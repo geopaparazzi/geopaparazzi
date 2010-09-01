@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout android:id="@+id/mainosmtagslayout"
+	android:layout_height="fill_parent" android:layout_width="fill_parent"
+	android:orientation="vertical" xmlns:android="http://schemas.android.com/apk/res/android">
+
+	<LinearLayout android:id="@+id/osmtagslayout"
+		android:layout_height="wrap_content" android:layout_width="fill_parent"
+		android:orientation="horizontal" android:padding="10px">
+		<TextView android:layout_height="wrap_content"
+			android:layout_width="wrap_content" android:text="@string/osm_additionalinfo"
+			android:layout_marginRight="5px" android:layout_marginLeft="5px" />
+		<EditText android:layout_height="wrap_content"
+			android:layout_width="fill_parent" android:text=""
+			android:id="@+id/osm_additionalinfo_id" />
+	</LinearLayout>
+
+	<TextView android:layout_height="wrap_content"
+		android:layout_width="wrap_content" android:text="@string/osm_tagsgrid" />
+
+	<GridView android:id="@+id/osmgridview" android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:numColumns="3"
+		android:verticalSpacing="5dp" android:horizontalSpacing="5dp"
+		xmlns:android="http://schemas.android.com/apk/res/android" />
+</LinearLayout>

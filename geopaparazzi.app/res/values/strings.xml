@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cancel">cancel</string>
+    <string name="ok">ok</string>
+    <string name="okcoord">use coord</string>
+    <string name="okaddress">use address</string>
+    <string name="longitude">longitude</string>
+    <string name="latitude">latitude</string>
+    
+    <string name="app_name">GeoPaparazzi</string>
+
+    <string name="notesaved">Note successfully saved!</string>
+    <string name="notenonsaved">An error occurred while saving the Note!</string>
+    <string name="notecancel">Note not saved as requested by user.</string>
+    <string name="notesvisibilityToggle">Toggle notes visibility.</string>
+
+    <string name="gpslogsvisibilityToggle">Toggle gps logs visibility.</string>
+
+    <string name="kmlsaved">Kml successfully exported to: </string>
+    <string name="kmlnonsaved">An error occurred while exporting to kml!</string>
+    <string name="gpxnonsaved">An error occurred while converting to gpx!</string>
+    <string name="imagesaved">Image successfully saved!</string>
+    <string name="imagenonsaved">An error occurred while saving the Image!</string>
+    <string name="loggingoff">Stopped gps and sensor logging.</string>
+    <string name="loggingon">Started gps and sensor logging.</string>
+    <string name="gpsloggingoff">Stopped gps logging.</string>
+    <string name="gpsloggingon">Started gps logging...</string>
+    <string name="gpsloggingalarm">Avoid/stop alarm... </string>
+    <string name="gpslogging_only">This function is available only when the gps is active and logging.</string>
+    <string name="nogps_data">No gps data available yet!</string>
+    
+    <string name="about">About</string>
+    <string name="exit">Exit</string>
+    <string name="cantcreate_sdcard">Wasn\'\'t able to create folder on sdcard ({0}). Exiting...</string>
+    <string name="sdcard_notexist">Sdcard folder doesn\'\'t exist or is not writable. Exiting...</string>
+    <string name="cantwrite_gpslog">ERROR: couldn\'\'t write gps log!</string>
+    <string name="cantclose_gpslog">ERROR: couldn\'\'t close gps log!</string>
+    <string name="gpslogthread_interrupted">ERROR: gps log thread interrupted!</string>
+    <string name="utctime">utc time: </string>
+    <string name="altim">altim: </string>
+    <string name="lat">lat: </string>
+    <string name="lon">lon: </string>
+    <string name="azimuth">azimuth: </string>
+    <string name="log_points">points: </string>
+    <string name="log_distance">distance: </string>
+    
+	<string name="osmview">osmview</string>
+	<string name="googleview">googleview</string>
+	<string name="zoomin">zoom in</string>
+	<string name="zoomout">zoom out</string>
+	<string name="centerongps">center on gps</string>
+	<string name="nogpscoordinate">The gps didn\'\'t send any coordinate yet. Try again in a minute.</string>
+	<string name="saveimg">Saving tile to disk</string>
+	<string name="goto_coordinate">go to coordinate</string>
+	<string name="askcoord">Please insert the coordinates to go to</string>
+	<string name="address">Address</string>
+	<string name="askaddress">Or use an address if you are connected to internet</string>
+	<string name="wrongLongitude">Longitude has to be a number between -180 and 180.</string>
+	<string name="wrongLatitude">Latitude has to be a number between -90 and 90.</string>
+	<string name="emptyaddress">Please insert an address.</string>
+	<string name="cantretrievefromaddress">Could not retrieve an the location from the supplied address.</string>
+	<string name="prompt_gpsenable">Your GPS is disabled! Would you like to enable it?</string>
+	<string name="nogps4google">The gps didn\'\'t supply any position yet. Can\'\'t Visualize any position on map.</string>
+	<string name="width_label">width</string>
+	<string name="color_label">color</string>
+	<string name="last_position">Last position at</string>
+	<string name="distance">Distance:</string>
+
+	<string name="mainmenu_kmlexport">kml export</string>
+	<string name="mainmenu_gpxconvert">import gpx</string>
+	<string name="mainmenu_gpsdataselect">gps data list</string>
+	<string name="mainmenu_mapdataselect">map data list</string>
+	<string name="mainmenu_togglemeasure">toggle measure mode</string>
+	<string name="mainmenu_preferences">preferences</string>
+	<string name="mainmenu_merge">merge selected logs</string>
+	<string name="mainmenu_addtags">add note by tag</string>
+	<string name="mainmenu_removelastnote">remove last note</string>
+
+	<string name="gpslogproperty">Properties for: </string>
+	<string name="gpslog_chart">Chart the log</string>
+	<string name="gpslog_zoom">Zoom to the log</string>
+	<string name="gpslog_delete">Delete the log</string>
+
+	<string name="mapproperty">Properties for: </string>
+	<string name="map_zoom">Zoom to the map</string>
+	<string name="map_delete">Delete the map</string>
+	
+	<string name="gps_preferences">Gps preferences</string>
+	<string name="gps_logging_distance">Min gps logging distance</string>
+	<string name="gps_logging_interval">Min gps logging interval</string>
+	<string name="gps_native_settings">Gps page</string>
+	<string name="gps_logging_on">Gps is logging</string>
+	<string name="gps_logging_off">Gps is not logging</string>
+	<string name="mapping_preferences">Mapping preferences</string>
+	<string name="osm_folder">OSM cache folder to use</string>
+	<string name="gpx_lines_folder">GPX lines folder</string>
+	<string name="gpx_points_folder">GPX points folder</string>
+	<string name="sms_preferences">Sms preferences</string>
+	<string name="sms_sending">Sms sending</string>
+	<string name="sms_sending_interval">Sending interval</string>
+	<string name="sms_catching">Sms catching</string>
+	<string name="sms_number">Phone number for automatic sms sending</string>
+	<string name="sms_catcher">Enable sms catcher</string>
+
+	<string name="database_preferences">Database preferences</string>
+	<string name="database_new">Create a new database on restart</string>
+	<string name="databaseError">An error occurred while connecting to the database</string>
+
+	<string name="chart_profile_view">Profile View</string>
+
+	<string name="gpx_import_title">Line or Point?</string>
+	<string name="gpx_import_message">Choose whether the file is to be imported as points or lines.</string>
+	<string name="gpx_import_checkbox_message">Import as points (as opposed to tracks)</string>
+	<string name="gpx_import_processing">Importing gpx...</string>
+
+	<string name="osm_additionalinfo">Add info to tag</string>
+	<string name="osm_tagsgrid">Choose a tag to insert</string>
+	
+	<string name="error_disk_full">The disk to which to log to seems to be full. Free some memory and start again.</string>
+	
+</resources>

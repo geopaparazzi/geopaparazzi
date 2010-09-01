@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2"
+	xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+	<Document>
+		<name>HydroloGIS home</name>
+		<Style id="red-pushpin">
+			<IconStyle>
+				<scale>1.1</scale>
+				<Icon>
+					<href>http://maps.google.com/mapfiles/kml/pushpin/red-pushpin.png
+					</href>
+				</Icon>
+				<hotSpot x="20" y="2" xunits="pixels" yunits="pixels" />
+			</IconStyle>
+			<ListStyle>
+			</ListStyle>
+		</Style>
+
+		
+		<Placemark>
+			<styleUrl>#red-pushpin</styleUrl>
+			<name>Geonote</name>
+			<description>
+				<![CDATA[
+				<p>Test.</p> 
+				]]>
+			</description>
+			<gx:balloonVisibility>1</gx:balloonVisibility>
+			<Point>
+				<coordinates>11.33868,46.47227,0</coordinates>
+			</Point>
+		</Placemark>
+
+		<Placemark>
+			<LineString>
+				<tessellate>1</tessellate>
+				<coordinates>
+					11.132294,46.474056,1 11.142294,46.574056,1 11.32868,46.48227,1 11.122294,46.774056,1
+				</coordinates>
+			</LineString>
+		</Placemark>
+	</Document>
+</kml>

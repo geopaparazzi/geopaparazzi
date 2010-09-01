@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string-array name="array_colornames">
+		<item>red</item>
+		<item>blue</item>
+		<item>green</item>
+		<item>black</item>
+		<item>white</item>
+		<item>gray</item>
+		<item>cyan</item>
+		<item>magenta</item>
+		<item>yellow</item>
+		<item>lightgray</item>
+		<item>darkgray</item>
+	</string-array>
+	<string-array name="array_widths">
+		<item>1</item>
+		<item>2</item>
+		<item>3</item>
+		<item>4</item>
+		<item>5</item>
+		<item>6</item>
+		<item>7</item>
+		<item>8</item>
+		<item>9</item>
+		<item>10</item>
+	</string-array>
+		<string-array name="gps_time_name">
+		<item>1 second</item>
+		<item>3 seconds</item>
+		<item>5 seconds</item>
+		<item>10 seconds</item>
+		<item>20 seconds</item>
+		<item>30 seconds</item>
+	</string-array>
+	<string-array name="gps_time_value">
+		<item>1</item>
+		<item>3</item>
+		<item>5</item>
+		<item>10</item>
+		<item>20</item>
+		<item>30</item>
+	</string-array>
+		<string-array name="sms_time_name">
+		<item>none</item>
+		<item>1 minute</item>
+		<item>3 minutes</item>
+		<item>5 minutes</item>
+		<item>10 minutes</item>
+		<item>30 minutes</item>
+		<item>60 minutes</item>
+	</string-array>
+	<string-array name="sms_time_value">
+		<item>0</item>
+		<item>1</item>
+		<item>3</item>
+		<item>5</item>
+		<item>10</item>
+		<item>30</item>
+		<item>60</item>
+	</string-array>
+</resources>

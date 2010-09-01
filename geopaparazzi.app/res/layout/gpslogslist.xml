@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:id="@+id/gpslogsList">
+
+	<RelativeLayout android:layout_width="fill_parent"
+		xmlns:android="http://schemas.android.com/apk/res/android" 
+		android:id="@+id/notesrow_container"
+		android:padding="5px" android:layout_height="wrap_content">
+		<CheckBox android:layout_height="wrap_content"
+			android:layout_width="wrap_content" android:id="@+id/notesvisible"
+			android:layout_alignParentLeft="true" android:layout_alignParentTop="true" />
+		<TextView android:layout_height="wrap_content"
+			android:layout_width="wrap_content" android:paddingLeft="10px"
+			android:layout_centerHorizontal="true" android:text="@string/notesvisibilityToggle"
+			android:layout_toRightOf="@+id/notesvisible" android:layout_alignBaseline="@+id/notesvisible"
+			android:textColor="@color/black" android:id="@+id/filename" />
+		<TextView android:layout_height="wrap_content"
+			android:layout_width="wrap_content" android:id="@+id/noteswidthLabel"
+			android:text="@string/width_label" android:padding="15px"
+			android:layout_marginRight="10px" android:layout_alignRight="@+id/noteswidthLabel"
+			android:layout_below="@+id/notesvisible" android:textColor="@color/black"
+			android:layout_toRightOf="@+id/notesvisible" />
+		<Spinner android:layout_height="wrap_content"
+			android:layout_width="fill_parent" android:id="@+id/noteswidthText"
+			android:layout_toRightOf="@+id/noteswidthLabel" android:layout_alignTop="@+id/noteswidthLabel"
+			android:text="1" />
+		<TextView android:layout_height="wrap_content"
+			android:layout_width="wrap_content" android:id="@+id/notescolorLabel"
+			android:padding="15px" android:layout_marginRight="10px"
+			android:layout_below="@+id/noteswidthLabel" android:layout_alignLeft="@+id/noteswidthLabel"
+			android:textColor="@color/black" android:text="@string/color_label"></TextView>
+		<Spinner android:id="@+id/notescolor_spinner" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:layout_toRightOf="@+id/notescolorLabel"
+			android:layout_alignTop="@+id/notescolorLabel" android:layout_alignRight="@+id/noteswidthText"
+			android:layout_alignLeft="@+id/noteswidthText" />
+	</RelativeLayout>
+
+	<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@android:id/list" android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
+	</ListView>
+</LinearLayout>

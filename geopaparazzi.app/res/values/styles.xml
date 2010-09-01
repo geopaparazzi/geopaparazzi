@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<style name="label">
+		<item name="android:textSize">18sp</item>
+		<item name="android:textColor">#ffffff</item>
+	</style>
+
+	<style name="view_text">
+		<item name="android:textSize">16sp</item>
+		<item name="android:textColor">#cccccc</item>
+	</style>
+	
+	<style name="black">
+		<item name="android:background">#000000</item>
+	</style>
+
+	<style name="white">
+		<item name="android:background">#FFFFFF</item>
+	</style>
+
+
+
+
+</resources>
