@@ -118,4 +118,26 @@
 	
 	<string name="error_disk_full">The disk to which to log to seems to be full. Free some memory and start again.</string>
 	
+	
+	
+	<string name="abouttext">
+	    GeoPaparazzi\n
+	    is brought to you by \n
+	    HydroloGIS (www.hydrologis.eu)\n
+	    \n
+	    The main website of the project is \n
+	    www.geopaparazzi.eu\n
+	    \n
+	    GeoPaparazzi is the little brother of:\n
+	    BeeGIS (www.beegis.org)\n
+	    and as such is able to load collected data into it.\n
+	    \n
+	    The chart view is adapted from the GraphView by Arno den Hond.\n
+	    \n
+	    The free maps come from \n
+	    OpenStreetMap (www.openstreetmap.org).\n
+	    \n
+	    The compass is the logo of the\n 
+	    Open Source Geospatial Foundation (www.osgeo.org).\n
+	</string>
 </resources>

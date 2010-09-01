@@ -135,6 +135,7 @@ public final class R {
     }
     public static final class string {
         public static final int about=0x7f070018;
+        public static final int abouttext=0x7f070066;
         public static final int address=0x7f07002f;
         public static final int altim=0x7f070020;
         public static final int app_name=0x7f070006;
