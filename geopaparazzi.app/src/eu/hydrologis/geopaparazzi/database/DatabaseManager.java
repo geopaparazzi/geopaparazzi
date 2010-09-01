@@ -33,6 +33,9 @@ import eu.hydrologis.geopaparazzi.util.ApplicationManager;
  */
 @SuppressWarnings("nls")
 public class DatabaseManager {
+
+    public static final int DATABASE_VERSION = 1;
+
     public static final String DEBUG_TAG = "DATABASEMANAGER";
 
     public static final String DATABASE_NAME = "geopaparazzi.db";
@@ -45,7 +48,7 @@ public class DatabaseManager {
 
     private static DatabaseManager dbManager = null;
 
-    private SQLiteDatabase sqliteDatabase;
+    private DatabaseOpenHelper databaseHelper;
 
     public static DatabaseManager getInstance() {
         if (dbManager == null) {
@@ -55,9 +58,8 @@ public class DatabaseManager {
     }
 
     public SQLiteDatabase getDatabase() throws IOException {
-        if (sqliteDatabase == null) {
+        if (databaseHelper == null) {
             File databaseFile = ApplicationManager.getInstance().getDatabaseFile();
-            boolean doNew = false;
             // SharedPreferences preferences = GeoPaparazziActivity.preferences;
             // String newDbKey =
             // ApplicationManager.getInstance().getResource().getString(R.string.database_new);
@@ -77,50 +79,74 @@ public class DatabaseManager {
             //
             // }
 
-            if (!databaseFile.exists()) {
-                doNew = true;
-            }
-            sqliteDatabase = SQLiteDatabase.openOrCreateDatabase(databaseFile, null);
-            Log.i(DEBUG_TAG, "Database: " + sqliteDatabase.getPath());
-            Log.i(DEBUG_TAG, "Database Version: " + sqliteDatabase.getVersion());
-            Log.i(DEBUG_TAG, "Database Page Size: " + sqliteDatabase.getPageSize());
-            Log.i(DEBUG_TAG, "Database Max Size: " + sqliteDatabase.getMaximumSize());
-            Log.i(DEBUG_TAG, "Database Open?  " + sqliteDatabase.isOpen());
-            Log.i(DEBUG_TAG, "Database readonly?  " + sqliteDatabase.isReadOnly());
-            Log.i(DEBUG_TAG, "Database Locked by current thread?  " + sqliteDatabase.isDbLockedByCurrentThread());
-            if (doNew) {
+            databaseHelper = new DatabaseOpenHelper(databaseFile);
 
-                sqliteDatabase.setLocale(Locale.getDefault());
-                sqliteDatabase.setLockingEnabled(false);
-                sqliteDatabase.setVersion(VERSION);
-
-                // CREATE TABLES
-                try {
-                    DaoNotes.createTables();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                try {
-                    DaoGpsLog.createTables();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                try {
-                    DaoMaps.createTables();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            }
+            SQLiteDatabase db = databaseHelper.getWritableDatabase();
+            Log.i(DEBUG_TAG, "Database: " + db.getPath());
+            Log.i(DEBUG_TAG, "Database Version: " + db.getVersion());
+            Log.i(DEBUG_TAG, "Database Page Size: " + db.getPageSize());
+            Log.i(DEBUG_TAG, "Database Max Size: " + db.getMaximumSize());
+            Log.i(DEBUG_TAG, "Database Open?  " + db.isOpen());
+            Log.i(DEBUG_TAG, "Database readonly?  " + db.isReadOnly());
+            Log.i(DEBUG_TAG, "Database Locked by current thread?  " + db.isDbLockedByCurrentThread());
         }
-        return sqliteDatabase;
+
+        return databaseHelper.getWritableDatabase();
     }
 
     public void closeDatabase() {
-        if (sqliteDatabase != null) {
+        if (databaseHelper != null) {
             Log.i(DEBUG_TAG, "Closing database");
-            sqliteDatabase.close();
+            databaseHelper.close();
             Log.i(DEBUG_TAG, "Database closed");
+        }
+    }
+
+    private static class DatabaseOpenHelper {
+        private SQLiteDatabase db;
+
+        private File databaseFile;
+
+        private DatabaseOpenHelper( File databaseFile ) {
+            this.databaseFile = databaseFile;
+        }
+
+        public void open() throws IOException {
+            if (databaseFile.exists()) {
+                Log.i("SQLiteHelper", "Opening database at " + databaseFile);
+                db = SQLiteDatabase.openOrCreateDatabase(databaseFile, null);
+                if (DATABASE_VERSION > db.getVersion())
+                    upgrade();
+            } else {
+                Log.i("SQLiteHelper", "Creating database at " + databaseFile);
+                db = SQLiteDatabase.openOrCreateDatabase(databaseFile, null);
+                create();
+            }
+        }
+
+        public void close() {
+            db.close();
+        }
+
+        public void create() throws IOException {
+            db.setLocale(Locale.getDefault());
+            db.setLockingEnabled(false);
+            db.setVersion(VERSION);
+
+            // CREATE TABLES
+            DaoNotes.createTables();
+            DaoGpsLog.createTables();
+            DaoMaps.createTables();
+        }
+
+        public void upgrade() throws IOException {
+            throw new RuntimeException("Method not implemented.");
+        }
+
+        public SQLiteDatabase getWritableDatabase() throws IOException {
+            if (db == null)
+                open();
+            return db;
         }
     }
 
