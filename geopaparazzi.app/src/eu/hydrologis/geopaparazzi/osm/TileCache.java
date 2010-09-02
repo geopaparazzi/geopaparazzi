@@ -30,8 +30,10 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -63,12 +65,13 @@ public class TileCache {
     /**
      * The maximum number of tiles kept in memory.
      */
-    public static final int imgCacheLimit = 27;
+    public static final int imgCacheLimit = 16;
 
     /**
      * The caching {@link HashMap}.
      */
-    private HashMap<String, Bitmap> tileCache = new HashMap<String, Bitmap>(27);
+    private Map<String, Bitmap> tileCache = Collections
+            .synchronizedMap(new HashMap<String, Bitmap>(27));
 
     /**
      * List of tiles that are currently being fectched and therefore 
@@ -100,20 +103,23 @@ public class TileCache {
      * @param tile the tile {@link Bitmap}.
      */
     public void put( String key, Bitmap tile ) {
-        int size = tileCache.size();
-        while( size > imgCacheLimit ) {
-            // remove oldest tile
-            String oldestKey = keyList.get(0);
-            Bitmap removed = tileCache.remove(oldestKey);
-            size = tileCache.size();
-            if (removed != null) {
-                removed.recycle();
+        synchronized (tileCache) {
+            int size = tileCache.size();
+            // Log.d(LOGTAG, "Inserting Tile: " + key + " - Size reached = " + size);
+            while( size > imgCacheLimit ) {
+                // remove oldest tile
+                // Log.d(LOGTAG, "Removing Tile. Size = " + size);
+                String oldestKey = keyList.get(0);
+                // Log.d(LOGTAG, "Removing Tile. Oldest key = " + oldestKey);
+                Bitmap bitmap = tileCache.get(oldestKey);
+                bitmap.recycle();
+                tileCache.remove(oldestKey);
                 keyList.remove(0);
-                // Log.v(LOGTAG, "Remove bitmap from cache (size = " + size + "): " + oldestKey);
+                size = keyList.size();
             }
+            keyList.add(key);
+            tileCache.put(key, tile);
         }
-        keyList.add(key);
-        tileCache.put(key, tile);
     }
     /**
      * Gather a tile from the cache.
@@ -144,15 +150,18 @@ public class TileCache {
         final String img = ytile + ".png"; //$NON-NLS-1$
         final String tileDef = folder + img;
 
-        // check in cache
-        Bitmap tileBitmap = tileCache.get(tileDef);
-        if (tileBitmap != null) {
-            // Log.v(LOGTAG, "Using image from cache: " + tileDef);
-            return tileBitmap;
+        Bitmap tileBitmap = null;
+        synchronized (tileCache) {
+            // check in cache
+            tileBitmap = tileCache.get(tileDef);
+            if (tileBitmap != null) {
+                // Log.v(LOGTAG, "Using image from cache: " + tileDef);
+                return tileBitmap;
+            }
         }
         File tileFile = new File(osmCacheDir + tileDef);
         if (tileFile.exists()) {
-            byte[] byteArrayForBitmap = new byte[512 * 512];
+            byte[] byteArrayForBitmap = new byte[16 * 1024];
             BitmapFactory.Options opt = new BitmapFactory.Options();
             opt.inTempStorage = byteArrayForBitmap;
             tileBitmap = BitmapFactory.decodeFile(tileFile.getAbsolutePath(), opt);
@@ -160,6 +169,10 @@ public class TileCache {
             // .getAbsolutePath());
             if (tileBitmap == null) {
                 Log.e(LOGTAG, "Problems reading image from disk: " + tileFile); //$NON-NLS-1$
+                boolean delete = tileFile.delete();
+                if (!delete) {
+                    tileFile.deleteOnExit();
+                }
                 tileBitmap = createDummyTile();
             } else {
                 put(tileDef, tileBitmap);
@@ -196,13 +209,14 @@ public class TileCache {
                         sb.append("http://tile.openstreetmap.org"); //$NON-NLS-1$
                         sb.append(tileDef);
                         String urlStr = sb.toString();
+                        InputStream tileInputStream = null;
                         try {
                             // Log.v(LOGTAG, "Getting image from web: " + urlStr);
                             URL osmFetchUrl = new URL(urlStr);
-                            InputStream tileInputStream = (InputStream) osmFetchUrl.getContent();
+                            tileInputStream = (InputStream) osmFetchUrl.getContent();
                             // BitmapDrawable bitmapDrawable = (BitmapDrawable) Drawable
                             // .createFromStream(tileInputStream, "src");
-                            byte[] byteArrayForBitmap = new byte[512 * 512];
+                            byte[] byteArrayForBitmap = new byte[16 * 1024];
                             BitmapFactory.Options opt = new BitmapFactory.Options();
                             opt.inTempStorage = byteArrayForBitmap;
                             tmpTileBitmap = BitmapFactory.decodeStream(tileInputStream, null, opt);
@@ -217,6 +231,14 @@ public class TileCache {
                             }
                         } catch (Exception e) {
                             Log.e(LOGTAG, "Problems reading image from web: " + urlStr); //$NON-NLS-1$
+                        } finally {
+                            if (tileInputStream != null) {
+                                try {
+                                    tileInputStream.close();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
                         }
                         // remove the tile from the being fetched list
                         loadingTilesList.remove(tileDef);
@@ -233,12 +255,17 @@ public class TileCache {
             bitmap.recycle();
         }
         tileCache.clear();
-        // Log.d(LOGTAG, "Cleared tiles cache");
+        if (dummyTile != null) {
+            dummyTile.recycle();
+            dummyTile = null;
+        }
+        Log.d(LOGTAG, "Cleared tiles cache");
     }
 
     private Bitmap createDummyTile() {
         if (dummyTile == null) {
-            dummyTile = BitmapFactory.decodeResource(applicationManager.getOsmView().getResources(), R.drawable.no_tile_256);
+            dummyTile = BitmapFactory.decodeResource(
+                    applicationManager.getOsmView().getResources(), R.drawable.no_tile_256);
         }
         return dummyTile;
     }
@@ -254,15 +281,17 @@ public class TileCache {
         fOut.close();
     }
 
-    public static int[] latLon2ContainingTileNumber( final double lat, final double lon, final int zoom ) {
+    public static int[] latLon2ContainingTileNumber( final double lat, final double lon,
+            final int zoom ) {
         int xtile = (int) floor((lon + 180) / 360 * (1 << zoom));
-        int ytile = (int) floor((1 - log(tan(lat * PI / 180) + 1 / cos(lat * PI / 180)) / PI) / 2 * (1 << zoom));
+        int ytile = (int) floor((1 - log(tan(lat * PI / 180) + 1 / cos(lat * PI / 180)) / PI) / 2
+                * (1 << zoom));
         // return ("" + zoom + "/" + xtile + "/" + ytile);
         return new int[]{xtile, ytile};
     }
 
-    public static void fetchTiles( File cacheDir, double startLon, double startLat, double endLon, double endLat, int startZoom,
-            int endZoom ) throws IOException {
+    public static void fetchTiles( File cacheDir, double startLon, double startLat, double endLon,
+            double endLat, int startZoom, int endZoom ) throws IOException {
         TileCache tC = new TileCache(cacheDir);
         for( int zoom = startZoom; zoom <= endZoom; zoom++ ) {
             for( double lon = startLon; lon <= endLon; lon++ ) {
