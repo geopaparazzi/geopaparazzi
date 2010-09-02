@@ -77,7 +77,8 @@ public class DaoMaps {
      * @return the id of the new created log.
      * @throws IOException 
      */
-    public static long addMap( Date ts, int mapType, String text, float width, String color, boolean visible ) throws IOException {
+    public static long addMap( Date ts, int mapType, String text, float width, String color,
+            boolean visible ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         long rowId;
@@ -109,8 +110,8 @@ public class DaoMaps {
         return rowId;
     }
 
-    public static void addMapDataPoint( SQLiteDatabase sqliteDatabase, long mapId, double lon, double lat, String text,
-            Date timestamp ) throws IOException {
+    public static void addMapDataPoint( SQLiteDatabase sqliteDatabase, long mapId, double lon,
+            double lat, String text, Date timestamp ) throws IOException {
         ContentValues values = new ContentValues();
         values.put(COLUMN_MAPID, (int) mapId);
         values.put(COLUMN_DATA_LON, lon);
@@ -176,8 +177,8 @@ public class DaoMaps {
         }
         c.close();
 
-        // Log.d(DEBUG_TAG, "Query: " + query);
-        // Log.d(DEBUG_TAG, "gave logs: " + logsList.size());
+        Log.d(TAG, "Query: " + query);
+        Log.d(TAG, "gave logs: " + logsList.size());
 
         return logsList;
     }
@@ -209,8 +210,8 @@ public class DaoMaps {
         }
     }
 
-    public static void updateMapProperties( long mapid, String color, float width, boolean visible, String name )
-            throws IOException {
+    public static void updateMapProperties( long mapid, String color, float width, boolean visible,
+            String name ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
@@ -262,16 +263,20 @@ public class DaoMaps {
      * @return the map of lines inside the bounds.
      * @throws IOException
      */
-    public static HashMap<Long, PointsContainer> getCoordinatesInWorldBounds( float n, float s, float w, float e )
-            throws IOException {
+    public static HashMap<Long, PointsContainer> getCoordinatesInWorldBounds( float n, float s,
+            float w, float e ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         HashMap<Long, PointsContainer> linesMap = new HashMap<Long, PointsContainer>();
+
+        Log.d(TAG, "PRE  NSEW = " + n + "/" + s + "/" + e + "/" + w);
         n = n + DatabaseManager.BUFFER;
         s = s - DatabaseManager.BUFFER;
         e = e + DatabaseManager.BUFFER;
         w = w - DatabaseManager.BUFFER;
+        Log.d(TAG, "POST NSEW = " + n + "/" + s + "/" + e + "/" + w);
 
-        String asColumnsToReturn[] = {COLUMN_MAPID, COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_TS, COLUMN_DATA_TEXT};
+        String asColumnsToReturn[] = {COLUMN_MAPID, COLUMN_DATA_LON, COLUMN_DATA_LAT,
+                COLUMN_DATA_TS, COLUMN_DATA_TEXT};
         StringBuilder sB = new StringBuilder();
         sB.append("(");
         sB.append(COLUMN_DATA_LON);
@@ -279,12 +284,15 @@ public class DaoMaps {
         sB.append(COLUMN_DATA_LAT);
         sB.append(" BETWEEN ? AND ?)");
         String strWhere = sB.toString();
-        String[] strWhereArgs = new String[]{String.valueOf(w), String.valueOf(e), String.valueOf(s), String.valueOf(n)};
+        String[] strWhereArgs = new String[]{String.valueOf(w), String.valueOf(e),
+                String.valueOf(s), String.valueOf(n)};
         String strSortOrder = COLUMN_MAPID + "," + COLUMN_DATA_TS + " ASC";
-        Cursor c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, strWhereArgs, null, null, strSortOrder);
+        Cursor c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, strWhereArgs,
+                null, null, strSortOrder);
         c.moveToFirst();
         long previousMapid = -1;
         PointsContainer line = null;
+        int index = 0;
         while( !c.isAfterLast() ) {
             long mapid = c.getLong(0);
             double lon = c.getDouble(1);
@@ -299,9 +307,70 @@ public class DaoMaps {
             }
             line.addPoint(lon, lat, 0.0, date, name);
             c.moveToNext();
+            index++;
         }
         c.close();
+        Log.i(TAG, "Read points = " + index);
         return linesMap;
+    }
+
+    /**
+     * Get the line of a given map from the database inside a given bound.
+     * 
+     * @param mapId the id of the map to pic.
+     * @param n
+     * @param s
+     * @param w
+     * @param e
+     * @return the map of lines inside the bounds.
+     * @throws IOException
+     */
+    public static PointsContainer getCoordinatesInWorldBoundsForMapId( long mapId, float n,
+            float s, float w, float e ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+
+        // Log.d(TAG, "PRE  NSEW = " + n + "/" + s + "/" + e + "/" + w);
+        n = n + DatabaseManager.BUFFER;
+        s = s - DatabaseManager.BUFFER;
+        e = e + DatabaseManager.BUFFER;
+        w = w - DatabaseManager.BUFFER;
+        // Log.d(TAG, "POST NSEW = " + n + "/" + s + "/" + e + "/" + w);
+
+        String asColumnsToReturn[] = {COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_TS,
+                COLUMN_DATA_TEXT};
+        StringBuilder sB = new StringBuilder();
+        sB.append("(");
+        sB.append(COLUMN_DATA_LON);
+        sB.append(" BETWEEN ? AND ?) AND (");
+        sB.append(COLUMN_DATA_LAT);
+        sB.append(" BETWEEN ? AND ?)");
+        sB.append(" AND ");
+        sB.append(COLUMN_MAPID);
+        sB.append(" = ");
+        sB.append(mapId);
+        String strWhere = sB.toString();
+        // Log.d(TAG, "WHERESTR = " + strWhere);
+        String[] strWhereArgs = new String[]{String.valueOf(w), String.valueOf(e),
+                String.valueOf(s), String.valueOf(n)};
+        String strSortOrder = COLUMN_DATA_TS + " ASC";
+        Cursor c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, strWhereArgs,
+                null, null, strSortOrder);
+        c.moveToFirst();
+        PointsContainer line = new PointsContainer("log_" + mapId);
+        int index = 0;
+        while( !c.isAfterLast() ) {
+            double lon = c.getDouble(0);
+            double lat = c.getDouble(1);
+            String date = c.getString(2);
+            String name = c.getString(3);
+
+            line.addPoint(lon, lat, 0.0, date, name);
+            c.moveToNext();
+            index++;
+        }
+        c.close();
+        Log.i(TAG, "Read points = " + index);
+        return line;
     }
 
     /**
@@ -314,9 +383,11 @@ public class DaoMaps {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         LinkedHashMap<Long, Line> linesMap = new LinkedHashMap<Long, Line>();
 
-        String asColumnsToReturn[] = {COLUMN_MAPID, COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_TS};
+        String asColumnsToReturn[] = {COLUMN_MAPID, COLUMN_DATA_LON, COLUMN_DATA_LAT,
+                COLUMN_DATA_TS};
         String strSortOrder = COLUMN_MAPID + "," + COLUMN_DATA_TS + " ASC";
-        Cursor c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, null, null, null, null, strSortOrder);
+        Cursor c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, null, null, null, null,
+                strSortOrder);
         c.moveToFirst();
         while( !c.isAfterLast() ) {
             long logid = c.getLong(0);
@@ -347,7 +418,8 @@ public class DaoMaps {
         String asColumnsToReturn[] = {COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_TS};
         String strSortOrder = COLUMN_DATA_TS + " ASC";
         String strWhere = COLUMN_MAPID + "=" + logId;
-        Cursor c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, null, null, null, strSortOrder);
+        Cursor c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, null, null, null,
+                strSortOrder);
         c.moveToFirst();
         Line line = new Line("log_" + logId);
         while( !c.isAfterLast() ) {

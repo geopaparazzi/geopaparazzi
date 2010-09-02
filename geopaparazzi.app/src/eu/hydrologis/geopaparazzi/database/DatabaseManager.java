@@ -125,6 +125,7 @@ public class DatabaseManager {
 
         public void close() {
             db.close();
+            db = null;
         }
 
         public void create() throws IOException {

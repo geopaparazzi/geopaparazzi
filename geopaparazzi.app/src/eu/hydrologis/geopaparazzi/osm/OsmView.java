@@ -245,7 +245,8 @@ public class OsmView extends View implements ApplicationManagerListener {
                     PointF s = dragList.get(i + 1);
                     canvas.drawLine(f.x, f.y, s.x, s.y, measurePaint);
                 }
-                canvas.drawText(distanceString + (int) measuredDistance + " meters", 5, 15, measureTextPaint); //$NON-NLS-1$
+                canvas.drawText(
+                        distanceString + (int) measuredDistance + " meters", 5, 15, measureTextPaint); //$NON-NLS-1$
             }
 
             if (gotoLat != -1) {
@@ -277,15 +278,12 @@ public class OsmView extends View implements ApplicationManagerListener {
 
         try {
             List<MapItem> mapsMap = DaoMaps.getMaps();
-            HashMap<Long, PointsContainer> coordsInWorldBounds = DaoMaps.getCoordinatesInWorldBounds(y0, y1, x0, x1);
-            if (coordsInWorldBounds.size() == 0) {
-                return;
-            }
             for( MapItem mapItem : mapsMap ) {
                 if (!mapItem.isVisible()) {
                     continue;
                 }
-                PointsContainer coordsContainer = coordsInWorldBounds.get(mapItem.getId());
+                PointsContainer coordsContainer = DaoMaps.getCoordinatesInWorldBoundsForMapId(
+                        mapItem.getId(), y0, y1, x0, x1);
                 if (coordsContainer == null) {
                     continue;
                 }
@@ -304,8 +302,10 @@ public class OsmView extends View implements ApplicationManagerListener {
                     List<Double> lonList = coordsContainer.getLonList();
 
                     for( int i = 0; i < latList.size(); i++ ) {
-                        float screenX = lonToScreen(width, lonList.get(i).floatValue(), centerLon, pixelDxInWorld);
-                        float screenY = latToScreen(height, latList.get(i).floatValue(), centerLat, pixelDyInWorld);
+                        float screenX = lonToScreen(width, lonList.get(i).floatValue(), centerLon,
+                                pixelDxInWorld);
+                        float screenY = latToScreen(height, latList.get(i).floatValue(), centerLat,
+                                pixelDyInWorld);
                         // Log.d(LOGTAG, screenX + "/" + screenY);
                         if (i == 0) {
                             path.moveTo(screenX, screenY);
@@ -331,8 +331,10 @@ public class OsmView extends View implements ApplicationManagerListener {
                     boolean hasNames = namesList.size() == latList.size();
 
                     for( int i = 0; i < latList.size(); i++ ) {
-                        float screenX = lonToScreen(width, lonList.get(i).floatValue(), centerLon, pixelDxInWorld);
-                        float screenY = latToScreen(height, latList.get(i).floatValue(), centerLat, pixelDyInWorld);
+                        float screenX = lonToScreen(width, lonList.get(i).floatValue(), centerLon,
+                                pixelDxInWorld);
+                        float screenY = latToScreen(height, latList.get(i).floatValue(), centerLat,
+                                pixelDyInWorld);
 
                         canvas.drawPoint(screenX, screenY, gpxPaint);
                         if (zoom > 12 && hasNames) {
@@ -356,7 +358,8 @@ public class OsmView extends View implements ApplicationManagerListener {
 
         try {
             List<MapItem> gpslogs = DaoGpsLog.getGpslogs();
-            HashMap<Long, Line> linesInWorldBounds = DaoGpsLog.getLinesInWorldBounds(y0, y1, x0, x1);
+            HashMap<Long, Line> linesInWorldBounds = DaoGpsLog
+                    .getLinesInWorldBounds(y0, y1, x0, x1);
             for( MapItem gpslogItem : gpslogs ) {
                 if (!gpslogItem.isVisible()) {
                     continue;
@@ -379,8 +382,10 @@ public class OsmView extends View implements ApplicationManagerListener {
                 List<Double> lonList = line.getLonList();
 
                 for( int i = 0; i < latList.size(); i++ ) {
-                    float screenX = lonToScreen(width, lonList.get(i).floatValue(), centerLon, pixelDxInWorld);
-                    float screenY = latToScreen(height, latList.get(i).floatValue(), centerLat, pixelDyInWorld);
+                    float screenX = lonToScreen(width, lonList.get(i).floatValue(), centerLon,
+                            pixelDxInWorld);
+                    float screenY = latToScreen(height, latList.get(i).floatValue(), centerLat,
+                            pixelDyInWorld);
                     // Log.d(LOGTAG, screenX + "/" + screenY);
                     if (i == 0) {
                         path.moveTo(screenX, screenY);
