@@ -74,7 +74,6 @@ public class GpsDataPropertiesActivity extends Activity {
             textView.addTextChangedListener(new TextWatcher(){
 
                 public void onTextChanged( CharSequence s, int start, int before, int count ) {
-                    item.setDirty(true);
                     newText = textView.getText().toString();
                 }
                 public void beforeTextChanged( CharSequence s, int start, int count, int after ) {

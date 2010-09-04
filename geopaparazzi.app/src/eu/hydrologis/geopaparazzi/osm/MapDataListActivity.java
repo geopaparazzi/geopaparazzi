@@ -109,6 +109,7 @@ public class MapDataListActivity extends ListActivity {
         Intent intent = new Intent(Constants.MAPDATAPROPERTIES);
         intent.putExtra(Constants.PREFS_KEY_MAP4PROPERTIES, mapsItems[position]);
         startActivity(intent);
+        finish();
     }
 
     // @Override
