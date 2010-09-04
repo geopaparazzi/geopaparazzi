@@ -149,8 +149,9 @@ public class OsmView extends View implements ApplicationManagerListener {
         if (loc != null) {
             gpsLat = (float) loc.getLatitude();
             gpsLon = (float) loc.getLongitude();
-        }else{
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(osmActivity.getApplicationContext());
+        } else {
+            SharedPreferences preferences = PreferenceManager
+                    .getDefaultSharedPreferences(osmActivity.getApplicationContext());
             gpsLon = preferences.getFloat(GPSLAST_LONGITUDE, gpsLon);
             gpsLat = preferences.getFloat(GPSLAST_LATITUDE, gpsLat);
         }
@@ -181,6 +182,19 @@ public class OsmView extends View implements ApplicationManagerListener {
         //
         // });
 
+    }
+
+    @Override
+    protected void onWindowVisibilityChanged( int visibility ) {
+        super.onWindowVisibilityChanged(visibility);
+        if (visibility == 8) {
+            SharedPreferences preferences = PreferenceManager
+                    .getDefaultSharedPreferences(osmActivity.getApplicationContext());
+            Editor editor = preferences.edit();
+            editor.putFloat(GPSLAST_LONGITUDE, centerLon);
+            editor.putFloat(GPSLAST_LATITUDE, centerLat);
+            editor.commit();
+        }
     }
 
     protected void onDraw( Canvas canvas ) {
