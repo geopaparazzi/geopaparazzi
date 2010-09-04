@@ -43,7 +43,7 @@ import eu.hydrologis.geopaparazzi.util.Constants;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class MapsDataListActivity extends ListActivity {
+public class MapDataListActivity extends ListActivity {
     private MapItem[] mapsItems;
     private ArrayAdapter<MapItem> arrayAdapter;
 
