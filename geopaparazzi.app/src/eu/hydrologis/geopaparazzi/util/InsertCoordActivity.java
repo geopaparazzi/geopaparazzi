@@ -17,12 +17,7 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
-import java.io.IOException;
-import java.util.List;
-
 import android.app.Activity;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -33,13 +28,14 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.osm.OsmView;
 
 /**
+ * Activity to get to a location by coordinate.
+ * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class InsertCoordActivity extends Activity {
     private ApplicationManager applicationManager;
     private EditText latText;
     private EditText lonText;
-    private EditText addressText;
 
     private final Handler openMapViewHandler = new Handler();
 
@@ -51,7 +47,6 @@ public class InsertCoordActivity extends Activity {
 
         lonText = (EditText) findViewById(R.id.longitudetext);
         latText = (EditText) findViewById(R.id.latitudetext);
-        addressText = (EditText) findViewById(R.id.addresstext);
 
         Button fromCoordsButton = (Button) findViewById(R.id.coordOkButton);
         fromCoordsButton.setOnClickListener(new Button.OnClickListener(){
@@ -95,63 +90,6 @@ public class InsertCoordActivity extends Activity {
                     }
                 }.start();
 
-                finish();
-            }
-        });
-
-        Button fromAddressButton = (Button) findViewById(R.id.addressOkButton);
-        fromAddressButton.setOnClickListener(new Button.OnClickListener(){
-            private double lat;
-            private double lon;
-
-            public void onClick( View v ) {
-                String addressString = String.valueOf(addressText.getText());
-                if (addressString.length() < 1) {
-                    Toast.makeText(InsertCoordActivity.this, R.string.emptyaddress,
-                            Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                Geocoder gc = new Geocoder(InsertCoordActivity.this);
-                List<Address> foundAdresses = null;
-                try {
-                    foundAdresses = gc.getFromLocationName(addressString, 5);
-                } catch (IOException e) {
-                    Toast.makeText(InsertCoordActivity.this, R.string.cantretrievefromaddress,
-                            Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                if (foundAdresses == null || foundAdresses.size() == 0) {
-                    Toast.makeText(InsertCoordActivity.this, R.string.cantretrievefromaddress,
-                            Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                Address addressResult = foundAdresses.get(0);
-                lat = addressResult.getLatitude();
-                lon = addressResult.getLongitude();
-
-                new Thread(){
-                    public void run() {
-                        openMapViewHandler.post(new Runnable(){
-                            public void run() {
-                                OsmView osmView = applicationManager.getOsmView();
-                                osmView.requestFocus();
-                                osmView.setGotoCoordinate(lon, lat);
-                            }
-                        });
-
-                    }
-                }.start();
-
-                finish();
-            }
-        });
-
-        Button cancelButton = (Button) findViewById(R.id.coordCancelButton);
-        cancelButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
                 finish();
             }
         });

@@ -47,7 +47,11 @@ public class MapDataPropertiesActivity extends Activity {
     private static List<String> colorList;
     private static List<String> widthsList;
     private MapItem item;
-    private EditText textView;
+
+    // properties
+    private String newText;
+    private float newWidth;
+    private String newColor;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -60,14 +64,15 @@ public class MapDataPropertiesActivity extends Activity {
         if (object instanceof MapItem) {
             item = (MapItem) object;
 
-            textView = (EditText) findViewById(R.id.mapname);
+            final EditText textView = (EditText) findViewById(R.id.mapname);
             final Spinner colorView = (Spinner) findViewById(R.id.color_spinner);
             final Spinner widthView = (Spinner) findViewById(R.id.widthText);
 
+            newText = item.getName();
             textView.setText(item.getName());
             textView.addTextChangedListener(new TextWatcher(){
                 public void onTextChanged( CharSequence s, int start, int before, int count ) {
-                    item.setDirty(true);
+                    newText = textView.getText().toString();
                 }
                 public void beforeTextChanged( CharSequence s, int start, int count, int after ) {
                 }
@@ -76,37 +81,36 @@ public class MapDataPropertiesActivity extends Activity {
             });
 
             // width spinner
-            ArrayAdapter< ? > widthSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.array_widths,
-                    android.R.layout.simple_spinner_item);
-            widthSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            newWidth = item.getWidth();
+            ArrayAdapter< ? > widthSpinnerAdapter = ArrayAdapter.createFromResource(this,
+                    R.array.array_widths, android.R.layout.simple_spinner_item);
+            widthSpinnerAdapter
+                    .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             widthView.setAdapter(widthSpinnerAdapter);
             int widthIndex = widthsList.indexOf(String.valueOf((int) item.getWidth()));
             widthView.setSelection(widthIndex);
             widthView.setOnItemSelectedListener(new OnItemSelectedListener(){
                 public void onItemSelected( AdapterView< ? > arg0, View arg1, int arg2, long arg3 ) {
                     Object selectedItem = widthView.getSelectedItem();
-                    float newWidth = Float.parseFloat(selectedItem.toString());
-                    item.setWidth(newWidth);
-                    item.setDirty(true);
+                    newWidth = Float.parseFloat(selectedItem.toString());
                 }
                 public void onNothingSelected( AdapterView< ? > arg0 ) {
                 }
             });
 
             // color box
-            ArrayAdapter< ? > colorSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.array_colornames,
-                    android.R.layout.simple_spinner_item);
-            colorSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            newColor = item.getColor();
+            ArrayAdapter< ? > colorSpinnerAdapter = ArrayAdapter.createFromResource(this,
+                    R.array.array_colornames, android.R.layout.simple_spinner_item);
+            colorSpinnerAdapter
+                    .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             colorView.setAdapter(colorSpinnerAdapter);
             int colorIndex = colorList.indexOf(item.getColor());
             colorView.setSelection(colorIndex);
             colorView.setOnItemSelectedListener(new OnItemSelectedListener(){
                 public void onItemSelected( AdapterView< ? > arg0, View arg1, int arg2, long arg3 ) {
                     Object selectedItem = colorView.getSelectedItem();
-                    String newColor = selectedItem.toString();
-                    item.setColor(newColor);
-                    // rowView.setBackgroundColor(Color.parseColor(item.getColor()));
-                    item.setDirty(true);
+                    newColor = selectedItem.toString();
                 }
                 public void onNothingSelected( AdapterView< ? > arg0 ) {
                 }
@@ -118,8 +122,11 @@ public class MapDataPropertiesActivity extends Activity {
                     try {
                         Line line = DaoMaps.getMapAsLine(item.getId());
                         if (line.getLonList().size() > 0) {
-                            ApplicationManager.getInstance().getOsmView()
-                                    .setGotoCoordinate(line.getLonList().get(0), line.getLatList().get(0));
+                            ApplicationManager
+                                    .getInstance()
+                                    .getOsmView()
+                                    .setGotoCoordinate(line.getLonList().get(0),
+                                            line.getLatList().get(0));
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -132,29 +139,34 @@ public class MapDataPropertiesActivity extends Activity {
                     try {
                         long id = item.getId();
                         DaoMaps.deleteMap(id);
+                        finish();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
             });
+            
+            final Button okButton = (Button) findViewById(R.id.map_ok);
+            okButton.setOnClickListener(new Button.OnClickListener(){
+                public void onClick( View v ) {
+                    try {
+                        DaoMaps.updateMapProperties(item.getId(), newColor, newWidth,
+                                item.isVisible(), newText);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    finish();
+                }
+            });
+
+            final Button cancelButton = (Button) findViewById(R.id.map_cancel);
+            cancelButton.setOnClickListener(new Button.OnClickListener(){
+                public void onClick( View v ) {
+                    finish();
+                }
+            });
 
         }
-    }
-
-    @Override
-    protected void onPause() {
-        try {
-            if (item != null && item.isDirty()) {
-                String newText = textView.getText().toString();
-                DaoMaps.updateMapProperties(item.getId(), item.getColor(), item.getWidth(), item.isVisible(), newText);
-                item.setDirty(false);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        super.onPause();
-
     }
 
     private void getResourcesAndColors() {

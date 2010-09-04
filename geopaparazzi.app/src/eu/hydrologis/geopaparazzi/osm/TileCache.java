@@ -281,6 +281,14 @@ public class TileCache {
         fOut.close();
     }
 
+    /**
+     * Retrieves the tile coordinates from the world coordinates.
+     * 
+     * @param lat world latitude.
+     * @param lon world longitude.
+     * @param zoom the required zoomlevel.
+     * @return the array containing x, y of the tile.
+     */
     public static int[] latLon2ContainingTileNumber( final double lat, final double lon,
             final int zoom ) {
         int xtile = (int) floor((lon + 180) / 360 * (1 << zoom));
@@ -290,6 +298,23 @@ public class TileCache {
         return new int[]{xtile, ytile};
     }
 
+    /**
+     * Utility to fetch tiles in a given boundary.
+     * 
+     * <p>This will be usefull for example to download a complete area
+     * and various zoomlevels. 
+     * 
+     * @TODO check how well this fits in OSM policy before using it (bunch download). 
+     * 
+     * @param cacheDir the folder into which to save the tiles.
+     * @param startLon the first coord longitude.
+     * @param startLat the first coord latitude.
+     * @param endLon the last coord longitude.
+     * @param endLat the last coord latitude.
+     * @param startZoom the lower zoom to download.
+     * @param endZoom the higher zoom to download.
+     * @throws IOException
+     */
     public static void fetchTiles( File cacheDir, double startLon, double startLat, double endLon,
             double endLat, int startZoom, int endZoom ) throws IOException {
         TileCache tC = new TileCache(cacheDir);

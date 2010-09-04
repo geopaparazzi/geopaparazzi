@@ -112,6 +112,7 @@ public class GpsDataListActivity extends ListActivity {
         Intent intent = new Intent(Constants.GPSLOG_PROPERTIES);
         intent.putExtra(Constants.PREFS_KEY_GPSLOG4PROPERTIES, gpslogItems[position]);
         startActivity(intent);
+        finish();
     }
 
     public boolean onCreateOptionsMenu( Menu menu ) {
@@ -155,6 +156,7 @@ public class GpsDataListActivity extends ListActivity {
             long id = mapItem.getId();
             DaoGpsLog.mergeLogs(id, mainId);
         }
+        finish();
 
     }
 

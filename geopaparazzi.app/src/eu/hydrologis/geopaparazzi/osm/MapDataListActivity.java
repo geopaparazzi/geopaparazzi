@@ -43,7 +43,7 @@ import eu.hydrologis.geopaparazzi.util.Constants;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class MapsDataListActivity extends ListActivity {
+public class MapDataListActivity extends ListActivity {
     private MapItem[] mapsItems;
     private ArrayAdapter<MapItem> arrayAdapter;
 
@@ -109,6 +109,7 @@ public class MapsDataListActivity extends ListActivity {
         Intent intent = new Intent(Constants.MAPDATAPROPERTIES);
         intent.putExtra(Constants.PREFS_KEY_MAP4PROPERTIES, mapsItems[position]);
         startActivity(intent);
+        finish();
     }
 
     // @Override

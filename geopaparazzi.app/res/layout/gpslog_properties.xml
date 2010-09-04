@@ -39,14 +39,22 @@
 	</LinearLayout>
 	<LinearLayout android:layout_width="fill_parent"
 		xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/row_container4"
-		android:padding="5px" android:layout_height="wrap_content"
-		android:orientation="vertical">
+		android:padding="5px" android:layout_height="wrap_content" android:orientation="horizontal">
 		<Button android:text="@string/gpslog_chart" android:id="@+id/gpslog_chart"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"></Button>
+			android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_weight="0.33"></Button>
 		<Button android:text="@string/gpslog_zoom" android:id="@+id/gpslog_zoom"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"></Button>
+			android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_weight="0.33"></Button>
 		<Button android:text="@string/gpslog_delete" android:id="@+id/gpslog_delete"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"></Button>
+			android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_weight="0.33"></Button>
+	</LinearLayout>
+	<LinearLayout android:layout_width="fill_parent"
+		xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/row_container5"
+		android:padding="5px" android:layout_height="wrap_content"
+		android:orientation="horizontal">
+		<Button android:text="@string/ok" android:id="@+id/gpslog_ok"
+			android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="0.5"></Button>
+		<Button android:text="@string/cancel" android:id="@+id/gpslog_cancel"
+			android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="0.5"></Button>
 	</LinearLayout>
 
 
