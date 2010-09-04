@@ -156,6 +156,7 @@ public class GpsDataListActivity extends ListActivity {
             long id = mapItem.getId();
             DaoGpsLog.mergeLogs(id, mainId);
         }
+        finish();
 
     }
 
