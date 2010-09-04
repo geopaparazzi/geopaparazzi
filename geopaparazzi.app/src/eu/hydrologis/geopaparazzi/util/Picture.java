@@ -47,7 +47,7 @@ public class Picture {
 
         StringBuilder sB = new StringBuilder();
         sB.append("<Placemark>\n");
-        sB.append("<name>").append(name).append("</name>\n");
+        // sB.append("<name>").append(name).append("</name>\n");
         sB.append("<description><![CDATA[<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">\n");
         sB.append("<html><head><title></title>");
         sB.append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\">");
