@@ -17,6 +17,9 @@
  */
 package eu.hydrologis.geopaparazzi;
 
+import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LATITUDE;
+import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LONGITUDE;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -27,10 +30,13 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -109,7 +115,8 @@ public class GeoPaparazziActivity extends Activity {
          * the compass view
          */
         compassView = new CompassView(this);
-        LayoutParams compassParams = new LayoutParams(Constants.COMPASS_CANVAS_WIDTH, Constants.COMPASS_CANVAS_HEIGHT);
+        LayoutParams compassParams = new LayoutParams(Constants.COMPASS_CANVAS_WIDTH,
+                Constants.COMPASS_CANVAS_HEIGHT);
         compassView.setLayoutParams(compassParams);
         mainLayout.addView(compassView);
 
@@ -118,7 +125,8 @@ public class GeoPaparazziActivity extends Activity {
          */
         GridView buttonGridView = new GridView(this);
         buttonGridView.setId(R.id.maingridview);
-        buttonGridView.setLayoutParams(new GridView.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+        buttonGridView.setLayoutParams(new GridView.LayoutParams(LayoutParams.FILL_PARENT,
+                LayoutParams.FILL_PARENT));
         buttonGridView.setNumColumns(2);
         buttonGridView.setVerticalSpacing(10);
         buttonGridView.setHorizontalSpacing(10);
@@ -141,9 +149,11 @@ public class GeoPaparazziActivity extends Activity {
 
     public boolean onCreateOptionsMenu( Menu menu ) {
         super.onCreateOptionsMenu(menu);
-        menu.add(Menu.NONE, MENU_SETTINGS, 0, R.string.mainmenu_preferences).setIcon(R.drawable.ic_menu_preferences);
+        menu.add(Menu.NONE, MENU_SETTINGS, 0, R.string.mainmenu_preferences).setIcon(
+                R.drawable.ic_menu_preferences);
         menu.add(Menu.NONE, MENU_OSM, 1, R.string.osmview).setIcon(R.drawable.menu_mapmode);
-        menu.add(Menu.NONE, MENU_KMLEXPORT, 2, R.string.mainmenu_kmlexport).setIcon(R.drawable.kmlexport);
+        menu.add(Menu.NONE, MENU_KMLEXPORT, 2, R.string.mainmenu_kmlexport).setIcon(
+                R.drawable.kmlexport);
         menu.add(Menu.NONE, MENU_EXIT, 3, R.string.exit).setIcon(R.drawable.exit);
         menu.add(Menu.NONE, MENU_ABOUT, 4, R.string.about).setIcon(R.drawable.about);
 
@@ -179,6 +189,17 @@ public class GeoPaparazziActivity extends Activity {
 
     public void finish() {
         Log.d(LOGTAG, "Finish called!");
+        // save last location just in case
+        GpsLocation loc = deviceManager.getLoc();
+        if (loc != null) {
+            SharedPreferences preferences = PreferenceManager
+                    .getDefaultSharedPreferences(getApplicationContext());
+            Editor editor = preferences.edit();
+            editor.putFloat(GPSLAST_LONGITUDE, (float) loc.getLongitude());
+            editor.putFloat(GPSLAST_LATITUDE, (float) loc.getLatitude());
+            editor.commit();
+        }
+
         Toast.makeText(this, R.string.loggingoff, Toast.LENGTH_LONG).show();
         // stop all logging
         deviceManager.stopListening();
@@ -190,7 +211,9 @@ public class GeoPaparazziActivity extends Activity {
     public void onConfigurationChanged( Configuration newConfig ) {
         super.onConfigurationChanged(newConfig);
         int orientation = mainLayout.getOrientation();
-        orientation = (orientation == LinearLayout.VERTICAL ? LinearLayout.HORIZONTAL : LinearLayout.VERTICAL);
+        orientation = (orientation == LinearLayout.VERTICAL
+                ? LinearLayout.HORIZONTAL
+                : LinearLayout.VERTICAL);
         mainLayout.setOrientation(orientation);
         setContentView(mainLayout);
     }
@@ -217,10 +240,12 @@ public class GeoPaparazziActivity extends Activity {
         public void handleMessage( android.os.Message msg ) {
             kmlProgressDialog.dismiss();
             if (kmlOutputFile.exists()) {
-                Toast.makeText(GeoPaparazziActivity.this, R.string.kmlsaved + kmlOutputFile.getAbsolutePath(), Toast.LENGTH_LONG)
+                Toast.makeText(GeoPaparazziActivity.this,
+                        R.string.kmlsaved + kmlOutputFile.getAbsolutePath(), Toast.LENGTH_LONG)
                         .show();
             } else {
-                Toast.makeText(GeoPaparazziActivity.this, R.string.kmlnonsaved, Toast.LENGTH_LONG).show();
+                Toast.makeText(GeoPaparazziActivity.this, R.string.kmlnonsaved, Toast.LENGTH_LONG)
+                        .show();
             }
         };
     };
@@ -246,7 +271,8 @@ public class GeoPaparazziActivity extends Activity {
                     List<Picture> picturesList = ApplicationManager.getInstance().getPictures();
 
                     File kmlExportDir = ApplicationManager.getInstance().getKmlExportDir();
-                    String filename = "geopaparazzi_" + Constants.TIMESTAMPFORMATTER.format(new Date()) + ".kmz";
+                    String filename = "geopaparazzi_"
+                            + Constants.TIMESTAMPFORMATTER.format(new Date()) + ".kmz";
                     kmlOutputFile = new File(kmlExportDir, filename);
                     KmlExport export = new KmlExport(null, kmlOutputFile);
                     export.export(notesList, linesList, picturesList);
@@ -254,7 +280,8 @@ public class GeoPaparazziActivity extends Activity {
                     kmlHandler.sendEmptyMessage(0);
                 } catch (IOException e) {
                     e.printStackTrace();
-                    Toast.makeText(GeoPaparazziActivity.this, R.string.kmlnonsaved, Toast.LENGTH_LONG).show();
+                    Toast.makeText(GeoPaparazziActivity.this, R.string.kmlnonsaved,
+                            Toast.LENGTH_LONG).show();
                 }
             }
         }.start();

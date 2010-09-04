@@ -17,6 +17,8 @@
  */
 package eu.hydrologis.geopaparazzi.osm;
 
+import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LATITUDE;
+import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LONGITUDE;
 import static java.lang.Math.PI;
 import static java.lang.Math.abs;
 import static java.lang.Math.atan;
@@ -147,9 +149,13 @@ public class OsmView extends View implements ApplicationManagerListener {
         if (loc != null) {
             gpsLat = (float) loc.getLatitude();
             gpsLon = (float) loc.getLongitude();
-            centerLat = (float) loc.getLatitude();
-            centerLon = (float) loc.getLongitude();
+        }else{
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(osmActivity.getApplicationContext());
+            gpsLon = preferences.getFloat(GPSLAST_LONGITUDE, gpsLon);
+            gpsLat = preferences.getFloat(GPSLAST_LATITUDE, gpsLat);
         }
+        centerLat = gpsLat;
+        centerLon = gpsLon;
 
         doShowTilesFrames = deviceManager.doShowTilesFrames();
 
