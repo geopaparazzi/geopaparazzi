@@ -66,7 +66,7 @@ public class OsmActivity extends Activity {
 
         // map view
         osmView = new OsmView(this);
-        ApplicationManager.getInstance().addListener(osmView);
+        ApplicationManager.getInstance(this).addListener(osmView);
 
         frameLayout.addView(osmView);
 
@@ -122,7 +122,7 @@ public class OsmActivity extends Activity {
 
         osmView.invalidate();
     }
-
+    
     // @Override
     // protected void onPause() {
     // osmView.clearCache();
@@ -171,7 +171,7 @@ public class OsmActivity extends Activity {
 
         case MENU_REMOVE_LAST_NOTE:
             try {
-                DaoNotes.deleteLastInsertedNote();
+                DaoNotes.deleteLastInsertedNote(this);
             } catch (IOException e) {
                 e.printStackTrace();
             }

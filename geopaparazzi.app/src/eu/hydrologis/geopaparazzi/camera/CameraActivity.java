@@ -80,7 +80,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
         surfaceHolder.addCallback(this);
         surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
-        deviceManager = ApplicationManager.getInstance();
+        deviceManager = ApplicationManager.getInstance(this);
         picturesDir = deviceManager.getPicturesDir();
 
     }

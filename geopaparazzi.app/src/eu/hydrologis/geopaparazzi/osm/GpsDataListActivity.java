@@ -70,14 +70,15 @@ public class GpsDataListActivity extends ListActivity {
 
         List<MapItem> logsList = null;
         try {
-            logsList = DaoGpsLog.getGpslogs();
+            logsList = DaoGpsLog.getGpslogs(this);
             gpslogItems = (MapItem[]) logsList.toArray(new MapItem[logsList.size()]);
         } catch (IOException e1) {
             e1.printStackTrace();
             return;
         }
 
-        ArrayAdapter<MapItem> arrayAdapter = new ArrayAdapter<MapItem>(this, R.layout.gpslog_row, gpslogItems){
+        ArrayAdapter<MapItem> arrayAdapter = new ArrayAdapter<MapItem>(this, R.layout.gpslog_row,
+                gpslogItems){
 
             @Override
             public View getView( int position, View cView, ViewGroup parent ) {
@@ -135,7 +136,7 @@ public class GpsDataListActivity extends ListActivity {
     }
 
     private void mergeSelected() throws IOException {
-        List<MapItem> gpslogs = DaoGpsLog.getGpslogs();
+        List<MapItem> gpslogs = DaoGpsLog.getGpslogs(this);
         List<MapItem> selected = new ArrayList<MapItem>();
         for( MapItem mapItem : gpslogs ) {
             if (mapItem.isVisible()) {
@@ -154,7 +155,7 @@ public class GpsDataListActivity extends ListActivity {
             }
             MapItem mapItem = selected.get(i);
             long id = mapItem.getId();
-            DaoGpsLog.mergeLogs(id, mainId);
+            DaoGpsLog.mergeLogs(this, id, mainId);
         }
         finish();
 
@@ -166,7 +167,8 @@ public class GpsDataListActivity extends ListActivity {
             boolean oneVisible = false;
             for( MapItem item : gpslogItems ) {
                 if (item.isDirty()) {
-                    DaoGpsLog.updateLogProperties(item.getId(), item.getColor(), item.getWidth(), item.isVisible(), null);
+                    DaoGpsLog.updateLogProperties(this, item.getId(), item.getColor(),
+                            item.getWidth(), item.isVisible(), null);
                     item.setDirty(false);
                 }
                 if (!oneVisible && item.isVisible()) {
@@ -195,8 +197,9 @@ public class GpsDataListActivity extends ListActivity {
         String color = preferences.getString(Constants.PREFS_KEY_NOTES_COLOR, "red"); //$NON-NLS-1$
         DataManager.getInstance().setNotesColor(color);
         final Spinner colorView = (Spinner) findViewById(R.id.notescolor_spinner);
-        ArrayAdapter< ? > colorSpinnerAdapter = ArrayAdapter.createFromResource(GpsDataListActivity.this,
-                R.array.array_colornames, android.R.layout.simple_spinner_item);
+        ArrayAdapter< ? > colorSpinnerAdapter = ArrayAdapter.createFromResource(
+                GpsDataListActivity.this, R.array.array_colornames,
+                android.R.layout.simple_spinner_item);
         colorSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         colorView.setAdapter(colorSpinnerAdapter);
         int colorIndex = colorList.indexOf(color);
@@ -219,7 +222,8 @@ public class GpsDataListActivity extends ListActivity {
         String width = preferences.getString(Constants.PREFS_KEY_NOTES_WIDTH, "5"); //$NON-NLS-1$
         DataManager.getInstance().setNotesWidth(Float.parseFloat(width));
         int widthIndex = widthsList.indexOf(width);
-        ArrayAdapter< ? > widthSpinnerAdapter = ArrayAdapter.createFromResource(GpsDataListActivity.this, R.array.array_widths,
+        ArrayAdapter< ? > widthSpinnerAdapter = ArrayAdapter.createFromResource(
+                GpsDataListActivity.this, R.array.array_widths,
                 android.R.layout.simple_spinner_item);
         widthSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         widthView.setAdapter(widthSpinnerAdapter);

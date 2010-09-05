@@ -81,7 +81,7 @@ public class GeoPaparazziActivity extends Activity {
     private static final int MENU_KMLEXPORT = 4;
     private static final int MENU_SETTINGS = 5;
 
-    private ApplicationManager deviceManager;
+    private ApplicationManager applicationManager;
     private ImageButton cameraButton;
     private CompassView compassView;
     private LinearLayout mainLayout;
@@ -100,12 +100,7 @@ public class GeoPaparazziActivity extends Activity {
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
 
-        deviceManager = ApplicationManager.getInstance(this);
-        deviceManager.activateManagers();
-
-        deviceManager.checkGps();
-
-        deviceManager.startListening();
+        applicationManager = ApplicationManager.getInstance(this);
 
         mainLayout = new LinearLayout(this);
         mainLayout.setOrientation(LinearLayout.VERTICAL);
@@ -119,6 +114,7 @@ public class GeoPaparazziActivity extends Activity {
                 Constants.COMPASS_CANVAS_HEIGHT);
         compassView.setLayoutParams(compassParams);
         mainLayout.addView(compassView);
+        applicationManager.addListener(compassView);
 
         /*
          * the buttons
@@ -139,7 +135,7 @@ public class GeoPaparazziActivity extends Activity {
         setContentView(mainLayout);
 
         try {
-            DatabaseManager.getInstance().getDatabase();
+            DatabaseManager.getInstance().getDatabase(this);
             checkMapsAndLogsVisibility();
         } catch (IOException e) {
             e.printStackTrace();
@@ -190,7 +186,7 @@ public class GeoPaparazziActivity extends Activity {
     public void finish() {
         Log.d(LOGTAG, "Finish called!");
         // save last location just in case
-        GpsLocation loc = deviceManager.getLoc();
+        GpsLocation loc = applicationManager.getLoc();
         if (loc != null) {
             SharedPreferences preferences = PreferenceManager
                     .getDefaultSharedPreferences(getApplicationContext());
@@ -202,8 +198,8 @@ public class GeoPaparazziActivity extends Activity {
 
         Toast.makeText(this, R.string.loggingoff, Toast.LENGTH_LONG).show();
         // stop all logging
-        deviceManager.stopListening();
-        deviceManager.doLogGps(false);
+        applicationManager.stopListening();
+        applicationManager.doLogGps(false);
         DatabaseManager.getInstance().closeDatabase();
         super.finish();
     }
@@ -216,17 +212,6 @@ public class GeoPaparazziActivity extends Activity {
                 : LinearLayout.VERTICAL);
         mainLayout.setOrientation(orientation);
         setContentView(mainLayout);
-    }
-
-    public void updateFromDeviceManager() {
-        // int accuracy = deviceManager.getAccuracy();
-        // double pitch = deviceManager.getPitch();
-        // double roll = deviceManager.getRoll();
-        double azimuth = deviceManager.getAzimuth();
-        GpsLocation loc = deviceManager.getLoc();
-
-        compassView.setLocationInfo((float) azimuth, loc);
-        compassView.invalidate();
     }
 
     public void onWindowFocusChanged( boolean hasFocus ) {
@@ -260,17 +245,18 @@ public class GeoPaparazziActivity extends Activity {
                     /*
                      * add gps logs
                      */
-                    HashMap<Long, Line> linesList = DaoGpsLog.getLinesMap();
+                    HashMap<Long, Line> linesList = DaoGpsLog
+                            .getLinesMap(GeoPaparazziActivity.this);
                     /*
                      * get notes
                      */
-                    List<Note> notesList = DaoNotes.getNotesList();
+                    List<Note> notesList = DaoNotes.getNotesList(GeoPaparazziActivity.this);
                     /*
                      * add pictures
                      */
-                    List<Picture> picturesList = ApplicationManager.getInstance().getPictures();
+                    List<Picture> picturesList = applicationManager.getPictures();
 
-                    File kmlExportDir = ApplicationManager.getInstance().getKmlExportDir();
+                    File kmlExportDir = applicationManager.getKmlExportDir();
                     String filename = "geopaparazzi_"
                             + Constants.TIMESTAMPFORMATTER.format(new Date()) + ".kmz";
                     kmlOutputFile = new File(kmlExportDir, filename);
@@ -292,8 +278,8 @@ public class GeoPaparazziActivity extends Activity {
      * whenever the camera is opened and closed.  
      */
     private void fixGpsButton() {
-        Log.d(LOGTAG, "Is logging = " + deviceManager.isGpsLogging());
-        if (deviceManager.isGpsLogging()) {
+        Log.d(LOGTAG, "Is logging = " + applicationManager.isGpsLogging());
+        if (applicationManager.isGpsLogging()) {
             if (gpsLabelText != null && gpsLogButton != null) {
                 gpsLabelText.setText(Constants.TEXT_STOP_GPS_LOGGING);
                 gpsLogButton.setImageResource(R.drawable.gps_on);
@@ -376,7 +362,7 @@ public class GeoPaparazziActivity extends Activity {
                 notesButton.setLayoutParams(notesParams);
                 notesButton.setOnClickListener(new Button.OnClickListener(){
                     public void onClick( View v ) {
-                        GpsLocation loc = deviceManager.getLoc();
+                        GpsLocation loc = applicationManager.getLoc();
                         if (loc != null) {
                             Intent intent = new Intent(Constants.TAKE_NOTE);
                             startActivity(intent);
@@ -406,16 +392,16 @@ public class GeoPaparazziActivity extends Activity {
                 gpsLogButton.setOnClickListener(new Button.OnClickListener(){
                     public void onClick( View v ) {
                         if (gpsLabelText.getText().equals(Constants.TEXT_START_GPS_LOGGING)) {
-                            GpsLocation loc = deviceManager.getLoc();
+                            GpsLocation loc = applicationManager.getLoc();
                             if (loc != null) {
-                                deviceManager.doLogGps(true);
+                                applicationManager.doLogGps(true);
                                 gpsLabelText.setText(Constants.TEXT_STOP_GPS_LOGGING);
                                 gpsLogButton.setImageResource(R.drawable.gps_on);
                             } else {
                                 ApplicationManager.openDialog(R.string.gpslogging_only, mContext);
                             }
                         } else {
-                            deviceManager.doLogGps(false);
+                            applicationManager.doLogGps(false);
                             gpsLabelText.setText(Constants.TEXT_START_GPS_LOGGING);
                             gpsLogButton.setImageResource(R.drawable.gps);
                         }
@@ -467,7 +453,7 @@ public class GeoPaparazziActivity extends Activity {
     // }
 
     private void checkMapsAndLogsVisibility() throws IOException {
-        List<MapItem> maps = DaoMaps.getMaps();
+        List<MapItem> maps = DaoMaps.getMaps(this);
         boolean oneVisible = false;
         for( MapItem item : maps ) {
             if (!oneVisible && item.isVisible()) {
@@ -476,7 +462,7 @@ public class GeoPaparazziActivity extends Activity {
         }
         DataManager.getInstance().setMapsVisible(oneVisible);
 
-        maps = DaoGpsLog.getGpslogs();
+        maps = DaoGpsLog.getGpslogs(this);
         oneVisible = false;
         for( MapItem item : maps ) {
             if (!oneVisible && item.isVisible()) {

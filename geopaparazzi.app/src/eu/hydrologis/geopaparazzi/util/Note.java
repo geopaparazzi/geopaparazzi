@@ -82,7 +82,8 @@ public class Note {
         sB.append("<name>").append(name).append("</name>\n");
         sB.append("<description>\n");
         sB.append("<![CDATA[\n");
-        sB.append("<p>").append(description).append("</p>\n");
+        String descr = description.replaceAll("\n", "</BR></BR>");
+        sB.append("<p>").append(descr).append("</p>\n");
         sB.append("]]>\n");
         sB.append("</description>\n");
         sB.append("<gx:balloonVisibility>1</gx:balloonVisibility>\n");

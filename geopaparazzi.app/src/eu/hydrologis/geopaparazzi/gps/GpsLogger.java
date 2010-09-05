@@ -95,14 +95,17 @@ public class GpsLogger implements ApplicationManagerListener {
                 last100Elevations.clear();
                 try {
                     java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
-                    long gpsLogId = DaoGpsLog.addGpsLog(now, now, null, 2f, "red", true);
+                    long gpsLogId = DaoGpsLog.addGpsLog(context, now, now, null, 2f, "red", true);
                     Log.i(LOGTAG, "Starting gps logging. Logid: " + gpsLogId);
 
                     // get preferences
-                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-                    String minDistanceStr = preferences.getString(GPSLOGGINGDISTANCEKEY, String.valueOf(GPS_LOGGING_DISTANCE));
+                    SharedPreferences preferences = PreferenceManager
+                            .getDefaultSharedPreferences(context);
+                    String minDistanceStr = preferences.getString(GPSLOGGINGDISTANCEKEY,
+                            String.valueOf(GPS_LOGGING_DISTANCE));
                     float minDistance = Float.parseFloat(minDistanceStr);
-                    String intervalStr = preferences.getString(GPSLOGGINGINTERVALKEY, String.valueOf(GPS_LOGGING_INTERVAL));
+                    String intervalStr = preferences.getString(GPSLOGGINGINTERVALKEY,
+                            String.valueOf(GPS_LOGGING_INTERVAL));
                     long waitForSecs = Long.parseLong(intervalStr);
                     Log.d(LOGTAG, "Waiting interval: " + waitForSecs);
 
@@ -118,9 +121,12 @@ public class GpsLogger implements ApplicationManagerListener {
                         }
 
                         float lastDistance = previousLogLoc.distanceTo(gpsLoc);
-                        Log.d(LOGTAG, "gpsloc: " + gpsLoc.getLatitude() + "/" + gpsLoc.getLongitude());
-                        Log.d(LOGTAG, "previousLoc: " + previousLogLoc.getLatitude() + "/" + previousLogLoc.getLongitude());
-                        Log.d(LOGTAG, "distance: " + lastDistance + " - mindistance: " + minDistance);
+                        Log.d(LOGTAG,
+                                "gpsloc: " + gpsLoc.getLatitude() + "/" + gpsLoc.getLongitude());
+                        Log.d(LOGTAG, "previousLoc: " + previousLogLoc.getLatitude() + "/"
+                                + previousLogLoc.getLongitude());
+                        Log.d(LOGTAG, "distance: " + lastDistance + " - mindistance: "
+                                + minDistance);
                         // ignore near points
                         if (lastDistance < minDistance) {
                             waitGpsInterval(waitForSecs);
@@ -143,10 +149,12 @@ public class GpsLogger implements ApplicationManagerListener {
                         }
                         last100Elevations.add((float) recAlt);
 
-                        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+                        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(
+                                context);
                         sqliteDatabase.beginTransaction();
                         try {
-                            DaoGpsLog.addGpsLogDataPoint(sqliteDatabase, gpsLogId, recLon, recLat, recAlt, gpsLoc.getSqlDate());
+                            DaoGpsLog.addGpsLogDataPoint(sqliteDatabase, gpsLogId, recLon, recLat,
+                                    recAlt, gpsLoc.getSqlDate());
                             sqliteDatabase.setTransactionSuccessful();
                         } catch (Exception e) {
                             throw new IOException(e.getLocalizedMessage());
@@ -161,8 +169,9 @@ public class GpsLogger implements ApplicationManagerListener {
                     }
 
                     if (currentPointsNum < 2) {
-                        Log.i(LOGTAG, "Removing gpslog, since too few points were added. Logid: " + gpsLogId);
-                        DaoGpsLog.deleteGpslog(gpsLogId);
+                        Log.i(LOGTAG, "Removing gpslog, since too few points were added. Logid: "
+                                + gpsLogId);
+                        DaoGpsLog.deleteGpslog(context, gpsLogId);
                     }
 
                     currentPointsNum = 0;
@@ -172,7 +181,7 @@ public class GpsLogger implements ApplicationManagerListener {
                     e.printStackTrace();
                     String msg = context.getResources().getString(R.string.error_disk_full);
                     Log.e(LOGTAG, msg);
-                    // ApplicationManager.getInstance().alertDialog(msg);
+                    // ApplicationManager.getInstance(getContext()).alertDialog(msg);
                     // FIXME
                     // Toasts.longAsyncToast(context, msg);
                     // Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
@@ -258,7 +267,8 @@ public class GpsLogger implements ApplicationManagerListener {
                 }
                 Uri alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
                 mMediaPlayer.setDataSource(context, alert);
-                final AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+                final AudioManager audioManager = (AudioManager) context
+                        .getSystemService(Context.AUDIO_SERVICE);
                 if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
                     mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
                     mMediaPlayer.setLooping(true);
@@ -287,6 +297,9 @@ public class GpsLogger implements ApplicationManagerListener {
 
     public void onLocationChanged( GpsLocation loc ) {
         gpsLoc = new GpsLocation(loc);
+    }
+
+    public void onSensorChanged( double azimuth ) {
     }
 
 }

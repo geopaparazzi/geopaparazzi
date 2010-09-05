@@ -120,10 +120,11 @@ public class MapDataPropertiesActivity extends Activity {
             zoomButton.setOnClickListener(new Button.OnClickListener(){
                 public void onClick( View v ) {
                     try {
-                        Line line = DaoMaps.getMapAsLine(item.getId());
+                        Line line = DaoMaps.getMapAsLine(MapDataPropertiesActivity.this,
+                                item.getId());
                         if (line.getLonList().size() > 0) {
                             ApplicationManager
-                                    .getInstance()
+                                    .getInstance(MapDataPropertiesActivity.this)
                                     .getOsmView()
                                     .setGotoCoordinate(line.getLonList().get(0),
                                             line.getLatList().get(0));
@@ -138,20 +139,20 @@ public class MapDataPropertiesActivity extends Activity {
                 public void onClick( View v ) {
                     try {
                         long id = item.getId();
-                        DaoMaps.deleteMap(id);
+                        DaoMaps.deleteMap(MapDataPropertiesActivity.this, id);
                         finish();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
             });
-            
+
             final Button okButton = (Button) findViewById(R.id.map_ok);
             okButton.setOnClickListener(new Button.OnClickListener(){
                 public void onClick( View v ) {
                     try {
-                        DaoMaps.updateMapProperties(item.getId(), newColor, newWidth,
-                                item.isVisible(), newText);
+                        DaoMaps.updateMapProperties(MapDataPropertiesActivity.this, item.getId(),
+                                newColor, newWidth, item.isVisible(), newText);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

@@ -26,6 +26,7 @@ import static java.lang.Math.exp;
 import static java.lang.Math.pow;
 import static java.lang.Math.round;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -110,7 +111,12 @@ public class OsmView extends View implements ApplicationManagerListener {
     public OsmView( final OsmActivity osmActivity ) {
         super(osmActivity);
         this.osmActivity = osmActivity;
-        tileCache = new TileCache(null);
+
+        Bitmap dummyTile = BitmapFactory.decodeResource(getResources(), R.drawable.no_tile_256);
+        ApplicationManager appMan = ApplicationManager.getInstance(getContext());
+        File osmCacheDir = appMan.getOsmCacheDir();
+        boolean internetIsOn = appMan.isInternetOn();
+        tileCache = new TileCache(osmCacheDir, internetIsOn, dummyTile);
 
         redPaint = new Paint();
         redPaint.setColor(Color.RED);
@@ -144,7 +150,7 @@ public class OsmView extends View implements ApplicationManagerListener {
 
         distanceString = getResources().getString(R.string.distance);
 
-        ApplicationManager deviceManager = ApplicationManager.getInstance();
+        ApplicationManager deviceManager = ApplicationManager.getInstance(getContext());
         GpsLocation loc = deviceManager.getLoc();
         if (loc != null) {
             gpsLat = (float) loc.getLatitude();
@@ -297,13 +303,13 @@ public class OsmView extends View implements ApplicationManagerListener {
         float x1 = screenToLon(width, width, centerLon, pixelDxInWorld);
 
         try {
-            List<MapItem> mapsMap = DaoMaps.getMaps();
+            List<MapItem> mapsMap = DaoMaps.getMaps(osmActivity);
             for( MapItem mapItem : mapsMap ) {
                 if (!mapItem.isVisible()) {
                     continue;
                 }
                 PointsContainer coordsContainer = DaoMaps.getCoordinatesInWorldBoundsForMapId(
-                        mapItem.getId(), y0, y1, x0, x1);
+                        osmActivity, mapItem.getId(), y0, y1, x0, x1);
                 if (coordsContainer == null) {
                     continue;
                 }
@@ -377,9 +383,9 @@ public class OsmView extends View implements ApplicationManagerListener {
         float x1 = screenToLon(width, width, centerLon, pixelDxInWorld);
 
         try {
-            List<MapItem> gpslogs = DaoGpsLog.getGpslogs();
-            HashMap<Long, Line> linesInWorldBounds = DaoGpsLog
-                    .getLinesInWorldBounds(y0, y1, x0, x1);
+            List<MapItem> gpslogs = DaoGpsLog.getGpslogs(osmActivity);
+            HashMap<Long, Line> linesInWorldBounds = DaoGpsLog.getLinesInWorldBounds(osmActivity,
+                    y0, y1, x0, x1);
             for( MapItem gpslogItem : gpslogs ) {
                 if (!gpslogItem.isVisible()) {
                     continue;
@@ -436,7 +442,8 @@ public class OsmView extends View implements ApplicationManagerListener {
         float x1 = screenToLon(width, width, centerLon, pixelDxInWorld);
 
         try {
-            List<Note> notesInWorldBounds = DaoNotes.getNotesInWorldBounds(y0, y1, x0, x1);
+            List<Note> notesInWorldBounds = DaoNotes.getNotesInWorldBounds(getContext(), y0, y1,
+                    x0, x1);
             int notesColor = DataManager.getInstance().getNotesColor();
             float notesWidth = DataManager.getInstance().getNotesWidth();
             for( Note note : notesInWorldBounds ) {
@@ -588,6 +595,9 @@ public class OsmView extends View implements ApplicationManagerListener {
         this.gpsLon = (float) loc.getLongitude();
 
         invalidateWithProgress();
+    }
+
+    public void onSensorChanged( double azimuth ) {
     }
 
     public void zoomIn() {

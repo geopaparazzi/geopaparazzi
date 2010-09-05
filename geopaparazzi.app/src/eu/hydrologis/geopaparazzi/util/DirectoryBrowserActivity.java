@@ -60,7 +60,7 @@ public class DirectoryBrowserActivity extends ListActivity {
             };
         }
 
-        geoPaparazziDir = ApplicationManager.getInstance().getGeoPaparazziDir();
+        geoPaparazziDir = ApplicationManager.getInstance(this).getGeoPaparazziDir();
         getFiles(geoPaparazziDir, geoPaparazziDir.listFiles(fileFilter));
     }
 

@@ -54,7 +54,7 @@ public class MapDataListActivity extends ListActivity {
 
         Collection<MapItem> logsList = null;
         try {
-            logsList = DaoMaps.getMaps();
+            logsList = DaoMaps.getMaps(this);
             mapsItems = (MapItem[]) logsList.toArray(new MapItem[logsList.size()]);
         } catch (IOException e1) {
             e1.printStackTrace();
@@ -86,8 +86,9 @@ public class MapDataListActivity extends ListActivity {
                             currentItem.setVisible(isChecked);
                             currentItem.setDirty(true);
                             try {
-                                DaoMaps.updateMapProperties(currentItem.getId(), currentItem.getColor(), currentItem.getWidth(),
-                                        currentItem.isVisible(), null);
+                                DaoMaps.updateMapProperties(MapDataListActivity.this,
+                                        currentItem.getId(), currentItem.getColor(),
+                                        currentItem.getWidth(), currentItem.isVisible(), null);
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }

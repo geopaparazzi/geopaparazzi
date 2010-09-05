@@ -130,10 +130,11 @@ public class GpsDataPropertiesActivity extends Activity {
             zoomButton.setOnClickListener(new Button.OnClickListener(){
                 public void onClick( View v ) {
                     try {
-                        Line line = DaoGpsLog.getGpslogAsLine(item.getId());
+                        Line line = DaoGpsLog.getGpslogAsLine(GpsDataPropertiesActivity.this,
+                                item.getId());
                         if (line.getLonList().size() > 0) {
                             ApplicationManager
-                                    .getInstance()
+                                    .getInstance(GpsDataPropertiesActivity.this)
                                     .getOsmView()
                                     .setGotoCoordinate(line.getLonList().get(0),
                                             line.getLatList().get(0));
@@ -148,7 +149,7 @@ public class GpsDataPropertiesActivity extends Activity {
                 public void onClick( View v ) {
                     try {
                         long id = item.getId();
-                        DaoGpsLog.deleteGpslog(id);
+                        DaoGpsLog.deleteGpslog(GpsDataPropertiesActivity.this, id);
                         finish();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -160,8 +161,8 @@ public class GpsDataPropertiesActivity extends Activity {
             okButton.setOnClickListener(new Button.OnClickListener(){
                 public void onClick( View v ) {
                     try {
-                        DaoGpsLog.updateLogProperties(item.getId(), newColor, newWidth,
-                                item.isVisible(), newText);
+                        DaoGpsLog.updateLogProperties(GpsDataPropertiesActivity.this, item.getId(),
+                                newColor, newWidth, item.isVisible(), newText);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

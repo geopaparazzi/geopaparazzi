@@ -63,7 +63,7 @@ public class NoteActivity extends Activity {
             coordsFromExtras = true;
         }
 
-        deviceManager = ApplicationManager.getInstance();
+        deviceManager = ApplicationManager.getInstance(this);
 
         noteText = (EditText) findViewById(R.id.noteentry);
         noteText.setLines(linesNum);
@@ -96,7 +96,7 @@ public class NoteActivity extends Activity {
                     StringBuilder sB = new StringBuilder(noteText.getText());
                     String noteString = sB.toString();
 
-                    DaoNotes.addNote(longitude, latitude, altitude, sqlDate, noteString);
+                    DaoNotes.addNote(NoteActivity.this, longitude, latitude, altitude, sqlDate, noteString);
                 } catch (IOException e) {
                     e.printStackTrace();
                     Toast.makeText(NoteActivity.this, R.string.notenonsaved, Toast.LENGTH_LONG).show();

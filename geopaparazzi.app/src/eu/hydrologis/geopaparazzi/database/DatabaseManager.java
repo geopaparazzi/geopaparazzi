@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
@@ -56,12 +57,11 @@ public class DatabaseManager {
         return dbManager;
     }
 
-    public SQLiteDatabase getDatabase() throws IOException {
+    public SQLiteDatabase getDatabase( Context context ) throws IOException {
         if (databaseHelper == null) {
-            File databaseFile = ApplicationManager.getInstance().getDatabaseFile();
             // SharedPreferences preferences = GeoPaparazziActivity.preferences;
             // String newDbKey =
-            // ApplicationManager.getInstance().getResource().getString(R.string.database_new);
+            // ApplicationManager.getInstance(getContext()).getResource().getString(R.string.database_new);
             // doNew = preferences.getBoolean(newDbKey, false);
             // if (doNew) {
             // // need to backup the database file
@@ -77,20 +77,22 @@ public class DatabaseManager {
             // }
             //
             // }
+            File databaseFile = ApplicationManager.getInstance(context).getDatabaseFile();
 
             databaseHelper = new DatabaseOpenHelper(databaseFile);
 
-            SQLiteDatabase db = databaseHelper.getWritableDatabase();
+            SQLiteDatabase db = databaseHelper.getWritableDatabase(context);
             Log.i(DEBUG_TAG, "Database: " + db.getPath());
             Log.i(DEBUG_TAG, "Database Version: " + db.getVersion());
             Log.i(DEBUG_TAG, "Database Page Size: " + db.getPageSize());
             Log.i(DEBUG_TAG, "Database Max Size: " + db.getMaximumSize());
             Log.i(DEBUG_TAG, "Database Open?  " + db.isOpen());
             Log.i(DEBUG_TAG, "Database readonly?  " + db.isReadOnly());
-            Log.i(DEBUG_TAG, "Database Locked by current thread?  " + db.isDbLockedByCurrentThread());
+            Log.i(DEBUG_TAG,
+                    "Database Locked by current thread?  " + db.isDbLockedByCurrentThread());
         }
 
-        return databaseHelper.getWritableDatabase();
+        return databaseHelper.getWritableDatabase(context);
     }
 
     public void closeDatabase() {
@@ -110,7 +112,7 @@ public class DatabaseManager {
             this.databaseFile = databaseFile;
         }
 
-        public void open() throws IOException {
+        public void open( Context context ) throws IOException {
             if (databaseFile.exists()) {
                 Log.i("SQLiteHelper", "Opening database at " + databaseFile);
                 db = SQLiteDatabase.openOrCreateDatabase(databaseFile, null);
@@ -119,7 +121,7 @@ public class DatabaseManager {
             } else {
                 Log.i("SQLiteHelper", "Creating database at " + databaseFile);
                 db = SQLiteDatabase.openOrCreateDatabase(databaseFile, null);
-                create();
+                create(context);
             }
         }
 
@@ -128,24 +130,24 @@ public class DatabaseManager {
             db = null;
         }
 
-        public void create() throws IOException {
+        public void create( Context context ) throws IOException {
             db.setLocale(Locale.getDefault());
             db.setLockingEnabled(false);
             db.setVersion(VERSION);
 
             // CREATE TABLES
-            DaoNotes.createTables();
-            DaoGpsLog.createTables();
-            DaoMaps.createTables();
+            DaoNotes.createTables(context);
+            DaoGpsLog.createTables(context);
+            DaoMaps.createTables(context);
         }
 
         public void upgrade() throws IOException {
             throw new RuntimeException("Method not implemented.");
         }
 
-        public SQLiteDatabase getWritableDatabase() throws IOException {
+        public SQLiteDatabase getWritableDatabase( Context context ) throws IOException {
             if (db == null)
-                open();
+                open(context);
             return db;
         }
     }

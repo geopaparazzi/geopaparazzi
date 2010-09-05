@@ -164,6 +164,11 @@ public interface Constants {
     public final float COMPASS_NEEDLE_HEIGHT_SHORT = 10;
 
     /**
+     * The notes title text length threshold.
+     */
+    public final int NOTES_LENGTH_LIMIT = 7;
+
+    /**
      * The coordinates of the needle, zero centered.
      */
     public final float[] COMPASS_NEEDLE_COORDINATES = new float[]{0f, -COMPASS_NEEDLE_HEIGHT_LONG, -COMPASS_NEEDLE_WIDTH / 2f,

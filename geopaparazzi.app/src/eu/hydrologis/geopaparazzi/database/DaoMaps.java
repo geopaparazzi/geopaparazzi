@@ -26,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
@@ -77,9 +78,9 @@ public class DaoMaps {
      * @return the id of the new created log.
      * @throws IOException 
      */
-    public static long addMap( Date ts, int mapType, String text, float width, String color,
-            boolean visible ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+    public static long addMap( Context context, Date ts, int mapType, String text, float width,
+            String color, boolean visible ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         sqliteDatabase.beginTransaction();
         long rowId;
         try {
@@ -123,8 +124,8 @@ public class DaoMaps {
         sqliteDatabase.insertOrThrow(TABLE_DATA, null, values);
     }
 
-    public static List<MapItem> getMaps() throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+    public static List<MapItem> getMaps( Context context ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         List<MapItem> logsList = new ArrayList<MapItem>();
 
         StringBuilder sB = new StringBuilder();
@@ -183,8 +184,8 @@ public class DaoMaps {
         return logsList;
     }
 
-    public static void deleteMap( long id ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+    public static void deleteMap( Context context, long id ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         sqliteDatabase.beginTransaction();
         try {
             // delete log
@@ -210,9 +211,9 @@ public class DaoMaps {
         }
     }
 
-    public static void updateMapProperties( long mapid, String color, float width, boolean visible,
-            String name ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+    public static void updateMapProperties( Context context, long mapid, String color, float width,
+            boolean visible, String name ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         sqliteDatabase.beginTransaction();
         try {
 
@@ -263,9 +264,9 @@ public class DaoMaps {
      * @return the map of lines inside the bounds.
      * @throws IOException
      */
-    public static HashMap<Long, PointsContainer> getCoordinatesInWorldBounds( float n, float s,
-            float w, float e ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+    public static HashMap<Long, PointsContainer> getCoordinatesInWorldBounds( Context context,
+            float n, float s, float w, float e ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         HashMap<Long, PointsContainer> linesMap = new HashMap<Long, PointsContainer>();
 
         Log.d(TAG, "PRE  NSEW = " + n + "/" + s + "/" + e + "/" + w);
@@ -325,9 +326,9 @@ public class DaoMaps {
      * @return the map of lines inside the bounds.
      * @throws IOException
      */
-    public static PointsContainer getCoordinatesInWorldBoundsForMapId( long mapId, float n,
-            float s, float w, float e ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+    public static PointsContainer getCoordinatesInWorldBoundsForMapId( Context context, long mapId,
+            float n, float s, float w, float e ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
 
         // Log.d(TAG, "PRE  NSEW = " + n + "/" + s + "/" + e + "/" + w);
         n = n + DatabaseManager.BUFFER;
@@ -379,8 +380,8 @@ public class DaoMaps {
      * @return the map of lines.
      * @throws IOException
      */
-    public static LinkedHashMap<Long, Line> getLinesMap() throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+    public static LinkedHashMap<Long, Line> getLinesMap( Context context ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         LinkedHashMap<Long, Line> linesMap = new LinkedHashMap<Long, Line>();
 
         String asColumnsToReturn[] = {COLUMN_MAPID, COLUMN_DATA_LON, COLUMN_DATA_LAT,
@@ -412,8 +413,8 @@ public class DaoMaps {
      * @return the line.
      * @throws IOException
      */
-    public static Line getMapAsLine( long logId ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+    public static Line getMapAsLine( Context context, long logId ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
 
         String asColumnsToReturn[] = {COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_TS};
         String strSortOrder = COLUMN_DATA_TS + " ASC";
@@ -440,13 +441,14 @@ public class DaoMaps {
      * @param mapType
      * @throws IOException
      */
-    public static void importGpxToMap( GpxItem gpxItem, int mapType ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+    public static void importGpxToMap( Context context, GpxItem gpxItem, int mapType )
+            throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         String filename = gpxItem.getFilename();
         List<PointF3D> points = gpxItem.read();
         List<String> names = gpxItem.getNames();
         Date date = new Date(System.currentTimeMillis());
-        long logid = addMap(date, mapType, filename, 2f, "red", false);
+        long logid = addMap(context, date, mapType, filename, 2f, "red", false);
 
         sqliteDatabase.beginTransaction();
         try {
@@ -469,7 +471,7 @@ public class DaoMaps {
         }
     }
 
-    public static void createTables() throws IOException {
+    public static void createTables( Context context ) throws IOException {
         StringBuilder sB = new StringBuilder();
 
         /*
@@ -522,7 +524,7 @@ public class DaoMaps {
         sB.append(" );");
         String CREATE_INDEX_MAPS_MAPID_X_Y = sB.toString();
 
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         Log.i(TAG, "Create the maps_data table.");
         sqliteDatabase.execSQL(CREATE_TABLE_MAPS_DATA);
         sqliteDatabase.execSQL(CREATE_INDEX_MAPS_ID);

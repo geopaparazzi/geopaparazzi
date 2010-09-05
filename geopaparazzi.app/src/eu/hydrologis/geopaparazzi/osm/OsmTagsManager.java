@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Set;
 
+import android.content.Context;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 
 /**
@@ -53,15 +54,16 @@ public class OsmTagsManager {
 
     private static String[] osmTagsArrays;
 
+
     /**
      * Gets the manager singleton. 
      * 
      * @return the {@link OsmTagsManager} singleton.
      */
-    public static OsmTagsManager getInstance() {
+    public static OsmTagsManager getInstance(Context context) {
         if (osmTagsManager == null) {
             osmTagsManager = new OsmTagsManager();
-            getFileTags();
+            getFileTags(context);
 
             Set<String> tagsSet = osmTagsMap.keySet();
             osmTagsArrays = (String[]) tagsSet.toArray(new String[tagsSet.size()]);
@@ -71,8 +73,8 @@ public class OsmTagsManager {
         return osmTagsManager;
     }
 
-    private static void getFileTags() {
-        File geoPaparazziDir = ApplicationManager.getInstance().getGeoPaparazziDir();
+    private static void getFileTags(Context context) {
+        File geoPaparazziDir = ApplicationManager.getInstance(context).getGeoPaparazziDir();
         File osmTagsFile = new File(geoPaparazziDir, OSMTAGSFILENAME);
         if (osmTagsFile.exists()) {
             BufferedReader br = null;

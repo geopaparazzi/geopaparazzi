@@ -33,6 +33,7 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.chart.ChartDrawer;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
+import eu.hydrologis.geopaparazzi.util.ApplicationManagerListener;
 import eu.hydrologis.geopaparazzi.util.Constants;
 
 /**
@@ -40,7 +41,7 @@ import eu.hydrologis.geopaparazzi.util.Constants;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class CompassView extends View {
+public class CompassView extends View implements ApplicationManagerListener {
     private Paint mPaint = new Paint();
     private Path mPath = new Path();
 
@@ -79,9 +80,12 @@ public class CompassView extends View {
     private DecimalFormat formatter = new DecimalFormat("0.00000"); //$NON-NLS-1$
     private String validPointsString;
     private String distanceString;
+    private ApplicationManager applicationManager;
 
     public CompassView( GeoPaparazziActivity geopaparazziActivity ) {
         super(geopaparazziActivity);
+
+        applicationManager = ApplicationManager.getInstance(getContext());
 
         float[] needle = Constants.COMPASS_NEEDLE_COORDINATES;
 
@@ -94,8 +98,10 @@ public class CompassView extends View {
         }
         mPath.close();
 
-        BitmapDrawable compassDrawable = (BitmapDrawable) getResources().getDrawable(R.drawable.compass);
-        compassDrawable.setBounds(0, 0, Constants.COMPASS_DIM_COMPASS, Constants.COMPASS_DIM_COMPASS);
+        BitmapDrawable compassDrawable = (BitmapDrawable) getResources().getDrawable(
+                R.drawable.compass);
+        compassDrawable.setBounds(0, 0, Constants.COMPASS_DIM_COMPASS,
+                Constants.COMPASS_DIM_COMPASS);
         compassBitmap = compassDrawable.getBitmap();
 
         timeString = getResources().getString(R.string.utctime);
@@ -117,12 +123,15 @@ public class CompassView extends View {
 
         if (picture == null) {
             picture = new Picture();
-            Canvas recCanvas = picture.beginRecording(Constants.COMPASS_CANVAS_WIDTH, Constants.COMPASS_CANVAS_HEIGHT);
+            Canvas recCanvas = picture.beginRecording(Constants.COMPASS_CANVAS_WIDTH,
+                    Constants.COMPASS_CANVAS_HEIGHT);
             recCanvas.drawColor(Color.WHITE);
-            recCanvas.drawBitmap(compassBitmap, Constants.COMPASS_X_POSITION, Constants.COMPASS_Y_POSITION, paint);
+            recCanvas.drawBitmap(compassBitmap, Constants.COMPASS_X_POSITION,
+                    Constants.COMPASS_Y_POSITION, paint);
             paint.setColor(Constants.COMPASS_NEEDLE_COLOR);
             paint.setAlpha(Constants.COMPASS_NEEDLE_ALPHA + 50);
-            recCanvas.drawCircle(Constants.COMPASS_X_POSITION_CENTER, Constants.COMPASS_Y_POSITION_CENTER, 4, paint);
+            recCanvas.drawCircle(Constants.COMPASS_X_POSITION_CENTER,
+                    Constants.COMPASS_Y_POSITION_CENTER, 4, paint);
 
             picture.endRecording();
         }
@@ -183,12 +192,12 @@ public class CompassView extends View {
         y = y + Constants.COMPASS_TEXT_SIZE + LINESPACING;
         canvas.drawText(azimuthSb.toString(), x, y, paint);
 
-        if (ApplicationManager.getInstance().isGpsLogging()) {
+        if (applicationManager.isGpsLogging()) {
             y = Constants.COMPASS_DIM_COMPASS;
-            validPointSb.append(" ").append(ApplicationManager.getInstance().getCurrentRunningGpsLogPointsNum());
+            validPointSb.append(" ").append(applicationManager.getCurrentRunningGpsLogPointsNum());
             canvas.drawText(validPointSb.toString(), x, y, paint);
             y = Constants.COMPASS_DIM_COMPASS - Constants.COMPASS_TEXT_SIZE - LINESPACING;
-            distanceSb.append(" ").append(ApplicationManager.getInstance().getCurrentRunningGpsLogDistance());
+            distanceSb.append(" ").append(applicationManager.getCurrentRunningGpsLogDistance());
             canvas.drawText(distanceSb.toString(), x, y, paint);
         }
 
@@ -196,7 +205,8 @@ public class CompassView extends View {
 
         // draw needle
         if (azimuth != -1) {
-            canvas.translate(Constants.COMPASS_X_POSITION_CENTER, Constants.COMPASS_Y_POSITION_CENTER);
+            canvas.translate(Constants.COMPASS_X_POSITION_CENTER,
+                    Constants.COMPASS_Y_POSITION_CENTER);
             paint.setColor(Color.RED);
             paint.setAlpha(150);
             paint.setStyle(Paint.Style.FILL);
@@ -206,9 +216,9 @@ public class CompassView extends View {
     }
 
     private void drawChart( Canvas canvas ) {
-        if (ApplicationManager.getInstance().isGpsLogging()) {
+        if (applicationManager.isGpsLogging()) {
 
-            List<Float> last100Elevations = ApplicationManager.getInstance().getLast100Elevations();
+            List<Float> last100Elevations = applicationManager.getLast100Elevations();
             float[] values = new float[last100Elevations.size()];
             float min = Float.POSITIVE_INFINITY;
             float max = Float.NEGATIVE_INFINITY;
@@ -236,23 +246,26 @@ public class CompassView extends View {
 
             float border = 4;
             float chartHeight = 100;
-            chartDrawer.setProperties(horizontalAxisColor, horizontalAxisAlpha, horizontalLabelsColor, horizontalLabelsAlpha,
-                    chartColor, chartAlpha, chartPointColor, chartPointAlpha, backgroundColor, backgroundAlpha);
-            chartDrawer.drawCart(canvas, border, Constants.COMPASS_CANVAS_HEIGHT - chartHeight - border,
-                    Constants.COMPASS_CANVAS_WIDTH - 2 * border, chartHeight - border, max, min, new String[]{"", ""}, //$NON-NLS-1$//$NON-NLS-2$
+            chartDrawer.setProperties(horizontalAxisColor, horizontalAxisAlpha,
+                    horizontalLabelsColor, horizontalLabelsAlpha, chartColor, chartAlpha,
+                    chartPointColor, chartPointAlpha, backgroundColor, backgroundAlpha);
+            chartDrawer.drawCart(canvas, border, Constants.COMPASS_CANVAS_HEIGHT - chartHeight
+                    - border, Constants.COMPASS_CANVAS_WIDTH - 2 * border, chartHeight - border,
+                    max, min, new String[]{"", ""}, //$NON-NLS-1$//$NON-NLS-2$
                     new String[]{"", ""}, null, values, 2); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
-    /**
-     * Set the various information about location and orientation.
-     * 
-     * @param azimuth
-     * @param loc
-     */
-    public void setLocationInfo( float azimuth, GpsLocation loc ) {
-        this.azimuth = azimuth;
+
+    public void onLocationChanged( GpsLocation loc ) {
         if (loc != null) {
             this.loc = loc;
         }
+        invalidate();
     }
+
+    public void onSensorChanged( double azimuth ) {
+        this.azimuth = (float) azimuth;
+        invalidate();
+    }
+
 }

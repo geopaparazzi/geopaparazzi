@@ -38,8 +38,6 @@ import java.util.Map;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
-import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 
 /**
  * A cache for osm tiles.
@@ -86,14 +84,19 @@ public class TileCache {
 
     private Bitmap dummyTile;
 
-    private ApplicationManager applicationManager;
+    private final boolean internetIsOn;
 
-    public TileCache( File cacheDir ) {
-        applicationManager = ApplicationManager.getInstance();
-        if (cacheDir == null) {
-            cacheDir = applicationManager.getOsmCacheDir();
-        }
-        osmCacheDir = cacheDir;
+    /**
+     * Constructor of {@link TileCache}.
+     * 
+     * @param osmCacheDir the folder where to create the cache.
+     * @param internetIsOn flag to tell if the device is online for download.
+     * @param dummyTile the image to use as empty.
+     */
+    public TileCache( File osmCacheDir, boolean internetIsOn, Bitmap dummyTile ) {
+        this.internetIsOn = internetIsOn;
+        this.dummyTile = dummyTile;
+        this.osmCacheDir = osmCacheDir;
     }
 
     /**
@@ -173,7 +176,7 @@ public class TileCache {
                 if (!delete) {
                     tileFile.deleteOnExit();
                 }
-                tileBitmap = createDummyTile();
+                tileBitmap = dummyTile;
             } else {
                 put(tileDef, tileBitmap);
                 // Log.v(LOGTAG, "File bitmap in cache: " + tileDef);
@@ -188,9 +191,8 @@ public class TileCache {
              * dummy image, so that it will be loaded 
              * as soon as is on board.
              */
-            boolean internetIsOn = applicationManager.isInternetOn();
             if (loadingTilesList.contains(tileDef)) {
-                return createDummyTile();
+                return dummyTile;
             } else {
                 if (internetIsOn)
                     loadingTilesList.add(tileDef);
@@ -200,7 +202,7 @@ public class TileCache {
              * Preload a dummy tile and start a thread for 
              * fetching the tile.
              */
-            tileBitmap = createDummyTile();
+            tileBitmap = dummyTile;
             if (internetIsOn) {
                 new Thread(){
                     public void run() {
@@ -262,14 +264,6 @@ public class TileCache {
         Log.d(LOGTAG, "Cleared tiles cache");
     }
 
-    private Bitmap createDummyTile() {
-        if (dummyTile == null) {
-            dummyTile = BitmapFactory.decodeResource(
-                    applicationManager.getOsmView().getResources(), R.drawable.no_tile_256);
-        }
-        return dummyTile;
-    }
-
     private void dumpPicture( File file, Bitmap bitmap ) throws IOException {
         FileOutputStream fOut = null;
         fOut = new FileOutputStream(file);
@@ -315,17 +309,18 @@ public class TileCache {
      * @param endZoom the higher zoom to download.
      * @throws IOException
      */
-    public static void fetchTiles( File cacheDir, double startLon, double startLat, double endLon,
-            double endLat, int startZoom, int endZoom ) throws IOException {
-        TileCache tC = new TileCache(cacheDir);
-        for( int zoom = startZoom; zoom <= endZoom; zoom++ ) {
-            for( double lon = startLon; lon <= endLon; lon++ ) {
-                for( double lat = startLat; lat <= endLat; lat++ ) {
-                    int[] xyTile = latLon2ContainingTileNumber(lat, lon, zoom);
-                    tC.get(zoom, xyTile[0], xyTile[1]);
-                }
-            }
-        }
-    }
+    // public static void fetchTiles( File cacheDir, double startLon, double startLat, double
+    // endLon,
+    // double endLat, int startZoom, int endZoom ) throws IOException {
+    // TileCache tC = new TileCache(cacheDir);
+    // for( int zoom = startZoom; zoom <= endZoom; zoom++ ) {
+    // for( double lon = startLon; lon <= endLon; lon++ ) {
+    // for( double lat = startLat; lat <= endLat; lat++ ) {
+    // int[] xyTile = latLon2ContainingTileNumber(lat, lon, zoom);
+    // tC.get(zoom, xyTile[0], xyTile[1]);
+    // }
+    // }
+    // }
+    // }
 
 }

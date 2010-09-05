@@ -43,7 +43,7 @@ public class InsertCoordActivity extends Activity {
         super.onCreate(icicle);
         setContentView(R.layout.insertcoord);
 
-        applicationManager = ApplicationManager.getInstance();
+        applicationManager = ApplicationManager.getInstance(this);
 
         lonText = (EditText) findViewById(R.id.longitudetext);
         latText = (EditText) findViewById(R.id.latitudetext);

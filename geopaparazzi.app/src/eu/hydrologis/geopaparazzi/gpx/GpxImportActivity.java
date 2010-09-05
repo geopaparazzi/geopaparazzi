@@ -80,9 +80,11 @@ public class GpxImportActivity extends Activity {
                                 item.setColor("red"); //$NON-NLS-1$
 
                                 if (!asPoint) {
-                                    DaoMaps.importGpxToMap(item, Constants.MAP_TYPE_LINE);
+                                    DaoMaps.importGpxToMap(GpxImportActivity.this, item,
+                                            Constants.MAP_TYPE_LINE);
                                 } else {
-                                    DaoMaps.importGpxToMap(item, Constants.MAP_TYPE_POINT);
+                                    DaoMaps.importGpxToMap(GpxImportActivity.this, item,
+                                            Constants.MAP_TYPE_POINT);
                                 }
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -96,11 +98,12 @@ public class GpxImportActivity extends Activity {
                 }
             });
 
-            alert.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener(){
-                public void onClick( DialogInterface dialog, int whichButton ) {
-                    finish();
-                }
-            });
+            alert.setNegativeButton(getString(R.string.cancel),
+                    new DialogInterface.OnClickListener(){
+                        public void onClick( DialogInterface dialog, int whichButton ) {
+                            finish();
+                        }
+                    });
 
             alert.show();
 

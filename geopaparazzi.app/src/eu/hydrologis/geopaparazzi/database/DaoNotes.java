@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
@@ -54,8 +55,9 @@ public class DaoNotes {
 
     private static SimpleDateFormat dateFormatter = Constants.TIME_FORMATTER_SQLITE;
 
-    public static void addNote( double lon, double lat, double altim, Date timestamp, String text ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+    public static void addNote( Context context, double lon, double lat, double altim,
+            Date timestamp, String text ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         sqliteDatabase.beginTransaction();
         try {
             ContentValues values = new ContentValues();
@@ -74,8 +76,8 @@ public class DaoNotes {
         }
     }
 
-    public static void deleteNote( long id ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+    public static void deleteNote( Context context, long id ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         sqliteDatabase.beginTransaction();
         try {
             // delete note
@@ -91,14 +93,14 @@ public class DaoNotes {
         }
     }
 
-    public static void deleteLastInsertedNote() throws IOException {
+    public static void deleteLastInsertedNote( Context context ) throws IOException {
         if (LASTINSERTEDNOTE_ID != -1) {
-            deleteNote(LASTINSERTEDNOTE_ID);
+            deleteNote(context, LASTINSERTEDNOTE_ID);
         }
     }
 
-    public static void importGpxToNotes( GpxItem gpxItem ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+    public static void importGpxToNotes( Context context, GpxItem gpxItem ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         sqliteDatabase.beginTransaction();
         try {
             List<PointF3D> points = gpxItem.read();
@@ -134,9 +136,10 @@ public class DaoNotes {
      * @return the list of notes inside the bounds.
      * @throws IOException
      */
-    public static List<Note> getNotesInWorldBounds( float n, float s, float w, float e ) throws IOException {
+    public static List<Note> getNotesInWorldBounds( Context context, float n, float s, float w,
+            float e ) throws IOException {
 
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         String query = "SELECT lon, lat, altim, text, ts FROM XXX WHERE (lon BETWEEN XXX AND XXX) AND (lat BETWEEN XXX AND XXX)";
         // String[] args = new String[]{TABLE_NOTES, String.valueOf(w), String.valueOf(e),
         // String.valueOf(s), String.valueOf(n)};
@@ -158,7 +161,16 @@ public class DaoNotes {
             double altim = c.getDouble(2);
             String text = c.getString(3);
             String date = c.getString(4);
-            Note note = new Note(text, date, lon, lat, altim);
+
+            String name = text;
+            if (text.length() > Constants.NOTES_LENGTH_LIMIT) {
+                name = text.substring(0, Constants.NOTES_LENGTH_LIMIT) + "..";
+            }
+            StringBuilder description = new StringBuilder();
+            description.append(text);
+            description.append("\n");
+            description.append(date);
+            Note note = new Note(name, description.toString(), lon, lat, altim);
             notes.add(note);
             c.moveToNext();
         }
@@ -172,12 +184,13 @@ public class DaoNotes {
      * @return list of notes.
      * @throws IOException
      */
-    public static List<Note> getNotesList() throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+    public static List<Note> getNotesList( Context context ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         List<Note> notesList = new ArrayList<Note>();
         String asColumnsToReturn[] = {COLUMN_LON, COLUMN_LAT, COLUMN_ALTIM, COLUMN_TS, COLUMN_TEXT};
         String strSortOrder = "_id ASC";
-        Cursor c = sqliteDatabase.query(TABLE_NOTES, asColumnsToReturn, null, null, null, null, strSortOrder);
+        Cursor c = sqliteDatabase.query(TABLE_NOTES, asColumnsToReturn, null, null, null, null,
+                strSortOrder);
         c.moveToFirst();
         while( !c.isAfterLast() ) {
             double lon = c.getDouble(0);
@@ -185,7 +198,16 @@ public class DaoNotes {
             double altim = c.getDouble(2);
             String date = c.getString(3);
             String text = c.getString(4);
-            Note note = new Note(text, date, lon, lat, altim);
+
+            String name = text;
+            if (text.length() > Constants.NOTES_LENGTH_LIMIT) {
+                name = text.substring(0, Constants.NOTES_LENGTH_LIMIT) + "..";
+            }
+            StringBuilder description = new StringBuilder();
+            description.append(text);
+            description.append("\n");
+            description.append(date);
+            Note note = new Note(name, description.toString(), lon, lat, altim);
             notesList.add(note);
             c.moveToNext();
         }
@@ -193,7 +215,7 @@ public class DaoNotes {
         return notesList;
     }
 
-    public static void createTables() throws IOException {
+    public static void createTables( Context context ) throws IOException {
         StringBuilder sB = new StringBuilder();
 
         sB = new StringBuilder();
@@ -228,7 +250,7 @@ public class DaoNotes {
         sB.append(" );");
         String CREATE_INDEX_NOTES_X_BY_Y = sB.toString();
 
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         Log.i(TAG, "Create the notes table.");
         sqliteDatabase.execSQL(CREATE_TABLE_NOTES);
         sqliteDatabase.execSQL(CREATE_INDEX_NOTES_TS);

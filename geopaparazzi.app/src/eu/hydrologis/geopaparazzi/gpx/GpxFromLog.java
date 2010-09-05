@@ -27,8 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.util.Log;
-
-import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.Note;
@@ -36,15 +34,17 @@ import eu.hydrologis.geopaparazzi.util.Note;
 /**
  * Log to Gpx converter.
  * 
+ * <p>Unused at the moment.
+ * 
  * @author Andrea Antonello (www.hydrologis.com)
  *
  */
 @SuppressWarnings("nls")
 public class GpxFromLog {
 
-    public void export( List<Note> notes, HashMap<Long, Line> linesMap ) throws IOException {
+    public void export( File gpxPointsDir, File gpxLinesDir, List<Note> notes,
+            HashMap<Long, Line> linesMap ) throws IOException {
         // lines
-        File gpxLinesDir = ApplicationManager.getInstance().getGeoPaparazziDir();
         String date = Constants.TIME_FORMATTER.format(new Date());
         Collection<Line> lines = linesMap.values();
         for( Line line : lines ) {
@@ -129,7 +129,6 @@ public class GpxFromLog {
         if (notes.size() < 1) {
             return;
         }
-        File gpxPointsDir = ApplicationManager.getInstance().getGeoPaparazziDir();
         String fileName = "notes_" + Constants.TIMESTAMPFORMATTER.format(new Date()) + ".gpx";
         File newFile = new File(gpxPointsDir, fileName);
 

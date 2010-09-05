@@ -30,6 +30,7 @@ import static java.lang.Math.toDegrees;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +56,6 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
-import eu.hydrologis.geopaparazzi.GeoPaparazziActivity;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DatabaseManager;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
@@ -67,7 +67,9 @@ import eu.hydrologis.geopaparazzi.osm.OsmView;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class ApplicationManager implements SensorEventListener, LocationListener {
+public class ApplicationManager implements SensorEventListener, LocationListener, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private static final String LOGTAG = "APPLICATIONMANAGER";
 
@@ -97,8 +99,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
     private double pitch = -1;
     private double roll = -1;
 
-    private static GeoPaparazziActivity mainActivity;
-    private static ApplicationManager deviceManager = null;
+    private Context context;
 
     private File databaseFile;
     private File geoPaparazziDir;
@@ -118,8 +119,6 @@ public class ApplicationManager implements SensorEventListener, LocationListener
 
     private float[] accels;
 
-    // private float[] orients;
-
     private final static int matrix_size = 16;
     private final float[] RM = new float[matrix_size];
     private final float[] outR = new float[matrix_size];
@@ -138,32 +137,39 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         listeners.remove(listener);
     }
 
+    private static ApplicationManager applicationManager;
     /**
-     * Gets the apps manager singleton. 
+     * The getter for the {@link ApplicationManager} singleton.
      * 
-     * @param mainActivity The reference to the main activity. Can be set only once.
-     * @return the {@link ApplicationManager} singleton.
+     * <p>This is a singletone but might require to be recreated
+     * in every moment of the application. This is due to the fact
+     * that when the application looses focus (for example because of
+     * an incoming call, and therefore at a random moment, if the memory 
+     * is too low, the parent activity could have been kille by 
+     * the system in background. In which case we need to recreate it.) 
+     * 
+     * @param context the context to refer to.
+     * @param osmCachePath the patch to the osmCache.
+     * @return
      */
-    public synchronized static ApplicationManager getInstance( GeoPaparazziActivity mainActivity ) {
-        if (mainActivity != null && ApplicationManager.mainActivity == null) {
-            setMainActivity(mainActivity);
+    public static ApplicationManager getInstance( Context context ) {
+        if (applicationManager == null && context != null) {
+            applicationManager = new ApplicationManager(context);
+            applicationManager.activateManagers();
+            applicationManager.checkGps();
+            applicationManager.startListening();
+        } else if (applicationManager == null && context == null) {
+            throw new RuntimeException("this should not happen!");
         }
-        if (deviceManager == null) {
-            deviceManager = new ApplicationManager();
-        }
-        return deviceManager;
+        return applicationManager;
     }
 
-    /**
-     * Utility to get back the {@link ApplicationManager} with default params.
-     * 
-     * @return the {@link ApplicationManager} singleton.
-     */
-    public static ApplicationManager getInstance() {
-        return getInstance(null);
-    }
+    private ApplicationManager( Context context ) {
+        this.context = context;
 
-    private ApplicationManager() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context
+                .getApplicationContext());
+        String osmCachePath = preferences.getString(OSMFOLDERKEY, null);
         /*
          * take care to create all the folders needed
          * 
@@ -197,66 +203,51 @@ public class ApplicationManager implements SensorEventListener, LocationListener
 
         if (mExternalStorageAvailable && mExternalStorageWriteable) {
             File sdcardDir = Environment.getExternalStorageDirectory();// new
-            // File(Constants.PATH_SDCARD);
             geoPaparazziDir = new File(sdcardDir.getAbsolutePath() + PATH_GEOPAPARAZZI);
             String geoPaparazziDirPath = geoPaparazziDir.getAbsolutePath();
 
             if (!geoPaparazziDir.exists())
                 if (!geoPaparazziDir.mkdir())
-                    alert(MessageFormat.format(mainActivity.getResources().getString(R.string.cantcreate_sdcard),
+                    alert(MessageFormat.format(
+                            context.getResources().getString(R.string.cantcreate_sdcard),
                             geoPaparazziDirPath));
             databaseFile = new File(geoPaparazziDirPath, DatabaseManager.DATABASE_NAME);
             picturesDir = new File(geoPaparazziDirPath + PATH_PICTURES);
             if (!picturesDir.exists())
                 if (!picturesDir.mkdir())
-                    alert(MessageFormat.format(mainActivity.getResources().getString(R.string.cantcreate_sdcard),
+                    alert(MessageFormat.format(
+                            context.getResources().getString(R.string.cantcreate_sdcard),
                             picturesDir.getAbsolutePath()));
 
-            // notesDir = new File(geoPaparazziDirPath + PATH_NOTES);
-            // if (!notesDir.exists())
-            // if (!notesDir.mkdir())
-            // alert(MessageFormat.format(mainActivity.getResources().getString(R.string.cantcreate_sdcard),
-            // notesDir.getAbsolutePath()));
-            //
-            // gpslogDir = new File(geoPaparazziDirPath + PATH_GPSLOGS);
-            // if (!gpslogDir.exists())
-            // if (!gpslogDir.mkdir())
-            // alert(MessageFormat.format(mainActivity.getResources().getString(R.string.cantcreate_sdcard),
-            // gpslogDir.getAbsolutePath()));
             File geoPaparazziDataDir = new File(sdcardDir.getAbsolutePath() + PATH_GEOPAPARAZZIDATA);
             String geoPaparazziDataDirPath = geoPaparazziDataDir.getAbsolutePath();
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mainActivity);
-            osmCacheDir = new File(preferences.getString(OSMFOLDERKEY, geoPaparazziDataDirPath + PATH_OSMCACHE));
+            if (osmCachePath == null) {
+                osmCachePath = geoPaparazziDataDirPath + PATH_OSMCACHE;
+            }
+            osmCacheDir = new File(osmCachePath);
             Log.i(LOGTAG, "OSMPATH:" + osmCacheDir.getAbsolutePath());
             if (!osmCacheDir.exists())
                 if (!osmCacheDir.mkdirs()) {
-                    String msg = MessageFormat.format(mainActivity.getResources().getString(R.string.cantcreate_sdcard),
+                    String msg = MessageFormat.format(
+                            context.getResources().getString(R.string.cantcreate_sdcard),
                             osmCacheDir.getAbsolutePath());
                     alert(msg);
                 }
             kmlExportDir = new File(geoPaparazziDirPath + PATH_KMLEXPORT);
             if (!kmlExportDir.exists())
                 if (!kmlExportDir.mkdir())
-                    alert(MessageFormat.format(mainActivity.getResources().getString(R.string.cantcreate_sdcard),
+                    alert(MessageFormat.format(
+                            context.getResources().getString(R.string.cantcreate_sdcard),
                             kmlExportDir.getAbsolutePath()));
 
         } else {
-            alertDialog(mainActivity.getResources().getString(R.string.sdcard_notexist));
+            alertDialog(context.getResources().getString(R.string.sdcard_notexist));
         }
 
     }
 
-    /**
-     * Setter for the main activity, used for certain tasks.
-     * 
-     * @param mainActivity the activity needed to retrieve the managers.
-     */
-    private static void setMainActivity( GeoPaparazziActivity mainActivity ) {
-        ApplicationManager.mainActivity = mainActivity;
-    }
-
     public Resources getResource() {
-        Resources resources = mainActivity.getResources();
+        Resources resources = context.getResources();
         return resources;
     }
 
@@ -264,9 +255,10 @@ public class ApplicationManager implements SensorEventListener, LocationListener
      * Get the location and sensor managers.
      */
     public void activateManagers() {
-        locationManager = (LocationManager) mainActivity.getSystemService(Context.LOCATION_SERVICE);
-        sensorManager = (SensorManager) mainActivity.getSystemService(Context.SENSOR_SERVICE);
-        connectivityManager = (ConnectivityManager) mainActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        connectivityManager = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
     }
 
     public boolean isInternetOn() {
@@ -298,8 +290,9 @@ public class ApplicationManager implements SensorEventListener, LocationListener
      * Starts listening to all the devices.
      */
     public void startListening() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mainActivity);
-        String intervalStr = preferences.getString(GPSLOGGINGINTERVALKEY, String.valueOf(GPS_LOGGING_INTERVAL));
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String intervalStr = preferences.getString(GPSLOGGINGINTERVALKEY,
+                String.valueOf(GPS_LOGGING_INTERVAL));
         int waitForMillis = (int) (Long.parseLong(intervalStr) * 1000);
         Log.d(LOGTAG, "LOG INTERVAL MILLIS: " + waitForMillis);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, waitForMillis,
@@ -308,11 +301,14 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         // locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
         // TIMETHRESHOLD, SENSORTHRESHOLD, this);
 
-        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+        sensorManager.registerListener(this,
+                sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
                 SensorManager.SENSOR_DELAY_NORMAL);
-        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
+        sensorManager.registerListener(this,
+                sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
                 SensorManager.SENSOR_DELAY_NORMAL);
-        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
+        sensorManager.registerListener(this,
+                sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
                 SensorManager.SENSOR_DELAY_NORMAL);
     }
 
@@ -325,15 +321,16 @@ public class ApplicationManager implements SensorEventListener, LocationListener
 
     public void checkGps() {
         if (!isGpsEnabled()) {
-            String prompt = mainActivity.getResources().getString(R.string.prompt_gpsenable);
-            String ok = mainActivity.getResources().getString(R.string.ok);
-            String cancel = mainActivity.getResources().getString(R.string.cancel);
-            AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
-            builder.setMessage(prompt).setCancelable(false).setPositiveButton(ok, new DialogInterface.OnClickListener(){
-                public void onClick( DialogInterface dialog, int id ) {
-                    showGpsOptions();
-                }
-            });
+            String prompt = context.getResources().getString(R.string.prompt_gpsenable);
+            String ok = context.getResources().getString(R.string.ok);
+            String cancel = context.getResources().getString(R.string.cancel);
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setMessage(prompt).setCancelable(false)
+                    .setPositiveButton(ok, new DialogInterface.OnClickListener(){
+                        public void onClick( DialogInterface dialog, int id ) {
+                            showGpsOptions();
+                        }
+                    });
             builder.setNegativeButton(cancel, new DialogInterface.OnClickListener(){
                 public void onClick( DialogInterface dialog, int id ) {
                     dialog.cancel();
@@ -345,8 +342,9 @@ public class ApplicationManager implements SensorEventListener, LocationListener
     }
 
     private void showGpsOptions() {
-        Intent gpsOptionsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        mainActivity.startActivity(gpsOptionsIntent);
+        Intent gpsOptionsIntent = new Intent(
+                android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        context.startActivity(gpsOptionsIntent);
     }
 
     public void onAccuracyChanged( Sensor sensor, int accuracy ) {
@@ -377,7 +375,8 @@ public class ApplicationManager implements SensorEventListener, LocationListener
             isReady = false;
 
             SensorManager.getRotationMatrix(RM, I, accels, mags);
-            SensorManager.remapCoordinateSystem(RM, SensorManager.AXIS_X, SensorManager.AXIS_Z, outR);
+            SensorManager.remapCoordinateSystem(RM, SensorManager.AXIS_X, SensorManager.AXIS_Z,
+                    outR);
             SensorManager.getOrientation(outR, values);
 
             azimuth = toDegrees(values[0]);
@@ -387,7 +386,9 @@ public class ApplicationManager implements SensorEventListener, LocationListener
             azimuth = azimuth > 0 ? azimuth : (360f + azimuth);
 
             // Log.v(LOGTAG, azimuth + "\t\t" + pitch + "\t\t" + roll);
-            mainActivity.updateFromDeviceManager();
+            for( ApplicationManagerListener listener : listeners ) {
+                listener.onSensorChanged(azimuth);
+            }
         }
 
     }
@@ -398,16 +399,11 @@ public class ApplicationManager implements SensorEventListener, LocationListener
             previousLoc = loc;
         }
 
-        mainActivity.updateFromDeviceManager();
-
         Log.d(LOGTAG, "Position update: " + gpsLoc.getLongitude() + "/" + gpsLoc.getLatitude()); //$NON-NLS-1$ //$NON-NLS-2$
-
         gpsLoc.setPreviousLoc(previousLoc);
-
         for( ApplicationManagerListener listener : listeners ) {
             listener.onLocationChanged(gpsLoc);
         }
-
         previousLoc = loc;
     }
 
@@ -469,17 +465,18 @@ public class ApplicationManager implements SensorEventListener, LocationListener
     // }
 
     private void alert( String msg ) {
-        Toast.makeText(mainActivity, msg, Toast.LENGTH_LONG).show();
+        Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
     }
 
     public void alertDialog( String msg ) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity);
-        String ok = mainActivity.getResources().getString(R.string.ok);
-        builder.setMessage(msg).setCancelable(false).setPositiveButton(ok, new DialogInterface.OnClickListener(){
-            public void onClick( DialogInterface dialog, int id ) {
-                showGpsOptions();
-            }
-        });
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        String ok = context.getResources().getString(R.string.ok);
+        builder.setMessage(msg).setCancelable(false)
+                .setPositiveButton(ok, new DialogInterface.OnClickListener(){
+                    public void onClick( DialogInterface dialog, int id ) {
+                        showGpsOptions();
+                    }
+                });
         AlertDialog alert = builder.create();
         alert.show();
     }
@@ -521,7 +518,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
 
     public void doLogGps( boolean doLogGps ) {
         if (gpsLogger == null) {
-            gpsLogger = new GpsLogger(mainActivity);
+            gpsLogger = new GpsLogger(context);
         }
         if (doLogGps) {
             addListener(gpsLogger);
@@ -570,10 +567,11 @@ public class ApplicationManager implements SensorEventListener, LocationListener
 
     public static void openDialog( int messageId, Context activity ) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setMessage(messageId).setCancelable(false).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
-            public void onClick( DialogInterface dialog, int id ) {
-            }
-        });
+        builder.setMessage(messageId).setCancelable(false)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                    public void onClick( DialogInterface dialog, int id ) {
+                    }
+                });
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }

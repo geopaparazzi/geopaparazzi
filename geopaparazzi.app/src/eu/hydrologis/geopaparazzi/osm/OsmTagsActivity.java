@@ -57,9 +57,10 @@ public class OsmTagsActivity extends Activity {
         additionalInfoText = (EditText) findViewById(R.id.osm_additionalinfo_id);
 
         GridView buttonGridView = (GridView) findViewById(R.id.osmgridview);
-        osmBaseTypes = OsmTagsManager.getInstance().getOsmTagsArrays();
+        osmBaseTypes = OsmTagsManager.getInstance(this).getOsmTagsArrays();
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.gpslog_row, osmBaseTypes){
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.gpslog_row,
+                osmBaseTypes){
             public View getView( final int position, View cView, ViewGroup parent ) {
 
                 Button osmButton = new Button(OsmTagsActivity.this);
@@ -72,7 +73,8 @@ public class OsmTagsActivity extends Activity {
                             StringBuilder sB = new StringBuilder(additionalInfoText.getText());
                             String infoString = sB.toString();
                             String tag = osmBaseTypes[position];
-                            String finalString = OsmTagsManager.getInstance().getDefinitionFromTag(tag);
+                            String finalString = OsmTagsManager.getInstance(OsmTagsActivity.this)
+                                    .getDefinitionFromTag(tag);
                             if (infoString.length() != 0) {
                                 String sep = ":";
                                 if (finalString.indexOf(":") != -1) {
@@ -81,10 +83,11 @@ public class OsmTagsActivity extends Activity {
                                 finalString = finalString + sep + infoString;
                             }
 
-                            DaoNotes.addNote(longitude, latitude, -1.0, sqlDate, finalString);
+                            DaoNotes.addNote(getContext(), longitude, latitude, -1.0, sqlDate, finalString);
                         } catch (Exception e) {
                             e.printStackTrace();
-                            Toast.makeText(OsmTagsActivity.this, R.string.notenonsaved, Toast.LENGTH_LONG).show();
+                            Toast.makeText(OsmTagsActivity.this, R.string.notenonsaved,
+                                    Toast.LENGTH_LONG).show();
                         }
                         finish();
                     }

@@ -47,7 +47,7 @@ public class SmsReceiver extends BroadcastReceiver {
     @Override
     public void onReceive( Context context, Intent intent ) {
         if (intent.getAction().equals(SmsReceiver.SMS_REC_ACTION)) {
-            appsManager = ApplicationManager.getInstance();
+            appsManager = ApplicationManager.getInstance(context);
             // SharedPreferences preferences = GeoPaparazziActivity.preferences;
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
             boolean doCatch = preferences.getBoolean(Constants.SMSCATCHERKEY, false);
