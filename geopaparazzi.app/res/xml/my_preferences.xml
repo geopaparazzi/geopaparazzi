@@ -18,9 +18,10 @@
 			android:key="osm_folder" android:title="@string/osm_folder"
 			android:defaultValue="/sdcard/geopaparazzi/osmcache"></EditTextPreference>
 	</PreferenceScreen>
+	<!-- 
 	<PreferenceScreen android:title="@string/sms_preferences"
 		android:order="9">
-		<!-- <PreferenceCategory android:title="@string/sms_sending"
+		<PreferenceCategory android:title="@string/sms_sending"
 			android:order="10">
 			<EditTextPreference android:order="11"
 				android:key="@string/sms_number" android:title="@string/sms_number"
@@ -29,7 +30,7 @@
 				android:entries="@array/sms_time_name" android:title="@string/sms_sending_interval"
 				android:order="12" android:key="@string/sms_sending_interval"
 				android:defaultValue="0"></ListPreference>
-		</PreferenceCategory> -->
+		</PreferenceCategory>
 		<PreferenceCategory android:title="@string/sms_catching"
 			android:order="13">
 			<CheckBoxPreference android:key="sms_catcher"
@@ -37,6 +38,7 @@
 			</CheckBoxPreference>
 		</PreferenceCategory>
 	</PreferenceScreen>
+	-->
 	<!-- 
 	<PreferenceScreen android:title="@string/database_preferences"
 		android:order="15">
