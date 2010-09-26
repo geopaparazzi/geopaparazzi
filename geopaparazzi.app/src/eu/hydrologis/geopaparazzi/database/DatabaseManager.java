@@ -120,6 +120,8 @@ public class DatabaseManager {
                     upgrade();
             } else {
                 Log.i("SQLiteHelper", "Creating database at " + databaseFile);
+                Log.d(DEBUG_TAG, "db folder exists: " + databaseFile.getParentFile().exists());
+                Log.d(DEBUG_TAG, "db folder is writable: " + databaseFile.getParentFile().canWrite());
                 db = SQLiteDatabase.openOrCreateDatabase(databaseFile, null);
                 create(context);
             }
