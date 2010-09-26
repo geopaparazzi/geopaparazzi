@@ -122,24 +122,24 @@
 	
 	<string name="abouttext">
 	    GeoPaparazzi\n
-	    is brought to you by \n
-	    HydroloGIS (www.hydrologis.eu)\n
-	    By buying this app, you also support the development of JGrass and BeeGIS. 
+	    is brought to you by HydroloGIS.\n
 	    \n
-	    The main website of the project is \n
-	    www.geopaparazzi.eu\n
-	    By buying this app, you also support the development of JGrass and BeeGIS.\n
+	    By buying this app, you also support the development of JGrass and BeeGIS.\n 
 	    \n
-	    GeoPaparazzi is the little brother of:\n
-	    BeeGIS (www.beegis.org)\n
-	    and as such is able to load collected data into it.\n
+	    GeoPaparazzi is the little brother of BeeGIS and as such is able to load collected data into it.\n
 	    \n
 	    The chart view is adapted from the GraphView by Arno den Hond.\n
 	    \n
-	    The free maps come from \n
-	    OpenStreetMap (www.openstreetmap.org).\n
+	    The maps come from OpenStreetMap.\n
 	    \n
-	    The compass is the logo of the\n 
-	    Open Source Geospatial Foundation (www.osgeo.org).\n
+	    The compass is adapted from the Modern Compass Rose by RobA found in the Open Clipart Library.\n
+	    \n
+	    Links:\n
+	    www.geopaparazzi.eu\n
+	    www.hydrologis.eu\n
+	    www.jgrass.org\n
+	    www.beegis.org\n
+	    www.openstreetmap.org\n
+	    www.openclipart.org\n
 	</string>
 </resources>

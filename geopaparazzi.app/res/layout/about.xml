@@ -4,6 +4,10 @@
 	    android:layout_height="fill_parent"
 		android:background="#FFFFFF">
 
+ <ScrollView   
+         android:id="@+id/aboutscroll"  
+       android:layout_height="fill_parent"   
+       android:layout_width="fill_parent">  
 	    <TextView
 	        android:id="@+id/about"
 	        android:layout_width="fill_parent"
@@ -14,7 +18,7 @@
 	        android:layout_marginLeft="10dip" 
 	        android:layout_marginRight="10dip"
 	    />
-
+ </ScrollView>
 	
 </LinearLayout>
 	

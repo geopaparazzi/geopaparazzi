@@ -37,26 +37,28 @@ public class AboutActivity extends Activity {
 
         TextView aboutView = (TextView) findViewById(R.id.about);
 
-        String[] aboutText = getResources().getString(R.string.abouttext).split("\\n");
+        String aboutString = getResources().getString(R.string.abouttext);
+        String[] aboutText = aboutString.split("\\n");
         StringBuilder sB = new StringBuilder();
         boolean first = true;
         for( String line : aboutText ) {
             line = line.trim();
-            
+
             if (first) {
                 sB.append("<h1>");
                 sB.append(line);
                 sB.append("</h1>");
-                
+
                 first = false;
-            }else{
+            } else {
                 sB.append(line).append("<BR>");
             }
-            
+
         }
 
         Spanned fromHtml = Html.fromHtml(sB.toString());
         aboutView.setText(fromHtml);
 
     }
+
 }
