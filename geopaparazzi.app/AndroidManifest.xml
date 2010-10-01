@@ -105,6 +105,7 @@
 				<action android:name="android.provider.Telephony.SMS_RECEIVED" />
 			</intent-filter>
 		</receiver>
+		 -->
 	</application>
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
@@ -116,6 +117,6 @@
 
 	<uses-permission android:name="android.permission.RECEIVE_SMS"></uses-permission>
 	<uses-permission android:name="android.permission.SEND_SMS"></uses-permission>
-<uses-sdk android:maxSdkVersion="8" android:minSdkVersion="7" android:targetSdkVersion="7"></uses-sdk>
+<uses-sdk android:minSdkVersion="3"></uses-sdk>
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
 </manifest> 
