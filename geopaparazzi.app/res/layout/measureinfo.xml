@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:background="#FFFFFF">
+
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:orientation="vertical" android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:background="#FFFFFF">
+		<TextView android:layout_height="wrap_content"
+			android:layout_width="fill_parent" android:id="@+id/measureinfo"
+			android:text="@string/measureinfo" android:layout_margin="10px"
+			android:textColor="#000000">
+		</TextView>
+		<LinearLayout android:orientation="horizontal"
+            android:layout_width="fill_parent" android:layout_height="wrap_content">
+            <TextView android:layout_height="wrap_content"
+                android:layout_width="70px" android:id="@+id/distancelabel"
+                android:text="@string/distance" android:layout_margin="10px"
+                android:textColor="#000000">
+            </TextView>
+            <EditText android:layout_height="wrap_content"
+                android:layout_width="fill_parent" android:id="@+id/measuredistancetext"
+                android:layout_toRightOf="@+id/distancelabel"
+                android:layout_margin="10px" android:text="">
+            </EditText>
+        </LinearLayout>
+        <!--  FIRST COORDINATE -->
+        <TextView android:layout_height="wrap_content"
+            android:layout_width="fill_parent" android:id="@+id/firstpoint"
+            android:text="@string/measureinfo_first" android:layout_margin="10px"
+            android:textColor="#000000">
+        </TextView>
+		<LinearLayout android:orientation="horizontal"
+			android:layout_width="fill_parent" android:layout_height="wrap_content">
+			<TextView android:layout_height="wrap_content"
+				android:id="@+id/longitudelabel_first"
+				android:text="@string/longitude" android:layout_margin="10px"
+				android:textColor="#000000" android:paddingLeft="20px" android:layout_width="100px">
+			</TextView>
+			<EditText android:layout_height="wrap_content"
+				android:layout_width="fill_parent" android:id="@+id/longitudetext_first"
+				android:layout_toRightOf="@+id/longitudelabel_first"
+				android:layout_margin="10px" android:text="">
+			</EditText>
+		</LinearLayout>
+		<LinearLayout android:orientation="horizontal"
+			android:layout_width="fill_parent" android:layout_height="wrap_content">
+			<TextView android:layout_height="wrap_content"
+				android:id="@+id/latitudelabel_first"
+				android:layout_below="@+id/longitudelabel_first" android:text="@string/latitude"
+				android:layout_margin="10px" android:textColor="#000000" android:layout_width="100px" android:paddingLeft="20px">
+			</TextView>
+			<EditText android:layout_height="wrap_content"
+				android:layout_width="fill_parent" android:id="@+id/latitudetext_first"
+				android:layout_toRightOf="@+id/latitudelabel_first" android:layout_margin="10px"
+				android:layout_below="@+id/longitudetext_first" android:text="">
+			</EditText>
+		</LinearLayout>
+        <!--  LAST COORDINATE -->
+        <TextView android:layout_height="wrap_content"
+            android:layout_width="fill_parent" android:id="@+id/lastpoint"
+            android:text="@string/measureinfo_last" android:layout_margin="10px"
+            android:textColor="#000000">
+        </TextView>
+		<LinearLayout android:orientation="horizontal"
+			android:layout_width="fill_parent" android:layout_height="wrap_content">
+			<TextView android:layout_height="wrap_content"
+				android:id="@+id/longitudelabel_last"
+				android:text="@string/longitude" android:layout_margin="10px"
+				android:textColor="#000000" android:paddingLeft="20px" android:layout_width="100px">
+			</TextView>
+			<EditText android:layout_height="wrap_content"
+				android:layout_width="fill_parent" android:id="@+id/longitudetext_last"
+				android:layout_toRightOf="@+id/longitudelabel_last"
+				android:layout_margin="10px" android:text="">
+			</EditText>
+		</LinearLayout>
+		<LinearLayout android:orientation="horizontal"
+			android:layout_width="fill_parent" android:layout_height="wrap_content">
+			<TextView android:layout_height="wrap_content"
+				android:id="@+id/latitudelabel_last"
+				android:layout_below="@+id/longitudelabel_last" android:text="@string/latitude"
+				android:layout_margin="10px" android:textColor="#000000"
+				android:paddingLeft="20px" android:layout_width="100px">
+			</TextView>
+			<EditText android:layout_height="wrap_content"
+				android:layout_width="fill_parent" android:id="@+id/latitudetext_last"
+				android:layout_toRightOf="@+id/latitudelabel_last" android:layout_margin="10px"
+				android:layout_below="@+id/longitudetext_last" android:text="">
+			</EditText>
+		</LinearLayout>
+		
+        <RelativeLayout 
+            android:layout_height="wrap_content" android:layout_width="fill_parent" 
+            android:layout_margin="20px" android:gravity="center_horizontal">
+            <Button android:id="@+id/measureOkButton" android:layout_width="120px"
+                android:layout_height="wrap_content" android:text="@string/ok" 
+                 android:layout_centerInParent="true"
+                >
+            </Button>
+        </RelativeLayout>
+	</LinearLayout>
+</ScrollView>

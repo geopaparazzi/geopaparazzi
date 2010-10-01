@@ -44,6 +44,7 @@ public interface Constants {
     public final String MAPDATAPROPERTIES = "eu.hydrologis.geopaparazzi.osm.MAPDATAPROPERTIES";
     public final String PREFERENCES = "eu.hydrologis.geopaparazzi.preferences.PREFERENCES";
     public final String VIEW_IN_CHART = "eu.hydrologis.geopaparazzi.chart.VIEW_IN_CHART";
+    public final String MEASUREMENT_INFO = "eu.hydrologis.geopaparazzi.osm.MEASUREMENT_INFO";
     public final String ABOUT = "eu.hydrologis.geopaparazzi.util.ABOUT";
     public final String DIRECTORYBROWSER = "eu.hydrologis.geopaparazzi.util.DIRECTORYBROWSER";
     public final String GPXIMPORT = "eu.hydrologis.geopaparazzi.gpx.GPXIMPORT";
@@ -54,6 +55,9 @@ public interface Constants {
     public final String EXTENTION = "EXTENTION";
     public final String PATH = "PATH";
     public final String ISLINE = "ISLINE";
+    public final String MEASURECOORDSX = "MEASURECOORDSX";
+    public final String MEASURECOORDSY = "MEASURECOORDSY";
+    public final String MEASUREDIST = "MEASUREDIST";
 
     /**
      * Threshold for the sensor values in degrees (azimuth, pitch, roll).

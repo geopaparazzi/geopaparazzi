@@ -58,6 +58,7 @@ import eu.hydrologis.geopaparazzi.util.BoundingBox;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.Note;
+import eu.hydrologis.geopaparazzi.util.PointF3D;
 import eu.hydrologis.geopaparazzi.util.PointsContainer;
 /**
  * The view showing the gps position on OSM tiles. 
@@ -107,6 +108,8 @@ public class OsmView extends View implements ApplicationManagerListener {
     private SharedPreferences preferences;
     private long lastTouchTime;
     private final OsmActivity osmActivity;
+    private List<Float> measureCoordinatesX = new ArrayList<Float>(30);
+    private List<Float> measureCoordinatesY = new ArrayList<Float>(30);
 
     public OsmView( final OsmActivity osmActivity ) {
         super(osmActivity);
@@ -156,8 +159,7 @@ public class OsmView extends View implements ApplicationManagerListener {
             gpsLat = (float) loc.getLatitude();
             gpsLon = (float) loc.getLongitude();
         } else {
-            SharedPreferences preferences = PreferenceManager
-                    .getDefaultSharedPreferences(osmActivity.getApplicationContext());
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(osmActivity.getApplicationContext());
             gpsLon = preferences.getFloat(GPSLAST_LONGITUDE, gpsLon);
             gpsLat = preferences.getFloat(GPSLAST_LATITUDE, gpsLat);
         }
@@ -194,8 +196,7 @@ public class OsmView extends View implements ApplicationManagerListener {
     protected void onWindowVisibilityChanged( int visibility ) {
         super.onWindowVisibilityChanged(visibility);
         if (visibility == 8) {
-            SharedPreferences preferences = PreferenceManager
-                    .getDefaultSharedPreferences(osmActivity.getApplicationContext());
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(osmActivity.getApplicationContext());
             Editor editor = preferences.edit();
             editor.putFloat(GPSLAST_LONGITUDE, centerLon);
             editor.putFloat(GPSLAST_LATITUDE, centerLat);
@@ -271,8 +272,7 @@ public class OsmView extends View implements ApplicationManagerListener {
                     PointF s = dragList.get(i + 1);
                     canvas.drawLine(f.x, f.y, s.x, s.y, measurePaint);
                 }
-                canvas.drawText(
-                        distanceString + (int) measuredDistance + " meters", 5, 15, measureTextPaint); //$NON-NLS-1$
+                canvas.drawText(distanceString + (int) measuredDistance + " meters", 5, 15, measureTextPaint); //$NON-NLS-1$
             }
 
             if (gotoLat != -1) {
@@ -308,8 +308,8 @@ public class OsmView extends View implements ApplicationManagerListener {
                 if (!mapItem.isVisible()) {
                     continue;
                 }
-                PointsContainer coordsContainer = DaoMaps.getCoordinatesInWorldBoundsForMapId(
-                        osmActivity, mapItem.getId(), y0, y1, x0, x1);
+                PointsContainer coordsContainer = DaoMaps.getCoordinatesInWorldBoundsForMapId(osmActivity, mapItem.getId(), y0,
+                        y1, x0, x1);
                 if (coordsContainer == null) {
                     continue;
                 }
@@ -328,10 +328,8 @@ public class OsmView extends View implements ApplicationManagerListener {
                     List<Double> lonList = coordsContainer.getLonList();
 
                     for( int i = 0; i < latList.size(); i++ ) {
-                        float screenX = lonToScreen(width, lonList.get(i).floatValue(), centerLon,
-                                pixelDxInWorld);
-                        float screenY = latToScreen(height, latList.get(i).floatValue(), centerLat,
-                                pixelDyInWorld);
+                        float screenX = lonToScreen(width, lonList.get(i).floatValue(), centerLon, pixelDxInWorld);
+                        float screenY = latToScreen(height, latList.get(i).floatValue(), centerLat, pixelDyInWorld);
                         // Log.d(LOGTAG, screenX + "/" + screenY);
                         if (i == 0) {
                             path.moveTo(screenX, screenY);
@@ -357,10 +355,8 @@ public class OsmView extends View implements ApplicationManagerListener {
                     boolean hasNames = namesList.size() == latList.size();
 
                     for( int i = 0; i < latList.size(); i++ ) {
-                        float screenX = lonToScreen(width, lonList.get(i).floatValue(), centerLon,
-                                pixelDxInWorld);
-                        float screenY = latToScreen(height, latList.get(i).floatValue(), centerLat,
-                                pixelDyInWorld);
+                        float screenX = lonToScreen(width, lonList.get(i).floatValue(), centerLon, pixelDxInWorld);
+                        float screenY = latToScreen(height, latList.get(i).floatValue(), centerLat, pixelDyInWorld);
 
                         canvas.drawPoint(screenX, screenY, gpxPaint);
                         if (zoom > 12 && hasNames) {
@@ -384,8 +380,7 @@ public class OsmView extends View implements ApplicationManagerListener {
 
         try {
             List<MapItem> gpslogs = DaoGpsLog.getGpslogs(osmActivity);
-            HashMap<Long, Line> linesInWorldBounds = DaoGpsLog.getLinesInWorldBounds(osmActivity,
-                    y0, y1, x0, x1);
+            HashMap<Long, Line> linesInWorldBounds = DaoGpsLog.getLinesInWorldBounds(osmActivity, y0, y1, x0, x1);
             for( MapItem gpslogItem : gpslogs ) {
                 if (!gpslogItem.isVisible()) {
                     continue;
@@ -408,10 +403,8 @@ public class OsmView extends View implements ApplicationManagerListener {
                 List<Double> lonList = line.getLonList();
 
                 for( int i = 0; i < latList.size(); i++ ) {
-                    float screenX = lonToScreen(width, lonList.get(i).floatValue(), centerLon,
-                            pixelDxInWorld);
-                    float screenY = latToScreen(height, latList.get(i).floatValue(), centerLat,
-                            pixelDyInWorld);
+                    float screenX = lonToScreen(width, lonList.get(i).floatValue(), centerLon, pixelDxInWorld);
+                    float screenY = latToScreen(height, latList.get(i).floatValue(), centerLat, pixelDyInWorld);
                     // Log.d(LOGTAG, screenX + "/" + screenY);
                     if (i == 0) {
                         path.moveTo(screenX, screenY);
@@ -442,8 +435,7 @@ public class OsmView extends View implements ApplicationManagerListener {
         float x1 = screenToLon(width, width, centerLon, pixelDxInWorld);
 
         try {
-            List<Note> notesInWorldBounds = DaoNotes.getNotesInWorldBounds(getContext(), y0, y1,
-                    x0, x1);
+            List<Note> notesInWorldBounds = DaoNotes.getNotesInWorldBounds(getContext(), y0, y1, x0, x1);
             int notesColor = DataManager.getInstance().getNotesColor();
             float notesWidth = DataManager.getInstance().getNotesWidth();
             for( Note note : notesInWorldBounds ) {
@@ -690,11 +682,15 @@ public class OsmView extends View implements ApplicationManagerListener {
             long thisTime = System.currentTimeMillis();
             long delta = thisTime - lastTouchTime;
             // Log.i(LOGTAG, "Time: " + thisTime + " Delta: " + delta);
+            float currentYscreenToLat = screenToLat(height, currentY, centerLat, pixelDyInWorld);
+            float currentXscreenToLon = screenToLon(width, currentX, centerLon, pixelDxInWorld);
+            if (isMeasureMode) {
+                measureCoordinatesX.add(currentXscreenToLon);
+                measureCoordinatesY.add(currentYscreenToLat);
+            }
             if (delta < 300) {
                 // double tag emulation
                 Intent intent = new Intent(Constants.TAKE_NOTE);
-                float currentYscreenToLat = screenToLat(height, currentY, centerLat, pixelDyInWorld);
-                float currentXscreenToLon = screenToLon(width, currentX, centerLon, pixelDxInWorld);
                 intent.putExtra(Constants.PREFS_KEY_LAT, currentYscreenToLat);
                 intent.putExtra(Constants.PREFS_KEY_LON, currentXscreenToLon);
                 osmActivity.startActivity(intent);
@@ -721,10 +717,12 @@ public class OsmView extends View implements ApplicationManagerListener {
 
             if (isMeasureMode) {
                 Location first = new Location("dummy"); //$NON-NLS-1$
-                float currentYscreenToLat = screenToLat(height, currentY, centerLat, pixelDyInWorld);
-                float currentXscreenToLon = screenToLon(width, currentX, centerLon, pixelDxInWorld);
-                first.setLatitude(currentYscreenToLat);
-                first.setLongitude(currentXscreenToLon);
+                float movingYscreenToLat = screenToLat(height, currentY, centerLat, pixelDyInWorld);
+                float movingXscreenToLon = screenToLon(width, currentX, centerLon, pixelDxInWorld);
+                measureCoordinatesX.add(movingXscreenToLon);
+                measureCoordinatesY.add(movingYscreenToLat);
+                first.setLatitude(movingYscreenToLat);
+                first.setLongitude(movingXscreenToLon);
                 Location second = new Location("dummy"); //$NON-NLS-1$
                 second.setLatitude(screenToLat(height, lastY, centerLat, pixelDyInWorld));
                 second.setLongitude(screenToLon(width, lastX, centerLon, pixelDxInWorld));
@@ -748,6 +746,24 @@ public class OsmView extends View implements ApplicationManagerListener {
             break;
         case MotionEvent.ACTION_UP:
             touchDragging = false;
+            if (isMeasureMode) {
+                // open info view
+                int size = measureCoordinatesX.size();
+                float[] xArray = new float[size];
+                float[] yArray = new float[size];
+                for( int i = 0; i < xArray.length; i++ ) {
+                    xArray[i] = measureCoordinatesX.get(i);
+                    yArray[i] = measureCoordinatesY.get(i);
+                }
+                measureCoordinatesX.clear();
+                measureCoordinatesY.clear();
+
+                Intent intent = new Intent(Constants.MEASUREMENT_INFO);
+                intent.putExtra(Constants.MEASURECOORDSX, xArray);
+                intent.putExtra(Constants.MEASURECOORDSY, yArray);
+                intent.putExtra(Constants.MEASUREDIST, measuredDistance);
+                osmActivity.startActivity(intent);
+            }
             measuredDistance = -1;
             break;
         }

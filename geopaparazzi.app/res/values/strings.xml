@@ -118,6 +118,9 @@
 	
 	<string name="error_disk_full">The disk to which to log to seems to be full. Free some memory and start again.</string>
 	
+	<string name="measureinfo">Last measurement info</string>
+	<string name="measureinfo_first">First point</string>
+	<string name="measureinfo_last">Last point</string>
 	
 	
 	<string name="abouttext">

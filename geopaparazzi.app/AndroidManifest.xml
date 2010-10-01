@@ -94,6 +94,12 @@
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
+		<activity android:name=".osm.MeasureInfoActivity">
+			<intent-filter>
+				<action android:name="eu.hydrologis.geopaparazzi.osm.MEASUREMENT_INFO" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+		</activity>
 		<receiver android:name=".sms.SmsReceiver" android:enabled="true">
 			<intent-filter>
 				<action android:name="android.provider.Telephony.SMS_RECEIVED" />
