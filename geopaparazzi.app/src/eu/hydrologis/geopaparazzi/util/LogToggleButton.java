@@ -17,13 +17,11 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
-import eu.hydrologis.geopaparazzi.R;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.view.Display;
-import android.view.View;
 import android.widget.Button;
+import eu.hydrologis.geopaparazzi.R;
 
 /**
  * A toggle button for the log.

@@ -17,8 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.osm;
 
-import java.io.IOException;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
@@ -26,7 +24,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.util.Constants;
 
 /**

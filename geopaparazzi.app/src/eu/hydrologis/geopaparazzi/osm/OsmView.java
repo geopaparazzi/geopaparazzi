@@ -58,7 +58,6 @@ import eu.hydrologis.geopaparazzi.util.BoundingBox;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.Note;
-import eu.hydrologis.geopaparazzi.util.PointF3D;
 import eu.hydrologis.geopaparazzi.util.PointsContainer;
 /**
  * The view showing the gps position on OSM tiles. 

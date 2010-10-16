@@ -27,7 +27,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Picture;
 import android.graphics.drawable.BitmapDrawable;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import eu.hydrologis.geopaparazzi.GeoPaparazziActivity;
@@ -46,8 +45,6 @@ import eu.hydrologis.geopaparazzi.util.Constants;
 public class CompassView extends View implements ApplicationManagerListener {
     private Paint mPaint = new Paint();
     private Path mPath = new Path();
-
-    private static final float LINESPACING = 3f;
 
     /**
      * The current azimuth angle, with 0 = North, -90 = West, 90 = East
@@ -87,7 +84,6 @@ public class CompassView extends View implements ApplicationManagerListener {
     private int compassHeight;
     private int compassCX;
     private int compassCY;
-    private float textSizeLarge;
     private float textSizeNormal;
     private final TextView compassInfoView;
 
@@ -129,8 +125,6 @@ public class CompassView extends View implements ApplicationManagerListener {
 
         chartDrawer = new ChartDrawer("", ChartDrawer.LINE); //$NON-NLS-1$
 
-        String textSizeLargeStr = getResources().getString(R.string.text_large);
-        textSizeLarge = Float.parseFloat(textSizeLargeStr);
         String textSizeMediumStr = getResources().getString(R.string.text_normal);
         textSizeNormal = Float.parseFloat(textSizeMediumStr);
     }
@@ -156,8 +150,6 @@ public class CompassView extends View implements ApplicationManagerListener {
         paint.setColor(Constants.COMPASS_TEXT_COLOR);
         paint.setAlpha(255);
         paint.setTextSize(textSizeNormal);
-        float x = compassWidth;
-        float y = 30f;
 
         StringBuilder sb = new StringBuilder();
 
