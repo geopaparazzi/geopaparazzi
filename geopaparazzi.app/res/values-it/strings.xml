@@ -27,7 +27,7 @@
     <string name="gpsloggingon">Partito gps...</string>
     <string name="gpsloggingalarm">Evita/ferma allarme... </string>
     <string name="gpslogging_only">Questa funzione è attiva solo quando il gps è attivo e sta registrando.</string>
-    <string name="nogps_data">Al momento nessun dato gps è dispomibile!</string>
+    <string name="nogps_data">Al momento nessun dato gps è disponibile!</string>
     
     <string name="about">Informazioni</string>
     <string name="exit">Esci</string>

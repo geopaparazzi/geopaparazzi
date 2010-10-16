@@ -31,10 +31,11 @@
 				android:layout_height="fill_parent" android:layout_width="fill_parent"
 				android:layout_weight="1" android:drawableTop="@drawable/camera"
 				android:padding="5px"></Button>
-			<ToggleButton android:text="@+id/logButton" android:id="@+id/logButton"
+
+			<eu.hydrologis.geopaparazzi.util.LogToggleButton
+				android:text="@+id/logButton" android:id="@+id/logButton"
 				android:layout_height="fill_parent" android:layout_width="fill_parent"
-				android:layout_weight="1" android:drawableTop="@drawable/logonoff"
-				android:padding="5px"></ToggleButton>
+				android:layout_weight="1" android:padding="5px"></eu.hydrologis.geopaparazzi.util.LogToggleButton>
 
 		</LinearLayout>
 		<LinearLayout android:layout_width="fill_parent"
@@ -45,6 +46,7 @@
 				android:layout_height="fill_parent" android:layout_width="fill_parent"
 				android:layout_weight="1" android:drawableTop="@drawable/notes"
 				android:padding="5px"></Button>
+
 			<Button android:text="@+id/mapButton" android:id="@+id/mapButton"
 				android:layout_height="fill_parent" android:layout_width="fill_parent"
 				android:layout_weight="1" android:drawableTop="@drawable/gmap"

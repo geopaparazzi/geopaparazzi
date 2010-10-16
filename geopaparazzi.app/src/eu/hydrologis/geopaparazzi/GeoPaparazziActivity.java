@@ -65,6 +65,7 @@ import eu.hydrologis.geopaparazzi.osm.MapItem;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Line;
+import eu.hydrologis.geopaparazzi.util.LogToggleButton;
 import eu.hydrologis.geopaparazzi.util.Note;
 import eu.hydrologis.geopaparazzi.util.Picture;
 
@@ -88,7 +89,7 @@ public class GeoPaparazziActivity extends Activity {
 
     private ProgressDialog kmlProgressDialog;
 
-    private ToggleButton logButton;
+    private LogToggleButton logButton;
 
     private File kmlOutputFile = null;
 
@@ -129,22 +130,19 @@ public class GeoPaparazziActivity extends Activity {
             }
         });
 
-        logButton = (ToggleButton) findViewById(R.id.logButton);
-        logButton.setText(R.string.text_start_gps_logging);
+        logButton = (LogToggleButton) findViewById(R.id.logButton);
         logButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
                 if (logButton.isChecked()) {
                     // GpsLocation loc = applicationManager.getLoc();
                     // if (loc != null) {
                     applicationManager.doLogGps(true);
-                    logButton.setText(R.string.text_stop_gps_logging);
                     // } else {
                     // ApplicationManager.openDialog(R.string.gpslogging_only,
                     // GeoPaparazziActivity.this);
                     // }
                 } else {
                     applicationManager.doLogGps(false);
-                    logButton.setText(R.string.text_start_gps_logging);
                 }
             }
         });

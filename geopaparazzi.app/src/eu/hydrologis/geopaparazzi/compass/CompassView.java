@@ -166,6 +166,7 @@ public class CompassView extends View implements ApplicationManagerListener {
             // Log.d("COMPASSVIEW", "Location from gps is null!");
             hasValue = false;
             sb.append(getContext().getString(R.string.nogps_data));
+            sb.append("\n");
         } else {
             sb.append(timeString);
             sb.append(" ").append(loc.getTimeString()); //$NON-NLS-1$

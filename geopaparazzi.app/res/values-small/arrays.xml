@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<integer-array name="compassneedle_width_heights">
+		<item>10</item>
+		<item>50</item>
+		<item>7</item>
+	</integer-array>
+	<integer-array name="compassneedle_coords">
+		<item>0</item>
+		<item>-50</item> <!-- item 2 of compassneedle_width_heights -->
+		<item>-5</item> <!-- item 1 divided by 2 of compassneedle_width_heights -->
+		<item>0</item>
+		<item>0</item>
+		<item>7</item> <!-- item 3 of compassneedle_width_heights -->
+		<item>5</item> <!-- item 1 divided by 2 of compassneedle_width_heights -->
+		<item>0</item>
+	</integer-array>
+</resources>
