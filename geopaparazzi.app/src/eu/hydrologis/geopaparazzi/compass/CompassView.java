@@ -107,6 +107,9 @@ public class CompassView extends View implements ApplicationManagerListener {
         compassWidth = compassDrawable.getIntrinsicWidth();
         compassHeight = compassDrawable.getIntrinsicHeight();
         compassCX = compassWidth / 2;
+        if (compassCX % 2 != 0) {
+            compassCX--;
+        }
         compassCY = compassHeight / 2;
 
         compassDrawable.setBounds(0, 0, compassWidth, compassHeight);
@@ -147,7 +150,7 @@ public class CompassView extends View implements ApplicationManagerListener {
         paint.setColor(Constants.COMPASS_TEXT_COLOR);
         paint.setAlpha(255);
         paint.setTextSize(textSize);
-        float x = compassWidth + 15f;
+        float x = compassWidth;
         float y = 30f;
 
         StringBuilder timeSb = new StringBuilder();
@@ -257,8 +260,8 @@ public class CompassView extends View implements ApplicationManagerListener {
             int canvasHeight = canvas.getHeight();
             chartDrawer.setProperties(horizontalAxisColor, horizontalAxisAlpha, horizontalLabelsColor, horizontalLabelsAlpha,
                     chartColor, chartAlpha, chartPointColor, chartPointAlpha, backgroundColor, backgroundAlpha);
-            chartDrawer.drawCart(canvas, border, canvasHeight - chartHeight - border,
-                    canvasWidth - 2 * border, chartHeight - border, max, min, new String[]{"", ""}, //$NON-NLS-1$//$NON-NLS-2$
+            chartDrawer.drawCart(canvas, border, canvasHeight - chartHeight - border, canvasWidth - 2 * border, chartHeight
+                    - border, max, min, new String[]{"", ""}, //$NON-NLS-1$//$NON-NLS-2$
                     new String[]{"", ""}, null, values, 2); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
