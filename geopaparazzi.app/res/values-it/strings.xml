@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cancel">cancella</string>
+    <string name="ok">ok</string>
+    <string name="okcoord">usa coordinate</string>
+    <string name="okaddress">usa indirizzo</string>
+    <string name="longitude">longitudine</string>
+    <string name="latitude">latitudine</string>
+    
+    <string name="app_name">GeoPaparazzi</string>
+
+    <string name="notesaved">Nota salvata con successo!</string>
+    <string name="notenonsaved">è avvenuto un errore durante il salvataggio della nota!</string>
+    <string name="notecancel">Nota non salvata come richiesto da utente.</string>
+    <string name="notesvisibilityToggle">Cambia visibilità delle note.</string>
+
+    <string name="gpslogsvisibilityToggle">Cambia visibilità del gps.</string>
+
+    <string name="kmlsaved">Kml salvato con successo in: </string>
+    <string name="kmlnonsaved">è avvenuto un errore durante il salvataggio del file kml!</string>
+    <string name="gpxnonsaved">è avvenuto un errore durante il salvataggio del file gpx!</string>
+    <string name="imagesaved">Imagine salvata con successo!</string>
+    <string name="imagenonsaved">è avvenuto un errore durante il salvataggio dell\'immagine!</string>
+    <string name="loggingoff">Fermati gps e sensori.</string>
+    <string name="loggingon">Partiti gps e sensori.</string>
+    <string name="gpsloggingoff">Fermato gps.</string>
+    <string name="gpsloggingon">Partito gps...</string>
+    <string name="gpsloggingalarm">Evita/ferma allarme... </string>
+    <string name="gpslogging_only">Questa funzione è attiva solo quando il gps è attivo e sta registrando.</string>
+    <string name="nogps_data">Al momento nessun dato gps è dispomibile!</string>
+    
+    <string name="about">Informazioni</string>
+    <string name="exit">Esci</string>
+    <string name="cantcreate_sdcard">Non sono stato in grado di creare la cartela sulla scheda SD ({0}). Esco...</string>
+    <string name="sdcard_notexist">Scheda SD non esiste o non è scrivibile (è possibile sia montata da un pc?). Esco...</string>
+    <string name="cantwrite_gpslog">ERRORE: non sono stato in grado di scrivere il log gps!</string>
+    <string name="cantclose_gpslog">ERRORE: non sono stato in grado di chiudere il log gps!</string>
+    <string name="gpslogthread_interrupted">ERRORE: il log gps è stato interrotto!</string>
+    <string name="utctime">tempo utc: </string>
+    <string name="altim">quota: </string>
+    <string name="lat">lat: </string>
+    <string name="lon">lon: </string>
+    <string name="azimuth">azimut: </string>
+    <string name="log_points">punti: </string>
+    <string name="log_distance">distanza: </string>
+    
+	<string name="osmview">vista osm</string>
+	<string name="googleview">vista gmap</string>
+	<string name="zoomin">zoom in</string>
+	<string name="zoomout">zoom out</string>
+	<string name="centerongps">centra sul gps</string>
+	<string name="nogpscoordinate">Il gps non ha fornito alcuna coordinata. Riprovare fra un minuto.</string>
+	<string name="saveimg">Salvataggio del tile su disco</string>
+	<string name="goto_coordinate">vai a coordinata</string>
+	<string name="askcoord">Si prega di inserire la coordinata alla quale andare</string>
+	<string name="address">Indirizzo</string>
+	<string name="askaddress">o utilizza un indirizzo se sei connesso alla rete</string>
+	<string name="wrongLongitude">La longitudine deve essere un numero fra -180 and 180.</string>
+	<string name="wrongLatitude">La latitudine deve essere un numero fra  -90 and 90.</string>
+	<string name="emptyaddress">Si prega di inserire un indirizzo.</string>
+	<string name="cantretrievefromaddress">Non sono stato in grado di recuperare la posizione dall\'indirizzo immesso.</string>
+	<string name="prompt_gpsenable">Il tuo gps non è attivo! Lo vuoi attivare?</string>
+	<string name="nogps4google">Il gps non ha fornito alcuna coordinata. Non sono in grado di visualizzare la posizione sulla mappa.</string>
+	<string name="width_label">larghezza</string>
+	<string name="color_label">colore</string>
+	<string name="last_position">Ultima posizione</string>
+	<string name="distance">Distanza:</string>
+
+	<string name="mainmenu_kmlexport">export kml</string>
+	<string name="mainmenu_gpxconvert">import gpx</string>
+	<string name="mainmenu_gpsdataselect">lista dati gps</string>
+	<string name="mainmenu_mapdataselect">lista dati mappa</string>
+	<string name="mainmenu_togglemeasure">cambia modalità di misura</string>
+	<string name="mainmenu_preferences">settaggi</string>
+	<string name="mainmenu_merge">unisci log selezionati</string>
+	<string name="mainmenu_addtags">aggiungi nota con tag</string>
+	<string name="mainmenu_removelastnote">cancella ultima nota</string>
+
+	<string name="gpslogproperty">Proprietà per: </string>
+	<string name="gpslog_chart">Grafica il log</string>
+	<string name="gpslog_zoom">Zooma al log</string>
+	<string name="gpslog_delete">Cancella il log</string>
+
+	<string name="mapproperty">Proprietà per: </string>
+	<string name="map_zoom">Zooma alla mappa</string>
+	<string name="map_delete">Cancella la mappa</string>
+	
+	<string name="gps_preferences">Settaggi gps</string>
+	<string name="gps_logging_distance">Distanza minima di registrazione gps</string>
+	<string name="gps_logging_interval">Intervallo minimo di registrazione gps</string>
+	<string name="gps_native_settings">Pagina gps</string>
+	<string name="gps_logging_on">Il gps sta registrando</string>
+	<string name="gps_logging_off">Il gps non sta registrando</string>
+	<string name="mapping_preferences">Settaggi mappa</string>
+	<string name="osm_folder">Cartella cache OSM da usare</string>
+	<string name="gpx_lines_folder">Cartella linee GPX</string>
+	<string name="gpx_points_folder">Cartella punti GPX</string>
+	<string name="sms_preferences">Settaggi Sms</string>
+	<string name="sms_sending">Invio Sms</string>
+	<string name="sms_sending_interval">Intervallo di invio</string>
+	<string name="sms_catching">Accetta Sms</string>
+	<string name="sms_number">Numero per invio automatico di sms</string>
+	<string name="sms_catcher">Attiva accettazione sms</string>
+
+	<string name="database_preferences">Settaggi database</string>
+	<string name="database_new">Crea un nuovo database al riavvio</string>
+	<string name="databaseError">è avvenuto un error durante la connessione al database!</string>
+
+	<string name="chart_profile_view">Vista profilo</string>
+
+	<string name="gpx_import_title">Linea o punto?</string>
+	<string name="gpx_import_message">Scegli se importare il file come linee o punti.</string>
+	<string name="gpx_import_checkbox_message">Importa come punti (invece di linee)</string>
+	<string name="gpx_import_processing">Importo gpx...</string>
+
+	<string name="osm_additionalinfo">Aggiungi informazione al tag</string>
+	<string name="osm_tagsgrid">Scegli un tag da inserire</string>
+	
+	<string name="error_disk_full">Il disco sul quale salvo i dati sembra essere pieno. Libera la memoria e riavvia l\'applicazione.</string>
+	
+	<string name="measureinfo">Informazioni ultima misura</string>
+	<string name="measureinfo_first">Primo punto</string>
+	<string name="measureinfo_last">Ultimo punto</string>
+	
+	
+	<string name="abouttext">
+	    GeoPaparazzi\n
+	    è sviluppato HydroloGIS\n
+	    \n
+	    Acquistando questa applicazione supporti anche lo sviluppo di JGrass e BeeGIS\n
+	    \n
+	    GeoPaparazzi è il fratelllo minore e in quanto tale è capace di caricarvi i suoi dati.\n
+	    \n
+	    La vista grafico è adattata dalla GraphView di Arno den Hond.\n
+	    \n
+	    Le mappe sono di OpenStreetMap.\n
+	    \n
+	    Il compasso è adattato dal Modern Compass Rose di RobA trovato nella Open Clipart Library.\n
+	    \n
+	    Collegamenti:\n
+	    www.geopaparazzi.eu\n
+	    www.hydrologis.eu\n
+	    www.jgrass.org\n
+	    www.beegis.org\n
+	    www.openstreetmap.org\n
+	    www.openclipart.org\n
+	</string>
+</resources>

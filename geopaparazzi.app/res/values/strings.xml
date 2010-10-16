@@ -32,7 +32,7 @@
     <string name="about">About</string>
     <string name="exit">Exit</string>
     <string name="cantcreate_sdcard">Wasn\'\'t able to create folder on sdcard ({0}). Exiting...</string>
-    <string name="sdcard_notexist">Sdcard folder doesn\'\'t exist or is not writable. Exiting...</string>
+    <string name="sdcard_notexist">Sdcard folder doesn\'\'t exist or is not writable (is it possible it is mounted on a pc?). Exiting...</string>
     <string name="cantwrite_gpslog">ERROR: couldn\'\'t write gps log!</string>
     <string name="cantclose_gpslog">ERROR: couldn\'\'t close gps log!</string>
     <string name="gpslogthread_interrupted">ERROR: gps log thread interrupted!</string>
