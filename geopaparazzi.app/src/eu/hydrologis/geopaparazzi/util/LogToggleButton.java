@@ -21,6 +21,8 @@ import eu.hydrologis.geopaparazzi.R;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.Display;
+import android.view.View;
 import android.widget.Button;
 
 /**
@@ -34,6 +36,7 @@ public class LogToggleButton extends Button {
     private Drawable gpsOn;
     private String startGpsStr;
     private String stopGpsStr;
+    private boolean isLandscape;
 
     public LogToggleButton( Context context ) {
         super(context);
@@ -60,16 +63,33 @@ public class LogToggleButton extends Button {
         return this.isChecked;
     }
 
+    public void setOrientation( boolean isLandscape ) {
+        this.isLandscape = isLandscape;
+        drawButtons();
+    }
+
     public boolean performClick() {
         this.isChecked = !this.isChecked;
+        drawButtons();
+        return super.performClick();
+    }
+
+    private void drawButtons() {
         if (isChecked) {
-            setCompoundDrawables(null, gpsOn, null, null);
+            if (isLandscape) {
+                setCompoundDrawables(gpsOn, null, null, null);
+            } else {
+                setCompoundDrawables(null, gpsOn, null, null);
+            }
             setText(stopGpsStr);
         } else {
-            setCompoundDrawables(null, gps, null, null);
+            if (isLandscape) {
+                setCompoundDrawables(gps, null, null, null);
+            } else {
+                setCompoundDrawables(null, gps, null, null);
+            }
             setText(startGpsStr);
         }
-        return super.performClick();
     }
 
 }

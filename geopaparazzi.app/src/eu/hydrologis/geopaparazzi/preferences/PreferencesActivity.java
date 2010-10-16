@@ -28,6 +28,22 @@ public class PreferencesActivity extends PreferenceActivity {
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.my_preferences);
+
+        // TODO make them all white
+        // getWindow().setBackgroundDrawableResource(R.drawable.background);
+        //
+        // PreferenceScreen b = (PreferenceScreen)
+        // findPreference("pref_second_preferencescreen_key");
+        // b.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+        //
+        // @Override
+        // public boolean onPreferenceClick(Preference preference) {
+        // PreferenceScreen a = (PreferenceScreen) preference;
+        // a.getDialog().getWindow().setBackgroundDrawableResource(R.drawable.background);
+        // return false;
+        // }
+        // });
+
     }
 
 }

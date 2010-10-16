@@ -28,31 +28,23 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Display;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.GridView;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 import eu.hydrologis.geopaparazzi.compass.CompassView;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
@@ -96,6 +88,10 @@ public class GeoPaparazziActivity extends Activity {
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
 
+        init();
+    }
+
+    private void init() {
         setContentView(R.layout.main);
 
         applicationManager = ApplicationManager.getInstance(this);
@@ -108,10 +104,6 @@ public class GeoPaparazziActivity extends Activity {
         compassView = new CompassView(this, compassInfoView);
         uppercol1View.addView(compassView, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
         applicationManager.addListener(compassView);
-
-        // Display display = getWindowManager().getDefaultDisplay();
-        // int width = display.getWidth();
-        // int height = display.getHeight();
 
         /*
          * the buttons
@@ -131,6 +123,7 @@ public class GeoPaparazziActivity extends Activity {
         });
 
         logButton = (LogToggleButton) findViewById(R.id.logButton);
+        logButton.setOrientation(isLandscape());
         logButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
                 if (logButton.isChecked()) {
@@ -235,6 +228,20 @@ public class GeoPaparazziActivity extends Activity {
         applicationManager.doLogGps(false);
         DatabaseManager.getInstance().closeDatabase();
         super.finish();
+    }
+
+    public void onConfigurationChanged( Configuration newConfig ) {
+        isLandscape();
+        init();
+        super.onConfigurationChanged(newConfig);
+    }
+
+    private boolean isLandscape() {
+        Display display = getWindowManager().getDefaultDisplay();
+        int width = display.getWidth();
+        int height = display.getHeight();
+
+        return width > height ? true : false;
     }
 
     // public void onConfigurationChanged( Configuration newConfig ) {
