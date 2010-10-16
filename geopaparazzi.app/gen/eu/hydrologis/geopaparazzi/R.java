@@ -11,6 +11,8 @@ public final class R {
     public static final class array {
         public static final int array_colornames=0x7f050000;
         public static final int array_widths=0x7f050001;
+        public static final int compassneedle_coords=0x7f050007;
+        public static final int compassneedle_width_heights=0x7f050006;
         public static final int gps_time_name=0x7f050002;
         public static final int gps_time_value=0x7f050003;
         public static final int sms_time_name=0x7f050004;

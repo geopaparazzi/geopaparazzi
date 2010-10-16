@@ -90,11 +90,6 @@ public interface Constants {
     public final int COMPASS_TEXT_COLOR = Color.BLACK;
 
     /**
-     * The needle width in its widest point.
-     */
-    public final float COMPASS_NEEDLE_WIDTH = 14;
-
-    /**
      * The needle color.
      */
     public final int COMPASS_NEEDLE_COLOR = Color.RED;
@@ -105,25 +100,9 @@ public interface Constants {
     public final int COMPASS_NEEDLE_ALPHA = 150;
 
     /**
-     * The length of the longer part of the needle.
-     */
-    public final float COMPASS_NEEDLE_HEIGHT_LONG = 80;
-
-    /**
-     * The length of the shorter part of the needle.
-     */
-    public final float COMPASS_NEEDLE_HEIGHT_SHORT = 10;
-
-    /**
      * The notes title text length threshold.
      */
     public final int NOTES_LENGTH_LIMIT = 7;
-
-    /**
-     * The coordinates of the needle, zero centered.
-     */
-    public final float[] COMPASS_NEEDLE_COORDINATES = new float[]{0f, -COMPASS_NEEDLE_HEIGHT_LONG, -COMPASS_NEEDLE_WIDTH / 2f,
-            0f, 0f, COMPASS_NEEDLE_HEIGHT_SHORT, COMPASS_NEEDLE_WIDTH / 2f, 0f};
 
     public final String PATH_GEOPAPARAZZI = "/geopaparazzi";
     public final String PATH_PICTURES = "/pictures";

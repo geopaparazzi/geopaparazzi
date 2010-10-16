@@ -92,8 +92,7 @@ public class CompassView extends View implements ApplicationManagerListener {
 
         applicationManager = ApplicationManager.getInstance(getContext());
 
-        float[] needle = Constants.COMPASS_NEEDLE_COORDINATES;
-
+        int[] needle = getResources().getIntArray(R.array.compassneedle_coords);
         for( int i = 0; i < needle.length; i = i + 2 ) {
             if (i == 0) {
                 mPath.moveTo(needle[i], needle[i + 1]);
