@@ -186,10 +186,10 @@ public class CompassView extends View implements ApplicationManagerListener {
         }
 
         if (hasValue) {
-            compassInfoView.setTextColor(R.color.black);
+            compassInfoView.setTextColor(getResources().getColor(R.color.black));
         } else {
             // paint.setTextSize(textSizeLarge);
-            compassInfoView.setTextColor(R.color.red);
+            compassInfoView.setTextColor(getResources().getColor(R.color.red));
         }
 
         if (applicationManager.isGpsLogging()) {
