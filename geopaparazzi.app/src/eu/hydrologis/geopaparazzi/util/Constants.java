@@ -85,59 +85,6 @@ public interface Constants {
     public final double DEFAULT_LON = Double.POSITIVE_INFINITY;
 
     /**
-     * The width of the compass canvas.
-     */
-    public final int SCREEN_WIDTH = 320;
-
-    /**
-     * The height of the compass canvas. 
-     */
-    public final int SCREEN_HEIGHT = 480;
-
-    /*
-    * The width of the compass canvas.
-     */
-    public final int COMPASS_CANVAS_WIDTH = 320;
-
-    /**
-     * The height of the compass canvas. 
-     */
-    public final int COMPASS_CANVAS_HEIGHT = 240;
-
-    /**
-     * The X position of the compass in the canvas.
-     */
-    public final int COMPASS_X_POSITION = 100;
-
-    /**
-     * The Y position of the compass in the canvas.
-     */
-    public final int COMPASS_Y_POSITION = 10;
-
-    /**
-     * The dimension of the compass image. 
-     * 
-     * <p>Needs to be changed if the image is changed.
-     * It is assumed to be square./p> 
-     */
-    public final int COMPASS_DIM_COMPASS = 220;
-
-    /**
-     * The X position of the center of the compass (needle in that point doesn't rotate).
-     */
-    public final int COMPASS_X_POSITION_CENTER = COMPASS_X_POSITION + COMPASS_DIM_COMPASS / 2;
-
-    /**
-     * The Y position of the center of the compass (needle in that point doesn't rotate).
-     */
-    public final int COMPASS_Y_POSITION_CENTER = COMPASS_Y_POSITION + 123;
-
-    /**
-     * The text size for the compass text.
-     */
-    public final float COMPASS_TEXT_SIZE = 16f;
-
-    /**
      * The text color for the compass text.
      */
     public final int COMPASS_TEXT_COLOR = Color.BLACK;

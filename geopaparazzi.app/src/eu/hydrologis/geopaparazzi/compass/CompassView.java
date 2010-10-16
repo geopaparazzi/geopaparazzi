@@ -81,6 +81,11 @@ public class CompassView extends View implements ApplicationManagerListener {
     private String validPointsString;
     private String distanceString;
     private ApplicationManager applicationManager;
+    private float textSize;
+    private int compassWidth;
+    private int compassHeight;
+    private int compassCX;
+    private int compassCY;
 
     public CompassView( GeoPaparazziActivity geopaparazziActivity ) {
         super(geopaparazziActivity);
@@ -98,10 +103,13 @@ public class CompassView extends View implements ApplicationManagerListener {
         }
         mPath.close();
 
-        BitmapDrawable compassDrawable = (BitmapDrawable) getResources().getDrawable(
-                R.drawable.compass);
-        compassDrawable.setBounds(0, 0, Constants.COMPASS_DIM_COMPASS,
-                Constants.COMPASS_DIM_COMPASS);
+        BitmapDrawable compassDrawable = (BitmapDrawable) getResources().getDrawable(R.drawable.compass);
+        compassWidth = compassDrawable.getIntrinsicWidth();
+        compassHeight = compassDrawable.getIntrinsicHeight();
+        compassCX = compassWidth / 2;
+        compassCY = compassHeight / 2;
+
+        compassDrawable.setBounds(0, 0, compassWidth, compassHeight);
         compassBitmap = compassDrawable.getBitmap();
 
         timeString = getResources().getString(R.string.utctime);
@@ -113,6 +121,9 @@ public class CompassView extends View implements ApplicationManagerListener {
         distanceString = getResources().getString(R.string.log_distance);
 
         chartDrawer = new ChartDrawer("", ChartDrawer.LINE); //$NON-NLS-1$
+
+        String textSizeStr = getResources().getString(R.string.text_large);
+        textSize = Float.parseFloat(textSizeStr);
     }
 
     protected void onDraw( Canvas canvas ) {
@@ -123,23 +134,20 @@ public class CompassView extends View implements ApplicationManagerListener {
 
         if (picture == null) {
             picture = new Picture();
-            Canvas recCanvas = picture.beginRecording(Constants.COMPASS_CANVAS_WIDTH,
-                    Constants.COMPASS_CANVAS_HEIGHT);
+            Canvas recCanvas = picture.beginRecording(compassWidth, compassHeight);
             recCanvas.drawColor(Color.WHITE);
-            recCanvas.drawBitmap(compassBitmap, Constants.COMPASS_X_POSITION,
-                    Constants.COMPASS_Y_POSITION, paint);
+            recCanvas.drawBitmap(compassBitmap, 0, 0, paint);
             paint.setColor(Constants.COMPASS_NEEDLE_COLOR);
             paint.setAlpha(Constants.COMPASS_NEEDLE_ALPHA + 50);
-            recCanvas.drawCircle(Constants.COMPASS_X_POSITION_CENTER,
-                    Constants.COMPASS_Y_POSITION_CENTER, 4, paint);
+            recCanvas.drawCircle(compassCX, compassCY, 4, paint);
 
             picture.endRecording();
         }
         picture.draw(canvas);
         paint.setColor(Constants.COMPASS_TEXT_COLOR);
         paint.setAlpha(255);
-        paint.setTextSize(Constants.COMPASS_TEXT_SIZE);
-        float x = 15f;
+        paint.setTextSize(textSize);
+        float x = compassWidth + 15f;
         float y = 30f;
 
         StringBuilder timeSb = new StringBuilder();
@@ -183,20 +191,20 @@ public class CompassView extends View implements ApplicationManagerListener {
         }
 
         canvas.drawText(timeSb.toString(), x, y, paint);
-        y = y + Constants.COMPASS_TEXT_SIZE + LINESPACING;
+        y = y + textSize + LINESPACING;
         canvas.drawText(lonSb.toString(), x, y, paint);
-        y = y + Constants.COMPASS_TEXT_SIZE + LINESPACING;
+        y = y + textSize + LINESPACING;
         canvas.drawText(latSb.toString(), x, y, paint);
-        y = y + Constants.COMPASS_TEXT_SIZE + LINESPACING;
+        y = y + textSize + LINESPACING;
         canvas.drawText(altimSb.toString(), x, y, paint);
-        y = y + Constants.COMPASS_TEXT_SIZE + LINESPACING;
+        y = y + textSize + LINESPACING;
         canvas.drawText(azimuthSb.toString(), x, y, paint);
 
         if (applicationManager.isGpsLogging()) {
-            y = Constants.COMPASS_DIM_COMPASS;
+            y = compassHeight;
             validPointSb.append(" ").append(applicationManager.getCurrentRunningGpsLogPointsNum());
             canvas.drawText(validPointSb.toString(), x, y, paint);
-            y = Constants.COMPASS_DIM_COMPASS - Constants.COMPASS_TEXT_SIZE - LINESPACING;
+            y = compassHeight - textSize - LINESPACING;
             distanceSb.append(" ").append(applicationManager.getCurrentRunningGpsLogDistance());
             canvas.drawText(distanceSb.toString(), x, y, paint);
         }
@@ -205,8 +213,7 @@ public class CompassView extends View implements ApplicationManagerListener {
 
         // draw needle
         if (azimuth != -1) {
-            canvas.translate(Constants.COMPASS_X_POSITION_CENTER,
-                    Constants.COMPASS_Y_POSITION_CENTER);
+            canvas.translate(compassCX, compassCY);
             paint.setColor(Color.RED);
             paint.setAlpha(150);
             paint.setStyle(Paint.Style.FILL);
@@ -246,12 +253,12 @@ public class CompassView extends View implements ApplicationManagerListener {
 
             float border = 4;
             float chartHeight = 100;
-            chartDrawer.setProperties(horizontalAxisColor, horizontalAxisAlpha,
-                    horizontalLabelsColor, horizontalLabelsAlpha, chartColor, chartAlpha,
-                    chartPointColor, chartPointAlpha, backgroundColor, backgroundAlpha);
-            chartDrawer.drawCart(canvas, border, Constants.COMPASS_CANVAS_HEIGHT - chartHeight
-                    - border, Constants.COMPASS_CANVAS_WIDTH - 2 * border, chartHeight - border,
-                    max, min, new String[]{"", ""}, //$NON-NLS-1$//$NON-NLS-2$
+            int canvasWidth = canvas.getWidth();
+            int canvasHeight = canvas.getHeight();
+            chartDrawer.setProperties(horizontalAxisColor, horizontalAxisAlpha, horizontalLabelsColor, horizontalLabelsAlpha,
+                    chartColor, chartAlpha, chartPointColor, chartPointAlpha, backgroundColor, backgroundAlpha);
+            chartDrawer.drawCart(canvas, border, canvasHeight - chartHeight - border,
+                    canvasWidth - 2 * border, chartHeight - border, max, min, new String[]{"", ""}, //$NON-NLS-1$//$NON-NLS-2$
                     new String[]{"", ""}, null, values, 2); //$NON-NLS-1$ //$NON-NLS-2$
         }
     }
