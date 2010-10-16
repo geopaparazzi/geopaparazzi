@@ -153,7 +153,7 @@ public final class R {
     }
     public static final class string {
         public static final int about=0x7f07001b;
-        public static final int abouttext=0x7f07006c;
+        public static final int abouttext=0x7f070071;
         public static final int address=0x7f070032;
         public static final int altim=0x7f070023;
         public static final int app_name=0x7f070009;
@@ -254,7 +254,12 @@ public final class R {
         public static final int sms_sending_interval=0x7f07005a;
         public static final int text_large=0x7f070000;
         public static final int text_normal=0x7f070001;
+        public static final int text_show_position_on_map=0x7f07006c;
         public static final int text_small=0x7f070002;
+        public static final int text_start_gps_logging=0x7f07006d;
+        public static final int text_stop_gps_logging=0x7f07006e;
+        public static final int text_take_a_gps_note=0x7f07006f;
+        public static final int text_take_picture=0x7f070070;
         public static final int utctime=0x7f070022;
         public static final int width_label=0x7f07003a;
         public static final int wrongLatitude=0x7f070035;

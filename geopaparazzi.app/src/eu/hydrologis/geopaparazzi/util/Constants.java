@@ -119,12 +119,6 @@ public interface Constants {
     public final SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     public final SimpleDateFormat TIME_FORMATTER_SQLITE = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public static final String TEXT_SHOW_POSITION_ON_MAP = "show position on map";
-    public static final String TEXT_START_GPS_LOGGING = "start gps logging";
-    public static final String TEXT_STOP_GPS_LOGGING = "stop gps logging";
-    public static final String TEXT_TAKE_A_GPS_NOTE = "take a gps note";
-    public static final String TEXT_TAKE_PICTURE = "take picture";
-
     public static final int GPS_LOGGING_INTERVAL = 10;
     public static final float GPS_LOGGING_DISTANCE = 5f;
 

@@ -122,7 +122,12 @@
 	<string name="measureinfo_first">Primo punto</string>
 	<string name="measureinfo_last">Ultimo punto</string>
 	
-	
+	<string name="text_show_position_on_map">mostra posizione su mappa</string>
+    <string name="text_start_gps_logging">registra log gps</string>
+    <string name="text_stop_gps_logging">ferma log gps</string>
+    <string name="text_take_a_gps_note">prendi una nota</string>
+    <string name="text_take_picture">scatta una foto</string>
+    
 	<string name="abouttext">
 	    GeoPaparazzi\n
 	    è sviluppato HydroloGIS\n

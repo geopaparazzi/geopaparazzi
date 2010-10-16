@@ -274,12 +274,12 @@ public class GeoPaparazziActivity extends Activity {
         Log.d(LOGTAG, "Is logging = " + applicationManager.isGpsLogging());
         if (applicationManager.isGpsLogging()) {
             if (gpsLabelText != null && gpsLogButton != null) {
-                gpsLabelText.setText(Constants.TEXT_STOP_GPS_LOGGING);
+                gpsLabelText.setText(R.string.text_stop_gps_logging);
                 gpsLogButton.setImageResource(R.drawable.gps_on);
             }
         } else {
             if (gpsLabelText != null && gpsLogButton != null) {
-                gpsLabelText.setText(Constants.TEXT_START_GPS_LOGGING);
+                gpsLabelText.setText(R.string.text_start_gps_logging);
                 gpsLogButton.setImageResource(R.drawable.gps);
             }
         }
@@ -316,7 +316,7 @@ public class GeoPaparazziActivity extends Activity {
                 cameraViewLayout.setOrientation(LinearLayout.VERTICAL);
 
                 cameraLabelText = new TextView(mContext);
-                cameraLabelText.setText(Constants.TEXT_TAKE_PICTURE);
+                cameraLabelText.setText(R.string.text_take_picture);
                 cameraLabelText.setGravity(Gravity.CENTER_HORIZONTAL);
 
                 cameraButton = new ImageButton(mContext);
@@ -345,7 +345,7 @@ public class GeoPaparazziActivity extends Activity {
                 notesViewLayout.setOrientation(LinearLayout.VERTICAL);
 
                 notesLabelText = new TextView(mContext);
-                notesLabelText.setText(Constants.TEXT_TAKE_A_GPS_NOTE);
+                notesLabelText.setText(R.string.text_take_a_gps_note);
                 notesLabelText.setGravity(Gravity.CENTER_HORIZONTAL);
 
                 notesButton = new ImageButton(mContext);
@@ -374,7 +374,7 @@ public class GeoPaparazziActivity extends Activity {
                 gpsViewLayout.setOrientation(LinearLayout.VERTICAL);
 
                 gpsLabelText = new TextView(mContext);
-                gpsLabelText.setText(Constants.TEXT_START_GPS_LOGGING);
+                gpsLabelText.setText(R.string.text_start_gps_logging);
                 gpsLabelText.setGravity(Gravity.CENTER_HORIZONTAL);
 
                 gpsLogButton = new ImageButton(mContext);
@@ -384,18 +384,19 @@ public class GeoPaparazziActivity extends Activity {
                 gpsLogButton.setLayoutParams(gpsLogParams);
                 gpsLogButton.setOnClickListener(new Button.OnClickListener(){
                     public void onClick( View v ) {
-                        if (gpsLabelText.getText().equals(Constants.TEXT_START_GPS_LOGGING)) {
+                        String startSts = getResources().getString(R.string.text_start_gps_logging);
+                        if (gpsLabelText.getText().equals(startSts)) {
                             GpsLocation loc = applicationManager.getLoc();
                             if (loc != null) {
                                 applicationManager.doLogGps(true);
-                                gpsLabelText.setText(Constants.TEXT_STOP_GPS_LOGGING);
+                                gpsLabelText.setText(R.string.text_stop_gps_logging);
                                 gpsLogButton.setImageResource(R.drawable.gps_on);
                             } else {
                                 ApplicationManager.openDialog(R.string.gpslogging_only, mContext);
                             }
                         } else {
                             applicationManager.doLogGps(false);
-                            gpsLabelText.setText(Constants.TEXT_START_GPS_LOGGING);
+                            gpsLabelText.setText(R.string.text_start_gps_logging);
                             gpsLogButton.setImageResource(R.drawable.gps);
                         }
                     }
@@ -411,7 +412,7 @@ public class GeoPaparazziActivity extends Activity {
                 mapViewLayout.setOrientation(LinearLayout.VERTICAL);
 
                 mapLabelText = new TextView(mContext);
-                mapLabelText.setText(Constants.TEXT_SHOW_POSITION_ON_MAP);
+                mapLabelText.setText(R.string.text_show_position_on_map);
                 mapLabelText.setGravity(Gravity.CENTER_HORIZONTAL);
 
                 final ImageButton mapButton = new ImageButton(mContext);
