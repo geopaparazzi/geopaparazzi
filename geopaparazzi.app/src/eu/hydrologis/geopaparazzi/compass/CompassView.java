@@ -29,6 +29,7 @@ import android.graphics.Picture;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import eu.hydrologis.geopaparazzi.GeoPaparazziActivity;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.chart.ChartDrawer;
@@ -88,9 +89,11 @@ public class CompassView extends View implements ApplicationManagerListener {
     private int compassCY;
     private float textSizeLarge;
     private float textSizeNormal;
+    private final TextView compassInfoView;
 
-    public CompassView( GeoPaparazziActivity geopaparazziActivity ) {
+    public CompassView( GeoPaparazziActivity geopaparazziActivity, TextView compassInfoView ) {
         super(geopaparazziActivity);
+        this.compassInfoView = compassInfoView;
 
         applicationManager = ApplicationManager.getInstance(getContext());
 
@@ -156,64 +159,47 @@ public class CompassView extends View implements ApplicationManagerListener {
         float x = compassWidth;
         float y = 30f;
 
-        StringBuilder timeSb = new StringBuilder();
-        StringBuilder latSb = new StringBuilder();
-        StringBuilder lonSb = new StringBuilder();
-        StringBuilder altimSb = new StringBuilder();
-        StringBuilder azimuthSb = new StringBuilder();
-        StringBuilder validPointSb = new StringBuilder();
-        StringBuilder distanceSb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
-        timeSb.append(timeString);
-        latSb.append(latString);
-        lonSb.append(lonString);
-        altimSb.append(altimString);
-        azimuthSb.append(azimString);
-        validPointSb.append(validPointsString);
-        distanceSb.append(distanceString);
-
+        boolean hasValue = true;
         if (loc == null) {
             // Log.d("COMPASSVIEW", "Location from gps is null!");
-
-            timeSb = new StringBuilder(getContext().getString(R.string.nogps_data));
-            latSb = new StringBuilder(""); //$NON-NLS-1$
-            lonSb = new StringBuilder(""); //$NON-NLS-1$
-            altimSb = new StringBuilder(""); //$NON-NLS-1$
-            azimuthSb = new StringBuilder(""); //$NON-NLS-1$
-            validPointSb = new StringBuilder(""); //$NON-NLS-1$
-            distanceSb = new StringBuilder(""); //$NON-NLS-1$
+            hasValue = false;
+            sb.append(getContext().getString(R.string.nogps_data));
         } else {
-            timeSb.append(" ").append(loc.getTimeString()); //$NON-NLS-1$
-            latSb.append(" ").append(formatter.format(loc.getLatitude())); //$NON-NLS-1$
-            lonSb.append(" ").append(formatter.format(loc.getLongitude())); //$NON-NLS-1$
-            altimSb.append(" ").append((int) loc.getAltitude()); //$NON-NLS-1$
-            azimuthSb.append(" ").append((int) azimuth); //$NON-NLS-1$
+            sb.append(timeString);
+            sb.append(" ").append(loc.getTimeString()); //$NON-NLS-1$
+            sb.append("\n");
+            sb.append(latString);
+            sb.append(" ").append(formatter.format(loc.getLatitude())); //$NON-NLS-1$
+            sb.append("\n");
+            sb.append(lonString);
+            sb.append(" ").append(formatter.format(loc.getLongitude())); //$NON-NLS-1$
+            sb.append("\n");
+            sb.append(altimString);
+            sb.append(" ").append((int) loc.getAltitude()); //$NON-NLS-1$
+            sb.append("\n");
+            sb.append(azimString);
+            sb.append(" ").append((int) azimuth); //$NON-NLS-1$
+            sb.append("\n");
         }
 
-        if (latSb.toString().length() == 0) {
-            paint.setColor(Color.RED);
-            paint.setAlpha(255);
-            paint.setTextSize(textSizeLarge);
+        if (hasValue) {
+            compassInfoView.setTextColor(R.color.black);
+        } else {
+            // paint.setTextSize(textSizeLarge);
+            compassInfoView.setTextColor(R.color.red);
         }
-
-        canvas.drawText(timeSb.toString(), x, y, paint);
-        y = y + textSizeNormal + LINESPACING;
-        canvas.drawText(lonSb.toString(), x, y, paint);
-        y = y + textSizeNormal + LINESPACING;
-        canvas.drawText(latSb.toString(), x, y, paint);
-        y = y + textSizeNormal + LINESPACING;
-        canvas.drawText(altimSb.toString(), x, y, paint);
-        y = y + textSizeNormal + LINESPACING;
-        canvas.drawText(azimuthSb.toString(), x, y, paint);
 
         if (applicationManager.isGpsLogging()) {
-            y = compassHeight;
-            validPointSb.append(" ").append(applicationManager.getCurrentRunningGpsLogPointsNum());
-            canvas.drawText(validPointSb.toString(), x, y, paint);
-            y = compassHeight - textSizeNormal - LINESPACING;
-            distanceSb.append(" ").append(applicationManager.getCurrentRunningGpsLogDistance());
-            canvas.drawText(distanceSb.toString(), x, y, paint);
+            sb.append(validPointsString);
+            sb.append(" ").append(applicationManager.getCurrentRunningGpsLogPointsNum());
+            sb.append("\n");
+            sb.append(distanceString);
+            sb.append(" ").append(applicationManager.getCurrentRunningGpsLogDistance());
+            sb.append("\n");
         }
+        compassInfoView.setText(sb.toString());
 
         drawChart(canvas);
 

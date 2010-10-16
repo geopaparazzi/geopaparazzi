@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:orientation="vertical" android:background="@color/white">
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:id="@+id/mainupper"
+		android:layout_weight="1">
+		<LinearLayout android:layout_width="fill_parent"
+			android:layout_height="fill_parent" android:id="@+id/uppercol1"
+			android:layout_weight="1">
+
+		</LinearLayout>
+		<LinearLayout android:layout_width="fill_parent"
+			android:layout_height="fill_parent" android:id="@+id/uppercol2"
+			android:layout_weight="1">
+
+			<TextView android:text="" android:id="@+id/compassInfoView"
+				android:layout_width="fill_parent" android:layout_height="fill_parent"></TextView>
+		</LinearLayout>
+
+	</LinearLayout>
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:id="@+id/mainlower"
+		android:layout_weight="1">
+
+		<LinearLayout android:layout_width="fill_parent"
+			android:layout_height="fill_parent" android:id="@+id/lowercol1"
+			android:layout_weight="1" android:orientation="vertical">
+
+			<Button android:text="@+id/photoButton" android:id="@+id/photoButton"
+				android:layout_height="fill_parent" android:layout_width="fill_parent"
+				android:layout_weight="1" android:drawableTop="@drawable/camera"
+				android:padding="5px"></Button>
+			<ToggleButton android:text="@+id/logButton" android:id="@+id/logButton"
+				android:layout_height="fill_parent" android:layout_width="fill_parent"
+				android:layout_weight="1" android:drawableTop="@drawable/logonoff"
+				android:padding="5px"></ToggleButton>
+
+		</LinearLayout>
+		<LinearLayout android:layout_width="fill_parent"
+			android:layout_height="fill_parent" android:id="@+id/lowercol2"
+			android:layout_weight="1" android:orientation="vertical">
+
+			<Button android:text="@+id/noteButton" android:id="@+id/noteButton"
+				android:layout_height="fill_parent" android:layout_width="fill_parent"
+				android:layout_weight="1" android:drawableTop="@drawable/notes"
+				android:padding="5px"></Button>
+			<Button android:text="@+id/mapButton" android:id="@+id/mapButton"
+				android:layout_height="fill_parent" android:layout_width="fill_parent"
+				android:layout_weight="1" android:drawableTop="@drawable/gmap"
+				android:padding="5px"></Button>
+
+		</LinearLayout>
+	</LinearLayout>
+</LinearLayout>
