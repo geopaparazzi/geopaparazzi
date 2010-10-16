@@ -27,6 +27,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Picture;
 import android.graphics.drawable.BitmapDrawable;
+import android.util.Log;
 import android.view.View;
 import eu.hydrologis.geopaparazzi.GeoPaparazziActivity;
 import eu.hydrologis.geopaparazzi.R;
@@ -81,11 +82,12 @@ public class CompassView extends View implements ApplicationManagerListener {
     private String validPointsString;
     private String distanceString;
     private ApplicationManager applicationManager;
-    private float textSize;
     private int compassWidth;
     private int compassHeight;
     private int compassCX;
     private int compassCY;
+    private float textSizeLarge;
+    private float textSizeNormal;
 
     public CompassView( GeoPaparazziActivity geopaparazziActivity ) {
         super(geopaparazziActivity);
@@ -124,8 +126,10 @@ public class CompassView extends View implements ApplicationManagerListener {
 
         chartDrawer = new ChartDrawer("", ChartDrawer.LINE); //$NON-NLS-1$
 
-        String textSizeStr = getResources().getString(R.string.text_large);
-        textSize = Float.parseFloat(textSizeStr);
+        String textSizeLargeStr = getResources().getString(R.string.text_large);
+        textSizeLarge = Float.parseFloat(textSizeLargeStr);
+        String textSizeMediumStr = getResources().getString(R.string.text_normal);
+        textSizeNormal = Float.parseFloat(textSizeMediumStr);
     }
 
     protected void onDraw( Canvas canvas ) {
@@ -148,7 +152,7 @@ public class CompassView extends View implements ApplicationManagerListener {
         picture.draw(canvas);
         paint.setColor(Constants.COMPASS_TEXT_COLOR);
         paint.setAlpha(255);
-        paint.setTextSize(textSize);
+        paint.setTextSize(textSizeNormal);
         float x = compassWidth;
         float y = 30f;
 
@@ -189,24 +193,24 @@ public class CompassView extends View implements ApplicationManagerListener {
         if (latSb.toString().length() == 0) {
             paint.setColor(Color.RED);
             paint.setAlpha(255);
-            paint.setTextSize(16);
+            paint.setTextSize(textSizeLarge);
         }
 
         canvas.drawText(timeSb.toString(), x, y, paint);
-        y = y + textSize + LINESPACING;
+        y = y + textSizeNormal + LINESPACING;
         canvas.drawText(lonSb.toString(), x, y, paint);
-        y = y + textSize + LINESPACING;
+        y = y + textSizeNormal + LINESPACING;
         canvas.drawText(latSb.toString(), x, y, paint);
-        y = y + textSize + LINESPACING;
+        y = y + textSizeNormal + LINESPACING;
         canvas.drawText(altimSb.toString(), x, y, paint);
-        y = y + textSize + LINESPACING;
+        y = y + textSizeNormal + LINESPACING;
         canvas.drawText(azimuthSb.toString(), x, y, paint);
 
         if (applicationManager.isGpsLogging()) {
             y = compassHeight;
             validPointSb.append(" ").append(applicationManager.getCurrentRunningGpsLogPointsNum());
             canvas.drawText(validPointSb.toString(), x, y, paint);
-            y = compassHeight - textSize - LINESPACING;
+            y = compassHeight - textSizeNormal - LINESPACING;
             distanceSb.append(" ").append(applicationManager.getCurrentRunningGpsLogDistance());
             canvas.drawText(distanceSb.toString(), x, y, paint);
         }
