@@ -43,6 +43,7 @@
     <string name="azimuth">azimuth: </string>
     <string name="log_points">points: </string>
     <string name="log_distance">distance: </string>
+    <string name="satellite_num">satellites: </string>
     
 	<string name="osmview">osmview</string>
 	<string name="googleview">googleview</string>
@@ -127,8 +128,7 @@
     <string name="text_stop_gps_logging">stop logging</string>
     <string name="text_take_a_gps_note">take gps note</string>
     <string name="text_take_picture">take picture</string>
-	
-	
+
 	<string name="abouttext">
 	    GeoPaparazzi\n
 	    is brought to you by HydroloGIS\n

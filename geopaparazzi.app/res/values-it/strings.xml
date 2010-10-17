@@ -43,6 +43,7 @@
     <string name="azimuth">azimut: </string>
     <string name="log_points">punti: </string>
     <string name="log_distance">distanza: </string>
+    <string name="satellite_num">satelliti: </string>
     
 	<string name="osmview">vista osm</string>
 	<string name="googleview">vista gmap</string>

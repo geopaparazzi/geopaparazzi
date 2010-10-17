@@ -86,6 +86,9 @@ public class CompassView extends View implements ApplicationManagerListener {
     private int compassCY;
     private float textSizeNormal;
     private final TextView compassInfoView;
+    private int satellitesNum = 0;
+    private String satellitesString;
+    private int maxSatellites = 0;
 
     public CompassView( GeoPaparazziActivity geopaparazziActivity, TextView compassInfoView ) {
         super(geopaparazziActivity);
@@ -122,6 +125,7 @@ public class CompassView extends View implements ApplicationManagerListener {
         azimString = getResources().getString(R.string.azimuth);
         validPointsString = getResources().getString(R.string.log_points);
         distanceString = getResources().getString(R.string.log_distance);
+        satellitesString = getResources().getString(R.string.satellite_num);
 
         chartDrawer = new ChartDrawer("", ChartDrawer.LINE); //$NON-NLS-1$
 
@@ -176,6 +180,15 @@ public class CompassView extends View implements ApplicationManagerListener {
             sb.append(" ").append((int) azimuth); //$NON-NLS-1$
             sb.append("\n");
         }
+
+        // TODO
+        // if (satellitesNum == 0) {
+        // sb.append("\n");
+        // }
+        // sb.append(satellitesString);
+        //        sb.append(" ").append(satellitesNum); //$NON-NLS-1$
+        //        sb.append("/").append(maxSatellites); //$NON-NLS-1$
+        // sb.append("\n");
 
         if (hasValue) {
             compassInfoView.setTextColor(getResources().getColor(R.color.black));
@@ -258,6 +271,11 @@ public class CompassView extends View implements ApplicationManagerListener {
     public void onSensorChanged( double azimuth ) {
         this.azimuth = (float) azimuth;
         invalidate();
+    }
+
+    public void onSatellitesStatusChanged( int num, int max ) {
+        this.satellitesNum = num;
+        this.maxSatellites = max;
     }
 
 }
