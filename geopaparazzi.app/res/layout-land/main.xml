@@ -1,58 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
 	android:orientation="horizontal" android:background="@color/white">
-	<LinearLayout android:layout_width="fill_parent"
-		android:layout_height="fill_parent" android:id="@+id/mainupper"
-		android:layout_weight="1">
-		<LinearLayout android:layout_width="fill_parent"
+	<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@+id/mainupper" android:layout_weight="4"
+		android:layout_gravity="top" android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
+
+		<LinearLayout android:layout_width="wrap_content"
 			android:layout_height="fill_parent" android:id="@+id/uppercol1"
-			android:layout_weight="1">
-
+			android:layout_gravity="left" android:gravity="right"
+			android:background="#00000000" android:cacheColorHint="#00000000"
+			android:orientation="horizontal" android:layout_weight="1">
 		</LinearLayout>
-		<LinearLayout android:layout_width="fill_parent"
-			android:layout_height="fill_parent" android:id="@+id/uppercol2"
-			android:layout_weight="1">
+		<TextView android:text="asdasd" android:id="@+id/compassInfoView"
+			android:layout_width="250dip" android:layout_height="fill_parent"
+			android:layout_gravity="right" android:background="#00000000"
+			android:cacheColorHint="#00000000" android:paddingLeft="15px"
+			android:paddingTop="15px" android:paddingRight="5px"
+			android:layout_weight="1"></TextView>
 
-			<TextView android:text="" android:id="@+id/compassInfoView"
-				android:layout_width="fill_parent" android:layout_height="fill_parent"></TextView>
-		</LinearLayout>
-
-	</LinearLayout>
+	</FrameLayout>
 	<LinearLayout android:layout_width="fill_parent"
-		android:layout_height="fill_parent" android:id="@+id/mainlower"
-		android:layout_weight="2" android:orientation="vertical">
-
-		<LinearLayout android:layout_width="fill_parent"
-			android:layout_height="fill_parent" android:id="@+id/lowercol1"
-			android:layout_weight="1" android:orientation="vertical">
+		android:layout_height="wrap_content" android:id="@+id/mainlower"
+		android:orientation="horizontal"
+		android:layout_gravity="bottom"
+		android:layout_weight="1">
 
 
-			<Button android:text="@+id/photoButton" android:id="@+id/photoButton"
-				android:layout_height="fill_parent" android:layout_width="fill_parent"
-				android:layout_weight="1" android:drawableLeft="@drawable/camera"
-				android:padding="5px"></Button>
+		<Button android:text="@+id/photoButton" android:id="@+id/photoButton"
+			android:layout_height="fill_parent" android:layout_width="fill_parent"
+			android:layout_weight="1" android:drawableTop="@drawable/camera"
+			android:padding="5px"></Button>
 
-			<eu.hydrologis.geopaparazzi.util.LogToggleButton
-				android:text="@+id/logButton" android:id="@+id/logButton"
-				android:layout_height="fill_parent" android:layout_width="fill_parent"
-				android:layout_weight="1" android:padding="5px"></eu.hydrologis.geopaparazzi.util.LogToggleButton>
+		<eu.hydrologis.geopaparazzi.util.LogToggleButton
+			android:text="@+id/logButton" android:id="@+id/logButton"
+			android:layout_height="fill_parent" android:layout_width="fill_parent"
+			android:layout_weight="1" android:padding="5px"></eu.hydrologis.geopaparazzi.util.LogToggleButton>
 
-		</LinearLayout>
-		<LinearLayout android:layout_width="fill_parent"
-			android:layout_height="fill_parent" android:id="@+id/lowercol2"
-			android:layout_weight="1" android:orientation="vertical">
 
-			<Button android:text="@+id/noteButton" android:id="@+id/noteButton"
-				android:layout_height="fill_parent" android:layout_width="fill_parent"
-				android:layout_weight="1" android:drawableLeft="@drawable/notes"
-				android:padding="5px"></Button>
+		<Button android:text="@+id/noteButton" android:id="@+id/noteButton"
+			android:layout_height="fill_parent" android:layout_width="fill_parent"
+			android:layout_weight="1" android:drawableTop="@drawable/notes"
+			android:padding="5px"></Button>
 
-			<Button android:text="@+id/mapButton" android:id="@+id/mapButton"
-				android:layout_height="fill_parent" android:layout_width="fill_parent"
-				android:layout_weight="1" android:drawableLeft="@drawable/gmap"
-				android:padding="5px"></Button>
+		<Button android:text="@+id/mapButton" android:id="@+id/mapButton"
+			android:layout_height="fill_parent" android:layout_width="fill_parent"
+			android:layout_weight="1" android:drawableTop="@drawable/gmap"
+			android:padding="5px"></Button>
 
-		</LinearLayout>
 	</LinearLayout>
-</LinearLayout>
+</FrameLayout>

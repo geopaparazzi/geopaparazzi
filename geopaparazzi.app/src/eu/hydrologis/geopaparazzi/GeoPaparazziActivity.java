@@ -37,6 +37,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -102,7 +103,8 @@ public class GeoPaparazziActivity extends Activity {
         LinearLayout uppercol1View = (LinearLayout) findViewById(R.id.uppercol1);
         TextView compassInfoView = (TextView) findViewById(R.id.compassInfoView);
         compassView = new CompassView(this, compassInfoView);
-        uppercol1View.addView(compassView, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+        LinearLayout.LayoutParams tmpParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        uppercol1View.addView(compassView, tmpParams);
         applicationManager.addListener(compassView);
 
         /*
