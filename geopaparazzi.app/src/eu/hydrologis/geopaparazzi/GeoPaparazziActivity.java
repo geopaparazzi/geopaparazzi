@@ -37,7 +37,6 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Display;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -85,7 +84,7 @@ public class GeoPaparazziActivity extends Activity {
     private LogToggleButton logButton;
 
     private File kmlOutputFile = null;
-    
+
     private boolean isChecked = false;
 
     public void onCreate( Bundle savedInstanceState ) {
@@ -116,13 +115,13 @@ public class GeoPaparazziActivity extends Activity {
         photoButton.setText(R.string.text_take_picture);
         photoButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                GpsLocation loc = applicationManager.getLoc();
-                if (loc != null) {
+//                GpsLocation loc = applicationManager.getLoc();
+//                if (loc != null) {
                     Intent intent = new Intent(Constants.TAKE_PICTURE);
                     startActivity(intent);
-                } else {
-                    ApplicationManager.openDialog(R.string.gpslogging_only, GeoPaparazziActivity.this);
-                }
+//                } else {
+//                    ApplicationManager.openDialog(R.string.gpslogging_only, GeoPaparazziActivity.this);
+//                }
             }
         });
 
@@ -132,13 +131,12 @@ public class GeoPaparazziActivity extends Activity {
             public void onClick( View v ) {
                 isChecked = logButton.isChecked();
                 if (isChecked) {
-                    // GpsLocation loc = applicationManager.getLoc();
-                    // if (loc != null) {
-                    applicationManager.doLogGps(true);
-                    // } else {
-                    // ApplicationManager.openDialog(R.string.gpslogging_only,
-                    // GeoPaparazziActivity.this);
-                    // }
+                    GpsLocation loc = applicationManager.getLoc();
+                    if (loc != null) {
+                        applicationManager.doLogGps(true);
+                    } else {
+                        ApplicationManager.openDialog(R.string.gpslogging_only, GeoPaparazziActivity.this);
+                    }
                 } else {
                     applicationManager.doLogGps(false);
                 }

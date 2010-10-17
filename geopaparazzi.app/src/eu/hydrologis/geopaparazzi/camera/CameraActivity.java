@@ -28,6 +28,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
+import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
@@ -36,6 +37,9 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
@@ -67,13 +71,15 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
     // };
     private ApplicationManager deviceManager;
     private ProgressDialog progressDialog;
+    private ImageButton snapButton;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
 
+        setContentView(R.layout.camera);
+
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        setContentView(R.layout.camera);
 
         surfaceView = (SurfaceView) findViewById(R.id.surface);
         surfaceHolder = surfaceView.getHolder();
@@ -82,6 +88,18 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
         deviceManager = ApplicationManager.getInstance(this);
         picturesDir = deviceManager.getPicturesDir();
+        
+        
+        snapButton = (ImageButton) findViewById(R.id.snapButton);
+        Paint buttonPaint = new Paint();
+        buttonPaint.setARGB(0, 255, 255, 255);
+        snapButton.setImageResource(R.drawable.snap);
+        snapButton.setBackgroundColor(buttonPaint.getColor());
+        snapButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                takePicture();
+            }
+        });
 
     }
 
@@ -90,65 +108,69 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
             return super.onKeyDown(keyCode, event);
         }
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_CAMERA) {
-            this.progressDialog = ProgressDialog.show(this, " Working...", " Retrieving image ", true, false);
-
-            try {
-                GpsLocation loc = deviceManager.getLoc();
-                double lat = -1;
-                double lon = -1;
-                double altim = -1;
-                if (loc != null) {
-                    lat = loc.getLatitude();
-                    lon = loc.getLongitude();
-                    altim = loc.getAltitude();
-                }
-                double azimuth = deviceManager.getAzimuth();
-                // long utcTimeInSeconds = deviceManager.getUtcTime() / 1000L;
-
-                String latString = String.valueOf(lat);
-                String lonString = String.valueOf(lon);
-                String altimString = String.valueOf(altim);
-                // String timeString = String.valueOf(utcTimeInSeconds);
-                String azimuthString = String.valueOf((int) azimuth);
-
-                // create props file
-                final String currentDatestring = Constants.TIMESTAMPFORMATTER.format(new Date());
-                String propertiesFilePath = picturesDir.getAbsolutePath() + "/IMG_" + currentDatestring + ".properties";
-                File propertiesFile = new File(propertiesFilePath);
-                BufferedWriter bW = null;
-                try {
-                    bW = new BufferedWriter(new FileWriter(propertiesFile));
-                    bW.write("latitude=");
-                    bW.write(latString);
-                    bW.write("\nlongitude=");
-                    bW.write(lonString);
-                    bW.write("\nazimuth=");
-                    bW.write(azimuthString);
-                    bW.write("\naltim=");
-                    bW.write(altimString);
-                    bW.write("\nutctimestamp=");
-                    bW.write(currentDatestring);
-                } catch (IOException e1) {
-                    throw new IOException(e1.getLocalizedMessage());
-                } finally {
-                    bW.close();
-                }
-
-                String imageFilePath = picturesDir.getAbsolutePath() + "/IMG_" + currentDatestring + ".jpg";
-                File imgFile = new File(imageFilePath);
-                Camera.PictureCallback captureCallback = new ImageCaptureCallback(imgFile, this);
-                capture(captureCallback);
-
-                return true;
-            } catch (IOException e) {
-                e.printStackTrace();
-                alert("An error occurred while taking the picture: " + e.getLocalizedMessage());
-                return false;
-            } finally {
-                this.progressDialog.dismiss();
-            }
+            return takePicture();
         }
         return false;
+    }
+
+    private boolean takePicture() {
+        this.progressDialog = ProgressDialog.show(this, " Working...", " Retrieving image ", true, false);
+
+        try {
+            GpsLocation loc = deviceManager.getLoc();
+            double lat = -1;
+            double lon = -1;
+            double altim = -1;
+            if (loc != null) {
+                lat = loc.getLatitude();
+                lon = loc.getLongitude();
+                altim = loc.getAltitude();
+            }
+            double azimuth = deviceManager.getAzimuth();
+            // long utcTimeInSeconds = deviceManager.getUtcTime() / 1000L;
+
+            String latString = String.valueOf(lat);
+            String lonString = String.valueOf(lon);
+            String altimString = String.valueOf(altim);
+            // String timeString = String.valueOf(utcTimeInSeconds);
+            String azimuthString = String.valueOf((int) azimuth);
+
+            // create props file
+            final String currentDatestring = Constants.TIMESTAMPFORMATTER.format(new Date());
+            String propertiesFilePath = picturesDir.getAbsolutePath() + "/IMG_" + currentDatestring + ".properties";
+            File propertiesFile = new File(propertiesFilePath);
+            BufferedWriter bW = null;
+            try {
+                bW = new BufferedWriter(new FileWriter(propertiesFile));
+                bW.write("latitude=");
+                bW.write(latString);
+                bW.write("\nlongitude=");
+                bW.write(lonString);
+                bW.write("\nazimuth=");
+                bW.write(azimuthString);
+                bW.write("\naltim=");
+                bW.write(altimString);
+                bW.write("\nutctimestamp=");
+                bW.write(currentDatestring);
+            } catch (IOException e1) {
+                throw new IOException(e1.getLocalizedMessage());
+            } finally {
+                bW.close();
+            }
+
+            String imageFilePath = picturesDir.getAbsolutePath() + "/IMG_" + currentDatestring + ".jpg";
+            File imgFile = new File(imageFilePath);
+            Camera.PictureCallback captureCallback = new ImageCaptureCallback(imgFile, this);
+            capture(captureCallback);
+
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            alert("An error occurred while taking the picture: " + e.getLocalizedMessage());
+            return false;
+        } finally {
+            this.progressDialog.dismiss();
+        }
     }
 
     private void alert( String msg ) {
