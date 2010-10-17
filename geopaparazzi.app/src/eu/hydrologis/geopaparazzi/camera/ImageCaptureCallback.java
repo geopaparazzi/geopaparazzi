@@ -23,6 +23,8 @@ import java.io.IOException;
 
 import eu.hydrologis.geopaparazzi.R;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.widget.Toast;
@@ -51,7 +53,17 @@ public class ImageCaptureCallback implements PictureCallback {
             ex.printStackTrace();
         }
         if (imgFile.exists() && imgFile.length() > 0) {
-            Toast.makeText(cameraActivity, R.string.imagesaved, Toast.LENGTH_LONG).show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(cameraActivity);
+            String ok = cameraActivity.getResources().getString(R.string.ok);
+            String msg = cameraActivity.getResources().getString(R.string.imagesaved);
+            builder.setMessage(msg).setCancelable(false)
+                    .setPositiveButton(ok, new DialogInterface.OnClickListener(){
+                        public void onClick( DialogInterface dialog, int id ) {
+                            cameraActivity.finish();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
         }else{
             Toast.makeText(cameraActivity, R.string.imagenonsaved, Toast.LENGTH_LONG).show();
         }
