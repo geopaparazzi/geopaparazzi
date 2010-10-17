@@ -122,10 +122,10 @@
 	<string name="measureinfo_first">First point</string>
 	<string name="measureinfo_last">Last point</string>
 	
-	<string name="text_show_position_on_map">show position on map</string>
-    <string name="text_start_gps_logging">start gps logging</string>
-    <string name="text_stop_gps_logging">stop gps logging</string>
-    <string name="text_take_a_gps_note">take a gps note</string>
+	<string name="text_show_position_on_map">map view</string>
+    <string name="text_start_gps_logging">start logging</string>
+    <string name="text_stop_gps_logging">stop logging</string>
+    <string name="text_take_a_gps_note">take gps note</string>
     <string name="text_take_picture">take picture</string>
 	
 	

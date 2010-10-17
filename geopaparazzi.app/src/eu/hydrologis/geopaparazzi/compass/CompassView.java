@@ -242,7 +242,7 @@ public class CompassView extends View implements ApplicationManagerListener {
                     chartColor, chartAlpha, chartPointColor, chartPointAlpha, backgroundColor, backgroundAlpha);
             float y = border;
             float w = canvasWidth - 2 * border;
-            float h = compassHeight / 2 - border;
+            float h = compassHeight - 3 * border;
             chartDrawer.drawCart(canvas, border, y, w, h, max, min, new String[]{"", ""}, //$NON-NLS-1$//$NON-NLS-2$
                     new String[]{"", ""}, null, values, 2); //$NON-NLS-1$ //$NON-NLS-2$
         }

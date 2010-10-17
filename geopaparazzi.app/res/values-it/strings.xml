@@ -122,11 +122,11 @@
 	<string name="measureinfo_first">Primo punto</string>
 	<string name="measureinfo_last">Ultimo punto</string>
 	
-	<string name="text_show_position_on_map">mostra su mappa</string>
-    <string name="text_start_gps_logging">registra log gps</string>
-    <string name="text_stop_gps_logging">ferma log gps</string>
-    <string name="text_take_a_gps_note">prendi una nota</string>
-    <string name="text_take_picture">scatta una foto</string>
+	<string name="text_show_position_on_map">vista mappa</string>
+    <string name="text_start_gps_logging">registra log</string>
+    <string name="text_stop_gps_logging">ferma log</string>
+    <string name="text_take_a_gps_note">predi nota gps</string>
+    <string name="text_take_picture">scatta foto gps</string>
     
 	<string name="abouttext">
 	    GeoPaparazzi\n

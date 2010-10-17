@@ -30,24 +30,27 @@
 
 		<Button android:text="@+id/photoButton" android:id="@+id/photoButton"
 			android:layout_height="fill_parent" android:layout_width="fill_parent"
-			android:layout_weight="1" android:drawableTop="@drawable/camera"
-			android:padding="5px"></Button>
+			android:layout_weight="1" 
+			style="@style/buttonFont"></Button>
+			<!-- android:drawableTop="@drawable/camera"  -->
 
 		<eu.hydrologis.geopaparazzi.util.LogToggleButton
 			android:text="@+id/logButton" android:id="@+id/logButton"
 			android:layout_height="fill_parent" android:layout_width="fill_parent"
-			android:layout_weight="1" android:padding="5px"></eu.hydrologis.geopaparazzi.util.LogToggleButton>
+			android:layout_weight="1" style="@style/buttonFont"></eu.hydrologis.geopaparazzi.util.LogToggleButton>
 
 
 		<Button android:text="@+id/noteButton" android:id="@+id/noteButton"
 			android:layout_height="fill_parent" android:layout_width="fill_parent"
-			android:layout_weight="1" android:drawableTop="@drawable/notes"
-			android:padding="5px"></Button>
+			android:layout_weight="1" 
+			style="@style/buttonFont"></Button>
+			<!--android:drawableTop="@drawable/notes" -->
 
 		<Button android:text="@+id/mapButton" android:id="@+id/mapButton"
 			android:layout_height="fill_parent" android:layout_width="fill_parent"
-			android:layout_weight="1" android:drawableTop="@drawable/gmap"
-			android:padding="5px"></Button>
+			android:layout_weight="1" 
+			style="@style/buttonFont"></Button>
+			<!-- android:drawableTop="@drawable/gmap" -->
 
 	</LinearLayout>
 </FrameLayout>

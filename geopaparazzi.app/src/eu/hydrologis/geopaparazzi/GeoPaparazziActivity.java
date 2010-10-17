@@ -115,28 +115,31 @@ public class GeoPaparazziActivity extends Activity {
         photoButton.setText(R.string.text_take_picture);
         photoButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-//                GpsLocation loc = applicationManager.getLoc();
-//                if (loc != null) {
+                GpsLocation loc = applicationManager.getLoc();
+                if (loc != null) {
                     Intent intent = new Intent(Constants.TAKE_PICTURE);
                     startActivity(intent);
-//                } else {
-//                    ApplicationManager.openDialog(R.string.gpslogging_only, GeoPaparazziActivity.this);
-//                }
+                } else {
+                    ApplicationManager.openDialog(R.string.gpslogging_only, GeoPaparazziActivity.this);
+                }
             }
         });
 
         logButton = (LogToggleButton) findViewById(R.id.logButton);
-        logButton.setCheched(isChecked);
+        logButton.setChecked(isChecked);
+        logButton.setIsLandscape(isLandscape());
         logButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
                 isChecked = logButton.isChecked();
                 if (isChecked) {
-                    GpsLocation loc = applicationManager.getLoc();
-                    if (loc != null) {
+//                    GpsLocation loc = applicationManager.getLoc();
+//                    if (loc != null) {
                         applicationManager.doLogGps(true);
-                    } else {
-                        ApplicationManager.openDialog(R.string.gpslogging_only, GeoPaparazziActivity.this);
-                    }
+//                    } else {
+//                        ApplicationManager.openDialog(R.string.gpslogging_only, GeoPaparazziActivity.this);
+//                        isChecked = !isChecked;
+//                        logButton.setChecked(isChecked);
+//                    }
                 } else {
                     applicationManager.doLogGps(false);
                 }
@@ -234,7 +237,6 @@ public class GeoPaparazziActivity extends Activity {
     }
 
     public void onConfigurationChanged( Configuration newConfig ) {
-        isLandscape();
         init();
         super.onConfigurationChanged(newConfig);
     }
