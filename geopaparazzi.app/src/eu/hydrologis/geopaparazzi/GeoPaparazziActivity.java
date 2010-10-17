@@ -85,6 +85,8 @@ public class GeoPaparazziActivity extends Activity {
     private LogToggleButton logButton;
 
     private File kmlOutputFile = null;
+    
+    private boolean isChecked = false;
 
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
@@ -125,10 +127,11 @@ public class GeoPaparazziActivity extends Activity {
         });
 
         logButton = (LogToggleButton) findViewById(R.id.logButton);
-        logButton.setOrientation(isLandscape());
+        logButton.setCheched(isChecked);
         logButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                if (logButton.isChecked()) {
+                isChecked = logButton.isChecked();
+                if (isChecked) {
                     // GpsLocation loc = applicationManager.getLoc();
                     // if (loc != null) {
                     applicationManager.doLogGps(true);

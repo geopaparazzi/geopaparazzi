@@ -34,7 +34,6 @@ public class LogToggleButton extends Button {
     private Drawable gpsOn;
     private String startGpsStr;
     private String stopGpsStr;
-    private boolean isLandscape;
 
     public LogToggleButton( Context context ) {
         super(context);
@@ -61,8 +60,8 @@ public class LogToggleButton extends Button {
         return this.isChecked;
     }
 
-    public void setOrientation( boolean isLandscape ) {
-        this.isLandscape = isLandscape;
+    public void setCheched( boolean isChecked ) {
+        this.isChecked = isChecked;
         drawButtons();
     }
 
@@ -74,18 +73,10 @@ public class LogToggleButton extends Button {
 
     private void drawButtons() {
         if (isChecked) {
-            if (isLandscape) {
-                setCompoundDrawables(gpsOn, null, null, null);
-            } else {
-                setCompoundDrawables(null, gpsOn, null, null);
-            }
+            setCompoundDrawables(null, gpsOn, null, null);
             setText(stopGpsStr);
         } else {
-            if (isLandscape) {
-                setCompoundDrawables(gps, null, null, null);
-            } else {
-                setCompoundDrawables(null, gps, null, null);
-            }
+            setCompoundDrawables(null, gps, null, null);
             setText(startGpsStr);
         }
     }

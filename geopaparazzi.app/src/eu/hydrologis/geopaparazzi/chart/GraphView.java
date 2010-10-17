@@ -36,10 +36,18 @@ public class GraphView extends View {
     private String[] verlabels;
 
     private ChartDrawer chartDrawer = null;
+    
+    public GraphView(Context context){
+        super(context);
+    }
 
     public GraphView( Context context, float[] xValues, float[] yValues, String title, String[] horlabels, String[] verlabels,
             int type ) {
         super(context);
+        init(xValues, yValues, title, horlabels, verlabels, type);
+    }
+
+    public void init( float[] xValues, float[] yValues, String title, String[] horlabels, String[] verlabels, int type ) {
         if (yValues == null)
             this.yValues = new float[0];
         else {
