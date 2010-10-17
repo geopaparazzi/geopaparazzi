@@ -24,4 +24,7 @@ public interface ApplicationManagerListener {
     public void onLocationChanged( GpsLocation loc );
 
     public void onSensorChanged( double azimuth );
+    
+    public void onSatellitesStatusChanged( int num, int max );
+    
 }

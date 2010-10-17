@@ -89,13 +89,13 @@ public class GeoPaparazziActivity extends Activity {
 
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
-
         init();
     }
 
     private void init() {
         setContentView(R.layout.main);
 
+        ApplicationManager.resetManager();
         applicationManager = ApplicationManager.getInstance(this);
 
         /*
@@ -132,14 +132,15 @@ public class GeoPaparazziActivity extends Activity {
             public void onClick( View v ) {
                 isChecked = logButton.isChecked();
                 if (isChecked) {
-//                    GpsLocation loc = applicationManager.getLoc();
-//                    if (loc != null) {
-                        applicationManager.doLogGps(true);
-//                    } else {
-//                        ApplicationManager.openDialog(R.string.gpslogging_only, GeoPaparazziActivity.this);
-//                        isChecked = !isChecked;
-//                        logButton.setChecked(isChecked);
-//                    }
+                    // GpsLocation loc = applicationManager.getLoc();
+                    // if (loc != null) {
+                    applicationManager.doLogGps(true);
+                    // } else {
+                    // ApplicationManager.openDialog(R.string.gpslogging_only,
+                    // GeoPaparazziActivity.this);
+                    // isChecked = !isChecked;
+                    // logButton.setChecked(isChecked);
+                    // }
                 } else {
                     applicationManager.doLogGps(false);
                 }
@@ -237,10 +238,11 @@ public class GeoPaparazziActivity extends Activity {
     }
 
     public void onConfigurationChanged( Configuration newConfig ) {
+        Log.d(LOGTAG, "Orientations: " + newConfig.orientation);
         init();
+
         super.onConfigurationChanged(newConfig);
     }
-
     private boolean isLandscape() {
         Display display = getWindowManager().getDefaultDisplay();
         int width = display.getWidth();

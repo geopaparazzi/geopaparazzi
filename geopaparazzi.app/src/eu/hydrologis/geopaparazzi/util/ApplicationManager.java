@@ -33,6 +33,8 @@ import java.io.FileInputStream;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -46,9 +48,13 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.GpsSatellite;
+import android.location.GpsStatus;
+import android.location.GpsStatus.Listener;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -68,6 +74,7 @@ import eu.hydrologis.geopaparazzi.osm.OsmView;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class ApplicationManager implements SensorEventListener, LocationListener, Serializable {
+    // , Listener {
 
     private static final long serialVersionUID = 1L;
 
@@ -164,11 +171,14 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         return applicationManager;
     }
 
+    public static void resetManager() {
+        applicationManager = null;
+    }
+
     private ApplicationManager( Context context ) {
         this.context = context;
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context
-                .getApplicationContext());
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         String osmCachePath = preferences.getString(OSMFOLDERKEY, null);
         /*
          * take care to create all the folders needed
@@ -208,15 +218,12 @@ public class ApplicationManager implements SensorEventListener, LocationListener
 
             if (!geoPaparazziDir.exists())
                 if (!geoPaparazziDir.mkdir())
-                    alert(MessageFormat.format(
-                            context.getResources().getString(R.string.cantcreate_sdcard),
-                            geoPaparazziDirPath));
+                    alert(MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard), geoPaparazziDirPath));
             databaseFile = new File(geoPaparazziDirPath, DatabaseManager.DATABASE_NAME);
             picturesDir = new File(geoPaparazziDirPath + PATH_PICTURES);
             if (!picturesDir.exists())
                 if (!picturesDir.mkdir())
-                    alert(MessageFormat.format(
-                            context.getResources().getString(R.string.cantcreate_sdcard),
+                    alert(MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
                             picturesDir.getAbsolutePath()));
 
             File geoPaparazziDataDir = new File(sdcardDir.getAbsolutePath() + PATH_GEOPAPARAZZIDATA);
@@ -228,16 +235,14 @@ public class ApplicationManager implements SensorEventListener, LocationListener
             Log.i(LOGTAG, "OSMPATH:" + osmCacheDir.getAbsolutePath());
             if (!osmCacheDir.exists())
                 if (!osmCacheDir.mkdirs()) {
-                    String msg = MessageFormat.format(
-                            context.getResources().getString(R.string.cantcreate_sdcard),
+                    String msg = MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
                             osmCacheDir.getAbsolutePath());
                     alert(msg);
                 }
             kmlExportDir = new File(geoPaparazziDirPath + PATH_KMLEXPORT);
             if (!kmlExportDir.exists())
                 if (!kmlExportDir.mkdir())
-                    alert(MessageFormat.format(
-                            context.getResources().getString(R.string.cantcreate_sdcard),
+                    alert(MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
                             kmlExportDir.getAbsolutePath()));
 
         } else {
@@ -257,8 +262,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
     public void activateManagers() {
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        connectivityManager = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
     }
 
     public boolean isInternetOn() {
@@ -282,8 +286,8 @@ public class ApplicationManager implements SensorEventListener, LocationListener
      * Stops listening to all the devices.
      */
     public void stopListening() {
-        locationManager.removeUpdates(this);
-        sensorManager.unregisterListener(this);
+        locationManager.removeUpdates(applicationManager);
+        sensorManager.unregisterListener(applicationManager);
     }
 
     /**
@@ -291,24 +295,23 @@ public class ApplicationManager implements SensorEventListener, LocationListener
      */
     public void startListening() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String intervalStr = preferences.getString(GPSLOGGINGINTERVALKEY,
-                String.valueOf(GPS_LOGGING_INTERVAL));
+        String intervalStr = preferences.getString(GPSLOGGINGINTERVALKEY, String.valueOf(GPS_LOGGING_INTERVAL));
         int waitForMillis = (int) (Long.parseLong(intervalStr) * 1000);
         Log.d(LOGTAG, "LOG INTERVAL MILLIS: " + waitForMillis);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, waitForMillis,
         // TIMETHRESHOLD,
-                SENSORTHRESHOLD, this);
+                SENSORTHRESHOLD, applicationManager);
         // locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
         // TIMETHRESHOLD, SENSORTHRESHOLD, this);
 
-        sensorManager.registerListener(this,
-                sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+        // locationManager.addGpsStatusListener(applicationManager);
+
+        sensorManager.unregisterListener(applicationManager);
+        sensorManager.registerListener(applicationManager, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
                 SensorManager.SENSOR_DELAY_NORMAL);
-        sensorManager.registerListener(this,
-                sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
+        sensorManager.registerListener(applicationManager, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
                 SensorManager.SENSOR_DELAY_NORMAL);
-        sensorManager.registerListener(this,
-                sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
+        sensorManager.registerListener(applicationManager, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
                 SensorManager.SENSOR_DELAY_NORMAL);
     }
 
@@ -325,12 +328,11 @@ public class ApplicationManager implements SensorEventListener, LocationListener
             String ok = context.getResources().getString(R.string.ok);
             String cancel = context.getResources().getString(R.string.cancel);
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setMessage(prompt).setCancelable(false)
-                    .setPositiveButton(ok, new DialogInterface.OnClickListener(){
-                        public void onClick( DialogInterface dialog, int id ) {
-                            showGpsOptions();
-                        }
-                    });
+            builder.setMessage(prompt).setCancelable(false).setPositiveButton(ok, new DialogInterface.OnClickListener(){
+                public void onClick( DialogInterface dialog, int id ) {
+                    showGpsOptions();
+                }
+            });
             builder.setNegativeButton(cancel, new DialogInterface.OnClickListener(){
                 public void onClick( DialogInterface dialog, int id ) {
                     dialog.cancel();
@@ -342,8 +344,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
     }
 
     private void showGpsOptions() {
-        Intent gpsOptionsIntent = new Intent(
-                android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        Intent gpsOptionsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
         context.startActivity(gpsOptionsIntent);
     }
 
@@ -375,8 +376,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
             isReady = false;
 
             SensorManager.getRotationMatrix(RM, I, accels, mags);
-            SensorManager.remapCoordinateSystem(RM, SensorManager.AXIS_X, SensorManager.AXIS_Z,
-                    outR);
+            SensorManager.remapCoordinateSystem(RM, SensorManager.AXIS_X, SensorManager.AXIS_Z, outR);
             SensorManager.getOrientation(outR, values);
 
             azimuth = toDegrees(values[0]);
@@ -414,7 +414,45 @@ public class ApplicationManager implements SensorEventListener, LocationListener
     }
 
     public void onStatusChanged( String provider, int status, Bundle extras ) {
+        String statusString;
+        switch( status ) {
+        case LocationProvider.OUT_OF_SERVICE:
+            if (gpsLoc == null || gpsLoc.getProvider().equals(provider)) {
+                statusString = "No Service";
+                gpsLoc = null;
+            }
+            break;
+        case LocationProvider.TEMPORARILY_UNAVAILABLE:
+            if (gpsLoc == null || gpsLoc.getProvider().equals(provider)) {
+                statusString = "no fix";
+            }
+            break;
+        case LocationProvider.AVAILABLE:
+            statusString = "fix";
+            break;
+        }
     }
+
+    // TODO
+    // public void onGpsStatusChanged( int event ) {
+    // int timeToFirstFix = -1;
+    // if (event == GpsStatus.GPS_EVENT_SATELLITE_STATUS) {
+    // GpsStatus status = locationManager.getGpsStatus(null);
+    // Iterable<GpsSatellite> sats = status.getSatellites();
+    // timeToFirstFix = status.getTimeToFirstFix();
+    // int max = status.getMaxSatellites();
+    // Iterator<GpsSatellite> iterator = sats.iterator();
+    // int num = 0;
+    // while( iterator.hasNext() ) {
+    // num++;
+    // }
+    // for( ApplicationManagerListener listener : listeners ) {
+    // listener.onSatellitesStatusChanged(num, max);
+    // }
+    // }
+    // Log.d(LOGTAG, "Gps status event: " + event);
+    // Log.d(LOGTAG, "Time to first fix: " + timeToFirstFix);
+    // }
 
     public int getAccuracy() {
         return accuracy;
@@ -471,12 +509,11 @@ public class ApplicationManager implements SensorEventListener, LocationListener
     public void alertDialog( String msg ) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         String ok = context.getResources().getString(R.string.ok);
-        builder.setMessage(msg).setCancelable(false)
-                .setPositiveButton(ok, new DialogInterface.OnClickListener(){
-                    public void onClick( DialogInterface dialog, int id ) {
-                        showGpsOptions();
-                    }
-                });
+        builder.setMessage(msg).setCancelable(false).setPositiveButton(ok, new DialogInterface.OnClickListener(){
+            public void onClick( DialogInterface dialog, int id ) {
+                showGpsOptions();
+            }
+        });
         AlertDialog alert = builder.create();
         alert.show();
     }
@@ -567,11 +604,10 @@ public class ApplicationManager implements SensorEventListener, LocationListener
 
     public static void openDialog( int messageId, Context activity ) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setMessage(messageId).setCancelable(false)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
-                    public void onClick( DialogInterface dialog, int id ) {
-                    }
-                });
+        builder.setMessage(messageId).setCancelable(false).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+            public void onClick( DialogInterface dialog, int id ) {
+            }
+        });
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }

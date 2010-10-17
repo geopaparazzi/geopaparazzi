@@ -302,4 +302,7 @@ public class GpsLogger implements ApplicationManagerListener {
     public void onSensorChanged( double azimuth ) {
     }
 
+    public void onSatellitesStatusChanged( int num, int max ) {
+    }
+
 }
