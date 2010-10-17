@@ -109,6 +109,8 @@ public class OsmView extends View implements ApplicationManagerListener {
     private final OsmActivity osmActivity;
     private List<Float> measureCoordinatesX = new ArrayList<Float>(30);
     private List<Float> measureCoordinatesY = new ArrayList<Float>(30);
+    private int gpsIconWidth;
+    private int gpsIconHeight;
 
     public OsmView( final OsmActivity osmActivity ) {
         super(osmActivity);
@@ -169,6 +171,8 @@ public class OsmView extends View implements ApplicationManagerListener {
 
         positionIcon = BitmapFactory.decodeResource(getResources(), R.drawable.current_position);
         gotoIcon = BitmapFactory.decodeResource(getResources(), R.drawable.goto_position);
+        gpsIconWidth = positionIcon.getWidth();
+        gpsIconHeight = positionIcon.getHeight();
 
         deviceManager.setOsmView(this);
 
@@ -261,7 +265,7 @@ public class OsmView extends View implements ApplicationManagerListener {
             float gpsY = latToScreen(height, gpsLat, centerLat, pixelDyInWorld);
 
             if ((gpsX >= 0 && gpsX <= width) && (gpsY >= 0 && gpsY <= height)) {
-                canvas.drawBitmap(positionIcon, gpsX - 20f, gpsY - 20f, null);
+                canvas.drawBitmap(positionIcon, gpsX - gpsIconWidth / 2, gpsY - gpsIconHeight / 2, null);
             }
 
             // measure
@@ -845,5 +849,8 @@ public class OsmView extends View implements ApplicationManagerListener {
             // reset distance
             measuredDistance = -1;
         }
+    }
+
+    public void onSatellitesStatusChanged( int num, int max ) {
     }
 }
