@@ -399,7 +399,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
             previousLoc = loc;
         }
 
-        Log.d(LOGTAG, "Position update: " + gpsLoc.getLongitude() + "/" + gpsLoc.getLatitude()); //$NON-NLS-1$ //$NON-NLS-2$
+        Log.d(LOGTAG, "Position update: " + gpsLoc.getLongitude() + "/" + gpsLoc.getLatitude() + "/" + gpsLoc.getAltitude()); //$NON-NLS-1$ //$NON-NLS-2$
         gpsLoc.setPreviousLoc(previousLoc);
         for( ApplicationManagerListener listener : listeners ) {
             listener.onLocationChanged(gpsLoc);

@@ -284,11 +284,7 @@ public final class R {
         public static final int zoomout=0x7f07002d;
     }
     public static final class style {
-        public static final int black=0x7f080002;
-        public static final int buttonFont=0x7f080004;
-        public static final int label=0x7f080000;
-        public static final int view_text=0x7f080001;
-        public static final int white=0x7f080003;
+        public static final int buttonFont=0x7f080000;
     }
     public static final class xml {
         public static final int my_preferences=0x7f040000;

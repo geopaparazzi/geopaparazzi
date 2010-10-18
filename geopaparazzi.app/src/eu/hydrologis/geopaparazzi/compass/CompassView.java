@@ -27,6 +27,8 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Picture;
 import android.graphics.drawable.BitmapDrawable;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 import eu.hydrologis.geopaparazzi.GeoPaparazziActivity;
@@ -190,6 +192,7 @@ public class CompassView extends View implements ApplicationManagerListener {
         //        sb.append("/").append(maxSatellites); //$NON-NLS-1$
         // sb.append("\n");
 
+        compassInfoView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSizeNormal);
         if (hasValue) {
             compassInfoView.setTextColor(getResources().getColor(R.color.black));
         } else {
@@ -209,6 +212,7 @@ public class CompassView extends View implements ApplicationManagerListener {
 
         drawChart(canvas);
 
+        azimuth = 195;
         // draw needle
         if (azimuth != -1) {
             canvas.translate(compassCX, compassCY);
@@ -224,10 +228,12 @@ public class CompassView extends View implements ApplicationManagerListener {
         if (applicationManager.isGpsLogging()) {
 
             List<Float> last100Elevations = applicationManager.getLast100Elevations();
-            float[] values = new float[last100Elevations.size()];
+            int last100size = last100Elevations.size();
+            Log.v("COMPASSVIEW", "Size of last 100 list: " + last100size);
+            float[] values = new float[last100size];
             float min = Float.POSITIVE_INFINITY;
             float max = Float.NEGATIVE_INFINITY;
-            for( int i = 0; i < last100Elevations.size(); i++ ) {
+            for( int i = 0; i < last100size; i++ ) {
                 values[i] = last100Elevations.get(i);
                 if (values[i] > max) {
                     max = values[i];

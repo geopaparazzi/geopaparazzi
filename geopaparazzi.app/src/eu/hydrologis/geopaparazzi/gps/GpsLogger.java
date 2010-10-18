@@ -47,7 +47,7 @@ import eu.hydrologis.geopaparazzi.database.DatabaseManager;
 import eu.hydrologis.geopaparazzi.util.ApplicationManagerListener;
 
 /**
- * The Gps engine.
+ * The Gps engine, used to put logs into the database.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
@@ -82,6 +82,11 @@ public class GpsLogger implements ApplicationManagerListener {
         this.context = context;
     }
 
+    /**
+     * Getter for the logging info.
+     * 
+     * @return true if the logger is active and recording points into the database.
+     */
     public boolean isLogging() {
         return isLogging;
     }
