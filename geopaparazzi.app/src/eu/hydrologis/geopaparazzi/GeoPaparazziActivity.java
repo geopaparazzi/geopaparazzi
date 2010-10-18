@@ -141,15 +141,14 @@ public class GeoPaparazziActivity extends Activity {
             public void onClick( View v ) {
                 isChecked = logButton.isChecked();
                 if (isChecked) {
-                    // GpsLocation loc = applicationManager.getLoc();
-                    // if (loc != null) {
-                    applicationManager.doLogGps(true);
-                    // } else {
-                    // ApplicationManager.openDialog(R.string.gpslogging_only,
-                    // GeoPaparazziActivity.this);
-                    // isChecked = !isChecked;
-                    // logButton.setChecked(isChecked);
-                    // }
+                    GpsLocation loc = applicationManager.getLoc();
+                    if (loc != null) {
+                        applicationManager.doLogGps(true);
+                    } else {
+                        ApplicationManager.openDialog(R.string.gpslogging_only, GeoPaparazziActivity.this);
+                        isChecked = !isChecked;
+                        logButton.setChecked(isChecked);
+                    }
                 } else {
                     applicationManager.doLogGps(false);
                 }
