@@ -34,6 +34,8 @@ import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Display;
@@ -86,7 +88,6 @@ public class GeoPaparazziActivity extends Activity {
     private File kmlOutputFile = null;
 
     private boolean isChecked = false;
-    private boolean isOrientationChange = false;
 
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
@@ -96,11 +97,13 @@ public class GeoPaparazziActivity extends Activity {
     private void init() {
         setContentView(R.layout.main);
 
-        if (!isOrientationChange) {
+        Object stateObj = getLastNonConfigurationInstance();
+        if (stateObj instanceof ApplicationManager) {
+            applicationManager = (ApplicationManager) stateObj;
+            applicationManager.clearListeners();
+        } else {
             ApplicationManager.resetManager();
             applicationManager = ApplicationManager.getInstance(this);
-        }else{
-            applicationManager.clearListeners();
         }
 
         /*
@@ -131,6 +134,7 @@ public class GeoPaparazziActivity extends Activity {
         });
 
         logButton = (LogToggleButton) findViewById(R.id.logButton);
+        isChecked = applicationManager.isGpsLogging();
         logButton.setChecked(isChecked);
         logButton.setIsLandscape(isLandscape());
         logButton.setOnClickListener(new Button.OnClickListener(){
@@ -242,13 +246,13 @@ public class GeoPaparazziActivity extends Activity {
         super.finish();
     }
 
-    public void onConfigurationChanged( Configuration newConfig ) {
-        Log.d(LOGTAG, "Orientations: " + newConfig.orientation);
-        isOrientationChange = true;
-        init();
-
-        super.onConfigurationChanged(newConfig);
-    }
+    // public void onConfigurationChanged( Configuration newConfig ) {
+    // Log.d(LOGTAG, "Orientations: " + newConfig.orientation);
+    // isOrientationChange = true;
+    // init();
+    //
+    // super.onConfigurationChanged(newConfig);
+    // }
     private boolean isLandscape() {
         Display display = getWindowManager().getDefaultDisplay();
         int width = display.getWidth();
@@ -500,4 +504,10 @@ public class GeoPaparazziActivity extends Activity {
         }
         DataManager.getInstance().setLogsVisible(oneVisible);
     }
+
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+        return applicationManager;
+    }
+
 }

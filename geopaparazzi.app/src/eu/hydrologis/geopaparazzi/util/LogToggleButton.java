@@ -19,6 +19,7 @@ package eu.hydrologis.geopaparazzi.util;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.widget.Button;
@@ -30,7 +31,7 @@ import eu.hydrologis.geopaparazzi.R;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class LogToggleButton extends Button {
-    protected boolean isChecked = false;
+    private boolean isChecked = false;
     private Drawable gps;
     private Drawable gpsOn;
     private String startGpsStr;
@@ -94,10 +95,6 @@ public class LogToggleButton extends Button {
     public void setIsLandscape( boolean isLandscape ) {
         this.isLandscape = isLandscape;
         drawButtons();
-    }
-    
-    private class ButtonState{
-        public boolean persistantIsChecked = false;
     }
 
 }

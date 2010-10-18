@@ -228,7 +228,7 @@ public class CompassView extends View implements ApplicationManagerListener {
 
             List<Float> last100Elevations = applicationManager.getLast100Elevations();
             int last100size = last100Elevations.size();
-            Log.v("COMPASSVIEW", "Size of last 100 list: " + last100size);
+            // Log.v("COMPASSVIEW", "Size of last 100 list: " + last100size);
             float[] values = new float[last100size];
             float min = Float.POSITIVE_INFINITY;
             float max = Float.NEGATIVE_INFINITY;

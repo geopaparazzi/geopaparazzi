@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="eu.hydrologis.geopaparazzi" android:versionName="1.1" android:versionCode="4">
-	<application android:icon="@drawable/icon" android:label="@string/app_name" android:debuggable="true">
-		<activity android:label="@string/app_name" android:name=".GeoPaparazziActivity"
-			>
+	package="eu.hydrologis.geopaparazzi" android:versionName="1.1"
+	android:versionCode="4">
+	<application android:icon="@drawable/icon" android:label="@string/app_name"
+		android:debuggable="true">
+		<activity android:label="@string/app_name" android:name=".GeoPaparazziActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
@@ -100,13 +101,9 @@
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
-		<!-- 
-		<receiver android:name=".sms.SmsReceiver" android:enabled="true">
-			<intent-filter>
-				<action android:name="android.provider.Telephony.SMS_RECEIVED" />
-			</intent-filter>
-		</receiver>
-		 -->
+		<!-- <receiver android:name=".sms.SmsReceiver" android:enabled="true"> 
+			<intent-filter> <action android:name="android.provider.Telephony.SMS_RECEIVED" 
+			/> </intent-filter> </receiver> -->
 	</application>
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
@@ -118,9 +115,6 @@
 
 	<uses-permission android:name="android.permission.RECEIVE_SMS"></uses-permission>
 	<uses-permission android:name="android.permission.SEND_SMS"></uses-permission>
-<uses-sdk android:minSdkVersion="3"></uses-sdk>
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
-<supports-screens android:smallScreens="true" android:normalScreens="true" android:largeScreens="true" android:anyDensity="true" android:resizeable="true"></supports-screens>
-
-
+	<uses-sdk android:minSdkVersion="3"></uses-sdk>
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
 </manifest> 
