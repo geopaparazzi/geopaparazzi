@@ -131,16 +131,19 @@ public class OsmView extends View implements ApplicationManagerListener {
         redRectPaint.setColor(Color.RED);
         redRectPaint.setStyle(Paint.Style.STROKE);
 
+        String textSizeMediumStr = getResources().getString(R.string.text_normal);
+        float textSizeNormal = Float.parseFloat(textSizeMediumStr);
         gpxPaint = new Paint();
         gpxTextPaint = new Paint();
         gpxTextPaint.setAntiAlias(true);
+        gpxTextPaint.setTextSize(textSizeNormal);
 
         measurePaint = new Paint();
         measurePaint.setAntiAlias(true);
         measurePaint.setColor(Color.DKGRAY);
         measurePaint.setStrokeWidth(3f);
         measurePaint.setStyle(Paint.Style.STROKE);
-        measurePaint.setTextSize(measurePaint.getTextSize() + 3f);
+        // measurePaint.setTextSize(measurePaint.getTextSize() + 3f);
 
         crossPaint = new Paint();
         crossPaint.setAntiAlias(true);
@@ -150,7 +153,7 @@ public class OsmView extends View implements ApplicationManagerListener {
 
         measureTextPaint = new Paint();
         measureTextPaint.setAntiAlias(true);
-        measureTextPaint.setTextSize(measureTextPaint.getTextSize() + 3f);
+        measureTextPaint.setTextSize(textSizeNormal);
 
         distanceString = getResources().getString(R.string.distance);
 

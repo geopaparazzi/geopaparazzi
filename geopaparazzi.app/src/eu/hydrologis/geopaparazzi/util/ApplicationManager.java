@@ -100,7 +100,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
     /**
      * The object responsible to log traces into the database. 
      */
-    private GpsLogger gpsLogger;
+    private static GpsLogger gpsLogger;
 
     private double azimuth = -1;
     private double pitch = -1;

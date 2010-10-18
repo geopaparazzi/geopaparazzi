@@ -111,7 +111,7 @@ public class GeoPaparazziActivity extends Activity {
          */
         LinearLayout uppercol1View = (LinearLayout) findViewById(R.id.uppercol1);
         TextView compassInfoView = (TextView) findViewById(R.id.compassInfoView);
-        compassView = new CompassView(this, compassInfoView);
+        compassView = new CompassView(this, compassInfoView, applicationManager);
         LinearLayout.LayoutParams tmpParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         uppercol1View.addView(compassView, tmpParams);
         applicationManager.addListener(compassView);
