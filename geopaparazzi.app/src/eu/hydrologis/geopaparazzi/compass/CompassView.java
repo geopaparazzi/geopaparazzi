@@ -212,7 +212,6 @@ public class CompassView extends View implements ApplicationManagerListener {
 
         drawChart(canvas);
 
-        azimuth = 195;
         // draw needle
         if (azimuth != -1) {
             canvas.translate(compassCX, compassCY);

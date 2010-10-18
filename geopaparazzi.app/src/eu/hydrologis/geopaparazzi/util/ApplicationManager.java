@@ -144,6 +144,10 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         listeners.remove(listener);
     }
 
+    public void clearListeners( ) {
+        listeners.clear();
+    }
+
     private static ApplicationManager applicationManager;
     /**
      * The getter for the {@link ApplicationManager} singleton.
@@ -298,9 +302,10 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         String intervalStr = preferences.getString(GPSLOGGINGINTERVALKEY, String.valueOf(GPS_LOGGING_INTERVAL));
         int waitForMillis = (int) (Long.parseLong(intervalStr) * 1000);
         Log.d(LOGTAG, "LOG INTERVAL MILLIS: " + waitForMillis);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, waitForMillis,
+        locationManager.requestLocationUpdates(
+                LocationManager.GPS_PROVIDER, waitForMillis,
         // TIMETHRESHOLD,
-                SENSORTHRESHOLD, applicationManager);
+                0f, applicationManager);
         // locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
         // TIMETHRESHOLD, SENSORTHRESHOLD, this);
 

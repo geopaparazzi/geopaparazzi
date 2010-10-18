@@ -15,7 +15,7 @@
 		</LinearLayout>
 		<TextView android:text="asdasd" android:id="@+id/compassInfoView"
 			android:layout_width="wrap_content" android:layout_height="fill_parent"
-			android:layout_gravity="left" android:gravity="right"
+			android:layout_gravity="right" android:gravity="right"
 			android:background="#00000000" android:cacheColorHint="#00000000"
 			android:paddingLeft="15px" android:paddingTop="15px"
 			android:paddingRight="5px" android:layout_weight="1"></TextView>

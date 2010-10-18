@@ -86,6 +86,7 @@ public class GeoPaparazziActivity extends Activity {
     private File kmlOutputFile = null;
 
     private boolean isChecked = false;
+    private boolean isOrientationChange = false;
 
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
@@ -95,8 +96,12 @@ public class GeoPaparazziActivity extends Activity {
     private void init() {
         setContentView(R.layout.main);
 
-        ApplicationManager.resetManager();
-        applicationManager = ApplicationManager.getInstance(this);
+        if (!isOrientationChange) {
+            ApplicationManager.resetManager();
+            applicationManager = ApplicationManager.getInstance(this);
+        }else{
+            applicationManager.clearListeners();
+        }
 
         /*
          * the compass view
@@ -239,6 +244,7 @@ public class GeoPaparazziActivity extends Activity {
 
     public void onConfigurationChanged( Configuration newConfig ) {
         Log.d(LOGTAG, "Orientations: " + newConfig.orientation);
+        isOrientationChange = true;
         init();
 
         super.onConfigurationChanged(newConfig);
