@@ -43,10 +43,10 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.location.Location;
 import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import eu.hydrologis.geopaparazzi.R;
@@ -80,16 +80,19 @@ public class OsmView extends View implements ApplicationManagerListener {
     private float gotoLon = -1;
 
     private int zoom = 16;
-    private Paint gpxTextPaint;
-    private Paint gpxPaint;
-    private Paint redPaint;
-    private Paint redRectPaint;
+    private static Paint gpxTextPaint;
+    private static Paint gpxPaint;
+    private static Paint xPaint;
+    private static Paint redPaint;
+    private static Paint redRectPaint;
     private int lastX = -1;
     private int lastY = -1;
     private float pixelDxInWorld;
     private float pixelDyInWorld;
-    private Bitmap positionIcon;
-    private Bitmap gotoIcon;
+    private static Bitmap positionIcon;
+    private static Bitmap gotoIcon;
+    private static int gpsIconWidth;
+    private static int gpsIconHeight;
 
     private boolean isMeasureMode = false;
     private float measuredDistance = -1;
@@ -101,68 +104,74 @@ public class OsmView extends View implements ApplicationManagerListener {
     private int height;
     private int currentX;
     private int currentY;
-    private Paint crossPaint;
-    private Paint measurePaint;
-    private Paint measureTextPaint;
-    private String distanceString;
+    private static Paint crossPaint;
+    private static Paint measurePaint;
+    private static Paint measureTextPaint;
+    private static String distanceString;
     private boolean touchDragging;
     private SharedPreferences preferences;
     private final OsmActivity osmActivity;
-    private List<Float> measureCoordinatesX = new ArrayList<Float>(30);
-    private List<Float> measureCoordinatesY = new ArrayList<Float>(30);
-    private int gpsIconWidth;
-    private int gpsIconHeight;
-    private String metersString;
+    private static List<Float> measureCoordinatesX = new ArrayList<Float>(30);
+    private static List<Float> measureCoordinatesY = new ArrayList<Float>(30);
+    private static String metersString;
     private DisplayMetrics displayMetrics;
 
     public OsmView( final OsmActivity osmActivity ) {
         super(osmActivity);
         this.osmActivity = osmActivity;
 
-        Bitmap dummyTile = BitmapFactory.decodeResource(getResources(), R.drawable.no_tile_256);
-        ApplicationManager appMan = ApplicationManager.getInstance(getContext());
-        File osmCacheDir = appMan.getOsmCacheDir();
-        boolean internetIsOn = appMan.isInternetOn();
-        tileCache = new TileCache(osmCacheDir, internetIsOn, dummyTile);
+        if (redPaint == null) {
 
-        redPaint = new Paint();
-        redPaint.setColor(Color.RED);
-        redPaint.setAlpha(255);
-        redPaint.setTextSize(redPaint.getTextSize() + 1f);
+            redPaint = new Paint();
+            redPaint.setColor(Color.RED);
+            redPaint.setTextSize(redPaint.getTextSize() + 1f);
 
-        redRectPaint = new Paint();
-        redRectPaint.setColor(Color.RED);
-        redRectPaint.setStrokeWidth(3f);
-        redRectPaint.setStyle(Paint.Style.STROKE);
+            redRectPaint = new Paint();
+            redRectPaint.setColor(Color.RED);
+            redRectPaint.setStrokeWidth(3f);
+            redRectPaint.setStyle(Paint.Style.STROKE);
 
-        String textSizeMediumStr = getResources().getString(R.string.text_normal);
-        float textSizeNormal = Float.parseFloat(textSizeMediumStr);
-        gpxPaint = new Paint();
-        gpxTextPaint = new Paint();
-        gpxTextPaint.setAntiAlias(true);
-        gpxTextPaint.setTextSize(textSizeNormal);
+            xPaint = new Paint();
+            xPaint.setColor(Color.rgb(175, 198, 233));
 
-        measurePaint = new Paint();
-        measurePaint.setAntiAlias(true);
-        measurePaint.setColor(Color.DKGRAY);
-        measurePaint.setStrokeWidth(3f);
-        measurePaint.setStyle(Paint.Style.STROKE);
-        // measurePaint.setTextSize(measurePaint.getTextSize() + 3f);
+            String textSizeMediumStr = getResources().getString(R.string.text_normal);
+            float textSizeNormal = Float.parseFloat(textSizeMediumStr);
+            gpxPaint = new Paint();
+            gpxTextPaint = new Paint();
+            gpxTextPaint.setAntiAlias(true);
+            gpxTextPaint.setTextSize(textSizeNormal);
 
-        crossPaint = new Paint();
-        crossPaint.setAntiAlias(true);
-        crossPaint.setColor(Color.GRAY);
-        crossPaint.setStrokeWidth(0.5f);
-        crossPaint.setStyle(Paint.Style.STROKE);
+            measurePaint = new Paint();
+            measurePaint.setAntiAlias(true);
+            measurePaint.setColor(Color.DKGRAY);
+            measurePaint.setStrokeWidth(3f);
+            measurePaint.setStyle(Paint.Style.STROKE);
+            // measurePaint.setTextSize(measurePaint.getTextSize() + 3f);
 
-        measureTextPaint = new Paint();
-        measureTextPaint.setAntiAlias(true);
-        measureTextPaint.setTextSize(textSizeNormal);
+            crossPaint = new Paint();
+            crossPaint.setAntiAlias(true);
+            crossPaint.setColor(Color.GRAY);
+            crossPaint.setStrokeWidth(0.5f);
+            crossPaint.setStyle(Paint.Style.STROKE);
 
-        distanceString = getResources().getString(R.string.distance);
-        metersString = getResources().getString(R.string.meters);
+            measureTextPaint = new Paint();
+            measureTextPaint.setAntiAlias(true);
+            measureTextPaint.setTextSize(textSizeNormal);
+
+            distanceString = getResources().getString(R.string.distance);
+            metersString = getResources().getString(R.string.meters);
+
+            positionIcon = BitmapFactory.decodeResource(getResources(), R.drawable.current_position);
+            gotoIcon = BitmapFactory.decodeResource(getResources(), R.drawable.goto_position);
+            gpsIconWidth = positionIcon.getWidth();
+            gpsIconHeight = positionIcon.getHeight();
+        }
 
         ApplicationManager deviceManager = ApplicationManager.getInstance(getContext());
+        File osmCacheDir = deviceManager.getOsmCacheDir();
+        boolean internetIsOn = deviceManager.isInternetOn();
+        tileCache = new TileCache(osmCacheDir, internetIsOn, null);
+
         GpsLocation loc = deviceManager.getLoc();
         if (loc != null) {
             gpsLat = (float) loc.getLatitude();
@@ -174,11 +183,6 @@ public class OsmView extends View implements ApplicationManagerListener {
         }
         centerLat = gpsLat;
         centerLon = gpsLon;
-
-        positionIcon = BitmapFactory.decodeResource(getResources(), R.drawable.current_position);
-        gotoIcon = BitmapFactory.decodeResource(getResources(), R.drawable.goto_position);
-        gpsIconWidth = positionIcon.getWidth();
-        gpsIconHeight = positionIcon.getHeight();
 
         deviceManager.setOsmView(this);
 
@@ -207,6 +211,16 @@ public class OsmView extends View implements ApplicationManagerListener {
             width = getMeasuredWidth();
             height = getMeasuredHeight();
 
+            canvas.drawARGB(255, 215, 227, 244);
+            int dx = (int) (width / 10f * 0.3f);
+            int offset = (int) (width / 10f * 0.7f);
+            for( int runY = 0; runY < height; runY = runY + dx + offset ) {
+                for( int runX = 0; runX < width; runX = runX + dx + offset ) {
+                    RectF r = new RectF(runX, runY, runX + dx, runY + dx);
+                    canvas.drawOval(r, xPaint);
+                }
+            }
+
             // http://wiki.openstreetmap.org/index.php/Slippy_map_tilenames
             int[] xyTile = TileCache.latLon2ContainingTileNumber(centerLat, centerLon, zoom);
             // get central tile info
@@ -215,7 +229,9 @@ public class OsmView extends View implements ApplicationManagerListener {
             Bitmap tileBitmap;
             if (doDrawNormal) {
                 tileBitmap = tileCache.get(zoom, xyTile[0], xyTile[1]);
-                canvas.drawBitmap(tileBitmap, centralBB.left, centralBB.top, null);
+                if (tileBitmap != null) {
+                    canvas.drawBitmap(tileBitmap, centralBB.left, centralBB.top, null);
+                }
             } else {
                 drawTileFrame(canvas, xyTile[0], xyTile[1], centralBB.left, centralBB.top, "c:" + xyTile[0] + "-" + xyTile[1]);
             }
@@ -314,7 +330,6 @@ public class OsmView extends View implements ApplicationManagerListener {
         }
 
     }
-
     private void drawTileFrame( Canvas canvas, int xtile, int ytile, int left, int top, String prefix ) {
         if (left > 0) {
             canvas.drawLine(left, 0, left, height, redRectPaint);
