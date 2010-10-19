@@ -3,21 +3,16 @@
 <LinearLayout android:id="@+id/mainosmtagslayout"
 	android:layout_height="fill_parent" android:layout_width="fill_parent"
 	android:orientation="vertical" xmlns:android="http://schemas.android.com/apk/res/android"
-	android:background="#FFFFFF">
-
-	<LinearLayout android:id="@+id/osmtagslayout"
-		android:layout_height="wrap_content" android:layout_width="fill_parent"
-		android:orientation="horizontal" android:padding="10px">
-		<TextView android:layout_height="wrap_content"
-			android:layout_width="wrap_content" android:text="@string/osm_additionalinfo"
-			android:layout_marginRight="5px" android:layout_marginLeft="5px" />
-		<EditText android:layout_height="wrap_content"
-			android:layout_width="fill_parent" android:text=""
-			android:id="@+id/osm_additionalinfo_id" />
-	</LinearLayout>
+	android:background="#FFFFFF" android:padding="10px">
 
 	<TextView android:layout_height="wrap_content"
-		android:layout_width="wrap_content" android:text="@string/osm_tagsgrid" />
+		android:layout_width="fill_parent" android:text="@string/osm_additionalinfo" android:paddingBottom="5px"/>
+	<EditText android:layout_height="wrap_content"
+		android:layout_width="fill_parent" android:text=""
+		android:id="@+id/osm_additionalinfo_id" android:paddingBottom="5px"/>
+
+	<TextView android:layout_height="wrap_content"
+		android:text="@string/osm_tagsgrid" android:layout_width="fill_parent" android:paddingBottom="5px"/>
 
 	<GridView android:id="@+id/osmgridview" android:layout_width="fill_parent"
 		android:layout_height="fill_parent" android:numColumns="3"

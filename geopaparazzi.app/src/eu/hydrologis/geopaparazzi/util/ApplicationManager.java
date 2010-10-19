@@ -114,8 +114,6 @@ public class ApplicationManager implements SensorEventListener, LocationListener
     private File osmCacheDir;
     private File kmlExportDir;
 
-    private boolean doShowTileFrames = false;
-
     private List<ApplicationManagerListener> listeners = new ArrayList<ApplicationManagerListener>();
 
     private OsmView osmView;
@@ -523,10 +521,6 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         alert.show();
     }
 
-    public boolean doShowTilesFrames() {
-        return doShowTileFrames;
-    }
-
     public boolean isGpsLogging() {
         if (gpsLogger == null) {
             return false;
@@ -607,9 +601,9 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         return picturesList;
     }
 
-    public static void openDialog( int messageId, Context activity ) {
+    public static void openDialog( int message, Context activity ) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setMessage(messageId).setCancelable(false).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+        builder.setMessage(message).setCancelable(false).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
             public void onClick( DialogInterface dialog, int id ) {
             }
         });

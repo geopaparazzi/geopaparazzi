@@ -45,6 +45,8 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.location.Location;
 import android.preference.PreferenceManager;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import eu.hydrologis.geopaparazzi.R;
@@ -94,7 +96,7 @@ public class OsmView extends View implements ApplicationManagerListener {
     private List<PointF> dragList = new ArrayList<PointF>();
 
     private TileCache tileCache = null;
-    private boolean doShowTilesFrames;
+    private boolean doDrawNormal = true;
     private int width;
     private int height;
     private int currentX;
@@ -105,12 +107,13 @@ public class OsmView extends View implements ApplicationManagerListener {
     private String distanceString;
     private boolean touchDragging;
     private SharedPreferences preferences;
-    private long lastTouchTime;
     private final OsmActivity osmActivity;
     private List<Float> measureCoordinatesX = new ArrayList<Float>(30);
     private List<Float> measureCoordinatesY = new ArrayList<Float>(30);
     private int gpsIconWidth;
     private int gpsIconHeight;
+    private String metersString;
+    private DisplayMetrics displayMetrics;
 
     public OsmView( final OsmActivity osmActivity ) {
         super(osmActivity);
@@ -129,6 +132,7 @@ public class OsmView extends View implements ApplicationManagerListener {
 
         redRectPaint = new Paint();
         redRectPaint.setColor(Color.RED);
+        redRectPaint.setStrokeWidth(3f);
         redRectPaint.setStyle(Paint.Style.STROKE);
 
         String textSizeMediumStr = getResources().getString(R.string.text_normal);
@@ -156,6 +160,7 @@ public class OsmView extends View implements ApplicationManagerListener {
         measureTextPaint.setTextSize(textSizeNormal);
 
         distanceString = getResources().getString(R.string.distance);
+        metersString = getResources().getString(R.string.meters);
 
         ApplicationManager deviceManager = ApplicationManager.getInstance(getContext());
         GpsLocation loc = deviceManager.getLoc();
@@ -170,8 +175,6 @@ public class OsmView extends View implements ApplicationManagerListener {
         centerLat = gpsLat;
         centerLon = gpsLon;
 
-        doShowTilesFrames = deviceManager.doShowTilesFrames();
-
         positionIcon = BitmapFactory.decodeResource(getResources(), R.drawable.current_position);
         gotoIcon = BitmapFactory.decodeResource(getResources(), R.drawable.goto_position);
         gpsIconWidth = positionIcon.getWidth();
@@ -182,20 +185,8 @@ public class OsmView extends View implements ApplicationManagerListener {
         preferences = PreferenceManager.getDefaultSharedPreferences(osmActivity);
         zoom = preferences.getInt(Constants.PREFS_KEY_ZOOM, 16);
 
-        // setLongClickable(true);
-        // this.setOnLongClickListener(new View.OnLongClickListener(){
-        //
-        // @Override
-        // public boolean onLongClick( View v ) {
-        // Intent intent = new Intent(Constants.TAKE_NOTE);
-        // intent.putExtra(Constants.PREFS_KEY_LAT, currentYscreenToLat);
-        // intent.putExtra(Constants.PREFS_KEY_LON, currentXscreenToLon);
-        // osmActivity.startActivity(intent);
-        // return true;
-        // }
-        //
-        // });
-
+        displayMetrics = new DisplayMetrics();
+        osmActivity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
     }
 
     @Override
@@ -221,37 +212,56 @@ public class OsmView extends View implements ApplicationManagerListener {
             // get central tile info
             BoundingBox centralBB = tileNumber2BoundingBox(xyTile[0], xyTile[1]);
             // Log.v(LOGTAG, "0:0 - " + centralBB.toString());
-            Bitmap tileBitmap = tileCache.get(zoom, xyTile[0], xyTile[1]);
-            canvas.drawBitmap(tileBitmap, centralBB.left, centralBB.top, null);
+            Bitmap tileBitmap;
+            if (doDrawNormal) {
+                tileBitmap = tileCache.get(zoom, xyTile[0], xyTile[1]);
+                canvas.drawBitmap(tileBitmap, centralBB.left, centralBB.top, null);
+            } else {
+                drawTileFrame(canvas, xyTile[0], xyTile[1], centralBB.left, centralBB.top, "c:" + xyTile[0] + "-" + xyTile[1]);
+            }
 
-            for( int i = -1; i < 2; i++ ) {
-                for( int j = -1; j < 2; j++ ) {
+            // calculate upper and lower tiles needed
+            int upperDiff = centralBB.top;
+            int lowerDiff = height - centralBB.bottom;
+            int upperNum = 0;
+            if (upperDiff > 0) {
+                upperNum = (int) Math.ceil((float) upperDiff / TILESIZE);
+            }
+            int lowerNum = 0;
+            if (lowerDiff > 0) {
+                lowerNum = (int) Math.ceil((float) lowerDiff / TILESIZE);
+            }
+            int leftDiff = centralBB.left;
+            int rightDiff = width - centralBB.right;
+            int leftNum = 0;
+            if (leftDiff > 0) {
+                leftNum = (int) Math.ceil((float) leftDiff / TILESIZE);
+            }
+            int rightNum = 0;
+            if (rightDiff > 0) {
+                rightNum = (int) Math.ceil((float) rightDiff / TILESIZE);
+            }
+            // Log.v(LOGTAG, "upper/lower num: " + upperNum + " / " + lowerNum);
+            // Log.v(LOGTAG, "left/right num: " + leftNum + " / " + rightNum);
+
+            for( int i = -leftNum; i <= rightNum; i++ ) {
+                for( int j = -upperNum; j <= lowerNum; j++ ) {
                     if (i == 0 && j == 0) {
                         continue;
                     }
                     int xtile = xyTile[0] + i;
                     int ytile = xyTile[1] + j;
-                    tileBitmap = tileCache.get(zoom, xtile, ytile);
-                    if (tileBitmap == null) {
-                        continue;
-                    }
-
                     int left = centralBB.left + i * TILESIZE;
                     int top = centralBB.top + j * TILESIZE;
-                    canvas.drawBitmap(tileBitmap, left, top, null);
 
-                    if (doShowTilesFrames) {
-                        canvas.drawRect(left, top, left + TILESIZE, top - TILESIZE, redRectPaint);
-                        StringBuilder sb = new StringBuilder();
-                        sb.append("/"); //$NON-NLS-1$
-                        sb.append(zoom);
-                        sb.append("/"); //$NON-NLS-1$
-                        sb.append(xtile);
-                        sb.append("/"); //$NON-NLS-1$
-                        String folder = sb.toString();
-                        String img = ytile + ".png"; //$NON-NLS-1$
-                        String tileDef = folder + img;
-                        canvas.drawText(tileDef, left + 5, top + 20, redPaint);
+                    if (doDrawNormal) {
+                        tileBitmap = tileCache.get(zoom, xtile, ytile);
+                        if (tileBitmap == null) {
+                            continue;
+                        }
+                        canvas.drawBitmap(tileBitmap, left, top, null);
+                    } else {
+                        drawTileFrame(canvas, xtile, ytile, left, top, xtile + "-" + ytile);
                     }
 
                 }
@@ -278,7 +288,12 @@ public class OsmView extends View implements ApplicationManagerListener {
                     PointF s = dragList.get(i + 1);
                     canvas.drawLine(f.x, f.y, s.x, s.y, measurePaint);
                 }
-                canvas.drawText(distanceString + (int) measuredDistance + " meters", 5, 15, measureTextPaint); //$NON-NLS-1$
+
+                StringBuilder sb = new StringBuilder();
+                sb.append(distanceString);
+                sb.append((int) measuredDistance);
+                sb.append(metersString);
+                canvas.drawText(sb.toString(), 5, 15, measureTextPaint); //$NON-NLS-1$
             }
 
             if (gotoLat != -1) {
@@ -298,6 +313,32 @@ public class OsmView extends View implements ApplicationManagerListener {
             e.printStackTrace();
         }
 
+    }
+
+    private void drawTileFrame( Canvas canvas, int xtile, int ytile, int left, int top, String prefix ) {
+        if (left > 0) {
+            canvas.drawLine(left, 0, left, height, redRectPaint);
+        }
+        if (left + TILESIZE > 0) {
+            canvas.drawLine(left + TILESIZE, 0, left + TILESIZE, height, redRectPaint);
+        }
+        if (top > 0) {
+            canvas.drawLine(0, top, width, top, redRectPaint);
+        }
+        if (top - TILESIZE > 0) {
+            canvas.drawLine(0, top - TILESIZE, width, top - TILESIZE, redRectPaint);
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append(prefix); //$NON-NLS-1$
+        sb.append("/"); //$NON-NLS-1$
+        sb.append(zoom);
+        sb.append("/"); //$NON-NLS-1$
+        sb.append(xtile);
+        sb.append("/"); //$NON-NLS-1$
+        sb.append(ytile);
+        sb.append(".png"); //$NON-NLS-1$
+        String tileDef = sb.toString();
+        canvas.drawText(tileDef, left + 5, top + 20, redPaint);
     }
 
     private void drawMaps( Canvas canvas, int width, int height ) {
@@ -466,100 +507,6 @@ public class OsmView extends View implements ApplicationManagerListener {
         }
     }
 
-    // private void drawGpx( Canvas canvas, int width, int height ) {
-    // RectF viewPort = new RectF(0, 0, width, height);
-    // List<GpxItem> gpxItems = GpxFilesManager.getInstance().getGpxItems();
-    // for( GpxItem gpxItem : gpxItems ) {
-    // // visible?
-    // boolean isVisible = gpxItem.isVisible();
-    // if (!isVisible) {
-    // continue;
-    // }
-    //
-    // String colorStr = gpxItem.getColor();
-    // int color = Color.parseColor(colorStr);
-    // float gWidth = Float.parseFloat(gpxItem.getWidth());
-    //
-    // List<PointF3D> points = gpxItem.read();
-    // // intersecting viewport?
-    // float screenE = lonToScreen(width, gpxItem.getE(), centerLon, pixelDxInWorld);
-    // float screenW = lonToScreen(width, gpxItem.getW(), centerLon, pixelDxInWorld);
-    // float screenS = latToScreen(height, gpxItem.getS(), centerLat, pixelDyInWorld);
-    // float screenN = latToScreen(height, gpxItem.getN(), centerLat, pixelDyInWorld);
-    // RectF dataRect = new RectF(screenW, screenN, screenE, screenS);
-    // if (!dataRect.intersect(viewPort)) {
-    // Log.d(LOGTAG, gpxItem.getFilename() + " out of viewport");
-    // continue;
-    // }
-    // // ok, let's do this
-    // if (!gpxItem.isLine()) {
-    // List<String> names = gpxItem.getNames();
-    // if (names.size() != points.size()) {
-    // names = null;
-    // }
-    // gpxPaint.setColor(color);
-    // gpxPaint.setStrokeWidth(gWidth);
-    // // gpxPaint.setAlpha(255);
-    // // gpxPaint.setTextSize(redPaint.getTextSize() + 1f);
-    // // gpxPaint.setStyle(Paint.Style.STROKE);
-    // float prevScreenX = Float.POSITIVE_INFINITY;
-    // float prevScreenY = Float.POSITIVE_INFINITY;
-    // for( int i = 0; i < points.size(); i++ ) {
-    // PointF point = points.get(i);
-    // float screenX = lonToScreen(width, point.x, centerLon, pixelDxInWorld);
-    // float screenY = latToScreen(height, point.y, centerLat, pixelDyInWorld);
-    // if (prevScreenX == screenX && prevScreenY == screenY) {
-    // continue;
-    // }
-    // if (viewPort.contains(screenX, screenY)) {
-    // canvas.drawPoint(screenX, screenY, gpxPaint);
-    // if (names != null) {
-    // canvas.drawText(names.get(i), screenX, screenY, gpxTextPaint);
-    // }
-    // prevScreenX = screenX;
-    // prevScreenY = screenY;
-    // }
-    // }
-    //
-    // } else {
-    // gpxPaint.setAntiAlias(true);
-    // gpxPaint.setColor(color);
-    // gpxPaint.setStrokeWidth(gWidth);
-    // // gpxPaint.setAlpha(255);
-    // // gpxPaint.setTextSize(redPaint.getTextSize() + 1f);
-    // gpxPaint.setStyle(Paint.Style.STROKE);
-    // // gpxPaint.setDither(true);
-    // gpxPaint.setStrokeJoin(Paint.Join.ROUND);
-    // gpxPaint.setStrokeCap(Paint.Cap.ROUND);
-    // Path path = new Path();
-    // float prevScreenX = Float.POSITIVE_INFINITY;
-    // float prevScreenY = Float.POSITIVE_INFINITY;
-    // boolean doNew = true;
-    // for( int i = 0; i < points.size(); i++ ) {
-    // PointF point = points.get(i);
-    // float screenX = lonToScreen(width, point.x, centerLon, pixelDxInWorld);
-    // float screenY = latToScreen(height, point.y, centerLat, pixelDyInWorld);
-    // // Log.d(LOGTAG, screenX + "/" + screenY);
-    // if (viewPort.contains(screenX, screenY)) {
-    // if (doNew) {
-    // path.moveTo(screenX, screenY);
-    // doNew = false;
-    // } else {
-    // if (prevScreenX == screenX && prevScreenY == screenY) {
-    // continue;
-    // }
-    // path.lineTo(screenX, screenY);
-    // prevScreenX = screenX;
-    // prevScreenY = screenY;
-    // }
-    // } else {
-    // doNew = true;
-    // }
-    // }
-    // canvas.drawPath(path, gpxPaint);
-    // }
-    // }
-    // }
     private float latToScreen( float height, float lat, float centerY, float resolutionY ) {
         return height / 2f - (lat - centerY) / resolutionY;
     }
@@ -685,24 +632,12 @@ public class OsmView extends View implements ApplicationManagerListener {
         }
         switch( action ) {
         case MotionEvent.ACTION_DOWN:
-            long thisTime = System.currentTimeMillis();
-            long delta = thisTime - lastTouchTime;
             // Log.i(LOGTAG, "Time: " + thisTime + " Delta: " + delta);
             float currentYscreenToLat = screenToLat(height, currentY, centerLat, pixelDyInWorld);
             float currentXscreenToLon = screenToLon(width, currentX, centerLon, pixelDxInWorld);
             if (isMeasureMode) {
                 measureCoordinatesX.add(currentXscreenToLon);
                 measureCoordinatesY.add(currentYscreenToLat);
-            }
-            if (delta < 300) {
-                // double tag emulation
-                Intent intent = new Intent(Constants.TAKE_NOTE);
-                intent.putExtra(Constants.PREFS_KEY_LAT, currentYscreenToLat);
-                intent.putExtra(Constants.PREFS_KEY_LON, currentXscreenToLon);
-                osmActivity.startActivity(intent);
-                return true;
-            } else {
-                lastTouchTime = thisTime;
             }
             break;
         case MotionEvent.ACTION_MOVE:

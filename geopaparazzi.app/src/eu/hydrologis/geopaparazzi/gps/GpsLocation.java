@@ -25,7 +25,7 @@ import android.location.Location;
 /**
  * Extends the location with some infos.
  * 
- * @author moovida
+ * @author Andrea Antonello (www.hydrologis.com)
  */
 public class GpsLocation extends Location {
 

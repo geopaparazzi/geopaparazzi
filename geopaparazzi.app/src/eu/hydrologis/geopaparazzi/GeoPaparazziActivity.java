@@ -31,11 +31,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Display;
@@ -245,13 +242,6 @@ public class GeoPaparazziActivity extends Activity {
         super.finish();
     }
 
-    // public void onConfigurationChanged( Configuration newConfig ) {
-    // Log.d(LOGTAG, "Orientations: " + newConfig.orientation);
-    // isOrientationChange = true;
-    // init();
-    //
-    // super.onConfigurationChanged(newConfig);
-    // }
     private boolean isLandscape() {
         Display display = getWindowManager().getDefaultDisplay();
         int width = display.getWidth();
@@ -259,22 +249,6 @@ public class GeoPaparazziActivity extends Activity {
 
         return width > height ? true : false;
     }
-
-    // public void onConfigurationChanged( Configuration newConfig ) {
-    // super.onConfigurationChanged(newConfig);
-    // int orientation = mainLayout.getOrientation();
-    // orientation = (orientation == LinearLayout.VERTICAL ? LinearLayout.HORIZONTAL :
-    // LinearLayout.VERTICAL);
-    // mainLayout.setOrientation(orientation);
-    // setContentView(mainLayout);
-    // }
-
-    // public void onWindowFocusChanged( boolean hasFocus ) {
-    // if (hasFocus) {
-    // fixGpsButton();
-    // }
-    // super.onWindowFocusChanged(hasFocus);
-    // }
 
     private Handler kmlHandler = new Handler(){
         public void handleMessage( android.os.Message msg ) {
@@ -322,167 +296,6 @@ public class GeoPaparazziActivity extends Activity {
             }
         }.start();
     }
-
-    /**
-     * Adapter to put buttons into a grid.
-     * 
-     * @author Andrea Antonello (www.hydrologis.com)
-     */
-    // private class ButtonAdapter extends BaseAdapter {
-    // private Context mContext;
-    //
-    // public ButtonAdapter( Context c ) {
-    // mContext = c;
-    // }
-    //
-    // public int getCount() {
-    // return 4;
-    // }
-    //
-    // public Object getItem( int position ) {
-    // return null;
-    // }
-    //
-    // public long getItemId( int position ) {
-    // return 0;
-    // }
-    //
-    // public View getView( int position, View convertView, ViewGroup parent ) {
-    //
-    // if (position == 0) {
-    // LinearLayout cameraViewLayout = new LinearLayout(mContext);
-    // cameraViewLayout.setOrientation(LinearLayout.VERTICAL);
-    //
-    // cameraLabelText = new TextView(mContext);
-    // cameraLabelText.setText(R.string.text_take_picture);
-    // cameraLabelText.setGravity(Gravity.CENTER_HORIZONTAL);
-    //
-    // cameraButton = new ImageButton(mContext);
-    // cameraButton.setImageResource(R.drawable.camera);
-    // LayoutParams cameraParams = new LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
-    // LinearLayout.LayoutParams.FILL_PARENT);
-    // cameraButton.setLayoutParams(cameraParams);
-    // cameraButton.setOnClickListener(new Button.OnClickListener(){
-    // public void onClick( View v ) {
-    // // GpsLocation loc = deviceManager.getLoc();
-    // // if (loc != null) {
-    // Intent intent = new Intent(Constants.TAKE_PICTURE);
-    // startActivity(intent);
-    // // } else {
-    // // ApplicationManager.openDialog(R.string.gpslogging_only, mContext);
-    // // }
-    // }
-    // });
-    //
-    // cameraViewLayout.addView(cameraButton);
-    // cameraViewLayout.addView(cameraLabelText);
-    //
-    // return cameraViewLayout;
-    // } else if (position == 1) {
-    // LinearLayout notesViewLayout = new LinearLayout(mContext);
-    // notesViewLayout.setOrientation(LinearLayout.VERTICAL);
-    //
-    // notesLabelText = new TextView(mContext);
-    // notesLabelText.setText(R.string.text_take_a_gps_note);
-    // notesLabelText.setGravity(Gravity.CENTER_HORIZONTAL);
-    //
-    // notesButton = new ImageButton(mContext);
-    // notesButton.setImageResource(R.drawable.notes);
-    // LayoutParams notesParams = new LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
-    // LinearLayout.LayoutParams.FILL_PARENT);
-    // notesButton.setLayoutParams(notesParams);
-    // notesButton.setOnClickListener(new Button.OnClickListener(){
-    // public void onClick( View v ) {
-    // GpsLocation loc = applicationManager.getLoc();
-    // if (loc != null) {
-    // Intent intent = new Intent(Constants.TAKE_NOTE);
-    // startActivity(intent);
-    // } else {
-    // ApplicationManager.openDialog(R.string.gpslogging_only, mContext);
-    // }
-    // }
-    // });
-    //
-    // notesViewLayout.addView(notesButton);
-    // notesViewLayout.addView(notesLabelText);
-    //
-    // return notesViewLayout;
-    // } else if (position == 2) {
-    // LinearLayout gpsViewLayout = new LinearLayout(mContext);
-    // gpsViewLayout.setOrientation(LinearLayout.VERTICAL);
-    //
-    // gpsLabelText = new TextView(mContext);
-    // gpsLabelText.setText(R.string.text_start_gps_logging);
-    // gpsLabelText.setGravity(Gravity.CENTER_HORIZONTAL);
-    //
-    // gpsLogButton = new ImageButton(mContext);
-    // gpsLogButton.setImageResource(R.drawable.gps);
-    // LayoutParams gpsLogParams = new LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
-    // LinearLayout.LayoutParams.FILL_PARENT);
-    // gpsLogButton.setLayoutParams(gpsLogParams);
-    // gpsLogButton.setOnClickListener(new Button.OnClickListener(){
-    // public void onClick( View v ) {
-    // String startSts = getResources().getString(R.string.text_start_gps_logging);
-    // if (gpsLabelText.getText().equals(startSts)) {
-    // GpsLocation loc = applicationManager.getLoc();
-    // if (loc != null) {
-    // applicationManager.doLogGps(true);
-    // gpsLabelText.setText(R.string.text_stop_gps_logging);
-    // gpsLogButton.setImageResource(R.drawable.gps_on);
-    // } else {
-    // ApplicationManager.openDialog(R.string.gpslogging_only, mContext);
-    // }
-    // } else {
-    // applicationManager.doLogGps(false);
-    // gpsLabelText.setText(R.string.text_start_gps_logging);
-    // gpsLogButton.setImageResource(R.drawable.gps);
-    // }
-    // }
-    // });
-    //
-    // gpsViewLayout.addView(gpsLogButton);
-    // gpsViewLayout.addView(gpsLabelText);
-    // fixGpsButton();
-    //
-    // return gpsViewLayout;
-    // } else if (position == 3) {
-    // LinearLayout mapViewLayout = new LinearLayout(mContext);
-    // mapViewLayout.setOrientation(LinearLayout.VERTICAL);
-    //
-    // mapLabelText = new TextView(mContext);
-    // mapLabelText.setText(R.string.text_show_position_on_map);
-    // mapLabelText.setGravity(Gravity.CENTER_HORIZONTAL);
-    //
-    // final ImageButton mapButton = new ImageButton(mContext);
-    // mapButton.setImageResource(R.drawable.gmap);
-    // LayoutParams mapParams = new LayoutParams(LinearLayout.LayoutParams.FILL_PARENT,
-    // LinearLayout.LayoutParams.FILL_PARENT);
-    // mapButton.setLayoutParams(mapParams);
-    // mapButton.setOnClickListener(new Button.OnClickListener(){
-    // public void onClick( View view ) {
-    // Intent intent2 = new Intent(Constants.VIEW_IN_OSM);
-    // startActivity(intent2);
-    // }
-    // });
-    //
-    // mapViewLayout.addView(mapButton);
-    // mapViewLayout.addView(mapLabelText);
-    //
-    // return mapViewLayout;
-    //
-    // }
-    //
-    // return null;
-    // }
-    //
-    // }
-
-    // public static SharedPreferences preferences;
-    // public void getPreferences() {
-    // if (preferences == null) {
-    // preferences = getPreferences(MODE_PRIVATE);
-    // }
-    // }
 
     private void checkMapsAndLogsVisibility() throws IOException {
         List<MapItem> maps = DaoMaps.getMaps(this);
