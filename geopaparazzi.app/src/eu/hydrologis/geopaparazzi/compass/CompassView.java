@@ -44,17 +44,21 @@ import eu.hydrologis.geopaparazzi.util.Constants;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class CompassView extends View implements ApplicationManagerListener {
+    /*
+     * static variables, needed to be initialized only once for all
+     */
     private static Paint mPaint = new Paint();
     private static Path mPath = null;
     private static Picture picture = null;
-
-    /**
-     * The current azimuth angle, with 0 = North, -90 = West, 90 = East
-     */
-    private float azimuth = -1f;
+    private static DecimalFormat formatter = new DecimalFormat("0.00000"); //$NON-NLS-1$
+    private static String validPointsString;
+    private static String distanceString;
+    private static int compassWidth;
+    private static int compassHeight;
+    private static int compassCX;
+    private static int compassCY;
+    private static float textSizeNormal;
     private static Bitmap compassBitmap;
-    private GpsLocation loc;
-
     private static String timeString;
     private static String lonString;
     private static String latString;
@@ -62,10 +66,12 @@ public class CompassView extends View implements ApplicationManagerListener {
     private static String azimString;
     private static ChartDrawer chartDrawer;
 
-    // private int verticalAxisColor = Color.DKGRAY;
-    // private int verticalAxisAlpha = 0;
-    // private int verticalLabelsColor = Color.BLACK;
-    // private int verticalLabelsAlpha = 255;
+    /**
+     * The current azimuth angle, with 0 = North, -90 = West, 90 = East
+     */
+    private float azimuth = -1f;
+    private GpsLocation loc;
+
     private int horizontalAxisColor = Color.DKGRAY;
     private int horizontalAxisAlpha = 0;
     private int horizontalLabelsColor = Color.BLACK;
@@ -77,15 +83,7 @@ public class CompassView extends View implements ApplicationManagerListener {
     private int backgroundColor = Color.LTGRAY;
     private int backgroundAlpha = 100;
 
-    private DecimalFormat formatter = new DecimalFormat("0.00000"); //$NON-NLS-1$
-    private static String validPointsString;
-    private static String distanceString;
     private ApplicationManager applicationManager;
-    private static int compassWidth;
-    private static int compassHeight;
-    private static int compassCX;
-    private static int compassCY;
-    private static float textSizeNormal;
     private final TextView compassInfoView;
     private int satellitesNum = 0;
     private static String satellitesString;
