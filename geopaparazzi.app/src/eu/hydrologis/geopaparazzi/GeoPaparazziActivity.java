@@ -97,7 +97,6 @@ public class GeoPaparazziActivity extends Activity {
         Object stateObj = getLastNonConfigurationInstance();
         if (stateObj instanceof ApplicationManager) {
             applicationManager = (ApplicationManager) stateObj;
-            applicationManager.clearListeners();
         } else {
             ApplicationManager.resetManager();
             applicationManager = ApplicationManager.getInstance(this);
@@ -111,6 +110,7 @@ public class GeoPaparazziActivity extends Activity {
         compassView = new CompassView(this, compassInfoView, applicationManager);
         LinearLayout.LayoutParams tmpParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         uppercol1View.addView(compassView, tmpParams);
+        applicationManager.removeCompassListener();
         applicationManager.addListener(compassView);
 
         /*

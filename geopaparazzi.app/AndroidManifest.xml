@@ -119,4 +119,7 @@
 	<uses-sdk android:maxSdkVersion="8" android:minSdkVersion="7" android:targetSdkVersion="7"></uses-sdk>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
 <supports-screens android:smallScreens="true" android:normalScreens="true" android:largeScreens="true" android:anyDensity="true" android:resizeable="true"></supports-screens>
+
+
+<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"></uses-permission>
 </manifest> 

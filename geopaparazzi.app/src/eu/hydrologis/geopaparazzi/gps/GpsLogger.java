@@ -116,6 +116,7 @@ public class GpsLogger implements ApplicationManagerListener {
 
                     currentPointsNum = 0;
                     currentDistance = 0;
+                    previousLogLoc = null;
                     while( isLogging ) {
                         if (gpsLoc == null) {
                             waitGpsInterval(waitForSecs);
