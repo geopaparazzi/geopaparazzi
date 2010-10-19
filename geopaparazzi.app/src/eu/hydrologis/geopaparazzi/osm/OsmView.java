@@ -120,8 +120,7 @@ public class OsmView extends View implements ApplicationManagerListener {
         super(osmActivity);
         this.osmActivity = osmActivity;
 
-        if (redPaint == null) {
-
+        if (!doDrawNormal) {
             redPaint = new Paint();
             redPaint.setColor(Color.RED);
             redPaint.setTextSize(redPaint.getTextSize() + 1f);
@@ -130,6 +129,9 @@ public class OsmView extends View implements ApplicationManagerListener {
             redRectPaint.setColor(Color.RED);
             redRectPaint.setStrokeWidth(3f);
             redRectPaint.setStyle(Paint.Style.STROKE);
+        }
+
+        if (xPaint == null) {
 
             xPaint = new Paint();
             xPaint.setColor(Color.rgb(175, 198, 233));
@@ -167,7 +169,7 @@ public class OsmView extends View implements ApplicationManagerListener {
             gpsIconHeight = positionIcon.getHeight();
         }
 
-        ApplicationManager deviceManager = ApplicationManager.getInstance(getContext());
+        ApplicationManager deviceManager = ApplicationManager.getInstance(osmActivity);
         File osmCacheDir = deviceManager.getOsmCacheDir();
         boolean internetIsOn = deviceManager.isInternetOn();
         tileCache = new TileCache(osmCacheDir, internetIsOn, null);
@@ -183,8 +185,6 @@ public class OsmView extends View implements ApplicationManagerListener {
         }
         centerLat = gpsLat;
         centerLon = gpsLon;
-
-        deviceManager.setOsmView(this);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(osmActivity);
         zoom = preferences.getInt(Constants.PREFS_KEY_ZOOM, 16);

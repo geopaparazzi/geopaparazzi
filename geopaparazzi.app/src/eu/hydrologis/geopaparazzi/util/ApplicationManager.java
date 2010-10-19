@@ -154,7 +154,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
      * in every moment of the application. This is due to the fact
      * that when the application looses focus (for example because of
      * an incoming call, and therefore at a random moment, if the memory 
-     * is too low, the parent activity could have been kille by 
+     * is too low, the parent activity could have been killed by 
      * the system in background. In which case we need to recreate it.) 
      * 
      * @param context the context to refer to.
@@ -271,18 +271,6 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         NetworkInfo info = connectivityManager.getActiveNetworkInfo();
         return (info != null && info.isConnected());
     }
-
-    // /**
-    // * Trigger to send to all listeners the last known location of the gps.
-    // */
-    // public void triggerGetLastKnowLocationBroadcast() {
-    // Location lastKnownLocation =
-    // locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-    //
-    // for( ApplicationManagerListener listener : listeners ) {
-    // listener.onLocationChanged(new GpsLocation(lastKnownLocation));
-    // }
-    // }
 
     /**
      * Stops listening to all the devices.

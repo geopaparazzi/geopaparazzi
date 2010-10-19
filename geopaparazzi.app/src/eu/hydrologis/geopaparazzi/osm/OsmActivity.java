@@ -67,7 +67,9 @@ public class OsmActivity extends Activity {
 
         // map view
         osmView = new OsmView(this);
-        ApplicationManager.getInstance(this).addListener(osmView);
+        ApplicationManager applicationManager = ApplicationManager.getInstance(this);
+        applicationManager.addListener(osmView);
+        applicationManager.setOsmView(osmView);
 
         frameLayout.addView(osmView);
 

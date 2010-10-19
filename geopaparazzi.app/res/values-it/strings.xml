@@ -22,7 +22,7 @@
     <string name="gpxnonsaved">è avvenuto un errore durante il salvataggio del file gpx!</string>
     <string name="imagesaved">Imagine salvata con successo!</string>
     <string name="imagenonsaved">è avvenuto un errore durante il salvataggio dell\'immagine!</string>
-    <string name="loggingoff">Fermati tuti i sensori.</string>
+    <string name="loggingoff">Fermati tutti i sensori.</string>
     <string name="loggingon">Partiti gps e sensori.</string>
     <string name="gpsloggingoff">Fermato gps.</string>
     <string name="gpsloggingon">Partito gps...</string>
