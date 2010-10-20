@@ -93,6 +93,12 @@ public class CompassView extends View implements ApplicationManagerListener {
         super(geopaparazziActivity);
         this.compassInfoView = compassInfoView;
         this.applicationManager = applicationManager;
+        
+        /*
+         * the following block initializes a bunch of variables that 
+         * can be kept static, since they are unique to the 
+         * lifetime of the application.
+         */
         if (mPath == null) {
             mPath = new Path();
             int[] needle = getResources().getIntArray(R.array.compassneedle_coords);

@@ -52,7 +52,7 @@ import eu.hydrologis.geopaparazzi.util.ApplicationManagerListener;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class GpsLogger implements ApplicationManagerListener {
-    private final String LOGTAG = "GPSLOGGER";
+    private static final String LOGTAG = "GPSLOGGER";
 
     private final Context context;
 

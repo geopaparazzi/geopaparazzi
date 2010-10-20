@@ -19,6 +19,8 @@ package eu.hydrologis.geopaparazzi.osm;
 
 import java.io.Serializable;
 
+import eu.hydrologis.geopaparazzi.gpx.GpxItem;
+
 /**
  * Item representing a map entry (gps log or map).
  * 
@@ -98,6 +100,14 @@ public class MapItem implements Comparable<MapItem>, Serializable {
         } else {
             return name.compareTo(another.name);
         }
+    }
+
+    public boolean equals( Object o ) {
+        if (o instanceof MapItem) {
+            MapItem other = (MapItem) o;
+            return name.equals(other.name);
+        }
+        return false;
     }
 
 }

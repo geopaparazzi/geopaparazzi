@@ -84,8 +84,6 @@ public class OsmView extends View implements ApplicationManagerListener {
     private static Paint gpxTextPaint;
     private static Paint gpxPaint;
     private static Paint xPaint;
-    private static Paint redPaint;
-    private static Paint redRectPaint;
     private int lastX = -1;
     private int lastY = -1;
     private float pixelDxInWorld;
@@ -120,17 +118,6 @@ public class OsmView extends View implements ApplicationManagerListener {
     public OsmView( final OsmActivity osmActivity ) {
         super(osmActivity);
         this.osmActivity = osmActivity;
-
-        if (!Debug.doDrawNormal) {
-            redPaint = new Paint();
-            redPaint.setColor(Color.RED);
-            redPaint.setTextSize(redPaint.getTextSize() + 1f);
-
-            redRectPaint = new Paint();
-            redRectPaint.setColor(Color.RED);
-            redRectPaint.setStrokeWidth(3f);
-            redRectPaint.setStyle(Paint.Style.STROKE);
-        }
 
         if (xPaint == null) {
 
@@ -292,7 +279,7 @@ public class OsmView extends View implements ApplicationManagerListener {
             float gpsY = latToScreen(height, gpsLat, centerLat, pixelDyInWorld);
 
             if ((gpsX >= 0 && gpsX <= width) && (gpsY >= 0 && gpsY <= height)) {
-                canvas.drawBitmap(positionIcon, gpsX - gpsIconWidth / 2, gpsY - gpsIconHeight / 2, null);
+                canvas.drawBitmap(positionIcon, gpsX - gpsIconWidth / 2f, gpsY - gpsIconHeight / 2f, null);
             }
 
             // measure
@@ -328,7 +315,25 @@ public class OsmView extends View implements ApplicationManagerListener {
         }
 
     }
+    /**
+     * Draws the tile frames. Meant for debugging purposes.
+     * 
+     * @param canvas
+     * @param xtile
+     * @param ytile
+     * @param left
+     * @param top
+     * @param prefix
+     */
     private void drawTileFrame( Canvas canvas, int xtile, int ytile, int left, int top, String prefix ) {
+        Paint redPaint = new Paint();
+        redPaint.setColor(Color.RED);
+        redPaint.setTextSize(redPaint.getTextSize() + 1f);
+
+        Paint redRectPaint = new Paint();
+        redRectPaint.setColor(Color.RED);
+        redRectPaint.setStrokeWidth(3f);
+        redRectPaint.setStyle(Paint.Style.STROKE);
         if (left > 0) {
             canvas.drawLine(left, 0, left, height, redRectPaint);
         }

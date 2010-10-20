@@ -154,6 +154,16 @@ public class GpxItem implements Comparable<GpxItem> {
             return filepath.compareTo(another.filepath);
         }
     }
+    
+    
+    @Override
+    public boolean equals( Object o ) {
+        if (o instanceof GpxItem) {
+            GpxItem other = (GpxItem) o;
+            return filepath.equals(other.filepath);
+        }
+        return false;
+    }
 
     public float getE() {
         return e;
