@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi.util;
+package eu.hydrologis.geopaparazzi.util.debug;
 
 import java.util.Date;
 

@@ -62,6 +62,8 @@ import eu.hydrologis.geopaparazzi.database.DatabaseManager;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.gps.GpsLogger;
 import eu.hydrologis.geopaparazzi.osm.OsmView;
+import eu.hydrologis.geopaparazzi.util.debug.Debug;
+import eu.hydrologis.geopaparazzi.util.debug.TestMock;
 
 /**
  * Singleton that takes care of all the sensors and gps and loggings.
@@ -126,8 +128,6 @@ public class ApplicationManager implements SensorEventListener, LocationListener
     private final float[] values = new float[3];
 
     private ConnectivityManager connectivityManager;
-
-    private boolean doMock = false;
 
     private static ApplicationManager applicationManager;
 
@@ -327,7 +327,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         String intervalStr = preferences.getString(GPSLOGGINGINTERVALKEY, String.valueOf(GPS_LOGGING_INTERVAL));
         int waitForMillis = (int) (Long.parseLong(intervalStr) * 1000);
         Log.d(LOGTAG, "LOG INTERVAL MILLIS: " + waitForMillis);
-        if (doMock) {
+        if (Debug.doMock) {
             TestMock.startMocking(locationManager);
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, waitForMillis, 0f, applicationManager);

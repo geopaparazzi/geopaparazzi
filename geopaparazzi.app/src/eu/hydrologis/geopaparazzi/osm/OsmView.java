@@ -61,6 +61,7 @@ import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.Note;
 import eu.hydrologis.geopaparazzi.util.PointsContainer;
+import eu.hydrologis.geopaparazzi.util.debug.Debug;
 /**
  * The view showing the gps position on OSM tiles. 
  * 
@@ -99,7 +100,7 @@ public class OsmView extends View implements ApplicationManagerListener {
     private List<PointF> dragList = new ArrayList<PointF>();
 
     private TileCache tileCache = null;
-    private boolean doDrawNormal = true;
+
     private int width;
     private int height;
     private int currentX;
@@ -120,7 +121,7 @@ public class OsmView extends View implements ApplicationManagerListener {
         super(osmActivity);
         this.osmActivity = osmActivity;
 
-        if (!doDrawNormal) {
+        if (!Debug.doDrawNormal) {
             redPaint = new Paint();
             redPaint.setColor(Color.RED);
             redPaint.setTextSize(redPaint.getTextSize() + 1f);
@@ -174,19 +175,17 @@ public class OsmView extends View implements ApplicationManagerListener {
         boolean internetIsOn = deviceManager.isInternetOn();
         tileCache = new TileCache(osmCacheDir, internetIsOn, null);
 
+        preferences = PreferenceManager.getDefaultSharedPreferences(osmActivity.getApplicationContext());
         GpsLocation loc = deviceManager.getLoc();
         if (loc != null) {
             gpsLat = (float) loc.getLatitude();
             gpsLon = (float) loc.getLongitude();
-        } else {
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(osmActivity.getApplicationContext());
-            gpsLon = preferences.getFloat(GPSLAST_LONGITUDE, gpsLon);
-            gpsLat = preferences.getFloat(GPSLAST_LATITUDE, gpsLat);
         }
+        gpsLon = preferences.getFloat(GPSLAST_LONGITUDE, gpsLon);
+        gpsLat = preferences.getFloat(GPSLAST_LATITUDE, gpsLat);
         centerLat = gpsLat;
         centerLon = gpsLon;
 
-        preferences = PreferenceManager.getDefaultSharedPreferences(osmActivity);
         zoom = preferences.getInt(Constants.PREFS_KEY_ZOOM, 16);
 
         displayMetrics = new DisplayMetrics();
@@ -197,7 +196,6 @@ public class OsmView extends View implements ApplicationManagerListener {
     protected void onWindowVisibilityChanged( int visibility ) {
         super.onWindowVisibilityChanged(visibility);
         if (visibility == 8) {
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(osmActivity.getApplicationContext());
             Editor editor = preferences.edit();
             editor.putFloat(GPSLAST_LONGITUDE, centerLon);
             editor.putFloat(GPSLAST_LATITUDE, centerLat);
@@ -227,7 +225,7 @@ public class OsmView extends View implements ApplicationManagerListener {
             BoundingBox centralBB = tileNumber2BoundingBox(xyTile[0], xyTile[1]);
             // Log.v(LOGTAG, "0:0 - " + centralBB.toString());
             Bitmap tileBitmap;
-            if (doDrawNormal) {
+            if (Debug.doDrawNormal) {
                 tileBitmap = tileCache.get(zoom, xyTile[0], xyTile[1]);
                 if (tileBitmap != null) {
                     canvas.drawBitmap(tileBitmap, centralBB.left, centralBB.top, null);
@@ -270,7 +268,7 @@ public class OsmView extends View implements ApplicationManagerListener {
                     int left = centralBB.left + i * TILESIZE;
                     int top = centralBB.top + j * TILESIZE;
 
-                    if (doDrawNormal) {
+                    if (Debug.doDrawNormal) {
                         tileBitmap = tileCache.get(zoom, xtile, ytile);
                         if (tileBitmap == null) {
                             continue;
