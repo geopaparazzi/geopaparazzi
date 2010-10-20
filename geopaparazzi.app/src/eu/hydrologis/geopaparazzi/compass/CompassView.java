@@ -27,7 +27,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Picture;
 import android.graphics.drawable.BitmapDrawable;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
@@ -45,28 +44,34 @@ import eu.hydrologis.geopaparazzi.util.Constants;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class CompassView extends View implements ApplicationManagerListener {
-    private Paint mPaint = new Paint();
-    private Path mPath = new Path();
+    /*
+     * static variables, needed to be initialized only once for all
+     */
+    private static Paint mPaint = new Paint();
+    private static Path mPath = null;
+    private static Picture picture = null;
+    private static DecimalFormat formatter = new DecimalFormat("0.00000"); //$NON-NLS-1$
+    private static String validPointsString;
+    private static String distanceString;
+    private static int compassWidth;
+    private static int compassHeight;
+    private static int compassCX;
+    private static int compassCY;
+    private static float textSizeNormal;
+    private static Bitmap compassBitmap;
+    private static String timeString;
+    private static String lonString;
+    private static String latString;
+    private static String altimString;
+    private static String azimString;
+    private static ChartDrawer chartDrawer;
 
     /**
      * The current azimuth angle, with 0 = North, -90 = West, 90 = East
      */
     private float azimuth = -1f;
-    private Bitmap compassBitmap;
     private GpsLocation loc;
 
-    private Picture picture = null;
-    private String timeString;
-    private String lonString;
-    private String latString;
-    private String altimString;
-    private String azimString;
-    private ChartDrawer chartDrawer;
-
-    // private int verticalAxisColor = Color.DKGRAY;
-    // private int verticalAxisAlpha = 0;
-    // private int verticalLabelsColor = Color.BLACK;
-    // private int verticalLabelsAlpha = 255;
     private int horizontalAxisColor = Color.DKGRAY;
     private int horizontalAxisAlpha = 0;
     private int horizontalLabelsColor = Color.BLACK;
@@ -78,61 +83,56 @@ public class CompassView extends View implements ApplicationManagerListener {
     private int backgroundColor = Color.LTGRAY;
     private int backgroundAlpha = 100;
 
-    private DecimalFormat formatter = new DecimalFormat("0.00000"); //$NON-NLS-1$
-    private String validPointsString;
-    private String distanceString;
     private ApplicationManager applicationManager;
-    private int compassWidth;
-    private int compassHeight;
-    private int compassCX;
-    private int compassCY;
-    private float textSizeNormal;
     private final TextView compassInfoView;
     private int satellitesNum = 0;
-    private String satellitesString;
+    private static String satellitesString;
     private int maxSatellites = 0;
 
-    public CompassView( GeoPaparazziActivity geopaparazziActivity, TextView compassInfoView ) {
+    public CompassView( GeoPaparazziActivity geopaparazziActivity, TextView compassInfoView, ApplicationManager applicationManager ) {
         super(geopaparazziActivity);
         this.compassInfoView = compassInfoView;
-
-        applicationManager = ApplicationManager.getInstance(getContext());
-
-        int[] needle = getResources().getIntArray(R.array.compassneedle_coords);
-        for( int i = 0; i < needle.length; i = i + 2 ) {
-            if (i == 0) {
-                mPath.moveTo(needle[i], needle[i + 1]);
-            } else {
-                mPath.lineTo(needle[i], needle[i + 1]);
+        this.applicationManager = applicationManager;
+        if (mPath == null) {
+            mPath = new Path();
+            int[] needle = getResources().getIntArray(R.array.compassneedle_coords);
+            for( int i = 0; i < needle.length; i = i + 2 ) {
+                if (i == 0) {
+                    mPath.moveTo(needle[i], needle[i + 1]);
+                } else {
+                    mPath.lineTo(needle[i], needle[i + 1]);
+                }
             }
+            mPath.close();
+
+            timeString = getResources().getString(R.string.utctime);
+            lonString = getResources().getString(R.string.lon);
+            latString = getResources().getString(R.string.lat);
+            altimString = getResources().getString(R.string.altim);
+            azimString = getResources().getString(R.string.azimuth);
+            validPointsString = getResources().getString(R.string.log_points);
+            distanceString = getResources().getString(R.string.log_distance);
+            satellitesString = getResources().getString(R.string.satellite_num);
+
+            chartDrawer = new ChartDrawer("", ChartDrawer.LINE); //$NON-NLS-1$
+
+            String textSizeMediumStr = getResources().getString(R.string.text_normal);
+            textSizeNormal = Float.parseFloat(textSizeMediumStr);
+
+            BitmapDrawable compassDrawable = (BitmapDrawable) getResources().getDrawable(R.drawable.compass);
+            compassWidth = compassDrawable.getIntrinsicWidth();
+            compassHeight = compassDrawable.getIntrinsicHeight();
+            compassCX = compassWidth / 2;
+            if (compassCX % 2 != 0) {
+                compassCX--;
+            }
+            compassCY = compassHeight / 2;
+            
+            compassDrawable.setBounds(0, 0, compassWidth, compassHeight);
+            compassBitmap = compassDrawable.getBitmap();
         }
-        mPath.close();
 
-        BitmapDrawable compassDrawable = (BitmapDrawable) getResources().getDrawable(R.drawable.compass);
-        compassWidth = compassDrawable.getIntrinsicWidth();
-        compassHeight = compassDrawable.getIntrinsicHeight();
-        compassCX = compassWidth / 2;
-        if (compassCX % 2 != 0) {
-            compassCX--;
-        }
-        compassCY = compassHeight / 2;
 
-        compassDrawable.setBounds(0, 0, compassWidth, compassHeight);
-        compassBitmap = compassDrawable.getBitmap();
-
-        timeString = getResources().getString(R.string.utctime);
-        lonString = getResources().getString(R.string.lon);
-        latString = getResources().getString(R.string.lat);
-        altimString = getResources().getString(R.string.altim);
-        azimString = getResources().getString(R.string.azimuth);
-        validPointsString = getResources().getString(R.string.log_points);
-        distanceString = getResources().getString(R.string.log_distance);
-        satellitesString = getResources().getString(R.string.satellite_num);
-
-        chartDrawer = new ChartDrawer("", ChartDrawer.LINE); //$NON-NLS-1$
-
-        String textSizeMediumStr = getResources().getString(R.string.text_normal);
-        textSizeNormal = Float.parseFloat(textSizeMediumStr);
     }
 
     protected void onDraw( Canvas canvas ) {

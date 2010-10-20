@@ -25,7 +25,6 @@ import static eu.hydrologis.geopaparazzi.util.Constants.PATH_GEOPAPARAZZIDATA;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_KMLEXPORT;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_OSMCACHE;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_PICTURES;
-import static eu.hydrologis.geopaparazzi.util.Constants.SENSORTHRESHOLD;
 import static java.lang.Math.toDegrees;
 
 import java.io.File;
@@ -33,8 +32,6 @@ import java.io.FileInputStream;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -48,9 +45,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.location.GpsSatellite;
-import android.location.GpsStatus;
-import android.location.GpsStatus.Listener;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -63,10 +57,13 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi.compass.CompassView;
 import eu.hydrologis.geopaparazzi.database.DatabaseManager;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.gps.GpsLogger;
 import eu.hydrologis.geopaparazzi.osm.OsmView;
+import eu.hydrologis.geopaparazzi.util.debug.Debug;
+import eu.hydrologis.geopaparazzi.util.debug.TestMock;
 
 /**
  * Singleton that takes care of all the sensors and gps and loggings.
@@ -100,7 +97,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
     /**
      * The object responsible to log traces into the database. 
      */
-    private GpsLogger gpsLogger;
+    private static GpsLogger gpsLogger;
 
     private double azimuth = -1;
     private double pitch = -1;
@@ -113,8 +110,6 @@ public class ApplicationManager implements SensorEventListener, LocationListener
     private File picturesDir;
     private File osmCacheDir;
     private File kmlExportDir;
-
-    private boolean doShowTileFrames = false;
 
     private List<ApplicationManagerListener> listeners = new ArrayList<ApplicationManagerListener>();
 
@@ -134,21 +129,8 @@ public class ApplicationManager implements SensorEventListener, LocationListener
 
     private ConnectivityManager connectivityManager;
 
-    public void addListener( ApplicationManagerListener listener ) {
-        if (!listeners.contains(listener)) {
-            listeners.add(listener);
-        }
-    }
-
-    public void removeListener( ApplicationManagerListener listener ) {
-        listeners.remove(listener);
-    }
-
-    public void clearListeners( ) {
-        listeners.clear();
-    }
-
     private static ApplicationManager applicationManager;
+
     /**
      * The getter for the {@link ApplicationManager} singleton.
      * 
@@ -156,7 +138,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
      * in every moment of the application. This is due to the fact
      * that when the application looses focus (for example because of
      * an incoming call, and therefore at a random moment, if the memory 
-     * is too low, the parent activity could have been kille by 
+     * is too low, the parent activity could have been killed by 
      * the system in background. In which case we need to recreate it.) 
      * 
      * @param context the context to refer to.
@@ -255,6 +237,61 @@ public class ApplicationManager implements SensorEventListener, LocationListener
 
     }
 
+    /**
+     * Add a listener to sensors and gps.
+     * 
+     * @param listener the listener to add.
+     */
+    public void addListener( ApplicationManagerListener listener ) {
+        if (!listeners.contains(listener)) {
+            listeners.add(listener);
+        }
+    }
+
+    /**
+     * Remove a listener to sensors and gps.
+     * 
+     * @param listener the listener to remove.
+     */
+    public void removeListener( ApplicationManagerListener listener ) {
+        listeners.remove(listener);
+    }
+
+    /**
+     * Remove the compasslistener, even if it is no longer 
+     * available in the current context.
+     * 
+     * <p>This happens for example on orientation change, where the {@link CompassView}
+     * is recreated, but the {@link ApplicationManager} still has the old one
+     * listening.
+     */
+    public void removeCompassListener() {
+        for( ApplicationManagerListener l : listeners ) {
+            if (l instanceof CompassView) {
+                listeners.remove(l);
+                break;
+            }
+        }
+    }
+
+    /**
+     * Remove the osm listener.
+     * 
+     * @see #removeCompassListener().
+     */
+    public void removeOsmListener() {
+        for( ApplicationManagerListener l : listeners ) {
+            if (l instanceof OsmView) {
+                listeners.remove(l);
+                break;
+            }
+        }
+    }
+
+    public void clearListeners() {
+        listeners.clear();
+    }
+
     public Resources getResource() {
         Resources resources = context.getResources();
         return resources;
@@ -274,18 +311,6 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         return (info != null && info.isConnected());
     }
 
-    // /**
-    // * Trigger to send to all listeners the last known location of the gps.
-    // */
-    // public void triggerGetLastKnowLocationBroadcast() {
-    // Location lastKnownLocation =
-    // locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-    //
-    // for( ApplicationManagerListener listener : listeners ) {
-    // listener.onLocationChanged(new GpsLocation(lastKnownLocation));
-    // }
-    // }
-
     /**
      * Stops listening to all the devices.
      */
@@ -302,12 +327,10 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         String intervalStr = preferences.getString(GPSLOGGINGINTERVALKEY, String.valueOf(GPS_LOGGING_INTERVAL));
         int waitForMillis = (int) (Long.parseLong(intervalStr) * 1000);
         Log.d(LOGTAG, "LOG INTERVAL MILLIS: " + waitForMillis);
-        locationManager.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER, waitForMillis,
-        // TIMETHRESHOLD,
-                0f, applicationManager);
-        // locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-        // TIMETHRESHOLD, SENSORTHRESHOLD, this);
+        if (Debug.doMock) {
+            TestMock.startMocking(locationManager);
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, waitForMillis, 0f, applicationManager);
 
         // locationManager.addGpsStatusListener(applicationManager);
 
@@ -419,23 +442,23 @@ public class ApplicationManager implements SensorEventListener, LocationListener
     }
 
     public void onStatusChanged( String provider, int status, Bundle extras ) {
-        String statusString;
-        switch( status ) {
-        case LocationProvider.OUT_OF_SERVICE:
-            if (gpsLoc == null || gpsLoc.getProvider().equals(provider)) {
-                statusString = "No Service";
-                gpsLoc = null;
-            }
-            break;
-        case LocationProvider.TEMPORARILY_UNAVAILABLE:
-            if (gpsLoc == null || gpsLoc.getProvider().equals(provider)) {
-                statusString = "no fix";
-            }
-            break;
-        case LocationProvider.AVAILABLE:
-            statusString = "fix";
-            break;
-        }
+        // String statusString;
+        // switch( status ) {
+        // case LocationProvider.OUT_OF_SERVICE:
+        // if (gpsLoc == null || gpsLoc.getProvider().equals(provider)) {
+        // statusString = "No Service";
+        // gpsLoc = null;
+        // }
+        // break;
+        // case LocationProvider.TEMPORARILY_UNAVAILABLE:
+        // if (gpsLoc == null || gpsLoc.getProvider().equals(provider)) {
+        // statusString = "no fix";
+        // }
+        // break;
+        // case LocationProvider.AVAILABLE:
+        // statusString = "fix";
+        // break;
+        // }
     }
 
     // TODO
@@ -523,10 +546,6 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         alert.show();
     }
 
-    public boolean doShowTilesFrames() {
-        return doShowTileFrames;
-    }
-
     public boolean isGpsLogging() {
         if (gpsLogger == null) {
             return false;
@@ -607,9 +626,9 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         return picturesList;
     }
 
-    public static void openDialog( int messageId, Context activity ) {
+    public static void openDialog( int message, Context activity ) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setMessage(messageId).setCancelable(false).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+        builder.setMessage(message).setCancelable(false).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
             public void onClick( DialogInterface dialog, int id ) {
             }
         });

@@ -6,6 +6,7 @@
     <string name="okaddress">usa indirizzo</string>
     <string name="longitude">longitudine</string>
     <string name="latitude">latitudine</string>
+    <string name="meters">metri</string>
     
     <string name="app_name">GeoPaparazzi</string>
 
@@ -21,7 +22,7 @@
     <string name="gpxnonsaved">è avvenuto un errore durante il salvataggio del file gpx!</string>
     <string name="imagesaved">Imagine salvata con successo!</string>
     <string name="imagenonsaved">è avvenuto un errore durante il salvataggio dell\'immagine!</string>
-    <string name="loggingoff">Fermati gps e sensori.</string>
+    <string name="loggingoff">Fermati tutti i sensori.</string>
     <string name="loggingon">Partiti gps e sensori.</string>
     <string name="gpsloggingoff">Fermato gps.</string>
     <string name="gpsloggingon">Partito gps...</string>
@@ -65,7 +66,7 @@
 	<string name="width_label">larghezza</string>
 	<string name="color_label">colore</string>
 	<string name="last_position">Ultima posizione</string>
-	<string name="distance">Distanza:</string>
+	<string name="distance">Distanza [m]:</string>
 
 	<string name="mainmenu_kmlexport">export kml</string>
 	<string name="mainmenu_gpxconvert">import gpx</string>
@@ -151,4 +152,6 @@
 	    www.openstreetmap.org\n
 	    www.openclipart.org\n
 	</string>
+	
+	<string name="no_maps_in_list">Non ci sono mappe nella lista. Per importare mappe seleziona la funzione di import gpx dal menu.</string>
 </resources>

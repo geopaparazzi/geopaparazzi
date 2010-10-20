@@ -52,10 +52,10 @@ public class MapDataListActivity extends ListActivity {
 
         setContentView(R.layout.mapslist);
 
-        Collection<MapItem> logsList = null;
+        Collection<MapItem> mapsList = null;
         try {
-            logsList = DaoMaps.getMaps(this);
-            mapsItems = (MapItem[]) logsList.toArray(new MapItem[logsList.size()]);
+            mapsList = DaoMaps.getMaps(this);
+            mapsItems = (MapItem[]) mapsList.toArray(new MapItem[mapsList.size()]);
         } catch (IOException e1) {
             e1.printStackTrace();
             return;
