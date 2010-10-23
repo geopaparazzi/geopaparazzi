@@ -27,15 +27,20 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -88,6 +93,9 @@ public class GeoPaparazziActivity extends Activity {
 
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
+
+        showChangeLogIfNeeded();
+
         init();
     }
 
@@ -323,4 +331,34 @@ public class GeoPaparazziActivity extends Activity {
         return applicationManager;
     }
 
+    /**
+     * Popup the changelog if it was never seen for the current version. 
+     */
+    private void showChangeLogIfNeeded() {
+        try {
+            // current version
+            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            int versionCode = packageInfo.versionCode;
+            SharedPreferences settings = getSharedPreferences("GEOPAPARAZZI_SHARED", 0);
+            int viewedChangelogVersion = settings.getInt("GEOPAPARAZZI_SHARED_VERSIONVIEWED", 0);
+            if (viewedChangelogVersion < versionCode) {
+                Editor editor = settings.edit();
+                editor.putInt("GEOPAPARAZZI_SHARED_VERSIONVIEWED", versionCode);
+                editor.commit();
+                LayoutInflater li = LayoutInflater.from(this);
+                View view = li.inflate(R.layout.changelog_view, null);
+
+                new AlertDialog.Builder(this).setTitle(R.string.changelog).setIcon(android.R.drawable.ic_menu_info_details)
+                        .setView(view).setNegativeButton(R.string.close, new DialogInterface.OnClickListener(){
+                            public void onClick( DialogInterface dialog, int whichButton ) {
+                                //
+                            }
+                        }).show();
+
+            }
+        } catch (NameNotFoundException e) {
+            Log.w("Unable to get version code. Will not show changelog", e);
+        }
+
+    }
 }

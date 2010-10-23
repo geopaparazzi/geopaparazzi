@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="changelog">Changelog</string>
+    <string name="close">Close</string>
+    <string name="thanks">Thanks for installing Geopaparazzi!</string>
+    <string name="changes">Changes:</string>
+
+	<string name="changelogtext">
+Version 1.1.1\n
+\n
+New Localization:\n
+* added Spanish translation\n
+\n
+Fixes:\n
+* fixed small delay in getting the old gps data on screen rotation\n
+\n
+\n
+Version 1.1\n
+\n
+1.6 (Donut) Android set as minimum OS, needed to support multiple screens.\n
+\n
+New features:\n
+\n
+* optimized OSM tiles gathering for small screens and enough tiles for large screens\n
+* support for small screens (ex HTC Wildfire)\n
+* measurement info activity added\n
+* added camera snap button in photo view for devices without action and snap button (ex. Samsung Tab)\n
+\n
+New Localization:\n
+\n
+* added Italian translation \n
+\n
+Fixes:\n
+\n
+* better togglebutton for the gps log\n
+* better layout depending on portrait/landscape mode and in general better orientation toggle support\n
+* same background color for all views \n
+	</string>
+	
+</resources>

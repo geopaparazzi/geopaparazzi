@@ -60,8 +60,8 @@
 	<string name="wrongLongitude">Longitude has to be a number between -180 and 180.</string>
 	<string name="wrongLatitude">Latitude has to be a number between -90 and 90.</string>
 	<string name="emptyaddress">Please insert an address.</string>
-	<string name="cantretrievefromaddress">Could not retrieve an the location from the supplied address.</string>
-	<string name="prompt_gpsenable">Your GPS is disabled! Would you like to enable it?</string>
+	<string name="cantretrievefromaddress">Could not retrieve the location from the supplied address.</string>
+	<string name="prompt_gpsenable">Your gps is disabled! Would you like to enable it?</string>
 	<string name="nogps4google">The gps didn\'\'t supply any position yet. Can\'\'t Visualize any position on map.</string>
 	<string name="width_label">width</string>
 	<string name="color_label">color</string>
