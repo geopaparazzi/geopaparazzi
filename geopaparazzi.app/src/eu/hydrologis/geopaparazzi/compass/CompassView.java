@@ -89,10 +89,11 @@ public class CompassView extends View implements ApplicationManagerListener {
     private static String satellitesString;
     private int maxSatellites = 0;
 
-    public CompassView( GeoPaparazziActivity geopaparazziActivity, TextView compassInfoView, ApplicationManager applicationManager ) {
+    public CompassView( GeoPaparazziActivity geopaparazziActivity, TextView compassInfoView, ApplicationManager applicationManager, GpsLocation startLoc ) {
         super(geopaparazziActivity);
         this.compassInfoView = compassInfoView;
         this.applicationManager = applicationManager;
+        this.loc = startLoc;
         
         /*
          * the following block initializes a bunch of variables that 
@@ -288,5 +289,7 @@ public class CompassView extends View implements ApplicationManagerListener {
         this.satellitesNum = num;
         this.maxSatellites = max;
     }
+    
+    
 
 }

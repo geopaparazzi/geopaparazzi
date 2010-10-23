@@ -19,8 +19,6 @@ package eu.hydrologis.geopaparazzi.util;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.widget.Button;
 import eu.hydrologis.geopaparazzi.R;

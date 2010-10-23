@@ -19,8 +19,6 @@ package eu.hydrologis.geopaparazzi.osm;
 
 import java.io.Serializable;
 
-import eu.hydrologis.geopaparazzi.gpx.GpxItem;
-
 /**
  * Item representing a map entry (gps log or map).
  * 

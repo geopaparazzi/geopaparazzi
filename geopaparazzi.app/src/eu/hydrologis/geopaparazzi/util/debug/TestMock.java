@@ -22,7 +22,7 @@ import java.util.Date;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
-import android.location.LocationProvider;
+import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 
 /**
  * A class for when there is no gps cover.
@@ -34,25 +34,27 @@ public class TestMock {
     private static double lon = 11;
     private static double alt = 100;
     private static long date = new Date().getTime();
-    private static String MOCK_PROVIDER_NAME = LocationManager.GPS_PROVIDER;
+    public static String MOCK_PROVIDER_NAME = LocationManager.GPS_PROVIDER;
     private static boolean isOn = false;
 
     /**
      * Starts to trigger mock locations.
      * 
      * @param locationManager the location manager.
+     * @param applicationManager 
      */
-    public static void startMocking( final LocationManager locationManager ) {
+    public static void startMocking( final LocationManager locationManager, ApplicationManager applicationManager ) {
         if (isOn) {
             return;
         }
         // Get some mock location data in the game
-        LocationProvider provider = locationManager.getProvider(MOCK_PROVIDER_NAME);
-        if (provider == null) {
-            locationManager.addTestProvider(MOCK_PROVIDER_NAME, true, false, true, false, false, false, false,
-                    Criteria.POWER_LOW, Criteria.ACCURACY_FINE);
-            locationManager.setTestProviderEnabled(MOCK_PROVIDER_NAME, true);
-        }
+        // LocationProvider provider = locationManager.getProvider(MOCK_PROVIDER_NAME);
+        // if (provider == null) {
+        locationManager.addTestProvider(MOCK_PROVIDER_NAME, true, false, true, false, false, false, false, Criteria.POWER_LOW,
+                Criteria.ACCURACY_FINE);
+        locationManager.setTestProviderEnabled(MOCK_PROVIDER_NAME, true);
+        locationManager.requestLocationUpdates(TestMock.MOCK_PROVIDER_NAME, 3000, 0f, applicationManager);
+        // }
 
         Runnable r = new Runnable(){
             public void run() {

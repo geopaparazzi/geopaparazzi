@@ -48,7 +48,6 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -328,9 +327,10 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         int waitForMillis = (int) (Long.parseLong(intervalStr) * 1000);
         Log.d(LOGTAG, "LOG INTERVAL MILLIS: " + waitForMillis);
         if (Debug.doMock) {
-            TestMock.startMocking(locationManager);
+            TestMock.startMocking(locationManager, applicationManager);
+        } else {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, waitForMillis, 0f, applicationManager);
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, waitForMillis, 0f, applicationManager);
 
         // locationManager.addGpsStatusListener(applicationManager);
 
