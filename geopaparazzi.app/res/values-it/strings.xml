@@ -32,8 +32,8 @@
     
     <string name="about">Informazioni</string>
     <string name="exit">Esci</string>
-    <string name="cantcreate_sdcard">Non sono stato in grado di creare la cartela sulla scheda SD ({0}). Esco...</string>
-    <string name="sdcard_notexist">Scheda SD non esiste o non è scrivibile (è possibile sia montata da un pc?). Esco...</string>
+    <string name="cantcreate_sdcard">Non sono stato in grado di creare la cartella sulla scheda SD ({0}). Esco...</string>
+    <string name="sdcard_notexist">Scheda SD non esiste o non è scrivibile (è possibile sia aperta su un pc?). Esco...</string>
     <string name="cantwrite_gpslog">ERRORE: non sono stato in grado di scrivere il log gps!</string>
     <string name="cantclose_gpslog">ERRORE: non sono stato in grado di chiudere il log gps!</string>
     <string name="gpslogthread_interrupted">ERRORE: il log gps è stato interrotto!</string>

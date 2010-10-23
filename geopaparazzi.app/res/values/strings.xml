@@ -21,7 +21,7 @@
     <string name="kmlnonsaved">An error occurred while exporting to kml!</string>
     <string name="gpxnonsaved">An error occurred while converting to gpx!</string>
     <string name="imagesaved">Image successfully saved!</string>
-    <string name="imagenonsaved">An error occurred while saving the Image!</string>
+    <string name="imagenonsaved">An error occurred while saving the image!</string>
     <string name="loggingoff">Stopped all sensors.</string>
     <string name="loggingon">Started gps and sensor logging.</string>
     <string name="gpsloggingoff">Stopped gps logging.</string>
