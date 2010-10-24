@@ -46,7 +46,7 @@
     <string name="log_distance">Etäisyys: </string>
     <string name="satellite_num">Satelliitit: </string>
     
-        <string name="osmview">OSM-kartta</string>
+        <string name="osmview">OSM-kartat</string>
         <string name="googleview">Google-kartat</string>
         <string name="zoomin">Lähennä</string>
         <string name="zoomout">Loitonna</string>
