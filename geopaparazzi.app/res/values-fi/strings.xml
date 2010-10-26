@@ -155,7 +155,7 @@
         
         <string name="no_maps_in_list">Gpx-kansio on tyhjä. Käytä Tuo gpx -toimintoa tiedostojen tuomiseksi.</string>
 
-    <string name="insert_note">insert your note here</string>
+    <string name="insert_note">Kirjoita muistiinpano</string>
 
 </resources>
 
