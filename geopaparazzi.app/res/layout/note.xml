@@ -1,48 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent" android:layout_height="fill_parent" android:background="#FFFFFF">
-	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	    android:layout_width="fill_parent"
-	    android:layout_height="fill_parent"
-		android.setVerticalScrollBarEnabled="true" android:background="#FFFFFF"
-    >
-	    <TextView
-	        android:id="@+id/notelabel"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:layout_marginTop="10dip"
-	        android:layout_marginBottom="10dip"
-	        android:layout_weight="0.1"
-	        android:text="Insert your note here:" android:textColor="#000000" android:layout_marginLeft="10dip" android:layout_marginRight="10dip"/>
-	
-	    <EditText
-	        android:id="@+id/noteentry"
-	        android:layout_width="fill_parent"
-	        android:layout_height="fill_parent"
-	        android:gravity="top" 
-	        android:background="@android:drawable/editbox_background"
-	        android:layout_below="@id/notelabel" 
-	        android:layout_marginBottom="5dip" android:lines="14" android:fitsSystemWindows="true" android:layout_marginRight="10dip" android:layout_marginLeft="10dip"/>
-	
-	    <Button
-	        android:id="@+id/cancel"
-	        android:layout_width="wrap_content"
-	        android:layout_height="fill_parent"
-	        android:layout_below="@id/noteentry"
-	        android:layout_alignParentRight="true"
-	        android:layout_marginLeft="7dip"
-	        android:layout_weight="0.8"
-	        android:text="Cancel" android:layout_marginRight="10dip"/>
-	
-	    <Button
-	        android:id="@+id/ok"
-	        android:layout_width="wrap_content"
-	        android:layout_height="fill_parent"
-	        android:layout_toLeftOf="@id/cancel"
-	        android:layout_alignTop="@id/cancel"
-	        android:layout_weight="0.8"
-	        android:text="    Ok     " />
-	
-	</RelativeLayout>
-</ScrollView>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:orientation="vertical" android:padding="10px"
+	android.setVerticalScrollBarEnabled="true" android:background="#FFFFFF">
+	<EditText android:id="@+id/noteentry" android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:layout_weight="6"
+		android:hint="@string/insert_note" android:gravity="top"
+		android:lines="15" />
+
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:orientation="horizontal"
+		android:layout_weight="1" android:background="#FFFFFF"
+		android:padding="10px">
+		<Button android:id="@+id/ok" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:layout_weight="1"
+			android:text="@string/ok" />
+		<Button android:id="@+id/cancel" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:layout_weight="1"
+			android:text="@string/cancel" />
+	</LinearLayout>
+</LinearLayout>

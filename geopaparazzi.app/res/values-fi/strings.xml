@@ -4,8 +4,8 @@
     <string name="ok">OK</string>
     <string name="okcoord">Mene sijaintiin</string>
     <string name="okaddress">Mene osoitteeseen</string>
-    <string name="longitude">Pituusaste</string>
-    <string name="latitude">Leveysaste</string>
+    <string name="longitude">Pituus-aste</string>
+    <string name="latitude">Leveys-aste</string>
     <string name="meters">meters</string>
     
     <string name="app_name">GeoPaparazzi</string>
@@ -13,21 +13,21 @@
     <string name="notesaved">Muistiinpano tallennettu!</string>
     <string name="notenonsaved">Muistiinpanon tallennus epäonnistui!</string>
     <string name="notecancel">Muistiinpanon tallennus peruttu.</string>
-    <string name="notesvisibilityToggle">Näytä/piilota muistiinpanot.</string>
+    <string name="notesvisibilityToggle">Näytä muistiinpanot.</string>
 
-    <string name="gpslogsvisibilityToggle">Näytä/piilota jäljet.</string>
+    <string name="gpslogsvisibilityToggle">Näytä jäljet.</string>
 
     <string name="kmlsaved">Tallennettu kml-tiedostona: </string>
     <string name="kmlnonsaved">Kml-tiedoston tallennus epäonnistui!</string>
     <string name="gpxnonsaved">Muunnos gpx-tiedostoksi epäonnistui!</string>
     <string name="imagesaved">Kuva tallennettu!</string>
     <string name="imagenonsaved">Kuvan tallentaminen epäonnistui!</string>
-    <string name="loggingoff">Jäljen ja anturitietojen tallennus lopetettu.</string>
-    <string name="loggingon">Jäljen ja anturitietojen tallennus aloitettu.</string>
+    <string name="loggingoff">GPS- ja anturiseuranta lopetettu.</string>
+    <string name="loggingon">GPS- ja anturiseuranta aloitettu.</string>
     <string name="gpsloggingoff">Jäljen tallennus lopetettu.</string>
     <string name="gpsloggingon">Jäljen tallennus aloitettu...</string>
     <string name="gpsloggingalarm">Estä/lopeta hälytys... </string>
-    <string name="gpslogging_only">Tämä toiminto on mahdollinen vain jäljen tallennuksen aikana.</string>
+    <string name="gpslogging_only">Tämä toiminto on mahdollinen vain GPS-seurannan aikana.</string>
     <string name="nogps_data">GPS-tietoa ei vielä saatavilla!</string>
     
     <string name="about">Info</string>
@@ -39,14 +39,14 @@
     <string name="gpslogthread_interrupted">Virhe: Jäljen tallennus keskeytetty!</string>
     <string name="utctime">UTC: </string>
     <string name="altim">Korkeus: </string>
-    <string name="lat">lat: </string>
-    <string name="lon">lon: </string>
+    <string name="lat">Lat: </string>
+    <string name="lon">Lon: </string>
     <string name="azimuth">Suunta: </string>
     <string name="log_points">Pisteet: </string>
     <string name="log_distance">Etäisyys: </string>
     <string name="satellite_num">Satelliitit: </string>
     
-        <string name="osmview">OSM-kartat</string>
+        <string name="osmview">OSM-kartta</string>
         <string name="googleview">Google-kartat</string>
         <string name="zoomin">Lähennä</string>
         <string name="zoomout">Loitonna</string>
@@ -65,8 +65,8 @@
         <string name="nogps4google">GPS-tietoa ei ole vielä saatavilla, joten sijaintia kartalla ei voi näyttää.</string>
         <string name="width_label">Leveys</string>
         <string name="color_label">Väri</string>
-        <string name="last_position">Viimeisin sijainti</string>
-        <string name="distance">Etäisyys [m]:</string>
+        <string name="last_position">Viime sijainti</string>
+        <string name="distance">Etäi-syys [m]:</string>
 
         <string name="mainmenu_kmlexport">Tallenna kml</string>
         <string name="mainmenu_gpxconvert">Tuo gpx</string>
@@ -75,8 +75,8 @@
         <string name="mainmenu_togglemeasure">Mittaus päälle/pois</string>
         <string name="mainmenu_preferences">Asetukset</string>
         <string name="mainmenu_merge">Yhdistä valitut jäljet</string>
-        <string name="mainmenu_addtags">Lisää muistiinpano lipukkeeseen</string>
-        <string name="mainmenu_removelastnote">Poista viimeisin muistiinpano</string>
+        <string name="mainmenu_addtags">Lisää uusi kohde</string>
+        <string name="mainmenu_removelastnote">Poista viime muistiinpano</string>
 
         <string name="gpslogproperty">Ominaisuudet: </string>
         <string name="gpslog_chart">Visualisoi jälki</string>
@@ -87,9 +87,9 @@
         <string name="map_zoom">Kohdista gpx-tiedostoon</string>
         <string name="map_delete">Poista gpx-tiedosto</string>
         
-        <string name="gps_preferences">GPS-asetukset</string>
-        <string name="gps_logging_distance">Jäljen pisteiden etäisyyden tallennusväli</string>
-        <string name="gps_logging_interval">Jäljen pisteiden tallenuksen aikaväli</string>
+        <string name="gps_preferences">Jäljen tallennusasetukset</string>
+        <string name="gps_logging_distance">Tallennusväli matkassa</string>
+        <string name="gps_logging_interval">Tallenusväli ajassa</string>
         <string name="gps_native_settings">Gps page</string>
         <string name="gps_logging_on">Jälkeä tallennetaan</string>
         <string name="gps_logging_off">Jäljen tallennus ei käytössä</string>
@@ -110,13 +110,13 @@
 
         <string name="chart_profile_view">Profiili</string>
 
-        <string name="gpx_import_title">Jälki vai piste?</string>
-        <string name="gpx_import_message">Tuo tiedosto pisteinä tai jälkenä.</string>
-        <string name="gpx_import_checkbox_message">Tuo pisteinä (ei jälkenä)</string>
+        <string name="gpx_import_title">Tuodaan gpx...</string>
+        <string name="gpx_import_message">Tuo tiedosto jälkenä tai pisteinä</string>
+        <string name="gpx_import_checkbox_message">Tuo pisteinä</string>
         <string name="gpx_import_processing">Avataan gpx-tiedostoa...</string>
 
-        <string name="osm_additionalinfo">Lisää tietoa lipukkeeseen</string>
-        <string name="osm_tagsgrid">Valitse lipuke</string>
+        <string name="osm_additionalinfo">Kohteen tiedot</string>
+        <string name="osm_tagsgrid">Lisää kohde ryhmään:</string>
         
         <string name="error_disk_full">Muistikortti täynnä. Vapauta tilaa ja aloita uudelleen.</string>
         
@@ -134,7 +134,7 @@
             GeoPaparazzi\n
             GeoPaparazin tarjoaa HydroloGIS.\n
             \n
-            Ostamalla tämän ohjelman tuet JGrass ja BeeGIS-projekteja.\n 
+            Ostamalla tämän ohjelman tuet JGrass- ja BeeGIS-projekteja.\n 
             \n
             GeoPaparazzi on BeeGIS-ohjelman versio mobiilikäyttöön. Voit ladata tallennettuja tietoja siitä suoraan BeeGIS-ohjelmaan\n
             \n
@@ -144,7 +144,7 @@
             \n
             Kompassikuvake: The Modern Compass Rose, RobA, Open Clipart Library.\n
             \n
-            Links:\n
+            Linkit:\n
             www.geopaparazzi.eu\n
             www.hydrologis.eu\n
             www.jgrass.org\n
@@ -154,5 +154,8 @@
         </string>
         
         <string name="no_maps_in_list">Gpx-kansio on tyhjä. Käytä Tuo gpx -toimintoa tiedostojen tuomiseksi.</string>
+
+    <string name="insert_note">insert your note here</string>
+
 </resources>
 

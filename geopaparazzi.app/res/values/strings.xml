@@ -154,4 +154,6 @@
 	</string>
 	
 	<string name="no_maps_in_list">There are no maps in the list. To import maps, use the import gpx function from the menu.</string>
+	
+	<string name="insert_note">insert your note here</string>
 </resources>
