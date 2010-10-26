@@ -116,7 +116,7 @@
 	<uses-permission android:name="android.permission.SEND_SMS"></uses-permission>
 	-->
 	<!-- <uses-sdk android:minSdkVersion="3"></uses-sdk>  -->
-	<uses-sdk android:maxSdkVersion="8" android:targetSdkVersion="4" android:minSdkVersion="4"></uses-sdk>
+	<uses-sdk android:targetSdkVersion="4" android:minSdkVersion="4"></uses-sdk>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
 <supports-screens android:smallScreens="true" android:normalScreens="true" android:largeScreens="true" android:anyDensity="true" android:resizeable="true"></supports-screens>
 
