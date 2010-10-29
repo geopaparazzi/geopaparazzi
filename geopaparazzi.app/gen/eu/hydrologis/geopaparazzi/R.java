@@ -196,6 +196,8 @@ public final class R {
         public static final int exit=0x7f060022;
         public static final int googleview=0x7f060031;
         public static final int goto_coordinate=0x7f060037;
+        public static final int gps_log=0x7f06007b;
+        public static final int gps_log_name=0x7f06007c;
         public static final int gps_logging_distance=0x7f060056;
         public static final int gps_logging_interval=0x7f060057;
         public static final int gps_logging_off=0x7f06005a;

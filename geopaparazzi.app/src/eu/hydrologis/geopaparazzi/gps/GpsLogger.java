@@ -91,7 +91,12 @@ public class GpsLogger implements ApplicationManagerListener {
         return isLogging;
     }
 
-    public void startLogging() {
+    /**
+     * Starts logging into the database.
+     * 
+     * @param logName a name for the new log or <code>null</code>.
+     */
+    public void startLogging(final String logName) {
         isLogging = true;
 
         Thread t = new Thread(){
@@ -100,7 +105,7 @@ public class GpsLogger implements ApplicationManagerListener {
                 last100Elevations.clear();
                 try {
                     java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
-                    long gpsLogId = DaoGpsLog.addGpsLog(context, now, now, null, 2f, "red", true);
+                    long gpsLogId = DaoGpsLog.addGpsLog(context, now, now, logName, 2f, "red", true);
                     Log.i(LOGTAG, "Starting gps logging. Logid: " + gpsLogId);
 
                     // get preferences

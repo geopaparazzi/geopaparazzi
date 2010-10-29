@@ -38,6 +38,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.text.Editable;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -46,6 +47,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -149,14 +151,29 @@ public class GeoPaparazziActivity extends Activity {
                 if (isChecked) {
                     GpsLocation loc = applicationManager.getLoc();
                     if (loc != null) {
-                        applicationManager.doLogGps(true);
+                        final String defaultLogName = "log_" + Constants.TIMESTAMPFORMATTER.format(new Date());
+                        final EditText input = new EditText(GeoPaparazziActivity.this);
+                        input.setText(defaultLogName);
+                        new AlertDialog.Builder(GeoPaparazziActivity.this).setTitle(R.string.gps_log)
+                                .setMessage(R.string.gps_log_name).setView(input)
+                                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                                    public void onClick( DialogInterface dialog, int whichButton ) {
+                                        Editable value = input.getText();
+                                        String newName = value.toString();
+                                        if (newName == null || newName.length() < 1) {
+                                            newName = defaultLogName;
+                                        }
+                                        applicationManager.startLogging(newName);
+                                    }
+                                }).show();
+
                     } else {
                         ApplicationManager.openDialog(R.string.gpslogging_only, GeoPaparazziActivity.this);
                         isChecked = !isChecked;
                         logButton.setChecked(isChecked);
                     }
                 } else {
-                    applicationManager.doLogGps(false);
+                    applicationManager.stopLogging();
                 }
             }
         });
@@ -246,7 +263,7 @@ public class GeoPaparazziActivity extends Activity {
         Toast.makeText(this, R.string.loggingoff, Toast.LENGTH_LONG).show();
         // stop all logging
         applicationManager.stopListening();
-        applicationManager.doLogGps(false);
+        applicationManager.stopLogging();
         DatabaseManager.getInstance().closeDatabase();
         super.finish();
     }

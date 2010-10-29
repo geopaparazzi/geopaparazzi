@@ -156,6 +156,7 @@
         <string name="no_maps_in_list">Gpx-kansio on tyhjä. Käytä Tuo gpx -toimintoa tiedostojen tuomiseksi.</string>
 
     <string name="insert_note">Kirjoita muistiinpano</string>
-
+    <string name="gps_log">gps log</string>
+    <string name="gps_log_name">Aseta GPS-lokin nimi tai hyväksy oletus yksi</string>
 </resources>
 

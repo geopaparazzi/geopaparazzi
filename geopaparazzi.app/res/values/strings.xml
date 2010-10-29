@@ -156,4 +156,6 @@
 	<string name="no_maps_in_list">There are no maps in the list. To import maps, use the import gpx function from the menu.</string>
 	
 	<string name="insert_note">insert your note here</string>
+	<string name="gps_log">gps log</string>
+	<string name="gps_log_name">Insert a gps log name or accept the default one</string>
 </resources>
