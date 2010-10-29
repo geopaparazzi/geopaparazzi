@@ -577,17 +577,30 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         return gpsLogger.getCurrentDistance();
     }
 
-    public void doLogGps( boolean doLogGps ) {
+    private void checkLoggerExists() {
         if (gpsLogger == null) {
             gpsLogger = new GpsLogger(context);
         }
-        if (doLogGps) {
-            addListener(gpsLogger);
-            gpsLogger.startLogging();
-        } else {
-            gpsLogger.stopLogging();
-            removeListener(gpsLogger);
-        }
+    }
+
+    /**
+     * Start gps logging.
+     * 
+     * @param logName a name for the new gps log or <code>null</code>.
+     */
+    public void startLogging( String logName ) {
+        checkLoggerExists();
+        addListener(gpsLogger);
+        gpsLogger.startLogging(logName);
+    }
+
+    /**
+     * Stop gps logging.
+     */
+    public void stopLogging() {
+        checkLoggerExists();
+        gpsLogger.stopLogging();
+        removeListener(gpsLogger);
     }
 
     /**
