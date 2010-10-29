@@ -89,7 +89,7 @@
         
         <string name="gps_preferences">Jäljen tallennusasetukset</string>
         <string name="gps_logging_distance">Tallennusväli matkassa</string>
-        <string name="gps_logging_interval">Tallenusväli ajassa</string>
+        <string name="gps_logging_interval">Tallennusväli ajassa</string>
         <string name="gps_native_settings">Gps page</string>
         <string name="gps_logging_on">Jälkeä tallennetaan</string>
         <string name="gps_logging_off">Jäljen tallennus ei käytössä</string>
@@ -156,7 +156,7 @@
         <string name="no_maps_in_list">Gpx-kansio on tyhjä. Käytä Tuo gpx -toimintoa tiedostojen tuomiseksi.</string>
 
     <string name="insert_note">Kirjoita muistiinpano</string>
-    <string name="gps_log">gps log</string>
-    <string name="gps_log_name">Aseta GPS-lokin nimi tai hyväksy oletus yksi</string>
+    <string name="gps_log">Jälki</string>
+    <string name="gps_log_name">Anna nimi tai käytä oletusnimeä</string>    
 </resources>
 
