@@ -10,6 +10,7 @@ Version 1.1.1\n
 \n
 New Localization:\n
 * added Spanish translation\n
+* added Finnish translation\n
 \n
 Fixes:\n
 * fixed small delay in getting the old gps data on screen rotation\n
