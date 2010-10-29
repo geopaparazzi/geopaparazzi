@@ -77,8 +77,8 @@ public class DaoGpsLog {
      * @return the id of the new created log.
      * @throws IOException 
      */
-    public static long addGpsLog( Context context, Date startTs, Date endTs, String text,
-            float width, String color, boolean visible ) throws IOException {
+    public static long addGpsLog( Context context, Date startTs, Date endTs, String text, float width, String color,
+            boolean visible ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         sqliteDatabase.beginTransaction();
         long rowId;
@@ -110,8 +110,8 @@ public class DaoGpsLog {
         return rowId;
     }
 
-    public static void addGpsLogDataPoint( SQLiteDatabase sqliteDatabase, long gpslogId,
-            double lon, double lat, double altim, Date timestamp ) throws IOException {
+    public static void addGpsLogDataPoint( SQLiteDatabase sqliteDatabase, long gpslogId, double lon, double lat, double altim,
+            Date timestamp ) throws IOException {
         ContentValues values = new ContentValues();
         values.put(COLUMN_LOGID, (int) gpslogId);
         values.put(COLUMN_DATA_LON, lon);
@@ -156,26 +156,32 @@ public class DaoGpsLog {
         sB.append(COLUMN_ID);
         String query = sB.toString();
 
-        Cursor c = sqliteDatabase.rawQuery(query, null);
-        c.moveToFirst();
-        while( !c.isAfterLast() ) {
-            long logid = c.getLong(0);
-            String text = c.getString(1);
-            String color = c.getString(2);
-            double width = c.getDouble(3);
-            int visible = c.getInt(4);
-            // Log.d(DEBUG_TAG, "Res: " + logid + "/" + color + "/" + width + "/" + visible + "/" +
-            // text);
-            MapItem item = new MapItem();
-            item.setId(logid);
-            item.setName(text);
-            item.setColor(color);
-            item.setWidth((float) width);
-            item.setVisible(visible == 1 ? true : false);
-            logsList.add(item);
-            c.moveToNext();
+        Cursor c = null;
+        try {
+            c = sqliteDatabase.rawQuery(query, null);
+            c.moveToFirst();
+            while( !c.isAfterLast() ) {
+                long logid = c.getLong(0);
+                String text = c.getString(1);
+                String color = c.getString(2);
+                double width = c.getDouble(3);
+                int visible = c.getInt(4);
+                // Log.d(DEBUG_TAG, "Res: " + logid + "/" + color + "/" + width + "/" + visible +
+                // "/" +
+                // text);
+                MapItem item = new MapItem();
+                item.setId(logid);
+                item.setName(text);
+                item.setColor(color);
+                item.setWidth((float) width);
+                item.setVisible(visible == 1 ? true : false);
+                logsList.add(item);
+                c.moveToNext();
+            }
+        } finally {
+            if (c != null)
+                c.close();
         }
-        c.close();
 
         // Log.d(DEBUG_TAG, "Query: " + query);
         // Log.d(DEBUG_TAG, "gave logs: " + logsList.size());
@@ -210,8 +216,8 @@ public class DaoGpsLog {
         }
     }
 
-    public static void updateLogProperties( Context context, long logid, String color, float width,
-            boolean visible, String name ) throws IOException {
+    public static void updateLogProperties( Context context, long logid, String color, float width, boolean visible, String name )
+            throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         sqliteDatabase.beginTransaction();
         try {
@@ -253,8 +259,7 @@ public class DaoGpsLog {
         }
     }
 
-    public static void mergeLogs( Context context, long logidToRemove, long destinationLogId )
-            throws IOException {
+    public static void mergeLogs( Context context, long logidToRemove, long destinationLogId ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         sqliteDatabase.beginTransaction();
         try {
@@ -312,8 +317,8 @@ public class DaoGpsLog {
      * @return the map of lines inside the bounds.
      * @throws IOException
      */
-    public static HashMap<Long, Line> getLinesInWorldBounds( Context context, float n, float s,
-            float w, float e ) throws IOException {
+    public static HashMap<Long, Line> getLinesInWorldBounds( Context context, float n, float s, float w, float e )
+            throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         HashMap<Long, Line> linesMap = new HashMap<Long, Line>();
         n = n + DatabaseManager.BUFFER;
@@ -321,8 +326,7 @@ public class DaoGpsLog {
         e = e + DatabaseManager.BUFFER;
         w = w - DatabaseManager.BUFFER;
 
-        String asColumnsToReturn[] = {COLUMN_LOGID, COLUMN_DATA_LON, COLUMN_DATA_LAT,
-                COLUMN_DATA_ALTIM, COLUMN_DATA_TS};
+        String asColumnsToReturn[] = {COLUMN_LOGID, COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_ALTIM, COLUMN_DATA_TS};
         StringBuilder sB = new StringBuilder();
         sB.append("(");
         sB.append(COLUMN_DATA_LON);
@@ -330,27 +334,30 @@ public class DaoGpsLog {
         sB.append(COLUMN_DATA_LAT);
         sB.append(" BETWEEN ? AND ?)");
         String strWhere = sB.toString();
-        String[] strWhereArgs = new String[]{String.valueOf(w), String.valueOf(e),
-                String.valueOf(s), String.valueOf(n)};
+        String[] strWhereArgs = new String[]{String.valueOf(w), String.valueOf(e), String.valueOf(s), String.valueOf(n)};
         String strSortOrder = COLUMN_LOGID + "," + COLUMN_DATA_TS + " ASC";
-        Cursor c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, strWhereArgs,
-                null, null, strSortOrder);
-        c.moveToFirst();
-        while( !c.isAfterLast() ) {
-            long logid = c.getLong(0);
-            double lon = c.getDouble(1);
-            double lat = c.getDouble(2);
-            double altim = c.getDouble(3);
-            String date = c.getString(4);
-            Line line = linesMap.get(logid);
-            if (line == null) {
-                line = new Line("log_" + logid);
-                linesMap.put(logid, line);
+        Cursor c = null;
+        try {
+            c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, strWhereArgs, null, null, strSortOrder);
+            c.moveToFirst();
+            while( !c.isAfterLast() ) {
+                long logid = c.getLong(0);
+                double lon = c.getDouble(1);
+                double lat = c.getDouble(2);
+                double altim = c.getDouble(3);
+                String date = c.getString(4);
+                Line line = linesMap.get(logid);
+                if (line == null) {
+                    line = new Line("log_" + logid);
+                    linesMap.put(logid, line);
+                }
+                line.addPoint(lon, lat, altim, date);
+                c.moveToNext();
             }
-            line.addPoint(lon, lat, altim, date);
-            c.moveToNext();
+        } finally {
+            if (c != null)
+                c.close();
         }
-        c.close();
         return linesMap;
     }
 
@@ -364,27 +371,30 @@ public class DaoGpsLog {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         LinkedHashMap<Long, Line> linesMap = new LinkedHashMap<Long, Line>();
 
-        String asColumnsToReturn[] = {COLUMN_LOGID, COLUMN_DATA_LON, COLUMN_DATA_LAT,
-                COLUMN_DATA_ALTIM, COLUMN_DATA_TS};
+        String asColumnsToReturn[] = {COLUMN_LOGID, COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_ALTIM, COLUMN_DATA_TS};
         String strSortOrder = COLUMN_LOGID + "," + COLUMN_DATA_TS + " ASC";
-        Cursor c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, null, null, null, null,
-                strSortOrder);
-        c.moveToFirst();
-        while( !c.isAfterLast() ) {
-            long logid = c.getLong(0);
-            double lon = c.getDouble(1);
-            double lat = c.getDouble(2);
-            double altim = c.getDouble(3);
-            String date = c.getString(4);
-            Line line = linesMap.get(logid);
-            if (line == null) {
-                line = new Line("log_" + logid);
-                linesMap.put(logid, line);
+        Cursor c = null;
+        try {
+            c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, null, null, null, null, strSortOrder);
+            c.moveToFirst();
+            while( !c.isAfterLast() ) {
+                long logid = c.getLong(0);
+                double lon = c.getDouble(1);
+                double lat = c.getDouble(2);
+                double altim = c.getDouble(3);
+                String date = c.getString(4);
+                Line line = linesMap.get(logid);
+                if (line == null) {
+                    line = new Line("log_" + logid);
+                    linesMap.put(logid, line);
+                }
+                line.addPoint(lon, lat, altim, date);
+                c.moveToNext();
             }
-            line.addPoint(lon, lat, altim, date);
-            c.moveToNext();
+        } finally {
+            if (c != null)
+                c.close();
         }
-        c.close();
         return linesMap;
     }
 
@@ -397,24 +407,27 @@ public class DaoGpsLog {
     public static Line getGpslogAsLine( Context context, long logId ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
 
-        String asColumnsToReturn[] = {COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_ALTIM,
-                COLUMN_DATA_TS};
+        String asColumnsToReturn[] = {COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_ALTIM, COLUMN_DATA_TS};
         String strSortOrder = COLUMN_DATA_TS + " ASC";
         String strWhere = COLUMN_LOGID + "=" + logId;
-        Cursor c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, null, null, null,
-                strSortOrder);
-        c.moveToFirst();
-        Line line = new Line("log_" + logId);
-        while( !c.isAfterLast() ) {
-            double lon = c.getDouble(0);
-            double lat = c.getDouble(1);
-            double altim = c.getDouble(2);
-            String date = c.getString(3);
-            line.addPoint(lon, lat, altim, date);
-            c.moveToNext();
+        Cursor c = null;
+        try {
+            c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, null, null, null, strSortOrder);
+            c.moveToFirst();
+            Line line = new Line("log_" + logId);
+            while( !c.isAfterLast() ) {
+                double lon = c.getDouble(0);
+                double lat = c.getDouble(1);
+                double altim = c.getDouble(2);
+                String date = c.getString(3);
+                line.addPoint(lon, lat, altim, date);
+                c.moveToNext();
+            }
+            return line;
+        } finally {
+            if (c != null)
+                c.close();
         }
-        c.close();
-        return line;
     }
 
     public static void importGpxToGpslogs( Context context, GpxItem gpxItem ) throws IOException {
