@@ -25,7 +25,7 @@ import java.io.Serializable;
  * @author Andrea Antonello (www.hydrologis.com)
  *
  */
-public class MapItem implements Comparable<MapItem>, Serializable {
+public class MapItem implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private boolean isDirty = false;
@@ -90,22 +90,6 @@ public class MapItem implements Comparable<MapItem>, Serializable {
 
     public int getType() {
         return type;
-    }
-
-    public int compareTo( MapItem another ) {
-        if (name.equals(another.name)) {
-            return 0;
-        } else {
-            return name.compareTo(another.name);
-        }
-    }
-
-    public boolean equals( Object o ) {
-        if (o instanceof MapItem) {
-            MapItem other = (MapItem) o;
-            return name.equals(other.name);
-        }
-        return false;
     }
 
 }
