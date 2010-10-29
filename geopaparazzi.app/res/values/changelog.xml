@@ -16,6 +16,7 @@ New features:\n
 New Localization:\n
   * added Spanish translation\n
   * added Finnish translation\n
+  * added German translation\n
 \n
 Fixes:\n
   * fixed small delay in getting the old gps data on screen rotation\n
