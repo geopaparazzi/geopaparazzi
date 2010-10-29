@@ -165,8 +165,7 @@ public class GeoPaparazziActivity extends Activity {
                                         }
                                         applicationManager.startLogging(newName);
                                     }
-                                }).show();
-
+                                }).setCancelable(false).show();
                     } else {
                         ApplicationManager.openDialog(R.string.gpslogging_only, GeoPaparazziActivity.this);
                         isChecked = !isChecked;

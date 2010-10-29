@@ -95,6 +95,8 @@ public class SmsReceiver extends BroadcastReceiver {
                     sB.append(String.valueOf(lon).replaceAll(",", "."));
                     sB.append("&zoom=18");
 
+                    String msg = sB.toString();
+
                     Location previousLoc = loc.getPreviousLoc();
                     if (previousLoc != null) {
                         Log.i("SMSRECEIVER", "Has also previous location");
@@ -106,6 +108,11 @@ public class SmsReceiver extends BroadcastReceiver {
                         sB.append("&lon=");
                         sB.append(String.valueOf(plon).replaceAll(",", "."));
                         sB.append("&zoom=18");
+                    }
+
+                    if (sB.toString().length() > 160) {
+                        // if longer than 160 chars it will not work
+                        sB = new StringBuilder(msg);
                     }
                 } else {
                     sB.append("Sorry, could not identify the location properly.");
@@ -126,8 +133,14 @@ public class SmsReceiver extends BroadcastReceiver {
         // Make sure there's a valid return address.
         if (addr == null) {
             Log.i("SmsIntent", "Unable to get Address from Sent Message");
+        } else {
+            Log.i("SmsIntent", "Sending to: " + addr);
         }
         try {
+            if (msg.length()>160) {
+                msg = msg.substring(0, 160);
+                Log.i("SmsIntent", "Trimming msg to: " + msg);
+            }
             mng.sendTextMessage(addr, null, msg, dummyEvent, dummyEvent);
         } catch (Exception e) {
             Log.e("SmsIntent", "SendException", e);
