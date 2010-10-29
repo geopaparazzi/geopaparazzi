@@ -6,14 +6,20 @@
     <string name="changes">Changes:</string>
 
 	<string name="changelogtext">
-Version 1.1.1\n
+Version 1.2\n
+\n
+New features:\n
+  * SMS catcher for finding surveyor through an sms\n
+  * better handling of gps log names\n
+  * better note insertion gui\n
 \n
 New Localization:\n
-* added Spanish translation\n
-* added Finnish translation\n
+  * added Spanish translation\n
+  * added Finnish translation\n
 \n
 Fixes:\n
-* fixed small delay in getting the old gps data on screen rotation\n
+  * fixed small delay in getting the old gps data on screen rotation\n
+  * gps log list sorted to have most recent on top\n
 \n
 \n
 Version 1.1\n
