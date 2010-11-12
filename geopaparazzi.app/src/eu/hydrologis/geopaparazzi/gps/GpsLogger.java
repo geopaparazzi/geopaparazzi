@@ -17,6 +17,8 @@
  */
 package eu.hydrologis.geopaparazzi.gps;
 
+import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LATITUDE;
+import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LONGITUDE;
 import static eu.hydrologis.geopaparazzi.util.Constants.GPSLOGGINGDISTANCEKEY;
 import static eu.hydrologis.geopaparazzi.util.Constants.GPSLOGGINGINTERVALKEY;
 import static eu.hydrologis.geopaparazzi.util.Constants.GPS_LOGGING_DISTANCE;
@@ -30,6 +32,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteFullException;
 import android.location.Location;
@@ -96,7 +99,7 @@ public class GpsLogger implements ApplicationManagerListener {
      * 
      * @param logName a name for the new log or <code>null</code>.
      */
-    public void startLogging(final String logName) {
+    public void startLogging( final String logName ) {
         isLogging = true;
 
         Thread t = new Thread(){
@@ -109,13 +112,10 @@ public class GpsLogger implements ApplicationManagerListener {
                     Log.i(LOGTAG, "Starting gps logging. Logid: " + gpsLogId);
 
                     // get preferences
-                    SharedPreferences preferences = PreferenceManager
-                            .getDefaultSharedPreferences(context);
-                    String minDistanceStr = preferences.getString(GPSLOGGINGDISTANCEKEY,
-                            String.valueOf(GPS_LOGGING_DISTANCE));
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+                    String minDistanceStr = preferences.getString(GPSLOGGINGDISTANCEKEY, String.valueOf(GPS_LOGGING_DISTANCE));
                     float minDistance = Float.parseFloat(minDistanceStr);
-                    String intervalStr = preferences.getString(GPSLOGGINGINTERVALKEY,
-                            String.valueOf(GPS_LOGGING_INTERVAL));
+                    String intervalStr = preferences.getString(GPSLOGGINGINTERVALKEY, String.valueOf(GPS_LOGGING_INTERVAL));
                     long waitForSecs = Long.parseLong(intervalStr);
                     Log.d(LOGTAG, "Waiting interval: " + waitForSecs);
 
@@ -132,12 +132,9 @@ public class GpsLogger implements ApplicationManagerListener {
                         }
 
                         float lastDistance = previousLogLoc.distanceTo(gpsLoc);
-                        Log.d(LOGTAG,
-                                "gpsloc: " + gpsLoc.getLatitude() + "/" + gpsLoc.getLongitude());
-                        Log.d(LOGTAG, "previousLoc: " + previousLogLoc.getLatitude() + "/"
-                                + previousLogLoc.getLongitude());
-                        Log.d(LOGTAG, "distance: " + lastDistance + " - mindistance: "
-                                + minDistance);
+                        Log.d(LOGTAG, "gpsloc: " + gpsLoc.getLatitude() + "/" + gpsLoc.getLongitude());
+                        Log.d(LOGTAG, "previousLoc: " + previousLogLoc.getLatitude() + "/" + previousLogLoc.getLongitude());
+                        Log.d(LOGTAG, "distance: " + lastDistance + " - mindistance: " + minDistance);
                         // ignore near points
                         if (lastDistance < minDistance) {
                             waitGpsInterval(waitForSecs);
@@ -160,12 +157,10 @@ public class GpsLogger implements ApplicationManagerListener {
                         }
                         last100Elevations.add((float) recAlt);
 
-                        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(
-                                context);
+                        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
                         sqliteDatabase.beginTransaction();
                         try {
-                            DaoGpsLog.addGpsLogDataPoint(sqliteDatabase, gpsLogId, recLon, recLat,
-                                    recAlt, gpsLoc.getSqlDate());
+                            DaoGpsLog.addGpsLogDataPoint(sqliteDatabase, gpsLogId, recLon, recLat, recAlt, gpsLoc.getSqlDate());
                             sqliteDatabase.setTransactionSuccessful();
                         } catch (Exception e) {
                             throw new IOException(e.getLocalizedMessage());
@@ -175,13 +170,21 @@ public class GpsLogger implements ApplicationManagerListener {
                         currentPointsNum++;
                         currentDistance = currentDistance + lastDistance;
 
+
                         previousLogLoc = gpsLoc;
+
+                        // save last known location
+                        Editor editor = preferences.edit();
+                        editor.putFloat(GPSLAST_LONGITUDE, (float) gpsLoc.getLongitude());
+                        editor.putFloat(GPSLAST_LATITUDE, (float) gpsLoc.getLatitude());
+                        editor.commit();
+                        
+                        // and wait
                         waitGpsInterval(waitForSecs);
                     }
 
                     if (currentPointsNum < 2) {
-                        Log.i(LOGTAG, "Removing gpslog, since too few points were added. Logid: "
-                                + gpsLogId);
+                        Log.i(LOGTAG, "Removing gpslog, since too few points were added. Logid: " + gpsLogId);
                         DaoGpsLog.deleteGpslog(context, gpsLogId);
                     }
 
@@ -278,8 +281,7 @@ public class GpsLogger implements ApplicationManagerListener {
                 }
                 Uri alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
                 mMediaPlayer.setDataSource(context, alert);
-                final AudioManager audioManager = (AudioManager) context
-                        .getSystemService(Context.AUDIO_SERVICE);
+                final AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
                 if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
                     mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
                     mMediaPlayer.setLooping(true);

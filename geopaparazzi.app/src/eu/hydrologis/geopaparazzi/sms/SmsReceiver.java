@@ -17,20 +17,19 @@
  */
 package eu.hydrologis.geopaparazzi.sms;
 
+import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LATITUDE;
+import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LONGITUDE;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.gps.GpsLocation;
-import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
 
 /**
@@ -42,18 +41,18 @@ public class SmsReceiver extends BroadcastReceiver {
     // public static final String SMSRECEIVED = "SMSR";
     private static final String SMS_REC_ACTION = "android.provider.Telephony.SMS_RECEIVED"; //$NON-NLS-1$
 
-    private ApplicationManager appsManager;
-
     @Override
     public void onReceive( Context context, Intent intent ) {
         if (intent.getAction().equals(SmsReceiver.SMS_REC_ACTION)) {
-            appsManager = ApplicationManager.getInstance(null);
+
             // SharedPreferences preferences = GeoPaparazziActivity.preferences;
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
             boolean doCatch = preferences.getBoolean(Constants.SMSCATCHERKEY, false);
             if (!doCatch) {
                 return;
             }
+            float gpsLon = preferences.getFloat(GPSLAST_LONGITUDE, -9999);
+            float gpsLat = preferences.getFloat(GPSLAST_LATITUDE, -9999);
 
             Bundle bundle = intent.getExtras();
             SmsMessage smsMessage = null;
@@ -63,15 +62,13 @@ public class SmsReceiver extends BroadcastReceiver {
                     smsMessage = SmsMessage.createFromPdu((byte[]) pdu);
                     String body = smsMessage.getDisplayMessageBody();
                     Log.i("SMSRECEIVER", "Got message: " + body);
-                    if (body.matches(".*GEOPAP.*")) {
+                    if (body.toLowerCase().matches(".*geopap.*")) {
                         break;
                     }
                     smsMessage = null;
                 }
             }
             if (smsMessage != null) {
-                GpsLocation loc = appsManager.getLoc();
-
                 // if (loc == null) {
                 // Log.i("SMSRECEIVER", "Setting a dummy location");
                 // loc = new GpsLocation(new Location("dummy"));
@@ -81,34 +78,41 @@ public class SmsReceiver extends BroadcastReceiver {
                 // }
 
                 StringBuilder sB = new StringBuilder();
-                if (loc != null) {
-                    double lat = loc.getLatitude();
-                    double lon = loc.getLongitude();
-                    String utc = loc.getTimeString();
-                    String lastPosition = appsManager.getResource().getString(R.string.last_position);
+                if (gpsLon != -9999) {
+                    String lastPosition = context.getString(R.string.last_position);
 
-                    // http://www.openstreetmap.org/?lat=46.068941&lon=11.169849&zoom=18
-                    sB.append(lastPosition).append(" ").append(utc).append("(UTC):\n");
+                    String latString = String.valueOf(gpsLat).replaceAll(",", ".");
+                    String lonString = String.valueOf(gpsLon).replaceAll(",", ".");
+                    // http://www.openstreetmap.org/?lat=46.068941&lon=11.169849&zoom=18&layers=M&mlat=42.95647&mlon=12.70393
+                    sB.append(lastPosition).append(":");
                     sB.append("http://www.openstreetmap.org/?lat=");
-                    sB.append(String.valueOf(lat).replaceAll(",", "."));
+                    sB.append(latString);
                     sB.append("&lon=");
-                    sB.append(String.valueOf(lon).replaceAll(",", "."));
+                    sB.append(lonString);
                     sB.append("&zoom=18");
+                    sB.append("&layers=M&mlat=");
+                    sB.append(latString);
+                    sB.append("&mlon=");
+                    sB.append(lonString);
 
                     String msg = sB.toString();
 
-                    Location previousLoc = loc.getPreviousLoc();
-                    if (previousLoc != null) {
-                        Log.i("SMSRECEIVER", "Has also previous location");
-                        double plat = previousLoc.getLatitude();
-                        double plon = previousLoc.getLongitude();
-                        sB.append("\nPrevious location was:\n");
-                        sB.append("http://www.openstreetmap.org/?lat=");
-                        sB.append(String.valueOf(plat).replaceAll(",", "."));
-                        sB.append("&lon=");
-                        sB.append(String.valueOf(plon).replaceAll(",", "."));
-                        sB.append("&zoom=18");
-                    }
+                    // Location previousLoc = loc.getPreviousLoc();
+                    // if (previousLoc != null) {
+                    // Log.i("SMSRECEIVER", "Has also previous location");
+                    // double plat = previousLoc.getLatitude();
+                    // double plon = previousLoc.getLongitude();
+                    // sB.append("\nPrevious location was:\n");
+                    // sB.append("http://www.openstreetmap.org/?lat=");
+                    // sB.append(String.valueOf(plat).replaceAll(",", "."));
+                    // sB.append("&lon=");
+                    // sB.append(String.valueOf(plon).replaceAll(",", "."));
+                    // sB.append("&zoom=18");
+                    // sB.append("&layers=M&mlat=");
+                    // sB.append(latString);
+                    // sB.append("&mlon=");
+                    // sB.append(lonString);
+                    // }
 
                     if (sB.toString().length() > 160) {
                         // if longer than 160 chars it will not work
@@ -137,7 +141,7 @@ public class SmsReceiver extends BroadcastReceiver {
             Log.i("SmsIntent", "Sending to: " + addr);
         }
         try {
-            if (msg.length()>160) {
+            if (msg.length() > 160) {
                 msg = msg.substring(0, 160);
                 Log.i("SmsIntent", "Trimming msg to: " + msg);
             }
