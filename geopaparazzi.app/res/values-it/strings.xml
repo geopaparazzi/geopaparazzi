@@ -158,4 +158,13 @@
     <string name="insert_note">inserire la nota qui</string>
     <string name="gps_log">traccia gps</string>
     <string name="gps_log_name">Inserire un nome per la traccia gps o accettare il nome preimpostato</string>
+
+	<string name="audio">audio</string>
+	<string name="audio_recording">Sto registrando... seleziona per fermare</string>
+	<string name="audio_recording_stop">ferma</string>
+
+	<string name="panic">panico!</string>
+	<string name="panic_number">Setta il panic number</string>
+	<string name="panic_number_notset">Non sembra essere disponibile alcuno panic number. Inserirlo nei settaggi.</string>
+	<string name="panic_for_real">Sei sicuro di voler spedire un update della posizione?</string>
 </resources>

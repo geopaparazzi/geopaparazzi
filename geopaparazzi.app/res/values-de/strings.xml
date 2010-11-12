@@ -159,4 +159,13 @@
         <string name="insert_note">Bitte Notiz einfügen</string>
         <string name="gps_log">GPS Aufzeichnung</string>
         <string name="gps_log_name">Name von GPS Protokolldatei eingeben oder Vorgabe akzeptieren</string>
+
+	<string name="audio">Aufnahme</string>
+	<string name="audio_recording">Aufnahme läuft... zum Stoppen hier drücken</string>
+	<string name="audio_recording_stop">stop</string>
+
+	<string name="panic">Panik!</string>
+	<string name="panic_number">Panik Nummer</string>
+	<string name="panic_number_notset">Keine Panik Nummer steht zur Verfühgung. Bitte setzen sie eine in den Einstellungen.</string>
+	<string name="panic_for_real">Soll wirklich die aktuelle Position verschickt werden?</string>
 </resources>
