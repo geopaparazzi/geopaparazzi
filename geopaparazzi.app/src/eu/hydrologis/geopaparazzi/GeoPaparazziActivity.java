@@ -20,7 +20,9 @@ package eu.hydrologis.geopaparazzi;
 import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LATITUDE;
 import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LONGITUDE;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
@@ -35,6 +37,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -90,6 +93,7 @@ public class GeoPaparazziActivity extends Activity {
     private LogToggleButton logButton;
 
     private File kmlOutputFile = null;
+    private MediaRecorder audioRecorder;
 
     private boolean isChecked = false;
 
@@ -177,6 +181,83 @@ public class GeoPaparazziActivity extends Activity {
             }
         });
 
+        // AUDIO BUTTON
+        Button audioButton = (Button) findViewById(R.id.audioButton);
+        audioButton.setText("audio");
+        audioButton.setOnClickListener(new Button.OnClickListener(){
+
+            public void onClick( View v ) {
+                try {
+                    GpsLocation loc = applicationManager.getLoc();
+                    if (loc != null) {
+                        double lat = loc.getLatitude();
+                        double lon = loc.getLongitude();
+                        double altim = loc.getAltitude();
+                        String latString = String.valueOf(lat);
+                        String lonString = String.valueOf(lon);
+                        String altimString = String.valueOf(altim);
+
+                        if (audioRecorder == null) {
+                            audioRecorder = new MediaRecorder();
+                        }
+                        File picturesDir = applicationManager.getPicturesDir();
+                        final String currentDatestring = Constants.TIMESTAMPFORMATTER.format(new Date());
+                        String audioFilePathNoExtention = picturesDir.getAbsolutePath() + "/AUDIO_" + currentDatestring;
+
+                        audioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                        audioRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+                        audioRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+                        audioRecorder.setOutputFile(audioFilePathNoExtention + ".3gp");
+                        audioRecorder.prepare();
+                        audioRecorder.start();
+
+                        // create props file
+                        String propertiesFilePath = audioFilePathNoExtention + ".properties";
+                        File propertiesFile = new File(propertiesFilePath);
+                        BufferedWriter bW = null;
+                        try {
+                            bW = new BufferedWriter(new FileWriter(propertiesFile));
+                            bW.write("latitude=");
+                            bW.write(latString);
+                            bW.write("\nlongitude=");
+                            bW.write(lonString);
+                            bW.write("\naltim=");
+                            bW.write(altimString);
+                            bW.write("\nutctimestamp=");
+                            bW.write(currentDatestring);
+                        } catch (IOException e1) {
+                            throw new IOException(e1.getLocalizedMessage());
+                        } finally {
+                            bW.close();
+                        }
+
+                        new AlertDialog.Builder(GeoPaparazziActivity.this).setTitle("STOP IT")
+                                .setIcon(android.R.drawable.ic_menu_info_details)
+                                .setNegativeButton(R.string.close, new DialogInterface.OnClickListener(){
+                                    public void onClick( DialogInterface dialog, int whichButton ) {
+                                        if (audioRecorder != null) {
+                                            audioRecorder.stop();
+                                            audioRecorder.release();
+                                            audioRecorder = null;
+                                        }
+                                    }
+                                }).show();
+
+                    } else {
+                        ApplicationManager.openDialog(R.string.gpslogging_only, GeoPaparazziActivity.this);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        // public void stop() throws IOException {
+        // recorder.stop();
+        // recorder.release();
+        // }
+
+        // NOTE BUTTON
         Button noteButton = (Button) findViewById(R.id.noteButton);
         noteButton.setText(R.string.text_take_a_gps_note);
         noteButton.setOnClickListener(new Button.OnClickListener(){

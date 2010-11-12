@@ -42,6 +42,19 @@
 			android:layout_height="fill_parent" android:id="@+id/lowercol2"
 			android:layout_weight="1" android:orientation="vertical">
 
+			<Button android:text="@+id/audioButton" android:id="@+id/audioButton"
+				android:layout_weight="1" android:drawableTop="@drawable/notes"
+				style="@style/buttonFont"></Button>
+
+			<Button android:text="@+id/panicButton" android:id="@+id/panicButton"
+				android:layout_weight="1" android:drawableTop="@drawable/gmap"
+				style="@style/buttonFont"></Button>
+
+		</LinearLayout>
+		<LinearLayout android:layout_width="fill_parent"
+			android:layout_height="fill_parent" android:id="@+id/lowercol3"
+			android:layout_weight="1" android:orientation="vertical">
+
 			<Button android:text="@+id/noteButton" android:id="@+id/noteButton"
 				android:layout_weight="1" android:drawableTop="@drawable/notes"
 				style="@style/buttonFont"></Button>
