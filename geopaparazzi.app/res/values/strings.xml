@@ -158,4 +158,14 @@
 	<string name="insert_note">insert your note here</string>
 	<string name="gps_log">gps log</string>
 	<string name="gps_log_name">Insert a gps log name or accept the default one</string>
+	
+	<string name="audio">audio</string>
+	<string name="audio_recording">Recording audio... push here to stop</string>
+	<string name="audio_recording_stop">stop</string>
+
+	<string name="panic">panic!</string>
+	<string name="panic_number">Panic number</string>
+	<string name="panic_number_notset">No valid panic number seems to be available. Did you set it in the preferences?</string>
+	<string name="panic_for_real">Are you sure you want to send out a position update?</string>
+	
 </resources>

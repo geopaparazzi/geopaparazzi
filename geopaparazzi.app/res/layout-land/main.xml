@@ -35,6 +35,13 @@
 			android:text="@+id/logButton" android:id="@+id/logButton"
 			android:layout_weight="1" style="@style/buttonFont"></eu.hydrologis.geopaparazzi.util.LogToggleButton>
 
+			<Button android:text="@+id/audioButton" android:id="@+id/audioButton"
+				android:layout_weight="1" 
+				style="@style/buttonFont"></Button>
+
+			<Button android:text="@+id/panicButton" android:id="@+id/panicButton"
+				android:layout_weight="1" 
+				style="@style/redButtonFont"></Button>
 
 		<Button android:text="@+id/noteButton" android:id="@+id/noteButton"
 			android:layout_weight="1" style="@style/buttonFont"></Button>

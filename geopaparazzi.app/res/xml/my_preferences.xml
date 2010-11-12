@@ -37,6 +37,9 @@
 			<CheckBoxPreference android:key="sms_catcher"
 				android:title="@string/sms_catcher" android:order="14">
 			</CheckBoxPreference>
+		<EditTextPreference android:order="15"
+			android:key="panic_number" android:title="@string/panic_number"
+			android:defaultValue=""></EditTextPreference>
 		</PreferenceCategory>
 	</PreferenceScreen>
 	<!-- 

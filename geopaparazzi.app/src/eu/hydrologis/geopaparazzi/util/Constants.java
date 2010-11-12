@@ -143,6 +143,7 @@ public interface Constants {
     public static final String GPSLOGGINGDISTANCEKEY = "gps_logging_distance";
     public static final String OSMFOLDERKEY = "osm_folder";
     public static final String SMSCATCHERKEY = "sms_catcher";
+    public static final String PANICKEY = "panic_number";
     public static final String GPSLAST_LONGITUDE = "gpslast_longitude";
     public static final String GPSLAST_LATITUDE = "gpslast_latitude";
 

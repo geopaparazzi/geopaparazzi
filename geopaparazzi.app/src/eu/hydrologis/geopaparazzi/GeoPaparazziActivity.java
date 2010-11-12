@@ -17,7 +17,7 @@
  */
 package eu.hydrologis.geopaparazzi;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LATITUDE;
+import static eu.hydrologis.geopaparazzi.util.Constants.*;
 import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LONGITUDE;
 
 import java.io.BufferedWriter;
@@ -30,6 +30,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -41,6 +42,7 @@ import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.telephony.SmsManager;
 import android.text.Editable;
 import android.util.Log;
 import android.view.Display;
@@ -183,7 +185,7 @@ public class GeoPaparazziActivity extends Activity {
 
         // AUDIO BUTTON
         Button audioButton = (Button) findViewById(R.id.audioButton);
-        audioButton.setText("audio");
+        audioButton.setText(R.string.audio);
         audioButton.setOnClickListener(new Button.OnClickListener(){
 
             public void onClick( View v ) {
@@ -231,9 +233,9 @@ public class GeoPaparazziActivity extends Activity {
                             bW.close();
                         }
 
-                        new AlertDialog.Builder(GeoPaparazziActivity.this).setTitle("STOP IT")
-                                .setIcon(android.R.drawable.ic_menu_info_details)
-                                .setNegativeButton(R.string.close, new DialogInterface.OnClickListener(){
+                        new AlertDialog.Builder(GeoPaparazziActivity.this).setTitle(R.string.audio_recording)
+                                .setIcon(android.R.drawable.ic_lock_power_off)
+                                .setNegativeButton(R.string.audio_recording_stop, new DialogInterface.OnClickListener(){
                                     public void onClick( DialogInterface dialog, int whichButton ) {
                                         if (audioRecorder != null) {
                                             audioRecorder.stop();
@@ -252,10 +254,24 @@ public class GeoPaparazziActivity extends Activity {
             }
         });
 
-        // public void stop() throws IOException {
-        // recorder.stop();
-        // recorder.release();
-        // }
+        // PANIC BUTTON
+        Button panicButton = (Button) findViewById(R.id.panicButton);
+        panicButton.setText(R.string.panic);
+        panicButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                new AlertDialog.Builder(GeoPaparazziActivity.this).setTitle(R.string.panic)
+                        .setIcon(android.R.drawable.ic_dialog_alert).setMessage(R.string.panic_for_real)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                            public void onClick( DialogInterface dialog, int whichButton ) {
+                                handlePanic();
+                            }
+                        }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                            public void onClick( DialogInterface dialog, int whichButton ) {
+                            }
+                        }).show();
+
+            }
+        });
 
         // NOTE BUTTON
         Button noteButton = (Button) findViewById(R.id.noteButton);
@@ -457,5 +473,50 @@ public class GeoPaparazziActivity extends Activity {
             Log.w("Unable to get version code. Will not show changelog", e);
         }
 
+    }
+
+    private void handlePanic() {
+        GpsLocation loc = applicationManager.getLoc();
+        if (loc != null) {
+            SmsManager mng = SmsManager.getDefault();
+            PendingIntent dummyEvent = PendingIntent.getBroadcast(GeoPaparazziActivity.this, 0, new Intent(
+                    "com.devx.SMSExample.IGNORE_ME"), 0);
+
+            String latString = String.valueOf(loc.getLatitude()).replaceAll(",", ".");
+            String lonString = String.valueOf(loc.getLongitude()).replaceAll(",", ".");
+            StringBuilder sB = new StringBuilder();
+            String lastPosition = GeoPaparazziActivity.this.getString(R.string.last_position);
+            sB.append(lastPosition).append(":");
+            sB.append("http://www.openstreetmap.org/?lat=");
+            sB.append(latString);
+            sB.append("&lon=");
+            sB.append(lonString);
+            sB.append("&zoom=18");
+            sB.append("&layers=M&mlat=");
+            sB.append(latString);
+            sB.append("&mlon=");
+            sB.append(lonString);
+            String msg = sB.toString();
+
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GeoPaparazziActivity.this);
+            String panicNumber = preferences.getString(PANICKEY, "");
+            // Make sure there's a valid return address.
+            if (panicNumber == null) {
+                ApplicationManager.openDialog(R.string.panic_number_notset, GeoPaparazziActivity.this);
+            } else {
+                try {
+                    if (msg.length() > 160) {
+                        msg = msg.substring(0, 160);
+                        Log.i("SmsIntent", "Trimming msg to: " + msg);
+                    }
+                    mng.sendTextMessage(panicNumber, null, msg, dummyEvent, dummyEvent);
+                } catch (Exception e) {
+                    Log.e("SmsIntent", "SendException", e);
+                }
+            }
+
+        } else {
+            ApplicationManager.openDialog(R.string.gpslogging_only, GeoPaparazziActivity.this);
+        }
     }
 }

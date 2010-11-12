@@ -7,4 +7,12 @@
         <item name="android:layout_height">fill_parent</item> 
         <item name="android:layout_width">fill_parent</item>
     </style>
+
+    <style name="redButtonFont" parent="@android:style/TextAppearance">
+        <item name="android:textColor">#FF0000</item>
+        <!-- <item name="android:typeface">monospace</item>  -->
+        <item name="android:padding">5dip</item>
+        <item name="android:layout_height">fill_parent</item> 
+        <item name="android:layout_width">fill_parent</item>
+    </style>
 </resources>

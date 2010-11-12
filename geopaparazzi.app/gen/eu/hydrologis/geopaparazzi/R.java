@@ -32,45 +32,47 @@ public final class R {
     }
     public static final class drawable {
         public static final int about=0x7f020000;
-        public static final int btn_minus_default=0x7f020001;
-        public static final int btn_plus_default=0x7f020002;
-        public static final int camera=0x7f020003;
-        public static final int compass=0x7f020004;
-        public static final int current_position=0x7f020005;
-        public static final int exit=0x7f020006;
-        public static final int gmap=0x7f020007;
-        public static final int goto_position=0x7f020008;
-        public static final int gps=0x7f020009;
-        public static final int gps_on=0x7f02000a;
-        public static final int gpxconvert=0x7f02000b;
-        public static final int gpxline=0x7f02000c;
-        public static final int gpxpoint=0x7f02000d;
-        public static final int ic_menu_add=0x7f02000e;
-        public static final int ic_menu_camera=0x7f02000f;
-        public static final int ic_menu_camera_on=0x7f020010;
-        public static final int ic_menu_compass=0x7f020011;
-        public static final int ic_menu_measure=0x7f020012;
-        public static final int ic_menu_preferences=0x7f020013;
-        public static final int ic_menu_remove=0x7f020014;
-        public static final int icon=0x7f020015;
-        public static final int kmlexport=0x7f020016;
-        public static final int logonoff=0x7f020017;
-        public static final int menu_goto=0x7f020018;
-        public static final int menu_mapmode=0x7f020019;
-        public static final int menu_mylocation=0x7f02001a;
-        public static final int menu_zoom_in=0x7f02001b;
-        public static final int menu_zoom_out=0x7f02001c;
-        public static final int merge=0x7f02001d;
-        public static final int no_tile_128=0x7f02001e;
-        public static final int no_tile_256=0x7f02001f;
-        public static final int notes=0x7f020020;
-        public static final int snap=0x7f020021;
-        public static final int zoom_in=0x7f020022;
-        public static final int zoom_in_pressed=0x7f020023;
-        public static final int zoom_out=0x7f020024;
-        public static final int zoom_out_pressed=0x7f020025;
-        public static final int zoomin=0x7f020026;
-        public static final int zoomout=0x7f020027;
+        public static final int audio=0x7f020001;
+        public static final int btn_minus_default=0x7f020002;
+        public static final int btn_plus_default=0x7f020003;
+        public static final int camera=0x7f020004;
+        public static final int compass=0x7f020005;
+        public static final int current_position=0x7f020006;
+        public static final int exit=0x7f020007;
+        public static final int gmap=0x7f020008;
+        public static final int goto_position=0x7f020009;
+        public static final int gps=0x7f02000a;
+        public static final int gps_on=0x7f02000b;
+        public static final int gpxconvert=0x7f02000c;
+        public static final int gpxline=0x7f02000d;
+        public static final int gpxpoint=0x7f02000e;
+        public static final int ic_menu_add=0x7f02000f;
+        public static final int ic_menu_camera=0x7f020010;
+        public static final int ic_menu_camera_on=0x7f020011;
+        public static final int ic_menu_compass=0x7f020012;
+        public static final int ic_menu_measure=0x7f020013;
+        public static final int ic_menu_preferences=0x7f020014;
+        public static final int ic_menu_remove=0x7f020015;
+        public static final int icon=0x7f020016;
+        public static final int kmlexport=0x7f020017;
+        public static final int logonoff=0x7f020018;
+        public static final int menu_goto=0x7f020019;
+        public static final int menu_mapmode=0x7f02001a;
+        public static final int menu_mylocation=0x7f02001b;
+        public static final int menu_zoom_in=0x7f02001c;
+        public static final int menu_zoom_out=0x7f02001d;
+        public static final int merge=0x7f02001e;
+        public static final int no_tile_128=0x7f02001f;
+        public static final int no_tile_256=0x7f020020;
+        public static final int notes=0x7f020021;
+        public static final int panic=0x7f020022;
+        public static final int snap=0x7f020023;
+        public static final int zoom_in=0x7f020024;
+        public static final int zoom_in_pressed=0x7f020025;
+        public static final int zoom_out=0x7f020026;
+        public static final int zoom_out_pressed=0x7f020027;
+        public static final int zoomin=0x7f020028;
+        public static final int zoomout=0x7f020029;
     }
     public static final class id {
         public static final int about=0x7f090001;
@@ -177,6 +179,9 @@ public final class R {
         public static final int app_name=0x7f06000f;
         public static final int askaddress=0x7f06003a;
         public static final int askcoord=0x7f060038;
+        public static final int audio=0x7f06007d;
+        public static final int audio_recording=0x7f06007e;
+        public static final int audio_recording_stop=0x7f06007f;
         public static final int azimuth=0x7f06002c;
         public static final int cancel=0x7f060008;
         public static final int cantclose_gpslog=0x7f060026;
@@ -270,6 +275,10 @@ public final class R {
         public static final int osm_folder=0x7f06005c;
         public static final int osm_tagsgrid=0x7f06006e;
         public static final int osmview=0x7f060030;
+        public static final int panic=0x7f060080;
+        public static final int panic_for_real=0x7f060083;
+        public static final int panic_number=0x7f060081;
+        public static final int panic_number_notset=0x7f060082;
         public static final int prompt_gpsenable=0x7f06003f;
         public static final int satellite_num=0x7f06002f;
         public static final int saveimg=0x7f060036;
@@ -298,6 +307,7 @@ public final class R {
     }
     public static final class style {
         public static final int buttonFont=0x7f080000;
+        public static final int redButtonFont=0x7f080001;
     }
     public static final class xml {
         public static final int my_preferences=0x7f040000;
