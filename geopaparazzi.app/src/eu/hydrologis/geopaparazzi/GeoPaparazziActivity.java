@@ -259,17 +259,23 @@ public class GeoPaparazziActivity extends Activity {
         panicButton.setText(R.string.panic);
         panicButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                new AlertDialog.Builder(GeoPaparazziActivity.this).setTitle(R.string.panic)
-                        .setIcon(android.R.drawable.ic_dialog_alert).setMessage(R.string.panic_for_real)
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
-                            public void onClick( DialogInterface dialog, int whichButton ) {
-                                handlePanic();
-                            }
-                        }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
-                            public void onClick( DialogInterface dialog, int whichButton ) {
-                            }
-                        }).show();
-
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GeoPaparazziActivity.this);
+                final String panicNumber = preferences.getString(PANICKEY, "");
+                // Make sure there's a valid return address.
+                if (panicNumber == null || panicNumber.length() == 0) {
+                    ApplicationManager.openDialog(R.string.panic_number_notset, GeoPaparazziActivity.this);
+                } else {
+                    new AlertDialog.Builder(GeoPaparazziActivity.this).setTitle(R.string.panic)
+                            .setIcon(android.R.drawable.ic_dialog_alert).setMessage(R.string.panic_for_real)
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                                public void onClick( DialogInterface dialog, int whichButton ) {
+                                    handlePanic(panicNumber);
+                                }
+                            }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                                public void onClick( DialogInterface dialog, int whichButton ) {
+                                }
+                            }).show();
+                }
             }
         });
 
@@ -475,7 +481,7 @@ public class GeoPaparazziActivity extends Activity {
 
     }
 
-    private void handlePanic() {
+    private void handlePanic( String panicNumber ) {
         GpsLocation loc = applicationManager.getLoc();
         if (loc != null) {
             SmsManager mng = SmsManager.getDefault();
@@ -498,21 +504,15 @@ public class GeoPaparazziActivity extends Activity {
             sB.append(lonString);
             String msg = sB.toString();
 
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GeoPaparazziActivity.this);
-            String panicNumber = preferences.getString(PANICKEY, "");
-            // Make sure there's a valid return address.
-            if (panicNumber == null) {
-                ApplicationManager.openDialog(R.string.panic_number_notset, GeoPaparazziActivity.this);
-            } else {
-                try {
-                    if (msg.length() > 160) {
-                        msg = msg.substring(0, 160);
-                        Log.i("SmsIntent", "Trimming msg to: " + msg);
-                    }
-                    mng.sendTextMessage(panicNumber, null, msg, dummyEvent, dummyEvent);
-                } catch (Exception e) {
-                    Log.e("SmsIntent", "SendException", e);
+            try {
+                if (msg.length() > 160) {
+                    msg = msg.substring(0, 160);
+                    Log.i("SmsIntent", "Trimming msg to: " + msg);
                 }
+                mng.sendTextMessage(panicNumber, null, msg, dummyEvent, dummyEvent);
+            } catch (Exception e) {
+                Log.e("SmsIntent", "SendException", e);
+                ApplicationManager.openDialog(R.string.panic_number_notset, GeoPaparazziActivity.this);
             }
 
         } else {
