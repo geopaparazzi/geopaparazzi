@@ -37,7 +37,7 @@
     <string name="cantwrite_gpslog">Virhe: Jälkeä ei pysty tallentamaan!</string>
     <string name="cantclose_gpslog">Virhe: Jäljen tallennus ei onnistunut!</string>
     <string name="gpslogthread_interrupted">Virhe: Jäljen tallennus keskeytetty!</string>
-    <string name="utctime">UTC: </string>
+    <string name="utctime">Aika: </string>
     <string name="altim">Korkeus: </string>
     <string name="lat">Lat: </string>
     <string name="lon">Lon: </string>

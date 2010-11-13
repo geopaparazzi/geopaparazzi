@@ -37,7 +37,7 @@
     <string name="cantwrite_gpslog">ERRORE: non sono stato in grado di scrivere il log gps!</string>
     <string name="cantclose_gpslog">ERRORE: non sono stato in grado di chiudere il log gps!</string>
     <string name="gpslogthread_interrupted">ERRORE: il log gps è stato interrotto!</string>
-    <string name="utctime">tempo utc: </string>
+    <string name="utctime">tempo: </string>
     <string name="altim">quota: </string>
     <string name="lat">lat: </string>
     <string name="lon">lon: </string>
