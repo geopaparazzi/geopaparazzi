@@ -66,7 +66,9 @@
         <string name="width_label">Leveys</string>
         <string name="color_label">Väri</string>
         <string name="last_position">Viime sijainti</string>
-        <string name="distance">Etäi-syys [m]:</string>
+        <string name="distance">Matka [m]:</string>
+        
+
 
         <string name="mainmenu_kmlexport">Tallenna kml</string>
         <string name="mainmenu_gpxconvert">Tuo gpx</string>
@@ -94,15 +96,15 @@
         <string name="gps_logging_on">Jälkeä tallennetaan</string>
         <string name="gps_logging_off">Jäljen tallennus ei käytössä</string>
         <string name="mapping_preferences">Kartta-asetukset</string>
-        <string name="osm_folder">OSM-karttojen tallennuskansio</string>
+        <string name="osm_folder">OSM-tallennuskansio</string>
         <string name="gpx_lines_folder">Gpx-jälkien tallennuskansio</string>
         <string name="gpx_points_folder">Gpx-pisteiden tallennuskansio</string>
         <string name="sms_preferences">Tekstiviestiasetukset</string>
         <string name="sms_sending">Tekstiviestin lähetys</string>
         <string name="sms_sending_interval">Lähetysväli</string>
-        <string name="sms_catching">Tekstiviestien vastaanotto</string>
+        <string name="sms_catching">Paikannus tekstiviestillä</string>    
         <string name="sms_number">Numero automaattisten viestien lähetystä varten</string>
-        <string name="sms_catcher">Ota käyttöön</string>
+        <string name="sms_catcher">Salli paikannus</string>
 
         <string name="database_preferences">Tietokanta-asetukset</string>
         <string name="database_new">Luo uusi tietokanta käynnistettäesä</string>
@@ -158,5 +160,15 @@
     <string name="insert_note">Kirjoita muistiinpano</string>
     <string name="gps_log">Jälki</string>
     <string name="gps_log_name">Anna nimi tai käytä oletusnimeä</string>    
+    
+        <!-- added 2010-11-13  -->
+       <string name="audio">Audio</string>
+       <string name="audio_recording">Nauhoitetaan... paina lopettaaksesi</string>
+       <string name="audio_recording_stop">Lopeta</string>
+
+       <string name="panic">Hätä!</string>
+       <string name="panic_number">Numero hätätilannetta varten</string>
+       <string name="panic_number_notset">Numeroa ei ole asetettu. Talleta se asetuksiin</string>
+       <string name="panic_for_real">Haluatko varmasti lähettää sijaintisi?</string>
 </resources>
 
