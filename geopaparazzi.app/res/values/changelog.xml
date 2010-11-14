@@ -11,6 +11,7 @@ Version 1.1.2\n
 New features:\n
   * audio recording button \n
   * the panic button (send sms with position update to a preconfigured phone number)\n
+  * adding gps exif tags into the pictures taken
 \n
 New Localization:\n
   * added Sinhala translation\n
