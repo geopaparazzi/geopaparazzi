@@ -125,8 +125,7 @@
         <string name="measureinfo">Viime mittauksen tiedot</string>
         <string name="measureinfo_first">Alkupiste</string>
         <string name="measureinfo_last">Loppupiste</string>
-        
-        <string name="text_show_position_on_map">Näytä sijainti kartalla</string>
+        <string name="text_show_position_on_map">Sijainti kartalla</string>
     <string name="text_start_gps_logging">Aloita jäljen tallennus</string>
     <string name="text_stop_gps_logging">Lopeta jäljen tallennus</string>
     <string name="text_take_a_gps_note">Tee muistiinpano</string>
@@ -167,7 +166,7 @@
        <string name="audio_recording_stop">Lopeta</string>
 
        <string name="panic">Hätä!</string>
-       <string name="panic_number">Numero hätätilannetta varten</string>
+       <string name="panic_number">Numero hätää varten</string>
        <string name="panic_number_notset">Numeroa ei ole asetettu. Talleta se asetuksiin</string>
        <string name="panic_for_real">Haluatko varmasti lähettää sijaintisi?</string>
 </resources>
