@@ -31,6 +31,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
+import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.os.Bundle;
 import android.util.Log;
@@ -88,8 +89,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
         deviceManager = ApplicationManager.getInstance(this);
         picturesDir = deviceManager.getPicturesDir();
-        
-        
+
         snapButton = (ImageButton) findViewById(R.id.snapButton);
         Paint buttonPaint = new Paint();
         buttonPaint.setARGB(0, 255, 255, 255);
@@ -135,8 +135,9 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
             // String timeString = String.valueOf(utcTimeInSeconds);
             String azimuthString = String.valueOf((int) azimuth);
 
+            Date date = new Date();
             // create props file
-            final String currentDatestring = Constants.TIMESTAMPFORMATTER.format(new Date());
+            final String currentDatestring = Constants.TIMESTAMPFORMATTER.format(date);
             String propertiesFilePath = picturesDir.getAbsolutePath() + "/IMG_" + currentDatestring + ".properties";
             File propertiesFile = new File(propertiesFilePath);
             BufferedWriter bW = null;
@@ -156,6 +157,22 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
                 throw new IOException(e1.getLocalizedMessage());
             } finally {
                 bW.close();
+            }
+
+            // add also in internal tags
+            try {
+                Parameters p = camera.getParameters();
+                p.remove("gps-latitude");
+                p.remove("gps-longitude");
+                p.remove("gps-altitude");
+                p.remove("gps-timestamp");
+                p.set("gps-latitude", latString);
+                p.set("gps-longitude", lonString);
+                p.set("gps-altitude", altimString);
+                p.set("gps-timestamp", String.valueOf(date.getTime() / 1000));
+                camera.setParameters(p);
+            } catch (Exception e) {
+                // if something goes wrong here, try to ignore internal tags
             }
 
             String imageFilePath = picturesDir.getAbsolutePath() + "/IMG_" + currentDatestring + ".jpg";
@@ -189,8 +206,8 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
         Camera.Parameters p = camera.getParameters();
         Size previewSize = p.getPreviewSize();
         Log.d("CAMERAACTIVITY", "Preview size before: " + previewSize.width + "/" + previewSize.height);
-
         p.setPreviewSize(previewSize.width, previewSize.height);
+
         camera.setParameters(p);
         camera.startPreview();
         // try {
