@@ -127,8 +127,8 @@
 	<string name="text_show_position_on_map">vista mappa</string>
     <string name="text_start_gps_logging">registra log</string>
     <string name="text_stop_gps_logging">ferma log</string>
-    <string name="text_take_a_gps_note">prendi nota gps</string>
-    <string name="text_take_picture">scatta foto gps</string>
+    <string name="text_take_a_gps_note">prendi nota</string>
+    <string name="text_take_picture">scatta foto</string>
     
 	<string name="abouttext">
 	    GeoPaparazzi\n
@@ -159,7 +159,7 @@
     <string name="gps_log">traccia gps</string>
     <string name="gps_log_name">Inserire un nome per la traccia gps o accettare il nome preimpostato</string>
 
-	<string name="audio">audio</string>
+	<string name="text_take_audio">registra audio</string>
 	<string name="audio_recording">Sto registrando... seleziona per fermare</string>
 	<string name="audio_recording_stop">ferma</string>
 

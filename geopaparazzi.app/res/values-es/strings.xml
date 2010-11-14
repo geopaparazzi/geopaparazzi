@@ -126,8 +126,8 @@
         <string name="text_show_position_on_map">vista mapa</string>
     <string name="text_start_gps_logging">empeza el registro</string>
     <string name="text_stop_gps_logging">detener el registro</string>
-    <string name="text_take_a_gps_note">tomar una nota gps</string>
-    <string name="text_take_picture">tomar foto gps</string>
+    <string name="text_take_a_gps_note">tomar una nota</string>
+    <string name="text_take_picture">tomar foto</string>
 	
 	<string name="abouttext">
 		GeoPaparazzi\n 
@@ -157,4 +157,13 @@
   	<string name="insert_note">insertar su nota aquí</string>
   	<string name="gps_log">registro gps</string>
     <string name="gps_log_name">Introduzca un nombre de registro gps o acepta el predeterminado</string>
+  
+    <string name="text_take_audio">registra el audio</string>
+    <string name="audio_recording"> Registro de audio...Pulsa aquí para parar</string>
+    <string name="audio_recording_stop">stop</string>
+    
+    <string name="panic">pánico!</string>
+    <string name="panic_number">número de pánico</string>
+    <string name="panic_number_notset">No parece estar disponible un número válido de pánico. Lo ha activado en las preferencias?</string>
+    <string name="panic_for_real">Está seguro que desea enviar una actualización de posición?</string>
   </resources>

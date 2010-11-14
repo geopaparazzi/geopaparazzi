@@ -128,7 +128,7 @@
         <string name="text_show_position_on_map">Karten-Ansicht</string>
     <string name="text_start_gps_logging">Starte Aufzeichnung</string>
     <string name="text_stop_gps_logging">Stoppe Aufzeichnung</string>
-    <string name="text_take_a_gps_note">Erstelle GPS Notiz</string>
+    <string name="text_take_a_gps_note">Erstelle Notiz</string>
     <string name="text_take_picture">Erstelle Bild</string>
 
         <string name="abouttext">
@@ -160,7 +160,7 @@
         <string name="gps_log">GPS Aufzeichnung</string>
         <string name="gps_log_name">Name von GPS Protokolldatei eingeben oder Vorgabe akzeptieren</string>
 
-	<string name="audio">Aufnahme</string>
+	<string name="text_take_audio">Aufnahme</string>
 	<string name="audio_recording">Aufnahme läuft... zum Stoppen hier drücken</string>
 	<string name="audio_recording_stop">stop</string>
 

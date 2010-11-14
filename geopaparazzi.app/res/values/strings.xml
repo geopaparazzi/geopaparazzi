@@ -127,7 +127,7 @@
 	<string name="text_show_position_on_map">map view</string>
     <string name="text_start_gps_logging">start logging</string>
     <string name="text_stop_gps_logging">stop logging</string>
-    <string name="text_take_a_gps_note">take gps note</string>
+    <string name="text_take_a_gps_note">take note</string>
     <string name="text_take_picture">take picture</string>
 
 	<string name="abouttext">
@@ -159,7 +159,7 @@
 	<string name="gps_log">gps log</string>
 	<string name="gps_log_name">Insert a gps log name or accept the default one</string>
 	
-	<string name="audio">audio</string>
+	<string name="text_take_audio">record audio</string>
 	<string name="audio_recording">Recording audio... push here to stop</string>
 	<string name="audio_recording_stop">stop</string>
 
