@@ -185,7 +185,7 @@ public class GeoPaparazziActivity extends Activity {
 
         // AUDIO BUTTON
         Button audioButton = (Button) findViewById(R.id.audioButton);
-        audioButton.setText(R.string.audio);
+        audioButton.setText(R.string.text_take_audio);
         audioButton.setOnClickListener(new Button.OnClickListener(){
 
             public void onClick( View v ) {
