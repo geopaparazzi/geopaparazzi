@@ -161,7 +161,7 @@
     <string name="gps_log_name">Anna nimi tai käytä oletusnimeä</string>    
     
         <!-- added 2010-11-13  -->
-       <string name="audio">Audio</string>
+       <string name="text_take_audio">Nauhoita</string>
        <string name="audio_recording">Nauhoitetaan... paina lopettaaksesi</string>
        <string name="audio_recording_stop">Lopeta</string>
 

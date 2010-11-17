@@ -179,9 +179,6 @@ public final class R {
         public static final int app_name=0x7f06000f;
         public static final int askaddress=0x7f06003a;
         public static final int askcoord=0x7f060038;
-        /**  added 2010-11-13  
-         */
-        public static final int audio=0x7f060084;
         public static final int audio_recording=0x7f06007e;
         public static final int audio_recording_stop=0x7f06007f;
         public static final int azimuth=0x7f06002c;
@@ -298,6 +295,8 @@ public final class R {
         public static final int text_start_gps_logging=0x7f060074;
         public static final int text_stop_gps_logging=0x7f060075;
         public static final int text_take_a_gps_note=0x7f060076;
+        /**  added 2010-11-13  
+         */
         public static final int text_take_audio=0x7f06007d;
         public static final int text_take_picture=0x7f060077;
         public static final int thanks=0x7f060002;
