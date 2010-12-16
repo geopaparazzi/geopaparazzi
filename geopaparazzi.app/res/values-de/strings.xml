@@ -23,12 +23,12 @@
     <string name="imagesaved">Bild erfolgreich gespeichert!</string>
     <string name="imagenonsaved">Ein Fehler ist während des Speicherns des Bildes aufgetreten!</string>
     <string name="loggingoff">Alle Sensoren gestoppt.</string>
-    <string name="loggingon">GPS und Sensoraufzeichnung (Log) gestartet.</string>
-    <string name="gpsloggingoff">GPS-Aufzeichnung (Log) gestoppt.</string>
-    <string name="gpsloggingon">GPS-Aufzeichnung (Log) gestartet...</string>
+    <string name="loggingon">GPS und Sensor-Log gestartet.</string>
+    <string name="gpsloggingoff">GPS-Log gestoppt.</string>
+    <string name="gpsloggingon">GPS-Log gestartet...</string>
     <string name="gpsloggingalarm">Unterdrücke/stoppe Alarm...</string>
     <string name="gpslogging_only">Diese Funktion is nur bei aktiviertem GPS wählbar.</string>
-    <string name="nogps_data">Bisher keine GPS-Daten vorhanden!</string>
+    <string name="nogps_data">Bisher kein GPS-Signal!</string>
     
     <string name="about">Über</string>
     <string name="exit">Beenden</string>
@@ -119,15 +119,15 @@
         <string name="osm_additionalinfo">Beschreibung zum Tag hinzufügen</string>
         <string name="osm_tagsgrid">Tag zum Einfügen auswählen</string>
         
-        <string name="error_disk_full">Speicherplatz voll: Aufzeichnung kann nicht durchgeführt werden. Bitte Speicherplatz freigeben und erneut probieren.</string>
+        <string name="error_disk_full">Speicherplatz voll: Log (Aufzeichnung) kann nicht durchgeführt werden. Bitte Speicherplatz freigeben und erneut probieren.</string>
         
         <string name="measureinfo">Letzte Messung Info</string>
         <string name="measureinfo_first">Erster Punkt</string>
         <string name="measureinfo_last">Letzter Punkt</string>
         
         <string name="text_show_position_on_map">Karten-Ansicht</string>
-    <string name="text_start_gps_logging">Starte Aufzeichnung</string>
-    <string name="text_stop_gps_logging">Stoppe Aufzeichnung</string>
+    <string name="text_start_gps_logging">Starte GPS-Log</string>
+    <string name="text_stop_gps_logging">Stoppe GPS-Log</string>
     <string name="text_take_a_gps_note">Erstelle Notiz</string>
     <string name="text_take_picture">Erstelle Bild</string>
 
@@ -157,7 +157,7 @@
         <string name="no_maps_in_list">Keine Karten in der Liste. Bitte den GPX-Import im Menü auswählen um welche zu importieren.</string>
         
         <string name="insert_note">Bitte Notiz einfügen</string>
-        <string name="gps_log">GPS Aufzeichnung</string>
+        <string name="gps_log">GPS Log</string>
         <string name="gps_log_name">Name von GPS Protokolldatei eingeben oder Vorgabe akzeptieren</string>
 
 	<string name="text_take_audio">Aufnahme</string>
