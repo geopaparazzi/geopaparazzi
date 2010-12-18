@@ -10,7 +10,6 @@
 	<eu.hydrologis.geopaparazzi.dashboard.Dashboard android:layout_width="fill_parent"
 		android:layout_height="fill_parent" android:background="@color/white"
 		geopap:cols="2">
-
 		<eu.hydrologis.geopaparazzi.dashboard.DashboardItem android:id="@+id/dashboard_note_item"
 			android:layout_height="wrap_content" android:layout_width="wrap_content"
 			geopap:title="@string/text_take_a_gps_note" geopap:image="@drawable/dashboard_note_item"

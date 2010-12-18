@@ -97,21 +97,19 @@ public class Dashboard extends ViewGroup {
 
         }
 
-        preferredDashboardHeight = availableHeight;
-        // if (getChildCount() <= cols) {
-        // preferredDashboardHeight = maxChildHeight;
-        // } else if (getChildCount() % cols == 0) {
-        // preferredDashboardHeight = maxChildHeight;
-        // } else {
-        // preferredDashboardHeight = maxChildHeight
-        // * (getChildCount() / cols + 1);
-        // }
+        // preferredDashboardHeight = availableHeight;
+        if (getChildCount() <= cols) {
+            preferredDashboardHeight = maxChildHeight;
+        } else if (getChildCount() % cols == 0) {
+            preferredDashboardHeight = maxChildHeight * getChildCount() / cols;
+        } else {
+            preferredDashboardHeight = maxChildHeight * (getChildCount() / cols + 1);
+        }
 
         // comunico al container della dashboard le dimensioni preferite
         setMeasuredDimension(preferredDashboardWidth, preferredDashboardHeight);
 
     }
-
     protected void onLayout( boolean changed, int left, int top, int right, int bottom ) {
         // dobbiamo dire ad ogni figlio dove mettersi in termini di altezza,
         // larghezza, etc
