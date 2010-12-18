@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" android:layout_height="@dimen/action_bar_height"
-	android:background="@color/hydrogreen" >
+	android:background="@drawable/action_bar_background">
 	<ImageView android:layout_height="@dimen/action_bar_logo_height"
 		android:layout_width="@dimen/action_bar_logo_width"
 		android:layout_alignParentLeft="true" android:id="@+id/action_bar_logo"
@@ -17,18 +17,25 @@
 		android:layout_alignParentRight="true" android:src="@drawable/action_bar_info"
 		android:background="@drawable/action_bar_button_drawable"
 		android:padding="2dp" android:layout_centerVertical="true"></ImageButton>
+	<ImageView android:layout_height="fill_parent"
+		android:layout_width="wrap_content" android:id="@+id/sep1"
+		android:layout_toLeftOf="@+id/action_bar_info" android:src="@drawable/separator"></ImageView>
 	<ImageButton android:layout_height="wrap_content"
 		android:layout_width="wrap_content" android:id="@+id/action_bar_note"
-		 android:src="@drawable/action_bar_note"
-		android:background="@drawable/action_bar_button_drawable"
-		android:layout_toLeftOf="@+id/action_bar_info"
-		android:padding="2dp" android:layout_centerVertical="true"></ImageButton>
+		android:src="@drawable/action_bar_note" android:background="@drawable/action_bar_button_drawable"
+		android:layout_toLeftOf="@+id/sep1" android:padding="2dp"
+		android:layout_centerVertical="true"></ImageButton>
+	<ImageView android:layout_height="fill_parent"
+		android:layout_width="wrap_content" android:id="@+id/sep2"
+		android:layout_toLeftOf="@+id/action_bar_note" android:src="@drawable/separator"></ImageView>
 	<ImageButton android:layout_height="wrap_content"
 		android:layout_width="wrap_content" android:id="@+id/action_bar_compass"
-		 android:src="@drawable/action_bar_compass"
-		android:background="@drawable/action_bar_button_drawable"
-		android:layout_toLeftOf="@+id/action_bar_note"
-		android:padding="2dp" android:layout_centerVertical="true"></ImageButton>
+		android:src="@drawable/action_bar_compass" android:background="@drawable/action_bar_button_drawable"
+		android:layout_toLeftOf="@+id/sep2" android:padding="2dp"
+		android:layout_centerVertical="true"></ImageButton>
+	<ImageView android:layout_height="fill_parent"
+		android:layout_width="wrap_content" android:id="@+id/sep3"
+		android:layout_toLeftOf="@+id/action_bar_compass" android:src="@drawable/separator"></ImageView>
 
 	<FrameLayout android:layout_height="fill_parent"
 		android:layout_width="wrap_content" android:id="@+id/action_bar_reload"
@@ -41,4 +48,5 @@
 			android:layout_height="@dimen/action_bar_process_height"
 			android:layout_width="@dimen/action_bar_process_width" android:src="@drawable/gps_activity_icon"></ImageView>
 	</FrameLayout>
+	
 </RelativeLayout>

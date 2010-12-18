@@ -8,8 +8,10 @@
 	<dimen name="action_bar_padding">2dp</dimen>
 	<dimen name="action_bar_process_height">36dp</dimen>
 	<dimen name="action_bar_process_width">36dp</dimen>
-	<!-- dims of action bar -->
+	<!-- dims of dashboards-->
 	<dimen name="dashboard_button_width">100dp</dimen>
 	<dimen name="dashboard_button_height">100dp</dimen>
 	<dimen name="dashboard_button_padding">3dp</dimen>
+	<!-- dims of panic bar-->
+	<dimen name="panic_bar_height">20dp</dimen>
 </resources>
