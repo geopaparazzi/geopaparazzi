@@ -4,7 +4,7 @@
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
 	android:id="@+id/main_frameLayout">
 	<LinearLayout android:orientation="vertical"
-		android:layout_width="fill_parent" android:layout_height="fill_parent"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:background="@color/white">
 
 		<include android:id="@+id/action_bar" layout="@layout/action_bar"

@@ -96,7 +96,6 @@ public class Dashboard extends ViewGroup {
             }
 
         }
-
         // preferredDashboardHeight = availableHeight;
         if (getChildCount() <= cols) {
             preferredDashboardHeight = maxChildHeight;

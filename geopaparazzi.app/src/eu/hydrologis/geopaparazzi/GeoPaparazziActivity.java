@@ -110,12 +110,12 @@ public class GeoPaparazziActivity extends Activity {
 
     private void init() {
         setContentView(R.layout.geopap_main);
-        
+
         ActionBar actionBar = ActionBar.getActionBar(this, R.id.action_bar);
-        actionBar.setTitleWithCustomFont(R.string.app_name,
-                R.id.action_bar_title, "fonts/accid.ttf");
-        
-        if(true)return;
+        actionBar.setTitleWithCustomFont(R.string.app_name, R.id.action_bar_title, "fonts/accid.ttf");
+
+        if (true)
+            return;
 
         Object stateObj = getLastNonConfigurationInstance();
         if (stateObj instanceof ApplicationManager) {
@@ -316,6 +316,78 @@ public class GeoPaparazziActivity extends Activity {
         } catch (IOException e) {
             e.printStackTrace();
             Toast.makeText(this, R.string.databaseError, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    // method that is defined in the drawableitem
+    public void push( int id ) {
+        switch( id ) {
+        case R.id.dashboard_note_item: {
+            GpsLocation loc = applicationManager.getLoc();
+            if (loc != null) {
+                Intent intent = new Intent(Constants.TAKE_NOTE);
+                startActivity(intent);
+            } else {
+                ApplicationManager.openDialog(R.string.gpslogging_only, GeoPaparazziActivity.this);
+            }
+            break;
+        }
+        case R.id.dashboard_undonote_item: {
+            try {
+                DaoNotes.deleteLastInsertedNote(this);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            break;
+        }
+        case R.id.dashboard_log_item: {
+            isChecked = logButton.isChecked();
+            if (isChecked) {
+                GpsLocation loc = applicationManager.getLoc();
+                if (loc != null) {
+                    final String defaultLogName = "log_" + Constants.TIMESTAMPFORMATTER.format(new Date());
+                    final EditText input = new EditText(GeoPaparazziActivity.this);
+                    input.setText(defaultLogName);
+                    new AlertDialog.Builder(GeoPaparazziActivity.this).setTitle(R.string.gps_log)
+                            .setMessage(R.string.gps_log_name).setView(input)
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                                public void onClick( DialogInterface dialog, int whichButton ) {
+                                    Editable value = input.getText();
+                                    String newName = value.toString();
+                                    if (newName == null || newName.length() < 1) {
+                                        newName = defaultLogName;
+                                    }
+                                    applicationManager.startLogging(newName);
+                                }
+                            }).setCancelable(false).show();
+                } else {
+                    ApplicationManager.openDialog(R.string.gpslogging_only, GeoPaparazziActivity.this);
+                    isChecked = !isChecked;
+                    logButton.setChecked(isChecked);
+                }
+            } else {
+                applicationManager.stopLogging();
+            }
+            break;
+        }
+        case R.id.dashboard_map_item: {
+            Intent mapIntent = new Intent(Constants.VIEW_IN_OSM);
+            startActivity(mapIntent);
+            break;
+        }
+        case R.id.dashboard_import_item: {
+            Intent browseIntent = new Intent(Constants.DIRECTORYBROWSER);
+            browseIntent.putExtra(Constants.INTENT_ID, Constants.GPXIMPORT);
+            browseIntent.putExtra(Constants.EXTENTION, ".gpx"); //$NON-NLS-1$
+            startActivity(browseIntent);
+            break;
+        }
+        case R.id.dashboard_export_item: {
+            exportToKml();
+            break;
+        }
+        default:
+            break;
         }
     }
 
