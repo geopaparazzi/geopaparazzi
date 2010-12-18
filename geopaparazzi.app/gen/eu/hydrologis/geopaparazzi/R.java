@@ -19,168 +19,250 @@ public final class R {
         public static final int sms_time_value=0x7f050005;
     }
     public static final class attr {
+        /** <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int cols=0x7f010000;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int image=0x7f010002;
+        /**  metodo di tipo xxx(int id) 
+         <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int onClick=0x7f010003;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int title=0x7f010001;
     }
     public static final class color {
         public static final int black=0x7f070005;
         public static final int blue=0x7f070002;
         public static final int dark=0x7f070004;
+        public static final int darkorange=0x7f070009;
         public static final int green=0x7f070001;
+        public static final int hydrogreen=0x7f07000c;
         public static final int light=0x7f070003;
+        public static final int mygreen_dark=0x7f07000a;
+        public static final int mygreen_light=0x7f07000b;
+        public static final int orange=0x7f070008;
         public static final int red=0x7f070000;
         public static final int transparent_white=0x7f070006;
         public static final int white=0x7f070007;
     }
+    public static final class dimen {
+        /**  dims of action bar 
+         */
+        public static final int action_bar_height=0x7f080000;
+        public static final int action_bar_logo_height=0x7f080001;
+        public static final int action_bar_logo_width=0x7f080002;
+        public static final int action_bar_padding=0x7f080004;
+        public static final int action_bar_process_height=0x7f080005;
+        public static final int action_bar_process_width=0x7f080006;
+        public static final int action_bar_title_size=0x7f080003;
+        public static final int dashboard_button_height=0x7f080008;
+        public static final int dashboard_button_padding=0x7f080009;
+        /**  dims of action bar 
+         */
+        public static final int dashboard_button_width=0x7f080007;
+    }
     public static final class drawable {
         public static final int about=0x7f020000;
-        public static final int audio=0x7f020001;
-        public static final int btn_minus_default=0x7f020002;
-        public static final int btn_plus_default=0x7f020003;
-        public static final int camera=0x7f020004;
-        public static final int compass=0x7f020005;
-        public static final int current_position=0x7f020006;
-        public static final int exit=0x7f020007;
-        public static final int gmap=0x7f020008;
-        public static final int goto_position=0x7f020009;
-        public static final int gps=0x7f02000a;
-        public static final int gps_on=0x7f02000b;
-        public static final int gpxconvert=0x7f02000c;
-        public static final int gpxline=0x7f02000d;
-        public static final int gpxpoint=0x7f02000e;
-        public static final int ic_menu_add=0x7f02000f;
-        public static final int ic_menu_camera=0x7f020010;
-        public static final int ic_menu_camera_on=0x7f020011;
-        public static final int ic_menu_compass=0x7f020012;
-        public static final int ic_menu_measure=0x7f020013;
-        public static final int ic_menu_preferences=0x7f020014;
-        public static final int ic_menu_remove=0x7f020015;
-        public static final int icon=0x7f020016;
-        public static final int kmlexport=0x7f020017;
-        public static final int logonoff=0x7f020018;
-        public static final int menu_goto=0x7f020019;
-        public static final int menu_mapmode=0x7f02001a;
-        public static final int menu_mylocation=0x7f02001b;
-        public static final int menu_zoom_in=0x7f02001c;
-        public static final int menu_zoom_out=0x7f02001d;
-        public static final int merge=0x7f02001e;
-        public static final int no_tile_128=0x7f02001f;
-        public static final int no_tile_256=0x7f020020;
-        public static final int notes=0x7f020021;
-        public static final int panic=0x7f020022;
-        public static final int snap=0x7f020023;
-        public static final int zoom_in=0x7f020024;
-        public static final int zoom_in_pressed=0x7f020025;
-        public static final int zoom_out=0x7f020026;
-        public static final int zoom_out_pressed=0x7f020027;
-        public static final int zoomin=0x7f020028;
-        public static final int zoomout=0x7f020029;
+        public static final int action_bar_background=0x7f020001;
+        public static final int action_bar_button_drawable=0x7f020002;
+        public static final int action_bar_compass=0x7f020003;
+        public static final int action_bar_info=0x7f020004;
+        public static final int action_bar_logo=0x7f020005;
+        public static final int action_bar_note=0x7f020006;
+        public static final int audio=0x7f020007;
+        public static final int btn_minus_default=0x7f020008;
+        public static final int btn_plus_default=0x7f020009;
+        public static final int camera=0x7f02000a;
+        public static final int compass=0x7f02000b;
+        public static final int current_position=0x7f02000c;
+        public static final int dashboard_export_item=0x7f02000d;
+        public static final int dashboard_import_item=0x7f02000e;
+        public static final int dashboard_log_item=0x7f02000f;
+        public static final int dashboard_map_item=0x7f020010;
+        public static final int dashboard_note_item=0x7f020011;
+        public static final int dashboard_undonote_item=0x7f020012;
+        public static final int exit=0x7f020013;
+        public static final int gmap=0x7f020014;
+        public static final int goto_position=0x7f020015;
+        public static final int gps=0x7f020016;
+        public static final int gps_activity_icon=0x7f020017;
+        public static final int gps_on=0x7f020018;
+        public static final int gpxconvert=0x7f020019;
+        public static final int gpxline=0x7f02001a;
+        public static final int gpxpoint=0x7f02001b;
+        public static final int ic_menu_add=0x7f02001c;
+        public static final int ic_menu_camera=0x7f02001d;
+        public static final int ic_menu_camera_on=0x7f02001e;
+        public static final int ic_menu_compass=0x7f02001f;
+        public static final int ic_menu_measure=0x7f020020;
+        public static final int ic_menu_preferences=0x7f020021;
+        public static final int ic_menu_remove=0x7f020022;
+        public static final int icon=0x7f020023;
+        public static final int kmlexport=0x7f020024;
+        public static final int logonoff=0x7f020025;
+        public static final int menu_goto=0x7f020026;
+        public static final int menu_mapmode=0x7f020027;
+        public static final int menu_mylocation=0x7f020028;
+        public static final int menu_zoom_in=0x7f020029;
+        public static final int menu_zoom_out=0x7f02002a;
+        public static final int merge=0x7f02002b;
+        public static final int no_tile_128=0x7f02002c;
+        public static final int no_tile_256=0x7f02002d;
+        public static final int notes=0x7f02002e;
+        public static final int panic=0x7f02002f;
+        public static final int search_button_pressed=0x7f020037;
+        public static final int search_button_released=0x7f020038;
+        public static final int snap=0x7f020030;
+        public static final int zoom_in=0x7f020031;
+        public static final int zoom_in_pressed=0x7f020032;
+        public static final int zoom_out=0x7f020033;
+        public static final int zoom_out_pressed=0x7f020034;
+        public static final int zoomin=0x7f020035;
+        public static final int zoomout=0x7f020036;
     }
     public static final class id {
-        public static final int about=0x7f090001;
-        public static final int aboutscroll=0x7f090000;
-        public static final int aboutscrollview=0x7f090005;
-        public static final int askcoordlabel=0x7f090020;
-        public static final int audioButton=0x7f09002e;
-        public static final int cancel=0x7f090049;
-        public static final int colorLabel=0x7f09000e;
-        public static final int color_spinner=0x7f09000f;
-        public static final int compassInfoView=0x7f090028;
-        public static final int coordOkButton=0x7f090025;
-        public static final int distancelabel=0x7f09003a;
-        public static final int filename=0x7f090018;
-        public static final int firstpoint=0x7f09003c;
-        public static final int gpslog_cancel=0x7f090016;
-        public static final int gpslog_chart=0x7f090011;
-        public static final int gpslog_delete=0x7f090013;
-        public static final int gpslog_ok=0x7f090015;
-        public static final int gpslog_zoom=0x7f090012;
-        public static final int gpslogname=0x7f090009;
-        public static final int gpslogsList=0x7f090019;
-        public static final int gpsproplabel=0x7f090008;
-        public static final int lastpoint=0x7f090041;
-        public static final int latitudelabel=0x7f090023;
-        public static final int latitudelabel_first=0x7f09003f;
-        public static final int latitudelabel_last=0x7f090044;
-        public static final int latitudetext=0x7f090024;
-        public static final int latitudetext_first=0x7f090040;
-        public static final int latitudetext_last=0x7f090045;
-        public static final int logButton=0x7f09002c;
-        public static final int longitudelabel=0x7f090021;
-        public static final int longitudelabel_first=0x7f09003d;
-        public static final int longitudelabel_last=0x7f090042;
-        public static final int longitudetext=0x7f090022;
-        public static final int longitudetext_first=0x7f09003e;
-        public static final int longitudetext_last=0x7f090043;
-        public static final int lowercol1=0x7f09002a;
-        public static final int lowercol2=0x7f09002d;
-        public static final int lowercol3=0x7f090030;
-        public static final int mainlower=0x7f090029;
-        public static final int mainosmtagslayout=0x7f09004a;
-        public static final int mainupper=0x7f090026;
-        public static final int mapButton=0x7f090032;
-        public static final int map_cancel=0x7f090038;
-        public static final int map_delete=0x7f090036;
-        public static final int map_ok=0x7f090037;
-        public static final int map_zoom=0x7f090035;
-        public static final int mapname=0x7f090034;
-        public static final int mapproplabel=0x7f090033;
-        public static final int measureOkButton=0x7f090046;
-        public static final int measuredistancetext=0x7f09003b;
-        public static final int measureinfo=0x7f090039;
-        public static final int noteButton=0x7f090031;
-        public static final int noteentry=0x7f090047;
-        public static final int notescolorLabel=0x7f09001e;
-        public static final int notescolor_spinner=0x7f09001f;
-        public static final int notesrow_container=0x7f09001a;
-        public static final int notesvisible=0x7f09001b;
-        public static final int noteswidthLabel=0x7f09001c;
-        public static final int noteswidthText=0x7f09001d;
-        public static final int ok=0x7f090048;
-        public static final int osm_additionalinfo_id=0x7f09004b;
-        public static final int osmgridview=0x7f09004c;
-        public static final int panicButton=0x7f09002f;
-        public static final int photoButton=0x7f09002b;
-        public static final int row_container=0x7f090006;
-        public static final int row_container1=0x7f090007;
-        public static final int row_container2=0x7f09000a;
-        public static final int row_container3=0x7f09000d;
-        public static final int row_container4=0x7f090010;
-        public static final int row_container5=0x7f090014;
-        public static final int snapButton=0x7f090004;
-        public static final int surface=0x7f090003;
-        public static final int text1=0x7f090002;
-        public static final int uppercol1=0x7f090027;
-        public static final int visible=0x7f090017;
-        public static final int widthLabel=0x7f09000b;
-        public static final int widthText=0x7f09000c;
+        public static final int about=0x7f0a0001;
+        public static final int aboutscroll=0x7f0a0000;
+        public static final int aboutscrollview=0x7f0a000d;
+        public static final int action_bar=0x7f0a0011;
+        public static final int action_bar_compass=0x7f0a0006;
+        public static final int action_bar_info=0x7f0a0004;
+        public static final int action_bar_logo=0x7f0a0002;
+        public static final int action_bar_note=0x7f0a0005;
+        public static final int action_bar_reload=0x7f0a0007;
+        public static final int action_bar_reload_button=0x7f0a0008;
+        public static final int action_bar_reload_image=0x7f0a0009;
+        public static final int action_bar_title=0x7f0a0003;
+        public static final int askcoordlabel=0x7f0a0032;
+        public static final int audioButton=0x7f0a0040;
+        public static final int button_layout=0x7f0a000e;
+        public static final int cancel=0x7f0a005b;
+        public static final int colorLabel=0x7f0a0020;
+        public static final int color_spinner=0x7f0a0021;
+        public static final int compassInfoView=0x7f0a003a;
+        public static final int coordOkButton=0x7f0a0037;
+        public static final int dashboard_export_item=0x7f0a0017;
+        public static final int dashboard_import_item=0x7f0a0016;
+        public static final int dashboard_item_image=0x7f0a000f;
+        public static final int dashboard_item_text=0x7f0a0010;
+        public static final int dashboard_log_item=0x7f0a0014;
+        public static final int dashboard_map_item=0x7f0a0015;
+        public static final int dashboard_note_item=0x7f0a0012;
+        public static final int dashboard_undonote_item=0x7f0a0013;
+        public static final int distancelabel=0x7f0a004c;
+        public static final int filename=0x7f0a002a;
+        public static final int firstpoint=0x7f0a004e;
+        public static final int gpslog_cancel=0x7f0a0028;
+        public static final int gpslog_chart=0x7f0a0023;
+        public static final int gpslog_delete=0x7f0a0025;
+        public static final int gpslog_ok=0x7f0a0027;
+        public static final int gpslog_zoom=0x7f0a0024;
+        public static final int gpslogname=0x7f0a001b;
+        public static final int gpslogsList=0x7f0a002b;
+        public static final int gpsproplabel=0x7f0a001a;
+        public static final int lastpoint=0x7f0a0053;
+        public static final int latitudelabel=0x7f0a0035;
+        public static final int latitudelabel_first=0x7f0a0051;
+        public static final int latitudelabel_last=0x7f0a0056;
+        public static final int latitudetext=0x7f0a0036;
+        public static final int latitudetext_first=0x7f0a0052;
+        public static final int latitudetext_last=0x7f0a0057;
+        public static final int logButton=0x7f0a003e;
+        public static final int longitudelabel=0x7f0a0033;
+        public static final int longitudelabel_first=0x7f0a004f;
+        public static final int longitudelabel_last=0x7f0a0054;
+        public static final int longitudetext=0x7f0a0034;
+        public static final int longitudetext_first=0x7f0a0050;
+        public static final int longitudetext_last=0x7f0a0055;
+        public static final int lowercol1=0x7f0a003c;
+        public static final int lowercol2=0x7f0a003f;
+        public static final int lowercol3=0x7f0a0042;
+        public static final int mainlower=0x7f0a003b;
+        public static final int mainosmtagslayout=0x7f0a005c;
+        public static final int mainupper=0x7f0a0038;
+        public static final int mapButton=0x7f0a0044;
+        public static final int map_cancel=0x7f0a004a;
+        public static final int map_delete=0x7f0a0048;
+        public static final int map_ok=0x7f0a0049;
+        public static final int map_zoom=0x7f0a0047;
+        public static final int mapname=0x7f0a0046;
+        public static final int mapproplabel=0x7f0a0045;
+        public static final int measureOkButton=0x7f0a0058;
+        public static final int measuredistancetext=0x7f0a004d;
+        public static final int measureinfo=0x7f0a004b;
+        public static final int noteButton=0x7f0a0043;
+        public static final int noteentry=0x7f0a0059;
+        public static final int notescolorLabel=0x7f0a0030;
+        public static final int notescolor_spinner=0x7f0a0031;
+        public static final int notesrow_container=0x7f0a002c;
+        public static final int notesvisible=0x7f0a002d;
+        public static final int noteswidthLabel=0x7f0a002e;
+        public static final int noteswidthText=0x7f0a002f;
+        public static final int ok=0x7f0a005a;
+        public static final int osm_additionalinfo_id=0x7f0a005d;
+        public static final int osmgridview=0x7f0a005e;
+        public static final int panicButton=0x7f0a0041;
+        public static final int photoButton=0x7f0a003d;
+        public static final int row_container=0x7f0a0018;
+        public static final int row_container1=0x7f0a0019;
+        public static final int row_container2=0x7f0a001c;
+        public static final int row_container3=0x7f0a001f;
+        public static final int row_container4=0x7f0a0022;
+        public static final int row_container5=0x7f0a0026;
+        public static final int snapButton=0x7f0a000c;
+        public static final int surface=0x7f0a000b;
+        public static final int text1=0x7f0a000a;
+        public static final int uppercol1=0x7f0a0039;
+        public static final int visible=0x7f0a0029;
+        public static final int widthLabel=0x7f0a001d;
+        public static final int widthText=0x7f0a001e;
     }
     public static final class layout {
         public static final int about=0x7f030000;
-        public static final int browse=0x7f030001;
-        public static final int browse_file_row=0x7f030002;
-        public static final int camera=0x7f030003;
-        public static final int changelog_view=0x7f030004;
-        public static final int gpslog_properties=0x7f030005;
-        public static final int gpslog_row=0x7f030006;
-        public static final int gpslogslist=0x7f030007;
-        public static final int insertcoord=0x7f030008;
-        public static final int main=0x7f030009;
-        public static final int maps_properties=0x7f03000a;
-        public static final int maps_row=0x7f03000b;
-        public static final int mapslist=0x7f03000c;
-        public static final int measureinfo=0x7f03000d;
-        public static final int note=0x7f03000e;
-        public static final int osmtags=0x7f03000f;
+        public static final int action_bar=0x7f030001;
+        public static final int browse=0x7f030002;
+        public static final int browse_file_row=0x7f030003;
+        public static final int camera=0x7f030004;
+        public static final int changelog_view=0x7f030005;
+        public static final int dashboard_button_layout=0x7f030006;
+        public static final int geopap_main=0x7f030007;
+        public static final int gpslog_properties=0x7f030008;
+        public static final int gpslog_row=0x7f030009;
+        public static final int gpslogslist=0x7f03000a;
+        public static final int insertcoord=0x7f03000b;
+        public static final int main=0x7f03000c;
+        public static final int maps_properties=0x7f03000d;
+        public static final int maps_row=0x7f03000e;
+        public static final int mapslist=0x7f03000f;
+        public static final int measureinfo=0x7f030010;
+        public static final int note=0x7f030011;
+        public static final int osmtags=0x7f030012;
     }
     public static final class string {
         public static final int about=0x7f060021;
-        public static final int abouttext=0x7f060078;
+        public static final int abouttext=0x7f060079;
         public static final int address=0x7f060039;
         public static final int altim=0x7f060029;
         public static final int app_name=0x7f06000f;
         public static final int askaddress=0x7f06003a;
         public static final int askcoord=0x7f060038;
-        public static final int audio_recording=0x7f06007e;
-        public static final int audio_recording_stop=0x7f06007f;
+        public static final int audio_recording=0x7f06007f;
+        public static final int audio_recording_stop=0x7f060080;
         public static final int azimuth=0x7f06002c;
         public static final int cancel=0x7f060008;
         public static final int cantclose_gpslog=0x7f060026;
@@ -203,8 +285,8 @@ public final class R {
         public static final int exit=0x7f060022;
         public static final int googleview=0x7f060031;
         public static final int goto_coordinate=0x7f060037;
-        public static final int gps_log=0x7f06007b;
-        public static final int gps_log_name=0x7f06007c;
+        public static final int gps_log=0x7f06007c;
+        public static final int gps_log_name=0x7f06007d;
         public static final int gps_logging_distance=0x7f060056;
         public static final int gps_logging_interval=0x7f060057;
         public static final int gps_logging_off=0x7f06005a;
@@ -230,7 +312,7 @@ public final class R {
         public static final int gpxnonsaved=0x7f060017;
         public static final int imagenonsaved=0x7f060019;
         public static final int imagesaved=0x7f060018;
-        public static final int insert_note=0x7f06007a;
+        public static final int insert_note=0x7f06007b;
         public static final int kmlnonsaved=0x7f060016;
         public static final int kmlsaved=0x7f060015;
         public static final int last_position=0x7f060043;
@@ -259,7 +341,7 @@ public final class R {
         public static final int measureinfo_first=0x7f060071;
         public static final int measureinfo_last=0x7f060072;
         public static final int meters=0x7f06000e;
-        public static final int no_maps_in_list=0x7f060079;
+        public static final int no_maps_in_list=0x7f06007a;
         public static final int nogps4google=0x7f060040;
         public static final int nogps_data=0x7f060020;
         public static final int nogpscoordinate=0x7f060035;
@@ -274,10 +356,10 @@ public final class R {
         public static final int osm_folder=0x7f06005c;
         public static final int osm_tagsgrid=0x7f06006e;
         public static final int osmview=0x7f060030;
-        public static final int panic=0x7f060080;
-        public static final int panic_for_real=0x7f060083;
-        public static final int panic_number=0x7f060081;
-        public static final int panic_number_notset=0x7f060082;
+        public static final int panic=0x7f060081;
+        public static final int panic_for_real=0x7f060084;
+        public static final int panic_number=0x7f060082;
+        public static final int panic_number_notset=0x7f060083;
         public static final int prompt_gpsenable=0x7f06003f;
         public static final int satellite_num=0x7f06002f;
         public static final int saveimg=0x7f060036;
@@ -297,8 +379,9 @@ public final class R {
         public static final int text_take_a_gps_note=0x7f060076;
         /**  added 2010-11-13  
          */
-        public static final int text_take_audio=0x7f06007d;
-        public static final int text_take_picture=0x7f060077;
+        public static final int text_take_audio=0x7f06007e;
+        public static final int text_take_picture=0x7f060078;
+        public static final int text_undo_a_gps_note=0x7f060077;
         public static final int thanks=0x7f060002;
         public static final int utctime=0x7f060028;
         public static final int width_label=0x7f060041;
@@ -308,10 +391,92 @@ public final class R {
         public static final int zoomout=0x7f060033;
     }
     public static final class style {
-        public static final int buttonFont=0x7f080000;
-        public static final int redButtonFont=0x7f080001;
+        public static final int buttonFont=0x7f090000;
+        public static final int redButtonFont=0x7f090001;
     }
     public static final class xml {
         public static final int my_preferences=0x7f040000;
     }
+    public static final class styleable {
+        /** Attributes that can be used with a Dashboard.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #Dashboard_cols eu.hydrologis.geopaparazzi:cols}</code></td><td></td></tr>
+           </table>
+           @see #Dashboard_cols
+         */
+        public static final int[] Dashboard = {
+            0x7f010000
+        };
+        /**
+          <p>This symbol is the offset where the {@link eu.hydrologis.geopaparazzi.R.attr#cols}
+          attribute's value can be found in the {@link #Dashboard} array.
+
+
+          <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:cols
+        */
+        public static final int Dashboard_cols = 0;
+        /** Attributes that can be used with a DashboardItem.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #DashboardItem_image eu.hydrologis.geopaparazzi:image}</code></td><td></td></tr>
+           <tr><td><code>{@link #DashboardItem_onClick eu.hydrologis.geopaparazzi:onClick}</code></td><td> metodo di tipo xxx(int id) </td></tr>
+           <tr><td><code>{@link #DashboardItem_title eu.hydrologis.geopaparazzi:title}</code></td><td></td></tr>
+           </table>
+           @see #DashboardItem_image
+           @see #DashboardItem_onClick
+           @see #DashboardItem_title
+         */
+        public static final int[] DashboardItem = {
+            0x7f010001, 0x7f010002, 0x7f010003
+        };
+        /**
+          <p>This symbol is the offset where the {@link eu.hydrologis.geopaparazzi.R.attr#image}
+          attribute's value can be found in the {@link #DashboardItem} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name android:image
+        */
+        public static final int DashboardItem_image = 1;
+        /**
+          <p>
+          @attr description
+           metodo di tipo xxx(int id) 
+
+
+          <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          <p>This is a private symbol.
+          @attr name android:onClick
+        */
+        public static final int DashboardItem_onClick = 2;
+        /**
+          <p>This symbol is the offset where the {@link eu.hydrologis.geopaparazzi.R.attr#title}
+          attribute's value can be found in the {@link #DashboardItem} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name android:title
+        */
+        public static final int DashboardItem_title = 0;
+    };
 }

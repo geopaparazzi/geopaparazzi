@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:geopap="http://schemas.android.com/apk/res/eu.hydrologis.geopaparazzi"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+
+	<include android:id="@+id/action_bar" layout="@layout/action_bar"
+		android:layout_width="fill_parent" android:layout_height="@dimen/action_bar_height" />
+
+	<eu.hydrologis.geopaparazzi.dashboard.Dashboard android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:background="@color/white"
+		geopap:cols="2">
+
+		<eu.hydrologis.geopaparazzi.dashboard.DashboardItem android:id="@+id/dashboard_note_item"
+			android:layout_height="wrap_content" android:layout_width="wrap_content"
+			geopap:title="@string/text_take_a_gps_note" geopap:image="@drawable/dashboard_note_item"
+			geopap:onClick="push">
+		</eu.hydrologis.geopaparazzi.dashboard.DashboardItem>
+		<eu.hydrologis.geopaparazzi.dashboard.DashboardItem android:id="@+id/dashboard_undonote_item"
+			android:layout_height="wrap_content" android:layout_width="wrap_content"
+			geopap:title="@string/text_undo_a_gps_note" geopap:image="@drawable/dashboard_undonote_item"
+			geopap:onClick="push">
+		</eu.hydrologis.geopaparazzi.dashboard.DashboardItem>
+		<eu.hydrologis.geopaparazzi.dashboard.DashboardItem android:id="@+id/dashboard_log_item"
+			android:layout_height="wrap_content" android:layout_width="wrap_content"
+			geopap:title="@string/text_start_gps_logging" geopap:image="@drawable/dashboard_log_item"
+			geopap:onClick="push">
+		</eu.hydrologis.geopaparazzi.dashboard.DashboardItem>
+		<eu.hydrologis.geopaparazzi.dashboard.DashboardItem android:id="@+id/dashboard_map_item"
+			android:layout_height="wrap_content" android:layout_width="wrap_content"
+			geopap:title="@string/text_show_position_on_map" geopap:image="@drawable/dashboard_map_item"
+			geopap:onClick="push">
+		</eu.hydrologis.geopaparazzi.dashboard.DashboardItem>
+		<eu.hydrologis.geopaparazzi.dashboard.DashboardItem android:id="@+id/dashboard_import_item"
+			android:layout_height="wrap_content" android:layout_width="wrap_content"
+			geopap:title="@string/mainmenu_gpxconvert" geopap:image="@drawable/dashboard_import_item"
+			geopap:onClick="push">
+		</eu.hydrologis.geopaparazzi.dashboard.DashboardItem>
+		<eu.hydrologis.geopaparazzi.dashboard.DashboardItem android:id="@+id/dashboard_export_item"
+			android:layout_height="wrap_content" android:layout_width="wrap_content"
+			geopap:title="@string/mainmenu_kmlexport" geopap:image="@drawable/dashboard_export_item"
+			geopap:onClick="push">
+		</eu.hydrologis.geopaparazzi.dashboard.DashboardItem>
+	</eu.hydrologis.geopaparazzi.dashboard.Dashboard>
+
+</LinearLayout>

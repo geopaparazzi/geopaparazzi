@@ -8,4 +8,9 @@
 	<color name="black">#000000</color>
 	<color name="transparent_white">#FFFFFFFF</color>
 	<color name="white">#FFFFFF</color>
+	<color name="orange">#FF9933</color>
+	<color name="darkorange">#993300</color>
+	<color name="mygreen_dark">#339966</color>
+	<color name="mygreen_light">#66CC99</color>
+	<color name="hydrogreen">#5d9d76</color>
 </resources>

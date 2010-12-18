@@ -17,8 +17,9 @@
  */
 package eu.hydrologis.geopaparazzi;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.*;
+import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LATITUDE;
 import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LONGITUDE;
+import static eu.hydrologis.geopaparazzi.util.Constants.PANICKEY;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -57,6 +58,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.compass.CompassView;
+import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
@@ -107,7 +109,13 @@ public class GeoPaparazziActivity extends Activity {
     }
 
     private void init() {
-        setContentView(R.layout.main);
+        setContentView(R.layout.geopap_main);
+        
+        ActionBar actionBar = ActionBar.getActionBar(this, R.id.action_bar);
+        actionBar.setTitleWithCustomFont(R.string.app_name,
+                R.id.action_bar_title, "fonts/accid.ttf");
+        
+        if(true)return;
 
         Object stateObj = getLastNonConfigurationInstance();
         if (stateObj instanceof ApplicationManager) {

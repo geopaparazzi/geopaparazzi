@@ -128,6 +128,7 @@
     <string name="text_start_gps_logging">start logging</string>
     <string name="text_stop_gps_logging">stop logging</string>
     <string name="text_take_a_gps_note">take note</string>
+    <string name="text_undo_a_gps_note">undo note</string>
     <string name="text_take_picture">take picture</string>
 
 	<string name="abouttext">

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="@dimen/action_bar_height"
+	android:background="@color/hydrogreen">
+	<ImageView android:layout_height="@dimen/action_bar_logo_height"
+		android:layout_width="@dimen/action_bar_logo_width"
+		android:layout_alignParentLeft="true" android:id="@+id/action_bar_logo"
+		android:layout_centerVertical="true" android:src="@drawable/action_bar_logo"></ImageView>
+	<TextView android:layout_toRightOf="@+id/action_bar_logo"
+		android:layout_width="wrap_content" android:text="geopaparazzi"
+		android:layout_centerInParent="true" android:id="@+id/action_bar_title"
+		android:textColor="@color/white" android:textStyle="bold"
+		android:layout_height="wrap_content" android:textSize="@dimen/action_bar_title_size"
+		android:padding="@dimen/action_bar_padding"></TextView>
+	<ImageButton android:layout_height="wrap_content"
+		android:layout_width="wrap_content" android:id="@+id/action_bar_info"
+		android:layout_alignParentRight="true" android:src="@drawable/action_bar_info"
+		android:background="@drawable/action_bar_button_drawable"
+		android:padding="2dp"></ImageButton>
+
+	<ImageButton android:layout_height="wrap_content"
+		android:layout_width="wrap_content" android:id="@+id/action_bar_note"
+		 android:src="@drawable/action_bar_note"
+		android:background="@drawable/action_bar_button_drawable"
+		android:layout_toLeftOf="@+id/action_bar_info"
+		android:padding="2dp"></ImageButton>
+	<ImageButton android:layout_height="wrap_content"
+		android:layout_width="wrap_content" android:id="@+id/action_bar_compass"
+		 android:src="@drawable/action_bar_compass"
+		android:background="@drawable/action_bar_button_drawable"
+		android:layout_toLeftOf="@+id/action_bar_note"
+		android:padding="2dp"></ImageButton>
+
+	<FrameLayout android:layout_height="fill_parent"
+		android:layout_width="wrap_content" android:id="@+id/action_bar_reload"
+		android:padding="2dp" android:layout_toLeftOf="@+id/action_bar_compass">
+		<Button android:layout_height="@dimen/action_bar_process_height"
+			android:layout_width="@dimen/action_bar_process_width" android:id="@+id/action_bar_reload_button"
+			android:background="@drawable/action_bar_button_drawable"></Button>
+		<ImageView android:id="@+id/action_bar_reload_image"
+			android:layout_height="@dimen/action_bar_process_height"
+			android:layout_width="@dimen/action_bar_process_width" android:src="@drawable/gps_activity_icon"></ImageView>
+	</FrameLayout>
+</RelativeLayout>
