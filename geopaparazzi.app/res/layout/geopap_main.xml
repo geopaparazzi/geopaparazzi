@@ -11,8 +11,9 @@
 			android:layout_width="fill_parent" android:layout_height="@dimen/action_bar_height" />
 
 		<eu.hydrologis.geopaparazzi.dashboard.Dashboard
-			android:layout_width="fill_parent" android:layout_height="fill_parent"
-			android:background="@color/white" geopap:cols="2">
+			android:id="@+id/dashboard" android:layout_width="fill_parent"
+			android:layout_height="fill_parent" android:background="@color/white"
+			geopap:cols="2">
 			<eu.hydrologis.geopaparazzi.dashboard.DashboardItem
 				android:id="@+id/dashboard_note_item" android:layout_height="wrap_content"
 				android:layout_width="wrap_content" geopap:title="@string/text_take_a_gps_note"
@@ -55,8 +56,7 @@
 			<TextView android:layout_width="wrap_content" android:text="@string/panic"
 				android:layout_centerInParent="true" android:textColor="@color/white"
 				android:textStyle="bold" android:layout_height="wrap_content"
-				android:textSize="@dimen/action_bar_title_size" 
-				android:padding="@dimen/action_bar_padding"
+				android:textSize="@dimen/action_bar_title_size" android:padding="@dimen/action_bar_padding"
 				android:layout_centerVertical="true"
 				android:layout_centerHorizontal="true"></TextView>
 		</LinearLayout>
