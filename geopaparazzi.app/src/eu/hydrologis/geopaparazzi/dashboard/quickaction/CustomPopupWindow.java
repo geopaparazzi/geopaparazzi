@@ -205,7 +205,8 @@ public class CustomPopupWindow {
 			window.setAnimationStyle(R.style.Animations_PopDownMenu_Center);
 		}
 
-		window.showAtLocation(anchor, Gravity.NO_GRAVITY, xPos, yPos);
+		window.showAtLocation(anchor, Gravity.LEFT, -10, -20);
+//		window.showAtLocation(anchor, Gravity.NO_GRAVITY, xPos, yPos);
 	}
 
 	public void dismiss() {

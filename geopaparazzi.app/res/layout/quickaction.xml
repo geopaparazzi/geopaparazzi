@@ -20,7 +20,7 @@
         android:id="@+id/scroll"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:fadingEdgeLength="0dip"
+        android:fadingEdgeLength="0dp"
         android:layout_below="@id/header2"
         android:background="@color/hydrogreen"
         android:scrollbars="none">
@@ -32,16 +32,15 @@
             android:paddingTop="4dp"
             android:paddingBottom="4dp" 
             android:orientation="horizontal">
-        
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/quickcontact_slider_grip_left" />
+                android:layout_height="fill_parent"
+                android:src="@drawable/quickaction_slider_left" />
 
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/quickcontact_slider_grip_right" />
+                android:layout_height="fill_parent"
+                android:src="@drawable/quickaction_slider_right" />
                 
         </LinearLayout>
             
