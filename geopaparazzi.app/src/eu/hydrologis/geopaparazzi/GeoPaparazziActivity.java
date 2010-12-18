@@ -608,7 +608,7 @@ public class GeoPaparazziActivity extends Activity {
     private void createQuickActions() {
         notesQuickaction = new ActionItem();
         notesQuickaction.setTitle("Geonote");
-        notesQuickaction.setIcon(getResources().getDrawable(R.drawable.notes));
+        notesQuickaction.setIcon(getResources().getDrawable(R.drawable.quickaction_notes));
         notesQuickaction.setOnClickListener(new OnClickListener(){
             public void onClick( View v ) {
                 GpsLocation loc = applicationManager.getLoc();
@@ -622,7 +622,7 @@ public class GeoPaparazziActivity extends Activity {
         });
         pictureQuickaction = new ActionItem();
         pictureQuickaction.setTitle("Photo");
-        pictureQuickaction.setIcon(getResources().getDrawable(R.drawable.camera));
+        pictureQuickaction.setIcon(getResources().getDrawable(R.drawable.quickaction_pictures));
         pictureQuickaction.setOnClickListener(new OnClickListener(){
             public void onClick( View v ) {
                 GpsLocation loc = applicationManager.getLoc();
@@ -636,7 +636,7 @@ public class GeoPaparazziActivity extends Activity {
         });
         audioQuickaction = new ActionItem();
         audioQuickaction.setTitle("Audio");
-        audioQuickaction.setIcon(getResources().getDrawable(R.drawable.audio));
+        audioQuickaction.setIcon(getResources().getDrawable(R.drawable.quickaction_audio));
         audioQuickaction.setOnClickListener(new OnClickListener(){
             public void onClick( View v ) {
                 try {

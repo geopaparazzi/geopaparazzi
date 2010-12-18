@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:fadingEdgeLength="0dip"
         android:layout_below="@id/header2"
-        android:background="@drawable/quickaction_slider_background"
+        android:background="@color/hydrogreen"
         android:scrollbars="none">
 
         <LinearLayout
