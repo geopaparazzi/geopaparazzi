@@ -1,4 +1,4 @@
-package eu.hydrologis.geopaparazzi.dashboard.quickaction;
+package eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard;
 
 import java.util.ArrayList;
 

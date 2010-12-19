@@ -1,3 +1,4 @@
+package eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard;
 //package eu.hydrologis.geopaparazzi.dashboard.quickaction;
 //
 //import android.app.Activity;

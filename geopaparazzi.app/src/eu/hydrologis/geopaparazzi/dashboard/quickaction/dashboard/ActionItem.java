@@ -1,4 +1,4 @@
-package eu.hydrologis.geopaparazzi.dashboard.quickaction;
+package eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard;
 
 import android.graphics.drawable.Drawable;
 import android.view.View.OnClickListener;

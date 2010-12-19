@@ -1,4 +1,4 @@
-package eu.hydrologis.geopaparazzi.dashboard.quickaction;
+package eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard;
 
 import android.content.Context;
 import android.graphics.Rect;

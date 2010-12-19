@@ -61,8 +61,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.compass.CompassView;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
-import eu.hydrologis.geopaparazzi.dashboard.quickaction.ActionItem;
-import eu.hydrologis.geopaparazzi.dashboard.quickaction.QuickAction;
+import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.ActionItem;
+import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
@@ -118,9 +118,6 @@ public class GeoPaparazziActivity extends Activity {
     private void init() {
         setContentView(R.layout.geopap_main);
 
-        ActionBar actionBar = ActionBar.getActionBar(this, R.id.action_bar);
-        actionBar.setTitleWithCustomFont(R.string.app_name, R.id.action_bar_title, "fonts/accid.ttf");
-
         Object stateObj = getLastNonConfigurationInstance();
         if (stateObj instanceof ApplicationManager) {
             applicationManager = (ApplicationManager) stateObj;
@@ -129,6 +126,8 @@ public class GeoPaparazziActivity extends Activity {
             applicationManager = ApplicationManager.getInstance(this);
         }
 
+        ActionBar actionBar = ActionBar.getActionBar(this, R.id.action_bar, applicationManager);
+        actionBar.setTitleWithCustomFont(R.string.app_name, R.id.action_bar_title, "fonts/accid.ttf");
         /*
          * the compass view
          */
@@ -203,7 +202,6 @@ public class GeoPaparazziActivity extends Activity {
         }
     }
 
-    // method that is defined in the drawableitem
     public void push( int id, View v ) {
         switch( id ) {
         case R.id.dashboard_note_item_button: {
