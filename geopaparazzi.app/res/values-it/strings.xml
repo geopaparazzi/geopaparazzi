@@ -68,8 +68,8 @@
 	<string name="last_position">Ultima posizione</string>
 	<string name="distance">Distanza [m]:</string>
 
-	<string name="mainmenu_kmlexport">export kml</string>
-	<string name="mainmenu_gpxconvert">import gpx</string>
+	<string name="mainmenu_kmlexport">esporta kml</string>
+	<string name="mainmenu_gpxconvert">importa gpx</string>
 	<string name="mainmenu_gpsdataselect">lista dati gps</string>
 	<string name="mainmenu_mapdataselect">lista dati mappa</string>
 	<string name="mainmenu_togglemeasure">cambia modalità di misura</string>
@@ -125,6 +125,7 @@
 	<string name="measureinfo_last">Ultimo punto</string>
 	
 	<string name="text_show_position_on_map">vista mappa</string>
+    <string name="text_logging">log GPS</string>
     <string name="text_start_gps_logging">registra log</string>
     <string name="text_stop_gps_logging">ferma log</string>
     <string name="text_take_a_gps_note">prendi nota</string>

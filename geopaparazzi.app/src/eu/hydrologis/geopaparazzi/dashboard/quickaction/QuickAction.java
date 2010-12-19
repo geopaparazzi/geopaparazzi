@@ -194,7 +194,7 @@ public class QuickAction extends CustomPopupWindow {
         String title;
         Drawable icon;
         OnClickListener listener;
-        int index = 1;
+        int index = 1; // changed to 0 when removed slider grips
 
         for( int i = 0; i < actionList.size(); i++ ) {
             title = actionList.get(i).getTitle();

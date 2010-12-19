@@ -15,13 +15,15 @@ public final class R {
         public static final int grow_from_top=0x7f040003;
         public static final int grow_from_topleft_to_bottomright=0x7f040004;
         public static final int grow_from_topright_to_bottomleft=0x7f040005;
-        public static final int rail=0x7f040006;
-        public static final int shrink_from_bottom=0x7f040007;
-        public static final int shrink_from_bottomleft_to_topright=0x7f040008;
-        public static final int shrink_from_bottomright_to_topleft=0x7f040009;
-        public static final int shrink_from_top=0x7f04000a;
-        public static final int shrink_from_topleft_to_bottomright=0x7f04000b;
-        public static final int shrink_from_topright_to_bottomleft=0x7f04000c;
+        public static final int linear_interpolator=0x7f040006;
+        public static final int rail=0x7f040007;
+        public static final int rotate_indefinite=0x7f040008;
+        public static final int shrink_from_bottom=0x7f040009;
+        public static final int shrink_from_bottomleft_to_topright=0x7f04000a;
+        public static final int shrink_from_bottomright_to_topleft=0x7f04000b;
+        public static final int shrink_from_top=0x7f04000c;
+        public static final int shrink_from_topleft_to_bottomright=0x7f04000d;
+        public static final int shrink_from_topright_to_bottomleft=0x7f04000e;
     }
     public static final class array {
         public static final int array_colornames=0x7f060000;
@@ -330,14 +332,14 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
     }
     public static final class string {
         public static final int about=0x7f070021;
-        public static final int abouttext=0x7f070079;
+        public static final int abouttext=0x7f07007a;
         public static final int address=0x7f070039;
         public static final int altim=0x7f070029;
         public static final int app_name=0x7f07000f;
         public static final int askaddress=0x7f07003a;
         public static final int askcoord=0x7f070038;
-        public static final int audio_recording=0x7f07007f;
-        public static final int audio_recording_stop=0x7f070080;
+        public static final int audio_recording=0x7f070080;
+        public static final int audio_recording_stop=0x7f070081;
         public static final int azimuth=0x7f07002c;
         public static final int cancel=0x7f070008;
         public static final int cantclose_gpslog=0x7f070026;
@@ -360,8 +362,8 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int exit=0x7f070022;
         public static final int googleview=0x7f070031;
         public static final int goto_coordinate=0x7f070037;
-        public static final int gps_log=0x7f07007c;
-        public static final int gps_log_name=0x7f07007d;
+        public static final int gps_log=0x7f07007d;
+        public static final int gps_log_name=0x7f07007e;
         public static final int gps_logging_distance=0x7f070056;
         public static final int gps_logging_interval=0x7f070057;
         public static final int gps_logging_off=0x7f07005a;
@@ -387,7 +389,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int gpxnonsaved=0x7f070017;
         public static final int imagenonsaved=0x7f070019;
         public static final int imagesaved=0x7f070018;
-        public static final int insert_note=0x7f07007b;
+        public static final int insert_note=0x7f07007c;
         public static final int kmlnonsaved=0x7f070016;
         public static final int kmlsaved=0x7f070015;
         public static final int last_position=0x7f070043;
@@ -416,7 +418,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int measureinfo_first=0x7f070071;
         public static final int measureinfo_last=0x7f070072;
         public static final int meters=0x7f07000e;
-        public static final int no_maps_in_list=0x7f07007a;
+        public static final int no_maps_in_list=0x7f07007b;
         public static final int nogps4google=0x7f070040;
         public static final int nogps_data=0x7f070020;
         public static final int nogpscoordinate=0x7f070035;
@@ -431,10 +433,10 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int osm_folder=0x7f07005c;
         public static final int osm_tagsgrid=0x7f07006e;
         public static final int osmview=0x7f070030;
-        public static final int panic=0x7f070081;
-        public static final int panic_for_real=0x7f070084;
-        public static final int panic_number=0x7f070082;
-        public static final int panic_number_notset=0x7f070083;
+        public static final int panic=0x7f070082;
+        public static final int panic_for_real=0x7f070085;
+        public static final int panic_number=0x7f070083;
+        public static final int panic_number_notset=0x7f070084;
         public static final int prompt_gpsenable=0x7f07003f;
         public static final int satellite_num=0x7f07002f;
         public static final int saveimg=0x7f070036;
@@ -446,17 +448,18 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int sms_sending=0x7f070060;
         public static final int sms_sending_interval=0x7f070061;
         public static final int text_large=0x7f070005;
+        public static final int text_logging=0x7f070074;
         public static final int text_normal=0x7f070006;
         public static final int text_show_position_on_map=0x7f070073;
         public static final int text_small=0x7f070007;
-        public static final int text_start_gps_logging=0x7f070074;
-        public static final int text_stop_gps_logging=0x7f070075;
-        public static final int text_take_a_gps_note=0x7f070076;
+        public static final int text_start_gps_logging=0x7f070075;
+        public static final int text_stop_gps_logging=0x7f070076;
+        public static final int text_take_a_gps_note=0x7f070077;
         /**  added 2010-11-13  
          */
-        public static final int text_take_audio=0x7f07007e;
-        public static final int text_take_picture=0x7f070078;
-        public static final int text_undo_a_gps_note=0x7f070077;
+        public static final int text_take_audio=0x7f07007f;
+        public static final int text_take_picture=0x7f070079;
+        public static final int text_undo_a_gps_note=0x7f070078;
         public static final int thanks=0x7f070002;
         public static final int utctime=0x7f070028;
         public static final int width_label=0x7f070041;

@@ -88,9 +88,8 @@ public class GeoPaparazziActivity extends Activity {
     private static final String LOGTAG = "GEOPAPARAZZIACTIVITY";
 
     private static final int MENU_ABOUT = Menu.FIRST;
-    private static final int MENU_KMLEXPORT = 2;
-    private static final int MENU_EXIT = 3;
-    private static final int MENU_SETTINGS = 4;
+    private static final int MENU_EXIT = 2;
+    private static final int MENU_SETTINGS = 3;
 
     private ActionItem startLogQuickaction;
     private ActionItem stopLogQuickaction;
@@ -258,7 +257,6 @@ public class GeoPaparazziActivity extends Activity {
     public boolean onCreateOptionsMenu( Menu menu ) {
         super.onCreateOptionsMenu(menu);
         menu.add(Menu.NONE, MENU_SETTINGS, 0, R.string.mainmenu_preferences).setIcon(R.drawable.ic_menu_preferences);
-        menu.add(Menu.NONE, MENU_KMLEXPORT, 1, R.string.mainmenu_kmlexport).setIcon(R.drawable.kmlexport);
         menu.add(Menu.NONE, MENU_EXIT, 2, R.string.exit).setIcon(R.drawable.exit);
         menu.add(Menu.NONE, MENU_ABOUT, 3, R.string.about).setIcon(R.drawable.about);
 
@@ -270,12 +268,7 @@ public class GeoPaparazziActivity extends Activity {
         case MENU_ABOUT:
             Intent intent = new Intent(Constants.ABOUT);
             startActivity(intent);
-
             return true;
-        case MENU_KMLEXPORT:
-            exportToKml();
-            return true;
-
         case MENU_SETTINGS:
             Intent preferencesIntent = new Intent(Constants.PREFERENCES);
             startActivity(preferencesIntent);

@@ -126,6 +126,7 @@
         <string name="measureinfo_first">Alkupiste</string>
         <string name="measureinfo_last">Loppupiste</string>
         <string name="text_show_position_on_map">Sijainti kartalla</string>
+    <string name="text_logging">tallennus</string>
     <string name="text_start_gps_logging">Aloita jäljen tallennus</string>
     <string name="text_stop_gps_logging">Lopeta jäljen tallennus</string>
     <string name="text_take_a_gps_note">Tee muistiinpano</string>
