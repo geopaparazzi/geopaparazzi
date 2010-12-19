@@ -10,7 +10,6 @@ import android.content.res.AssetManager;
 import android.graphics.Typeface;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
@@ -73,6 +72,11 @@ public class ActionBar {
             }
         });
 
+        checkLogging();
+    }
+    
+    public View getActionBarView() {
+        return actionBarView;
     }
 
     private void initVars() {
@@ -147,7 +151,8 @@ public class ActionBar {
         }
         case R.id.action_bar_note: {
 
-            eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction qa = new eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction(v);
+            eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction qa = new eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction(
+                    v);
             qa.addActionItem(applicationManager.getNotesQuickAction());
             qa.addActionItem(applicationManager.getPicturesQuickAction());
             qa.addActionItem(applicationManager.getAudioQuickAction());
@@ -222,6 +227,14 @@ public class ActionBar {
             sb.append(": ").append(applicationManager.isGpsLogging()); //$NON-NLS-1$
         }
         return sb.toString();
+    }
+
+    public void checkLogging() {
+        if (applicationManager.isGpsLogging()) {
+            startAnimation(R.id.action_bar_reload_image, R.anim.rotate_indefinite);
+        } else {
+            stopAnimation(R.id.action_bar_reload_image);
+        }
     }
 
 }

@@ -36,9 +36,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
-import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
 
@@ -72,6 +70,27 @@ public class OsmActivity extends Activity {
         applicationManager.setOsmView(osmView);
 
         frameLayout.addView(osmView);
+
+        // action bar
+        // <include android:id="@+id/action_bar" layout="@layout/action_bar"
+        // android:layout_width="fill_parent" android:layout_height="@dimen/action_bar_height" />
+        // RelativeLayout actionBarView = (RelativeLayout) findViewById(R.id.action_bar_layout);
+        // actionBarView.setLayoutParams();
+        // actionBarView.setPadding(5, 5, 5, 0);
+        // actionBarView.setGravity(Gravity.TOP);
+        // frameLayout.addView(actionBarView);
+
+        // ActionBar actionBar = ActionBar.getActionBar(this, R.id.action_bar, applicationManager);
+        // View actionBarView = actionBar.getActionBarView();
+        // RelativeLayout actionBarView = (RelativeLayout) inflator.inflate(R.layout.action_bar,
+        // null);
+        // int actionBarHeight = 40;//getResources().getInteger(R.dimen.action_bar_height);
+        // android.widget.RelativeLayout.LayoutParams actionBarParams = new
+        // RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT,
+        // actionBarHeight);
+        // actionBarView.setLayoutParams(actionBarParams);
+        // actionBarView.setGravity(Gravity.TOP);
+        // frameLayout.addView(actionBarView);
 
         // button view
         LinearLayout buttonsLayout = new LinearLayout(this);

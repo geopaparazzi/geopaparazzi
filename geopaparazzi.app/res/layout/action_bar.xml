@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" android:layout_height="@dimen/action_bar_height"
-	android:background="@drawable/action_bar_background">
+	android:background="@drawable/action_bar_background" android:id="@+id/action_bar_layout">
 	<ImageView android:layout_height="@dimen/action_bar_logo_height"
 		android:layout_width="@dimen/action_bar_logo_width"
 		android:layout_alignParentLeft="true" android:id="@+id/action_bar_logo"

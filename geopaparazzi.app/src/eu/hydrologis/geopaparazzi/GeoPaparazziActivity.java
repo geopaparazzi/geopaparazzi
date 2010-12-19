@@ -36,7 +36,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -104,11 +103,8 @@ public class GeoPaparazziActivity extends Activity {
 
         actionBar = ActionBar.getActionBar(this, R.id.action_bar, applicationManager);
         actionBar.setTitleWithCustomFont(R.string.app_name, R.id.action_bar_title, "fonts/accid.ttf");
-        if (applicationManager.isGpsLogging()) {
-            actionBar.startAnimation(R.id.action_bar_reload_image, R.anim.rotate_indefinite);
-        } else {
-            actionBar.stopAnimation(R.id.action_bar_reload_image);
-        }
+        actionBar.checkLogging();
+
         
         /*
          * the buttons
