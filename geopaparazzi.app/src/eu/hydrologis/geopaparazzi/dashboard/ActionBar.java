@@ -1,12 +1,14 @@
 package eu.hydrologis.geopaparazzi.dashboard;
 
 import java.text.DecimalFormat;
+import java.util.HashMap;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
@@ -40,6 +42,7 @@ public class ActionBar {
 
     public ActionBar( View actionBarView, ApplicationManager applicationManager ) {
         this.actionBarView = actionBarView;
+
         this.applicationManager = applicationManager;
 
         initVars();
@@ -52,7 +55,15 @@ public class ActionBar {
                 push(gpsInfoButtonId, v);
             }
         });
-        ImageButton noteButton = (ImageButton) actionBarView.findViewById(R.id.action_bar_note);
+
+        final int noteButtonId = R.id.action_bar_note;
+        ImageButton noteButton = (ImageButton) actionBarView.findViewById(noteButtonId);
+        noteButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                push(noteButtonId, v);
+            }
+        });
+
         final int compassButtonId = R.id.action_bar_compass;
         ImageButton compassButton = (ImageButton) actionBarView.findViewById(compassButtonId);
         compassButton.setOnClickListener(new Button.OnClickListener(){
@@ -82,60 +93,35 @@ public class ActionBar {
         return new ActionBar(view, applicationManager);
     }
 
-    public void hideButton( int buttonId, int... others ) {
-        View firstButton = actionBarView.findViewById(buttonId);
-        if (firstButton != null) {
-            firstButton.setVisibility(View.GONE);
-        }
-        if (others != null) {
-            for( int otherId : others ) {
-                View otherButton = actionBarView.findViewById(otherId);
-                if (otherButton != null) {
-                    otherButton.setVisibility(View.GONE);
-                }
-            }
-        }
-    }
-
-    public void showButton( int buttonId, int... others ) {
-        View firstButton = actionBarView.findViewById(buttonId);
-        if (firstButton != null) {
-            firstButton.setVisibility(View.VISIBLE);
-        }
-        if (others != null) {
-            for( int otherId : others ) {
-                View otherButton = actionBarView.findViewById(otherId);
-                if (otherButton != null) {
-                    otherButton.setVisibility(View.VISIBLE);
-                }
-            }
-        }
-    }
-
-    public void registerListenerForButton( int buttonId, OnClickListener listener ) {
-        View button = actionBarView.findViewById(buttonId);
-        if (button != null) {
-            button.setOnClickListener(listener);
-        }
-    }
-
+    private static HashMap<Integer, Animation> animationsStack = new HashMap<Integer, Animation>();
     public void startAnimation( int buttonId, int animationId ) {
         View button = actionBarView.findViewById(buttonId);
         if (button != null) {
-            Animation buttonAnimation = AnimationUtils.loadAnimation(button.getContext(), animationId);
-            button.startAnimation(buttonAnimation);
+            // see if there is some leftover anim
+            Animation tmpAnim = animationsStack.remove(buttonId);
+            if (tmpAnim != null) {
+                stopAnim(tmpAnim);
+            }
+
+            // and start the proper one
+            Animation animation = AnimationUtils.loadAnimation(button.getContext(), animationId);
+            Log.d("ACTIONBARVIEW", "START animation: " + animation + " / " + buttonId);
+            button.startAnimation(animation);
+            animationsStack.put(buttonId, animation);
         }
     }
 
+    private void stopAnim( Animation animation ) {
+        Log.d("ACTIONBARVIEW", "STOP animation: " + animation);
+        DecelerateInterpolator decelerateInterpolator = new DecelerateInterpolator(2.f);
+        animation.setInterpolator(decelerateInterpolator);
+        animation.setRepeatCount(0);
+    }
+
     public void stopAnimation( int buttonId ) {
-        View button = actionBarView.findViewById(buttonId);
-        if (button != null) {
-            Animation animation = button.getAnimation();
-            if (animation != null) {
-                DecelerateInterpolator decelerateInterpolator = new DecelerateInterpolator(2.f);
-                animation.setInterpolator(decelerateInterpolator);
-                animation.setRepeatCount(0);
-            }
+        Animation animation = animationsStack.remove(buttonId);
+        if (animation != null) {
+            stopAnim(animation);
         }
     }
 
@@ -158,14 +144,15 @@ public class ActionBar {
             break;
         }
         case R.id.action_bar_note: {
-            GpsLocation loc = applicationManager.getLoc();
-            Context context = actionBarView.getContext();
-            if (loc != null) {
-                Intent intent = new Intent(Constants.TAKE_NOTE);
-                context.startActivity(intent);
-            } else {
-                ApplicationManager.openDialog(R.string.gpslogging_only, context);
-            }
+
+            // GpsLocation loc = applicationManager.getLoc();
+            // Context context = actionBarView.getContext();
+            // if (loc != null) {
+            // Intent intent = new Intent(Constants.TAKE_NOTE);
+            // context.startActivity(intent);
+            // } else {
+            // ApplicationManager.openDialog(R.string.gpslogging_only, context);
+            // }
             break;
         }
         case R.id.action_bar_compass: {

@@ -27,11 +27,15 @@ import static eu.hydrologis.geopaparazzi.util.Constants.PATH_OSMCACHE;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_PICTURES;
 import static java.lang.Math.toDegrees;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -48,15 +52,22 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.MediaRecorder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.text.Editable;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.EditText;
 import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.compass.CompassView;
+import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
+import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.ActionItem;
 import eu.hydrologis.geopaparazzi.database.DatabaseManager;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.gps.GpsLogger;
@@ -413,7 +424,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
             normalPitch = toDegrees(values[1]);
             normalRoll = toDegrees(values[2]);
             normalAzimuth = normalAzimuth > 0 ? normalAzimuth : (360f + normalAzimuth);
-            Log.v(LOGTAG, "NAZIMUTH = " + normalAzimuth);
+            // Log.v(LOGTAG, "NAZIMUTH = " + normalAzimuth);
 
             SensorManager.remapCoordinateSystem(RM, SensorManager.AXIS_X, SensorManager.AXIS_Z, outR);
             SensorManager.getOrientation(outR, values);
@@ -662,6 +673,175 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         });
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    private ActionItem notesQuickaction;
+    public ActionItem getNotesQuickAction() {
+        if (notesQuickaction == null) {
+            notesQuickaction = new ActionItem();
+            notesQuickaction.setTitle("Geonote");
+            notesQuickaction.setIcon(context.getResources().getDrawable(R.drawable.quickaction_notes));
+            notesQuickaction.setOnClickListener(new OnClickListener(){
+                public void onClick( View v ) {
+                    GpsLocation loc = applicationManager.getLoc();
+                    if (loc != null) {
+                        Intent intent = new Intent(Constants.TAKE_NOTE);
+                        context.startActivity(intent);
+                    } else {
+                        openDialog(R.string.gpslogging_only, context);
+                    }
+                }
+            });
+        }
+        return notesQuickaction;
+    }
+    private ActionItem pictureQuickaction;
+    public ActionItem getPicturesQuickAction() {
+        if (pictureQuickaction == null) {
+            pictureQuickaction = new ActionItem();
+            pictureQuickaction.setTitle("Photo");
+            pictureQuickaction.setIcon(context.getResources().getDrawable(R.drawable.quickaction_pictures));
+            pictureQuickaction.setOnClickListener(new OnClickListener(){
+                public void onClick( View v ) {
+                    GpsLocation loc = applicationManager.getLoc();
+                    if (loc != null) {
+                        Intent intent = new Intent(Constants.TAKE_PICTURE);
+                        context.startActivity(intent);
+                    } else {
+                        openDialog(R.string.gpslogging_only, context);
+                    }
+                }
+            });
+        }
+        return pictureQuickaction;
+    }
+    private ActionItem audioQuickaction;
+    private MediaRecorder audioRecorder;
+    public ActionItem getAudioQuickAction() {
+        if (audioQuickaction == null) {
+            audioQuickaction = new ActionItem();
+            audioQuickaction.setTitle("Audio");
+            audioQuickaction.setIcon(context.getResources().getDrawable(R.drawable.quickaction_audio));
+            audioQuickaction.setOnClickListener(new OnClickListener(){
+                public void onClick( View v ) {
+                    try {
+                        GpsLocation loc = applicationManager.getLoc();
+                        if (loc != null) {
+                            double lat = loc.getLatitude();
+                            double lon = loc.getLongitude();
+                            double altim = loc.getAltitude();
+                            String latString = String.valueOf(lat);
+                            String lonString = String.valueOf(lon);
+                            String altimString = String.valueOf(altim);
+
+                            if (audioRecorder == null) {
+                                audioRecorder = new MediaRecorder();
+                            }
+                            File picturesDir = applicationManager.getPicturesDir();
+                            final String currentDatestring = Constants.TIMESTAMPFORMATTER.format(new Date());
+                            String audioFilePathNoExtention = picturesDir.getAbsolutePath() + "/AUDIO_" + currentDatestring;
+
+                            audioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                            audioRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+                            audioRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+                            audioRecorder.setOutputFile(audioFilePathNoExtention + ".3gp");
+                            audioRecorder.prepare();
+                            audioRecorder.start();
+
+                            // create props file
+                            String propertiesFilePath = audioFilePathNoExtention + ".properties";
+                            File propertiesFile = new File(propertiesFilePath);
+                            BufferedWriter bW = null;
+                            try {
+                                bW = new BufferedWriter(new FileWriter(propertiesFile));
+                                bW.write("latitude=");
+                                bW.write(latString);
+                                bW.write("\nlongitude=");
+                                bW.write(lonString);
+                                bW.write("\naltim=");
+                                bW.write(altimString);
+                                bW.write("\nutctimestamp=");
+                                bW.write(currentDatestring);
+                            } catch (IOException e1) {
+                                throw new IOException(e1.getLocalizedMessage());
+                            } finally {
+                                bW.close();
+                            }
+
+                            new AlertDialog.Builder(context).setTitle(R.string.audio_recording)
+                                    .setIcon(android.R.drawable.ic_lock_power_off)
+                                    .setNegativeButton(R.string.audio_recording_stop, new DialogInterface.OnClickListener(){
+                                        public void onClick( DialogInterface dialog, int whichButton ) {
+                                            if (audioRecorder != null) {
+                                                audioRecorder.stop();
+                                                audioRecorder.release();
+                                                audioRecorder = null;
+                                            }
+                                        }
+                                    }).show();
+
+                        } else {
+                            openDialog(R.string.gpslogging_only, context);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+        return audioQuickaction;
+    }
+
+    private ActionItem startLogQuickaction;
+    public ActionItem getStartLogQuickAction( final ActionBar actionBar ) {
+        if (startLogQuickaction == null) {
+            startLogQuickaction = new ActionItem();
+            startLogQuickaction.setTitle("Start Log");
+            startLogQuickaction.setIcon(context.getResources().getDrawable(R.drawable.quickaction_start_log));
+            startLogQuickaction.setOnClickListener(new OnClickListener(){
+                public void onClick( View v ) {
+                    if (!applicationManager.isGpsLogging()) {
+                        GpsLocation loc = applicationManager.getLoc();
+                        if (loc != null) {
+                            final String defaultLogName = "log_" + Constants.TIMESTAMPFORMATTER.format(new Date());
+                            final EditText input = new EditText(context);
+                            input.setText(defaultLogName);
+                            new AlertDialog.Builder(context).setTitle(R.string.gps_log).setMessage(R.string.gps_log_name)
+                                    .setView(input).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                                        public void onClick( DialogInterface dialog, int whichButton ) {
+                                            Editable value = input.getText();
+                                            String newName = value.toString();
+                                            if (newName == null || newName.length() < 1) {
+                                                newName = defaultLogName;
+                                            }
+                                            applicationManager.startLogging(newName);
+                                            actionBar.startAnimation(R.id.action_bar_reload_image, R.anim.rotate_indefinite);
+                                        }
+                                    }).setCancelable(false).show();
+                        } else {
+                            ApplicationManager.openDialog(R.string.gpslogging_only, context);
+                        }
+                    }
+                }
+            });
+        }
+        return startLogQuickaction;
+    }
+
+    private ActionItem stopLogQuickaction;
+    public ActionItem getStopLogQuickAction( final ActionBar actionBar ) {
+        if (stopLogQuickaction == null) {
+            stopLogQuickaction = new ActionItem();
+            stopLogQuickaction.setTitle("Stop Log");
+            stopLogQuickaction.setIcon(context.getResources().getDrawable(R.drawable.quickaction_stop_log));
+            stopLogQuickaction.setOnClickListener(new OnClickListener(){
+                public void onClick( View v ) {
+                    applicationManager.stopLogging();
+                    actionBar.stopAnimation(R.id.action_bar_reload_image);
+                }
+            });
+        }
+        return stopLogQuickaction;
     }
 
 }
