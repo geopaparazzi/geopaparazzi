@@ -29,6 +29,7 @@ public class ActionBar {
     private final View actionBarView;
     private final ApplicationManager applicationManager;
     private ActionItem infoQuickaction;
+    private String loggingString;
 
     private static String nodataString;
     private static String timeString;
@@ -85,6 +86,7 @@ public class ActionBar {
         distanceString = context.getString(R.string.log_distance);
         satellitesString = context.getString(R.string.satellite_num);
         nodataString = context.getString(R.string.nogps_data);
+        loggingString = context.getString(R.string.text_logging);
 
     }
 
@@ -145,14 +147,12 @@ public class ActionBar {
         }
         case R.id.action_bar_note: {
 
-            // GpsLocation loc = applicationManager.getLoc();
-            // Context context = actionBarView.getContext();
-            // if (loc != null) {
-            // Intent intent = new Intent(Constants.TAKE_NOTE);
-            // context.startActivity(intent);
-            // } else {
-            // ApplicationManager.openDialog(R.string.gpslogging_only, context);
-            // }
+            eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction qa = new eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction(v);
+            qa.addActionItem(applicationManager.getNotesQuickAction());
+            qa.addActionItem(applicationManager.getPicturesQuickAction());
+            qa.addActionItem(applicationManager.getAudioQuickAction());
+            qa.setAnimStyle(QuickAction.ANIM_AUTO);
+            qa.show();
             break;
         }
         case R.id.action_bar_compass: {
@@ -218,6 +218,8 @@ public class ActionBar {
             sb.append(azimString);
             sb.append(" ").append((int) (360 - azimuth)); //$NON-NLS-1$
             sb.append("\n");
+            sb.append(loggingString);
+            sb.append(": ").append(applicationManager.isGpsLogging()); //$NON-NLS-1$
         }
         return sb.toString();
     }

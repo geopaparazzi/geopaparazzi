@@ -51,9 +51,7 @@ public class OsmActivity extends Activity {
     private static final int MENU_GPSDATA = 3;
     private static final int MENU_MAPDATA = 4;
     private static final int MENU_TOGGLE_MEASURE = 5;
-    private static final int MENU_GPXCONVERT = 6;
-    private static final int MENU_ADDTAGS = 7;
-    private static final int MENU_REMOVE_LAST_NOTE = 8;
+    private static final int MENU_ADDTAGS = 6;
 
     private OsmView osmView;
 
@@ -140,9 +138,7 @@ public class OsmActivity extends Activity {
         menu.add(Menu.NONE, MENU_ADDTAGS, 3, R.string.mainmenu_addtags).setIcon(R.drawable.ic_menu_add);
         menu.add(Menu.NONE, CENTER_ON_GPS, 4, R.string.centerongps).setIcon(R.drawable.menu_mylocation);
         menu.add(Menu.NONE, MENU_TOGGLE_MEASURE, 5, R.string.mainmenu_togglemeasure).setIcon(R.drawable.ic_menu_measure);
-        menu.add(Menu.NONE, MENU_REMOVE_LAST_NOTE, 6, R.string.mainmenu_removelastnote).setIcon(R.drawable.ic_menu_remove);
-        menu.add(Menu.NONE, MENU_GPXCONVERT, 7, R.string.mainmenu_gpxconvert).setIcon(R.drawable.gpxconvert);
-        menu.add(Menu.NONE, GO_TO, 8, R.string.goto_coordinate).setIcon(R.drawable.menu_goto);
+        menu.add(Menu.NONE, GO_TO, 6, R.string.goto_coordinate).setIcon(R.drawable.menu_goto);
         return true;
     }
 
@@ -177,15 +173,6 @@ public class OsmActivity extends Activity {
             startActivity(osmTagsIntent);
             return true;
 
-        case MENU_REMOVE_LAST_NOTE:
-            try {
-                DaoNotes.deleteLastInsertedNote(this);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            osmView.invalidate();
-            return true;
-
         case CENTER_ON_GPS:
             osmView.centerOnGps();
 
@@ -197,12 +184,6 @@ public class OsmActivity extends Activity {
         case MENU_TOGGLE_MEASURE:
             osmView.setMeasureMode(!osmView.isMeasureMode());
 
-            return true;
-        case MENU_GPXCONVERT:
-            Intent browseIntent = new Intent(Constants.DIRECTORYBROWSER);
-            browseIntent.putExtra(Constants.INTENT_ID, Constants.GPXIMPORT);
-            browseIntent.putExtra(Constants.EXTENTION, ".gpx"); //$NON-NLS-1$
-            startActivity(browseIntent);
             return true;
         }
         return super.onMenuItemSelected(featureId, item);
