@@ -55,6 +55,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -147,17 +148,11 @@ public class GeoPaparazziActivity extends Activity {
         /*
          * the buttons
          */
-        Button photoButton = (Button) findViewById(R.id.photoButton);
-        photoButton.setText(R.string.text_take_picture);
-        photoButton.setOnClickListener(new Button.OnClickListener(){
+        final int notesButtonId = R.id.dashboard_note_item_button;
+        ImageButton notesButton = (ImageButton) findViewById(notesButtonId);
+        notesButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                GpsLocation loc = applicationManager.getLoc();
-                if (loc != null) {
-                    Intent intent = new Intent(Constants.TAKE_PICTURE);
-                    startActivity(intent);
-                } else {
-                    ApplicationManager.openDialog(R.string.gpslogging_only, GeoPaparazziActivity.this);
-                }
+                push(notesButtonId);
             }
         });
 
@@ -329,9 +324,9 @@ public class GeoPaparazziActivity extends Activity {
     // method that is defined in the drawableitem
     public void push( int id ) {
         switch( id ) {
-        case R.id.dashboard_note_item: {
+        case R.id.dashboard_note_item_button: {
             // quickaction
-            View dashboard = findViewById(R.id.dashboard);
+            View dashboard = findViewById(R.id.dashboard_note_item);
             QuickAction qa = new QuickAction(dashboard);
 
             qa.addActionItem(notesQuickaction);
@@ -343,7 +338,7 @@ public class GeoPaparazziActivity extends Activity {
 
             break;
         }
-        case R.id.dashboard_undonote_item: {
+        case R.id.dashboard_undonote_item_button: {
             try {
                 DaoNotes.deleteLastInsertedNote(this);
             } catch (IOException e) {
@@ -351,7 +346,7 @@ public class GeoPaparazziActivity extends Activity {
             }
             break;
         }
-        case R.id.dashboard_log_item: {
+        case R.id.dashboard_log_item_button: {
             isChecked = logButton.isChecked();
             if (isChecked) {
                 GpsLocation loc = applicationManager.getLoc();
@@ -381,19 +376,19 @@ public class GeoPaparazziActivity extends Activity {
             }
             break;
         }
-        case R.id.dashboard_map_item: {
+        case R.id.dashboard_map_item_button: {
             Intent mapIntent = new Intent(Constants.VIEW_IN_OSM);
             startActivity(mapIntent);
             break;
         }
-        case R.id.dashboard_import_item: {
+        case R.id.dashboard_import_item_button: {
             Intent browseIntent = new Intent(Constants.DIRECTORYBROWSER);
             browseIntent.putExtra(Constants.INTENT_ID, Constants.GPXIMPORT);
             browseIntent.putExtra(Constants.EXTENTION, ".gpx"); //$NON-NLS-1$
             startActivity(browseIntent);
             break;
         }
-        case R.id.dashboard_export_item: {
+        case R.id.dashboard_export_item_button: {
             exportToKml();
             break;
         }

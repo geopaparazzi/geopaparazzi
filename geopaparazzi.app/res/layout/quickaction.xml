@@ -14,7 +14,7 @@
         android:id="@+id/arrow_up"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"	
-        android:src="@drawable/quickcontact_arrow_up" />
+        android:src="@drawable/quickaction_arrow_up" />
        
     <HorizontalScrollView
         android:id="@+id/scroll"
@@ -59,6 +59,6 @@
         android:layout_height="wrap_content"
     	android:layout_marginTop="1dp"
         android:layout_below="@id/footer"
-        android:src="@drawable/quickcontact_arrow_down" />
+        android:src="@drawable/quickaction_arrow_down" />
 
 </RelativeLayout>

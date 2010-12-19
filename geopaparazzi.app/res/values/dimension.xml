@@ -13,5 +13,5 @@
 	<dimen name="dashboard_button_height">100dp</dimen>
 	<dimen name="dashboard_button_padding">6dp</dimen>
 	<!-- dims of panic bar-->
-	<dimen name="panic_bar_height">20dp</dimen>
+	<dimen name="panic_bar_height">30dp</dimen>
 </resources>

@@ -4,48 +4,107 @@
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
 	android:id="@+id/main_frameLayout">
 	<LinearLayout android:orientation="vertical"
-		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:background="@color/white">
+		android:layout_width="fill_parent" android:layout_height="fill_parent"
+		android:background="@color/white" android:layout_marginBottom="@dimen/panic_bar_height"
+		android:gravity="center_vertical">
 
 		<include android:id="@+id/action_bar" layout="@layout/action_bar"
 			android:layout_width="fill_parent" android:layout_height="@dimen/action_bar_height" />
 
-		<eu.hydrologis.geopaparazzi.dashboard.Dashboard
-			android:id="@+id/dashboard" android:layout_width="fill_parent"
-			android:layout_height="fill_parent" android:background="@color/white"
-			geopap:cols="2">
-			<eu.hydrologis.geopaparazzi.dashboard.DashboardItem
-				android:id="@+id/dashboard_note_item" android:layout_height="wrap_content"
-				android:layout_width="wrap_content" geopap:title="@string/text_take_a_gps_note"
-				geopap:image="@drawable/dashboard_note_item" geopap:onClick="push">
-			</eu.hydrologis.geopaparazzi.dashboard.DashboardItem>
-			<eu.hydrologis.geopaparazzi.dashboard.DashboardItem
-				android:id="@+id/dashboard_undonote_item" android:layout_height="wrap_content"
-				android:layout_width="wrap_content" geopap:title="@string/text_undo_a_gps_note"
-				geopap:image="@drawable/dashboard_undonote_item" geopap:onClick="push">
-			</eu.hydrologis.geopaparazzi.dashboard.DashboardItem>
-			<eu.hydrologis.geopaparazzi.dashboard.DashboardItem
-				android:id="@+id/dashboard_log_item" android:layout_height="wrap_content"
-				android:layout_width="wrap_content" geopap:title="@string/text_start_gps_logging"
-				geopap:image="@drawable/dashboard_log_item" geopap:onClick="push">
-			</eu.hydrologis.geopaparazzi.dashboard.DashboardItem>
-			<eu.hydrologis.geopaparazzi.dashboard.DashboardItem
-				android:id="@+id/dashboard_map_item" android:layout_height="wrap_content"
-				android:layout_width="wrap_content" geopap:title="@string/text_show_position_on_map"
-				geopap:image="@drawable/dashboard_map_item" geopap:onClick="push">
-			</eu.hydrologis.geopaparazzi.dashboard.DashboardItem>
-			<eu.hydrologis.geopaparazzi.dashboard.DashboardItem
-				android:id="@+id/dashboard_import_item" android:layout_height="wrap_content"
-				android:layout_width="wrap_content" geopap:title="@string/mainmenu_gpxconvert"
-				geopap:image="@drawable/dashboard_import_item" geopap:onClick="push">
-			</eu.hydrologis.geopaparazzi.dashboard.DashboardItem>
-			<eu.hydrologis.geopaparazzi.dashboard.DashboardItem
-				android:id="@+id/dashboard_export_item" android:layout_height="wrap_content"
-				android:layout_width="wrap_content" geopap:title="@string/mainmenu_kmlexport"
-				geopap:image="@drawable/dashboard_export_item" geopap:onClick="push">
-			</eu.hydrologis.geopaparazzi.dashboard.DashboardItem>
-		</eu.hydrologis.geopaparazzi.dashboard.Dashboard>
+		<LinearLayout android:orientation="horizontal"
+			android:layout_width="fill_parent" android:layout_height="fill_parent"
+			android:background="@color/white" android:layout_weight="1">
+
+			<LinearLayout android:layout_width="fill_parent"
+				android:id="@+id/dashboard_note_item" android:orientation="vertical"
+				android:layout_height="fill_parent" android:gravity="center_horizontal"
+				android:layout_weight="1">
+				<ImageButton android:id="@+id/dashboard_note_item_button"
+					android:layout_height="wrap_content" android:padding="@dimen/dashboard_button_padding"
+					android:layout_width="wrap_content" android:src="@drawable/dashboard_note_item"
+					android:background="@drawable/action_bar_button_drawable"></ImageButton>
+				<TextView android:text="@string/text_take_a_gps_note"
+					android:id="@+id/dashboard_note_item_text" android:padding="@dimen/dashboard_button_padding"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:textColor="@color/hydrogreen" android:textStyle="bold"></TextView>
+			</LinearLayout>
+			<LinearLayout android:layout_width="fill_parent"
+				android:id="@+id/dashboard_undonote_item" android:orientation="vertical"
+				android:layout_height="fill_parent" android:gravity="center_horizontal"
+				android:layout_weight="1">
+				<ImageButton android:id="@+id/dashboard_undonote_item_button"
+					android:layout_height="wrap_content" android:padding="@dimen/dashboard_button_padding"
+					android:layout_width="wrap_content" android:src="@drawable/dashboard_undonote_item"
+					android:background="@drawable/action_bar_button_drawable"></ImageButton>
+				<TextView android:text="@string/text_undo_a_gps_note"
+					android:id="@+id/dashboard_undoitem_text" android:padding="@dimen/dashboard_button_padding"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:textColor="@color/hydrogreen" android:textStyle="bold"></TextView>
+			</LinearLayout>
+		</LinearLayout>
+		<LinearLayout android:orientation="horizontal"
+			android:layout_width="fill_parent" android:layout_height="fill_parent"
+			android:background="@color/white" android:layout_weight="1">
+			<LinearLayout android:layout_width="fill_parent"
+				android:id="@+id/dashboard_log_item" android:orientation="vertical"
+				android:layout_height="fill_parent" android:gravity="center_horizontal"
+				android:layout_weight="1">
+				<ImageButton android:id="@+id/dashboard_log_item_button"
+					android:layout_height="wrap_content" android:padding="@dimen/dashboard_button_padding"
+					android:layout_width="wrap_content" android:src="@drawable/dashboard_log_item"
+					android:background="@drawable/action_bar_button_drawable"></ImageButton>
+				<TextView android:text="@string/text_start_gps_logging"
+					android:id="@+id/dashboard_log_item_text" android:padding="@dimen/dashboard_button_padding"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:textColor="@color/hydrogreen" android:textStyle="bold"></TextView>
+			</LinearLayout>
+			<LinearLayout android:layout_width="fill_parent"
+				android:id="@+id/dashboard_map_item" android:orientation="vertical"
+				android:layout_height="fill_parent" android:gravity="center_horizontal"
+				android:layout_weight="1">
+				<ImageButton android:id="@+id/dashboard_map_item_button"
+					android:layout_height="wrap_content" android:padding="@dimen/dashboard_button_padding"
+					android:layout_width="wrap_content" android:src="@drawable/dashboard_map_item"
+					android:background="@drawable/action_bar_button_drawable"></ImageButton>
+				<TextView android:text="@string/text_show_position_on_map"
+					android:id="@+id/dashboard_map_item_text" android:padding="@dimen/dashboard_button_padding"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:textColor="@color/hydrogreen" android:textStyle="bold"></TextView>
+			</LinearLayout>
+		</LinearLayout>
+		<LinearLayout android:orientation="horizontal"
+			android:layout_width="fill_parent" android:layout_height="fill_parent"
+			android:background="@color/white" android:layout_weight="1">
+			<LinearLayout android:layout_width="fill_parent"
+				android:id="@+id/dashboard_import_item" android:orientation="vertical"
+				android:layout_height="fill_parent" android:gravity="center_horizontal"
+				android:layout_weight="1">
+				<ImageButton android:id="@+id/dashboard_import_item_button"
+					android:layout_height="wrap_content" android:padding="@dimen/dashboard_button_padding"
+					android:layout_width="wrap_content" android:src="@drawable/dashboard_import_item"
+					android:background="@drawable/action_bar_button_drawable"></ImageButton>
+				<TextView android:text="@string/mainmenu_gpxconvert"
+					android:id="@+id/dashboard_import_item_text" android:padding="@dimen/dashboard_button_padding"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:textColor="@color/hydrogreen" android:textStyle="bold"></TextView>
+			</LinearLayout>
+			<LinearLayout android:layout_width="fill_parent"
+				android:id="@+id/dashboard_export_item" android:orientation="vertical"
+				android:layout_height="fill_parent" android:gravity="center_horizontal"
+				android:layout_weight="1">
+				<ImageButton android:id="@+id/dashboard_export_item_button"
+					android:layout_height="wrap_content" android:padding="@dimen/dashboard_button_padding"
+					android:layout_width="wrap_content" android:src="@drawable/dashboard_export_item"
+					android:background="@drawable/action_bar_button_drawable"></ImageButton>
+				<TextView android:text="@string/mainmenu_kmlexport"
+					android:id="@+id/dashboard_export_item_text" android:padding="@dimen/dashboard_button_padding"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:textColor="@color/hydrogreen" android:textStyle="bold"></TextView>
+			</LinearLayout>
+		</LinearLayout>
 	</LinearLayout>
+
+
 	<SlidingDrawer android:layout_height="wrap_content"
 		android:handle="@+id/handle" android:content="@+id/content"
 		android:id="@+id/slide" android:orientation="vertical"
