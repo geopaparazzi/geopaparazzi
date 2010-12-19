@@ -560,7 +560,7 @@ public class OsmView extends View implements ApplicationManagerListener {
         invalidateWithProgress();
     }
 
-    public void onSensorChanged( double azimuth ) {
+    public void onSensorChanged( double normalAzimuth, double pictureAzimuth ) {
     }
 
     public void zoomIn() {

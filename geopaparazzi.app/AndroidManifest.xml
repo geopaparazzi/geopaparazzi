@@ -15,6 +15,12 @@
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
+		<activity android:name=".compass.CompassActivity">
+			<intent-filter>
+				<action android:name="eu.hydrologis.geopaparazzi.compass.VIEW_COMPASS" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+		</activity>
 		<activity android:name=".gps.NoteActivity"
 			android:configChanges="keyboardHidden|orientation">
 			<intent-filter>

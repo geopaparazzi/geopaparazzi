@@ -98,9 +98,12 @@ public class ApplicationManager implements SensorEventListener, LocationListener
      */
     private static GpsLogger gpsLogger;
 
-    private double azimuth = -1;
-    private double pitch = -1;
-    private double roll = -1;
+    private double normalAzimuth = -1;
+    private double normalPitch = -1;
+    private double normalRoll = -1;
+    private double pictureAzimuth = -1;
+    private double picturePitch = -1;
+    private double pictureRoll = -1;
 
     private Context context;
 
@@ -404,18 +407,26 @@ public class ApplicationManager implements SensorEventListener, LocationListener
             isReady = false;
 
             SensorManager.getRotationMatrix(RM, I, accels, mags);
+            SensorManager.remapCoordinateSystem(RM, SensorManager.AXIS_X, SensorManager.AXIS_Y, outR);
+            SensorManager.getOrientation(outR, values);
+            normalAzimuth = toDegrees(values[0]);
+            normalPitch = toDegrees(values[1]);
+            normalRoll = toDegrees(values[2]);
+            normalAzimuth = normalAzimuth > 0 ? normalAzimuth : (360f + normalAzimuth);
+            Log.v(LOGTAG, "NAZIMUTH = " + normalAzimuth);
+
             SensorManager.remapCoordinateSystem(RM, SensorManager.AXIS_X, SensorManager.AXIS_Z, outR);
             SensorManager.getOrientation(outR, values);
 
-            azimuth = toDegrees(values[0]);
-            pitch = toDegrees(values[1]);
-            roll = toDegrees(values[2]);
+            pictureAzimuth = toDegrees(values[0]);
+            picturePitch = toDegrees(values[1]);
+            pictureRoll = toDegrees(values[2]);
+            pictureAzimuth = pictureAzimuth > 0 ? pictureAzimuth : (360f + pictureAzimuth);
 
-            azimuth = azimuth > 0 ? azimuth : (360f + azimuth);
+            // Log.v(LOGTAG, "PAZIMUTH = " + pictureAzimuth);
 
-            // Log.v(LOGTAG, azimuth + "\t\t" + pitch + "\t\t" + roll);
             for( ApplicationManagerListener listener : listeners ) {
-                listener.onSensorChanged(azimuth);
+                listener.onSensorChanged(normalAzimuth, pictureAzimuth);
             }
         }
 
@@ -490,17 +501,21 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         return gpsLoc;
     }
 
-    public double getAzimuth() {
-        return azimuth;
+    public double getNormalAzimuth() {
+        return normalAzimuth;
     }
 
-    public double getPitch() {
-        return pitch;
+    public double getPictureAzimuth() {
+        return pictureAzimuth;
     }
 
-    public double getRoll() {
-        return roll;
-    }
+    // public double getPitch() {
+    // return pitch;
+    // }
+    //
+    // public double getRoll() {
+    // return roll;
+    // }
 
     public File getGeoPaparazziDir() {
         return geoPaparazziDir;

@@ -53,7 +53,13 @@ public class ActionBar {
             }
         });
         ImageButton noteButton = (ImageButton) actionBarView.findViewById(R.id.action_bar_note);
-        ImageButton compassButton = (ImageButton) actionBarView.findViewById(R.id.action_bar_compass);
+        final int compassButtonId = R.id.action_bar_compass;
+        ImageButton compassButton = (ImageButton) actionBarView.findViewById(compassButtonId);
+        compassButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                push(compassButtonId, v);
+            }
+        });
 
     }
 
@@ -163,12 +169,9 @@ public class ActionBar {
             break;
         }
         case R.id.action_bar_compass: {
-            // QuickAction qa = new QuickAction(v);
-            // qa.addActionItem(startLogQuickaction);
-            // qa.addActionItem(stopLogQuickaction);
-            // qa.setAnimStyle(QuickAction.ANIM_AUTO);
-            // qa.show();
-
+            Context context = actionBarView.getContext();
+            Intent intent = new Intent(Constants.VIEW_COMPASS);
+            context.startActivity(intent);
             break;
         }
         default:
@@ -204,7 +207,7 @@ public class ActionBar {
     }
 
     private String createGpsInfo() {
-        double azimuth = applicationManager.getAzimuth();
+        double azimuth = applicationManager.getNormalAzimuth();
         GpsLocation loc = applicationManager.getLoc();
 
         StringBuilder sb = new StringBuilder();
@@ -226,7 +229,7 @@ public class ActionBar {
             sb.append(" ").append((int) loc.getAltitude()); //$NON-NLS-1$
             sb.append("\n");
             sb.append(azimString);
-            sb.append(" ").append((int) azimuth); //$NON-NLS-1$
+            sb.append(" ").append((int) (360 - azimuth)); //$NON-NLS-1$
             sb.append("\n");
         }
         return sb.toString();

@@ -128,18 +128,6 @@ public class GeoPaparazziActivity extends Activity {
 
         ActionBar actionBar = ActionBar.getActionBar(this, R.id.action_bar, applicationManager);
         actionBar.setTitleWithCustomFont(R.string.app_name, R.id.action_bar_title, "fonts/accid.ttf");
-        /*
-         * the compass view
-         */
-        // LinearLayout uppercol1View = (LinearLayout) findViewById(R.id.uppercol1);
-        // TextView compassInfoView = (TextView) findViewById(R.id.compassInfoView);
-        // GpsLocation tmpLoc = applicationManager.getLoc();
-        // compassView = new CompassView(this, compassInfoView, applicationManager, tmpLoc);
-        // LinearLayout.LayoutParams tmpParams = new
-        // LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        // uppercol1View.addView(compassView, tmpParams);
-        // applicationManager.removeCompassListener();
-        // applicationManager.addListener(compassView);
 
         /*
          * the buttons

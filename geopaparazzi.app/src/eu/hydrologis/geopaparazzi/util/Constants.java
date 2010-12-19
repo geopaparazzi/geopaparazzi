@@ -36,6 +36,7 @@ public interface Constants {
     public final String TAKE_NOTE = "eu.hydrologis.geopaparazzi.camera.TAKE_NOTE";
     public final String TOGGLE_GPS = "eu.hydrologis.geopaparazzi.camera.TOGGLE_GPS";
     public final String VIEW_IN_OSM = "eu.hydrologis.geopaparazzi.osm.VIEW_IN_OSM";
+    public final String VIEW_COMPASS = "eu.hydrologis.geopaparazzi.compass.VIEW_COMPASS";
     public final String INSERT_COORD = "eu.hydrologis.geopaparazzi.util.INSERT_COORD";
     public final String EXPORT_KML = "eu.hydrologis.geopaparazzi.kml.EXPORT_KML";
     public final String GPSLOG_DATALIST = "eu.hydrologis.geopaparazzi.osm.GPSLOG_DATALIST";

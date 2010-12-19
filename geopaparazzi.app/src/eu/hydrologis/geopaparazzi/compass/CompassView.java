@@ -20,6 +20,7 @@ package eu.hydrologis.geopaparazzi.compass;
 import java.text.DecimalFormat;
 import java.util.List;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -30,7 +31,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
-import eu.hydrologis.geopaparazzi.GeoPaparazziActivity;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.chart.ChartDrawer;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
@@ -69,7 +69,8 @@ public class CompassView extends View implements ApplicationManagerListener {
     /**
      * The current azimuth angle, with 0 = North, -90 = West, 90 = East
      */
-    private float azimuth = -1f;
+    private float normalAzimuth = -1f;
+    private float pictureAzimuth = -1f;
     private GpsLocation loc;
 
     private int horizontalAxisColor = Color.DKGRAY;
@@ -89,12 +90,12 @@ public class CompassView extends View implements ApplicationManagerListener {
     private static String satellitesString;
     private int maxSatellites = 0;
 
-    public CompassView( GeoPaparazziActivity geopaparazziActivity, TextView compassInfoView, ApplicationManager applicationManager, GpsLocation startLoc ) {
-        super(geopaparazziActivity);
+    public CompassView( Context context, TextView compassInfoView, ApplicationManager applicationManager, GpsLocation startLoc ) {
+        super(context);
         this.compassInfoView = compassInfoView;
         this.applicationManager = applicationManager;
         this.loc = startLoc;
-        
+
         /*
          * the following block initializes a bunch of variables that 
          * can be kept static, since they are unique to the 
@@ -134,11 +135,10 @@ public class CompassView extends View implements ApplicationManagerListener {
                 compassCX--;
             }
             compassCY = compassHeight / 2;
-            
+
             compassDrawable.setBounds(0, 0, compassWidth, compassHeight);
             compassBitmap = compassDrawable.getBitmap();
         }
-
 
     }
 
@@ -186,7 +186,7 @@ public class CompassView extends View implements ApplicationManagerListener {
             sb.append(" ").append((int) loc.getAltitude()); //$NON-NLS-1$
             sb.append("\n");
             sb.append(azimString);
-            sb.append(" ").append((int) azimuth); //$NON-NLS-1$
+            sb.append(" ").append((int) (360 - normalAzimuth)); //$NON-NLS-1$
             sb.append("\n");
         }
 
@@ -220,12 +220,12 @@ public class CompassView extends View implements ApplicationManagerListener {
         drawChart(canvas);
 
         // draw needle
-        if (azimuth != -1) {
+        if (normalAzimuth != -1) {
             canvas.translate(compassCX, compassCY);
             paint.setColor(Color.RED);
             paint.setAlpha(150);
             paint.setStyle(Paint.Style.FILL);
-            canvas.rotate((float) azimuth);
+            canvas.rotate(-(float) normalAzimuth);
             canvas.drawPath(mPath, paint);
         }
     }
@@ -280,8 +280,8 @@ public class CompassView extends View implements ApplicationManagerListener {
         invalidate();
     }
 
-    public void onSensorChanged( double azimuth ) {
-        this.azimuth = (float) azimuth;
+    public void onSensorChanged( double normalAzimuth, double pictureAzimuth ) {
+        this.normalAzimuth = (float) normalAzimuth;
         invalidate();
     }
 
@@ -289,7 +289,5 @@ public class CompassView extends View implements ApplicationManagerListener {
         this.satellitesNum = num;
         this.maxSatellites = max;
     }
-    
-    
 
 }

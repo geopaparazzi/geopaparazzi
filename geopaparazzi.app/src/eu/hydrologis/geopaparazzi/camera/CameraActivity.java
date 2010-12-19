@@ -126,7 +126,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
                 lon = loc.getLongitude();
                 altim = loc.getAltitude();
             }
-            double azimuth = deviceManager.getAzimuth();
+            double azimuth = deviceManager.getPictureAzimuth();
             // long utcTimeInSeconds = deviceManager.getUtcTime() / 1000L;
 
             String latString = String.valueOf(lat);
