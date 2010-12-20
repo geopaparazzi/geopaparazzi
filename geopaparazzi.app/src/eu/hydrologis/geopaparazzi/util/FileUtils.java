@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
@@ -33,11 +35,13 @@ public class FileUtils {
     }
 
     public void copyFile( File in, File out ) throws IOException {
-        FileInputStream fis = null;
-        FileOutputStream fos = null;
+        FileInputStream fis = new FileInputStream(in);
+        FileOutputStream fos = new FileOutputStream(out);
+        copyFile(fis, fos);
+    }
+
+    public void copyFile( InputStream fis, OutputStream fos ) throws IOException {
         try {
-            fis = new FileInputStream(in);
-            fos = new FileOutputStream(out);
             byte[] buf = new byte[1024];
             int i = 0;
             while( (i = fis.read(buf)) != -1 ) {
