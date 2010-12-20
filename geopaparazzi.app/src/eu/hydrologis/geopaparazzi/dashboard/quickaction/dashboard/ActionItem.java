@@ -4,6 +4,8 @@ import android.graphics.drawable.Drawable;
 import android.view.View.OnClickListener;
 
 /**
+ * Taken from http://www.londatiga.net/it/how-to-create-quickaction-dialog-in-android/
+ * 
  * Action item, displayed as menu with icon and text.
  * 
  * @author Lorensius. W. L. T

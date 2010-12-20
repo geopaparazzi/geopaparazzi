@@ -90,6 +90,19 @@ public class GeoPaparazziActivity extends Activity {
         init();
     }
 
+    protected void onResume() {
+        super.onResume();
+        checkActionBar();
+    }
+
+    private void checkActionBar() {
+        if (actionBar == null) {
+            actionBar = ActionBar.getActionBar(this, R.id.action_bar, applicationManager);
+            actionBar.setTitle(R.string.app_name, R.id.action_bar_title);
+            actionBar.checkLogging();
+        }
+    }
+
     private void init() {
         setContentView(R.layout.geopap_main);
 
@@ -101,9 +114,7 @@ public class GeoPaparazziActivity extends Activity {
             applicationManager = ApplicationManager.getInstance(this);
         }
 
-        actionBar = ActionBar.getActionBar(this, R.id.action_bar, applicationManager);
-        actionBar.setTitle(R.string.app_name, R.id.action_bar_title);
-        actionBar.checkLogging();
+        checkActionBar();
 
         /*
          * the buttons

@@ -815,7 +815,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
                                                 newName = defaultLogName;
                                             }
                                             applicationManager.startLogging(newName);
-                                            actionBar.startAnimation(R.id.action_bar_reload_image, R.anim.rotate_indefinite);
+                                            actionBar.checkLogging();
                                         }
                                     }).setCancelable(false).show();
                         } else {
@@ -837,7 +837,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
             stopLogQuickaction.setOnClickListener(new OnClickListener(){
                 public void onClick( View v ) {
                     applicationManager.stopLogging();
-                    actionBar.stopAnimation(R.id.action_bar_reload_image);
+                    actionBar.checkLogging();
                 }
             });
         }

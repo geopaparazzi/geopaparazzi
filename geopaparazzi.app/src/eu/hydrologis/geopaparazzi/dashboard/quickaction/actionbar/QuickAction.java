@@ -18,6 +18,8 @@ import android.widget.TextView;
 import eu.hydrologis.geopaparazzi.R;
 
 /**
+ * Taken from http://www.londatiga.net/it/how-to-create-quickaction-dialog-in-android/
+ * 
  * Popup window, shows action list as icon and text like the one in Gallery3D app. 
  * 
  * @author Lorensius. W. T

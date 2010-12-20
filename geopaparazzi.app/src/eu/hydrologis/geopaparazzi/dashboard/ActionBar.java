@@ -1,3 +1,20 @@
+/*
+ * Geopaparazzi - Digital field mapping on Android based devices
+ * Copyright (C) 2010  HydroloGIS (www.hydrologis.com)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.hydrologis.geopaparazzi.dashboard;
 
 import java.text.DecimalFormat;
@@ -6,8 +23,6 @@ import java.util.HashMap;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.AssetManager;
-import android.graphics.Typeface;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -23,6 +38,12 @@ import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
 
+/**
+ * 
+ * The action bar utilities class.
+ * 
+ * @author Andrea Antonello (www.hydrologis.com)
+ */
 public class ActionBar {
     private static DecimalFormat formatter = new DecimalFormat("0.00000"); //$NON-NLS-1$
     private final View actionBarView;
@@ -39,11 +60,12 @@ public class ActionBar {
     private static String validPointsString;
     private static String distanceString;
     private static String satellitesString;
+    private final Activity activity;
 
-    public ActionBar( View actionBarView, ApplicationManager applicationManager ) {
+    public ActionBar( View actionBarView, ApplicationManager applicationManager, Activity activity ) {
         this.actionBarView = actionBarView;
-
         this.applicationManager = applicationManager;
+        this.activity = activity;
 
         initVars();
         createQuickActions();
@@ -96,11 +118,11 @@ public class ActionBar {
 
     public static ActionBar getActionBar( Activity activity, int activityId, ApplicationManager applicationManager ) {
         View view = activity.findViewById(activityId);
-        return new ActionBar(view, applicationManager);
+        return new ActionBar(view, applicationManager, activity);
     }
 
     private static HashMap<Integer, Animation> animationsStack = new HashMap<Integer, Animation>();
-    public void startAnimation( int buttonId, int animationId ) {
+    private void startAnimation( int buttonId, int animationId ) {
         View button = actionBarView.findViewById(buttonId);
         if (button != null) {
             // see if there is some leftover anim
@@ -124,7 +146,7 @@ public class ActionBar {
         animation.setRepeatCount(0);
     }
 
-    public void stopAnimation( int buttonId ) {
+    private void stopAnimation( int buttonId ) {
         Animation animation = animationsStack.remove(buttonId);
         if (animation != null) {
             stopAnim(animation);
@@ -137,7 +159,7 @@ public class ActionBar {
             textView.setText(titleResourceId);
         }
     }
-    
+
     public void push( int id, View v ) {
         switch( id ) {
         case R.id.action_bar_info: {
@@ -219,11 +241,16 @@ public class ActionBar {
     }
 
     public void checkLogging() {
-        if (applicationManager.isGpsLogging()) {
-            startAnimation(R.id.action_bar_reload_image, R.anim.rotate_indefinite);
-        } else {
-            stopAnimation(R.id.action_bar_reload_image);
-        }
+        activity.runOnUiThread(new Runnable(){
+            public void run() {
+                if (applicationManager.isGpsLogging()) {
+                    startAnimation(R.id.action_bar_reload_image, R.anim.rotate_indefinite);
+                } else {
+                    stopAnimation(R.id.action_bar_reload_image);
+                }
+            }
+        });
+
     }
 
 }

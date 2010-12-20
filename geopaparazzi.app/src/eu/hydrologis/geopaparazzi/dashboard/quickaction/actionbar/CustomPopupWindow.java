@@ -22,6 +22,8 @@ public class CustomPopupWindow {
     protected final WindowManager windowManager;
 
     /**
+     * Taken from http://www.londatiga.net/it/how-to-create-quickaction-dialog-in-android/
+     * 
      * Create a QuickAction
      * 
      * @param anchor

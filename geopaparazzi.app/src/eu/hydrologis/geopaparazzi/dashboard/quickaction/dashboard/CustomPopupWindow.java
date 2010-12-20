@@ -15,6 +15,8 @@ import android.widget.PopupWindow;
 import eu.hydrologis.geopaparazzi.R;
 
 /**
+ * Taken from http://www.londatiga.net/it/how-to-create-quickaction-dialog-in-android/
+ * 
  * This class does most of the work of wrapping the {@link PopupWindow} so it's
  * simpler to use. Edited by Lorensius. W. L. T
  * 
