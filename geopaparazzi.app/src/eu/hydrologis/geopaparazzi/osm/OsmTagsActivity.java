@@ -17,6 +17,7 @@
  */
 package eu.hydrologis.geopaparazzi.osm;
 
+import java.io.IOException;
 import java.sql.Date;
 
 import android.app.Activity;
@@ -30,6 +31,7 @@ import android.widget.GridView;
 import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
+import eu.hydrologis.geopaparazzi.osm.OsmTagsManager.TagObject;
 import eu.hydrologis.geopaparazzi.util.Constants;
 
 /**
@@ -41,7 +43,7 @@ public class OsmTagsActivity extends Activity {
     private EditText additionalInfoText;
     private float latitude;
     private float longitude;
-    private String[] osmBaseTypes;
+    private String[] tagNamesArray;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -57,14 +59,18 @@ public class OsmTagsActivity extends Activity {
         additionalInfoText = (EditText) findViewById(R.id.osm_additionalinfo_id);
 
         GridView buttonGridView = (GridView) findViewById(R.id.osmgridview);
-        osmBaseTypes = OsmTagsManager.getInstance(this).getOsmTagsArrays();
+        try {
+            tagNamesArray = OsmTagsManager.getInstance(this).getTagsArrays();
+        } catch (Exception e1) {
+            tagNamesArray = new String[]{"ERROR IN READING TAGS"};
+            e1.printStackTrace();
+        }
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.gpslog_row,
-                osmBaseTypes){
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.gpslog_row, tagNamesArray){
             public View getView( final int position, View cView, ViewGroup parent ) {
 
                 Button osmButton = new Button(OsmTagsActivity.this);
-                osmButton.setText(osmBaseTypes[position]);
+                osmButton.setText(tagNamesArray[position]);
                 // osmButton.setImageResource(R.drawable.gps);
                 osmButton.setOnClickListener(new Button.OnClickListener(){
                     public void onClick( View v ) {
@@ -72,9 +78,9 @@ public class OsmTagsActivity extends Activity {
                             Date sqlDate = new Date(System.currentTimeMillis());
                             StringBuilder sB = new StringBuilder(additionalInfoText.getText());
                             String infoString = sB.toString();
-                            String tag = osmBaseTypes[position];
-                            String finalString = OsmTagsManager.getInstance(OsmTagsActivity.this)
-                                    .getDefinitionFromTag(tag);
+                            String name = tagNamesArray[position];
+                            TagObject tag = OsmTagsManager.getInstance(OsmTagsActivity.this).getTagFromName(name);
+                            String finalString = tag.longName;
                             if (infoString.length() != 0) {
                                 String sep = ":";
                                 if (finalString.indexOf(":") != -1) {
@@ -86,8 +92,7 @@ public class OsmTagsActivity extends Activity {
                             DaoNotes.addNote(getContext(), longitude, latitude, -1.0, sqlDate, finalString);
                         } catch (Exception e) {
                             e.printStackTrace();
-                            Toast.makeText(OsmTagsActivity.this, R.string.notenonsaved,
-                                    Toast.LENGTH_LONG).show();
+                            Toast.makeText(OsmTagsActivity.this, R.string.notenonsaved, Toast.LENGTH_LONG).show();
                         }
                         finish();
                     }

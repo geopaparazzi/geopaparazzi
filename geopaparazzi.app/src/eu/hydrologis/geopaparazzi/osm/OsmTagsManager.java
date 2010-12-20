@@ -17,16 +17,21 @@
  */
 package eu.hydrologis.geopaparazzi.osm;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Set;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import android.content.Context;
+import android.content.res.AssetManager;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
+import eu.hydrologis.geopaparazzi.util.FileUtils;
 
 /**
  * Singleton that takes care of osm tags.
@@ -34,86 +39,87 @@ import eu.hydrologis.geopaparazzi.util.ApplicationManager;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class OsmTagsManager {
-    public static String OSMTAGSFILENAME = "tags.json";
 
-    private static HashMap<String, String> osmTagsMap = new HashMap<String, String>();
-    static {
-        osmTagsMap.put("ATM", "ATM");
-        osmTagsMap.put("Beach", "Beach");
-        osmTagsMap.put("Church", "Place of Worship: Church");
-        osmTagsMap.put("Ecocenter", "Ecocenter");
-        osmTagsMap.put("Fountain", "Fountain");
-        osmTagsMap.put("Market", "Market");
-        osmTagsMap.put("Public Phone", "Public Phone");
-        osmTagsMap.put("Restaurant", "Restaurant");
-        osmTagsMap.put("Village", "Village");
-        osmTagsMap.put("POI", "POI");
-    }
+    private static final String TAG_LONGNAME = "longname";
+    private static final String TAG_SHORTNAME = "shortname";
+    private static final String TAG_FORM = "form";
+    private static final String TAG_FORMITEMS = "formitems";
 
-    private static OsmTagsManager osmTagsManager;
+    public static String TAGSFILENAME = "tags.json";
 
-    private static String[] osmTagsArrays;
+    private static HashMap<String, TagObject> tagsMap = new HashMap<String, TagObject>();
 
+    private static OsmTagsManager tagsManager;
 
-    private OsmTagsManager(Context context) {
-        
-        // TODO http://thedevelopersinfo.com/2009/11/17/using-assets-in-android/
-    }
-    
+    private static String[] tagsArrays;
+
     /**
      * Gets the manager singleton. 
      * 
      * @return the {@link OsmTagsManager} singleton.
+     * @throws IOException 
      */
-    public static OsmTagsManager getInstance(Context context) {
-        if (osmTagsManager == null) {
-            osmTagsManager = new OsmTagsManager(context);
+    public static OsmTagsManager getInstance( Context context ) throws Exception {
+        if (tagsManager == null) {
+            tagsManager = new OsmTagsManager();
             getFileTags(context);
 
-            Set<String> tagsSet = osmTagsMap.keySet();
-            osmTagsArrays = (String[]) tagsSet.toArray(new String[tagsSet.size()]);
-            Arrays.sort(osmTagsArrays);
+            Set<String> tagsSet = tagsMap.keySet();
+            tagsArrays = (String[]) tagsSet.toArray(new String[tagsSet.size()]);
+            Arrays.sort(tagsArrays);
+
         }
 
-        return osmTagsManager;
+        return tagsManager;
     }
 
-    private static void getFileTags(Context context) {
+    private static void getFileTags( Context context ) throws Exception {
         File geoPaparazziDir = ApplicationManager.getInstance(context).getGeoPaparazziDir();
-        File osmTagsFile = new File(geoPaparazziDir, OSMTAGSFILENAME);
+        File osmTagsFile = new File(geoPaparazziDir, TAGSFILENAME);
+        // if (!osmTagsFile.exists()) {
+        if (true) {
+            AssetManager assetManager = context.getAssets();
+            InputStream inputStream = assetManager.open("tags/tags.json");
+
+            FileUtils.copyFile(inputStream, new FileOutputStream(osmTagsFile));
+        }
+
         if (osmTagsFile.exists()) {
-            BufferedReader br = null;
-            osmTagsMap.clear();
-            try {
-                br = new BufferedReader(new FileReader(osmTagsFile));
-                String line = null;
-                while( (line = br.readLine()) != null ) {
-                    if (line.indexOf("=") == -1 || line.startsWith("#")) {
-                        continue;
-                    }
-                    String[] lineSplit = line.split("=");
-                    osmTagsMap.put(lineSplit[0].trim(), lineSplit[1].trim());
+
+            tagsMap.clear();
+            String tagsFileString = FileUtils.readfile(osmTagsFile);
+            JSONArray tagArrayObj = new JSONArray(tagsFileString);
+            int tagsNum = tagArrayObj.length();
+            for( int i = 0; i < tagsNum; i++ ) {
+                JSONObject jsonObject = tagArrayObj.getJSONObject(i);
+                String shortname = jsonObject.getString(TAG_SHORTNAME);
+                String longname = jsonObject.getString(TAG_LONGNAME);
+                JSONArray formItemsArray = null;
+                if (jsonObject.has(TAG_FORM)) {
+                    JSONObject formObj = jsonObject.getJSONObject(TAG_FORM);
+                    formItemsArray = formObj.getJSONArray(TAG_FORMITEMS);
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (br != null) {
-                    try {
-                        br.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+                TagObject tag = new TagObject();
+                tag.shortName = shortname;
+                tag.longName = longname;
+                tag.formItems = formItemsArray;
+                tagsMap.put(shortname, tag);
             }
+
         }
     }
 
-    public String[] getOsmTagsArrays() {
-        return osmTagsArrays;
+    public String[] getTagsArrays() {
+        return tagsArrays;
     }
 
-    public String getDefinitionFromTag( String tag ) {
-        return osmTagsMap.get(tag);
+    public TagObject getTagFromName( String name ) {
+        return tagsMap.get(name);
     }
 
+    public static class TagObject {
+        public String shortName;
+        public String longName;
+        public JSONArray formItems;
+    }
 }

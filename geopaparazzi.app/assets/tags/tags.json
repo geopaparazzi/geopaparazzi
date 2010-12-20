@@ -1,23 +1,26 @@
+[{
+	"shortname": "bank",
+	"longname":"bank",
+	"form": {
+		"formitems":[
+			{"key":"bank name", "value":"", "type":"string"},  
+			{"key":"has atm", "value":"yes", "type":"string"},
+			{"key":"employees", "value":"10", "type":"integer"}
+		]
+	}
+},
 {
-"tag":{
-    "name": "bank",
-    "default":"btb",
-    "form": [
-        {"key":"bank name", "value":"", "type":"string"},  
-        {"key":"has atm", "value":"yes", "type":"string"},
-        {"key":"employees", "value":"10", "type":"integer"}
-    ]
+	"shortname": "church",
+	"longname":"place of worship",
+	"form": {
+		"formitems":[
+			{"key":"church name", "value":"", "type":"string"},  
+			{"key":"building year", "value":"", "type":"string"}
+		]
+	}
 },
-"tag":{
-    "name": "church",
-    "default":"",
-    "form": [
-        {"key":"church name", "value":"", "type":"string"},  
-        {"key":"building year", "value":"", "type":"string"}
-    ]
-},
-"tag":{
-    "name": "POI"
-}
-}    
-    
+{
+	"shortname": "POI",
+	"longname": "POI"
+}]
+	
