@@ -203,7 +203,7 @@ public class ActionBar {
         GpsLocation loc = applicationManager.getLoc();
 
         StringBuilder sb = new StringBuilder();
-        if (loc == null) {
+        if (loc == null || !applicationManager.isGpsEnabled()) {
             // Log.d("COMPASSVIEW", "Location from gps is null!");
             sb.append(nodataString);
             sb.append("\n");

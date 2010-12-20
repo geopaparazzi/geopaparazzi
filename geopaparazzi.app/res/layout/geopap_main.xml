@@ -18,7 +18,7 @@
 			<LinearLayout android:layout_width="fill_parent"
 				android:id="@+id/dashboard_note_item" android:orientation="vertical"
 				android:layout_height="fill_parent" android:gravity="center_horizontal"
-				android:layout_weight="1" >
+				android:layout_weight="1">
 				<ImageButton android:id="@+id/dashboard_note_item_button"
 					android:layout_height="wrap_content" android:padding="@dimen/dashboard_button_padding"
 					android:layout_width="wrap_content" android:src="@drawable/dashboard_note_item"
@@ -53,8 +53,8 @@
 					android:layout_height="wrap_content" android:padding="@dimen/dashboard_button_padding"
 					android:layout_width="wrap_content" android:src="@drawable/dashboard_log_item"
 					android:background="@drawable/action_bar_button_drawable"></ImageButton>
-				<TextView android:text="@string/text_logging"
-					android:id="@+id/dashboard_log_item_text" android:padding="@dimen/dashboard_button_padding"
+				<TextView android:text="@string/text_logging" android:id="@+id/dashboard_log_item_text"
+					android:padding="@dimen/dashboard_button_padding"
 					android:layout_width="wrap_content" android:layout_height="wrap_content"
 					android:textColor="@color/hydrogreen" android:textStyle="bold"></TextView>
 			</LinearLayout>
@@ -109,7 +109,7 @@
 		android:handle="@+id/handle" android:content="@+id/content"
 		android:id="@+id/slide" android:orientation="vertical"
 		android:layout_width="fill_parent">
-		<LinearLayout android:id="@id/handle"
+		<LinearLayout android:id="@+id/handle"
 			android:layout_width="fill_parent" android:layout_height="@dimen/panic_bar_height"
 			android:background="@drawable/action_bar_background" android:gravity="center_horizontal">
 			<TextView android:layout_width="wrap_content" android:text="@string/panic"
@@ -119,11 +119,28 @@
 				android:layout_centerVertical="true"
 				android:layout_centerHorizontal="true"></TextView>
 		</LinearLayout>
-		<LinearLayout android:layout_width="fill_parent"
-			android:layout_height="fill_parent" android:id="@id/content"
-			android:background="@color/orange">
-			<Button android:text="PANIC!" android:id="@+id/panicbutton"
-				android:layout_width="fill_parent" android:layout_height="fill_parent"></Button>
-		</LinearLayout>
+		<FrameLayout android:layout_width="fill_parent"
+			android:layout_height="fill_parent" android:id="@+id/panic_frameLayout">
+			<LinearLayout android:layout_width="fill_parent"
+				android:gravity="center_vertical|center_horizontal"
+				android:layout_height="fill_parent" android:id="@+id/content"
+				android:background="@color/hydrogreen" android:layout_weight="1">
+				<Button android:text="  PANIC!  " android:id="@+id/panicbutton"
+					android:textStyle="bold" android:textColor="@color/white"
+					android:textSize="@dimen/panic_button_text_size"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:background="@drawable/panic_button_drawable"></Button>
+			</LinearLayout>
+			<LinearLayout android:layout_width="fill_parent"
+				android:gravity="bottom|center_horizontal"
+				android:layout_height="fill_parent" android:id="@+id/content"
+				android:background="@color/hydrogreen" android:layout_weight="1">
+				<Button android:text="  send position  " android:id="@+id/statusupdatebutton"
+					android:textStyle="bold" android:textColor="@color/white"
+					android:textSize="@dimen/statusupdate_button_text_size"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:background="@drawable/panic_button_drawable"></Button>
+			</LinearLayout>
+		</FrameLayout>
 	</SlidingDrawer>
 </FrameLayout>

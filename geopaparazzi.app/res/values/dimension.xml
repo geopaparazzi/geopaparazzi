@@ -14,4 +14,6 @@
 	<dimen name="dashboard_button_padding">6dp</dimen>
 	<!-- dims of panic bar-->
 	<dimen name="panic_bar_height">30dp</dimen>
+	<dimen name="panic_button_text_size">30dp</dimen>
+	<dimen name="statusupdate_button_text_size">15dp</dimen>
 </resources>
