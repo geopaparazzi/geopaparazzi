@@ -29,13 +29,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
@@ -50,47 +50,21 @@ public class OsmActivity extends Activity {
     private static final int MENU_MAPDATA = 4;
     private static final int MENU_TOGGLE_MEASURE = 5;
     private static final int MENU_ADDTAGS = 6;
-
     private OsmView osmView;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
-        requestWindowFeature(Window.FEATURE_PROGRESS);
 
-        // main frame
-        FrameLayout frameLayout = new FrameLayout(this);
-        frameLayout.setId(-9999);
-        frameLayout.setLayoutParams(new FrameLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+        setContentView(R.layout.osmview);
 
-        // map view
-        osmView = new OsmView(this);
         ApplicationManager applicationManager = ApplicationManager.getInstance(this);
-        applicationManager.removeOsmListener();
-        applicationManager.addListener(osmView);
-        applicationManager.setOsmView(osmView);
 
-        frameLayout.addView(osmView);
+        ActionBar actionBar = ActionBar.getActionBar(this, R.id.osm_action_bar, applicationManager);
+        actionBar.setTitle(R.string.app_name, R.id.action_bar_title);
+        actionBar.checkLogging();
 
-        // action bar
-        // <include android:id="@+id/action_bar" layout="@layout/action_bar"
-        // android:layout_width="fill_parent" android:layout_height="@dimen/action_bar_height" />
-        // RelativeLayout actionBarView = (RelativeLayout) findViewById(R.id.action_bar_layout);
-        // actionBarView.setLayoutParams();
-        // actionBarView.setPadding(5, 5, 5, 0);
-        // actionBarView.setGravity(Gravity.TOP);
-        // frameLayout.addView(actionBarView);
-
-        // ActionBar actionBar = ActionBar.getActionBar(this, R.id.action_bar, applicationManager);
-        // View actionBarView = actionBar.getActionBarView();
-        // RelativeLayout actionBarView = (RelativeLayout) inflator.inflate(R.layout.action_bar,
-        // null);
-        // int actionBarHeight = 40;//getResources().getInteger(R.dimen.action_bar_height);
-        // android.widget.RelativeLayout.LayoutParams actionBarParams = new
-        // RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT,
-        // actionBarHeight);
-        // actionBarView.setLayoutParams(actionBarParams);
-        // actionBarView.setGravity(Gravity.TOP);
-        // frameLayout.addView(actionBarView);
+        // requestWindowFeature(Window.FEATURE_PROGRESS);
+        osmView = (OsmView) findViewById(R.id.osmviewid);
 
         // button view
         LinearLayout buttonsLayout = new LinearLayout(this);
@@ -136,9 +110,8 @@ public class OsmActivity extends Activity {
 
         transparentPanel.addView(zoominButton);
 
+        FrameLayout frameLayout = (FrameLayout) findViewById(R.id.osm_frameLayout);
         frameLayout.addView(buttonsLayout);
-
-        setContentView(frameLayout);
 
         osmView.invalidate();
     }

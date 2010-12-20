@@ -74,7 +74,7 @@ public class ActionBar {
 
         checkLogging();
     }
-    
+
     public View getActionBarView() {
         return actionBarView;
     }
@@ -137,6 +137,7 @@ public class ActionBar {
             textView.setText(titleResourceId);
         }
     }
+    
     public void push( int id, View v ) {
         switch( id ) {
         case R.id.action_bar_info: {
@@ -168,18 +169,6 @@ public class ActionBar {
         }
         default:
             break;
-        }
-    }
-
-    public void setTitleWithCustomFont( int titleResourceId, int titleViewId, String assetFontFile ) {
-        Context context = actionBarView.getContext();
-        AssetManager assets = context.getResources().getAssets();
-        Typeface typeface = Typeface.createFromAsset(assets, assetFontFile); // "fonts/title_font.ttf"
-
-        TextView textView = (TextView) actionBarView.findViewById(titleViewId);
-        if (textView != null) {
-            textView.setText(titleResourceId);
-            // textView.setTypeface(typeface);
         }
     }
 

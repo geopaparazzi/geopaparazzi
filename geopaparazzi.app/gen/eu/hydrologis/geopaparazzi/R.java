@@ -209,8 +209,8 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int action_bar_reload=0x7f0b000b;
         public static final int action_bar_reload_image=0x7f0b000c;
         public static final int action_bar_title=0x7f0b0004;
-        public static final int arrow_down=0x7f0b0078;
-        public static final int arrow_up=0x7f0b0077;
+        public static final int arrow_down=0x7f0b007a;
+        public static final int arrow_up=0x7f0b0079;
         public static final int askcoordlabel=0x7f0b004a;
         public static final int audioButton=0x7f0b0055;
         public static final int button_layout=0x7f0b0014;
@@ -243,7 +243,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int distancelabel=0x7f0b0061;
         public static final int filename=0x7f0b0042;
         public static final int firstpoint=0x7f0b0063;
-        public static final int footer=0x7f0b007b;
+        public static final int footer=0x7f0b007d;
         public static final int gpslog_cancel=0x7f0b0040;
         public static final int gpslog_chart=0x7f0b003b;
         public static final int gpslog_delete=0x7f0b003d;
@@ -253,8 +253,8 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int gpslogsList=0x7f0b0043;
         public static final int gpsproplabel=0x7f0b0032;
         public static final int handle=0x7f0b002b;
-        public static final int header2=0x7f0b0079;
-        public static final int icon=0x7f0b007c;
+        public static final int header2=0x7f0b007b;
+        public static final int icon=0x7f0b007e;
         public static final int lastpoint=0x7f0b0068;
         public static final int latitudelabel=0x7f0b004d;
         public static final int latitudelabel_first=0x7f0b0066;
@@ -295,9 +295,11 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int noteswidthLabel=0x7f0b0046;
         public static final int noteswidthText=0x7f0b0047;
         public static final int ok=0x7f0b006f;
+        public static final int osm_action_bar=0x7f0b0076;
         public static final int osm_additionalinfo_id=0x7f0b0072;
         public static final int osm_frameLayout=0x7f0b0074;
         public static final int osmgridview=0x7f0b0073;
+        public static final int osmviewid=0x7f0b0075;
         public static final int panicButton=0x7f0b0056;
         public static final int panicbutton=0x7f0b002e;
         public static final int photoButton=0x7f0b0052;
@@ -307,8 +309,8 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int row_container3=0x7f0b0037;
         public static final int row_container4=0x7f0b003a;
         public static final int row_container5=0x7f0b003e;
-        public static final int scroll=0x7f0b007a;
-        public static final int scroller=0x7f0b0075;
+        public static final int scroll=0x7f0b007c;
+        public static final int scroller=0x7f0b0077;
         public static final int sep1=0x7f0b0006;
         public static final int sep2=0x7f0b0008;
         public static final int sep3=0x7f0b000a;
@@ -317,8 +319,8 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int statusupdatebutton=0x7f0b002f;
         public static final int surface=0x7f0b000e;
         public static final int text1=0x7f0b000d;
-        public static final int title=0x7f0b007d;
-        public static final int tracks=0x7f0b0076;
+        public static final int title=0x7f0b007f;
+        public static final int tracks=0x7f0b0078;
         public static final int uppercol1=0x7f0b0012;
         public static final int visible=0x7f0b0041;
         public static final int widthLabel=0x7f0b0035;

@@ -102,7 +102,7 @@ public class GeoPaparazziActivity extends Activity {
         }
 
         actionBar = ActionBar.getActionBar(this, R.id.action_bar, applicationManager);
-        actionBar.setTitleWithCustomFont(R.string.app_name, R.id.action_bar_title, "fonts/accid.ttf");
+        actionBar.setTitle(R.string.app_name, R.id.action_bar_title);
         actionBar.checkLogging();
 
         /*
@@ -159,14 +159,14 @@ public class GeoPaparazziActivity extends Activity {
 
         // panic buttons part
         final int panicButtonId = R.id.panicbutton;
-        ImageButton panicButton = (ImageButton) findViewById(panicButtonId);
+        Button panicButton = (Button) findViewById(panicButtonId);
         panicButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
                 push(panicButtonId, v);
             }
         });
         final int statusUpdateButtonId = R.id.statusupdatebutton;
-        ImageButton statusUpdateButton = (ImageButton) findViewById(statusUpdateButtonId);
+        Button statusUpdateButton = (Button) findViewById(statusUpdateButtonId);
         statusUpdateButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
                 push(statusUpdateButtonId, v);
