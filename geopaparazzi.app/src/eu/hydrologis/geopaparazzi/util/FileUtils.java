@@ -28,19 +28,19 @@ import java.io.OutputStream;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class FileUtils {
-    public void copyFile( String fromFile, String toFile ) throws IOException {
+    public static void copyFile( String fromFile, String toFile ) throws IOException {
         File in = new File(fromFile);
         File out = new File(toFile);
         copyFile(in, out);
     }
 
-    public void copyFile( File in, File out ) throws IOException {
+    public static void copyFile( File in, File out ) throws IOException {
         FileInputStream fis = new FileInputStream(in);
         FileOutputStream fos = new FileOutputStream(out);
         copyFile(fis, fos);
     }
 
-    public void copyFile( InputStream fis, OutputStream fos ) throws IOException {
+    public static void copyFile( InputStream fis, OutputStream fos ) throws IOException {
         try {
             byte[] buf = new byte[1024];
             int i = 0;
@@ -69,7 +69,7 @@ public class FileUtils {
      * @param filehandle
      * @return true if all deletions were successful
      */
-    public boolean deleteFileOrDir( File filehandle ) {
+    public static boolean deleteFileOrDir( File filehandle ) {
 
         if (filehandle.isDirectory()) {
             String[] children = filehandle.list();
@@ -98,7 +98,7 @@ public class FileUtils {
      * @param filehandle
      * @return true if all went well
      */
-    public boolean deleteFileOrDirOnExit( File filehandle ) {
+    public static boolean deleteFileOrDirOnExit( File filehandle ) {
         if (filehandle.isDirectory()) {
             String[] children = filehandle.list();
             for( int i = 0; i < children.length; i++ ) {
