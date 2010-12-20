@@ -119,28 +119,28 @@
 				android:layout_centerVertical="true"
 				android:layout_centerHorizontal="true"></TextView>
 		</LinearLayout>
-		<FrameLayout android:layout_width="fill_parent"
-			android:layout_height="fill_parent" android:id="@+id/panic_frameLayout">
-			<LinearLayout android:layout_width="fill_parent"
-				android:gravity="center_vertical|center_horizontal"
-				android:layout_height="fill_parent" android:id="@+id/content"
-				android:background="@color/hydrogreen" android:layout_weight="1">
-				<Button android:text="  PANIC!  " android:id="@+id/panicbutton"
+		<LinearLayout android:layout_width="fill_parent"
+			android:orientation="vertical" android:layout_height="fill_parent"
+			android:id="@+id/content" android:background="@color/hydrogreen"
+			android:gravity="center_horizontal">
+			<LinearLayout android:layout_width="wrap_content"
+				android:layout_height="fill_parent" android:layout_weight="1">
+				<Button android:text="@string/panic_upper" android:id="@+id/panicbutton"
 					android:textStyle="bold" android:textColor="@color/white"
 					android:textSize="@dimen/panic_button_text_size"
 					android:layout_width="wrap_content" android:layout_height="wrap_content"
-					android:background="@drawable/panic_button_drawable"></Button>
+					android:background="@drawable/panic_button_drawable"
+					android:layout_gravity="center_vertical|center_horizontal"></Button>
 			</LinearLayout>
-			<LinearLayout android:layout_width="fill_parent"
-				android:gravity="bottom|center_horizontal"
-				android:layout_height="fill_parent" android:id="@+id/content"
-				android:background="@color/hydrogreen" android:layout_weight="1">
-				<Button android:text="  send position  " android:id="@+id/statusupdatebutton"
+			<LinearLayout android:layout_width="wrap_content"
+				android:layout_height="fill_parent" android:layout_weight="1">
+				<Button android:text="@string/send_status_update" android:id="@+id/statusupdatebutton"
 					android:textStyle="bold" android:textColor="@color/white"
 					android:textSize="@dimen/statusupdate_button_text_size"
 					android:layout_width="wrap_content" android:layout_height="wrap_content"
-					android:background="@drawable/panic_button_drawable"></Button>
+					android:background="@drawable/warning_button_drawable"
+					android:layout_gravity="center_vertical|center_horizontal"></Button>
 			</LinearLayout>
-		</FrameLayout>
+		</LinearLayout>
 	</SlidingDrawer>
 </FrameLayout>

@@ -17,7 +17,7 @@
  */
 package eu.hydrologis.geopaparazzi;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LATITUDE;
+import static eu.hydrologis.geopaparazzi.util.Constants.*;
 import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LONGITUDE;
 
 import java.io.File;
@@ -105,7 +105,6 @@ public class GeoPaparazziActivity extends Activity {
         actionBar.setTitleWithCustomFont(R.string.app_name, R.id.action_bar_title, "fonts/accid.ttf");
         actionBar.checkLogging();
 
-        
         /*
          * the buttons
          */
@@ -155,6 +154,22 @@ public class GeoPaparazziActivity extends Activity {
         exportButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
                 push(exportButtonId, v);
+            }
+        });
+
+        // panic buttons part
+        final int panicButtonId = R.id.panicbutton;
+        ImageButton panicButton = (ImageButton) findViewById(panicButtonId);
+        panicButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                push(panicButtonId, v);
+            }
+        });
+        final int statusUpdateButtonId = R.id.statusupdatebutton;
+        ImageButton statusUpdateButton = (ImageButton) findViewById(statusUpdateButtonId);
+        statusUpdateButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                push(statusUpdateButtonId, v);
             }
         });
 
@@ -208,6 +223,28 @@ public class GeoPaparazziActivity extends Activity {
         }
         case R.id.dashboard_export_item_button: {
             exportToKml();
+            break;
+        }
+        case R.id.panicbutton: {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GeoPaparazziActivity.this);
+            final String panicNumber = preferences.getString(PANICKEY, "");
+            // Make sure there's a valid return address.
+            if (panicNumber == null || panicNumber.length() == 0) {
+                ApplicationManager.openDialog(R.string.panic_number_notset, GeoPaparazziActivity.this);
+            } else {
+                String[] numbers = panicNumber.split(";");
+                for( String number : numbers ) {
+                    number = number.trim();
+                    if (number.length() == 0) {
+                        continue;
+                    }
+                    sendPosition(number, true);
+                }
+            }
+
+            break;
+        }
+        case R.id.statusupdatebutton: {
             break;
         }
         default:
@@ -375,7 +412,13 @@ public class GeoPaparazziActivity extends Activity {
 
     }
 
-    private void handlePanic( String panicNumber ) {
+    /**
+     * Send the panic or status update message.
+     * 
+     * @param panicNumber The number to which to send the message to.
+     * @param doPanic make the panic message as opposed to just a status update.
+     */
+    private void sendPosition( String panicNumber, boolean doPanic ) {
         GpsLocation loc = applicationManager.getLoc();
         if (loc != null) {
             SmsManager mng = SmsManager.getDefault();
@@ -385,7 +428,12 @@ public class GeoPaparazziActivity extends Activity {
             String latString = String.valueOf(loc.getLatitude()).replaceAll(",", ".");
             String lonString = String.valueOf(loc.getLongitude()).replaceAll(",", ".");
             StringBuilder sB = new StringBuilder();
-            String lastPosition = GeoPaparazziActivity.this.getString(R.string.last_position);
+            String lastPosition;
+            if (doPanic) {
+                lastPosition = getString(R.string.help_needed);
+            } else {
+                lastPosition = getString(R.string.last_position);
+            }
             sB.append(lastPosition).append(":");
             sB.append("http://www.openstreetmap.org/?lat=");
             sB.append(latString);
