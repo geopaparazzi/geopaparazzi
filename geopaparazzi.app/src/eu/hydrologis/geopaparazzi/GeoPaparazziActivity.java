@@ -226,25 +226,11 @@ public class GeoPaparazziActivity extends Activity {
             break;
         }
         case R.id.panicbutton: {
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GeoPaparazziActivity.this);
-            final String panicNumber = preferences.getString(PANICKEY, "");
-            // Make sure there's a valid return address.
-            if (panicNumber == null || panicNumber.length() == 0) {
-                ApplicationManager.openDialog(R.string.panic_number_notset, GeoPaparazziActivity.this);
-            } else {
-                String[] numbers = panicNumber.split(";");
-                for( String number : numbers ) {
-                    number = number.trim();
-                    if (number.length() == 0) {
-                        continue;
-                    }
-                    sendPosition(number, true);
-                }
-            }
-
+            sendPosition(true);
             break;
         }
         case R.id.statusupdatebutton: {
+            sendPosition(false);
             break;
         }
         default:
@@ -298,14 +284,6 @@ public class GeoPaparazziActivity extends Activity {
         applicationManager = null;
         super.finish();
     }
-
-    // private boolean isLandscape() {
-    // Display display = getWindowManager().getDefaultDisplay();
-    // int width = display.getWidth();
-    // int height = display.getHeight();
-    //
-    // return width > height ? true : false;
-    // }
 
     private Handler kmlHandler = new Handler(){
         public void handleMessage( android.os.Message msg ) {
@@ -415,51 +393,65 @@ public class GeoPaparazziActivity extends Activity {
     /**
      * Send the panic or status update message.
      * 
-     * @param panicNumber The number to which to send the message to.
      * @param doPanic make the panic message as opposed to just a status update.
      */
-    private void sendPosition( String panicNumber, boolean doPanic ) {
-        GpsLocation loc = applicationManager.getLoc();
-        if (loc != null) {
-            SmsManager mng = SmsManager.getDefault();
-            PendingIntent dummyEvent = PendingIntent.getBroadcast(GeoPaparazziActivity.this, 0, new Intent(
-                    "com.devx.SMSExample.IGNORE_ME"), 0);
-
-            String latString = String.valueOf(loc.getLatitude()).replaceAll(",", ".");
-            String lonString = String.valueOf(loc.getLongitude()).replaceAll(",", ".");
-            StringBuilder sB = new StringBuilder();
-            String lastPosition;
-            if (doPanic) {
-                lastPosition = getString(R.string.help_needed);
-            } else {
-                lastPosition = getString(R.string.last_position);
-            }
-            sB.append(lastPosition).append(":");
-            sB.append("http://www.openstreetmap.org/?lat=");
-            sB.append(latString);
-            sB.append("&lon=");
-            sB.append(lonString);
-            sB.append("&zoom=18");
-            sB.append("&layers=M&mlat=");
-            sB.append(latString);
-            sB.append("&mlon=");
-            sB.append(lonString);
-            String msg = sB.toString();
-
-            try {
-                if (msg.length() > 160) {
-                    msg = msg.substring(0, 160);
-                    Log.i("SmsIntent", "Trimming msg to: " + msg);
-                }
-                mng.sendTextMessage(panicNumber, null, msg, dummyEvent, dummyEvent);
-            } catch (Exception e) {
-                Log.e("SmsIntent", "SendException", e);
-                ApplicationManager.openDialog(R.string.panic_number_notset, GeoPaparazziActivity.this);
-            }
-
+    private void sendPosition( boolean doPanic ) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final String panicNumbersString = preferences.getString(PANICKEY, "");
+        // Make sure there's a valid return address.
+        if (panicNumbersString == null || panicNumbersString.length() == 0) {
+            ApplicationManager.openDialog(R.string.panic_number_notset, GeoPaparazziActivity.this);
         } else {
-            ApplicationManager.openDialog(R.string.gpslogging_only, GeoPaparazziActivity.this);
+            String[] numbers = panicNumbersString.split(";");
+            for( String number : numbers ) {
+                number = number.trim();
+                if (number.length() == 0) {
+                    continue;
+                }
+                GpsLocation loc = applicationManager.getLoc();
+                if (loc != null) {
+                    SmsManager mng = SmsManager.getDefault();
+                    PendingIntent dummyEvent = PendingIntent
+                            .getBroadcast(this, 0, new Intent("com.devx.SMSExample.IGNORE_ME"), 0);
+
+                    String latString = String.valueOf(loc.getLatitude()).replaceAll(",", ".");
+                    String lonString = String.valueOf(loc.getLongitude()).replaceAll(",", ".");
+                    StringBuilder sB = new StringBuilder();
+                    String lastPosition;
+                    if (doPanic) {
+                        lastPosition = getString(R.string.help_needed);
+                    } else {
+                        lastPosition = getString(R.string.last_position);
+                    }
+                    sB.append(lastPosition).append(":");
+                    sB.append("http://www.openstreetmap.org/?lat=");
+                    sB.append(latString);
+                    sB.append("&lon=");
+                    sB.append(lonString);
+                    sB.append("&zoom=18");
+                    sB.append("&layers=M&mlat=");
+                    sB.append(latString);
+                    sB.append("&mlon=");
+                    sB.append(lonString);
+                    String msg = sB.toString();
+
+                    try {
+                        if (msg.length() > 160) {
+                            msg = msg.substring(0, 160);
+                            Log.i("SmsIntent", "Trimming msg to: " + msg);
+                        }
+                        mng.sendTextMessage(number, null, msg, dummyEvent, dummyEvent);
+                    } catch (Exception e) {
+                        Log.e("SmsIntent", "SendException", e);
+                        ApplicationManager.openDialog(R.string.panic_number_notset, this);
+                    }
+
+                } else {
+                    ApplicationManager.openDialog(R.string.gpslogging_only, this);
+                }
+            }
         }
+
     }
 
 }
