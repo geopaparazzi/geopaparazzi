@@ -34,7 +34,7 @@ import eu.hydrologis.geopaparazzi.util.ApplicationManager;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class OsmTagsManager {
-    public static String OSMTAGSFILENAME = "osmtags.properties";
+    public static String OSMTAGSFILENAME = "tags.json";
 
     private static HashMap<String, String> osmTagsMap = new HashMap<String, String>();
     static {
@@ -55,6 +55,11 @@ public class OsmTagsManager {
     private static String[] osmTagsArrays;
 
 
+    private OsmTagsManager(Context context) {
+        
+        // TODO http://thedevelopersinfo.com/2009/11/17/using-assets-in-android/
+    }
+    
     /**
      * Gets the manager singleton. 
      * 
@@ -62,7 +67,7 @@ public class OsmTagsManager {
      */
     public static OsmTagsManager getInstance(Context context) {
         if (osmTagsManager == null) {
-            osmTagsManager = new OsmTagsManager();
+            osmTagsManager = new OsmTagsManager(context);
             getFileTags(context);
 
             Set<String> tagsSet = osmTagsMap.keySet();
