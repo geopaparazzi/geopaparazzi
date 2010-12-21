@@ -5,7 +5,7 @@
 		"formitems":[
 			{"key":"bank name", "value":"", "type":"string"},  
 			{"key":"has atm", "value":"yes", "type":"boolean"},
-			{"key":"employees", "value":"10", "type":"integer"},
+			{"key":"employees", "value":"10", "type":"double"},
 			{"key":"vacche", 
 			 "values":{ "items":[
                 			     { "item":"1" },
@@ -24,7 +24,8 @@
 	"form": {
 		"formitems":[
 			{"key":"church name", "value":"", "type":"string"},  
-			{"key":"building year", "value":"", "type":"string"}
+			{"key":"building year", "value":"", "type":"string"},
+			{"key":"number of people", "value":"", "type":"double"}
 		]
 	}
 },

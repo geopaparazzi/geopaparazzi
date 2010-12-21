@@ -27,6 +27,7 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -118,7 +119,9 @@ public class FormActivity extends Activity {
                 }
 
                 if (type.equals(TagsManager.TYPE_STRING)) {
-                    addTextView(mainView, key, value, jsonObject);
+                    addTextView(mainView, key, value, jsonObject, false);
+                } else if (type.equals(TagsManager.TYPE_DOUBLE)) {
+                    addTextView(mainView, key, value, jsonObject, true);
                 }
 
             }
@@ -165,7 +168,7 @@ public class FormActivity extends Activity {
         }
     }
 
-    private void addTextView( LinearLayout mainView, String key, String value, JSONObject jsonObject ) {
+    private void addTextView( LinearLayout mainView, String key, String value, JSONObject jsonObject, boolean numeric ) {
         LinearLayout textLayout = new LinearLayout(this);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.WRAP_CONTENT);
@@ -187,6 +190,9 @@ public class FormActivity extends Activity {
         editView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
         editView.setPadding(5, 5, 5, 5);
         editView.setText(value);
+        if (numeric) {
+            editView.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+        }
 
         textLayout.addView(editView);
 
@@ -194,4 +200,6 @@ public class FormActivity extends Activity {
         keyList.add(key);
 
     }
+
+
 }
