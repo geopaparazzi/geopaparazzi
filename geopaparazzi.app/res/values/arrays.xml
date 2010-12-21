@@ -59,6 +59,10 @@
 		<item>30</item>
 		<item>60</item>
 	</string-array>
+	<string-array name="true_false">
+		<item>true</item>
+		<item>false</item>
+	</string-array>
 	<integer-array name="compassneedle_width_heights">
 		<item>14</item>
 		<item>80</item>

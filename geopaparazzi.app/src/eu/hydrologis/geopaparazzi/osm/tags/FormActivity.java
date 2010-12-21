@@ -28,13 +28,13 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.InputType;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.osm.TagsManager;
@@ -122,6 +122,8 @@ public class FormActivity extends Activity {
                     addTextView(mainView, key, value, jsonObject, false);
                 } else if (type.equals(TagsManager.TYPE_DOUBLE)) {
                     addTextView(mainView, key, value, jsonObject, true);
+                } else if (type.equals(TagsManager.TYPE_BOOLEAN)) {
+                    addBooleanView(mainView, key, value, jsonObject);
                 }
 
             }
@@ -143,7 +145,9 @@ public class FormActivity extends Activity {
             if (view instanceof TextView) {
                 TextView textView = (TextView) view;
                 text = textView.getText().toString();
-
+            } else if (view instanceof Spinner) {
+                Spinner spinner = (Spinner) view;
+                text = spinner.getSelectedItem().toString();
             }
 
             try {
@@ -201,5 +205,36 @@ public class FormActivity extends Activity {
 
     }
 
+    private void addBooleanView( LinearLayout mainView, String key, String value, JSONObject jsonObject ) {
+        LinearLayout textLayout = new LinearLayout(this);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
+                LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(10, 10, 10, 10);
+        textLayout.setLayoutParams(layoutParams);
+        textLayout.setOrientation(LinearLayout.VERTICAL);
+        mainView.addView(textLayout);
+
+        TextView textView = new TextView(this);
+        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        textView.setPadding(2, 2, 2, 2);
+        textView.setText(key);
+        textView.setTextColor(R.color.hydrogreen);
+
+        textLayout.addView(textView);
+
+        Spinner spinner = new Spinner(this);
+        spinner.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        spinner.setPadding(5, 5, 5, 5);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.true_false,
+                android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        textLayout.addView(spinner);
+
+        key2WidgetMap.put(key, spinner);
+        keyList.add(key);
+
+    }
 
 }

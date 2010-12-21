@@ -31,12 +31,13 @@ public final class R {
     public static final class array {
         public static final int array_colornames=0x7f060000;
         public static final int array_widths=0x7f060001;
-        public static final int compassneedle_coords=0x7f060007;
-        public static final int compassneedle_width_heights=0x7f060006;
+        public static final int compassneedle_coords=0x7f060008;
+        public static final int compassneedle_width_heights=0x7f060007;
         public static final int gps_time_name=0x7f060002;
         public static final int gps_time_value=0x7f060003;
         public static final int sms_time_name=0x7f060004;
         public static final int sms_time_value=0x7f060005;
+        public static final int true_false=0x7f060006;
     }
     public static final class attr {
         /** <p>Must be an integer value, such as "<code>100</code>".
