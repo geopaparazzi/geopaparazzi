@@ -4,8 +4,17 @@
 	"form": {
 		"formitems":[
 			{"key":"bank name", "value":"", "type":"string"},  
-			{"key":"has atm", "value":"yes", "type":"string"},
-			{"key":"employees", "value":"10", "type":"integer"}
+			{"key":"has atm", "value":"yes", "type":"boolean"},
+			{"key":"employees", "value":"10", "type":"integer"},
+			{"key":"vacche", 
+			 "values":{ "items":[
+                			     { "item":"1" },
+                			     { "item":"5" },
+                			     { "item":"10" }
+                                ]
+                       } ,
+            "value":"1",
+			"type":"numbercombo"}
 		]
 	}
 },

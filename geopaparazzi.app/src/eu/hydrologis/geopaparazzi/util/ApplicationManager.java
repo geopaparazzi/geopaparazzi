@@ -675,6 +675,16 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         alertDialog.show();
     }
 
+    public static void openDialog( String message, Context activity ) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setMessage(message).setCancelable(false).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+            public void onClick( DialogInterface dialog, int id ) {
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
     private ActionItem notesQuickaction;
     public ActionItem getNotesQuickAction() {
         if (notesQuickaction == null) {

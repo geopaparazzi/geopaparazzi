@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.sql.Date;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +32,7 @@ import android.widget.GridView;
 import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
-import eu.hydrologis.geopaparazzi.osm.OsmTagsManager.TagObject;
+import eu.hydrologis.geopaparazzi.osm.TagsManager.TagObject;
 import eu.hydrologis.geopaparazzi.util.Constants;
 
 /**
@@ -60,7 +61,7 @@ public class OsmTagsActivity extends Activity {
 
         GridView buttonGridView = (GridView) findViewById(R.id.osmgridview);
         try {
-            tagNamesArray = OsmTagsManager.getInstance(this).getTagsArrays();
+            tagNamesArray = TagsManager.getInstance(this).getTagsArrays();
         } catch (Exception e1) {
             tagNamesArray = new String[]{"ERROR IN READING TAGS"};
             e1.printStackTrace();
@@ -79,17 +80,30 @@ public class OsmTagsActivity extends Activity {
                             StringBuilder sB = new StringBuilder(additionalInfoText.getText());
                             String infoString = sB.toString();
                             String name = tagNamesArray[position];
-                            TagObject tag = OsmTagsManager.getInstance(OsmTagsActivity.this).getTagFromName(name);
-                            String finalString = tag.longName;
+                            TagObject tag = TagsManager.getInstance(OsmTagsActivity.this).getTagFromName(name);
+                            String finalLongName = tag.longName;
                             if (infoString.length() != 0) {
                                 String sep = ":";
-                                if (finalString.indexOf(":") != -1) {
+                                if (finalLongName.indexOf(":") != -1) {
                                     sep = " ";
                                 }
-                                finalString = finalString + sep + infoString;
+                                finalLongName = finalLongName + sep + infoString;
                             }
 
-                            DaoNotes.addNote(getContext(), longitude, latitude, -1.0, sqlDate, finalString);
+                            if (tag.hasForm) {
+                                // launch form activity
+                                String jsonString = tag.jsonString;
+
+                                Intent formIntent = new Intent(Constants.FORM);
+                                formIntent.putExtra(Constants.FORMJSON_KEY, jsonString);
+                                formIntent.putExtra(Constants.FORMSHORTNAME_KEY, tag.shortName);
+                                formIntent.putExtra(Constants.FORMLONGNAME_KEY, finalLongName);
+                                startActivity(formIntent);
+                            } else {
+                                // insert as it is
+                                DaoNotes.addNote(getContext(), longitude, latitude, -1.0, sqlDate, finalLongName);
+                            }
+
                         } catch (Exception e) {
                             e.printStackTrace();
                             Toast.makeText(OsmTagsActivity.this, R.string.notenonsaved, Toast.LENGTH_LONG).show();

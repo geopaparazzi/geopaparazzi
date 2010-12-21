@@ -50,6 +50,7 @@ public interface Constants {
     public final String DIRECTORYBROWSER = "eu.hydrologis.geopaparazzi.util.DIRECTORYBROWSER";
     public final String GPXIMPORT = "eu.hydrologis.geopaparazzi.gpx.GPXIMPORT";
     public final String OSMTAGS = "eu.hydrologis.geopaparazzi.osm.OSMTAGS";
+    public final String FORM = "eu.hydrologis.geopaparazzi.osm.tags.FORM";
 
     public final String ID = "ID";
     public final String INTENT_ID = "INTENT_ID";
@@ -147,5 +148,9 @@ public interface Constants {
     public static final String PANICKEY = "panic_number";
     public static final String GPSLAST_LONGITUDE = "gpslast_longitude";
     public static final String GPSLAST_LATITUDE = "gpslast_latitude";
+    
+    public static final String FORMJSON_KEY = "formjson_key";
+    public static final String FORMSHORTNAME_KEY = "formshortname_key";
+    public static final String FORMLONGNAME_KEY = "formlongname_key";
 
 }

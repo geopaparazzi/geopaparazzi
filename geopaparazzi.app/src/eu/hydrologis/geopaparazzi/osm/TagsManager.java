@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
@@ -34,34 +35,41 @@ import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.FileUtils;
 
 /**
- * Singleton that takes care of osm tags.
+ * Singleton that takes care of tags.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class OsmTagsManager {
+public class TagsManager {
 
-    private static final String TAG_LONGNAME = "longname";
-    private static final String TAG_SHORTNAME = "shortname";
-    private static final String TAG_FORM = "form";
-    private static final String TAG_FORMITEMS = "formitems";
+    public static final String TAG_LONGNAME = "longname";
+    public static final String TAG_SHORTNAME = "shortname";
+    public static final String TAG_FORM = "form";
+    public static final String TAG_FORMITEMS = "formitems";
+
+    public static final String TAG_KEY = "key";
+    public static final String TAG_VALUE = "value";
+    public static final String TAG_TYPE = "type";
+    public static final String TYPE_STRING = "string";
+    public static final String TYPE_DOUBLE = "double";
+    public static final String TYPE_BOOLEAN = "boolean";
 
     public static String TAGSFILENAME = "tags.json";
 
     private static HashMap<String, TagObject> tagsMap = new HashMap<String, TagObject>();
 
-    private static OsmTagsManager tagsManager;
+    private static TagsManager tagsManager;
 
     private static String[] tagsArrays;
 
     /**
      * Gets the manager singleton. 
      * 
-     * @return the {@link OsmTagsManager} singleton.
+     * @return the {@link TagsManager} singleton.
      * @throws IOException 
      */
-    public static OsmTagsManager getInstance( Context context ) throws Exception {
+    public static TagsManager getInstance( Context context ) throws Exception {
         if (tagsManager == null) {
-            tagsManager = new OsmTagsManager();
+            tagsManager = new TagsManager();
             getFileTags(context);
 
             Set<String> tagsSet = tagsMap.keySet();
@@ -92,18 +100,8 @@ public class OsmTagsManager {
             int tagsNum = tagArrayObj.length();
             for( int i = 0; i < tagsNum; i++ ) {
                 JSONObject jsonObject = tagArrayObj.getJSONObject(i);
-                String shortname = jsonObject.getString(TAG_SHORTNAME);
-                String longname = jsonObject.getString(TAG_LONGNAME);
-                JSONArray formItemsArray = null;
-                if (jsonObject.has(TAG_FORM)) {
-                    JSONObject formObj = jsonObject.getJSONObject(TAG_FORM);
-                    formItemsArray = formObj.getJSONArray(TAG_FORMITEMS);
-                }
-                TagObject tag = new TagObject();
-                tag.shortName = shortname;
-                tag.longName = longname;
-                tag.formItems = formItemsArray;
-                tagsMap.put(shortname, tag);
+                TagObject tag = stringToTagObject(jsonObject.toString());
+                tagsMap.put(tag.shortName, tag);
             }
 
         }
@@ -117,9 +115,25 @@ public class OsmTagsManager {
         return tagsMap.get(name);
     }
 
+    public static TagObject stringToTagObject( String jsonString ) throws JSONException {
+        JSONObject jsonObject = new JSONObject(jsonString);
+        String shortname = jsonObject.getString(TAG_SHORTNAME);
+        String longname = jsonObject.getString(TAG_LONGNAME);
+
+        TagObject tag = new TagObject();
+        tag.shortName = shortname;
+        tag.longName = longname;
+        if (jsonObject.has(TAG_FORM)) {
+            tag.hasForm = true;
+        }
+        tag.jsonString = jsonString;
+        return tag;
+    }
+    
     public static class TagObject {
         public String shortName;
         public String longName;
-        public JSONArray formItems;
+        public boolean hasForm;
+        public String jsonString;
     }
 }
