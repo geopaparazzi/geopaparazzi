@@ -11,25 +11,28 @@
 
 	<ScrollView android:id="@+id/form_scroll"
 		android:layout_height="wrap_content" android:layout_width="fill_parent">
-		<LinearLayout android:id="@+id/form_linear"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:orientation="vertical">
+		<LinearLayout android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:orientation="vertical">
+			<LinearLayout android:id="@+id/form_linear"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:orientation="vertical">
 
+			</LinearLayout>
+
+			<LinearLayout android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:orientation="horizontal"
+				android:layout_margin="20dp">
+				<Button android:text="@string/ok" android:id="@+id/form_ok"
+					android:layout_width="fill_parent" android:layout_height="wrap_content"
+					android:layout_weight="1" android:padding="5dp"></Button>
+				<Button android:text="@string/cancel" android:id="@+id/form_cancel"
+					android:layout_width="fill_parent" android:layout_height="wrap_content"
+					android:layout_weight="1" android:padding="5dp"></Button>
+			</LinearLayout>
 		</LinearLayout>
-
 	</ScrollView>
 
-	<LinearLayout android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:orientation="horizontal"
-		android:layout_margin="20dp">
-		<Button android:text="@string/ok" android:id="@+id/form_ok"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:layout_weight="1" android:padding="5dp"></Button>
-		<Button android:text="@string/cancel" android:id="@+id/form_cancel"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:layout_weight="1" android:padding="5dp"></Button>
-	</LinearLayout>
-	
+
 
 
 </LinearLayout>

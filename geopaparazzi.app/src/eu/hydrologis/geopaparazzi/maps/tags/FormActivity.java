@@ -17,6 +17,7 @@
  */
 package eu.hydrologis.geopaparazzi.maps.tags;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +38,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.maps.TagsManager;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
@@ -55,6 +57,8 @@ public class FormActivity extends Activity {
     private List<String> keyList = new ArrayList<String>();
     private JSONArray formItemsArray;
     private JSONObject jsonFormObject;
+    private float latitude;
+    private float longitude;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -68,6 +72,8 @@ public class FormActivity extends Activity {
             formJsonString = extras.getString(Constants.FORMJSON_KEY);
             // formShortnameDefinition = extras.getString(Constants.FORMSHORTNAME_KEY);
             formLongnameDefinition = extras.getString(Constants.FORMLONGNAME_KEY);
+            latitude = extras.getFloat(Constants.VIEW_CENTER_LAT);
+            longitude = extras.getFloat(Constants.VIEW_CENTER_LON);
         }
 
         if (formJsonString == null) {
@@ -82,12 +88,16 @@ public class FormActivity extends Activity {
         Button okButton = (Button) findViewById(R.id.form_ok);
         okButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
+                String endString = "";
                 try {
+                    endString = jsonFormObject.toString();
                     storeNote();
-
-                    ApplicationManager.openDialog(jsonFormObject.toString(2), FormActivity.this);
-                } catch (JSONException e) {
+                    Date sqlDate = new Date(System.currentTimeMillis());
+                    DaoNotes.addNote(FormActivity.this, longitude, latitude, -1.0, sqlDate, endString);
+                    finish();
+                } catch (Exception e) {
                     e.printStackTrace();
+                    ApplicationManager.openDialog("An error occurred while saving:\n" + endString, FormActivity.this);
                 }
             }
 
@@ -101,8 +111,7 @@ public class FormActivity extends Activity {
 
         try {
             jsonFormObject = new JSONObject(formJsonString);
-            JSONObject formObj = jsonFormObject.getJSONObject(TagsManager.TAG_FORM);
-            formItemsArray = formObj.getJSONArray(TagsManager.TAG_FORMITEMS);
+            formItemsArray = TagsManager.getFormItems(jsonFormObject);
 
             int length = formItemsArray.length();
             for( int i = 0; i < length; i++ ) {
@@ -119,11 +128,17 @@ public class FormActivity extends Activity {
                 }
 
                 if (type.equals(TagsManager.TYPE_STRING)) {
-                    addTextView(mainView, key, value, jsonObject, false);
+                    addTextView(mainView, key, value, false);
                 } else if (type.equals(TagsManager.TYPE_DOUBLE)) {
-                    addTextView(mainView, key, value, jsonObject, true);
+                    addTextView(mainView, key, value, true);
                 } else if (type.equals(TagsManager.TYPE_BOOLEAN)) {
-                    addBooleanView(mainView, key, value, jsonObject);
+                    addBooleanView(mainView, key, value);
+                } else if (type.equals(TagsManager.TYPE_STRINGCOMBO)) {
+                    addComboView(mainView, key, value, jsonObject);
+                } else if (type.equals(TagsManager.TYPE_DOUBLECOMBO)) {
+                    addComboView(mainView, key, value, jsonObject);
+                } else {
+                    throw new RuntimeException("Type non implemented yet: " + type);
                 }
 
             }
@@ -172,7 +187,7 @@ public class FormActivity extends Activity {
         }
     }
 
-    private void addTextView( LinearLayout mainView, String key, String value, JSONObject jsonObject, boolean numeric ) {
+    private void addTextView( LinearLayout mainView, String key, String value, boolean numeric ) {
         LinearLayout textLayout = new LinearLayout(this);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.WRAP_CONTENT);
@@ -186,7 +201,7 @@ public class FormActivity extends Activity {
         textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
         textView.setText(key);
-        textView.setTextColor(R.color.hydrogreen);
+        textView.setTextColor(getResources().getColor(R.color.hydrogreen));
 
         textLayout.addView(textView);
 
@@ -205,7 +220,7 @@ public class FormActivity extends Activity {
 
     }
 
-    private void addBooleanView( LinearLayout mainView, String key, String value, JSONObject jsonObject ) {
+    private void addBooleanView( LinearLayout mainView, String key, String value ) {
         LinearLayout textLayout = new LinearLayout(this);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.WRAP_CONTENT);
@@ -218,7 +233,7 @@ public class FormActivity extends Activity {
         textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
         textView.setText(key);
-        textView.setTextColor(R.color.hydrogreen);
+        textView.setTextColor(getResources().getColor(R.color.hydrogreen));
 
         textLayout.addView(textView);
 
@@ -230,11 +245,62 @@ public class FormActivity extends Activity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
+        if (value != null) {
+            String[] stringArray = getResources().getStringArray(R.array.true_false);
+            for( int i = 0; i < stringArray.length; i++ ) {
+                if (stringArray[i].equals(value.trim())) {
+                    spinner.setSelection(i);
+                    break;
+                }
+            }
+        }
+
         textLayout.addView(spinner);
 
         key2WidgetMap.put(key, spinner);
         keyList.add(key);
 
+    }
+
+    private void addComboView( LinearLayout mainView, String key, String value, JSONObject jsonObject ) throws JSONException {
+        LinearLayout textLayout = new LinearLayout(this);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
+                LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(10, 10, 10, 10);
+        textLayout.setLayoutParams(layoutParams);
+        textLayout.setOrientation(LinearLayout.VERTICAL);
+        mainView.addView(textLayout);
+
+        TextView textView = new TextView(this);
+        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        textView.setPadding(2, 2, 2, 2);
+        textView.setText(key);
+        textView.setTextColor(getResources().getColor(R.color.hydrogreen));
+        textLayout.addView(textView);
+
+        JSONArray comboItems = TagsManager.getComboItems(jsonObject);
+        String[] itemsArray = TagsManager.comboItems2StringArray(comboItems);
+
+        Spinner spinner = new Spinner(this);
+        spinner.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        spinner.setPadding(5, 5, 5, 5);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, itemsArray);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        if (value != null) {
+            for( int i = 0; i < itemsArray.length; i++ ) {
+                if (itemsArray[i].equals(value.trim())) {
+                    spinner.setSelection(i);
+                    break;
+                }
+            }
+        }
+
+        textLayout.addView(spinner);
+
+        key2WidgetMap.put(key, spinner);
+        keyList.add(key);
     }
 
 }

@@ -45,13 +45,18 @@ public class TagsManager {
     public static final String TAG_SHORTNAME = "shortname";
     public static final String TAG_FORM = "form";
     public static final String TAG_FORMITEMS = "formitems";
-
     public static final String TAG_KEY = "key";
     public static final String TAG_VALUE = "value";
+    public static final String TAG_VALUES = "values";
+    public static final String TAG_ITEMS = "items";
+    public static final String TAG_ITEM = "item";
     public static final String TAG_TYPE = "type";
+
     public static final String TYPE_STRING = "string";
     public static final String TYPE_DOUBLE = "double";
     public static final String TYPE_BOOLEAN = "boolean";
+    public static final String TYPE_DOUBLECOMBO = "doublecombo";
+    public static final String TYPE_STRINGCOMBO = "stringcombo";
 
     public static String TAGSFILENAME = "tags.json";
 
@@ -129,7 +134,62 @@ public class TagsManager {
         tag.jsonString = jsonString;
         return tag;
     }
-    
+
+    /**
+     * Utility method to get the formitems of a form object.
+     * 
+     * <p>Note that the entering json object has to be one 
+     * object of the main array, not THE main array itself, 
+     * i.e. a choice was already done.
+     * 
+     * @param jsonObj the single object.
+     * @return the array of items of the contained form or <code>null</code> if 
+     *          no form is contained.
+     * @throws JSONException
+     */
+    public static JSONArray getFormItems( JSONObject jsonObj ) throws JSONException {
+        if (jsonObj.has(TagsManager.TAG_FORM)) {
+            JSONObject formObj = jsonObj.getJSONObject(TagsManager.TAG_FORM);
+            if (formObj.has(TagsManager.TAG_FORMITEMS)) {
+                JSONArray formItemsArray = formObj.getJSONArray(TagsManager.TAG_FORMITEMS);
+                return formItemsArray;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Utility method to get the combo items of a formitem object.
+     * 
+     * @param formItem the json form <b>item</b>.
+     * @return the array of items.
+     * @throws JSONException
+     */
+    public static JSONArray getComboItems( JSONObject formItem ) throws JSONException {
+        if (formItem.has(TagsManager.TAG_VALUES)) {
+            JSONObject valuesObj = formItem.getJSONObject(TagsManager.TAG_VALUES);
+            if (valuesObj.has(TagsManager.TAG_ITEMS)) {
+                JSONArray itemsArray = valuesObj.getJSONArray(TagsManager.TAG_ITEMS);
+                return itemsArray;
+            }
+        }
+        return null;
+    }
+
+    public static String[] comboItems2StringArray( JSONArray comboItems ) throws JSONException {
+        int length = comboItems.length();
+        String[] itemsArray = new String[length];
+        for( int i = 0; i < length; i++ ) {
+            JSONObject itemObj = comboItems.getJSONObject(i);
+            if (itemObj.has(TagsManager.TAG_ITEM)) {
+                itemsArray[i] = itemObj.getString(TagsManager.TAG_ITEM).trim();
+            }else{
+                itemsArray[i] = " - ";
+            }
+        }
+        return itemsArray;
+    }
+
     public static class TagObject {
         public String shortName;
         public String longName;
