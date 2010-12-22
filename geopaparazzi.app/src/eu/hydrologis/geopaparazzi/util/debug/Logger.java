@@ -17,10 +17,8 @@
  */
 package eu.hydrologis.geopaparazzi.util.debug;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -32,7 +30,7 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 
 /**
- * A logger class tat can also write to file.
+ * A logger class that can also write to file.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
@@ -42,7 +40,7 @@ public class Logger {
     private static File debugLogFile;
 
     private static enum LOGTYPE {
-        D, I, W;
+        D, I, W, E;
     }
 
     public Logger( Context context ) {
@@ -59,11 +57,31 @@ public class Logger {
         return simpleName.toUpperCase();
     }
 
-    public static int d( Object caller, String message ) {
+    public static int e( Object caller, String message, Throwable t ) {
+        String name = toName(caller);
+        return e(name, message, t);
+    }
+
+    private static int e( String name, String message, Throwable t ) {
         if (!logToFile) {
-            return Log.d(toName(caller), message);
+            return Log.e(name, message);
         } else {
-            dumpToFile(toName(caller), message, LOGTYPE.D);
+            message = message + "\n" + t.getMessage();
+            dumpToFile(name, message, LOGTYPE.E);
+        }
+        return -1;
+    }
+
+    public static int d( Object caller, String message ) {
+        String name = toName(caller);
+        return d(name, message);
+    }
+
+    private static int d( String name, String message ) {
+        if (!logToFile) {
+            return Log.d(name, message);
+        } else {
+            dumpToFile(name, message, LOGTYPE.D);
         }
         return -1;
     }
@@ -99,6 +117,9 @@ public class Logger {
                 break;
             case W:
                 br.write("WARN: ");
+                break;
+            case E:
+                br.write("ERROR: ");
                 break;
             default:
                 br.write("DEBUG: ");

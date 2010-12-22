@@ -48,6 +48,7 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DatabaseManager;
 import eu.hydrologis.geopaparazzi.util.ApplicationManagerListener;
+import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * The Gps engine, used to put logs into the database.
@@ -109,7 +110,7 @@ public class GpsLogger implements ApplicationManagerListener {
                 try {
                     java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
                     long gpsLogId = DaoGpsLog.addGpsLog(context, now, now, logName, 2f, "red", true);
-                    Log.i(LOGTAG, "Starting gps logging. Logid: " + gpsLogId);
+                    Logger.i(LOGTAG, "Starting gps logging. Logid: " + gpsLogId);
 
                     // get preferences
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -117,7 +118,7 @@ public class GpsLogger implements ApplicationManagerListener {
                     float minDistance = Float.parseFloat(minDistanceStr);
                     String intervalStr = preferences.getString(GPSLOGGINGINTERVALKEY, String.valueOf(GPS_LOGGING_INTERVAL));
                     long waitForSecs = Long.parseLong(intervalStr);
-                    Log.d(LOGTAG, "Waiting interval: " + waitForSecs);
+                    Logger.d(LOGTAG, "Waiting interval: " + waitForSecs);
 
                     currentPointsNum = 0;
                     currentDistance = 0;
@@ -132,9 +133,9 @@ public class GpsLogger implements ApplicationManagerListener {
                         }
 
                         float lastDistance = previousLogLoc.distanceTo(gpsLoc);
-                        Log.d(LOGTAG, "gpsloc: " + gpsLoc.getLatitude() + "/" + gpsLoc.getLongitude());
-                        Log.d(LOGTAG, "previousLoc: " + previousLogLoc.getLatitude() + "/" + previousLogLoc.getLongitude());
-                        Log.d(LOGTAG, "distance: " + lastDistance + " - mindistance: " + minDistance);
+                        Logger.d(LOGTAG, "gpsloc: " + gpsLoc.getLatitude() + "/" + gpsLoc.getLongitude());
+                        Logger.d(LOGTAG, "previousLoc: " + previousLogLoc.getLatitude() + "/" + previousLogLoc.getLongitude());
+                        Logger.d(LOGTAG, "distance: " + lastDistance + " - mindistance: " + minDistance);
                         // ignore near points
                         if (lastDistance < minDistance) {
                             waitGpsInterval(waitForSecs);
@@ -170,7 +171,6 @@ public class GpsLogger implements ApplicationManagerListener {
                         currentPointsNum++;
                         currentDistance = currentDistance + lastDistance;
 
-
                         previousLogLoc = gpsLoc;
 
                         // save last known location
@@ -178,13 +178,13 @@ public class GpsLogger implements ApplicationManagerListener {
                         editor.putFloat(GPSLAST_LONGITUDE, (float) gpsLoc.getLongitude());
                         editor.putFloat(GPSLAST_LATITUDE, (float) gpsLoc.getLatitude());
                         editor.commit();
-                        
+
                         // and wait
                         waitGpsInterval(waitForSecs);
                     }
 
                     if (currentPointsNum < 2) {
-                        Log.i(LOGTAG, "Removing gpslog, since too few points were added. Logid: " + gpsLogId);
+                        Logger.i(LOGTAG, "Removing gpslog, since too few points were added. Logid: " + gpsLogId);
                         DaoGpsLog.deleteGpslog(context, gpsLogId);
                     }
 
@@ -210,7 +210,7 @@ public class GpsLogger implements ApplicationManagerListener {
                     playAlert();
                     isLogging = false;
                 }
-                Log.d(LOGTAG, "Exit logging...");
+                Logger.d(this, "Exit logging...");
             }
 
             private void waitGpsInterval( long waitForSecs ) {
@@ -312,7 +312,7 @@ public class GpsLogger implements ApplicationManagerListener {
         gpsLoc = new GpsLocation(loc);
     }
 
-    public void onSensorChanged( double normalAzimuth , double pictureAzimuth ) {
+    public void onSensorChanged( double normalAzimuth, double pictureAzimuth ) {
     }
 
     public void onSatellitesStatusChanged( int num, int max ) {

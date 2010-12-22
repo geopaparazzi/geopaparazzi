@@ -28,9 +28,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
-import android.util.Log;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.util.Constants;
+import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * Sms reciever and gps coordinates sender.
@@ -61,7 +61,7 @@ public class SmsReceiver extends BroadcastReceiver {
                 for( Object pdu : pdus ) {
                     smsMessage = SmsMessage.createFromPdu((byte[]) pdu);
                     String body = smsMessage.getDisplayMessageBody();
-                    Log.i("SMSRECEIVER", "Got message: " + body);
+                    Logger.i(this, "Got message: " + body);
                     if (body.toLowerCase().matches(".*geopap.*")) {
                         break;
                     }
@@ -70,7 +70,7 @@ public class SmsReceiver extends BroadcastReceiver {
             }
             if (smsMessage != null) {
                 // if (loc == null) {
-                // Log.i("SMSRECEIVER", "Setting a dummy location");
+                // Logger.i("SMSRECEIVER", "Setting a dummy location");
                 // loc = new GpsLocation(new Location("dummy"));
                 // loc.setLatitude(46.674056);
                 // loc.setLongitude(11.132294);
@@ -99,7 +99,7 @@ public class SmsReceiver extends BroadcastReceiver {
 
                     // Location previousLoc = loc.getPreviousLoc();
                     // if (previousLoc != null) {
-                    // Log.i("SMSRECEIVER", "Has also previous location");
+                    // Logger.i("SMSRECEIVER", "Has also previous location");
                     // double plat = previousLoc.getLatitude();
                     // double plon = previousLoc.getLongitude();
                     // sB.append("\nPrevious location was:\n");
@@ -123,7 +123,7 @@ public class SmsReceiver extends BroadcastReceiver {
                 }
 
                 String msg = sB.toString();
-                Log.i("SMSRECEIVER", msg);
+                Logger.i(this, msg);
                 sendGPSData(context, smsMessage, msg);
             }
         }
@@ -136,18 +136,18 @@ public class SmsReceiver extends BroadcastReceiver {
         String addr = inMessage.getOriginatingAddress();
         // Make sure there's a valid return address.
         if (addr == null) {
-            Log.i("SmsIntent", "Unable to get Address from Sent Message");
+            Logger.i(this, "Unable to get Address from Sent Message");
         } else {
-            Log.i("SmsIntent", "Sending to: " + addr);
+            Logger.i(this, "Sending to: " + addr);
         }
         try {
             if (msg.length() > 160) {
                 msg = msg.substring(0, 160);
-                Log.i("SmsIntent", "Trimming msg to: " + msg);
+                Logger.i(this, "Trimming msg to: " + msg);
             }
             mng.sendTextMessage(addr, null, msg, dummyEvent, dummyEvent);
         } catch (Exception e) {
-            Log.e("SmsIntent", "SendException", e);
+            Logger.e(this, "SendException", e);
         }
     }
 

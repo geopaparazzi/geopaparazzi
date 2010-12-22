@@ -38,6 +38,7 @@ import java.util.Map;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
+import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * A cache for osm tiles.
@@ -68,8 +69,7 @@ public class TileCache {
     /**
      * The caching {@link HashMap}.
      */
-    private Map<String, Bitmap> tileCache = Collections
-            .synchronizedMap(new HashMap<String, Bitmap>(27));
+    private Map<String, Bitmap> tileCache = Collections.synchronizedMap(new HashMap<String, Bitmap>(27));
 
     /**
      * List of tiles that are currently being fectched and therefore 
@@ -108,12 +108,12 @@ public class TileCache {
     public void put( String key, Bitmap tile ) {
         synchronized (tileCache) {
             int size = tileCache.size();
-            // Log.d(LOGTAG, "Inserting Tile: " + key + " - Size reached = " + size);
+            // Logger.d(LOGTAG, "Inserting Tile: " + key + " - Size reached = " + size);
             while( size > imgCacheLimit ) {
                 // remove oldest tile
-                // Log.d(LOGTAG, "Removing Tile. Size = " + size);
+                // Logger.d(LOGTAG, "Removing Tile. Size = " + size);
                 String oldestKey = keyList.get(0);
-                // Log.d(LOGTAG, "Removing Tile. Oldest key = " + oldestKey);
+                // Logger.d(LOGTAG, "Removing Tile. Oldest key = " + oldestKey);
                 Bitmap bitmap = tileCache.get(oldestKey);
                 bitmap.recycle();
                 tileCache.remove(oldestKey);
@@ -261,7 +261,7 @@ public class TileCache {
             dummyTile.recycle();
             dummyTile = null;
         }
-        Log.d(LOGTAG, "Cleared tiles cache");
+        Logger.d(this, "Cleared tiles cache");
     }
 
     private void dumpPicture( File file, Bitmap bitmap ) throws IOException {
@@ -269,7 +269,7 @@ public class TileCache {
         fOut = new FileOutputStream(file);
         // boolean didCompress =
         bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
-        // Log.d(LOGTAG, "Compressed bitmap: " + file.getAbsolutePath() + " (successfull = " +
+        // Logger.d(LOGTAG, "Compressed bitmap: " + file.getAbsolutePath() + " (successfull = " +
         // didCompress + ")");
         fOut.flush();
         fOut.close();
@@ -283,11 +283,9 @@ public class TileCache {
      * @param zoom the required zoomlevel.
      * @return the array containing x, y of the tile.
      */
-    public static int[] latLon2ContainingTileNumber( final double lat, final double lon,
-            final int zoom ) {
+    public static int[] latLon2ContainingTileNumber( final double lat, final double lon, final int zoom ) {
         int xtile = (int) floor((lon + 180) / 360 * (1 << zoom));
-        int ytile = (int) floor((1 - log(tan(lat * PI / 180) + 1 / cos(lat * PI / 180)) / PI) / 2
-                * (1 << zoom));
+        int ytile = (int) floor((1 - log(tan(lat * PI / 180) + 1 / cos(lat * PI / 180)) / PI) / 2 * (1 << zoom));
         // return ("" + zoom + "/" + xtile + "/" + ytile);
         return new int[]{xtile, ytile};
     }

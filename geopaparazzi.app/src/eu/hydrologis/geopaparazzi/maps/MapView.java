@@ -404,7 +404,7 @@ public class MapView extends View implements ApplicationManagerListener {
                     for( int i = 0; i < latList.size(); i++ ) {
                         float screenX = lonToScreen(width, lonList.get(i).floatValue(), centerLon, pixelDxInWorld);
                         float screenY = latToScreen(height, latList.get(i).floatValue(), centerLat, pixelDyInWorld);
-                        // Log.d(LOGTAG, screenX + "/" + screenY);
+                        // Logger.d(LOGTAG, screenX + "/" + screenY);
                         if (i == 0) {
                             path.moveTo(screenX, screenY);
                         } else {
@@ -479,7 +479,7 @@ public class MapView extends View implements ApplicationManagerListener {
                 for( int i = 0; i < latList.size(); i++ ) {
                     float screenX = lonToScreen(width, lonList.get(i).floatValue(), centerLon, pixelDxInWorld);
                     float screenY = latToScreen(height, latList.get(i).floatValue(), centerLat, pixelDyInWorld);
-                    // Log.d(LOGTAG, screenX + "/" + screenY);
+                    // Logger.d(LOGTAG, screenX + "/" + screenY);
                     if (i == 0) {
                         path.moveTo(screenX, screenY);
                     } else {
@@ -659,7 +659,7 @@ public class MapView extends View implements ApplicationManagerListener {
         }
         switch( action ) {
         case MotionEvent.ACTION_DOWN:
-            // Log.i(LOGTAG, "Time: " + thisTime + " Delta: " + delta);
+            // Logger.i(LOGTAG, "Time: " + thisTime + " Delta: " + delta);
             float currentYscreenToLat = screenToLat(height, currentY, centerLat, pixelDyInWorld);
             float currentXscreenToLon = screenToLon(width, currentX, centerLon, pixelDxInWorld);
             if (isMeasureMode) {

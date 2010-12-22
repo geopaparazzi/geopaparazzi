@@ -57,12 +57,10 @@ public class ActionBar {
     // private static String validPointsString;
     // private static String distanceString;
     // private static String satellitesString;
-    private final Activity activity;
 
-    public ActionBar( View actionBarView, ApplicationManager applicationManager, Activity activity ) {
+    public ActionBar( View actionBarView, ApplicationManager applicationManager ) {
         this.actionBarView = actionBarView;
         this.applicationManager = applicationManager;
-        this.activity = activity;
 
         initVars();
         createQuickActions();
@@ -116,7 +114,7 @@ public class ActionBar {
 
     public static ActionBar getActionBar( Activity activity, int activityId, ApplicationManager applicationManager ) {
         View view = activity.findViewById(activityId);
-        return new ActionBar(view, applicationManager, activity);
+        return new ActionBar(view, applicationManager);
     }
 
     public void setTitle( int titleResourceId, int titleViewId ) {
@@ -181,7 +179,7 @@ public class ActionBar {
 
         StringBuilder sb = new StringBuilder();
         if (loc == null || !applicationManager.isGpsEnabled()) {
-            // Log.d("COMPASSVIEW", "Location from gps is null!");
+            // Logger.d("COMPASSVIEW", "Location from gps is null!");
             sb.append(nodataString);
             sb.append("\n");
             sb.append(gpsonString);

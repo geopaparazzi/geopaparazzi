@@ -58,7 +58,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.Editable;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
@@ -236,7 +235,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
             } else {
                 mapsCacheDir = new File(sdcardDir.getAbsolutePath() + PATH_MAPSCACHE);
             }
-            Log.i(LOGTAG, "MAPSCACHEPATH:" + mapsCacheDir.getAbsolutePath());
+            Logger.i(LOGTAG, "MAPSCACHEPATH:" + mapsCacheDir.getAbsolutePath());
             if (!mapsCacheDir.exists())
                 if (!mapsCacheDir.mkdirs()) {
                     String msg = MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
@@ -344,7 +343,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String intervalStr = preferences.getString(GPSLOGGINGINTERVALKEY, String.valueOf(GPS_LOGGING_INTERVAL));
         int waitForMillis = (int) (Long.parseLong(intervalStr) * 1000);
-        Log.d(LOGTAG, "LOG INTERVAL MILLIS: " + waitForMillis);
+        Logger.d(LOGTAG, "LOG INTERVAL MILLIS: " + waitForMillis);
         if (Debug.doMock) {
             TestMock.startMocking(locationManager, applicationManager);
         } else {
@@ -454,7 +453,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
             previousLoc = loc;
         }
 
-        Log.d(LOGTAG, "Position update: " + gpsLoc.getLongitude() + "/" + gpsLoc.getLatitude() + "/" + gpsLoc.getAltitude()); //$NON-NLS-1$ //$NON-NLS-2$
+        Logger.d(LOGTAG, "Position update: " + gpsLoc.getLongitude() + "/" + gpsLoc.getLatitude() + "/" + gpsLoc.getAltitude()); //$NON-NLS-1$ //$NON-NLS-2$
         gpsLoc.setPreviousLoc(previousLoc);
         for( ApplicationManagerListener listener : listeners ) {
             listener.onLocationChanged(gpsLoc);
@@ -505,8 +504,8 @@ public class ApplicationManager implements SensorEventListener, LocationListener
     // listener.onSatellitesStatusChanged(num, max);
     // }
     // }
-    // Log.d(LOGTAG, "Gps status event: " + event);
-    // Log.d(LOGTAG, "Time to first fix: " + timeToFirstFix);
+    // Logger.d(LOGTAG, "Gps status event: " + event);
+    // Logger.d(LOGTAG, "Time to first fix: " + timeToFirstFix);
     // }
 
     public int getAccuracy() {

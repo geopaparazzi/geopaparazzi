@@ -88,7 +88,7 @@ public class GeoPaparazziActivity extends Activity {
         super.onCreate(savedInstanceState);
         // enable logger if needed
         new Logger(this);
-        
+
         showChangeLogIfNeeded();
         init();
     }
@@ -281,7 +281,7 @@ public class GeoPaparazziActivity extends Activity {
     }
 
     public void finish() {
-        Log.d(LOGTAG, "Finish called!");
+        Logger.d(LOGTAG, "Finish called!");
         // save last location just in case
         GpsLocation loc = applicationManager.getLoc();
         if (loc != null) {
@@ -399,7 +399,7 @@ public class GeoPaparazziActivity extends Activity {
 
             }
         } catch (NameNotFoundException e) {
-            Log.w("Unable to get version code. Will not show changelog", e);
+            Logger.w(this, "Unable to get version code. Will not show changelog");
         }
 
     }
@@ -452,7 +452,7 @@ public class GeoPaparazziActivity extends Activity {
                     try {
                         if (msg.length() > 160) {
                             msg = msg.substring(0, 160);
-                            Log.i("SmsIntent", "Trimming msg to: " + msg);
+                            Logger.i("SmsIntent", "Trimming msg to: " + msg);
                         }
                         mng.sendTextMessage(number, null, msg, dummyEvent, dummyEvent);
                         Toast.makeText(this, R.string.message_sent, Toast.LENGTH_LONG).show();

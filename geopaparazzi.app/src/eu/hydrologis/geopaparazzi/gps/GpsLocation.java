@@ -19,8 +19,8 @@ package eu.hydrologis.geopaparazzi.gps;
 
 import java.util.Date;
 
-import eu.hydrologis.geopaparazzi.util.Constants;
 import android.location.Location;
+import eu.hydrologis.geopaparazzi.util.Constants;
 
 /**
  * Extends the location with some infos.

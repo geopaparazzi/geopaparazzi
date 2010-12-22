@@ -72,7 +72,7 @@ public class MapDataListActivity extends ListActivity {
                 CheckBox visibleView = (CheckBox) rowView.findViewById(R.id.visible);
 
                 final MapItem currentItem = mapsItems[position];
-                // Log.d("MAPSDATALISTACTIVITY", currentItem.getName() + "/" +
+                // Logger.d("MAPSDATALISTACTIVITY", currentItem.getName() + "/" +
                 // currentItem.isVisible() + "/" + currentItem.getId());
                 rowView.setBackgroundColor(Color.parseColor(currentItem.getColor()));
                 nameView.setText(currentItem.getName());

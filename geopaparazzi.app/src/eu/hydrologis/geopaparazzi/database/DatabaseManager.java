@@ -23,8 +23,8 @@ import java.util.Locale;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
+import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * The database manager.
@@ -80,13 +80,13 @@ public class DatabaseManager {
             databaseHelper = new DatabaseOpenHelper(databaseFile);
 
             SQLiteDatabase db = databaseHelper.getWritableDatabase(context);
-            Log.i(DEBUG_TAG, "Database: " + db.getPath());
-            Log.i(DEBUG_TAG, "Database Version: " + db.getVersion());
-            Log.i(DEBUG_TAG, "Database Page Size: " + db.getPageSize());
-            Log.i(DEBUG_TAG, "Database Max Size: " + db.getMaximumSize());
-            Log.i(DEBUG_TAG, "Database Open?  " + db.isOpen());
-            Log.i(DEBUG_TAG, "Database readonly?  " + db.isReadOnly());
-            Log.i(DEBUG_TAG, "Database Locked by current thread?  " + db.isDbLockedByCurrentThread());
+            Logger.i(DEBUG_TAG, "Database: " + db.getPath());
+            Logger.i(DEBUG_TAG, "Database Version: " + db.getVersion());
+            Logger.i(DEBUG_TAG, "Database Page Size: " + db.getPageSize());
+            Logger.i(DEBUG_TAG, "Database Max Size: " + db.getMaximumSize());
+            Logger.i(DEBUG_TAG, "Database Open?  " + db.isOpen());
+            Logger.i(DEBUG_TAG, "Database readonly?  " + db.isReadOnly());
+            Logger.i(DEBUG_TAG, "Database Locked by current thread?  " + db.isDbLockedByCurrentThread());
         }
 
         return databaseHelper.getWritableDatabase(context);
@@ -94,9 +94,9 @@ public class DatabaseManager {
 
     public void closeDatabase() {
         if (databaseHelper != null) {
-            Log.i(DEBUG_TAG, "Closing database");
+            Logger.i(DEBUG_TAG, "Closing database");
             databaseHelper.close();
-            Log.i(DEBUG_TAG, "Database closed");
+            Logger.i(DEBUG_TAG, "Database closed");
         }
     }
 
@@ -111,15 +111,15 @@ public class DatabaseManager {
 
         public void open( Context context ) throws IOException {
             if (databaseFile.exists()) {
-                Log.i("SQLiteHelper", "Opening database at " + databaseFile);
+                Logger.i("SQLiteHelper", "Opening database at " + databaseFile);
                 db = SQLiteDatabase.openOrCreateDatabase(databaseFile, null);
                 int dbVersion = db.getVersion();
                 if (DATABASE_VERSION > dbVersion)
                     upgrade(DATABASE_VERSION, dbVersion);
             } else {
-                Log.i("SQLiteHelper", "Creating database at " + databaseFile);
-                Log.d(DEBUG_TAG, "db folder exists: " + databaseFile.getParentFile().exists());
-                Log.d(DEBUG_TAG, "db folder is writable: " + databaseFile.getParentFile().canWrite());
+                Logger.i("SQLiteHelper", "Creating database at " + databaseFile);
+                Logger.d(dbManager, "db folder exists: " + databaseFile.getParentFile().exists());
+                Logger.d(dbManager, "db folder is writable: " + databaseFile.getParentFile().canWrite());
                 db = SQLiteDatabase.openOrCreateDatabase(databaseFile, null);
                 create(context);
             }

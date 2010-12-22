@@ -45,6 +45,7 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
+import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * The taking pictures activity.
@@ -205,7 +206,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
         // }
         Camera.Parameters p = camera.getParameters();
         Size previewSize = p.getPreviewSize();
-        Log.d("CAMERAACTIVITY", "Preview size before: " + previewSize.width + "/" + previewSize.height);
+        Logger.d(this, "Preview size before: " + previewSize.width + "/" + previewSize.height);
         p.setPreviewSize(previewSize.width, previewSize.height);
 
         camera.setParameters(p);

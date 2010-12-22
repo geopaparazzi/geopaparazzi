@@ -28,9 +28,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
-import android.util.Log;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Note;
+import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
@@ -47,8 +47,6 @@ public class DaoNotes {
     private static final String COLUMN_FORM = "form";
 
     public static final String TABLE_NOTES = "notes";
-
-    private static final String TAG = "DAONOTES";
 
     private static long LASTINSERTEDNOTE_ID = -1;
 
@@ -149,7 +147,7 @@ public class DaoNotes {
         query = query.replaceFirst("XXX", String.valueOf(s));
         query = query.replaceFirst("XXX", String.valueOf(n));
 
-        Log.i(TAG, "Query: " + query);
+        Logger.i("DAONOTES", "Query: " + query);
 
         Cursor c = sqliteDatabase.rawQuery(query, null);
         List<Note> notes = new ArrayList<Note>();
@@ -225,7 +223,7 @@ public class DaoNotes {
         sB.append(COLUMN_FORM).append(" CLOB;");
         String query = sB.toString();
 
-        Log.i(TAG, "Upgrading database from version 1 to version 2.");
+        Logger.i("DAONOTES", "Upgrading database from version 1 to version 2.");
 
         db.beginTransaction();
         try {
@@ -275,7 +273,7 @@ public class DaoNotes {
         String CREATE_INDEX_NOTES_X_BY_Y = sB.toString();
 
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
-        Log.i(TAG, "Create the notes table.");
+        Logger.i("DAONOTES", "Create the notes table.");
 
         sqliteDatabase.beginTransaction();
         try {

@@ -168,7 +168,7 @@ public class CompassView extends View implements ApplicationManagerListener {
 
         boolean hasValue = true;
         if (loc == null) {
-            // Log.d("COMPASSVIEW", "Location from gps is null!");
+            // Logger.d("COMPASSVIEW", "Location from gps is null!");
             hasValue = false;
             sb.append(getContext().getString(R.string.nogps_data));
             sb.append("\n");
