@@ -35,22 +35,22 @@ public interface Constants {
     public final String TAKE_PICTURE = "eu.hydrologis.geopaparazzi.camera.TAKE_PICTURE";
     public final String TAKE_NOTE = "eu.hydrologis.geopaparazzi.camera.TAKE_NOTE";
     public final String TOGGLE_GPS = "eu.hydrologis.geopaparazzi.camera.TOGGLE_GPS";
-    public final String VIEW_IN_OSM = "eu.hydrologis.geopaparazzi.osm.VIEW_IN_OSM";
+    public final String MAP_VIEW = "eu.hydrologis.geopaparazzi.maps.MAP_VIEW";
     public final String VIEW_COMPASS = "eu.hydrologis.geopaparazzi.compass.VIEW_COMPASS";
     public final String INSERT_COORD = "eu.hydrologis.geopaparazzi.util.INSERT_COORD";
     public final String EXPORT_KML = "eu.hydrologis.geopaparazzi.kml.EXPORT_KML";
-    public final String GPSLOG_DATALIST = "eu.hydrologis.geopaparazzi.osm.GPSLOG_DATALIST";
-    public final String GPSLOG_PROPERTIES = "eu.hydrologis.geopaparazzi.osm.GPSLOG_PROPERTIES";
-    public final String MAPSDATALIST = "eu.hydrologis.geopaparazzi.osm.MAPSDATALIST";
-    public final String MAPDATAPROPERTIES = "eu.hydrologis.geopaparazzi.osm.MAPDATAPROPERTIES";
+    public final String GPSLOG_DATALIST = "eu.hydrologis.geopaparazzi.maps.GPSLOG_DATALIST";
+    public final String GPSLOG_PROPERTIES = "eu.hydrologis.geopaparazzi.maps.GPSLOG_PROPERTIES";
+    public final String MAPSDATALIST = "eu.hydrologis.geopaparazzi.maps.MAPSDATALIST";
+    public final String MAPDATAPROPERTIES = "eu.hydrologis.geopaparazzi.maps.MAPDATAPROPERTIES";
     public final String PREFERENCES = "eu.hydrologis.geopaparazzi.preferences.PREFERENCES";
     public final String VIEW_IN_CHART = "eu.hydrologis.geopaparazzi.chart.VIEW_IN_CHART";
-    public final String MEASUREMENT_INFO = "eu.hydrologis.geopaparazzi.osm.MEASUREMENT_INFO";
+    public final String MEASUREMENT_INFO = "eu.hydrologis.geopaparazzi.maps.MEASUREMENT_INFO";
     public final String ABOUT = "eu.hydrologis.geopaparazzi.util.ABOUT";
     public final String DIRECTORYBROWSER = "eu.hydrologis.geopaparazzi.util.DIRECTORYBROWSER";
     public final String GPXIMPORT = "eu.hydrologis.geopaparazzi.gpx.GPXIMPORT";
-    public final String OSMTAGS = "eu.hydrologis.geopaparazzi.osm.OSMTAGS";
-    public final String FORM = "eu.hydrologis.geopaparazzi.osm.tags.FORM";
+    public final String TAGS = "eu.hydrologis.geopaparazzi.maps.TAGS";
+    public final String FORM = "eu.hydrologis.geopaparazzi.maps.tags.FORM";
 
     public final String ID = "ID";
     public final String INTENT_ID = "INTENT_ID";
@@ -107,15 +107,12 @@ public interface Constants {
     public final int NOTES_LENGTH_LIMIT = 7;
 
     public final String PATH_GEOPAPARAZZI = "/geopaparazzi";
-    public final String PATH_PICTURES = "/pictures";
+    public final String PATH_MEDIA = "/media";
     public final String PATH_NOTES = "/notes";
-    public final String PATH_GPSLOGS = "/gpslogs";
     public final String PATH_KMLEXPORT = "/export";
 
     public final String PATH_GEOPAPARAZZIDATA = "/geopaparazzi";
-    public final String PATH_OSMCACHE = "/osmcache";
-    public final String PATH_GPXLINES = "/gpxlines";
-    public final String PATH_GPXPOINTS = "/gpxpoints";
+    public final String PATH_MAPSCACHE = "/mapscache";
 
     public final SimpleDateFormat TIMESTAMPFORMATTER = new SimpleDateFormat("yyyyMMdd_HHmmss");
     public final SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -134,8 +131,8 @@ public interface Constants {
     public static final String PREFS_KEY_MAP4PROPERTIES = "PREFS_KEY_MAP4PROPERTIES";
     public static final String PREFS_KEY_LAT = "PREFS_KEY_LAT";
     public static final String PREFS_KEY_LON = "PREFS_KEY_LON";
-    public static final String OSMVIEW_CENTER_LAT = "OSMVIEW_CENTER_LAT";
-    public static final String OSMVIEW_CENTER_LON = "OSMVIEW_CENTER_LON";
+    public static final String VIEW_CENTER_LAT = "MAPSVIEW_CENTER_LAT";
+    public static final String VIEW_CENTER_LON = "MAPSVIEW_CENTER_LON";
 
     public static final int MAP_TYPE_POINT = 0;
     public static final int MAP_TYPE_LINE = 1;
@@ -143,7 +140,7 @@ public interface Constants {
 
     public static final String GPSLOGGINGINTERVALKEY = "gps_logging_interval";
     public static final String GPSLOGGINGDISTANCEKEY = "gps_logging_distance";
-    public static final String OSMFOLDERKEY = "osm_folder";
+    public static final String MAPSFOLDERKEY = "maps_folder";
     public static final String SMSCATCHERKEY = "sms_catcher";
     public static final String PANICKEY = "panic_number";
     public static final String GPSLAST_LONGITUDE = "gpslast_longitude";

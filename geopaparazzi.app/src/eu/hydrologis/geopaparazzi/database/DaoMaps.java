@@ -32,7 +32,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 import eu.hydrologis.geopaparazzi.gpx.GpxItem;
-import eu.hydrologis.geopaparazzi.osm.MapItem;
+import eu.hydrologis.geopaparazzi.maps.MapItem;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.PointF3D;

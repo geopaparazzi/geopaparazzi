@@ -88,7 +88,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
         surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
         deviceManager = ApplicationManager.getInstance(this);
-        picturesDir = deviceManager.getPicturesDir();
+        picturesDir = deviceManager.getMediaDir();
 
         snapButton = (ImageButton) findViewById(R.id.snapButton);
         Paint buttonPaint = new Paint();

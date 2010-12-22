@@ -2,11 +2,11 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
 	android:id="@+id/osm_frameLayout">
-	<eu.hydrologis.geopaparazzi.osm.OsmView
+	<eu.hydrologis.geopaparazzi.maps.MapView
 		android:id="@+id/osmviewid" android:layout_width="fill_parent"
 		android:layout_height="fill_parent">
-	</eu.hydrologis.geopaparazzi.osm.OsmView>
-	<include android:id="@+id/osm_action_bar" layout="@layout/action_bar"
+	</eu.hydrologis.geopaparazzi.maps.MapView>
+	<include android:id="@+id/maps_action_bar" layout="@layout/action_bar"
 		android:layout_width="fill_parent" android:layout_height="@dimen/action_bar_height" />
 
 	<FrameLayout android:layout_width="fill_parent"

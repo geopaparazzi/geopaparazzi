@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi.osm;
+package eu.hydrologis.geopaparazzi.maps;
 
 import java.io.IOException;
 import java.util.List;
@@ -37,27 +37,27 @@ import eu.hydrologis.geopaparazzi.util.Constants;
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class OsmActivity extends Activity {
+public class MapsActivity extends Activity {
     private static final int GO_TO = 1;
     private static final int MENU_GPSDATA = 2;
     private static final int MENU_MAPDATA = 3;
     private static final int MENU_TOGGLE_MEASURE = 4;
     private static final int MENU_ADDTAGS = 5;
-    private OsmView osmView;
+    private MapView mapsView;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
 
-        setContentView(R.layout.osmview);
+        setContentView(R.layout.mapsview);
 
         ApplicationManager applicationManager = ApplicationManager.getInstance(this);
 
-        ActionBar actionBar = ActionBar.getActionBar(this, R.id.osm_action_bar, applicationManager);
+        ActionBar actionBar = ActionBar.getActionBar(this, R.id.maps_action_bar, applicationManager);
         actionBar.setTitle(R.string.app_name, R.id.action_bar_title);
         actionBar.checkLogging();
 
         // requestWindowFeature(Window.FEATURE_PROGRESS);
-        osmView = (OsmView) findViewById(R.id.osmviewid);
+        mapsView = (MapView) findViewById(R.id.osmviewid);
 
         // button view
         ImageButton zoomIn = (ImageButton) findViewById(R.id.zoom_in_btn);
@@ -66,23 +66,23 @@ public class OsmActivity extends Activity {
 
         zoomIn.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                osmView.zoomIn();
+                mapsView.zoomIn();
             }
         });
 
         centerOnGps.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                osmView.centerOnGps();
+                mapsView.centerOnGps();
             }
         });
 
         zoomOut.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                osmView.zoomOut();
+                mapsView.zoomOut();
             }
         });
 
-        osmView.invalidate();
+        mapsView.invalidate();
     }
 
     // @Override
@@ -128,9 +128,9 @@ public class OsmActivity extends Activity {
             }
 
         case MENU_ADDTAGS:
-            Intent osmTagsIntent = new Intent(Constants.OSMTAGS);
-            osmTagsIntent.putExtra(Constants.OSMVIEW_CENTER_LAT, osmView.getCenterLat());
-            osmTagsIntent.putExtra(Constants.OSMVIEW_CENTER_LON, osmView.getCenterLon());
+            Intent osmTagsIntent = new Intent(Constants.TAGS);
+            osmTagsIntent.putExtra(Constants.VIEW_CENTER_LAT, mapsView.getCenterLat());
+            osmTagsIntent.putExtra(Constants.VIEW_CENTER_LON, mapsView.getCenterLon());
             startActivity(osmTagsIntent);
             return true;
 
@@ -139,7 +139,7 @@ public class OsmActivity extends Activity {
             startActivity(intent);
             return true;
         case MENU_TOGGLE_MEASURE:
-            osmView.setMeasureMode(!osmView.isMeasureMode());
+            mapsView.setMeasureMode(!mapsView.isMeasureMode());
 
             return true;
         }

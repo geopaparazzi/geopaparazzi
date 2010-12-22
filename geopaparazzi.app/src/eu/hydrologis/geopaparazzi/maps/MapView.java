@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi.osm;
+package eu.hydrologis.geopaparazzi.maps;
 
 import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LATITUDE;
 import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LONGITUDE;
@@ -50,7 +50,6 @@ import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
@@ -69,9 +68,9 @@ import eu.hydrologis.geopaparazzi.util.debug.Debug;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class OsmView extends View implements ApplicationManagerListener {
+public class MapView extends View implements ApplicationManagerListener {
     private static final int TILESIZE = 256;
-    public static final String LOGTAG = "OSMVIEW"; //$NON-NLS-1$
+    public static final String LOGTAG = "MAPVIEW"; //$NON-NLS-1$
 
     protected static final int ZOOMIN = 0;
 
@@ -116,13 +115,13 @@ public class OsmView extends View implements ApplicationManagerListener {
     private static String metersString;
     private Context context;
 
-    public OsmView( Context context, AttributeSet set ) {
+    public MapView( Context context, AttributeSet set ) {
         super(context, set);
         this.context = context;
         init();
     }
 
-    public OsmView( Context context ) {
+    public MapView( Context context ) {
         super(context);
         this.context = context;
         init();

@@ -30,33 +30,33 @@
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".osm.GpsDataPropertiesActivity">
+		<activity android:name=".maps.GpsDataPropertiesActivity">
 			<intent-filter>
-				<action android:name="eu.hydrologis.geopaparazzi.osm.GPSLOG_PROPERTIES" />
+				<action android:name="eu.hydrologis.geopaparazzi.maps.GPSLOG_PROPERTIES" />
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".osm.GpsDataListActivity">
+		<activity android:name=".maps.GpsDataListActivity">
 			<intent-filter>
-				<action android:name="eu.hydrologis.geopaparazzi.osm.GPSLOG_DATALIST" />
+				<action android:name="eu.hydrologis.geopaparazzi.maps.GPSLOG_DATALIST" />
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".osm.MapDataPropertiesActivity">
+		<activity android:name=".maps.MapDataPropertiesActivity">
 			<intent-filter>
-				<action android:name="eu.hydrologis.geopaparazzi.osm.MAPDATAPROPERTIES" />
+				<action android:name="eu.hydrologis.geopaparazzi.maps.MAPDATAPROPERTIES" />
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".osm.MapDataListActivity">
+		<activity android:name=".maps.MapDataListActivity">
 			<intent-filter>
-				<action android:name="eu.hydrologis.geopaparazzi.osm.MAPSDATALIST" />
+				<action android:name="eu.hydrologis.geopaparazzi.maps.MAPSDATALIST" />
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".osm.OsmActivity">
+		<activity android:name=".maps.MapsActivity">
 			<intent-filter>
-				<action android:name="eu.hydrologis.geopaparazzi.osm.VIEW_IN_OSM" />
+				<action android:name="eu.hydrologis.geopaparazzi.maps.MAP_VIEW" />
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
@@ -96,21 +96,21 @@
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".osm.OsmTagsActivity">
+		<activity android:name=".maps.MapTagsActivity">
 			<intent-filter>
-				<action android:name="eu.hydrologis.geopaparazzi.osm.OSMTAGS" />
+				<action android:name="eu.hydrologis.geopaparazzi.maps.TAGS" />
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".osm.MeasureInfoActivity">
+		<activity android:name=".maps.MeasureInfoActivity">
 			<intent-filter>
-				<action android:name="eu.hydrologis.geopaparazzi.osm.MEASUREMENT_INFO" />
+				<action android:name="eu.hydrologis.geopaparazzi.maps.MEASUREMENT_INFO" />
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".osm.tags.FormActivity">
+		<activity android:name=".maps.tags.FormActivity">
 			<intent-filter>
-				<action android:name="eu.hydrologis.geopaparazzi.osm.tags.FORM" />
+				<action android:name="eu.hydrologis.geopaparazzi.maps.tags.FORM" />
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>

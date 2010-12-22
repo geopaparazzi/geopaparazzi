@@ -15,9 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi.osm;
+package eu.hydrologis.geopaparazzi.maps;
 
-import java.io.IOException;
 import java.sql.Date;
 
 import android.app.Activity;
@@ -32,7 +31,7 @@ import android.widget.GridView;
 import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
-import eu.hydrologis.geopaparazzi.osm.TagsManager.TagObject;
+import eu.hydrologis.geopaparazzi.maps.TagsManager.TagObject;
 import eu.hydrologis.geopaparazzi.util.Constants;
 
 /**
@@ -40,7 +39,7 @@ import eu.hydrologis.geopaparazzi.util.Constants;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class OsmTagsActivity extends Activity {
+public class MapTagsActivity extends Activity {
     private EditText additionalInfoText;
     private float latitude;
     private float longitude;
@@ -48,12 +47,12 @@ public class OsmTagsActivity extends Activity {
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
-        setContentView(R.layout.osmtags);
+        setContentView(R.layout.tags);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            latitude = extras.getFloat(Constants.OSMVIEW_CENTER_LAT);
-            longitude = extras.getFloat(Constants.OSMVIEW_CENTER_LON);
+            latitude = extras.getFloat(Constants.VIEW_CENTER_LAT);
+            longitude = extras.getFloat(Constants.VIEW_CENTER_LON);
 
         }
 
@@ -70,7 +69,7 @@ public class OsmTagsActivity extends Activity {
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.gpslog_row, tagNamesArray){
             public View getView( final int position, View cView, ViewGroup parent ) {
 
-                Button osmButton = new Button(OsmTagsActivity.this);
+                Button osmButton = new Button(MapTagsActivity.this);
                 osmButton.setText(tagNamesArray[position]);
                 // osmButton.setImageResource(R.drawable.gps);
                 osmButton.setOnClickListener(new Button.OnClickListener(){
@@ -80,7 +79,7 @@ public class OsmTagsActivity extends Activity {
                             StringBuilder sB = new StringBuilder(additionalInfoText.getText());
                             String infoString = sB.toString();
                             String name = tagNamesArray[position];
-                            TagObject tag = TagsManager.getInstance(OsmTagsActivity.this).getTagFromName(name);
+                            TagObject tag = TagsManager.getInstance(MapTagsActivity.this).getTagFromName(name);
                             String finalLongName = tag.longName;
                             if (infoString.length() != 0) {
                                 String sep = ":";
@@ -106,7 +105,7 @@ public class OsmTagsActivity extends Activity {
 
                         } catch (Exception e) {
                             e.printStackTrace();
-                            Toast.makeText(OsmTagsActivity.this, R.string.notenonsaved, Toast.LENGTH_LONG).show();
+                            Toast.makeText(MapTagsActivity.this, R.string.notenonsaved, Toast.LENGTH_LONG).show();
                         }
                         finish();
                     }

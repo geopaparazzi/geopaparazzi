@@ -56,8 +56,8 @@ import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.DatabaseManager;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.kml.KmlExport;
-import eu.hydrologis.geopaparazzi.osm.DataManager;
-import eu.hydrologis.geopaparazzi.osm.MapItem;
+import eu.hydrologis.geopaparazzi.maps.DataManager;
+import eu.hydrologis.geopaparazzi.maps.MapItem;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Line;
@@ -221,7 +221,7 @@ public class GeoPaparazziActivity extends Activity {
             break;
         }
         case R.id.dashboard_map_item_button: {
-            Intent mapIntent = new Intent(Constants.VIEW_IN_OSM);
+            Intent mapIntent = new Intent(Constants.MAP_VIEW);
             startActivity(mapIntent);
             break;
         }

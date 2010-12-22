@@ -25,7 +25,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.osm.OsmView;
+import eu.hydrologis.geopaparazzi.maps.MapView;
 
 /**
  * Activity to get to a location by coordinate.
@@ -81,7 +81,7 @@ public class InsertCoordActivity extends Activity {
                     public void run() {
                         openMapViewHandler.post(new Runnable(){
                             public void run() {
-                                OsmView osmView = applicationManager.getOsmView();
+                                MapView osmView = applicationManager.getOsmView();
                                 osmView.requestFocus();
                                 osmView.setGotoCoordinate(lon, lat);
                             }

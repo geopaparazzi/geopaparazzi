@@ -15,13 +15,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi.osm;
+package eu.hydrologis.geopaparazzi.maps;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -33,7 +34,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.database.DaoMaps;
+import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Line;
@@ -43,7 +44,7 @@ import eu.hydrologis.geopaparazzi.util.Line;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class MapDataPropertiesActivity extends Activity {
+public class GpsDataPropertiesActivity extends Activity {
     private static List<String> colorList;
     private static List<String> widthsList;
     private MapItem item;
@@ -56,21 +57,22 @@ public class MapDataPropertiesActivity extends Activity {
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
 
-        setContentView(R.layout.maps_properties);
+        setContentView(R.layout.gpslog_properties);
         getResourcesAndColors();
 
         Bundle extras = getIntent().getExtras();
-        Object object = extras.get(Constants.PREFS_KEY_MAP4PROPERTIES);
+        Object object = extras.get(Constants.PREFS_KEY_GPSLOG4PROPERTIES);
         if (object instanceof MapItem) {
             item = (MapItem) object;
 
-            final EditText textView = (EditText) findViewById(R.id.mapname);
+            final EditText textView = (EditText) findViewById(R.id.gpslogname);
             final Spinner colorView = (Spinner) findViewById(R.id.color_spinner);
             final Spinner widthView = (Spinner) findViewById(R.id.widthText);
 
-            newText = item.getName();
             textView.setText(item.getName());
+            newText = item.getName();
             textView.addTextChangedListener(new TextWatcher(){
+
                 public void onTextChanged( CharSequence s, int start, int before, int count ) {
                     newText = textView.getText().toString();
                 }
@@ -80,7 +82,6 @@ public class MapDataPropertiesActivity extends Activity {
                 }
             });
 
-            // width spinner
             newWidth = item.getWidth();
             ArrayAdapter< ? > widthSpinnerAdapter = ArrayAdapter.createFromResource(this,
                     R.array.array_widths, android.R.layout.simple_spinner_item);
@@ -108,6 +109,7 @@ public class MapDataPropertiesActivity extends Activity {
             int colorIndex = colorList.indexOf(item.getColor());
             colorView.setSelection(colorIndex);
             colorView.setOnItemSelectedListener(new OnItemSelectedListener(){
+
                 public void onItemSelected( AdapterView< ? > arg0, View arg1, int arg2, long arg3 ) {
                     Object selectedItem = colorView.getSelectedItem();
                     newColor = selectedItem.toString();
@@ -116,15 +118,23 @@ public class MapDataPropertiesActivity extends Activity {
                 }
             });
 
-            final Button zoomButton = (Button) findViewById(R.id.map_zoom);
+            final Button chartButton = (Button) findViewById(R.id.gpslog_chart);
+            chartButton.setOnClickListener(new Button.OnClickListener(){
+                public void onClick( View v ) {
+                    Intent intent = new Intent(Constants.VIEW_IN_CHART);
+                    intent.putExtra(Constants.ID, item.getId());
+                    startActivity(intent);
+                }
+            });
+            final Button zoomButton = (Button) findViewById(R.id.gpslog_zoom);
             zoomButton.setOnClickListener(new Button.OnClickListener(){
                 public void onClick( View v ) {
                     try {
-                        Line line = DaoMaps.getMapAsLine(MapDataPropertiesActivity.this,
+                        Line line = DaoGpsLog.getGpslogAsLine(GpsDataPropertiesActivity.this,
                                 item.getId());
                         if (line.getLonList().size() > 0) {
                             ApplicationManager
-                                    .getInstance(MapDataPropertiesActivity.this)
+                                    .getInstance(GpsDataPropertiesActivity.this)
                                     .getOsmView()
                                     .setGotoCoordinate(line.getLonList().get(0),
                                             line.getLatList().get(0));
@@ -134,12 +144,12 @@ public class MapDataPropertiesActivity extends Activity {
                     }
                 }
             });
-            final Button deleteButton = (Button) findViewById(R.id.map_delete);
+            final Button deleteButton = (Button) findViewById(R.id.gpslog_delete);
             deleteButton.setOnClickListener(new Button.OnClickListener(){
                 public void onClick( View v ) {
                     try {
                         long id = item.getId();
-                        DaoMaps.deleteMap(MapDataPropertiesActivity.this, id);
+                        DaoGpsLog.deleteGpslog(GpsDataPropertiesActivity.this, id);
                         finish();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -147,11 +157,11 @@ public class MapDataPropertiesActivity extends Activity {
                 }
             });
 
-            final Button okButton = (Button) findViewById(R.id.map_ok);
+            final Button okButton = (Button) findViewById(R.id.gpslog_ok);
             okButton.setOnClickListener(new Button.OnClickListener(){
                 public void onClick( View v ) {
                     try {
-                        DaoMaps.updateMapProperties(MapDataPropertiesActivity.this, item.getId(),
+                        DaoGpsLog.updateLogProperties(GpsDataPropertiesActivity.this, item.getId(),
                                 newColor, newWidth, item.isVisible(), newText);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -160,7 +170,7 @@ public class MapDataPropertiesActivity extends Activity {
                 }
             });
 
-            final Button cancelButton = (Button) findViewById(R.id.map_cancel);
+            final Button cancelButton = (Button) findViewById(R.id.gpslog_cancel);
             cancelButton.setOnClickListener(new Button.OnClickListener(){
                 public void onClick( View v ) {
                     finish();

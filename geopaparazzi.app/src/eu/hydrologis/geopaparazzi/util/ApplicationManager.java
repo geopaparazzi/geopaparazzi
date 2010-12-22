@@ -17,14 +17,12 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.GPSLOGGINGINTERVALKEY;
+import static eu.hydrologis.geopaparazzi.util.Constants.*;
 import static eu.hydrologis.geopaparazzi.util.Constants.GPS_LOGGING_INTERVAL;
-import static eu.hydrologis.geopaparazzi.util.Constants.OSMFOLDERKEY;
+import static eu.hydrologis.geopaparazzi.util.Constants.MAPSFOLDERKEY;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_GEOPAPARAZZI;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_GEOPAPARAZZIDATA;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_KMLEXPORT;
-import static eu.hydrologis.geopaparazzi.util.Constants.PATH_OSMCACHE;
-import static eu.hydrologis.geopaparazzi.util.Constants.PATH_PICTURES;
 import static java.lang.Math.toDegrees;
 
 import java.io.BufferedWriter;
@@ -71,7 +69,7 @@ import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.ActionItem;
 import eu.hydrologis.geopaparazzi.database.DatabaseManager;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.gps.GpsLogger;
-import eu.hydrologis.geopaparazzi.osm.OsmView;
+import eu.hydrologis.geopaparazzi.maps.MapView;
 import eu.hydrologis.geopaparazzi.util.debug.Debug;
 import eu.hydrologis.geopaparazzi.util.debug.TestMock;
 
@@ -120,13 +118,13 @@ public class ApplicationManager implements SensorEventListener, LocationListener
 
     private File databaseFile;
     private File geoPaparazziDir;
-    private File picturesDir;
-    private File osmCacheDir;
+    private File mediaDir;
+    private File mapsCacheDir;
     private File kmlExportDir;
 
     private List<ApplicationManagerListener> listeners = new ArrayList<ApplicationManagerListener>();
 
-    private OsmView osmView;
+    private MapView osmView;
 
     private float[] mags;
 
@@ -178,7 +176,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         this.context = context;
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-        String osmCachePath = preferences.getString(OSMFOLDERKEY, null);
+        String mapsCachePath = preferences.getString(MAPSFOLDERKEY, null);
         /*
          * take care to create all the folders needed
          * 
@@ -186,13 +184,14 @@ public class ApplicationManager implements SensorEventListener, LocationListener
          * 
          * geopaparazzi 
          *    | 
-         *    |--- pictures 
+         *    |--- media 
          *    |       |-- IMG_***.jpg 
+         *    |       |-- AUDIO_***.3gp 
          *    |       `-- etc 
          *    |--- geopaparazzi.db 
-         *    |--- osmtags.properties 
+         *    |--- tags.json 
          *    |        
-         *    |--- osmcache 
+         *    |--- mapscache 
          *    |    `-- zoomlevel 
          *    |          `-- xtile 
          *    |               `-- ytile.png
@@ -219,23 +218,23 @@ public class ApplicationManager implements SensorEventListener, LocationListener
                 if (!geoPaparazziDir.mkdir())
                     alert(MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard), geoPaparazziDirPath));
             databaseFile = new File(geoPaparazziDirPath, DatabaseManager.DATABASE_NAME);
-            picturesDir = new File(geoPaparazziDirPath + PATH_PICTURES);
-            if (!picturesDir.exists())
-                if (!picturesDir.mkdir())
+            mediaDir = new File(geoPaparazziDirPath + PATH_MEDIA);
+            if (!mediaDir.exists())
+                if (!mediaDir.mkdir())
                     alert(MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
-                            picturesDir.getAbsolutePath()));
+                            mediaDir.getAbsolutePath()));
 
             File geoPaparazziDataDir = new File(sdcardDir.getAbsolutePath() + PATH_GEOPAPARAZZIDATA);
             String geoPaparazziDataDirPath = geoPaparazziDataDir.getAbsolutePath();
-            if (osmCachePath == null) {
-                osmCachePath = geoPaparazziDataDirPath + PATH_OSMCACHE;
+            if (mapsCachePath == null) {
+                mapsCachePath = geoPaparazziDataDirPath + PATH_MAPSCACHE;
             }
-            osmCacheDir = new File(osmCachePath);
-            Log.i(LOGTAG, "OSMPATH:" + osmCacheDir.getAbsolutePath());
-            if (!osmCacheDir.exists())
-                if (!osmCacheDir.mkdirs()) {
+            mapsCacheDir = new File(mapsCachePath);
+            Log.i(LOGTAG, "MAPSCACHEPATH:" + mapsCacheDir.getAbsolutePath());
+            if (!mapsCacheDir.exists())
+                if (!mapsCacheDir.mkdirs()) {
                     String msg = MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
-                            osmCacheDir.getAbsolutePath());
+                            mapsCacheDir.getAbsolutePath());
                     alert(msg);
                 }
             kmlExportDir = new File(geoPaparazziDirPath + PATH_KMLEXPORT);
@@ -294,7 +293,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
      */
     public void removeOsmListener() {
         for( ApplicationManagerListener l : listeners ) {
-            if (l instanceof OsmView) {
+            if (l instanceof MapView) {
                 listeners.remove(l);
                 break;
             }
@@ -541,15 +540,15 @@ public class ApplicationManager implements SensorEventListener, LocationListener
     // }
 
     public File getOsmCacheDir() {
-        return osmCacheDir;
+        return mapsCacheDir;
     }
 
     public File getKmlExportDir() {
         return kmlExportDir;
     }
 
-    public File getPicturesDir() {
-        return picturesDir;
+    public File getMediaDir() {
+        return mediaDir;
     }
 
     // public File getNotesDir() {
@@ -579,7 +578,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         return gpsLogger.isLogging();
     }
 
-    public void setOsmView( OsmView osmView ) {
+    public void setOsmView( MapView osmView ) {
         this.osmView = osmView;
 
         if (gpsLoc != null) {
@@ -587,7 +586,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         }
     }
 
-    public OsmView getOsmView() {
+    public MapView getOsmView() {
         return osmView;
     }
 
@@ -636,7 +635,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
      */
     public List<Picture> getPictures() {
         List<Picture> picturesList = new ArrayList<Picture>();
-        File picturesDir = getPicturesDir();
+        File picturesDir = getMediaDir();
         File[] pictures = picturesDir.listFiles();
         for( int i = 0; i < pictures.length; i++ ) {
             File picture = pictures[i];
@@ -747,9 +746,9 @@ public class ApplicationManager implements SensorEventListener, LocationListener
                             if (audioRecorder == null) {
                                 audioRecorder = new MediaRecorder();
                             }
-                            File picturesDir = applicationManager.getPicturesDir();
+                            File mediaDir = applicationManager.getMediaDir();
                             final String currentDatestring = Constants.TIMESTAMPFORMATTER.format(new Date());
-                            String audioFilePathNoExtention = picturesDir.getAbsolutePath() + "/AUDIO_" + currentDatestring;
+                            String audioFilePathNoExtention = mediaDir.getAbsolutePath() + "/AUDIO_" + currentDatestring;
 
                             audioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
                             audioRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
@@ -779,7 +778,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
                             }
 
                             new AlertDialog.Builder(context).setTitle(R.string.audio_recording)
-                                    .setIcon(android.R.drawable.ic_lock_power_off)
+                                    .setIcon(android.R.drawable.ic_menu_info_details)
                                     .setNegativeButton(R.string.audio_recording_stop, new DialogInterface.OnClickListener(){
                                         public void onClick( DialogInterface dialog, int whichButton ) {
                                             if (audioRecorder != null) {
