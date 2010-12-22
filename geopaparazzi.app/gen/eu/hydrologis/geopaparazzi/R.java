@@ -351,8 +351,10 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int databaseError=0x7f070067;
         public static final int database_new=0x7f070066;
         public static final int database_preferences=0x7f070065;
+        public static final int debug=0x7f07008d;
         public static final int distance=0x7f070044;
         public static final int emptyaddress=0x7f07003d;
+        public static final int enable_debug=0x7f07008e;
         public static final int error_disk_full=0x7f07006f;
         public static final int exit=0x7f070022;
         public static final int googleview=0x7f070031;

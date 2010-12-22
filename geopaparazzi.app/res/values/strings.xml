@@ -179,5 +179,8 @@
 	
     <string name="text_logging">logging</string>
     <string name="text_gpson">gps on</string>
+
+    <string name="debug">debug preferences</string>
+    <string name="enable_debug">enable debug log</string>
 	
 </resources>

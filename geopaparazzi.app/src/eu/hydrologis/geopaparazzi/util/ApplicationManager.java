@@ -72,6 +72,7 @@ import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.gps.GpsLogger;
 import eu.hydrologis.geopaparazzi.maps.MapView;
 import eu.hydrologis.geopaparazzi.util.debug.Debug;
+import eu.hydrologis.geopaparazzi.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.util.debug.TestMock;
 
 /**
@@ -141,6 +142,8 @@ public class ApplicationManager implements SensorEventListener, LocationListener
 
     private ConnectivityManager connectivityManager;
 
+    private File debugLogFile;
+
     private static ApplicationManager applicationManager;
 
     /**
@@ -192,6 +195,8 @@ public class ApplicationManager implements SensorEventListener, LocationListener
          *    |--- geopaparazzi.db 
          *    |--- tags.json 
          *    |        
+         *    |--- debug.log 
+         *    |        
          *    `--- export
          * geopaparazzimapscache 
          *    `-- zoomlevel 
@@ -219,6 +224,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
                 if (!geoPaparazziDir.mkdir())
                     alert(MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard), geoPaparazziDirPath));
             databaseFile = new File(geoPaparazziDirPath, DatabaseManager.DATABASE_NAME);
+            debugLogFile = new File(geoPaparazziDirPath, "debug.log");
             mediaDir = new File(geoPaparazziDirPath + PATH_MEDIA);
             if (!mediaDir.exists())
                 if (!mediaDir.mkdir())
@@ -546,6 +552,10 @@ public class ApplicationManager implements SensorEventListener, LocationListener
     public File getKmlExportDir() {
         return kmlExportDir;
     }
+    
+    public File getDebugLogFile() {
+        return debugLogFile;
+    }
 
     public File getMediaDir() {
         return mediaDir;
@@ -845,8 +855,10 @@ public class ApplicationManager implements SensorEventListener, LocationListener
             stopLogQuickaction.setIcon(context.getResources().getDrawable(R.drawable.quickaction_stop_log));
             stopLogQuickaction.setOnClickListener(new OnClickListener(){
                 public void onClick( View v ) {
-                    applicationManager.stopLogging();
-                    actionBar.checkLogging();
+                    if (applicationManager.isGpsLogging()) {
+                        applicationManager.stopLogging();
+                        actionBar.checkLogging();
+                    }
                 }
             });
         }

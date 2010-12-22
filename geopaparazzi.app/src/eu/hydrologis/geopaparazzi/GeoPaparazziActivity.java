@@ -63,6 +63,7 @@ import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.Note;
 import eu.hydrologis.geopaparazzi.util.Picture;
+import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * The main {@link Activity activity} of GeoPaparazzi.
@@ -78,14 +79,16 @@ public class GeoPaparazziActivity extends Activity {
     private static final int MENU_SETTINGS = 3;
 
     private ApplicationManager applicationManager;
-
+    private ActionBar actionBar;
     private ProgressDialog kmlProgressDialog;
 
     private File kmlOutputFile = null;
 
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
-
+        // enable logger if needed
+        new Logger(this);
+        
         showChangeLogIfNeeded();
         init();
     }
@@ -99,8 +102,8 @@ public class GeoPaparazziActivity extends Activity {
         if (actionBar == null) {
             actionBar = ActionBar.getActionBar(this, R.id.action_bar, applicationManager);
             actionBar.setTitle(R.string.app_name, R.id.action_bar_title);
-            actionBar.checkLogging();
         }
+        actionBar.checkLogging();
     }
 
     private void init() {
@@ -309,8 +312,6 @@ public class GeoPaparazziActivity extends Activity {
             }
         };
     };
-
-    private ActionBar actionBar;
 
     private void exportToKml() {
 

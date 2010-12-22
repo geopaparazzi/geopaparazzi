@@ -184,6 +184,9 @@ public class ActionBar {
             // Log.d("COMPASSVIEW", "Location from gps is null!");
             sb.append(nodataString);
             sb.append("\n");
+            sb.append(gpsonString);
+            sb.append(": ").append(applicationManager.isGpsEnabled()); //$NON-NLS-1$
+            sb.append("\n");
         } else {
             sb.append(timeString);
             sb.append(" ").append(loc.getTimeString()); //$NON-NLS-1$
@@ -200,9 +203,6 @@ public class ActionBar {
             sb.append(azimString);
             sb.append(" ").append((int) (360 - azimuth)); //$NON-NLS-1$
             sb.append("\n");
-            sb.append(gpsonString);
-            sb.append(": ").append(applicationManager.isGpsEnabled()); //$NON-NLS-1$
-            sb.append("\n");
             sb.append(loggingString);
             sb.append(": ").append(applicationManager.isGpsLogging()); //$NON-NLS-1$
         }
@@ -210,22 +210,22 @@ public class ActionBar {
     }
 
     public void checkLogging() {
-        activity.runOnUiThread(new Runnable(){
-            public void run() {
-                View gpsOnOffView = actionBarView.findViewById(R.id.gpsOnOff);
-                Resources resources = gpsOnOffView.getResources();
+        // activity.runOnUiThread(new Runnable(){
+        // public void run() {
+        View gpsOnOffView = actionBarView.findViewById(R.id.gpsOnOff);
+        Resources resources = gpsOnOffView.getResources();
 
-                if (applicationManager.isGpsEnabled()) {
-                    if (applicationManager.isGpsLogging()) {
-                        gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_logging));
-                    } else {
-                        gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_notlogging));
-                    }
-                } else {
-                    gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_off));
-                }
+        if (applicationManager.isGpsEnabled()) {
+            if (applicationManager.isGpsLogging()) {
+                gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_logging));
+            } else {
+                gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_notlogging));
             }
-        });
+        } else {
+            gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_off));
+        }
+        // }
+        // });
 
     }
 }

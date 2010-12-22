@@ -20,8 +20,4 @@
 	<color name="gpsorange_stroke">#ff9600</color>
 	<color name="gpsblue_fill">#84beff</color>
 	<color name="gpsblue_stroke">#009aff</color>
-<!-- 
- 	<color name="gpsorange_fill">#ff9700</color>
-	<color name="gpsorange_stroke">#c47606</color>
- -->
 </resources>
