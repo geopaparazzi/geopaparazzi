@@ -88,19 +88,18 @@ public class TagsManager {
 
     private static void getFileTags( Context context ) throws Exception {
         File geoPaparazziDir = ApplicationManager.getInstance(context).getGeoPaparazziDir();
-        File osmTagsFile = new File(geoPaparazziDir, TAGSFILENAME);
-        // if (!osmTagsFile.exists()) {
-        if (true) {
+        File tagsFile = new File(geoPaparazziDir, TAGSFILENAME);
+        if (!tagsFile.exists()) {
             AssetManager assetManager = context.getAssets();
             InputStream inputStream = assetManager.open("tags/tags.json");
 
-            FileUtils.copyFile(inputStream, new FileOutputStream(osmTagsFile));
+            FileUtils.copyFile(inputStream, new FileOutputStream(tagsFile));
         }
 
-        if (osmTagsFile.exists()) {
+        if (tagsFile.exists()) {
 
             tagsMap.clear();
-            String tagsFileString = FileUtils.readfile(osmTagsFile);
+            String tagsFileString = FileUtils.readfile(tagsFile);
             JSONArray tagArrayObj = new JSONArray(tagsFileString);
             int tagsNum = tagArrayObj.length();
             for( int i = 0; i < tagsNum; i++ ) {
@@ -183,7 +182,7 @@ public class TagsManager {
             JSONObject itemObj = comboItems.getJSONObject(i);
             if (itemObj.has(TagsManager.TAG_ITEM)) {
                 itemsArray[i] = itemObj.getString(TagsManager.TAG_ITEM).trim();
-            }else{
+            } else {
                 itemsArray[i] = " - ";
             }
         }
