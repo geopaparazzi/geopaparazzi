@@ -18,16 +18,12 @@
 package eu.hydrologis.geopaparazzi.dashboard;
 
 import java.text.DecimalFormat;
-import java.util.HashMap;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+import android.content.res.Resources;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -49,7 +45,6 @@ public class ActionBar {
     private final View actionBarView;
     private final ApplicationManager applicationManager;
     private ActionItem infoQuickaction;
-    private String loggingString;
 
     private static String nodataString;
     private static String timeString;
@@ -57,6 +52,8 @@ public class ActionBar {
     private static String latString;
     private static String altimString;
     private static String azimString;
+    private static String loggingString;
+    private static String gpsonString;
     // private static String validPointsString;
     // private static String distanceString;
     // private static String satellitesString;
@@ -113,44 +110,13 @@ public class ActionBar {
         // satellitesString = context.getString(R.string.satellite_num);
         nodataString = context.getString(R.string.nogps_data);
         loggingString = context.getString(R.string.text_logging);
+        gpsonString = context.getString(R.string.text_gpson);
 
     }
 
     public static ActionBar getActionBar( Activity activity, int activityId, ApplicationManager applicationManager ) {
         View view = activity.findViewById(activityId);
         return new ActionBar(view, applicationManager, activity);
-    }
-
-    private static HashMap<Integer, Animation> animationsStack = new HashMap<Integer, Animation>();
-    private void startAnimation( int buttonId, int animationId ) {
-        View button = actionBarView.findViewById(buttonId);
-        if (button != null) {
-            // see if there is some leftover anim
-            Animation tmpAnim = animationsStack.remove(buttonId);
-            if (tmpAnim != null) {
-                stopAnim(tmpAnim);
-            }
-
-            // and start the proper one
-            Animation animation = AnimationUtils.loadAnimation(button.getContext(), animationId);
-            Log.d("ACTIONBARVIEW", "START animation: " + animation + " / " + buttonId);
-            button.startAnimation(animation);
-            animationsStack.put(buttonId, animation);
-        }
-    }
-
-    private void stopAnim( Animation animation ) {
-        Log.d("ACTIONBARVIEW", "STOP animation: " + animation);
-        DecelerateInterpolator decelerateInterpolator = new DecelerateInterpolator(2.f);
-        animation.setInterpolator(decelerateInterpolator);
-        animation.setRepeatCount(0);
-    }
-
-    private void stopAnimation( int buttonId ) {
-        Animation animation = animationsStack.remove(buttonId);
-        if (animation != null) {
-            stopAnim(animation);
-        }
     }
 
     public void setTitle( int titleResourceId, int titleViewId ) {
@@ -234,6 +200,9 @@ public class ActionBar {
             sb.append(azimString);
             sb.append(" ").append((int) (360 - azimuth)); //$NON-NLS-1$
             sb.append("\n");
+            sb.append(gpsonString);
+            sb.append(": ").append(applicationManager.isGpsEnabled()); //$NON-NLS-1$
+            sb.append("\n");
             sb.append(loggingString);
             sb.append(": ").append(applicationManager.isGpsLogging()); //$NON-NLS-1$
         }
@@ -243,14 +212,20 @@ public class ActionBar {
     public void checkLogging() {
         activity.runOnUiThread(new Runnable(){
             public void run() {
-                if (applicationManager.isGpsLogging()) {
-                    startAnimation(R.id.action_bar_reload_image, R.anim.rotate_indefinite);
+                View gpsOnOffView = actionBarView.findViewById(R.id.gpsOnOff);
+                Resources resources = gpsOnOffView.getResources();
+
+                if (applicationManager.isGpsEnabled()) {
+                    if (applicationManager.isGpsLogging()) {
+                        gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_logging));
+                    } else {
+                        gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_notlogging));
+                    }
                 } else {
-                    stopAnimation(R.id.action_bar_reload_image);
+                    gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_off));
                 }
             }
         });
 
     }
-
 }

@@ -14,4 +14,14 @@
 	<color name="mygreen_dark">#378756</color>
 	<color name="mygreen_light">#66CC99</color>
 	<color name="hydrogreen">#5d9d76</color>
+	<color name="gpsred_fill">#ff8484</color>
+	<color name="gpsred_stroke">#ff0000</color>
+	<color name="gpsorange_fill">#ffd293</color>
+	<color name="gpsorange_stroke">#ff9600</color>
+	<color name="gpsblue_fill">#84beff</color>
+	<color name="gpsblue_stroke">#009aff</color>
+<!-- 
+ 	<color name="gpsorange_fill">#ff9700</color>
+	<color name="gpsorange_stroke">#c47606</color>
+ -->
 </resources>

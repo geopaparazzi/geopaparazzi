@@ -125,7 +125,6 @@
 	<string name="measureinfo_last">Last point</string>
 	
 	<string name="text_show_position_on_map">map view</string>
-    <string name="text_logging">logging</string>
     <string name="text_start_gps_logging">start logging</string>
     <string name="text_stop_gps_logging">stop logging</string>
     <string name="text_take_a_gps_note">take note</string>
@@ -177,5 +176,8 @@
 
 	<string name="last_note_deleted">Deleted last note</string>
 	<string name="last_note_not_deleted">Couldn\'t delete last note</string>
+	
+    <string name="text_logging">logging</string>
+    <string name="text_gpson">gps on</string>
 	
 </resources>

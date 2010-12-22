@@ -36,19 +36,26 @@
 	<ImageView android:layout_height="fill_parent"
 		android:layout_width="wrap_content" android:id="@+id/sep3"
 		android:layout_toLeftOf="@+id/action_bar_compass" android:src="@drawable/separator"></ImageView>
-
+	<TextView android:layout_height="wrap_content" android:id="@+id/gpsOnOff"
+		android:layout_toLeftOf="@+id/sep3" android:layout_width="wrap_content"
+		android:text="GPS" android:textColor="@color/black"
+		android:layout_centerVertical="true"
+		android:background="@drawable/gps_background_off"
+		android:padding="4dp" android:layout_margin="6dp"></TextView>
+<!--
 	<FrameLayout android:layout_height="fill_parent"
 		android:layout_width="wrap_content" android:id="@+id/action_bar_reload"
 		android:padding="2dp" android:layout_toLeftOf="@+id/action_bar_compass"
 		android:layout_centerVertical="true">
-<!-- 		<Button android:layout_height="@dimen/action_bar_process_height"
+ 		<Button android:layout_height="@dimen/action_bar_process_height"
 			android:layout_width="@dimen/action_bar_process_width" android:id="@+id/action_bar_reload_button"
 			android:background="@drawable/action_bar_button_drawable"></Button>
-			 -->
 		<ImageView android:id="@+id/action_bar_reload_image"
 			android:layout_height="@dimen/action_bar_process_height"
 			android:layout_width="@dimen/action_bar_process_width" 
 			android:src="@drawable/gps_activity_icon"></ImageView>
 	</FrameLayout>
+			 -->
 	
+
 </RelativeLayout>

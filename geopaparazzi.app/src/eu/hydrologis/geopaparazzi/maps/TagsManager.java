@@ -97,7 +97,6 @@ public class TagsManager {
         }
 
         if (tagsFile.exists()) {
-
             tagsMap.clear();
             String tagsFileString = FileUtils.readfile(tagsFile);
             JSONArray tagArrayObj = new JSONArray(tagsFileString);
