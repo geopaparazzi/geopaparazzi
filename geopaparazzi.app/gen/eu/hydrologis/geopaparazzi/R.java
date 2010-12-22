@@ -382,6 +382,8 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int insert_note=0x7f07007c;
         public static final int kmlnonsaved=0x7f070016;
         public static final int kmlsaved=0x7f070015;
+        public static final int last_note_deleted=0x7f07008a;
+        public static final int last_note_not_deleted=0x7f07008b;
         public static final int last_position=0x7f070043;
         public static final int lat=0x7f07002a;
         public static final int latitude=0x7f07000d;
@@ -407,6 +409,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int measureinfo=0x7f070070;
         public static final int measureinfo_first=0x7f070071;
         public static final int measureinfo_last=0x7f070072;
+        public static final int message_sent=0x7f070089;
         public static final int meters=0x7f07000e;
         public static final int no_maps_in_list=0x7f07007b;
         public static final int nogps4google=0x7f070040;

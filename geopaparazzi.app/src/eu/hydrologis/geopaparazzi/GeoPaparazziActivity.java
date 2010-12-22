@@ -207,8 +207,10 @@ public class GeoPaparazziActivity extends Activity {
         case R.id.dashboard_undonote_item_button: {
             try {
                 DaoNotes.deleteLastInsertedNote(this);
+                Toast.makeText(this, R.string.last_note_deleted, Toast.LENGTH_LONG).show();
             } catch (IOException e) {
                 e.printStackTrace();
+                Toast.makeText(this, R.string.last_note_not_deleted, Toast.LENGTH_LONG).show();
             }
             break;
         }
@@ -252,8 +254,8 @@ public class GeoPaparazziActivity extends Activity {
     public boolean onCreateOptionsMenu( Menu menu ) {
         super.onCreateOptionsMenu(menu);
         menu.add(Menu.NONE, MENU_SETTINGS, 0, R.string.mainmenu_preferences).setIcon(android.R.drawable.ic_menu_preferences);
-        menu.add(Menu.NONE, MENU_EXIT, 2, R.string.exit).setIcon(android.R.drawable.ic_lock_power_off);
-        menu.add(Menu.NONE, MENU_ABOUT, 3, R.string.about).setIcon(android.R.drawable.ic_menu_info_details);
+        menu.add(Menu.NONE, MENU_EXIT, 1, R.string.exit).setIcon(android.R.drawable.ic_lock_power_off);
+        menu.add(Menu.NONE, MENU_ABOUT, 2, R.string.about).setIcon(android.R.drawable.ic_menu_info_details);
 
         return true;
     }
@@ -452,6 +454,7 @@ public class GeoPaparazziActivity extends Activity {
                             Log.i("SmsIntent", "Trimming msg to: " + msg);
                         }
                         mng.sendTextMessage(number, null, msg, dummyEvent, dummyEvent);
+                        Toast.makeText(this, R.string.message_sent, Toast.LENGTH_LONG).show();
                     } catch (Exception e) {
                         Log.e("SmsIntent", "SendException", e);
                         ApplicationManager.openDialog(R.string.panic_number_notset, this);

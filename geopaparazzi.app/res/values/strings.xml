@@ -173,5 +173,9 @@
 	<string name="panic_upper">  PANIC!  </string>
 	<string name="send_status_update">send position</string>
 	<string name="help_needed">Help needed at</string>
+	<string name="message_sent">Message sent</string>
+
+	<string name="last_note_deleted">Deleted last note</string>
+	<string name="last_note_not_deleted">Couldn\'t delete last note</string>
 	
 </resources>
