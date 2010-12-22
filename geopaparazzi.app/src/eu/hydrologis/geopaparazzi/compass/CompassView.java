@@ -70,7 +70,7 @@ public class CompassView extends View implements ApplicationManagerListener {
      * The current azimuth angle, with 0 = North, -90 = West, 90 = East
      */
     private float normalAzimuth = -1f;
-    private float pictureAzimuth = -1f;
+    // private float pictureAzimuth = -1f;
     private GpsLocation loc;
 
     private int horizontalAxisColor = Color.DKGRAY;
@@ -86,9 +86,9 @@ public class CompassView extends View implements ApplicationManagerListener {
 
     private ApplicationManager applicationManager;
     private final TextView compassInfoView;
-    private int satellitesNum = 0;
-    private static String satellitesString;
-    private int maxSatellites = 0;
+    // private int satellitesNum = 0;
+    // private static String satellitesString;
+    // private int maxSatellites = 0;
 
     public CompassView( Context context, TextView compassInfoView, ApplicationManager applicationManager, GpsLocation startLoc ) {
         super(context);
@@ -120,7 +120,7 @@ public class CompassView extends View implements ApplicationManagerListener {
             azimString = getResources().getString(R.string.azimuth);
             validPointsString = getResources().getString(R.string.log_points);
             distanceString = getResources().getString(R.string.log_distance);
-            satellitesString = getResources().getString(R.string.satellite_num);
+            // satellitesString = getResources().getString(R.string.satellite_num);
 
             chartDrawer = new ChartDrawer("", ChartDrawer.LINE); //$NON-NLS-1$
 
@@ -286,8 +286,8 @@ public class CompassView extends View implements ApplicationManagerListener {
     }
 
     public void onSatellitesStatusChanged( int num, int max ) {
-        this.satellitesNum = num;
-        this.maxSatellites = max;
+        // this.satellitesNum = num;
+        // this.maxSatellites = max;
     }
 
 }

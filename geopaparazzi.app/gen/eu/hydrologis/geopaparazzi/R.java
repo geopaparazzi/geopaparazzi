@@ -70,16 +70,17 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int black=0x7f080005;
         public static final int blue=0x7f080002;
         public static final int dark=0x7f080004;
-        public static final int darkorange=0x7f080009;
+        public static final int darkorange=0x7f08000a;
         public static final int green=0x7f080001;
-        public static final int hydrogreen=0x7f08000c;
+        public static final int hydrogreen=0x7f08000d;
         public static final int light=0x7f080003;
-        public static final int mygreen_dark=0x7f08000a;
-        public static final int mygreen_light=0x7f08000b;
-        public static final int orange=0x7f080008;
+        public static final int mygreen_dark=0x7f08000b;
+        public static final int mygreen_light=0x7f08000c;
+        public static final int orange=0x7f080009;
         public static final int red=0x7f080000;
         public static final int transparent_white=0x7f080006;
-        public static final int white=0x7f080007;
+        public static final int transparent_white_200=0x7f080007;
+        public static final int white=0x7f080008;
     }
     public static final class dimen {
         /**  dims of action bar 

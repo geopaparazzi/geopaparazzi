@@ -48,7 +48,7 @@ import eu.hydrologis.geopaparazzi.util.Constants;
  */
 public class FormActivity extends Activity {
     private String formJsonString;
-    private String formShortnameDefinition;
+    // private String formShortnameDefinition;
     private String formLongnameDefinition;
 
     private HashMap<String, View> key2WidgetMap = new HashMap<String, View>();
@@ -66,7 +66,7 @@ public class FormActivity extends Activity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             formJsonString = extras.getString(Constants.FORMJSON_KEY);
-            formShortnameDefinition = extras.getString(Constants.FORMSHORTNAME_KEY);
+            // formShortnameDefinition = extras.getString(Constants.FORMSHORTNAME_KEY);
             formLongnameDefinition = extras.getString(Constants.FORMLONGNAME_KEY);
         }
 

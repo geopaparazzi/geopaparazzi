@@ -108,11 +108,11 @@ public class ApplicationManager implements SensorEventListener, LocationListener
     private static GpsLogger gpsLogger;
 
     private double normalAzimuth = -1;
-    private double normalPitch = -1;
-    private double normalRoll = -1;
+    // private double normalPitch = -1;
+    // private double normalRoll = -1;
     private double pictureAzimuth = -1;
-    private double picturePitch = -1;
-    private double pictureRoll = -1;
+    // private double picturePitch = -1;
+    // private double pictureRoll = -1;
 
     private Context context;
 
@@ -420,8 +420,8 @@ public class ApplicationManager implements SensorEventListener, LocationListener
             SensorManager.remapCoordinateSystem(RM, SensorManager.AXIS_X, SensorManager.AXIS_Y, outR);
             SensorManager.getOrientation(outR, values);
             normalAzimuth = toDegrees(values[0]);
-            normalPitch = toDegrees(values[1]);
-            normalRoll = toDegrees(values[2]);
+            // normalPitch = toDegrees(values[1]);
+            // normalRoll = toDegrees(values[2]);
             normalAzimuth = normalAzimuth > 0 ? normalAzimuth : (360f + normalAzimuth);
             // Log.v(LOGTAG, "NAZIMUTH = " + normalAzimuth);
 
@@ -429,8 +429,8 @@ public class ApplicationManager implements SensorEventListener, LocationListener
             SensorManager.getOrientation(outR, values);
 
             pictureAzimuth = toDegrees(values[0]);
-            picturePitch = toDegrees(values[1]);
-            pictureRoll = toDegrees(values[2]);
+            // picturePitch = toDegrees(values[1]);
+            // pictureRoll = toDegrees(values[2]);
             pictureAzimuth = pictureAzimuth > 0 ? pictureAzimuth : (360f + pictureAzimuth);
 
             // Log.v(LOGTAG, "PAZIMUTH = " + pictureAzimuth);

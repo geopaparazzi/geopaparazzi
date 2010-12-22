@@ -57,9 +57,9 @@ public class ActionBar {
     private static String latString;
     private static String altimString;
     private static String azimString;
-    private static String validPointsString;
-    private static String distanceString;
-    private static String satellitesString;
+    // private static String validPointsString;
+    // private static String distanceString;
+    // private static String satellitesString;
     private final Activity activity;
 
     public ActionBar( View actionBarView, ApplicationManager applicationManager, Activity activity ) {
@@ -108,9 +108,9 @@ public class ActionBar {
         latString = context.getString(R.string.lat);
         altimString = context.getString(R.string.altim);
         azimString = context.getString(R.string.azimuth);
-        validPointsString = context.getString(R.string.log_points);
-        distanceString = context.getString(R.string.log_distance);
-        satellitesString = context.getString(R.string.satellite_num);
+        // validPointsString = context.getString(R.string.log_points);
+        // distanceString = context.getString(R.string.log_distance);
+        // satellitesString = context.getString(R.string.satellite_num);
         nodataString = context.getString(R.string.nogps_data);
         loggingString = context.getString(R.string.text_logging);
 
