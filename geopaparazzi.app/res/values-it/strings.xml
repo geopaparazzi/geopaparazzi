@@ -168,4 +168,12 @@
 	<string name="panic_number">Setta il panic number</string>
 	<string name="panic_number_notset">Non sembra essere disponibile alcuno panic number. Inserirlo nei settaggi.</string>
 	<string name="panic_for_real">Sei sicuro di voler spedire un update della posizione?</string>
+	
+	<string name="panic_upper">  PANICO!  </string>
+	<string name="send_status_update">manda posizione</string>
+	<string name="help_needed">Serve aiuto a</string>
+	<string name="message_sent">Messaggio spedito</string>
+
+	<string name="last_note_deleted">Rimossa ultima nota</string>
+	<string name="last_note_not_deleted">Non e\' stato possibile rimuovere l\'ultima nota</string>
 </resources>
