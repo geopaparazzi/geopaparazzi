@@ -22,18 +22,12 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Paint;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
@@ -44,12 +38,11 @@ import eu.hydrologis.geopaparazzi.util.Constants;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class OsmActivity extends Activity {
-    private static final int CENTER_ON_GPS = 1;
-    private static final int GO_TO = 2;
-    private static final int MENU_GPSDATA = 3;
-    private static final int MENU_MAPDATA = 4;
-    private static final int MENU_TOGGLE_MEASURE = 5;
-    private static final int MENU_ADDTAGS = 6;
+    private static final int GO_TO = 1;
+    private static final int MENU_GPSDATA = 2;
+    private static final int MENU_MAPDATA = 3;
+    private static final int MENU_TOGGLE_MEASURE = 4;
+    private static final int MENU_ADDTAGS = 5;
     private OsmView osmView;
 
     public void onCreate( Bundle icicle ) {
@@ -67,51 +60,27 @@ public class OsmActivity extends Activity {
         osmView = (OsmView) findViewById(R.id.osmviewid);
 
         // button view
-        LinearLayout buttonsLayout = new LinearLayout(this);
-        buttonsLayout.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
-        buttonsLayout.setPadding(5, 5, 5, 0);
-        buttonsLayout.setOrientation(LinearLayout.VERTICAL);
-        buttonsLayout.setGravity(Gravity.BOTTOM);
+        ImageButton zoomIn = (ImageButton) findViewById(R.id.zoom_in_btn);
+        ImageButton centerOnGps = (ImageButton) findViewById(R.id.center_on_gps_btn);
+        ImageButton zoomOut = (ImageButton) findViewById(R.id.zoom_out_btn);
 
-        TransparentPanel transparentPanel = new TransparentPanel(this);
-        transparentPanel.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        transparentPanel.setPadding(0, 0, 0, 0);
-        buttonsLayout.addView(transparentPanel);
-
-        Paint buttonBack = new Paint();
-        buttonBack.setARGB(0, 255, 255, 255);
-        ImageButton zoomoutButton = new ImageButton(this);
-        zoomoutButton.setImageResource(R.drawable.zoomout);
-        zoomoutButton.setBackgroundColor(buttonBack.getColor());
-        zoomoutButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
-                osmView.zoomOut();
-            }
-        });
-        android.widget.RelativeLayout.LayoutParams paramsOut = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
-                LayoutParams.WRAP_CONTENT);
-        paramsOut.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        zoomoutButton.setLayoutParams(paramsOut);
-
-        transparentPanel.addView(zoomoutButton);
-
-        ImageButton zoominButton = new ImageButton(this);
-        zoominButton.setImageResource(R.drawable.zoomin);
-        zoominButton.setBackgroundColor(buttonBack.getColor());
-        zoominButton.setOnClickListener(new Button.OnClickListener(){
+        zoomIn.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
                 osmView.zoomIn();
             }
         });
-        android.widget.RelativeLayout.LayoutParams paramsIn = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
-                LayoutParams.WRAP_CONTENT);
-        paramsIn.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-        zoominButton.setLayoutParams(paramsIn);
 
-        transparentPanel.addView(zoominButton);
+        centerOnGps.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                osmView.centerOnGps();
+            }
+        });
 
-        FrameLayout frameLayout = (FrameLayout) findViewById(R.id.osm_frameLayout);
-        frameLayout.addView(buttonsLayout);
+        zoomOut.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                osmView.zoomOut();
+            }
+        });
 
         osmView.invalidate();
     }
@@ -125,12 +94,12 @@ public class OsmActivity extends Activity {
 
     public boolean onCreateOptionsMenu( Menu menu ) {
         super.onCreateOptionsMenu(menu);
-        menu.add(Menu.NONE, MENU_GPSDATA, 1, R.string.mainmenu_gpsdataselect).setIcon(R.drawable.ic_menu_compass);
-        menu.add(Menu.NONE, MENU_MAPDATA, 2, R.string.mainmenu_mapdataselect).setIcon(R.drawable.ic_menu_compass);
-        menu.add(Menu.NONE, MENU_ADDTAGS, 3, R.string.mainmenu_addtags).setIcon(R.drawable.ic_menu_add);
-        menu.add(Menu.NONE, CENTER_ON_GPS, 4, R.string.centerongps).setIcon(R.drawable.menu_mylocation);
-        menu.add(Menu.NONE, MENU_TOGGLE_MEASURE, 5, R.string.mainmenu_togglemeasure).setIcon(R.drawable.ic_menu_measure);
-        menu.add(Menu.NONE, GO_TO, 6, R.string.goto_coordinate).setIcon(R.drawable.menu_goto);
+        menu.add(Menu.NONE, MENU_ADDTAGS, 1, R.string.mainmenu_addtags).setIcon(android.R.drawable.ic_menu_add);
+        menu.add(Menu.NONE, MENU_GPSDATA, 2, R.string.mainmenu_gpsdataselect).setIcon(android.R.drawable.ic_menu_compass);
+        menu.add(Menu.NONE, MENU_MAPDATA, 3, R.string.mainmenu_mapdataselect).setIcon(android.R.drawable.ic_menu_compass);
+        menu.add(Menu.NONE, MENU_TOGGLE_MEASURE, 4, R.string.mainmenu_togglemeasure).setIcon(
+                android.R.drawable.ic_menu_sort_by_size);
+        menu.add(Menu.NONE, GO_TO, 5, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
         return true;
     }
 
@@ -165,10 +134,6 @@ public class OsmActivity extends Activity {
             startActivity(osmTagsIntent);
             return true;
 
-        case CENTER_ON_GPS:
-            osmView.centerOnGps();
-
-            return true;
         case GO_TO:
             Intent intent = new Intent(Constants.INSERT_COORD);
             startActivity(intent);

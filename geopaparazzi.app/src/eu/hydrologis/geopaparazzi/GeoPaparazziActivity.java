@@ -251,9 +251,9 @@ public class GeoPaparazziActivity extends Activity {
 
     public boolean onCreateOptionsMenu( Menu menu ) {
         super.onCreateOptionsMenu(menu);
-        menu.add(Menu.NONE, MENU_SETTINGS, 0, R.string.mainmenu_preferences).setIcon(R.drawable.ic_menu_preferences);
-        menu.add(Menu.NONE, MENU_EXIT, 2, R.string.exit).setIcon(R.drawable.exit);
-        menu.add(Menu.NONE, MENU_ABOUT, 3, R.string.about).setIcon(R.drawable.about);
+        menu.add(Menu.NONE, MENU_SETTINGS, 0, R.string.mainmenu_preferences).setIcon(android.R.drawable.ic_menu_preferences);
+        menu.add(Menu.NONE, MENU_EXIT, 2, R.string.exit).setIcon(android.R.drawable.ic_lock_power_off);
+        menu.add(Menu.NONE, MENU_ABOUT, 3, R.string.about).setIcon(android.R.drawable.ic_menu_info_details);
 
         return true;
     }
