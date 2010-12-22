@@ -57,7 +57,7 @@ import eu.hydrologis.geopaparazzi.util.Constants;
  */
 public class GpsDataListActivity extends ListActivity {
     private static final int MERGE_SELECTED = 1;
-    
+
     // TODO make user sort for some next release (mind, it implies translations)
     // private static final int SORT_BY_NAME = 2;
     // private static final int SORT_BY_ID = 3;
@@ -127,7 +127,7 @@ public class GpsDataListActivity extends ListActivity {
 
     public boolean onCreateOptionsMenu( Menu menu ) {
         super.onCreateOptionsMenu(menu);
-        menu.add(Menu.NONE, MERGE_SELECTED, 1, R.string.mainmenu_merge).setIcon(R.drawable.merge);
+        menu.add(Menu.NONE, MERGE_SELECTED, 1, R.string.mainmenu_merge).setIcon(android.R.drawable.ic_menu_add);
         return true;
     }
 
