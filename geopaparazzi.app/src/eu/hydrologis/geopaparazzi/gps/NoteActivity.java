@@ -96,7 +96,7 @@ public class NoteActivity extends Activity {
                     StringBuilder sB = new StringBuilder(noteText.getText());
                     String noteString = sB.toString();
 
-                    DaoNotes.addNote(NoteActivity.this, longitude, latitude, altitude, sqlDate, noteString);
+                    DaoNotes.addNote(NoteActivity.this, longitude, latitude, altitude, sqlDate, noteString, null);
                 } catch (IOException e) {
                     e.printStackTrace();
                     Toast.makeText(NoteActivity.this, R.string.notenonsaved, Toast.LENGTH_LONG).show();

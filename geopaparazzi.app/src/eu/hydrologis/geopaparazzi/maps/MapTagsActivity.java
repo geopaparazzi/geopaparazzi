@@ -102,7 +102,7 @@ public class MapTagsActivity extends Activity {
                                 startActivity(formIntent);
                             } else {
                                 // insert as it is
-                                DaoNotes.addNote(getContext(), longitude, latitude, -1.0, sqlDate, finalLongName);
+                                DaoNotes.addNote(getContext(), longitude, latitude, -1.0, sqlDate, finalLongName, null);
                             }
 
                         } catch (Exception e) {

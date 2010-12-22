@@ -93,7 +93,7 @@ public class FormActivity extends Activity {
                     endString = jsonFormObject.toString();
                     storeNote();
                     Date sqlDate = new Date(System.currentTimeMillis());
-                    DaoNotes.addNote(FormActivity.this, longitude, latitude, -1.0, sqlDate, endString);
+                    DaoNotes.addNote(FormActivity.this, longitude, latitude, -1.0, sqlDate, formLongnameDefinition, endString);
                     finish();
                 } catch (Exception e) {
                     e.printStackTrace();

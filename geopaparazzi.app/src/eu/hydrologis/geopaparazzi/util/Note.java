@@ -28,6 +28,7 @@ public class Note {
     private final double lon;
     private final double lat;
     private final double altim;
+    private final String form;
 
     /**
      * A wrapper for a note.
@@ -38,7 +39,7 @@ public class Note {
      * @param lat
      * @param altim
      */
-    public Note( String name, String description, double lon, double lat , double altim) {
+    public Note( String name, String description, double lon, double lat, double altim, String form ) {
         if (name != null) {
             this.name = name;
         } else {
@@ -52,28 +53,33 @@ public class Note {
         this.lon = lon;
         this.lat = lat;
         this.altim = altim;
+        this.form = form;
     }
-    
+
     public double getLat() {
         return lat;
     }
-    
+
     public double getLon() {
         return lon;
     }
-    
+
     public double getAltim() {
         return altim;
     }
-    
+
     public String getName() {
         return name;
     }
-    
+
     public String getDescription() {
         return description;
     }
     
+    public String getForm() {
+        return form;
+    }
+
     @SuppressWarnings("nls")
     public String toKmlString() {
         StringBuilder sB = new StringBuilder();
@@ -84,6 +90,10 @@ public class Note {
         sB.append("<![CDATA[\n");
         String descr = description.replaceAll("\n", "</BR></BR>");
         sB.append("<p>").append(descr).append("</p>\n");
+        
+        // TODO insert the form as html, if available
+        
+        
         sB.append("]]>\n");
         sB.append("</description>\n");
         sB.append("<gx:balloonVisibility>1</gx:balloonVisibility>\n");

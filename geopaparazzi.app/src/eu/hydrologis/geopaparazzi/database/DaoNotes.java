@@ -29,10 +29,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
-import eu.hydrologis.geopaparazzi.gpx.GpxItem;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Note;
-import eu.hydrologis.geopaparazzi.util.PointF3D;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
@@ -46,6 +44,7 @@ public class DaoNotes {
     private static final String COLUMN_ALTIM = "altim";
     private static final String COLUMN_TS = "ts";
     private static final String COLUMN_TEXT = "text";
+    private static final String COLUMN_FORM = "form";
 
     public static final String TABLE_NOTES = "notes";
 
@@ -55,8 +54,8 @@ public class DaoNotes {
 
     private static SimpleDateFormat dateFormatter = Constants.TIME_FORMATTER_SQLITE;
 
-    public static void addNote( Context context, double lon, double lat, double altim,
-            Date timestamp, String text ) throws IOException {
+    public static void addNote( Context context, double lon, double lat, double altim, Date timestamp, String text, String form )
+            throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         sqliteDatabase.beginTransaction();
         try {
@@ -66,6 +65,7 @@ public class DaoNotes {
             values.put(COLUMN_ALTIM, altim);
             values.put(COLUMN_TS, dateFormatter.format(timestamp));
             values.put(COLUMN_TEXT, text);
+            values.put(COLUMN_FORM, form);
             LASTINSERTEDNOTE_ID = sqliteDatabase.insertOrThrow(TABLE_NOTES, null, values);
 
             sqliteDatabase.setTransactionSuccessful();
@@ -99,32 +99,32 @@ public class DaoNotes {
         }
     }
 
-    public static void importGpxToNotes( Context context, GpxItem gpxItem ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
-        sqliteDatabase.beginTransaction();
-        try {
-            List<PointF3D> points = gpxItem.read();
-            List<String> names = gpxItem.getNames();
-            for( int i = 0; i < points.size(); i++ ) {
-                Date date = new Date(System.currentTimeMillis());
-                String dateStrs = Constants.TIME_FORMATTER_SQLITE.format(date);
-                PointF3D point = points.get(i);
-                String name = names.get(i);
-                ContentValues values = new ContentValues();
-                values.put(COLUMN_LON, point.x);
-                values.put(COLUMN_LAT, point.y);
-                values.put(COLUMN_ALTIM, point.getZ());
-                values.put(COLUMN_TS, dateStrs);
-                values.put(COLUMN_TEXT, name);
-                sqliteDatabase.insertOrThrow(TABLE_NOTES, null, values);
-            }
-            sqliteDatabase.setTransactionSuccessful();
-        } catch (Exception e) {
-            throw new IOException(e.getLocalizedMessage());
-        } finally {
-            sqliteDatabase.endTransaction();
-        }
-    }
+    // public static void importGpxToNotes( Context context, GpxItem gpxItem ) throws IOException {
+    // SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    // sqliteDatabase.beginTransaction();
+    // try {
+    // List<PointF3D> points = gpxItem.read();
+    // List<String> names = gpxItem.getNames();
+    // for( int i = 0; i < points.size(); i++ ) {
+    // Date date = new Date(System.currentTimeMillis());
+    // String dateStrs = Constants.TIME_FORMATTER_SQLITE.format(date);
+    // PointF3D point = points.get(i);
+    // String name = names.get(i);
+    // ContentValues values = new ContentValues();
+    // values.put(COLUMN_LON, point.x);
+    // values.put(COLUMN_LAT, point.y);
+    // values.put(COLUMN_ALTIM, point.getZ());
+    // values.put(COLUMN_TS, dateStrs);
+    // values.put(COLUMN_TEXT, name);
+    // sqliteDatabase.insertOrThrow(TABLE_NOTES, null, values);
+    // }
+    // sqliteDatabase.setTransactionSuccessful();
+    // } catch (Exception e) {
+    // throw new IOException(e.getLocalizedMessage());
+    // } finally {
+    // sqliteDatabase.endTransaction();
+    // }
+    // }
 
     /**
      * Get the collected notes from the database inside a given bound.
@@ -136,8 +136,7 @@ public class DaoNotes {
      * @return the list of notes inside the bounds.
      * @throws IOException
      */
-    public static List<Note> getNotesInWorldBounds( Context context, float n, float s, float w,
-            float e ) throws IOException {
+    public static List<Note> getNotesInWorldBounds( Context context, float n, float s, float w, float e ) throws IOException {
 
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         String query = "SELECT lon, lat, altim, text, ts FROM XXX WHERE (lon BETWEEN XXX AND XXX) AND (lat BETWEEN XXX AND XXX)";
@@ -170,7 +169,7 @@ public class DaoNotes {
             description.append(text);
             description.append("\n");
             description.append(date);
-            Note note = new Note(name, description.toString(), lon, lat, altim);
+            Note note = new Note(name, description.toString(), lon, lat, altim, null);
             notes.add(note);
             c.moveToNext();
         }
@@ -187,10 +186,9 @@ public class DaoNotes {
     public static List<Note> getNotesList( Context context ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         List<Note> notesList = new ArrayList<Note>();
-        String asColumnsToReturn[] = {COLUMN_LON, COLUMN_LAT, COLUMN_ALTIM, COLUMN_TS, COLUMN_TEXT};
+        String asColumnsToReturn[] = {COLUMN_LON, COLUMN_LAT, COLUMN_ALTIM, COLUMN_TS, COLUMN_TEXT, COLUMN_FORM};
         String strSortOrder = "_id ASC";
-        Cursor c = sqliteDatabase.query(TABLE_NOTES, asColumnsToReturn, null, null, null, null,
-                strSortOrder);
+        Cursor c = sqliteDatabase.query(TABLE_NOTES, asColumnsToReturn, null, null, null, null, strSortOrder);
         c.moveToFirst();
         while( !c.isAfterLast() ) {
             double lon = c.getDouble(0);
@@ -198,6 +196,7 @@ public class DaoNotes {
             double altim = c.getDouble(2);
             String date = c.getString(3);
             String text = c.getString(4);
+            String form = c.getString(5);
 
             String name = text;
             if (text.length() > Constants.NOTES_LENGTH_LIMIT) {
@@ -207,12 +206,36 @@ public class DaoNotes {
             description.append(text);
             description.append("\n");
             description.append(date);
-            Note note = new Note(name, description.toString(), lon, lat, altim);
+            Note note = new Note(name, description.toString(), lon, lat, altim, form);
             notesList.add(note);
             c.moveToNext();
         }
         c.close();
         return notesList;
+    }
+
+    public static void upgradeNotesFromDB1ToDB2( SQLiteDatabase db ) throws IOException {
+        StringBuilder sB = new StringBuilder();
+
+        sB = new StringBuilder();
+        // ALTER TABLE xyz ADD COLUMN newcol TEXT;
+        sB.append("ALTER TABLE ");
+        sB.append(TABLE_NOTES);
+        sB.append(" ADD COLUMN ");
+        sB.append(COLUMN_FORM).append(" CLOB;");
+        String query = sB.toString();
+
+        Log.i(TAG, "Upgrading database from version 1 to version 2.");
+
+        db.beginTransaction();
+        try {
+            db.execSQL(query);
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            throw new IOException(e.getLocalizedMessage());
+        } finally {
+            db.endTransaction();
+        }
     }
 
     public static void createTables( Context context ) throws IOException {
@@ -228,7 +251,8 @@ public class DaoNotes {
         sB.append(COLUMN_LAT).append(" REAL NOT NULL,");
         sB.append(COLUMN_ALTIM).append(" REAL NOT NULL,");
         sB.append(COLUMN_TS).append(" DATE NOT NULL,");
-        sB.append(COLUMN_TEXT).append(" TEXT NOT NULL ");
+        sB.append(COLUMN_TEXT).append(" TEXT NOT NULL, ");
+        sB.append(COLUMN_FORM).append(" CLOB");
         sB.append(");");
         String CREATE_TABLE_NOTES = sB.toString();
 
@@ -252,9 +276,19 @@ public class DaoNotes {
 
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         Log.i(TAG, "Create the notes table.");
-        sqliteDatabase.execSQL(CREATE_TABLE_NOTES);
-        sqliteDatabase.execSQL(CREATE_INDEX_NOTES_TS);
-        sqliteDatabase.execSQL(CREATE_INDEX_NOTES_X_BY_Y);
+
+        sqliteDatabase.beginTransaction();
+        try {
+            sqliteDatabase.execSQL(CREATE_TABLE_NOTES);
+            sqliteDatabase.execSQL(CREATE_INDEX_NOTES_TS);
+            sqliteDatabase.execSQL(CREATE_INDEX_NOTES_X_BY_Y);
+
+            sqliteDatabase.setTransactionSuccessful();
+        } catch (Exception e) {
+            throw new IOException(e.getLocalizedMessage());
+        } finally {
+            sqliteDatabase.endTransaction();
+        }
     }
 
 }

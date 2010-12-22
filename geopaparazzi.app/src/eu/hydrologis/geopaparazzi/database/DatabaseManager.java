@@ -34,7 +34,7 @@ import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 @SuppressWarnings("nls")
 public class DatabaseManager {
 
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
 
     public static final String DEBUG_TAG = "DATABASEMANAGER";
 
@@ -43,8 +43,6 @@ public class DatabaseManager {
     public static final float BUFFER = 0.001f;
 
     // TABLE NAMES
-
-    private static final int VERSION = 1;
 
     private static DatabaseManager dbManager = null;
 
@@ -88,8 +86,7 @@ public class DatabaseManager {
             Log.i(DEBUG_TAG, "Database Max Size: " + db.getMaximumSize());
             Log.i(DEBUG_TAG, "Database Open?  " + db.isOpen());
             Log.i(DEBUG_TAG, "Database readonly?  " + db.isReadOnly());
-            Log.i(DEBUG_TAG,
-                    "Database Locked by current thread?  " + db.isDbLockedByCurrentThread());
+            Log.i(DEBUG_TAG, "Database Locked by current thread?  " + db.isDbLockedByCurrentThread());
         }
 
         return databaseHelper.getWritableDatabase(context);
@@ -116,8 +113,9 @@ public class DatabaseManager {
             if (databaseFile.exists()) {
                 Log.i("SQLiteHelper", "Opening database at " + databaseFile);
                 db = SQLiteDatabase.openOrCreateDatabase(databaseFile, null);
-                if (DATABASE_VERSION > db.getVersion())
-                    upgrade();
+                int dbVersion = db.getVersion();
+                if (DATABASE_VERSION > dbVersion)
+                    upgrade(DATABASE_VERSION, dbVersion);
             } else {
                 Log.i("SQLiteHelper", "Creating database at " + databaseFile);
                 Log.d(DEBUG_TAG, "db folder exists: " + databaseFile.getParentFile().exists());
@@ -135,7 +133,7 @@ public class DatabaseManager {
         public void create( Context context ) throws IOException {
             db.setLocale(Locale.getDefault());
             db.setLockingEnabled(false);
-            db.setVersion(VERSION);
+            db.setVersion(DATABASE_VERSION);
 
             // CREATE TABLES
             DaoNotes.createTables(context);
@@ -143,8 +141,12 @@ public class DatabaseManager {
             DaoMaps.createTables(context);
         }
 
-        public void upgrade() throws IOException {
-            throw new RuntimeException("Method not implemented.");
+        public void upgrade( int newDbVersion, int oldDbVersion ) throws IOException {
+            if (newDbVersion == 2 && oldDbVersion == 1) {
+                DaoNotes.upgradeNotesFromDB1ToDB2(db);
+            } else {
+                throw new RuntimeException("Method not implemented.");
+            }
         }
 
         public SQLiteDatabase getWritableDatabase( Context context ) throws IOException {
