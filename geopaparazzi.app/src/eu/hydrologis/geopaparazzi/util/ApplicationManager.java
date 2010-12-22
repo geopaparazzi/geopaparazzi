@@ -17,12 +17,13 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.*;
+import static eu.hydrologis.geopaparazzi.util.Constants.GPSLOGGINGINTERVALKEY;
 import static eu.hydrologis.geopaparazzi.util.Constants.GPS_LOGGING_INTERVAL;
 import static eu.hydrologis.geopaparazzi.util.Constants.MAPSFOLDERKEY;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_GEOPAPARAZZI;
-import static eu.hydrologis.geopaparazzi.util.Constants.PATH_GEOPAPARAZZIDATA;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_KMLEXPORT;
+import static eu.hydrologis.geopaparazzi.util.Constants.PATH_MAPSCACHE;
+import static eu.hydrologis.geopaparazzi.util.Constants.PATH_MEDIA;
 import static java.lang.Math.toDegrees;
 
 import java.io.BufferedWriter;
@@ -191,11 +192,11 @@ public class ApplicationManager implements SensorEventListener, LocationListener
          *    |--- geopaparazzi.db 
          *    |--- tags.json 
          *    |        
-         *    |--- mapscache 
-         *    |    `-- zoomlevel 
-         *    |          `-- xtile 
-         *    |               `-- ytile.png
          *    `--- export
+         * geopaparazzimapscache 
+         *    `-- zoomlevel 
+         *        `-- xtile 
+         *            `-- ytile.png
          */
         String state = Environment.getExternalStorageState();
         boolean mExternalStorageAvailable;
@@ -224,12 +225,11 @@ public class ApplicationManager implements SensorEventListener, LocationListener
                     alert(MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
                             mediaDir.getAbsolutePath()));
 
-            File geoPaparazziDataDir = new File(sdcardDir.getAbsolutePath() + PATH_GEOPAPARAZZIDATA);
-            String geoPaparazziDataDirPath = geoPaparazziDataDir.getAbsolutePath();
-            if (mapsCachePath == null) {
-                mapsCachePath = geoPaparazziDataDirPath + PATH_MAPSCACHE;
+            if (mapsCachePath != null) {
+                mapsCacheDir = new File(mapsCachePath);
+            } else {
+                mapsCacheDir = new File(sdcardDir.getAbsolutePath() + PATH_MAPSCACHE);
             }
-            mapsCacheDir = new File(mapsCachePath);
             Log.i(LOGTAG, "MAPSCACHEPATH:" + mapsCacheDir.getAbsolutePath());
             if (!mapsCacheDir.exists())
                 if (!mapsCacheDir.mkdirs()) {

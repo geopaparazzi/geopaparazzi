@@ -112,7 +112,7 @@ public interface Constants {
     public final String PATH_KMLEXPORT = "/export";
 
     public final String PATH_GEOPAPARAZZIDATA = "/geopaparazzi";
-    public final String PATH_MAPSCACHE = "/mapscache";
+    public final String PATH_MAPSCACHE = "/geopaparazzimapscache";
 
     public final SimpleDateFormat TIMESTAMPFORMATTER = new SimpleDateFormat("yyyyMMdd_HHmmss");
     public final SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
