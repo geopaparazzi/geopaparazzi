@@ -17,6 +17,11 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import eu.hydrologis.geopaparazzi.maps.TagsManager;
+
 /**
  * Represents a note (log or map).
  * 
@@ -75,13 +80,13 @@ public class Note {
     public String getDescription() {
         return description;
     }
-    
+
     public String getForm() {
         return form;
     }
 
     @SuppressWarnings("nls")
-    public String toKmlString() {
+    public String toKmlString() throws Exception {
         StringBuilder sB = new StringBuilder();
         sB.append("<Placemark>\n");
         sB.append("<styleUrl>#red-pushpin</styleUrl>\n");
@@ -90,10 +95,35 @@ public class Note {
         sB.append("<![CDATA[\n");
         String descr = description.replaceAll("\n", "</BR></BR>");
         sB.append("<p>").append(descr).append("</p>\n");
-        
+
         // TODO insert the form as html, if available
-        
-        
+        if (form != null) {
+            JSONArray formItems = TagsManager.getFormItems(new JSONObject(form));
+
+            // table head
+            // <table style="text-align: left; width: 80%;" border="1" cellpadding="5"
+            sB.append("<table style=\"text-align: left; width: 100%;\" border=\"1\" cellpadding=\"5\" cellspacing=\"2\">");
+            // <tbody>
+            sB.append("<tbody>");
+
+            for( int i = 0; i < formItems.length(); i++ ) {
+                JSONObject formItem = formItems.getJSONObject(i);
+                String key = formItem.getString(TagsManager.TAG_KEY);
+                String value = formItem.getString(TagsManager.TAG_VALUE);
+
+                sB.append("<tr>");
+                sB.append("<td style=\"text-align: left; vertical-align: top; width: 50%;\">");
+                sB.append(key);
+                sB.append("</td>");
+                sB.append("<td style=\"text-align: left; vertical-align: top; width: 50%;\">");
+                sB.append(value);
+                sB.append("</td>");
+                sB.append("</tr>");
+            }
+            sB.append("</tbody>");
+            sB.append("</table>");
+        }
+
         sB.append("]]>\n");
         sB.append("</description>\n");
         sB.append("<gx:balloonVisibility>1</gx:balloonVisibility>\n");

@@ -82,7 +82,11 @@ public class KmlExport {
         sB.append("</Style>\n");
 
         for( Note note : notes ) {
-            sB.append(note.toKmlString());
+            try {
+                sB.append(note.toKmlString());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         Collection<Line> lines = linesMap.values();
         for( Line line : lines ) {
@@ -104,20 +108,17 @@ public class KmlExport {
             BufferedWriter bW = new BufferedWriter(new FileWriter(kmlFile));
             bW.write(sB.toString());
             bW.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        /*
-         * create the kmz file with the base kml and all the pictures
-         */
-        File[] files = new File[1 + picturesList.size()];
-        files[0] = kmlFile;
-        for( int i = 0; i < files.length - 1; i++ ) {
-            files[i + 1] = new File(picturesList.get(i).getPicturePath());
-        }
-        try {
+            /*
+             * create the kmz file with the base kml and all the pictures
+             */
+            File[] files = new File[1 + picturesList.size()];
+            files[0] = kmlFile;
+            for( int i = 0; i < files.length - 1; i++ ) {
+                files[i + 1] = new File(picturesList.get(i).getPicturePath());
+            }
             CompressionUtilities.createZipFromFiles(outputFile, files);
+
+            kmlFile.delete();
         } catch (IOException e) {
             e.printStackTrace();
         }

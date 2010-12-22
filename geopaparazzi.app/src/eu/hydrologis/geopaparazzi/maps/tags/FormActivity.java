@@ -90,8 +90,8 @@ public class FormActivity extends Activity {
             public void onClick( View v ) {
                 String endString = "";
                 try {
-                    endString = jsonFormObject.toString();
                     storeNote();
+                    endString = jsonFormObject.toString();
                     Date sqlDate = new Date(System.currentTimeMillis());
                     DaoNotes.addNote(FormActivity.this, longitude, latitude, -1.0, sqlDate, formLongnameDefinition, endString);
                     finish();
