@@ -22,12 +22,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
-import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 
 /**
  * A logger class that can also write to file.
@@ -43,12 +38,12 @@ public class Logger {
         D, I, W, E;
     }
 
-    public Logger( Context context ) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String key = context.getString(R.string.enable_debug);
-        logToFile = preferences.getBoolean(key, false);
-        if (logToFile) {
-            debugLogFile = ApplicationManager.getInstance(context).getDebugLogFile();
+    public Logger( File logFile ) {
+        if (logFile == null) {
+            logToFile = false;
+        } else {
+            debugLogFile = logFile;
+            logToFile = true;
         }
     }
 
@@ -105,40 +100,45 @@ public class Logger {
     }
 
     private static void dumpToFile( String name, String message, LOGTYPE type ) {
-        BufferedWriter br = null;
+        BufferedWriter bw = null;
+        StringBuilder sb = new StringBuilder();
         try {
-            br = new BufferedWriter(new FileWriter(debugLogFile));
+            bw = new BufferedWriter(new FileWriter(debugLogFile, true), 1024);
             switch( type ) {
             case D:
-                br.write("DEBUG: ");
+                sb.append("DEBUG: ");
                 break;
             case I:
-                br.write("INFO: ");
+                sb.append("INFO: ");
                 break;
             case W:
-                br.write("WARN: ");
+                sb.append("WARN: ");
                 break;
             case E:
-                br.write("ERROR: ");
+                sb.append("ERROR: ");
                 break;
             default:
-                br.write("DEBUG: ");
+                sb.append("DEBUG: ");
                 break;
             }
-            br.write(name);
-            br.write(" - ");
-            br.write(message);
-            br.write("\n");
+            sb.append(name);
+            sb.append(" - ");
+            sb.append(message);
+            sb.append("\n");
+            bw.write(sb.toString());
         } catch (IOException e) {
+            Log.e("LOGGER", "error in dumping to file 1", e);
             e.printStackTrace();
         } finally {
-            if (br != null) {
+            if (bw != null) {
                 try {
-                    br.close();
+                    bw.close();
                 } catch (IOException e) {
+                    Log.e("LOGGER", "error in dumping to file 2", e);
                     e.printStackTrace();
                 }
             }
         }
     }
+
 }

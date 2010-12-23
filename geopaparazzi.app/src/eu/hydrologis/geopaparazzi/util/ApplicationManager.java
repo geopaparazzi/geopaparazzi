@@ -175,6 +175,10 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         applicationManager = null;
     }
 
+    public Context getContext() {
+        return context;
+    }
+    
     private ApplicationManager( Context context ) {
         this.context = context;
 
@@ -343,10 +347,12 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String intervalStr = preferences.getString(GPSLOGGINGINTERVALKEY, String.valueOf(GPS_LOGGING_INTERVAL));
         int waitForMillis = (int) (Long.parseLong(intervalStr) * 1000);
-        Logger.d(LOGTAG, "LOG INTERVAL MILLIS: " + waitForMillis);
+        Logger.d(this, "LOG INTERVAL MILLIS: " + waitForMillis);
         if (Debug.doMock) {
+            Logger.d(this, "Using Mock locations");
             TestMock.startMocking(locationManager, applicationManager);
         } else {
+            Logger.d(this, "Using GPS");
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, waitForMillis, 0f, applicationManager);
         }
 
@@ -365,7 +371,9 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         if (locationManager == null) {
             return false;
         }
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean gpsIsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        Logger.i(this, "Gps is on: " + gpsIsEnabled);
+        return gpsIsEnabled;
     }
 
     public void checkGps() {
@@ -551,7 +559,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
     public File getKmlExportDir() {
         return kmlExportDir;
     }
-    
+
     public File getDebugLogFile() {
         return debugLogFile;
     }

@@ -33,6 +33,7 @@ import eu.hydrologis.geopaparazzi.dashboard.quickaction.actionbar.QuickAction;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
+import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * 
@@ -214,12 +215,16 @@ public class ActionBar {
         Resources resources = gpsOnOffView.getResources();
 
         if (applicationManager.isGpsEnabled()) {
+            Logger.d(this, "GPS seems to be on");
             if (applicationManager.isGpsLogging()) {
+                Logger.d(this, "GPS seems to be also logging");
                 gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_logging));
             } else {
+                Logger.d(this, "GPS is not logging");
                 gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_notlogging));
             }
         } else {
+            Logger.d(this, "GPS seems to be off");
             gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_off));
         }
         // }

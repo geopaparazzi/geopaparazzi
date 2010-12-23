@@ -30,6 +30,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -84,8 +85,6 @@ public class GeoPaparazziActivity extends Activity {
 
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
-        // enable logger if needed
-        new Logger(this);
 
         showChangeLogIfNeeded();
         init();
@@ -95,18 +94,21 @@ public class GeoPaparazziActivity extends Activity {
         super.onResume();
         checkActionBar();
     }
-    
+
     public void onWindowFocusChanged( boolean hasFocus ) {
         super.onWindowFocusChanged(hasFocus);
         checkActionBar();
     }
 
     private void checkActionBar() {
+        checkDebugLogger();
+
         if (actionBar == null) {
             actionBar = ActionBar.getActionBar(this, R.id.action_bar, applicationManager);
             actionBar.setTitle(R.string.app_name, R.id.action_bar_title);
         }
         actionBar.checkLogging();
+
     }
 
     private void init() {
@@ -197,6 +199,20 @@ public class GeoPaparazziActivity extends Activity {
             e.printStackTrace();
             Toast.makeText(this, R.string.databaseError, Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void checkDebugLogger() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String key = getString(R.string.enable_debug);
+        boolean logToFile = preferences.getBoolean(key, false);
+        Log.d("MAINACTIVITY", "Log to file = " + logToFile);
+        if (logToFile) {
+            File debugLogFile = applicationManager.getDebugLogFile();
+            new Logger(debugLogFile);
+        } else {
+            new Logger(null);
+        }
+
     }
 
     public void push( int id, View v ) {

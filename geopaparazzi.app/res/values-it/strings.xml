@@ -125,7 +125,6 @@
 	<string name="measureinfo_last">Ultimo punto</string>
 	
 	<string name="text_show_position_on_map">vista mappa</string>
-    <string name="text_logging">log GPS</string>
     <string name="text_start_gps_logging">registra log</string>
     <string name="text_stop_gps_logging">ferma log</string>
     <string name="text_take_a_gps_note">prendi nota</string>
@@ -177,6 +176,12 @@
 	<string name="last_note_deleted">Rimossa ultima nota</string>
 	<string name="last_note_not_deleted">Non e\' stato possibile rimuovere l\'ultima nota</string>
 
+    <string name="text_logging">in log</string>
+    <string name="text_gpson">gps attivo</string>
+
+    <string name="debug">Settaggi di debug</string>
+    <string name="enable_debug">Attiva log di debug</string>
+    
     <string name="gpslogging_only">Questa funzione è attiva solo quando il gps è attivo e ha segnale.</string>
 
 </resources>
