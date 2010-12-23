@@ -207,7 +207,7 @@ public class FormActivity extends Activity {
 
         EditText editView = new EditText(this);
         editView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        editView.setPadding(5, 5, 5, 5);
+        editView.setPadding(15, 5, 15, 5);
         editView.setText(value);
         if (numeric) {
             editView.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
@@ -239,7 +239,7 @@ public class FormActivity extends Activity {
 
         Spinner spinner = new Spinner(this);
         spinner.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        spinner.setPadding(5, 5, 5, 5);
+        spinner.setPadding(15, 5, 15, 5);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.true_false,
                 android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -283,7 +283,7 @@ public class FormActivity extends Activity {
 
         Spinner spinner = new Spinner(this);
         spinner.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        spinner.setPadding(5, 5, 5, 5);
+        spinner.setPadding(15, 5, 15, 5);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, itemsArray);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

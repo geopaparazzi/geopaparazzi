@@ -72,8 +72,6 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
  */
 public class GeoPaparazziActivity extends Activity {
 
-    private static final String LOGTAG = "GEOPAPARAZZIACTIVITY";
-
     private static final int MENU_ABOUT = Menu.FIRST;
     private static final int MENU_EXIT = 2;
     private static final int MENU_SETTINGS = 3;
@@ -95,6 +93,11 @@ public class GeoPaparazziActivity extends Activity {
 
     protected void onResume() {
         super.onResume();
+        checkActionBar();
+    }
+    
+    public void onWindowFocusChanged( boolean hasFocus ) {
+        super.onWindowFocusChanged(hasFocus);
         checkActionBar();
     }
 
@@ -281,7 +284,7 @@ public class GeoPaparazziActivity extends Activity {
     }
 
     public void finish() {
-        Logger.d(LOGTAG, "Finish called!");
+        Logger.d(this, "Finish called!");
         // save last location just in case
         GpsLocation loc = applicationManager.getLoc();
         if (loc != null) {
