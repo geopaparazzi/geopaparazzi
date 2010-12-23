@@ -338,6 +338,9 @@ public class ApplicationManager implements SensorEventListener, LocationListener
     public void stopListening() {
         locationManager.removeUpdates(applicationManager);
         sensorManager.unregisterListener(applicationManager);
+        if (TestMock.isOn) {
+            TestMock.stopMocking(locationManager);
+        }
     }
 
     /**
@@ -372,6 +375,11 @@ public class ApplicationManager implements SensorEventListener, LocationListener
             return false;
         }
         boolean gpsIsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        List<String> allProviders = locationManager.getAllProviders();
+        for( String string : allProviders ) {
+            Logger.i(this, "Loctaion Providers: " + string);
+        }
+        
         Logger.i(this, "Gps is on: " + gpsIsEnabled);
         return gpsIsEnabled;
     }

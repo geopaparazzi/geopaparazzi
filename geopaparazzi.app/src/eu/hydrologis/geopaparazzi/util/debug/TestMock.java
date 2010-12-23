@@ -35,7 +35,7 @@ public class TestMock {
     private static double alt = 100;
     private static long date = new Date().getTime();
     public static String MOCK_PROVIDER_NAME = LocationManager.GPS_PROVIDER;
-    private static boolean isOn = false;
+    public static boolean isOn = false;
 
     /**
      * Starts to trigger mock locations.

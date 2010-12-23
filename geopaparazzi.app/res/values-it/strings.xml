@@ -176,7 +176,7 @@
 	<string name="last_note_deleted">Rimossa ultima nota</string>
 	<string name="last_note_not_deleted">Non e\' stato possibile rimuovere l\'ultima nota</string>
 
-    <string name="text_logging">in log</string>
+    <string name="text_logging">logging</string>
     <string name="text_gpson">gps attivo</string>
 
     <string name="debug">Settaggi di debug</string>

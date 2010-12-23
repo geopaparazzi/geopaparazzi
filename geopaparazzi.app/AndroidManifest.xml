@@ -121,7 +121,6 @@
 		</receiver>
 	</application>
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
-	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
 	<uses-permission android:name="android.permission.CAMERA"></uses-permission>
 	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
 	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
@@ -138,4 +137,5 @@
 		android:anyDensity="true" android:resizeable="true"></supports-screens>
 
 	<uses-permission android:name="android.permission.RECORD_AUDIO"></uses-permission>
+	
 </manifest> 
