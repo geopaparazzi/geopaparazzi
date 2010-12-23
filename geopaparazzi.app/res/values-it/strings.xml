@@ -27,7 +27,7 @@
     <string name="gpsloggingoff">Fermato gps.</string>
     <string name="gpsloggingon">Partito gps...</string>
     <string name="gpsloggingalarm">Evita/ferma allarme... </string>
-    <string name="gpslogging_only">Questa funzione è attiva solo quando il gps è attivo e sta registrando.</string>
+    
     <string name="nogps_data">Al momento nessun dato gps è disponibile!</string>
     
     <string name="about">Informazioni</string>
@@ -176,4 +176,7 @@
 
 	<string name="last_note_deleted">Rimossa ultima nota</string>
 	<string name="last_note_not_deleted">Non e\' stato possibile rimuovere l\'ultima nota</string>
+
+    <string name="gpslogging_only">Questa funzione è attiva solo quando il gps è attivo e ha segnale.</string>
+
 </resources>

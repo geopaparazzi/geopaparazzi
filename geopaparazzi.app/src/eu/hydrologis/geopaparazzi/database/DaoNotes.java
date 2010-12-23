@@ -245,6 +245,7 @@ public class DaoNotes {
         db.beginTransaction();
         try {
             db.execSQL(addColumnQuery);
+            db.setVersion(2);
             db.setTransactionSuccessful();
         } catch (Exception e) {
             throw new IOException(e.getLocalizedMessage());

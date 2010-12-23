@@ -27,7 +27,7 @@
     <string name="gpsloggingoff">Stopped gps logging.</string>
     <string name="gpsloggingon">Started gps logging...</string>
     <string name="gpsloggingalarm">Avoid/stop alarm... </string>
-    <string name="gpslogging_only">This function is available only when the gps is active and logging.</string>
+    
     <string name="nogps_data">No gps data available yet!</string>
     
     <string name="about">About</string>
@@ -182,5 +182,7 @@
 
     <string name="debug">debug preferences</string>
     <string name="enable_debug">enable debug log</string>
+    
+    <string name="gpslogging_only">This function is available only when the gps is active and a signal is avaliable.</string>
 	
 </resources>
