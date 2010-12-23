@@ -213,21 +213,38 @@ public class DaoNotes {
     }
 
     public static void upgradeNotesFromDB1ToDB2( SQLiteDatabase db ) throws IOException {
+
         StringBuilder sB = new StringBuilder();
+        // make sure the form column doesn't exist
+        sB = new StringBuilder();
+        sB.append("SELECT ");
+        sB.append(COLUMN_FORM);
+        sB.append(" FROM ");
+        sB.append(TABLE_NOTES);
+        sB.append(";");
+        String checkColumnQuery = sB.toString();
+        try {
+            db.rawQuery(checkColumnQuery, null);
+            // if it comes to this point, the form column
+            // exists already. Nothing to do.
+            Logger.i("DAONOTES", "Database already contains form column. Skipping upgrade.");
+            return;
+        } catch (Exception e) {
+            // ignore and add column
+        }
 
         sB = new StringBuilder();
-        // ALTER TABLE xyz ADD COLUMN newcol TEXT;
         sB.append("ALTER TABLE ");
         sB.append(TABLE_NOTES);
         sB.append(" ADD COLUMN ");
         sB.append(COLUMN_FORM).append(" CLOB;");
-        String query = sB.toString();
+        String addColumnQuery = sB.toString();
 
         Logger.i("DAONOTES", "Upgrading database from version 1 to version 2.");
 
         db.beginTransaction();
         try {
-            db.execSQL(query);
+            db.execSQL(addColumnQuery);
             db.setTransactionSuccessful();
         } catch (Exception e) {
             throw new IOException(e.getLocalizedMessage());
