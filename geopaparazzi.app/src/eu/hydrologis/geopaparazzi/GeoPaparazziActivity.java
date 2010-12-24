@@ -48,6 +48,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.ActionItem;
@@ -228,13 +229,24 @@ public class GeoPaparazziActivity extends Activity {
             break;
         }
         case R.id.dashboard_undonote_item_button: {
-            try {
-                DaoNotes.deleteLastInsertedNote(this);
-                Toast.makeText(this, R.string.last_note_deleted, Toast.LENGTH_LONG).show();
-            } catch (IOException e) {
-                e.printStackTrace();
-                Toast.makeText(this, R.string.last_note_not_deleted, Toast.LENGTH_LONG).show();
-            }
+            new AlertDialog.Builder(this).setTitle(R.string.text_undo_a_gps_note).setMessage(R.string.remove_last_note_prompt)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                        public void onClick( DialogInterface dialog, int whichButton ) {
+                        }
+                    }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                        public void onClick( DialogInterface dialog, int whichButton ) {
+                            try {
+                                DaoNotes.deleteLastInsertedNote(GeoPaparazziActivity.this);
+                                Toast.makeText(GeoPaparazziActivity.this, R.string.last_note_deleted, Toast.LENGTH_LONG).show();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                Toast.makeText(GeoPaparazziActivity.this, R.string.last_note_not_deleted, Toast.LENGTH_LONG)
+                                        .show();
+                            }
+                        }
+                    }).show();
+
             break;
         }
         case R.id.dashboard_log_item_button: {
