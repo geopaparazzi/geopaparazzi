@@ -2,26 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
 	android:orientation="vertical" android:background="@color/white">
-	<!-- 
-	 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
 		android:id="@+id/mainupper" android:layout_weight="1"
 		android:layout_gravity="top" android:layout_width="fill_parent"
 		android:layout_height="fill_parent">
-	 -->
 
 		<LinearLayout android:layout_width="wrap_content"
 			android:layout_height="fill_parent" android:id="@+id/uppercol1"
+			android:layout_gravity="left" android:gravity="right"
 			android:background="#00000000" android:cacheColorHint="#00000000"
-			android:layout_gravity="center_horizontal"
 			android:orientation="horizontal" android:layout_weight="1">
 		</LinearLayout>
 		<TextView android:text="asdasd" android:id="@+id/compassInfoView"
-			android:layout_width="fill_parent" android:layout_height="fill_parent"
+			android:layout_width="wrap_content" android:layout_height="fill_parent"
+			android:gravity="right" android:layout_gravity="right"
 			android:background="#00000000" android:cacheColorHint="#00000000"
 			android:paddingLeft="15px" android:paddingTop="15px"
 			android:paddingRight="5px" android:layout_weight="1"></TextView>
 
-	<!-- 
 	</FrameLayout>
--->
 </LinearLayout>

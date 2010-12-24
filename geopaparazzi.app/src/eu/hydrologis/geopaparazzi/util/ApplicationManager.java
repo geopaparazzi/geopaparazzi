@@ -19,7 +19,6 @@ package eu.hydrologis.geopaparazzi.util;
 
 import static eu.hydrologis.geopaparazzi.util.Constants.GPSLOGGINGINTERVALKEY;
 import static eu.hydrologis.geopaparazzi.util.Constants.GPS_LOGGING_INTERVAL;
-import static eu.hydrologis.geopaparazzi.util.Constants.MAPSFOLDERKEY;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_GEOPAPARAZZI;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_KMLEXPORT;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_MAPSCACHE;
@@ -182,8 +181,6 @@ public class ApplicationManager implements SensorEventListener, LocationListener
     private ApplicationManager( Context context ) {
         this.context = context;
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-        String mapsCachePath = preferences.getString(MAPSFOLDERKEY, null);
         /*
          * take care to create all the folders needed
          * 
@@ -234,11 +231,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
                     alert(MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
                             mediaDir.getAbsolutePath()));
 
-            if (mapsCachePath != null) {
-                mapsCacheDir = new File(mapsCachePath);
-            } else {
-                mapsCacheDir = new File(sdcardDir.getAbsolutePath() + PATH_MAPSCACHE);
-            }
+            mapsCacheDir = new File(sdcardDir.getAbsolutePath() + PATH_MAPSCACHE);
             Logger.i(LOGTAG, "MAPSCACHEPATH:" + mapsCacheDir.getAbsolutePath());
             if (!mapsCacheDir.exists())
                 if (!mapsCacheDir.mkdirs()) {

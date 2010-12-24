@@ -12,11 +12,6 @@
 			android:order="4" android:key="gps_logging_interval"
 			android:defaultValue="5"></ListPreference>
 	</PreferenceScreen>
-	<PreferenceScreen android:title="@string/mapping_preferences"
-		android:order="5">
-		<EditTextPreference android:order="6" android:key="osm_folder"
-			android:title="@string/osm_folder" android:defaultValue="/sdcard/geopaparazzi/osmcache"></EditTextPreference>
-	</PreferenceScreen>
 	<PreferenceScreen android:title="@string/sms_preferences"
 		android:order="9">
 		<!-- <PreferenceCategory android:title="@string/sms_sending" android:order="10"> 

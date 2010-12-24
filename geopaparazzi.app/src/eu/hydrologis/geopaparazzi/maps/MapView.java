@@ -108,11 +108,13 @@ public class MapView extends View implements ApplicationManagerListener {
     private static Paint measurePaint;
     private static Paint measureTextPaint;
     private static String distanceString;
-    private boolean touchDragging;
-    private SharedPreferences preferences;
     private static List<Float> measureCoordinatesX = new ArrayList<Float>(30);
     private static List<Float> measureCoordinatesY = new ArrayList<Float>(30);
     private static String metersString;
+    private static float actionBarHeight;
+
+    private boolean touchDragging;
+    private SharedPreferences preferences;
     private Context context;
 
     public MapView( Context context, AttributeSet set ) {
@@ -164,6 +166,8 @@ public class MapView extends View implements ApplicationManagerListener {
             gotoIcon = BitmapFactory.decodeResource(getResources(), R.drawable.goto_position);
             gpsIconWidth = positionIcon.getWidth();
             gpsIconHeight = positionIcon.getHeight();
+
+            actionBarHeight = getResources().getDimension(R.dimen.action_bar_height);
         }
 
         ApplicationManager deviceManager = ApplicationManager.getInstance(context);
@@ -303,7 +307,7 @@ public class MapView extends View implements ApplicationManagerListener {
                 sb.append(distanceString);
                 sb.append((int) measuredDistance);
                 sb.append(metersString);
-                canvas.drawText(sb.toString(), 5, 15, measureTextPaint); //$NON-NLS-1$
+                canvas.drawText(sb.toString(), 5, 15 + actionBarHeight, measureTextPaint); //$NON-NLS-1$
             }
 
             if (gotoLat != -1) {

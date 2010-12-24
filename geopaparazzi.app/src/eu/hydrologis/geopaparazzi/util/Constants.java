@@ -140,7 +140,6 @@ public interface Constants {
 
     public static final String GPSLOGGINGINTERVALKEY = "gps_logging_interval";
     public static final String GPSLOGGINGDISTANCEKEY = "gps_logging_distance";
-    public static final String MAPSFOLDERKEY = "maps_folder";
     public static final String SMSCATCHERKEY = "sms_catcher";
     public static final String PANICKEY = "panic_number";
     public static final String GPSLAST_LONGITUDE = "gpslast_longitude";

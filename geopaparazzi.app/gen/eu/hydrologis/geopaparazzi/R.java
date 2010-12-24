@@ -189,7 +189,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int center_on_gps_btn=0x7f0b005f;
         public static final int colorLabel=0x7f0b003c;
         public static final int color_spinner=0x7f0b003d;
-        public static final int compassInfoView=0x7f0b0012;
+        public static final int compassInfoView=0x7f0b0011;
         public static final int content=0x7f0b0030;
         public static final int coordOkButton=0x7f0b0053;
         public static final int dashboard_export_item=0x7f0b002c;
@@ -248,7 +248,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int longitudetext_last=0x7f0b006b;
         public static final int main_frameLayout=0x7f0b001b;
         public static final int mainosmtagslayout=0x7f0b007b;
-        public static final int mainupper=0x7f0b0010;
+        public static final int mainupper=0x7f0b0012;
         public static final int map_cancel=0x7f0b0059;
         public static final int map_delete=0x7f0b0057;
         public static final int map_ok=0x7f0b0058;
@@ -291,7 +291,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int text1=0x7f0b000c;
         public static final int title=0x7f0b007a;
         public static final int tracks=0x7f0b0073;
-        public static final int uppercol1=0x7f0b0011;
+        public static final int uppercol1=0x7f0b0010;
         public static final int visible=0x7f0b0045;
         public static final int widthLabel=0x7f0b0039;
         public static final int widthText=0x7f0b003a;
@@ -440,6 +440,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int panic_number_notset=0x7f070082;
         public static final int panic_upper=0x7f070084;
         public static final int prompt_gpsenable=0x7f07003e;
+        public static final int remove_last_note_prompt=0x7f07008f;
         public static final int satellite_num=0x7f07002e;
         public static final int saveimg=0x7f070035;
         public static final int sdcard_notexist=0x7f070023;
