@@ -17,8 +17,9 @@
  */
 package eu.hydrologis.geopaparazzi;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.*;
+import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LATITUDE;
 import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LONGITUDE;
+import static eu.hydrologis.geopaparazzi.util.Constants.PANICKEY;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +31,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -50,6 +50,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
+import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.ActionItem;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
@@ -238,8 +239,13 @@ public class GeoPaparazziActivity extends Activity {
         }
         case R.id.dashboard_log_item_button: {
             QuickAction qa = new QuickAction(v);
-            qa.addActionItem(applicationManager.getStartLogQuickAction(actionBar));
-            qa.addActionItem(applicationManager.getStopLogQuickAction(actionBar));
+            if (applicationManager.isGpsLogging()) {
+                ActionItem stopLogQuickAction = applicationManager.getStopLogQuickAction(actionBar);
+                qa.addActionItem(stopLogQuickAction);
+            } else {
+                ActionItem startLogQuickAction = applicationManager.getStartLogQuickAction(actionBar);
+                qa.addActionItem(startLogQuickAction);
+            }
             qa.setAnimStyle(QuickAction.ANIM_AUTO);
             qa.show();
             break;
