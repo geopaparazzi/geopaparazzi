@@ -36,7 +36,6 @@ import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
- * 
  * The action bar utilities class.
  * 
  * @author Andrea Antonello (www.hydrologis.com)

@@ -178,7 +178,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
     public Context getContext() {
         return context;
     }
-    
+
     private ApplicationManager( Context context ) {
         this.context = context;
 
@@ -375,11 +375,10 @@ public class ApplicationManager implements SensorEventListener, LocationListener
             return false;
         }
         boolean gpsIsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        List<String> allProviders = locationManager.getAllProviders();
-        for( String string : allProviders ) {
-            Logger.i(this, "Loctaion Providers: " + string);
-        }
-        
+        // List<String> allProviders = locationManager.getAllProviders();
+        // for( String string : allProviders ) {
+        // Logger.i(this, "Loctaion Providers: " + string);
+        // }
         Logger.i(this, "Gps is on: " + gpsIsEnabled);
         return gpsIsEnabled;
     }
