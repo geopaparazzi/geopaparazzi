@@ -183,5 +183,6 @@
     <string name="enable_debug">Attiva log di debug</string>
     
     <string name="gpslogging_only">Questa funzione è attiva solo quando il gps è attivo e ha segnale.</string>
-
+    <string name="remove_last_note_prompt">Vuoi veramente rimuovere l\'ultima nota? Non e\' possibile tornare indietro.</string>
+	
 </resources>
