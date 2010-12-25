@@ -193,16 +193,19 @@ public class DaoMaps {
             String query = "delete from " + TABLE_MAPS + " where " + COLUMN_ID + " = " + id;
             SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
             sqlUpdate.execute();
+            sqlUpdate.close();
 
             // delete properties
             query = "delete from " + TABLE_PROPERTIES + " where " + COLUMN_MAPID + " = " + id;
             sqlUpdate = sqliteDatabase.compileStatement(query);
             sqlUpdate.execute();
+            sqlUpdate.close();
 
             // delete data
             query = "delete from " + TABLE_DATA + " where " + COLUMN_MAPID + " = " + id;
             sqlUpdate = sqliteDatabase.compileStatement(query);
             sqlUpdate.execute();
+            sqlUpdate.close();
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
@@ -232,6 +235,7 @@ public class DaoMaps {
             // sqliteDatabase.execSQL(query);
             SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
             sqlUpdate.execute();
+            sqlUpdate.close();
 
             if (name != null && name.length() > 0) {
                 sb = new StringBuilder();
@@ -245,6 +249,7 @@ public class DaoMaps {
                 Logger.i(TAG, query);
                 sqlUpdate = sqliteDatabase.compileStatement(query);
                 sqlUpdate.execute();
+                sqlUpdate.close();
             }
 
             sqliteDatabase.setTransactionSuccessful();

@@ -195,16 +195,19 @@ public class DaoGpsLog {
             String query = "delete from " + TABLE_GPSLOGS + " where " + COLUMN_ID + " = " + id;
             SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
             sqlUpdate.execute();
+            sqlUpdate.close();
 
             // delete properties
             query = "delete from " + TABLE_PROPERTIES + " where " + COLUMN_LOGID + " = " + id;
             sqlUpdate = sqliteDatabase.compileStatement(query);
             sqlUpdate.execute();
+            sqlUpdate.close();
 
             // delete data
             query = "delete from " + TABLE_DATA + " where " + COLUMN_LOGID + " = " + id;
             sqlUpdate = sqliteDatabase.compileStatement(query);
             sqlUpdate.execute();
+            sqlUpdate.close();
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
@@ -234,6 +237,7 @@ public class DaoGpsLog {
             // sqliteDatabase.execSQL(query);
             SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
             sqlUpdate.execute();
+            sqlUpdate.close();
 
             if (name != null && name.length() > 0) {
                 sb = new StringBuilder();
@@ -247,6 +251,7 @@ public class DaoGpsLog {
                 Logger.i("DAOGPSLOG", query);
                 sqlUpdate = sqliteDatabase.compileStatement(query);
                 sqlUpdate.execute();
+                sqlUpdate.close();
             }
 
             sqliteDatabase.setTransactionSuccessful();
@@ -272,6 +277,7 @@ public class DaoGpsLog {
             String query = sb.toString();
             SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
             sqlUpdate.execute();
+            sqlUpdate.close();
 
             sb = new StringBuilder();
             sb.append("delete from ");
@@ -283,6 +289,7 @@ public class DaoGpsLog {
             query = sb.toString();
             sqlUpdate = sqliteDatabase.compileStatement(query);
             sqlUpdate.execute();
+            sqlUpdate.close();
 
             sb = new StringBuilder();
             sb.append("UPDATE ");
@@ -296,6 +303,7 @@ public class DaoGpsLog {
             // sqliteDatabase.execSQL(query);
             sqlUpdate = sqliteDatabase.compileStatement(query);
             sqlUpdate.execute();
+            sqlUpdate.close();
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
