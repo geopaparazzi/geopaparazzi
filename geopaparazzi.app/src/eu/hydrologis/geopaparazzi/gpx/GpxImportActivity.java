@@ -30,6 +30,7 @@ import android.widget.CheckBox;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.util.Constants;
+import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * Gpx file import activity.
@@ -87,6 +88,7 @@ public class GpxImportActivity extends Activity {
                                             Constants.MAP_TYPE_POINT);
                                 }
                             } catch (IOException e) {
+                                Logger.e(this, e.getLocalizedMessage(), e);
                                 e.printStackTrace();
                             } finally {
                                 gpsImportHandler.sendEmptyMessage(0);

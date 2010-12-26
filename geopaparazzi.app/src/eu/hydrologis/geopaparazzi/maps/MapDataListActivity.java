@@ -37,6 +37,7 @@ import android.widget.TextView;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.util.Constants;
+import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * Maps listing activity.
@@ -57,6 +58,7 @@ public class MapDataListActivity extends ListActivity {
             mapsList = DaoMaps.getMaps(this);
             mapsItems = (MapItem[]) mapsList.toArray(new MapItem[mapsList.size()]);
         } catch (IOException e1) {
+            Logger.e(this, e1.getLocalizedMessage(), e1);
             e1.printStackTrace();
             return;
         }
@@ -90,6 +92,7 @@ public class MapDataListActivity extends ListActivity {
                                         currentItem.getId(), currentItem.getColor(),
                                         currentItem.getWidth(), currentItem.isVisible(), null);
                             } catch (IOException e) {
+                                Logger.e(this, e.getLocalizedMessage(), e);
                                 e.printStackTrace();
                             }
                         }

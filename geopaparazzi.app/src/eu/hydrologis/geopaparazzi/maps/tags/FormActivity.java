@@ -42,6 +42,7 @@ import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.maps.TagsManager;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
+import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * The form activity.
@@ -96,6 +97,7 @@ public class FormActivity extends Activity {
                     DaoNotes.addNote(FormActivity.this, longitude, latitude, -1.0, sqlDate, formLongnameDefinition, endString);
                     finish();
                 } catch (Exception e) {
+                    Logger.e(this, e.getLocalizedMessage(), e);
                     e.printStackTrace();
                     ApplicationManager.openDialog("An error occurred while saving:\n" + endString, FormActivity.this);
                 }
@@ -144,6 +146,7 @@ public class FormActivity extends Activity {
             }
 
         } catch (JSONException e) {
+            Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
         }
 
@@ -169,6 +172,7 @@ public class FormActivity extends Activity {
                 if (text != null)
                     update(key, text);
             } catch (JSONException e) {
+                Logger.e(this, e.getLocalizedMessage(), e);
                 e.printStackTrace();
             }
 

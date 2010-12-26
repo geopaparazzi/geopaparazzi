@@ -232,12 +232,14 @@ public class TileCache {
                                 // Log.v(LOGTAG, "Web bitmap in cache: " + tileDef);
                             }
                         } catch (Exception e) {
+                            Logger.e(this, e.getLocalizedMessage(), e);
                             Log.e(LOGTAG, "Problems reading image from web: " + urlStr); //$NON-NLS-1$
                         } finally {
                             if (tileInputStream != null) {
                                 try {
                                     tileInputStream.close();
                                 } catch (IOException e) {
+                                    Logger.e(this, e.getLocalizedMessage(), e);
                                     e.printStackTrace();
                                 }
                             }

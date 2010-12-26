@@ -61,7 +61,18 @@ public class Logger {
         if (!logToFile) {
             return Log.e(name, message);
         } else {
-            message = message + "\n" + t.getMessage();
+            StringBuilder sb = new StringBuilder();
+            sb.append(message);
+            sb.append("\n");
+            sb.append(t.getMessage());
+            StackTraceElement[] stackTrace = t.getStackTrace();
+            for( StackTraceElement ste : stackTrace ) {
+                sb.append("in class: ");
+                sb.append(ste.getClassName()).append(" method: ");
+                sb.append(ste.getMethodName()).append(" line:");
+                sb.append(ste.getLineNumber()).append("\n");
+            }
+            message = sb.toString();
             dumpToFile(name, message, LOGTYPE.E);
         }
         return -1;

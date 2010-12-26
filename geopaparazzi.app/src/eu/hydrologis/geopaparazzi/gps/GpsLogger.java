@@ -164,6 +164,7 @@ public class GpsLogger implements ApplicationManagerListener {
                             DaoGpsLog.addGpsLogDataPoint(sqliteDatabase, gpsLogId, recLon, recLat, recAlt, gpsLoc.getSqlDate());
                             sqliteDatabase.setTransactionSuccessful();
                         } catch (Exception e) {
+                            Logger.e(this, e.getLocalizedMessage(), e);
                             throw new IOException(e.getLocalizedMessage());
                         } finally {
                             sqliteDatabase.endTransaction();
@@ -194,7 +195,7 @@ public class GpsLogger implements ApplicationManagerListener {
                 } catch (SQLiteFullException e) {
                     e.printStackTrace();
                     String msg = context.getResources().getString(R.string.error_disk_full);
-                    Log.e(LOGTAG, msg);
+                    Logger.e(this, msg, e);
                     // ApplicationManager.getInstance(getContext()).alertDialog(msg);
                     // FIXME
                     // Toasts.longAsyncToast(context, msg);
@@ -203,8 +204,7 @@ public class GpsLogger implements ApplicationManagerListener {
                 } catch (Exception e) {
                     e.printStackTrace();
                     String msg = context.getResources().getString(R.string.cantwrite_gpslog);
-                    Log.e(LOGTAG, msg);
-                    Log.e(LOGTAG, e.getLocalizedMessage());
+                    Logger.e(this, msg, e);
                     // FIXME
                     // Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
                     playAlert();
@@ -220,7 +220,7 @@ public class GpsLogger implements ApplicationManagerListener {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     String msg = context.getResources().getString(R.string.cantwrite_gpslog);
-                    Log.e(LOGTAG, msg);
+                    Logger.e(this, msg, e);
                     Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
                 }
             }
@@ -289,6 +289,7 @@ public class GpsLogger implements ApplicationManagerListener {
                     mMediaPlayer.start();
                 }
             } catch (Exception e) {
+                Logger.e(this, e.getLocalizedMessage(), e);
                 e.printStackTrace();
             }
         };
@@ -304,6 +305,7 @@ public class GpsLogger implements ApplicationManagerListener {
             }
             alertSoundHandler.sendEmptyMessage(0);
         } catch (InterruptedException e) {
+            Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
         }
     }

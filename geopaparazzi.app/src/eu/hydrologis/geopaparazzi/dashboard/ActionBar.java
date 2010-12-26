@@ -128,7 +128,6 @@ public class ActionBar {
         switch( id ) {
         case R.id.action_bar_info: {
             QuickAction qa = new QuickAction(v);
-
             infoQuickaction.setTitle(createGpsInfo());
             qa.addActionItem(infoQuickaction);
             qa.setAnimStyle(QuickAction.ANIM_AUTO);
@@ -140,9 +139,9 @@ public class ActionBar {
 
             eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction qa = new eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction(
                     v);
-            qa.addActionItem(applicationManager.getNotesQuickAction());
-            qa.addActionItem(applicationManager.getPicturesQuickAction());
-            qa.addActionItem(applicationManager.getAudioQuickAction());
+            qa.addActionItem(applicationManager.getNotesQuickAction(qa));
+            qa.addActionItem(applicationManager.getPicturesQuickAction(qa));
+            qa.addActionItem(applicationManager.getAudioQuickAction(qa));
             qa.setAnimStyle(QuickAction.ANIM_AUTO);
             qa.show();
             break;

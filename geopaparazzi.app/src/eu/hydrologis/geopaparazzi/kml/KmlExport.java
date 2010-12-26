@@ -29,6 +29,7 @@ import eu.hydrologis.geopaparazzi.util.CompressionUtilities;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.Note;
 import eu.hydrologis.geopaparazzi.util.Picture;
+import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * A kmz exporter for notes, logs and pics.
@@ -85,6 +86,7 @@ public class KmlExport {
             try {
                 sB.append(note.toKmlString());
             } catch (Exception e) {
+                Logger.e(this, e.getLocalizedMessage(), e);
                 e.printStackTrace();
             }
         }
@@ -120,6 +122,7 @@ public class KmlExport {
 
             kmlFile.delete();
         } catch (IOException e) {
+            Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
         }
     }

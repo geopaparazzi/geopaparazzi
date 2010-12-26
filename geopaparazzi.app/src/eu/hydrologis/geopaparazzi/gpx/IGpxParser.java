@@ -26,7 +26,7 @@ public interface IGpxParser {
     /*
      * READ GPX DATA FILE
      */
-    public abstract int read( String filename );
+    public abstract void read( String filename );
 
     public abstract List<PointF3D> getPoints();
 

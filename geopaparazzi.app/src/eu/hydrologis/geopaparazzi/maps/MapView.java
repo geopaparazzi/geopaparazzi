@@ -63,6 +63,7 @@ import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.Note;
 import eu.hydrologis.geopaparazzi.util.PointsContainer;
 import eu.hydrologis.geopaparazzi.util.debug.Debug;
+import eu.hydrologis.geopaparazzi.util.debug.Logger;
 /**
  * The view showing the gps position on OSM tiles. 
  * 
@@ -324,6 +325,7 @@ public class MapView extends View implements ApplicationManagerListener {
             canvas.drawLine(0, height / 2f, width, height / 2f, crossPaint);
 
         } catch (IOException e) {
+            Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
         }
 
@@ -445,6 +447,7 @@ public class MapView extends View implements ApplicationManagerListener {
 
             }
         } catch (IOException e) {
+            Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
         }
     }
@@ -499,6 +502,7 @@ public class MapView extends View implements ApplicationManagerListener {
 
             }
         } catch (IOException e) {
+            Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
         }
     }
@@ -534,6 +538,7 @@ public class MapView extends View implements ApplicationManagerListener {
                 }
             }
         } catch (IOException e) {
+            Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
         }
     }
@@ -752,6 +757,7 @@ public class MapView extends View implements ApplicationManagerListener {
             fetchTiles();
             invalidate();
         } catch (IOException e) {
+            Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
         }
     }

@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import eu.hydrologis.geopaparazzi.util.debug.Logger;
+
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
@@ -79,6 +81,7 @@ public class FileUtils {
                 try {
                     br.close();
                 } catch (IOException e) {
+                    Logger.e("FILEUTILS", e.getLocalizedMessage(), e);
                     e.printStackTrace();
                 }
             }

@@ -104,6 +104,7 @@ public class DaoMaps {
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
+            Logger.e("DAOMAPS", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();
@@ -209,6 +210,7 @@ public class DaoMaps {
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
+            Logger.e("DAOMAPS", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();
@@ -254,6 +256,7 @@ public class DaoMaps {
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
+            Logger.e("DAOMAPS", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();
@@ -461,6 +464,7 @@ public class DaoMaps {
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
+            Logger.e("DAOMAPS", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();

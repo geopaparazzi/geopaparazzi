@@ -75,6 +75,7 @@ public class TestMock {
                     try {
                         Thread.sleep(2000);
                     } catch (InterruptedException e) {
+                        Logger.e(this, e.getLocalizedMessage(), e);
                         e.printStackTrace();
                     }
                 }

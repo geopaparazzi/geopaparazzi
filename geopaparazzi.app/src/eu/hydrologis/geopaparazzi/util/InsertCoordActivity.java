@@ -26,6 +26,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.maps.MapView;
+import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * Activity to get to a location by coordinate.
@@ -61,6 +62,7 @@ public class InsertCoordActivity extends Activity {
                         throw new Exception();
                     }
                 } catch (Exception e1) {
+                    Logger.e(this, e1.getLocalizedMessage(), e1);
                     Toast.makeText(InsertCoordActivity.this, R.string.wrongLongitude,
                             Toast.LENGTH_LONG).show();
                     return;
@@ -72,6 +74,7 @@ public class InsertCoordActivity extends Activity {
                         throw new Exception();
                     }
                 } catch (Exception e1) {
+                    Logger.e(this, e1.getLocalizedMessage(), e1);
                     Toast.makeText(InsertCoordActivity.this, R.string.wrongLatitude,
                             Toast.LENGTH_LONG).show();
                     return;

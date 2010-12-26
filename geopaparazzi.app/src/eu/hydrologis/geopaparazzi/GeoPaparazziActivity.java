@@ -197,6 +197,7 @@ public class GeoPaparazziActivity extends Activity {
             DatabaseManager.getInstance().getDatabase(this);
             checkMapsAndLogsVisibility();
         } catch (IOException e) {
+            Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
             Toast.makeText(this, R.string.databaseError, Toast.LENGTH_LONG).show();
         }
@@ -220,9 +221,9 @@ public class GeoPaparazziActivity extends Activity {
         switch( id ) {
         case R.id.dashboard_note_item_button: {
             QuickAction qa = new QuickAction(v);
-            qa.addActionItem(applicationManager.getNotesQuickAction());
-            qa.addActionItem(applicationManager.getPicturesQuickAction());
-            qa.addActionItem(applicationManager.getAudioQuickAction());
+            qa.addActionItem(applicationManager.getNotesQuickAction(qa));
+            qa.addActionItem(applicationManager.getPicturesQuickAction(qa));
+            qa.addActionItem(applicationManager.getAudioQuickAction(qa));
             qa.setAnimStyle(QuickAction.ANIM_AUTO);
             qa.show();
             break;
@@ -239,6 +240,7 @@ public class GeoPaparazziActivity extends Activity {
                                 DaoNotes.deleteLastInsertedNote(GeoPaparazziActivity.this);
                                 Toast.makeText(GeoPaparazziActivity.this, R.string.last_note_deleted, Toast.LENGTH_LONG).show();
                             } catch (IOException e) {
+                                Logger.e(this, e.getLocalizedMessage(), e);
                                 e.printStackTrace();
                                 Toast.makeText(GeoPaparazziActivity.this, R.string.last_note_not_deleted, Toast.LENGTH_LONG)
                                         .show();
@@ -251,10 +253,10 @@ public class GeoPaparazziActivity extends Activity {
         case R.id.dashboard_log_item_button: {
             QuickAction qa = new QuickAction(v);
             if (applicationManager.isGpsLogging()) {
-                ActionItem stopLogQuickAction = applicationManager.getStopLogQuickAction(actionBar);
+                ActionItem stopLogQuickAction = applicationManager.getStopLogQuickAction(actionBar, qa);
                 qa.addActionItem(stopLogQuickAction);
             } else {
-                ActionItem startLogQuickAction = applicationManager.getStartLogQuickAction(actionBar);
+                ActionItem startLogQuickAction = applicationManager.getStartLogQuickAction(actionBar, qa);
                 qa.addActionItem(startLogQuickAction);
             }
             qa.setAnimStyle(QuickAction.ANIM_AUTO);
@@ -377,6 +379,7 @@ public class GeoPaparazziActivity extends Activity {
 
                     kmlHandler.sendEmptyMessage(0);
                 } catch (IOException e) {
+                    Logger.e(this, e.getLocalizedMessage(), e);
                     e.printStackTrace();
                     Toast.makeText(GeoPaparazziActivity.this, R.string.kmlnonsaved, Toast.LENGTH_LONG).show();
                 }
@@ -493,7 +496,7 @@ public class GeoPaparazziActivity extends Activity {
                         mng.sendTextMessage(number, null, msg, dummyEvent, dummyEvent);
                         Toast.makeText(this, R.string.message_sent, Toast.LENGTH_LONG).show();
                     } catch (Exception e) {
-                        Log.e("SmsIntent", "SendException", e);
+                        Logger.e(this, e.getLocalizedMessage(), e);
                         ApplicationManager.openDialog(R.string.panic_number_notset, this);
                     }
 

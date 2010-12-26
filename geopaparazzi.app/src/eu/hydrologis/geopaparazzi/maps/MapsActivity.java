@@ -33,6 +33,7 @@ import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
+import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
@@ -123,6 +124,7 @@ public class MapsActivity extends Activity {
                     return true;
                 }
             } catch (IOException e1) {
+                Logger.e(this, e1.getLocalizedMessage(), e1);
                 e1.printStackTrace();
                 return false;
             }

@@ -68,6 +68,7 @@ public class DaoNotes {
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
+            Logger.e("DAONOTES", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();
@@ -85,6 +86,7 @@ public class DaoNotes {
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
+            Logger.e("DAONOTES", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();
@@ -248,6 +250,7 @@ public class DaoNotes {
             db.setVersion(2);
             db.setTransactionSuccessful();
         } catch (Exception e) {
+            Logger.e("DAONOTES", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             db.endTransaction();
@@ -301,6 +304,7 @@ public class DaoNotes {
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
+            Logger.e("DAONOTES", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();

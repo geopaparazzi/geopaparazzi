@@ -49,6 +49,7 @@ import android.widget.TextView;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.util.Constants;
+import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * Gpx listing activity.
@@ -82,8 +83,9 @@ public class GpsDataListActivity extends ListActivity {
             logsList = DaoGpsLog.getGpslogs(this);
             Collections.sort(logsList, mapItemSorter);
             gpslogItems = (MapItem[]) logsList.toArray(new MapItem[logsList.size()]);
-        } catch (IOException e1) {
-            e1.printStackTrace();
+        } catch (IOException e) {
+            Logger.e(this, e.getLocalizedMessage(), e);
+            e.printStackTrace();
             return;
         }
 
@@ -137,6 +139,7 @@ public class GpsDataListActivity extends ListActivity {
             try {
                 mergeSelected();
             } catch (IOException e) {
+                Logger.e(this, e.getLocalizedMessage(), e);
                 e.printStackTrace();
             }
             return true;
@@ -185,6 +188,7 @@ public class GpsDataListActivity extends ListActivity {
             }
             DataManager.getInstance().setLogsVisible(oneVisible);
         } catch (IOException e) {
+            Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
         }
 

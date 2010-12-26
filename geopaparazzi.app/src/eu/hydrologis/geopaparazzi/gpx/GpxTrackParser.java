@@ -31,6 +31,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 import eu.hydrologis.geopaparazzi.util.PointF3D;
+import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * Gpx Track parser
@@ -58,7 +59,7 @@ public class GpxTrackParser extends DefaultHandler implements IGpxParser {
         pointsList.clear();
     }
 
-    public int read( String filename ) {
+    public void read( String filename ) {
         clear();
         try {
             FileInputStream in = new FileInputStream(new File(filename));
@@ -72,9 +73,9 @@ public class GpxTrackParser extends DefaultHandler implements IGpxParser {
             reader.parse(source);
             in.close();
         } catch (Exception e) {
+            Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
         }
-        return 0;
     }
 
     /*

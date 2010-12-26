@@ -24,193 +24,186 @@ import eu.hydrologis.geopaparazzi.R;
  * 
  */
 public class CustomPopupWindow {
-	protected final View anchor;
-	protected final PopupWindow window;
-	private View root;
-	private Drawable background = null;
-	protected final WindowManager windowManager;
+    protected final View anchor;
+    protected final PopupWindow window;
+    private View root;
+    private Drawable background = null;
+    protected final WindowManager windowManager;
 
-	/**
-	 * Create a QuickAction
-	 * 
-	 * @param anchor
-	 *            the view that the QuickAction will be displaying 'from'
-	 */
-	public CustomPopupWindow(View anchor) {
-		this.anchor = anchor;
-		this.window = new PopupWindow(anchor.getContext());
+    /**
+     * Create a QuickAction
+     * 
+     * @param anchor
+     *            the view that the QuickAction will be displaying 'from'
+     */
+    public CustomPopupWindow( View anchor ) {
+        this.anchor = anchor;
+        this.window = new PopupWindow(anchor.getContext());
 
-		// when a touch even happens outside of the window
-		// make the window go away
-		window.setTouchInterceptor(new OnTouchListener() {
-			public boolean onTouch(View v, MotionEvent event) {
-				if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
-					CustomPopupWindow.this.window.dismiss();
+        // when a touch even happens outside of the window
+        // make the window go away
+        window.setTouchInterceptor(new OnTouchListener(){
+            public boolean onTouch( View v, MotionEvent event ) {
+                if (event.getAction() == MotionEvent.ACTION_OUTSIDE) {
+                    CustomPopupWindow.this.window.dismiss();
+                    return true;
+                }
+                return false;
+            }
+        });
 
-					return true;
-				}
+        windowManager = (WindowManager) anchor.getContext().getSystemService(Context.WINDOW_SERVICE);
 
-				return false;
-			}
-		});
+        onCreate();
+    }
 
-		windowManager = (WindowManager) anchor.getContext().getSystemService(
-				Context.WINDOW_SERVICE);
+    /**
+     * Anything you want to have happen when created. Probably should create a
+     * view and setup the event listeners on child views.
+     */
+    protected void onCreate() {
+    }
 
-		onCreate();
-	}
+    /**
+     * In case there is stuff to do right before displaying.
+     */
+    protected void onShow() {
+    }
 
-	/**
-	 * Anything you want to have happen when created. Probably should create a
-	 * view and setup the event listeners on child views.
-	 */
-	protected void onCreate() {
-	}
+    protected void preShow() {
+        if (root == null) {
+            throw new IllegalStateException("setContentView was not called with a view to display.");
+        }
 
-	/**
-	 * In case there is stuff to do right before displaying.
-	 */
-	protected void onShow() {
-	}
+        onShow();
 
-	protected void preShow() {
-		if (root == null) {
-			throw new IllegalStateException(
-					"setContentView was not called with a view to display.");
-		}
+        if (background == null) {
+            window.setBackgroundDrawable(new BitmapDrawable());
+        } else {
+            window.setBackgroundDrawable(background);
+        }
 
-		onShow();
+        // if using PopupWindow#setBackgroundDrawable this is the only values of
+        // the width and hight that make it work
+        // otherwise you need to set the background of the root viewgroup
+        // and set the popupwindow background to an empty BitmapDrawable
 
-		if (background == null) {
-			window.setBackgroundDrawable(new BitmapDrawable());
-		} else {
-			window.setBackgroundDrawable(background);
-		}
+        window.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setTouchable(true);
+        window.setFocusable(true);
+        window.setOutsideTouchable(true);
 
-		// if using PopupWindow#setBackgroundDrawable this is the only values of
-		// the width and hight that make it work
-		// otherwise you need to set the background of the root viewgroup
-		// and set the popupwindow background to an empty BitmapDrawable
+        window.setContentView(root);
+    }
 
-		window.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
-		window.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
-		window.setTouchable(true);
-		window.setFocusable(true);
-		window.setOutsideTouchable(true);
+    public void setBackgroundDrawable( Drawable background ) {
+        this.background = background;
+    }
 
-		window.setContentView(root);
-	}
+    /**
+     * Sets the content view. Probably should be called from {@link onCreate}
+     * 
+     * @param root
+     *            the view the popup will display
+     */
+    public void setContentView( View root ) {
+        this.root = root;
 
-	public void setBackgroundDrawable(Drawable background) {
-		this.background = background;
-	}
+        window.setContentView(root);
+    }
 
-	/**
-	 * Sets the content view. Probably should be called from {@link onCreate}
-	 * 
-	 * @param root
-	 *            the view the popup will display
-	 */
-	public void setContentView(View root) {
-		this.root = root;
+    /**
+     * Will inflate and set the view from a resource id
+     * 
+     * @param layoutResID
+     */
+    public void setContentView( int layoutResID ) {
+        LayoutInflater inflator = (LayoutInflater) anchor.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-		window.setContentView(root);
-	}
+        setContentView(inflator.inflate(layoutResID, null));
+    }
 
-	/**
-	 * Will inflate and set the view from a resource id
-	 * 
-	 * @param layoutResID
-	 */
-	public void setContentView(int layoutResID) {
-		LayoutInflater inflator = (LayoutInflater) anchor.getContext()
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    /**
+     * If you want to do anything when {@link dismiss} is called
+     * 
+     * @param listener
+     */
+    public void setOnDismissListener( PopupWindow.OnDismissListener listener ) {
+        window.setOnDismissListener(listener);
+    }
 
-		setContentView(inflator.inflate(layoutResID, null));
-	}
+    /**
+     * Displays like a popdown menu from the anchor view
+     */
+    public void showDropDown() {
+        showDropDown(0, 0);
+    }
 
-	/**
-	 * If you want to do anything when {@link dismiss} is called
-	 * 
-	 * @param listener
-	 */
-	public void setOnDismissListener(PopupWindow.OnDismissListener listener) {
-		window.setOnDismissListener(listener);
-	}
+    /**
+     * Displays like a popdown menu from the anchor view.
+     * 
+     * @param xOffset
+     *            offset in X direction
+     * @param yOffset
+     *            offset in Y direction
+     */
+    public void showDropDown( int xOffset, int yOffset ) {
+        preShow();
 
-	/**
-	 * Displays like a popdown menu from the anchor view
-	 */
-	public void showDropDown() {
-		showDropDown(0, 0);
-	}
+        window.setAnimationStyle(R.style.Animations_PopDownMenu_Left);
 
-	/**
-	 * Displays like a popdown menu from the anchor view.
-	 * 
-	 * @param xOffset
-	 *            offset in X direction
-	 * @param yOffset
-	 *            offset in Y direction
-	 */
-	public void showDropDown(int xOffset, int yOffset) {
-		preShow();
+        window.showAsDropDown(anchor, xOffset, yOffset);
+    }
 
-		window.setAnimationStyle(R.style.Animations_PopDownMenu_Left);
+    /**
+     * Displays like a QuickAction from the anchor view.
+     */
+    public void showLikeQuickAction() {
+        showLikeQuickAction(0, 0);
+    }
 
-		window.showAsDropDown(anchor, xOffset, yOffset);
-	}
+    /**
+     * Displays like a QuickAction from the anchor view.
+     * 
+     * @param xOffset
+     *            offset in the X direction
+     * @param yOffset
+     *            offset in the Y direction
+     */
+    public void showLikeQuickAction( int xOffset, int yOffset ) {
+        preShow();
 
-	/**
-	 * Displays like a QuickAction from the anchor view.
-	 */
-	public void showLikeQuickAction() {
-		showLikeQuickAction(0, 0);
-	}
+        window.setAnimationStyle(R.style.Animations_PopUpMenu_Center);
 
-	/**
-	 * Displays like a QuickAction from the anchor view.
-	 * 
-	 * @param xOffset
-	 *            offset in the X direction
-	 * @param yOffset
-	 *            offset in the Y direction
-	 */
-	public void showLikeQuickAction(int xOffset, int yOffset) {
-		preShow();
+        int[] location = new int[2];
+        anchor.getLocationOnScreen(location);
 
-		window.setAnimationStyle(R.style.Animations_PopUpMenu_Center);
+        Rect anchorRect = new Rect(location[0], location[1], location[0] + anchor.getWidth(), location[1] + anchor.getHeight());
 
-		int[] location = new int[2];
-		anchor.getLocationOnScreen(location);
+        root.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        root.measure(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 
-		Rect anchorRect = new Rect(location[0], location[1], location[0]
-				+ anchor.getWidth(), location[1] + anchor.getHeight());
+        int rootWidth = root.getMeasuredWidth();
+        int rootHeight = root.getMeasuredHeight();
 
-		root.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
-				LayoutParams.WRAP_CONTENT));
-		root.measure(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        int screenWidth = windowManager.getDefaultDisplay().getWidth();
+        // int screenHeight = windowManager.getDefaultDisplay().getHeight();
 
-		int rootWidth = root.getMeasuredWidth();
-		int rootHeight = root.getMeasuredHeight();
+        int xPos = ((screenWidth - rootWidth) / 2) + xOffset;
+        int yPos = anchorRect.top - rootHeight + yOffset;
 
-		int screenWidth = windowManager.getDefaultDisplay().getWidth();
-		// int screenHeight = windowManager.getDefaultDisplay().getHeight();
+        // display on bottom
+        if (rootHeight > anchorRect.top) {
+            yPos = anchorRect.bottom + yOffset;
 
-		int xPos = ((screenWidth - rootWidth) / 2) + xOffset;
-		int yPos = anchorRect.top - rootHeight + yOffset;
+            window.setAnimationStyle(R.style.Animations_PopDownMenu_Center);
+        }
 
-		// display on bottom
-		if (rootHeight > anchorRect.top) {
-			yPos = anchorRect.bottom + yOffset;
+        window.showAtLocation(anchor, Gravity.NO_GRAVITY, xPos, yPos);
+    }
 
-			window.setAnimationStyle(R.style.Animations_PopDownMenu_Center);
-		}
-
-		window.showAtLocation(anchor, Gravity.NO_GRAVITY, xPos, yPos);
-	}
-
-	public void dismiss() {
-		window.dismiss();
-	}
+    public void dismiss() {
+        window.dismiss();
+    }
 }

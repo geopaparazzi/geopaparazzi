@@ -101,6 +101,7 @@ public class DaoGpsLog {
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
+            Logger.e("DAOGPSLOG", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();
@@ -211,6 +212,7 @@ public class DaoGpsLog {
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
+            Logger.e("DOAGPSLOG", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();
@@ -256,6 +258,7 @@ public class DaoGpsLog {
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
+            Logger.e("DAOGPSLOG", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();
@@ -307,6 +310,7 @@ public class DaoGpsLog {
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
+            Logger.e("DAOGPSLOG", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();
@@ -458,6 +462,7 @@ public class DaoGpsLog {
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
+            Logger.e("DAOGPSLOG", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();

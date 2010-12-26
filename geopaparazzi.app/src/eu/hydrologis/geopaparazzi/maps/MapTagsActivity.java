@@ -33,6 +33,7 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.maps.TagsManager.TagObject;
 import eu.hydrologis.geopaparazzi.util.Constants;
+import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * Osm tags adding activity.
@@ -63,6 +64,7 @@ public class MapTagsActivity extends Activity {
             tagNamesArray = TagsManager.getInstance(this).getTagsArrays();
         } catch (Exception e1) {
             tagNamesArray = new String[]{"ERROR IN READING TAGS"};
+            Logger.e(this, e1.getLocalizedMessage(), e1);
             e1.printStackTrace();
         }
 
@@ -106,6 +108,7 @@ public class MapTagsActivity extends Activity {
                             }
 
                         } catch (Exception e) {
+                            Logger.e(this, e.getLocalizedMessage(), e);
                             e.printStackTrace();
                             Toast.makeText(MapTagsActivity.this, R.string.notenonsaved, Toast.LENGTH_LONG).show();
                         }

@@ -38,6 +38,7 @@ import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Line;
+import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * Data properties activity.
@@ -140,6 +141,7 @@ public class GpsDataPropertiesActivity extends Activity {
                                             line.getLatList().get(0));
                         }
                     } catch (IOException e) {
+                        Logger.e(this, e.getLocalizedMessage(), e);
                         e.printStackTrace();
                     }
                 }
@@ -164,6 +166,7 @@ public class GpsDataPropertiesActivity extends Activity {
                         DaoGpsLog.updateLogProperties(GpsDataPropertiesActivity.this, item.getId(),
                                 newColor, newWidth, item.isVisible(), newText);
                     } catch (IOException e) {
+                        Logger.e(this, e.getLocalizedMessage(), e);
                         e.printStackTrace();
                     }
                     finish();

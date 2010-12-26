@@ -155,6 +155,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
                 bW.write("\nutctimestamp=");
                 bW.write(currentDatestring);
             } catch (IOException e1) {
+                Logger.e(this, e1.getLocalizedMessage(), e1);
                 throw new IOException(e1.getLocalizedMessage());
             } finally {
                 bW.close();
@@ -173,6 +174,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
                 p.set("gps-timestamp", String.valueOf(date.getTime() / 1000));
                 camera.setParameters(p);
             } catch (Exception e) {
+                Logger.e(this, e.getLocalizedMessage(), e);
                 // if something goes wrong here, try to ignore internal tags
             }
 
@@ -183,7 +185,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.e(this, e.getLocalizedMessage(), e);
             alert("An error occurred while taking the picture: " + e.getLocalizedMessage());
             return false;
         } finally {
@@ -224,6 +226,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
         try {
             camera.setPreviewDisplay(holder);
         } catch (IOException e) {
+            Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
         }
     }

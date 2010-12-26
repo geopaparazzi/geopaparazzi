@@ -31,6 +31,7 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
+import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * Notes taking activity.
@@ -98,6 +99,7 @@ public class NoteActivity extends Activity {
 
                     DaoNotes.addNote(NoteActivity.this, longitude, latitude, altitude, sqlDate, noteString, null);
                 } catch (IOException e) {
+                    Logger.e(this, e.getLocalizedMessage(), e);
                     e.printStackTrace();
                     Toast.makeText(NoteActivity.this, R.string.notenonsaved, Toast.LENGTH_LONG).show();
                 }

@@ -22,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -49,8 +50,9 @@ public class ImageCaptureCallback implements PictureCallback {
             filoutputStream.write(data);
             filoutputStream.flush();
             filoutputStream.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            Logger.e(this, e.getLocalizedMessage(), e);
+            e.printStackTrace();
         }
         if (imgFile.exists() && imgFile.length() > 0) {
             AlertDialog.Builder builder = new AlertDialog.Builder(cameraActivity);
