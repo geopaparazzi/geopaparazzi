@@ -28,7 +28,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
-import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
@@ -39,6 +38,8 @@ import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import eu.hydrologis.geopaparazzi.R;
@@ -55,22 +56,11 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
 public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
     private Camera camera;
-    // private boolean isPreviewRunning = false;
+    private boolean isPreviewRunning = false;
 
     private SurfaceView surfaceView;
     private SurfaceHolder surfaceHolder;
     private File picturesDir;
-
-    // private Camera.PictureCallback mPictureCallbackRaw = new Camera.PictureCallback(){
-    // public void onPictureTaken( byte[] data, Camera c ) {
-    // CameraActivity.this.camera.startPreview();
-    // }
-    // };
-
-    // private Camera.ShutterCallback mShutterCallback = new Camera.ShutterCallback(){
-    // public void onShutter() {
-    // }
-    // };
     private ApplicationManager deviceManager;
     private ProgressDialog progressDialog;
     private ImageButton snapButton;
@@ -78,30 +68,29 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
 
+        getWindow().setFormat(PixelFormat.TRANSLUCENT);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
         setContentView(R.layout.camera);
 
-        getWindow().setFormat(PixelFormat.TRANSLUCENT);
-        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        deviceManager = ApplicationManager.getInstance(this);
+        picturesDir = deviceManager.getMediaDir();
 
         surfaceView = (SurfaceView) findViewById(R.id.surface);
         surfaceHolder = surfaceView.getHolder();
         surfaceHolder.addCallback(this);
         surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
-        deviceManager = ApplicationManager.getInstance(this);
-        picturesDir = deviceManager.getMediaDir();
-
         snapButton = (ImageButton) findViewById(R.id.snapButton);
-        Paint buttonPaint = new Paint();
-        buttonPaint.setARGB(0, 255, 255, 255);
-        snapButton.setImageResource(R.drawable.snap);
-        snapButton.setBackgroundColor(buttonPaint.getColor());
         snapButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
                 takePicture();
             }
         });
 
+        Logger.d(this, "Camera activity created");
     }
 
     public boolean onKeyDown( int keyCode, KeyEvent event ) {
@@ -203,39 +192,42 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
     }
 
     public void surfaceChanged( SurfaceHolder holder, int format, int w, int h ) {
-        // if (this.isPreviewRunning) {
-        // camera.stopPreview();
-        // }
+        Logger.d(this, "Enter surface changed");
+        if (this.isPreviewRunning) {
+            Logger.d(this, "Stopping preview");
+            camera.stopPreview();
+            this.isPreviewRunning = false;
+        }
         Camera.Parameters p = camera.getParameters();
         Size previewSize = p.getPreviewSize();
         Logger.d(this, "Preview size before: " + previewSize.width + "/" + previewSize.height);
         p.setPreviewSize(previewSize.width, previewSize.height);
 
         camera.setParameters(p);
-        camera.startPreview();
-        // try {
-        // this.camera.setPreviewDisplay(holder);
-        // this.isPreviewRunning = true;
-        // } catch (Exception e) {
-        // e.printStackTrace();
-        // }
-    }
-
-    public void surfaceCreated( SurfaceHolder holder ) {
-        camera = Camera.open();
         try {
             camera.setPreviewDisplay(holder);
         } catch (IOException e) {
             Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
         }
+        camera.startPreview();
+        this.isPreviewRunning = true;
+        Logger.d(this, "Exit surface changed");
+    }
+
+    public void surfaceCreated( SurfaceHolder holder ) {
+        Logger.d(this, "Enter surface created");
+        camera = Camera.open();
+        Logger.d(this, "Exit surface created");
     }
 
     public void surfaceDestroyed( SurfaceHolder holder ) {
+        Logger.d(this, "Enter surface destroyed");
         camera.stopPreview();
-        // this.isPreviewRunning = false;
+        this.isPreviewRunning = false;
         camera.release();
         camera = null;
+        Logger.d(this, "Exit surface destroyed");
     }
 
     public boolean capture( Camera.PictureCallback jpegHandler ) {

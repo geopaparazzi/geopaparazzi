@@ -10,7 +10,7 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".camera.CameraActivity">
+		<activity android:name=".camera.CameraActivity" android:configChanges="orientation">
 			<intent-filter>
 				<action android:name="eu.hydrologis.geopaparazzi.camera.TAKE_PICTURE" />
 				<category android:name="android.intent.category.DEFAULT" />

@@ -161,14 +161,13 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int quickcontact_slider_grip_left=0x7f020032;
         public static final int quickcontact_slider_grip_right=0x7f020033;
         public static final int quickcontact_top_frame=0x7f020034;
-        public static final int search_button_pressed=0x7f02003b;
-        public static final int search_button_released=0x7f02003c;
+        public static final int search_button_pressed=0x7f02003a;
+        public static final int search_button_released=0x7f02003b;
         public static final int separator=0x7f020035;
-        public static final int snap=0x7f020036;
-        public static final int sym_action_add=0x7f020037;
-        public static final int sym_action_map=0x7f020038;
-        public static final int warning=0x7f020039;
-        public static final int warning_button_drawable=0x7f02003a;
+        public static final int sym_action_add=0x7f020036;
+        public static final int sym_action_map=0x7f020037;
+        public static final int warning=0x7f020038;
+        public static final int warning_button_drawable=0x7f020039;
     }
     public static final class id {
         public static final int about=0x7f0b0001;
