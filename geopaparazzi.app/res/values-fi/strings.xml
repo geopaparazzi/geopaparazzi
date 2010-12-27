@@ -27,7 +27,7 @@
     <string name="gpsloggingoff">Jäljen tallennus lopetettu.</string>
     <string name="gpsloggingon">Jäljen tallennus aloitettu...</string>
     <string name="gpsloggingalarm">Estä/lopeta hälytys... </string>
-    <string name="gpslogging_only">Tämä toiminto on mahdollinen vain GPS-seurannan aikana.</string>
+
     <string name="nogps_data">GPS-tietoa ei vielä saatavilla!</string>
     
     <string name="about">Info</string>
@@ -68,8 +68,6 @@
         <string name="last_position">Viime sijainti</string>
         <string name="distance">Matka [m]:</string>
         
-
-
         <string name="mainmenu_kmlexport">Tallenna kml</string>
         <string name="mainmenu_gpxconvert">Tuo gpx</string>
         <string name="mainmenu_gpsdataselect">Jäljet</string>
@@ -125,8 +123,8 @@
         <string name="measureinfo">Viime mittauksen tiedot</string>
         <string name="measureinfo_first">Alkupiste</string>
         <string name="measureinfo_last">Loppupiste</string>
-        <string name="text_show_position_on_map">Sijainti kartalla</string>
-    <string name="text_logging">tallennus</string>
+        
+    <string name="text_show_position_on_map">Sijainti kartalla</string>
     <string name="text_start_gps_logging">Aloita jäljen tallennus</string>
     <string name="text_stop_gps_logging">Lopeta jäljen tallennus</string>
     <string name="text_take_a_gps_note">Tee muistiinpano</string>
@@ -161,14 +159,29 @@
     <string name="gps_log">Jälki</string>
     <string name="gps_log_name">Anna nimi tai käytä oletusnimeä</string>    
     
-        <!-- added 2010-11-13  -->
-       <string name="text_take_audio">Nauhoita</string>
-       <string name="audio_recording">Nauhoitetaan... paina lopettaaksesi</string>
+       <string name="text_take_audio">Äänitä</string>
+       <string name="audio_recording">Äänitetään... paina lopettaaksesi</string>
        <string name="audio_recording_stop">Lopeta</string>
 
        <string name="panic">Hätä!</string>
        <string name="panic_number">Numero hätää varten</string>
        <string name="panic_number_notset">Numeroa ei ole asetettu. Talleta se asetuksiin</string>
        <string name="panic_for_real">Haluatko varmasti lähettää sijaintisi?</string>
-</resources>
 
+    <string name="panic_upper">  HÄTÄ!  </string>
+    <string name="send_status_update">Lähetä sijainti</string>
+    <string name="help_needed">Apua tarvitaan sijainnissa</string>
+    <string name="message_sent">Viesti lähetetty</string>
+
+    <string name="last_note_deleted">Viime muistiinpano poistettu</string>
+    <string name="last_note_not_deleted">Muistiinpanon poisto ei onnistunut</string>
+    
+    <string name="text_logging">Jälkeä tallennetaan</string>
+    <string name="text_gpson">GPS aktiivinen</string>
+
+    <string name="debug">Tarkista asetukset</string>
+    <string name="enable_debug">Tee tarkistusloki</string>
+    
+    <string name="gpslogging_only">Tämä toiminto on mahdollinen vain GPS-seurannan aikana.</string>
+
+</resources>

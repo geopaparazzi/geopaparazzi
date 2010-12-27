@@ -459,8 +459,6 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int text_start_gps_logging=0x7f070073;
         public static final int text_stop_gps_logging=0x7f070074;
         public static final int text_take_a_gps_note=0x7f070075;
-        /**  added 2010-11-13  
-         */
         public static final int text_take_audio=0x7f07007d;
         public static final int text_take_picture=0x7f070077;
         public static final int text_undo_a_gps_note=0x7f070076;
