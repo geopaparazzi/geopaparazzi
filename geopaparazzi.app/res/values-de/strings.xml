@@ -184,5 +184,7 @@
     <string name="enable_debug">Aktiviere Debug-Log</string>
 
 	<string name="gpslogging_only">Diese Funktion ist nur verfügbar, wenn GPS aktiviert und Position bereits empfangen wurde.</string>
-	
+	<string name="remove_last_note_prompt">Letzte Notiz wirklich löschen? Aktion kann nicht rückgängig gemacht werden.</string>
+
+    <string name="export_for_real">Daten exportieren?</string>
 </resources>
