@@ -185,5 +185,7 @@
     
     <string name="gpslogging_only">This function is available only when the gps is active and a signal is avaliable.</string>
     <string name="remove_last_note_prompt">Do you really want to remove the last text note? This can\'t be undone.</string>
+    
+    <string name="export_for_real">Export data?</string>
 	
 </resources>

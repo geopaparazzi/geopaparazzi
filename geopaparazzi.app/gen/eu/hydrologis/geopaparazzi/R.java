@@ -356,6 +356,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int enable_debug=0x7f07008d;
         public static final int error_disk_full=0x7f07006e;
         public static final int exit=0x7f070021;
+        public static final int export_for_real=0x7f070090;
         public static final int googleview=0x7f070030;
         public static final int goto_coordinate=0x7f070036;
         public static final int gps_log=0x7f07007b;

@@ -276,7 +276,17 @@ public class GeoPaparazziActivity extends Activity {
             break;
         }
         case R.id.dashboard_export_item_button: {
-            exportToKml();
+            new AlertDialog.Builder(this).setTitle(R.string.export_for_real)
+                    .setIcon(android.R.drawable.ic_dialog_info)
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                        public void onClick( DialogInterface dialog, int whichButton ) {
+                        }
+                    }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                        public void onClick( DialogInterface dialog, int whichButton ) {
+                            exportToKml();
+                        }
+                    }).show();
+
             break;
         }
         case R.id.panicbutton: {
