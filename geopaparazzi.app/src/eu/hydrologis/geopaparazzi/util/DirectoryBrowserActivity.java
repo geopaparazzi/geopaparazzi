@@ -26,7 +26,9 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import eu.hydrologis.geopaparazzi.R;
 
@@ -60,6 +62,13 @@ public class DirectoryBrowserActivity extends ListActivity {
             };
         }
 
+        Button upButton = (Button) findViewById(R.id.upbutton);
+        upButton.setOnClickListener(new OnClickListener(){
+            public void onClick( View v ) {
+                goUp();
+            }
+        });
+
         geoPaparazziDir = ApplicationManager.getInstance(this).getGeoPaparazziDir();
         getFiles(geoPaparazziDir, geoPaparazziDir.listFiles(fileFilter));
     }
@@ -67,31 +76,31 @@ public class DirectoryBrowserActivity extends ListActivity {
     @Override
     protected void onListItemClick( ListView l, View v, int position, long id ) {
         int selectedRow = (int) id;
-        if (selectedRow == 0) {
-            currentDir = currentDir.getParentFile();
+        File file = new File(items.get(selectedRow));
+        if (file.isDirectory()) {
+            currentDir = file;
             getFiles(currentDir, currentDir.listFiles(fileFilter));
         } else {
-            File file = new File(items.get(selectedRow));
-            if (file.isDirectory()) {
-                currentDir = file;
-                getFiles(currentDir, currentDir.listFiles(fileFilter));
-            } else {
-                String absolutePath = file.getAbsolutePath();
-                Intent intent = new Intent(intentId);
-                intent.putExtra(Constants.PATH, absolutePath);
-                startActivity(intent);
-                finish();
-            }
+            String absolutePath = file.getAbsolutePath();
+            Intent intent = new Intent(intentId);
+            intent.putExtra(Constants.PATH, absolutePath);
+            startActivity(intent);
+            finish();
         }
+    }
+
+    private void goUp() {
+        File tmpDir = currentDir.getParentFile();
+        if (tmpDir != null && tmpDir.exists()) {
+            currentDir = tmpDir;
+        }
+        getFiles(currentDir, currentDir.listFiles(fileFilter));
     }
 
     private void getFiles( File parent, File[] files ) {
         Arrays.sort(files);
         currentDir = parent;
         items = new ArrayList<String>();
-        items.add(parent.getAbsolutePath());
-
-        // items.add(getString(R.string.goto_root));
         for( File file : files ) {
             items.add(file.getPath());
         }

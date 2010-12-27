@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-      android:layout_width="fill_parent"
-      android:layout_height="fill_parent"
-      android:background="#FFFFFF" 
-       >
-        <ListView android:id="@android:id/list"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:background="#FFFFFF" />
-        <TextView android:id="@android:id/empty"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:background="#FFFFFF" 
-          android:text="" android:textColor="@color/black"/>
-</LinearLayout>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:background="#FFFFFF">
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:orientation="vertical"
+		android:background="#FFFFFF">
+		<ListView android:id="@android:id/list" android:layout_width="fill_parent"
+			android:layout_height="fill_parent" android:background="#FFFFFF"
+			android:cacheColorHint="#00000000" />
+		<!-- <TextView android:id="@android:id/empty" android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" android:background="#FFFFFF" android:text="" 
+			android:textColor="@color/black" /> -->
+
+	</LinearLayout>
+	<Button android:text="@string/up" android:id="@+id/upbutton"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:layout_gravity="center_horizontal|bottom"></Button>
+</FrameLayout>

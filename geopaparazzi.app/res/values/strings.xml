@@ -187,5 +187,6 @@
     <string name="remove_last_note_prompt">Do you really want to remove the last text note? This can\'t be undone.</string>
     
     <string name="export_for_real">Export data?</string>
+    <string name="up">up</string>
 	
 </resources>
