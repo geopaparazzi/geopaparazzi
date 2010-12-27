@@ -61,6 +61,9 @@ public class Logger {
         if (!logToFile) {
             return Log.e(name, message);
         } else {
+            // do also normal log
+            Log.e(name, message, t);
+            // and dump
             StringBuilder sb = new StringBuilder();
             sb.append(message);
             sb.append("\n");

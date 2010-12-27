@@ -727,14 +727,21 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         pictureQuickaction.setIcon(context.getResources().getDrawable(R.drawable.quickaction_pictures));
         pictureQuickaction.setOnClickListener(new OnClickListener(){
             public void onClick( View v ) {
-                GpsLocation loc = applicationManager.getLoc();
-                if (loc != null) {
-                    Intent intent = new Intent(Constants.TAKE_PICTURE);
-                    context.startActivity(intent);
-                } else {
-                    openDialog(R.string.gpslogging_only, context);
+                try {
+                    Logger.d(this, "Asking location");
+                    GpsLocation loc = applicationManager.getLoc();
+                    if (loc != null) {
+                        Logger.d(this, "Location != null");
+                        Intent intent = new Intent(Constants.TAKE_PICTURE);
+                        context.startActivity(intent);
+                    } else {
+                        Logger.d(this, "Location == null");
+                        openDialog(R.string.gpslogging_only, context);
+                    }
+                    qa.dismiss();
+                } catch (Exception e) {
+                    Logger.e(this, e.getLocalizedMessage(), e);
                 }
-                qa.dismiss();
             }
         });
         return pictureQuickaction;
