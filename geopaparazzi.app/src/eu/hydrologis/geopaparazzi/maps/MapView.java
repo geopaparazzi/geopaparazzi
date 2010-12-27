@@ -292,6 +292,7 @@ public class MapView extends View implements ApplicationManagerListener {
             float gpsX = lonToScreen(width, gpsLon, centerLon, pixelDxInWorld);
             float gpsY = latToScreen(height, gpsLat, centerLat, pixelDyInWorld);
 
+            logGpsCoords(gpsX, gpsY);
             if ((gpsX >= 0 && gpsX <= width) && (gpsY >= 0 && gpsY <= height)) {
                 canvas.drawBitmap(positionIcon, gpsX - gpsIconWidth / 2f, gpsY - gpsIconHeight / 2f, null);
             }
@@ -330,6 +331,20 @@ public class MapView extends View implements ApplicationManagerListener {
         }
 
     }
+
+    private void logGpsCoords( float gpsX, float gpsY ) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Pre-Drawing coords: ");
+        sb.append(gpsLon);
+        sb.append("/");
+        sb.append(gpsLat);
+        sb.append("=  screen: ");
+        sb.append(gpsX);
+        sb.append("/");
+        sb.append(gpsY);
+        Logger.d(this, sb.toString());
+    }
+
     /**
      * Draws the tile frames. Meant for debugging purposes.
      * 

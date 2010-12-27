@@ -59,6 +59,7 @@ public class MapsActivity extends Activity {
 
         // requestWindowFeature(Window.FEATURE_PROGRESS);
         mapsView = (MapView) findViewById(R.id.osmviewid);
+        applicationManager.addListener(mapsView);
 
         // button view
         ImageButton zoomIn = (ImageButton) findViewById(R.id.zoom_in_btn);
