@@ -59,6 +59,7 @@ public class MapsActivity extends Activity {
 
         // requestWindowFeature(Window.FEATURE_PROGRESS);
         mapsView = (MapView) findViewById(R.id.osmviewid);
+        applicationManager.setMapView(mapsView);
         applicationManager.addListener(mapsView);
 
         // button view
