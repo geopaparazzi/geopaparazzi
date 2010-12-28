@@ -582,4 +582,32 @@ public class DaoGpsLog {
 
     }
 
+    public static void setEndTs( Context context, long logid, Date end ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        try {
+            sqliteDatabase.beginTransaction();
+
+            StringBuilder sb = new StringBuilder();
+            sb = new StringBuilder();
+            sb.append("UPDATE ");
+            sb.append(TABLE_GPSLOGS);
+            sb.append(" SET ");
+            sb.append(COLUMN_LOG_ENDTS).append("='").append(dateFormatter.format(end)).append("' ");
+            sb.append("WHERE ").append(COLUMN_ID).append("=").append(logid);
+
+            String query = sb.toString();
+            Logger.i("DAOGPSLOG", query);
+            SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
+            sqlUpdate.execute();
+            sqlUpdate.close();
+
+            sqliteDatabase.setTransactionSuccessful();
+        } catch (Exception e) {
+            Logger.e("DAOGPSLOG", e.getLocalizedMessage(), e);
+            throw new IOException(e.getLocalizedMessage());
+        } finally {
+            sqliteDatabase.endTransaction();
+        }
+    }
+
 }

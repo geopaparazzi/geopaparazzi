@@ -186,6 +186,10 @@ public class GpsLogger implements ApplicationManagerListener {
                     if (currentPointsNum < 2) {
                         Logger.i(LOGTAG, "Removing gpslog, since too few points were added. Logid: " + gpsLogId);
                         DaoGpsLog.deleteGpslog(context, gpsLogId);
+                    } else {
+                        // set the end timestamp
+                        java.sql.Date end = new java.sql.Date(System.currentTimeMillis());
+                        DaoGpsLog.setEndTs(context, gpsLogId, end);
                     }
 
                     currentPointsNum = 0;
