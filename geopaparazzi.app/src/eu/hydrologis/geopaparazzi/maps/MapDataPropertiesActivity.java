@@ -126,7 +126,7 @@ public class MapDataPropertiesActivity extends Activity {
                         if (line.getLonList().size() > 0) {
                             ApplicationManager
                                     .getInstance(MapDataPropertiesActivity.this)
-                                    .getOsmView()
+                                    .getMapView()
                                     .setGotoCoordinate(line.getLonList().get(0),
                                             line.getLatList().get(0));
                         }

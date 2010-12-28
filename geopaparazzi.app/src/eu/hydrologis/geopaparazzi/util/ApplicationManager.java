@@ -125,7 +125,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
 
     private List<ApplicationManagerListener> listeners = new ArrayList<ApplicationManagerListener>();
 
-    private MapView osmView;
+    private MapView mapView;
 
     private float[] mags;
 
@@ -596,16 +596,16 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         return gpsLogger.isLogging();
     }
 
-    public void setOsmView( MapView osmView ) {
-        this.osmView = osmView;
+    public void setMapView( MapView mapView ) {
+        this.mapView = mapView;
 
         if (gpsLoc != null) {
-            osmView.onLocationChanged(gpsLoc);
+            mapView.onLocationChanged(gpsLoc);
         }
     }
 
-    public MapView getOsmView() {
-        return osmView;
+    public MapView getMapView() {
+        return mapView;
     }
 
     public List<Float> getLast100Elevations() {

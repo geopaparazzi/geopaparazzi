@@ -84,7 +84,7 @@ public class InsertCoordActivity extends Activity {
                     public void run() {
                         openMapViewHandler.post(new Runnable(){
                             public void run() {
-                                MapView osmView = applicationManager.getOsmView();
+                                MapView osmView = applicationManager.getMapView();
                                 osmView.requestFocus();
                                 osmView.setGotoCoordinate(lon, lat);
                             }

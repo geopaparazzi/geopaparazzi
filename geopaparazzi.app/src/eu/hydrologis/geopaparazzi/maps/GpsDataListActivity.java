@@ -97,7 +97,6 @@ public class GpsDataListActivity extends ListActivity {
         } catch (IOException e) {
             Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
-            return;
         }
 
         ArrayAdapter<MapItem> arrayAdapter = new ArrayAdapter<MapItem>(this, R.layout.gpslog_row, gpslogItems){

@@ -84,10 +84,9 @@ public class GpsDataPropertiesActivity extends Activity {
             });
 
             newWidth = item.getWidth();
-            ArrayAdapter< ? > widthSpinnerAdapter = ArrayAdapter.createFromResource(this,
-                    R.array.array_widths, android.R.layout.simple_spinner_item);
-            widthSpinnerAdapter
-                    .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            ArrayAdapter< ? > widthSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.array_widths,
+                    android.R.layout.simple_spinner_item);
+            widthSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             widthView.setAdapter(widthSpinnerAdapter);
             int widthIndex = widthsList.indexOf(String.valueOf((int) item.getWidth()));
             widthView.setSelection(widthIndex);
@@ -102,10 +101,9 @@ public class GpsDataPropertiesActivity extends Activity {
 
             // color box
             newColor = item.getColor();
-            ArrayAdapter< ? > colorSpinnerAdapter = ArrayAdapter.createFromResource(this,
-                    R.array.array_colornames, android.R.layout.simple_spinner_item);
-            colorSpinnerAdapter
-                    .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            ArrayAdapter< ? > colorSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.array_colornames,
+                    android.R.layout.simple_spinner_item);
+            colorSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             colorView.setAdapter(colorSpinnerAdapter);
             int colorIndex = colorList.indexOf(item.getColor());
             colorView.setSelection(colorIndex);
@@ -131,14 +129,14 @@ public class GpsDataPropertiesActivity extends Activity {
             zoomButton.setOnClickListener(new Button.OnClickListener(){
                 public void onClick( View v ) {
                     try {
-                        Line line = DaoGpsLog.getGpslogAsLine(GpsDataPropertiesActivity.this,
-                                item.getId());
+                        Line line = DaoGpsLog.getGpslogAsLine(GpsDataPropertiesActivity.this, item.getId());
                         if (line.getLonList().size() > 0) {
-                            ApplicationManager
-                                    .getInstance(GpsDataPropertiesActivity.this)
-                                    .getOsmView()
-                                    .setGotoCoordinate(line.getLonList().get(0),
-                                            line.getLatList().get(0));
+                            ApplicationManager applicationManager = ApplicationManager
+                                    .getInstance(GpsDataPropertiesActivity.this);
+                            MapView mapsView = applicationManager.getMapView();
+                            List<Double> lonList = line.getLonList();
+                            List<Double> latList = line.getLatList();
+                            mapsView.setGotoCoordinate(lonList.get(0), latList.get(0));
                         }
                     } catch (IOException e) {
                         Logger.e(this, e.getLocalizedMessage(), e);
@@ -163,8 +161,8 @@ public class GpsDataPropertiesActivity extends Activity {
             okButton.setOnClickListener(new Button.OnClickListener(){
                 public void onClick( View v ) {
                     try {
-                        DaoGpsLog.updateLogProperties(GpsDataPropertiesActivity.this, item.getId(),
-                                newColor, newWidth, item.isVisible(), newText);
+                        DaoGpsLog.updateLogProperties(GpsDataPropertiesActivity.this, item.getId(), newColor, newWidth,
+                                item.isVisible(), newText);
                     } catch (IOException e) {
                         Logger.e(this, e.getLocalizedMessage(), e);
                         e.printStackTrace();
