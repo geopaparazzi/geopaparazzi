@@ -18,7 +18,7 @@
 package eu.hydrologis.geopaparazzi.maps;
 
 import java.io.IOException;
-import java.util.Collection;
+import java.util.List;
 
 import android.app.ListActivity;
 import android.content.Context;
@@ -46,24 +46,27 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
  */
 public class MapDataListActivity extends ListActivity {
     private MapItem[] mapsItems;
-    private ArrayAdapter<MapItem> arrayAdapter;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
 
         setContentView(R.layout.mapslist);
 
-        Collection<MapItem> mapsList = null;
+        refreshList();
+    }
+
+    private void refreshList() {
+        Logger.d(this, "refreshing maps list");
+        mapsItems = new MapItem[0];
         try {
-            mapsList = DaoMaps.getMaps(this);
+            List<MapItem> mapsList = DaoMaps.getMaps(this);
             mapsItems = (MapItem[]) mapsList.toArray(new MapItem[mapsList.size()]);
         } catch (IOException e1) {
             Logger.e(this, e1.getLocalizedMessage(), e1);
             e1.printStackTrace();
-            return;
         }
 
-        arrayAdapter = new ArrayAdapter<MapItem>(this, R.layout.maps_row, mapsItems){
+        ArrayAdapter<MapItem> arrayAdapter = new ArrayAdapter<MapItem>(this, R.layout.maps_row, mapsItems){
 
             @Override
             public View getView( int position, View cView, ViewGroup parent ) {
@@ -88,9 +91,8 @@ public class MapDataListActivity extends ListActivity {
                             currentItem.setVisible(isChecked);
                             currentItem.setDirty(true);
                             try {
-                                DaoMaps.updateMapProperties(MapDataListActivity.this,
-                                        currentItem.getId(), currentItem.getColor(),
-                                        currentItem.getWidth(), currentItem.isVisible(), null);
+                                DaoMaps.updateMapProperties(MapDataListActivity.this, currentItem.getId(),
+                                        currentItem.getColor(), currentItem.getWidth(), currentItem.isVisible(), null);
                             } catch (IOException e) {
                                 Logger.e(this, e.getLocalizedMessage(), e);
                                 e.printStackTrace();
@@ -105,18 +107,14 @@ public class MapDataListActivity extends ListActivity {
 
         };
         setListAdapter(arrayAdapter);
-        // getListView().setTextFilterEnabled(true);
     }
 
-    @Override
     protected void onListItemClick( ListView parent, View v, int position, long id ) {
         Intent intent = new Intent(Constants.MAPDATAPROPERTIES);
         intent.putExtra(Constants.PREFS_KEY_MAP4PROPERTIES, mapsItems[position]);
         startActivity(intent);
-        finish();
     }
 
-    // @Override
     protected void onPause() {
         boolean oneVisible = false;
         for( MapItem item : mapsItems ) {
@@ -128,13 +126,9 @@ public class MapDataListActivity extends ListActivity {
         super.onPause();
     }
 
-    // @Override
-    // protected void onResume() {
-    // arrayAdapter.notifyDataSetChanged();
-    // arrayAdapter.notifyDataSetInvalidated();
-    // getListView().invalidateViews();
-    //
-    // super.onResume();
-    // }
+    protected void onResume() {
+        super.onResume();
+        refreshList();
+    }
 
 }
