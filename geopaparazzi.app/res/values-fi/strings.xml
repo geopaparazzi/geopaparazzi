@@ -129,6 +129,7 @@
     <string name="text_stop_gps_logging">Lopeta jäljen tallennus</string>
     <string name="text_take_a_gps_note">Tee muistiinpano</string>
     <string name="text_take_picture">Ota kuva</string>
+    <string name="text_logging">Jäljen tallennus</string>
 
         <string name="abouttext">
             GeoPaparazzi\n
@@ -179,7 +180,7 @@
     <string name="last_note_deleted">Viime muistiinpano poistettu</string>
     <string name="last_note_not_deleted">Muistiinpanon poisto ei onnistunut</string>
     
-    <string name="text_logging">Jälkeä tallennetaan</string>
+    <string name="text_undo_a_gps_note">Poista muistiinpano</string>
     <string name="text_gpson">GPS aktiivinen</string>
 
     <string name="debug">Tarkista asetukset</string>
@@ -189,4 +190,5 @@
     
     <string name="remove_last_note_prompt">Haluatko todella peruuttamattomasti poistaa viime muistiinpanon?.</string>   
     <string name="export_for_real">Vie dataa?</string>
+    
 </resources>
