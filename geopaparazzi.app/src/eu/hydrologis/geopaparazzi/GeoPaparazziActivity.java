@@ -42,6 +42,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -327,6 +328,15 @@ public class GeoPaparazziActivity extends Activity {
         }
         return super.onMenuItemSelected(featureId, item);
     }
+    
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // force to exit through the exit button
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
 
     public void finish() {
         Logger.d(this, "Finish called!");
