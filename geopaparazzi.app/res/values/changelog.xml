@@ -19,6 +19,8 @@ New features:\n
 Fixes:\n
   * tons of code revies and tweaks\n
   * moved all hardcoded guis to xml\n
+  * much better interaction in maps lists\n
+  * logs now have proper end timestamp\n
 \n
 \n
 Version 1.2.0\n

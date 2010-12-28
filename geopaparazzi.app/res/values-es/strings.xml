@@ -144,6 +144,8 @@
 		\n 
 		La brújula ha sido adaptada por parte de Modern Compass Rose de RobA que se encuentra en la Open Clipart Library.\n 
 		\n 
+		The quickactions are adapted from Lorenz’s Londatiga tutorial.\n
+        \n
 		Links:\n 
 		www.geopaparazzi.eu\n 
 		www.hydrologis.eu\n 
@@ -151,6 +153,7 @@
 		www.beegis.org\n 
 		www.openstreetmap.org\n 
 		www.openclipart.org\n
+		www.londatiga.net\n
 	</string> 
   	
   	<string name="no_maps_in_list">No hay mapas en la lista. Con el fin de importar mapas, seleccionar la función de importación gpx en el menú.</string>

@@ -145,6 +145,8 @@
 	    \n
 	    The compass is adapted from the Modern Compass Rose by RobA found in the Open Clipart Library.\n
 	    \n
+	    The quickactions are adapted from Lorenz’s Londatiga tutorial.\n
+	    \n
 	    Links:\n
 	    www.geopaparazzi.eu\n
 	    www.hydrologis.eu\n
@@ -152,6 +154,7 @@
 	    www.beegis.org\n
 	    www.openstreetmap.org\n
 	    www.openclipart.org\n
+	    www.londatiga.net\n
 	</string>
 	
 	<string name="no_maps_in_list">There are no maps in the list. To import maps, use the import gpx function from the menu.</string>

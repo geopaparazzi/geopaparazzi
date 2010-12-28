@@ -144,6 +144,8 @@
             \n
             Kompassikuvake: The Modern Compass Rose, RobA, Open Clipart Library.\n
             \n
+            Quickactions: Lorenz’s Londatiga tutorial.\n
+            \n
             Linkit:\n
             www.geopaparazzi.eu\n
             www.hydrologis.eu\n
@@ -151,6 +153,7 @@
             www.beegis.org\n
             www.openstreetmap.org\n
             www.openclipart.org\n
+            www.londatiga.net\n
         </string>
         
         <string name="no_maps_in_list">Gpx-kansio on tyhjä. Käytä Tuo gpx -toimintoa tiedostojen tuomiseksi.</string>
