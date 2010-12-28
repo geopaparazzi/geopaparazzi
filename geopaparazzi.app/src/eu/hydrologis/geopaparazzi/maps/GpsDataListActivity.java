@@ -78,9 +78,20 @@ public class GpsDataListActivity extends ListActivity {
 
         handleNotes();
 
-        List<MapItem> logsList = null;
+        refreshList();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshList();
+    }
+
+    private void refreshList() {
+        Logger.d(this, "refreshing gps maps list");
+        gpslogItems = new MapItem[0];
         try {
-            logsList = DaoGpsLog.getGpslogs(this);
+            List<MapItem> logsList = DaoGpsLog.getGpslogs(this);
             Collections.sort(logsList, mapItemSorter);
             gpslogItems = (MapItem[]) logsList.toArray(new MapItem[logsList.size()]);
         } catch (IOException e) {
@@ -90,7 +101,6 @@ public class GpsDataListActivity extends ListActivity {
         }
 
         ArrayAdapter<MapItem> arrayAdapter = new ArrayAdapter<MapItem>(this, R.layout.gpslog_row, gpslogItems){
-
             @Override
             public View getView( int position, View cView, ViewGroup parent ) {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -116,7 +126,6 @@ public class GpsDataListActivity extends ListActivity {
 
         };
         setListAdapter(arrayAdapter);
-        // getListView().setTextFilterEnabled(true);
     }
 
     @Override
@@ -124,7 +133,6 @@ public class GpsDataListActivity extends ListActivity {
         Intent intent = new Intent(Constants.GPSLOG_PROPERTIES);
         intent.putExtra(Constants.PREFS_KEY_GPSLOG4PROPERTIES, gpslogItems[position]);
         startActivity(intent);
-        finish();
     }
 
     public boolean onCreateOptionsMenu( Menu menu ) {
