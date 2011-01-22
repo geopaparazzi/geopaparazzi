@@ -17,6 +17,8 @@
  */
 package eu.hydrologis.geopaparazzi.database;
 
+import static java.lang.Math.abs;
+
 import java.io.IOException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -35,6 +37,7 @@ import eu.hydrologis.geopaparazzi.maps.MapItem;
 import eu.hydrologis.geopaparazzi.maps.MapView;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Line;
+import eu.hydrologis.geopaparazzi.util.LineArray;
 import eu.hydrologis.geopaparazzi.util.PointF3D;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
@@ -382,12 +385,12 @@ public class DaoGpsLog {
      * @return the map of lines inside the bounds.
      * @throws IOException
      */
-    public static HashMap<Long, Line> getLinesInWorldBoundsDecimated( Context context, float n, float s, float w, float e,
+    public static HashMap<Long, LineArray> getLinesInWorldBoundsDecimated( Context context, float n, float s, float w, float e,
             int screenWidth, int screenHeight, float centerLon, float centerLat, float pixelDxInWorld, float pixelDyInWorld
 
     ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
-        HashMap<Long, Line> linesMap = new HashMap<Long, Line>();
+        HashMap<Long, LineArray> linesMap = new HashMap<Long, LineArray>();
         n = n + DatabaseManager.BUFFER;
         s = s - DatabaseManager.BUFFER;
         e = e + DatabaseManager.BUFFER;
@@ -405,39 +408,46 @@ public class DaoGpsLog {
         String strSortOrder = COLUMN_LOGID + "," + COLUMN_DATA_TS + " ASC";
         Cursor c = null;
         try {
+            Logger.d("DAOGPSLOG", "BBBBBBBBBBBBBBBBB");
             c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, strWhereArgs, null, null, strSortOrder);
             c.moveToFirst();
+            Logger.d("DAOGPSLOG", "BBBBBBBBBBBBBBBBBUUU");
 
             int previousScreenX = Integer.MAX_VALUE;
             int previousScreenY = Integer.MAX_VALUE;
 
+            int jump = 0;
             while( !c.isAfterLast() ) {
                 long logid = c.getLong(0);
-                double lon = c.getDouble(1);
-                double lat = c.getDouble(2);
+                float lon = c.getFloat(1);
+                float lat = c.getFloat(2);
 
                 // check if on screen it would be placed on the same pixel
-                int screenX = (int) MapView.lonToScreen(screenWidth, (float) lon, centerLon, pixelDxInWorld);
-                int screenY = (int) MapView.latToScreen(screenHeight, (float) lat, centerLat, pixelDyInWorld);
-                if (screenX == previousScreenX && screenY == previousScreenY) {
-                    previousScreenX = screenX;
-                    previousScreenY = screenY;
+                int screenX = (int) MapView.lonToScreen(screenWidth, lon, centerLon, pixelDxInWorld);
+                int screenY = (int) MapView.latToScreen(screenHeight, lat, centerLat, pixelDyInWorld);
+                int thres = 5;
+                if (abs(screenX - previousScreenX) < thres && abs(screenY - previousScreenY) < thres) {
+                    c.moveToNext();
+                    jump++;
                     continue;
-                } else {
-                    previousScreenX = screenX;
-                    previousScreenY = screenY;
                 }
+                previousScreenX = screenX;
+                previousScreenY = screenY;
 
-                double altim = c.getDouble(3);
-                String date = c.getString(4);
-                Line line = linesMap.get(logid);
+                LineArray line = linesMap.get(logid);
                 if (line == null) {
-                    line = new Line("log_" + logid);
+                    line = new LineArray("log_" + logid);
                     linesMap.put(logid, line);
                 }
-                line.addPoint(lon, lat, altim, date);
+                line.addPoint(lon, lat);
                 c.moveToNext();
             }
+            Logger.d("DAOGPSLOG", "Jumped: " + jump);
+            // Set<Entry<Long, LineArray>> entrySet = linesMap.entrySet();
+            // for( Entry<Long, LineArray> entry : entrySet ) {
+            // Logger.d("DAOGPSLOG", "Found for log: " + entry.getKey() + " points: " +
+            // entry.getValue().getIndex());
+            // }
         } finally {
             if (c != null)
                 c.close();

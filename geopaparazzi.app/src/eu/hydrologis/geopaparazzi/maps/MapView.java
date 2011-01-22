@@ -59,7 +59,7 @@ import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.ApplicationManagerListener;
 import eu.hydrologis.geopaparazzi.util.BoundingBox;
 import eu.hydrologis.geopaparazzi.util.Constants;
-import eu.hydrologis.geopaparazzi.util.Line;
+import eu.hydrologis.geopaparazzi.util.LineArray;
 import eu.hydrologis.geopaparazzi.util.Note;
 import eu.hydrologis.geopaparazzi.util.PointsContainer;
 import eu.hydrologis.geopaparazzi.util.debug.Debug;
@@ -205,7 +205,6 @@ public class MapView extends View implements ApplicationManagerListener {
     }
 
     protected void onDraw( Canvas canvas ) {
-
         try {
             width = getMeasuredWidth();
             height = getMeasuredHeight();
@@ -490,15 +489,15 @@ public class MapView extends View implements ApplicationManagerListener {
 
         try {
             List<MapItem> gpslogs = DaoGpsLog.getGpslogs(context);
-             HashMap<Long, Line> linesInWorldBounds =
-             DaoGpsLog.getLinesInWorldBoundsDecimated(context, y0, y1, x0, x1, width,
-             height, centerLon, centerLat, pixelDxInWorld, pixelDyInWorld);
-//            HashMap<Long, Line> linesInWorldBounds = DaoGpsLog.getLinesInWorldBounds(context, y0, y1, x0, x1);
+            HashMap<Long, LineArray> linesInWorldBounds = DaoGpsLog.getLinesInWorldBoundsDecimated(context, y0, y1, x0, x1,
+                    width, height, centerLon, centerLat, pixelDxInWorld, pixelDyInWorld);
+            // HashMap<Long, Line> linesInWorldBounds = DaoGpsLog.getLinesInWorldBounds(context, y0,
+            // y1, x0, x1);
             for( MapItem gpslogItem : gpslogs ) {
                 if (!gpslogItem.isVisible()) {
                     continue;
                 }
-                Line line = linesInWorldBounds.get(gpslogItem.getId());
+                LineArray line = linesInWorldBounds.get(gpslogItem.getId());
                 if (line == null) {
                     continue;
                 }
@@ -512,12 +511,12 @@ public class MapView extends View implements ApplicationManagerListener {
                 float prevScreenX = Float.POSITIVE_INFINITY;
                 float prevScreenY = Float.POSITIVE_INFINITY;
 
-                List<Double> latList = line.getLatList();
-                List<Double> lonList = line.getLonList();
-
-                for( int i = 0; i < latList.size(); i++ ) {
-                    float screenX = lonToScreen(width, lonList.get(i).floatValue(), centerLon, pixelDxInWorld);
-                    float screenY = latToScreen(height, latList.get(i).floatValue(), centerLat, pixelDyInWorld);
+                float[] lonArray = line.getLonArray();
+                float[] latArray = line.getLatArray();
+                int index = line.getIndex();
+                for( int i = 0; i < index; i++ ) {
+                    float screenX = lonToScreen(width, lonArray[i], centerLon, pixelDxInWorld);
+                    float screenY = latToScreen(height, latArray[i], centerLat, pixelDyInWorld);
                     // Logger.d(LOGTAG, screenX + "/" + screenY);
                     if (i == 0) {
                         path.moveTo(screenX, screenY);
@@ -599,12 +598,30 @@ public class MapView extends View implements ApplicationManagerListener {
         return requestFocus;
     }
 
+    float previousGpsLat = Float.MAX_VALUE;
+    float previousGpsLon = Float.MAX_VALUE;
     public void onLocationChanged( GpsLocation loc ) {
         if (!isShown()) {
             return;
         }
         this.gpsLat = (float) loc.getLatitude();
         this.gpsLon = (float) loc.getLongitude();
+
+        // if gpspoints are the same, do not redraw
+        float thres = 0.0001f;
+        if (Math.abs(gpsLon - previousGpsLon) < thres && Math.abs(gpsLat - previousGpsLat) < thres) {
+            return;
+        }
+
+        // if gps it outside of screen do not redraw
+        float screenX = lonToScreen(width, gpsLon, centerLon, pixelDxInWorld);
+        if (screenX > width || screenX < 0) {
+            return;
+        }
+        float screenY = latToScreen(height, gpsLat, centerLat, pixelDyInWorld);
+        if (screenY > height || screenY < 0) {
+            return;
+        }
 
         invalidateWithProgress();
     }
@@ -751,6 +768,7 @@ public class MapView extends View implements ApplicationManagerListener {
 
             lastX = currentX;
             lastY = currentY;
+            invalidate();
             break;
         case MotionEvent.ACTION_UP:
             touchDragging = false;
@@ -773,10 +791,10 @@ public class MapView extends View implements ApplicationManagerListener {
                 context.startActivity(intent);
             }
             measuredDistance = -1;
+            invalidate();
             break;
         }
 
-        invalidate();
         return true;
     }
 

@@ -42,6 +42,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -436,8 +437,16 @@ public class ApplicationManager implements SensorEventListener, LocationListener
             normalAzimuth = toDegrees(values[0]);
             // normalPitch = toDegrees(values[1]);
             // normalRoll = toDegrees(values[2]);
-            normalAzimuth = normalAzimuth > 0 ? normalAzimuth : (360f + normalAzimuth);
-            // Log.v(LOGTAG, "NAZIMUTH = " + normalAzimuth);
+//            int orientation = getContext().getResources().getConfiguration().orientation;
+//            switch( orientation ) {
+//            case Configuration.ORIENTATION_LANDSCAPE:
+//                normalAzimuth = -1 * (normalAzimuth - 135);
+//            case Configuration.ORIENTATION_PORTRAIT:
+//            default:
+//                break;
+//            }
+//            normalAzimuth = normalAzimuth > 0 ? normalAzimuth : (360f + normalAzimuth);
+//            Logger.d(this, "NAZIMUTH = " + normalAzimuth);
 
             SensorManager.remapCoordinateSystem(RM, SensorManager.AXIS_X, SensorManager.AXIS_Z, outR);
             SensorManager.getOrientation(outR, values);
@@ -455,7 +464,6 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         }
 
     }
-
     public void onLocationChanged( Location loc ) {
         gpsLoc = new GpsLocation(loc);
         if (previousLoc == null) {
