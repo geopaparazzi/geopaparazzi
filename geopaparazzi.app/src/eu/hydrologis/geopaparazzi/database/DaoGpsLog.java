@@ -321,59 +321,63 @@ public class DaoGpsLog {
         }
     }
 
-    /**
-     * Get the collected lines from the database inside a given bound.
-     * 
-     * @param n
-     * @param s
-     * @param w
-     * @param e
-     * @return the map of lines inside the bounds.
-     * @throws IOException
-     */
-    public static HashMap<Long, Line> getLinesInWorldBounds( Context context, float n, float s, float w, float e )
-            throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
-        HashMap<Long, Line> linesMap = new HashMap<Long, Line>();
-        n = n + DatabaseManager.BUFFER;
-        s = s - DatabaseManager.BUFFER;
-        e = e + DatabaseManager.BUFFER;
-        w = w - DatabaseManager.BUFFER;
-
-        String asColumnsToReturn[] = {COLUMN_LOGID, COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_ALTIM, COLUMN_DATA_TS};
-        StringBuilder sB = new StringBuilder();
-        sB.append("(");
-        sB.append(COLUMN_DATA_LON);
-        sB.append(" BETWEEN ? AND ?) AND (");
-        sB.append(COLUMN_DATA_LAT);
-        sB.append(" BETWEEN ? AND ?)");
-        String strWhere = sB.toString();
-        String[] strWhereArgs = new String[]{String.valueOf(w), String.valueOf(e), String.valueOf(s), String.valueOf(n)};
-        String strSortOrder = COLUMN_LOGID + "," + COLUMN_DATA_TS + " ASC";
-        Cursor c = null;
-        try {
-            c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, strWhereArgs, null, null, strSortOrder);
-            c.moveToFirst();
-            while( !c.isAfterLast() ) {
-                long logid = c.getLong(0);
-                double lon = c.getDouble(1);
-                double lat = c.getDouble(2);
-                double altim = c.getDouble(3);
-                String date = c.getString(4);
-                Line line = linesMap.get(logid);
-                if (line == null) {
-                    line = new Line("log_" + logid);
-                    linesMap.put(logid, line);
-                }
-                line.addPoint(lon, lat, altim, date);
-                c.moveToNext();
-            }
-        } finally {
-            if (c != null)
-                c.close();
-        }
-        return linesMap;
-    }
+    // /**
+    // * Get the collected lines from the database inside a given bound.
+    // *
+    // * @param n
+    // * @param s
+    // * @param w
+    // * @param e
+    // * @return the map of lines inside the bounds.
+    // * @throws IOException
+    // */
+    // public static HashMap<Long, Line> getLinesInWorldBounds( Context context, float n, float s,
+    // float w, float e )
+    // throws IOException {
+    // SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    // HashMap<Long, Line> linesMap = new HashMap<Long, Line>();
+    // n = n + DatabaseManager.BUFFER;
+    // s = s - DatabaseManager.BUFFER;
+    // e = e + DatabaseManager.BUFFER;
+    // w = w - DatabaseManager.BUFFER;
+    //
+    // String asColumnsToReturn[] = {COLUMN_LOGID, COLUMN_DATA_LON, COLUMN_DATA_LAT,
+    // COLUMN_DATA_ALTIM, COLUMN_DATA_TS};
+    // StringBuilder sB = new StringBuilder();
+    // sB.append("(");
+    // sB.append(COLUMN_DATA_LON);
+    // sB.append(" BETWEEN ? AND ?) AND (");
+    // sB.append(COLUMN_DATA_LAT);
+    // sB.append(" BETWEEN ? AND ?)");
+    // String strWhere = sB.toString();
+    // String[] strWhereArgs = new String[]{String.valueOf(w), String.valueOf(e), String.valueOf(s),
+    // String.valueOf(n)};
+    // String strSortOrder = COLUMN_LOGID + "," + COLUMN_DATA_TS + " ASC";
+    // Cursor c = null;
+    // try {
+    // c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, strWhereArgs, null, null,
+    // strSortOrder);
+    // c.moveToFirst();
+    // while( !c.isAfterLast() ) {
+    // long logid = c.getLong(0);
+    // double lon = c.getDouble(1);
+    // double lat = c.getDouble(2);
+    // double altim = c.getDouble(3);
+    // String date = c.getString(4);
+    // Line line = linesMap.get(logid);
+    // if (line == null) {
+    // line = new Line("log_" + logid);
+    // linesMap.put(logid, line);
+    // }
+    // line.addPoint(lon, lat, altim, date);
+    // c.moveToNext();
+    // }
+    // } finally {
+    // if (c != null)
+    // c.close();
+    // }
+    // return linesMap;
+    // }
 
     /**
      * Get the collected lines from the database inside a given bound - decimated for the given screen.
@@ -495,10 +499,13 @@ public class DaoGpsLog {
     /**
      * Get the linefor a certainlog id from the db
      * 
+     * @param context
+     * @param logId the id of the log.
+     * @param pointsNum the max num of points that we want (-1 means all).
      * @return the line.
      * @throws IOException
      */
-    public static Line getGpslogAsLine( Context context, long logId ) throws IOException {
+    public static Line getGpslogAsLine( Context context, long logId, int pointsNum ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
 
         String asColumnsToReturn[] = {COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_ALTIM, COLUMN_DATA_TS};
@@ -507,6 +514,12 @@ public class DaoGpsLog {
         Cursor c = null;
         try {
             c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, null, null, null, strSortOrder);
+            int count = c.getCount();
+            int jump = 0;
+            if (pointsNum != -1 && count > pointsNum) {
+                jump = (int) Math.ceil((double) count / pointsNum);
+            }
+
             c.moveToFirst();
             Line line = new Line("log_" + logId);
             while( !c.isAfterLast() ) {
@@ -516,6 +529,12 @@ public class DaoGpsLog {
                 String date = c.getString(3);
                 line.addPoint(lon, lat, altim, date);
                 c.moveToNext();
+                for( int i = 1; i < jump; i++ ) {
+                    c.moveToNext();
+                    if (c.isAfterLast()) {
+                        break;
+                    }
+                }
             }
             return line;
         } finally {
