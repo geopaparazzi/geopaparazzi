@@ -24,7 +24,7 @@ import static java.lang.Math.abs;
 import static java.lang.Math.atan;
 import static java.lang.Math.exp;
 import static java.lang.Math.pow;
-import static java.lang.Math.round;
+import static java.lang.Math.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -425,12 +425,12 @@ public class MapView extends View implements ApplicationManagerListener {
                     float prevScreenX = Float.POSITIVE_INFINITY;
                     float prevScreenY = Float.POSITIVE_INFINITY;
 
-                    List<Double> latList = coordsContainer.getLatList();
-                    List<Double> lonList = coordsContainer.getLonList();
+                    float[] latArray = coordsContainer.getLatArray();
+                    float[] lonArray = coordsContainer.getLonArray();
 
-                    for( int i = 0; i < latList.size(); i++ ) {
-                        float screenX = lonToScreen(width, lonList.get(i).floatValue(), centerLon, pixelDxInWorld);
-                        float screenY = latToScreen(height, latList.get(i).floatValue(), centerLat, pixelDyInWorld);
+                    for( int i = 0; i < latArray.length; i++ ) {
+                        float screenX = lonToScreen(width, lonArray[i], centerLon, pixelDxInWorld);
+                        float screenY = latToScreen(height, latArray[i], centerLat, pixelDyInWorld);
                         // Logger.d(LOGTAG, screenX + "/" + screenY);
                         if (i == 0) {
                             path.moveTo(screenX, screenY);
@@ -450,18 +450,18 @@ public class MapView extends View implements ApplicationManagerListener {
                     gpxPaint.setStrokeWidth(mapItem.getWidth());
                     gpxPaint.setStyle(Paint.Style.FILL);
 
-                    List<Double> latList = coordsContainer.getLatList();
-                    List<Double> lonList = coordsContainer.getLonList();
-                    List<String> namesList = coordsContainer.getNamesList();
-                    boolean hasNames = namesList.size() == latList.size();
+                    float[] latArray = coordsContainer.getLatArray();
+                    float[] lonArray = coordsContainer.getLonArray();
+                    String[] namesArray = coordsContainer.getNamesArray();
+                    boolean hasNames = namesArray.length == latArray.length;
 
-                    for( int i = 0; i < latList.size(); i++ ) {
-                        float screenX = lonToScreen(width, lonList.get(i).floatValue(), centerLon, pixelDxInWorld);
-                        float screenY = latToScreen(height, latList.get(i).floatValue(), centerLat, pixelDyInWorld);
+                    for( int i = 0; i < latArray.length; i++ ) {
+                        float screenX = lonToScreen(width, lonArray[i], centerLon, pixelDxInWorld);
+                        float screenY = latToScreen(height, latArray[i], centerLat, pixelDyInWorld);
 
                         canvas.drawPoint(screenX, screenY, gpxPaint);
                         if (zoom > 12 && hasNames) {
-                            canvas.drawText(namesList.get(i), screenX, screenY, gpxTextPaint);
+                            canvas.drawText(namesArray[i], screenX, screenY, gpxTextPaint);
                         }
                     }
                 }
@@ -702,6 +702,8 @@ public class MapView extends View implements ApplicationManagerListener {
         }
     }
 
+    private int downX = 0;
+    private int downY = 0;
     public boolean onTouchEvent( MotionEvent event ) {
         int action = event.getAction();
 
@@ -716,6 +718,8 @@ public class MapView extends View implements ApplicationManagerListener {
         }
         switch( action ) {
         case MotionEvent.ACTION_DOWN:
+            downX = currentX;
+            downY = currentY;
             // Logger.i(LOGTAG, "Time: " + thisTime + " Delta: " + delta);
             float currentYscreenToLat = screenToLat(height, currentY, centerLat, pixelDyInWorld);
             float currentXscreenToLon = screenToLon(width, currentX, centerLon, pixelDxInWorld);
@@ -791,7 +795,11 @@ public class MapView extends View implements ApplicationManagerListener {
                 context.startActivity(intent);
             }
             measuredDistance = -1;
-            invalidate();
+            double down2up = sqrt(pow(downX - currentX, 2.0) + pow(downY - currentY, 2.0));
+            Logger.i(this, "down2up: " + down2up);
+            if (down2up > 8) {
+                invalidate();
+            }
             break;
         }
 

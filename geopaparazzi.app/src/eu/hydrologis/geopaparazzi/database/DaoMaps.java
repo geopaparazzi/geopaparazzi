@@ -21,8 +21,6 @@ import java.io.IOException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import android.content.ContentValues;
@@ -263,63 +261,67 @@ public class DaoMaps {
         }
     }
 
-    /**
-     * Get the collected lines from the database inside a given bound.
-     * 
-     * @param n
-     * @param s
-     * @param w
-     * @param e
-     * @return the map of lines inside the bounds.
-     * @throws IOException
-     */
-    public static HashMap<Long, PointsContainer> getCoordinatesInWorldBounds( Context context, float n, float s, float w, float e )
-            throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
-        HashMap<Long, PointsContainer> linesMap = new HashMap<Long, PointsContainer>();
-
-        Logger.d(TAG, "PRE  NSEW = " + n + "/" + s + "/" + e + "/" + w);
-        n = n + DatabaseManager.BUFFER;
-        s = s - DatabaseManager.BUFFER;
-        e = e + DatabaseManager.BUFFER;
-        w = w - DatabaseManager.BUFFER;
-        Logger.d(TAG, "POST NSEW = " + n + "/" + s + "/" + e + "/" + w);
-
-        String asColumnsToReturn[] = {COLUMN_MAPID, COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_TS, COLUMN_DATA_TEXT};
-        StringBuilder sB = new StringBuilder();
-        sB.append("(");
-        sB.append(COLUMN_DATA_LON);
-        sB.append(" BETWEEN ? AND ?) AND (");
-        sB.append(COLUMN_DATA_LAT);
-        sB.append(" BETWEEN ? AND ?)");
-        String strWhere = sB.toString();
-        String[] strWhereArgs = new String[]{String.valueOf(w), String.valueOf(e), String.valueOf(s), String.valueOf(n)};
-        String strSortOrder = COLUMN_MAPID + "," + COLUMN_DATA_TS + " ASC";
-        Cursor c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, strWhereArgs, null, null, strSortOrder);
-        c.moveToFirst();
-        long previousMapid = -1;
-        PointsContainer line = null;
-        int index = 0;
-        while( !c.isAfterLast() ) {
-            long mapid = c.getLong(0);
-            double lon = c.getDouble(1);
-            double lat = c.getDouble(2);
-            String date = c.getString(3);
-            String name = c.getString(4);
-
-            if (mapid != previousMapid) {
-                line = new PointsContainer("log_" + mapid);
-                linesMap.put(mapid, line);
-                previousMapid = mapid;
-            }
-            line.addPoint(lon, lat, 0.0, date, name);
-            c.moveToNext();
-            index++;
-        }
-        c.close();
-        Logger.i(TAG, "Read points = " + index);
-        return linesMap;
-    }
+    // /**
+    // * Get the collected lines from the database inside a given bound.
+    // *
+    // * @param n
+    // * @param s
+    // * @param w
+    // * @param e
+    // * @return the map of lines inside the bounds.
+    // * @throws IOException
+    // */
+    // public static HashMap<Long, PointsContainer> getCoordinatesInWorldBounds( Context context,
+    // float n, float s, float w, float e )
+    // throws IOException {
+    // SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    // HashMap<Long, PointsContainer> linesMap = new HashMap<Long, PointsContainer>();
+    //
+    // Logger.d(TAG, "PRE  NSEW = " + n + "/" + s + "/" + e + "/" + w);
+    // n = n + DatabaseManager.BUFFER;
+    // s = s - DatabaseManager.BUFFER;
+    // e = e + DatabaseManager.BUFFER;
+    // w = w - DatabaseManager.BUFFER;
+    // Logger.d(TAG, "POST NSEW = " + n + "/" + s + "/" + e + "/" + w);
+    //
+    // String asColumnsToReturn[] = {COLUMN_MAPID, COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_TS,
+    // COLUMN_DATA_TEXT};
+    // StringBuilder sB = new StringBuilder();
+    // sB.append("(");
+    // sB.append(COLUMN_DATA_LON);
+    // sB.append(" BETWEEN ? AND ?) AND (");
+    // sB.append(COLUMN_DATA_LAT);
+    // sB.append(" BETWEEN ? AND ?)");
+    // String strWhere = sB.toString();
+    // String[] strWhereArgs = new String[]{String.valueOf(w), String.valueOf(e), String.valueOf(s),
+    // String.valueOf(n)};
+    // String strSortOrder = COLUMN_MAPID + "," + COLUMN_DATA_TS + " ASC";
+    // Cursor c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, strWhereArgs, null,
+    // null, strSortOrder);
+    // c.moveToFirst();
+    // long previousMapid = -1;
+    // PointsContainer line = null;
+    // int index = 0;
+    // while( !c.isAfterLast() ) {
+    // long mapid = c.getLong(0);
+    // double lon = c.getDouble(1);
+    // double lat = c.getDouble(2);
+    // String date = c.getString(3);
+    // String name = c.getString(4);
+    //
+    // if (mapid != previousMapid) {
+    // line = new PointsContainer("log_" + mapid);
+    // linesMap.put(mapid, line);
+    // previousMapid = mapid;
+    // }
+    // line.addPoint(lon, lat, 0.0, date, name);
+    // c.moveToNext();
+    // index++;
+    // }
+    // c.close();
+    // Logger.i(TAG, "Read points = " + index);
+    // return linesMap;
+    // }
 
     /**
      * Get the line of a given map from the database inside a given bound.
@@ -360,53 +362,54 @@ public class DaoMaps {
         String strSortOrder = COLUMN_DATA_TS + " ASC";
         Cursor c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, strWhereArgs, null, null, strSortOrder);
         c.moveToFirst();
-        PointsContainer line = new PointsContainer("log_" + mapId);
+        PointsContainer pointsContainer = new PointsContainer("log_" + mapId);
         int index = 0;
         while( !c.isAfterLast() ) {
-            double lon = c.getDouble(0);
-            double lat = c.getDouble(1);
-            String date = c.getString(2);
+            float lon = c.getFloat(0);
+            float lat = c.getFloat(1);
             String name = c.getString(3);
 
-            line.addPoint(lon, lat, 0.0, date, name);
+            pointsContainer.addPoint(lon, lat, name);
             c.moveToNext();
             index++;
         }
         c.close();
         Logger.i(TAG, "Read points = " + index);
-        return line;
+        return pointsContainer;
     }
 
-    /**
-     * Get the map of lines from the db, having the gpslog id in the key.
-     * 
-     * @return the map of lines.
-     * @throws IOException
-     */
-    public static LinkedHashMap<Long, Line> getLinesMap( Context context ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
-        LinkedHashMap<Long, Line> linesMap = new LinkedHashMap<Long, Line>();
-
-        String asColumnsToReturn[] = {COLUMN_MAPID, COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_TS};
-        String strSortOrder = COLUMN_MAPID + "," + COLUMN_DATA_TS + " ASC";
-        Cursor c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, null, null, null, null, strSortOrder);
-        c.moveToFirst();
-        while( !c.isAfterLast() ) {
-            long logid = c.getLong(0);
-            double lon = c.getDouble(1);
-            double lat = c.getDouble(2);
-            String date = c.getString(3);
-            Line line = linesMap.get(logid);
-            if (line == null) {
-                line = new Line("log_" + logid);
-                linesMap.put(logid, line);
-            }
-            line.addPoint(lon, lat, 0.0, date);
-            c.moveToNext();
-        }
-        c.close();
-        return linesMap;
-    }
+    // /**
+    // * Get the map of lines from the db, having the gpslog id in the key.
+    // *
+    // * @return the map of lines.
+    // * @throws IOException
+    // */
+    // public static LinkedHashMap<Long, Line> getLinesMap( Context context ) throws IOException {
+    // SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    // LinkedHashMap<Long, Line> linesMap = new LinkedHashMap<Long, Line>();
+    //
+    // String asColumnsToReturn[] = {COLUMN_MAPID, COLUMN_DATA_LON, COLUMN_DATA_LAT,
+    // COLUMN_DATA_TS};
+    // String strSortOrder = COLUMN_MAPID + "," + COLUMN_DATA_TS + " ASC";
+    // Cursor c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, null, null, null, null,
+    // strSortOrder);
+    // c.moveToFirst();
+    // while( !c.isAfterLast() ) {
+    // long logid = c.getLong(0);
+    // double lon = c.getDouble(1);
+    // double lat = c.getDouble(2);
+    // String date = c.getString(3);
+    // Line line = linesMap.get(logid);
+    // if (line == null) {
+    // line = new Line("log_" + logid);
+    // linesMap.put(logid, line);
+    // }
+    // line.addPoint(lon, lat, 0.0, date);
+    // c.moveToNext();
+    // }
+    // c.close();
+    // return linesMap;
+    // }
 
     /**
      * Get the linefor a certainlog id from the db
@@ -434,6 +437,37 @@ public class DaoMaps {
         return line;
     }
 
+    /**
+     * Get the first point of a certain map.
+     * 
+     * @param context
+     * @param logId the id of the log to query.
+     * @return the array of [lon, lat] of the first point.
+     * @throws IOException
+     */
+    public static double[] getMapFirstPoint( Context context, long logId ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+
+        String asColumnsToReturn[] = {COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_TS};
+        String strSortOrder = COLUMN_DATA_TS + " ASC";
+        String strWhere = COLUMN_MAPID + "=" + logId;
+        Cursor c = null;
+        try {
+            c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, null, null, null, strSortOrder, "1");
+            c.moveToFirst();
+            double[] lonLat = new double[2];
+            while( !c.isAfterLast() ) {
+                lonLat[0] = c.getDouble(0);
+                lonLat[1] = c.getDouble(1);
+                break;
+            }
+            return lonLat;
+        } finally {
+            if (c != null)
+                c.close();
+        }
+    }
+    
     /**
      * Import a gpx in the database.
      * 

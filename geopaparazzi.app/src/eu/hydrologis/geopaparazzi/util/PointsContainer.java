@@ -17,76 +17,76 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A container for points.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
- *
  */
 public class PointsContainer {
 
     private final String fileName;
-    private final List<Double> latList;
-    private final List<Double> lonList;
-    private final List<Double> altimList;
-    private final List<String> dateList;
-    private final List<String> namesList;
+    private String[] namesArray;
+    private float[] lonArray;
+    private float[] latArray;
+    private int index = 0;
 
-    public PointsContainer( String fileName, List<Double> lonList, List<Double> latList, List<Double> altimList,
-            List<String> dateList, List<String> namesList ) {
-        this.fileName = fileName;
-        this.lonList = lonList;
-        this.latList = latList;
-        this.altimList = altimList;
-        this.dateList = dateList;
-        this.namesList = namesList;
+    private int maxArraySize = 100;
 
-    }
-
-    public PointsContainer( String logid ) {
+    public PointsContainer( String logid, int initialCount ) {
         this.fileName = logid;
-        this.lonList = new ArrayList<Double>();
-        this.latList = new ArrayList<Double>();
-        this.altimList = new ArrayList<Double>();
-        this.dateList = new ArrayList<String>();
-        this.namesList = new ArrayList<String>();
+        maxArraySize = initialCount;
+        lonArray = new float[maxArraySize];
+        latArray = new float[maxArraySize];
+        namesArray = new String[maxArraySize];
+    }
+    public PointsContainer( String logid ) {
+        this(logid, 100);
     }
 
-    public void addPoint( double lon, double lat, double altim, String date, String name ) {
-        this.lonList.add(lon);
-        this.latList.add(lat);
-        this.altimList.add(altim);
-        this.dateList.add(date);
-        if (name != null) {
-            this.namesList.add(name);
+    public void addPoint( float lon, float lat, String name ) {
+        if (index == maxArraySize) {
+            // enlarge array
+            float[] tmpLon = new float[maxArraySize + 100];
+            float[] tmpLat = new float[maxArraySize + 100];
+            String[] tmpNames = new String[maxArraySize + 100];
+            System.arraycopy(lonArray, 0, tmpLon, 0, maxArraySize);
+            System.arraycopy(latArray, 0, tmpLat, 0, maxArraySize);
+            System.arraycopy(namesArray, 0, tmpNames, 0, maxArraySize);
+            lonArray = tmpLon;
+            latArray = tmpLat;
+            namesArray = tmpNames;
+            maxArraySize = maxArraySize + 100;
         }
+
+        lonArray[index] = lon;
+        latArray[index] = lat;
+        if (name != null) {
+            namesArray[index] = name;
+        }else{
+            namesArray[index] = "";
+        }
+        index++;
     }
 
     public String getfileName() {
         return fileName;
     }
 
-    public List<Double> getLatList() {
-        return latList;
+    public float[] getLatArray() {
+        return latArray;
     }
 
-    public List<Double> getLonList() {
-        return lonList;
+    public float[] getLonArray() {
+        return lonArray;
     }
 
-    public List<Double> getAltimList() {
-        return altimList;
+    public String[] getNamesArray() {
+        return namesArray;
     }
 
-    public List<String> getDateList() {
-        return dateList;
-    }
-
-    public List<String> getNamesList() {
-        return namesList;
+    public int getIndex() {
+        return index;
     }
 
 }

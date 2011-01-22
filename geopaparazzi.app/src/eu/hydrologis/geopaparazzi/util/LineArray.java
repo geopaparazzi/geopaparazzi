@@ -17,7 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
-import eu.hydrologis.geopaparazzi.util.debug.Logger;
 import android.location.Location;
 
 /**
@@ -56,7 +55,6 @@ public class LineArray {
             lonArray = tmpLon;
             latArray = tmpLat;
             maxArraySize = maxArraySize + 100;
-            Logger.d(this, "New line size: " + lonArray.length);
         }
 
         lonArray[index] = lon;

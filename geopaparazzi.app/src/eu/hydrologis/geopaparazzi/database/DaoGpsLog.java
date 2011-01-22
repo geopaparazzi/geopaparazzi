@@ -548,7 +548,7 @@ public class DaoGpsLog {
      * 
      * @param context
      * @param logId the id of the log to query.
-     * @return the array of [lon, lat] o fthe first point.
+     * @return the array of [lon, lat] of the first point.
      * @throws IOException
      */
     public static double[] getGpslogFirstPoint( Context context, long logId ) throws IOException {
@@ -559,7 +559,7 @@ public class DaoGpsLog {
         String strWhere = COLUMN_LOGID + "=" + logId;
         Cursor c = null;
         try {
-            c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, null, null, null, strSortOrder);
+            c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, null, null, null, strSortOrder, "1");
             c.moveToFirst();
             double[] lonLat = new double[2];
             while( !c.isAfterLast() ) {
