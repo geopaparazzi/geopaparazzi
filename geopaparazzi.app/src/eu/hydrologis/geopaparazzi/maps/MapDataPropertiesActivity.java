@@ -83,10 +83,9 @@ public class MapDataPropertiesActivity extends Activity {
 
             // width spinner
             newWidth = item.getWidth();
-            ArrayAdapter< ? > widthSpinnerAdapter = ArrayAdapter.createFromResource(this,
-                    R.array.array_widths, android.R.layout.simple_spinner_item);
-            widthSpinnerAdapter
-                    .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            ArrayAdapter< ? > widthSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.array_widths,
+                    android.R.layout.simple_spinner_item);
+            widthSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             widthView.setAdapter(widthSpinnerAdapter);
             int widthIndex = widthsList.indexOf(String.valueOf((int) item.getWidth()));
             widthView.setSelection(widthIndex);
@@ -101,10 +100,9 @@ public class MapDataPropertiesActivity extends Activity {
 
             // color box
             newColor = item.getColor();
-            ArrayAdapter< ? > colorSpinnerAdapter = ArrayAdapter.createFromResource(this,
-                    R.array.array_colornames, android.R.layout.simple_spinner_item);
-            colorSpinnerAdapter
-                    .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            ArrayAdapter< ? > colorSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.array_colornames,
+                    android.R.layout.simple_spinner_item);
+            colorSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             colorView.setAdapter(colorSpinnerAdapter);
             int colorIndex = colorList.indexOf(item.getColor());
             colorView.setSelection(colorIndex);
@@ -121,14 +119,10 @@ public class MapDataPropertiesActivity extends Activity {
             zoomButton.setOnClickListener(new Button.OnClickListener(){
                 public void onClick( View v ) {
                     try {
-                        Line line = DaoMaps.getMapAsLine(MapDataPropertiesActivity.this,
-                                item.getId());
-                        if (line.getLonList().size() > 0) {
-                            ApplicationManager
-                                    .getInstance(MapDataPropertiesActivity.this)
-                                    .getMapView()
-                                    .setGotoCoordinate(line.getLonList().get(0),
-                                            line.getLatList().get(0));
+                        double[] firstPoint = DaoMaps.getMapFirstPoint(MapDataPropertiesActivity.this, item.getId());
+                        if (firstPoint != null) {
+                            ApplicationManager.getInstance(MapDataPropertiesActivity.this).getMapView()
+                                    .setGotoCoordinate(firstPoint[0], firstPoint[1]);
                         }
                     } catch (IOException e) {
                         Logger.e(this, e.getLocalizedMessage(), e);
@@ -154,8 +148,8 @@ public class MapDataPropertiesActivity extends Activity {
             okButton.setOnClickListener(new Button.OnClickListener(){
                 public void onClick( View v ) {
                     try {
-                        DaoMaps.updateMapProperties(MapDataPropertiesActivity.this, item.getId(),
-                                newColor, newWidth, item.isVisible(), newText);
+                        DaoMaps.updateMapProperties(MapDataPropertiesActivity.this, item.getId(), newColor, newWidth,
+                                item.isVisible(), newText);
                     } catch (IOException e) {
                         Logger.e(this, e.getLocalizedMessage(), e);
                         e.printStackTrace();
