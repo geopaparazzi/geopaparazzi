@@ -1,29 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
-	android:id="@+id/osm_frameLayout">
-	<eu.hydrologis.geopaparazzi.maps.MapView
-		android:id="@+id/osmviewid" android:layout_width="fill_parent"
-		android:layout_height="fill_parent">
-	</eu.hydrologis.geopaparazzi.maps.MapView>
+	android:orientation="vertical" android:id="@+id/osm_frameLayout">
+
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="fill_parent" android:layout_height="fill_parent"
+		android:orientation="horizontal" android:id="@+id/innerlayout">
+		<eu.hydrologis.geopaparazzi.maps.MapView
+			android:id="@+id/osmviewid" android:layout_width="fill_parent"
+			android:layout_height="fill_parent" android:layout_weight="1">
+		</eu.hydrologis.geopaparazzi.maps.MapView>
+		<LinearLayout android:layout_width="wrap_content"
+			android:id="@+id/seekbarlayout" android:layout_height="fill_parent"
+			android:background="@color/hydrogreen" android:orientation="vertical">
+			<LinearLayout android:layout_width="wrap_content"
+				android:id="@+id/dummylayout" android:layout_height="@dimen/action_bar_height"
+				android:background="@color/hydrogreen">
+			</LinearLayout>
+			<eu.hydrologis.geopaparazzi.util.VerticalSeekBar
+				android:id="@+id/ZoomBar" android:progressDrawable="@drawable/progress_vertical"
+				android:thumb="@drawable/seek_thumb" android:layout_height="fill_parent"
+				android:layout_width="26dip" android:layout_weight="1" />
+		</LinearLayout>
+	</LinearLayout>
+
 	<include android:id="@+id/maps_action_bar" layout="@layout/action_bar"
 		android:layout_width="fill_parent" android:layout_height="@dimen/action_bar_height" />
 
-	<FrameLayout android:layout_width="fill_parent"
-		android:id="@+id/navigation_buttons" android:orientation="horizontal"
-		android:layout_height="wrap_content" android:layout_gravity="bottom">
-		<ImageButton android:id="@+id/zoom_out_btn" android:src="@android:drawable/btn_minus"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:background="@drawable/action_bar_button_drawable"
-			android:layout_gravity="left" android:padding="5dp"></ImageButton>
+	<FrameLayout android:layout_width="fill_parent" android:id="@+id/navigation_buttons"
+		android:orientation="horizontal" android:layout_height="wrap_content"
+		android:layout_gravity="bottom">
+		<!-- <ImageButton android:id="@+id/zoom_out_btn" android:src="@android:drawable/btn_minus" 
+			android:layout_width="wrap_content" android:layout_height="wrap_content" 
+			android:background="@drawable/action_bar_button_drawable" android:layout_gravity="left" 
+			android:padding="5dp"></ImageButton> -->
 		<ImageButton android:id="@+id/center_on_gps_btn"
 			android:src="@android:drawable/ic_menu_mylocation"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:background="@drawable/action_bar_button_drawable"
-			android:layout_gravity="center_horizontal|center_vertical" android:padding="5dp"></ImageButton>
-		<ImageButton android:id="@+id/zoom_in_btn" android:src="@android:drawable/btn_plus"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:background="@drawable/action_bar_button_drawable"
-			android:layout_gravity="right" android:padding="5dp"></ImageButton>
+			android:layout_gravity="center_horizontal|center_vertical"
+			android:padding="5dp"></ImageButton>
+		<!-- <ImageButton android:id="@+id/zoom_in_btn" android:src="@android:drawable/btn_plus" 
+			android:layout_width="wrap_content" android:layout_height="wrap_content" 
+			android:background="@drawable/action_bar_button_drawable" android:layout_gravity="right" 
+			android:padding="5dp"></ImageButton> -->
 	</FrameLayout>
 </FrameLayout>
