@@ -58,6 +58,9 @@ public class Logger {
     }
 
     private static int e( String name, String message, Throwable t ) {
+        if (message == null) {
+            message = "Unknown error message";
+        }
         if (!logToFile) {
             return Log.e(name, message);
         } else {
@@ -87,6 +90,9 @@ public class Logger {
     }
 
     private static int d( String name, String message ) {
+        if (message == null) {
+            message = "Unknown debug message";
+        }
         if (!logToFile) {
             return Log.d(name, message);
         } else {
@@ -96,6 +102,9 @@ public class Logger {
     }
 
     public static int i( Object caller, String message ) {
+        if (message == null) {
+            message = "Unknown info message";
+        }
         if (!logToFile) {
             return Log.i(toName(caller), message);
         } else {
@@ -105,6 +114,9 @@ public class Logger {
     }
 
     public static int w( Object caller, String message ) {
+        if (message == null) {
+            message = "Unknown warning message";
+        }
         if (!logToFile) {
             return Log.w(toName(caller), message);
         } else {
