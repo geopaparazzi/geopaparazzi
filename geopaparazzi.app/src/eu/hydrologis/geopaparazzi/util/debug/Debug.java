@@ -27,7 +27,7 @@ public interface Debug {
     /**
      * Flag to define the use of mock locations instead of the gps.
      */
-    boolean doMock = true;
+    boolean doMock = false;
 
     /**
      * Flag to define normal drawing of renderers, as opposed to drawing some debug info.
