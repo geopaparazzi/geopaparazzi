@@ -38,31 +38,6 @@ public final class R {
         public static final int true_false=0x7f060006;
     }
     public static final class attr {
-        /** <p>Must be an integer value, such as "<code>100</code>".
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-         */
-        public static final int cols=0x7f010000;
-        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-         */
-        public static final int image=0x7f010002;
-        /**  metodo di tipo xxx(int id) 
-         <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-         */
-        public static final int onClick=0x7f010003;
-        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-         */
-        public static final int title=0x7f010001;
     }
     public static final class color {
         public static final int black=0x7f080005;
@@ -136,40 +111,46 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int panic=0x7f020019;
         public static final int panic_button_drawable=0x7f02001a;
         public static final int popup=0x7f02001b;
-        public static final int quickaction_arrow_down=0x7f02001c;
-        public static final int quickaction_arrow_up=0x7f02001d;
-        public static final int quickaction_audio=0x7f02001e;
-        public static final int quickaction_item2_btn=0x7f02001f;
-        public static final int quickaction_notes=0x7f020020;
-        public static final int quickaction_pictures=0x7f020021;
-        public static final int quickaction_slider_background=0x7f020022;
-        public static final int quickaction_slider_left=0x7f020023;
-        public static final int quickaction_slider_right=0x7f020024;
-        public static final int quickaction_start_log=0x7f020025;
-        public static final int quickaction_stop_log=0x7f020026;
-        public static final int quickcontact_bottom_frame=0x7f020027;
-        public static final int quickcontact_disambig_bottom_bg=0x7f020028;
-        public static final int quickcontact_disambig_divider=0x7f020029;
-        public static final int quickcontact_drop_shadow=0x7f02002a;
-        public static final int quickcontact_photo_frame=0x7f02002b;
-        public static final int quickcontact_slider_background=0x7f02002c;
-        public static final int quickcontact_slider_btn=0x7f02002d;
-        public static final int quickcontact_slider_btn_normal=0x7f02002e;
-        public static final int quickcontact_slider_btn_on=0x7f02002f;
-        public static final int quickcontact_slider_btn_pressed=0x7f020030;
-        public static final int quickcontact_slider_btn_selected=0x7f020031;
-        public static final int quickcontact_slider_grip_left=0x7f020032;
-        public static final int quickcontact_slider_grip_right=0x7f020033;
-        public static final int quickcontact_top_frame=0x7f020034;
-        public static final int search_button_pressed=0x7f02003a;
-        public static final int search_button_released=0x7f02003b;
-        public static final int separator=0x7f020035;
-        public static final int sym_action_add=0x7f020036;
-        public static final int sym_action_map=0x7f020037;
-        public static final int warning=0x7f020038;
-        public static final int warning_button_drawable=0x7f020039;
+        public static final int progress_vertical=0x7f02001c;
+        public static final int quickaction_arrow_down=0x7f02001d;
+        public static final int quickaction_arrow_up=0x7f02001e;
+        public static final int quickaction_audio=0x7f02001f;
+        public static final int quickaction_item2_btn=0x7f020020;
+        public static final int quickaction_notes=0x7f020021;
+        public static final int quickaction_pictures=0x7f020022;
+        public static final int quickaction_slider_background=0x7f020023;
+        public static final int quickaction_slider_left=0x7f020024;
+        public static final int quickaction_slider_right=0x7f020025;
+        public static final int quickaction_start_log=0x7f020026;
+        public static final int quickaction_stop_log=0x7f020027;
+        public static final int quickcontact_bottom_frame=0x7f020028;
+        public static final int quickcontact_disambig_bottom_bg=0x7f020029;
+        public static final int quickcontact_disambig_divider=0x7f02002a;
+        public static final int quickcontact_drop_shadow=0x7f02002b;
+        public static final int quickcontact_photo_frame=0x7f02002c;
+        public static final int quickcontact_slider_background=0x7f02002d;
+        public static final int quickcontact_slider_btn=0x7f02002e;
+        public static final int quickcontact_slider_btn_normal=0x7f02002f;
+        public static final int quickcontact_slider_btn_on=0x7f020030;
+        public static final int quickcontact_slider_btn_pressed=0x7f020031;
+        public static final int quickcontact_slider_btn_selected=0x7f020032;
+        public static final int quickcontact_slider_grip_left=0x7f020033;
+        public static final int quickcontact_slider_grip_right=0x7f020034;
+        public static final int quickcontact_top_frame=0x7f020035;
+        public static final int search_button_pressed=0x7f02003f;
+        public static final int search_button_released=0x7f020040;
+        public static final int seek_thumb=0x7f020036;
+        public static final int seek_thumb_normal=0x7f020037;
+        public static final int seek_thumb_pressed=0x7f020038;
+        public static final int seek_thumb_selected=0x7f020039;
+        public static final int separator=0x7f02003a;
+        public static final int sym_action_add=0x7f02003b;
+        public static final int sym_action_map=0x7f02003c;
+        public static final int warning=0x7f02003d;
+        public static final int warning_button_drawable=0x7f02003e;
     }
     public static final class id {
+        public static final int ZoomBar=0x7f0b005c;
         public static final int about=0x7f0b0001;
         public static final int aboutscroll=0x7f0b0000;
         public static final int aboutscrollview=0x7f0b0010;
@@ -180,13 +161,13 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int action_bar_logo=0x7f0b0003;
         public static final int action_bar_note=0x7f0b0007;
         public static final int action_bar_title=0x7f0b0004;
-        public static final int arrow_down=0x7f0b0072;
-        public static final int arrow_up=0x7f0b0071;
+        public static final int arrow_down=0x7f0b0074;
+        public static final int arrow_up=0x7f0b0073;
         public static final int askcoordlabel=0x7f0b004b;
         public static final int browselist_text=0x7f0b000d;
         public static final int button_layout=0x7f0b0014;
-        public static final int cancel=0x7f0b006e;
-        public static final int center_on_gps_btn=0x7f0b005c;
+        public static final int cancel=0x7f0b0070;
+        public static final int center_on_gps_btn=0x7f0b005f;
         public static final int colorLabel=0x7f0b003a;
         public static final int color_spinner=0x7f0b003b;
         public static final int compassInfoView=0x7f0b0012;
@@ -212,10 +193,11 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int dashboard_undoitem_text=0x7f0b0023;
         public static final int dashboard_undonote_item=0x7f0b0021;
         public static final int dashboard_undonote_item_button=0x7f0b0022;
-        public static final int distancelabel=0x7f0b005f;
+        public static final int distancelabel=0x7f0b0061;
+        public static final int dummylayout=0x7f0b005b;
         public static final int filename=0x7f0b0043;
-        public static final int firstpoint=0x7f0b0061;
-        public static final int footer=0x7f0b0075;
+        public static final int firstpoint=0x7f0b0063;
+        public static final int footer=0x7f0b0077;
         public static final int form_cancel=0x7f0b001b;
         public static final int form_linear=0x7f0b0019;
         public static final int form_ok=0x7f0b001a;
@@ -231,23 +213,24 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int gpslogsList=0x7f0b0044;
         public static final int gpsproplabel=0x7f0b0036;
         public static final int handle=0x7f0b0030;
-        public static final int header2=0x7f0b0073;
-        public static final int icon=0x7f0b0076;
-        public static final int lastpoint=0x7f0b0066;
+        public static final int header2=0x7f0b0075;
+        public static final int icon=0x7f0b0078;
+        public static final int innerlayout=0x7f0b0058;
+        public static final int lastpoint=0x7f0b0068;
         public static final int latitudelabel=0x7f0b004e;
-        public static final int latitudelabel_first=0x7f0b0064;
-        public static final int latitudelabel_last=0x7f0b0069;
+        public static final int latitudelabel_first=0x7f0b0066;
+        public static final int latitudelabel_last=0x7f0b006b;
         public static final int latitudetext=0x7f0b004f;
-        public static final int latitudetext_first=0x7f0b0065;
-        public static final int latitudetext_last=0x7f0b006a;
+        public static final int latitudetext_first=0x7f0b0067;
+        public static final int latitudetext_last=0x7f0b006c;
         public static final int longitudelabel=0x7f0b004c;
-        public static final int longitudelabel_first=0x7f0b0062;
-        public static final int longitudelabel_last=0x7f0b0067;
+        public static final int longitudelabel_first=0x7f0b0064;
+        public static final int longitudelabel_last=0x7f0b0069;
         public static final int longitudetext=0x7f0b004d;
-        public static final int longitudetext_first=0x7f0b0063;
-        public static final int longitudetext_last=0x7f0b0068;
+        public static final int longitudetext_first=0x7f0b0065;
+        public static final int longitudetext_last=0x7f0b006a;
         public static final int main_frameLayout=0x7f0b001c;
-        public static final int mainosmtagslayout=0x7f0b0078;
+        public static final int mainosmtagslayout=0x7f0b007a;
         public static final int mainupper=0x7f0b0013;
         public static final int map_cancel=0x7f0b0056;
         public static final int map_delete=0x7f0b0054;
@@ -255,28 +238,29 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int map_zoom=0x7f0b0053;
         public static final int mapname=0x7f0b0052;
         public static final int mapproplabel=0x7f0b0051;
-        public static final int maps_action_bar=0x7f0b0059;
-        public static final int measureOkButton=0x7f0b006b;
-        public static final int measuredistancetext=0x7f0b0060;
-        public static final int measureinfo=0x7f0b005e;
-        public static final int navigation_buttons=0x7f0b005a;
-        public static final int noteentry=0x7f0b006c;
+        public static final int maps_action_bar=0x7f0b005d;
+        public static final int measureOkButton=0x7f0b006d;
+        public static final int measuredistancetext=0x7f0b0062;
+        public static final int measureinfo=0x7f0b0060;
+        public static final int navigation_buttons=0x7f0b005e;
+        public static final int noteentry=0x7f0b006e;
         public static final int notescolorLabel=0x7f0b0049;
         public static final int notescolor_spinner=0x7f0b004a;
         public static final int notesrow_container=0x7f0b0045;
         public static final int notesvisible=0x7f0b0046;
         public static final int noteswidthLabel=0x7f0b0047;
         public static final int noteswidthText=0x7f0b0048;
-        public static final int ok=0x7f0b006d;
-        public static final int osm_additionalinfo_id=0x7f0b0079;
+        public static final int ok=0x7f0b006f;
+        public static final int osm_additionalinfo_id=0x7f0b007b;
         public static final int osm_frameLayout=0x7f0b0057;
-        public static final int osmgridview=0x7f0b007a;
-        public static final int osmviewid=0x7f0b0058;
+        public static final int osmgridview=0x7f0b007c;
+        public static final int osmviewid=0x7f0b0059;
         public static final int panicbutton=0x7f0b0033;
         public static final int row_container=0x7f0b0035;
         public static final int row_container5=0x7f0b003f;
-        public static final int scroll=0x7f0b0074;
-        public static final int scroller=0x7f0b006f;
+        public static final int scroll=0x7f0b0076;
+        public static final int scroller=0x7f0b0071;
+        public static final int seekbarlayout=0x7f0b005a;
         public static final int sep1=0x7f0b0006;
         public static final int sep2=0x7f0b0008;
         public static final int sep3=0x7f0b000a;
@@ -284,15 +268,13 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int snapButton=0x7f0b000f;
         public static final int statusupdatebutton=0x7f0b0034;
         public static final int surface=0x7f0b000e;
-        public static final int title=0x7f0b0077;
-        public static final int tracks=0x7f0b0070;
+        public static final int title=0x7f0b0079;
+        public static final int tracks=0x7f0b0072;
         public static final int upbutton=0x7f0b000c;
         public static final int uppercol1=0x7f0b0011;
         public static final int visible=0x7f0b0042;
         public static final int widthLabel=0x7f0b0038;
         public static final int widthText=0x7f0b0039;
-        public static final int zoom_in_btn=0x7f0b005d;
-        public static final int zoom_out_btn=0x7f0b005b;
     }
     public static final class layout {
         public static final int about=0x7f030000;
@@ -492,85 +474,127 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int my_preferences=0x7f050000;
     }
     public static final class styleable {
-        /** Attributes that can be used with a Dashboard.
+        /** Attributes that can be used with a ProgressBar.
            <p>Includes the following attributes:</p>
            <table>
            <colgroup align="left" />
            <colgroup align="left" />
            <tr><th>Attribute</th><th>Description</th></tr>
-           <tr><td><code>{@link #Dashboard_cols eu.hydrologis.geopaparazzi:cols}</code></td><td></td></tr>
+           <tr><td><code>{@link #ProgressBar_android_max eu.hydrologis.geopaparazzi:android_max}</code></td><td></td></tr>
+           <tr><td><code>{@link #ProgressBar_android_maxHeight eu.hydrologis.geopaparazzi:android_maxHeight}</code></td><td></td></tr>
+           <tr><td><code>{@link #ProgressBar_android_maxWidth eu.hydrologis.geopaparazzi:android_maxWidth}</code></td><td></td></tr>
+           <tr><td><code>{@link #ProgressBar_android_minHeight eu.hydrologis.geopaparazzi:android_minHeight}</code></td><td></td></tr>
+           <tr><td><code>{@link #ProgressBar_android_minWidth eu.hydrologis.geopaparazzi:android_minWidth}</code></td><td></td></tr>
+           <tr><td><code>{@link #ProgressBar_android_progress eu.hydrologis.geopaparazzi:android_progress}</code></td><td></td></tr>
+           <tr><td><code>{@link #ProgressBar_android_progressDrawable eu.hydrologis.geopaparazzi:android_progressDrawable}</code></td><td></td></tr>
+           <tr><td><code>{@link #ProgressBar_android_secondaryProgress eu.hydrologis.geopaparazzi:android_secondaryProgress}</code></td><td></td></tr>
            </table>
-           @see #Dashboard_cols
+           @see #ProgressBar_android_max
+           @see #ProgressBar_android_maxHeight
+           @see #ProgressBar_android_maxWidth
+           @see #ProgressBar_android_minHeight
+           @see #ProgressBar_android_minWidth
+           @see #ProgressBar_android_progress
+           @see #ProgressBar_android_progressDrawable
+           @see #ProgressBar_android_secondaryProgress
          */
-        public static final int[] Dashboard = {
-            0x7f010000
+        public static final int[] ProgressBar = {
+            0x0101011f, 0x01010120, 0x01010136, 0x01010137,
+            0x01010138, 0x0101013c, 0x0101013f, 0x01010140
         };
         /**
-          <p>This symbol is the offset where the {@link eu.hydrologis.geopaparazzi.R.attr#cols}
-          attribute's value can be found in the {@link #Dashboard} array.
-
-
-          <p>Must be an integer value, such as "<code>100</code>".
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-          @attr name android:cols
+          <p>This symbol is the offset where the {@link eu.hydrologis.geopaparazzi.R.attr#android_max}
+          attribute's value can be found in the {@link #ProgressBar} array.
+          @attr name android:android_max
         */
-        public static final int Dashboard_cols = 0;
-        /** Attributes that can be used with a DashboardItem.
+        public static final int ProgressBar_android_max = 2;
+        /**
+          <p>This symbol is the offset where the {@link eu.hydrologis.geopaparazzi.R.attr#android_maxHeight}
+          attribute's value can be found in the {@link #ProgressBar} array.
+          @attr name android:android_maxHeight
+        */
+        public static final int ProgressBar_android_maxHeight = 1;
+        /**
+          <p>This symbol is the offset where the {@link eu.hydrologis.geopaparazzi.R.attr#android_maxWidth}
+          attribute's value can be found in the {@link #ProgressBar} array.
+          @attr name android:android_maxWidth
+        */
+        public static final int ProgressBar_android_maxWidth = 0;
+        /**
+          <p>This symbol is the offset where the {@link eu.hydrologis.geopaparazzi.R.attr#android_minHeight}
+          attribute's value can be found in the {@link #ProgressBar} array.
+          @attr name android:android_minHeight
+        */
+        public static final int ProgressBar_android_minHeight = 7;
+        /**
+          <p>This symbol is the offset where the {@link eu.hydrologis.geopaparazzi.R.attr#android_minWidth}
+          attribute's value can be found in the {@link #ProgressBar} array.
+          @attr name android:android_minWidth
+        */
+        public static final int ProgressBar_android_minWidth = 6;
+        /**
+          <p>This symbol is the offset where the {@link eu.hydrologis.geopaparazzi.R.attr#android_progress}
+          attribute's value can be found in the {@link #ProgressBar} array.
+          @attr name android:android_progress
+        */
+        public static final int ProgressBar_android_progress = 3;
+        /**
+          <p>This symbol is the offset where the {@link eu.hydrologis.geopaparazzi.R.attr#android_progressDrawable}
+          attribute's value can be found in the {@link #ProgressBar} array.
+          @attr name android:android_progressDrawable
+        */
+        public static final int ProgressBar_android_progressDrawable = 5;
+        /**
+          <p>This symbol is the offset where the {@link eu.hydrologis.geopaparazzi.R.attr#android_secondaryProgress}
+          attribute's value can be found in the {@link #ProgressBar} array.
+          @attr name android:android_secondaryProgress
+        */
+        public static final int ProgressBar_android_secondaryProgress = 4;
+        /** Attributes that can be used with a SeekBar.
            <p>Includes the following attributes:</p>
            <table>
            <colgroup align="left" />
            <colgroup align="left" />
            <tr><th>Attribute</th><th>Description</th></tr>
-           <tr><td><code>{@link #DashboardItem_image eu.hydrologis.geopaparazzi:image}</code></td><td></td></tr>
-           <tr><td><code>{@link #DashboardItem_onClick eu.hydrologis.geopaparazzi:onClick}</code></td><td> metodo di tipo xxx(int id) </td></tr>
-           <tr><td><code>{@link #DashboardItem_title eu.hydrologis.geopaparazzi:title}</code></td><td></td></tr>
+           <tr><td><code>{@link #SeekBar_android_thumb eu.hydrologis.geopaparazzi:android_thumb}</code></td><td></td></tr>
+           <tr><td><code>{@link #SeekBar_android_thumbOffset eu.hydrologis.geopaparazzi:android_thumbOffset}</code></td><td></td></tr>
            </table>
-           @see #DashboardItem_image
-           @see #DashboardItem_onClick
-           @see #DashboardItem_title
+           @see #SeekBar_android_thumb
+           @see #SeekBar_android_thumbOffset
          */
-        public static final int[] DashboardItem = {
-            0x7f010001, 0x7f010002, 0x7f010003
+        public static final int[] SeekBar = {
+            0x01010142, 0x01010143
         };
         /**
-          <p>This symbol is the offset where the {@link eu.hydrologis.geopaparazzi.R.attr#image}
-          attribute's value can be found in the {@link #DashboardItem} array.
-
-
-          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-          @attr name android:image
+          <p>This symbol is the offset where the {@link eu.hydrologis.geopaparazzi.R.attr#android_thumb}
+          attribute's value can be found in the {@link #SeekBar} array.
+          @attr name android:android_thumb
         */
-        public static final int DashboardItem_image = 1;
+        public static final int SeekBar_android_thumb = 0;
         /**
-          <p>
-          @attr description
-           metodo di tipo xxx(int id) 
-
-
-          <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
-<p>This may also be a reference to a resource (in the form
-"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
-theme attribute (in the form
-"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
-containing a value of this type.
-          <p>This is a private symbol.
-          @attr name android:onClick
+          <p>This symbol is the offset where the {@link eu.hydrologis.geopaparazzi.R.attr#android_thumbOffset}
+          attribute's value can be found in the {@link #SeekBar} array.
+          @attr name android:android_thumbOffset
         */
-        public static final int DashboardItem_onClick = 2;
+        public static final int SeekBar_android_thumbOffset = 1;
+        /** Attributes that can be used with a Theme.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #Theme_android_disabledAlpha eu.hydrologis.geopaparazzi:android_disabledAlpha}</code></td><td></td></tr>
+           </table>
+           @see #Theme_android_disabledAlpha
+         */
+        public static final int[] Theme = {
+            0x01010033
+        };
         /**
-          <p>This symbol is the offset where the {@link eu.hydrologis.geopaparazzi.R.attr#title}
-          attribute's value can be found in the {@link #DashboardItem} array.
-
-
-          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
-or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
-          @attr name android:title
+          <p>This symbol is the offset where the {@link eu.hydrologis.geopaparazzi.R.attr#android_disabledAlpha}
+          attribute's value can be found in the {@link #Theme} array.
+          @attr name android:android_disabledAlpha
         */
-        public static final int DashboardItem_title = 0;
+        public static final int Theme_android_disabledAlpha = 0;
     };
 }

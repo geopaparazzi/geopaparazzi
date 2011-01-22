@@ -31,6 +31,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import android.content.Context;
 import android.content.Intent;
@@ -286,6 +288,7 @@ public class MapView extends View implements ApplicationManagerListener {
                 drawGpslogs(canvas, width, height);
                 drawNotes(canvas, width, height);
             }
+            gpsUpdate = false;
 
             // gps position
             float gpsX = lonToScreen(width, gpsLon, centerLon, pixelDxInWorld);
@@ -395,6 +398,7 @@ public class MapView extends View implements ApplicationManagerListener {
      * @param width
      * @param height
      */
+    private HashMap<MapItem, PointsContainer> pointsContainerMap = new HashMap<MapItem, PointsContainer>();
     private void drawMaps( Canvas canvas, int width, int height ) {
         if (!DataManager.getInstance().areMapsVisible())
             return;
@@ -404,16 +408,28 @@ public class MapView extends View implements ApplicationManagerListener {
         float x1 = screenToLon(width, width, centerLon, pixelDxInWorld);
 
         try {
+
             List<MapItem> mapsMap = DaoMaps.getMaps(context);
-            for( MapItem mapItem : mapsMap ) {
-                if (!mapItem.isVisible()) {
-                    continue;
+            if (!gpsUpdate) {
+                pointsContainerMap.clear();
+                for( MapItem mapItem : mapsMap ) {
+                    if (!mapItem.isVisible()) {
+                        continue;
+                    }
+                    PointsContainer coordsContainer = DaoMaps.getCoordinatesInWorldBoundsForMapIdDecimated(context,
+                            mapItem.getId(), y0, y1, x0, x1, width, height, centerLon, centerLat, pixelDxInWorld, pixelDyInWorld);
+                    if (coordsContainer == null) {
+                        continue;
+                    }
+
+                    pointsContainerMap.put(mapItem, coordsContainer);
                 }
-                PointsContainer coordsContainer = DaoMaps.getCoordinatesInWorldBoundsForMapId(context, mapItem.getId(), y0, y1,
-                        x0, x1);
-                if (coordsContainer == null) {
-                    continue;
-                }
+            }
+
+            Set<Entry<MapItem, PointsContainer>> entrySet = pointsContainerMap.entrySet();
+            for( Entry<MapItem, PointsContainer> entry : entrySet ) {
+                MapItem mapItem = entry.getKey();
+                PointsContainer coordsContainer = entry.getValue();
                 if (mapItem.getType() == Constants.MAP_TYPE_LINE) {
                     gpxPaint.setAntiAlias(true);
                     gpxPaint.setColor(Color.parseColor(mapItem.getColor()));
@@ -460,7 +476,7 @@ public class MapView extends View implements ApplicationManagerListener {
                         float screenY = latToScreen(height, latArray[i], centerLat, pixelDyInWorld);
 
                         canvas.drawPoint(screenX, screenY, gpxPaint);
-                        if (zoom > 12 && hasNames) {
+                        if (zoom > 12 && hasNames && namesArray[i] != null) {
                             canvas.drawText(namesArray[i], screenX, screenY, gpxTextPaint);
                         }
                     }
@@ -479,6 +495,7 @@ public class MapView extends View implements ApplicationManagerListener {
      * @param width
      * @param height
      */
+    private HashMap<Long, LineArray> linesInWorldBounds = null;
     private void drawGpslogs( Canvas canvas, int width, int height ) {
         if (!DataManager.getInstance().areLogsVisible())
             return;
@@ -489,8 +506,9 @@ public class MapView extends View implements ApplicationManagerListener {
 
         try {
             List<MapItem> gpslogs = DaoGpsLog.getGpslogs(context);
-            HashMap<Long, LineArray> linesInWorldBounds = DaoGpsLog.getLinesInWorldBoundsDecimated(context, y0, y1, x0, x1,
-                    width, height, centerLon, centerLat, pixelDxInWorld, pixelDyInWorld);
+            if (!gpsUpdate || linesInWorldBounds == null)
+                linesInWorldBounds = DaoGpsLog.getLinesInWorldBoundsDecimated(context, y0, y1, x0, x1, width, height, centerLon,
+                        centerLat, pixelDxInWorld, pixelDyInWorld);
             // HashMap<Long, Line> linesInWorldBounds = DaoGpsLog.getLinesInWorldBounds(context, y0,
             // y1, x0, x1);
             for( MapItem gpslogItem : gpslogs ) {
@@ -537,6 +555,7 @@ public class MapView extends View implements ApplicationManagerListener {
             e.printStackTrace();
         }
     }
+    private List<Note> notesInWorldBounds;
     private void drawNotes( Canvas canvas, int width, int height ) {
         if (!DataManager.getInstance().areNotesVisible())
             return;
@@ -547,7 +566,8 @@ public class MapView extends View implements ApplicationManagerListener {
         float x1 = screenToLon(width, width, centerLon, pixelDxInWorld);
 
         try {
-            List<Note> notesInWorldBounds = DaoNotes.getNotesInWorldBounds(getContext(), y0, y1, x0, x1);
+            if (!gpsUpdate || notesInWorldBounds == null)
+                notesInWorldBounds = DaoNotes.getNotesInWorldBounds(getContext(), y0, y1, x0, x1);
             int notesColor = DataManager.getInstance().getNotesColor();
             float notesWidth = DataManager.getInstance().getNotesWidth();
             for( Note note : notesInWorldBounds ) {
@@ -599,7 +619,8 @@ public class MapView extends View implements ApplicationManagerListener {
     }
 
     float previousGpsLat = Float.MAX_VALUE;
-    float previousGpsLon = Float.MAX_VALUE;
+    private float previousGpsLon = Float.MAX_VALUE;
+    private boolean gpsUpdate = false;
     public void onLocationChanged( GpsLocation loc ) {
         if (!isShown()) {
             return;
@@ -623,6 +644,7 @@ public class MapView extends View implements ApplicationManagerListener {
             return;
         }
 
+        gpsUpdate = true;
         invalidateWithProgress();
     }
 
@@ -645,6 +667,15 @@ public class MapView extends View implements ApplicationManagerListener {
         zoom = zoom - 1;
         if (zoom < 0)
             zoom = 0;
+
+        Editor editor = preferences.edit();
+        editor.putInt(Constants.PREFS_KEY_ZOOM, zoom);
+        editor.commit();
+        invalidateWithProgress();
+    }
+
+    public void zoomTo( int zoomLevel ) {
+        zoom = zoomLevel;
 
         Editor editor = preferences.edit();
         editor.putInt(Constants.PREFS_KEY_ZOOM, zoom);

@@ -391,7 +391,6 @@ public class DaoGpsLog {
      */
     public static HashMap<Long, LineArray> getLinesInWorldBoundsDecimated( Context context, float n, float s, float w, float e,
             int screenWidth, int screenHeight, float centerLon, float centerLat, float pixelDxInWorld, float pixelDyInWorld
-
     ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         HashMap<Long, LineArray> linesMap = new HashMap<Long, LineArray>();
@@ -412,10 +411,8 @@ public class DaoGpsLog {
         String strSortOrder = COLUMN_LOGID + "," + COLUMN_DATA_TS + " ASC";
         Cursor c = null;
         try {
-            Logger.d("DAOGPSLOG", "BBBBBBBBBBBBBBBBB");
             c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, strWhereArgs, null, null, strSortOrder);
             c.moveToFirst();
-            Logger.d("DAOGPSLOG", "BBBBBBBBBBBBBBBBBUUU");
 
             int previousScreenX = Integer.MAX_VALUE;
             int previousScreenY = Integer.MAX_VALUE;
@@ -446,7 +443,7 @@ public class DaoGpsLog {
                 line.addPoint(lon, lat);
                 c.moveToNext();
             }
-            Logger.d("DAOGPSLOG", "Jumped: " + jump);
+            // Logger.d("DAOGPSLOG", "Jumped: " + jump);
             // Set<Entry<Long, LineArray>> entrySet = linesMap.entrySet();
             // for( Entry<Long, LineArray> entry : entrySet ) {
             // Logger.d("DAOGPSLOG", "Found for log: " + entry.getKey() + " points: " +

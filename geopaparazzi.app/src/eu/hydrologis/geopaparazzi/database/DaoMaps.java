@@ -17,6 +17,8 @@
  */
 package eu.hydrologis.geopaparazzi.database;
 
+import static java.lang.Math.abs;
+
 import java.io.IOException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -30,6 +32,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import eu.hydrologis.geopaparazzi.gpx.GpxItem;
 import eu.hydrologis.geopaparazzi.maps.MapItem;
+import eu.hydrologis.geopaparazzi.maps.MapView;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.PointF3D;
@@ -334,8 +337,9 @@ public class DaoMaps {
      * @return the map of lines inside the bounds.
      * @throws IOException
      */
-    public static PointsContainer getCoordinatesInWorldBoundsForMapId( Context context, long mapId, float n, float s, float w,
-            float e ) throws IOException {
+    public static PointsContainer getCoordinatesInWorldBoundsForMapIdDecimated( Context context, long mapId, float n, float s,
+            float w, float e, int screenWidth, int screenHeight, float centerLon, float centerLat, float pixelDxInWorld,
+            float pixelDyInWorld ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
 
         // Logger.d(TAG, "PRE  NSEW = " + n + "/" + s + "/" + e + "/" + w);
@@ -362,19 +366,37 @@ public class DaoMaps {
         String strSortOrder = COLUMN_DATA_TS + " ASC";
         Cursor c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, strWhereArgs, null, null, strSortOrder);
         c.moveToFirst();
+
+        int previousScreenX = Integer.MAX_VALUE;
+        int previousScreenY = Integer.MAX_VALUE;
+
         PointsContainer pointsContainer = new PointsContainer("log_" + mapId);
         int index = 0;
+        int jump = 0;
         while( !c.isAfterLast() ) {
             float lon = c.getFloat(0);
             float lat = c.getFloat(1);
             String name = c.getString(3);
+
+            // check if on screen it would be placed on the same pixel
+            int screenX = (int) MapView.lonToScreen(screenWidth, lon, centerLon, pixelDxInWorld);
+            int screenY = (int) MapView.latToScreen(screenHeight, lat, centerLat, pixelDyInWorld);
+            int thres = 5;
+            if (abs(screenX - previousScreenX) < thres && abs(screenY - previousScreenY) < thres) {
+                c.moveToNext();
+                jump++;
+                continue;
+            }
+            previousScreenX = screenX;
+            previousScreenY = screenY;
 
             pointsContainer.addPoint(lon, lat, name);
             c.moveToNext();
             index++;
         }
         c.close();
-        Logger.i(TAG, "Read points = " + index);
+        // Logger.i(TAG, "Read points = " + index);
+        Logger.d("DAOMAPS", "Jumped: " + jump);
         return pointsContainer;
     }
 
@@ -467,7 +489,7 @@ public class DaoMaps {
                 c.close();
         }
     }
-    
+
     /**
      * Import a gpx in the database.
      * 

@@ -22,7 +22,9 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +35,7 @@ import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
+import eu.hydrologis.geopaparazzi.util.VerticalSeekBar;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -62,16 +65,39 @@ public class MapsActivity extends Activity {
         applicationManager.setMapView(mapsView);
         applicationManager.addListener(mapsView);
 
-        // button view
-        ImageButton zoomIn = (ImageButton) findViewById(R.id.zoom_in_btn);
-        ImageButton centerOnGps = (ImageButton) findViewById(R.id.center_on_gps_btn);
-        ImageButton zoomOut = (ImageButton) findViewById(R.id.zoom_out_btn);
+        // zoom bar
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final int zoom = preferences.getInt(Constants.PREFS_KEY_ZOOM, 16);
+        VerticalSeekBar vSeekBar = (VerticalSeekBar) findViewById(R.id.ZoomBar);
+        vSeekBar.setMax(18);
+        vSeekBar.setProgress(zoom);
+        mapsView.zoomTo(zoom);
+        vSeekBar.setOnSeekBarChangeListener(new VerticalSeekBar.OnSeekBarChangeListener(){
+            private int progress = zoom;
+            public void onStopTrackingTouch( VerticalSeekBar seekBar ) {
+                mapsView.zoomTo(progress);
+                Logger.d(this, "Zoomed to: " + progress);
+            }
 
-        zoomIn.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
-                mapsView.zoomIn();
+            public void onStartTrackingTouch( VerticalSeekBar seekBar ) {
+
+            }
+
+            public void onProgressChanged( VerticalSeekBar seekBar, int progress, boolean fromUser ) {
+                this.progress = progress;
             }
         });
+
+        // button view
+        // ImageButton zoomIn = (ImageButton) findViewById(R.id.zoom_in_btn);
+        ImageButton centerOnGps = (ImageButton) findViewById(R.id.center_on_gps_btn);
+        // ImageButton zoomOut = (ImageButton) findViewById(R.id.zoom_out_btn);
+
+        // zoomIn.setOnClickListener(new Button.OnClickListener(){
+        // public void onClick( View v ) {
+        // mapsView.zoomIn();
+        // }
+        // });
 
         centerOnGps.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
@@ -79,11 +105,11 @@ public class MapsActivity extends Activity {
             }
         });
 
-        zoomOut.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
-                mapsView.zoomOut();
-            }
-        });
+        // zoomOut.setOnClickListener(new Button.OnClickListener(){
+        // public void onClick( View v ) {
+        // mapsView.zoomOut();
+        // }
+        // });
 
         mapsView.invalidate();
     }
