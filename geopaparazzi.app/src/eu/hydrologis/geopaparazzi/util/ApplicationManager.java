@@ -42,7 +42,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -201,6 +200,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
          *    |        
          *    `--- export
          * geopaparazzimapscache 
+         *    |--.nomedia
          *    `-- zoomlevel 
          *        `-- xtile 
          *            `-- ytile.png
@@ -241,6 +241,14 @@ public class ApplicationManager implements SensorEventListener, LocationListener
                             mapsCacheDir.getAbsolutePath());
                     alert(msg);
                 }
+            File noMediaFile = new File(mapsCacheDir, ".nomedia");
+            if (!noMediaFile.exists()) {
+                try {
+                    noMediaFile.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             kmlExportDir = new File(geoPaparazziDirPath + PATH_KMLEXPORT);
             if (!kmlExportDir.exists())
                 if (!kmlExportDir.mkdir())
