@@ -32,6 +32,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import eu.hydrologis.geopaparazzi.gpx.GpxItem;
 import eu.hydrologis.geopaparazzi.maps.MapItem;
+import eu.hydrologis.geopaparazzi.maps.MapView;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.PointF3D;
@@ -372,6 +373,79 @@ public class DaoGpsLog {
     }
 
     /**
+     * Get the collected lines from the database inside a given bound - decimated for the given screen.
+     * 
+     * @param n
+     * @param s
+     * @param w
+     * @param e
+     * @return the map of lines inside the bounds.
+     * @throws IOException
+     */
+    public static HashMap<Long, Line> getLinesInWorldBoundsDecimated( Context context, float n, float s, float w, float e,
+            int screenWidth, int screenHeight, float centerLon, float centerLat, float pixelDxInWorld, float pixelDyInWorld
+
+    ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        HashMap<Long, Line> linesMap = new HashMap<Long, Line>();
+        n = n + DatabaseManager.BUFFER;
+        s = s - DatabaseManager.BUFFER;
+        e = e + DatabaseManager.BUFFER;
+        w = w - DatabaseManager.BUFFER;
+
+        String asColumnsToReturn[] = {COLUMN_LOGID, COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_ALTIM, COLUMN_DATA_TS};
+        StringBuilder sB = new StringBuilder();
+        sB.append("(");
+        sB.append(COLUMN_DATA_LON);
+        sB.append(" BETWEEN ? AND ?) AND (");
+        sB.append(COLUMN_DATA_LAT);
+        sB.append(" BETWEEN ? AND ?)");
+        String strWhere = sB.toString();
+        String[] strWhereArgs = new String[]{String.valueOf(w), String.valueOf(e), String.valueOf(s), String.valueOf(n)};
+        String strSortOrder = COLUMN_LOGID + "," + COLUMN_DATA_TS + " ASC";
+        Cursor c = null;
+        try {
+            c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, strWhereArgs, null, null, strSortOrder);
+            c.moveToFirst();
+
+            int previousScreenX = Integer.MAX_VALUE;
+            int previousScreenY = Integer.MAX_VALUE;
+
+            while( !c.isAfterLast() ) {
+                long logid = c.getLong(0);
+                double lon = c.getDouble(1);
+                double lat = c.getDouble(2);
+
+                // check if on screen it would be placed on the same pixel
+                int screenX = (int) MapView.lonToScreen(screenWidth, (float) lon, centerLon, pixelDxInWorld);
+                int screenY = (int) MapView.latToScreen(screenHeight, (float) lat, centerLat, pixelDyInWorld);
+                if (screenX == previousScreenX && screenY == previousScreenY) {
+                    previousScreenX = screenX;
+                    previousScreenY = screenY;
+                    continue;
+                } else {
+                    previousScreenX = screenX;
+                    previousScreenY = screenY;
+                }
+
+                double altim = c.getDouble(3);
+                String date = c.getString(4);
+                Line line = linesMap.get(logid);
+                if (line == null) {
+                    line = new Line("log_" + logid);
+                    linesMap.put(logid, line);
+                }
+                line.addPoint(lon, lat, altim, date);
+                c.moveToNext();
+            }
+        } finally {
+            if (c != null)
+                c.close();
+        }
+        return linesMap;
+    }
+
+    /**
      * Get the map of lines from the db, having the gpslog id in the key.
      * 
      * @return the map of lines.
@@ -434,6 +508,37 @@ public class DaoGpsLog {
                 c.moveToNext();
             }
             return line;
+        } finally {
+            if (c != null)
+                c.close();
+        }
+    }
+
+    /**
+     * Get the first point of a gps log.
+     * 
+     * @param context
+     * @param logId the id of the log to query.
+     * @return the array of [lon, lat] o fthe first point.
+     * @throws IOException
+     */
+    public static double[] getGpslogFirstPoint( Context context, long logId ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+
+        String asColumnsToReturn[] = {COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_ALTIM, COLUMN_DATA_TS};
+        String strSortOrder = COLUMN_DATA_TS + " ASC";
+        String strWhere = COLUMN_LOGID + "=" + logId;
+        Cursor c = null;
+        try {
+            c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, null, null, null, strSortOrder);
+            c.moveToFirst();
+            double[] lonLat = new double[2];
+            while( !c.isAfterLast() ) {
+                lonLat[0] = c.getDouble(0);
+                lonLat[1] = c.getDouble(1);
+                break;
+            }
+            return lonLat;
         } finally {
             if (c != null)
                 c.close();

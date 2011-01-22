@@ -389,6 +389,13 @@ public class MapView extends View implements ApplicationManagerListener {
         canvas.drawText(tileDef, left + 5, top + 20, redPaint);
     }
 
+    /**
+     * Draws the external loaded maps on map.
+     * 
+     * @param canvas
+     * @param width
+     * @param height
+     */
     private void drawMaps( Canvas canvas, int width, int height ) {
         if (!DataManager.getInstance().areMapsVisible())
             return;
@@ -466,6 +473,13 @@ public class MapView extends View implements ApplicationManagerListener {
             e.printStackTrace();
         }
     }
+    /**
+     * Draw the geopap registered logs on map.
+     * 
+     * @param canvas
+     * @param width
+     * @param height
+     */
     private void drawGpslogs( Canvas canvas, int width, int height ) {
         if (!DataManager.getInstance().areLogsVisible())
             return;
@@ -476,7 +490,10 @@ public class MapView extends View implements ApplicationManagerListener {
 
         try {
             List<MapItem> gpslogs = DaoGpsLog.getGpslogs(context);
-            HashMap<Long, Line> linesInWorldBounds = DaoGpsLog.getLinesInWorldBounds(context, y0, y1, x0, x1);
+             HashMap<Long, Line> linesInWorldBounds =
+             DaoGpsLog.getLinesInWorldBoundsDecimated(context, y0, y1, x0, x1, width,
+             height, centerLon, centerLat, pixelDxInWorld, pixelDyInWorld);
+//            HashMap<Long, Line> linesInWorldBounds = DaoGpsLog.getLinesInWorldBounds(context, y0, y1, x0, x1);
             for( MapItem gpslogItem : gpslogs ) {
                 if (!gpslogItem.isVisible()) {
                     continue;
@@ -521,7 +538,6 @@ public class MapView extends View implements ApplicationManagerListener {
             e.printStackTrace();
         }
     }
-
     private void drawNotes( Canvas canvas, int width, int height ) {
         if (!DataManager.getInstance().areNotesVisible())
             return;
@@ -558,19 +574,19 @@ public class MapView extends View implements ApplicationManagerListener {
         }
     }
 
-    private float latToScreen( float height, float lat, float centerY, float resolutionY ) {
+    public static float latToScreen( float height, float lat, float centerY, float resolutionY ) {
         return height / 2f - (lat - centerY) / resolutionY;
     }
-    private float screenToLat( float height, float screenY, float centerLat, float resolutionY ) {
+    public static float screenToLat( float height, float screenY, float centerLat, float resolutionY ) {
         float lat = centerLat + (height / 2f - screenY) * resolutionY;
         return lat;
     }
 
-    private float lonToScreen( float width, float lon, float centerX, float resolutionX ) {
+    public static float lonToScreen( float width, float lon, float centerX, float resolutionX ) {
         return width / 2f + (lon - centerX) / resolutionX;
     }
 
-    private float screenToLon( float width, float screenX, float centerLon, float resolutionX ) {
+    public static float screenToLon( float width, float screenX, float centerLon, float resolutionX ) {
         float lon = screenX * resolutionX - width * resolutionX / 2 + centerLon;
         return lon;
     }

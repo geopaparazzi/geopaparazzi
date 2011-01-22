@@ -129,14 +129,12 @@ public class GpsDataPropertiesActivity extends Activity {
             zoomButton.setOnClickListener(new Button.OnClickListener(){
                 public void onClick( View v ) {
                     try {
-                        Line line = DaoGpsLog.getGpslogAsLine(GpsDataPropertiesActivity.this, item.getId());
-                        if (line.getLonList().size() > 0) {
+                        double[] firstPoint = DaoGpsLog.getGpslogFirstPoint(GpsDataPropertiesActivity.this, item.getId());
+                        if (firstPoint != null) {
                             ApplicationManager applicationManager = ApplicationManager
                                     .getInstance(GpsDataPropertiesActivity.this);
                             MapView mapsView = applicationManager.getMapView();
-                            List<Double> lonList = line.getLonList();
-                            List<Double> latList = line.getLatList();
-                            mapsView.setGotoCoordinate(lonList.get(0), latList.get(0));
+                            mapsView.setGotoCoordinate(firstPoint[0], firstPoint[1]);
                         }
                     } catch (IOException e) {
                         Logger.e(this, e.getLocalizedMessage(), e);
