@@ -30,19 +30,11 @@
 	<FrameLayout android:layout_width="fill_parent" android:id="@+id/navigation_buttons"
 		android:orientation="horizontal" android:layout_height="wrap_content"
 		android:layout_gravity="bottom">
-		<!-- <ImageButton android:id="@+id/zoom_out_btn" android:src="@android:drawable/btn_minus" 
-			android:layout_width="wrap_content" android:layout_height="wrap_content" 
-			android:background="@drawable/action_bar_button_drawable" android:layout_gravity="left" 
-			android:padding="5dp"></ImageButton> -->
 		<ImageButton android:id="@+id/center_on_gps_btn"
 			android:src="@android:drawable/ic_menu_mylocation"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"
 			android:background="@drawable/action_bar_button_drawable"
-			android:layout_gravity="center_horizontal|center_vertical"
+			android:layout_gravity="clip_horizontal|center_vertical"
 			android:padding="5dp"></ImageButton>
-		<!-- <ImageButton android:id="@+id/zoom_in_btn" android:src="@android:drawable/btn_plus" 
-			android:layout_width="wrap_content" android:layout_height="wrap_content" 
-			android:background="@drawable/action_bar_button_drawable" android:layout_gravity="right" 
-			android:padding="5dp"></ImageButton> -->
 	</FrameLayout>
 </FrameLayout>

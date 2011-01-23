@@ -89,27 +89,13 @@ public class MapsActivity extends Activity {
         });
 
         // button view
-        // ImageButton zoomIn = (ImageButton) findViewById(R.id.zoom_in_btn);
         ImageButton centerOnGps = (ImageButton) findViewById(R.id.center_on_gps_btn);
-        // ImageButton zoomOut = (ImageButton) findViewById(R.id.zoom_out_btn);
-
-        // zoomIn.setOnClickListener(new Button.OnClickListener(){
-        // public void onClick( View v ) {
-        // mapsView.zoomIn();
-        // }
-        // });
 
         centerOnGps.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
                 mapsView.centerOnGps();
             }
         });
-
-        // zoomOut.setOnClickListener(new Button.OnClickListener(){
-        // public void onClick( View v ) {
-        // mapsView.zoomOut();
-        // }
-        // });
 
         mapsView.invalidate();
     }
