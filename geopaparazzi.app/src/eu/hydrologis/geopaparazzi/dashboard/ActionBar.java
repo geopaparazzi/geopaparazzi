@@ -18,11 +18,17 @@
 package eu.hydrologis.geopaparazzi.dashboard;
 
 import java.text.DecimalFormat;
+import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -32,7 +38,6 @@ import eu.hydrologis.geopaparazzi.dashboard.quickaction.actionbar.ActionItem;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.actionbar.QuickAction;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
-import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -147,9 +152,38 @@ public class ActionBar {
             break;
         }
         case R.id.action_bar_compass: {
-            Context context = actionBarView.getContext();
-            Intent intent = new Intent(Constants.VIEW_COMPASS);
-            context.startActivity(intent);
+            String gpsStatusAction = "com.eclipsim.gpsstatus.VIEW";
+            String gpsStatusPackage = "com.eclipsim.gpsstatus";
+            final Context context = actionBarView.getContext();
+            List<PackageInfo> installedPackages = context.getPackageManager().getInstalledPackages(PackageManager.GET_ACTIVITIES);
+            boolean hasGpsStatus = false;
+            for( PackageInfo packageInfo : installedPackages ) {
+                String packageName = packageInfo.packageName;
+                // Logger.i(this, packageName);
+                if (packageName.startsWith(gpsStatusPackage)) {
+                    hasGpsStatus = true;
+                    break;
+                }
+            }
+            if (hasGpsStatus) {
+                Intent intent = new Intent(gpsStatusAction);
+                context.startActivity(intent);
+            } else {
+                new AlertDialog.Builder(context).setTitle("Install GPS Status")
+                        .setMessage("Geopaparazzi uses the Gps Status Application as compass and gps info view. Do you want to install it?")
+                        .setIcon(android.R.drawable.ic_dialog_info)
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                            public void onClick( DialogInterface dialog, int whichButton ) {
+                            }
+                        }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                            public void onClick( DialogInterface dialog, int whichButton ) {
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                intent.setData(Uri.parse("market://search?q=Gps Status pub:EclipSim"));
+                                context.startActivity(intent);
+                            }
+                        }).show();
+
+            }
             break;
         }
         default:

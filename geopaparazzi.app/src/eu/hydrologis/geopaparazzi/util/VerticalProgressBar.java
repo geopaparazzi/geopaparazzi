@@ -24,9 +24,6 @@ import android.widget.ProgressBar;
 import android.widget.RemoteViews.RemoteView;
 import eu.hydrologis.geopaparazzi.R;
 
-
-
-
 @RemoteView
 public class VerticalProgressBar extends View {
     private static final int MAX_LEVEL = 10000;
@@ -50,32 +47,31 @@ public class VerticalProgressBar extends View {
     private boolean mInDrawing;
 
     protected int mScrollX;
-	protected int mScrollY;
-	protected int mPaddingLeft;
-	protected int mPaddingRight;
-	protected int mPaddingTop;
-	protected int mPaddingBottom;
-	protected ViewParent mParent;
+    protected int mScrollY;
+    protected int mPaddingLeft;
+    protected int mPaddingRight;
+    protected int mPaddingTop;
+    protected int mPaddingBottom;
+    protected ViewParent mParent;
 
     /**
      * Create a new progress bar with range 0...100 and initial progress of 0.
      * @param context the application environment
      */
-    public VerticalProgressBar(Context context) {
-    	this(context, null);
+    public VerticalProgressBar( Context context ) {
+        this(context, null);
     }
 
-    public VerticalProgressBar(Context context, AttributeSet attrs) {
+    public VerticalProgressBar( Context context, AttributeSet attrs ) {
         this(context, attrs, android.R.attr.progressBarStyle);
     }
 
-    public VerticalProgressBar(Context context, AttributeSet attrs, int defStyle) {
+    public VerticalProgressBar( Context context, AttributeSet attrs, int defStyle ) {
         super(context, attrs, defStyle);
         mUiThreadId = Thread.currentThread().getId();
         initProgressBar();
 
-        TypedArray a =
-            context.obtainStyledAttributes(attrs, R.styleable.ProgressBar, defStyle, 0);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ProgressBar, defStyle, 0);
 
         mNoInvalidate = true;
 
@@ -87,7 +83,6 @@ public class VerticalProgressBar extends View {
             setProgressDrawable(drawable);
         }
 
-
         mMinWidth = a.getDimensionPixelSize(R.styleable.ProgressBar_android_minWidth, mMinWidth);
         mMaxWidth = a.getDimensionPixelSize(R.styleable.ProgressBar_android_maxWidth, mMaxWidth);
         mMinHeight = a.getDimensionPixelSize(R.styleable.ProgressBar_android_minHeight, mMinHeight);
@@ -97,8 +92,7 @@ public class VerticalProgressBar extends View {
 
         setProgress(a.getInt(R.styleable.ProgressBar_android_progress, mProgress));
 
-        setSecondaryProgress(
-                a.getInt(R.styleable.ProgressBar_android_secondaryProgress, mSecondaryProgress));
+        setSecondaryProgress(a.getInt(R.styleable.ProgressBar_android_secondaryProgress, mSecondaryProgress));
 
         mNoInvalidate = false;
 
@@ -109,14 +103,14 @@ public class VerticalProgressBar extends View {
      * Converts a drawable to a tiled version of itself. It will recursively
      * traverse layer and state list drawables.
      */
-    private Drawable tileify(Drawable drawable, boolean clip) {
+    private Drawable tileify( Drawable drawable, boolean clip ) {
 
         if (drawable instanceof LayerDrawable) {
-        	LayerDrawable background = (LayerDrawable) drawable;
+            LayerDrawable background = (LayerDrawable) drawable;
             final int N = background.getNumberOfLayers();
             Drawable[] outDrawables = new Drawable[N];
 
-            for (int i = 0; i < N; i++) {
+            for( int i = 0; i < N; i++ ) {
                 int id = background.getId(i);
                 outDrawables[i] = tileify(background.getDrawable(i),
                         (id == android.R.id.progress || id == android.R.id.secondaryProgress));
@@ -124,14 +118,14 @@ public class VerticalProgressBar extends View {
 
             LayerDrawable newBg = new LayerDrawable(outDrawables);
 
-            for (int i = 0; i < N; i++) {
+            for( int i = 0; i < N; i++ ) {
                 newBg.setId(i, background.getId(i));
             }
 
             return newBg;
 
         } else if (drawable instanceof StateListDrawable) {
-            StateListDrawable in = (StateListDrawable) drawable;
+            // StateListDrawable in = (StateListDrawable) drawable;
             StateListDrawable out = new StateListDrawable();
             /*int numStates = in.getStateCount();
             for (int i = 0; i < numStates; i++) {
@@ -146,15 +140,14 @@ public class VerticalProgressBar extends View {
             }
 
             final ShapeDrawable shapeDrawable = new ShapeDrawable(getDrawableShape());
-            return (clip) ? new ClipDrawable(shapeDrawable, Gravity.LEFT,
-                    ClipDrawable.HORIZONTAL) : shapeDrawable;
+            return (clip) ? new ClipDrawable(shapeDrawable, Gravity.LEFT, ClipDrawable.HORIZONTAL) : shapeDrawable;
         }
 
         return drawable;
     }
 
     Shape getDrawableShape() {
-        final float[] roundedCorners = new float[] { 5, 5, 5, 5, 5, 5, 5, 5 };
+        final float[] roundedCorners = new float[]{5, 5, 5, 5, 5, 5, 5, 5};
         return new RoundRectShape(roundedCorners, null, null);
     }
 
@@ -197,7 +190,7 @@ public class VerticalProgressBar extends View {
      *
      * @see #getProgressDrawable()
      */
-    public void setProgressDrawable(Drawable d) {
+    public void setProgressDrawable( Drawable d ) {
         if (d != null) {
             d.setCallback(this);
             // Make sure the ProgressBar is always tall enough
@@ -220,7 +213,7 @@ public class VerticalProgressBar extends View {
     }
 
     @Override
-    protected boolean verifyDrawable(Drawable who) {
+    protected boolean verifyDrawable( Drawable who ) {
         return who == mProgressDrawable || super.verifyDrawable(who);
     }
 
@@ -237,7 +230,7 @@ public class VerticalProgressBar extends View {
         private int mProgress;
         private boolean mFromUser;
 
-        RefreshProgressRunnable(int id, int progress, boolean fromUser) {
+        RefreshProgressRunnable( int id, int progress, boolean fromUser ) {
             mId = id;
             mProgress = progress;
             mFromUser = fromUser;
@@ -249,7 +242,7 @@ public class VerticalProgressBar extends View {
             mRefreshProgressRunnable = this;
         }
 
-        public void setup(int id, int progress, boolean fromUser) {
+        public void setup( int id, int progress, boolean fromUser ) {
             mId = id;
             mProgress = progress;
             mFromUser = fromUser;
@@ -257,7 +250,7 @@ public class VerticalProgressBar extends View {
 
     }
 
-    private synchronized void doRefreshProgress(int id, int progress, boolean fromUser) {
+    private synchronized void doRefreshProgress( int id, int progress, boolean fromUser ) {
         float scale = mMax > 0 ? (float) progress / (float) mMax : 0;
         final Drawable d = mCurrentDrawable;
         if (d != null) {
@@ -278,10 +271,10 @@ public class VerticalProgressBar extends View {
         }
     }
 
-    void onProgressRefresh(float scale, boolean fromUser) {
+    void onProgressRefresh( float scale, boolean fromUser ) {
     }
 
-    private synchronized void refreshProgress(int id, int progress, boolean fromUser) {
+    private synchronized void refreshProgress( int id, int progress, boolean fromUser ) {
         if (mUiThreadId == Thread.currentThread().getId()) {
             doRefreshProgress(id, progress, fromUser);
         } else {
@@ -308,11 +301,11 @@ public class VerticalProgressBar extends View {
      * @see #getProgress()
      * @see #incrementProgressBy(int)
      */
-    public synchronized void setProgress(int progress) {
+    public synchronized void setProgress( int progress ) {
         setProgress(progress, false);
     }
 
-    synchronized void setProgress(int progress, boolean fromUser) {
+    synchronized void setProgress( int progress, boolean fromUser ) {
         if (progress < 0) {
             progress = 0;
         }
@@ -336,7 +329,7 @@ public class VerticalProgressBar extends View {
      * @see #getSecondaryProgress()
      * @see #incrementSecondaryProgressBy(int)
      */
-    public synchronized void setSecondaryProgress(int secondaryProgress) {
+    public synchronized void setSecondaryProgress( int secondaryProgress ) {
         if (secondaryProgress < 0) {
             secondaryProgress = 0;
         }
@@ -402,7 +395,7 @@ public class VerticalProgressBar extends View {
      * @see #setProgress(int)
      * @see #setSecondaryProgress(int)
      */
-    public synchronized void setMax(int max) {
+    public synchronized void setMax( int max ) {
         if (max < 0) {
             max = 0;
         }
@@ -424,7 +417,7 @@ public class VerticalProgressBar extends View {
      *
      * @see #setProgress(int)
      */
-    public synchronized final void incrementProgressBy(int diff) {
+    public synchronized final void incrementProgressBy( int diff ) {
         setProgress(mProgress + diff);
     }
 
@@ -435,27 +428,26 @@ public class VerticalProgressBar extends View {
      *
      * @see #setSecondaryProgress(int)
      */
-    public synchronized final void incrementSecondaryProgressBy(int diff) {
+    public synchronized final void incrementSecondaryProgressBy( int diff ) {
         setSecondaryProgress(mSecondaryProgress + diff);
     }
 
     @Override
-    public void setVisibility(int v) {
+    public void setVisibility( int v ) {
         if (getVisibility() != v) {
             super.setVisibility(v);
         }
     }
 
     @Override
-    public void invalidateDrawable(Drawable dr) {
+    public void invalidateDrawable( Drawable dr ) {
         if (!mInDrawing) {
             if (verifyDrawable(dr)) {
                 final Rect dirty = dr.getBounds();
                 final int scrollX = mScrollX + mPaddingLeft;
                 final int scrollY = mScrollY + mPaddingTop;
 
-                invalidate(dirty.left + scrollX, dirty.top + scrollY,
-                        dirty.right + scrollX, dirty.bottom + scrollY);
+                invalidate(dirty.left + scrollX, dirty.top + scrollY, dirty.right + scrollX, dirty.bottom + scrollY);
             } else {
                 super.invalidateDrawable(dr);
             }
@@ -463,7 +455,7 @@ public class VerticalProgressBar extends View {
     }
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+    protected void onSizeChanged( int w, int h, int oldw, int oldh ) {
         // onDraw will translate the canvas so we draw starting at 0,0
         int right = w - mPaddingRight - mPaddingLeft;
         int bottom = h - mPaddingBottom - mPaddingTop;
@@ -474,7 +466,7 @@ public class VerticalProgressBar extends View {
     }
 
     @Override
-    protected synchronized void onDraw(Canvas canvas) {
+    protected synchronized void onDraw( Canvas canvas ) {
         super.onDraw(canvas);
 
         Drawable d = mCurrentDrawable;
@@ -489,7 +481,7 @@ public class VerticalProgressBar extends View {
     }
 
     @Override
-    protected synchronized void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected synchronized void onMeasure( int widthMeasureSpec, int heightMeasureSpec ) {
         Drawable d = mCurrentDrawable;
 
         int dw = 0;
@@ -501,8 +493,7 @@ public class VerticalProgressBar extends View {
         dw += mPaddingLeft + mPaddingRight;
         dh += mPaddingTop + mPaddingBottom;
 
-        setMeasuredDimension(resolveSize(dw, widthMeasureSpec),
-                resolveSize(dh, heightMeasureSpec));
+        setMeasuredDimension(resolveSize(dw, widthMeasureSpec), resolveSize(dh, heightMeasureSpec));
     }
 
     @Override
@@ -523,33 +514,32 @@ public class VerticalProgressBar extends View {
         /**
          * Constructor called from {@link ProgressBar#onSaveInstanceState()}
          */
-        SavedState(Parcelable superState) {
+        SavedState( Parcelable superState ) {
             super(superState);
         }
 
         /**
          * Constructor called from {@link #CREATOR}
          */
-        private SavedState(Parcel in) {
+        private SavedState( Parcel in ) {
             super(in);
             progress = in.readInt();
             secondaryProgress = in.readInt();
         }
 
         @Override
-        public void writeToParcel(Parcel out, int flags) {
+        public void writeToParcel( Parcel out, int flags ) {
             super.writeToParcel(out, flags);
             out.writeInt(progress);
             out.writeInt(secondaryProgress);
         }
 
-        public static final Parcelable.Creator<SavedState> CREATOR
-                = new Parcelable.Creator<SavedState>() {
-            public SavedState createFromParcel(Parcel in) {
+        public static final Parcelable.Creator<SavedState> CREATOR = new Parcelable.Creator<SavedState>(){
+            public SavedState createFromParcel( Parcel in ) {
                 return new SavedState(in);
             }
 
-            public SavedState[] newArray(int size) {
+            public SavedState[] newArray( int size ) {
                 return new SavedState[size];
             }
         };
@@ -568,7 +558,7 @@ public class VerticalProgressBar extends View {
     }
 
     @Override
-    public void onRestoreInstanceState(Parcelable state) {
+    public void onRestoreInstanceState( Parcelable state ) {
         SavedState ss = (SavedState) state;
         super.onRestoreInstanceState(ss.getSuperState());
 

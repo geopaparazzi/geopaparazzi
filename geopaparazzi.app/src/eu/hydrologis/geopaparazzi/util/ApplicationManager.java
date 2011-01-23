@@ -62,7 +62,6 @@ import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.compass.CompassView;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.ActionItem;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction;
@@ -279,23 +278,6 @@ public class ApplicationManager implements SensorEventListener, LocationListener
      */
     public void removeListener( ApplicationManagerListener listener ) {
         listeners.remove(listener);
-    }
-
-    /**
-     * Remove the compasslistener, even if it is no longer 
-     * available in the current context.
-     * 
-     * <p>This happens for example on orientation change, where the {@link CompassView}
-     * is recreated, but the {@link ApplicationManager} still has the old one
-     * listening.
-     */
-    public void removeCompassListener() {
-        for( ApplicationManagerListener l : listeners ) {
-            if (l instanceof CompassView) {
-                listeners.remove(l);
-                break;
-            }
-        }
     }
 
     /**
