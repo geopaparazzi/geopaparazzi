@@ -6,6 +6,17 @@
     <string name="changes">Changes:</string>
 
 	<string name="changelogtext">
+Version 2.1.0¶\n
+\n
+New features:\n
+  * zoom bar on map view to choose the zoomlevel\n
+  * compass view now links to the Gps Status Application\n
+\n
+Fixes:\n
+  * lots of enhancements on the data decimating and rendering performance, fixing crashes and freezes\n
+  * .nomedia file in the maps cache folder to stop scanner from browsing it \n
+\n
+\n
 Version 2.0.0\n
 \n
 New features:\n
