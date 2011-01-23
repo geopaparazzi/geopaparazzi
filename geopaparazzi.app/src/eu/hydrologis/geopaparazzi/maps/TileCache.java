@@ -37,7 +37,6 @@ import java.util.Map;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -51,11 +50,6 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class TileCache {
-    /**
-     * The log tag. 
-     */
-    private static final String LOGTAG = TileCache.class.getSimpleName();
-
     /**
      * The root folder for OSM tile storing. 
      */
@@ -171,7 +165,7 @@ public class TileCache {
             // BitmapDrawable bitmapDrawable = (BitmapDrawable) Drawable.createFromPath(tileFile
             // .getAbsolutePath());
             if (tileBitmap == null) {
-                Log.e(LOGTAG, "Problems reading image from disk: " + tileFile); //$NON-NLS-1$
+                Logger.d(this, "Problems reading image from disk: " + tileFile); //$NON-NLS-1$
                 boolean delete = tileFile.delete();
                 if (!delete) {
                     tileFile.deleteOnExit();
@@ -232,8 +226,7 @@ public class TileCache {
                                 // Log.v(LOGTAG, "Web bitmap in cache: " + tileDef);
                             }
                         } catch (Exception e) {
-                            Logger.e(this, e.getLocalizedMessage(), e);
-                            Log.e(LOGTAG, "Problems reading image from web: " + urlStr); //$NON-NLS-1$
+                            Logger.e(this, "Problems reading image from web: " + urlStr, e);
                         } finally {
                             if (tileInputStream != null) {
                                 try {

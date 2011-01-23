@@ -495,7 +495,7 @@ public class MapView extends View implements ApplicationManagerListener {
      * @param width
      * @param height
      */
-    private HashMap<Long, LineArray> linesInWorldBounds = null;
+    private HashMap<Long, LineArray> linesInWorldBounds = new HashMap<Long, LineArray>();
     private void drawGpslogs( Canvas canvas, int width, int height ) {
         if (!DataManager.getInstance().areLogsVisible())
             return;
@@ -505,17 +505,44 @@ public class MapView extends View implements ApplicationManagerListener {
         float x1 = screenToLon(width, width, centerLon, pixelDxInWorld);
 
         try {
+
             List<MapItem> gpslogs = DaoGpsLog.getGpslogs(context);
-            if (!gpsUpdate || linesInWorldBounds == null)
-                linesInWorldBounds = DaoGpsLog.getLinesInWorldBoundsDecimated(context, y0, y1, x0, x1, width, height, centerLon,
-                        centerLat, pixelDxInWorld, pixelDyInWorld);
+            long currentLogId = ApplicationManager.getInstance(context).getCurrentRecordedLogId();
+            // if (!gpsUpdate || linesInWorldBounds == null) {
+            // linesInWorldBounds = DaoGpsLog.getLinesInWorldBoundsDecimated(context, y0, y1, x0,
+            // x1, width, height, centerLon,
+            // centerLat, pixelDxInWorld, pixelDyInWorld, lastLogId);
+            // }
+            // LineArray currentLine = DaoGpsLog.getLinesInWorldBoundsByIdDecimated(context, y0, y1,
+            // x0, x1, width, height,
+            // centerLon, centerLat, pixelDxInWorld, pixelDyInWorld, lastLogId);
+
             // HashMap<Long, Line> linesInWorldBounds = DaoGpsLog.getLinesInWorldBounds(context, y0,
             // y1, x0, x1);
             for( MapItem gpslogItem : gpslogs ) {
                 if (!gpslogItem.isVisible()) {
                     continue;
                 }
-                LineArray line = linesInWorldBounds.get(gpslogItem.getId());
+                Long id = gpslogItem.getId();
+                LineArray line;
+                if (id == currentLogId) {
+                    // we always reread the current log to make it proceed
+                    line = DaoGpsLog.getLinesInWorldBoundsByIdDecimated(context, y0, y1, x0, x1, width, height, centerLon,
+                            centerLat, pixelDxInWorld, pixelDyInWorld, id);
+                } else {
+                    // for the other logs we cache depending on a gps update or a touch draw event
+                    if (gpsUpdate) {
+                        // draw was triggered by gps moving, we get the cached from before
+                        line = linesInWorldBounds.get(id);
+                    } else {
+                        // if the draw comes from no gps update, reread the track
+                        linesInWorldBounds.remove(id);
+                        line = DaoGpsLog.getLinesInWorldBoundsByIdDecimated(context, y0, y1, x0, x1, width, height, centerLon,
+                                centerLat, pixelDxInWorld, pixelDyInWorld, id);
+                        linesInWorldBounds.put(id, line);
+                    }
+                }
+
                 if (line == null) {
                     continue;
                 }
@@ -618,7 +645,7 @@ public class MapView extends View implements ApplicationManagerListener {
         return requestFocus;
     }
 
-    float previousGpsLat = Float.MAX_VALUE;
+    private float previousGpsLat = Float.MAX_VALUE;
     private float previousGpsLon = Float.MAX_VALUE;
     private boolean gpsUpdate = false;
     public void onLocationChanged( GpsLocation loc ) {

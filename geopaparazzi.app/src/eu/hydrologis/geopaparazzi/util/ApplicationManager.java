@@ -79,8 +79,6 @@ import eu.hydrologis.geopaparazzi.util.debug.TestMock;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class ApplicationManager implements SensorEventListener, LocationListener, Serializable {
-    // , Listener {
-
     private static final long serialVersionUID = 1L;
 
     private static final String LOGTAG = "APPLICATIONMANAGER";
@@ -427,16 +425,16 @@ public class ApplicationManager implements SensorEventListener, LocationListener
             normalAzimuth = toDegrees(values[0]);
             // normalPitch = toDegrees(values[1]);
             // normalRoll = toDegrees(values[2]);
-//            int orientation = getContext().getResources().getConfiguration().orientation;
-//            switch( orientation ) {
-//            case Configuration.ORIENTATION_LANDSCAPE:
-//                normalAzimuth = -1 * (normalAzimuth - 135);
-//            case Configuration.ORIENTATION_PORTRAIT:
-//            default:
-//                break;
-//            }
-//            normalAzimuth = normalAzimuth > 0 ? normalAzimuth : (360f + normalAzimuth);
-//            Logger.d(this, "NAZIMUTH = " + normalAzimuth);
+            // int orientation = getContext().getResources().getConfiguration().orientation;
+            // switch( orientation ) {
+            // case Configuration.ORIENTATION_LANDSCAPE:
+            // normalAzimuth = -1 * (normalAzimuth - 135);
+            // case Configuration.ORIENTATION_PORTRAIT:
+            // default:
+            // break;
+            // }
+            // normalAzimuth = normalAzimuth > 0 ? normalAzimuth : (360f + normalAzimuth);
+            // Logger.d(this, "NAZIMUTH = " + normalAzimuth);
 
             SensorManager.remapCoordinateSystem(RM, SensorManager.AXIS_X, SensorManager.AXIS_Z, outR);
             SensorManager.getOrientation(outR, values);
@@ -612,6 +610,13 @@ public class ApplicationManager implements SensorEventListener, LocationListener
 
     public int getCurrentRunningGpsLogPointsNum() {
         return gpsLogger.getCurrentPointsNum();
+    }
+
+    public long getCurrentRecordedLogId() {
+        if (gpsLogger == null) {
+            return -1l;
+        }
+        return gpsLogger.getCurrentRecordedLogId();
     }
 
     public int getCurrentRunningGpsLogDistance() {

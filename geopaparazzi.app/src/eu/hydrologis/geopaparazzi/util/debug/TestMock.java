@@ -22,6 +22,7 @@ import java.util.Date;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import eu.hydrologis.geopaparazzi.maps.MapView;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 
 /**
@@ -47,6 +48,12 @@ public class TestMock {
         if (isOn) {
             return;
         }
+
+        MapView mapView = applicationManager.getMapView();
+        if (mapView != null) {
+            lat = mapView.getCenterLat();
+            lon = mapView.getCenterLon();
+        }
         // Get some mock location data in the game
         // LocationProvider provider = locationManager.getProvider(MOCK_PROVIDER_NAME);
         // if (provider == null) {
@@ -59,6 +66,7 @@ public class TestMock {
         Runnable r = new Runnable(){
             public void run() {
                 isOn = true;
+
                 while( isOn ) {
                     Location location = new Location(MOCK_PROVIDER_NAME);
                     location.setLatitude(lat);

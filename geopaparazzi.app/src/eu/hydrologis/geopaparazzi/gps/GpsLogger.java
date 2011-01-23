@@ -94,6 +94,11 @@ public class GpsLogger implements ApplicationManagerListener {
         return isLogging;
     }
 
+    private long currentRecordedLogId = -1;
+    public long getCurrentRecordedLogId() {
+        return currentRecordedLogId;
+    }
+
     /**
      * Starts logging into the database.
      * 
@@ -109,6 +114,7 @@ public class GpsLogger implements ApplicationManagerListener {
                 try {
                     java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
                     long gpsLogId = DaoGpsLog.addGpsLog(context, now, now, logName, 2f, "red", true);
+                    currentRecordedLogId = gpsLogId;
                     Logger.i(LOGTAG, "Starting gps logging. Logid: " + gpsLogId);
 
                     // get preferences
@@ -194,6 +200,7 @@ public class GpsLogger implements ApplicationManagerListener {
 
                     currentPointsNum = 0;
                     currentDistance = 0f;
+                    currentRecordedLogId = -1;
 
                 } catch (SQLiteFullException e) {
                     e.printStackTrace();
