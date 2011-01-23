@@ -143,18 +143,18 @@
 	    \n
 	    The maps come from OpenStreetMap.\n
 	    \n
-	    The compass is adapted from the Modern Compass Rose by RobA found in the Open Clipart Library.\n
+	    The Vertical Seekbar comes from ardroid.\n
 	    \n
 	    The quickactions are adapted from Lorenz’s Londatiga tutorial.\n
 	    \n
 	    Links:\n
-	    www.geopaparazzi.eu\n
-	    www.hydrologis.eu\n
-	    www.jgrass.org\n
-	    www.beegis.org\n
-	    www.openstreetmap.org\n
-	    www.openclipart.org\n
-	    www.londatiga.net\n
+	    http://www.geopaparazzi.eu\n
+	    http://www.hydrologis.eu\n
+	    http://www.jgrass.org\n
+	    http://www.beegis.org\n
+	    http://www.openstreetmap.org\n
+	    http://code.google.com/p/ardroid\n
+	    http://www.londatiga.net\n
 	</string>
 	
 	<string name="no_maps_in_list">There are no maps in the list. To import maps, use the import gpx function from the menu.</string>
@@ -191,5 +191,8 @@
     
     <string name="export_for_real">Export data?</string>
     <string name="up">up</string>
+
+    <string name="installgpsstatus_title">Install GPS Status</string>
+    <string name="installgpsstatus_message">Geopaparazzi uses the Gps Status Application as compass and gps info view. Do you want to install it?</string>
 	
 </resources>

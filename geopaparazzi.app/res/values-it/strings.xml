@@ -142,17 +142,18 @@
 	    \n
 	    Le mappe sono di OpenStreetMap.\n
 	    \n
-	    La bussola è adattata dal Modern Compass Rose di RobA trovato nella Open Clipart Library.\n
+	    La Vertical Seekbar proviene da ardroid.\n
 	    \n
 	    Le quickactions sono adattate dal tutorial di Lorenz su Londatiga.\n
         \n
 	    Collegamenti:\n
-	    www.geopaparazzi.eu\n
-	    www.hydrologis.eu\n
-	    www.jgrass.org\n
-	    www.beegis.org\n
-	    www.openstreetmap.org\n
-	    www.openclipart.org\n
+	    http://www.geopaparazzi.eu\n
+	    http://www.hydrologis.eu\n
+	    http://www.jgrass.org\n
+	    http://www.beegis.org\n
+	    http://www.openstreetmap.org\n
+	    http://code.google.com/p/ardroid\n	    
+	    http://www.openclipart.org\n
 	</string>
 	
 	<string name="no_maps_in_list">Non ci sono mappe nella lista. Per importare mappe seleziona la funzione di import gpx dal menu.</string>
@@ -188,4 +189,10 @@
     <string name="remove_last_note_prompt">Vuoi veramente rimuovere l\'ultima nota? Non e\' possibile tornare indietro.</string>
 	
 	<string name="export_for_real">Exportare i dati?</string>
+	
+	<string name="up">su</string>
+	
+	<string name="installgpsstatus_title">Installa GPS Status</string>
+    <string name="installgpsstatus_message">Geopaparazzi usa l\'applicazione Gps Status come bussola e vista informazioni gps. La vuoi installare?</string>
+	
 </resources>

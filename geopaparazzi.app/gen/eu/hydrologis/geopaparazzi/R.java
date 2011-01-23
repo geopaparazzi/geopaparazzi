@@ -367,6 +367,8 @@ public final class R {
         public static final int imagenonsaved=0x7f070019;
         public static final int imagesaved=0x7f070018;
         public static final int insert_note=0x7f07007a;
+        public static final int installgpsstatus_message=0x7f070093;
+        public static final int installgpsstatus_title=0x7f070092;
         public static final int kmlnonsaved=0x7f070016;
         public static final int kmlsaved=0x7f070015;
         public static final int last_note_deleted=0x7f070088;

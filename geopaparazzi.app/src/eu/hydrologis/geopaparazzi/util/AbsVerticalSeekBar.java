@@ -1,3 +1,20 @@
+/*
+ * Geopaparazzi - Digital field mapping on Android based devices
+ * Copyright (C) 2010  HydroloGIS (www.hydrologis.com)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.hydrologis.geopaparazzi.util;
 
 import android.content.Context;
@@ -10,7 +27,10 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import eu.hydrologis.geopaparazzi.R;
 
-public class AbsVerticalSeekBar extends VerticalProgressBar{
+/**
+ * @author http://code.google.com/p/ardroid/
+ */
+public class AbsVerticalSeekBar extends VerticalProgressBar {
 
     private Drawable mThumb;
     private int mThumbOffset;
@@ -35,29 +55,26 @@ public class AbsVerticalSeekBar extends VerticalProgressBar{
     private static final int NO_ALPHA = 0xFF;
     private float mDisabledAlpha;
 
-    public AbsVerticalSeekBar(Context context) {
-    	super(context);
+    public AbsVerticalSeekBar( Context context ) {
+        super(context);
     }
 
-    public AbsVerticalSeekBar(Context context, AttributeSet attrs) {
+    public AbsVerticalSeekBar( Context context, AttributeSet attrs ) {
         super(context, attrs);
     }
 
-    public AbsVerticalSeekBar(Context context, AttributeSet attrs, int defStyle) {
+    public AbsVerticalSeekBar( Context context, AttributeSet attrs, int defStyle ) {
         super(context, attrs, defStyle);
 
-        TypedArray a = context.obtainStyledAttributes(attrs,
-                R.styleable.SeekBar, defStyle, 0);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SeekBar, defStyle, 0);
         Drawable thumb = a.getDrawable(R.styleable.SeekBar_android_thumb);
         setThumb(thumb); // will guess mThumbOffset if thumb != null...
         // ...but allow layout to override this
-        int thumbOffset =
-                a.getDimensionPixelOffset(R.styleable.SeekBar_android_thumbOffset, getThumbOffset());
+        int thumbOffset = a.getDimensionPixelOffset(R.styleable.SeekBar_android_thumbOffset, getThumbOffset());
         setThumbOffset(thumbOffset);
         a.recycle();
 
-        a = context.obtainStyledAttributes(attrs,
-                R.styleable.Theme, 0, 0);
+        a = context.obtainStyledAttributes(attrs, R.styleable.Theme, 0, 0);
         mDisabledAlpha = a.getFloat(R.styleable.Theme_android_disabledAlpha, 0.5f);
         a.recycle();
     }
@@ -70,14 +87,14 @@ public class AbsVerticalSeekBar extends VerticalProgressBar{
      *
      * @param thumb Drawable representing the thumb
      */
-    public void setThumb(Drawable thumb) {
+    public void setThumb( Drawable thumb ) {
         if (thumb != null) {
             thumb.setCallback(this);
 
             // Assuming the thumb drawable is symmetric, set the thumb offset
             // such that the thumb will hang halfway off either edge of the
             // progress bar.
-            mThumbOffset = (int)thumb.getIntrinsicHeight() / 2;
+            mThumbOffset = (int) thumb.getIntrinsicHeight() / 2;
         }
         mThumb = thumb;
         invalidate();
@@ -96,7 +113,7 @@ public class AbsVerticalSeekBar extends VerticalProgressBar{
      *
      * @param thumbOffset The offset amount in pixels.
      */
-    public void setThumbOffset(int thumbOffset) {
+    public void setThumbOffset( int thumbOffset ) {
         mThumbOffset = thumbOffset;
         invalidate();
     }
@@ -107,7 +124,7 @@ public class AbsVerticalSeekBar extends VerticalProgressBar{
      * @param increment The amount to increment or decrement when the user
      *            presses the arrow keys.
      */
-    public void setKeyProgressIncrement(int increment) {
+    public void setKeyProgressIncrement( int increment ) {
         mKeyProgressIncrement = increment < 0 ? -increment : increment;
     }
 
@@ -124,7 +141,7 @@ public class AbsVerticalSeekBar extends VerticalProgressBar{
     }
 
     @Override
-    public synchronized void setMax(int max) {
+    public synchronized void setMax( int max ) {
         super.setMax(max);
 
         if ((mKeyProgressIncrement == 0) || (getMax() / mKeyProgressIncrement > 20)) {
@@ -135,7 +152,7 @@ public class AbsVerticalSeekBar extends VerticalProgressBar{
     }
 
     @Override
-    protected boolean verifyDrawable(Drawable who) {
+    protected boolean verifyDrawable( Drawable who ) {
         return who == mThumb || super.verifyDrawable(who);
     }
 
@@ -155,7 +172,7 @@ public class AbsVerticalSeekBar extends VerticalProgressBar{
     }
 
     @Override
-    void onProgressRefresh(float scale, boolean fromUser) {
+    void onProgressRefresh( float scale, boolean fromUser ) {
         Drawable thumb = mThumb;
         if (thumb != null) {
             setThumbPos(getHeight(), thumb, scale, Integer.MIN_VALUE);
@@ -168,9 +185,8 @@ public class AbsVerticalSeekBar extends VerticalProgressBar{
         }
     }
 
-
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+    protected void onSizeChanged( int w, int h, int oldw, int oldh ) {
         Drawable d = getCurrentDrawable();
         Drawable thumb = mThumb;
         int thumbWidth = thumb == null ? 0 : thumb.getIntrinsicWidth();
@@ -187,9 +203,8 @@ public class AbsVerticalSeekBar extends VerticalProgressBar{
             }
             if (d != null) {
                 // Canvas will be translated by the padding, so 0,0 is where we start drawing
-                d.setBounds(gapForCenteringTrack, 0,
-                        w - mPaddingRight - mPaddingLeft - gapForCenteringTrack,
-                        h - mPaddingBottom - mPaddingTop);
+                d.setBounds(gapForCenteringTrack, 0, w - mPaddingRight - mPaddingLeft - gapForCenteringTrack, h - mPaddingBottom
+                        - mPaddingTop);
             }
         } else {
             if (d != null) {
@@ -206,7 +221,7 @@ public class AbsVerticalSeekBar extends VerticalProgressBar{
     /**
      * @param gap If set to {@link Integer#MIN_VALUE}, this will be ignored and
      */
-    private void setThumbPos(int h, Drawable thumb, float scale, int gap) {
+    private void setThumbPos( int h, Drawable thumb, float scale, int gap ) {
         int available = h - mPaddingTop - mPaddingBottom;
         int thumbWidth = thumb.getIntrinsicWidth();
         int thumbHeight = thumb.getIntrinsicHeight();
@@ -214,10 +229,10 @@ public class AbsVerticalSeekBar extends VerticalProgressBar{
 
         // The extra space for the thumb to move on the track
         available += mThumbOffset * 2;
-        int thumbPos = (int) ((1-scale) * available);
+        int thumbPos = (int) ((1 - scale) * available);
         int leftBound, rightBound;
         if (gap == Integer.MIN_VALUE) {
-        	Rect oldBounds = thumb.getBounds();
+            Rect oldBounds = thumb.getBounds();
             leftBound = oldBounds.left;
             rightBound = oldBounds.right;
         } else {
@@ -230,7 +245,7 @@ public class AbsVerticalSeekBar extends VerticalProgressBar{
     }
 
     @Override
-    protected synchronized void onDraw(Canvas canvas) {
+    protected synchronized void onDraw( Canvas canvas ) {
         super.onDraw(canvas);
         if (mThumb != null) {
             canvas.save();
@@ -243,7 +258,7 @@ public class AbsVerticalSeekBar extends VerticalProgressBar{
     }
 
     @Override
-    protected synchronized void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    protected synchronized void onMeasure( int widthMeasureSpec, int heightMeasureSpec ) {
         Drawable d = getCurrentDrawable();
 
         int thumbWidth = mThumb == null ? 0 : mThumb.getIntrinsicWidth();
@@ -257,51 +272,50 @@ public class AbsVerticalSeekBar extends VerticalProgressBar{
         dw += mPaddingLeft + mPaddingRight;
         dh += mPaddingTop + mPaddingBottom;
 
-        setMeasuredDimension(resolveSize(dw, widthMeasureSpec),
-                resolveSize(dh, heightMeasureSpec));
+        setMeasuredDimension(resolveSize(dw, widthMeasureSpec), resolveSize(dh, heightMeasureSpec));
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent( MotionEvent event ) {
         if (!mIsUserSeekable || !isEnabled()) {
             return false;
         }
 
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                setPressed(true);
-                onStartTrackingTouch();
-                trackTouchEvent(event);
-                break;
+        switch( event.getAction() ) {
+        case MotionEvent.ACTION_DOWN:
+            setPressed(true);
+            onStartTrackingTouch();
+            trackTouchEvent(event);
+            break;
 
-            case MotionEvent.ACTION_MOVE:
-                trackTouchEvent(event);
-                attemptClaimDrag();
-                break;
+        case MotionEvent.ACTION_MOVE:
+            trackTouchEvent(event);
+            attemptClaimDrag();
+            break;
 
-            case MotionEvent.ACTION_UP:
-                trackTouchEvent(event);
-                onStopTrackingTouch();
-                setPressed(false);
-                // ProgressBar doesn't know to repaint the thumb drawable
-                // in its inactive state when the touch stops (because the
-                // value has not apparently changed)
-                invalidate();
-                break;
+        case MotionEvent.ACTION_UP:
+            trackTouchEvent(event);
+            onStopTrackingTouch();
+            setPressed(false);
+            // ProgressBar doesn't know to repaint the thumb drawable
+            // in its inactive state when the touch stops (because the
+            // value has not apparently changed)
+            invalidate();
+            break;
 
-            case MotionEvent.ACTION_CANCEL:
-                onStopTrackingTouch();
-                setPressed(false);
-                invalidate(); // see above explanation
-                break;
+        case MotionEvent.ACTION_CANCEL:
+            onStopTrackingTouch();
+            setPressed(false);
+            invalidate(); // see above explanation
+            break;
         }
         return true;
     }
 
-    private void trackTouchEvent(MotionEvent event) {
+    private void trackTouchEvent( MotionEvent event ) {
         final int height = getHeight();
         final int available = height - mPaddingTop - mPaddingBottom;
-        int y = height - (int)event.getY();
+        int y = height - (int) event.getY();
         float scale;
         float progress = 0;
         if (y < mPaddingBottom) {
@@ -309,7 +323,7 @@ public class AbsVerticalSeekBar extends VerticalProgressBar{
         } else if (y > height - mPaddingTop) {
             scale = 1.0f;
         } else {
-            scale = (float)(y - mPaddingBottom) / (float)available;
+            scale = (float) (y - mPaddingBottom) / (float) available;
             progress = mTouchProgressOffset;
         }
 
@@ -349,21 +363,23 @@ public class AbsVerticalSeekBar extends VerticalProgressBar{
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    public boolean onKeyDown( int keyCode, KeyEvent event ) {
         int progress = getProgress();
 
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_DPAD_DOWN:
-                if (progress <= 0) break;
-                setProgress(progress - mKeyProgressIncrement, true);
-                onKeyChange();
-                return true;
+        switch( keyCode ) {
+        case KeyEvent.KEYCODE_DPAD_DOWN:
+            if (progress <= 0)
+                break;
+            setProgress(progress - mKeyProgressIncrement, true);
+            onKeyChange();
+            return true;
 
-            case KeyEvent.KEYCODE_DPAD_UP:
-                if (progress >= getMax()) break;
-                setProgress(progress + mKeyProgressIncrement, true);
-                onKeyChange();
-                return true;
+        case KeyEvent.KEYCODE_DPAD_UP:
+            if (progress >= getMax())
+                break;
+            setProgress(progress + mKeyProgressIncrement, true);
+            onKeyChange();
+            return true;
         }
 
         return super.onKeyDown(keyCode, event);

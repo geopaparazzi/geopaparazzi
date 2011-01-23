@@ -169,8 +169,8 @@ public class ActionBar {
                 Intent intent = new Intent(gpsStatusAction);
                 context.startActivity(intent);
             } else {
-                new AlertDialog.Builder(context).setTitle("Install GPS Status")
-                        .setMessage("Geopaparazzi uses the Gps Status Application as compass and gps info view. Do you want to install it?")
+                new AlertDialog.Builder(context).setTitle(context.getString(R.string.installgpsstatus_title))
+                        .setMessage(context.getString(R.string.installgpsstatus_message))
                         .setIcon(android.R.drawable.ic_dialog_info)
                         .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
                             public void onClick( DialogInterface dialog, int whichButton ) {
