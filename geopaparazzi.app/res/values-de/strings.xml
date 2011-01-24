@@ -143,18 +143,18 @@
             \n
             Kartendaten von OpenStreetMap.\n
             \n
-            Der Kompass basiert auf Modern Compass Rose von RobA aus der Open Clipart Library.\n
+            Die vertikale Zoomleiste kommt von Ardroid\n
             \n
             Die quickactions basieren auf Lorenz’s Londatiga tutorial.\n            
             \n
             Links:\n
-            www.geopaparazzi.eu\n
-            www.hydrologis.eu\n
-            www.jgrass.org\n
-            www.beegis.org\n
-            www.openstreetmap.org\n
-            www.openclipart.org\n
-            www.londatiga.net\n
+            http://www.geopaparazzi.eu\n
+            http://www.hydrologis.eu\n
+            http://www.jgrass.org\n
+            http://www.beegis.org\n
+            http://www.openstreetmap.org\n
+            http://code.google.com/p/ardroid\n
+            http://www.londatiga.net\n
         </string>
         
     <string name="no_maps_in_list">Keine Karten in der Liste. Bitte den GPX-Import im Menü auswählen um welche zu importieren.</string>
@@ -190,4 +190,8 @@
 	<string name="remove_last_note_prompt">Letzte Notiz wirklich löschen? Aktion kann nicht rückgängig gemacht werden.</string>
 
     <string name="export_for_real">Daten exportieren?</string>
+    
+    <string name="installgpsstatus_title">Installiere GPS-Status</string>
+    <string name="installgpsstatus_message">Geopaparazzi benötigt die GPS-Status Anwendung zur Kompass-Darstellung. Soll diese installiert werden?</string>
+    
 </resources>
