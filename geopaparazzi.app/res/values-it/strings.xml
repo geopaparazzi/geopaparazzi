@@ -128,6 +128,7 @@
     <string name="text_start_gps_logging">registra log</string>
     <string name="text_stop_gps_logging">ferma log</string>
     <string name="text_take_a_gps_note">prendi nota</string>
+    <string name="text_undo_a_gps_note">annulla nota</string>
     <string name="text_take_picture">scatta foto</string>
     
 	<string name="abouttext">
@@ -177,7 +178,7 @@
 	<string name="message_sent">Messaggio spedito</string>
 
 	<string name="last_note_deleted">Rimossa ultima nota</string>
-	<string name="last_note_not_deleted">Non e\' stato possibile rimuovere l\'ultima nota</string>
+	<string name="last_note_not_deleted">Non è stato possibile rimuovere l\'ultima nota</string>
 
     <string name="text_logging">logging</string>
     <string name="text_gpson">gps attivo</string>

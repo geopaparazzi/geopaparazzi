@@ -27,7 +27,6 @@
     <string name="gpsloggingoff">Parado el gps.</string>
     <string name="gpsloggingon">Encendido el gps.</string>
     <string name="gpsloggingalarm">Evitar/parar alarma... </string>
-    <string name="gpslogging_only">Esta función sólo está disponible cuando el gps está activo y está anotando.</string>
     <string name="nogps_data">No hay todavía datos gps disponibles!</string>
     
     <string name="about">información</string>
@@ -124,10 +123,10 @@
         <string name="measureinfo_last">último punto</string>
         
         <string name="text_show_position_on_map">vista mapa</string>
-    <string name="text_logging">registro</string>
     <string name="text_start_gps_logging">empeza el registro</string>
     <string name="text_stop_gps_logging">detener el registro</string>
     <string name="text_take_a_gps_note">tomar una nota</string>
+    <string name="text_undo_a_gps_note">anular nota</string>
     <string name="text_take_picture">tomar foto</string>
 	
 	<string name="abouttext">
@@ -142,18 +141,18 @@
 		\n 
 		Los mapas son de OpenStreetMap.\n 
 		\n 
-		La brújula ha sido adaptada por parte de Modern Compass Rose de RobA que se encuentra en la Open Clipart Library.\n 
+	    La Seekbar vertical llega desde ardroid.\n
 		\n 
-		The quickactions are adapted from Lorenz’s Londatiga tutorial.\n
+		Las quickactions han sido adaptadas desde el tutorial Lorenz en Londatiga.\n
         \n
 		Links:\n 
-		www.geopaparazzi.eu\n 
-		www.hydrologis.eu\n 
-		www.jgrass.org\n 
-		www.beegis.org\n 
-		www.openstreetmap.org\n 
-		www.openclipart.org\n
-		www.londatiga.net\n
+		http://www.geopaparazzi.eu\n 
+		http://www.hydrologis.eu\n 
+		http://www.jgrass.org\n 
+		http://www.beegis.org\n 
+		http://www.openstreetmap.org\n 
+		http://code.google.com/p/ardroid\n	    
+		http://www.londatiga.net\n
 	</string> 
   	
   	<string name="no_maps_in_list">No hay mapas en la lista. Con el fin de importar mapas, seleccionar la función de importación gpx en el menú.</string>
@@ -170,4 +169,30 @@
     <string name="panic_number">número de pánico</string>
     <string name="panic_number_notset">No parece estar disponible un número válido de pánico. Lo ha activado en las preferencias?</string>
     <string name="panic_for_real">Está seguro que desea enviar una actualización de posición?</string>
+ 
+ 	<string name="panic_upper">  PÁNICO!  </string>
+	<string name="send_status_update">envia la posición</string>
+	<string name="help_needed">Necessita de ayuda a</string>
+	<string name="message_sent">Mesaje enviado</string>
+ 
+ 
+	<string name="last_note_deleted">Cancelada la última nota</string>
+	<string name="last_note_not_deleted">No ha sido posible cancelar la última nota</string>
+
+    <string name="text_logging">logging</string>
+    <string name="text_gpson">gps activo</string>
+
+    <string name="debug">Preferencias de debug</string>
+    <string name="enable_debug">Activa el log de debug</string>
+    
+    <string name="gpslogging_only">Esta función sólo está disponible cuando el gps está activo y tiene señal.</string>
+    <string name="remove_last_note_prompt">Está seguro que desea cancelar la última nota? No es sta posible de volver.</string>
+	
+	<string name="export_for_real">Exportar los datos?</string>
+	
+	<string name="up">encima</string>
+	
+	<string name="installgpsstatus_title">Instala GPS Status</string>
+    <string name="installgpsstatus_message">Geopaparazzi utiliza la aplicación Gps Status como brújula y la vista información gps. Desea instalarla?</string>
+	
   </resources>
