@@ -17,9 +17,12 @@
  */
 package eu.hydrologis.geopaparazzi.gpx;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import eu.hydrologis.geopaparazzi.util.PointF3D;
+import eu.hydrologis.geopaparazzi.gpx.parser.WayPoint;
+import eu.hydrologis.geopaparazzi.gpx.parser.GpxParser.Route;
+import eu.hydrologis.geopaparazzi.gpx.parser.GpxParser.TrackSegment;
 
 /**
  * Item representing a gpx file.
@@ -28,64 +31,22 @@ import eu.hydrologis.geopaparazzi.util.PointF3D;
  *
  */
 public class GpxItem implements Comparable<GpxItem> {
-    private String filepath;
-    private String filename;
+    private String name;
     private String width;
     private String color;
     private boolean isLine;
     private boolean isVisible;
 
-    private List<PointF3D> plots;
-    private List<String> names;
-    private float e;
-    private float w;
-    private float n;
-    private float s;
-    private float h;
-    private float l;
-    private float length;
+    private List<WayPoint> wayPoints = new ArrayList<WayPoint>();
+    private List<TrackSegment> trackSegments = new ArrayList<TrackSegment>();
+    private List<Route> routes = new ArrayList<Route>();
 
-    /**
-     * Reads data from gpx file.
-     *
-     * @return the list of points, same as {@link GpxItem#getPlots()}.
-     */
-    public List<PointF3D> read() {
-        if (plots == null) {
-            IGpxParser gp = null;
-            if (isLine) {
-                gp = new GpxTrackParser();
-            } else {
-                gp = new GpxWaypointsParser();
-            }
-            gp.read(filepath);
-            plots = gp.getPoints();
-            names = gp.getNames();
-            e = gp.getEastBound();
-            w = gp.getWestBound();
-            n = gp.getNorthBound();
-            s = gp.getSouthBound();
-            h = gp.getMaxElev();
-            l = gp.getMinElev();
-            length = gp.getLength();
-        }
-        return plots;
+    public String getName() {
+        return name;
     }
 
-    public String getFilepath() {
-        return filepath;
-    }
-
-    public void setFilepath( String filepath ) {
-        this.filepath = filepath;
-    }
-
-    public String getFilename() {
-        return filename;
-    }
-
-    public void setFilename( String filename ) {
-        this.filename = filename;
+    public void setName( String name ) {
+        this.name = name;
     }
 
     public String getWidth() {
@@ -108,39 +69,8 @@ public class GpxItem implements Comparable<GpxItem> {
         return isLine;
     }
 
-    public void setLine( boolean isLine ) {
-        this.isLine = isLine;
-    }
-
-    public List<PointF3D> getPlots() {
-        return plots;
-    }
-
-    public List<String> getNames() {
-        return names;
-    }
-
-    /**
-     * Clears the data, if they were read. 
-     * 
-     * <p>Usefull for freeing memory.</p>
-     */
-    public void clear() {
-        if (plots != null) {
-            plots.clear();
-            plots = null;
-        }
-        if (names != null) {
-            names.clear();
-            names = null;
-        }
-    }
-
     public void setVisible( boolean isVisible ) {
         this.isVisible = isVisible;
-        if (!isVisible) {
-            clear();
-        }
     }
 
     public boolean isVisible() {
@@ -148,48 +78,50 @@ public class GpxItem implements Comparable<GpxItem> {
     }
 
     public int compareTo( GpxItem another ) {
-        if (filepath.equals(another.filepath)) {
-            return 0;
-        } else {
-            return filepath.compareTo(another.filepath);
+        return 0;
+    }
+
+    @SuppressWarnings("unchecked")
+    public void setData( Object data ) {
+        if (data instanceof List< ? >) {
+            wayPoints = (List<WayPoint>) data;
+        }
+        if (data instanceof TrackSegment) {
+            TrackSegment segment = (TrackSegment) data;
+            trackSegments.add(segment);
+        }
+        if (data instanceof Route) {
+            Route route = (Route) data;
+            routes.add(route);
         }
     }
-    
-    
-    @Override
-    public boolean equals( Object o ) {
-        if (o instanceof GpxItem) {
-            GpxItem other = (GpxItem) o;
-            return filepath.equals(other.filepath);
-        }
-        return false;
+
+    public List<WayPoint> getWayPoints() {
+        return wayPoints;
     }
 
-    public float getE() {
-        return e;
+    public List<TrackSegment> getTrackSegments() {
+        return trackSegments;
     }
 
-    public float getW() {
-        return w;
+    public List<Route> getRoutes() {
+        return routes;
     }
 
-    public float getN() {
-        return n;
-    }
-
-    public float getS() {
-        return s;
-    }
-
-    public float getH() {
-        return h;
-    }
-
-    public float getL() {
-        return l;
-    }
-
-    public float getLength() {
-        return length;
-    }
+    // public int compareTo( GpxItem another ) {
+    // if (filepath.equals(another.filepath)) {
+    // return 0;
+    // } else {
+    // return filepath.compareTo(another.filepath);
+    // }
+    // }
+    //
+    // @Override
+    // public boolean equals( Object o ) {
+    // if (o instanceof GpxItem) {
+    // GpxItem other = (GpxItem) o;
+    // return filepath.equals(other.filepath);
+    // }
+    // return false;
+    // }
 }

@@ -112,7 +112,7 @@
 
 	<string name="gpx_import_title">Route oder Punkt?</string>
     <string name="gpx_import_message">Datei als Route oder Punkte importieren.</string>
-    <string name="gpx_import_checkbox_message">Import als Punkte (Gegenteil: Route)</string>
+    <string name="gpx_import_checkbox_message">Zwinge Import als Linee?</string>
     <string name="gpx_import_processing">Importiere GPX...</string>
 
 	<string name="osm_additionalinfo">Beschreibung zum Tag hinzufügen</string>

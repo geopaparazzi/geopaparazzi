@@ -31,6 +31,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import eu.hydrologis.geopaparazzi.gpx.GpxItem;
+import eu.hydrologis.geopaparazzi.gpx.parser.RoutePoint;
+import eu.hydrologis.geopaparazzi.gpx.parser.TrackPoint;
+import eu.hydrologis.geopaparazzi.gpx.parser.WayPoint;
+import eu.hydrologis.geopaparazzi.gpx.parser.GpxParser.Route;
+import eu.hydrologis.geopaparazzi.gpx.parser.GpxParser.TrackSegment;
 import eu.hydrologis.geopaparazzi.maps.MapItem;
 import eu.hydrologis.geopaparazzi.maps.MapView;
 import eu.hydrologis.geopaparazzi.util.Constants;
@@ -493,37 +498,98 @@ public class DaoMaps {
     /**
      * Import a gpx in the database.
      * 
-     * @param gpxItem
-     * @param mapType
+     * TODO refactor a better design, with the new gox parser this is ugly.
+     * 
+     * @param context
+     * @param gpxItem the gpx wrapper.
+     * @param forceLines if true, forces also waypoints to be imported as tracks.
      * @throws IOException
      */
-    public static void importGpxToMap( Context context, GpxItem gpxItem, int mapType ) throws IOException {
+    public static void importGpxToMap( Context context, GpxItem gpxItem, boolean forceLines ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
-        String filename = gpxItem.getFilename();
-        List<PointF3D> points = gpxItem.read();
-        List<String> names = gpxItem.getNames();
-        Date date = new Date(System.currentTimeMillis());
-        long logid = addMap(context, date, mapType, filename, 2f, "red", false);
 
-        sqliteDatabase.beginTransaction();
-        try {
-            long currentTimeMillis = System.currentTimeMillis();
-            for( int i = 0; i < points.size(); i++ ) {
-                date = new Date(currentTimeMillis + i * 1000l);
-                PointF3D point = points.get(i);
-                String text = null;
-                if (names != null) {
-                    text = names.get(i);
-                }
-                addMapDataPoint(sqliteDatabase, logid, point.x, point.y, text, date);
+        // waypoints
+        List<WayPoint> wayPoints = gpxItem.getWayPoints();
+        if (wayPoints.size() > 0) {
+            String name = gpxItem.getName();
+            int mapType = Constants.MAP_TYPE_POINT;
+            float width = 5f;
+            if (forceLines) {
+                mapType = Constants.MAP_TYPE_LINE;
+                width = 2f;
             }
+            Date date = new Date(System.currentTimeMillis());
+            long logid = addMap(context, date, mapType, name, width, "red", false);
 
-            sqliteDatabase.setTransactionSuccessful();
-        } catch (Exception e) {
-            Logger.e("DAOMAPS", e.getLocalizedMessage(), e);
-            throw new IOException(e.getLocalizedMessage());
-        } finally {
-            sqliteDatabase.endTransaction();
+            sqliteDatabase.beginTransaction();
+            try {
+                long currentTimeMillis = System.currentTimeMillis();
+                for( int i = 0; i < wayPoints.size(); i++ ) {
+                    date = new Date(currentTimeMillis + i * 1000l);
+                    WayPoint point = wayPoints.get(i);
+                    addMapDataPoint(sqliteDatabase, logid, point.getLongitude(), point.getLatitude(), point.getName(), date);
+                }
+                sqliteDatabase.setTransactionSuccessful();
+            } catch (Exception e) {
+                Logger.e("DAOMAPS", e.getLocalizedMessage(), e);
+                throw new IOException(e.getLocalizedMessage());
+            } finally {
+                sqliteDatabase.endTransaction();
+            }
+        }
+        // tracks
+        List<TrackSegment> trackSegments = gpxItem.getTrackSegments();
+        if (trackSegments.size() > 0) {
+            for( TrackSegment trackSegment : trackSegments ) {
+                String name = trackSegment.getName();
+                int mapType = Constants.MAP_TYPE_LINE;
+                Date date = new Date(System.currentTimeMillis());
+                long logid = addMap(context, date, mapType, name, 2f, "blue", false);
+
+                sqliteDatabase.beginTransaction();
+                try {
+                    long currentTimeMillis = System.currentTimeMillis();
+                    List<TrackPoint> points = trackSegment.getPoints();
+                    for( int i = 0; i < points.size(); i++ ) {
+                        date = new Date(currentTimeMillis + i * 1000l);
+                        TrackPoint point = points.get(i);
+                        addMapDataPoint(sqliteDatabase, logid, point.getLongitude(), point.getLatitude(), null, date);
+                    }
+                    sqliteDatabase.setTransactionSuccessful();
+                } catch (Exception e) {
+                    Logger.e("DAOMAPS", e.getLocalizedMessage(), e);
+                    throw new IOException(e.getLocalizedMessage());
+                } finally {
+                    sqliteDatabase.endTransaction();
+                }
+            }
+        }
+        // routes
+        List<Route> routes = gpxItem.getRoutes();
+        if (routes.size() > 0) {
+            for( Route route : routes ) {
+                String name = route.getName();
+                int mapType = Constants.MAP_TYPE_LINE;
+                Date date = new Date(System.currentTimeMillis());
+                long logid = addMap(context, date, mapType, name, 2f, "green", false);
+
+                sqliteDatabase.beginTransaction();
+                try {
+                    long currentTimeMillis = System.currentTimeMillis();
+                    List<RoutePoint> points = route.getPoints();
+                    for( int i = 0; i < points.size(); i++ ) {
+                        date = new Date(currentTimeMillis + i * 1000l);
+                        RoutePoint point = points.get(i);
+                        addMapDataPoint(sqliteDatabase, logid, point.getLongitude(), point.getLatitude(), null, date);
+                    }
+                    sqliteDatabase.setTransactionSuccessful();
+                } catch (Exception e) {
+                    Logger.e("DAOMAPS", e.getLocalizedMessage(), e);
+                    throw new IOException(e.getLocalizedMessage());
+                } finally {
+                    sqliteDatabase.endTransaction();
+                }
+            }
         }
     }
 

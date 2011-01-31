@@ -444,7 +444,7 @@ public class MapView extends View implements ApplicationManagerListener {
                     float[] latArray = coordsContainer.getLatArray();
                     float[] lonArray = coordsContainer.getLonArray();
 
-                    for( int i = 0; i < latArray.length; i++ ) {
+                    for( int i = 0; i < coordsContainer.getIndex(); i++ ) {
                         float screenX = lonToScreen(width, lonArray[i], centerLon, pixelDxInWorld);
                         float screenY = latToScreen(height, latArray[i], centerLat, pixelDyInWorld);
                         // Logger.d(LOGTAG, screenX + "/" + screenY);
@@ -471,7 +471,7 @@ public class MapView extends View implements ApplicationManagerListener {
                     String[] namesArray = coordsContainer.getNamesArray();
                     boolean hasNames = namesArray.length == latArray.length;
 
-                    for( int i = 0; i < latArray.length; i++ ) {
+                    for( int i = 0; i < coordsContainer.getIndex(); i++ ) {
                         float screenX = lonToScreen(width, lonArray[i], centerLon, pixelDxInWorld);
                         float screenY = latToScreen(height, latArray[i], centerLat, pixelDyInWorld);
 

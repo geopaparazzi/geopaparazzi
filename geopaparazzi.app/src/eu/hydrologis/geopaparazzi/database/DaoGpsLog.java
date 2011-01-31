@@ -647,34 +647,35 @@ public class DaoGpsLog {
         }
     }
 
-    public static void importGpxToGpslogs( Context context, GpxItem gpxItem ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
-        String filename = gpxItem.getFilename();
-        List<PointF3D> points = gpxItem.read();
-        Date date = new Date(System.currentTimeMillis());
-        long logid = addGpsLog(context, date, date, filename, 2f, "red", true);
-
-        sqliteDatabase.beginTransaction();
-        try {
-            long currentTimeMillis = System.currentTimeMillis();
-            for( int i = 0; i < points.size(); i++ ) {
-                date = new Date(currentTimeMillis + i);
-                PointF3D point = points.get(i);
-                float z = point.getZ();
-                if (Float.isNaN(z)) {
-                    z = 0f;
-                }
-                addGpsLogDataPoint(sqliteDatabase, logid, point.x, point.y, z, date);
-            }
-
-            sqliteDatabase.setTransactionSuccessful();
-        } catch (Exception e) {
-            Logger.e("DAOGPSLOG", e.getLocalizedMessage(), e);
-            throw new IOException(e.getLocalizedMessage());
-        } finally {
-            sqliteDatabase.endTransaction();
-        }
-    }
+    // public static void importGpxToGpslogs( Context context, GpxItem gpxItem ) throws IOException
+    // {
+    // SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    // String filename = gpxItem.getFilename();
+    // List<PointF3D> points = gpxItem.read();
+    // Date date = new Date(System.currentTimeMillis());
+    // long logid = addGpsLog(context, date, date, filename, 2f, "red", true);
+    //
+    // sqliteDatabase.beginTransaction();
+    // try {
+    // long currentTimeMillis = System.currentTimeMillis();
+    // for( int i = 0; i < points.size(); i++ ) {
+    // date = new Date(currentTimeMillis + i);
+    // PointF3D point = points.get(i);
+    // float z = point.getZ();
+    // if (Float.isNaN(z)) {
+    // z = 0f;
+    // }
+    // addGpsLogDataPoint(sqliteDatabase, logid, point.x, point.y, z, date);
+    // }
+    //
+    // sqliteDatabase.setTransactionSuccessful();
+    // } catch (Exception e) {
+    // Logger.e("DAOGPSLOG", e.getLocalizedMessage(), e);
+    // throw new IOException(e.getLocalizedMessage());
+    // } finally {
+    // sqliteDatabase.endTransaction();
+    // }
+    // }
 
     public static void createTables( Context context ) throws IOException {
         StringBuilder sB = new StringBuilder();

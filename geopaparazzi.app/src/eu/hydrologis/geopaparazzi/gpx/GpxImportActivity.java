@@ -19,6 +19,7 @@ package eu.hydrologis.geopaparazzi.gpx;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -29,6 +30,10 @@ import android.os.Handler;
 import android.widget.CheckBox;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
+import eu.hydrologis.geopaparazzi.gpx.parser.GpxParser;
+import eu.hydrologis.geopaparazzi.gpx.parser.WayPoint;
+import eu.hydrologis.geopaparazzi.gpx.parser.GpxParser.Route;
+import eu.hydrologis.geopaparazzi.gpx.parser.GpxParser.TrackSegment;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
@@ -67,26 +72,53 @@ public class GpxImportActivity extends Activity {
 
                         public void run() {
                             try {
-                                boolean asPoint = input.isChecked();
+                                boolean asLines = input.isChecked();
 
                                 File file = new File(path);
-
-                                String name = file.getName();
-                                GpxItem item = new GpxItem();
-                                item.setFilename(name);
-                                item.setFilepath(path);
-                                item.setLine(!asPoint);
-                                item.setWidth("2"); //$NON-NLS-1$
-                                item.setVisible(false);
-                                item.setColor("red"); //$NON-NLS-1$
-
-                                if (!asPoint) {
-                                    DaoMaps.importGpxToMap(GpxImportActivity.this, item,
-                                            Constants.MAP_TYPE_LINE);
+                                GpxParser parser = new GpxParser(path);
+                                if (parser.parse()) {
+                                    List<WayPoint> wayPoints = parser.getWayPoints();
+                                    if (wayPoints.size() > 0) {
+                                        String name = file.getName();
+                                        GpxItem item = new GpxItem();
+                                        item.setName(name);
+                                        item.setWidth("2"); //$NON-NLS-1$
+                                        item.setVisible(false);
+                                        item.setColor("blue"); //$NON-NLS-1$
+                                        item.setData(wayPoints);
+                                        DaoMaps.importGpxToMap(GpxImportActivity.this, item, asLines);
+                                    }
+                                    List<TrackSegment> tracks = parser.getTracks();
+                                    if (tracks.size() > 0) {
+                                        for( TrackSegment trackSegment : tracks ) {
+                                            String name = trackSegment.getName();
+                                            GpxItem item = new GpxItem();
+                                            item.setName(name);
+                                            item.setWidth("2"); //$NON-NLS-1$
+                                            item.setVisible(false);
+                                            item.setColor("red"); //$NON-NLS-1$
+                                            item.setData(trackSegment);
+                                            DaoMaps.importGpxToMap(GpxImportActivity.this, item, asLines);
+                                        }
+                                    }
+                                    List<Route> routes = parser.getRoutes();
+                                    if (routes.size() > 0) {
+                                        for( Route route : routes ) {
+                                            String name = route.getName();
+                                            GpxItem item = new GpxItem();
+                                            item.setName(name);
+                                            item.setWidth("2"); //$NON-NLS-1$
+                                            item.setVisible(false);
+                                            item.setColor("green"); //$NON-NLS-1$
+                                            item.setData(route);
+                                            DaoMaps.importGpxToMap(GpxImportActivity.this, item, asLines);
+                                        }
+                                    }
                                 } else {
-                                    DaoMaps.importGpxToMap(GpxImportActivity.this, item,
-                                            Constants.MAP_TYPE_POINT);
+                                    // TODO error
+                                    System.out.println("ERROR");
                                 }
+
                             } catch (IOException e) {
                                 Logger.e(this, e.getLocalizedMessage(), e);
                                 e.printStackTrace();
@@ -100,12 +132,11 @@ public class GpxImportActivity extends Activity {
                 }
             });
 
-            alert.setNegativeButton(getString(R.string.cancel),
-                    new DialogInterface.OnClickListener(){
-                        public void onClick( DialogInterface dialog, int whichButton ) {
-                            finish();
-                        }
-                    });
+            alert.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener(){
+                public void onClick( DialogInterface dialog, int whichButton ) {
+                    finish();
+                }
+            });
 
             alert.show();
 

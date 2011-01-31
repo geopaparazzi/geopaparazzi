@@ -112,7 +112,7 @@
 
 	<string name="gpx_import_title">Line or Point?</string>
 	<string name="gpx_import_message">Choose whether the file is to be imported as points or lines.</string>
-	<string name="gpx_import_checkbox_message">Import as points (as opposed to tracks)</string>
+	<string name="gpx_import_checkbox_message">Force import as line?</string>
 	<string name="gpx_import_processing">Importing gpx...</string>
 
 	<string name="osm_additionalinfo">Add info to tag</string>

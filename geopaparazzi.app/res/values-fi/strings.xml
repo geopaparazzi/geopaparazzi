@@ -112,7 +112,7 @@
 
         <string name="gpx_import_title">Tuodaan gpx...</string>
         <string name="gpx_import_message">Tuo tiedosto jälkenä tai pisteinä</string>
-        <string name="gpx_import_checkbox_message">Tuo pisteinä</string>
+        <string name="gpx_import_checkbox_message">Force import as line?</string>
         <string name="gpx_import_processing">Avataan gpx-tiedostoa...</string>
 
         <string name="osm_additionalinfo">Kohteen tiedot</string>
