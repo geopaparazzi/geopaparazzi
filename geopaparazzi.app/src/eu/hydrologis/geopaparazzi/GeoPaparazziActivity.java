@@ -88,7 +88,6 @@ public class GeoPaparazziActivity extends Activity {
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
 
-        showChangeLogIfNeeded();
         init();
     }
 
@@ -277,8 +276,7 @@ public class GeoPaparazziActivity extends Activity {
             break;
         }
         case R.id.dashboard_export_item_button: {
-            new AlertDialog.Builder(this).setTitle(R.string.export_for_real)
-                    .setIcon(android.R.drawable.ic_dialog_info)
+            new AlertDialog.Builder(this).setTitle(R.string.export_for_real).setIcon(android.R.drawable.ic_dialog_info)
                     .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
                         public void onClick( DialogInterface dialog, int whichButton ) {
                         }
@@ -328,15 +326,14 @@ public class GeoPaparazziActivity extends Activity {
         }
         return super.onMenuItemSelected(featureId, item);
     }
-    
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+    public boolean onKeyDown( int keyCode, KeyEvent event ) {
         // force to exit through the exit button
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             return true;
         }
         return super.onKeyDown(keyCode, event);
     }
-
 
     public void finish() {
         Logger.d(this, "Finish called!");
@@ -430,37 +427,6 @@ public class GeoPaparazziActivity extends Activity {
     @Override
     public Object onRetainNonConfigurationInstance() {
         return applicationManager;
-    }
-
-    /**
-     * Popup the changelog if it was never seen for the current version. 
-     */
-    private void showChangeLogIfNeeded() {
-        try {
-            // current version
-            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            int versionCode = packageInfo.versionCode;
-            SharedPreferences settings = getSharedPreferences("GEOPAPARAZZI_SHARED", 0);
-            int viewedChangelogVersion = settings.getInt("GEOPAPARAZZI_SHARED_VERSIONVIEWED", 0);
-            if (viewedChangelogVersion < versionCode) {
-                Editor editor = settings.edit();
-                editor.putInt("GEOPAPARAZZI_SHARED_VERSIONVIEWED", versionCode);
-                editor.commit();
-                LayoutInflater li = LayoutInflater.from(this);
-                View view = li.inflate(R.layout.changelog_view, null);
-
-                new AlertDialog.Builder(this).setTitle(R.string.changelog).setIcon(android.R.drawable.ic_menu_info_details)
-                        .setView(view).setNegativeButton(R.string.close, new DialogInterface.OnClickListener(){
-                            public void onClick( DialogInterface dialog, int whichButton ) {
-                                //
-                            }
-                        }).show();
-
-            }
-        } catch (NameNotFoundException e) {
-            Logger.w(this, "Unable to get version code. Will not show changelog");
-        }
-
     }
 
     /**
