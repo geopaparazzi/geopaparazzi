@@ -18,6 +18,7 @@
 package eu.hydrologis.geopaparazzi.maps;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.List;
 
 import android.app.Activity;
@@ -49,6 +50,11 @@ public class MapsActivity extends Activity {
     private static final int MENU_ADDTAGS = 5;
     private MapView mapsView;
 
+    private DecimalFormat formatter = new DecimalFormat("00");
+    private Button zoomInButton;
+    private Button zoomOutButton;
+    private VerticalSeekBar zoomBar;
+
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
 
@@ -68,14 +74,14 @@ public class MapsActivity extends Activity {
         // zoom bar
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         final int zoom = preferences.getInt(Constants.PREFS_KEY_ZOOM, 16);
-        VerticalSeekBar vSeekBar = (VerticalSeekBar) findViewById(R.id.ZoomBar);
-        vSeekBar.setMax(18);
-        vSeekBar.setProgress(zoom);
+        zoomBar = (VerticalSeekBar) findViewById(R.id.ZoomBar);
+        zoomBar.setMax(18);
+        zoomBar.setProgress(zoom);
         mapsView.zoomTo(zoom);
-        vSeekBar.setOnSeekBarChangeListener(new VerticalSeekBar.OnSeekBarChangeListener(){
+        zoomBar.setOnSeekBarChangeListener(new VerticalSeekBar.OnSeekBarChangeListener(){
             private int progress = zoom;
             public void onStopTrackingTouch( VerticalSeekBar seekBar ) {
-                mapsView.zoomTo(progress);
+                setNewZoom(progress, false);
                 Logger.d(this, "Zoomed to: " + progress);
             }
 
@@ -85,6 +91,34 @@ public class MapsActivity extends Activity {
 
             public void onProgressChanged( VerticalSeekBar seekBar, int progress, boolean fromUser ) {
                 this.progress = progress;
+                setNewZoom(progress, true);
+            }
+        });
+
+        int zoomInLevel = zoom + 1;
+        if (zoomInLevel > 18) {
+            zoomInLevel = 18;
+        }
+        int zoomOutLevel = zoom - 1;
+        if (zoomOutLevel < 0) {
+            zoomOutLevel = 0;
+        }
+        zoomInButton = (Button) findViewById(R.id.zoomin);
+        zoomInButton.setText(formatter.format(zoomInLevel));
+        zoomInButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                String text = zoomInButton.getText().toString();
+                int newZoom = Integer.parseInt(text);
+                setNewZoom(newZoom, false);
+            }
+        });
+        zoomOutButton = (Button) findViewById(R.id.zoomout);
+        zoomOutButton.setText(formatter.format(zoomOutLevel));
+        zoomOutButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                String text = zoomOutButton.getText().toString();
+                int newZoom = Integer.parseInt(text);
+                setNewZoom(newZoom, false);
             }
         });
 
@@ -98,6 +132,25 @@ public class MapsActivity extends Activity {
         });
 
         mapsView.invalidate();
+    }
+
+    private void setNewZoom( int newZoom, boolean onlyText ) {
+        int zoomInLevel = newZoom + 1;
+        if (zoomInLevel > 18) {
+            zoomInLevel = 18;
+        }
+        int zoomOutLevel = newZoom - 1;
+        if (zoomOutLevel < 0) {
+            zoomOutLevel = 0;
+        }
+        zoomInButton.setText(formatter.format(zoomInLevel));
+        zoomOutButton.setText(formatter.format(zoomOutLevel));
+        zoomBar.setProgress(newZoom);
+
+        if (!onlyText) {
+            mapsView.zoomTo(newZoom);
+        }
+        // mapsView.invalidate();
     }
 
     // @Override
