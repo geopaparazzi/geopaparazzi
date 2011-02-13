@@ -13,34 +13,37 @@
 			android:defaultValue="5"></ListPreference>
 	</PreferenceScreen>
 	<PreferenceScreen android:title="@string/sms_preferences"
-		android:order="9">
+		android:order="6">
 		<!-- <PreferenceCategory android:title="@string/sms_sending" android:order="10"> 
 			<EditTextPreference android:order="11" android:key="@string/sms_number" android:title="@string/sms_number" 
 			android:defaultValue=""></EditTextPreference> <ListPreference android:entryValues="@array/sms_time_value" 
 			android:entries="@array/sms_time_name" android:title="@string/sms_sending_interval" 
 			android:order="12" android:key="@string/sms_sending_interval" android:defaultValue="0"></ListPreference> 
 			</PreferenceCategory> -->
-		<PreferenceCategory android:title="@string/sms_catching"
-			android:order="13">
-			<CheckBoxPreference android:key="sms_catcher"
-				android:title="@string/sms_catcher" android:order="14">
-			</CheckBoxPreference>
-			<EditTextPreference android:order="15"
-				android:key="panic_number" android:title="@string/panic_number"
-				android:defaultValue=""></EditTextPreference>
-		</PreferenceCategory>
+		<CheckBoxPreference android:key="sms_catcher"
+			android:title="@string/sms_catcher" android:order="7">
+		</CheckBoxPreference>
+		<EditTextPreference android:order="8" android:key="panic_number"
+			android:title="@string/panic_number" android:defaultValue=""></EditTextPreference>
+	</PreferenceScreen>
+	<PreferenceScreen android:title="@string/rendering_preferences"
+		android:order="9">
+		<ListPreference android:entryValues="@array/decimation_factor"
+			android:entries="@array/decimation_factor" android:title="@string/decimation_combo_label"
+			android:order="10" android:key="decimation_list"
+			android:defaultValue="5"></ListPreference>
 	</PreferenceScreen>
 	<PreferenceScreen android:title="@string/debug"
-		android:order="16">
-		<PreferenceCategory android:title="@string/debug"
-			android:order="17">
-			<CheckBoxPreference android:key="@string/enable_debug"
-				android:title="@string/enable_debug" android:order="18">
-			</CheckBoxPreference>
-		</PreferenceCategory>
+		android:order="11">
+		<CheckBoxPreference android:key="@string/enable_debug"
+			android:title="@string/enable_debug" android:order="12">
+		</CheckBoxPreference>
 	</PreferenceScreen>
-	<!-- <PreferenceScreen android:title="@string/database_preferences" android:order="15"> 
-		<PreferenceCategory android:title="@string/database_preferences" android:order="16"> 
-		<CheckBoxPreference android:key="@string/database_new" android:title="@string/database_new" 
-		android:order="17"> </CheckBoxPreference> </PreferenceCategory> </PreferenceScreen> -->
+	<!-- <PreferenceCategory android:title="@string/sms_catching" android:order="13"> 
+		</PreferenceCategory> <PreferenceCategory android:title="@string/debug" android:order="17"> 
+		</PreferenceCategory> <PreferenceScreen android:title="@string/database_preferences" 
+		android:order="15"> <PreferenceCategory android:title="@string/database_preferences" 
+		android:order="16"> <CheckBoxPreference android:key="@string/database_new" 
+		android:title="@string/database_new" android:order="17"> </CheckBoxPreference> 
+		</PreferenceCategory> </PreferenceScreen> -->
 </PreferenceScreen>

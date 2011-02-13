@@ -195,4 +195,7 @@
     <string name="installgpsstatus_title">Install GPS Status</string>
     <string name="installgpsstatus_message">Geopaparazzi uses the Gps Status Application as compass and gps info view. Do you want to install it?</string>
 	
+	<!-- added after 1.2.1 -->
+    <string name="rendering_preferences">Rendering preferences</string>
+    <string name="decimation_combo_label">Decimation factor</string>
 </resources>

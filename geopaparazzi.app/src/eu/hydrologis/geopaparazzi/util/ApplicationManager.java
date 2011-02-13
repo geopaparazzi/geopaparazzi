@@ -17,7 +17,7 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.GPSLOGGINGINTERVALKEY;
+import static eu.hydrologis.geopaparazzi.util.Constants.*;
 import static eu.hydrologis.geopaparazzi.util.Constants.GPS_LOGGING_INTERVAL;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_GEOPAPARAZZI;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_KMLEXPORT;
@@ -874,6 +874,18 @@ public class ApplicationManager implements SensorEventListener, LocationListener
             }
         });
         return stopLogQuickaction;
+    }
+
+    public int getDecimationFactor() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String decimationFactorStr = preferences.getString(DECIMATION_FACTOR, "5");
+        int decimationFactor = 5;
+        try {
+            decimationFactor = Integer.parseInt(decimationFactorStr);
+        } catch (Exception e) {
+            // use default
+        }
+        return decimationFactor;
     }
 
 }

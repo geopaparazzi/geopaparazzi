@@ -125,8 +125,8 @@
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
 	<uses-permission android:name="android.permission.RECORD_AUDIO"></uses-permission>
 	
-	<!-- only for testing purposes
 	<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"></uses-permission>
+	<!-- only for testing purposes
 	 -->
 	<!-- compatibility -->
 	<uses-sdk android:targetSdkVersion="8" android:minSdkVersion="4"></uses-sdk>

@@ -138,6 +138,7 @@ public interface Constants {
     public static final int MAP_TYPE_LINE = 1;
     public static final int MAP_TYPE_POLYGON = 2;
 
+    public static final String DECIMATION_FACTOR = "decimation_factor";
     public static final String GPSLOGGINGINTERVALKEY = "gps_logging_interval";
     public static final String GPSLOGGINGDISTANCEKEY = "gps_logging_distance";
     public static final String SMSCATCHERKEY = "sms_catcher";

@@ -399,7 +399,7 @@ public class DaoGpsLog {
      */
     public static HashMap<Long, LineArray> getLinesInWorldBoundsDecimated( Context context, float n, float s, float w, float e,
             int screenWidth, int screenHeight, float centerLon, float centerLat, float pixelDxInWorld, float pixelDyInWorld,
-            long excludedId ) throws IOException {
+            long excludedId, int decimationFactor ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         HashMap<Long, LineArray> linesMap = new HashMap<Long, LineArray>();
         n = n + DatabaseManager.BUFFER;
@@ -438,8 +438,7 @@ public class DaoGpsLog {
                 // check if on screen it would be placed on the same pixel
                 int screenX = (int) MapView.lonToScreen(screenWidth, lon, centerLon, pixelDxInWorld);
                 int screenY = (int) MapView.latToScreen(screenHeight, lat, centerLat, pixelDyInWorld);
-                int thres = 5;
-                if (abs(screenX - previousScreenX) < thres && abs(screenY - previousScreenY) < thres) {
+                if (abs(screenX - previousScreenX) < decimationFactor && abs(screenY - previousScreenY) < decimationFactor) {
                     c.moveToNext();
                     jump++;
                     continue;
@@ -470,7 +469,7 @@ public class DaoGpsLog {
 
     public static LineArray getLinesInWorldBoundsByIdDecimated( Context context, float n, float s, float w, float e,
             int screenWidth, int screenHeight, float centerLon, float centerLat, float pixelDxInWorld, float pixelDyInWorld,
-            long logId ) throws IOException {
+            long logId, int decimationFactor ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         n = n + DatabaseManager.BUFFER;
         s = s - DatabaseManager.BUFFER;
@@ -507,8 +506,7 @@ public class DaoGpsLog {
                 // check if on screen it would be placed on the same pixel
                 int screenX = (int) MapView.lonToScreen(screenWidth, lon, centerLon, pixelDxInWorld);
                 int screenY = (int) MapView.latToScreen(screenHeight, lat, centerLat, pixelDyInWorld);
-                int thres = 5;
-                if (abs(screenX - previousScreenX) < thres && abs(screenY - previousScreenY) < thres) {
+                if (abs(screenX - previousScreenX) < decimationFactor && abs(screenY - previousScreenY) < decimationFactor) {
                     c.moveToNext();
                     jump++;
                     continue;

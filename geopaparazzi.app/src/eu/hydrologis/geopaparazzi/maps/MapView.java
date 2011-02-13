@@ -507,7 +507,9 @@ public class MapView extends View implements ApplicationManagerListener {
         try {
 
             List<MapItem> gpslogs = DaoGpsLog.getGpslogs(context);
-            long currentLogId = ApplicationManager.getInstance(context).getCurrentRecordedLogId();
+            ApplicationManager applicationManager = ApplicationManager.getInstance(context);
+            long currentLogId = applicationManager.getCurrentRecordedLogId();
+            int decimationFactor = applicationManager.getDecimationFactor();
             // if (!gpsUpdate || linesInWorldBounds == null) {
             // linesInWorldBounds = DaoGpsLog.getLinesInWorldBoundsDecimated(context, y0, y1, x0,
             // x1, width, height, centerLon,
@@ -528,7 +530,7 @@ public class MapView extends View implements ApplicationManagerListener {
                 if (id == currentLogId) {
                     // we always reread the current log to make it proceed
                     line = DaoGpsLog.getLinesInWorldBoundsByIdDecimated(context, y0, y1, x0, x1, width, height, centerLon,
-                            centerLat, pixelDxInWorld, pixelDyInWorld, id);
+                            centerLat, pixelDxInWorld, pixelDyInWorld, id, decimationFactor);
                 } else {
                     // for the other logs we cache depending on a gps update or a touch draw event
                     if (gpsUpdate) {
@@ -538,7 +540,7 @@ public class MapView extends View implements ApplicationManagerListener {
                         // if the draw comes from no gps update, reread the track
                         linesInWorldBounds.remove(id);
                         line = DaoGpsLog.getLinesInWorldBoundsByIdDecimated(context, y0, y1, x0, x1, width, height, centerLon,
-                                centerLat, pixelDxInWorld, pixelDyInWorld, id);
+                                centerLat, pixelDxInWorld, pixelDyInWorld, id, decimationFactor);
                         linesInWorldBounds.put(id, line);
                     }
                 }

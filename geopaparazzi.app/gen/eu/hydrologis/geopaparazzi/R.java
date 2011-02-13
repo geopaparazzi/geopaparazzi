@@ -29,8 +29,9 @@ public final class R {
     public static final class array {
         public static final int array_colornames=0x7f060000;
         public static final int array_widths=0x7f060001;
-        public static final int compassneedle_coords=0x7f060008;
-        public static final int compassneedle_width_heights=0x7f060007;
+        public static final int compassneedle_coords=0x7f060009;
+        public static final int compassneedle_width_heights=0x7f060008;
+        public static final int decimation_factor=0x7f060007;
         public static final int gps_time_name=0x7f060002;
         public static final int gps_time_value=0x7f060003;
         public static final int sms_time_name=0x7f060004;
@@ -320,6 +321,7 @@ public final class R {
         public static final int database_new=0x7f090060;
         public static final int database_preferences=0x7f09005f;
         public static final int debug=0x7f090087;
+        public static final int decimation_combo_label=0x7f090090;
         public static final int distance=0x7f09003e;
         public static final int emptyaddress=0x7f090037;
         public static final int enable_debug=0x7f090088;
@@ -412,6 +414,9 @@ public final class R {
         public static final int panic_upper=0x7f09007f;
         public static final int prompt_gpsenable=0x7f090039;
         public static final int remove_last_note_prompt=0x7f09008a;
+        /**  added after 1.2.1 
+         */
+        public static final int rendering_preferences=0x7f09008f;
         public static final int satellite_num=0x7f090029;
         public static final int saveimg=0x7f090030;
         public static final int sdcard_notexist=0x7f09001e;
