@@ -38,6 +38,11 @@ public class TestMock {
     public static String MOCK_PROVIDER_NAME = LocationManager.GPS_PROVIDER;
     public static boolean isOn = false;
 
+    public static double a = 0.001;
+    public static double radius = 0.1;
+
+    private static double t = 1.0;
+
     /**
      * Starts to trigger mock locations.
      * 
@@ -75,8 +80,9 @@ public class TestMock {
                     location.setAltitude(alt);
                     locationManager.setTestProviderLocation(MOCK_PROVIDER_NAME, location);
 
-                    lat = lat + 0.001;
-                    lon = lon + 0.001;
+                    lon = lon + a * radius * Math.cos(t);
+                    lat = lat + a * radius * Math.sin(t);
+                    t = t + 1;
                     alt = alt + 1.0;
                     date = date + 5000l;
 
@@ -94,7 +100,6 @@ public class TestMock {
         Thread t = new Thread(r);
         t.start();
     }
-
     /**
      * Stops the mocking.
      * 
