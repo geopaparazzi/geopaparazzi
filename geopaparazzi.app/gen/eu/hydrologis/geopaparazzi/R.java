@@ -416,8 +416,8 @@ public final class R {
         public static final int panic_upper=0x7f09007f;
         public static final int prompt_gpsenable=0x7f090039;
         public static final int remove_last_note_prompt=0x7f09008a;
-        /**  added after 1.2.1 
- added after 1.2.1 
+        /**  added after 2.1.1 
+ added after 2.1.1 
          */
         public static final int rendering_preferences=0x7f09008f;
         public static final int reset=0x7f090091;

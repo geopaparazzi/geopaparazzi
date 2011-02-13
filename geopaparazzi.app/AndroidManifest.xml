@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="eu.hydrologis.geopaparazzi" android:versionCode="9" android:versionName="2.1.1">
+	package="eu.hydrologis.geopaparazzi" android:versionCode="10" android:versionName="2.1.2">
 	<application android:icon="@drawable/icon" android:label="@string/app_name"
 		android:theme="@android:style/Theme.NoTitleBar">
 		<activity android:label="@string/app_name"
@@ -125,8 +125,8 @@
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
 	<uses-permission android:name="android.permission.RECORD_AUDIO"></uses-permission>
 	
-	<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"></uses-permission>
 	<!-- only for testing purposes
+	<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"></uses-permission>
 	 -->
 	<!-- compatibility -->
 	<uses-sdk android:targetSdkVersion="8" android:minSdkVersion="4"></uses-sdk>
