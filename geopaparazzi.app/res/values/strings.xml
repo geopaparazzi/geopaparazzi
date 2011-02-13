@@ -200,5 +200,4 @@
     <string name="decimation_combo_label">Decimation factor</string>
     <string name="reset">Reset data</string>
     <string name="reset_prompt">This will reset the database and media folder while maps will be preserved. Nothing gets lost though. The database and media folder will be renamed by appending the current date and time. Ok to continue? You will need to restart Geopaparazzi.</string>
-    <string name="reset_successful">Reset of data has been successfull.</string>
 </resources>
