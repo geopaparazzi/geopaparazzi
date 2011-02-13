@@ -173,13 +173,14 @@ public class MapView extends View implements ApplicationManagerListener {
             actionBarHeight = getResources().getDimension(R.dimen.action_bar_height);
         }
 
-        ApplicationManager deviceManager = ApplicationManager.getInstance(context);
-        File osmCacheDir = deviceManager.getOsmCacheDir();
-        boolean internetIsOn = deviceManager.isInternetOn();
+        ApplicationManager applicationManager = ApplicationManager.getInstance(context);
+        decimationFactor = applicationManager.getDecimationFactor();
+        File osmCacheDir = applicationManager.getOsmCacheDir();
+        boolean internetIsOn = applicationManager.isInternetOn();
         tileCache = new TileCache(osmCacheDir, internetIsOn, null);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        GpsLocation loc = deviceManager.getLoc();
+        GpsLocation loc = applicationManager.getLoc();
         if (loc != null) {
             gpsLat = (float) loc.getLatitude();
             gpsLon = (float) loc.getLongitude();
@@ -509,7 +510,7 @@ public class MapView extends View implements ApplicationManagerListener {
             List<MapItem> gpslogs = DaoGpsLog.getGpslogs(context);
             ApplicationManager applicationManager = ApplicationManager.getInstance(context);
             long currentLogId = applicationManager.getCurrentRecordedLogId();
-            int decimationFactor = applicationManager.getDecimationFactor();
+
             // if (!gpsUpdate || linesInWorldBounds == null) {
             // linesInWorldBounds = DaoGpsLog.getLinesInWorldBoundsDecimated(context, y0, y1, x0,
             // x1, width, height, centerLon,
@@ -764,6 +765,7 @@ public class MapView extends View implements ApplicationManagerListener {
 
     private int downX = 0;
     private int downY = 0;
+    private int decimationFactor;
     public boolean onTouchEvent( MotionEvent event ) {
         int action = event.getAction();
 

@@ -517,7 +517,7 @@ public class DaoGpsLog {
                 line.addPoint(lon, lat);
                 c.moveToNext();
             }
-            // Logger.d("DAOGPSLOG", "Jumped: " + jump);
+            Logger.d("DAOGPSLOG", "Logs jumped: " + jump + " with thres: " + decimationFactor);
             // Set<Entry<Long, LineArray>> entrySet = linesMap.entrySet();
             // for( Entry<Long, LineArray> entry : entrySet ) {
             // Logger.d("DAOGPSLOG", "Found for log: " + entry.getKey() + " points: " +

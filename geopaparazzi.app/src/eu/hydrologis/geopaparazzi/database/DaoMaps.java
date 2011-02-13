@@ -186,8 +186,8 @@ public class DaoMaps {
         }
         c.close();
 
-        Logger.d("DAOMAPS", "Query: " + query);
-        Logger.d("DAOMAPS", "gave logs: " + logsList.size());
+        // Logger.d("DAOMAPS", "Query: " + query);
+        // Logger.d("DAOMAPS", "gave logs: " + logsList.size());
 
         return logsList;
     }
@@ -401,7 +401,7 @@ public class DaoMaps {
         }
         c.close();
         // Logger.i(TAG, "Read points = " + index);
-        Logger.d("DAOMAPS", "Jumped: " + jump);
+        Logger.d("DAOMAPS", "Maps jumped: " + jump);
         return pointsContainer;
     }
 
