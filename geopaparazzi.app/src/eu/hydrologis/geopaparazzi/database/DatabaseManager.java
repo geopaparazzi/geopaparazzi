@@ -126,6 +126,10 @@ public class DatabaseManager {
         }
 
         public void close() {
+            if (!db.isOpen()) {
+                return;
+            }
+            db.releaseReference();
             db.close();
             db = null;
         }

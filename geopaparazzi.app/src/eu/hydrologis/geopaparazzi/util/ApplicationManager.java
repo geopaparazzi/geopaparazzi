@@ -17,7 +17,8 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.*;
+import static eu.hydrologis.geopaparazzi.util.Constants.DECIMATION_FACTOR;
+import static eu.hydrologis.geopaparazzi.util.Constants.GPSLOGGINGINTERVALKEY;
 import static eu.hydrologis.geopaparazzi.util.Constants.GPS_LOGGING_INTERVAL;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_GEOPAPARAZZI;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_KMLEXPORT;
@@ -223,12 +224,13 @@ public class ApplicationManager implements SensorEventListener, LocationListener
                 if (!geoPaparazziDir.mkdir())
                     alert(MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard), geoPaparazziDirPath));
             databaseFile = new File(geoPaparazziDirPath, DatabaseManager.DATABASE_NAME);
-            debugLogFile = new File(geoPaparazziDirPath, "debug.log");
             mediaDir = new File(geoPaparazziDirPath + PATH_MEDIA);
+
             if (!mediaDir.exists())
                 if (!mediaDir.mkdir())
                     alert(MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
                             mediaDir.getAbsolutePath()));
+            debugLogFile = new File(geoPaparazziDirPath, "debug.log");
 
             mapsCacheDir = new File(sdcardDir.getAbsolutePath() + PATH_MAPSCACHE);
             Logger.i(LOGTAG, "MAPSCACHEPATH:" + mapsCacheDir.getAbsolutePath());
@@ -256,6 +258,11 @@ public class ApplicationManager implements SensorEventListener, LocationListener
             alertDialog(context.getResources().getString(R.string.sdcard_notexist));
         }
 
+    }
+
+    public void createResetFile() throws IOException {
+        File resetFile = new File(geoPaparazziDir, "doReset");
+        resetFile.createNewFile();
     }
 
     /**
@@ -750,6 +757,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         return pictureQuickaction;
     }
     private MediaRecorder audioRecorder;
+
     public ActionItem getAudioQuickAction( final QuickAction qa ) {
         ActionItem audioQuickaction = new ActionItem();
         audioQuickaction.setTitle("Audio");

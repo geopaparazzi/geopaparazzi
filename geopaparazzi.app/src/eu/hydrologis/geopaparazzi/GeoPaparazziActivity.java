@@ -35,15 +35,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -78,6 +75,7 @@ public class GeoPaparazziActivity extends Activity {
     private static final int MENU_ABOUT = Menu.FIRST;
     private static final int MENU_EXIT = 2;
     private static final int MENU_SETTINGS = 3;
+    private static final int MENU_RESET = 4;
 
     private ApplicationManager applicationManager;
     private ActionBar actionBar;
@@ -306,6 +304,7 @@ public class GeoPaparazziActivity extends Activity {
         menu.add(Menu.NONE, MENU_SETTINGS, 0, R.string.mainmenu_preferences).setIcon(android.R.drawable.ic_menu_preferences);
         menu.add(Menu.NONE, MENU_EXIT, 1, R.string.exit).setIcon(android.R.drawable.ic_lock_power_off);
         menu.add(Menu.NONE, MENU_ABOUT, 2, R.string.about).setIcon(android.R.drawable.ic_menu_info_details);
+        menu.add(Menu.NONE, MENU_RESET, 3, R.string.reset).setIcon(android.R.drawable.ic_menu_revert);
 
         return true;
     }
@@ -319,6 +318,9 @@ public class GeoPaparazziActivity extends Activity {
         case MENU_SETTINGS:
             Intent preferencesIntent = new Intent(Constants.PREFERENCES);
             startActivity(preferencesIntent);
+            return true;
+        case MENU_RESET:
+            resetData();
             return true;
         case MENU_EXIT:
             finish();
@@ -356,6 +358,40 @@ public class GeoPaparazziActivity extends Activity {
         super.finish();
     }
 
+    private void resetData() {
+        new AlertDialog.Builder(this).setTitle(R.string.reset).setMessage(R.string.reset_prompt)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                    public void onClick( DialogInterface dialog, int whichButton ) {
+                    }
+                }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                    public void onClick( DialogInterface dialog, int whichButton ) {
+                        try {
+                            File databaseFile = applicationManager.getDatabaseFile();
+                            if (databaseFile.exists()) {
+                                File newFile = new File(databaseFile.getAbsolutePath() + "_"
+                                        + Constants.TIMESTAMPFORMATTER.format(new Date()));
+                                if (!databaseFile.renameTo(newFile)) {
+                                    throw new IOException("Unable to rename the database file.");
+                                }
+                            }
+                            File mediaDir = applicationManager.getMediaDir();
+                            if (mediaDir.exists()) {
+                                File newMediaDir = new File(mediaDir.getAbsolutePath() + "_"
+                                        + Constants.TIMESTAMPFORMATTER.format(new Date()));
+                                if (!mediaDir.renameTo(newMediaDir)) {
+                                    throw new IOException("Unable to rename the media folder.");
+                                }
+                            }
+                            finish();
+                        } catch (IOException e) {
+                            Logger.e(this, e.getLocalizedMessage(), e);
+                            e.printStackTrace();
+                            Toast.makeText(GeoPaparazziActivity.this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }).show();
+    }
     private Handler kmlHandler = new Handler(){
         public void handleMessage( android.os.Message msg ) {
             kmlProgressDialog.dismiss();

@@ -419,6 +419,9 @@ public final class R {
         /**  added after 1.2.1 
          */
         public static final int rendering_preferences=0x7f09008f;
+        public static final int reset=0x7f090091;
+        public static final int reset_prompt=0x7f090092;
+        public static final int reset_successful=0x7f090093;
         public static final int satellite_num=0x7f090029;
         public static final int saveimg=0x7f090030;
         public static final int sdcard_notexist=0x7f09001e;
