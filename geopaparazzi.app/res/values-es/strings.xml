@@ -195,4 +195,9 @@
 	<string name="installgpsstatus_title">Instala GPS Status</string>
     <string name="installgpsstatus_message">Geopaparazzi utiliza la aplicación Gps Status como brújula y la vista información gps. Desea instalarla?</string>
 	
+   <!-- added after 1.2.1 -->
+   <string name="rendering_preferences">Prestación de preferencias</string>
+   <string name="decimation_combo_label">Factor de decimación</string>
+   <string name="reset">Restablecer los datos</string>
+   <string name="reset_prompt">Esto restablecerá la carpeta de datos y media, mientras que los mapas se mantendrá. Nada se pierde. Los datos y la carpeta de los media se renombran añadiendo la fecha y hora actuales. Se puede continuar? Usted tendrá que reiniciar Geopaparazzi.</string>
   </resources>
