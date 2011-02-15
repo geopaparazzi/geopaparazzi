@@ -417,6 +417,8 @@ public final class R {
         public static final int prompt_gpsenable=0x7f090039;
         public static final int remove_last_note_prompt=0x7f09008a;
         /**  added after 2.1.1 
+ hinzugefügt nach Version 1.2.1 
+ added after 1.2.1 
  added after 1.2.1 
  added after 2.1.1 
          */
