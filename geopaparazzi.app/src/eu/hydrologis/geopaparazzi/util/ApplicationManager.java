@@ -17,7 +17,7 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.DECIMATION_FACTOR;
+import static eu.hydrologis.geopaparazzi.util.Constants.*;
 import static eu.hydrologis.geopaparazzi.util.Constants.GPSLOGGINGINTERVALKEY;
 import static eu.hydrologis.geopaparazzi.util.Constants.GPS_LOGGING_INTERVAL;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_GEOPAPARAZZI;
@@ -203,60 +203,68 @@ public class ApplicationManager implements SensorEventListener, LocationListener
          *        `-- xtile 
          *            `-- ytile.png
          */
-        String state = Environment.getExternalStorageState();
-        boolean mExternalStorageAvailable;
-        boolean mExternalStorageWriteable;
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            mExternalStorageAvailable = mExternalStorageWriteable = true;
-        } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-            mExternalStorageAvailable = true;
-            mExternalStorageWriteable = false;
-        } else {
-            mExternalStorageAvailable = mExternalStorageWriteable = false;
-        }
 
-        if (mExternalStorageAvailable && mExternalStorageWriteable) {
-            File sdcardDir = Environment.getExternalStorageDirectory();// new
-            geoPaparazziDir = new File(sdcardDir.getAbsolutePath() + PATH_GEOPAPARAZZI);
-            String geoPaparazziDirPath = geoPaparazziDir.getAbsolutePath();
-
-            if (!geoPaparazziDir.exists())
-                if (!geoPaparazziDir.mkdir())
-                    alert(MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard), geoPaparazziDirPath));
-            databaseFile = new File(geoPaparazziDirPath, DatabaseManager.DATABASE_NAME);
-            mediaDir = new File(geoPaparazziDirPath + PATH_MEDIA);
-
-            if (!mediaDir.exists())
-                if (!mediaDir.mkdir())
-                    alert(MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
-                            mediaDir.getAbsolutePath()));
-            debugLogFile = new File(geoPaparazziDirPath, "debug.log");
-
-            mapsCacheDir = new File(sdcardDir.getAbsolutePath() + PATH_MAPSCACHE);
-            Logger.i(LOGTAG, "MAPSCACHEPATH:" + mapsCacheDir.getAbsolutePath());
-            if (!mapsCacheDir.exists())
-                if (!mapsCacheDir.mkdirs()) {
-                    String msg = MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
-                            mapsCacheDir.getAbsolutePath());
-                    alert(msg);
-                }
-            File noMediaFile = new File(mapsCacheDir, ".nomedia");
-            if (!noMediaFile.exists()) {
-                try {
-                    noMediaFile.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String baseFolder = preferences.getString(BASEFOLDERKEY, "");
+        geoPaparazziDir = new File(baseFolder);
+        mapsCacheDir = new File(geoPaparazziDir.getParentFile() + PATH_MAPSCACHE);
+        if (baseFolder == null || baseFolder.length() == 0 || !geoPaparazziDir.getParentFile().exists()
+                || !geoPaparazziDir.getParentFile().canWrite()) {
+            // the folder doesn't exist for some reason, fallback on default
+            String state = Environment.getExternalStorageState();
+            boolean mExternalStorageAvailable;
+            boolean mExternalStorageWriteable;
+            if (Environment.MEDIA_MOUNTED.equals(state)) {
+                mExternalStorageAvailable = mExternalStorageWriteable = true;
+            } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+                mExternalStorageAvailable = true;
+                mExternalStorageWriteable = false;
+            } else {
+                mExternalStorageAvailable = mExternalStorageWriteable = false;
             }
-            kmlExportDir = new File(geoPaparazziDirPath + PATH_KMLEXPORT);
-            if (!kmlExportDir.exists())
-                if (!kmlExportDir.mkdir())
-                    alert(MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
-                            kmlExportDir.getAbsolutePath()));
-
-        } else {
-            alertDialog(context.getResources().getString(R.string.sdcard_notexist));
+            if (mExternalStorageAvailable && mExternalStorageWriteable) {
+                File sdcardDir = Environment.getExternalStorageDirectory();// new
+                geoPaparazziDir = new File(sdcardDir.getAbsolutePath() + PATH_GEOPAPARAZZI);
+                mapsCacheDir = new File(sdcardDir.getAbsolutePath() + PATH_MAPSCACHE);
+            } else {
+                alertDialog(context.getResources().getString(R.string.sdcard_notexist));
+                return;
+            }
         }
+
+        String geoPaparazziDirPath = geoPaparazziDir.getAbsolutePath();
+        if (!geoPaparazziDir.exists())
+            if (!geoPaparazziDir.mkdir())
+                alert(MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard), geoPaparazziDirPath));
+        databaseFile = new File(geoPaparazziDirPath, DatabaseManager.DATABASE_NAME);
+        mediaDir = new File(geoPaparazziDirPath + PATH_MEDIA);
+
+        if (!mediaDir.exists())
+            if (!mediaDir.mkdir())
+                alert(MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
+                        mediaDir.getAbsolutePath()));
+        debugLogFile = new File(geoPaparazziDirPath, "debug.log");
+
+        Logger.i(LOGTAG, "MAPSCACHEPATH:" + mapsCacheDir.getAbsolutePath());
+        if (!mapsCacheDir.exists())
+            if (!mapsCacheDir.mkdirs()) {
+                String msg = MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
+                        mapsCacheDir.getAbsolutePath());
+                alert(msg);
+            }
+        File noMediaFile = new File(mapsCacheDir, ".nomedia");
+        if (!noMediaFile.exists()) {
+            try {
+                noMediaFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        kmlExportDir = new File(geoPaparazziDirPath + PATH_KMLEXPORT);
+        if (!kmlExportDir.exists())
+            if (!kmlExportDir.mkdir())
+                alert(MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
+                        kmlExportDir.getAbsolutePath()));
 
     }
 

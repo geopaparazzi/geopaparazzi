@@ -392,6 +392,7 @@ public class GeoPaparazziActivity extends Activity {
                     }
                 }).show();
     }
+    
     private Handler kmlHandler = new Handler(){
         public void handleMessage( android.os.Message msg ) {
             kmlProgressDialog.dismiss();

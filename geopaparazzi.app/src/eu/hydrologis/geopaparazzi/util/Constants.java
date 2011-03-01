@@ -17,6 +17,7 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 
 import android.graphics.Color;
@@ -106,13 +107,13 @@ public interface Constants {
      */
     public final int NOTES_LENGTH_LIMIT = 7;
 
-    public final String PATH_GEOPAPARAZZI = "/geopaparazzi";
-    public final String PATH_MEDIA = "/media";
-    public final String PATH_NOTES = "/notes";
-    public final String PATH_KMLEXPORT = "/export";
+    public final String PATH_GEOPAPARAZZI = File.separator + "geopaparazzi";
+    public final String PATH_MEDIA = File.separator + "media";
+    public final String PATH_NOTES = File.separator + "notes";
+    public final String PATH_KMLEXPORT = File.separator + "export";
 
-    public final String PATH_GEOPAPARAZZIDATA = "/geopaparazzi";
-    public final String PATH_MAPSCACHE = "/geopaparazzimapscache";
+    public final String PATH_GEOPAPARAZZIDATA = File.separator + "geopaparazzi";
+    public final String PATH_MAPSCACHE = File.separator + "geopaparazzimapscache";
 
     public final SimpleDateFormat TIMESTAMPFORMATTER = new SimpleDateFormat("yyyyMMdd_HHmmss");
     public final SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -138,6 +139,7 @@ public interface Constants {
     public static final int MAP_TYPE_LINE = 1;
     public static final int MAP_TYPE_POLYGON = 2;
 
+    public static final String BASEFOLDERKEY = "geopaparazzi_basefolder_key";
     public static final String DECIMATION_FACTOR = "decimation_list";
     public static final String GPSLOGGINGINTERVALKEY = "gps_logging_interval";
     public static final String GPSLOGGINGDISTANCEKEY = "gps_logging_distance";
