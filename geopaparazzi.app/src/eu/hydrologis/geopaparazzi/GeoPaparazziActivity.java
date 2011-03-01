@@ -30,6 +30,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -347,7 +348,7 @@ public class GeoPaparazziActivity extends Activity {
         case (BROWSERRETURNCODE): {
             if (resultCode == Activity.RESULT_OK) {
                 String chosenFolderToLoad = data.getStringExtra(Constants.PATH);
-                
+
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 Editor editor = preferences.edit();
                 editor.putString(BASEFOLDERKEY, chosenFolderToLoad);
@@ -390,31 +391,52 @@ public class GeoPaparazziActivity extends Activity {
         super.finish();
     }
 
+    private boolean doRename = false;
     private void resetData() {
+
+        File geoPaparazziDir = applicationManager.getGeoPaparazziDir();
+        String name = geoPaparazziDir.getName();
+        doRename = false;
+        if (name.equals(Constants.GEOPAPARAZZI)) {
+            doRename = true;
+        }
         final String defaultLogName = Constants.GEOPAPARAZZI + "_" + Constants.TIMESTAMPFORMATTER.format(new Date());
         final EditText input = new EditText(this);
         input.setText(defaultLogName);
-        new AlertDialog.Builder(this).setTitle(R.string.reset).setMessage(R.string.reset_prompt).setView(input)
-                .setIcon(android.R.drawable.ic_dialog_alert)
+        Builder builder = new AlertDialog.Builder(this).setTitle(R.string.reset);
+        if (doRename) {
+            builder.setMessage(R.string.reset_prompt);
+            builder.setView(input);
+        }
+        builder.setIcon(android.R.drawable.ic_dialog_alert)
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
                     }
                 }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
-                        Editable value = input.getText();
-                        String newName = value.toString();
-                        if (newName == null || newName.length() < 1) {
-                            newName = defaultLogName;
-                        }
-
                         try {
-                            File geopaparazziDirFile = applicationManager.getGeoPaparazziDir();
-                            DatabaseManager.getInstance().closeDatabase();
-                            File geopaparazziParentFile = geopaparazziDirFile.getParentFile();
-                            File newGeopaparazziDirFile = new File(geopaparazziParentFile.getAbsolutePath(), newName);
-                            if (!geopaparazziDirFile.renameTo(newGeopaparazziDirFile)) {
-                                throw new IOException("Unable to rename the geopaparazzi folder.");
+                            SharedPreferences preferences = PreferenceManager
+                                    .getDefaultSharedPreferences(getApplicationContext());
+                            Editor editor = preferences.edit();
+                            if (doRename) {
+                                Editable value = input.getText();
+                                String newName = value.toString();
+                                if (newName == null || newName.length() < 1) {
+                                    newName = defaultLogName;
+                                }
+                                File geopaparazziDirFile = applicationManager.getGeoPaparazziDir();
+                                DatabaseManager.getInstance().closeDatabase();
+                                File geopaparazziParentFile = geopaparazziDirFile.getParentFile();
+                                File newGeopaparazziDirFile = new File(geopaparazziParentFile.getAbsolutePath(), newName);
+                                if (!geopaparazziDirFile.renameTo(newGeopaparazziDirFile)) {
+                                    throw new IOException("Unable to rename the geopaparazzi folder.");
+                                }
+                                editor.putString(BASEFOLDERKEY, newGeopaparazziDirFile.getAbsolutePath());
+                            } else {
+                                editor.putString(BASEFOLDERKEY, "");
                             }
+                            editor.commit();
+
                             Intent intent = getIntent();
                             finish();
                             startActivity(intent);
