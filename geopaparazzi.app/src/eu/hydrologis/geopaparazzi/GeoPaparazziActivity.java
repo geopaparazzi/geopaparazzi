@@ -17,6 +17,7 @@
  */
 package eu.hydrologis.geopaparazzi;
 
+import static eu.hydrologis.geopaparazzi.util.Constants.BASEFOLDERKEY;
 import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LATITUDE;
 import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LONGITUDE;
 import static eu.hydrologis.geopaparazzi.util.Constants.PANICKEY;
@@ -39,12 +40,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
+import android.text.Editable;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
@@ -60,6 +63,7 @@ import eu.hydrologis.geopaparazzi.maps.DataManager;
 import eu.hydrologis.geopaparazzi.maps.MapItem;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
+import eu.hydrologis.geopaparazzi.util.DirectoryBrowserActivity;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.Note;
 import eu.hydrologis.geopaparazzi.util.Picture;
@@ -76,12 +80,14 @@ public class GeoPaparazziActivity extends Activity {
     private static final int MENU_EXIT = 2;
     private static final int MENU_SETTINGS = 3;
     private static final int MENU_RESET = 4;
+    private static final int MENU_LOAD = 5;
 
     private ApplicationManager applicationManager;
     private ActionBar actionBar;
     private ProgressDialog kmlProgressDialog;
 
     private File kmlOutputFile = null;
+    private static final int BROWSERRETURNCODE = 666;
 
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
@@ -305,6 +311,7 @@ public class GeoPaparazziActivity extends Activity {
         menu.add(Menu.NONE, MENU_EXIT, 1, R.string.exit).setIcon(android.R.drawable.ic_lock_power_off);
         menu.add(Menu.NONE, MENU_ABOUT, 2, R.string.about).setIcon(android.R.drawable.ic_menu_info_details);
         menu.add(Menu.NONE, MENU_RESET, 3, R.string.reset).setIcon(android.R.drawable.ic_menu_revert);
+        menu.add(Menu.NONE, MENU_LOAD, 4, R.string.load).setIcon(android.R.drawable.ic_menu_set_as);
 
         return true;
     }
@@ -322,11 +329,36 @@ public class GeoPaparazziActivity extends Activity {
         case MENU_RESET:
             resetData();
             return true;
+        case MENU_LOAD:
+            Intent browseIntent = new Intent(Constants.DIRECTORYBROWSER);
+            browseIntent.putExtra(Constants.EXTENTION, DirectoryBrowserActivity.FOLDER);
+            startActivityForResult(browseIntent, BROWSERRETURNCODE);
+            return true;
         case MENU_EXIT:
             finish();
             return true;
         }
         return super.onMenuItemSelected(featureId, item);
+    }
+
+    protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch( requestCode ) {
+        case (BROWSERRETURNCODE): {
+            if (resultCode == Activity.RESULT_OK) {
+                String chosenFolderToLoad = data.getStringExtra(Constants.PATH);
+                
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                Editor editor = preferences.edit();
+                editor.putString(BASEFOLDERKEY, chosenFolderToLoad);
+                editor.commit();
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+            }
+            break;
+        }
+        }
     }
 
     public boolean onKeyDown( int keyCode, KeyEvent event ) {
@@ -359,40 +391,42 @@ public class GeoPaparazziActivity extends Activity {
     }
 
     private void resetData() {
-        new AlertDialog.Builder(this).setTitle(R.string.reset).setMessage(R.string.reset_prompt)
+        final String defaultLogName = Constants.GEOPAPARAZZI + "_" + Constants.TIMESTAMPFORMATTER.format(new Date());
+        final EditText input = new EditText(this);
+        input.setText(defaultLogName);
+        new AlertDialog.Builder(this).setTitle(R.string.reset).setMessage(R.string.reset_prompt).setView(input)
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
                     }
                 }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
+                        Editable value = input.getText();
+                        String newName = value.toString();
+                        if (newName == null || newName.length() < 1) {
+                            newName = defaultLogName;
+                        }
+
                         try {
-                            File databaseFile = applicationManager.getDatabaseFile();
-                            if (databaseFile.exists()) {
-                                File newFile = new File(databaseFile.getAbsolutePath() + "_"
-                                        + Constants.TIMESTAMPFORMATTER.format(new Date()));
-                                if (!databaseFile.renameTo(newFile)) {
-                                    throw new IOException("Unable to rename the database file.");
-                                }
+                            File geopaparazziDirFile = applicationManager.getGeoPaparazziDir();
+                            DatabaseManager.getInstance().closeDatabase();
+                            File geopaparazziParentFile = geopaparazziDirFile.getParentFile();
+                            File newGeopaparazziDirFile = new File(geopaparazziParentFile.getAbsolutePath(), newName);
+                            if (!geopaparazziDirFile.renameTo(newGeopaparazziDirFile)) {
+                                throw new IOException("Unable to rename the geopaparazzi folder.");
                             }
-                            File mediaDir = applicationManager.getMediaDir();
-                            if (mediaDir.exists()) {
-                                File newMediaDir = new File(mediaDir.getAbsolutePath() + "_"
-                                        + Constants.TIMESTAMPFORMATTER.format(new Date()));
-                                if (!mediaDir.renameTo(newMediaDir)) {
-                                    throw new IOException("Unable to rename the media folder.");
-                                }
-                            }
+                            Intent intent = getIntent();
                             finish();
+                            startActivity(intent);
                         } catch (IOException e) {
                             Logger.e(this, e.getLocalizedMessage(), e);
                             e.printStackTrace();
                             Toast.makeText(GeoPaparazziActivity.this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                         }
                     }
-                }).show();
+                }).setCancelable(false).show();
     }
-    
+
     private Handler kmlHandler = new Handler(){
         public void handleMessage( android.os.Message msg ) {
             kmlProgressDialog.dismiss();

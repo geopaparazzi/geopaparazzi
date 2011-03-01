@@ -200,5 +200,7 @@
     <string name="rendering_preferences">Settaggi di rendering</string>
     <string name="decimation_combo_label">Fattore di decimazione</string>
     <string name="reset">Resetta i dati</string>
-    <string name="reset_prompt">Verranno resettati il database e la cartella dei file multimediali mentre le mappe verranno preservate. Nulla va perso. Il database e la cartella media verranno rinominati aggiungendo la data e ora al nome. Continuare> Sara\' necessario rilanciare Geopaparazzi.</string>
+
+	<!-- added after 2.1.2 -->
+    <string name="reset_prompt">Rinominare il progetto ed iniziarne uno nuovo?</string>
 </resources>

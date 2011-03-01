@@ -29,6 +29,7 @@ import android.graphics.Color;
  */
 @SuppressWarnings("nls")
 public interface Constants {
+    
     /*
      * intent names
      */
@@ -107,12 +108,13 @@ public interface Constants {
      */
     public final int NOTES_LENGTH_LIMIT = 7;
 
-    public final String PATH_GEOPAPARAZZI = File.separator + "geopaparazzi";
+    public static final String GEOPAPARAZZI = "geopaparazzi";
+    public final String PATH_GEOPAPARAZZI = File.separator + GEOPAPARAZZI;
     public final String PATH_MEDIA = File.separator + "media";
     public final String PATH_NOTES = File.separator + "notes";
     public final String PATH_KMLEXPORT = File.separator + "export";
 
-    public final String PATH_GEOPAPARAZZIDATA = File.separator + "geopaparazzi";
+    public final String PATH_GEOPAPARAZZIDATA = File.separator + GEOPAPARAZZI;
     public final String PATH_MAPSCACHE = File.separator + "geopaparazzimapscache";
 
     public final SimpleDateFormat TIMESTAMPFORMATTER = new SimpleDateFormat("yyyyMMdd_HHmmss");

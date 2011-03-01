@@ -97,6 +97,8 @@ public class DatabaseManager {
             Logger.i(DEBUG_TAG, "Closing database");
             databaseHelper.close();
             Logger.i(DEBUG_TAG, "Database closed");
+            databaseHelper = null;
+            dbManager = null;
         }
     }
 

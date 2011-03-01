@@ -13,7 +13,12 @@
 			android:textColor="@color/black" /> -->
 
 	</LinearLayout>
-	<Button android:text="@string/up" android:id="@+id/upbutton"
-		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:layout_gravity="center_horizontal|bottom"></Button>
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:layout_gravity="center_horizontal|bottom"
+		android:orientation="horizontal" android:background="#FFFFFF">
+		<Button android:text="@string/ok" android:id="@+id/okbutton"
+			android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1"></Button>
+		<Button android:text="@string/up" android:id="@+id/upbutton"
+			android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1"></Button>
+	</LinearLayout>
 </FrameLayout>

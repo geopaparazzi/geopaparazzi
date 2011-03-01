@@ -334,8 +334,12 @@ public class ApplicationManager implements SensorEventListener, LocationListener
      * Stops listening to all the devices.
      */
     public void stopListening() {
-        locationManager.removeUpdates(applicationManager);
-        sensorManager.unregisterListener(applicationManager);
+        if (applicationManager != null) {
+            if (locationManager != null)
+                locationManager.removeUpdates(applicationManager);
+            if (sensorManager != null)
+                sensorManager.unregisterListener(applicationManager);
+        }
         if (TestMock.isOn) {
             TestMock.stopMocking(locationManager);
         }

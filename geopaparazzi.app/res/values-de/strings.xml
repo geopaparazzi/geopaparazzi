@@ -194,10 +194,11 @@
     <string name="installgpsstatus_title">Installiere GPS-Status</string>
     <string name="installgpsstatus_message">Geopaparazzi benötigt die GPS-Status Anwendung zur Kompass-Darstellung. Soll diese installiert werden?</string>
 
-    <!-- hinzugefügt nach Version 1.2.1 -->
+    <!-- hinzugefügt nach Version 2.1.1 -->
     <string name="rendering_preferences">Renderungseinstellungen</string>
     <string name="decimation_combo_label">Dezimierungsfaktor</string>
     <string name="reset">Daten zurücksetzen</string>
-    <string name="reset_prompt">Diese Aktion setzt die Datenbank und den Medienordner zurück während die Karte erhalten bleibt. Keine Daten gehen verloren. Datenbank und Medienordner werden umbenannt indem das aktuelle Datum sowie Uhrzeit (an den Namen) angefügt werden. Fortfahren? Anschließend muss Geopaparazzi neu gestartet werden.</string>
-    <string name="reset_successful">Daten erfolgreich zurückgesetzt.</string>    
+
+    <!-- hinzugefügt nach Version 2.1.2 -->
+    <string name="reset_prompt">Projekt neu benennen und mit einem Neuen beginnen?</string>
 </resources>
