@@ -425,11 +425,11 @@ public final class R {
  added after 2.1.1 
          */
         public static final int rendering_preferences=0x7f09008f;
-        public static final int reset=0x7f090091;
         /**  added after 2.1.2 
  hinzugefügt nach Version 2.1.2 
  added after 2.1.2 
          */
+        public static final int reset=0x7f090091;
         public static final int reset_prompt=0x7f090092;
         public static final int reset_successful=0x7f090094;
         public static final int satellite_num=0x7f090029;

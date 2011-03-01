@@ -198,9 +198,9 @@
 	<!-- added after 2.1.1 -->
     <string name="rendering_preferences">Rendering preferences</string>
     <string name="decimation_combo_label">Decimation factor</string>
-    <string name="reset">Reset data</string>
 
 	<!-- added after 2.1.2 -->
+    <string name="reset">New project</string>
     <string name="reset_prompt">Rename the project and start on a new one?</string>
     <string name="load">Load an existing project</string>
 </resources>

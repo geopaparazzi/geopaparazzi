@@ -197,8 +197,8 @@
     <!-- hinzugefügt nach Version 2.1.1 -->
     <string name="rendering_preferences">Renderungseinstellungen</string>
     <string name="decimation_combo_label">Dezimierungsfaktor</string>
-    <string name="reset">Daten zurücksetzen</string>
 
     <!-- hinzugefügt nach Version 2.1.2 -->
+    <string name="reset">Neues Projekt</string>
     <string name="reset_prompt">Projekt neu benennen und mit einem Neuen beginnen?</string>
 </resources>

@@ -81,7 +81,7 @@ public class DirectoryBrowserActivity extends ListActivity {
                 }
             });
         } else {
-            okButton.setVisibility(View.INVISIBLE);
+            okButton.setEnabled(false);
         }
         Button upButton = (Button) findViewById(R.id.upbutton);
         upButton.setOnClickListener(new OnClickListener(){

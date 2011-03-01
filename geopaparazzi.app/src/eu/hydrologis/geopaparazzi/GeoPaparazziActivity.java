@@ -308,10 +308,10 @@ public class GeoPaparazziActivity extends Activity {
     public boolean onCreateOptionsMenu( Menu menu ) {
         super.onCreateOptionsMenu(menu);
         menu.add(Menu.NONE, MENU_SETTINGS, 0, R.string.mainmenu_preferences).setIcon(android.R.drawable.ic_menu_preferences);
-        menu.add(Menu.NONE, MENU_EXIT, 1, R.string.exit).setIcon(android.R.drawable.ic_lock_power_off);
-        menu.add(Menu.NONE, MENU_ABOUT, 2, R.string.about).setIcon(android.R.drawable.ic_menu_info_details);
-        menu.add(Menu.NONE, MENU_RESET, 3, R.string.reset).setIcon(android.R.drawable.ic_menu_revert);
-        menu.add(Menu.NONE, MENU_LOAD, 4, R.string.load).setIcon(android.R.drawable.ic_menu_set_as);
+        menu.add(Menu.NONE, MENU_RESET, 1, R.string.reset).setIcon(android.R.drawable.ic_menu_revert);
+        menu.add(Menu.NONE, MENU_LOAD, 2, R.string.load).setIcon(android.R.drawable.ic_menu_set_as);
+        menu.add(Menu.NONE, MENU_EXIT, 3, R.string.exit).setIcon(android.R.drawable.ic_lock_power_off);
+        menu.add(Menu.NONE, MENU_ABOUT, 4, R.string.about).setIcon(android.R.drawable.ic_menu_info_details);
 
         return true;
     }
