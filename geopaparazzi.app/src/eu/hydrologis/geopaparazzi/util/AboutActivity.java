@@ -18,6 +18,9 @@
 package eu.hydrologis.geopaparazzi.util;
 
 import android.app.Activity;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
@@ -38,6 +41,16 @@ public class AboutActivity extends Activity {
         TextView aboutView = (TextView) findViewById(R.id.about);
 
         String aboutString = getResources().getString(R.string.abouttext);
+
+        String version = "";
+        try {
+            PackageInfo pInfo = getPackageManager().getPackageInfo("eu.hydrologis.geopaparazzi", PackageManager.GET_META_DATA);
+            version = pInfo.versionName;
+        } catch (NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        aboutString = aboutString.replaceFirst("VERSION", version);
         String[] aboutText = aboutString.split("\\n");
         StringBuilder sB = new StringBuilder();
         boolean first = true;
