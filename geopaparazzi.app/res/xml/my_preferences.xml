@@ -23,8 +23,9 @@
 		<CheckBoxPreference android:key="sms_catcher"
 			android:title="@string/sms_catcher" android:order="7">
 		</CheckBoxPreference>
-		<EditTextPreference android:order="8" android:key="panic_number"
-			android:title="@string/panic_number" android:defaultValue=""></EditTextPreference>
+		<eu.hydrologis.geopaparazzi.preferences.PhoneNumberPreference
+			android:order="8" android:key="panic_number" android:title="@string/panic_number">
+		</eu.hydrologis.geopaparazzi.preferences.PhoneNumberPreference>
 	</PreferenceScreen>
 	<PreferenceScreen android:title="@string/rendering_preferences"
 		android:order="9">

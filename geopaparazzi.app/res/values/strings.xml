@@ -203,4 +203,7 @@
     <string name="reset">New project</string>
     <string name="reset_prompt">Rename the project and start on a new one?</string>
     <string name="load">Load an existing project</string>
+    <string name="phonenumber_hint">Enter comma separated phone numbers...</string>
+    <string name="pick_phonenumber_label">...</string>
+
 </resources>

@@ -161,8 +161,8 @@ public final class R {
         public static final int action_bar_logo=0x7f0b0003;
         public static final int action_bar_note=0x7f0b0007;
         public static final int action_bar_title=0x7f0b0004;
-        public static final int arrow_down=0x7f0b0073;
-        public static final int arrow_up=0x7f0b0072;
+        public static final int arrow_down=0x7f0b0075;
+        public static final int arrow_up=0x7f0b0074;
         public static final int askcoordlabel=0x7f0b0048;
         public static final int browselist_text=0x7f0b000e;
         public static final int button_layout=0x7f0b0011;
@@ -193,10 +193,11 @@ public final class R {
         public static final int dashboard_undonote_item=0x7f0b001e;
         public static final int dashboard_undonote_item_button=0x7f0b001f;
         public static final int distancelabel=0x7f0b0060;
+        public static final int do_phonenumber_picker=0x7f0b0071;
         public static final int dummylayout=0x7f0b0058;
         public static final int filename=0x7f0b0040;
         public static final int firstpoint=0x7f0b0062;
-        public static final int footer=0x7f0b0076;
+        public static final int footer=0x7f0b0078;
         public static final int form_cancel=0x7f0b0018;
         public static final int form_linear=0x7f0b0016;
         public static final int form_ok=0x7f0b0017;
@@ -212,8 +213,8 @@ public final class R {
         public static final int gpslogsList=0x7f0b0041;
         public static final int gpsproplabel=0x7f0b0033;
         public static final int handle=0x7f0b002d;
-        public static final int header2=0x7f0b0074;
-        public static final int icon=0x7f0b0077;
+        public static final int header2=0x7f0b0076;
+        public static final int icon=0x7f0b0079;
         public static final int innerlayout=0x7f0b0055;
         public static final int lastpoint=0x7f0b0067;
         public static final int latitudelabel=0x7f0b004b;
@@ -229,7 +230,7 @@ public final class R {
         public static final int longitudetext_first=0x7f0b0064;
         public static final int longitudetext_last=0x7f0b0069;
         public static final int main_frameLayout=0x7f0b0019;
-        public static final int mainosmtagslayout=0x7f0b0079;
+        public static final int mainosmtagslayout=0x7f0b007b;
         public static final int map_cancel=0x7f0b0053;
         public static final int map_delete=0x7f0b0051;
         public static final int map_ok=0x7f0b0052;
@@ -250,15 +251,16 @@ public final class R {
         public static final int noteswidthText=0x7f0b0045;
         public static final int ok=0x7f0b006e;
         public static final int okbutton=0x7f0b000c;
-        public static final int osm_additionalinfo_id=0x7f0b007a;
+        public static final int osm_additionalinfo_id=0x7f0b007c;
         public static final int osm_frameLayout=0x7f0b0054;
-        public static final int osmgridview=0x7f0b007b;
+        public static final int osmgridview=0x7f0b007d;
         public static final int osmviewid=0x7f0b0056;
         public static final int panicbutton=0x7f0b0030;
+        public static final int phonenumber_text=0x7f0b0070;
         public static final int row_container=0x7f0b0032;
         public static final int row_container5=0x7f0b003c;
-        public static final int scroll=0x7f0b0075;
-        public static final int scroller=0x7f0b0070;
+        public static final int scroll=0x7f0b0077;
+        public static final int scroller=0x7f0b0072;
         public static final int seekbarlayout=0x7f0b0057;
         public static final int sep1=0x7f0b0006;
         public static final int sep2=0x7f0b0008;
@@ -267,8 +269,8 @@ public final class R {
         public static final int snapButton=0x7f0b0010;
         public static final int statusupdatebutton=0x7f0b0031;
         public static final int surface=0x7f0b000f;
-        public static final int title=0x7f0b0078;
-        public static final int tracks=0x7f0b0071;
+        public static final int title=0x7f0b007a;
+        public static final int tracks=0x7f0b0073;
         public static final int upbutton=0x7f0b000d;
         public static final int visible=0x7f0b003f;
         public static final int widthLabel=0x7f0b0035;
@@ -295,11 +297,12 @@ public final class R {
         public static final int mapsview=0x7f03000f;
         public static final int measureinfo=0x7f030010;
         public static final int note=0x7f030011;
-        public static final int popup=0x7f030012;
-        public static final int quickaction=0x7f030013;
-        public static final int quickaction_item=0x7f030014;
-        public static final int quickaction_item2=0x7f030015;
-        public static final int tags=0x7f030016;
+        public static final int phonenumberpref=0x7f030012;
+        public static final int popup=0x7f030013;
+        public static final int quickaction=0x7f030014;
+        public static final int quickaction_item=0x7f030015;
+        public static final int quickaction_item2=0x7f030016;
+        public static final int tags=0x7f030017;
     }
     public static final class string {
         public static final int about=0x7f09001b;
@@ -416,6 +419,8 @@ public final class R {
         public static final int panic_number=0x7f09007c;
         public static final int panic_number_notset=0x7f09007d;
         public static final int panic_upper=0x7f09007f;
+        public static final int phonenumber_hint=0x7f090094;
+        public static final int pick_phonenumber_label=0x7f090095;
         public static final int prompt_gpsenable=0x7f090039;
         public static final int remove_last_note_prompt=0x7f09008a;
         /**  added after 2.1.1 
@@ -431,7 +436,7 @@ public final class R {
          */
         public static final int reset=0x7f090091;
         public static final int reset_prompt=0x7f090092;
-        public static final int reset_successful=0x7f090094;
+        public static final int reset_successful=0x7f090096;
         public static final int satellite_num=0x7f090029;
         public static final int saveimg=0x7f090030;
         public static final int sdcard_notexist=0x7f09001e;

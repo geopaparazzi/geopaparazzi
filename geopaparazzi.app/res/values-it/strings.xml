@@ -203,4 +203,5 @@
 	<!-- added after 2.1.2 -->
     <string name="reset">Nuovo progetto</string>
     <string name="reset_prompt">Rinominare il progetto ed iniziarne uno nuovo?</string>
+    <string name="phonenumber_hint">Inserire numeri separati da virgole...</string>
 </resources>

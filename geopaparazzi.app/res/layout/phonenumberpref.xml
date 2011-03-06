@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="wrap_content"
+	android:orientation="horizontal">
+	<EditText android:layout_height="wrap_content" android:hint="@string/phonenumber_hint"
+		android:id="@+id/phonenumber_text" android:inputType="text"
+		android:layout_width="fill_parent" android:layout_weight="1"></EditText>
+	<Button android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:id="@+id/do_phonenumber_picker"
+		android:text="@string/pick_phonenumber_label" android:layout_weight="6"></Button>
+</LinearLayout>  
