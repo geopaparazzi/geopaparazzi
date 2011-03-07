@@ -96,7 +96,6 @@ public class Note {
         String descr = description.replaceAll("\n", "</BR></BR>");
         sB.append("<p>").append(descr).append("</p>\n");
 
-        // TODO insert the form as html, if available
         if (form != null) {
             JSONArray formItems = TagsManager.getFormItems(new JSONObject(form));
 

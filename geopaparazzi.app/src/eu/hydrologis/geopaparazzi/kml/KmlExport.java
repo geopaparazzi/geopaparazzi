@@ -47,83 +47,84 @@ public class KmlExport {
         this.outputFile = outputFile;
     }
 
-    public void export( List<Note> notes, HashMap<Long, Line> linesMap, List<Picture> picturesList ) {
+    public void export( List<Note> notes, HashMap<Long, Line> linesMap, List<Picture> picturesList ) throws IOException {
         if (name == null) {
             name = "Geopaparazzi Export";
         }
-        StringBuilder sB = new StringBuilder();
-        sB.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-        sB.append("<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n");
-        sB.append("xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n");
-        sB.append("<Document>\n");
-        sB.append("<name>").append(name).append("</name>\n");
-        sB.append("<Style id=\"red-pushpin\">\n");
-        sB.append("<IconStyle>\n");
-        sB.append("<scale>1.1</scale>\n");
-        sB.append("<Icon>\n");
-        sB.append("<href>http://maps.google.com/mapfiles/kml/pushpin/red-pushpin.png\n");
-        sB.append("</href>\n");
-        sB.append("</Icon>\n");
-        sB.append("<hotSpot x=\"20\" y=\"2\" xunits=\"pixels\" yunits=\"pixels\" />\n");
-        sB.append("</IconStyle>\n");
-        sB.append("<ListStyle>\n");
-        sB.append("</ListStyle>\n");
-        sB.append("</Style>\n");
-        sB.append("<Style id=\"yellow-pushpin\">\n");
-        sB.append("<IconStyle>\n");
-        sB.append("<scale>1.1</scale>\n");
-        sB.append("<Icon>\n");
-        sB.append("<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png\n");
-        sB.append("</href>\n");
-        sB.append("</Icon>\n");
-        sB.append("<hotSpot x=\"20\" y=\"2\" xunits=\"pixels\" yunits=\"pixels\" />\n");
-        sB.append("</IconStyle>\n");
-        sB.append("<ListStyle>\n");
-        sB.append("</ListStyle>\n");
-        sB.append("</Style>\n");
-
-        for( Note note : notes ) {
-            try {
-                sB.append(note.toKmlString());
-            } catch (Exception e) {
-                Logger.e(this, e.getLocalizedMessage(), e);
-                e.printStackTrace();
-            }
-        }
-        Collection<Line> lines = linesMap.values();
-        for( Line line : lines ) {
-            if (line.getLatList().size() > 1)
-                sB.append(line.toKmlString());
-        }
-        for( Picture picture : picturesList ) {
-            sB.append(picture.toKmlString());
-        }
-
-        sB.append("</Document>\n");
-        sB.append("</kml>\n");
 
         /*
          * write the internal kml file
          */
         File kmlFile = new File(outputFile.getParentFile(), "kml.kml");
+        BufferedWriter bW = null;
         try {
-            BufferedWriter bW = new BufferedWriter(new FileWriter(kmlFile));
-            bW.write(sB.toString());
-            bW.close();
-            /*
-             * create the kmz file with the base kml and all the pictures
-             */
-            File[] files = new File[1 + picturesList.size()];
-            files[0] = kmlFile;
-            for( int i = 0; i < files.length - 1; i++ ) {
-                files[i + 1] = new File(picturesList.get(i).getPicturePath());
-            }
-            CompressionUtilities.createZipFromFiles(outputFile, files);
+            bW = new BufferedWriter(new FileWriter(kmlFile));
+            bW.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+            bW.write("<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\"\n");
+            bW.write("xmlns:kml=\"http://www.opengis.net/kml/2.2\" xmlns:atom=\"http://www.w3.org/2005/Atom\">\n");
+            bW.write("<Document>\n");
+            bW.write("<name>");
+            bW.write(name);
+            bW.write("</name>\n");
+            bW.write("<Style id=\"red-pushpin\">\n");
+            bW.write("<IconStyle>\n");
+            bW.write("<scale>1.1</scale>\n");
+            bW.write("<Icon>\n");
+            bW.write("<href>http://maps.google.com/mapfiles/kml/pushpin/red-pushpin.png\n");
+            bW.write("</href>\n");
+            bW.write("</Icon>\n");
+            bW.write("<hotSpot x=\"20\" y=\"2\" xunits=\"pixels\" yunits=\"pixels\" />\n");
+            bW.write("</IconStyle>\n");
+            bW.write("<ListStyle>\n");
+            bW.write("</ListStyle>\n");
+            bW.write("</Style>\n");
+            bW.write("<Style id=\"yellow-pushpin\">\n");
+            bW.write("<IconStyle>\n");
+            bW.write("<scale>1.1</scale>\n");
+            bW.write("<Icon>\n");
+            bW.write("<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png\n");
+            bW.write("</href>\n");
+            bW.write("</Icon>\n");
+            bW.write("<hotSpot x=\"20\" y=\"2\" xunits=\"pixels\" yunits=\"pixels\" />\n");
+            bW.write("</IconStyle>\n");
+            bW.write("<ListStyle>\n");
+            bW.write("</ListStyle>\n");
+            bW.write("</Style>\n");
 
-            kmlFile.delete();
-        } catch (IOException e) {
-            Logger.e(this, e.getLocalizedMessage(), e);
-            e.printStackTrace();
+            for( Note note : notes ) {
+                try {
+                    bW.write(note.toKmlString());
+                } catch (Exception e) {
+                    Logger.e(this, e.getLocalizedMessage(), e);
+                    e.printStackTrace();
+                }
+            }
+            Collection<Line> lines = linesMap.values();
+            for( Line line : lines ) {
+                if (line.getLatList().size() > 1)
+                    bW.write(line.toKmlString());
+            }
+            for( Picture picture : picturesList ) {
+                bW.write(picture.toKmlString());
+            }
+
+            bW.write("</Document>\n");
+            bW.write("</kml>\n");
+
+        } finally {
+            if (bW != null)
+                bW.close();
         }
+        /*
+         * create the kmz file with the base kml and all the pictures
+         */
+        File[] files = new File[1 + picturesList.size()];
+        files[0] = kmlFile;
+        for( int i = 0; i < files.length - 1; i++ ) {
+            files[i + 1] = new File(picturesList.get(i).getPicturePath());
+        }
+        CompressionUtilities.createZipFromFiles(outputFile, files);
+
+        kmlFile.delete();
     }
 }
