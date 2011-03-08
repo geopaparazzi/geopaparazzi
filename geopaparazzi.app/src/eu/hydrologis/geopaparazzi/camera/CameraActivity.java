@@ -248,4 +248,9 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
             return false;
         }
     }
+
+    public void startPreview() {
+        camera.startPreview();
+        this.isPreviewRunning = true;
+    }
 }

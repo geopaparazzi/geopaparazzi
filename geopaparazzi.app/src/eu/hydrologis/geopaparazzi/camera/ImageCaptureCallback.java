@@ -68,7 +68,7 @@ public class ImageCaptureCallback implements PictureCallback {
             String msg = cameraActivity.getResources().getString(R.string.imagesaved);
             builder.setMessage(msg).setCancelable(false).setPositiveButton(ok, new DialogInterface.OnClickListener(){
                 public void onClick( DialogInterface dialog, int id ) {
-                    cameraActivity.finish();
+                    cameraActivity.startPreview();
                 }
             });
             AlertDialog alert = builder.create();
