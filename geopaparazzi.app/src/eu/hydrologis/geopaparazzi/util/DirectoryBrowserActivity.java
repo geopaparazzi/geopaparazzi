@@ -110,8 +110,14 @@ public class DirectoryBrowserActivity extends ListActivity {
         int selectedRow = (int) id;
         File file = new File(items.get(selectedRow));
         if (file.isDirectory()) {
-            currentDir = file;
-            getFiles(currentDir, currentDir.listFiles(fileFilter));
+            File[] filesArray = file.listFiles(fileFilter);
+            if (filesArray != null) {
+                currentDir = file;
+                getFiles(currentDir, filesArray);
+            } else {
+                filesArray = currentDir.listFiles(fileFilter);
+                getFiles(currentDir, filesArray);
+            }
         } else {
             String absolutePath = file.getAbsolutePath();
             handleIntent(absolutePath);
@@ -122,7 +128,9 @@ public class DirectoryBrowserActivity extends ListActivity {
     private void goUp() {
         File tmpDir = currentDir.getParentFile();
         if (tmpDir != null && tmpDir.exists()) {
-            currentDir = tmpDir;
+            if (tmpDir.canRead()) {
+                currentDir = tmpDir;
+            }
         }
         getFiles(currentDir, currentDir.listFiles(fileFilter));
     }
