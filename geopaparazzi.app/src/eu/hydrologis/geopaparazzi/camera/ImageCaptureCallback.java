@@ -45,30 +45,37 @@ public class ImageCaptureCallback implements PictureCallback {
     }
 
     public void onPictureTaken( byte[] data, Camera camera ) {
+        FileOutputStream filoutputStream = null;
         try {
-            FileOutputStream filoutputStream = new FileOutputStream(imgFile);
+            filoutputStream = new FileOutputStream(imgFile);
             filoutputStream.write(data);
-            filoutputStream.flush();
-            filoutputStream.close();
         } catch (Exception e) {
             Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
+        } finally {
+            if (filoutputStream != null) {
+                try {
+                    filoutputStream.flush();
+                    filoutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         if (imgFile.exists() && imgFile.length() > 0) {
             AlertDialog.Builder builder = new AlertDialog.Builder(cameraActivity);
             String ok = cameraActivity.getResources().getString(R.string.ok);
             String msg = cameraActivity.getResources().getString(R.string.imagesaved);
-            builder.setMessage(msg).setCancelable(false)
-                    .setPositiveButton(ok, new DialogInterface.OnClickListener(){
-                        public void onClick( DialogInterface dialog, int id ) {
-                            cameraActivity.finish();
-                        }
-                    });
+            builder.setMessage(msg).setCancelable(false).setPositiveButton(ok, new DialogInterface.OnClickListener(){
+                public void onClick( DialogInterface dialog, int id ) {
+                    cameraActivity.finish();
+                }
+            });
             AlertDialog alert = builder.create();
             alert.show();
-        }else{
+        } else {
             Toast.makeText(cameraActivity, R.string.imagenonsaved, Toast.LENGTH_LONG).show();
         }
-        
+
     }
 }

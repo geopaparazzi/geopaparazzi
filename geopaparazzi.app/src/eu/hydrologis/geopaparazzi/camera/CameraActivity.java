@@ -98,7 +98,17 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
             return super.onKeyDown(keyCode, event);
         }
         if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_CAMERA) {
-            return takePicture();
+            Thread pictureThread = new Thread(new Runnable(){
+                public void run() {
+                    runOnUiThread(new Runnable(){
+                        public void run() {
+                            takePicture();
+                        }
+                    });
+                }
+            });
+            pictureThread.start();
+            return true;
         }
         return false;
     }
