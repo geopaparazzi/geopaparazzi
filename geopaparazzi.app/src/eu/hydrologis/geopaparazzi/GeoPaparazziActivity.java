@@ -348,14 +348,15 @@ public class GeoPaparazziActivity extends Activity {
         case (BROWSERRETURNCODE): {
             if (resultCode == Activity.RESULT_OK) {
                 String chosenFolderToLoad = data.getStringExtra(Constants.PATH);
-
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                Editor editor = preferences.edit();
-                editor.putString(BASEFOLDERKEY, chosenFolderToLoad);
-                editor.commit();
-                Intent intent = getIntent();
-                finish();
-                startActivity(intent);
+                if (chosenFolderToLoad != null && new File(chosenFolderToLoad).getParentFile().exists()) {
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    Editor editor = preferences.edit();
+                    editor.putString(BASEFOLDERKEY, chosenFolderToLoad);
+                    editor.commit();
+                    Intent intent = getIntent();
+                    finish();
+                    startActivity(intent);
+                }
             }
             break;
         }
