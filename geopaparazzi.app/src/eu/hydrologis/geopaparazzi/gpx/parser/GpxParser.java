@@ -16,14 +16,7 @@
 
 package eu.hydrologis.geopaparazzi.gpx.parser;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
-import org.xml.sax.helpers.DefaultHandler;
-
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -31,9 +24,14 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * A very basic GPX parser to meet the need of the emulator control panel.
@@ -43,9 +41,6 @@ import javax.xml.parsers.SAXParserFactory;
  * <p>Modified to also handle routes and multiple segments by Andrea Antonello (www.hydrologis.com)
  */
 public class GpxParser {
-
-    private final static String NS_GPX = "http://www.topografix.com/GPX/1/1"; //$NON-NLS-1$
-
     private final static String NODE_WAYPOINT = "wpt"; //$NON-NLS-1$
     private final static String NODE_TRACK = "trk"; //$NON-NLS-1$
     private final static String NODE_TRACK_SEGMENT = "trkseg"; //$NON-NLS-1$
@@ -98,29 +93,27 @@ public class GpxParser {
         public void startElement( String uri, String localName, String name, Attributes attributes ) throws SAXException {
             // we only care about the standard GPX nodes.
             try {
-                if (NS_GPX.equals(uri)) {
-                    if (NODE_WAYPOINT.equals(localName)) {
-                        mCurrentWayPoint = new WayPoint();
-                        mWayPoints.add(mCurrentWayPoint);
-                        handleLocation(mCurrentWayPoint, attributes);
-                    } else if (NODE_TRACK.equals(localName)) {
-                    } else if (NODE_TRACK_SEGMENT.equals(localName)) {
-                        mCurrentTrackSegment = new TrackSegment();
-                        mTrackSegmentList.add(mCurrentTrackSegment);
-                    } else if (NODE_TRACK_POINT.equals(localName)) {
-                        if (mCurrentTrackSegment != null) {
-                            mCurrentTrackSegment.addPoint(mCurrentTrackPoint = new TrackPoint());
-                            handleLocation(mCurrentTrackPoint, attributes);
-                        }
-                    } else if (NODE_ROUTE.equals(localName)) {
-                        mCurrentRoute = new Route();
-                        mRouteList.add(mCurrentRoute);
-                    } else if (NODE_ROUTE_POINT.equals(localName)) {
-                        if (mCurrentRoute != null) {
-                            mCurrentRoutePoint = new RoutePoint();
-                            mCurrentRoute.addPoint(mCurrentRoutePoint);
-                            handleLocation(mCurrentRoutePoint, attributes);
-                        }
+                if (NODE_WAYPOINT.equals(localName)) {
+                    mCurrentWayPoint = new WayPoint();
+                    mWayPoints.add(mCurrentWayPoint);
+                    handleLocation(mCurrentWayPoint, attributes);
+                } else if (NODE_TRACK.equals(localName)) {
+                } else if (NODE_TRACK_SEGMENT.equals(localName)) {
+                    mCurrentTrackSegment = new TrackSegment();
+                    mTrackSegmentList.add(mCurrentTrackSegment);
+                } else if (NODE_TRACK_POINT.equals(localName)) {
+                    if (mCurrentTrackSegment != null) {
+                        mCurrentTrackSegment.addPoint(mCurrentTrackPoint = new TrackPoint());
+                        handleLocation(mCurrentTrackPoint, attributes);
+                    }
+                } else if (NODE_ROUTE.equals(localName)) {
+                    mCurrentRoute = new Route();
+                    mRouteList.add(mCurrentRoute);
+                } else if (NODE_ROUTE_POINT.equals(localName)) {
+                    if (mCurrentRoute != null) {
+                        mCurrentRoutePoint = new RoutePoint();
+                        mCurrentRoute.addPoint(mCurrentRoutePoint);
+                        handleLocation(mCurrentRoutePoint, attributes);
                     }
                 }
             } finally {
@@ -141,38 +134,36 @@ public class GpxParser {
 
         @Override
         public void endElement( String uri, String localName, String name ) throws SAXException {
-            if (NS_GPX.equals(uri)) {
-                if (NODE_WAYPOINT.equals(localName)) {
-                    mCurrentWayPoint = null;
-                } else if (NODE_TRACK.equals(localName)) {
-                } else if (NODE_TRACK_SEGMENT.equals(localName)) {
-                    mCurrentTrackSegment = null;
-                } else if (NODE_TRACK_POINT.equals(localName)) {
-                    mCurrentTrackPoint = null;
-                } else if (NODE_ROUTE.equals(localName)) {
-                    mCurrentRoute = null;
-                } else if (NODE_ROUTE_POINT.equals(localName)) {
-                    mCurrentRoutePoint = null;
-                } else if (NODE_NAME.equals(localName)) {
-                    if (mCurrentTrackSegment != null) {
-                        mCurrentTrackSegment.setName(mStringAccumulator.toString());
-                    } else if (mCurrentWayPoint != null) {
-                        mCurrentWayPoint.setName(mStringAccumulator.toString());
-                    }
-                } else if (NODE_TIME.equals(localName)) {
-                    if (mCurrentTrackPoint != null) {
-                        mCurrentTrackPoint.setTime(computeTime(mStringAccumulator.toString()));
-                    }
-                } else if (NODE_ELEVATION.equals(localName)) {
-                    if (mCurrentTrackPoint != null) {
-                        mCurrentTrackPoint.setElevation(Double.parseDouble(mStringAccumulator.toString()));
-                    } else if (mCurrentWayPoint != null) {
-                        mCurrentWayPoint.setElevation(Double.parseDouble(mStringAccumulator.toString()));
-                    }
-                } else if (NODE_DESCRIPTION.equals(localName)) {
-                    if (mCurrentWayPoint != null) {
-                        mCurrentWayPoint.setDescription(mStringAccumulator.toString());
-                    }
+            if (NODE_WAYPOINT.equals(localName)) {
+                mCurrentWayPoint = null;
+            } else if (NODE_TRACK.equals(localName)) {
+            } else if (NODE_TRACK_SEGMENT.equals(localName)) {
+                mCurrentTrackSegment = null;
+            } else if (NODE_TRACK_POINT.equals(localName)) {
+                mCurrentTrackPoint = null;
+            } else if (NODE_ROUTE.equals(localName)) {
+                mCurrentRoute = null;
+            } else if (NODE_ROUTE_POINT.equals(localName)) {
+                mCurrentRoutePoint = null;
+            } else if (NODE_NAME.equals(localName)) {
+                if (mCurrentTrackSegment != null) {
+                    mCurrentTrackSegment.setName(mStringAccumulator.toString());
+                } else if (mCurrentWayPoint != null) {
+                    mCurrentWayPoint.setName(mStringAccumulator.toString());
+                }
+            } else if (NODE_TIME.equals(localName)) {
+                if (mCurrentTrackPoint != null) {
+                    mCurrentTrackPoint.setTime(computeTime(mStringAccumulator.toString()));
+                }
+            } else if (NODE_ELEVATION.equals(localName)) {
+                if (mCurrentTrackPoint != null) {
+                    mCurrentTrackPoint.setElevation(Double.parseDouble(mStringAccumulator.toString()));
+                } else if (mCurrentWayPoint != null) {
+                    mCurrentWayPoint.setElevation(Double.parseDouble(mStringAccumulator.toString()));
+                }
+            } else if (NODE_DESCRIPTION.equals(localName)) {
+                if (mCurrentWayPoint != null) {
+                    mCurrentWayPoint.setDescription(mStringAccumulator.toString());
                 }
             }
         }
@@ -398,10 +389,8 @@ public class GpxParser {
             parser.parse(new InputSource(new FileReader(mFileName)), mHandler);
 
             return mHandler.getSuccess();
-        } catch (ParserConfigurationException e) {
-        } catch (SAXException e) {
-        } catch (IOException e) {
-        } finally {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return false;
