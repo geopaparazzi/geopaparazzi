@@ -73,10 +73,10 @@ public class MapsActivity extends Activity {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         // set zoom preferences
-        final int zoomLevel1 = preferences.getInt(Constants.PREFS_KEY_ZOOM1, 14);
-        final int zoomLevel2 = preferences.getInt(Constants.PREFS_KEY_ZOOM2, 16);
-        final int zoomLevelLabelLength1 = preferences.getInt(Constants.PREFS_KEY_ZOOM1_LABELLENGTH, 4);
-        final int zoomLevelLabelLength2 = preferences.getInt(Constants.PREFS_KEY_ZOOM2_LABELLENGTH, -1);
+        final int zoomLevel1 = Integer.parseInt(preferences.getString(Constants.PREFS_KEY_ZOOM1, "14"));
+        final int zoomLevel2 = Integer.parseInt(preferences.getString(Constants.PREFS_KEY_ZOOM2, "16"));
+        final int zoomLevelLabelLength1 = Integer.parseInt(preferences.getString(Constants.PREFS_KEY_ZOOM1_LABELLENGTH, "4"));
+        final int zoomLevelLabelLength2 = Integer.parseInt(preferences.getString(Constants.PREFS_KEY_ZOOM2_LABELLENGTH, "-1"));
         mapsView.setZoomLabelsParams(zoomLevel1, zoomLevelLabelLength1, zoomLevel2, zoomLevelLabelLength2);
 
         // zoom bar
