@@ -369,6 +369,13 @@ public final class R {
         public static final int installgpsstatus_title=0x7f09008d;
         public static final int kmlnonsaved=0x7f090011;
         public static final int kmlsaved=0x7f090010;
+        public static final int labels_length_zoom1=0x7f090098;
+        public static final int labels_length_zoom2=0x7f09009a;
+        /**  added after 2.1.4 
+         */
+        public static final int labels_preferences=0x7f090096;
+        public static final int labels_zoom1=0x7f090097;
+        public static final int labels_zoom2=0x7f090099;
         public static final int last_note_deleted=0x7f090083;
         public static final int last_note_not_deleted=0x7f090084;
         public static final int last_position=0x7f09003d;
@@ -436,7 +443,7 @@ public final class R {
          */
         public static final int reset=0x7f090091;
         public static final int reset_prompt=0x7f090092;
-        public static final int reset_successful=0x7f090096;
+        public static final int reset_successful=0x7f09009b;
         public static final int satellite_num=0x7f090029;
         public static final int saveimg=0x7f090030;
         public static final int sdcard_notexist=0x7f09001e;

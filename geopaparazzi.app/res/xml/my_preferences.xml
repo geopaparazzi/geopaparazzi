@@ -40,11 +40,19 @@
 			android:title="@string/enable_debug" android:order="12">
 		</CheckBoxPreference>
 	</PreferenceScreen>
-	<!-- <PreferenceCategory android:title="@string/sms_catching" android:order="13"> 
-		</PreferenceCategory> <PreferenceCategory android:title="@string/debug" android:order="17"> 
-		</PreferenceCategory> <PreferenceScreen android:title="@string/database_preferences" 
-		android:order="15"> <PreferenceCategory android:title="@string/database_preferences" 
-		android:order="16"> <CheckBoxPreference android:key="@string/database_new" 
-		android:title="@string/database_new" android:order="17"> </CheckBoxPreference> 
-		</PreferenceCategory> </PreferenceScreen> -->
+	<PreferenceScreen android:title="@string/labels_preferences"
+		android:order="13">
+		<EditTextPreference android:order="14"
+			android:key="labels_zoom1" android:title="@string/labels_zoom1"
+			android:defaultValue="14" android:inputType="number"></EditTextPreference>
+		<EditTextPreference android:order="15"
+			android:key="labels_length_zoom1" android:title="@string/labels_length_zoom1"
+			android:defaultValue="4" android:inputType="number"></EditTextPreference>
+		<EditTextPreference android:order="16"
+			android:key="labels_zoom2" android:title="@string/labels_zoom2"
+			android:defaultValue="17" android:inputType="number"></EditTextPreference>
+		<EditTextPreference android:order="17"
+			android:key="labels_length_zoom2" android:title="@string/labels_length_zoom2"
+			android:defaultValue="-1" android:inputType="number"></EditTextPreference>
+	</PreferenceScreen>
 </PreferenceScreen>

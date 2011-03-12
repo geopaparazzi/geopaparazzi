@@ -116,6 +116,11 @@ public class MapView extends View implements ApplicationManagerListener {
     private static String metersString;
     private static float actionBarHeight;
 
+    private int zoomLevel1;
+    private int zoomLevelLabelLength1;
+    private int zoomLevel2;
+    private int zoomLevelLabelLength2;
+
     private boolean touchDragging;
     private SharedPreferences preferences;
     private Context context;
@@ -477,8 +482,18 @@ public class MapView extends View implements ApplicationManagerListener {
                         float screenY = latToScreen(height, latArray[i], centerLat, pixelDyInWorld);
 
                         canvas.drawPoint(screenX, screenY, gpxPaint);
-                        if (zoom > 12 && hasNames && namesArray[i] != null) {
-                            canvas.drawText(namesArray[i], screenX, screenY, gpxTextPaint);
+                        if (zoom >= zoomLevel1 && hasNames && namesArray[i] != null) {
+                            String text = namesArray[i];
+                            if (zoom < zoomLevel2) {
+                                if (zoomLevelLabelLength1 != -1 && text.length() > zoomLevelLabelLength1) {
+                                    text = text.substring(0, zoomLevelLabelLength1);
+                                }
+                            } else {
+                                if (zoomLevelLabelLength2 != -1 && text.length() > zoomLevelLabelLength2) {
+                                    text = text.substring(0, zoomLevelLabelLength2);
+                                }
+                            }
+                            canvas.drawText(text, screenX, screenY, gpxTextPaint);
                         }
                     }
                 }
@@ -613,8 +628,18 @@ public class MapView extends View implements ApplicationManagerListener {
                 float screenY = latToScreen(height, lat, centerLat, pixelDyInWorld);
 
                 canvas.drawPoint(screenX, screenY, gpxPaint);
-                if (zoom > 12) {
-                    canvas.drawText(note.getName(), screenX, screenY, gpxTextPaint);
+                if (zoom >= zoomLevel1) {
+                    String text = note.getName();
+                    if (zoom < zoomLevel2) {
+                        if (zoomLevelLabelLength1 != -1 && text.length() > zoomLevelLabelLength1) {
+                            text = text.substring(0, zoomLevelLabelLength1);
+                        }
+                    } else {
+                        if (zoomLevelLabelLength2 != -1 && text.length() > zoomLevelLabelLength2) {
+                            text = text.substring(0, zoomLevelLabelLength2);
+                        }
+                    }
+                    canvas.drawText(text, screenX, screenY, gpxTextPaint);
                 }
             }
         } catch (IOException e) {
@@ -946,6 +971,13 @@ public class MapView extends View implements ApplicationManagerListener {
     }
 
     public void onSatellitesStatusChanged( int num, int max ) {
+    }
+
+    public void setZoomLabelsParams( int zoomLevel1, int zoomLevelLabelLength1, int zoomLevel2, int zoomLevelLabelLength2 ) {
+        this.zoomLevel1 = zoomLevel1;
+        this.zoomLevelLabelLength1 = zoomLevelLabelLength1;
+        this.zoomLevel2 = zoomLevel2;
+        this.zoomLevelLabelLength2 = zoomLevelLabelLength2;
     }
 
 }

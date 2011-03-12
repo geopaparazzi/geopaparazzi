@@ -206,4 +206,11 @@
     <string name="phonenumber_hint">Enter comma separated phone numbers...</string>
     <string name="pick_phonenumber_label">...</string>
 
+	<!-- added after 2.1.4 -->
+    <string name="labels_preferences">Labels preferences</string>
+    <string name="labels_zoom1">Zoom level 1</string>
+    <string name="labels_length_zoom1">Labels length for level 1</string>
+    <string name="labels_zoom2">Zoom level 2</string>
+    <string name="labels_length_zoom2">Labels length for level 2</string>
+
 </resources>

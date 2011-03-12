@@ -134,6 +134,10 @@ public interface Constants {
     public static final String PREFS_KEY_MAP4PROPERTIES = "PREFS_KEY_MAP4PROPERTIES";
     public static final String PREFS_KEY_LAT = "PREFS_KEY_LAT";
     public static final String PREFS_KEY_LON = "PREFS_KEY_LON";
+    public static final String PREFS_KEY_ZOOM1 = "labels_zoom1";
+    public static final String PREFS_KEY_ZOOM1_LABELLENGTH = "labels_length_zoom1";
+    public static final String PREFS_KEY_ZOOM2 = "labels_zoom2";
+    public static final String PREFS_KEY_ZOOM2_LABELLENGTH = "labels_length_zoom2";
     public static final String VIEW_CENTER_LAT = "MAPSVIEW_CENTER_LAT";
     public static final String VIEW_CENTER_LON = "MAPSVIEW_CENTER_LON";
 
