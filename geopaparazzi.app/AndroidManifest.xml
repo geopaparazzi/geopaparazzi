@@ -107,6 +107,12 @@
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
+		<activity android:name=".maps.MapDownloadActivity">
+			<intent-filter>
+				<action android:name="eu.hydrologis.geopaparazzi.maps.MAPDOWNLOADACTIVITY" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+		</activity>
 		<activity android:name=".preferences.PhoneNumberActivity">
 			<intent-filter>
 				<action android:name="eu.hydrologis.geopaparazzi.preferences.PHONENUMBERACTIVITY" />

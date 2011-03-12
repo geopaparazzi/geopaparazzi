@@ -71,4 +71,19 @@
 		<item>10</item>
 		<item>15</item>
 	</string-array>
+	<string-array name="array_zoomlevels">
+		<item>5</item>
+		<item>6</item>
+		<item>7</item>
+		<item>8</item>
+		<item>9</item>
+		<item>10</item>
+		<item>11</item>
+		<item>12</item>
+		<item>13</item>
+		<item>14</item>
+		<item>15</item>
+		<item>16</item>
+		<item>17</item>
+	</string-array>
 </resources>

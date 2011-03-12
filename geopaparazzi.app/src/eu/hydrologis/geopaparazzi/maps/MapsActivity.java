@@ -48,6 +48,7 @@ public class MapsActivity extends Activity {
     private static final int MENU_MAPDATA = 3;
     private static final int MENU_TOGGLE_MEASURE = 4;
     private static final int MENU_ADDTAGS = 5;
+    private static final int MENU_DOWNLOADMAPS = 6;
     private MapView mapsView;
 
     private DecimalFormat formatter = new DecimalFormat("00");
@@ -170,11 +171,12 @@ public class MapsActivity extends Activity {
     public boolean onCreateOptionsMenu( Menu menu ) {
         super.onCreateOptionsMenu(menu);
         menu.add(Menu.NONE, MENU_ADDTAGS, 1, R.string.mainmenu_addtags).setIcon(android.R.drawable.ic_menu_add);
-        menu.add(Menu.NONE, MENU_GPSDATA, 2, R.string.mainmenu_gpsdataselect).setIcon(android.R.drawable.ic_menu_compass);
-        menu.add(Menu.NONE, MENU_MAPDATA, 3, R.string.mainmenu_mapdataselect).setIcon(android.R.drawable.ic_menu_compass);
-        menu.add(Menu.NONE, MENU_TOGGLE_MEASURE, 4, R.string.mainmenu_togglemeasure).setIcon(
+        menu.add(Menu.NONE, MENU_TOGGLE_MEASURE, 2, R.string.mainmenu_togglemeasure).setIcon(
                 android.R.drawable.ic_menu_sort_by_size);
+        menu.add(Menu.NONE, MENU_GPSDATA, 3, R.string.mainmenu_gpsdataselect).setIcon(android.R.drawable.ic_menu_compass);
+        menu.add(Menu.NONE, MENU_MAPDATA, 4, R.string.mainmenu_mapdataselect).setIcon(android.R.drawable.ic_menu_compass);
         menu.add(Menu.NONE, GO_TO, 5, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
+        menu.add(Menu.NONE, MENU_DOWNLOADMAPS, 6, "download maps").setIcon(android.R.drawable.ic_menu_mapmode);
         return true;
     }
 
@@ -217,6 +219,17 @@ public class MapsActivity extends Activity {
         case MENU_TOGGLE_MEASURE:
             mapsView.setMeasureMode(!mapsView.isMeasureMode());
 
+            return true;
+        case MENU_DOWNLOADMAPS:
+            float screenNorth = mapsView.getScreenNorth();
+            float screenSouth = mapsView.getScreenSouth();
+            float screenWest = mapsView.getScreenWest();
+            float screenEast = mapsView.getScreenEast();
+
+            float[] nsew = new float[]{screenNorth, screenSouth, screenEast, screenWest};
+            Intent downloadIntent = new Intent(this, MapDownloadActivity.class);
+            downloadIntent.putExtra(Constants.NSEW_COORDS, nsew);
+            startActivity(downloadIntent);
             return true;
         }
         return super.onMenuItemSelected(featureId, item);

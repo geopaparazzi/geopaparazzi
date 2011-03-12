@@ -213,4 +213,13 @@
     <string name="labels_zoom2">Zoom level 2</string>
     <string name="labels_length_zoom2">Labels length for level 2</string>
 
+    <string name="zoom_level_download_label">Zoom level to download</string>
+    <string name="tilesnum_label">Number of tiles that will be downloaded: </string>
+    <string name="tiles_warning">
+	Bulk downloading is strongly discouraged. Do not download tiles unnecessarily.
+	In particular, downloading significant areas of tiles at zoom levels 17, 18 or 19 
+	for offline or later usage is forbidden and can lead to access block. 
+	OSM Policy is described here: http://wiki.openstreetmap.org/wiki/Tile_usage_policy
+	</string>
+
 </resources>

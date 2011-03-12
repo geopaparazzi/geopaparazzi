@@ -29,11 +29,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -79,6 +81,8 @@ public class TileCache {
     private Bitmap dummyTile;
 
     private final boolean internetIsOn;
+
+    private final static double delta = 0.1;
 
     /**
      * Constructor of {@link TileCache}.
@@ -298,22 +302,64 @@ public class TileCache {
      * @param startLat the first coord latitude.
      * @param endLon the last coord longitude.
      * @param endLat the last coord latitude.
-     * @param startZoom the lower zoom to download.
-     * @param endZoom the higher zoom to download.
+     * @param isInternetOn 
+     * @param theDummyTile a dummy tile for missing values
+     * @param zoomLevels the levels to extract.
      * @throws IOException
      */
-    // public static void fetchTiles( File cacheDir, double startLon, double startLat, double
-    // endLon,
-    // double endLat, int startZoom, int endZoom ) throws IOException {
-    // TileCache tC = new TileCache(cacheDir);
-    // for( int zoom = startZoom; zoom <= endZoom; zoom++ ) {
-    // for( double lon = startLon; lon <= endLon; lon++ ) {
-    // for( double lat = startLat; lat <= endLat; lat++ ) {
-    // int[] xyTile = latLon2ContainingTileNumber(lat, lon, zoom);
-    // tC.get(zoom, xyTile[0], xyTile[1]);
-    // }
-    // }
-    // }
-    // }
+    public static void fetchTiles( File cacheDir, double startLon, double startLat, double endLon, double endLat,
+            boolean isInternetOn, Bitmap theDummyTile, int... zoomLevels ) throws IOException {
+        TileCache tC = new TileCache(cacheDir, isInternetOn, theDummyTile);
+        for( int i = 0; i < zoomLevels.length; i++ ) {
+            int zoom = zoomLevels[i];
+            for( double lon = startLon; lon <= endLon; lon++ ) {
+                for( double lat = startLat; lat <= endLat; lat++ ) {
+                    int[] xyTile = latLon2ContainingTileNumber(lat, lon, zoom);
+                    tC.get(zoom, xyTile[0], xyTile[1]);
+                }
+            }
+        }
+    }
+
+    /**
+     * Utility to fetch tiles numbers in a given boundary.
+     * 
+     * @param startLon the first coord longitude.
+     * @param startLat the first coord latitude.
+     * @param endLon the last coord longitude.
+     * @param endLat the last coord latitude.
+     * @param zoomLevels the levels to count.
+     * @throws IOException
+     */
+    public static int fetchTilesNumber( double startLon, double startLat, double endLon, double endLat, int... zoomLevels )
+            throws IOException {
+        TreeSet<String> tilesSet = new TreeSet<String>();
+        int[] previousTile = null;
+        for( int i = 0; i < zoomLevels.length; i++ ) {
+            int zoom = zoomLevels[i];
+            for( double lon = startLon; lon <= endLon; lon = lon + delta ) {
+                for( double lat = startLat; lat <= endLat; lat = lat + delta ) {
+                    int[] xyTile = latLon2ContainingTileNumber(lat, lon, zoom);
+                    if (previousTile == null) {
+                        previousTile = xyTile;
+                    } else {
+                        if (Arrays.equals(previousTile, xyTile)) {
+                            continue;
+                        }
+                    }
+
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(xyTile[0]);
+                    sb.append(",");
+                    sb.append(xyTile[1]);
+                    String tileString = sb.toString();
+                    tilesSet.add(tileString);
+                    
+                    previousTile = xyTile;
+                }
+            }
+        }
+        return tilesSet.size();
+    }
 
 }

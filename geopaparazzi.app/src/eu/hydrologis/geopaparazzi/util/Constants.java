@@ -62,6 +62,7 @@ public interface Constants {
     public final String MEASURECOORDSX = "MEASURECOORDSX";
     public final String MEASURECOORDSY = "MEASURECOORDSY";
     public final String MEASUREDIST = "MEASUREDIST";
+    public final String NSEW_COORDS = "NSEW_COORDS";
 
     /**
      * Threshold for the sensor values in degrees (azimuth, pitch, roll).

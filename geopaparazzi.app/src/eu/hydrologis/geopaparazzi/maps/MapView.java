@@ -84,6 +84,11 @@ public class MapView extends View implements ApplicationManagerListener {
     private float gotoLat = -1;
     private float gotoLon = -1;
 
+    private float screenNorth;
+    private float screenWest;
+    private float screenSouth;
+    private float screenEast;
+
     private int zoom = 16;
     private static Paint gpxTextPaint;
     private static Paint gpxPaint;
@@ -231,6 +236,12 @@ public class MapView extends View implements ApplicationManagerListener {
             int[] xyTile = TileCache.latLon2ContainingTileNumber(centerLat, centerLon, zoom);
             // get central tile info
             BoundingBox centralBB = tileNumber2BoundingBox(xyTile[0], xyTile[1]);
+
+            screenNorth = screenToLat(height, 0, centerLat, pixelDyInWorld);
+            screenWest = screenToLon(width, 0, centerLon, pixelDxInWorld);
+            screenSouth = screenToLat(height, height, centerLat, pixelDyInWorld);
+            screenEast = screenToLon(width, width, centerLon, pixelDxInWorld);
+
             // Log.v(LOGTAG, "0:0 - " + centralBB.toString());
             Bitmap tileBitmap;
             if (Debug.doDrawNormal) {
@@ -408,10 +419,10 @@ public class MapView extends View implements ApplicationManagerListener {
     private void drawMaps( Canvas canvas, int width, int height ) {
         if (!DataManager.getInstance().areMapsVisible())
             return;
-        float y0 = screenToLat(height, 0, centerLat, pixelDyInWorld);
-        float x0 = screenToLon(width, 0, centerLon, pixelDxInWorld);
-        float y1 = screenToLat(height, height, centerLat, pixelDyInWorld);
-        float x1 = screenToLon(width, width, centerLon, pixelDxInWorld);
+        float y0 = screenNorth;
+        float x0 = screenWest;
+        float y1 = screenSouth;
+        float x1 = screenEast;
 
         try {
 
@@ -515,10 +526,10 @@ public class MapView extends View implements ApplicationManagerListener {
     private void drawGpslogs( Canvas canvas, int width, int height ) {
         if (!DataManager.getInstance().areLogsVisible())
             return;
-        float y0 = screenToLat(height, 0, centerLat, pixelDyInWorld);
-        float x0 = screenToLon(width, 0, centerLon, pixelDxInWorld);
-        float y1 = screenToLat(height, height, centerLat, pixelDyInWorld);
-        float x1 = screenToLon(width, width, centerLon, pixelDxInWorld);
+        float y0 = screenNorth;
+        float x0 = screenWest;
+        float y1 = screenSouth;
+        float x1 = screenEast;
 
         try {
 
@@ -978,6 +989,22 @@ public class MapView extends View implements ApplicationManagerListener {
         this.zoomLevelLabelLength1 = zoomLevelLabelLength1;
         this.zoomLevel2 = zoomLevel2;
         this.zoomLevelLabelLength2 = zoomLevelLabelLength2;
+    }
+
+    public float getScreenNorth() {
+        return screenNorth;
+    }
+
+    public float getScreenSouth() {
+        return screenSouth;
+    }
+
+    public float getScreenEast() {
+        return screenEast;
+    }
+
+    public float getScreenWest() {
+        return screenWest;
     }
 
 }
