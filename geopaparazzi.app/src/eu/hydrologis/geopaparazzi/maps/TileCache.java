@@ -17,7 +17,7 @@
  */
 package eu.hydrologis.geopaparazzi.maps;
 
-import static java.lang.Math.PI;
+import static java.lang.Math.*;
 import static java.lang.Math.cos;
 import static java.lang.Math.floor;
 import static java.lang.Math.log;
@@ -284,11 +284,11 @@ public class TileCache {
      */
     public static int[] latLon2ContainingTileNumber( final double lat, final double lon, final int zoom ) {
         int xtile = (int) floor((lon + 180) / 360 * (1 << zoom));
-        int ytile = (int) floor((1 - log(tan(lat * PI / 180) + 1 / cos(lat * PI / 180)) / PI) / 2 * (1 << zoom));
+        int ytile = (int) floor((1 - log(tan(toRadians(lat)) + 1 / cos(toRadians(lat))) / PI) / 2 * (1 << zoom));
         // return ("" + zoom + "/" + xtile + "/" + ytile);
         return new int[]{xtile, ytile};
     }
-
+    
     /**
      * Utility to fetch tiles in a given boundary.
      * 
@@ -329,10 +329,8 @@ public class TileCache {
      * @param endLon the last coord longitude.
      * @param endLat the last coord latitude.
      * @param zoomLevels the levels to count.
-     * @throws IOException
      */
-    public static int fetchTilesNumber( double startLon, double startLat, double endLon, double endLat, int... zoomLevels )
-            throws IOException {
+    public static int fetchTilesNumber( double startLon, double startLat, double endLon, double endLat, int... zoomLevels ) {
         TreeSet<String> tilesSet = new TreeSet<String>();
         int[] previousTile = null;
         for( int i = 0; i < zoomLevels.length; i++ ) {
@@ -354,7 +352,7 @@ public class TileCache {
                     sb.append(xyTile[1]);
                     String tileString = sb.toString();
                     tilesSet.add(tileString);
-                    
+
                     previousTile = xyTile;
                 }
             }

@@ -17,20 +17,17 @@
  */
 package eu.hydrologis.geopaparazzi.maps;
 
-import java.io.File;
-import java.io.IOException;
-
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemSelectedListener;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.util.Constants;
 
@@ -40,9 +37,14 @@ import eu.hydrologis.geopaparazzi.util.Constants;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class MapDownloadActivity extends Activity {
-    private String baseText;
+    private ProgressDialog mapTiesCountProgressDialog;
     private int selectedZoom;
-    private boolean first = true;
+
+    private Handler maptilesCountHandler = new Handler(){
+        public void handleMessage( android.os.Message msg ) {
+            mapTiesCountProgressDialog.dismiss();
+        };
+    };
 
     @SuppressWarnings("nls")
     public void onCreate( Bundle icicle ) {
@@ -54,7 +56,6 @@ public class MapDownloadActivity extends Activity {
             final float[] nsewArray = extras.getFloatArray(Constants.NSEW_COORDS);
 
             final TextView tileNumView = (TextView) findViewById(R.id.tiles_number);
-            baseText = tileNumView.getText().toString();
 
             final Spinner zoomLevelView = (Spinner) findViewById(R.id.zoom_level_download_spinner);
 
@@ -64,21 +65,16 @@ public class MapDownloadActivity extends Activity {
             zoomLevelView.setAdapter(zoomLevelSpinnerAdapter);
             zoomLevelView.setOnItemSelectedListener(new OnItemSelectedListener(){
                 public void onItemSelected( AdapterView< ? > arg0, View arg1, int arg2, long arg3 ) {
-                    if (first) {
-                        first = false;
-                        return;
-                    }
 
                     Object selectedItem = zoomLevelView.getSelectedItem();
-                    selectedZoom = Integer.parseInt(selectedItem.toString());
-
-                    try {
-                        int tilesNumber = TileCache.fetchTilesNumber(nsewArray[3], nsewArray[1], nsewArray[2], nsewArray[0],
-                                selectedZoom);
-                        tileNumView.setText(baseText + tilesNumber);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    String item = selectedItem.toString();
+                    if (item.equals("-")) {
+                        tileNumView.setText("---");
+                        return;
                     }
+                    selectedZoom = Integer.parseInt(item);
+
+                    countMapTiles(nsewArray, tileNumView);
 
                 }
 
@@ -98,6 +94,22 @@ public class MapDownloadActivity extends Activity {
 
         // File osmCacheDir = applicationManager.getOsmCacheDir();
         // boolean internetIsOn = applicationManager.isInternetOn();
+    }
+
+    private void countMapTiles( final float[] nsewArray, final TextView tileNumView ) {
+        mapTiesCountProgressDialog = ProgressDialog.show(MapDownloadActivity.this, "Counting tiles...", "", true, true);
+        new Thread(){
+            public void run() {
+                final int tilesNumber = TileCache.fetchTilesNumber(nsewArray[3], nsewArray[1], nsewArray[2], nsewArray[0],
+                        selectedZoom);
+                MapDownloadActivity.this.runOnUiThread(new Runnable(){
+                    public void run() {
+                        tileNumView.setText(String.valueOf(tilesNumber));
+                        maptilesCountHandler.sendEmptyMessage(0);
+                    }
+                });
+            }
+        }.start();
     }
 
 }

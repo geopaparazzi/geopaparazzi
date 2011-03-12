@@ -72,6 +72,7 @@
 		<item>15</item>
 	</string-array>
 	<string-array name="array_zoomlevels">
+		<item>-</item>
 		<item>5</item>
 		<item>6</item>
 		<item>7</item>
