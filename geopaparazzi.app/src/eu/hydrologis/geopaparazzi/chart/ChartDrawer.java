@@ -36,11 +36,11 @@ public class ChartDrawer {
     public static final int LINE = 1;
     public static final int POINTS = 2;
 
-    private int verticalAxisColor = Color.DKGRAY;
+    private int verticalAxisColor = Color.BLACK;
     private int verticalAxisAlpha = 255;
     private int verticalLabelsColor = Color.BLACK;
     private int verticalLabelsAlpha = 255;
-    private int horizontalAxisColor = Color.DKGRAY;
+    private int horizontalAxisColor = Color.BLACK;
     private int horizontalAxisAlpha = 255;
     private int horizontalLabelsColor = Color.BLACK;
     private int horizontalLabelsAlpha = 255;
@@ -48,8 +48,8 @@ public class ChartDrawer {
     private int chartAlpha = 255;
     private int chartPointColor = Color.RED;
     private int chartPointAlpha = 255;
-    private int backgroundColor = Color.LTGRAY;
-    private int backgroundAlpha = 100;
+    private int backgroundColor = Color.WHITE;
+    private int backgroundAlpha = 255;
 
     private Paint paint = new Paint();
 
