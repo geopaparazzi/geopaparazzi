@@ -35,9 +35,9 @@
 			android:defaultValue="5"></ListPreference>
 	</PreferenceScreen>
 	<PreferenceScreen android:title="@string/debug"
-		android:order="11">
+		android:order="998">
 		<CheckBoxPreference android:key="@string/enable_debug"
-			android:title="@string/enable_debug" android:order="12">
+			android:title="@string/enable_debug" android:order="999">
 		</CheckBoxPreference>
 	</PreferenceScreen>
 	<PreferenceScreen android:title="@string/labels_preferences"

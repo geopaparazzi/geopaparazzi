@@ -105,7 +105,7 @@ public class ChartActivity extends Activity {
             }
             pts[i] = altim;
         }
-        altims.clear();
+        // altims.clear();
         String[] verlabels = new String[]{f.format(max), f.format(min)};
         String[] horlabels = new String[]{"0", "" + (int) line.getLength() + "[m]"};
 
