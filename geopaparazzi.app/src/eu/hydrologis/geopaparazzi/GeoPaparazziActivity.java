@@ -432,10 +432,10 @@ public class GeoPaparazziActivity extends Activity {
                                 if (!geopaparazziDirFile.renameTo(newGeopaparazziDirFile)) {
                                     throw new IOException("Unable to rename the geopaparazzi folder.");
                                 }
-                                editor.putString(BASEFOLDERKEY, newGeopaparazziDirFile.getAbsolutePath());
-                            } else {
-                                editor.putString(BASEFOLDERKEY, "");
+                                // editor.putString(BASEFOLDERKEY,
+                                // newGeopaparazziDirFile.getAbsolutePath());
                             }
+                            editor.putString(BASEFOLDERKEY, "");
                             editor.commit();
 
                             Intent intent = getIntent();
