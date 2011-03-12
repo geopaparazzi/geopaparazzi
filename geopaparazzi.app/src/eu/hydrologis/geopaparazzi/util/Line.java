@@ -19,6 +19,7 @@ package eu.hydrologis.geopaparazzi.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import static java.lang.Math.*;
 
 import android.location.Location;
 
@@ -90,10 +91,16 @@ public class Line {
         for( int i = 0; i < latList.size() - 1; i++ ) {
             double lat1 = latList.get(i);
             double lon1 = lonList.get(i);
+            double altim1 = altimList.get(i);
             double lat2 = latList.get(i + 1);
             double lon2 = lonList.get(i + 1);
+            double altim2 = altimList.get(i + 1);
             Location.distanceBetween(lat1, lon1, lat2, lon2, dist);
-            length = length + dist[0];
+
+            double deltaAltim = abs(altim2 - altim1);
+            double deltaLength = sqrt(pow(deltaAltim, 2.0) + pow(dist[0], 2.0));
+            length = length + deltaLength;
+
         }
         return length;
     }
