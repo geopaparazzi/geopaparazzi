@@ -49,7 +49,7 @@ public class ChartActivity extends Activity {
             try {
                 long logid = extras.getLong(Constants.ID);
 
-                Line line = DaoGpsLog.getGpslogAsLine(this, logid, 150);
+                Line line = DaoGpsLog.getGpslogAsLine(this, logid, -1);
 
                 makeProfilePlot(line);
             } catch (IOException e) {

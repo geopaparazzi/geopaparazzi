@@ -568,7 +568,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
     // return gpslogDir;
     // }
 
-    public File getOsmCacheDir() {
+    public File getMapsCacheDir() {
         return mapsCacheDir;
     }
 

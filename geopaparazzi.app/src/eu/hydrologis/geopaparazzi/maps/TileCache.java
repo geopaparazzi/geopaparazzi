@@ -17,11 +17,12 @@
  */
 package eu.hydrologis.geopaparazzi.maps;
 
-import static java.lang.Math.*;
+import static java.lang.Math.PI;
 import static java.lang.Math.cos;
 import static java.lang.Math.floor;
 import static java.lang.Math.log;
 import static java.lang.Math.tan;
+import static java.lang.Math.toRadians;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -122,6 +123,7 @@ public class TileCache {
             tileCache.put(key, tile);
         }
     }
+
     /**
      * Gather a tile from the cache.
      * 
@@ -147,18 +149,32 @@ public class TileCache {
         sb.append("/"); //$NON-NLS-1$
         sb.append(xtile);
         sb.append("/"); //$NON-NLS-1$
-        final String folder = sb.toString();
-        final String img = ytile + ".png"; //$NON-NLS-1$
-        final String tileDef = folder + img;
+        sb.append(ytile);
+        sb.append(".png"); //$NON-NLS-1$
 
-        Bitmap tileBitmap = null;
-        synchronized (tileCache) {
-            // check in cache
-            tileBitmap = tileCache.get(tileDef);
-            if (tileBitmap != null) {
-                // Log.v(LOGTAG, "Using image from cache: " + tileDef);
-                return tileBitmap;
-            }
+        return get(sb.toString());
+    }
+
+    /**
+     * Gather a tile from the cache.
+     * 
+     * @param zoomXtileYtile
+     * @return the tile or a dummy image if the tile could not be retrieved.
+     * @throws IOException
+     * @see {@link #get(int, int, int)}
+     */
+    public synchronized Bitmap get( String zoomXtileYtile ) throws IOException {
+        final String tileDef = zoomXtileYtile;
+        int lastSlash = tileDef.lastIndexOf("/");
+
+        final String folder = tileDef.substring(0, lastSlash);
+        final String img = tileDef.substring(lastSlash + 1);
+
+        // check in cache
+        Bitmap tileBitmap = tileCache.get(tileDef);
+        if (tileBitmap != null) {
+            // Log.v(LOGTAG, "Using image from cache: " + tileDef);
+            return tileBitmap;
         }
         File tileFile = new File(osmCacheDir + tileDef);
         if (tileFile.exists()) {
@@ -288,9 +304,9 @@ public class TileCache {
         // return ("" + zoom + "/" + xtile + "/" + ytile);
         return new int[]{xtile, ytile};
     }
-    
+
     /**
-     * Utility to fetch tiles in a given boundary.
+     * Utility to fetch tiles.
      * 
      * <p>This will be usefull for example to download a complete area
      * and various zoomlevels. 
@@ -298,26 +314,16 @@ public class TileCache {
      * @TODO check how well this fits in OSM policy before using it (bunch download). 
      * 
      * @param cacheDir the folder into which to save the tiles.
-     * @param startLon the first coord longitude.
-     * @param startLat the first coord latitude.
-     * @param endLon the last coord longitude.
-     * @param endLat the last coord latitude.
+     * @param tileSet the set of tiledefinitions to fetch.
      * @param isInternetOn 
      * @param theDummyTile a dummy tile for missing values
-     * @param zoomLevels the levels to extract.
      * @throws IOException
      */
-    public static void fetchTiles( File cacheDir, double startLon, double startLat, double endLon, double endLat,
-            boolean isInternetOn, Bitmap theDummyTile, int... zoomLevels ) throws IOException {
+    public static void fetchTiles( File cacheDir, TreeSet<String> tileSet, boolean isInternetOn, Bitmap theDummyTile )
+            throws IOException {
         TileCache tC = new TileCache(cacheDir, isInternetOn, theDummyTile);
-        for( int i = 0; i < zoomLevels.length; i++ ) {
-            int zoom = zoomLevels[i];
-            for( double lon = startLon; lon <= endLon; lon++ ) {
-                for( double lat = startLat; lat <= endLat; lat++ ) {
-                    int[] xyTile = latLon2ContainingTileNumber(lat, lon, zoom);
-                    tC.get(zoom, xyTile[0], xyTile[1]);
-                }
-            }
+        for( String tileDef : tileSet ) {
+            tC.get(tileDef);
         }
     }
 
@@ -329,8 +335,10 @@ public class TileCache {
      * @param endLon the last coord longitude.
      * @param endLat the last coord latitude.
      * @param zoomLevels the levels to count.
+     * @return the set of tiles in the string form xtile,ytile.
      */
-    public static int fetchTilesNumber( double startLon, double startLat, double endLon, double endLat, int... zoomLevels ) {
+    public static TreeSet<String> fetchTilesSet( double startLon, double startLat, double endLon, double endLat,
+            int... zoomLevels ) {
         TreeSet<String> tilesSet = new TreeSet<String>();
         int[] previousTile = null;
         for( int i = 0; i < zoomLevels.length; i++ ) {
@@ -347,9 +355,13 @@ public class TileCache {
                     }
 
                     StringBuilder sb = new StringBuilder();
+                    sb.append("/"); //$NON-NLS-1$
+                    sb.append(zoom);
+                    sb.append("/"); //$NON-NLS-1$
                     sb.append(xyTile[0]);
-                    sb.append(",");
+                    sb.append("/"); //$NON-NLS-1$
                     sb.append(xyTile[1]);
+                    sb.append(".png"); //$NON-NLS-1$
                     String tileString = sb.toString();
                     tilesSet.add(tileString);
 
@@ -357,7 +369,7 @@ public class TileCache {
                 }
             }
         }
-        return tilesSet.size();
+        return tilesSet;
     }
 
 }

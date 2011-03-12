@@ -185,7 +185,7 @@ public class MapView extends View implements ApplicationManagerListener {
 
         ApplicationManager applicationManager = ApplicationManager.getInstance(context);
         decimationFactor = applicationManager.getDecimationFactor();
-        File osmCacheDir = applicationManager.getOsmCacheDir();
+        File osmCacheDir = applicationManager.getMapsCacheDir();
         boolean internetIsOn = applicationManager.isInternetOn();
         tileCache = new TileCache(osmCacheDir, internetIsOn, null);
 
