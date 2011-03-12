@@ -18,9 +18,12 @@
 package eu.hydrologis.geopaparazzi.maps;
 
 import static java.lang.Math.PI;
+import static java.lang.Math.atan;
 import static java.lang.Math.cos;
+import static java.lang.Math.exp;
 import static java.lang.Math.floor;
 import static java.lang.Math.log;
+import static java.lang.Math.pow;
 import static java.lang.Math.tan;
 import static java.lang.Math.toRadians;
 
@@ -72,7 +75,7 @@ public class TileCache {
      * List of tiles that are currently being fectched and therefore 
      * should not be requested again.
      */
-    private List<String> loadingTilesList = new ArrayList<String>();
+    private List<String> loadingTilesList = Collections.synchronizedList(new ArrayList<String>());
 
     /**
      * The list of keys used to keep track of order of tiles.
@@ -83,7 +86,7 @@ public class TileCache {
 
     private final boolean internetIsOn;
 
-    private final static double delta = 0.1;
+    private final static double delta = 0.01;
 
     /**
      * Constructor of {@link TileCache}.
@@ -107,7 +110,7 @@ public class TileCache {
     public void put( String key, Bitmap tile ) {
         synchronized (tileCache) {
             int size = tileCache.size();
-            // Logger.d(LOGTAG, "Inserting Tile: " + key + " - Size reached = " + size);
+            // Logger.d(this, "Inserting Tile: " + key + " - Size reached = " + size);
             while( size > imgCacheLimit ) {
                 // remove oldest tile
                 // Logger.d(LOGTAG, "Removing Tile. Size = " + size);
@@ -163,18 +166,21 @@ public class TileCache {
      * @throws IOException
      * @see {@link #get(int, int, int)}
      */
-    public synchronized Bitmap get( String zoomXtileYtile ) throws IOException {
+    public Bitmap get( String zoomXtileYtile ) throws IOException {
         final String tileDef = zoomXtileYtile;
         int lastSlash = tileDef.lastIndexOf("/");
 
         final String folder = tileDef.substring(0, lastSlash);
         final String img = tileDef.substring(lastSlash + 1);
 
-        // check in cache
-        Bitmap tileBitmap = tileCache.get(tileDef);
-        if (tileBitmap != null) {
-            // Log.v(LOGTAG, "Using image from cache: " + tileDef);
-            return tileBitmap;
+        Bitmap tileBitmap = null;
+        synchronized (tileCache) {
+            // check in cache
+            tileBitmap = tileCache.get(tileDef);
+            if (tileBitmap != null) {
+                // Logger.d(this, "Using image from cache: " + tileDef);
+                return tileBitmap;
+            }
         }
         File tileFile = new File(osmCacheDir + tileDef);
         if (tileFile.exists()) {
@@ -205,11 +211,13 @@ public class TileCache {
              * dummy image, so that it will be loaded 
              * as soon as is on board.
              */
-            if (loadingTilesList.contains(tileDef)) {
-                return dummyTile;
-            } else {
-                if (internetIsOn)
-                    loadingTilesList.add(tileDef);
+            synchronized (loadingTilesList) {
+                if (loadingTilesList.contains(tileDef)) {
+                    return dummyTile;
+                } else {
+                    if (internetIsOn)
+                        loadingTilesList.add(tileDef);
+                }
             }
 
             /*
@@ -227,7 +235,7 @@ public class TileCache {
                         String urlStr = sb.toString();
                         InputStream tileInputStream = null;
                         try {
-                            // Log.v(LOGTAG, "Getting image from web: " + urlStr);
+                            // Logger.d(this, "Getting image from web: " + urlStr);
                             URL osmFetchUrl = new URL(urlStr);
                             tileInputStream = (InputStream) osmFetchUrl.getContent();
                             // BitmapDrawable bitmapDrawable = (BitmapDrawable) Drawable
@@ -258,7 +266,9 @@ public class TileCache {
                             }
                         }
                         // remove the tile from the being fetched list
-                        loadingTilesList.remove(tileDef);
+                        synchronized (loadingTilesList) {
+                            loadingTilesList.remove(tileDef);
+                        }
                     }
                 }.start();
             }
@@ -311,8 +321,6 @@ public class TileCache {
      * <p>This will be usefull for example to download a complete area
      * and various zoomlevels. 
      * 
-     * @TODO check how well this fits in OSM policy before using it (bunch download). 
-     * 
      * @param cacheDir the folder into which to save the tiles.
      * @param tileSet the set of tiledefinitions to fetch.
      * @param isInternetOn 
@@ -343,9 +351,13 @@ public class TileCache {
         int[] previousTile = null;
         for( int i = 0; i < zoomLevels.length; i++ ) {
             int zoom = zoomLevels[i];
-            for( double lon = startLon; lon <= endLon; lon = lon + delta ) {
-                for( double lat = startLat; lat <= endLat; lat = lat + delta ) {
+            for( double lat = startLat; lat <= endLat; lat = lat + delta ) {
+                int yTile = -1;
+                for( double lon = startLon; lon <= endLon; lon = lon + delta ) {
                     int[] xyTile = latLon2ContainingTileNumber(lat, lon, zoom);
+                    if (yTile == -1) {
+                        yTile = xyTile[1];
+                    }
                     if (previousTile == null) {
                         previousTile = xyTile;
                     } else {
@@ -366,10 +378,29 @@ public class TileCache {
                     tilesSet.add(tileString);
 
                     previousTile = xyTile;
+
+                    // jump on a bit faster
+                    double tmplon = tile2lon(xyTile[0] + 1, zoom);
+                    if (tmplon > lon) {
+                        lon = tmplon;
+                    }
+                }
+                double tmplat = tile2lat(yTile - 1, zoom);
+                if (tmplat > lat) {
+                    lat = tmplat;
                 }
             }
         }
         return tilesSet;
+    }
+
+    private static double tile2lon( int x, int z ) {
+        return (x / pow(2.0, z) * 360.0) - 180.0;
+    }
+
+    private static double tile2lat( int y, int z ) {
+        double n = PI - ((2.0 * PI * y) / pow(2.0, z));
+        return 180.0 / PI * atan(0.5 * (exp(n) - exp(-n)));
     }
 
 }

@@ -124,9 +124,16 @@ public class MapDownloadActivity extends Activity {
     // handler for the background updating
     Handler progressHandler = new Handler(){
         public void handleMessage( Message msg ) {
-            dialog.incrementProgressBy(1);
+            if (runningIncrement < maxIncrement) {
+                dialog.incrementProgressBy(1);
+            } else {
+                dialog.dismiss();
+                finish();
+            }
         }
     };
+    private int runningIncrement = 0;
+    private int maxIncrement = 0;
     private ProgressDialog dialog;
     private void downloadMapTiles( final float[] nsewArray, final TextView tileNumView ) {
         final TreeSet<String> tilesSet = TileCache.fetchTilesSet(nsewArray[3], nsewArray[1], nsewArray[2], nsewArray[0],
@@ -136,7 +143,8 @@ public class MapDownloadActivity extends Activity {
         dialog.setMessage("Fetching tiles...");
         dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         dialog.setProgress(0);
-        dialog.setMax(tilesSet.size());
+        maxIncrement = tilesSet.size();
+        dialog.setMax(maxIncrement);
         dialog.show();
 
         new Thread(){
@@ -147,16 +155,15 @@ public class MapDownloadActivity extends Activity {
                 for( String tileDef : tilesSet ) {
                     try {
                         tC.get(tileDef);
-
+                        MapDownloadActivity.this.runOnUiThread(new Runnable(){
+                            public void run() {
+                                progressHandler.sendEmptyMessage(0);
+                            }
+                        });
                     } catch (IOException e) {
                         // ignore it, fetch what it is able to
                     }
                 }
-                MapDownloadActivity.this.runOnUiThread(new Runnable(){
-                    public void run() {
-                        progressHandler.sendEmptyMessage(0);
-                    }
-                });
             }
         }.start();
     }
