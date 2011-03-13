@@ -121,10 +121,9 @@ public class MapDownloadActivity extends Activity {
         }.start();
     }
 
-    // handler for the background updating
     Handler progressHandler = new Handler(){
         public void handleMessage( Message msg ) {
-            if (runningIncrement < maxIncrement) {
+            if (!downloadFinished) {
                 dialog.incrementProgressBy(1);
             } else {
                 dialog.dismiss();
@@ -132,8 +131,7 @@ public class MapDownloadActivity extends Activity {
             }
         }
     };
-    private int runningIncrement = 0;
-    private int maxIncrement = 0;
+    private boolean downloadFinished = false;
     private ProgressDialog dialog;
     private void downloadMapTiles( final float[] nsewArray, final TextView tileNumView ) {
         final TreeSet<String> tilesSet = TileCache.fetchTilesSet(nsewArray[3], nsewArray[1], nsewArray[2], nsewArray[0],
@@ -143,12 +141,12 @@ public class MapDownloadActivity extends Activity {
         dialog.setMessage("Fetching tiles...");
         dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         dialog.setProgress(0);
-        maxIncrement = tilesSet.size();
-        dialog.setMax(maxIncrement);
+        dialog.setMax(tilesSet.size());
         dialog.show();
 
         new Thread(){
             public void run() {
+                downloadFinished = false;
                 File cacheDir = applicationManager.getMapsCacheDir();
                 boolean isInternetOn = applicationManager.isInternetOn();
                 TileCache tC = new TileCache(cacheDir, isInternetOn, null);
@@ -164,6 +162,12 @@ public class MapDownloadActivity extends Activity {
                         // ignore it, fetch what it is able to
                     }
                 }
+                MapDownloadActivity.this.runOnUiThread(new Runnable(){
+                    public void run() {
+                        downloadFinished = true;
+                        progressHandler.sendEmptyMessage(0);
+                    }
+                });
             }
         }.start();
     }
