@@ -216,6 +216,8 @@
     <string name="select_all">Select all</string>
     <string name="unselect_all">Unselect all</string>
 
+    <string name="menu_download_maps">download maps</string>
+
     <string name="zoom_level_download_label">Zoom level to download</string>
     <string name="tilesnum_label">Number of tiles that will be downloaded: </string>
     <string name="tiles_warning">

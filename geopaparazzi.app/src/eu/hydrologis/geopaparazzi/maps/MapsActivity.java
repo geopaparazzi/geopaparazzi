@@ -175,8 +175,9 @@ public class MapsActivity extends Activity {
                 android.R.drawable.ic_menu_sort_by_size);
         menu.add(Menu.NONE, MENU_GPSDATA, 3, R.string.mainmenu_gpsdataselect).setIcon(android.R.drawable.ic_menu_compass);
         menu.add(Menu.NONE, MENU_MAPDATA, 4, R.string.mainmenu_mapdataselect).setIcon(android.R.drawable.ic_menu_compass);
-        menu.add(Menu.NONE, GO_TO, 5, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
-        menu.add(Menu.NONE, MENU_DOWNLOADMAPS, 6, "download maps").setIcon(android.R.drawable.ic_menu_mapmode);
+        menu.add(Menu.CATEGORY_SECONDARY, GO_TO, 5, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
+        menu.add(Menu.CATEGORY_SECONDARY, MENU_DOWNLOADMAPS, 6, R.string.menu_download_maps).setIcon(
+                android.R.drawable.ic_menu_mapmode);
         return true;
     }
 
