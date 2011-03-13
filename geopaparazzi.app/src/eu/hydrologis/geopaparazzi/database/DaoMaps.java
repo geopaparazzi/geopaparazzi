@@ -31,16 +31,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import eu.hydrologis.geopaparazzi.gpx.GpxItem;
+import eu.hydrologis.geopaparazzi.gpx.parser.GpxParser.Route;
+import eu.hydrologis.geopaparazzi.gpx.parser.GpxParser.TrackSegment;
 import eu.hydrologis.geopaparazzi.gpx.parser.RoutePoint;
 import eu.hydrologis.geopaparazzi.gpx.parser.TrackPoint;
 import eu.hydrologis.geopaparazzi.gpx.parser.WayPoint;
-import eu.hydrologis.geopaparazzi.gpx.parser.GpxParser.Route;
-import eu.hydrologis.geopaparazzi.gpx.parser.GpxParser.TrackSegment;
 import eu.hydrologis.geopaparazzi.maps.MapItem;
 import eu.hydrologis.geopaparazzi.maps.MapView;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Line;
-import eu.hydrologis.geopaparazzi.util.PointF3D;
 import eu.hydrologis.geopaparazzi.util.PointsContainer;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
@@ -259,6 +258,33 @@ public class DaoMaps {
                 sqlUpdate.execute();
                 sqlUpdate.close();
             }
+
+            sqliteDatabase.setTransactionSuccessful();
+        } catch (Exception e) {
+            Logger.e("DAOMAPS", e.getLocalizedMessage(), e);
+            throw new IOException(e.getLocalizedMessage());
+        } finally {
+            sqliteDatabase.endTransaction();
+        }
+    }
+
+    public static void setMapsVisibility( Context context, boolean visible ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        sqliteDatabase.beginTransaction();
+        try {
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("UPDATE ");
+            sb.append(TABLE_PROPERTIES);
+            sb.append(" SET ");
+            sb.append(COLUMN_PROPERTIES_VISIBLE).append("=").append(visible ? 1 : 0).append(" ");
+
+            String query = sb.toString();
+            Logger.i(TAG, query);
+            // sqliteDatabase.execSQL(query);
+            SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
+            sqlUpdate.execute();
+            sqlUpdate.close();
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {

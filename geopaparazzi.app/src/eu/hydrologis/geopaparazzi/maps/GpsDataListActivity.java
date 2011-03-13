@@ -138,9 +138,9 @@ public class GpsDataListActivity extends ListActivity {
 
     public boolean onCreateOptionsMenu( Menu menu ) {
         super.onCreateOptionsMenu(menu);
-        menu.add(Menu.NONE, SELECTALL, 1, R.string.select_all).setIcon(R.drawable.ic_menu_select);
-        menu.add(Menu.NONE, UNSELECTALL, 2, R.string.unselect_all).setIcon(R.drawable.ic_menu_unselect);
-        menu.add(Menu.NONE, MERGE_SELECTED, 3, R.string.mainmenu_merge).setIcon(android.R.drawable.ic_menu_add);
+        menu.add(Menu.NONE, MERGE_SELECTED, 1, R.string.mainmenu_merge).setIcon(android.R.drawable.ic_menu_add);
+        menu.add(Menu.FIRST, SELECTALL, 2, R.string.select_all).setIcon(R.drawable.ic_menu_select);
+        menu.add(Menu.FIRST, UNSELECTALL, 3, R.string.unselect_all).setIcon(R.drawable.ic_menu_unselect);
         return true;
     }
 

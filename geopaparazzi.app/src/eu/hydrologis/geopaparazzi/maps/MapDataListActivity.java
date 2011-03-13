@@ -26,6 +26,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -35,6 +37,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.TextView;
 import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
@@ -45,6 +48,9 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class MapDataListActivity extends ListActivity {
+    private static final int SELECTALL = 1;
+    private static final int UNSELECTALL = 2;
+
     private MapItem[] mapsItems;
 
     public void onCreate( Bundle icicle ) {
@@ -113,6 +119,35 @@ public class MapDataListActivity extends ListActivity {
         Intent intent = new Intent(Constants.MAPDATAPROPERTIES);
         intent.putExtra(Constants.PREFS_KEY_MAP4PROPERTIES, mapsItems[position]);
         startActivity(intent);
+    }
+
+    public boolean onCreateOptionsMenu( Menu menu ) {
+        super.onCreateOptionsMenu(menu);
+        menu.add(Menu.NONE, SELECTALL, 1, R.string.select_all).setIcon(R.drawable.ic_menu_select);
+        menu.add(Menu.NONE, UNSELECTALL, 2, R.string.unselect_all).setIcon(R.drawable.ic_menu_unselect);
+        return true;
+    }
+
+    public boolean onMenuItemSelected( int featureId, MenuItem item ) {
+        switch( item.getItemId() ) {
+        case SELECTALL:
+            try {
+                DaoMaps.setMapsVisibility(this, true);
+                refreshList();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return true;
+        case UNSELECTALL:
+            try {
+                DaoMaps.setMapsVisibility(this, false);
+                refreshList();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return true;
+        }
+        return super.onMenuItemSelected(featureId, item);
     }
 
     protected void onPause() {
