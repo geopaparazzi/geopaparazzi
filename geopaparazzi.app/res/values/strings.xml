@@ -213,6 +213,9 @@
     <string name="labels_zoom2">Zoom level 2</string>
     <string name="labels_length_zoom2">Labels length for level 2</string>
 
+    <string name="select_all">Select all</string>
+    <string name="unselect_all">Unselect all</string>
+
     <string name="zoom_level_download_label">Zoom level to download</string>
     <string name="tilesnum_label">Number of tiles that will be downloaded: </string>
     <string name="tiles_warning">

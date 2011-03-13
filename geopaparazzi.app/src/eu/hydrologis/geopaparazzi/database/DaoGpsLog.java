@@ -269,6 +269,33 @@ public class DaoGpsLog {
         }
     }
 
+    public static void setLogsVisibility( Context context, boolean visible ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        sqliteDatabase.beginTransaction();
+        try {
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("UPDATE ");
+            sb.append(TABLE_PROPERTIES);
+            sb.append(" SET ");
+            sb.append(COLUMN_PROPERTIES_VISIBLE).append("=").append(visible ? 1 : 0).append(" ");
+
+            String query = sb.toString();
+            Logger.i("DAOGPSLOG", query);
+            // sqliteDatabase.execSQL(query);
+            SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
+            sqlUpdate.execute();
+            sqlUpdate.close();
+
+            sqliteDatabase.setTransactionSuccessful();
+        } catch (Exception e) {
+            Logger.e("DAOGPSLOG", e.getLocalizedMessage(), e);
+            throw new IOException(e.getLocalizedMessage());
+        } finally {
+            sqliteDatabase.endTransaction();
+        }
+    }
+
     public static void mergeLogs( Context context, long logidToRemove, long destinationLogId ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         sqliteDatabase.beginTransaction();

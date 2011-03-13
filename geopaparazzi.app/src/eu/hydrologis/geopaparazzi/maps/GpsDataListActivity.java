@@ -57,7 +57,9 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class GpsDataListActivity extends ListActivity {
-    private static final int MERGE_SELECTED = 1;
+    private static final int SELECTALL = 1;
+    private static final int UNSELECTALL = 2;
+    private static final int MERGE_SELECTED = 3;
 
     // TODO make user sort for some next release (mind, it implies translations)
     // private static final int SORT_BY_NAME = 2;
@@ -136,7 +138,9 @@ public class GpsDataListActivity extends ListActivity {
 
     public boolean onCreateOptionsMenu( Menu menu ) {
         super.onCreateOptionsMenu(menu);
-        menu.add(Menu.NONE, MERGE_SELECTED, 1, R.string.mainmenu_merge).setIcon(android.R.drawable.ic_menu_add);
+        menu.add(Menu.NONE, SELECTALL, 1, R.string.select_all).setIcon(R.drawable.ic_menu_select);
+        menu.add(Menu.NONE, UNSELECTALL, 2, R.string.unselect_all).setIcon(R.drawable.ic_menu_unselect);
+        menu.add(Menu.NONE, MERGE_SELECTED, 3, R.string.mainmenu_merge).setIcon(android.R.drawable.ic_menu_add);
         return true;
     }
 
@@ -147,6 +151,22 @@ public class GpsDataListActivity extends ListActivity {
                 mergeSelected();
             } catch (IOException e) {
                 Logger.e(this, e.getLocalizedMessage(), e);
+                e.printStackTrace();
+            }
+            return true;
+        case SELECTALL:
+            try {
+                DaoGpsLog.setLogsVisibility(this, true);
+                refreshList();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return true;
+        case UNSELECTALL:
+            try {
+                DaoGpsLog.setLogsVisibility(this, false);
+                refreshList();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             return true;
@@ -176,8 +196,7 @@ public class GpsDataListActivity extends ListActivity {
             long id = mapItem.getId();
             DaoGpsLog.mergeLogs(this, id, mainId);
         }
-        finish();
-
+        refreshList();
     }
 
     @Override
