@@ -53,12 +53,14 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.ApplicationManagerListener;
+import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.BoundingBox;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.LineArray;
@@ -99,8 +101,11 @@ public class MapView extends View implements ApplicationManagerListener {
     private float pixelDyInWorld;
     private static Bitmap positionIcon;
     private static Bitmap gotoIcon;
+    private static Bitmap bookmarkIcon;
     private static int gpsIconWidth;
     private static int gpsIconHeight;
+    private static int bookmarkIconWidth;
+    private static int bookmarkIconHeight;
 
     private boolean isMeasureMode = false;
     private float measuredDistance = -1;
@@ -177,6 +182,9 @@ public class MapView extends View implements ApplicationManagerListener {
 
             positionIcon = BitmapFactory.decodeResource(getResources(), R.drawable.current_position);
             gotoIcon = BitmapFactory.decodeResource(getResources(), R.drawable.goto_position);
+            bookmarkIconWidth = bookmarkIcon.getWidth();
+            bookmarkIconHeight = bookmarkIcon.getHeight();
+            bookmarkIcon = BitmapFactory.decodeResource(getResources(), R.drawable.bookmark);
             gpsIconWidth = positionIcon.getWidth();
             gpsIconHeight = positionIcon.getHeight();
 
@@ -304,6 +312,7 @@ public class MapView extends View implements ApplicationManagerListener {
                 drawMaps(canvas, width, height);
                 drawGpslogs(canvas, width, height);
                 drawNotes(canvas, width, height);
+                drawBookmarks(canvas, width, height);
             }
             gpsUpdate = false;
 
@@ -611,15 +620,16 @@ public class MapView extends View implements ApplicationManagerListener {
             e.printStackTrace();
         }
     }
+
     private List<Note> notesInWorldBounds;
     private void drawNotes( Canvas canvas, int width, int height ) {
         if (!DataManager.getInstance().areNotesVisible())
             return;
 
-        float y0 = screenToLat(height, 0, centerLat, pixelDyInWorld);
-        float y1 = screenToLat(height, height, centerLat, pixelDyInWorld);
-        float x0 = screenToLon(width, 0, centerLon, pixelDxInWorld);
-        float x1 = screenToLon(width, width, centerLon, pixelDxInWorld);
+        float y0 = screenNorth;
+        float x0 = screenWest;
+        float y1 = screenSouth;
+        float x1 = screenEast;
 
         try {
             if (!gpsUpdate || notesInWorldBounds == null)
@@ -639,23 +649,60 @@ public class MapView extends View implements ApplicationManagerListener {
                 float screenY = latToScreen(height, lat, centerLat, pixelDyInWorld);
 
                 canvas.drawPoint(screenX, screenY, gpxPaint);
-                if (zoom >= zoomLevel1) {
-                    String text = note.getName();
-                    if (zoom < zoomLevel2) {
-                        if (zoomLevelLabelLength1 != -1 && text.length() > zoomLevelLabelLength1) {
-                            text = text.substring(0, zoomLevelLabelLength1);
-                        }
-                    } else {
-                        if (zoomLevelLabelLength2 != -1 && text.length() > zoomLevelLabelLength2) {
-                            text = text.substring(0, zoomLevelLabelLength2);
-                        }
-                    }
-                    canvas.drawText(text, screenX, screenY, gpxTextPaint);
-                }
+                drawLabel(canvas, note.getName(), screenX, screenY);
             }
         } catch (IOException e) {
             Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
+        }
+    }
+
+    private List<Bookmark> bookmarksInWorldBounds;
+    private void drawBookmarks( Canvas canvas, int width, int height ) {
+        if (!DataManager.getInstance().areNotesVisible())
+            return;
+
+        float y0 = screenNorth;
+        float x0 = screenWest;
+        float y1 = screenSouth;
+        float x1 = screenEast;
+
+        try {
+            if (!gpsUpdate || bookmarksInWorldBounds == null)
+                bookmarksInWorldBounds = DaoBookmarks.getBookmarksInWorldBounds(getContext(), y0, y1, x0, x1);
+            for( Bookmark bookMark : bookmarksInWorldBounds ) {
+                float lat = (float) bookMark.getLat();
+                float lon = (float) bookMark.getLon();
+
+                float screenX = lonToScreen(width, lon, centerLon, pixelDxInWorld);
+                float screenY = latToScreen(height, lat, centerLat, pixelDyInWorld);
+
+                canvas.drawPoint(screenX, screenY, gpxPaint);
+                canvas.drawBitmap(bookmarkIcon, screenX - bookmarkIconWidth / 2f, screenY - bookmarkIconHeight / 2f, null);
+
+                drawLabel(canvas, bookMark.getName(), screenX, screenY);
+            }
+        } catch (IOException e) {
+            Logger.e(this, e.getLocalizedMessage(), e);
+            e.printStackTrace();
+        }
+    }
+
+    private void drawLabel( Canvas canvas, String label, float screenX, float screenY ) {
+        if (label == null || label.length() == 0) {
+            return;
+        }
+        if (zoom >= zoomLevel1) {
+            if (zoom < zoomLevel2) {
+                if (zoomLevelLabelLength1 != -1 && label.length() > zoomLevelLabelLength1) {
+                    label = label.substring(0, zoomLevelLabelLength1);
+                }
+            } else {
+                if (zoomLevelLabelLength2 != -1 && label.length() > zoomLevelLabelLength2) {
+                    label = label.substring(0, zoomLevelLabelLength2);
+                }
+            }
+            canvas.drawText(label, screenX, screenY, gpxTextPaint);
         }
     }
 

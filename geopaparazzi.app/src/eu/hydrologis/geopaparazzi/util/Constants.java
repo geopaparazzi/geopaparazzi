@@ -104,10 +104,6 @@ public interface Constants {
      */
     public final int COMPASS_NEEDLE_ALPHA = 150;
 
-    /**
-     * The notes title text length threshold.
-     */
-    public final int NOTES_LENGTH_LIMIT = 7;
 
     public static final String GEOPAPARAZZI = "geopaparazzi";
     public final String PATH_GEOPAPARAZZI = File.separator + GEOPAPARAZZI;

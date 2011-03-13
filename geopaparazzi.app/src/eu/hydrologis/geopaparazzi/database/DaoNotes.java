@@ -161,15 +161,11 @@ public class DaoNotes {
             String text = c.getString(3);
             String date = c.getString(4);
 
-            String name = text;
-            if (text.length() > Constants.NOTES_LENGTH_LIMIT) {
-                name = text.substring(0, Constants.NOTES_LENGTH_LIMIT) + "..";
-            }
             StringBuilder description = new StringBuilder();
             description.append(text);
             description.append("\n");
             description.append(date);
-            Note note = new Note(name, description.toString(), lon, lat, altim, null);
+            Note note = new Note(text, description.toString(), lon, lat, altim, null);
             notes.add(note);
             c.moveToNext();
         }
@@ -198,15 +194,11 @@ public class DaoNotes {
             String text = c.getString(4);
             String form = c.getString(5);
 
-            String name = text;
-            if (text.length() > Constants.NOTES_LENGTH_LIMIT) {
-                name = text.substring(0, Constants.NOTES_LENGTH_LIMIT) + "..";
-            }
             StringBuilder description = new StringBuilder();
             description.append(text);
             description.append("\n");
             description.append(date);
-            Note note = new Note(name, description.toString(), lon, lat, altim, form);
+            Note note = new Note(text, description.toString(), lon, lat, altim, form);
             notesList.add(note);
             c.moveToNext();
         }

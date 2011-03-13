@@ -34,7 +34,7 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
 @SuppressWarnings("nls")
 public class DatabaseManager {
 
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
 
     public static final String DEBUG_TAG = "DATABASEMANAGER";
 
@@ -117,7 +117,7 @@ public class DatabaseManager {
                 db = SQLiteDatabase.openOrCreateDatabase(databaseFile, null);
                 int dbVersion = db.getVersion();
                 if (DATABASE_VERSION > dbVersion)
-                    upgrade(DATABASE_VERSION, dbVersion);
+                    upgrade(DATABASE_VERSION, dbVersion, context);
             } else {
                 Logger.i("SQLiteHelper", "Creating database at " + databaseFile);
                 Logger.d(dbManager, "db folder exists: " + databaseFile.getParentFile().exists());
@@ -144,13 +144,15 @@ public class DatabaseManager {
             DaoNotes.createTables(context);
             DaoGpsLog.createTables(context);
             DaoMaps.createTables(context);
+            DaoBookmarks.createTables(context);
         }
 
-        public void upgrade( int newDbVersion, int oldDbVersion ) throws IOException {
-            if (newDbVersion == 2 && oldDbVersion == 1) {
+        public void upgrade( int newDbVersion, int oldDbVersion, Context context ) throws IOException {
+            if (newDbVersion == 3 && oldDbVersion == 1) {
                 DaoNotes.upgradeNotesFromDB1ToDB2(db);
-            } else {
-                throw new RuntimeException("Method not implemented.");
+            }
+            if (newDbVersion == 3 && oldDbVersion == 2) {
+                DaoBookmarks.createTables(context);
             }
         }
 
