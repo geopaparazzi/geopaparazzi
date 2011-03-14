@@ -52,11 +52,11 @@ import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
- * Gpx listing activity.
+ * Bookmarks listing activity.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class GpsDataListActivity extends ListActivity {
+public class BookmarksListActivity extends ListActivity {
     private static final int SELECTALL = 1;
     private static final int UNSELECTALL = 2;
     private static final int MERGE_SELECTED = 3;
@@ -70,7 +70,7 @@ public class GpsDataListActivity extends ListActivity {
     private static List<String> colorList;
     private static List<String> widthsList;
     private MapItem[] gpslogItems;
-    private Comparator<MapItem> mapItemSorter = new ItemComparators.MapItemIdComparator(true);
+    private Comparator<MapItem> mapItemSorter = new MapItemComparators.MapItemIdComparator(true);
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -235,7 +235,7 @@ public class GpsDataListActivity extends ListActivity {
         String color = preferences.getString(Constants.PREFS_KEY_NOTES_COLOR, "red"); //$NON-NLS-1$
         DataManager.getInstance().setNotesColor(color);
         final Spinner colorView = (Spinner) findViewById(R.id.notescolor_spinner);
-        ArrayAdapter< ? > colorSpinnerAdapter = ArrayAdapter.createFromResource(GpsDataListActivity.this,
+        ArrayAdapter< ? > colorSpinnerAdapter = ArrayAdapter.createFromResource(BookmarksListActivity.this,
                 R.array.array_colornames, android.R.layout.simple_spinner_item);
         colorSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         colorView.setAdapter(colorSpinnerAdapter);
@@ -259,7 +259,7 @@ public class GpsDataListActivity extends ListActivity {
         String width = preferences.getString(Constants.PREFS_KEY_NOTES_WIDTH, "5"); //$NON-NLS-1$
         DataManager.getInstance().setNotesWidth(Float.parseFloat(width));
         int widthIndex = widthsList.indexOf(width);
-        ArrayAdapter< ? > widthSpinnerAdapter = ArrayAdapter.createFromResource(GpsDataListActivity.this, R.array.array_widths,
+        ArrayAdapter< ? > widthSpinnerAdapter = ArrayAdapter.createFromResource(BookmarksListActivity.this, R.array.array_widths,
                 android.R.layout.simple_spinner_item);
         widthSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         widthView.setAdapter(widthSpinnerAdapter);

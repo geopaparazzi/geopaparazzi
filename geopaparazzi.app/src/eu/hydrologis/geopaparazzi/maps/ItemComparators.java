@@ -19,12 +19,14 @@ package eu.hydrologis.geopaparazzi.maps;
 
 import java.util.Comparator;
 
+import eu.hydrologis.geopaparazzi.util.Bookmark;
+
 /**
  * {@link MapItem} comparators to sort them.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class MapItemComparators {
+public class ItemComparators {
 
     /**
      * Sorts {@link MapItem}s by name. 
@@ -65,6 +67,32 @@ public class MapItemComparators {
             if (id1 < id2) {
                 return doInverse ? 1 : -1;
             } else if (id1 > id2) {
+                return doInverse ? -1 : 1;
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    /**
+     * Sorts {@link Bookmark}s by text. 
+     */
+    public static class BookmarksComparator implements Comparator<Bookmark> {
+        private boolean doInverse = false;
+        public BookmarksComparator() {
+        }
+        public BookmarksComparator( boolean doInverse ) {
+            this.doInverse = doInverse;
+        }
+        public int compare( Bookmark m1, Bookmark m2 ) {
+            String id1 = m1.getName();
+            String id2 = m2.getName();
+
+            int compareTo = id1.compareTo(id2);
+
+            if (compareTo < 0) {
+                return doInverse ? 1 : -1;
+            } else if (compareTo > 0) {
                 return doInverse ? -1 : 1;
             } else {
                 return 0;
