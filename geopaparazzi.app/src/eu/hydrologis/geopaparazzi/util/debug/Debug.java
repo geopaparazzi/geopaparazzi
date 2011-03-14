@@ -43,5 +43,5 @@ public interface Debug {
      * 
      * <p>For release = <code>false</code>.
      */
-    boolean doOverwriteTags = true;
+    boolean doOverwriteTags = false;
 }
