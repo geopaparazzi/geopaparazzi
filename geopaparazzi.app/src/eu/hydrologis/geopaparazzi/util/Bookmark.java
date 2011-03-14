@@ -17,7 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
-
 /**
  * Represents a bookmark.
  * 
@@ -27,15 +26,18 @@ public class Bookmark {
     private final String name;
     private final double lon;
     private final double lat;
+    private final long id;
 
     /**
      * A wrapper for a Bookmark.
      * 
+     * @param id 
      * @param name the name of the Bookmark.
      * @param lon
      * @param lat
      */
-    public Bookmark( String name, double lon, double lat ) {
+    public Bookmark( long id, String name, double lon, double lat ) {
+        this.id = id;
         if (name != null) {
             this.name = name;
         } else {
@@ -43,6 +45,10 @@ public class Bookmark {
         }
         this.lon = lon;
         this.lat = lat;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public double getLat() {

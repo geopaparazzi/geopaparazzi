@@ -216,6 +216,9 @@
     <string name="select_all">Select all</string>
     <string name="unselect_all">Unselect all</string>
 
+    <string name="delete_visible_notes">delete visible notes</string>
+    <string name="delete_visible_bookmarks">delete visible bookmarks</string>
+
     <string name="menu_download_maps">download maps</string>
     <string name="mainmenu_addbookmark">add a bookmark</string>
 

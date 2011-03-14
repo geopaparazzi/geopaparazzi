@@ -93,7 +93,7 @@ public class DaoBookmarks {
             throws IOException {
 
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
-        String query = "SELECT lon, lat, text FROM XXX WHERE (lon BETWEEN XXX AND XXX) AND (lat BETWEEN XXX AND XXX)";
+        String query = "SELECT _id, lon, lat, text FROM XXX WHERE (lon BETWEEN XXX AND XXX) AND (lat BETWEEN XXX AND XXX)";
         // String[] args = new String[]{TABLE_NOTES, String.valueOf(w), String.valueOf(e),
         // String.valueOf(s), String.valueOf(n)};
 
@@ -109,11 +109,12 @@ public class DaoBookmarks {
         List<Bookmark> bookmarks = new ArrayList<Bookmark>();
         c.moveToFirst();
         while( !c.isAfterLast() ) {
-            double lon = c.getDouble(0);
-            double lat = c.getDouble(1);
-            String text = c.getString(2);
+            long id = c.getLong(0);
+            double lon = c.getDouble(1);
+            double lat = c.getDouble(2);
+            String text = c.getString(3);
 
-            Bookmark note = new Bookmark(text, lon, lat);
+            Bookmark note = new Bookmark(id, text, lon, lat);
             bookmarks.add(note);
             c.moveToNext();
         }

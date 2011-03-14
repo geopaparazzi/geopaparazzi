@@ -30,6 +30,7 @@ import eu.hydrologis.geopaparazzi.maps.TagsManager;
 public class Note {
     private final String name;
     private final String description;
+    private final long id;
     private final double lon;
     private final double lat;
     private final double altim;
@@ -38,13 +39,16 @@ public class Note {
     /**
      * A wrapper for a note.
      * 
+     * @param id the note's id.
      * @param name the text of the note.
      * @param description a description or the date if available.
      * @param lon
      * @param lat
      * @param altim
+     * @param form the form.
      */
-    public Note( String name, String description, double lon, double lat, double altim, String form ) {
+    public Note( long id, String name, String description, double lon, double lat, double altim, String form ) {
+        this.id = id;
         if (name != null) {
             this.name = name;
         } else {
@@ -59,6 +63,10 @@ public class Note {
         this.lat = lat;
         this.altim = altim;
         this.form = form;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public double getLat() {

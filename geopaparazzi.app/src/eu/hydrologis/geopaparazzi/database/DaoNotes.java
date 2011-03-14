@@ -139,7 +139,7 @@ public class DaoNotes {
     public static List<Note> getNotesInWorldBounds( Context context, float n, float s, float w, float e ) throws IOException {
 
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
-        String query = "SELECT lon, lat, altim, text, ts FROM XXX WHERE (lon BETWEEN XXX AND XXX) AND (lat BETWEEN XXX AND XXX)";
+        String query = "SELECT _id, lon, lat, altim, text, ts FROM XXX WHERE (lon BETWEEN XXX AND XXX) AND (lat BETWEEN XXX AND XXX)";
         // String[] args = new String[]{TABLE_NOTES, String.valueOf(w), String.valueOf(e),
         // String.valueOf(s), String.valueOf(n)};
 
@@ -155,17 +155,18 @@ public class DaoNotes {
         List<Note> notes = new ArrayList<Note>();
         c.moveToFirst();
         while( !c.isAfterLast() ) {
-            double lon = c.getDouble(0);
-            double lat = c.getDouble(1);
-            double altim = c.getDouble(2);
-            String text = c.getString(3);
-            String date = c.getString(4);
+            long id = c.getLong(0);
+            double lon = c.getDouble(1);
+            double lat = c.getDouble(2);
+            double altim = c.getDouble(3);
+            String text = c.getString(4);
+            String date = c.getString(5);
 
             StringBuilder description = new StringBuilder();
             description.append(text);
             description.append("\n");
             description.append(date);
-            Note note = new Note(text, description.toString(), lon, lat, altim, null);
+            Note note = new Note(id, text, description.toString(), lon, lat, altim, null);
             notes.add(note);
             c.moveToNext();
         }
@@ -182,23 +183,24 @@ public class DaoNotes {
     public static List<Note> getNotesList( Context context ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         List<Note> notesList = new ArrayList<Note>();
-        String asColumnsToReturn[] = {COLUMN_LON, COLUMN_LAT, COLUMN_ALTIM, COLUMN_TS, COLUMN_TEXT, COLUMN_FORM};
+        String asColumnsToReturn[] = {COLUMN_ID, COLUMN_LON, COLUMN_LAT, COLUMN_ALTIM, COLUMN_TS, COLUMN_TEXT, COLUMN_FORM};
         String strSortOrder = "_id ASC";
         Cursor c = sqliteDatabase.query(TABLE_NOTES, asColumnsToReturn, null, null, null, null, strSortOrder);
         c.moveToFirst();
         while( !c.isAfterLast() ) {
-            double lon = c.getDouble(0);
-            double lat = c.getDouble(1);
-            double altim = c.getDouble(2);
-            String date = c.getString(3);
-            String text = c.getString(4);
-            String form = c.getString(5);
+            long id = c.getLong(0);
+            double lon = c.getDouble(1);
+            double lat = c.getDouble(2);
+            double altim = c.getDouble(3);
+            String date = c.getString(4);
+            String text = c.getString(5);
+            String form = c.getString(6);
 
             StringBuilder description = new StringBuilder();
             description.append(text);
             description.append("\n");
             description.append(date);
-            Note note = new Note(text, description.toString(), lon, lat, altim, form);
+            Note note = new Note(id, text, description.toString(), lon, lat, altim, form);
             notesList.add(note);
             c.moveToNext();
         }

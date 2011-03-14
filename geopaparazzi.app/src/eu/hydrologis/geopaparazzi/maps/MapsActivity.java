@@ -41,8 +41,11 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
+import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
+import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
+import eu.hydrologis.geopaparazzi.util.Note;
 import eu.hydrologis.geopaparazzi.util.VerticalSeekBar;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
@@ -54,9 +57,11 @@ public class MapsActivity extends Activity {
     private static final int MENU_MAPDATA = 2;
     private static final int MENU_ADDTAGS = 3;
     private static final int MENU_ADDBOOKMARK = 4;
-    private static final int MENU_TOGGLE_MEASURE = 5;
-    private static final int MENU_DOWNLOADMAPS = 6;
-    private static final int GO_TO = 7;
+    private static final int MENU_DELETEVISIBLENOTES = 5;
+    private static final int MENU_DELETEVISIBLEBOOKMARKS = 6;
+    private static final int MENU_TOGGLE_MEASURE = 7;
+    private static final int MENU_DOWNLOADMAPS = 8;
+    private static final int GO_TO = 9;
 
     private MapView mapsView;
 
@@ -186,7 +191,11 @@ public class MapsActivity extends Activity {
         menu.add(Menu.CATEGORY_SECONDARY, MENU_TOGGLE_MEASURE, 5, R.string.mainmenu_togglemeasure).setIcon(
                 android.R.drawable.ic_menu_sort_by_size);
         menu.add(Menu.CATEGORY_SECONDARY, GO_TO, 6, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
-        menu.add(Menu.CATEGORY_SECONDARY, MENU_DOWNLOADMAPS, 7, R.string.menu_download_maps).setIcon(
+        menu.add(Menu.CATEGORY_SECONDARY, MENU_DELETEVISIBLENOTES, 7, R.string.delete_visible_notes).setIcon(
+                R.drawable.ic_menu_remove);
+        menu.add(Menu.CATEGORY_SECONDARY, MENU_DELETEVISIBLEBOOKMARKS, 8, R.string.delete_visible_bookmarks).setIcon(
+                R.drawable.ic_menu_removestar);
+        menu.add(Menu.CATEGORY_SECONDARY, MENU_DOWNLOADMAPS, 9, R.string.menu_download_maps).setIcon(
                 android.R.drawable.ic_menu_mapmode);
         return true;
     }
@@ -254,7 +263,38 @@ public class MapsActivity extends Activity {
                     }).setCancelable(false).show();
 
             return true;
-
+        case MENU_DELETEVISIBLENOTES: {
+            try {
+                float n = mapsView.getScreenNorth();
+                float s = mapsView.getScreenSouth();
+                float w = mapsView.getScreenWest();
+                float e = mapsView.getScreenEast();
+                List<Note> notesInBounds = DaoNotes.getNotesInWorldBounds(this, n, s, w, e);
+                for( Note note : notesInBounds ) {
+                    DaoNotes.deleteNote(this, note.getId());
+                }
+                mapsView.invalidate();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return true;
+        }
+        case MENU_DELETEVISIBLEBOOKMARKS: {
+            try {
+                float n = mapsView.getScreenNorth();
+                float s = mapsView.getScreenSouth();
+                float w = mapsView.getScreenWest();
+                float e = mapsView.getScreenEast();
+                List<Bookmark> bookmarksInBounds = DaoBookmarks.getBookmarksInWorldBounds(this, n, s, w, e);
+                for( Bookmark bookmark : bookmarksInBounds ) {
+                    DaoBookmarks.deleteBookmark(this, bookmark.getId());
+                }
+                mapsView.invalidate();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return true;
+        }
         case GO_TO:
             Intent intent = new Intent(Constants.INSERT_COORD);
             startActivity(intent);
