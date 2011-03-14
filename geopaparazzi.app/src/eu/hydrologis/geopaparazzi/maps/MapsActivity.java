@@ -17,17 +17,22 @@
  */
 package eu.hydrologis.geopaparazzi.maps;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.MessageFormat;
 import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.view.Menu;
@@ -239,7 +244,7 @@ public class MapsActivity extends Activity {
             Builder builder = new AlertDialog.Builder(this).setTitle("New Bookmark");
             builder.setMessage("Enter a name for the new bookmark (optional)");
             builder.setView(input);
-            builder.setIcon(android.R.drawable.ic_dialog_alert)
+            builder.setIcon(android.R.drawable.ic_dialog_info)
                     .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
                         public void onClick( DialogInterface dialog, int whichButton ) {
                         }
@@ -269,11 +274,32 @@ public class MapsActivity extends Activity {
                 float s = mapsView.getScreenSouth();
                 float w = mapsView.getScreenWest();
                 float e = mapsView.getScreenEast();
-                List<Note> notesInBounds = DaoNotes.getNotesInWorldBounds(this, n, s, w, e);
-                for( Note note : notesInBounds ) {
-                    DaoNotes.deleteNote(this, note.getId());
-                }
-                mapsView.invalidate();
+                final List<Note> notesInBounds = DaoNotes.getNotesInWorldBounds(this, n, s, w, e);
+
+                int notesNum = notesInBounds.size();
+
+                notesRemoveDialog = new ProgressDialog(MapsActivity.this);
+                notesRemoveDialog.setCancelable(true);
+                notesRemoveDialog.setMessage(MessageFormat.format("Deleting {0} notes...", notesNum));
+                notesRemoveDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                notesRemoveDialog.setProgress(0);
+                notesRemoveDialog.setMax(notesNum);
+                notesRemoveDialog.show();
+
+                new Thread(){
+                    public void run() {
+                        for( Note note : notesInBounds ) {
+                            notesRemoveHandler.sendEmptyMessage(0);
+                            try {
+                                DaoNotes.deleteNote(MapsActivity.this, note.getId());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        notesDeleted = true;
+                        notesRemoveHandler.sendEmptyMessage(0);
+                    }
+                }.start();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -285,11 +311,31 @@ public class MapsActivity extends Activity {
                 float s = mapsView.getScreenSouth();
                 float w = mapsView.getScreenWest();
                 float e = mapsView.getScreenEast();
-                List<Bookmark> bookmarksInBounds = DaoBookmarks.getBookmarksInWorldBounds(this, n, s, w, e);
-                for( Bookmark bookmark : bookmarksInBounds ) {
-                    DaoBookmarks.deleteBookmark(this, bookmark.getId());
-                }
-                mapsView.invalidate();
+                final List<Bookmark> bookmarksInBounds = DaoBookmarks.getBookmarksInWorldBounds(MapsActivity.this, n, s, w, e);
+                int bookmarksNum = bookmarksInBounds.size();
+
+                bookmarksRemoveDialog = new ProgressDialog(MapsActivity.this);
+                bookmarksRemoveDialog.setCancelable(true);
+                bookmarksRemoveDialog.setMessage(MessageFormat.format("Deleting {0} bookmarks...", bookmarksNum));
+                bookmarksRemoveDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                bookmarksRemoveDialog.setProgress(0);
+                bookmarksRemoveDialog.setMax(bookmarksNum);
+                bookmarksRemoveDialog.show();
+
+                new Thread(){
+                    public void run() {
+                        for( final Bookmark bookmark : bookmarksInBounds ) {
+                            bookmarksRemoveHandler.sendEmptyMessage(0);
+                            try {
+                                DaoBookmarks.deleteBookmark(MapsActivity.this, bookmark.getId());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        bookmarksDeleted = true;
+                        bookmarksRemoveHandler.sendEmptyMessage(0);
+                    }
+                }.start();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -317,5 +363,30 @@ public class MapsActivity extends Activity {
         }
         return super.onMenuItemSelected(featureId, item);
     }
+
+    private boolean bookmarksDeleted = false;
+    private ProgressDialog bookmarksRemoveDialog;
+    Handler bookmarksRemoveHandler = new Handler(){
+        public void handleMessage( Message msg ) {
+            if (!bookmarksDeleted) {
+                bookmarksRemoveDialog.incrementProgressBy(1);
+            } else {
+                bookmarksRemoveDialog.dismiss();
+                mapsView.invalidate();
+            }
+        }
+    };
+    private boolean notesDeleted = false;
+    private ProgressDialog notesRemoveDialog;
+    Handler notesRemoveHandler = new Handler(){
+        public void handleMessage( Message msg ) {
+            if (!notesDeleted) {
+                notesRemoveDialog.incrementProgressBy(1);
+            } else {
+                notesRemoveDialog.dismiss();
+                mapsView.invalidate();
+            }
+        }
+    };
 
 }
