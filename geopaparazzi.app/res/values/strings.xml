@@ -221,6 +221,7 @@
 
     <string name="menu_download_maps">download maps</string>
     <string name="mainmenu_addbookmark">add a bookmark</string>
+    <string name="mainmenu_bookmarks">bookmarks</string>
 
     <string name="no_internet_warning">No internet connection available!</string>
 

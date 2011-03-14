@@ -113,6 +113,12 @@
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
+		<activity android:name=".maps.BookmarksListActivity">
+			<intent-filter>
+				<action android:name="eu.hydrologis.geopaparazzi.maps.BOOKMARKSLISTACTIVITY" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+		</activity>
 		<activity android:name=".preferences.PhoneNumberActivity">
 			<intent-filter>
 				<action android:name="eu.hydrologis.geopaparazzi.preferences.PHONENUMBERACTIVITY" />

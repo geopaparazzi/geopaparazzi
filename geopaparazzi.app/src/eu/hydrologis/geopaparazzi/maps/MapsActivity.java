@@ -17,7 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.maps;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
@@ -25,8 +24,8 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.app.AlertDialog.Builder;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -66,7 +65,8 @@ public class MapsActivity extends Activity {
     private static final int MENU_DELETEVISIBLEBOOKMARKS = 6;
     private static final int MENU_TOGGLE_MEASURE = 7;
     private static final int MENU_DOWNLOADMAPS = 8;
-    private static final int GO_TO = 9;
+    private static final int MENU_BOOKMARKS = 9;
+    private static final int GO_TO = 10;
 
     private MapView mapsView;
 
@@ -195,12 +195,14 @@ public class MapsActivity extends Activity {
         menu.add(Menu.NONE, MENU_MAPDATA, 4, R.string.mainmenu_mapdataselect).setIcon(android.R.drawable.ic_menu_compass);
         menu.add(Menu.CATEGORY_SECONDARY, MENU_TOGGLE_MEASURE, 5, R.string.mainmenu_togglemeasure).setIcon(
                 android.R.drawable.ic_menu_sort_by_size);
-        menu.add(Menu.CATEGORY_SECONDARY, GO_TO, 6, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
+        menu.add(Menu.CATEGORY_SECONDARY, MENU_BOOKMARKS, 6, R.string.mainmenu_bookmarks)
+                .setIcon(android.R.drawable.ic_input_get);
         menu.add(Menu.CATEGORY_SECONDARY, MENU_DELETEVISIBLENOTES, 7, R.string.delete_visible_notes).setIcon(
                 R.drawable.ic_menu_remove);
         menu.add(Menu.CATEGORY_SECONDARY, MENU_DELETEVISIBLEBOOKMARKS, 8, R.string.delete_visible_bookmarks).setIcon(
                 R.drawable.ic_menu_removestar);
-        menu.add(Menu.CATEGORY_SECONDARY, MENU_DOWNLOADMAPS, 9, R.string.menu_download_maps).setIcon(
+        menu.add(Menu.CATEGORY_SECONDARY, GO_TO, 9, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
+        menu.add(Menu.CATEGORY_SECONDARY, MENU_DOWNLOADMAPS, 10, R.string.menu_download_maps).setIcon(
                 android.R.drawable.ic_menu_mapmode);
         return true;
     }
@@ -347,10 +349,16 @@ public class MapsActivity extends Activity {
             }
             return true;
         }
-        case GO_TO:
+        case GO_TO: {
             Intent intent = new Intent(Constants.INSERT_COORD);
             startActivity(intent);
             return true;
+        }
+        case MENU_BOOKMARKS: {
+            Intent intent = new Intent(this, BookmarksListActivity.class);
+            startActivity(intent);
+            return true;
+        }
         case MENU_TOGGLE_MEASURE:
             mapsView.setMeasureMode(!mapsView.isMeasureMode());
 

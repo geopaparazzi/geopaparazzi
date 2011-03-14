@@ -24,7 +24,8 @@ import static java.lang.Math.abs;
 import static java.lang.Math.atan;
 import static java.lang.Math.exp;
 import static java.lang.Math.pow;
-import static java.lang.Math.*;
+import static java.lang.Math.round;
+import static java.lang.Math.sqrt;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,7 +51,6 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.preference.PreferenceManager;
-import android.text.style.TypefaceSpan;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;

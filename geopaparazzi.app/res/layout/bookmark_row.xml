@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView android:id="@+id/bookmarkrow"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="wrap_content"
+	android:text="asdasdadsd" android:textColor="@color/black"
+	android:focusableInTouchMode="false" android:focusable="false"
+	android:padding="15dp" />
