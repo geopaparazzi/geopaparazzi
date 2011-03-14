@@ -23,10 +23,15 @@ package eu.hydrologis.geopaparazzi.util;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class Bookmark {
-    private final String name;
-    private final double lon;
-    private final double lat;
-    private final long id;
+    private String name;
+    private double lon;
+    private double lat;
+    private long id;
+    private double zoom;
+    private double north;
+    private double south;
+    private double west;
+    private double east;
 
     /**
      * A wrapper for a Bookmark.
@@ -38,6 +43,23 @@ public class Bookmark {
      */
     public Bookmark( long id, String name, double lon, double lat ) {
         this.id = id;
+        if (name != null) {
+            this.name = name;
+        } else {
+            this.name = ""; //$NON-NLS-1$
+        }
+        this.lon = lon;
+        this.lat = lat;
+    }
+
+    public Bookmark( long id, String name, double lon, double lat, double zoom, double north, double south, double west,
+            double east ) {
+        this.id = id;
+        this.zoom = zoom;
+        this.north = north;
+        this.south = south;
+        this.west = west;
+        this.east = east;
         if (name != null) {
             this.name = name;
         } else {
@@ -61,6 +83,26 @@ public class Bookmark {
 
     public String getName() {
         return name;
+    }
+
+    public double getZoom() {
+        return zoom;
+    }
+
+    public double getNorth() {
+        return north;
+    }
+
+    public double getSouth() {
+        return south;
+    }
+
+    public double getWest() {
+        return west;
+    }
+
+    public double getEast() {
+        return east;
     }
 
 }

@@ -257,7 +257,13 @@ public class MapsActivity extends Activity {
                                     newName = "";
                                 }
 
-                                DaoBookmarks.addBookmark(getApplicationContext(), centerLon, centerLat, newName);
+                                int zoom = mapsView.getZoom();
+                                float n = mapsView.getScreenNorth();
+                                float s = mapsView.getScreenSouth();
+                                float w = mapsView.getScreenWest();
+                                float e = mapsView.getScreenEast();
+                                DaoBookmarks
+                                        .addBookmark(getApplicationContext(), centerLon, centerLat, newName, zoom, n, s, w, e);
                                 mapsView.invalidate();
                             } catch (IOException e) {
                                 Logger.e(this, e.getLocalizedMessage(), e);

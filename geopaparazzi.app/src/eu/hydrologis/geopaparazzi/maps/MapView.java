@@ -232,6 +232,10 @@ public class MapView extends View implements ApplicationManagerListener {
             editor.commit();
         }
     }
+    
+    public int getZoom() {
+        return zoom;
+    }
 
     protected void onDraw( Canvas canvas ) {
         try {

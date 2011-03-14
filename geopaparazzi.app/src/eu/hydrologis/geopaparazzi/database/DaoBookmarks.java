@@ -39,10 +39,16 @@ public class DaoBookmarks {
     private static final String COLUMN_LON = "lon";
     private static final String COLUMN_LAT = "lat";
     private static final String COLUMN_TEXT = "text";
+    private static final String COLUMN_ZOOM = "zoom";
+    private static final String COLUMN_NORTHBOUND = "bnorth";
+    private static final String COLUMN_SOUTHBOUND = "bsouth";
+    private static final String COLUMN_WESTBOUND = "bwest";
+    private static final String COLUMN_EASTBOUND = "beast";
 
     public static final String TABLE_BOOKMARKS = "bookmarks";
 
-    public static void addBookmark( Context context, double lon, double lat, String text ) throws IOException {
+    public static void addBookmark( Context context, double lon, double lat, String text, double zoom, double north,
+            double south, double west, double east ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         sqliteDatabase.beginTransaction();
         try {
@@ -50,6 +56,11 @@ public class DaoBookmarks {
             values.put(COLUMN_LON, lon);
             values.put(COLUMN_LAT, lat);
             values.put(COLUMN_TEXT, text);
+            values.put(COLUMN_ZOOM, zoom);
+            values.put(COLUMN_NORTHBOUND, north);
+            values.put(COLUMN_SOUTHBOUND, south);
+            values.put(COLUMN_WESTBOUND, west);
+            values.put(COLUMN_EASTBOUND, east);
             sqliteDatabase.insertOrThrow(TABLE_BOOKMARKS, null, values);
 
             sqliteDatabase.setTransactionSuccessful();
@@ -122,6 +133,34 @@ public class DaoBookmarks {
         return bookmarks;
     }
 
+    public static List<Bookmark> getAllBookmarks( Context context ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        String query = "SELECT _id, lon, lat, text, zoom, bnorth, bsouth, bwest, beast FROM " + TABLE_BOOKMARKS;
+
+        Logger.i("DAOBOOKMARKS", "Query: " + query);
+
+        Cursor c = sqliteDatabase.rawQuery(query, null);
+        List<Bookmark> bookmarks = new ArrayList<Bookmark>();
+        c.moveToFirst();
+        while( !c.isAfterLast() ) {
+            long id = c.getLong(0);
+            double lon = c.getDouble(1);
+            double lat = c.getDouble(2);
+            String text = c.getString(3);
+            double zoom = c.getDouble(4);
+            double n = c.getDouble(5);
+            double s = c.getDouble(6);
+            double w = c.getDouble(7);
+            double e = c.getDouble(8);
+
+            Bookmark note = new Bookmark(id, text, lon, lat, zoom, n, s, w, e);
+            bookmarks.add(note);
+            c.moveToNext();
+        }
+        c.close();
+        return bookmarks;
+    }
+
     public static void createTables( Context context ) throws IOException {
         StringBuilder sB = new StringBuilder();
 
@@ -133,6 +172,11 @@ public class DaoBookmarks {
         sB.append(" INTEGER PRIMARY KEY AUTOINCREMENT, ");
         sB.append(COLUMN_LON).append(" REAL NOT NULL, ");
         sB.append(COLUMN_LAT).append(" REAL NOT NULL,");
+        sB.append(COLUMN_ZOOM).append(" REAL NOT NULL,");
+        sB.append(COLUMN_NORTHBOUND).append(" REAL NOT NULL,");
+        sB.append(COLUMN_SOUTHBOUND).append(" REAL NOT NULL,");
+        sB.append(COLUMN_WESTBOUND).append(" REAL NOT NULL,");
+        sB.append(COLUMN_EASTBOUND).append(" REAL NOT NULL,");
         sB.append(COLUMN_TEXT).append(" TEXT NOT NULL ");
         sB.append(");");
         String CREATE_TABLE_BOOKMARKS = sB.toString();
