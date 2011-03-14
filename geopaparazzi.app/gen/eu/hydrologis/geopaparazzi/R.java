@@ -423,6 +423,7 @@ public final class R {
         public static final int menu_download_maps=0x7f09009f;
         public static final int message_sent=0x7f090082;
         public static final int meters=0x7f090009;
+        public static final int no_internet_warning=0x7f0900a1;
         public static final int no_maps_in_list=0x7f090074;
         public static final int nogps4google=0x7f09003a;
         public static final int nogps_data=0x7f09001a;
@@ -460,7 +461,7 @@ public final class R {
          */
         public static final int reset=0x7f090091;
         public static final int reset_prompt=0x7f090092;
-        public static final int reset_successful=0x7f0900a4;
+        public static final int reset_successful=0x7f0900a5;
         public static final int satellite_num=0x7f090029;
         public static final int saveimg=0x7f090030;
         public static final int sdcard_notexist=0x7f09001e;
@@ -484,15 +485,15 @@ public final class R {
         public static final int text_take_audio=0x7f090078;
         public static final int text_take_picture=0x7f090072;
         public static final int text_undo_a_gps_note=0x7f090071;
-        public static final int tiles_warning=0x7f0900a3;
-        public static final int tilesnum_label=0x7f0900a2;
+        public static final int tiles_warning=0x7f0900a4;
+        public static final int tilesnum_label=0x7f0900a3;
         public static final int unselect_all=0x7f09009c;
         public static final int up=0x7f09008c;
         public static final int utctime=0x7f090022;
         public static final int width_label=0x7f09003b;
         public static final int wrongLatitude=0x7f090036;
         public static final int wrongLongitude=0x7f090035;
-        public static final int zoom_level_download_label=0x7f0900a1;
+        public static final int zoom_level_download_label=0x7f0900a2;
         public static final int zoomin=0x7f09002c;
         public static final int zoomout=0x7f09002d;
     }

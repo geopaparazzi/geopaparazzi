@@ -350,15 +350,33 @@ public class MapsActivity extends Activity {
 
             return true;
         case MENU_DOWNLOADMAPS:
-            float screenNorth = mapsView.getScreenNorth();
-            float screenSouth = mapsView.getScreenSouth();
-            float screenWest = mapsView.getScreenWest();
-            float screenEast = mapsView.getScreenEast();
+            final ApplicationManager applicationManager = ApplicationManager.getInstance(this);
+            boolean isInternetOn = applicationManager.isInternetOn();
+            if (isInternetOn) {
+                float screenNorth = mapsView.getScreenNorth();
+                float screenSouth = mapsView.getScreenSouth();
+                float screenWest = mapsView.getScreenWest();
+                float screenEast = mapsView.getScreenEast();
 
-            float[] nsew = new float[]{screenNorth, screenSouth, screenEast, screenWest};
-            Intent downloadIntent = new Intent(this, MapDownloadActivity.class);
-            downloadIntent.putExtra(Constants.NSEW_COORDS, nsew);
-            startActivity(downloadIntent);
+                float[] nsew = new float[]{screenNorth, screenSouth, screenEast, screenWest};
+                Intent downloadIntent = new Intent(this, MapDownloadActivity.class);
+                downloadIntent.putExtra(Constants.NSEW_COORDS, nsew);
+                startActivity(downloadIntent);
+            } else {
+                runOnUiThread(new Runnable(){
+                    public void run() {
+                        String msg = getResources().getString(R.string.no_internet_warning);
+                        String ok = getResources().getString(R.string.ok);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+                        builder.setMessage(msg).setCancelable(false).setPositiveButton(ok, new DialogInterface.OnClickListener(){
+                            public void onClick( DialogInterface dialog, int id ) {
+                            }
+                        });
+                        AlertDialog alert = builder.create();
+                        alert.show();
+                    }
+                });
+            }
             return true;
         }
         return super.onMenuItemSelected(featureId, item);
