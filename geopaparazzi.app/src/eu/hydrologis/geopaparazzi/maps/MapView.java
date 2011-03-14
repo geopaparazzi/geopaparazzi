@@ -47,8 +47,10 @@ import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.preference.PreferenceManager;
+import android.text.style.TypefaceSpan;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -92,6 +94,7 @@ public class MapView extends View implements ApplicationManagerListener {
     private float screenEast;
 
     private int zoom = 16;
+    private static Paint bookmarkTextPaint;
     private static Paint gpxTextPaint;
     private static Paint gpxPaint;
     private static Paint xPaint;
@@ -160,6 +163,11 @@ public class MapView extends View implements ApplicationManagerListener {
             gpxTextPaint.setAntiAlias(true);
             gpxTextPaint.setTextSize(textSizeNormal);
 
+            bookmarkTextPaint = new Paint();
+            bookmarkTextPaint.setAntiAlias(true);
+            bookmarkTextPaint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+            bookmarkTextPaint.setColor(Color.RED);
+
             measurePaint = new Paint();
             measurePaint.setAntiAlias(true);
             measurePaint.setColor(Color.DKGRAY);
@@ -181,12 +189,12 @@ public class MapView extends View implements ApplicationManagerListener {
             metersString = getResources().getString(R.string.meters);
 
             positionIcon = BitmapFactory.decodeResource(getResources(), R.drawable.current_position);
-            gotoIcon = BitmapFactory.decodeResource(getResources(), R.drawable.goto_position);
-            bookmarkIconWidth = bookmarkIcon.getWidth();
-            bookmarkIconHeight = bookmarkIcon.getHeight();
-            bookmarkIcon = BitmapFactory.decodeResource(getResources(), R.drawable.bookmark);
             gpsIconWidth = positionIcon.getWidth();
             gpsIconHeight = positionIcon.getHeight();
+            gotoIcon = BitmapFactory.decodeResource(getResources(), R.drawable.goto_position);
+            bookmarkIcon = BitmapFactory.decodeResource(getResources(), R.drawable.bookmark);
+            bookmarkIconWidth = bookmarkIcon.getWidth();
+            bookmarkIconHeight = bookmarkIcon.getHeight();
 
             actionBarHeight = getResources().getDimension(R.dimen.action_bar_height);
         }
@@ -649,7 +657,7 @@ public class MapView extends View implements ApplicationManagerListener {
                 float screenY = latToScreen(height, lat, centerLat, pixelDyInWorld);
 
                 canvas.drawPoint(screenX, screenY, gpxPaint);
-                drawLabel(canvas, note.getName(), screenX, screenY);
+                drawLabel(canvas, note.getName(), screenX, screenY, gpxTextPaint);
             }
         } catch (IOException e) {
             Logger.e(this, e.getLocalizedMessage(), e);
@@ -680,7 +688,8 @@ public class MapView extends View implements ApplicationManagerListener {
                 canvas.drawPoint(screenX, screenY, gpxPaint);
                 canvas.drawBitmap(bookmarkIcon, screenX - bookmarkIconWidth / 2f, screenY - bookmarkIconHeight / 2f, null);
 
-                drawLabel(canvas, bookMark.getName(), screenX, screenY);
+                drawLabel(canvas, bookMark.getName(), screenX + bookmarkIconWidth / 3f, screenY - bookmarkIconWidth / 3f,
+                        bookmarkTextPaint);
             }
         } catch (IOException e) {
             Logger.e(this, e.getLocalizedMessage(), e);
@@ -688,7 +697,7 @@ public class MapView extends View implements ApplicationManagerListener {
         }
     }
 
-    private void drawLabel( Canvas canvas, String label, float screenX, float screenY ) {
+    private void drawLabel( Canvas canvas, String label, float positionX, float positionY, Paint paint ) {
         if (label == null || label.length() == 0) {
             return;
         }
@@ -702,7 +711,7 @@ public class MapView extends View implements ApplicationManagerListener {
                     label = label.substring(0, zoomLevelLabelLength2);
                 }
             }
-            canvas.drawText(label, screenX, screenY, gpxTextPaint);
+            canvas.drawText(label, positionX, positionY, paint);
         }
     }
 

@@ -111,7 +111,7 @@ public class DaoBookmarks {
         while( !c.isAfterLast() ) {
             double lon = c.getDouble(0);
             double lat = c.getDouble(1);
-            String text = c.getString(3);
+            String text = c.getString(2);
 
             Bookmark note = new Bookmark(text, lon, lat);
             bookmarks.add(note);
@@ -132,27 +132,27 @@ public class DaoBookmarks {
         sB.append(" INTEGER PRIMARY KEY AUTOINCREMENT, ");
         sB.append(COLUMN_LON).append(" REAL NOT NULL, ");
         sB.append(COLUMN_LAT).append(" REAL NOT NULL,");
-        sB.append(COLUMN_TEXT).append(" TEXT NOT NULL, ");
+        sB.append(COLUMN_TEXT).append(" TEXT NOT NULL ");
         sB.append(");");
-        String CREATE_TABLE_NOTES = sB.toString();
+        String CREATE_TABLE_BOOKMARKS = sB.toString();
 
         sB = new StringBuilder();
-        sB.append("CREATE INDEX notes_x_by_y_idx ON ");
+        sB.append("CREATE INDEX bookmarks_x_by_y_idx ON ");
         sB.append(TABLE_BOOKMARKS);
         sB.append(" ( ");
         sB.append(COLUMN_LON);
         sB.append(", ");
         sB.append(COLUMN_LAT);
         sB.append(" );");
-        String CREATE_INDEX_NOTES_X_BY_Y = sB.toString();
+        String CREATE_INDEX_BOOKMARKS_X_BY_Y = sB.toString();
 
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         Logger.i("DAOBOOKMARKS", "Create the bookmarks table.");
 
         sqliteDatabase.beginTransaction();
         try {
-            sqliteDatabase.execSQL(CREATE_TABLE_NOTES);
-            sqliteDatabase.execSQL(CREATE_INDEX_NOTES_X_BY_Y);
+            sqliteDatabase.execSQL(CREATE_TABLE_BOOKMARKS);
+            sqliteDatabase.execSQL(CREATE_INDEX_BOOKMARKS_X_BY_Y);
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {

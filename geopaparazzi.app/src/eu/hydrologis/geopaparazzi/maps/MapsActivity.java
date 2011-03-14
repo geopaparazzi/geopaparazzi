@@ -22,17 +22,24 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
+import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
@@ -43,12 +50,14 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class MapsActivity extends Activity {
-    private static final int GO_TO = 1;
-    private static final int MENU_GPSDATA = 2;
-    private static final int MENU_MAPDATA = 3;
-    private static final int MENU_TOGGLE_MEASURE = 4;
-    private static final int MENU_ADDTAGS = 5;
+    private static final int MENU_GPSDATA = 1;
+    private static final int MENU_MAPDATA = 2;
+    private static final int MENU_ADDTAGS = 3;
+    private static final int MENU_ADDBOOKMARK = 4;
+    private static final int MENU_TOGGLE_MEASURE = 5;
     private static final int MENU_DOWNLOADMAPS = 6;
+    private static final int GO_TO = 7;
+
     private MapView mapsView;
 
     private DecimalFormat formatter = new DecimalFormat("00");
@@ -171,12 +180,13 @@ public class MapsActivity extends Activity {
     public boolean onCreateOptionsMenu( Menu menu ) {
         super.onCreateOptionsMenu(menu);
         menu.add(Menu.NONE, MENU_ADDTAGS, 1, R.string.mainmenu_addtags).setIcon(android.R.drawable.ic_menu_add);
-        menu.add(Menu.NONE, MENU_TOGGLE_MEASURE, 2, R.string.mainmenu_togglemeasure).setIcon(
-                android.R.drawable.ic_menu_sort_by_size);
+        menu.add(Menu.NONE, MENU_ADDBOOKMARK, 2, R.string.mainmenu_addbookmark).setIcon(R.drawable.ic_menu_star);
         menu.add(Menu.NONE, MENU_GPSDATA, 3, R.string.mainmenu_gpsdataselect).setIcon(android.R.drawable.ic_menu_compass);
         menu.add(Menu.NONE, MENU_MAPDATA, 4, R.string.mainmenu_mapdataselect).setIcon(android.R.drawable.ic_menu_compass);
-        menu.add(Menu.CATEGORY_SECONDARY, GO_TO, 5, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
-        menu.add(Menu.CATEGORY_SECONDARY, MENU_DOWNLOADMAPS, 6, R.string.menu_download_maps).setIcon(
+        menu.add(Menu.CATEGORY_SECONDARY, MENU_TOGGLE_MEASURE, 5, R.string.mainmenu_togglemeasure).setIcon(
+                android.R.drawable.ic_menu_sort_by_size);
+        menu.add(Menu.CATEGORY_SECONDARY, GO_TO, 6, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
+        menu.add(Menu.CATEGORY_SECONDARY, MENU_DOWNLOADMAPS, 7, R.string.menu_download_maps).setIcon(
                 android.R.drawable.ic_menu_mapmode);
         return true;
     }
@@ -211,6 +221,38 @@ public class MapsActivity extends Activity {
             osmTagsIntent.putExtra(Constants.VIEW_CENTER_LAT, mapsView.getCenterLat());
             osmTagsIntent.putExtra(Constants.VIEW_CENTER_LON, mapsView.getCenterLon());
             startActivity(osmTagsIntent);
+            return true;
+        case MENU_ADDBOOKMARK:
+            final float centerLat = mapsView.getCenterLat();
+            final float centerLon = mapsView.getCenterLon();
+            final EditText input = new EditText(this);
+            input.setText("");
+            Builder builder = new AlertDialog.Builder(this).setTitle("New Bookmark");
+            builder.setMessage("Enter a name for the new bookmark (optional)");
+            builder.setView(input);
+            builder.setIcon(android.R.drawable.ic_dialog_alert)
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                        public void onClick( DialogInterface dialog, int whichButton ) {
+                        }
+                    }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                        public void onClick( DialogInterface dialog, int whichButton ) {
+                            try {
+                                Editable value = input.getText();
+                                String newName = value.toString();
+                                if (newName == null || newName.length() < 1) {
+                                    newName = "";
+                                }
+
+                                DaoBookmarks.addBookmark(getApplicationContext(), centerLon, centerLat, newName);
+                                mapsView.invalidate();
+                            } catch (IOException e) {
+                                Logger.e(this, e.getLocalizedMessage(), e);
+                                e.printStackTrace();
+                                Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }).setCancelable(false).show();
+
             return true;
 
         case GO_TO:
