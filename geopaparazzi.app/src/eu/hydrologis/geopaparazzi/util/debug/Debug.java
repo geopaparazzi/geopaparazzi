@@ -26,11 +26,22 @@ package eu.hydrologis.geopaparazzi.util.debug;
 public interface Debug {
     /**
      * Flag to define the use of mock locations instead of the gps.
+     * 
+     * <p>For release = <code>false</code>.
      */
     boolean doMock = false;
 
     /**
      * Flag to define normal drawing of renderers, as opposed to drawing some debug info.
+     * 
+     * <p>For release = <code>true</code>.
      */
     boolean doDrawNormal = true;
+
+    /**
+     * Flag to define if the tags file should be overwritten. 
+     * 
+     * <p>For release = <code>false</code>.
+     */
+    boolean doOverwriteTags = true;
 }

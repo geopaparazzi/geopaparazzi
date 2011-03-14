@@ -33,6 +33,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.FileUtils;
+import eu.hydrologis.geopaparazzi.util.debug.Debug;
 
 /**
  * Singleton that takes care of tags.
@@ -89,7 +90,7 @@ public class TagsManager {
     private static void getFileTags( Context context ) throws Exception {
         File geoPaparazziDir = ApplicationManager.getInstance(context).getGeoPaparazziDir();
         File tagsFile = new File(geoPaparazziDir, TAGSFILENAME);
-        if (!tagsFile.exists()) {
+        if (!tagsFile.exists() || Debug.doOverwriteTags) {
             AssetManager assetManager = context.getAssets();
             InputStream inputStream = assetManager.open("tags/tags.json");
 
