@@ -20,7 +20,9 @@ package eu.hydrologis.geopaparazzi.maps;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.app.ListActivity;
 import android.os.Bundle;
@@ -39,7 +41,8 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class BookmarksListActivity extends ListActivity {
-    private Bookmark[] bookmarksArray;
+    private String[] bookmarksNames;
+    private Map<String, Bookmark> bookmarksMap = new HashMap<String, Bookmark>();
     private Comparator<Bookmark> bookmarksSorter = new ItemComparators.BookmarksComparator(true);
 
     public void onCreate( Bundle icicle ) {
@@ -58,24 +61,38 @@ public class BookmarksListActivity extends ListActivity {
 
     private void refreshList() {
         Logger.d(this, "refreshing bookmarks list");
-        bookmarksArray = new Bookmark[0];
         try {
             List<Bookmark> bookmarksList = DaoBookmarks.getAllBookmarks(this);
+            
+            if (bookmarksList.size() ==0) {
+                ApplicationManager.openDialog("No bookmarks in the list.", this);
+                finish();
+            }
+
             Collections.sort(bookmarksList, bookmarksSorter);
-            bookmarksArray = (Bookmark[]) bookmarksList.toArray(new Bookmark[bookmarksList.size()]);
+            bookmarksNames = new String[bookmarksList.size()];
+            bookmarksMap.clear();
+            int index = 0;
+            for( Bookmark bookmark : bookmarksList ) {
+                String name = bookmark.getName();
+                bookmarksMap.put(name, bookmark);
+                bookmarksNames[index] = name;
+                index++;
+            }
         } catch (IOException e) {
             Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
         }
 
-        ArrayAdapter<Bookmark> arrayAdapter = new ArrayAdapter<Bookmark>(this, R.layout.bookmark_row, bookmarksArray);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.bookmark_row, bookmarksNames);
         setListAdapter(arrayAdapter);
     }
 
     @Override
     protected void onListItemClick( ListView parent, View v, int position, long id ) {
         MapView mapView = ApplicationManager.getInstance(this).getMapView();
-        Bookmark bookmark = bookmarksArray[position];
+        String bookmarkName = bookmarksNames[position];
+        Bookmark bookmark = bookmarksMap.get(bookmarkName);
         mapView.zoomTo((int) bookmark.getZoom());
         mapView.setGotoCoordinate(bookmark.getLon(), bookmark.getLat());
         mapView.invalidate();

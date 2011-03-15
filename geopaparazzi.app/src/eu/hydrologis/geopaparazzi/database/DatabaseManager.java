@@ -152,6 +152,7 @@ public class DatabaseManager {
                 DaoNotes.upgradeNotesFromDB1ToDB2(db);
             }
             if (newDbVersion == 3 && oldDbVersion == 2) {
+                DaoBookmarks.createTables(context);
                 db.beginTransaction();
                 try {
                     db.setTransactionSuccessful();
@@ -162,7 +163,6 @@ public class DatabaseManager {
                 } finally {
                     db.endTransaction();
                 }
-                DaoBookmarks.createTables(context);
             }
         }
 
