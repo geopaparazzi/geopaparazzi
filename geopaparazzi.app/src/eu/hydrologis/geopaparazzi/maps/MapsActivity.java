@@ -88,6 +88,7 @@ public class MapsActivity extends Activity {
 
         // requestWindowFeature(Window.FEATURE_PROGRESS);
         mapsView = (MapView) findViewById(R.id.osmviewid);
+        ViewportManager.INSTANCE.setMapActivity(this);
         applicationManager.setMapView(mapsView);
         applicationManager.addListener(mapsView);
 
@@ -104,7 +105,7 @@ public class MapsActivity extends Activity {
         zoomBar = (VerticalSeekBar) findViewById(R.id.ZoomBar);
         zoomBar.setMax(18);
         zoomBar.setProgress(zoom);
-        mapsView.zoomTo(zoom);
+        mapsView.setZoom(zoom);
         zoomBar.setOnSeekBarChangeListener(new VerticalSeekBar.OnSeekBarChangeListener(){
             private int progress = zoom;
             public void onStopTrackingTouch( VerticalSeekBar seekBar ) {
@@ -161,7 +162,7 @@ public class MapsActivity extends Activity {
         mapsView.invalidate();
     }
 
-    private void setNewZoom( int newZoom, boolean onlyText ) {
+    public void setNewZoom( int newZoom, boolean onlyText ) {
         int zoomInLevel = newZoom + 1;
         if (zoomInLevel > 18) {
             zoomInLevel = 18;
@@ -175,17 +176,18 @@ public class MapsActivity extends Activity {
         zoomBar.setProgress(newZoom);
 
         if (!onlyText) {
-            mapsView.zoomTo(newZoom);
+            mapsView.setZoom(newZoom);
         }
-        // mapsView.invalidate();
     }
 
-    // @Override
-    // protected void onPause() {
-    // osmView.clearCache();
-    //
-    // super.onPause();
-    // }
+    public void setNewCenter( double lon, double lat, boolean drawIcon ) {
+        mapsView.setCenter(lon, lat, drawIcon);
+    }
+
+    public double[] getCenterLonLat() {
+        double[] lonLat = {mapsView.getCenterLon(), mapsView.getCenterLat()};
+        return lonLat;
+    }
 
     public boolean onCreateOptionsMenu( Menu menu ) {
         super.onCreateOptionsMenu(menu);
@@ -420,5 +422,9 @@ public class MapsActivity extends Activity {
             }
         }
     };
+
+    public void inalidateMap() {
+        mapsView.invalidate();
+    }
 
 }

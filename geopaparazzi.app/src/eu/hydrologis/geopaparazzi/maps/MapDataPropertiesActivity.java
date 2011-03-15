@@ -34,7 +34,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
-import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
@@ -120,8 +119,8 @@ public class MapDataPropertiesActivity extends Activity {
                     try {
                         double[] firstPoint = DaoMaps.getMapFirstPoint(MapDataPropertiesActivity.this, item.getId());
                         if (firstPoint != null) {
-                            ApplicationManager.getInstance(MapDataPropertiesActivity.this).getMapView()
-                                    .setGotoCoordinate(firstPoint[0], firstPoint[1]);
+                            ViewportManager.INSTANCE.setCenterTo(firstPoint[0], firstPoint[1], false);
+                            ViewportManager.INSTANCE.invalidateMap();
                         }
                     } catch (IOException e) {
                         Logger.e(this, e.getLocalizedMessage(), e);

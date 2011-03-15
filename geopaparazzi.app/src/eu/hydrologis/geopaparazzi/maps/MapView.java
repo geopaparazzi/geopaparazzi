@@ -134,6 +134,8 @@ public class MapView extends View implements ApplicationManagerListener {
     private int zoomLevel2;
     private int zoomLevelLabelLength2;
 
+    private boolean drawGoto = false;
+
     private boolean touchDragging;
     private SharedPreferences preferences;
     private Context context;
@@ -232,7 +234,7 @@ public class MapView extends View implements ApplicationManagerListener {
             editor.commit();
         }
     }
-    
+
     public int getZoom() {
         return zoom;
     }
@@ -352,7 +354,7 @@ public class MapView extends View implements ApplicationManagerListener {
                 canvas.drawText(sb.toString(), 5, 15 + actionBarHeight, measureTextPaint); //$NON-NLS-1$
             }
 
-            if (gotoLat != -1) {
+            if (drawGoto && gotoLat != -1) {
 
                 float gotoX = width / 2f + (gotoLon - centerLon) / pixelDxInWorld;
                 float gotoY = height / 2f - (gotoLat - centerLat) / pixelDyInWorld;
@@ -800,22 +802,32 @@ public class MapView extends View implements ApplicationManagerListener {
         invalidateWithProgress();
     }
 
-    public void zoomTo( int zoomLevel ) {
+    /**
+     * Sets the zoom of the viewport. Invalidation is needed afterwards.
+     * 
+     * @param zoomLevel
+     */
+    public void setZoom( int zoomLevel ) {
         zoom = zoomLevel;
 
         Editor editor = preferences.edit();
         editor.putInt(Constants.PREFS_KEY_ZOOM, zoom);
         editor.commit();
-        invalidateWithProgress();
     }
 
-    public void setGotoCoordinate( double lon, double lat ) {
+    /**
+     * Sets the center of the viewport to the given coords. Invalidation is needed afterwards.
+     * 
+     * @param lon
+     * @param lat
+     * @param drawGoto
+     */
+    public void setCenter( double lon, double lat, boolean drawGoto ) {
         centerLat = (float) lat;
         centerLon = (float) lon;
         gotoLat = centerLat;
         gotoLon = centerLon;
-
-        invalidate();
+        this.drawGoto = drawGoto;
     }
 
     public void centerOnGps() {

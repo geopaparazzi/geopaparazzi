@@ -63,8 +63,8 @@ public class BookmarksListActivity extends ListActivity {
         Logger.d(this, "refreshing bookmarks list");
         try {
             List<Bookmark> bookmarksList = DaoBookmarks.getAllBookmarks(this);
-            
-            if (bookmarksList.size() ==0) {
+
+            if (bookmarksList.size() == 0) {
                 ApplicationManager.openDialog("No bookmarks in the list.", this);
                 finish();
             }
@@ -90,12 +90,13 @@ public class BookmarksListActivity extends ListActivity {
 
     @Override
     protected void onListItemClick( ListView parent, View v, int position, long id ) {
-        MapView mapView = ApplicationManager.getInstance(this).getMapView();
+        ViewportManager viewportManager = ViewportManager.INSTANCE;
+
         String bookmarkName = bookmarksNames[position];
         Bookmark bookmark = bookmarksMap.get(bookmarkName);
-        mapView.zoomTo((int) bookmark.getZoom());
-        mapView.setGotoCoordinate(bookmark.getLon(), bookmark.getLat());
-        mapView.invalidate();
+        viewportManager.setZoomTo((int) bookmark.getZoom());
+        viewportManager.setCenterTo(bookmark.getLon(), bookmark.getLat(), false);
+        viewportManager.invalidateMap();
         finish();
     }
 

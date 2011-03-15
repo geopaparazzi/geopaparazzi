@@ -619,10 +619,6 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         }
     }
 
-    public MapView getMapView() {
-        return mapView;
-    }
-
     public List<Float> getLast100Elevations() {
         return gpsLogger.getLast100Elevations();
     }

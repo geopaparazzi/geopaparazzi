@@ -25,7 +25,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.maps.MapView;
+import eu.hydrologis.geopaparazzi.maps.ViewportManager;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -63,8 +63,7 @@ public class InsertCoordActivity extends Activity {
                     }
                 } catch (Exception e1) {
                     Logger.e(this, e1.getLocalizedMessage(), e1);
-                    Toast.makeText(InsertCoordActivity.this, R.string.wrongLongitude,
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(InsertCoordActivity.this, R.string.wrongLongitude, Toast.LENGTH_LONG).show();
                     return;
                 }
                 String latString = String.valueOf(latText.getText());
@@ -75,8 +74,7 @@ public class InsertCoordActivity extends Activity {
                     }
                 } catch (Exception e1) {
                     Logger.e(this, e1.getLocalizedMessage(), e1);
-                    Toast.makeText(InsertCoordActivity.this, R.string.wrongLatitude,
-                            Toast.LENGTH_LONG).show();
+                    Toast.makeText(InsertCoordActivity.this, R.string.wrongLatitude, Toast.LENGTH_LONG).show();
                     return;
                 }
 
@@ -84,9 +82,8 @@ public class InsertCoordActivity extends Activity {
                     public void run() {
                         openMapViewHandler.post(new Runnable(){
                             public void run() {
-                                MapView osmView = applicationManager.getMapView();
-                                osmView.requestFocus();
-                                osmView.setGotoCoordinate(lon, lat);
+                                ViewportManager.INSTANCE.setCenterTo(lon, lat, true);
+                                ViewportManager.INSTANCE.invalidateMap();
                             }
                         });
 
