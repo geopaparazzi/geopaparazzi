@@ -111,6 +111,7 @@ public class MapsActivity extends Activity {
             private int progress = zoom;
             public void onStopTrackingTouch( VerticalSeekBar seekBar ) {
                 setNewZoom(progress, false);
+                inalidateMap();
                 Logger.d(this, "Zoomed to: " + progress);
             }
 
@@ -121,6 +122,7 @@ public class MapsActivity extends Activity {
             public void onProgressChanged( VerticalSeekBar seekBar, int progress, boolean fromUser ) {
                 this.progress = progress;
                 setNewZoom(progress, true);
+                inalidateMap();
             }
         });
 
@@ -139,6 +141,8 @@ public class MapsActivity extends Activity {
                 String text = zoomInButton.getText().toString();
                 int newZoom = Integer.parseInt(text);
                 setNewZoom(newZoom, false);
+                inalidateMap();
+
             }
         });
         zoomOutButton = (Button) findViewById(R.id.zoomout);
@@ -148,6 +152,8 @@ public class MapsActivity extends Activity {
                 String text = zoomOutButton.getText().toString();
                 int newZoom = Integer.parseInt(text);
                 setNewZoom(newZoom, false);
+                inalidateMap();
+
             }
         });
 
