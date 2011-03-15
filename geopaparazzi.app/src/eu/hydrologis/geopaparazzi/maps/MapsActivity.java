@@ -20,6 +20,7 @@ package eu.hydrologis.geopaparazzi.maps;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
+import java.util.Date;
 import java.util.List;
 
 import android.app.Activity;
@@ -244,7 +245,9 @@ public class MapsActivity extends Activity {
             final float centerLat = mapsView.getCenterLat();
             final float centerLon = mapsView.getCenterLon();
             final EditText input = new EditText(this);
-            input.setText("");
+            final String newDate = Constants.TIME_FORMATTER.format(new Date());
+            final String proposedName = "bookmark " + newDate;
+            input.setText(proposedName);
             Builder builder = new AlertDialog.Builder(this).setTitle("New Bookmark");
             builder.setMessage("Enter a name for the new bookmark (optional)");
             builder.setView(input);
@@ -258,7 +261,7 @@ public class MapsActivity extends Activity {
                                 Editable value = input.getText();
                                 String newName = value.toString();
                                 if (newName == null || newName.length() < 1) {
-                                    newName = "";
+                                    newName = proposedName;;
                                 }
 
                                 int zoom = mapsView.getZoom();

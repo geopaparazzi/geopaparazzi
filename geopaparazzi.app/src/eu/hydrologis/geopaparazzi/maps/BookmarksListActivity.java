@@ -31,7 +31,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
-import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
@@ -64,11 +63,6 @@ public class BookmarksListActivity extends ListActivity {
         try {
             List<Bookmark> bookmarksList = DaoBookmarks.getAllBookmarks(this);
 
-            if (bookmarksList.size() == 0) {
-                ApplicationManager.openDialog("No bookmarks in the list.", this);
-                finish();
-            }
-
             Collections.sort(bookmarksList, bookmarksSorter);
             bookmarksNames = new String[bookmarksList.size()];
             bookmarksMap.clear();
@@ -78,6 +72,9 @@ public class BookmarksListActivity extends ListActivity {
                 bookmarksMap.put(name, bookmark);
                 bookmarksNames[index] = name;
                 index++;
+            }
+            if (bookmarksList.size() == 0) {
+                bookmarksNames = new String[]{"No bookmarks available"};
             }
         } catch (IOException e) {
             Logger.e(this, e.getLocalizedMessage(), e);
@@ -94,9 +91,11 @@ public class BookmarksListActivity extends ListActivity {
 
         String bookmarkName = bookmarksNames[position];
         Bookmark bookmark = bookmarksMap.get(bookmarkName);
-        viewportManager.setZoomTo((int) bookmark.getZoom());
-        viewportManager.setCenterTo(bookmark.getLon(), bookmark.getLat(), false);
-        viewportManager.invalidateMap();
+        if (bookmark != null) {
+            viewportManager.setZoomTo((int) bookmark.getZoom());
+            viewportManager.setCenterTo(bookmark.getLon(), bookmark.getLat(), false);
+            viewportManager.invalidateMap();
+        }
         finish();
     }
 
