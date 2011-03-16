@@ -25,8 +25,6 @@ import static eu.hydrologis.geopaparazzi.util.Constants.GPS_LOGGING_DISTANCE;
 import static eu.hydrologis.geopaparazzi.util.Constants.GPS_LOGGING_INTERVAL;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -46,15 +44,18 @@ import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DatabaseManager;
-import eu.hydrologis.geopaparazzi.util.ApplicationManagerListener;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * The Gps engine, used to put logs into the database.
  * 
+ * <p>This class takes care to make the logging occur at preferences settings.
+ * That is why it is not listening directly to the gps, but instead to the gps manager.
+ * It is the manager that updates the position.
+ * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class GpsLogger implements ApplicationManagerListener {
+public class GpsLogger implements GpsManagerListener {
     private static final String LOGTAG = "GPSLOGGER";
 
     private final Context context;
@@ -75,8 +76,6 @@ public class GpsLogger implements ApplicationManagerListener {
 
     private MediaPlayer mMediaPlayer;
     private boolean doPlayAlarm = false;
-
-    private List<Float> last100Elevations = new ArrayList<Float>(100);
 
     private int currentPointsNum;
     private float currentDistance;
@@ -110,7 +109,6 @@ public class GpsLogger implements ApplicationManagerListener {
         Thread t = new Thread(){
 
             public void run() {
-                last100Elevations.clear();
                 try {
                     java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
                     long gpsLogId = DaoGpsLog.addGpsLog(context, now, now, logName, 2f, "red", true);
@@ -157,11 +155,6 @@ public class GpsLogger implements ApplicationManagerListener {
                         sB.append(recAlt).append(",");
                         sB.append(timeStringSql);
                         sB.append("\n");
-
-                        if (last100Elevations.size() == 100) {
-                            last100Elevations.remove(0);
-                        }
-                        last100Elevations.add((float) recAlt);
 
                         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
                         sqliteDatabase.beginTransaction();
@@ -253,10 +246,6 @@ public class GpsLogger implements ApplicationManagerListener {
         return (int) currentDistance;
     }
 
-    public List<Float> getLast100Elevations() {
-        return last100Elevations;
-    }
-
     // /////////////////////////////////////////////////
     // SOUND HANDLING
     // /////////////////////////////////////////////////
@@ -322,9 +311,6 @@ public class GpsLogger implements ApplicationManagerListener {
 
     public void onLocationChanged( GpsLocation loc ) {
         gpsLoc = new GpsLocation(loc);
-    }
-
-    public void onSensorChanged( double normalAzimuth, double pictureAzimuth ) {
     }
 
     public void onSatellitesStatusChanged( int num, int max ) {

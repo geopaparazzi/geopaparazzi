@@ -44,6 +44,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
+import eu.hydrologis.geopaparazzi.gps.GpsManager;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
@@ -117,7 +118,7 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
         this.progressDialog = ProgressDialog.show(this, " Working...", " Retrieving image ", true, false);
 
         try {
-            GpsLocation loc = deviceManager.getLoc();
+            GpsLocation loc = GpsManager.getInstance(this).getLocation();
             double lat = -1;
             double lon = -1;
             double altim = -1;

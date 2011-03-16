@@ -42,9 +42,10 @@ public class DatabaseManager {
 
     public static final float BUFFER = 0.001f;
 
-    // TABLE NAMES
-
     private static DatabaseManager dbManager = null;
+    
+    private DatabaseManager() {
+    }
 
     private DatabaseOpenHelper databaseHelper;
 

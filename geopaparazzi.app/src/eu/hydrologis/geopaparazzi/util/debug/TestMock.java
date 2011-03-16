@@ -22,8 +22,8 @@ import java.util.Date;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import eu.hydrologis.geopaparazzi.gps.GpsManager;
 import eu.hydrologis.geopaparazzi.maps.ViewportManager;
-import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 
 /**
  * A class for when there is no gps cover.
@@ -47,9 +47,9 @@ public class TestMock {
      * Starts to trigger mock locations.
      * 
      * @param locationManager the location manager.
-     * @param applicationManager 
+     * @param gpsManager 
      */
-    public static void startMocking( final LocationManager locationManager, ApplicationManager applicationManager ) {
+    public static void startMocking( final LocationManager locationManager, GpsManager gpsManager ) {
         if (isOn) {
             return;
         }
@@ -65,7 +65,7 @@ public class TestMock {
         locationManager.addTestProvider(MOCK_PROVIDER_NAME, true, false, true, false, false, false, false, Criteria.POWER_LOW,
                 Criteria.ACCURACY_FINE);
         locationManager.setTestProviderEnabled(MOCK_PROVIDER_NAME, true);
-        locationManager.requestLocationUpdates(TestMock.MOCK_PROVIDER_NAME, 3000, 0f, applicationManager);
+        locationManager.requestLocationUpdates(TestMock.MOCK_PROVIDER_NAME, 3000, 0f, gpsManager);
         // }
 
         Runnable r = new Runnable(){

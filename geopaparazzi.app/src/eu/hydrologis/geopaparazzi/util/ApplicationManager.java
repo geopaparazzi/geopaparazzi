@@ -69,6 +69,7 @@ import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction;
 import eu.hydrologis.geopaparazzi.database.DatabaseManager;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.gps.GpsLogger;
+import eu.hydrologis.geopaparazzi.gps.GpsManager;
 import eu.hydrologis.geopaparazzi.maps.MapView;
 import eu.hydrologis.geopaparazzi.util.debug.Debug;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
@@ -79,32 +80,14 @@ import eu.hydrologis.geopaparazzi.util.debug.TestMock;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class ApplicationManager implements SensorEventListener, LocationListener, Serializable {
+public class ApplicationManager implements SensorEventListener, Serializable {
     private static final long serialVersionUID = 1L;
 
     private static final String LOGTAG = "APPLICATIONMANAGER";
 
-    private LocationManager locationManager;
     private SensorManager sensorManager;
 
     private int accuracy;
-
-    /**
-     * The last taken gps location.
-     */
-    private GpsLocation gpsLoc = null;
-
-    /**
-     * The previous gps location or null if no gps location was taken yet.
-     * 
-     * <p>This changes with every {@link #onLocationChanged(Location)}.</p>
-     */
-    private Location previousLoc = null;
-
-    /**
-     * The object responsible to log traces into the database. 
-     */
-    private static GpsLogger gpsLogger;
 
     private double normalAzimuth = -1;
     // private double normalPitch = -1;
@@ -158,9 +141,8 @@ public class ApplicationManager implements SensorEventListener, LocationListener
     public static ApplicationManager getInstance( Context context ) {
         if (applicationManager == null && context != null) {
             applicationManager = new ApplicationManager(context);
-            applicationManager.activateManagers();
-            applicationManager.checkGps();
-            applicationManager.startListening();
+            applicationManager.activateSensorManagers();
+            applicationManager.startSensorListening();
         } else if (applicationManager == null && context == null) {
             throw new RuntimeException("this should not happen!");
         }
@@ -225,7 +207,15 @@ public class ApplicationManager implements SensorEventListener, LocationListener
                 geoPaparazziDir = new File(sdcardDir.getAbsolutePath() + PATH_GEOPAPARAZZI);
                 mapsCacheDir = new File(sdcardDir.getAbsolutePath() + PATH_MAPSCACHE);
             } else {
-                alertDialog(context.getResources().getString(R.string.sdcard_notexist));
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                String ok = context.getResources().getString(R.string.ok);
+                builder.setMessage(R.string.sdcard_notexist).setCancelable(false)
+                        .setPositiveButton(ok, new DialogInterface.OnClickListener(){
+                            public void onClick( DialogInterface dialog, int id ) {
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
                 return;
             }
         }
@@ -317,8 +307,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
     /**
      * Get the location and sensor managers.
      */
-    public void activateManagers() {
-        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+    public void activateSensorManagers() {
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
     }
@@ -331,35 +320,17 @@ public class ApplicationManager implements SensorEventListener, LocationListener
     /**
      * Stops listening to all the devices.
      */
-    public void stopListening() {
+    public void stopSensorListening() {
         if (applicationManager != null) {
-            if (locationManager != null)
-                locationManager.removeUpdates(applicationManager);
             if (sensorManager != null)
                 sensorManager.unregisterListener(applicationManager);
-        }
-        if (TestMock.isOn) {
-            TestMock.stopMocking(locationManager);
         }
     }
 
     /**
      * Starts listening to all the devices.
      */
-    public void startListening() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String intervalStr = preferences.getString(GPSLOGGINGINTERVALKEY, String.valueOf(GPS_LOGGING_INTERVAL));
-        int waitForMillis = (int) (Long.parseLong(intervalStr) * 1000);
-        Logger.d(this, "LOG INTERVAL MILLIS: " + waitForMillis);
-        if (Debug.doMock) {
-            Logger.d(this, "Using Mock locations");
-            TestMock.startMocking(locationManager, applicationManager);
-        } else {
-            Logger.d(this, "Using GPS");
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, waitForMillis, 0f, applicationManager);
-        }
-
-        // locationManager.addGpsStatusListener(applicationManager);
+    public void startSensorListening() {
 
         sensorManager.unregisterListener(applicationManager);
         sensorManager.registerListener(applicationManager, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
@@ -368,45 +339,6 @@ public class ApplicationManager implements SensorEventListener, LocationListener
                 SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(applicationManager, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
                 SensorManager.SENSOR_DELAY_NORMAL);
-    }
-
-    public boolean isGpsEnabled() {
-        if (locationManager == null) {
-            return false;
-        }
-        boolean gpsIsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        // List<String> allProviders = locationManager.getAllProviders();
-        // for( String string : allProviders ) {
-        // Logger.i(this, "Loctaion Providers: " + string);
-        // }
-        Logger.i(this, "Gps is on: " + gpsIsEnabled);
-        return gpsIsEnabled;
-    }
-
-    public void checkGps() {
-        if (!isGpsEnabled()) {
-            String prompt = context.getResources().getString(R.string.prompt_gpsenable);
-            String ok = context.getResources().getString(R.string.ok);
-            String cancel = context.getResources().getString(R.string.cancel);
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setMessage(prompt).setCancelable(false).setPositiveButton(ok, new DialogInterface.OnClickListener(){
-                public void onClick( DialogInterface dialog, int id ) {
-                    showGpsOptions();
-                }
-            });
-            builder.setNegativeButton(cancel, new DialogInterface.OnClickListener(){
-                public void onClick( DialogInterface dialog, int id ) {
-                    dialog.cancel();
-                }
-            });
-            AlertDialog alert = builder.create();
-            alert.show();
-        }
-    }
-
-    private void showGpsOptions() {
-        Intent gpsOptionsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        context.startActivity(gpsOptionsIntent);
     }
 
     public void onAccuracyChanged( Sensor sensor, int accuracy ) {
@@ -469,73 +401,9 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         }
 
     }
-    public void onLocationChanged( Location loc ) {
-        gpsLoc = new GpsLocation(loc);
-        if (previousLoc == null) {
-            previousLoc = loc;
-        }
-
-        Logger.d(LOGTAG, "Position update: " + gpsLoc.getLongitude() + "/" + gpsLoc.getLatitude() + "/" + gpsLoc.getAltitude()); //$NON-NLS-1$ //$NON-NLS-2$
-        gpsLoc.setPreviousLoc(previousLoc);
-        for( ApplicationManagerListener listener : listeners ) {
-            listener.onLocationChanged(gpsLoc);
-        }
-        previousLoc = loc;
-    }
-
-    public void onProviderDisabled( String provider ) {
-    }
-
-    public void onProviderEnabled( String provider ) {
-    }
-
-    public void onStatusChanged( String provider, int status, Bundle extras ) {
-        // String statusString;
-        // switch( status ) {
-        // case LocationProvider.OUT_OF_SERVICE:
-        // if (gpsLoc == null || gpsLoc.getProvider().equals(provider)) {
-        // statusString = "No Service";
-        // gpsLoc = null;
-        // }
-        // break;
-        // case LocationProvider.TEMPORARILY_UNAVAILABLE:
-        // if (gpsLoc == null || gpsLoc.getProvider().equals(provider)) {
-        // statusString = "no fix";
-        // }
-        // break;
-        // case LocationProvider.AVAILABLE:
-        // statusString = "fix";
-        // break;
-        // }
-    }
-
-    // TODO
-    // public void onGpsStatusChanged( int event ) {
-    // int timeToFirstFix = -1;
-    // if (event == GpsStatus.GPS_EVENT_SATELLITE_STATUS) {
-    // GpsStatus status = locationManager.getGpsStatus(null);
-    // Iterable<GpsSatellite> sats = status.getSatellites();
-    // timeToFirstFix = status.getTimeToFirstFix();
-    // int max = status.getMaxSatellites();
-    // Iterator<GpsSatellite> iterator = sats.iterator();
-    // int num = 0;
-    // while( iterator.hasNext() ) {
-    // num++;
-    // }
-    // for( ApplicationManagerListener listener : listeners ) {
-    // listener.onSatellitesStatusChanged(num, max);
-    // }
-    // }
-    // Logger.d(LOGTAG, "Gps status event: " + event);
-    // Logger.d(LOGTAG, "Time to first fix: " + timeToFirstFix);
-    // }
 
     public int getAccuracy() {
         return accuracy;
-    }
-
-    public GpsLocation getLoc() {
-        return gpsLoc;
     }
 
     public double getNormalAzimuth() {
@@ -588,70 +456,6 @@ public class ApplicationManager implements SensorEventListener, LocationListener
 
     private void alert( String msg ) {
         Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
-    }
-
-    public void alertDialog( String msg ) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        String ok = context.getResources().getString(R.string.ok);
-        builder.setMessage(msg).setCancelable(false).setPositiveButton(ok, new DialogInterface.OnClickListener(){
-            public void onClick( DialogInterface dialog, int id ) {
-                showGpsOptions();
-            }
-        });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
-
-    public boolean isGpsLogging() {
-        if (gpsLogger == null) {
-            return false;
-        }
-        return gpsLogger.isLogging();
-    }
-
-    public List<Float> getLast100Elevations() {
-        return gpsLogger.getLast100Elevations();
-    }
-
-    public int getCurrentRunningGpsLogPointsNum() {
-        return gpsLogger.getCurrentPointsNum();
-    }
-
-    public long getCurrentRecordedLogId() {
-        if (gpsLogger == null) {
-            return -1l;
-        }
-        return gpsLogger.getCurrentRecordedLogId();
-    }
-
-    public int getCurrentRunningGpsLogDistance() {
-        return gpsLogger.getCurrentDistance();
-    }
-
-    private void checkLoggerExists() {
-        if (gpsLogger == null) {
-            gpsLogger = new GpsLogger(context);
-        }
-    }
-
-    /**
-     * Start gps logging.
-     * 
-     * @param logName a name for the new gps log or <code>null</code>.
-     */
-    public void startLogging( String logName ) {
-        checkLoggerExists();
-        addListener(gpsLogger);
-        gpsLogger.startLogging(logName);
-    }
-
-    /**
-     * Stop gps logging.
-     */
-    public void stopLogging() {
-        checkLoggerExists();
-        gpsLogger.stopLogging();
-        removeListener(gpsLogger);
     }
 
     /**
@@ -717,7 +521,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         notesQuickaction.setIcon(context.getResources().getDrawable(R.drawable.quickaction_notes));
         notesQuickaction.setOnClickListener(new OnClickListener(){
             public void onClick( View v ) {
-                GpsLocation loc = applicationManager.getLoc();
+                GpsLocation loc = GpsManager.getInstance(context).getLocation();
                 if (loc != null) {
                     Intent intent = new Intent(Constants.TAKE_NOTE);
                     context.startActivity(intent);
@@ -737,7 +541,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
             public void onClick( View v ) {
                 try {
                     Logger.d(this, "Asking location");
-                    GpsLocation loc = applicationManager.getLoc();
+                    GpsLocation loc = GpsManager.getInstance(context).getLocation();
                     if (loc != null) {
                         Logger.d(this, "Location != null");
                         Intent intent = new Intent(Constants.TAKE_PICTURE);
@@ -763,7 +567,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         audioQuickaction.setOnClickListener(new OnClickListener(){
             public void onClick( View v ) {
                 try {
-                    GpsLocation loc = applicationManager.getLoc();
+                    GpsLocation loc = GpsManager.getInstance(context).getLocation();
                     if (loc != null) {
                         double lat = loc.getLatitude();
                         double lon = loc.getLongitude();
@@ -838,8 +642,9 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         startLogQuickaction.setIcon(context.getResources().getDrawable(R.drawable.quickaction_start_log));
         startLogQuickaction.setOnClickListener(new OnClickListener(){
             public void onClick( View v ) {
-                if (!applicationManager.isGpsLogging()) {
-                    GpsLocation loc = applicationManager.getLoc();
+                final GpsManager gpsManager = GpsManager.getInstance(context);
+                if (!gpsManager.isGpsLogging()) {
+                    GpsLocation loc = gpsManager.getLocation();
                     if (loc != null) {
                         final String defaultLogName = "log_" + Constants.TIMESTAMPFORMATTER.format(new Date());
                         final EditText input = new EditText(context);
@@ -852,7 +657,7 @@ public class ApplicationManager implements SensorEventListener, LocationListener
                                         if (newName == null || newName.length() < 1) {
                                             newName = defaultLogName;
                                         }
-                                        applicationManager.startLogging(newName);
+                                        gpsManager.startLogging(newName);
                                         actionBar.checkLogging();
                                     }
                                 }).setCancelable(false).show();
@@ -872,8 +677,9 @@ public class ApplicationManager implements SensorEventListener, LocationListener
         stopLogQuickaction.setIcon(context.getResources().getDrawable(R.drawable.quickaction_stop_log));
         stopLogQuickaction.setOnClickListener(new OnClickListener(){
             public void onClick( View v ) {
-                if (applicationManager.isGpsLogging()) {
-                    applicationManager.stopLogging();
+                GpsManager gpsManager = GpsManager.getInstance(context);
+                if (gpsManager.isGpsLogging()) {
+                    gpsManager.stopLogging();
                     actionBar.checkLogging();
                 }
                 qa.dismiss();

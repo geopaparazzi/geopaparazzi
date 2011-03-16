@@ -29,7 +29,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
-import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
@@ -44,7 +43,6 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class NoteActivity extends Activity {
-    private ApplicationManager deviceManager;
     private EditText noteText;
     private int LANDSCAPE_LINES = 5;
     private int PORTRAIT_LINES = 14;
@@ -64,7 +62,6 @@ public class NoteActivity extends Activity {
             coordsFromExtras = true;
         }
 
-        deviceManager = ApplicationManager.getInstance(this);
 
         noteText = (EditText) findViewById(R.id.noteentry);
         noteText.setLines(linesNum);
@@ -72,7 +69,8 @@ public class NoteActivity extends Activity {
         Button saveButton = (Button) findViewById(R.id.ok);
         saveButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                GpsLocation loc = deviceManager.getLoc();
+                
+                GpsLocation loc = GpsManager.getInstance(NoteActivity.this).getLocation();
                 try {
 
                     double altitude;

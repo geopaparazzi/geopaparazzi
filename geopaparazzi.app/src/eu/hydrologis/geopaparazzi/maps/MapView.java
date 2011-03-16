@@ -60,6 +60,7 @@ import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
+import eu.hydrologis.geopaparazzi.gps.GpsManager;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.ApplicationManagerListener;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
@@ -83,8 +84,8 @@ public class MapView extends View implements ApplicationManagerListener {
 
     private float centerLat = 46.674056f;
     private float centerLon = 11.132294f;
-    private float gpsLat = 46.674056f;
-    private float gpsLon = 11.132294f;
+    private float gpsLat = Float.NaN;
+    private float gpsLon = Float.NaN;
     private float gotoLat = -1;
     private float gotoLon = -1;
 
@@ -209,15 +210,14 @@ public class MapView extends View implements ApplicationManagerListener {
         tileCache = new TileCache(osmCacheDir, internetIsOn, null);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        GpsLocation loc = applicationManager.getLoc();
+        gpsManager = GpsManager.getInstance(context);
+        GpsLocation loc = gpsManager.getLocation();
         if (loc != null) {
             gpsLat = (float) loc.getLatitude();
             gpsLon = (float) loc.getLongitude();
         }
-        gpsLon = preferences.getFloat(GPSLAST_LONGITUDE, gpsLon);
-        gpsLat = preferences.getFloat(GPSLAST_LATITUDE, gpsLat);
-        centerLat = gpsLat;
-        centerLon = gpsLon;
+        centerLon = preferences.getFloat(GPSLAST_LONGITUDE, 0);
+        centerLat = preferences.getFloat(GPSLAST_LATITUDE, 0);
 
         zoom = preferences.getInt(Constants.PREFS_KEY_ZOOM, 16);
 
@@ -323,7 +323,7 @@ public class MapView extends View implements ApplicationManagerListener {
 
                 }
             }
-            
+
             if (!enableDrawing) {
                 // draw only map
                 return;
@@ -337,13 +337,15 @@ public class MapView extends View implements ApplicationManagerListener {
             }
             gpsUpdate = false;
 
-            // gps position
-            float gpsX = lonToScreen(width, gpsLon, centerLon, pixelDxInWorld);
-            float gpsY = latToScreen(height, gpsLat, centerLat, pixelDyInWorld);
+            if (!Float.isNaN(gpsLat) && !Float.isNaN(gpsLon)) {
+                // gps position
+                float gpsX = lonToScreen(width, gpsLon, centerLon, pixelDxInWorld);
+                float gpsY = latToScreen(height, gpsLat, centerLat, pixelDyInWorld);
 
-            // logGpsCoords(gpsX, gpsY);
-            if ((gpsX >= 0 && gpsX <= width) && (gpsY >= 0 && gpsY <= height)) {
-                canvas.drawBitmap(positionIcon, gpsX - gpsIconWidth / 2f, gpsY - gpsIconHeight / 2f, null);
+                // logGpsCoords(gpsX, gpsY);
+                if ((gpsX > 0 && gpsX < width) && (gpsY > 0 && gpsY < height)) {
+                    canvas.drawBitmap(positionIcon, gpsX - gpsIconWidth / 2f, gpsY - gpsIconHeight / 2f, null);
+                }
             }
 
             // measure
@@ -564,8 +566,8 @@ public class MapView extends View implements ApplicationManagerListener {
         try {
 
             List<MapItem> gpslogs = DaoGpsLog.getGpslogs(context);
-            ApplicationManager applicationManager = ApplicationManager.getInstance(context);
-            long currentLogId = applicationManager.getCurrentRecordedLogId();
+            GpsManager gpsManager = GpsManager.getInstance(context);
+            long currentLogId = gpsManager.getCurrentRecordedLogId();
 
             // if (!gpsUpdate || linesInWorldBounds == null) {
             // linesInWorldBounds = DaoGpsLog.getLinesInWorldBoundsDecimated(context, y0, y1, x0,
@@ -884,6 +886,7 @@ public class MapView extends View implements ApplicationManagerListener {
     private int downX = 0;
     private int downY = 0;
     private int decimationFactor;
+    private GpsManager gpsManager;
     public boolean onTouchEvent( MotionEvent event ) {
         int action = event.getAction();
         enableDrawing = true;

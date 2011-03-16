@@ -60,6 +60,7 @@ import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.DatabaseManager;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
+import eu.hydrologis.geopaparazzi.gps.GpsManager;
 import eu.hydrologis.geopaparazzi.kml.KmlExport;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
 import eu.hydrologis.geopaparazzi.maps.MapItem;
@@ -92,6 +93,7 @@ public class GeoPaparazziActivity extends Activity {
     private static final int BROWSERRETURNCODE = 666;
 
     private boolean sliderIsOpen = false;
+    private GpsManager gpsManager;
 
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
@@ -113,7 +115,7 @@ public class GeoPaparazziActivity extends Activity {
         checkDebugLogger();
 
         if (actionBar == null) {
-            actionBar = ActionBar.getActionBar(this, R.id.action_bar, applicationManager);
+            actionBar = ActionBar.getActionBar(this, R.id.action_bar, applicationManager, gpsManager);
             actionBar.setTitle(R.string.app_name, R.id.action_bar_title);
         }
         actionBar.checkLogging();
@@ -122,6 +124,8 @@ public class GeoPaparazziActivity extends Activity {
 
     private void init() {
         setContentView(R.layout.geopap_main);
+
+        gpsManager = GpsManager.getInstance(this);
 
         Object stateObj = getLastNonConfigurationInstance();
         if (stateObj instanceof ApplicationManager) {
@@ -274,7 +278,7 @@ public class GeoPaparazziActivity extends Activity {
         }
         case R.id.dashboard_log_item_button: {
             QuickAction qa = new QuickAction(v);
-            if (applicationManager.isGpsLogging()) {
+            if (gpsManager.isGpsLogging()) {
                 ActionItem stopLogQuickAction = applicationManager.getStopLogQuickAction(actionBar, qa);
                 qa.addActionItem(stopLogQuickAction);
             } else {
@@ -394,7 +398,7 @@ public class GeoPaparazziActivity extends Activity {
     public void finish() {
         Logger.d(this, "Finish called!");
         // save last location just in case
-        GpsLocation loc = applicationManager.getLoc();
+        GpsLocation loc = gpsManager.getLocation();
         if (loc != null) {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             Editor editor = preferences.edit();
@@ -405,8 +409,8 @@ public class GeoPaparazziActivity extends Activity {
 
         Toast.makeText(this, R.string.loggingoff, Toast.LENGTH_LONG).show();
         // stop all logging
-        applicationManager.stopListening();
-        applicationManager.stopLogging();
+        gpsManager.stopListening();
+        gpsManager.stopLogging();
         DatabaseManager.getInstance().closeDatabase();
         applicationManager = null;
         super.finish();
@@ -562,7 +566,7 @@ public class GeoPaparazziActivity extends Activity {
                 if (number.length() == 0) {
                     continue;
                 }
-                GpsLocation loc = applicationManager.getLoc();
+                GpsLocation loc = gpsManager.getLocation();
                 if (loc != null) {
                     SmsManager mng = SmsManager.getDefault();
                     PendingIntent dummyEvent = PendingIntent

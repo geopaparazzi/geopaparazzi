@@ -37,6 +37,7 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.actionbar.ActionItem;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.actionbar.QuickAction;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
+import eu.hydrologis.geopaparazzi.gps.GpsManager;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
@@ -59,13 +60,15 @@ public class ActionBar {
     private static String azimString;
     private static String loggingString;
     private static String gpsonString;
+    private final GpsManager gpsManager;
     // private static String validPointsString;
     // private static String distanceString;
     // private static String satellitesString;
 
-    public ActionBar( View actionBarView, ApplicationManager applicationManager ) {
+    public ActionBar( View actionBarView, ApplicationManager applicationManager, GpsManager gpsManager ) {
         this.actionBarView = actionBarView;
         this.applicationManager = applicationManager;
+        this.gpsManager = gpsManager;
 
         initVars();
         createQuickActions();
@@ -117,9 +120,10 @@ public class ActionBar {
 
     }
 
-    public static ActionBar getActionBar( Activity activity, int activityId, ApplicationManager applicationManager ) {
+    public static ActionBar getActionBar( Activity activity, int activityId, ApplicationManager applicationManager,
+            GpsManager gpsManager ) {
         View view = activity.findViewById(activityId);
-        return new ActionBar(view, applicationManager);
+        return new ActionBar(view, applicationManager, gpsManager);
     }
 
     public void setTitle( int titleResourceId, int titleViewId ) {
@@ -208,15 +212,15 @@ public class ActionBar {
 
     private String createGpsInfo() {
         double azimuth = applicationManager.getNormalAzimuth();
-        GpsLocation loc = applicationManager.getLoc();
+        GpsLocation loc = gpsManager.getLocation();
 
         StringBuilder sb = new StringBuilder();
-        if (loc == null || !applicationManager.isGpsEnabled()) {
+        if (loc == null || !gpsManager.isGpsEnabled()) {
             // Logger.d("COMPASSVIEW", "Location from gps is null!");
             sb.append(nodataString);
             sb.append("\n");
             sb.append(gpsonString);
-            sb.append(": ").append(applicationManager.isGpsEnabled()); //$NON-NLS-1$
+            sb.append(": ").append(gpsManager.isGpsEnabled()); //$NON-NLS-1$
             sb.append("\n");
         } else {
             sb.append(timeString);
@@ -235,7 +239,7 @@ public class ActionBar {
             sb.append(" ").append((int) (360 - azimuth)); //$NON-NLS-1$
             sb.append("\n");
             sb.append(loggingString);
-            sb.append(": ").append(applicationManager.isGpsLogging()); //$NON-NLS-1$
+            sb.append(": ").append(gpsManager.isGpsLogging()); //$NON-NLS-1$
         }
         return sb.toString();
     }
@@ -246,9 +250,9 @@ public class ActionBar {
         View gpsOnOffView = actionBarView.findViewById(R.id.gpsOnOff);
         Resources resources = gpsOnOffView.getResources();
 
-        if (applicationManager.isGpsEnabled()) {
+        if (gpsManager.isGpsEnabled()) {
             Logger.d(this, "GPS seems to be on");
-            if (applicationManager.isGpsLogging()) {
+            if (gpsManager.isGpsLogging()) {
                 Logger.d(this, "GPS seems to be also logging");
                 gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_logging));
             } else {
