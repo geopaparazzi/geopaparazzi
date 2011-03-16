@@ -26,6 +26,7 @@
 			<FrameLayout android:layout_width="fill_parent"
 				android:orientation="vertical" android:layout_height="fill_parent"
 				android:id="@+id/mapslidecontent">
+				<!-- the zoombar -->
 				<LinearLayout android:layout_width="wrap_content"
 					android:id="@+id/seekbarlayout" android:layout_height="fill_parent"
 					android:orientation="vertical" android:layout_gravity="right">
@@ -43,13 +44,34 @@
 						android:text="17" android:layout_marginTop="3dip"
 						android:layout_marginBottom="3dip" android:textStyle="bold"></Button>
 				</LinearLayout>
+				<!-- the tools buttons -->
 				<LinearLayout android:layout_width="wrap_content"
 					android:id="@+id/maptoolslayout" android:layout_height="fill_parent"
 					android:orientation="vertical" android:layout_gravity="left">
 					<ImageButton android:id="@+id/addnotebytagbutton"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
-						android:src="@drawable/ic_menu_star"></ImageButton>
+						android:background="@drawable/android:ic_menu_add"
+						android:layout_margin="5dip"
+						></ImageButton>
+					<ImageButton android:id="@+id/removenotesbutton"
+						android:layout_width="wrap_content" android:layout_height="wrap_content"
+						android:background="@drawable/ic_menu_remove"
+						android:layout_margin="5dip"
+						></ImageButton>
+					<ImageButton android:id="@+id/addbookmarkbutton"
+						android:layout_width="wrap_content" android:layout_height="wrap_content"
+						android:layout_margin="5dip"
+						android:background="@drawable/ic_menu_star"></ImageButton>
+					<ImageButton android:id="@+id/removebookmarkbutton"
+						android:layout_width="wrap_content" android:layout_height="wrap_content"
+						android:layout_margin="5dip"
+						android:background="@drawable/ic_menu_removestar"></ImageButton>
+					<ImageButton android:id="@+id/togglemeasuremodebutton"
+						android:layout_width="wrap_content" android:layout_height="wrap_content"
+						android:layout_margin="5dip"
+						android:background="@drawable/measuremode"></ImageButton>
 				</LinearLayout>
+				<!-- the center on gps button -->
 				<ImageButton android:id="@+id/center_on_gps_btn"
 					android:src="@android:drawable/ic_menu_mylocation"
 					android:layout_width="wrap_content" android:layout_height="wrap_content"

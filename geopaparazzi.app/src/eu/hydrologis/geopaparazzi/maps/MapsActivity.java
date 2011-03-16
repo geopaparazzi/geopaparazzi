@@ -173,6 +173,7 @@ public class MapsActivity extends Activity {
         slidingDrawer.setOnDrawerOpenListener(new SlidingDrawer.OnDrawerOpenListener(){
             public void onDrawerOpened() {
                 Logger.d(this, "Enable drawing");
+                sliderIsOpen = true;
                 slideHandleButton.setBackgroundResource(R.drawable.min);
                 startDrawingAgain();
             }
@@ -196,6 +197,39 @@ public class MapsActivity extends Activity {
             public void onScrollStarted() {
                 Logger.d(this, "Scroll Start Disable drawing");
                 mapsView.enableDrawing(false);
+            }
+        });
+
+        /*
+         * tool buttons
+         */
+        ImageButton addnotebytagButton = (ImageButton) findViewById(R.id.addnotebytagbutton);
+        addnotebytagButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                Intent osmTagsIntent = new Intent(Constants.TAGS);
+                osmTagsIntent.putExtra(Constants.VIEW_CENTER_LAT, mapsView.getCenterLat());
+                osmTagsIntent.putExtra(Constants.VIEW_CENTER_LON, mapsView.getCenterLon());
+                startActivity(osmTagsIntent);
+            }
+        });
+
+        ImageButton addBookmarkButton = (ImageButton) findViewById(R.id.addbookmarkbutton);
+        addBookmarkButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                addBookmark();
+            }
+        });
+
+        final ImageButton toggleMeasuremodeButton = (ImageButton) findViewById(R.id.togglemeasuremodebutton);
+        toggleMeasuremodeButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                boolean isInMeasureMode = mapsView.isMeasureMode();
+                mapsView.setMeasureMode(!isInMeasureMode);
+                if (!isInMeasureMode) {
+                    toggleMeasuremodeButton.setBackgroundResource(R.drawable.measuremode_on);
+                } else {
+                    toggleMeasuremodeButton.setBackgroundResource(R.drawable.measuremode);
+                }
             }
         });
 
@@ -281,43 +315,7 @@ public class MapsActivity extends Activity {
             startActivity(osmTagsIntent);
             return true;
         case MENU_ADDBOOKMARK:
-            final float centerLat = mapsView.getCenterLat();
-            final float centerLon = mapsView.getCenterLon();
-            final EditText input = new EditText(this);
-            final String newDate = Constants.TIME_FORMATTER.format(new Date());
-            final String proposedName = "bookmark " + newDate;
-            input.setText(proposedName);
-            Builder builder = new AlertDialog.Builder(this).setTitle("New Bookmark");
-            builder.setMessage("Enter a name for the new bookmark (optional)");
-            builder.setView(input);
-            builder.setIcon(android.R.drawable.ic_dialog_info)
-                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
-                        public void onClick( DialogInterface dialog, int whichButton ) {
-                        }
-                    }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
-                        public void onClick( DialogInterface dialog, int whichButton ) {
-                            try {
-                                Editable value = input.getText();
-                                String newName = value.toString();
-                                if (newName == null || newName.length() < 1) {
-                                    newName = proposedName;;
-                                }
-
-                                int zoom = mapsView.getZoom();
-                                float n = mapsView.getScreenNorth();
-                                float s = mapsView.getScreenSouth();
-                                float w = mapsView.getScreenWest();
-                                float e = mapsView.getScreenEast();
-                                DaoBookmarks
-                                        .addBookmark(getApplicationContext(), centerLon, centerLat, newName, zoom, n, s, w, e);
-                                mapsView.invalidate();
-                            } catch (IOException e) {
-                                Logger.e(this, e.getLocalizedMessage(), e);
-                                e.printStackTrace();
-                                Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    }).setCancelable(false).show();
+            addBookmark();
 
             return true;
         case MENU_DELETEVISIBLENOTES: {
@@ -438,6 +436,45 @@ public class MapsActivity extends Activity {
             return true;
         }
         return super.onMenuItemSelected(featureId, item);
+    }
+
+    private void addBookmark() {
+        final float centerLat = mapsView.getCenterLat();
+        final float centerLon = mapsView.getCenterLon();
+        final EditText input = new EditText(this);
+        final String newDate = Constants.TIME_FORMATTER.format(new Date());
+        final String proposedName = "bookmark " + newDate;
+        input.setText(proposedName);
+        Builder builder = new AlertDialog.Builder(this).setTitle("New Bookmark");
+        builder.setMessage("Enter a name for the new bookmark (optional)");
+        builder.setView(input);
+        builder.setIcon(android.R.drawable.ic_dialog_info)
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                    public void onClick( DialogInterface dialog, int whichButton ) {
+                    }
+                }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                    public void onClick( DialogInterface dialog, int whichButton ) {
+                        try {
+                            Editable value = input.getText();
+                            String newName = value.toString();
+                            if (newName == null || newName.length() < 1) {
+                                newName = proposedName;;
+                            }
+
+                            int zoom = mapsView.getZoom();
+                            float n = mapsView.getScreenNorth();
+                            float s = mapsView.getScreenSouth();
+                            float w = mapsView.getScreenWest();
+                            float e = mapsView.getScreenEast();
+                            DaoBookmarks.addBookmark(getApplicationContext(), centerLon, centerLat, newName, zoom, n, s, w, e);
+                            mapsView.invalidate();
+                        } catch (IOException e) {
+                            Logger.e(this, e.getLocalizedMessage(), e);
+                            e.printStackTrace();
+                            Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }).setCancelable(false).show();
     }
 
     private boolean bookmarksDeleted = false;
