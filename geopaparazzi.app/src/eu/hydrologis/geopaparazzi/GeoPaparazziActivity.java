@@ -50,6 +50,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.SlidingDrawer;
 import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.ActionItem;
@@ -89,6 +90,8 @@ public class GeoPaparazziActivity extends Activity {
 
     private File kmlOutputFile = null;
     private static final int BROWSERRETURNCODE = 666;
+
+    private boolean sliderIsOpen = false;
 
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
@@ -179,6 +182,20 @@ public class GeoPaparazziActivity extends Activity {
         exportButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
                 push(exportButtonId, v);
+            }
+        });
+
+        // slidingdrawer
+        final int slidingId = R.id.slide;
+        slidingDrawer = (SlidingDrawer) findViewById(slidingId);
+        slidingDrawer.setOnDrawerOpenListener(new SlidingDrawer.OnDrawerOpenListener(){
+            public void onDrawerOpened() {
+                sliderIsOpen = true;
+            }
+        });
+        slidingDrawer.setOnDrawerCloseListener(new SlidingDrawer.OnDrawerCloseListener(){
+            public void onDrawerClosed() {
+                sliderIsOpen = false;
             }
         });
 
@@ -366,6 +383,9 @@ public class GeoPaparazziActivity extends Activity {
     public boolean onKeyDown( int keyCode, KeyEvent event ) {
         // force to exit through the exit button
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (sliderIsOpen) {
+                slidingDrawer.animateClose();
+            }
             return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -461,6 +481,7 @@ public class GeoPaparazziActivity extends Activity {
             }
         };
     };
+    private SlidingDrawer slidingDrawer;
 
     private void exportToKml() {
 

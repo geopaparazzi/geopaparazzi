@@ -35,12 +35,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.Editable;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.SlidingDrawer;
 import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
@@ -75,6 +77,8 @@ public class MapsActivity extends Activity {
     private Button zoomInButton;
     private Button zoomOutButton;
     private VerticalSeekBar zoomBar;
+    private SlidingDrawer slidingDrawer;
+    private boolean sliderIsOpen;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -82,10 +86,6 @@ public class MapsActivity extends Activity {
         setContentView(R.layout.mapsview);
 
         ApplicationManager applicationManager = ApplicationManager.getInstance(this);
-
-        ActionBar actionBar = ActionBar.getActionBar(this, R.id.maps_action_bar, applicationManager);
-        actionBar.setTitle(R.string.app_name, R.id.action_bar_title);
-        actionBar.checkLogging();
 
         // requestWindowFeature(Window.FEATURE_PROGRESS);
         mapsView = (MapView) findViewById(R.id.osmviewid);
@@ -122,7 +122,6 @@ public class MapsActivity extends Activity {
             public void onProgressChanged( VerticalSeekBar seekBar, int progress, boolean fromUser ) {
                 this.progress = progress;
                 setNewZoom(progress, true);
-                inalidateMap();
             }
         });
 
@@ -163,6 +162,40 @@ public class MapsActivity extends Activity {
         centerOnGps.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
                 mapsView.centerOnGps();
+            }
+        });
+
+        // slidingdrawer
+        final int slidingId = R.id.mapslide;
+        slidingDrawer = (SlidingDrawer) findViewById(slidingId);
+        final Button slideHandleButton = (Button) findViewById(R.id.mapslidehandle);
+
+        slidingDrawer.setOnDrawerOpenListener(new SlidingDrawer.OnDrawerOpenListener(){
+            public void onDrawerOpened() {
+                Logger.d(this, "Enable drawing");
+                slideHandleButton.setBackgroundResource(R.drawable.min);
+                startDrawingAgain();
+            }
+        });
+        slidingDrawer.setOnDrawerCloseListener(new SlidingDrawer.OnDrawerCloseListener(){
+            public void onDrawerClosed() {
+                Logger.d(this, "Enable drawing");
+                slideHandleButton.setBackgroundResource(R.drawable.max);
+                sliderIsOpen = false;
+                startDrawingAgain();
+            }
+
+        });
+
+        slidingDrawer.setOnDrawerScrollListener(new SlidingDrawer.OnDrawerScrollListener(){
+            public void onScrollEnded() {
+                Logger.d(this, "Scroll End Disable drawing");
+                mapsView.enableDrawing(false);
+            }
+
+            public void onScrollStarted() {
+                Logger.d(this, "Scroll Start Disable drawing");
+                mapsView.enableDrawing(false);
             }
         });
 
@@ -409,7 +442,7 @@ public class MapsActivity extends Activity {
 
     private boolean bookmarksDeleted = false;
     private ProgressDialog bookmarksRemoveDialog;
-    Handler bookmarksRemoveHandler = new Handler(){
+    private Handler bookmarksRemoveHandler = new Handler(){
         public void handleMessage( Message msg ) {
             if (!bookmarksDeleted) {
                 bookmarksRemoveDialog.incrementProgressBy(1);
@@ -419,9 +452,10 @@ public class MapsActivity extends Activity {
             }
         }
     };
+
     private boolean notesDeleted = false;
     private ProgressDialog notesRemoveDialog;
-    Handler notesRemoveHandler = new Handler(){
+    private Handler notesRemoveHandler = new Handler(){
         public void handleMessage( Message msg ) {
             if (!notesDeleted) {
                 notesRemoveDialog.incrementProgressBy(1);
@@ -436,4 +470,30 @@ public class MapsActivity extends Activity {
         mapsView.invalidate();
     }
 
+    public boolean onKeyDown( int keyCode, KeyEvent event ) {
+        // force to exit through the exit button
+        if (keyCode == KeyEvent.KEYCODE_BACK && sliderIsOpen) {
+            slidingDrawer.animateClose();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private void startDrawingAgain() {
+        new Thread(new Runnable(){
+            public void run() {
+                runOnUiThread(new Runnable(){
+                    public void run() {
+                        try {
+                            Thread.sleep(300);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        mapsView.enableDrawing(true);
+                        inalidateMap();
+                    }
+                });
+            }
+        }).start();
+    }
 }

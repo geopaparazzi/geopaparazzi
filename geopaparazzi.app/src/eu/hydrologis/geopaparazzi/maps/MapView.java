@@ -135,6 +135,7 @@ public class MapView extends View implements ApplicationManagerListener {
     private int zoomLevelLabelLength2;
 
     private boolean drawGoto = false;
+    private boolean enableDrawing = true;
 
     private boolean touchDragging;
     private SharedPreferences preferences;
@@ -240,6 +241,7 @@ public class MapView extends View implements ApplicationManagerListener {
     }
 
     protected void onDraw( Canvas canvas ) {
+
         try {
             width = getMeasuredWidth();
             height = getMeasuredHeight();
@@ -320,6 +322,11 @@ public class MapView extends View implements ApplicationManagerListener {
                     }
 
                 }
+            }
+            
+            if (!enableDrawing) {
+                // draw only map
+                return;
             }
 
             if (!touchDragging) {
@@ -813,6 +820,7 @@ public class MapView extends View implements ApplicationManagerListener {
         Editor editor = preferences.edit();
         editor.putInt(Constants.PREFS_KEY_ZOOM, zoom);
         editor.commit();
+        enableDrawing = true;
     }
 
     /**
@@ -828,11 +836,13 @@ public class MapView extends View implements ApplicationManagerListener {
         gotoLat = centerLat;
         gotoLon = centerLon;
         this.drawGoto = drawGoto;
+        enableDrawing = true;
     }
 
     public void centerOnGps() {
         centerLat = gpsLat;
         centerLon = gpsLon;
+        enableDrawing = true;
         invalidateWithProgress();
     }
 
@@ -876,6 +886,7 @@ public class MapView extends View implements ApplicationManagerListener {
     private int decimationFactor;
     public boolean onTouchEvent( MotionEvent event ) {
         int action = event.getAction();
+        enableDrawing = true;
 
         currentX = (int) round(event.getX());
         currentY = (int) round(event.getY());
@@ -1077,6 +1088,10 @@ public class MapView extends View implements ApplicationManagerListener {
 
     public float getScreenWest() {
         return screenWest;
+    }
+
+    public void enableDrawing( boolean enableDrawing ) {
+        this.enableDrawing = enableDrawing;
     }
 
 }

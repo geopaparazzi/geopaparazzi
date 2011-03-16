@@ -10,45 +10,46 @@
 			android:id="@+id/osmviewid" android:layout_width="fill_parent"
 			android:layout_height="fill_parent" android:layout_weight="1">
 		</eu.hydrologis.geopaparazzi.maps.MapView>
-		<LinearLayout android:layout_width="wrap_content"
-			android:id="@+id/seekbarlayout" android:layout_height="fill_parent"
-			android:background="@color/hydrogreen" android:orientation="vertical">
-			<LinearLayout android:layout_width="wrap_content"
-				android:id="@+id/dummylayout" android:layout_height="@dimen/action_bar_height"
-				android:background="@color/hydrogreen">
-			</LinearLayout>
-			<Button android:id="@+id/zoomin"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-				android:background="@drawable/action_bar_button_drawable"
-			android:text="01"
-			android:paddingBottom="8dp"
-			android:paddingLeft="5dp"
-			></Button>
-			<eu.hydrologis.geopaparazzi.util.VerticalSeekBar
-				android:id="@+id/ZoomBar" android:progressDrawable="@drawable/progress_vertical"
-				android:thumb="@drawable/seek_thumb" android:layout_height="fill_parent"
-				android:layout_width="26dip" android:layout_weight="1" />
-			<Button android:id="@+id/zoomout"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:text="17"
-				android:background="@drawable/action_bar_button_drawable"
-			android:paddingTop="8dp"
-			android:paddingLeft="5dp"
-			></Button>
-		</LinearLayout>
+
 	</LinearLayout>
 
-	<include android:id="@+id/maps_action_bar" layout="@layout/action_bar"
-		android:layout_width="fill_parent" android:layout_height="@dimen/action_bar_height" />
-
-	<FrameLayout android:layout_width="fill_parent" android:id="@+id/navigation_buttons"
-		android:orientation="horizontal" android:layout_height="wrap_content"
-		android:layout_gravity="bottom">
-		<ImageButton android:id="@+id/center_on_gps_btn"
-			android:src="@android:drawable/ic_menu_mylocation"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"
-			android:background="@drawable/action_bar_button_drawable"
-			android:layout_gravity="clip_horizontal|center_vertical"
-			android:padding="5dp"></ImageButton>
+	<!-- the tools slider -->
+	<FrameLayout android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:gravity="bottom"
+		android:orientation="horizontal">
+		<SlidingDrawer android:layout_height="fill_parent"
+			android:handle="@+id/mapslidehandle" android:content="@+id/mapslidecontent"
+			android:id="@+id/mapslide" android:orientation="vertical"
+			android:layout_width="fill_parent">
+			<Button android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:id="@+id/mapslidehandle"
+				android:background="@drawable/max"></Button>
+			<FrameLayout android:layout_width="fill_parent"
+				android:orientation="vertical" android:layout_height="fill_parent"
+				android:id="@+id/mapslidecontent">
+				<LinearLayout android:layout_width="wrap_content"
+					android:id="@+id/seekbarlayout" android:layout_height="fill_parent"
+					android:orientation="vertical" android:layout_gravity="right">
+					<Button android:id="@+id/zoomin" android:layout_width="50dip"
+						android:layout_height="50dip" android:text="01"
+						android:layout_gravity="center_horizontal"
+						android:layout_marginTop="5dip" android:textStyle="bold"></Button>
+					<eu.hydrologis.geopaparazzi.util.VerticalSeekBar
+						android:id="@+id/ZoomBar" android:progressDrawable="@drawable/progress_vertical"
+						android:thumb="@drawable/seek_thumb" android:layout_height="fill_parent"
+						android:layout_gravity="center_horizontal" android:layout_width="26dip"
+						android:layout_weight="1" />
+					<Button android:id="@+id/zoomout" android:layout_width="50dip"
+						android:layout_gravity="center_horizontal" android:layout_height="50dip"
+						android:text="17" android:layout_marginTop="3dip"
+						android:layout_marginBottom="3dip" android:textStyle="bold"></Button>
+				</LinearLayout>
+				<ImageButton android:id="@+id/center_on_gps_btn"
+					android:src="@android:drawable/ic_menu_mylocation"
+					android:layout_width="wrap_content" android:layout_height="wrap_content"
+					android:background="@drawable/action_bar_button_drawable"
+					android:layout_gravity="bottom|left" android:padding="5dp"></ImageButton>
+			</FrameLayout>
+		</SlidingDrawer>
 	</FrameLayout>
 </FrameLayout>
