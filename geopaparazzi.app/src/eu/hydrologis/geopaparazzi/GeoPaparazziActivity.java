@@ -64,6 +64,7 @@ import eu.hydrologis.geopaparazzi.gps.GpsManager;
 import eu.hydrologis.geopaparazzi.kml.KmlExport;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
 import eu.hydrologis.geopaparazzi.maps.MapItem;
+import eu.hydrologis.geopaparazzi.sensors.SensorsManager;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.DirectoryBrowserActivity;
@@ -94,6 +95,7 @@ public class GeoPaparazziActivity extends Activity {
 
     private boolean sliderIsOpen = false;
     private GpsManager gpsManager;
+    private SensorsManager sensorManager;
 
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
@@ -115,7 +117,7 @@ public class GeoPaparazziActivity extends Activity {
         checkDebugLogger();
 
         if (actionBar == null) {
-            actionBar = ActionBar.getActionBar(this, R.id.action_bar, applicationManager, gpsManager);
+            actionBar = ActionBar.getActionBar(this, R.id.action_bar, applicationManager, gpsManager, sensorManager);
             actionBar.setTitle(R.string.app_name, R.id.action_bar_title);
         }
         actionBar.checkLogging();
@@ -126,6 +128,7 @@ public class GeoPaparazziActivity extends Activity {
         setContentView(R.layout.geopap_main);
 
         gpsManager = GpsManager.getInstance(this);
+        sensorManager = SensorsManager.getInstance(this);
 
         Object stateObj = getLastNonConfigurationInstance();
         if (stateObj instanceof ApplicationManager) {
@@ -558,7 +561,14 @@ public class GeoPaparazziActivity extends Activity {
         final String panicNumbersString = preferences.getString(PANICKEY, "");
         // Make sure there's a valid return address.
         if (panicNumbersString == null || panicNumbersString.length() == 0) {
-            ApplicationManager.openDialog(R.string.panic_number_notset, GeoPaparazziActivity.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(R.string.panic_number_notset).setCancelable(false)
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                        public void onClick( DialogInterface dialog, int id ) {
+                        }
+                    });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
         } else {
             String[] numbers = panicNumbersString.split(";");
             for( String number : numbers ) {
@@ -602,11 +612,25 @@ public class GeoPaparazziActivity extends Activity {
                         Toast.makeText(this, R.string.message_sent, Toast.LENGTH_LONG).show();
                     } catch (Exception e) {
                         Logger.e(this, e.getLocalizedMessage(), e);
-                        ApplicationManager.openDialog(R.string.panic_number_notset, this);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        builder.setMessage(R.string.panic_number_notset).setCancelable(false)
+                                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                                    public void onClick( DialogInterface dialog, int id ) {
+                                    }
+                                });
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.show();
                     }
 
                 } else {
-                    ApplicationManager.openDialog(R.string.gpslogging_only, this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage(R.string.gpslogging_only).setCancelable(false)
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                                public void onClick( DialogInterface dialog, int id ) {
+                                }
+                            });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
                 }
             }
         }

@@ -50,7 +50,7 @@ import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.gps.GpsManager;
-import eu.hydrologis.geopaparazzi.util.ApplicationManager;
+import eu.hydrologis.geopaparazzi.sensors.SensorsManager;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Note;
@@ -296,7 +296,14 @@ public class MapsActivity extends Activity {
                 List<MapItem> mapsList = DaoMaps.getMaps(this);
                 int mapsNum = mapsList.size();
                 if (mapsNum < 1) {
-                    ApplicationManager.openDialog(R.string.no_maps_in_list, this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setMessage(R.string.no_maps_in_list).setCancelable(false)
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                                public void onClick( DialogInterface dialog, int id ) {
+                                }
+                            });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
                     return true;
                 } else {
                     Intent mapDatalistIntent = new Intent(Constants.MAPSDATALIST);
@@ -319,8 +326,8 @@ public class MapsActivity extends Activity {
             return true;
         }
         case MENU_DOWNLOADMAPS:
-            final ApplicationManager applicationManager = ApplicationManager.getInstance(this);
-            boolean isInternetOn = applicationManager.isInternetOn();
+            final SensorsManager sensorsManager = SensorsManager.getInstance(this);
+            boolean isInternetOn = sensorsManager.isInternetOn();
             if (isInternetOn) {
                 float screenNorth = mapsView.getScreenNorth();
                 float screenSouth = mapsView.getScreenSouth();

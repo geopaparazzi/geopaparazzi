@@ -17,14 +17,12 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.*;
-import static eu.hydrologis.geopaparazzi.util.Constants.GPSLOGGINGINTERVALKEY;
-import static eu.hydrologis.geopaparazzi.util.Constants.GPS_LOGGING_INTERVAL;
+import static eu.hydrologis.geopaparazzi.util.Constants.BASEFOLDERKEY;
+import static eu.hydrologis.geopaparazzi.util.Constants.DECIMATION_FACTOR;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_GEOPAPARAZZI;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_KMLEXPORT;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_MAPSCACHE;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_MEDIA;
-import static java.lang.Math.toDegrees;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -43,18 +41,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.media.MediaRecorder;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.Editable;
@@ -68,33 +55,18 @@ import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.ActionItem;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction;
 import eu.hydrologis.geopaparazzi.database.DatabaseManager;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
-import eu.hydrologis.geopaparazzi.gps.GpsLogger;
 import eu.hydrologis.geopaparazzi.gps.GpsManager;
-import eu.hydrologis.geopaparazzi.maps.MapView;
-import eu.hydrologis.geopaparazzi.util.debug.Debug;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
-import eu.hydrologis.geopaparazzi.util.debug.TestMock;
 
 /**
  * Singleton that takes care of all the sensors and gps and loggings.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class ApplicationManager implements SensorEventListener, Serializable {
+public class ApplicationManager implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private static final String LOGTAG = "APPLICATIONMANAGER";
-
-    private SensorManager sensorManager;
-
-    private int accuracy;
-
-    private double normalAzimuth = -1;
-    // private double normalPitch = -1;
-    // private double normalRoll = -1;
-    private double pictureAzimuth = -1;
-    // private double picturePitch = -1;
-    // private double pictureRoll = -1;
 
     private Context context;
 
@@ -103,22 +75,6 @@ public class ApplicationManager implements SensorEventListener, Serializable {
     private File mediaDir;
     private File mapsCacheDir;
     private File kmlExportDir;
-
-    private List<ApplicationManagerListener> listeners = new ArrayList<ApplicationManagerListener>();
-
-    private float[] mags;
-
-    private boolean isReady;
-
-    private float[] accels;
-
-    private final static int matrix_size = 16;
-    private final float[] RM = new float[matrix_size];
-    private final float[] outR = new float[matrix_size];
-    private final float[] I = new float[matrix_size];
-    private final float[] values = new float[3];
-
-    private ConnectivityManager connectivityManager;
 
     private File debugLogFile;
 
@@ -135,16 +91,11 @@ public class ApplicationManager implements SensorEventListener, Serializable {
      * the system in background. In which case we need to recreate it.) 
      * 
      * @param context the context to refer to.
-     * @param osmCachePath the patch to the osmCache.
      * @return
      */
     public static ApplicationManager getInstance( Context context ) {
-        if (applicationManager == null && context != null) {
+        if (applicationManager == null) {
             applicationManager = new ApplicationManager(context);
-            applicationManager.activateSensorManagers();
-            applicationManager.startSensorListening();
-        } else if (applicationManager == null && context == null) {
-            throw new RuntimeException("this should not happen!");
         }
         return applicationManager;
     }
@@ -261,167 +212,6 @@ public class ApplicationManager implements SensorEventListener, Serializable {
         resetFile.createNewFile();
     }
 
-    /**
-     * Add a listener to sensors and gps.
-     * 
-     * @param listener the listener to add.
-     */
-    public void addListener( ApplicationManagerListener listener ) {
-        if (!listeners.contains(listener)) {
-            listeners.add(listener);
-        }
-    }
-
-    /**
-     * Remove a listener to sensors and gps.
-     * 
-     * @param listener the listener to remove.
-     */
-    public void removeListener( ApplicationManagerListener listener ) {
-        listeners.remove(listener);
-    }
-
-    /**
-     * Remove the osm listener.
-     * 
-     * @see #removeCompassListener().
-     */
-    public void removeOsmListener() {
-        for( ApplicationManagerListener l : listeners ) {
-            if (l instanceof MapView) {
-                listeners.remove(l);
-                break;
-            }
-        }
-    }
-
-    public void clearListeners() {
-        listeners.clear();
-    }
-
-    public Resources getResource() {
-        Resources resources = context.getResources();
-        return resources;
-    }
-
-    /**
-     * Get the location and sensor managers.
-     */
-    public void activateSensorManagers() {
-        sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
-        connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-    }
-
-    public boolean isInternetOn() {
-        NetworkInfo info = connectivityManager.getActiveNetworkInfo();
-        return (info != null && info.isConnected());
-    }
-
-    /**
-     * Stops listening to all the devices.
-     */
-    public void stopSensorListening() {
-        if (applicationManager != null) {
-            if (sensorManager != null)
-                sensorManager.unregisterListener(applicationManager);
-        }
-    }
-
-    /**
-     * Starts listening to all the devices.
-     */
-    public void startSensorListening() {
-
-        sensorManager.unregisterListener(applicationManager);
-        sensorManager.registerListener(applicationManager, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-                SensorManager.SENSOR_DELAY_NORMAL);
-        sensorManager.registerListener(applicationManager, sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
-                SensorManager.SENSOR_DELAY_NORMAL);
-        sensorManager.registerListener(applicationManager, sensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION),
-                SensorManager.SENSOR_DELAY_NORMAL);
-    }
-
-    public void onAccuracyChanged( Sensor sensor, int accuracy ) {
-        int type = sensor.getType();
-        if (type == SensorManager.SENSOR_ORIENTATION) {
-            this.accuracy = accuracy;
-        }
-    }
-
-    public void onSensorChanged( SensorEvent event ) {
-        Sensor sensor = event.sensor;
-        int type = sensor.getType();
-
-        switch( type ) {
-        case Sensor.TYPE_MAGNETIC_FIELD:
-            mags = event.values.clone();
-            isReady = true;
-            break;
-        case Sensor.TYPE_ACCELEROMETER:
-            accels = event.values.clone();
-            break;
-        // case Sensor.TYPE_ORIENTATION:
-        // orients = event.values.clone();
-        // break;
-        }
-
-        if (mags != null && accels != null && isReady) {
-            isReady = false;
-
-            SensorManager.getRotationMatrix(RM, I, accels, mags);
-            SensorManager.remapCoordinateSystem(RM, SensorManager.AXIS_X, SensorManager.AXIS_Y, outR);
-            SensorManager.getOrientation(outR, values);
-            normalAzimuth = toDegrees(values[0]);
-            // normalPitch = toDegrees(values[1]);
-            // normalRoll = toDegrees(values[2]);
-            // int orientation = getContext().getResources().getConfiguration().orientation;
-            // switch( orientation ) {
-            // case Configuration.ORIENTATION_LANDSCAPE:
-            // normalAzimuth = -1 * (normalAzimuth - 135);
-            // case Configuration.ORIENTATION_PORTRAIT:
-            // default:
-            // break;
-            // }
-            // normalAzimuth = normalAzimuth > 0 ? normalAzimuth : (360f + normalAzimuth);
-            // Logger.d(this, "NAZIMUTH = " + normalAzimuth);
-
-            SensorManager.remapCoordinateSystem(RM, SensorManager.AXIS_X, SensorManager.AXIS_Z, outR);
-            SensorManager.getOrientation(outR, values);
-
-            pictureAzimuth = toDegrees(values[0]);
-            // picturePitch = toDegrees(values[1]);
-            // pictureRoll = toDegrees(values[2]);
-            pictureAzimuth = pictureAzimuth > 0 ? pictureAzimuth : (360f + pictureAzimuth);
-
-            // Log.v(LOGTAG, "PAZIMUTH = " + pictureAzimuth);
-
-            for( ApplicationManagerListener listener : listeners ) {
-                listener.onSensorChanged(normalAzimuth, pictureAzimuth);
-            }
-        }
-
-    }
-
-    public int getAccuracy() {
-        return accuracy;
-    }
-
-    public double getNormalAzimuth() {
-        return normalAzimuth;
-    }
-
-    public double getPictureAzimuth() {
-        return pictureAzimuth;
-    }
-
-    // public double getPitch() {
-    // return pitch;
-    // }
-    //
-    // public double getRoll() {
-    // return roll;
-    // }
-
     public File getGeoPaparazziDir() {
         return geoPaparazziDir;
     }
@@ -429,10 +219,6 @@ public class ApplicationManager implements SensorEventListener, Serializable {
     public File getDatabaseFile() {
         return databaseFile;
     }
-
-    // public File getGpslogDir() {
-    // return gpslogDir;
-    // }
 
     public File getMapsCacheDir() {
         return mapsCacheDir;
@@ -449,10 +235,6 @@ public class ApplicationManager implements SensorEventListener, Serializable {
     public File getMediaDir() {
         return mediaDir;
     }
-
-    // public File getNotesDir() {
-    // return notesDir;
-    // }
 
     private void alert( String msg ) {
         Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
@@ -495,17 +277,7 @@ public class ApplicationManager implements SensorEventListener, Serializable {
         return picturesList;
     }
 
-    public static void openDialog( int message, Context activity ) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setMessage(message).setCancelable(false).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
-            public void onClick( DialogInterface dialog, int id ) {
-            }
-        });
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-    }
-
-    public static void openDialog( String message, Context activity ) {
+    private void openDialog( int message, Context activity ) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setMessage(message).setCancelable(false).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
             public void onClick( DialogInterface dialog, int id ) {
@@ -662,7 +434,7 @@ public class ApplicationManager implements SensorEventListener, Serializable {
                                     }
                                 }).setCancelable(false).show();
                     } else {
-                        ApplicationManager.openDialog(R.string.gpslogging_only, context);
+                        openDialog(R.string.gpslogging_only, context);
                     }
                 }
                 qa.dismiss();

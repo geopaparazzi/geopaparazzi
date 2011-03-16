@@ -35,6 +35,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi.sensors.SensorsManager;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
 
@@ -48,6 +49,7 @@ public class MapDownloadActivity extends Activity {
     private int selectedZoom;
 
     private ApplicationManager applicationManager;
+    private SensorsManager sensorsManager;
 
     @SuppressWarnings("nls")
     public void onCreate( Bundle icicle ) {
@@ -57,6 +59,7 @@ public class MapDownloadActivity extends Activity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             applicationManager = ApplicationManager.getInstance(this);
+            sensorsManager = SensorsManager.getInstance(this);
 
             final float[] nsewArray = extras.getFloatArray(Constants.NSEW_COORDS);
 
@@ -148,7 +151,7 @@ public class MapDownloadActivity extends Activity {
             public void run() {
                 downloadFinished = false;
                 File cacheDir = applicationManager.getMapsCacheDir();
-                boolean isInternetOn = applicationManager.isInternetOn();
+                boolean isInternetOn = sensorsManager.isInternetOn();
                 TileCache tC = new TileCache(cacheDir, isInternetOn, null);
                 for( String tileDef : tilesSet ) {
                     try {

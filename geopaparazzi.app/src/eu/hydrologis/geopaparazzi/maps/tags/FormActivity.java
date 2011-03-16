@@ -27,6 +27,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
@@ -40,7 +42,6 @@ import android.widget.TextView;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.maps.TagsManager;
-import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
@@ -99,7 +100,14 @@ public class FormActivity extends Activity {
                 } catch (Exception e) {
                     Logger.e(this, e.getLocalizedMessage(), e);
                     e.printStackTrace();
-                    ApplicationManager.openDialog("An error occurred while saving:\n" + endString, FormActivity.this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(FormActivity.this);
+                    builder.setMessage("An error occurred while saving:\n" + endString).setCancelable(false)
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                                public void onClick( DialogInterface dialog, int id ) {
+                                }
+                            });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
                 }
             }
 

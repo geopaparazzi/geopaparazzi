@@ -45,6 +45,7 @@ import android.widget.ImageButton;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.gps.GpsManager;
+import eu.hydrologis.geopaparazzi.sensors.SensorsManager;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
@@ -127,7 +128,8 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
                 lon = loc.getLongitude();
                 altim = loc.getAltitude();
             }
-            double azimuth = deviceManager.getPictureAzimuth();
+            SensorsManager sensorsManager = SensorsManager.getInstance(this);
+            double azimuth = sensorsManager.getPictureAzimuth();
             // long utcTimeInSeconds = deviceManager.getUtcTime() / 1000L;
 
             String latString = String.valueOf(lat);

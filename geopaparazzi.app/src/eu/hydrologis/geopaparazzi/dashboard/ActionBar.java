@@ -38,6 +38,7 @@ import eu.hydrologis.geopaparazzi.dashboard.quickaction.actionbar.ActionItem;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.actionbar.QuickAction;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.gps.GpsManager;
+import eu.hydrologis.geopaparazzi.sensors.SensorsManager;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
@@ -64,11 +65,14 @@ public class ActionBar {
     // private static String validPointsString;
     // private static String distanceString;
     // private static String satellitesString;
+    private final SensorsManager sensorsManager;
 
-    public ActionBar( View actionBarView, ApplicationManager applicationManager, GpsManager gpsManager ) {
+    public ActionBar( View actionBarView, ApplicationManager applicationManager, GpsManager gpsManager,
+            SensorsManager sensorsManager ) {
         this.actionBarView = actionBarView;
         this.applicationManager = applicationManager;
         this.gpsManager = gpsManager;
+        this.sensorsManager = sensorsManager;
 
         initVars();
         createQuickActions();
@@ -121,9 +125,9 @@ public class ActionBar {
     }
 
     public static ActionBar getActionBar( Activity activity, int activityId, ApplicationManager applicationManager,
-            GpsManager gpsManager ) {
+            GpsManager gpsManager, SensorsManager sensorsManager ) {
         View view = activity.findViewById(activityId);
-        return new ActionBar(view, applicationManager, gpsManager);
+        return new ActionBar(view, applicationManager, gpsManager, sensorsManager);
     }
 
     public void setTitle( int titleResourceId, int titleViewId ) {
@@ -211,7 +215,7 @@ public class ActionBar {
     }
 
     private String createGpsInfo() {
-        double azimuth = applicationManager.getNormalAzimuth();
+        double azimuth = sensorsManager.getNormalAzimuth();
         GpsLocation loc = gpsManager.getLocation();
 
         StringBuilder sb = new StringBuilder();

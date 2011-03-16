@@ -62,6 +62,7 @@ import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.gps.GpsManager;
 import eu.hydrologis.geopaparazzi.gps.GpsManagerListener;
+import eu.hydrologis.geopaparazzi.sensors.SensorsManager;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.BoundingBox;
@@ -206,7 +207,8 @@ public class MapView extends View implements GpsManagerListener {
         ApplicationManager applicationManager = ApplicationManager.getInstance(context);
         decimationFactor = applicationManager.getDecimationFactor();
         File osmCacheDir = applicationManager.getMapsCacheDir();
-        boolean internetIsOn = applicationManager.isInternetOn();
+        SensorsManager sensorsManager = SensorsManager.getInstance(context);
+        boolean internetIsOn = sensorsManager.isInternetOn();
         tileCache = new TileCache(osmCacheDir, internetIsOn, null);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
