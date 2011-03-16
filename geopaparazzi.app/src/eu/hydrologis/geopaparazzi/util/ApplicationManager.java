@@ -123,8 +123,6 @@ public class ApplicationManager implements SensorEventListener, LocationListener
 
     private List<ApplicationManagerListener> listeners = new ArrayList<ApplicationManagerListener>();
 
-    private MapView mapView;
-
     private float[] mags;
 
     private boolean isReady;
@@ -609,14 +607,6 @@ public class ApplicationManager implements SensorEventListener, LocationListener
             return false;
         }
         return gpsLogger.isLogging();
-    }
-
-    public void setMapView( MapView mapView ) {
-        this.mapView = mapView;
-
-        if (gpsLoc != null) {
-            mapView.onLocationChanged(gpsLoc);
-        }
     }
 
     public List<Float> getLast100Elevations() {

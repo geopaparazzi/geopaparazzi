@@ -34,7 +34,6 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class InsertCoordActivity extends Activity {
-    private ApplicationManager applicationManager;
     private EditText latText;
     private EditText lonText;
 
@@ -43,8 +42,6 @@ public class InsertCoordActivity extends Activity {
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
         setContentView(R.layout.insertcoord);
-
-        applicationManager = ApplicationManager.getInstance(this);
 
         lonText = (EditText) findViewById(R.id.longitudetext);
         latText = (EditText) findViewById(R.id.latitudetext);

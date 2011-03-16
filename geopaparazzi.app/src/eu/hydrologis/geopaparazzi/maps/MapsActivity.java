@@ -45,7 +45,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SlidingDrawer;
 import android.widget.Toast;
-import eu.hydrologis.geopaparazzi.GeoPaparazziActivity;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
@@ -86,7 +85,6 @@ public class MapsActivity extends Activity {
         // requestWindowFeature(Window.FEATURE_PROGRESS);
         mapsView = (MapView) findViewById(R.id.osmviewid);
         ViewportManager.INSTANCE.setMapActivity(this);
-        applicationManager.setMapView(mapsView);
         applicationManager.addListener(mapsView);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
