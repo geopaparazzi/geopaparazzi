@@ -30,19 +30,20 @@
 				<LinearLayout android:layout_width="wrap_content"
 					android:id="@+id/seekbarlayout" android:layout_height="fill_parent"
 					android:orientation="vertical" android:layout_gravity="right">
-					<Button android:id="@+id/zoomin" android:layout_width="50dip"
-						android:layout_height="50dip" android:text="01"
-						android:layout_gravity="center_horizontal"
-						android:layout_marginTop="5dip" android:textStyle="bold"></Button>
+					<Button android:id="@+id/zoomin" android:layout_width="wrap_content"
+						android:layout_height="wrap_content" android:text="01"
+						android:layout_gravity="center_horizontal" android:background="@drawable/buttoncircle"
+						android:layout_marginBottom="5dip" android:textStyle="bold"></Button>
 					<eu.hydrologis.geopaparazzi.util.VerticalSeekBar
 						android:id="@+id/ZoomBar" android:progressDrawable="@drawable/progress_vertical"
 						android:thumb="@drawable/seek_thumb" android:layout_height="fill_parent"
 						android:layout_gravity="center_horizontal" android:layout_width="26dip"
 						android:layout_weight="1" />
-					<Button android:id="@+id/zoomout" android:layout_width="50dip"
-						android:layout_gravity="center_horizontal" android:layout_height="50dip"
+					<Button android:id="@+id/zoomout" android:layout_width="wrap_content"
+						android:layout_gravity="center_horizontal" android:layout_height="wrap_content"
 						android:text="17" android:layout_marginTop="3dip"
-						android:layout_marginBottom="3dip" android:textStyle="bold"></Button>
+						android:background="@drawable/buttoncircle"
+						android:layout_marginBottom="5dip" android:textStyle="bold"></Button>
 				</LinearLayout>
 				<!-- the tools buttons -->
 				<LinearLayout android:layout_width="wrap_content"
@@ -50,33 +51,26 @@
 					android:orientation="vertical" android:layout_gravity="left">
 					<ImageButton android:id="@+id/addnotebytagbutton"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
-						android:background="@drawable/addnote"
-						android:layout_margin="5dip"
-						></ImageButton>
+						android:background="@drawable/addnote" android:layout_margin="5dip"></ImageButton>
 					<ImageButton android:id="@+id/removenotesbutton"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
-						android:background="@drawable/deletenote"
-						android:layout_margin="5dip"
-						></ImageButton>
+						android:background="@drawable/deletenote" android:layout_margin="5dip"></ImageButton>
 					<ImageButton android:id="@+id/addbookmarkbutton"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
-						android:layout_margin="5dip"
-						android:background="@drawable/addbookmark"></ImageButton>
+						android:layout_margin="5dip" android:background="@drawable/addbookmark"></ImageButton>
 					<ImageButton android:id="@+id/removebookmarkbutton"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
-						android:layout_margin="5dip"
-						android:background="@drawable/deletebookmark"></ImageButton>
+						android:layout_margin="5dip" android:background="@drawable/deletebookmark"></ImageButton>
 					<ImageButton android:id="@+id/togglemeasuremodebutton"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
-						android:layout_margin="5dip"
-						android:background="@drawable/measuremode"></ImageButton>
+						android:layout_margin="5dip" android:background="@drawable/measuremode"></ImageButton>
 				</LinearLayout>
 				<!-- the center on gps button -->
 				<ImageButton android:id="@+id/center_on_gps_btn"
 					android:src="@android:drawable/ic_menu_mylocation"
 					android:layout_width="wrap_content" android:layout_height="wrap_content"
 					android:background="@drawable/action_bar_button_drawable"
-					android:layout_gravity="bottom|left" android:padding="5dp"></ImageButton>
+					android:layout_gravity="bottom|center" android:padding="5dp"></ImageButton>
 			</FrameLayout>
 		</SlidingDrawer>
 	</FrameLayout>
