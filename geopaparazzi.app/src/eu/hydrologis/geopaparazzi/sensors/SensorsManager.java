@@ -199,7 +199,7 @@ public class SensorsManager implements SensorEventListener {
             // pictureRoll = toDegrees(values[2]);
             pictureAzimuth = pictureAzimuth > 0 ? pictureAzimuth : (360f + pictureAzimuth);
 
-            // Log.v(LOGTAG, "PAZIMUTH = " + pictureAzimuth);
+            // Logger.d(sensorManager, "PAZIMUTH = " + pictureAzimuth);
 
             for( SensorsManagerListener listener : listeners ) {
                 listener.onSensorChanged(normalAzimuth, pictureAzimuth);

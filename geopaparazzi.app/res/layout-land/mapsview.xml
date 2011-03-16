@@ -48,25 +48,31 @@
 				<!-- the tools buttons -->
 				<LinearLayout android:layout_width="wrap_content"
 					android:id="@+id/maptoolslayout" android:layout_height="fill_parent"
-					android:orientation="vertical" android:layout_gravity="left">
-					<ImageButton android:id="@+id/addnotebytagbutton"
-						android:layout_width="wrap_content" android:layout_height="wrap_content"
-						android:background="@drawable/addnote" android:layout_margin="5dip"></ImageButton>
-					<ImageButton android:id="@+id/removenotesbutton"
-						android:layout_width="wrap_content" android:layout_height="wrap_content"
-						android:background="@drawable/deletenote" android:layout_margin="5dip"></ImageButton>
-					<ImageButton android:id="@+id/addbookmarkbutton"
-						android:layout_width="wrap_content" android:layout_height="wrap_content"
-						android:layout_margin="5dip" android:background="@drawable/addbookmark"></ImageButton>
-					<ImageButton android:id="@+id/removebookmarkbutton"
-						android:layout_width="wrap_content" android:layout_height="wrap_content"
-						android:layout_margin="5dip" android:background="@drawable/deletebookmark"></ImageButton>
-					<ImageButton android:id="@+id/bookmarkslistbutton"
-						android:layout_width="wrap_content" android:layout_height="wrap_content"
-						android:layout_margin="5dip" android:background="@drawable/bookmarkslist"></ImageButton>
-					<ImageButton android:id="@+id/togglemeasuremodebutton"
-						android:layout_width="wrap_content" android:layout_height="wrap_content"
-						android:layout_margin="5dip" android:background="@drawable/measuremode"></ImageButton>
+					android:orientation="horizontal" android:layout_gravity="left">
+					<LinearLayout android:layout_width="wrap_content"
+						android:layout_height="fill_parent" android:orientation="vertical">
+						<ImageButton android:id="@+id/addnotebytagbutton"
+							android:layout_width="wrap_content" android:layout_height="wrap_content"
+							android:background="@drawable/addnote" android:layout_margin="5dip"></ImageButton>
+						<ImageButton android:id="@+id/removenotesbutton"
+							android:layout_width="wrap_content" android:layout_height="wrap_content"
+							android:background="@drawable/deletenote" android:layout_margin="5dip"></ImageButton>
+						<ImageButton android:id="@+id/togglemeasuremodebutton"
+							android:layout_width="wrap_content" android:layout_height="wrap_content"
+							android:layout_margin="5dip" android:background="@drawable/measuremode"></ImageButton>
+					</LinearLayout>
+					<LinearLayout android:layout_width="wrap_content"
+						android:layout_height="fill_parent" android:orientation="vertical">
+						<ImageButton android:id="@+id/addbookmarkbutton"
+							android:layout_width="wrap_content" android:layout_height="wrap_content"
+							android:layout_margin="5dip" android:background="@drawable/addbookmark"></ImageButton>
+						<ImageButton android:id="@+id/removebookmarkbutton"
+							android:layout_width="wrap_content" android:layout_height="wrap_content"
+							android:layout_margin="5dip" android:background="@drawable/deletebookmark"></ImageButton>
+						<ImageButton android:id="@+id/bookmarkslistbutton"
+							android:layout_width="wrap_content" android:layout_height="wrap_content"
+							android:layout_margin="5dip" android:background="@drawable/bookmarkslist"></ImageButton>
+					</LinearLayout>
 				</LinearLayout>
 				<!-- the center on gps button -->
 				<ImageButton android:id="@+id/center_on_gps_btn"

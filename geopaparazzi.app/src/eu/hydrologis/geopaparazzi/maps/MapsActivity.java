@@ -63,9 +63,8 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
 public class MapsActivity extends Activity {
     private static final int MENU_GPSDATA = 1;
     private static final int MENU_MAPDATA = 2;
-    private static final int MENU_BOOKMARKS = 3;
-    private static final int MENU_DOWNLOADMAPS = 4;
-    private static final int GO_TO = 5;
+    private static final int MENU_DOWNLOADMAPS = 3;
+    private static final int GO_TO = 4;
 
     private MapView mapsView;
 
@@ -229,6 +228,14 @@ public class MapsActivity extends Activity {
             }
         });
 
+        ImageButton listBookmarksButton = (ImageButton) findViewById(R.id.bookmarkslistbutton);
+        listBookmarksButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                Intent intent = new Intent(MapsActivity.this, BookmarksListActivity.class);
+                startActivity(intent);
+            }
+        });
+
         final ImageButton toggleMeasuremodeButton = (ImageButton) findViewById(R.id.togglemeasuremodebutton);
         toggleMeasuremodeButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
@@ -276,10 +283,8 @@ public class MapsActivity extends Activity {
         super.onCreateOptionsMenu(menu);
         menu.add(Menu.NONE, MENU_GPSDATA, 1, R.string.mainmenu_gpsdataselect).setIcon(android.R.drawable.ic_menu_compass);
         menu.add(Menu.NONE, MENU_MAPDATA, 2, R.string.mainmenu_mapdataselect).setIcon(android.R.drawable.ic_menu_compass);
-        menu.add(Menu.CATEGORY_SECONDARY, MENU_BOOKMARKS, 3, R.string.mainmenu_bookmarks)
-                .setIcon(android.R.drawable.ic_input_get);
-        menu.add(Menu.CATEGORY_SECONDARY, GO_TO, 4, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
-        menu.add(Menu.CATEGORY_SECONDARY, MENU_DOWNLOADMAPS, 5, R.string.menu_download_maps).setIcon(
+        menu.add(Menu.CATEGORY_SECONDARY, GO_TO, 3, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
+        menu.add(Menu.CATEGORY_SECONDARY, MENU_DOWNLOADMAPS, 4, R.string.menu_download_maps).setIcon(
                 android.R.drawable.ic_menu_mapmode);
         return true;
     }
@@ -317,11 +322,6 @@ public class MapsActivity extends Activity {
             }
         case GO_TO: {
             Intent intent = new Intent(Constants.INSERT_COORD);
-            startActivity(intent);
-            return true;
-        }
-        case MENU_BOOKMARKS: {
-            Intent intent = new Intent(this, BookmarksListActivity.class);
             startActivity(intent);
             return true;
         }
