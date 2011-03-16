@@ -50,22 +50,22 @@
 					android:orientation="vertical" android:layout_gravity="left">
 					<ImageButton android:id="@+id/addnotebytagbutton"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
-						android:background="@drawable/android:ic_menu_add"
+						android:background="@drawable/addnote"
 						android:layout_margin="5dip"
 						></ImageButton>
 					<ImageButton android:id="@+id/removenotesbutton"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
-						android:background="@drawable/ic_menu_remove"
+						android:background="@drawable/deletenote"
 						android:layout_margin="5dip"
 						></ImageButton>
 					<ImageButton android:id="@+id/addbookmarkbutton"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
 						android:layout_margin="5dip"
-						android:background="@drawable/ic_menu_star"></ImageButton>
+						android:background="@drawable/addbookmark"></ImageButton>
 					<ImageButton android:id="@+id/removebookmarkbutton"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
 						android:layout_margin="5dip"
-						android:background="@drawable/ic_menu_removestar"></ImageButton>
+						android:background="@drawable/deletebookmark"></ImageButton>
 					<ImageButton android:id="@+id/togglemeasuremodebutton"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
 						android:layout_margin="5dip"
