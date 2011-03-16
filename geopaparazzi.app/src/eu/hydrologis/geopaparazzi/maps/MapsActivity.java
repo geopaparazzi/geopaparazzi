@@ -42,10 +42,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.SlidingDrawer;
 import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
@@ -168,7 +168,7 @@ public class MapsActivity extends Activity {
         // slidingdrawer
         final int slidingId = R.id.mapslide;
         slidingDrawer = (SlidingDrawer) findViewById(slidingId);
-        final Button slideHandleButton = (Button) findViewById(R.id.mapslidehandle);
+        final ImageView slideHandleButton = (ImageView) findViewById(R.id.mapslidehandle);
 
         slidingDrawer.setOnDrawerOpenListener(new SlidingDrawer.OnDrawerOpenListener(){
             public void onDrawerOpened() {

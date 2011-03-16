@@ -15,15 +15,14 @@
 
 	<!-- the tools slider -->
 	<FrameLayout android:layout_width="fill_parent"
-		android:layout_height="fill_parent" android:gravity="bottom"
-		android:orientation="horizontal">
-		<SlidingDrawer android:layout_height="fill_parent"
+		android:layout_height="fill_parent">
+		<SlidingDrawer android:layout_height="wrap_content"
 			android:handle="@+id/mapslidehandle" android:content="@+id/mapslidecontent"
 			android:id="@+id/mapslide" android:orientation="vertical"
 			android:layout_width="fill_parent">
-			<Button android:layout_width="fill_parent"
+			<ImageView android:layout_width="fill_parent"
 				android:layout_height="wrap_content" android:id="@+id/mapslidehandle"
-				android:background="@drawable/max"></Button>
+				android:background="@drawable/max"></ImageView>
 			<FrameLayout android:layout_width="fill_parent"
 				android:orientation="vertical" android:layout_height="fill_parent"
 				android:id="@+id/mapslidecontent">
@@ -43,6 +42,13 @@
 						android:layout_gravity="center_horizontal" android:layout_height="50dip"
 						android:text="17" android:layout_marginTop="3dip"
 						android:layout_marginBottom="3dip" android:textStyle="bold"></Button>
+				</LinearLayout>
+				<LinearLayout android:layout_width="wrap_content"
+					android:id="@+id/maptoolslayout" android:layout_height="fill_parent"
+					android:orientation="vertical" android:layout_gravity="left">
+					<ImageButton android:id="@+id/addnotebytagbutton"
+						android:layout_width="wrap_content" android:layout_height="wrap_content"
+						android:src="@drawable/ic_menu_star"></ImageButton>
 				</LinearLayout>
 				<ImageButton android:id="@+id/center_on_gps_btn"
 					android:src="@android:drawable/ic_menu_mylocation"
