@@ -61,8 +61,8 @@ import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.gps.GpsManager;
+import eu.hydrologis.geopaparazzi.gps.GpsManagerListener;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
-import eu.hydrologis.geopaparazzi.util.ApplicationManagerListener;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.BoundingBox;
 import eu.hydrologis.geopaparazzi.util.Constants;
@@ -76,7 +76,7 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class MapView extends View implements ApplicationManagerListener {
+public class MapView extends View implements GpsManagerListener {
     private static final int TILESIZE = 256;
     public static final String LOGTAG = "MAPVIEW"; //$NON-NLS-1$
 
@@ -337,7 +337,7 @@ public class MapView extends View implements ApplicationManagerListener {
             }
             gpsUpdate = false;
 
-            if (!Float.isNaN(gpsLat) && !Float.isNaN(gpsLon)) {
+            if (isGpsValid()) {
                 // gps position
                 float gpsX = lonToScreen(width, gpsLon, centerLon, pixelDxInWorld);
                 float gpsY = latToScreen(height, gpsLat, centerLat, pixelDyInWorld);
@@ -381,6 +381,10 @@ public class MapView extends View implements ApplicationManagerListener {
             e.printStackTrace();
         }
 
+    }
+
+    private boolean isGpsValid() {
+        return !Float.isNaN(gpsLat) && !Float.isNaN(gpsLon);
     }
 
     // private void logGpsCoords( float gpsX, float gpsY ) {
@@ -785,9 +789,6 @@ public class MapView extends View implements ApplicationManagerListener {
         invalidateWithProgress();
     }
 
-    public void onSensorChanged( double normalAzimuth, double pictureAzimuth ) {
-    }
-
     public void zoomIn() {
         zoom = zoom + 1;
         if (zoom > 18)
@@ -842,6 +843,9 @@ public class MapView extends View implements ApplicationManagerListener {
     }
 
     public void centerOnGps() {
+        if (!isGpsValid()) {
+            return;
+        }
         centerLat = gpsLat;
         centerLon = gpsLon;
         enableDrawing = true;

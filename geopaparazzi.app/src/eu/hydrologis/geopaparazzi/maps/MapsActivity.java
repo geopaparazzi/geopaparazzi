@@ -49,6 +49,7 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
+import eu.hydrologis.geopaparazzi.gps.GpsManager;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
@@ -80,12 +81,12 @@ public class MapsActivity extends Activity {
 
         setContentView(R.layout.mapsview);
 
-        ApplicationManager applicationManager = ApplicationManager.getInstance(this);
+        GpsManager gpsManager = GpsManager.getInstance(this);
 
         // requestWindowFeature(Window.FEATURE_PROGRESS);
         mapsView = (MapView) findViewById(R.id.osmviewid);
         ViewportManager.INSTANCE.setMapActivity(this);
-        applicationManager.addListener(mapsView);
+        gpsManager.addListener(mapsView);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         // set zoom preferences

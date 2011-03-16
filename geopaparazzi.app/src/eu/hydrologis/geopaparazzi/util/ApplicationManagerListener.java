@@ -17,14 +17,9 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
-import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 
 public interface ApplicationManagerListener {
 
-    public void onLocationChanged( GpsLocation loc );
-
     public void onSensorChanged(double normalAzimuth, double pictureAzimuth );
-    
-    public void onSatellitesStatusChanged( int num, int max );
     
 }

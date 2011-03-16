@@ -76,13 +76,13 @@ public class GpsManager implements LocationListener {
         checkLoggerExists();
     }
 
-    public static GpsManager getInstance( Context context ) {
-        synchronized (gpsManager) {
-            if (gpsManager == null) {
-                gpsManager = new GpsManager(context);
-            }
-            return gpsManager;
+    public synchronized static GpsManager getInstance( Context context ) {
+        if (gpsManager == null) {
+            gpsManager = new GpsManager(context);
+            gpsManager.checkGps();
+            gpsManager.startListening();
         }
+        return gpsManager;
     }
 
     /**
