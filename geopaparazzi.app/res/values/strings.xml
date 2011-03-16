@@ -32,10 +32,10 @@
     
     <string name="about">About</string>
     <string name="exit">Exit</string>
-    <string name="cantcreate_sdcard">Wasn\'\'t able to create folder on sdcard ({0}). Exiting...</string>
-    <string name="sdcard_notexist">Sdcard folder doesn\'\'t exist or is not writable (is it possible it is mounted on a pc?). Exiting...</string>
-    <string name="cantwrite_gpslog">ERROR: couldn\'\'t write gps log!</string>
-    <string name="cantclose_gpslog">ERROR: couldn\'\'t close gps log!</string>
+    <string name="cantcreate_sdcard">Wasn\'t able to create folder on sdcard ({0}). Exiting...</string>
+    <string name="sdcard_notexist">Sdcard folder doesn\'t exist or is not writable (is it possible it is mounted on a pc?). Exiting...</string>
+    <string name="cantwrite_gpslog">ERROR: couldn\'t write gps log!</string>
+    <string name="cantclose_gpslog">ERROR: couldn\'t close gps log!</string>
     <string name="gpslogthread_interrupted">ERROR: gps log thread interrupted!</string>
     <string name="utctime">time: </string>
     <string name="altim">altim: </string>
@@ -51,7 +51,7 @@
 	<string name="zoomin">zoom in</string>
 	<string name="zoomout">zoom out</string>
 	<string name="centerongps">center on gps</string>
-	<string name="nogpscoordinate">The gps didn\'\'t send any coordinate yet. Try again in a minute.</string>
+	<string name="nogpscoordinate">The gps didn\'t send any coordinate yet. Try again in a minute.</string>
 	<string name="saveimg">Saving tile to disk</string>
 	<string name="goto_coordinate">go to coordinate</string>
 	<string name="askcoord">Please insert the coordinates to go to</string>
@@ -62,7 +62,7 @@
 	<string name="emptyaddress">Please insert an address.</string>
 	<string name="cantretrievefromaddress">Could not retrieve the location from the supplied address.</string>
 	<string name="prompt_gpsenable">Your gps is disabled! Would you like to enable it?</string>
-	<string name="nogps4google">The gps didn\'\'t supply any position yet. Can\'\'t Visualize any position on map.</string>
+	<string name="nogps4google">The gps didn\'t supply any position yet. Can\'t Visualize any position on map.</string>
 	<string name="width_label">width</string>
 	<string name="color_label">color</string>
 	<string name="last_position">Last position at</string>
@@ -217,7 +217,11 @@
     <string name="unselect_all">Unselect all</string>
 
     <string name="delete_visible_notes">delete visible notes</string>
+    <string name="delete_visible_notes_title">DELETE NOTES</string>
+    <string name="delete_visible_notes_prompt">Do you really want to remove all visible notes? This can\'t be undone.</string>
     <string name="delete_visible_bookmarks">delete visible bookmarks</string>
+    <string name="delete_visible_bookmarks_title">DELETE BOOKMARKS</string>
+    <string name="delete_visible_bookmarks_prompt">Do you really want to remove all visible bookmarks? This can\'t be undone.</string>
 
     <string name="menu_download_maps">download maps</string>
     <string name="mainmenu_addbookmark">add a bookmark</string>

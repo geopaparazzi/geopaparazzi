@@ -45,6 +45,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SlidingDrawer;
 import android.widget.Toast;
+import eu.hydrologis.geopaparazzi.GeoPaparazziActivity;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
@@ -62,14 +63,9 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
 public class MapsActivity extends Activity {
     private static final int MENU_GPSDATA = 1;
     private static final int MENU_MAPDATA = 2;
-    private static final int MENU_ADDTAGS = 3;
-    private static final int MENU_ADDBOOKMARK = 4;
-    private static final int MENU_DELETEVISIBLENOTES = 5;
-    private static final int MENU_DELETEVISIBLEBOOKMARKS = 6;
-    private static final int MENU_TOGGLE_MEASURE = 7;
-    private static final int MENU_DOWNLOADMAPS = 8;
-    private static final int MENU_BOOKMARKS = 9;
-    private static final int GO_TO = 10;
+    private static final int MENU_BOOKMARKS = 3;
+    private static final int MENU_DOWNLOADMAPS = 4;
+    private static final int GO_TO = 5;
 
     private MapView mapsView;
 
@@ -220,6 +216,20 @@ public class MapsActivity extends Activity {
             }
         });
 
+        ImageButton removeNotesButton = (ImageButton) findViewById(R.id.removenotesbutton);
+        removeNotesButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                deleteVisibleNotes();
+            }
+        });
+
+        ImageButton removeBookmarksButton = (ImageButton) findViewById(R.id.removebookmarkbutton);
+        removeBookmarksButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                deleteVisibleBookmarks();
+            }
+        });
+
         final ImageButton toggleMeasuremodeButton = (ImageButton) findViewById(R.id.togglemeasuremodebutton);
         toggleMeasuremodeButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
@@ -265,20 +275,12 @@ public class MapsActivity extends Activity {
 
     public boolean onCreateOptionsMenu( Menu menu ) {
         super.onCreateOptionsMenu(menu);
-        menu.add(Menu.NONE, MENU_ADDTAGS, 1, R.string.mainmenu_addtags).setIcon(android.R.drawable.ic_menu_add);
-        menu.add(Menu.NONE, MENU_ADDBOOKMARK, 2, R.string.mainmenu_addbookmark).setIcon(R.drawable.ic_menu_star);
-        menu.add(Menu.NONE, MENU_GPSDATA, 3, R.string.mainmenu_gpsdataselect).setIcon(android.R.drawable.ic_menu_compass);
-        menu.add(Menu.NONE, MENU_MAPDATA, 4, R.string.mainmenu_mapdataselect).setIcon(android.R.drawable.ic_menu_compass);
-        menu.add(Menu.CATEGORY_SECONDARY, MENU_TOGGLE_MEASURE, 5, R.string.mainmenu_togglemeasure).setIcon(
-                android.R.drawable.ic_menu_sort_by_size);
-        menu.add(Menu.CATEGORY_SECONDARY, MENU_BOOKMARKS, 6, R.string.mainmenu_bookmarks)
+        menu.add(Menu.NONE, MENU_GPSDATA, 1, R.string.mainmenu_gpsdataselect).setIcon(android.R.drawable.ic_menu_compass);
+        menu.add(Menu.NONE, MENU_MAPDATA, 2, R.string.mainmenu_mapdataselect).setIcon(android.R.drawable.ic_menu_compass);
+        menu.add(Menu.CATEGORY_SECONDARY, MENU_BOOKMARKS, 3, R.string.mainmenu_bookmarks)
                 .setIcon(android.R.drawable.ic_input_get);
-        menu.add(Menu.CATEGORY_SECONDARY, MENU_DELETEVISIBLENOTES, 7, R.string.delete_visible_notes).setIcon(
-                R.drawable.ic_menu_remove);
-        menu.add(Menu.CATEGORY_SECONDARY, MENU_DELETEVISIBLEBOOKMARKS, 8, R.string.delete_visible_bookmarks).setIcon(
-                R.drawable.ic_menu_removestar);
-        menu.add(Menu.CATEGORY_SECONDARY, GO_TO, 9, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
-        menu.add(Menu.CATEGORY_SECONDARY, MENU_DOWNLOADMAPS, 10, R.string.menu_download_maps).setIcon(
+        menu.add(Menu.CATEGORY_SECONDARY, GO_TO, 4, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
+        menu.add(Menu.CATEGORY_SECONDARY, MENU_DOWNLOADMAPS, 5, R.string.menu_download_maps).setIcon(
                 android.R.drawable.ic_menu_mapmode);
         return true;
     }
@@ -307,90 +309,6 @@ public class MapsActivity extends Activity {
                 e1.printStackTrace();
                 return false;
             }
-
-        case MENU_ADDTAGS:
-            Intent osmTagsIntent = new Intent(Constants.TAGS);
-            osmTagsIntent.putExtra(Constants.VIEW_CENTER_LAT, mapsView.getCenterLat());
-            osmTagsIntent.putExtra(Constants.VIEW_CENTER_LON, mapsView.getCenterLon());
-            startActivity(osmTagsIntent);
-            return true;
-        case MENU_ADDBOOKMARK:
-            addBookmark();
-
-            return true;
-        case MENU_DELETEVISIBLENOTES: {
-            try {
-                float n = mapsView.getScreenNorth();
-                float s = mapsView.getScreenSouth();
-                float w = mapsView.getScreenWest();
-                float e = mapsView.getScreenEast();
-                final List<Note> notesInBounds = DaoNotes.getNotesInWorldBounds(this, n, s, w, e);
-
-                int notesNum = notesInBounds.size();
-
-                notesRemoveDialog = new ProgressDialog(MapsActivity.this);
-                notesRemoveDialog.setCancelable(true);
-                notesRemoveDialog.setMessage(MessageFormat.format("Deleting {0} notes...", notesNum));
-                notesRemoveDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                notesRemoveDialog.setProgress(0);
-                notesRemoveDialog.setMax(notesNum);
-                notesRemoveDialog.show();
-
-                new Thread(){
-                    public void run() {
-                        for( Note note : notesInBounds ) {
-                            notesRemoveHandler.sendEmptyMessage(0);
-                            try {
-                                DaoNotes.deleteNote(MapsActivity.this, note.getId());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        notesDeleted = true;
-                        notesRemoveHandler.sendEmptyMessage(0);
-                    }
-                }.start();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return true;
-        }
-        case MENU_DELETEVISIBLEBOOKMARKS: {
-            try {
-                float n = mapsView.getScreenNorth();
-                float s = mapsView.getScreenSouth();
-                float w = mapsView.getScreenWest();
-                float e = mapsView.getScreenEast();
-                final List<Bookmark> bookmarksInBounds = DaoBookmarks.getBookmarksInWorldBounds(MapsActivity.this, n, s, w, e);
-                int bookmarksNum = bookmarksInBounds.size();
-
-                bookmarksRemoveDialog = new ProgressDialog(MapsActivity.this);
-                bookmarksRemoveDialog.setCancelable(true);
-                bookmarksRemoveDialog.setMessage(MessageFormat.format("Deleting {0} bookmarks...", bookmarksNum));
-                bookmarksRemoveDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                bookmarksRemoveDialog.setProgress(0);
-                bookmarksRemoveDialog.setMax(bookmarksNum);
-                bookmarksRemoveDialog.show();
-
-                new Thread(){
-                    public void run() {
-                        for( final Bookmark bookmark : bookmarksInBounds ) {
-                            bookmarksRemoveHandler.sendEmptyMessage(0);
-                            try {
-                                DaoBookmarks.deleteBookmark(MapsActivity.this, bookmark.getId());
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        bookmarksDeleted = true;
-                        bookmarksRemoveHandler.sendEmptyMessage(0);
-                    }
-                }.start();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return true;
-        }
         case GO_TO: {
             Intent intent = new Intent(Constants.INSERT_COORD);
             startActivity(intent);
@@ -401,10 +319,6 @@ public class MapsActivity extends Activity {
             startActivity(intent);
             return true;
         }
-        case MENU_TOGGLE_MEASURE:
-            mapsView.setMeasureMode(!mapsView.isMeasureMode());
-
-            return true;
         case MENU_DOWNLOADMAPS:
             final ApplicationManager applicationManager = ApplicationManager.getInstance(this);
             boolean isInternetOn = applicationManager.isInternetOn();
@@ -436,6 +350,102 @@ public class MapsActivity extends Activity {
             return true;
         }
         return super.onMenuItemSelected(featureId, item);
+    }
+
+    private void deleteVisibleBookmarks() {
+
+        new AlertDialog.Builder(this).setTitle(R.string.delete_visible_bookmarks_title)
+                .setMessage(R.string.delete_visible_bookmarks_prompt).setIcon(android.R.drawable.ic_dialog_alert)
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                    public void onClick( DialogInterface dialog, int whichButton ) {
+                    }
+                }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                    public void onClick( DialogInterface dialog, int whichButton ) {
+                        try {
+                            float n = mapsView.getScreenNorth();
+                            float s = mapsView.getScreenSouth();
+                            float w = mapsView.getScreenWest();
+                            float e = mapsView.getScreenEast();
+                            final List<Bookmark> bookmarksInBounds = DaoBookmarks.getBookmarksInWorldBounds(MapsActivity.this, n,
+                                    s, w, e);
+                            int bookmarksNum = bookmarksInBounds.size();
+
+                            bookmarksRemoveDialog = new ProgressDialog(MapsActivity.this);
+                            bookmarksRemoveDialog.setCancelable(true);
+                            bookmarksRemoveDialog.setMessage(MessageFormat.format("Deleting {0} bookmarks...", bookmarksNum));
+                            bookmarksRemoveDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                            bookmarksRemoveDialog.setProgress(0);
+                            bookmarksRemoveDialog.setMax(bookmarksNum);
+                            bookmarksRemoveDialog.show();
+
+                            new Thread(){
+                                public void run() {
+                                    for( final Bookmark bookmark : bookmarksInBounds ) {
+                                        bookmarksRemoveHandler.sendEmptyMessage(0);
+                                        try {
+                                            DaoBookmarks.deleteBookmark(MapsActivity.this, bookmark.getId());
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    bookmarksDeleted = true;
+                                    bookmarksRemoveHandler.sendEmptyMessage(0);
+                                }
+                            }.start();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).show();
+
+    }
+
+    private void deleteVisibleNotes() {
+
+        new AlertDialog.Builder(this).setTitle(R.string.delete_visible_notes_title)
+                .setMessage(R.string.delete_visible_notes_prompt).setIcon(android.R.drawable.ic_dialog_alert)
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                    public void onClick( DialogInterface dialog, int whichButton ) {
+                    }
+                }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                    public void onClick( DialogInterface dialog, int whichButton ) {
+                        try {
+                            float n = mapsView.getScreenNorth();
+                            float s = mapsView.getScreenSouth();
+                            float w = mapsView.getScreenWest();
+                            float e = mapsView.getScreenEast();
+                            final List<Note> notesInBounds = DaoNotes.getNotesInWorldBounds(MapsActivity.this, n, s, w, e);
+
+                            int notesNum = notesInBounds.size();
+
+                            notesRemoveDialog = new ProgressDialog(MapsActivity.this);
+                            notesRemoveDialog.setCancelable(true);
+                            notesRemoveDialog.setMessage(MessageFormat.format("Deleting {0} notes...", notesNum));
+                            notesRemoveDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                            notesRemoveDialog.setProgress(0);
+                            notesRemoveDialog.setMax(notesNum);
+                            notesRemoveDialog.show();
+
+                            new Thread(){
+                                public void run() {
+                                    for( Note note : notesInBounds ) {
+                                        notesRemoveHandler.sendEmptyMessage(0);
+                                        try {
+                                            DaoNotes.deleteNote(MapsActivity.this, note.getId());
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    notesDeleted = true;
+                                    notesRemoveHandler.sendEmptyMessage(0);
+                                }
+                            }.start();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).show();
+
     }
 
     private void addBookmark() {
