@@ -66,7 +66,7 @@
 	<string name="width_label">larghezza</string>
 	<string name="color_label">colore</string>
 	<string name="last_position">Ultima posizione</string>
-	<string name="distance">Distanza [m]:</string>
+	<string name="distance">Distanza [m]</string>
 
 	<string name="mainmenu_kmlexport">esporta kml</string>
 	<string name="mainmenu_gpxconvert">importa gpx</string>

@@ -118,7 +118,13 @@ public class MapView extends View implements GpsManagerListener {
 
     private TileCache tileCache = null;
 
+    /**
+     * The visible screen width.
+     */
     private int width;
+    /**
+     * The visible screen height.
+     */
     private int height;
     private int currentX;
     private int currentY;
@@ -161,12 +167,11 @@ public class MapView extends View implements GpsManagerListener {
             xPaint = new Paint();
             xPaint.setColor(Color.rgb(175, 198, 233));
 
-            String textSizeMediumStr = getResources().getString(R.string.text_normal);
-            float textSizeNormal = Float.parseFloat(textSizeMediumStr);
+            float textSizeMedium = getResources().getDimension(R.dimen.text_normal);
             gpxPaint = new Paint();
             gpxTextPaint = new Paint();
             gpxTextPaint.setAntiAlias(true);
-            gpxTextPaint.setTextSize(textSizeNormal);
+            gpxTextPaint.setTextSize(textSizeMedium);
 
             bookmarkTextPaint = new Paint();
             bookmarkTextPaint.setAntiAlias(true);
@@ -188,7 +193,8 @@ public class MapView extends View implements GpsManagerListener {
 
             measureTextPaint = new Paint();
             measureTextPaint.setAntiAlias(true);
-            measureTextPaint.setTextSize(textSizeNormal);
+            measureTextPaint.setTextSize(textSizeMedium);
+            measureTextPaint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
             distanceString = getResources().getString(R.string.distance);
             metersString = getResources().getString(R.string.meters);
@@ -358,11 +364,21 @@ public class MapView extends View implements GpsManagerListener {
                     canvas.drawLine(f.x, f.y, s.x, s.y, measurePaint);
                 }
 
+                Rect rect = new Rect();
+                measureTextPaint.getTextBounds(distanceString, 0, distanceString.length(), rect);
+                int textWidth = rect.width();
+                int textHeight = rect.height();
+                int x = width / 2 - textWidth / 2;
+                canvas.drawText(distanceString, x, 15 + actionBarHeight, measureTextPaint);
+
                 StringBuilder sb = new StringBuilder();
-                sb.append(distanceString);
                 sb.append((int) measuredDistance);
                 sb.append(metersString);
-                canvas.drawText(sb.toString(), 5, 15 + actionBarHeight, measureTextPaint); //$NON-NLS-1$
+                String mString = sb.toString();
+                measureTextPaint.getTextBounds(mString, 0, mString.length(), rect);
+                textWidth = rect.width();
+                x = width / 2 - textWidth / 2;
+                canvas.drawText(mString, x, 15 + actionBarHeight + 5 + textHeight, measureTextPaint);
             }
 
             if (drawGoto && gotoLat != -1) {

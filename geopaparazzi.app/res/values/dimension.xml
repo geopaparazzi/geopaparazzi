@@ -16,4 +16,8 @@
 	<dimen name="panic_bar_height">30dip</dimen>
 	<dimen name="panic_button_text_size">30dip</dimen>
 	<dimen name="statusupdate_button_text_size">15dip</dimen>
+	<!-- text sizes -->
+	<dimen name="text_large">16dip</dimen>
+	<dimen name="text_normal">14dip</dimen>
+	<dimen name="text_small">12dip</dimen>
 </resources>
