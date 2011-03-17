@@ -1093,9 +1093,6 @@ public class MapView extends View implements GpsManagerListener {
         }
     }
 
-    public void onSatellitesStatusChanged( int num, int max ) {
-    }
-
     public void setZoomLabelsParams( int zoomLevel1, int zoomLevelLabelLength1, int zoomLevel2, int zoomLevelLabelLength2 ) {
         this.zoomLevel1 = zoomLevel1;
         this.zoomLevelLabelLength1 = zoomLevelLabelLength1;
@@ -1121,6 +1118,9 @@ public class MapView extends View implements GpsManagerListener {
 
     public void enableDrawing( boolean enableDrawing ) {
         this.enableDrawing = enableDrawing;
+    }
+
+    public void onStatusChanged( boolean hasFix ) {
     }
 
 }

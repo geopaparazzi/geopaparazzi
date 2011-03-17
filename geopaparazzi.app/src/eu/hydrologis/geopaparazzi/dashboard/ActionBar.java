@@ -38,6 +38,7 @@ import eu.hydrologis.geopaparazzi.dashboard.quickaction.actionbar.ActionItem;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.actionbar.QuickAction;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.gps.GpsManager;
+import eu.hydrologis.geopaparazzi.gps.GpsManagerListener;
 import eu.hydrologis.geopaparazzi.sensors.SensorsManager;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
@@ -47,7 +48,7 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class ActionBar {
+public class ActionBar implements GpsManagerListener {
     private static DecimalFormat formatter = new DecimalFormat("0.00000"); //$NON-NLS-1$
     private final View actionBarView;
     private final ApplicationManager applicationManager;
@@ -60,12 +61,14 @@ public class ActionBar {
     private static String altimString;
     private static String azimString;
     private static String loggingString;
+    private static String acquirefixString;
     private static String gpsonString;
     private final GpsManager gpsManager;
     // private static String validPointsString;
     // private static String distanceString;
     // private static String satellitesString;
     private final SensorsManager sensorsManager;
+    private boolean hasFix;
 
     public ActionBar( View actionBarView, ApplicationManager applicationManager, GpsManager gpsManager,
             SensorsManager sensorsManager ) {
@@ -73,6 +76,8 @@ public class ActionBar {
         this.applicationManager = applicationManager;
         this.gpsManager = gpsManager;
         this.sensorsManager = sensorsManager;
+        
+        gpsManager.addListener(this);
 
         initVars();
         createQuickActions();
@@ -120,6 +125,7 @@ public class ActionBar {
         // satellitesString = context.getString(R.string.satellite_num);
         nodataString = context.getString(R.string.nogps_data);
         loggingString = context.getString(R.string.text_logging);
+        acquirefixString = context.getString(R.string.gps_searching_fix);
         gpsonString = context.getString(R.string.text_gpson);
 
     }
@@ -223,8 +229,14 @@ public class ActionBar {
             // Logger.d("COMPASSVIEW", "Location from gps is null!");
             sb.append(nodataString);
             sb.append("\n");
-            sb.append(gpsonString);
-            sb.append(": ").append(gpsManager.isGpsEnabled()); //$NON-NLS-1$
+            if (gpsManager.isGpsEnabled()) {
+                if (!gpsManager.hasGpsFix()) {
+                    sb.append(acquirefixString);
+                } else {
+                    sb.append(gpsonString);
+                    sb.append(": ").append(gpsManager.isGpsEnabled()); //$NON-NLS-1$
+                }
+            }
             sb.append("\n");
         } else {
             sb.append(timeString);
@@ -260,8 +272,13 @@ public class ActionBar {
                 Logger.d(this, "GPS seems to be also logging");
                 gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_logging));
             } else {
-                Logger.d(this, "GPS is not logging");
-                gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_notlogging));
+                if (gpsManager.hasGpsFix()) {
+                    Logger.d(this, "GPS has fix");
+                    gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_hasfix_notlogging));
+                } else {
+                    Logger.d(this, "GPS is not logging");
+                    gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_notlogging));
+                }
             }
         } else {
             Logger.d(this, "GPS seems to be off");
@@ -270,5 +287,16 @@ public class ActionBar {
         // }
         // });
 
+    }
+
+    public void onLocationChanged( GpsLocation loc ) {
+    }
+
+    public void onStatusChanged( boolean newHasFix ) {
+        if (hasFix != newHasFix) {
+            Logger.d(this, "Check logging on gps fix update.");
+            checkLogging();
+            hasFix = newHasFix;
+        }
     }
 }

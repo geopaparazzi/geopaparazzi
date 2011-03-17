@@ -17,9 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.gps;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.GPSLOGGINGINTERVALKEY;
-import static eu.hydrologis.geopaparazzi.util.Constants.GPS_LOGGING_INTERVAL;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,12 +24,13 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.location.GpsStatus;
+import android.location.GpsStatus.Listener;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.os.SystemClock;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.util.debug.Debug;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
@@ -43,7 +41,7 @@ import eu.hydrologis.geopaparazzi.util.debug.TestMock;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class GpsManager implements LocationListener {
+public class GpsManager implements LocationListener, Listener {
 
     private static GpsManager gpsManager;
     private final Context context;
@@ -68,6 +66,8 @@ public class GpsManager implements LocationListener {
     private Location previousLoc = null;
 
     private LocationManager locationManager;
+    private long mLastLocationMillis;
+    private boolean hasGPSFix = false;
 
     private GpsManager( Context context ) {
         this.context = context;
@@ -109,8 +109,10 @@ public class GpsManager implements LocationListener {
      * Stops listening to all the devices.
      */
     public void stopListening() {
-        if (locationManager != null)
+        if (locationManager != null) {
             locationManager.removeUpdates(gpsManager);
+            locationManager.removeGpsStatusListener(gpsManager);
+        }
         if (TestMock.isOn) {
             TestMock.stopMocking(locationManager);
         }
@@ -120,16 +122,13 @@ public class GpsManager implements LocationListener {
      * Starts listening to all the devices.
      */
     public void startListening() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String intervalStr = preferences.getString(GPSLOGGINGINTERVALKEY, String.valueOf(GPS_LOGGING_INTERVAL));
-        int waitForMillis = (int) (Long.parseLong(intervalStr) * 1000);
-        Logger.d(this, "LOG INTERVAL MILLIS: " + waitForMillis);
         if (Debug.doMock) {
             Logger.d(this, "Using Mock locations");
             TestMock.startMocking(locationManager, gpsManager);
         } else {
             Logger.d(this, "Using GPS");
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, waitForMillis, 0f, gpsManager);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000l, 0f, gpsManager);
+            locationManager.addGpsStatusListener(gpsManager);
         }
     }
 
@@ -144,6 +143,10 @@ public class GpsManager implements LocationListener {
         // }
         Logger.i(this, "Gps is on: " + gpsIsEnabled);
         return gpsIsEnabled;
+    }
+
+    public boolean hasGpsFix() {
+        return hasGPSFix;
     }
 
     public void checkGps() {
@@ -221,6 +224,10 @@ public class GpsManager implements LocationListener {
     }
 
     public void onLocationChanged( Location loc ) {
+        if (loc == null)
+            return;
+        mLastLocationMillis = SystemClock.elapsedRealtime();
+
         gpsLoc = new GpsLocation(loc);
         if (previousLoc == null) {
             previousLoc = loc;
@@ -236,10 +243,10 @@ public class GpsManager implements LocationListener {
     }
 
     public void onProviderDisabled( String provider ) {
-        if (isGpsLogging()) {
-            stopLogging();
-        }
-        stopListening();
+        // if (isGpsLogging()) {
+        // stopLogging();
+        // }
+        // stopListening();
     }
 
     public void onProviderEnabled( String provider ) {
@@ -264,6 +271,28 @@ public class GpsManager implements LocationListener {
         // break;
         // }
 
+    }
+
+    public void onGpsStatusChanged( int event ) {
+        switch( event ) {
+        case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
+            if (gpsLoc != null)
+                hasGPSFix = (SystemClock.elapsedRealtime() - mLastLocationMillis) < 3000;
+            // if (hasGPSFix) { // A fix has been acquired.
+            // Logger.i(this, "Fix acquired");
+            // } else { // The fix has been lost.
+            // Logger.i(this, "Fix lost");
+            // }
+
+            break;
+        case GpsStatus.GPS_EVENT_FIRST_FIX:
+            Logger.i(this, "First fix");
+            hasGPSFix = true;
+            break;
+        }
+        for( GpsManagerListener listener : listeners ) {
+            listener.onStatusChanged(hasGPSFix);
+        }
     }
 
 }

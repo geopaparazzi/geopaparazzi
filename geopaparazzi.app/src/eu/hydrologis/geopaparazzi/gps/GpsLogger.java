@@ -313,7 +313,7 @@ public class GpsLogger implements GpsManagerListener {
         gpsLoc = new GpsLocation(loc);
     }
 
-    public void onSatellitesStatusChanged( int num, int max ) {
+    public void onStatusChanged( boolean hasFix ) {
     }
 
 }
