@@ -560,7 +560,8 @@ public class GeoPaparazziActivity extends Activity {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         final String panicNumbersString = preferences.getString(PANICKEY, "");
         // Make sure there's a valid return address.
-        if (panicNumbersString == null || panicNumbersString.length() == 0) {
+
+        if (panicNumbersString == null || panicNumbersString.length() == 0 || panicNumbersString.matches(".*[A-Za-z].*")) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(R.string.panic_number_notset).setCancelable(false)
                     .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){

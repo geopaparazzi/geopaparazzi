@@ -23,9 +23,11 @@
 		<CheckBoxPreference android:key="sms_catcher"
 			android:title="@string/sms_catcher" android:order="7">
 		</CheckBoxPreference>
-		<eu.hydrologis.geopaparazzi.preferences.PhoneNumberPreference
-			android:order="8" android:key="panic_number" android:title="@string/panic_number">
-		</eu.hydrologis.geopaparazzi.preferences.PhoneNumberPreference>
+		<!-- <eu.hydrologis.geopaparazzi.preferences.PhoneNumberPreference android:order="8" 
+			android:key="panic_number" android:title="@string/panic_number"> </eu.hydrologis.geopaparazzi.preferences.PhoneNumberPreference> -->
+		<EditTextPreference android:order="8"
+			android:key="panic_number" android:title="@string/panic_number"
+			android:defaultValue=""></EditTextPreference>
 	</PreferenceScreen>
 	<PreferenceScreen android:title="@string/rendering_preferences"
 		android:order="9">
@@ -42,15 +44,15 @@
 	</PreferenceScreen>
 	<PreferenceScreen android:title="@string/labels_preferences"
 		android:order="13">
-		<EditTextPreference android:order="14"
-			android:key="labels_zoom1" android:title="@string/labels_zoom1"
-			android:defaultValue="14" android:inputType="number"></EditTextPreference>
+		<EditTextPreference android:order="14" android:key="labels_zoom1"
+			android:title="@string/labels_zoom1" android:defaultValue="14"
+			android:inputType="number"></EditTextPreference>
 		<EditTextPreference android:order="15"
 			android:key="labels_length_zoom1" android:title="@string/labels_length_zoom1"
 			android:defaultValue="4" android:inputType="number"></EditTextPreference>
-		<EditTextPreference android:order="16"
-			android:key="labels_zoom2" android:title="@string/labels_zoom2"
-			android:defaultValue="17" android:inputType="number"></EditTextPreference>
+		<EditTextPreference android:order="16" android:key="labels_zoom2"
+			android:title="@string/labels_zoom2" android:defaultValue="17"
+			android:inputType="number"></EditTextPreference>
 		<EditTextPreference android:order="17"
 			android:key="labels_length_zoom2" android:title="@string/labels_length_zoom2"
 			android:defaultValue="-1" android:inputType="number"></EditTextPreference>
