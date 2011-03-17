@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<!-- dims of action bar -->
-	<dimen name="action_bar_height">40dp</dimen>
-	<dimen name="action_bar_logo_height">32dp</dimen>
-	<dimen name="action_bar_logo_width">32dp</dimen>
+	<dimen name="action_bar_height">40dip</dimen>
+	<dimen name="action_bar_logo_height">32dip</dimen>
+	<dimen name="action_bar_logo_width">32dip</dimen>
 	<dimen name="action_bar_title_size">14sp</dimen>
-	<dimen name="action_bar_padding">2dp</dimen>
-	<dimen name="action_bar_process_height">36dp</dimen>
-	<dimen name="action_bar_process_width">36dp</dimen>
+	<dimen name="action_bar_padding">2dip</dimen>
+	<dimen name="action_bar_process_height">36dip</dimen>
+	<dimen name="action_bar_process_width">36dip</dimen>
 	<!-- dims of dashboards-->
-	<dimen name="dashboard_button_width">100dp</dimen>
-	<dimen name="dashboard_button_height">100dp</dimen>
-	<dimen name="dashboard_button_padding">6dp</dimen>
+	<dimen name="dashboard_button_width">100dip</dimen>
+	<dimen name="dashboard_button_height">100dip</dimen>
+	<dimen name="dashboard_button_padding">6dip</dimen>
 	<!-- dims of panic bar-->
-	<dimen name="panic_bar_height">30dp</dimen>
-	<dimen name="panic_button_text_size">30dp</dimen>
-	<dimen name="statusupdate_button_text_size">15dp</dimen>
+	<dimen name="panic_bar_height">30dip</dimen>
+	<dimen name="panic_button_text_size">30dip</dimen>
+	<dimen name="statusupdate_button_text_size">15dip</dimen>
 </resources>
