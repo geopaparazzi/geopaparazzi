@@ -56,6 +56,7 @@ import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction;
 import eu.hydrologis.geopaparazzi.database.DatabaseManager;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.gps.GpsManager;
+import eu.hydrologis.geopaparazzi.maps.DataManager;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -431,6 +432,7 @@ public class ApplicationManager implements Serializable {
                                         }
                                         gpsManager.startLogging(newName);
                                         actionBar.checkLogging();
+                                        DataManager.getInstance().setLogsVisible(true);
                                     }
                                 }).setCancelable(false).show();
                     } else {

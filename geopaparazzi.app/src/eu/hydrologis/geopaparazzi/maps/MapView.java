@@ -229,6 +229,7 @@ public class MapView extends View implements GpsManagerListener {
 
         zoom = preferences.getInt(Constants.PREFS_KEY_ZOOM, 16);
 
+        gpsUpdate = false;
         // displayMetrics = new DisplayMetrics();
         // context.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
     }
@@ -603,12 +604,15 @@ public class MapView extends View implements GpsManagerListener {
             // HashMap<Long, Line> linesInWorldBounds = DaoGpsLog.getLinesInWorldBounds(context, y0,
             // y1, x0, x1);
             for( MapItem gpslogItem : gpslogs ) {
+                Long id = gpslogItem.getId();
+                // Logger.d(LOGTAG, "Handling log: " + id);
                 if (!gpslogItem.isVisible()) {
+                    // Logger.d(LOGTAG, "...which is not visible");
                     continue;
                 }
-                Long id = gpslogItem.getId();
                 LineArray line;
                 if (id == currentLogId) {
+                    // Logger.d(LOGTAG, "...which is the current");
                     // we always reread the current log to make it proceed
                     line = DaoGpsLog.getLinesInWorldBoundsByIdDecimated(context, y0, y1, x0, x1, width, height, centerLon,
                             centerLat, pixelDxInWorld, pixelDyInWorld, id, decimationFactor);
