@@ -20,18 +20,35 @@ package eu.hydrologis.geopaparazzi.maps;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.app.AlertDialog.Builder;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
+import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -81,7 +98,66 @@ public class BookmarksListActivity extends ListActivity {
             e.printStackTrace();
         }
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.bookmark_row, bookmarksNames);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.bookmark_row, bookmarksNames){
+            @Override
+            public View getView( int position, View cView, ViewGroup parent ) {
+                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                final View rowView = inflater.inflate(R.layout.bookmark_row, null);
+
+                final TextView bookmarkText = (TextView) rowView.findViewById(R.id.bookmarkrow);
+                bookmarkText.setText(bookmarksNames[position]);
+                final Button renameButton = (Button) rowView.findViewById(R.id.renamebutton);
+                renameButton.setOnClickListener(new View.OnClickListener(){
+                    public void onClick( View v ) {
+                        final String name = bookmarkText.getText().toString();
+                        final EditText input = new EditText(BookmarksListActivity.this);
+                        input.setText(name);
+                        Builder builder = new AlertDialog.Builder(BookmarksListActivity.this).setTitle("Rename Bookmark");
+                        builder.setMessage("Rename the bookmark");
+                        builder.setView(input);
+                        builder.setIcon(android.R.drawable.ic_dialog_info)
+                                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                                    public void onClick( DialogInterface dialog, int whichButton ) {
+                                    }
+                                }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                                    public void onClick( DialogInterface dialog, int whichButton ) {
+                                        try {
+                                            Editable value = input.getText();
+                                            String newName = value.toString();
+                                            if (newName == null || newName.length() < 1) {
+                                                return;
+                                            }
+                                            Bookmark bookmark = bookmarksMap.get(name);
+                                            DaoBookmarks.updateBookmarkName(BookmarksListActivity.this, bookmark.getId(), newName);
+                                            refreshList();
+                                        } catch (IOException e) {
+                                            Logger.e(this, e.getLocalizedMessage(), e);
+                                            e.printStackTrace();
+                                            Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG)
+                                                    .show();
+                                        }
+                                    }
+                                }).setCancelable(false).show();
+                    }
+                });
+
+                bookmarkText.setOnClickListener(new View.OnClickListener(){
+                    public void onClick( View v ) {
+                        ViewportManager viewportManager = ViewportManager.INSTANCE;
+                        Bookmark bookmark = bookmarksMap.get(bookmarkText.getText().toString());
+                        if (bookmark != null) {
+                            viewportManager.setZoomTo((int) bookmark.getZoom());
+                            viewportManager.setCenterTo(bookmark.getLon(), bookmark.getLat(), false);
+                            viewportManager.invalidateMap();
+                        }
+                        finish();
+                    }
+                });
+
+                return rowView;
+            }
+
+        };
         setListAdapter(arrayAdapter);
     }
 

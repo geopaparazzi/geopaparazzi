@@ -90,6 +90,32 @@ public class DaoBookmarks {
         }
     }
 
+    public static void updateBookmarkName( Context context, long id, String newName ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        sqliteDatabase.beginTransaction();
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append("UPDATE ");
+            sb.append(TABLE_BOOKMARKS);
+            sb.append(" SET ");
+            sb.append(COLUMN_TEXT).append("='").append(newName).append("' ");
+            sb.append("WHERE ").append(COLUMN_ID).append("=").append(id);
+
+            String query = sb.toString();
+            Logger.i("DAOBOOKMARKS", query);
+            SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
+            sqlUpdate.execute();
+            sqlUpdate.close();
+
+            sqliteDatabase.setTransactionSuccessful();
+        } catch (Exception e) {
+            Logger.e("DAOBOOKMARKS", e.getLocalizedMessage(), e);
+            throw new IOException(e.getLocalizedMessage());
+        } finally {
+            sqliteDatabase.endTransaction();
+        }
+    }
+
     /**
      * Get the collected notes from the database inside a given bound.
      * 
