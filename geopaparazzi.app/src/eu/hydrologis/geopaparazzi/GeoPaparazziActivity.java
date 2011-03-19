@@ -597,7 +597,7 @@ public class GeoPaparazziActivity extends Activity {
                     sB.append(latString);
                     sB.append("&lon=");
                     sB.append(lonString);
-                    sB.append("&zoom=18");
+                    sB.append("&zoom=15");
                     sB.append("&layers=M&mlat=");
                     sB.append(latString);
                     sB.append("&mlon=");
