@@ -18,9 +18,9 @@
 package eu.hydrologis.geopaparazzi;
 
 import static eu.hydrologis.geopaparazzi.util.Constants.BASEFOLDERKEY;
-import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LATITUDE;
-import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LONGITUDE;
 import static eu.hydrologis.geopaparazzi.util.Constants.PANICKEY;
+import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_LAT;
+import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_LON;
 
 import java.io.File;
 import java.io.IOException;
@@ -405,8 +405,8 @@ public class GeoPaparazziActivity extends Activity {
         if (loc != null) {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             Editor editor = preferences.edit();
-            editor.putFloat(GPSLAST_LONGITUDE, (float) loc.getLongitude());
-            editor.putFloat(GPSLAST_LATITUDE, (float) loc.getLatitude());
+            editor.putFloat(PREFS_KEY_LON, (float) loc.getLongitude());
+            editor.putFloat(PREFS_KEY_LAT, (float) loc.getLatitude());
             editor.commit();
         }
 

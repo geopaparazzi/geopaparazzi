@@ -17,8 +17,8 @@
  */
 package eu.hydrologis.geopaparazzi.sms;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LATITUDE;
-import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LONGITUDE;
+import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_LAT;
+import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_LON;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -51,8 +51,8 @@ public class SmsReceiver extends BroadcastReceiver {
             if (!doCatch) {
                 return;
             }
-            float gpsLon = preferences.getFloat(GPSLAST_LONGITUDE, -9999);
-            float gpsLat = preferences.getFloat(GPSLAST_LATITUDE, -9999);
+            float gpsLon = preferences.getFloat(PREFS_KEY_LON, -9999);
+            float gpsLat = preferences.getFloat(PREFS_KEY_LAT, -9999);
 
             Bundle bundle = intent.getExtras();
             SmsMessage smsMessage = null;

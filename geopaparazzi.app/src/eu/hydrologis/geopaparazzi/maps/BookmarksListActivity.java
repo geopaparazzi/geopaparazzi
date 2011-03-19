@@ -24,13 +24,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.LayoutInflater;
@@ -44,7 +42,6 @@ import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
-import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -141,11 +138,8 @@ public class BookmarksListActivity extends ListActivity {
                     public void onClick( View v ) {
                         Bookmark bookmark = bookmarksMap.get(bookmarkText.getText().toString());
                         if (bookmark != null) {
-                            Intent intent = new Intent((String) null);
-                            intent.putExtra(Constants.KEY_COORD_X, (float) bookmark.getLon());
-                            intent.putExtra(Constants.KEY_COORD_Y, (float) bookmark.getLat());
-                            intent.putExtra(Constants.KEY_ZOOM, (int) bookmark.getZoom());
-                            setResult(Activity.RESULT_OK, intent);
+                            ViewportManager.INSTANCE.setCenterAndZoomForMapWindowFocus(bookmark.getLon(), bookmark.getLat(),
+                                    (int) bookmark.getZoom());
                         }
                         finish();
                     }

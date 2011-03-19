@@ -17,8 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.maps;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LATITUDE;
-import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LONGITUDE;
 import static java.lang.Math.PI;
 import static java.lang.Math.abs;
 import static java.lang.Math.atan;
@@ -224,8 +222,8 @@ public class MapView extends View implements GpsManagerListener {
             gpsLat = (float) loc.getLatitude();
             gpsLon = (float) loc.getLongitude();
         }
-        centerLon = preferences.getFloat(GPSLAST_LONGITUDE, 0);
-        centerLat = preferences.getFloat(GPSLAST_LATITUDE, 0);
+        // centerLon = preferences.getFloat(GPSLAST_LONGITUDE, 0);
+        // centerLat = preferences.getFloat(GPSLAST_LATITUDE, 0);
 
         zoom = preferences.getInt(Constants.PREFS_KEY_ZOOM, 16);
 
@@ -239,8 +237,8 @@ public class MapView extends View implements GpsManagerListener {
         super.onWindowVisibilityChanged(visibility);
         if (visibility == 8) {
             Editor editor = preferences.edit();
-            editor.putFloat(GPSLAST_LONGITUDE, centerLon);
-            editor.putFloat(GPSLAST_LATITUDE, centerLat);
+            // editor.putFloat(GPSLAST_LONGITUDE, centerLon);
+            // editor.putFloat(GPSLAST_LATITUDE, centerLat);
             editor.commit();
         }
     }
