@@ -18,7 +18,6 @@
 package eu.hydrologis.geopaparazzi.database;
 
 import static java.lang.Math.abs;
-import static eu.hydrologis.geopaparazzi.util.Constants.*;
 
 import java.io.IOException;
 import java.sql.Date;
@@ -36,14 +35,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import android.graphics.Path;
 import android.graphics.Point;
 import eu.hydrologis.geopaparazzi.maps.MapItem;
 import eu.hydrologis.geopaparazzi.maps.MapView;
-import eu.hydrologis.geopaparazzi.maps.overlays.LogsOverlay.Transformer;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.LineArray;
-import eu.hydrologis.geopaparazzi.util.LineScreenArray;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -626,7 +624,21 @@ public class DaoGpsLog {
         return line;
     }
 
-    public static List<Point> getScreenLinesInWorldBoundsByIdDecimated( Context context, float n, float s, float w, float e,
+    /**
+     * Retrieve a log in the given world bounds as {@link Path} to be drawn.
+     * 
+     * @param context
+     * @param n
+     * @param s
+     * @param w
+     * @param e
+     * @param path
+     * @param pj
+     * @param logId
+     * @param decimationFactor
+     * @throws IOException
+     */
+    public static void getPathInWorldBoundsByIdDecimated( Context context, float n, float s, float w, float e, Path path,
             Projection pj, long logId, int decimationFactor ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         n = n + DatabaseManager.BUFFER;
@@ -647,8 +659,8 @@ public class DaoGpsLog {
         String strWhere = sB.toString();
         String[] strWhereArgs = new String[]{String.valueOf(w), String.valueOf(e), String.valueOf(s), String.valueOf(n)};
         String strSortOrder = COLUMN_DATA_TS + " ASC";
-        // LineScreenArray line = new LineScreenArray("log_" + logId);
-        List<Point> line = new ArrayList<Point>();
+
+        path.rewind();
         Cursor c = null;
         try {
             c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, strWhereArgs, null, null, strSortOrder);
@@ -658,6 +670,7 @@ public class DaoGpsLog {
             int previousScreenY = Integer.MAX_VALUE;
 
             int jump = 0;
+            boolean first = true;
             while( !c.isAfterLast() ) {
                 float lon = c.getFloat(0);
                 float lat = c.getFloat(1);
@@ -675,20 +688,19 @@ public class DaoGpsLog {
                 previousScreenX = screenX;
                 previousScreenY = screenY;
 
-                line.add(mapPixels);
+                if (first) {
+                    path.moveTo(screenX, screenY);
+                    first = false;
+                } else {
+                    path.lineTo(screenX, screenY);
+                }
                 c.moveToNext();
             }
-            Logger.d("DAOGPSLOG", "Logs jumped: " + jump + " with thres: " + decimationFactor);
-            // Set<Entry<Long, LineArray>> entrySet = linesMap.entrySet();
-            // for( Entry<Long, LineArray> entry : entrySet ) {
-            // Logger.d("DAOGPSLOG", "Found for log: " + entry.getKey() + " points: " +
-            // entry.getValue().getIndex());
-            // }
+            Logger.d("DAOGPSLOG", "Log points jumped: " + jump + " with thres: " + decimationFactor);
         } finally {
             if (c != null)
                 c.close();
         }
-        return line;
     }
 
     /**
