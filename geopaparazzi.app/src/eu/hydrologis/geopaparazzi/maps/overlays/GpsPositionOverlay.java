@@ -68,8 +68,8 @@ public class GpsPositionOverlay extends Overlay {
             return;
 
         Projection pj = mapsView.getProjection();
-        float lat = (float) (loc.getLatitude());
-        float lon = (float) (loc.getLongitude());
+        float lat = (float) loc.getLatitude();
+        float lon = (float) loc.getLongitude();
         GeoPoint g = new GeoPoint(lat, lon);
         Point mapPixels = pj.toMapPixels(g, null);
         canvas.drawBitmap(gpsIcon, mapPixels.x - gpsIconWidth / 2f, mapPixels.y - gpsIconHeight / 2f, null);

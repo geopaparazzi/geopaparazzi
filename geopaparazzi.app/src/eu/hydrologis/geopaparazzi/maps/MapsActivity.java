@@ -709,15 +709,25 @@ public class MapsActivity extends Activity implements GpsManagerListener {
         mGpsOverlay.setDoDraw(false);
     }
 
+    private boolean hasFix = false;
     public void onLocationChanged( GpsLocation loc ) {
+        if (loc == null || !hasFix) {
+            return;
+        }
+        BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
+        int lat = (int) ((float) loc.getLatitude() * E6);
+        int lon = (int) ((float) loc.getLongitude() * E6);
+        if (!boundingBox.contains(lat, lon)) {
+            return;
+        }
+
         mLogsOverlay.setGpsUpdate(true);
-        // mNotesOverlay.setDoDraw(false);
-        // mBookmarksOverlay.setDoDraw(false);
+        mNotesOverlay.setGpsUpdate(false);
+        mBookmarksOverlay.setGpsUpdate(false);
         mGpsOverlay.setLoc(loc);
         mapsView.invalidate();
     }
-
     public void onStatusChanged( boolean hasFix ) {
-
+        this.hasFix = hasFix;
     }
 }
