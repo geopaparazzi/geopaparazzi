@@ -40,7 +40,7 @@ public enum ViewportManager {
         if (mapsActivity == null) {
             return;
         }
-        mapsActivity.setZoomGuiText(zoom);
+        // mapsActivity.setZoomGuiText(zoom);
         mapsActivity.getMapController().setZoom(zoom);
     }
 

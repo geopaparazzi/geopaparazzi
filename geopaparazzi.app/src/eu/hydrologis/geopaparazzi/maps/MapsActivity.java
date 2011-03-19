@@ -353,8 +353,6 @@ public class MapsActivity extends Activity implements GpsManagerListener {
         // }
         // });
 
-        // need to zoom somewhere because of an activity result?
-
     }
 
     @Override
@@ -398,7 +396,7 @@ public class MapsActivity extends Activity implements GpsManagerListener {
                 float lat = data.getFloatExtra(Constants.KEY_COORD_Y, -9999f);
                 int zoom = data.getIntExtra(Constants.KEY_ZOOM, -9999);
                 if (lon != -9999f && lat != -9999f && zoom != -9999) {
-                    // setNewCenterAtZoom(lon, lat, zoom);
+                    // set the prefs, it will be handled then in onWindowFocusChanged
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
                     Editor editor = preferences.edit();
                     editor.putFloat(GPSLAST_LONGITUDE, lon);
@@ -420,7 +418,7 @@ public class MapsActivity extends Activity implements GpsManagerListener {
         return mapsView;
     }
 
-    public void setZoomGuiText( int newZoom ) {
+    private void setZoomGuiText( int newZoom ) {
         int zoomInLevel = newZoom + 1;
         if (zoomInLevel > maxZoomLevel) {
             zoomInLevel = maxZoomLevel;
@@ -439,35 +437,11 @@ public class MapsActivity extends Activity implements GpsManagerListener {
     }
 
     public void setNewCenterAtZoom( final double centerX, final double centerY, final int zoom ) {
-
-        // new Thread(new Runnable(){
-        // public void run() {
-        // runOnUiThread(new Runnable(){
-        // public void run() {
-        // disableDrawing();
-        GeoPoint mapCenter = mapsView.getMapCenter();
-        int zoomLevel = mapsView.getZoomLevel();
-
         mapsView.getController().setZoom(zoom);
         mapsView.getController().setCenter(new GeoPoint((int) (centerX * E6), (int) (centerY * E6)));
-        // setNewCenter(centerX, centerY, false);
         mapsView.postInvalidate();
-        // }
-        // });
-        // }
-        // }).start();
-
-        // int count = 0;
-        // while( mapsView.isAnimating() || count > 100 ) {
-        // try {
-        // Thread.sleep(30);
-        // } catch (InterruptedException e) {
-        // e.printStackTrace();
-        // }
-        // count++;
-        // }
-        // enableDrawingWithDelay();
     }
+
     public double[] getCenterLonLat() {
         GeoPoint mapCenter = mapsView.getMapCenter();
         double[] lonLat = {mapCenter.getLongitudeE6() / 6d, mapCenter.getLatitudeE6() / 6d};
