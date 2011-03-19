@@ -34,12 +34,14 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Point;
+import android.graphics.Rect;
+import android.view.MotionEvent;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.gps.GpsManager;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
 import eu.hydrologis.geopaparazzi.maps.MapItem;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
-import eu.hydrologis.geopaparazzi.util.LineScreenArray;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -54,7 +56,11 @@ public class LogsOverlay extends Overlay {
     private Context context;
 
     private int decimationFactor;
+    private HashMap<Long, List<Point>> linesInWorldBounds = new HashMap<Long, List<Point>>();
 
+    final private Rect screenRect = new Rect();
+
+    private boolean touchDragging = false;
     private boolean doDraw = true;
     private boolean gpsUpdate = false;
 
@@ -73,12 +79,9 @@ public class LogsOverlay extends Overlay {
         this.gpsUpdate = gpsUpdate;
     }
 
-    private HashMap<Long, LineScreenArray> linesInWorldBounds = new HashMap<Long, LineScreenArray>();
     protected void draw( final Canvas canvas, final MapView mapsView, final boolean shadow ) {
-        if (!DataManager.getInstance().areLogsVisible() || shadow || !doDraw)
+        if (touchDragging || shadow || !doDraw || mapsView.isAnimating() || !DataManager.getInstance().areLogsVisible())
             return;
-
-        final Projection pj = mapsView.getProjection();
 
         BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
         float y0 = boundingBox.getLatNorthE6() / E6;
@@ -86,22 +89,18 @@ public class LogsOverlay extends Overlay {
         float x0 = boundingBox.getLonWestE6() / E6;
         float x1 = boundingBox.getLonEastE6() / E6;
 
+        Projection pj = mapsView.getProjection();
+
+        int screenWidth = canvas.getWidth();
+        int screenHeight = canvas.getHeight();
+        screenRect.contains(0, 0, screenWidth, screenHeight);
+        mapsView.getScreenRect(screenRect);
+
         try {
             List<MapItem> gpslogs = DaoGpsLog.getGpslogs(context);
             GpsManager gpsManager = GpsManager.getInstance(context);
             long currentLogId = gpsManager.getCurrentRecordedLogId();
 
-            // if (!gpsUpdate || linesInWorldBounds == null) {
-            // linesInWorldBounds = DaoGpsLog.getLinesInWorldBoundsDecimated(context, y0, y1, x0,
-            // x1, width, height, centerLon,
-            // centerLat, pixelDxInWorld, pixelDyInWorld, lastLogId);
-            // }
-            // LineArray currentLine = DaoGpsLog.getLinesInWorldBoundsByIdDecimated(context, y0, y1,
-            // x0, x1, width, height,
-            // centerLon, centerLat, pixelDxInWorld, pixelDyInWorld, lastLogId);
-
-            // HashMap<Long, Line> linesInWorldBounds = DaoGpsLog.getLinesInWorldBounds(context, y0,
-            // y1, x0, x1);
             for( MapItem gpslogItem : gpslogs ) {
                 Long id = gpslogItem.getId();
                 // Logger.d(LOGTAG, "Handling log: " + id);
@@ -109,7 +108,7 @@ public class LogsOverlay extends Overlay {
                     // Logger.d(LOGTAG, "...which is not visible");
                     continue;
                 }
-                LineScreenArray line;
+                List<Point> line;
                 if (id == currentLogId) {
                     // Logger.d(LOGTAG, "...which is the current");
                     // we always reread the current log to make it proceed
@@ -133,6 +132,7 @@ public class LogsOverlay extends Overlay {
                     continue;
                 }
 
+                mPaint.setAntiAlias(true);
                 mPaint.setColor(Color.parseColor(gpslogItem.getColor()));
                 mPaint.setStrokeWidth(gpslogItem.getWidth());
                 mPaint.setStyle(Paint.Style.STROKE);
@@ -142,20 +142,18 @@ public class LogsOverlay extends Overlay {
                 float prevScreenX = Float.POSITIVE_INFINITY;
                 float prevScreenY = Float.POSITIVE_INFINITY;
 
-                int[] lonArray = line.getLonArray();
-                int[] latArray = line.getLatArray();
-                int index = line.getIndex();
+                int index = line.size();
                 for( int i = 0; i < index; i++ ) {
-                    // Logger.d(LOGTAG, screenX + "/" + screenY);
+                    Point point = line.get(i);
                     if (i == 0) {
-                        path.moveTo(lonArray[i], latArray[i]);
+                        path.moveTo(point.x, point.y);
                     } else {
-                        if (prevScreenX == lonArray[i] && prevScreenY == latArray[i]) {
+                        if (prevScreenX == point.x && prevScreenY == point.y) {
                             continue;
                         }
-                        path.lineTo(lonArray[i], latArray[i]);
-                        prevScreenX = lonArray[i];
-                        prevScreenY = latArray[i];
+                        path.lineTo(point.x, point.y);
+                        prevScreenX = point.x;
+                        prevScreenY = point.y;
                     }
                 }
                 canvas.drawPath(path, mPaint);
@@ -165,5 +163,61 @@ public class LogsOverlay extends Overlay {
             Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
         }
+
+    }
+
+    @Override
+    public boolean onTouchEvent( MotionEvent event, MapView mapView ) {
+        int action = event.getAction();
+        switch( action ) {
+        case MotionEvent.ACTION_MOVE:
+            touchDragging = true;
+            break;
+        case MotionEvent.ACTION_UP:
+            touchDragging = false;
+            mapView.invalidate();
+            break;
+        }
+        return super.onTouchEvent(event, mapView);
+    }
+
+    public static class Transformer {
+        private float lat0;
+        private float lon0;
+        private float lon1;
+        private float lat1;
+        private int w;
+        private int h;
+
+        public Transformer( BoundingBoxE6 boundingBox, Rect screenRect ) {
+            lat1 = boundingBox.getLatNorthE6() / E6;
+            lat0 = boundingBox.getLatSouthE6() / E6;
+            lon0 = boundingBox.getLonWestE6() / E6;
+            lon1 = boundingBox.getLonEastE6() / E6;
+
+            w = screenRect.width();
+            h = screenRect.height();
+        }
+
+        public int latToScreen( float lat ) {
+            int y = (int) Math.round(h - h * (lat - lat0) / (lat1 - lat0));
+            return y;
+        }
+
+        public int lonToScreen( float lon ) {
+            int x = (int) Math.round(w * (lon - lon0) / (lon1 - lon0));
+            return x;
+        }
+
+        // public float screenToLat( float height, float screenY, float centerLat, float resolutionY
+        // ) {
+        // float lat = centerLat + (height / 2f - screenY) * resolutionY;
+        // return lat;
+        // }
+        // public float screenToLon( float width, float screenX, float centerLon, float resolutionX
+        // ) {
+        // float lon = screenX * resolutionX - width * resolutionX / 2 + centerLon;
+        // return lon;
+        // }
     }
 }

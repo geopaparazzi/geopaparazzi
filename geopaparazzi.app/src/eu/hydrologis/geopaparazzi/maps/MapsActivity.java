@@ -67,6 +67,7 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
+import eu.hydrologis.geopaparazzi.maps.overlays.LogsOverlay;
 import eu.hydrologis.geopaparazzi.sensors.SensorsManager;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
@@ -98,6 +99,7 @@ public class MapsActivity extends Activity {
     private ResourceProxy mResourceProxy;
     private ScaleBarOverlay mScaleBarOverlay;
     private MinimapOverlay mMiniMapOverlay;
+    private LogsOverlay mLogsOverlay;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -117,22 +119,29 @@ public class MapsActivity extends Activity {
 
         ViewportManager.INSTANCE.setMapActivity(this);
 
-        /* Scale Bar Overlay */
-        {
-            this.mScaleBarOverlay = new ScaleBarOverlay(this, mResourceProxy);
-            this.mapsView.getOverlays().add(mScaleBarOverlay);
-            // Scale bar tries to draw as 1-inch, so to put it in the top center, set x offset to
-            // half screen width, minus half an inch.
-            this.mScaleBarOverlay.setScaleBarOffset(getResources().getDisplayMetrics().widthPixels / 2
-                    - getResources().getDisplayMetrics().xdpi / 2, 10);
-        }
+//        /* Scale Bar Overlay */
+//        {
+//            this.mScaleBarOverlay = new ScaleBarOverlay(this, mResourceProxy);
+//            this.mapsView.getOverlays().add(mScaleBarOverlay);
+//            // Scale bar tries to draw as 1-inch, so to put it in the top center, set x offset to
+//            // half screen width, minus half an inch.
+//            this.mScaleBarOverlay.setScaleBarOffset(getResources().getDisplayMetrics().widthPixels / 2
+//                    - getResources().getDisplayMetrics().xdpi / 2, 10);
+//        }
+//
+//        /* MiniMap */
+//        {
+//            mMiniMapOverlay = new MinimapOverlay(this, mapsView.getTileRequestCompleteHandler());
+//            this.mapsView.getOverlays().add(mMiniMapOverlay);
+//        }
 
-        /* MiniMap */
+        /* gps logs */
         {
-            mMiniMapOverlay = new MinimapOverlay(this, mapsView.getTileRequestCompleteHandler());
-            this.mapsView.getOverlays().add(mMiniMapOverlay);
+            mLogsOverlay = new LogsOverlay(this, mResourceProxy);
+            this.mapsView.getOverlays().add(mLogsOverlay);
         }
-
+        
+        
         // GpsManager gpsManager = GpsManager.getInstance(this);
         //
         // // requestWindowFeature(Window.FEATURE_PROGRESS);
@@ -157,10 +166,10 @@ public class MapsActivity extends Activity {
         // Integer.parseInt(preferences.getString(Constants.PREFS_KEY_ZOOM2_LABELLENGTH, "-1"));
         // mapsView.setZoomLabelsParams(zoomLevel1, zoomLevelLabelLength1, zoomLevel2,
         // zoomLevelLabelLength2);
-        
+
         int maxZoomLevel = mapsView.getMaxZoomLevel();
         int minZoomLevel = mapsView.getMinZoomLevel();
-        
+
         // zoom bar
         zoomBar = (VerticalSeekBar) findViewById(R.id.ZoomBar);
         zoomBar.setMax(maxZoomLevel);
