@@ -68,6 +68,7 @@ import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.maps.overlays.LogsOverlay;
+import eu.hydrologis.geopaparazzi.maps.overlays.NotesOverlay;
 import eu.hydrologis.geopaparazzi.sensors.SensorsManager;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
@@ -100,6 +101,7 @@ public class MapsActivity extends Activity {
     private ScaleBarOverlay mScaleBarOverlay;
     private MinimapOverlay mMiniMapOverlay;
     private LogsOverlay mLogsOverlay;
+    private NotesOverlay mNotesOverlay;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -123,6 +125,12 @@ public class MapsActivity extends Activity {
         {
             mLogsOverlay = new LogsOverlay(this, mResourceProxy);
             this.mapsView.getOverlays().add(mLogsOverlay);
+        }
+
+        /* gps notes */
+        {
+            mNotesOverlay = new NotesOverlay(this, mResourceProxy);
+            this.mapsView.getOverlays().add(mNotesOverlay);
         }
 
         /* Scale Bar Overlay */
@@ -257,12 +265,12 @@ public class MapsActivity extends Activity {
         slidingDrawer.setOnDrawerScrollListener(new SlidingDrawer.OnDrawerScrollListener(){
             public void onScrollEnded() {
                 Logger.d(this, "Scroll End Disable drawing");
-                mLogsOverlay.setDoDraw(false);
+                disableDrawing();
             }
 
             public void onScrollStarted() {
                 Logger.d(this, "Scroll Start Disable drawing");
-                mLogsOverlay.setDoDraw(false);
+                disableDrawing();
             }
         });
         //
@@ -674,10 +682,16 @@ public class MapsActivity extends Activity {
                             e.printStackTrace();
                         }
                         mLogsOverlay.setDoDraw(true);
+                        mNotesOverlay.setDoDraw(true);
                         inalidateMap();
                     }
                 });
             }
         }).start();
+    }
+
+    private void disableDrawing() {
+        mLogsOverlay.setDoDraw(false);
+        mNotesOverlay.setDoDraw(false);
     }
 }
