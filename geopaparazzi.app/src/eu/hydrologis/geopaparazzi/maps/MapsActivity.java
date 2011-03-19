@@ -70,7 +70,9 @@ import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.gps.GpsManager;
+import eu.hydrologis.geopaparazzi.gps.GpsManagerListener;
 import eu.hydrologis.geopaparazzi.maps.overlays.BookmarksOverlay;
+import eu.hydrologis.geopaparazzi.maps.overlays.GpsPositionOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.LogsOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.NotesOverlay;
 import eu.hydrologis.geopaparazzi.sensors.SensorsManager;
@@ -84,7 +86,7 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class MapsActivity extends Activity {
+public class MapsActivity extends Activity implements GpsManagerListener {
     private static final int MENU_GPSDATA = 1;
     private static final int MENU_MAPDATA = 2;
     private static final int MENU_TILE_SOURCE_ID = 3;
@@ -107,6 +109,7 @@ public class MapsActivity extends Activity {
     private LogsOverlay mLogsOverlay;
     private NotesOverlay mNotesOverlay;
     private BookmarksOverlay mBookmarksOverlay;
+    private GpsPositionOverlay mGpsOverlay;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -126,6 +129,8 @@ public class MapsActivity extends Activity {
 
         ViewportManager.INSTANCE.setMapActivity(this);
 
+        GpsManager.getInstance(this).addListener(this);
+
         /* gps logs */
         {
             mLogsOverlay = new LogsOverlay(this, mResourceProxy);
@@ -142,6 +147,12 @@ public class MapsActivity extends Activity {
         {
             mBookmarksOverlay = new BookmarksOverlay(this, mResourceProxy);
             this.mapsView.getOverlays().add(mBookmarksOverlay);
+        }
+
+        /* gps position */
+        {
+            mGpsOverlay = new GpsPositionOverlay(this, mResourceProxy);
+            this.mapsView.getOverlays().add(mGpsOverlay);
         }
 
         /* Scale Bar Overlay */
@@ -683,6 +694,7 @@ public class MapsActivity extends Activity {
                         mLogsOverlay.setDoDraw(true);
                         mNotesOverlay.setDoDraw(true);
                         mBookmarksOverlay.setDoDraw(true);
+                        mGpsOverlay.setDoDraw(true);
                         inalidateMap();
                     }
                 });
@@ -694,5 +706,18 @@ public class MapsActivity extends Activity {
         mLogsOverlay.setDoDraw(false);
         mNotesOverlay.setDoDraw(false);
         mBookmarksOverlay.setDoDraw(false);
+        mGpsOverlay.setDoDraw(false);
+    }
+
+    public void onLocationChanged( GpsLocation loc ) {
+        mLogsOverlay.setGpsUpdate(true);
+        // mNotesOverlay.setDoDraw(false);
+        // mBookmarksOverlay.setDoDraw(false);
+        mGpsOverlay.setLoc(loc);
+        mapsView.invalidate();
+    }
+
+    public void onStatusChanged( boolean hasFix ) {
+
     }
 }

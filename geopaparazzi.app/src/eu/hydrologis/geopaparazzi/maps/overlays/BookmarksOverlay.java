@@ -43,7 +43,6 @@ import android.preference.PreferenceManager;
 import android.view.MotionEvent;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
-import eu.hydrologis.geopaparazzi.maps.DataManager;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
@@ -67,6 +66,8 @@ public class BookmarksOverlay extends Overlay {
     private int zoomLevel2;
     private int zoomLevelLabelLength1;
     private int zoomLevelLabelLength2;
+
+    private boolean gpsUpdate = false;
     private static Bitmap bookmarkIcon;
     private static int bookmarkIconWidth;
     private static int bookmarkIconHeight;
@@ -96,9 +97,18 @@ public class BookmarksOverlay extends Overlay {
         this.doDraw = doDraw;
     }
 
+    public void setGpsUpdate( boolean gpsUpdate ) {
+        this.gpsUpdate = gpsUpdate;
+    }
+
     protected void draw( final Canvas canvas, final MapView mapsView, final boolean shadow ) {
-        if (touchDragging || shadow || !doDraw || mapsView.isAnimating() || !DataManager.getInstance().areNotesVisible())
+        if (touchDragging || shadow || !doDraw || mapsView.isAnimating())
             return;
+
+        if (gpsUpdate) {
+            gpsUpdate = false;
+            return;
+        }
 
         BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
         float y0 = boundingBox.getLatNorthE6() / E6;

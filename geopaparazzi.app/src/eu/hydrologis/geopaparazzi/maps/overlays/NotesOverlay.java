@@ -64,6 +64,7 @@ public class NotesOverlay extends Overlay {
     private int zoomLevel2;
     private int zoomLevelLabelLength1;
     private int zoomLevelLabelLength2;
+    private boolean gpsUpdate = false;
 
     public NotesOverlay( final Context ctx, final ResourceProxy pResourceProxy ) {
         super(pResourceProxy);
@@ -84,9 +85,18 @@ public class NotesOverlay extends Overlay {
         this.doDraw = doDraw;
     }
 
+    public void setGpsUpdate( boolean gpsUpdate ) {
+        this.gpsUpdate = gpsUpdate;
+    }
+
     protected void draw( final Canvas canvas, final MapView mapsView, final boolean shadow ) {
         if (touchDragging || shadow || !doDraw || mapsView.isAnimating() || !DataManager.getInstance().areNotesVisible())
             return;
+
+        if (gpsUpdate) {
+            gpsUpdate = false;
+            return;
+        }
 
         BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
         float y0 = boundingBox.getLatNorthE6() / E6;

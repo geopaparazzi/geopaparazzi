@@ -114,8 +114,7 @@ public class LogsOverlay extends Overlay {
                     // for the other logs we cache depending on a gps update or a touch draw event
                     if (gpsUpdate) {
                         // draw was triggered by gps moving, we get the cached from before
-                        // line = linesInWorldBounds.get(id);
-                        gpsUpdate = false;
+                        continue;
                     } else {
                         // if the draw comes from no gps update, reread the track
                         // linesInWorldBounds.remove(id);
@@ -132,6 +131,10 @@ public class LogsOverlay extends Overlay {
                 mPaint.setStrokeCap(Paint.Cap.ROUND);
                 canvas.drawPath(mPath, mPaint);
 
+            }
+
+            if (gpsUpdate) {
+                gpsUpdate = false;
             }
         } catch (IOException e) {
             Logger.e(this, e.getLocalizedMessage(), e);
