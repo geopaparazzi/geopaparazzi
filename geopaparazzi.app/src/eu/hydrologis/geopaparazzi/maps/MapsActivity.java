@@ -86,6 +86,8 @@ public class MapsActivity extends Activity {
     private static final int MENU_DOWNLOADMAPS = 6;
     private static final int GO_TO = 7;
 
+    private static final float E6 = 1000000f;
+
     private DecimalFormat formatter = new DecimalFormat("00");
     private Button zoomInButton;
     private Button zoomOutButton;
@@ -114,6 +116,8 @@ public class MapsActivity extends Activity {
 
         mapController = mapsView.getController();
 
+        ViewportManager.INSTANCE.setMapActivity(this);
+
         /* Scale Bar Overlay */
         {
             this.mScaleBarOverlay = new ScaleBarOverlay(this, mResourceProxy);
@@ -134,13 +138,14 @@ public class MapsActivity extends Activity {
         //
         // // requestWindowFeature(Window.FEATURE_PROGRESS);
         // mapsView = (MapView) findViewById(R.id.osmviewid);
-        // ViewportManager.INSTANCE.setMapActivity(this);
         // gpsManager.addListener(mapsView);
         //
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         float lastCenterLon = preferences.getFloat(GPSLAST_LONGITUDE, 0);
         float lastCenterLat = preferences.getFloat(GPSLAST_LATITUDE, 0);
         mapController.setCenter(new GeoPoint(lastCenterLat, lastCenterLon));
+        final int zoom = preferences.getInt(Constants.PREFS_KEY_ZOOM, 16);
+        mapController.setZoom(zoom);
 
         // // set zoom preferences
         // final int zoomLevel1 = Integer.parseInt(preferences.getString(Constants.PREFS_KEY_ZOOM1,
@@ -153,13 +158,14 @@ public class MapsActivity extends Activity {
         // Integer.parseInt(preferences.getString(Constants.PREFS_KEY_ZOOM2_LABELLENGTH, "-1"));
         // mapsView.setZoomLabelsParams(zoomLevel1, zoomLevelLabelLength1, zoomLevel2,
         // zoomLevelLabelLength2);
-        //
+        
+        int maxZoomLevel = mapsView.getMaxZoomLevel();
+        int minZoomLevel = mapsView.getMinZoomLevel();
+        
         // zoom bar
-        final int zoom = preferences.getInt(Constants.PREFS_KEY_ZOOM, 16);
         zoomBar = (VerticalSeekBar) findViewById(R.id.ZoomBar);
-        zoomBar.setMax(18);
+        zoomBar.setMax(maxZoomLevel);
         zoomBar.setProgress(zoom);
-        mapController.setZoom(zoom);
         zoomBar.setOnSeekBarChangeListener(new VerticalSeekBar.OnSeekBarChangeListener(){
             private int progress = zoom;
             public void onStopTrackingTouch( VerticalSeekBar seekBar ) {
@@ -179,12 +185,12 @@ public class MapsActivity extends Activity {
         });
 
         int zoomInLevel = zoom + 1;
-        if (zoomInLevel > 18) {
-            zoomInLevel = 18;
+        if (zoomInLevel > maxZoomLevel) {
+            zoomInLevel = maxZoomLevel;
         }
         int zoomOutLevel = zoom - 1;
-        if (zoomOutLevel < 0) {
-            zoomOutLevel = 0;
+        if (zoomOutLevel < minZoomLevel) {
+            zoomOutLevel = minZoomLevel;
         }
         zoomInButton = (Button) findViewById(R.id.zoomin);
         zoomInButton.setText(formatter.format(zoomInLevel));
@@ -314,15 +320,35 @@ public class MapsActivity extends Activity {
     }
 
     @Override
-    protected void onPause() {
-        GeoPoint mapCenter = mapsView.getMapCenter();
+    public void onWindowFocusChanged( boolean hasFocus ) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        Editor editor = preferences.edit();
-        editor.putFloat(GPSLAST_LONGITUDE, mapCenter.getLongitudeE6() / 6f);
-        editor.putFloat(GPSLAST_LATITUDE, mapCenter.getLatitudeE6() / 6f);
-        editor.commit();
-        super.onPause();
+        if (!hasFocus) {
+            GeoPoint mapCenter = mapsView.getMapCenter();
+            Editor editor = preferences.edit();
+            editor.putFloat(GPSLAST_LONGITUDE, mapCenter.getLongitudeE6() / E6);
+            editor.putFloat(GPSLAST_LATITUDE, mapCenter.getLatitudeE6() / E6);
+            editor.putInt(Constants.PREFS_KEY_ZOOM, mapsView.getZoomLevel());
+            editor.commit();
+        } else {
+            float lastCenterLon = preferences.getFloat(GPSLAST_LONGITUDE, 0);
+            float lastCenterLat = preferences.getFloat(GPSLAST_LATITUDE, 0);
+            final int zoom = preferences.getInt(Constants.PREFS_KEY_ZOOM, 16);
+            mapController.setCenter(new GeoPoint(lastCenterLat, lastCenterLon));
+            mapController.setZoom(zoom);
+        }
+        super.onWindowFocusChanged(hasFocus);
     }
+
+    // @Override
+    // protected void onPause() {
+    // GeoPoint mapCenter = mapsView.getMapCenter();
+    // SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+    // Editor editor = preferences.edit();
+    // editor.putFloat(GPSLAST_LONGITUDE, mapCenter.getLongitudeE6() / E6);
+    // editor.putFloat(GPSLAST_LATITUDE, mapCenter.getLatitudeE6() / E6);
+    // editor.commit();
+    // super.onPause();
+    // }
 
     public void setNewZoom( int newZoom, boolean onlyText ) {
         int zoomInLevel = newZoom + 1;
@@ -423,10 +449,10 @@ public class MapsActivity extends Activity {
             boolean isInternetOn = sensorsManager.isInternetOn();
             if (isInternetOn) {
                 BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
-                float screenNorth = boundingBox.getLatNorthE6() / 6f;
-                float screenSouth = boundingBox.getLatSouthE6() / 6f;
-                float screenWest = boundingBox.getLonWestE6() / 6f;
-                float screenEast = boundingBox.getLonEastE6() / 6f;
+                float screenNorth = boundingBox.getLatNorthE6() / E6;
+                float screenSouth = boundingBox.getLatSouthE6() / E6;
+                float screenWest = boundingBox.getLonWestE6() / E6;
+                float screenEast = boundingBox.getLonEastE6() / E6;
 
                 float[] nsew = new float[]{screenNorth, screenSouth, screenEast, screenWest};
                 Intent downloadIntent = new Intent(this, MapDownloadActivity.class);
@@ -463,10 +489,10 @@ public class MapsActivity extends Activity {
                     public void onClick( DialogInterface dialog, int whichButton ) {
                         try {
                             BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
-                            float n = boundingBox.getLatNorthE6() / 6f;
-                            float s = boundingBox.getLatSouthE6() / 6f;
-                            float w = boundingBox.getLonWestE6() / 6f;
-                            float e = boundingBox.getLonEastE6() / 6f;
+                            float n = boundingBox.getLatNorthE6() / E6;
+                            float s = boundingBox.getLatSouthE6() / E6;
+                            float w = boundingBox.getLonWestE6() / E6;
+                            float e = boundingBox.getLonEastE6() / E6;
                             final List<Bookmark> bookmarksInBounds = DaoBookmarks.getBookmarksInWorldBounds(MapsActivity.this, n,
                                     s, w, e);
                             int bookmarksNum = bookmarksInBounds.size();
@@ -512,10 +538,10 @@ public class MapsActivity extends Activity {
                     public void onClick( DialogInterface dialog, int whichButton ) {
                         try {
                             BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
-                            float n = boundingBox.getLatNorthE6() / 6f;
-                            float s = boundingBox.getLatSouthE6() / 6f;
-                            float w = boundingBox.getLonWestE6() / 6f;
-                            float e = boundingBox.getLonEastE6() / 6f;
+                            float n = boundingBox.getLatNorthE6() / E6;
+                            float s = boundingBox.getLatSouthE6() / E6;
+                            float w = boundingBox.getLonWestE6() / E6;
+                            float e = boundingBox.getLonEastE6() / E6;
                             final List<Note> notesInBounds = DaoNotes.getNotesInWorldBounds(MapsActivity.this, n, s, w, e);
 
                             int notesNum = notesInBounds.size();
@@ -552,8 +578,8 @@ public class MapsActivity extends Activity {
 
     private void addBookmark() {
         GeoPoint mapCenter = mapsView.getMapCenter();
-        final float centerLat = mapCenter.getLatitudeE6() / 6f;
-        final float centerLon = mapCenter.getLongitudeE6() / 6f;
+        final float centerLat = mapCenter.getLatitudeE6() / E6;
+        final float centerLon = mapCenter.getLongitudeE6() / E6;
         final EditText input = new EditText(this);
         final String newDate = Constants.TIME_FORMATTER.format(new Date());
         final String proposedName = "bookmark " + newDate;
@@ -576,10 +602,10 @@ public class MapsActivity extends Activity {
 
                             int zoom = mapsView.getZoomLevel();
                             BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
-                            float n = boundingBox.getLatNorthE6() / 6f;
-                            float s = boundingBox.getLatSouthE6() / 6f;
-                            float w = boundingBox.getLonWestE6() / 6f;
-                            float e = boundingBox.getLonEastE6() / 6f;
+                            float n = boundingBox.getLatNorthE6() / E6;
+                            float s = boundingBox.getLatSouthE6() / E6;
+                            float w = boundingBox.getLonWestE6() / E6;
+                            float e = boundingBox.getLonEastE6() / E6;
                             DaoBookmarks.addBookmark(getApplicationContext(), centerLon, centerLat, newName, zoom, n, s, w, e);
                             mapsView.invalidate();
                         } catch (IOException e) {
