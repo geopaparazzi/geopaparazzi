@@ -168,7 +168,7 @@ public final class R {
         public static final int warning_button_drawable=0x7f020049;
     }
     public static final class id {
-        public static final int ZoomBar=0x7f0b0066;
+        public static final int ZoomBar=0x7f0b0065;
         public static final int about=0x7f0b0001;
         public static final int aboutscroll=0x7f0b0000;
         public static final int action_bar=0x7f0b001f;
@@ -178,20 +178,20 @@ public final class R {
         public static final int action_bar_logo=0x7f0b0003;
         public static final int action_bar_note=0x7f0b0007;
         public static final int action_bar_title=0x7f0b0004;
-        public static final int addbookmarkbutton=0x7f0b006b;
-        public static final int addnotebytagbutton=0x7f0b0069;
+        public static final int addbookmarkbutton=0x7f0b006a;
+        public static final int addnotebytagbutton=0x7f0b0068;
         public static final int arrow_down=0x7f0b0086;
         public static final int arrow_up=0x7f0b0085;
         public static final int askcoordlabel=0x7f0b004d;
         public static final int bookmarkrow=0x7f0b000d;
-        public static final int bookmarkslistbutton=0x7f0b006d;
+        public static final int bookmarkslistbutton=0x7f0b006c;
         public static final int browsebuttonslayout=0x7f0b000f;
         public static final int browselist_text=0x7f0b0013;
         public static final int browselistlayout=0x7f0b0012;
         public static final int browsermainlayout=0x7f0b000e;
         public static final int button_layout=0x7f0b0016;
         public static final int cancel=0x7f0b0080;
-        public static final int center_on_gps_btn=0x7f0b006f;
+        public static final int center_on_gps_btn=0x7f0b006e;
         public static final int colorLabel=0x7f0b003c;
         public static final int color_spinner=0x7f0b003d;
         public static final int content=0x7f0b0033;
@@ -262,10 +262,10 @@ public final class R {
         public static final int mapproplabel=0x7f0b0053;
         public static final int mapsdownload_cancel=0x7f0b005d;
         public static final int mapsdownload_ok=0x7f0b005c;
-        public static final int mapslide=0x7f0b0063;
-        public static final int mapslidecontent=0x7f0b0062;
-        public static final int mapslidehandle=0x7f0b0061;
-        public static final int maptoolslayout=0x7f0b0068;
+        public static final int mapslide=0x7f0b0062;
+        public static final int mapslidecontent=0x7f0b0061;
+        public static final int mapslidehandle=0x7f0b0060;
+        public static final int maptoolslayout=0x7f0b0067;
         public static final int measureOkButton=0x7f0b007d;
         public static final int measuredistancetext=0x7f0b0072;
         public static final int measureinfo=0x7f0b0070;
@@ -281,17 +281,17 @@ public final class R {
         public static final int osm_additionalinfo_id=0x7f0b008d;
         public static final int osm_frameLayout=0x7f0b005e;
         public static final int osmgridview=0x7f0b008e;
-        public static final int osmviewid=0x7f0b0060;
+        public static final int osmviewid=0x7f0b006f;
         public static final int panicbutton=0x7f0b0035;
         public static final int phonenumber_text=0x7f0b0081;
-        public static final int removebookmarkbutton=0x7f0b006c;
-        public static final int removenotesbutton=0x7f0b006a;
+        public static final int removebookmarkbutton=0x7f0b006b;
+        public static final int removenotesbutton=0x7f0b0069;
         public static final int renamebutton=0x7f0b000c;
         public static final int row_container=0x7f0b0037;
         public static final int row_container5=0x7f0b0041;
         public static final int scroll=0x7f0b0088;
         public static final int scroller=0x7f0b0083;
-        public static final int seekbarlayout=0x7f0b0064;
+        public static final int seekbarlayout=0x7f0b0063;
         public static final int sep1=0x7f0b0006;
         public static final int sep2=0x7f0b0008;
         public static final int sep3=0x7f0b000a;
@@ -302,15 +302,15 @@ public final class R {
         public static final int tiles_number=0x7f0b005b;
         public static final int tiles_number_label=0x7f0b005a;
         public static final int title=0x7f0b008b;
-        public static final int togglemeasuremodebutton=0x7f0b006e;
+        public static final int togglemeasuremodebutton=0x7f0b006d;
         public static final int tracks=0x7f0b0084;
         public static final int upbutton=0x7f0b0011;
         public static final int visible=0x7f0b0044;
         public static final int widthLabel=0x7f0b003a;
         public static final int widthText=0x7f0b003b;
         public static final int zoom_level_download_spinner=0x7f0b0059;
-        public static final int zoomin=0x7f0b0065;
-        public static final int zoomout=0x7f0b0067;
+        public static final int zoomin=0x7f0b0064;
+        public static final int zoomout=0x7f0b0066;
     }
     public static final class layout {
         public static final int about=0x7f030000;
