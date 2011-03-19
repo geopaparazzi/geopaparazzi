@@ -70,6 +70,7 @@ import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.gps.GpsManager;
+import eu.hydrologis.geopaparazzi.maps.overlays.BookmarksOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.LogsOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.NotesOverlay;
 import eu.hydrologis.geopaparazzi.sensors.SensorsManager;
@@ -105,6 +106,7 @@ public class MapsActivity extends Activity {
     private MinimapOverlay mMiniMapOverlay;
     private LogsOverlay mLogsOverlay;
     private NotesOverlay mNotesOverlay;
+    private BookmarksOverlay mBookmarksOverlay;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -134,6 +136,12 @@ public class MapsActivity extends Activity {
         {
             mNotesOverlay = new NotesOverlay(this, mResourceProxy);
             this.mapsView.getOverlays().add(mNotesOverlay);
+        }
+
+        /* bookmarks */
+        {
+            mBookmarksOverlay = new BookmarksOverlay(this, mResourceProxy);
+            this.mapsView.getOverlays().add(mBookmarksOverlay);
         }
 
         /* Scale Bar Overlay */
@@ -674,6 +682,7 @@ public class MapsActivity extends Activity {
                         }
                         mLogsOverlay.setDoDraw(true);
                         mNotesOverlay.setDoDraw(true);
+                        mBookmarksOverlay.setDoDraw(true);
                         inalidateMap();
                     }
                 });
@@ -684,5 +693,6 @@ public class MapsActivity extends Activity {
     private void disableDrawing() {
         mLogsOverlay.setDoDraw(false);
         mNotesOverlay.setDoDraw(false);
+        mBookmarksOverlay.setDoDraw(false);
     }
 }

@@ -149,7 +149,7 @@ public class DaoNotes {
         query = query.replaceFirst("XXX", String.valueOf(s));
         query = query.replaceFirst("XXX", String.valueOf(n));
 
-        Logger.i("DAONOTES", "Query: " + query);
+        // Logger.i("DAONOTES", "Query: " + query);
 
         Cursor c = sqliteDatabase.rawQuery(query, null);
         List<Note> notes = new ArrayList<Note>();
