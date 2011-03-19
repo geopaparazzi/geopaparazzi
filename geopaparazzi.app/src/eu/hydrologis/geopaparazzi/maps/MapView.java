@@ -210,7 +210,6 @@ public class MapView extends View implements GpsManagerListener {
 
         ApplicationManager applicationManager = ApplicationManager.getInstance(context);
         decimationFactor = applicationManager.getDecimationFactor();
-        File osmCacheDir = applicationManager.getMapsCacheDir();
         SensorsManager sensorsManager = SensorsManager.getInstance(context);
         boolean internetIsOn = sensorsManager.isInternetOn();
         tileCache = new TileCache(osmCacheDir, internetIsOn, null);

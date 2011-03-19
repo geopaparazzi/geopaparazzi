@@ -21,7 +21,6 @@ import static eu.hydrologis.geopaparazzi.util.Constants.BASEFOLDERKEY;
 import static eu.hydrologis.geopaparazzi.util.Constants.DECIMATION_FACTOR;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_GEOPAPARAZZI;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_KMLEXPORT;
-import static eu.hydrologis.geopaparazzi.util.Constants.PATH_MAPSCACHE;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_MEDIA;
 
 import java.io.BufferedWriter;
@@ -67,14 +66,11 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
 public class ApplicationManager implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private static final String LOGTAG = "APPLICATIONMANAGER";
-
     private Context context;
 
     private File databaseFile;
     private File geoPaparazziDir;
     private File mediaDir;
-    private File mapsCacheDir;
     private File kmlExportDir;
 
     private File debugLogFile;
@@ -129,17 +125,11 @@ public class ApplicationManager implements Serializable {
          *    |--- debug.log 
          *    |        
          *    `--- export
-         * geopaparazzimapscache 
-         *    |--.nomedia
-         *    `-- zoomlevel 
-         *        `-- xtile 
-         *            `-- ytile.png
          */
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String baseFolder = preferences.getString(BASEFOLDERKEY, "");
         geoPaparazziDir = new File(baseFolder);
-        mapsCacheDir = new File(geoPaparazziDir.getParentFile() + PATH_MAPSCACHE);
         if (baseFolder == null || baseFolder.length() == 0 || !geoPaparazziDir.getParentFile().exists()
                 || !geoPaparazziDir.getParentFile().canWrite()) {
             // the folder doesn't exist for some reason, fallback on default
@@ -157,7 +147,6 @@ public class ApplicationManager implements Serializable {
             if (mExternalStorageAvailable && mExternalStorageWriteable) {
                 File sdcardDir = Environment.getExternalStorageDirectory();// new
                 geoPaparazziDir = new File(sdcardDir.getAbsolutePath() + PATH_GEOPAPARAZZI);
-                mapsCacheDir = new File(sdcardDir.getAbsolutePath() + PATH_MAPSCACHE);
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 String ok = context.getResources().getString(R.string.ok);
@@ -185,21 +174,6 @@ public class ApplicationManager implements Serializable {
                         mediaDir.getAbsolutePath()));
         debugLogFile = new File(geoPaparazziDirPath, "debug.log");
 
-        Logger.i(LOGTAG, "MAPSCACHEPATH:" + mapsCacheDir.getAbsolutePath());
-        if (!mapsCacheDir.exists())
-            if (!mapsCacheDir.mkdirs()) {
-                String msg = MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
-                        mapsCacheDir.getAbsolutePath());
-                alert(msg);
-            }
-        File noMediaFile = new File(mapsCacheDir, ".nomedia");
-        if (!noMediaFile.exists()) {
-            try {
-                noMediaFile.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
         kmlExportDir = new File(geoPaparazziDirPath + PATH_KMLEXPORT);
         if (!kmlExportDir.exists())
             if (!kmlExportDir.mkdir())
@@ -219,10 +193,6 @@ public class ApplicationManager implements Serializable {
 
     public File getDatabaseFile() {
         return databaseFile;
-    }
-
-    public File getMapsCacheDir() {
-        return mapsCacheDir;
     }
 
     public File getKmlExportDir() {

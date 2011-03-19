@@ -114,7 +114,6 @@ public interface Constants {
     public final String PATH_KMLEXPORT = File.separator + "export";
 
     public final String PATH_GEOPAPARAZZIDATA = File.separator + GEOPAPARAZZI;
-    public final String PATH_MAPSCACHE = File.separator + "geopaparazzimapscache";
 
     public final SimpleDateFormat TIMESTAMPFORMATTER = new SimpleDateFormat("yyyyMMdd_HHmmss");
     public final SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
