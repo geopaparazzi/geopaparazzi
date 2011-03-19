@@ -20,7 +20,10 @@ package eu.hydrologis.geopaparazzi.maps.overlays;
 import static eu.hydrologis.geopaparazzi.util.Constants.E6;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.osmdroid.ResourceProxy;
 import org.osmdroid.util.BoundingBoxE6;
@@ -49,8 +52,7 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
  */
 public class LogsOverlay extends Overlay {
 
-    private final Paint mPaint = new Paint();
-    private final Path mPath = new Path();
+    private HashMap<Path, Paint> lastPathsDrawn = new HashMap<Path, Paint>();
 
     private Context context;
 
@@ -81,6 +83,15 @@ public class LogsOverlay extends Overlay {
         if (touchDragging || shadow || !doDraw || mapsView.isAnimating() || !DataManager.getInstance().areLogsVisible())
             return;
 
+        if (gpsUpdate) {
+            Set<Entry<Path, Paint>> entrySet = lastPathsDrawn.entrySet();
+            for( Entry<Path, Paint> entry : entrySet ) {
+                canvas.drawPath(entry.getKey(), entry.getValue());
+            }
+            gpsUpdate = false;
+            return;
+        }
+
         BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
         float y0 = boundingBox.getLatNorthE6() / E6;
         float y1 = boundingBox.getLatSouthE6() / E6;
@@ -99,6 +110,7 @@ public class LogsOverlay extends Overlay {
             GpsManager gpsManager = GpsManager.getInstance(context);
             long currentLogId = gpsManager.getCurrentRecordedLogId();
 
+            lastPathsDrawn.clear();
             for( MapItem gpslogItem : gpslogs ) {
                 Long id = gpslogItem.getId();
                 // Logger.d(LOGTAG, "Handling log: " + id);
@@ -106,21 +118,16 @@ public class LogsOverlay extends Overlay {
                     // Logger.d(LOGTAG, "...which is not visible");
                     continue;
                 }
+                final Path mPath = new Path();
+                final Paint mPaint = new Paint();
+
                 if (id == currentLogId) {
                     // Logger.d(LOGTAG, "...which is the current");
                     // we always reread the current log to make it proceed
                     DaoGpsLog.getPathInWorldBoundsByIdDecimated(context, y0, y1, x0, x1, mPath, pj, id, decimationFactor);
                 } else {
                     // for the other logs we cache depending on a gps update or a touch draw event
-                    if (gpsUpdate) {
-                        // draw was triggered by gps moving, we get the cached from before
-                        continue;
-                    } else {
-                        // if the draw comes from no gps update, reread the track
-                        // linesInWorldBounds.remove(id);
-                        DaoGpsLog.getPathInWorldBoundsByIdDecimated(context, y0, y1, x0, x1, mPath, pj, id, decimationFactor);
-                        // linesInWorldBounds.put(id, line);
-                    }
+                    DaoGpsLog.getPathInWorldBoundsByIdDecimated(context, y0, y1, x0, x1, mPath, pj, id, decimationFactor);
                 }
 
                 mPaint.setAntiAlias(true);
@@ -131,11 +138,9 @@ public class LogsOverlay extends Overlay {
                 mPaint.setStrokeCap(Paint.Cap.ROUND);
                 canvas.drawPath(mPath, mPaint);
 
+                lastPathsDrawn.put(mPath, mPaint);
             }
 
-            if (gpsUpdate) {
-                gpsUpdate = false;
-            }
         } catch (IOException e) {
             Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();

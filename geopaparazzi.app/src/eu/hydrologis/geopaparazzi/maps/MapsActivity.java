@@ -72,6 +72,7 @@ import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.gps.GpsManager;
 import eu.hydrologis.geopaparazzi.gps.GpsManagerListener;
 import eu.hydrologis.geopaparazzi.maps.overlays.BookmarksOverlay;
+import eu.hydrologis.geopaparazzi.maps.overlays.CrossOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.GpsPositionOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.LogsOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.NotesOverlay;
@@ -110,6 +111,7 @@ public class MapsActivity extends Activity implements GpsManagerListener {
     private NotesOverlay mNotesOverlay;
     private BookmarksOverlay mBookmarksOverlay;
     private GpsPositionOverlay mGpsOverlay;
+    private CrossOverlay mCrossOverlay;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -154,6 +156,12 @@ public class MapsActivity extends Activity implements GpsManagerListener {
             mGpsOverlay = new GpsPositionOverlay(this, mResourceProxy);
             this.mapsView.getOverlays().add(mGpsOverlay);
         }
+
+        /* cross */
+        // {
+        // mCrossOverlay = new CrossOverlay(this, mResourceProxy);
+        // this.mapsView.getOverlays().add(mCrossOverlay);
+        // }
 
         /* Scale Bar Overlay */
         {
@@ -711,7 +719,7 @@ public class MapsActivity extends Activity implements GpsManagerListener {
 
     private boolean hasFix = false;
     public void onLocationChanged( GpsLocation loc ) {
-        if (loc == null || !hasFix) {
+        if (loc == null) {
             return;
         }
         BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
@@ -722,8 +730,8 @@ public class MapsActivity extends Activity implements GpsManagerListener {
         }
 
         mLogsOverlay.setGpsUpdate(true);
-        mNotesOverlay.setGpsUpdate(false);
-        mBookmarksOverlay.setGpsUpdate(false);
+        mNotesOverlay.setGpsUpdate(true);
+        mBookmarksOverlay.setGpsUpdate(true);
         mGpsOverlay.setLoc(loc);
         mapsView.invalidate();
     }

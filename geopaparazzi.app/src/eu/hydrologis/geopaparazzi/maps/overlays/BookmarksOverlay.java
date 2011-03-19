@@ -20,6 +20,7 @@ package eu.hydrologis.geopaparazzi.maps.overlays;
 import static eu.hydrologis.geopaparazzi.util.Constants.E6;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.osmdroid.ResourceProxy;
@@ -72,6 +73,8 @@ public class BookmarksOverlay extends Overlay {
     private static int bookmarkIconWidth;
     private static int bookmarkIconHeight;
 
+    private List<Bookmark> bookmarksInWorldBounds = new ArrayList<Bookmark>();
+
     public BookmarksOverlay( final Context ctx, final ResourceProxy pResourceProxy ) {
         super(pResourceProxy);
         this.context = ctx;
@@ -105,11 +108,6 @@ public class BookmarksOverlay extends Overlay {
         if (touchDragging || shadow || !doDraw || mapsView.isAnimating())
             return;
 
-        if (gpsUpdate) {
-            gpsUpdate = false;
-            return;
-        }
-
         BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
         float y0 = boundingBox.getLatNorthE6() / E6;
         float y1 = boundingBox.getLatSouthE6() / E6;
@@ -125,24 +123,34 @@ public class BookmarksOverlay extends Overlay {
 
         int zoomLevel = mapsView.getZoomLevel();
 
-        try {
-            List<Bookmark> bookmarksInWorldBounds = DaoBookmarks.getBookmarksInWorldBounds(context, y0, y1, x0, x1);
-            for( Bookmark bookMark : bookmarksInWorldBounds ) {
-                float lat = (float) bookMark.getLat();
-                float lon = (float) bookMark.getLon();
-                GeoPoint g = new GeoPoint(lat, lon);
-                Point mapPixels = pj.toMapPixels(g, null);
+        if (gpsUpdate) {
+            drawBookmarks(canvas, pj, zoomLevel);
+            gpsUpdate = false;
+            return;
+        }
 
-                canvas.drawBitmap(bookmarkIcon, mapPixels.x - bookmarkIconWidth / 2f, mapPixels.y - bookmarkIconHeight / 2f, null);
-                drawLabel(canvas, bookMark.getName(), mapPixels.x + bookmarkIconWidth / 3f, mapPixels.y - bookmarkIconWidth / 3f,
-                        mTextPaint, zoomLevel);
-            }
+        try {
+            bookmarksInWorldBounds = DaoBookmarks.getBookmarksInWorldBounds(context, y0, y1, x0, x1);
+            drawBookmarks(canvas, pj, zoomLevel);
 
         } catch (IOException e) {
             Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
         }
 
+    }
+
+    private void drawBookmarks( final Canvas canvas, Projection pj, int zoomLevel ) {
+        for( Bookmark bookMark : bookmarksInWorldBounds ) {
+            float lat = (float) bookMark.getLat();
+            float lon = (float) bookMark.getLon();
+            GeoPoint g = new GeoPoint(lat, lon);
+            Point mapPixels = pj.toMapPixels(g, null);
+
+            canvas.drawBitmap(bookmarkIcon, mapPixels.x - bookmarkIconWidth / 2f, mapPixels.y - bookmarkIconHeight / 2f, null);
+            drawLabel(canvas, bookMark.getName(), mapPixels.x + bookmarkIconWidth / 3f, mapPixels.y - bookmarkIconWidth / 3f,
+                    mTextPaint, zoomLevel);
+        }
     }
 
     private void drawLabel( Canvas canvas, String label, float positionX, float positionY, Paint paint, int zoom ) {

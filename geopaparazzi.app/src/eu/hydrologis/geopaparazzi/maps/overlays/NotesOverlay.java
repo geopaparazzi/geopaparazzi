@@ -20,6 +20,7 @@ package eu.hydrologis.geopaparazzi.maps.overlays;
 import static eu.hydrologis.geopaparazzi.util.Constants.E6;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.osmdroid.ResourceProxy;
@@ -65,6 +66,7 @@ public class NotesOverlay extends Overlay {
     private int zoomLevelLabelLength1;
     private int zoomLevelLabelLength2;
     private boolean gpsUpdate = false;
+    private List<Note> notesInWorldBounds = new ArrayList<Note>();
 
     public NotesOverlay( final Context ctx, final ResourceProxy pResourceProxy ) {
         super(pResourceProxy);
@@ -93,11 +95,6 @@ public class NotesOverlay extends Overlay {
         if (touchDragging || shadow || !doDraw || mapsView.isAnimating() || !DataManager.getInstance().areNotesVisible())
             return;
 
-        if (gpsUpdate) {
-            gpsUpdate = false;
-            return;
-        }
-
         BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
         float y0 = boundingBox.getLatNorthE6() / E6;
         float y1 = boundingBox.getLatSouthE6() / E6;
@@ -113,30 +110,40 @@ public class NotesOverlay extends Overlay {
 
         int zoomLevel = mapsView.getZoomLevel();
 
+        if (gpsUpdate) {
+            drawNotes(canvas, pj, zoomLevel);
+            gpsUpdate = false;
+            return;
+        }
+
         try {
-            List<Note> notesInWorldBounds = DaoNotes.getNotesInWorldBounds(context, y0, y1, x0, x1);
-            int notesColor = DataManager.getInstance().getNotesColor();
-            float notesWidth = DataManager.getInstance().getNotesWidth();
-            mPaint.setAntiAlias(true);
-            mPaint.setColor(notesColor);
-            mPaint.setStrokeWidth(notesWidth);
-            mPaint.setStyle(Paint.Style.FILL);
-            for( Note note : notesInWorldBounds ) {
-                float lat = (float) note.getLat();
-                float lon = (float) note.getLon();
-
-                GeoPoint g = new GeoPoint(lat, lon);
-                Point mapPixels = pj.toMapPixels(g, null);
-
-                canvas.drawPoint(mapPixels.x, mapPixels.y, mPaint);
-                drawLabel(canvas, note.getName(), mapPixels.x, mapPixels.y, mTextPaint, zoomLevel);
-            }
+            notesInWorldBounds = DaoNotes.getNotesInWorldBounds(context, y0, y1, x0, x1);
+            drawNotes(canvas, pj, zoomLevel);
 
         } catch (IOException e) {
             Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
         }
 
+    }
+
+    private void drawNotes( final Canvas canvas, Projection pj, int zoomLevel ) {
+        int notesColor = DataManager.getInstance().getNotesColor();
+        float notesWidth = DataManager.getInstance().getNotesWidth();
+        mPaint.setAntiAlias(true);
+        mPaint.setColor(notesColor);
+        mPaint.setStrokeWidth(notesWidth);
+        mPaint.setStyle(Paint.Style.FILL);
+        for( Note note : notesInWorldBounds ) {
+            float lat = (float) note.getLat();
+            float lon = (float) note.getLon();
+
+            GeoPoint g = new GeoPoint(lat, lon);
+            Point mapPixels = pj.toMapPixels(g, null);
+
+            canvas.drawPoint(mapPixels.x, mapPixels.y, mPaint);
+            drawLabel(canvas, note.getName(), mapPixels.x, mapPixels.y, mTextPaint, zoomLevel);
+        }
     }
 
     private void drawLabel( Canvas canvas, String label, float positionX, float positionY, Paint paint, int zoom ) {
