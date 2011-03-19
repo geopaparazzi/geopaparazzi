@@ -28,13 +28,15 @@ import java.util.Date;
 import java.util.List;
 
 import org.osmdroid.ResourceProxy;
+import org.osmdroid.events.MapListener;
+import org.osmdroid.events.ScrollEvent;
+import org.osmdroid.events.ZoomEvent;
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.tileprovider.util.CloudmadeUtil;
 import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
-import org.osmdroid.views.MapController.AnimationType;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MinimapOverlay;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
@@ -88,7 +90,7 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class MapsActivity extends Activity implements GpsManagerListener {
+public class MapsActivity extends Activity implements GpsManagerListener, MapListener {
     private static final int MENU_GPSDATA = 1;
     private static final int MENU_MAPDATA = 2;
     private static final int MENU_TILE_SOURCE_ID = 3;
@@ -129,6 +131,8 @@ public class MapsActivity extends Activity implements GpsManagerListener {
         rl.addView(this.mapsView, new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
 
         mapController = mapsView.getController();
+
+        mapsView.setMapListener(this);
 
         ViewportManager.INSTANCE.setMapActivity(this);
 
@@ -371,6 +375,7 @@ public class MapsActivity extends Activity implements GpsManagerListener {
             final int zoom = preferences.getInt(Constants.PREFS_KEY_ZOOM, 16);
             mapController.setCenter(new GeoPoint(lastCenterLat, lastCenterLon));
             mapController.setZoom(zoom);
+            setZoomGuiText(zoom);
         }
         super.onWindowFocusChanged(hasFocus);
     }
@@ -433,11 +438,12 @@ public class MapsActivity extends Activity implements GpsManagerListener {
     }
 
     public void setNewCenter( double lon, double lat, boolean drawIcon ) {
-        mapController.animateTo(new GeoPoint(lat, lon), AnimationType.LINEAR);
+        mapController.setCenter(new GeoPoint(lat, lon));
     }
 
     public void setNewCenterAtZoom( final double centerX, final double centerY, final int zoom ) {
         mapsView.getController().setZoom(zoom);
+        setZoomGuiText(zoom);
         mapsView.getController().setCenter(new GeoPoint((int) (centerX * E6), (int) (centerY * E6)));
         mapsView.postInvalidate();
     }
@@ -544,6 +550,10 @@ public class MapsActivity extends Activity implements GpsManagerListener {
                 });
             }
             return true;
+        default:
+            ITileSource tileSource = TileSourceFactory.getTileSource(item.getItemId() - 1000);
+            mapsView.setTileSource(tileSource);
+            mMiniMapOverlay.setTileSource(tileSource);
         }
         return super.onMenuItemSelected(featureId, item);
     }
@@ -776,6 +786,18 @@ public class MapsActivity extends Activity implements GpsManagerListener {
     }
     public void onStatusChanged( boolean hasFix ) {
         this.hasFix = hasFix;
+    }
+
+    public boolean onScroll( ScrollEvent event ) {
+        return true;
+    }
+
+    public boolean onZoom( ZoomEvent event ) {
+        int zoomLevel = event.getZoomLevel();
+        if (zoomInButton != null) {
+            setZoomGuiText(zoomLevel);
+        }
+        return true;
     }
 
 }
