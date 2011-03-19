@@ -27,16 +27,21 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView.Projection;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import android.graphics.Point;
 import eu.hydrologis.geopaparazzi.maps.MapItem;
 import eu.hydrologis.geopaparazzi.maps.MapView;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.LineArray;
+import eu.hydrologis.geopaparazzi.util.LineScreenArray;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -540,6 +545,134 @@ public class DaoGpsLog {
                 previousScreenY = screenY;
 
                 line.addPoint(lon, lat);
+                c.moveToNext();
+            }
+            Logger.d("DAOGPSLOG", "Logs jumped: " + jump + " with thres: " + decimationFactor);
+            // Set<Entry<Long, LineArray>> entrySet = linesMap.entrySet();
+            // for( Entry<Long, LineArray> entry : entrySet ) {
+            // Logger.d("DAOGPSLOG", "Found for log: " + entry.getKey() + " points: " +
+            // entry.getValue().getIndex());
+            // }
+        } finally {
+            if (c != null)
+                c.close();
+        }
+        return line;
+    }
+
+    public static LineArray getLinesInWorldBoundsByIdDecimated2( Context context, float n, float s, float w, float e,
+            Projection pj, long logId, int decimationFactor ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        n = n + DatabaseManager.BUFFER;
+        s = s - DatabaseManager.BUFFER;
+        e = e + DatabaseManager.BUFFER;
+        w = w - DatabaseManager.BUFFER;
+
+        String asColumnsToReturn[] = {COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_ALTIM, COLUMN_DATA_TS};
+        StringBuilder sB = new StringBuilder();
+        sB.append(COLUMN_LOGID);
+        sB.append(" = ");
+        sB.append(logId);
+        sB.append(" AND (");
+        sB.append(COLUMN_DATA_LON);
+        sB.append(" BETWEEN ? AND ?) AND (");
+        sB.append(COLUMN_DATA_LAT);
+        sB.append(" BETWEEN ? AND ?)");
+        String strWhere = sB.toString();
+        String[] strWhereArgs = new String[]{String.valueOf(w), String.valueOf(e), String.valueOf(s), String.valueOf(n)};
+        String strSortOrder = COLUMN_DATA_TS + " ASC";
+        LineArray line = new LineArray("log_" + logId);
+        Cursor c = null;
+        try {
+            c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, strWhereArgs, null, null, strSortOrder);
+            c.moveToFirst();
+
+            int previousScreenX = Integer.MAX_VALUE;
+            int previousScreenY = Integer.MAX_VALUE;
+
+            int jump = 0;
+            while( !c.isAfterLast() ) {
+                float lon = c.getFloat(0);
+                float lat = c.getFloat(1);
+
+                GeoPoint g = new GeoPoint(lat, lon);
+                Point mapPixels = pj.toMapPixels(g, null);
+                // check if on screen it would be placed on the same pixel
+                int screenX = mapPixels.x;
+                int screenY = mapPixels.y;
+                if (abs(screenX - previousScreenX) < decimationFactor && abs(screenY - previousScreenY) < decimationFactor) {
+                    c.moveToNext();
+                    jump++;
+                    continue;
+                }
+                previousScreenX = screenX;
+                previousScreenY = screenY;
+
+                line.addPoint(lon, lat);
+                c.moveToNext();
+            }
+            Logger.d("DAOGPSLOG", "Logs jumped: " + jump + " with thres: " + decimationFactor);
+            // Set<Entry<Long, LineArray>> entrySet = linesMap.entrySet();
+            // for( Entry<Long, LineArray> entry : entrySet ) {
+            // Logger.d("DAOGPSLOG", "Found for log: " + entry.getKey() + " points: " +
+            // entry.getValue().getIndex());
+            // }
+        } finally {
+            if (c != null)
+                c.close();
+        }
+        return line;
+    }
+
+    public static LineScreenArray getScreenLinesInWorldBoundsByIdDecimated( Context context, float n, float s, float w, float e,
+            Projection pj, long logId, int decimationFactor ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        n = n + DatabaseManager.BUFFER;
+        s = s - DatabaseManager.BUFFER;
+        e = e + DatabaseManager.BUFFER;
+        w = w - DatabaseManager.BUFFER;
+        
+        String asColumnsToReturn[] = {COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_ALTIM, COLUMN_DATA_TS};
+        StringBuilder sB = new StringBuilder();
+        sB.append(COLUMN_LOGID);
+        sB.append(" = ");
+        sB.append(logId);
+        sB.append(" AND (");
+        sB.append(COLUMN_DATA_LON);
+        sB.append(" BETWEEN ? AND ?) AND (");
+        sB.append(COLUMN_DATA_LAT);
+        sB.append(" BETWEEN ? AND ?)");
+        String strWhere = sB.toString();
+        String[] strWhereArgs = new String[]{String.valueOf(w), String.valueOf(e), String.valueOf(s), String.valueOf(n)};
+        String strSortOrder = COLUMN_DATA_TS + " ASC";
+        LineScreenArray line = new LineScreenArray("log_" + logId);
+        Cursor c = null;
+        try {
+            c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, strWhereArgs, null, null, strSortOrder);
+            c.moveToFirst();
+            
+            int previousScreenX = Integer.MAX_VALUE;
+            int previousScreenY = Integer.MAX_VALUE;
+            
+            int jump = 0;
+            while( !c.isAfterLast() ) {
+                float lon = c.getFloat(0);
+                float lat = c.getFloat(1);
+                
+                GeoPoint g = new GeoPoint(lat, lon);
+                Point mapPixels = pj.toMapPixels(g, null);
+                // check if on screen it would be placed on the same pixel
+                int screenX = mapPixels.x;
+                int screenY = mapPixels.y;
+                if (abs(screenX - previousScreenX) < decimationFactor && abs(screenY - previousScreenY) < decimationFactor) {
+                    c.moveToNext();
+                    jump++;
+                    continue;
+                }
+                previousScreenX = screenX;
+                previousScreenY = screenY;
+                
+                line.addPoint(screenX, screenY);
                 c.moveToNext();
             }
             Logger.d("DAOGPSLOG", "Logs jumped: " + jump + " with thres: " + decimationFactor);

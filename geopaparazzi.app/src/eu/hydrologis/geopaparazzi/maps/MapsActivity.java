@@ -17,6 +17,7 @@
  */
 package eu.hydrologis.geopaparazzi.maps;
 
+import static eu.hydrologis.geopaparazzi.util.Constants.E6;
 import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LATITUDE;
 import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LONGITUDE;
 
@@ -85,8 +86,6 @@ public class MapsActivity extends Activity {
     private static final int MENU_SCALE_ID = 5;
     private static final int MENU_DOWNLOADMAPS = 6;
     private static final int GO_TO = 7;
-
-    private static final float E6 = 1000000f;
 
     private DecimalFormat formatter = new DecimalFormat("00");
     private Button zoomInButton;

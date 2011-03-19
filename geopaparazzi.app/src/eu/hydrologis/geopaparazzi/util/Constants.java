@@ -64,6 +64,8 @@ public interface Constants {
     public final String MEASUREDIST = "MEASUREDIST";
     public final String NSEW_COORDS = "NSEW_COORDS";
 
+    public final float E6 = 1000000f;
+    
     /**
      * Threshold for the sensor values in degrees (azimuth, pitch, roll).
      */
