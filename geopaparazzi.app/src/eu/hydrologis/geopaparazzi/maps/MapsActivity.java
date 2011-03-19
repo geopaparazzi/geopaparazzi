@@ -241,7 +241,7 @@ public class MapsActivity extends Activity {
                 Logger.d(this, "Enable drawing");
                 sliderIsOpen = true;
                 slideHandleButton.setBackgroundResource(R.drawable.min);
-                enableDrawing(true);
+                enableDrawingWithDelay();
             }
         });
         slidingDrawer.setOnDrawerCloseListener(new SlidingDrawer.OnDrawerCloseListener(){
@@ -249,7 +249,7 @@ public class MapsActivity extends Activity {
                 Logger.d(this, "Enable drawing");
                 slideHandleButton.setBackgroundResource(R.drawable.max);
                 sliderIsOpen = false;
-                enableDrawing(true);
+                enableDrawingWithDelay();
             }
 
         });
@@ -257,12 +257,12 @@ public class MapsActivity extends Activity {
         slidingDrawer.setOnDrawerScrollListener(new SlidingDrawer.OnDrawerScrollListener(){
             public void onScrollEnded() {
                 Logger.d(this, "Scroll End Disable drawing");
-                enableDrawing(false);
+                mLogsOverlay.setDoDraw(false);
             }
 
             public void onScrollStarted() {
                 Logger.d(this, "Scroll Start Disable drawing");
-                enableDrawing(false);
+                mLogsOverlay.setDoDraw(false);
             }
         });
         //
@@ -663,7 +663,7 @@ public class MapsActivity extends Activity {
         return super.onKeyDown(keyCode, event);
     }
 
-    private void enableDrawing( boolean doDraw ) {
+    private void enableDrawingWithDelay() {
         new Thread(new Runnable(){
             public void run() {
                 runOnUiThread(new Runnable(){
@@ -673,7 +673,7 @@ public class MapsActivity extends Activity {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        // mapsView.enableDrawing(true);
+                        mLogsOverlay.setDoDraw(true);
                         inalidateMap();
                     }
                 });
