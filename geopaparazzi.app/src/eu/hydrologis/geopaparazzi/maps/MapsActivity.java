@@ -266,50 +266,50 @@ public class MapsActivity extends Activity {
                 disableDrawing();
             }
         });
-        //
-        // /*
-        // * tool buttons
-        // */
-        // ImageButton addnotebytagButton = (ImageButton) findViewById(R.id.addnotebytagbutton);
-        // addnotebytagButton.setOnClickListener(new Button.OnClickListener(){
-        // public void onClick( View v ) {
-        // Intent osmTagsIntent = new Intent(Constants.TAGS);
-        // osmTagsIntent.putExtra(Constants.VIEW_CENTER_LAT, mapsView.getCenterLat());
-        // osmTagsIntent.putExtra(Constants.VIEW_CENTER_LON, mapsView.getCenterLon());
-        // startActivity(osmTagsIntent);
-        // }
-        // });
-        //
-        // ImageButton addBookmarkButton = (ImageButton) findViewById(R.id.addbookmarkbutton);
-        // addBookmarkButton.setOnClickListener(new Button.OnClickListener(){
-        // public void onClick( View v ) {
-        // addBookmark();
-        // }
-        // });
-        //
-        // ImageButton removeNotesButton = (ImageButton) findViewById(R.id.removenotesbutton);
-        // removeNotesButton.setOnClickListener(new Button.OnClickListener(){
-        // public void onClick( View v ) {
-        // deleteVisibleNotes();
-        // }
-        // });
-        //
-        // ImageButton removeBookmarksButton = (ImageButton)
-        // findViewById(R.id.removebookmarkbutton);
-        // removeBookmarksButton.setOnClickListener(new Button.OnClickListener(){
-        // public void onClick( View v ) {
-        // deleteVisibleBookmarks();
-        // }
-        // });
-        //
-        // ImageButton listBookmarksButton = (ImageButton) findViewById(R.id.bookmarkslistbutton);
-        // listBookmarksButton.setOnClickListener(new Button.OnClickListener(){
-        // public void onClick( View v ) {
-        // Intent intent = new Intent(MapsActivity.this, BookmarksListActivity.class);
-        // startActivity(intent);
-        // }
-        // });
-        //
+
+        /*
+        * tool buttons
+        */
+        ImageButton addnotebytagButton = (ImageButton) findViewById(R.id.addnotebytagbutton);
+        addnotebytagButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                GeoPoint mapCenter = mapsView.getMapCenter();
+                Intent osmTagsIntent = new Intent(Constants.TAGS);
+                osmTagsIntent.putExtra(Constants.VIEW_CENTER_LAT, mapCenter.getLatitudeE6() / E6);
+                osmTagsIntent.putExtra(Constants.VIEW_CENTER_LON, mapCenter.getLongitudeE6() / E6);
+                startActivity(osmTagsIntent);
+            }
+        });
+
+        ImageButton addBookmarkButton = (ImageButton) findViewById(R.id.addbookmarkbutton);
+        addBookmarkButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                addBookmark();
+            }
+        });
+
+        ImageButton removeNotesButton = (ImageButton) findViewById(R.id.removenotesbutton);
+        removeNotesButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                deleteVisibleNotes();
+            }
+        });
+
+        ImageButton removeBookmarksButton = (ImageButton) findViewById(R.id.removebookmarkbutton);
+        removeBookmarksButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                deleteVisibleBookmarks();
+            }
+        });
+
+        ImageButton listBookmarksButton = (ImageButton) findViewById(R.id.bookmarkslistbutton);
+        listBookmarksButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                Intent intent = new Intent(MapsActivity.this, BookmarksListActivity.class);
+                startActivity(intent);
+            }
+        });
+
         // final ImageButton toggleMeasuremodeButton = (ImageButton)
         // findViewById(R.id.togglemeasuremodebutton);
         // toggleMeasuremodeButton.setOnClickListener(new Button.OnClickListener(){
@@ -323,8 +323,6 @@ public class MapsActivity extends Activity {
         // }
         // }
         // });
-        //
-        // mapsView.invalidate();
     }
 
     @Override
