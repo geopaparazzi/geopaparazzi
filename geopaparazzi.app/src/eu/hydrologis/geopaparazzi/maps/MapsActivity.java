@@ -58,6 +58,7 @@ import android.view.SubMenu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
@@ -67,6 +68,8 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
+import eu.hydrologis.geopaparazzi.gps.GpsLocation;
+import eu.hydrologis.geopaparazzi.gps.GpsManager;
 import eu.hydrologis.geopaparazzi.maps.overlays.LogsOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.NotesOverlay;
 import eu.hydrologis.geopaparazzi.sensors.SensorsManager;
@@ -162,18 +165,6 @@ public class MapsActivity extends Activity {
         final int zoom = preferences.getInt(Constants.PREFS_KEY_ZOOM, 16);
         mapController.setZoom(zoom);
 
-        // // set zoom preferences
-        // final int zoomLevel1 = Integer.parseInt(preferences.getString(Constants.PREFS_KEY_ZOOM1,
-        // "14"));
-        // final int zoomLevel2 = Integer.parseInt(preferences.getString(Constants.PREFS_KEY_ZOOM2,
-        // "16"));
-        // final int zoomLevelLabelLength1 =
-        // Integer.parseInt(preferences.getString(Constants.PREFS_KEY_ZOOM1_LABELLENGTH, "4"));
-        // final int zoomLevelLabelLength2 =
-        // Integer.parseInt(preferences.getString(Constants.PREFS_KEY_ZOOM2_LABELLENGTH, "-1"));
-        // mapsView.setZoomLabelsParams(zoomLevel1, zoomLevelLabelLength1, zoomLevel2,
-        // zoomLevelLabelLength2);
-
         int maxZoomLevel = mapsView.getMaxZoomLevel();
         int minZoomLevel = mapsView.getMinZoomLevel();
 
@@ -229,16 +220,18 @@ public class MapsActivity extends Activity {
 
             }
         });
-        //
-        // // button view
-        // ImageButton centerOnGps = (ImageButton) findViewById(R.id.center_on_gps_btn);
-        //
-        // centerOnGps.setOnClickListener(new Button.OnClickListener(){
-        // public void onClick( View v ) {
-        // mapsView.centerOnGps();
-        // }
-        // });
-        //
+
+        // center on gps button
+        ImageButton centerOnGps = (ImageButton) findViewById(R.id.center_on_gps_btn);
+        centerOnGps.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                GpsLocation location = GpsManager.getInstance(MapsActivity.this).getLocation();
+                if (location != null) {
+                    setNewCenter(location.getLongitude(), location.getLatitude(), false);
+                }
+            }
+        });
+
         // slidingdrawer
         final int slidingId = R.id.mapslide;
         slidingDrawer = (SlidingDrawer) findViewById(slidingId);
