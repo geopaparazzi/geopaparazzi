@@ -158,10 +158,10 @@ public class MapsActivity extends Activity implements GpsManagerListener {
         }
 
         /* cross */
-        // {
-        // mCrossOverlay = new CrossOverlay(this, mResourceProxy);
-        // this.mapsView.getOverlays().add(mCrossOverlay);
-        // }
+        {
+            mCrossOverlay = new CrossOverlay(this, mResourceProxy);
+            this.mapsView.getOverlays().add(mCrossOverlay);
+        }
 
         /* Scale Bar Overlay */
         {
