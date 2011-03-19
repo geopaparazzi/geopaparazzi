@@ -17,6 +17,8 @@
  */
 package eu.hydrologis.geopaparazzi.maps;
 
+import org.osmdroid.util.BoundingBoxE6;
+
 /**
  * Singleton that takes care of viewport sync.
  * 
@@ -38,7 +40,8 @@ public enum ViewportManager {
         if (mapsActivity == null) {
             return;
         }
-        mapsActivity.setNewZoom(zoom, false);
+        mapsActivity.setZoomGuiText(zoom);
+        mapsActivity.getMapController().setZoom(zoom);
     }
 
     public void setBoundsTo( double n, double s, double w, double e ) {
@@ -52,11 +55,31 @@ public enum ViewportManager {
         mapsActivity.setNewCenter(centerX, centerY, drawIcon);
     }
 
+    public void setCenterAndZoomTo( double centerX, double centerY, int zoom ) {
+        if (mapsActivity == null) {
+            return;
+        }
+        mapsActivity.setNewCenterAtZoom(centerX, centerY, zoom);
+    }
+
+    public void zoomToSpan( BoundingBoxE6 bbox ) {
+        if (mapsActivity == null) {
+            return;
+        }
+        mapsActivity.getMapController().zoomToSpan(bbox);
+    }
+
     public void invalidateMap() {
         if (mapsActivity == null) {
             return;
         }
         mapsActivity.inalidateMap();
+    }
+    public void postInvalidateMap() {
+        if (mapsActivity == null) {
+            return;
+        }
+        mapsActivity.getMapsView().postInvalidate();
     }
 
     public double[] getCenterLonLat() {

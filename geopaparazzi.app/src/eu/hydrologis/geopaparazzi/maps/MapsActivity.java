@@ -34,6 +34,7 @@ import org.osmdroid.tileprovider.util.CloudmadeUtil;
 import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
+import org.osmdroid.views.MapController.AnimationType;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MinimapOverlay;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
@@ -192,8 +193,8 @@ public class MapsActivity extends Activity implements GpsManagerListener {
         final int zoom = preferences.getInt(Constants.PREFS_KEY_ZOOM, 16);
         mapController.setZoom(zoom);
 
-        int maxZoomLevel = mapsView.getMaxZoomLevel();
-        int minZoomLevel = mapsView.getMinZoomLevel();
+        maxZoomLevel = mapsView.getMaxZoomLevel();
+        minZoomLevel = mapsView.getMinZoomLevel();
 
         // zoom bar
         zoomBar = (VerticalSeekBar) findViewById(R.id.ZoomBar);
@@ -202,7 +203,8 @@ public class MapsActivity extends Activity implements GpsManagerListener {
         zoomBar.setOnSeekBarChangeListener(new VerticalSeekBar.OnSeekBarChangeListener(){
             private int progress = zoom;
             public void onStopTrackingTouch( VerticalSeekBar seekBar ) {
-                setNewZoom(progress, false);
+                setZoomGuiText(progress);
+                mapsView.getController().setZoom(progress);
                 inalidateMap();
                 Logger.d(this, "Zoomed to: " + progress);
             }
@@ -213,7 +215,7 @@ public class MapsActivity extends Activity implements GpsManagerListener {
 
             public void onProgressChanged( VerticalSeekBar seekBar, int progress, boolean fromUser ) {
                 this.progress = progress;
-                setNewZoom(progress, true);
+                setZoomGuiText(progress);
             }
         });
 
@@ -231,9 +233,9 @@ public class MapsActivity extends Activity implements GpsManagerListener {
             public void onClick( View v ) {
                 String text = zoomInButton.getText().toString();
                 int newZoom = Integer.parseInt(text);
-                setNewZoom(newZoom, false);
+                setZoomGuiText(newZoom);
+                mapsView.getController().setZoom(newZoom);
                 inalidateMap();
-
             }
         });
         zoomOutButton = (Button) findViewById(R.id.zoomout);
@@ -242,9 +244,9 @@ public class MapsActivity extends Activity implements GpsManagerListener {
             public void onClick( View v ) {
                 String text = zoomOutButton.getText().toString();
                 int newZoom = Integer.parseInt(text);
-                setNewZoom(newZoom, false);
+                setZoomGuiText(newZoom);
+                mapsView.getController().setZoom(newZoom);
                 inalidateMap();
-
             }
         });
 
@@ -333,7 +335,7 @@ public class MapsActivity extends Activity implements GpsManagerListener {
         listBookmarksButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
                 Intent intent = new Intent(MapsActivity.this, BookmarksListActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, BOOKMARKSRETURNCODE);
             }
         });
 
@@ -350,6 +352,9 @@ public class MapsActivity extends Activity implements GpsManagerListener {
         // }
         // }
         // });
+
+        // need to zoom somewhere because of an activity result?
+
     }
 
     @Override
@@ -383,28 +388,86 @@ public class MapsActivity extends Activity implements GpsManagerListener {
     // super.onPause();
     // }
 
-    public void setNewZoom( int newZoom, boolean onlyText ) {
+    private static final int BOOKMARKSRETURNCODE = 999;
+    protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch( requestCode ) {
+        case (BOOKMARKSRETURNCODE): {
+            if (resultCode == Activity.RESULT_OK) {
+                float lon = data.getFloatExtra(Constants.KEY_COORD_X, -9999f);
+                float lat = data.getFloatExtra(Constants.KEY_COORD_Y, -9999f);
+                int zoom = data.getIntExtra(Constants.KEY_ZOOM, -9999);
+                if (lon != -9999f && lat != -9999f && zoom != -9999) {
+                    // setNewCenterAtZoom(lon, lat, zoom);
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                    Editor editor = preferences.edit();
+                    editor.putFloat(GPSLAST_LONGITUDE, lon);
+                    editor.putFloat(GPSLAST_LATITUDE, lat);
+                    editor.putInt(Constants.PREFS_KEY_ZOOM, zoom);
+                    editor.commit();
+                }
+            }
+            break;
+        }
+        }
+    }
+
+    public MapController getMapController() {
+        return mapController;
+    }
+
+    public MapView getMapsView() {
+        return mapsView;
+    }
+
+    public void setZoomGuiText( int newZoom ) {
         int zoomInLevel = newZoom + 1;
-        if (zoomInLevel > 18) {
-            zoomInLevel = 18;
+        if (zoomInLevel > maxZoomLevel) {
+            zoomInLevel = maxZoomLevel;
         }
         int zoomOutLevel = newZoom - 1;
-        if (zoomOutLevel < 0) {
-            zoomOutLevel = 0;
+        if (zoomOutLevel < minZoomLevel) {
+            zoomOutLevel = minZoomLevel;
         }
         zoomInButton.setText(formatter.format(zoomInLevel));
         zoomOutButton.setText(formatter.format(zoomOutLevel));
         zoomBar.setProgress(newZoom);
-
-        if (!onlyText) {
-            mapController.setZoom(newZoom);
-        }
     }
 
     public void setNewCenter( double lon, double lat, boolean drawIcon ) {
-        mapController.setCenter(new GeoPoint(lat, lon));
+        mapController.animateTo(new GeoPoint(lat, lon), AnimationType.LINEAR);
     }
 
+    public void setNewCenterAtZoom( final double centerX, final double centerY, final int zoom ) {
+
+        // new Thread(new Runnable(){
+        // public void run() {
+        // runOnUiThread(new Runnable(){
+        // public void run() {
+        // disableDrawing();
+        GeoPoint mapCenter = mapsView.getMapCenter();
+        int zoomLevel = mapsView.getZoomLevel();
+
+        mapsView.getController().setZoom(zoom);
+        mapsView.getController().setCenter(new GeoPoint((int) (centerX * E6), (int) (centerY * E6)));
+        // setNewCenter(centerX, centerY, false);
+        mapsView.postInvalidate();
+        // }
+        // });
+        // }
+        // }).start();
+
+        // int count = 0;
+        // while( mapsView.isAnimating() || count > 100 ) {
+        // try {
+        // Thread.sleep(30);
+        // } catch (InterruptedException e) {
+        // e.printStackTrace();
+        // }
+        // count++;
+        // }
+        // enableDrawingWithDelay();
+    }
     public double[] getCenterLonLat() {
         GeoPoint mapCenter = mapsView.getMapCenter();
         double[] lonLat = {mapCenter.getLongitudeE6() / 6d, mapCenter.getLatitudeE6() / 6d};
@@ -718,6 +781,8 @@ public class MapsActivity extends Activity implements GpsManagerListener {
     }
 
     private boolean hasFix = false;
+    private int maxZoomLevel;
+    private int minZoomLevel;
     public void onLocationChanged( GpsLocation loc ) {
         if (loc == null) {
             return;
@@ -738,4 +803,5 @@ public class MapsActivity extends Activity implements GpsManagerListener {
     public void onStatusChanged( boolean hasFix ) {
         this.hasFix = hasFix;
     }
+
 }

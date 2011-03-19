@@ -63,6 +63,9 @@ public interface Constants {
     public final String MEASURECOORDSY = "MEASURECOORDSY";
     public final String MEASUREDIST = "MEASUREDIST";
     public final String NSEW_COORDS = "NSEW_COORDS";
+    public final String KEY_COORD_X = "KEY_COORD_X";
+    public final String KEY_COORD_Y = "KEY_COORD_Y";
+    public final String KEY_ZOOM = "KEY_ZOOM";
 
     public final float E6 = 1000000f;
     

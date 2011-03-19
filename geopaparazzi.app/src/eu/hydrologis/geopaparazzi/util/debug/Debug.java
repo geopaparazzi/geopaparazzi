@@ -29,7 +29,7 @@ public interface Debug {
      * 
      * <p>For release = <code>false</code>.
      */
-    boolean doMock = true;
+    boolean doMock = false;
 
     /**
      * Flag to define normal drawing of renderers, as opposed to drawing some debug info.
