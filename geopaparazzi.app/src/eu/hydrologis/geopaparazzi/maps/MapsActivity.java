@@ -23,10 +23,16 @@ import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.osmdroid.ResourceProxy;
+import org.osmdroid.tileprovider.tilesource.ITileSource;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.tileprovider.util.CloudmadeUtil;
 import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.MinimapOverlay;
+import org.osmdroid.views.overlay.ScaleBarOverlay;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -43,24 +49,23 @@ import android.text.Editable;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.SlidingDrawer;
 import android.widget.Toast;
-import android.widget.RelativeLayout.LayoutParams;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
-import eu.hydrologis.geopaparazzi.gps.GpsManager;
 import eu.hydrologis.geopaparazzi.sensors.SensorsManager;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Note;
+import eu.hydrologis.geopaparazzi.util.ResourceProxyImpl;
 import eu.hydrologis.geopaparazzi.util.VerticalSeekBar;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
@@ -70,8 +75,11 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
 public class MapsActivity extends Activity {
     private static final int MENU_GPSDATA = 1;
     private static final int MENU_MAPDATA = 2;
-    private static final int MENU_DOWNLOADMAPS = 3;
-    private static final int GO_TO = 4;
+    private static final int MENU_TILE_SOURCE_ID = 3;
+    private static final int MENU_MINIMAP_ID = 4;
+    private static final int MENU_SCALE_ID = 5;
+    private static final int MENU_DOWNLOADMAPS = 6;
+    private static final int GO_TO = 7;
 
     private DecimalFormat formatter = new DecimalFormat("00");
     private Button zoomInButton;
@@ -80,9 +88,15 @@ public class MapsActivity extends Activity {
     private SlidingDrawer slidingDrawer;
     private boolean sliderIsOpen;
     private MapView mapsView;
+    private MapController mapController;
+    private ResourceProxy mResourceProxy;
+    private ScaleBarOverlay mScaleBarOverlay;
+    private MinimapOverlay mMiniMapOverlay;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
+
+        mResourceProxy = new ResourceProxyImpl(getApplicationContext());
 
         setContentView(R.layout.mapsview);
 
@@ -93,6 +107,24 @@ public class MapsActivity extends Activity {
         this.mapsView = new MapView(this, 256);
         rl.addView(this.mapsView, new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
 
+        mapController = mapsView.getController();
+
+        /* Scale Bar Overlay */
+        {
+            this.mScaleBarOverlay = new ScaleBarOverlay(this, mResourceProxy);
+            this.mapsView.getOverlays().add(mScaleBarOverlay);
+            // Scale bar tries to draw as 1-inch, so to put it in the top center, set x offset to
+            // half screen width, minus half an inch.
+            this.mScaleBarOverlay.setScaleBarOffset(getResources().getDisplayMetrics().widthPixels / 2
+                    - getResources().getDisplayMetrics().xdpi / 2, 10);
+        }
+
+        /* MiniMap */
+        {
+            mMiniMapOverlay = new MinimapOverlay(this, mapsView.getTileRequestCompleteHandler());
+            this.mapsView.getOverlays().add(mMiniMapOverlay);
+        }
+
         // GpsManager gpsManager = GpsManager.getInstance(this);
         //
         // // requestWindowFeature(Window.FEATURE_PROGRESS);
@@ -100,7 +132,7 @@ public class MapsActivity extends Activity {
         // ViewportManager.INSTANCE.setMapActivity(this);
         // gpsManager.addListener(mapsView);
         //
-        // SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         // // set zoom preferences
         // final int zoomLevel1 = Integer.parseInt(preferences.getString(Constants.PREFS_KEY_ZOOM1,
         // "14"));
@@ -113,61 +145,60 @@ public class MapsActivity extends Activity {
         // mapsView.setZoomLabelsParams(zoomLevel1, zoomLevelLabelLength1, zoomLevel2,
         // zoomLevelLabelLength2);
         //
-        // // zoom bar
-        // final int zoom = preferences.getInt(Constants.PREFS_KEY_ZOOM, 16);
-        // zoomBar = (VerticalSeekBar) findViewById(R.id.ZoomBar);
-        // zoomBar.setMax(18);
-        // zoomBar.setProgress(zoom);
-        // mapsView.setZoom(zoom);
-        // zoomBar.setOnSeekBarChangeListener(new VerticalSeekBar.OnSeekBarChangeListener(){
-        // private int progress = zoom;
-        // public void onStopTrackingTouch( VerticalSeekBar seekBar ) {
-        // setNewZoom(progress, false);
-        // inalidateMap();
-        // Logger.d(this, "Zoomed to: " + progress);
-        // }
-        //
-        // public void onStartTrackingTouch( VerticalSeekBar seekBar ) {
-        //
-        // }
-        //
-        // public void onProgressChanged( VerticalSeekBar seekBar, int progress, boolean fromUser )
-        // {
-        // this.progress = progress;
-        // setNewZoom(progress, true);
-        // }
-        // });
-        //
-        // int zoomInLevel = zoom + 1;
-        // if (zoomInLevel > 18) {
-        // zoomInLevel = 18;
-        // }
-        // int zoomOutLevel = zoom - 1;
-        // if (zoomOutLevel < 0) {
-        // zoomOutLevel = 0;
-        // }
-        // zoomInButton = (Button) findViewById(R.id.zoomin);
-        // zoomInButton.setText(formatter.format(zoomInLevel));
-        // zoomInButton.setOnClickListener(new Button.OnClickListener(){
-        // public void onClick( View v ) {
-        // String text = zoomInButton.getText().toString();
-        // int newZoom = Integer.parseInt(text);
-        // setNewZoom(newZoom, false);
-        // inalidateMap();
-        //
-        // }
-        // });
-        // zoomOutButton = (Button) findViewById(R.id.zoomout);
-        // zoomOutButton.setText(formatter.format(zoomOutLevel));
-        // zoomOutButton.setOnClickListener(new Button.OnClickListener(){
-        // public void onClick( View v ) {
-        // String text = zoomOutButton.getText().toString();
-        // int newZoom = Integer.parseInt(text);
-        // setNewZoom(newZoom, false);
-        // inalidateMap();
-        //
-        // }
-        // });
+        // zoom bar
+        final int zoom = preferences.getInt(Constants.PREFS_KEY_ZOOM, 16);
+        zoomBar = (VerticalSeekBar) findViewById(R.id.ZoomBar);
+        zoomBar.setMax(18);
+        zoomBar.setProgress(zoom);
+        mapController.setZoom(zoom);
+        zoomBar.setOnSeekBarChangeListener(new VerticalSeekBar.OnSeekBarChangeListener(){
+            private int progress = zoom;
+            public void onStopTrackingTouch( VerticalSeekBar seekBar ) {
+                setNewZoom(progress, false);
+                inalidateMap();
+                Logger.d(this, "Zoomed to: " + progress);
+            }
+
+            public void onStartTrackingTouch( VerticalSeekBar seekBar ) {
+
+            }
+
+            public void onProgressChanged( VerticalSeekBar seekBar, int progress, boolean fromUser ) {
+                this.progress = progress;
+                setNewZoom(progress, true);
+            }
+        });
+
+        int zoomInLevel = zoom + 1;
+        if (zoomInLevel > 18) {
+            zoomInLevel = 18;
+        }
+        int zoomOutLevel = zoom - 1;
+        if (zoomOutLevel < 0) {
+            zoomOutLevel = 0;
+        }
+        zoomInButton = (Button) findViewById(R.id.zoomin);
+        zoomInButton.setText(formatter.format(zoomInLevel));
+        zoomInButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                String text = zoomInButton.getText().toString();
+                int newZoom = Integer.parseInt(text);
+                setNewZoom(newZoom, false);
+                inalidateMap();
+
+            }
+        });
+        zoomOutButton = (Button) findViewById(R.id.zoomout);
+        zoomOutButton.setText(formatter.format(zoomOutLevel));
+        zoomOutButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                String text = zoomOutButton.getText().toString();
+                int newZoom = Integer.parseInt(text);
+                setNewZoom(newZoom, false);
+                inalidateMap();
+
+            }
+        });
         //
         // // button view
         // ImageButton centerOnGps = (ImageButton) findViewById(R.id.center_on_gps_btn);
@@ -274,21 +305,21 @@ public class MapsActivity extends Activity {
     }
 
     public void setNewZoom( int newZoom, boolean onlyText ) {
-        // int zoomInLevel = newZoom + 1;
-        // if (zoomInLevel > 18) {
-        // zoomInLevel = 18;
-        // }
-        // int zoomOutLevel = newZoom - 1;
-        // if (zoomOutLevel < 0) {
-        // zoomOutLevel = 0;
-        // }
-        // zoomInButton.setText(formatter.format(zoomInLevel));
-        // zoomOutButton.setText(formatter.format(zoomOutLevel));
-        // zoomBar.setProgress(newZoom);
-        //
-        // if (!onlyText) {
-        // mapsView.setZoom(newZoom);
-        // }
+        int zoomInLevel = newZoom + 1;
+        if (zoomInLevel > 18) {
+            zoomInLevel = 18;
+        }
+        int zoomOutLevel = newZoom - 1;
+        if (zoomOutLevel < 0) {
+            zoomOutLevel = 0;
+        }
+        zoomInButton.setText(formatter.format(zoomInLevel));
+        zoomOutButton.setText(formatter.format(zoomOutLevel));
+        zoomBar.setProgress(newZoom);
+
+        if (!onlyText) {
+            mapController.setZoom(newZoom);
+        }
     }
 
     public void setNewCenter( double lon, double lat, boolean drawIcon ) {
@@ -304,8 +335,16 @@ public class MapsActivity extends Activity {
         super.onCreateOptionsMenu(menu);
         menu.add(Menu.NONE, MENU_GPSDATA, 1, R.string.mainmenu_gpsdataselect).setIcon(android.R.drawable.ic_menu_compass);
         menu.add(Menu.NONE, MENU_MAPDATA, 2, R.string.mainmenu_mapdataselect).setIcon(android.R.drawable.ic_menu_compass);
-        menu.add(Menu.CATEGORY_SECONDARY, GO_TO, 3, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
-        menu.add(Menu.CATEGORY_SECONDARY, MENU_DOWNLOADMAPS, 4, R.string.menu_download_maps).setIcon(
+        final SubMenu subMenu = menu.addSubMenu(Menu.NONE, MENU_TILE_SOURCE_ID, 3, "Choose Tile Source");
+        {
+            for( final ITileSource tileSource : TileSourceFactory.getTileSources() ) {
+                subMenu.add(0, 1000 + tileSource.ordinal(), Menu.NONE, tileSource.localizedName(mResourceProxy));
+            }
+        }
+        menu.add(Menu.NONE, MENU_MINIMAP_ID, 4, "Toggle Minimap");
+        menu.add(Menu.NONE, MENU_SCALE_ID, 5, "Toggle Scalebar");
+        menu.add(Menu.CATEGORY_SECONDARY, GO_TO, 6, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
+        menu.add(Menu.CATEGORY_SECONDARY, MENU_DOWNLOADMAPS, 7, R.string.menu_download_maps).setIcon(
                 android.R.drawable.ic_menu_mapmode);
         return true;
     }
@@ -341,6 +380,18 @@ public class MapsActivity extends Activity {
                 e1.printStackTrace();
                 return false;
             }
+        case MENU_TILE_SOURCE_ID:
+            this.mapsView.invalidate();
+            return true;
+
+        case MENU_MINIMAP_ID:
+            mMiniMapOverlay.setEnabled(!mMiniMapOverlay.isEnabled());
+            this.mapsView.invalidate();
+            return true;
+        case MENU_SCALE_ID:
+            mScaleBarOverlay.setEnabled(!mScaleBarOverlay.isEnabled());
+            this.mapsView.invalidate();
+            return true;
         case GO_TO: {
             Intent intent = new Intent(Constants.INSERT_COORD);
             startActivity(intent);
