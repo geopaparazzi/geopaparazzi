@@ -17,6 +17,9 @@
  */
 package eu.hydrologis.geopaparazzi.maps;
 
+import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LATITUDE;
+import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LONGITUDE;
+
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
@@ -41,6 +44,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -53,6 +57,7 @@ import android.view.SubMenu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.SlidingDrawer;
@@ -133,6 +138,10 @@ public class MapsActivity extends Activity {
         // gpsManager.addListener(mapsView);
         //
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        float lastCenterLon = preferences.getFloat(GPSLAST_LONGITUDE, 0);
+        float lastCenterLat = preferences.getFloat(GPSLAST_LATITUDE, 0);
+        mapController.setCenter(new GeoPoint(lastCenterLat, lastCenterLon));
+
         // // set zoom preferences
         // final int zoomLevel1 = Integer.parseInt(preferences.getString(Constants.PREFS_KEY_ZOOM1,
         // "14"));
@@ -209,40 +218,40 @@ public class MapsActivity extends Activity {
         // }
         // });
         //
-        // // slidingdrawer
-        // final int slidingId = R.id.mapslide;
-        // slidingDrawer = (SlidingDrawer) findViewById(slidingId);
-        // final ImageView slideHandleButton = (ImageView) findViewById(R.id.mapslidehandle);
-        //
-        // slidingDrawer.setOnDrawerOpenListener(new SlidingDrawer.OnDrawerOpenListener(){
-        // public void onDrawerOpened() {
-        // Logger.d(this, "Enable drawing");
-        // sliderIsOpen = true;
-        // slideHandleButton.setBackgroundResource(R.drawable.min);
-        // startDrawingAgain();
-        // }
-        // });
-        // slidingDrawer.setOnDrawerCloseListener(new SlidingDrawer.OnDrawerCloseListener(){
-        // public void onDrawerClosed() {
-        // Logger.d(this, "Enable drawing");
-        // slideHandleButton.setBackgroundResource(R.drawable.max);
-        // sliderIsOpen = false;
-        // startDrawingAgain();
-        // }
-        //
-        // });
-        //
-        // slidingDrawer.setOnDrawerScrollListener(new SlidingDrawer.OnDrawerScrollListener(){
-        // public void onScrollEnded() {
-        // Logger.d(this, "Scroll End Disable drawing");
-        // mapsView.enableDrawing(false);
-        // }
-        //
-        // public void onScrollStarted() {
-        // Logger.d(this, "Scroll Start Disable drawing");
-        // mapsView.enableDrawing(false);
-        // }
-        // });
+        // slidingdrawer
+        final int slidingId = R.id.mapslide;
+        slidingDrawer = (SlidingDrawer) findViewById(slidingId);
+        final ImageView slideHandleButton = (ImageView) findViewById(R.id.mapslidehandle);
+
+        slidingDrawer.setOnDrawerOpenListener(new SlidingDrawer.OnDrawerOpenListener(){
+            public void onDrawerOpened() {
+                Logger.d(this, "Enable drawing");
+                sliderIsOpen = true;
+                slideHandleButton.setBackgroundResource(R.drawable.min);
+                enableDrawing(true);
+            }
+        });
+        slidingDrawer.setOnDrawerCloseListener(new SlidingDrawer.OnDrawerCloseListener(){
+            public void onDrawerClosed() {
+                Logger.d(this, "Enable drawing");
+                slideHandleButton.setBackgroundResource(R.drawable.max);
+                sliderIsOpen = false;
+                enableDrawing(true);
+            }
+
+        });
+
+        slidingDrawer.setOnDrawerScrollListener(new SlidingDrawer.OnDrawerScrollListener(){
+            public void onScrollEnded() {
+                Logger.d(this, "Scroll End Disable drawing");
+                enableDrawing(false);
+            }
+
+            public void onScrollStarted() {
+                Logger.d(this, "Scroll Start Disable drawing");
+                enableDrawing(false);
+            }
+        });
         //
         // /*
         // * tool buttons
@@ -304,6 +313,17 @@ public class MapsActivity extends Activity {
         // mapsView.invalidate();
     }
 
+    @Override
+    protected void onPause() {
+        GeoPoint mapCenter = mapsView.getMapCenter();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        Editor editor = preferences.edit();
+        editor.putFloat(GPSLAST_LONGITUDE, mapCenter.getLongitudeE6() / 6f);
+        editor.putFloat(GPSLAST_LATITUDE, mapCenter.getLatitudeE6() / 6f);
+        editor.commit();
+        super.onPause();
+    }
+
     public void setNewZoom( int newZoom, boolean onlyText ) {
         int zoomInLevel = newZoom + 1;
         if (zoomInLevel > 18) {
@@ -323,11 +343,12 @@ public class MapsActivity extends Activity {
     }
 
     public void setNewCenter( double lon, double lat, boolean drawIcon ) {
-        // mapsView.setCenter(lon, lat, drawIcon);
+        mapController.setCenter(new GeoPoint(lat, lon));
     }
 
     public double[] getCenterLonLat() {
-        double[] lonLat = null;// {mapsView.getCenterLon(), mapsView.getCenterLat()};
+        GeoPoint mapCenter = mapsView.getMapCenter();
+        double[] lonLat = {mapCenter.getLongitudeE6() / 6d, mapCenter.getLatitudeE6() / 6d};
         return lonLat;
     }
 
@@ -609,7 +630,7 @@ public class MapsActivity extends Activity {
         return super.onKeyDown(keyCode, event);
     }
 
-    private void startDrawingAgain() {
+    private void enableDrawing( boolean doDraw ) {
         new Thread(new Runnable(){
             public void run() {
                 runOnUiThread(new Runnable(){
