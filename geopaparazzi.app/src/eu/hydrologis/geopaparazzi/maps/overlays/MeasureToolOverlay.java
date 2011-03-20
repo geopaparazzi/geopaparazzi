@@ -157,6 +157,7 @@ public class MeasureToolOverlay extends Overlay {
         switch( action ) {
         case MotionEvent.ACTION_DOWN:
             // Logger.d(this, "First point....");
+            measuredDistance = 0;
             measurePath.reset();
             GeoPoint firstGeoPoint = pj.fromPixels(currentX, currentY);
             pj.toMapPixels(firstGeoPoint, tmpP);
@@ -176,9 +177,6 @@ public class MeasureToolOverlay extends Overlay {
             // the measurement
             GeoPoint previousGeoPoint = pj.fromPixels(lastX, lastY);
             float distanceTo = currentGeoPoint.distanceTo(previousGeoPoint);
-            if (Float.isNaN(measuredDistance)) {
-                measuredDistance = 0;
-            }
             lastX = currentX;
             lastY = currentY;
             measuredDistance = measuredDistance + distanceTo;
