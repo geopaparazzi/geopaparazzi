@@ -5,12 +5,14 @@
 	android:layout_marginBottom="5dip" android:layout_marginTop="5dip">
 
 	<Button android:text="..." android:id="@+id/renamebutton"
-		android:padding="15dip"
-		android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+		android:padding="15dip" android:layout_width="wrap_content"
+		android:layout_height="wrap_content"></Button>
+	<Button android:text="->" android:id="@+id/gobutton"
+		android:padding="15dip" android:layout_width="wrap_content"
+		android:layout_height="wrap_content"></Button>
 	<TextView android:id="@+id/bookmarkrow"
 		xmlns:android="http://schemas.android.com/apk/res/android"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:text="asdasdadsd" android:textColor="@color/black"
-		android:layout_marginLeft="5dip"
-		 />
+		android:layout_marginLeft="5dip" />
 </LinearLayout>

@@ -134,7 +134,8 @@ public class BookmarksListActivity extends ListActivity {
                     }
                 });
 
-                bookmarkText.setOnClickListener(new View.OnClickListener(){
+                final Button goButton = (Button) rowView.findViewById(R.id.gobutton);
+                goButton.setOnClickListener(new View.OnClickListener(){
                     public void onClick( View v ) {
                         Bookmark bookmark = bookmarksMap.get(bookmarkText.getText().toString());
                         if (bookmark != null) {

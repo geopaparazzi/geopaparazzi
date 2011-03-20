@@ -141,6 +141,8 @@
 	    \n
 	    The chart view is adapted from the GraphView by Arno den Hond.\n
 	    \n
+	    The mapping engine is osmdroid.\n
+	    \n
 	    The maps are from (c) OpenStreetMap contributors, CC-BY-SA.\n
 	    \n
 	    The Vertical Seekbar comes from ardroid.\n
@@ -152,6 +154,7 @@
 	    http://www.hydrologis.eu\n
 	    http://www.jgrass.org\n
 	    http://www.beegis.org\n
+	    http://code.google.com/p/osmdroid\n
 	    http://www.openstreetmap.org\n
 	    http://code.google.com/p/ardroid\n
 	    http://www.londatiga.net\n
