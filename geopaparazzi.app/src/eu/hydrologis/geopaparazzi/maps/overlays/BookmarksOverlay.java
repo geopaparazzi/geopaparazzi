@@ -98,6 +98,7 @@ public class BookmarksOverlay extends Overlay {
 
     public void setDoDraw( boolean doDraw ) {
         this.doDraw = doDraw;
+        Logger.d(this, "Will draw: " + doDraw);
     }
 
     public void setGpsUpdate( boolean gpsUpdate ) {

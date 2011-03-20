@@ -30,6 +30,7 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
+import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * Overlay to show the gps position.
@@ -57,6 +58,7 @@ public class GpsPositionOverlay extends Overlay {
 
     public void setDoDraw( boolean doDraw ) {
         this.doDraw = doDraw;
+        Logger.d(this, "Will draw: " + doDraw);
     }
 
     public void setLoc( GpsLocation loc ) {

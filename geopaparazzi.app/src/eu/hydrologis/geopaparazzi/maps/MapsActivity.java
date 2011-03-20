@@ -78,6 +78,8 @@ import eu.hydrologis.geopaparazzi.maps.overlays.BookmarksOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.CrossOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.GpsPositionOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.LogsOverlay;
+import eu.hydrologis.geopaparazzi.maps.overlays.MapsOverlay;
+import eu.hydrologis.geopaparazzi.maps.overlays.MeasureToolOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.NotesOverlay;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
@@ -113,6 +115,8 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
     private BookmarksOverlay mBookmarksOverlay;
     private GpsPositionOverlay mGpsOverlay;
     private CrossOverlay mCrossOverlay;
+    private MapsOverlay mMapsOverlay;
+    private MeasureToolOverlay mMeasureOverlay;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -129,6 +133,12 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         ViewportManager.INSTANCE.setMapActivity(this);
 
         GpsManager.getInstance(this).addListener(this);
+
+        /* imported maps */
+        {
+            mMapsOverlay = new MapsOverlay(this, mResourceProxy);
+            this.mapsView.getOverlays().add(mMapsOverlay);
+        }
 
         /* gps logs */
         {
@@ -158,6 +168,12 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         {
             mCrossOverlay = new CrossOverlay(this, mResourceProxy);
             this.mapsView.getOverlays().add(mCrossOverlay);
+        }
+
+        /* measure tool */
+        {
+            mMeasureOverlay = new MeasureToolOverlay(this, mResourceProxy);
+            this.mapsView.getOverlays().add(mMeasureOverlay);
         }
 
         /* Scale Bar Overlay */
@@ -329,19 +345,23 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
             }
         });
 
-        // final ImageButton toggleMeasuremodeButton = (ImageButton)
-        // findViewById(R.id.togglemeasuremodebutton);
-        // toggleMeasuremodeButton.setOnClickListener(new Button.OnClickListener(){
-        // public void onClick( View v ) {
-        // boolean isInMeasureMode = mapsView.isMeasureMode();
-        // mapsView.setMeasureMode(!isInMeasureMode);
-        // if (!isInMeasureMode) {
-        // toggleMeasuremodeButton.setBackgroundResource(R.drawable.measuremode_on);
-        // } else {
-        // toggleMeasuremodeButton.setBackgroundResource(R.drawable.measuremode);
-        // }
-        // }
-        // });
+        final ImageButton toggleMeasuremodeButton = (ImageButton) findViewById(R.id.togglemeasuremodebutton);
+        toggleMeasuremodeButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                boolean isInMeasureMode = mMeasureOverlay.isInMeasureMode();
+                mMeasureOverlay.setMeasureMode(!isInMeasureMode);
+                if (!isInMeasureMode) {
+                    toggleMeasuremodeButton.setBackgroundResource(R.drawable.measuremode_on);
+                } else {
+                    toggleMeasuremodeButton.setBackgroundResource(R.drawable.measuremode);
+                }
+                if (!isInMeasureMode) {
+                    disableDrawing();
+                }else{
+                    enableDrawingWithDelay();
+                }
+            }
+        });
 
     }
 
@@ -351,8 +371,8 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         if (!hasFocus) {
             GeoPoint mapCenter = mapsView.getMapCenter();
             Editor editor = preferences.edit();
-            editor.putFloat(PREFS_KEY_LON, (float)(mapCenter.getLongitudeE6() / E6));
-            editor.putFloat(PREFS_KEY_LAT,  (float)(mapCenter.getLatitudeE6() / E6));
+            editor.putFloat(PREFS_KEY_LON, (float) (mapCenter.getLongitudeE6() / E6));
+            editor.putFloat(PREFS_KEY_LAT, (float) (mapCenter.getLatitudeE6() / E6));
             editor.putInt(PREFS_KEY_ZOOM, mapsView.getZoomLevel());
             editor.commit();
         } else {
@@ -676,6 +696,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
+                        mMapsOverlay.setDoDraw(true);
                         mLogsOverlay.setDoDraw(true);
                         mNotesOverlay.setDoDraw(true);
                         mBookmarksOverlay.setDoDraw(true);
@@ -688,6 +709,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
     }
 
     private void disableDrawing() {
+        mMapsOverlay.setDoDraw(false);
         mLogsOverlay.setDoDraw(false);
         mNotesOverlay.setDoDraw(false);
         mBookmarksOverlay.setDoDraw(false);
@@ -707,6 +729,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
             return;
         }
 
+        mMapsOverlay.setGpsUpdate(true);
         mLogsOverlay.setGpsUpdate(true);
         mNotesOverlay.setGpsUpdate(true);
         mBookmarksOverlay.setGpsUpdate(true);

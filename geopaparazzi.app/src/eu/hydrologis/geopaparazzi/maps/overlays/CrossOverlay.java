@@ -23,10 +23,13 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.MapView.Projection;
 import org.osmdroid.views.overlay.Overlay;
 
+import eu.hydrologis.geopaparazzi.util.debug.Logger;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Point;
 
 /**
@@ -38,6 +41,7 @@ public class CrossOverlay extends Overlay {
 
     private boolean doDraw = true;
     private Paint crossPaint = new Paint();
+    private final Path path = new Path();
 
     public CrossOverlay( final Context ctx, final ResourceProxy pResourceProxy ) {
         super(pResourceProxy);
@@ -50,6 +54,7 @@ public class CrossOverlay extends Overlay {
 
     public void setDoDraw( boolean doDraw ) {
         this.doDraw = doDraw;
+        Logger.d(this, "Will draw: " + doDraw);
     }
 
     protected void draw( final Canvas canvas, final MapView mapsView, final boolean shadow ) {
@@ -59,7 +64,12 @@ public class CrossOverlay extends Overlay {
         Projection pj = mapsView.getProjection();
         GeoPoint mapCenter = mapsView.getMapCenter();
         Point center = pj.toMapPixels(mapCenter, null);
-        canvas.drawLine(center.x, center.y - 20, center.x, center.y + 20, crossPaint);
-        canvas.drawLine(center.x - 20, center.y, center.x + 20, center.y, crossPaint);
+
+        path.reset();
+        path.moveTo(center.x, center.y - 20);
+        path.lineTo(center.x, center.y + 20);
+        path.moveTo(center.x - 20, center.y);
+        path.lineTo(center.x + 20, center.y);
+        canvas.drawPath(path, crossPaint);
     }
 }

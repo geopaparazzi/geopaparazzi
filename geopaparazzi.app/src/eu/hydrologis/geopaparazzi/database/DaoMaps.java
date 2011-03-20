@@ -25,11 +25,15 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView.Projection;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import android.graphics.Point;
 import eu.hydrologis.geopaparazzi.gpx.GpxItem;
 import eu.hydrologis.geopaparazzi.gpx.parser.GpxParser.Route;
 import eu.hydrologis.geopaparazzi.gpx.parser.GpxParser.TrackSegment;
@@ -37,7 +41,6 @@ import eu.hydrologis.geopaparazzi.gpx.parser.RoutePoint;
 import eu.hydrologis.geopaparazzi.gpx.parser.TrackPoint;
 import eu.hydrologis.geopaparazzi.gpx.parser.WayPoint;
 import eu.hydrologis.geopaparazzi.maps.MapItem;
-import eu.hydrologis.geopaparazzi.maps.MapView;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.PointsContainer;
@@ -357,20 +360,8 @@ public class DaoMaps {
     // return linesMap;
     // }
 
-    /**
-     * Get the line of a given map from the database inside a given bound.
-     * 
-     * @param mapId the id of the map to pic.
-     * @param n
-     * @param s
-     * @param w
-     * @param e
-     * @return the map of lines inside the bounds.
-     * @throws IOException
-     */
-    public static PointsContainer getCoordinatesInWorldBoundsForMapIdDecimated( Context context, long mapId, float n, float s,
-            float w, float e, int screenWidth, int screenHeight, float centerLon, float centerLat, float pixelDxInWorld,
-            float pixelDyInWorld ) throws IOException {
+    public static PointsContainer getCoordinatesInWorldBoundsForMapIdDecimated2( Context context, long mapId, float n, float s,
+            float w, float e, Projection pj, int decimationFactor ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
 
         // Logger.d(TAG, "PRE  NSEW = " + n + "/" + s + "/" + e + "/" + w);
@@ -409,11 +400,12 @@ public class DaoMaps {
             float lat = c.getFloat(1);
             String name = c.getString(3);
 
+            GeoPoint g = new GeoPoint(lat, lon);
+            Point mapPixels = pj.toMapPixels(g, null);
             // check if on screen it would be placed on the same pixel
-            int screenX = (int) MapView.lonToScreen(screenWidth, lon, centerLon, pixelDxInWorld);
-            int screenY = (int) MapView.latToScreen(screenHeight, lat, centerLat, pixelDyInWorld);
-            int thres = 5;
-            if (abs(screenX - previousScreenX) < thres && abs(screenY - previousScreenY) < thres) {
+            int screenX = mapPixels.x;
+            int screenY = mapPixels.y;
+            if (abs(screenX - previousScreenX) < decimationFactor && abs(screenY - previousScreenY) < decimationFactor) {
                 c.moveToNext();
                 jump++;
                 continue;

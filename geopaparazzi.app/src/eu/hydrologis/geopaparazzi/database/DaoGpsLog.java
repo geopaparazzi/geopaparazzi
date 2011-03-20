@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -38,7 +37,6 @@ import android.database.sqlite.SQLiteStatement;
 import android.graphics.Path;
 import android.graphics.Point;
 import eu.hydrologis.geopaparazzi.maps.MapItem;
-import eu.hydrologis.geopaparazzi.maps.MapView;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.LineArray;
@@ -409,157 +407,6 @@ public class DaoGpsLog {
     // return linesMap;
     // }
 
-    /**
-     * Get the collected lines from the database inside a given bound - decimated for the given screen.
-     * 
-     * @param context
-     * @param n
-     * @param s
-     * @param w
-     * @param e
-     * @param screenWidth
-     * @param screenHeight
-     * @param centerLon
-     * @param centerLat
-     * @param pixelDxInWorld
-     * @param pixelDyInWorld
-     * @param excludedId
-     * @return
-     * @throws IOException
-     */
-    public static HashMap<Long, LineArray> getLinesInWorldBoundsDecimated( Context context, float n, float s, float w, float e,
-            int screenWidth, int screenHeight, float centerLon, float centerLat, float pixelDxInWorld, float pixelDyInWorld,
-            long excludedId, int decimationFactor ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
-        HashMap<Long, LineArray> linesMap = new HashMap<Long, LineArray>();
-        n = n + DatabaseManager.BUFFER;
-        s = s - DatabaseManager.BUFFER;
-        e = e + DatabaseManager.BUFFER;
-        w = w - DatabaseManager.BUFFER;
-
-        String asColumnsToReturn[] = {COLUMN_LOGID, COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_ALTIM, COLUMN_DATA_TS};
-        StringBuilder sB = new StringBuilder();
-        sB.append("(");
-        sB.append(COLUMN_DATA_LON);
-        sB.append(" BETWEEN ? AND ?) AND (");
-        sB.append(COLUMN_DATA_LAT);
-        sB.append(" BETWEEN ? AND ?)");
-        String strWhere = sB.toString();
-        String[] strWhereArgs = new String[]{String.valueOf(w), String.valueOf(e), String.valueOf(s), String.valueOf(n)};
-        String strSortOrder = COLUMN_LOGID + "," + COLUMN_DATA_TS + " ASC";
-        Cursor c = null;
-        try {
-            c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, strWhereArgs, null, null, strSortOrder);
-            c.moveToFirst();
-
-            int previousScreenX = Integer.MAX_VALUE;
-            int previousScreenY = Integer.MAX_VALUE;
-
-            int jump = 0;
-            while( !c.isAfterLast() ) {
-                long logid = c.getLong(0);
-                if (excludedId != -1 && excludedId == logid) {
-                    continue;
-                }
-
-                float lon = c.getFloat(1);
-                float lat = c.getFloat(2);
-
-                // check if on screen it would be placed on the same pixel
-                int screenX = (int) MapView.lonToScreen(screenWidth, lon, centerLon, pixelDxInWorld);
-                int screenY = (int) MapView.latToScreen(screenHeight, lat, centerLat, pixelDyInWorld);
-                if (abs(screenX - previousScreenX) < decimationFactor && abs(screenY - previousScreenY) < decimationFactor) {
-                    c.moveToNext();
-                    jump++;
-                    continue;
-                }
-                previousScreenX = screenX;
-                previousScreenY = screenY;
-
-                LineArray line = linesMap.get(logid);
-                if (line == null) {
-                    line = new LineArray("log_" + logid);
-                    linesMap.put(logid, line);
-                }
-                line.addPoint(lon, lat);
-                c.moveToNext();
-            }
-            // Logger.d("DAOGPSLOG", "Jumped: " + jump);
-            // Set<Entry<Long, LineArray>> entrySet = linesMap.entrySet();
-            // for( Entry<Long, LineArray> entry : entrySet ) {
-            // Logger.d("DAOGPSLOG", "Found for log: " + entry.getKey() + " points: " +
-            // entry.getValue().getIndex());
-            // }
-        } finally {
-            if (c != null)
-                c.close();
-        }
-        return linesMap;
-    }
-
-    public static LineArray getLinesInWorldBoundsByIdDecimated( Context context, float n, float s, float w, float e,
-            int screenWidth, int screenHeight, float centerLon, float centerLat, float pixelDxInWorld, float pixelDyInWorld,
-            long logId, int decimationFactor ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
-        n = n + DatabaseManager.BUFFER;
-        s = s - DatabaseManager.BUFFER;
-        e = e + DatabaseManager.BUFFER;
-        w = w - DatabaseManager.BUFFER;
-
-        String asColumnsToReturn[] = {COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_ALTIM, COLUMN_DATA_TS};
-        StringBuilder sB = new StringBuilder();
-        sB.append(COLUMN_LOGID);
-        sB.append(" = ");
-        sB.append(logId);
-        sB.append(" AND (");
-        sB.append(COLUMN_DATA_LON);
-        sB.append(" BETWEEN ? AND ?) AND (");
-        sB.append(COLUMN_DATA_LAT);
-        sB.append(" BETWEEN ? AND ?)");
-        String strWhere = sB.toString();
-        String[] strWhereArgs = new String[]{String.valueOf(w), String.valueOf(e), String.valueOf(s), String.valueOf(n)};
-        String strSortOrder = COLUMN_DATA_TS + " ASC";
-        LineArray line = new LineArray("log_" + logId);
-        Cursor c = null;
-        try {
-            c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, strWhereArgs, null, null, strSortOrder);
-            c.moveToFirst();
-
-            int previousScreenX = Integer.MAX_VALUE;
-            int previousScreenY = Integer.MAX_VALUE;
-
-            int jump = 0;
-            while( !c.isAfterLast() ) {
-                float lon = c.getFloat(0);
-                float lat = c.getFloat(1);
-
-                // check if on screen it would be placed on the same pixel
-                int screenX = (int) MapView.lonToScreen(screenWidth, lon, centerLon, pixelDxInWorld);
-                int screenY = (int) MapView.latToScreen(screenHeight, lat, centerLat, pixelDyInWorld);
-                if (abs(screenX - previousScreenX) < decimationFactor && abs(screenY - previousScreenY) < decimationFactor) {
-                    c.moveToNext();
-                    jump++;
-                    continue;
-                }
-                previousScreenX = screenX;
-                previousScreenY = screenY;
-
-                line.addPoint(lon, lat);
-                c.moveToNext();
-            }
-            Logger.d("DAOGPSLOG", "Logs jumped: " + jump + " with thres: " + decimationFactor);
-            // Set<Entry<Long, LineArray>> entrySet = linesMap.entrySet();
-            // for( Entry<Long, LineArray> entry : entrySet ) {
-            // Logger.d("DAOGPSLOG", "Found for log: " + entry.getKey() + " points: " +
-            // entry.getValue().getIndex());
-            // }
-        } finally {
-            if (c != null)
-                c.close();
-        }
-        return line;
-    }
-
     public static LineArray getLinesInWorldBoundsByIdDecimated2( Context context, float n, float s, float w, float e,
             Projection pj, long logId, int decimationFactor ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
@@ -660,7 +507,6 @@ public class DaoGpsLog {
         String[] strWhereArgs = new String[]{String.valueOf(w), String.valueOf(e), String.valueOf(s), String.valueOf(n)};
         String strSortOrder = COLUMN_DATA_TS + " ASC";
 
-        path.rewind();
         Cursor c = null;
         try {
             c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, strWhereArgs, null, null, strSortOrder);
