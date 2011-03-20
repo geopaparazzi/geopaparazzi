@@ -357,7 +357,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                 }
                 if (!isInMeasureMode) {
                     disableDrawing();
-                }else{
+                } else {
                     enableDrawingWithDelay();
                 }
             }
@@ -440,15 +440,16 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         super.onCreateOptionsMenu(menu);
         menu.add(Menu.NONE, MENU_GPSDATA, 1, R.string.mainmenu_gpsdataselect).setIcon(android.R.drawable.ic_menu_compass);
         menu.add(Menu.NONE, MENU_MAPDATA, 2, R.string.mainmenu_mapdataselect).setIcon(android.R.drawable.ic_menu_compass);
-        final SubMenu subMenu = menu.addSubMenu(Menu.NONE, MENU_TILE_SOURCE_ID, 3, "Choose Tile Source");
+        menu.add(Menu.NONE, MENU_MINIMAP_ID, 3, "toggle minimap").setIcon(R.drawable.ic_menu_minimap);
+        menu.add(Menu.NONE, MENU_SCALE_ID, 4, "toggle scalebar").setIcon(R.drawable.ic_menu_scalebar);
+        final SubMenu subMenu = menu.addSubMenu(Menu.NONE, MENU_TILE_SOURCE_ID, 5, "tile source").setIcon(
+                R.drawable.ic_menu_tilesource);
         {
             for( final ITileSource tileSource : TileSourceFactory.getTileSources() ) {
                 subMenu.add(0, 1000 + tileSource.ordinal(), Menu.NONE, tileSource.localizedName(mResourceProxy));
             }
         }
-        menu.add(Menu.NONE, MENU_MINIMAP_ID, 4, "Toggle Minimap");
-        menu.add(Menu.NONE, MENU_SCALE_ID, 5, "Toggle Scalebar");
-        menu.add(Menu.CATEGORY_SECONDARY, GO_TO, 6, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
+        menu.add(Menu.NONE, GO_TO, 6, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
         return true;
     }
 
