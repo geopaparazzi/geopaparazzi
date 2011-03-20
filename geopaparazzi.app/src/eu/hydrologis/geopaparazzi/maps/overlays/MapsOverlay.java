@@ -194,7 +194,7 @@ public class MapsOverlay extends Overlay {
                         float screenY = p.y;
 
                         canvas.drawPoint(screenX, screenY, gpxPaint);
-                        drawLabel(canvas, namesArray[i], lonArray[i], latArray[i], gpxTextPaint, zoomLevel);
+                        drawLabel(canvas, namesArray[i], screenX, screenY, gpxTextPaint, zoomLevel);
                     }
                 }
 
