@@ -17,7 +17,7 @@
  */
 package eu.hydrologis.geopaparazzi.maps;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.E6;
+import static eu.hydrologis.geopaparazzi.util.Constants.*;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_LAT;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_LON;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_ZOOM;
@@ -176,23 +176,27 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
             this.mapsView.getOverlays().add(mMeasureOverlay);
         }
 
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         /* Scale Bar Overlay */
         {
-            this.mScaleBarOverlay = new ScaleBarOverlay(this, mResourceProxy);
-            this.mapsView.getOverlays().add(mScaleBarOverlay);
+            mScaleBarOverlay = new ScaleBarOverlay(this, mResourceProxy);
+            mapsView.getOverlays().add(mScaleBarOverlay);
             // Scale bar tries to draw as 1-inch, so to put it in the top center, set x offset to
             // half screen width, minus half an inch.
-            this.mScaleBarOverlay.setScaleBarOffset(getResources().getDisplayMetrics().widthPixels / 2
+            mScaleBarOverlay.setScaleBarOffset(getResources().getDisplayMetrics().widthPixels / 2
                     - getResources().getDisplayMetrics().xdpi / 2, 10);
+            boolean isScalebaron = preferences.getBoolean(PREFS_KEY_SCALEBARON, false);
+            mScaleBarOverlay.setEnabled(isScalebaron);
         }
 
         /* MiniMap */
         {
             mMiniMapOverlay = new MinimapOverlay(this, mapsView.getTileRequestCompleteHandler());
             this.mapsView.getOverlays().add(mMiniMapOverlay);
+            boolean isMinimapon = preferences.getBoolean(PREFS_KEY_MINIMAPON, false);
+            mMiniMapOverlay.setEnabled(isMinimapon);
         }
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         float lastCenterLon = preferences.getFloat(PREFS_KEY_LON, 0f);
         float lastCenterLat = preferences.getFloat(PREFS_KEY_LAT, 0f);
         final int zoom = preferences.getInt(Constants.PREFS_KEY_ZOOM, 16);
@@ -454,6 +458,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
     }
 
     public boolean onMenuItemSelected( int featureId, MenuItem item ) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         switch( item.getItemId() ) {
         case MENU_GPSDATA:
             Intent gpsDatalistIntent = new Intent(Constants.GPSLOG_DATALIST);
@@ -489,12 +494,19 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
             return true;
 
         case MENU_MINIMAP_ID:
-            mMiniMapOverlay.setEnabled(!mMiniMapOverlay.isEnabled());
-            this.mapsView.invalidate();
+            boolean isMinimapEnabled = !mMiniMapOverlay.isEnabled();
+            mMiniMapOverlay.setEnabled(isMinimapEnabled);
+            mapsView.invalidate();
+            Editor editor1 = preferences.edit();
+            editor1.putBoolean(PREFS_KEY_MINIMAPON, isMinimapEnabled);
+            editor1.commit();
             return true;
         case MENU_SCALE_ID:
-            mScaleBarOverlay.setEnabled(!mScaleBarOverlay.isEnabled());
-            this.mapsView.invalidate();
+            boolean isScalebarEnabled = !mScaleBarOverlay.isEnabled();
+            mScaleBarOverlay.setEnabled(isScalebarEnabled);
+            mapsView.invalidate();
+            Editor editor2 = preferences.edit();
+            editor2.putBoolean(PREFS_KEY_SCALEBARON, isScalebarEnabled);
             return true;
         case GO_TO: {
             Intent intent = new Intent(Constants.INSERT_COORD);

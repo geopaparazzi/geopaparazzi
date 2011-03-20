@@ -29,7 +29,7 @@ import android.graphics.Color;
  */
 @SuppressWarnings("nls")
 public interface Constants {
-    
+
     /*
      * intent names
      */
@@ -65,7 +65,7 @@ public interface Constants {
     public final String NSEW_COORDS = "NSEW_COORDS";
 
     public final float E6 = 1000000f;
-    
+
     /**
      * Threshold for the sensor values in degrees (azimuth, pitch, roll).
      */
@@ -106,7 +106,6 @@ public interface Constants {
      */
     public final int COMPASS_NEEDLE_ALPHA = 150;
 
-
     public static final String GEOPAPARAZZI = "geopaparazzi";
     public final String PATH_GEOPAPARAZZI = File.separator + GEOPAPARAZZI;
     public final String PATH_MEDIA = File.separator + "media";
@@ -138,6 +137,8 @@ public interface Constants {
     public static final String PREFS_KEY_ZOOM2_LABELLENGTH = "labels_length_zoom2";
     public static final String VIEW_CENTER_LAT = "MAPSVIEW_CENTER_LAT";
     public static final String VIEW_CENTER_LON = "MAPSVIEW_CENTER_LON";
+    public static final String PREFS_KEY_MINIMAPON = "PREFS_KEY_MINIMAPON";
+    public static final String PREFS_KEY_SCALEBARON = "PREFS_KEY_SCALEBARON";
 
     public static final int MAP_TYPE_POINT = 0;
     public static final int MAP_TYPE_LINE = 1;
@@ -149,7 +150,7 @@ public interface Constants {
     public static final String GPSLOGGINGDISTANCEKEY = "gps_logging_distance";
     public static final String SMSCATCHERKEY = "sms_catcher";
     public static final String PANICKEY = "panic_number";
-    
+
     public static final String FORMJSON_KEY = "formjson_key";
     public static final String FORMSHORTNAME_KEY = "formshortname_key";
     public static final String FORMLONGNAME_KEY = "formlongname_key";
