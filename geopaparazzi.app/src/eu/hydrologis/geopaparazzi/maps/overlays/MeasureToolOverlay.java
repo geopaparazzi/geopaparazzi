@@ -17,12 +17,14 @@
  */
 package eu.hydrologis.geopaparazzi.maps.overlays;
 
+import static eu.hydrologis.geopaparazzi.util.Constants.E6;
 import static java.lang.Math.*;
 import static org.osmdroid.util.constants.GeoConstants.FEET_PER_METER;
 import static org.osmdroid.util.constants.GeoConstants.METERS_PER_NAUTICAL_MILE;
 import static org.osmdroid.util.constants.GeoConstants.METERS_PER_STATUTE_MILE;
 
 import org.osmdroid.ResourceProxy;
+import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.MapView.Projection;
@@ -66,6 +68,8 @@ public class MeasureToolOverlay extends Overlay {
     private String distanceString;
     private final ResourceProxy resourceProxy;
 
+    private final Point tmpP = new Point();
+
     public MeasureToolOverlay( final Context ctx, final ResourceProxy pResourceProxy ) {
         super(pResourceProxy);
         this.resourceProxy = pResourceProxy;
@@ -93,14 +97,18 @@ public class MeasureToolOverlay extends Overlay {
         if (!isOn || shadow || !doDraw)
             return;
 
-        Logger.d(this, "Drawing measure path....");
         canvas.drawPath(measurePath, measurePaint);
 
         Projection pj = mapsView.getProjection();
         GeoPoint mapCenter = mapsView.getMapCenter();
         Point center = pj.toMapPixels(mapCenter, null);
+        BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
+        int latNorthE6 = boundingBox.getLatNorthE6();
+        int latText = latNorthE6 - (latNorthE6 - mapCenter.getLatitudeE6()) / 3;
 
-        int upper = 25;
+        Point textPoint = pj.toMapPixels(new GeoPoint(latText, mapCenter.getLongitudeE6()), null);
+
+        int upper = textPoint.y;
         int delta = 5;
         Rect rect = new Rect();
         measureTextPaint.getTextBounds(distanceString, 0, distanceString.length(), rect);
@@ -109,12 +117,14 @@ public class MeasureToolOverlay extends Overlay {
         int x = center.x - textWidth / 2;
         canvas.drawText(distanceString, x, upper, measureTextPaint);
 
-        String distanceText = distanceText((int) measuredDistance, imperial, nautical);
+        String distanceText = String.valueOf((int) measuredDistance);
+        // String distanceText = distanceText((int) measuredDistance, imperial, nautical);
         measureTextPaint.getTextBounds(distanceText, 0, distanceText.length(), rect);
         textWidth = rect.width();
         x = center.x - textWidth / 2;
         canvas.drawText(distanceText, x, upper + delta + textHeight, measureTextPaint);
 
+        Logger.d(this, "Drawing measure path text: " + upper);
     }
 
     public void setMeasureMode( boolean isOn ) {
@@ -134,7 +144,7 @@ public class MeasureToolOverlay extends Overlay {
         // handle drawing
         currentX = (int) round(event.getX());
         currentY = (int) round(event.getY());
-        Logger.d(this, "point: " + currentX + "/" + currentY);
+        // Logger.d(this, "point: " + currentX + "/" + currentY);
 
         if (lastX == -1 || lastY == -1) {
             // lose the first drag and set the delta
@@ -146,24 +156,24 @@ public class MeasureToolOverlay extends Overlay {
         int action = event.getAction();
         switch( action ) {
         case MotionEvent.ACTION_DOWN:
-            Logger.d(this, "First point....");
+            // Logger.d(this, "First point....");
             measurePath.reset();
-            measurePath.moveTo(currentX, currentY);
+            GeoPoint firstGeoPoint = pj.fromPixels(currentX, currentY);
+            pj.toMapPixels(firstGeoPoint, tmpP);
+            measurePath.moveTo(tmpP.x, tmpP.y);
             break;
         case MotionEvent.ACTION_MOVE:
             int dx = currentX - lastX;
             int dy = currentY - lastY;
-            if (abs(dx) < 2 || abs(dy) < 2) {
+            if (abs(dx) < 1 && abs(dy) < 1) {
                 lastX = currentX;
                 lastY = currentY;
                 return true;
             }
-
-            Logger.d(this, "Recording points....");
-            measurePath.lineTo(currentX, currentY);
-
-            // the measurement
             GeoPoint currentGeoPoint = pj.fromPixels(currentX, currentY);
+            pj.toMapPixels(currentGeoPoint, tmpP);
+            measurePath.lineTo(tmpP.x, tmpP.y);
+            // the measurement
             GeoPoint previousGeoPoint = pj.fromPixels(lastX, lastY);
             float distanceTo = currentGeoPoint.distanceTo(previousGeoPoint);
             if (Float.isNaN(measuredDistance)) {
@@ -172,45 +182,50 @@ public class MeasureToolOverlay extends Overlay {
             lastX = currentX;
             lastY = currentY;
             measuredDistance = measuredDistance + distanceTo;
+            // Logger.d(this, "Recording points. Distance = " + measuredDistance);
             mapView.invalidate();
             break;
         case MotionEvent.ACTION_UP:
-            measuredDistance = Float.NaN;
             break;
         }
         return true;
     }
 
-    private String distanceText( final int meters, final boolean imperial, final boolean nautical ) {
-        if (imperial) {
-            if (meters >= METERS_PER_STATUTE_MILE * 5) {
-                return resourceProxy.getString(ResourceProxy.string.format_distance_miles,
-                        (int) (meters / METERS_PER_STATUTE_MILE));
-
-            } else if (meters >= METERS_PER_STATUTE_MILE / 5) {
-                return resourceProxy.getString(ResourceProxy.string.format_distance_miles,
-                        ((int) (meters / (METERS_PER_STATUTE_MILE / 10.0))) / 10.0);
-            } else {
-                return resourceProxy.getString(ResourceProxy.string.format_distance_feet, (int) (meters * FEET_PER_METER));
-            }
-        } else if (nautical) {
-            if (meters >= METERS_PER_NAUTICAL_MILE * 5) {
-                return resourceProxy.getString(ResourceProxy.string.format_distance_nautical_miles,
-                        ((int) (meters / METERS_PER_NAUTICAL_MILE)));
-            } else if (meters >= METERS_PER_NAUTICAL_MILE / 5) {
-                return resourceProxy.getString(ResourceProxy.string.format_distance_nautical_miles,
-                        (((int) (meters / (METERS_PER_NAUTICAL_MILE / 10.0))) / 10.0));
-            } else {
-                return resourceProxy.getString(ResourceProxy.string.format_distance_feet, ((int) (meters * FEET_PER_METER)));
-            }
-        } else {
-            if (meters >= 1000 * 5) {
-                return resourceProxy.getString(ResourceProxy.string.format_distance_kilometers, (meters / 1000));
-            } else if (meters >= 1000 / 5) {
-                return resourceProxy.getString(ResourceProxy.string.format_distance_kilometers, (int) (meters / 100.0) / 10.0);
-            } else {
-                return resourceProxy.getString(ResourceProxy.string.format_distance_meters, meters);
-            }
-        }
-    }
+    // private String distanceText( final int meters, final boolean imperial, final boolean nautical
+    // ) {
+    // if (imperial) {
+    // if (meters >= METERS_PER_STATUTE_MILE * 5) {
+    // return resourceProxy.getString(ResourceProxy.string.format_distance_miles,
+    // (int) (meters / METERS_PER_STATUTE_MILE));
+    //
+    // } else if (meters >= METERS_PER_STATUTE_MILE / 5) {
+    // return resourceProxy.getString(ResourceProxy.string.format_distance_miles,
+    // ((int) (meters / (METERS_PER_STATUTE_MILE / 10.0))) / 10.0);
+    // } else {
+    // return resourceProxy.getString(ResourceProxy.string.format_distance_feet, (int) (meters *
+    // FEET_PER_METER));
+    // }
+    // } else if (nautical) {
+    // if (meters >= METERS_PER_NAUTICAL_MILE * 5) {
+    // return resourceProxy.getString(ResourceProxy.string.format_distance_nautical_miles,
+    // ((int) (meters / METERS_PER_NAUTICAL_MILE)));
+    // } else if (meters >= METERS_PER_NAUTICAL_MILE / 5) {
+    // return resourceProxy.getString(ResourceProxy.string.format_distance_nautical_miles,
+    // (((int) (meters / (METERS_PER_NAUTICAL_MILE / 10.0))) / 10.0));
+    // } else {
+    // return resourceProxy.getString(ResourceProxy.string.format_distance_feet, ((int) (meters *
+    // FEET_PER_METER)));
+    // }
+    // } else {
+    // if (meters >= 1000 * 5) {
+    // return resourceProxy.getString(ResourceProxy.string.format_distance_kilometers, (meters /
+    // 1000));
+    // } else if (meters >= 1000 / 5) {
+    // return resourceProxy.getString(ResourceProxy.string.format_distance_kilometers, (int) (meters
+    // / 100.0) / 10.0);
+    // } else {
+    // return resourceProxy.getString(ResourceProxy.string.format_distance_meters, meters);
+    // }
+    // }
+    // }
 }
