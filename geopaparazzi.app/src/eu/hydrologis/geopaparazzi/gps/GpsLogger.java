@@ -55,6 +55,7 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("nls")
 public class GpsLogger implements GpsManagerListener {
     private static final String LOGTAG = "GPSLOGGER";
 

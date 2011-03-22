@@ -54,7 +54,7 @@ public class CrossOverlay extends Overlay {
 
     public void setDoDraw( boolean doDraw ) {
         this.doDraw = doDraw;
-        Logger.d(this, "Will draw: " + doDraw);
+        Logger.d(this, "Will draw: " + doDraw); //$NON-NLS-1$
     }
 
     protected void draw( final Canvas canvas, final MapView mapsView, final boolean shadow ) {

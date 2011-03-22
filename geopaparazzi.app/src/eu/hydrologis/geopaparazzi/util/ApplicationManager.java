@@ -128,7 +128,7 @@ public class ApplicationManager implements Serializable {
          */
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String baseFolder = preferences.getString(BASEFOLDERKEY, "");
+        String baseFolder = preferences.getString(BASEFOLDERKEY, ""); //$NON-NLS-1$
         geoPaparazziDir = new File(baseFolder);
         if (baseFolder == null || baseFolder.length() == 0 || !geoPaparazziDir.getParentFile().exists()
                 || !geoPaparazziDir.getParentFile().canWrite()) {
@@ -172,7 +172,7 @@ public class ApplicationManager implements Serializable {
             if (!mediaDir.mkdir())
                 alert(MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
                         mediaDir.getAbsolutePath()));
-        debugLogFile = new File(geoPaparazziDirPath, "debug.log");
+        debugLogFile = new File(geoPaparazziDirPath, "debug.log"); //$NON-NLS-1$
 
         kmlExportDir = new File(geoPaparazziDirPath + PATH_KMLEXPORT);
         if (!kmlExportDir.exists())
@@ -180,11 +180,6 @@ public class ApplicationManager implements Serializable {
                 alert(MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
                         kmlExportDir.getAbsolutePath()));
 
-    }
-
-    public void createResetFile() throws IOException {
-        File resetFile = new File(geoPaparazziDir, "doReset");
-        resetFile.createNewFile();
     }
 
     public File getGeoPaparazziDir() {
@@ -216,6 +211,7 @@ public class ApplicationManager implements Serializable {
      * 
      * @return the list of pictures.
      */
+    @SuppressWarnings("nls")
     public List<Picture> getPictures() {
         List<Picture> picturesList = new ArrayList<Picture>();
         File picturesDir = getMediaDir();
@@ -260,7 +256,7 @@ public class ApplicationManager implements Serializable {
 
     public ActionItem getNotesQuickAction( final QuickAction qa ) {
         ActionItem notesQuickaction = new ActionItem();
-        notesQuickaction.setTitle("Geonote");
+        notesQuickaction.setTitle("Geonote"); //$NON-NLS-1$
         notesQuickaction.setIcon(context.getResources().getDrawable(R.drawable.quickaction_notes));
         notesQuickaction.setOnClickListener(new OnClickListener(){
             public void onClick( View v ) {
@@ -276,6 +272,7 @@ public class ApplicationManager implements Serializable {
         });
         return notesQuickaction;
     }
+    @SuppressWarnings("nls")
     public ActionItem getPicturesQuickAction( final QuickAction qa ) {
         ActionItem pictureQuickaction = new ActionItem();
         pictureQuickaction.setTitle("Photo");
@@ -303,6 +300,7 @@ public class ApplicationManager implements Serializable {
     }
     private MediaRecorder audioRecorder;
 
+    @SuppressWarnings("nls")
     public ActionItem getAudioQuickAction( final QuickAction qa ) {
         ActionItem audioQuickaction = new ActionItem();
         audioQuickaction.setTitle("Audio");
@@ -381,7 +379,7 @@ public class ApplicationManager implements Serializable {
 
     public ActionItem getStartLogQuickAction( final ActionBar actionBar, final QuickAction qa ) {
         ActionItem startLogQuickaction = new ActionItem();
-        startLogQuickaction.setTitle("Start Log");
+        startLogQuickaction.setTitle("Start Log"); //$NON-NLS-1$
         startLogQuickaction.setIcon(context.getResources().getDrawable(R.drawable.quickaction_start_log));
         startLogQuickaction.setOnClickListener(new OnClickListener(){
             public void onClick( View v ) {
@@ -389,7 +387,7 @@ public class ApplicationManager implements Serializable {
                 if (!gpsManager.isGpsLogging()) {
                     GpsLocation loc = gpsManager.getLocation();
                     if (loc != null) {
-                        final String defaultLogName = "log_" + Constants.TIMESTAMPFORMATTER.format(new Date());
+                        final String defaultLogName = "log_" + Constants.TIMESTAMPFORMATTER.format(new Date()); //$NON-NLS-1$
                         final EditText input = new EditText(context);
                         input.setText(defaultLogName);
                         new AlertDialog.Builder(context).setTitle(R.string.gps_log).setMessage(R.string.gps_log_name)
@@ -417,7 +415,7 @@ public class ApplicationManager implements Serializable {
 
     public ActionItem getStopLogQuickAction( final ActionBar actionBar, final QuickAction qa ) {
         ActionItem stopLogQuickaction = new ActionItem();
-        stopLogQuickaction.setTitle("Stop Log");
+        stopLogQuickaction.setTitle("Stop Log"); //$NON-NLS-1$
         stopLogQuickaction.setIcon(context.getResources().getDrawable(R.drawable.quickaction_stop_log));
         stopLogQuickaction.setOnClickListener(new OnClickListener(){
             public void onClick( View v ) {
@@ -434,7 +432,7 @@ public class ApplicationManager implements Serializable {
 
     public int getDecimationFactor() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String decimationFactorStr = preferences.getString(DECIMATION_FACTOR, "5");
+        String decimationFactorStr = preferences.getString(DECIMATION_FACTOR, "5"); //$NON-NLS-1$
         int decimationFactor = 5;
         try {
             decimationFactor = Integer.parseInt(decimationFactorStr);

@@ -56,6 +56,7 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("nls")
 public class MapsOverlay extends Overlay {
 
     private Paint gpxPaint = new Paint();

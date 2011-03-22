@@ -69,7 +69,7 @@ public class BookmarksListActivity extends ListActivity {
     }
 
     private void refreshList() {
-        Logger.d(this, "refreshing bookmarks list");
+        Logger.d(this, "refreshing bookmarks list"); //$NON-NLS-1$
         try {
             List<Bookmark> bookmarksList = DaoBookmarks.getAllBookmarks(this);
 
@@ -84,7 +84,7 @@ public class BookmarksListActivity extends ListActivity {
                 index++;
             }
             if (bookmarksList.size() == 0) {
-                bookmarksNames = new String[]{"No bookmarks available"};
+                bookmarksNames = new String[]{getResources().getString(R.string.bookmarks_list_noavailable)};
             }
         } catch (IOException e) {
             Logger.e(this, e.getLocalizedMessage(), e);
@@ -105,8 +105,8 @@ public class BookmarksListActivity extends ListActivity {
                         final String name = bookmarkText.getText().toString();
                         final EditText input = new EditText(BookmarksListActivity.this);
                         input.setText(name);
-                        Builder builder = new AlertDialog.Builder(BookmarksListActivity.this).setTitle("Rename Bookmark");
-                        builder.setMessage("Rename the bookmark");
+                        Builder builder = new AlertDialog.Builder(BookmarksListActivity.this)
+                                .setTitle(R.string.bookmarks_list_rename);
                         builder.setView(input);
                         builder.setIcon(android.R.drawable.ic_dialog_info)
                                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){

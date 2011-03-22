@@ -55,6 +55,7 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("nls")
 public class CameraActivity extends Activity implements SurfaceHolder.Callback {
 
     private Camera camera;

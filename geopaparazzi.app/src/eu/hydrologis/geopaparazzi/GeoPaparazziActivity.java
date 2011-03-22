@@ -42,7 +42,6 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
 import android.text.Editable;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -236,7 +235,6 @@ public class GeoPaparazziActivity extends Activity {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String key = getString(R.string.enable_debug);
         boolean logToFile = preferences.getBoolean(key, false);
-        Log.d("MAINACTIVITY", "Log to file = " + logToFile);
         if (logToFile) {
             File debugLogFile = applicationManager.getDebugLogFile();
             new Logger(debugLogFile);
@@ -399,7 +397,7 @@ public class GeoPaparazziActivity extends Activity {
     }
 
     public void finish() {
-        Logger.d(this, "Finish called!");
+        Logger.d(this, "Finish called!"); //$NON-NLS-1$
         // save last location just in case
         GpsLocation loc = gpsManager.getLocation();
         if (loc != null) {
@@ -428,7 +426,7 @@ public class GeoPaparazziActivity extends Activity {
         if (name.equals(Constants.GEOPAPARAZZI)) {
             doRename = true;
         }
-        final String defaultLogName = Constants.GEOPAPARAZZI + "_" + Constants.TIMESTAMPFORMATTER.format(new Date());
+        final String defaultLogName = Constants.GEOPAPARAZZI + "_" + Constants.TIMESTAMPFORMATTER.format(new Date()); //$NON-NLS-1$
         final EditText input = new EditText(this);
         input.setText(defaultLogName);
         Builder builder = new AlertDialog.Builder(this).setTitle(R.string.reset);
@@ -457,12 +455,12 @@ public class GeoPaparazziActivity extends Activity {
                                 File geopaparazziParentFile = geopaparazziDirFile.getParentFile();
                                 File newGeopaparazziDirFile = new File(geopaparazziParentFile.getAbsolutePath(), newName);
                                 if (!geopaparazziDirFile.renameTo(newGeopaparazziDirFile)) {
-                                    throw new IOException("Unable to rename the geopaparazzi folder.");
+                                    throw new IOException("Unable to rename the geopaparazzi folder."); //$NON-NLS-1$
                                 }
                                 // editor.putString(BASEFOLDERKEY,
                                 // newGeopaparazziDirFile.getAbsolutePath());
                             }
-                            editor.putString(BASEFOLDERKEY, "");
+                            editor.putString(BASEFOLDERKEY, ""); //$NON-NLS-1$
                             editor.commit();
 
                             Intent intent = getIntent();
@@ -492,7 +490,7 @@ public class GeoPaparazziActivity extends Activity {
 
     private void exportToKml() {
 
-        kmlProgressDialog = ProgressDialog.show(this, "Exporting to kml...", "", true, true);
+        kmlProgressDialog = ProgressDialog.show(this, getString(R.string.geopaparazziactivity_exporting_kmz), "", true, true); //$NON-NLS-1$
         new Thread(){
 
             public void run() {
@@ -511,7 +509,7 @@ public class GeoPaparazziActivity extends Activity {
                     List<Picture> picturesList = applicationManager.getPictures();
 
                     File kmlExportDir = applicationManager.getKmlExportDir();
-                    String filename = "geopaparazzi_" + Constants.TIMESTAMPFORMATTER.format(new Date()) + ".kmz";
+                    String filename = "geopaparazzi_" + Constants.TIMESTAMPFORMATTER.format(new Date()) + ".kmz"; //$NON-NLS-1$ //$NON-NLS-2$
                     kmlOutputFile = new File(kmlExportDir, filename);
                     KmlExport export = new KmlExport(null, kmlOutputFile);
                     export.export(notesList, linesList, picturesList);
@@ -556,6 +554,7 @@ public class GeoPaparazziActivity extends Activity {
      * 
      * @param doPanic make the panic message as opposed to just a status update.
      */
+    @SuppressWarnings("nls")
     private void sendPosition( boolean doPanic ) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         final String panicNumbersString = preferences.getString(PANICKEY, "");
@@ -597,7 +596,7 @@ public class GeoPaparazziActivity extends Activity {
                     sB.append(latString);
                     sB.append("&lon=");
                     sB.append(lonString);
-                    sB.append("&zoom=15");
+                    sB.append("&zoom=14");
                     sB.append("&layers=M&mlat=");
                     sB.append(latString);
                     sB.append("&mlon=");

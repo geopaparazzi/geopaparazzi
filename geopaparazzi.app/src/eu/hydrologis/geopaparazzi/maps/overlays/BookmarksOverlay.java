@@ -53,6 +53,7 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("nls")
 public class BookmarksOverlay extends Overlay {
 
     private final Paint mTextPaint = new Paint();

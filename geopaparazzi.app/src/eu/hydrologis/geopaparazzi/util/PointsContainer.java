@@ -17,7 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
-
 /**
  * A container for points.
  * 
@@ -63,8 +62,8 @@ public class PointsContainer {
         latArray[index] = lat;
         if (name != null) {
             namesArray[index] = name;
-        }else{
-            namesArray[index] = "";
+        } else {
+            namesArray[index] = ""; //$NON-NLS-1$
         }
         index++;
     }

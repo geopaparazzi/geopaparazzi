@@ -48,6 +48,7 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("nls")
 public class ActionBar implements GpsManagerListener {
     private static DecimalFormat formatter = new DecimalFormat("0.00000"); //$NON-NLS-1$
     private final View actionBarView;

@@ -58,7 +58,7 @@ public class GpsPositionOverlay extends Overlay {
 
     public void setDoDraw( boolean doDraw ) {
         this.doDraw = doDraw;
-        Logger.d(this, "Will draw: " + doDraw);
+        Logger.d(this, "Will draw: " + doDraw); //$NON-NLS-1$
     }
 
     public void setLoc( GpsLocation loc ) {

@@ -234,13 +234,19 @@
 
     <string name="gps_searching_fix">Gps is trying to acquire fix.</string>
 
-    <string name="zoom_level_download_label">Zoom level to download</string>
-    <string name="tilesnum_label">Number of tiles that will be downloaded: </string>
-    <string name="tiles_warning">
-	Bulk downloading is strongly discouraged. Do not download tiles unnecessarily.
-	In particular, downloading significant areas of tiles at zoom levels 17, 18 or 19 
-	for offline or later usage is forbidden and can lead to access block. 
-	OSM Policy is described here: http://wiki.openstreetmap.org/wiki/Tile_usage_policy
-	</string>
+    <string name="bookmarks_list_noavailable">No bookmarks available</string>
+    <string name="bookmarks_list_rename">Rename the bookmark</string>
 
+    <string name="mapsactivity_menu_toggle_minimap">toggle minimap</string>
+    <string name="mapsactivity_menu_toggle_scalebar">toggle scalebar</string>
+    <string name="mapsactivity_menu_tilesource">tile source</string>
+    
+    <string name="mapsactivity_delete_bookmarks">Deleting {0} bookmarks...</string>
+    <string name="mapsactivity_delete_notes">Deleting {0} notes...</string>
+    <string name="mapsactivity_new_bookmark">New bookmark</string>
+    <string name="mapsactivity_enter_bookmark_name">Enter a name for the new bookmark (optional)</string>
+
+    <string name="maptagsactivity_error_reading_tags">Error in reading tags</string>
+
+    <string name="geopaparazziactivity_exporting_kmz">Exporting to kmz...</string>
 </resources>

@@ -90,7 +90,7 @@ public class GpsDataListActivity extends ListActivity {
     }
 
     private void refreshList() {
-        Logger.d(this, "refreshing gps maps list");
+        Logger.d(this, "refreshing gps maps list"); //$NON-NLS-1$
         gpslogItems = new MapItem[0];
         try {
             List<MapItem> logsList = DaoGpsLog.getGpslogs(this);

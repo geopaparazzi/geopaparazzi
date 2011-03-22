@@ -99,7 +99,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
     private static final int MENU_SCALE_ID = 5;
     private static final int GO_TO = 6;
 
-    private DecimalFormat formatter = new DecimalFormat("00");
+    private DecimalFormat formatter = new DecimalFormat("00"); //$NON-NLS-1$
     private Button zoomInButton;
     private Button zoomOutButton;
     private VerticalSeekBar zoomBar;
@@ -216,7 +216,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                 setZoomGuiText(progress);
                 mapsView.getController().setZoom(progress);
                 inalidateMap();
-                Logger.d(this, "Zoomed to: " + progress);
+                //                Logger.d(this, "Zoomed to: " + progress); //$NON-NLS-1$
             }
 
             public void onStartTrackingTouch( VerticalSeekBar seekBar ) {
@@ -278,7 +278,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
 
         slidingDrawer.setOnDrawerOpenListener(new SlidingDrawer.OnDrawerOpenListener(){
             public void onDrawerOpened() {
-                Logger.d(this, "Enable drawing");
+                // Logger.d(this, "Enable drawing");
                 sliderIsOpen = true;
                 slideHandleButton.setBackgroundResource(R.drawable.min);
                 enableDrawingWithDelay();
@@ -286,7 +286,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         });
         slidingDrawer.setOnDrawerCloseListener(new SlidingDrawer.OnDrawerCloseListener(){
             public void onDrawerClosed() {
-                Logger.d(this, "Enable drawing");
+                // Logger.d(this, "Enable drawing");
                 slideHandleButton.setBackgroundResource(R.drawable.max);
                 sliderIsOpen = false;
                 enableDrawingWithDelay();
@@ -296,12 +296,12 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
 
         slidingDrawer.setOnDrawerScrollListener(new SlidingDrawer.OnDrawerScrollListener(){
             public void onScrollEnded() {
-                Logger.d(this, "Scroll End Disable drawing");
+                // Logger.d(this, "Scroll End Disable drawing");
                 disableDrawing();
             }
 
             public void onScrollStarted() {
-                Logger.d(this, "Scroll Start Disable drawing");
+                // Logger.d(this, "Scroll Start Disable drawing");
                 disableDrawing();
             }
         });
@@ -444,10 +444,10 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         super.onCreateOptionsMenu(menu);
         menu.add(Menu.NONE, MENU_GPSDATA, 1, R.string.mainmenu_gpsdataselect).setIcon(android.R.drawable.ic_menu_compass);
         menu.add(Menu.NONE, MENU_MAPDATA, 2, R.string.mainmenu_mapdataselect).setIcon(android.R.drawable.ic_menu_compass);
-        menu.add(Menu.NONE, MENU_MINIMAP_ID, 3, "toggle minimap").setIcon(R.drawable.ic_menu_minimap);
-        menu.add(Menu.NONE, MENU_SCALE_ID, 4, "toggle scalebar").setIcon(R.drawable.ic_menu_scalebar);
-        final SubMenu subMenu = menu.addSubMenu(Menu.NONE, MENU_TILE_SOURCE_ID, 5, "tile source").setIcon(
-                R.drawable.ic_menu_tilesource);
+        menu.add(Menu.NONE, MENU_MINIMAP_ID, 3, R.string.mapsactivity_menu_toggle_minimap).setIcon(R.drawable.ic_menu_minimap);
+        menu.add(Menu.NONE, MENU_SCALE_ID, 4, R.string.mapsactivity_menu_toggle_scalebar).setIcon(R.drawable.ic_menu_scalebar);
+        final SubMenu subMenu = menu.addSubMenu(Menu.NONE, MENU_TILE_SOURCE_ID, 5, R.string.mapsactivity_menu_tilesource)
+                .setIcon(R.drawable.ic_menu_tilesource);
         {
             for( final ITileSource tileSource : TileSourceFactory.getTileSources() ) {
                 subMenu.add(0, 1000 + tileSource.ordinal(), Menu.NONE, tileSource.localizedName(mResourceProxy));
@@ -542,7 +542,8 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
 
                             bookmarksRemoveDialog = new ProgressDialog(MapsActivity.this);
                             bookmarksRemoveDialog.setCancelable(true);
-                            bookmarksRemoveDialog.setMessage(MessageFormat.format("Deleting {0} bookmarks...", bookmarksNum));
+                            bookmarksRemoveDialog.setMessage(MessageFormat.format(
+                                    getString(R.string.mapsactivity_delete_bookmarks), bookmarksNum));
                             bookmarksRemoveDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                             bookmarksRemoveDialog.setProgress(0);
                             bookmarksRemoveDialog.setMax(bookmarksNum);
@@ -591,7 +592,8 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
 
                             notesRemoveDialog = new ProgressDialog(MapsActivity.this);
                             notesRemoveDialog.setCancelable(true);
-                            notesRemoveDialog.setMessage(MessageFormat.format("Deleting {0} notes...", notesNum));
+                            notesRemoveDialog.setMessage(MessageFormat.format(getString(R.string.mapsactivity_delete_notes),
+                                    notesNum));
                             notesRemoveDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
                             notesRemoveDialog.setProgress(0);
                             notesRemoveDialog.setMax(notesNum);
@@ -625,10 +627,10 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         final float centerLon = mapCenter.getLongitudeE6() / E6;
         final EditText input = new EditText(this);
         final String newDate = Constants.TIME_FORMATTER.format(new Date());
-        final String proposedName = "bookmark " + newDate;
+        final String proposedName = "bookmark " + newDate; //$NON-NLS-1$
         input.setText(proposedName);
-        Builder builder = new AlertDialog.Builder(this).setTitle("New Bookmark");
-        builder.setMessage("Enter a name for the new bookmark (optional)");
+        Builder builder = new AlertDialog.Builder(this).setTitle(R.string.mapsactivity_new_bookmark);
+        builder.setMessage(R.string.mapsactivity_enter_bookmark_name);
         builder.setView(input);
         builder.setIcon(android.R.drawable.ic_dialog_info)
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){

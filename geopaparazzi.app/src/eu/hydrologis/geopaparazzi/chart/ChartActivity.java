@@ -90,6 +90,7 @@ public class ChartActivity extends Activity {
     // setContentView(graphView);
     // }
 
+    @SuppressWarnings("nls")
     private void makeProfilePlot( Line line ) {
         List<Double> altims = line.getAltimList();
         float[] pts = new float[altims.size()];

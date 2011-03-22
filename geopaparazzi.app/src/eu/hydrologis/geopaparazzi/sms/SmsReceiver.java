@@ -37,15 +37,14 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("nls")
 public class SmsReceiver extends BroadcastReceiver {
-    // public static final String SMSRECEIVED = "SMSR";
     private static final String SMS_REC_ACTION = "android.provider.Telephony.SMS_RECEIVED"; //$NON-NLS-1$
 
     @Override
     public void onReceive( Context context, Intent intent ) {
         if (intent.getAction().equals(SmsReceiver.SMS_REC_ACTION)) {
 
-            // SharedPreferences preferences = GeoPaparazziActivity.preferences;
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
             boolean doCatch = preferences.getBoolean(Constants.SMSCATCHERKEY, false);
             if (!doCatch) {
@@ -89,7 +88,7 @@ public class SmsReceiver extends BroadcastReceiver {
                     sB.append(latString);
                     sB.append("&lon=");
                     sB.append(lonString);
-                    sB.append("&zoom=18");
+                    sB.append("&zoom=14");
                     sB.append("&layers=M&mlat=");
                     sB.append(latString);
                     sB.append("&mlon=");

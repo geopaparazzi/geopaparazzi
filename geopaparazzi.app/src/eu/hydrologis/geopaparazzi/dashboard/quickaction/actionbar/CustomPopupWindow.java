@@ -67,7 +67,7 @@ public class CustomPopupWindow {
 
     protected void preShow() {
         if (root == null) {
-            throw new IllegalStateException("setContentView was not called with a view to display.");
+            throw new IllegalStateException("setContentView was not called with a view to display."); //$NON-NLS-1$
         }
 
         onShow();

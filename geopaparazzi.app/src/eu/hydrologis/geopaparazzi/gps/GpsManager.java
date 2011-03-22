@@ -41,6 +41,7 @@ import eu.hydrologis.geopaparazzi.util.debug.TestMock;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("nls")
 public class GpsManager implements LocationListener, Listener {
 
     private static GpsManager gpsManager;
@@ -155,7 +156,7 @@ public class GpsManager implements LocationListener, Listener {
         Logger.i(this, "Gps is on: " + gpsIsEnabled);
         return gpsIsEnabled;
     }
-    
+
     public boolean isGpsListening() {
         return isListening;
     }

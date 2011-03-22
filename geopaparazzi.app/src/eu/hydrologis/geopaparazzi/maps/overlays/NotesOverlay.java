@@ -50,6 +50,7 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("nls")
 public class NotesOverlay extends Overlay {
 
     private final Paint mPaint = new Paint();
