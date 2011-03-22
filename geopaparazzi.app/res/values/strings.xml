@@ -226,11 +226,8 @@
     <string name="delete_visible_bookmarks_title">DELETE BOOKMARKS</string>
     <string name="delete_visible_bookmarks_prompt">Do you really want to remove all visible bookmarks? This can\'t be undone.</string>
 
-    <string name="menu_download_maps">download maps</string>
     <string name="mainmenu_addbookmark">add a bookmark</string>
     <string name="mainmenu_bookmarks">bookmarks</string>
-
-    <string name="no_internet_warning">No internet connection available!</string>
 
     <string name="gps_searching_fix">Gps is trying to acquire fix.</string>
 

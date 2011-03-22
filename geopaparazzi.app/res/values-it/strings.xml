@@ -204,4 +204,42 @@
     <string name="reset">Nuovo progetto</string>
     <string name="reset_prompt">Rinominare il progetto ed iniziarne uno nuovo?</string>
     <string name="phonenumber_hint">Inserire numeri separati da virgole...</string>
+
+	<!-- added after 2.1.4 -->
+    <string name="labels_preferences">Settaggi etichette</string>
+    <string name="labels_zoom1">Livello di zoom 1</string>
+    <string name="labels_length_zoom1">Lunghezza etichette livello 1</string>
+    <string name="labels_zoom2">Livello di zoom 2</string>
+    <string name="labels_length_zoom2">Lunghezza etichette livello 2</string>
+
+    <string name="select_all">Seleziona tutti</string>
+    <string name="unselect_all">Deseleziona tutti</string>
+
+    <string name="delete_visible_notes">cancella note visibili</string>
+    <string name="delete_visible_notes_title">CANCELLA NOTE</string>
+    <string name="delete_visible_notes_prompt">Sei sicuro di volere cancellare tutte le note visibili? Non è possibile tornare indietro.</string>
+    <string name="delete_visible_bookmarks">cancella segnalibri visibili</string>
+    <string name="delete_visible_bookmarks_title">CANCELLA SEGNALIBRI</string>
+    <string name="delete_visible_bookmarks_prompt">Sei sicuro di volere cancellare tutti i segnalibri visibili? Non è possibile tornare indietro.</string>
+
+    <string name="mainmenu_addbookmark">aggiungi segnalibro</string>
+    <string name="mainmenu_bookmarks">segnalibri</string>
+
+    <string name="gps_searching_fix">Il Gps sta cercando di acquisire il segnale.</string>
+
+    <string name="bookmarks_list_noavailable">Non ci sono segnalibri disponibili</string>
+    <string name="bookmarks_list_rename">Rinomina segnlibro</string>
+
+    <string name="mapsactivity_menu_toggle_minimap">cambia minimappa</string>
+    <string name="mapsactivity_menu_toggle_scalebar">cambia scala</string>
+    <string name="mapsactivity_menu_tilesource">sorgente tile</string>
+    
+    <string name="mapsactivity_delete_bookmarks">Sto cancellando {0} segnalibri...</string>
+    <string name="mapsactivity_delete_notes">Sto cancellando {0} note...</string>
+    <string name="mapsactivity_new_bookmark">Nuovo segnalibro</string>
+    <string name="mapsactivity_enter_bookmark_name">Inserisci un nome per il nuovo segnalibro (opzionale)</string>
+
+    <string name="maptagsactivity_error_reading_tags">Errore nella lettura dei tag</string>
+
+    <string name="geopaparazziactivity_exporting_kmz">Sto esportando in kmz...</string>
 </resources>

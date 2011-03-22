@@ -348,8 +348,8 @@ public final class R {
         public static final int audio_recording=0x7f090076;
         public static final int audio_recording_stop=0x7f090077;
         public static final int azimuth=0x7f090023;
-        public static final int bookmarks_list_noavailable=0x7f0900a5;
-        public static final int bookmarks_list_rename=0x7f0900a6;
+        public static final int bookmarks_list_noavailable=0x7f0900a3;
+        public static final int bookmarks_list_rename=0x7f0900a4;
         public static final int cancel=0x7f090000;
         public static final int cantclose_gpslog=0x7f09001d;
         public static final int cantcreate_sdcard=0x7f09001a;
@@ -375,7 +375,7 @@ public final class R {
         public static final int error_disk_full=0x7f090066;
         public static final int exit=0x7f090019;
         public static final int export_for_real=0x7f090088;
-        public static final int geopaparazziactivity_exporting_kmz=0x7f0900af;
+        public static final int geopaparazziactivity_exporting_kmz=0x7f0900ad;
         public static final int googleview=0x7f090028;
         public static final int goto_coordinate=0x7f09002e;
         public static final int gps_log=0x7f090073;
@@ -386,7 +386,7 @@ public final class R {
         public static final int gps_logging_on=0x7f090050;
         public static final int gps_native_settings=0x7f09004f;
         public static final int gps_preferences=0x7f09004c;
-        public static final int gps_searching_fix=0x7f0900a4;
+        public static final int gps_searching_fix=0x7f0900a2;
         public static final int gpslog_chart=0x7f090046;
         public static final int gpslog_delete=0x7f090048;
         public static final int gpslog_zoom=0x7f090047;
@@ -415,6 +415,7 @@ public final class R {
         public static final int labels_length_zoom1=0x7f090095;
         public static final int labels_length_zoom2=0x7f090097;
         /**  added after 2.1.4 
+ added after 2.1.4 
          */
         public static final int labels_preferences=0x7f090093;
         public static final int labels_zoom1=0x7f090094;
@@ -431,9 +432,9 @@ public final class R {
         public static final int loggingon=0x7f090013;
         public static final int lon=0x7f090022;
         public static final int longitude=0x7f090004;
-        public static final int mainmenu_addbookmark=0x7f0900a1;
+        public static final int mainmenu_addbookmark=0x7f0900a0;
         public static final int mainmenu_addtags=0x7f090043;
-        public static final int mainmenu_bookmarks=0x7f0900a2;
+        public static final int mainmenu_bookmarks=0x7f0900a1;
         public static final int mainmenu_gpsdataselect=0x7f09003e;
         public static final int mainmenu_gpxconvert=0x7f09003d;
         public static final int mainmenu_kmlexport=0x7f09003c;
@@ -446,21 +447,19 @@ public final class R {
         public static final int map_zoom=0x7f09004a;
         public static final int mapping_preferences=0x7f090052;
         public static final int mapproperty=0x7f090049;
-        public static final int mapsactivity_delete_bookmarks=0x7f0900aa;
-        public static final int mapsactivity_delete_notes=0x7f0900ab;
-        public static final int mapsactivity_enter_bookmark_name=0x7f0900ad;
-        public static final int mapsactivity_menu_tilesource=0x7f0900a9;
-        public static final int mapsactivity_menu_toggle_minimap=0x7f0900a7;
-        public static final int mapsactivity_menu_toggle_scalebar=0x7f0900a8;
-        public static final int mapsactivity_new_bookmark=0x7f0900ac;
-        public static final int maptagsactivity_error_reading_tags=0x7f0900ae;
+        public static final int mapsactivity_delete_bookmarks=0x7f0900a8;
+        public static final int mapsactivity_delete_notes=0x7f0900a9;
+        public static final int mapsactivity_enter_bookmark_name=0x7f0900ab;
+        public static final int mapsactivity_menu_tilesource=0x7f0900a7;
+        public static final int mapsactivity_menu_toggle_minimap=0x7f0900a5;
+        public static final int mapsactivity_menu_toggle_scalebar=0x7f0900a6;
+        public static final int mapsactivity_new_bookmark=0x7f0900aa;
+        public static final int maptagsactivity_error_reading_tags=0x7f0900ac;
         public static final int measureinfo=0x7f090067;
         public static final int measureinfo_first=0x7f090068;
         public static final int measureinfo_last=0x7f090069;
-        public static final int menu_download_maps=0x7f0900a0;
         public static final int message_sent=0x7f09007f;
         public static final int meters=0x7f090006;
-        public static final int no_internet_warning=0x7f0900a3;
         public static final int no_maps_in_list=0x7f090071;
         public static final int nogps4google=0x7f090037;
         public static final int nogps_data=0x7f090017;
@@ -498,7 +497,7 @@ public final class R {
          */
         public static final int reset=0x7f09008e;
         public static final int reset_prompt=0x7f09008f;
-        public static final int reset_successful=0x7f0900b0;
+        public static final int reset_successful=0x7f0900ae;
         public static final int satellite_num=0x7f090026;
         public static final int saveimg=0x7f09002d;
         public static final int sdcard_notexist=0x7f09001b;
