@@ -68,19 +68,28 @@ public class GpsManager implements LocationListener, Listener {
     private LocationManager locationManager;
     private long mLastLocationMillis;
     private boolean hasGPSFix = false;
+    private boolean isListening = false;
 
     private GpsManager( Context context ) {
         this.context = context;
-
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        checkLoggerExists();
     }
 
     public synchronized static GpsManager getInstance( Context context ) {
         if (gpsManager == null) {
             gpsManager = new GpsManager(context);
+            gpsManager.checkLoggerExists();
             gpsManager.checkGps();
             gpsManager.startListening();
+            Logger.d(gpsManager, "STARTED LISTENING");
+        }
+        // woke up from death and has the manager already but isn't listening any more
+        if (!gpsManager.isGpsListening()) {
+            gpsManager = new GpsManager(context);
+            gpsManager.checkLoggerExists();
+            gpsManager.checkGps();
+            gpsManager.startListening();
+            Logger.d(gpsManager, "STARTED LISTENING AFTER REVIEW");
         }
         return gpsManager;
     }
@@ -116,6 +125,7 @@ public class GpsManager implements LocationListener, Listener {
         if (TestMock.isOn) {
             TestMock.stopMocking(locationManager);
         }
+        isListening = false;
     }
 
     /**
@@ -130,6 +140,7 @@ public class GpsManager implements LocationListener, Listener {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000l, 0f, gpsManager);
             locationManager.addGpsStatusListener(gpsManager);
         }
+        isListening = true;
     }
 
     public boolean isGpsEnabled() {
@@ -143,6 +154,10 @@ public class GpsManager implements LocationListener, Listener {
         // }
         Logger.i(this, "Gps is on: " + gpsIsEnabled);
         return gpsIsEnabled;
+    }
+    
+    public boolean isGpsListening() {
+        return isListening;
     }
 
     public boolean hasGpsFix() {
