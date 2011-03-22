@@ -249,8 +249,8 @@ public class GpsManager implements LocationListener, Listener {
             previousLoc = loc;
         }
 
-        Logger.d(gpsManager,
-                "Position update: " + gpsLoc.getLongitude() + "/" + gpsLoc.getLatitude() + "/" + gpsLoc.getAltitude()); //$NON-NLS-1$ //$NON-NLS-2$
+        // Logger.d(gpsManager,
+        //                "Position update: " + gpsLoc.getLongitude() + "/" + gpsLoc.getLatitude() + "/" + gpsLoc.getAltitude()); //$NON-NLS-1$ //$NON-NLS-2$
         gpsLoc.setPreviousLoc(previousLoc);
         for( GpsManagerListener listener : listeners ) {
             listener.onLocationChanged(gpsLoc);
