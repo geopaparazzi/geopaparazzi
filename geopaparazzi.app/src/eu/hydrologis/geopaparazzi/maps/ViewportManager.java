@@ -17,6 +17,18 @@
  */
 package eu.hydrologis.geopaparazzi.maps;
 
+import static eu.hydrologis.geopaparazzi.util.Constants.E6;
+import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_LAT;
+import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_LON;
+import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_ZOOM;
+
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.preference.PreferenceManager;
+
 /**
  * Singleton that takes care of viewport sync.
  * 
@@ -38,19 +50,65 @@ public enum ViewportManager {
         if (mapsActivity == null) {
             return;
         }
-        mapsActivity.setNewZoom(zoom, false);
+        // mapsActivity.setZoomGuiText(zoom);
+        mapsActivity.getMapController().setZoom(zoom);
     }
 
     public void setBoundsTo( double n, double s, double w, double e ) {
         throw new RuntimeException();
     }
 
-    public void setCenterTo( double centerX, double centerY, boolean drawIcon ) {
+    // public void setCenterTo( double centerX, double centerY, boolean drawIcon ) {
+    // if (mapsActivity == null) {
+    // return;
+    // }
+    // mapsActivity.setNewCenter(centerX, centerY, drawIcon);
+    // }
+    //
+    /**
+     * Set center coords and zoom ready for the {@link MapsActivity} to focus again.
+     * 
+     * <p>In {@link MapsActivity} the {@link MapsActivity#onWindowFocusChanged(boolean)}
+     * will take care to zoom properly.
+     * 
+     * @param centerX the lon coordinate. Can be <code>null</code>.
+     * @param centerY the lat coordinate. Can be <code>null</code>.
+     * @param zoom the zoom. Can be <code>null</code>.
+     */
+    public void setCenterAndZoomForMapWindowFocus( Double centerX, Double centerY, Integer zoom ) {
         if (mapsActivity == null) {
             return;
         }
-        mapsActivity.setNewCenter(centerX, centerY, drawIcon);
+
+        MapView mapsView = mapsActivity.getMapsView();
+        GeoPoint mapCenter = mapsView.getMapCenter();
+        int zoomLevel = mapsView.getZoomLevel();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mapsActivity);
+        Editor editor = preferences.edit();
+        if (centerX != null) {
+            editor.putFloat(PREFS_KEY_LON, centerX.floatValue());
+        } else {
+            editor.putFloat(PREFS_KEY_LON, (float) (mapCenter.getLongitudeE6() / E6));
+        }
+        if (centerY != null) {
+            editor.putFloat(PREFS_KEY_LAT, centerY.floatValue());
+        } else {
+            editor.putFloat(PREFS_KEY_LAT, (float) (mapCenter.getLatitudeE6() / E6));
+        }
+        if (zoom != null) {
+            editor.putInt(PREFS_KEY_ZOOM, zoom);
+        } else {
+            editor.putInt(PREFS_KEY_ZOOM, zoomLevel);
+        }
+        editor.commit();
     }
+
+    // public void zoomToSpan( BoundingBoxE6 bbox ) {
+    // if (mapsActivity == null) {
+    // return;
+    // }
+    // mapsActivity.getMapController().zoomToSpan(bbox);
+    // }
 
     public void invalidateMap() {
         if (mapsActivity == null) {
@@ -58,12 +116,25 @@ public enum ViewportManager {
         }
         mapsActivity.inalidateMap();
     }
+    public void postInvalidateMap() {
+        if (mapsActivity == null) {
+            return;
+        }
+        mapsActivity.getMapsView().postInvalidate();
+    }
 
     public double[] getCenterLonLat() {
         if (mapsActivity == null) {
             return null;
         }
         return mapsActivity.getCenterLonLat();
+    }
+
+    public int getZoom() {
+        if (mapsActivity == null) {
+            return 0;
+        }
+        return mapsActivity.getMapsView().getZoomLevel();
     }
 
 }

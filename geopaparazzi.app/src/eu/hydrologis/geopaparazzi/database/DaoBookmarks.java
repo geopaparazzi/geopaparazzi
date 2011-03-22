@@ -140,7 +140,7 @@ public class DaoBookmarks {
         query = query.replaceFirst("XXX", String.valueOf(s));
         query = query.replaceFirst("XXX", String.valueOf(n));
 
-        Logger.i("DAOBOOKMARKS", "Query: " + query);
+        // Logger.i("DAOBOOKMARKS", "Query: " + query);
 
         Cursor c = sqliteDatabase.rawQuery(query, null);
         List<Bookmark> bookmarks = new ArrayList<Bookmark>();
@@ -163,7 +163,7 @@ public class DaoBookmarks {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         String query = "SELECT _id, lon, lat, text, zoom, bnorth, bsouth, bwest, beast FROM " + TABLE_BOOKMARKS;
 
-        Logger.i("DAOBOOKMARKS", "Query: " + query);
+        // Logger.i("DAOBOOKMARKS", "Query: " + query);
 
         Cursor c = sqliteDatabase.rawQuery(query, null);
         List<Bookmark> bookmarks = new ArrayList<Bookmark>();

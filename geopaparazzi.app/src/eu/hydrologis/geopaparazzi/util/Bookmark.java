@@ -105,6 +105,7 @@ public class Bookmark {
         return east;
     }
 
+    @SuppressWarnings("nls")
     public String toString() {
         return "Bookmark [name=" + name + ", lon=" + lon + ", lat=" + lat + ", id=" + id + ", zoom=" + zoom + ", north=" + north
                 + ", south=" + south + ", west=" + west + ", east=" + east + "]";

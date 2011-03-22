@@ -29,6 +29,7 @@ import android.util.Log;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("nls")
 public class Logger {
 
     private static boolean logToFile = false;

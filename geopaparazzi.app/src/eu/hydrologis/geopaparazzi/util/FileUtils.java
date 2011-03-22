@@ -73,7 +73,7 @@ public class FileUtils {
             br = new BufferedReader(new FileReader(file));
             String line = null;
             while( (line = br.readLine()) != null ) {
-                sb.append(line).append("\n");
+                sb.append(line).append("\n"); //$NON-NLS-1$
             }
             return sb.toString();
         } finally {
@@ -81,7 +81,7 @@ public class FileUtils {
                 try {
                     br.close();
                 } catch (IOException e) {
-                    Logger.e("FILEUTILS", e.getLocalizedMessage(), e);
+                    Logger.e("FILEUTILS", e.getLocalizedMessage(), e); //$NON-NLS-1$
                     e.printStackTrace();
                 }
             }

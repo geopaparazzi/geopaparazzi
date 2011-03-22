@@ -21,7 +21,6 @@ import static eu.hydrologis.geopaparazzi.util.Constants.BASEFOLDERKEY;
 import static eu.hydrologis.geopaparazzi.util.Constants.DECIMATION_FACTOR;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_GEOPAPARAZZI;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_KMLEXPORT;
-import static eu.hydrologis.geopaparazzi.util.Constants.PATH_MAPSCACHE;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_MEDIA;
 
 import java.io.BufferedWriter;
@@ -67,14 +66,11 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
 public class ApplicationManager implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private static final String LOGTAG = "APPLICATIONMANAGER";
-
     private Context context;
 
     private File databaseFile;
     private File geoPaparazziDir;
     private File mediaDir;
-    private File mapsCacheDir;
     private File kmlExportDir;
 
     private File debugLogFile;
@@ -129,17 +125,11 @@ public class ApplicationManager implements Serializable {
          *    |--- debug.log 
          *    |        
          *    `--- export
-         * geopaparazzimapscache 
-         *    |--.nomedia
-         *    `-- zoomlevel 
-         *        `-- xtile 
-         *            `-- ytile.png
          */
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String baseFolder = preferences.getString(BASEFOLDERKEY, "");
+        String baseFolder = preferences.getString(BASEFOLDERKEY, ""); //$NON-NLS-1$
         geoPaparazziDir = new File(baseFolder);
-        mapsCacheDir = new File(geoPaparazziDir.getParentFile() + PATH_MAPSCACHE);
         if (baseFolder == null || baseFolder.length() == 0 || !geoPaparazziDir.getParentFile().exists()
                 || !geoPaparazziDir.getParentFile().canWrite()) {
             // the folder doesn't exist for some reason, fallback on default
@@ -157,7 +147,6 @@ public class ApplicationManager implements Serializable {
             if (mExternalStorageAvailable && mExternalStorageWriteable) {
                 File sdcardDir = Environment.getExternalStorageDirectory();// new
                 geoPaparazziDir = new File(sdcardDir.getAbsolutePath() + PATH_GEOPAPARAZZI);
-                mapsCacheDir = new File(sdcardDir.getAbsolutePath() + PATH_MAPSCACHE);
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 String ok = context.getResources().getString(R.string.ok);
@@ -183,23 +172,8 @@ public class ApplicationManager implements Serializable {
             if (!mediaDir.mkdir())
                 alert(MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
                         mediaDir.getAbsolutePath()));
-        debugLogFile = new File(geoPaparazziDirPath, "debug.log");
+        debugLogFile = new File(geoPaparazziDirPath, "debug.log"); //$NON-NLS-1$
 
-        Logger.i(LOGTAG, "MAPSCACHEPATH:" + mapsCacheDir.getAbsolutePath());
-        if (!mapsCacheDir.exists())
-            if (!mapsCacheDir.mkdirs()) {
-                String msg = MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
-                        mapsCacheDir.getAbsolutePath());
-                alert(msg);
-            }
-        File noMediaFile = new File(mapsCacheDir, ".nomedia");
-        if (!noMediaFile.exists()) {
-            try {
-                noMediaFile.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
         kmlExportDir = new File(geoPaparazziDirPath + PATH_KMLEXPORT);
         if (!kmlExportDir.exists())
             if (!kmlExportDir.mkdir())
@@ -208,21 +182,12 @@ public class ApplicationManager implements Serializable {
 
     }
 
-    public void createResetFile() throws IOException {
-        File resetFile = new File(geoPaparazziDir, "doReset");
-        resetFile.createNewFile();
-    }
-
     public File getGeoPaparazziDir() {
         return geoPaparazziDir;
     }
 
     public File getDatabaseFile() {
         return databaseFile;
-    }
-
-    public File getMapsCacheDir() {
-        return mapsCacheDir;
     }
 
     public File getKmlExportDir() {
@@ -246,6 +211,7 @@ public class ApplicationManager implements Serializable {
      * 
      * @return the list of pictures.
      */
+    @SuppressWarnings("nls")
     public List<Picture> getPictures() {
         List<Picture> picturesList = new ArrayList<Picture>();
         File picturesDir = getMediaDir();
@@ -290,7 +256,7 @@ public class ApplicationManager implements Serializable {
 
     public ActionItem getNotesQuickAction( final QuickAction qa ) {
         ActionItem notesQuickaction = new ActionItem();
-        notesQuickaction.setTitle("Geonote");
+        notesQuickaction.setTitle("Geonote"); //$NON-NLS-1$
         notesQuickaction.setIcon(context.getResources().getDrawable(R.drawable.quickaction_notes));
         notesQuickaction.setOnClickListener(new OnClickListener(){
             public void onClick( View v ) {
@@ -306,6 +272,7 @@ public class ApplicationManager implements Serializable {
         });
         return notesQuickaction;
     }
+    @SuppressWarnings("nls")
     public ActionItem getPicturesQuickAction( final QuickAction qa ) {
         ActionItem pictureQuickaction = new ActionItem();
         pictureQuickaction.setTitle("Photo");
@@ -333,6 +300,7 @@ public class ApplicationManager implements Serializable {
     }
     private MediaRecorder audioRecorder;
 
+    @SuppressWarnings("nls")
     public ActionItem getAudioQuickAction( final QuickAction qa ) {
         ActionItem audioQuickaction = new ActionItem();
         audioQuickaction.setTitle("Audio");
@@ -411,7 +379,7 @@ public class ApplicationManager implements Serializable {
 
     public ActionItem getStartLogQuickAction( final ActionBar actionBar, final QuickAction qa ) {
         ActionItem startLogQuickaction = new ActionItem();
-        startLogQuickaction.setTitle("Start Log");
+        startLogQuickaction.setTitle("Start Log"); //$NON-NLS-1$
         startLogQuickaction.setIcon(context.getResources().getDrawable(R.drawable.quickaction_start_log));
         startLogQuickaction.setOnClickListener(new OnClickListener(){
             public void onClick( View v ) {
@@ -419,7 +387,7 @@ public class ApplicationManager implements Serializable {
                 if (!gpsManager.isGpsLogging()) {
                     GpsLocation loc = gpsManager.getLocation();
                     if (loc != null) {
-                        final String defaultLogName = "log_" + Constants.TIMESTAMPFORMATTER.format(new Date());
+                        final String defaultLogName = "log_" + Constants.TIMESTAMPFORMATTER.format(new Date()); //$NON-NLS-1$
                         final EditText input = new EditText(context);
                         input.setText(defaultLogName);
                         new AlertDialog.Builder(context).setTitle(R.string.gps_log).setMessage(R.string.gps_log_name)
@@ -447,7 +415,7 @@ public class ApplicationManager implements Serializable {
 
     public ActionItem getStopLogQuickAction( final ActionBar actionBar, final QuickAction qa ) {
         ActionItem stopLogQuickaction = new ActionItem();
-        stopLogQuickaction.setTitle("Stop Log");
+        stopLogQuickaction.setTitle("Stop Log"); //$NON-NLS-1$
         stopLogQuickaction.setIcon(context.getResources().getDrawable(R.drawable.quickaction_stop_log));
         stopLogQuickaction.setOnClickListener(new OnClickListener(){
             public void onClick( View v ) {
@@ -464,7 +432,7 @@ public class ApplicationManager implements Serializable {
 
     public int getDecimationFactor() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String decimationFactorStr = preferences.getString(DECIMATION_FACTOR, "5");
+        String decimationFactorStr = preferences.getString(DECIMATION_FACTOR, "5"); //$NON-NLS-1$
         int decimationFactor = 5;
         try {
             decimationFactor = Integer.parseInt(decimationFactorStr);

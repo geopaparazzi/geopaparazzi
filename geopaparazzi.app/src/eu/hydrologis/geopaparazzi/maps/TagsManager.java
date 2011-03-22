@@ -40,6 +40,7 @@ import eu.hydrologis.geopaparazzi.util.debug.Debug;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("nls")
 public class TagsManager {
 
     public static final String TAG_LONGNAME = "longname";

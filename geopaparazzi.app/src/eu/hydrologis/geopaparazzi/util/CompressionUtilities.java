@@ -29,6 +29,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+import eu.hydrologis.geopaparazzi.util.debug.Logger;
+
 /**
  * Utilities class to zip and unzip folders.
  * 
@@ -139,6 +141,7 @@ public class CompressionUtilities {
         }
     }
 
+    @SuppressWarnings("nls")
     public static void createZipFromFiles( File destinationZip, File... files ) throws IOException {
         FileOutputStream fos = new FileOutputStream(destinationZip);
         ZipOutputStream zos = new ZipOutputStream(fos);
@@ -149,7 +152,7 @@ public class CompressionUtilities {
             String name = files[i].getName();
             File file = files[i];
             if (!file.exists()) {
-                System.err.println("Skipping: " + name);
+                Logger.d("COMPRESSIONUTILITIES", "Skipping: " + name);
                 continue;
             }
             BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));

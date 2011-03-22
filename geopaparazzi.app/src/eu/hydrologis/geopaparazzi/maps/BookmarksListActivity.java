@@ -37,7 +37,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.R;
@@ -70,7 +69,7 @@ public class BookmarksListActivity extends ListActivity {
     }
 
     private void refreshList() {
-        Logger.d(this, "refreshing bookmarks list");
+        Logger.d(this, "refreshing bookmarks list"); //$NON-NLS-1$
         try {
             List<Bookmark> bookmarksList = DaoBookmarks.getAllBookmarks(this);
 
@@ -85,7 +84,7 @@ public class BookmarksListActivity extends ListActivity {
                 index++;
             }
             if (bookmarksList.size() == 0) {
-                bookmarksNames = new String[]{"No bookmarks available"};
+                bookmarksNames = new String[]{getResources().getString(R.string.bookmarks_list_noavailable)};
             }
         } catch (IOException e) {
             Logger.e(this, e.getLocalizedMessage(), e);
@@ -106,8 +105,8 @@ public class BookmarksListActivity extends ListActivity {
                         final String name = bookmarkText.getText().toString();
                         final EditText input = new EditText(BookmarksListActivity.this);
                         input.setText(name);
-                        Builder builder = new AlertDialog.Builder(BookmarksListActivity.this).setTitle("Rename Bookmark");
-                        builder.setMessage("Rename the bookmark");
+                        Builder builder = new AlertDialog.Builder(BookmarksListActivity.this)
+                                .setTitle(R.string.bookmarks_list_rename);
                         builder.setView(input);
                         builder.setIcon(android.R.drawable.ic_dialog_info)
                                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
@@ -135,14 +134,13 @@ public class BookmarksListActivity extends ListActivity {
                     }
                 });
 
-                bookmarkText.setOnClickListener(new View.OnClickListener(){
+                final Button goButton = (Button) rowView.findViewById(R.id.gobutton);
+                goButton.setOnClickListener(new View.OnClickListener(){
                     public void onClick( View v ) {
-                        ViewportManager viewportManager = ViewportManager.INSTANCE;
                         Bookmark bookmark = bookmarksMap.get(bookmarkText.getText().toString());
                         if (bookmark != null) {
-                            viewportManager.setZoomTo((int) bookmark.getZoom());
-                            viewportManager.setCenterTo(bookmark.getLon(), bookmark.getLat(), false);
-                            viewportManager.invalidateMap();
+                            ViewportManager.INSTANCE.setCenterAndZoomForMapWindowFocus(bookmark.getLon(), bookmark.getLat(),
+                                    (int) bookmark.getZoom());
                         }
                         finish();
                     }
@@ -153,20 +151,6 @@ public class BookmarksListActivity extends ListActivity {
 
         };
         setListAdapter(arrayAdapter);
-    }
-
-    @Override
-    protected void onListItemClick( ListView parent, View v, int position, long id ) {
-        ViewportManager viewportManager = ViewportManager.INSTANCE;
-
-        String bookmarkName = bookmarksNames[position];
-        Bookmark bookmark = bookmarksMap.get(bookmarkName);
-        if (bookmark != null) {
-            viewportManager.setZoomTo((int) bookmark.getZoom());
-            viewportManager.setCenterTo(bookmark.getLon(), bookmark.getLat(), false);
-            viewportManager.invalidateMap();
-        }
-        finish();
     }
 
 }

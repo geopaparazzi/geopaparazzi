@@ -129,8 +129,7 @@ public class GpsDataPropertiesActivity extends Activity {
                     try {
                         double[] firstPoint = DaoGpsLog.getGpslogFirstPoint(GpsDataPropertiesActivity.this, item.getId());
                         if (firstPoint != null) {
-                            ViewportManager.INSTANCE.setCenterTo(firstPoint[0], firstPoint[1], false);
-                            ViewportManager.INSTANCE.invalidateMap();
+                            ViewportManager.INSTANCE.setCenterAndZoomForMapWindowFocus(firstPoint[0], firstPoint[1], null);
                         }
                     } catch (IOException e) {
                         Logger.e(this, e.getLocalizedMessage(), e);
@@ -174,7 +173,6 @@ public class GpsDataPropertiesActivity extends Activity {
 
         }
     }
-
     private void getResourcesAndColors() {
         if (colorList == null) {
             String[] colorArray = getResources().getStringArray(R.array.array_colornames);

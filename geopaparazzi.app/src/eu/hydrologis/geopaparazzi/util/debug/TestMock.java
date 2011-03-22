@@ -22,6 +22,8 @@ import java.util.Date;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.location.LocationProvider;
+import android.os.SystemClock;
 import eu.hydrologis.geopaparazzi.gps.GpsManager;
 import eu.hydrologis.geopaparazzi.maps.ViewportManager;
 
@@ -67,6 +69,9 @@ public class TestMock {
         locationManager.setTestProviderEnabled(MOCK_PROVIDER_NAME, true);
         locationManager.requestLocationUpdates(TestMock.MOCK_PROVIDER_NAME, 3000, 0f, gpsManager);
         // }
+        locationManager.setTestProviderEnabled(MOCK_PROVIDER_NAME, true);
+        locationManager
+                .setTestProviderStatus(MOCK_PROVIDER_NAME, LocationProvider.AVAILABLE, null, SystemClock.elapsedRealtime());
 
         Runnable r = new Runnable(){
             public void run() {

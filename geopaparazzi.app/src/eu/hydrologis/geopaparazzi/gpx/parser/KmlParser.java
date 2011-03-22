@@ -46,7 +46,7 @@ public class KmlParser {
     private final static String NODE_NAME = "name"; //$NON-NLS-1$
     private final static String NODE_COORDINATES = "coordinates"; //$NON-NLS-1$
     
-    private final static Pattern sLocationPattern = Pattern.compile("([^,]+),([^,]+)(?:,([^,]+))?");
+    private final static Pattern sLocationPattern = Pattern.compile("([^,]+),([^,]+)(?:,([^,]+))?"); //$NON-NLS-1$
     
     private static SAXParserFactory sParserFactory;
     

@@ -63,7 +63,7 @@ public class MapTagsActivity extends Activity {
         try {
             tagNamesArray = TagsManager.getInstance(this).getTagsArrays();
         } catch (Exception e1) {
-            tagNamesArray = new String[]{"ERROR IN READING TAGS"};
+            tagNamesArray = new String[]{getString(R.string.maptagsactivity_error_reading_tags)};
             Logger.e(this, e1.getLocalizedMessage(), e1);
             e1.printStackTrace();
         }
@@ -84,9 +84,9 @@ public class MapTagsActivity extends Activity {
                             TagObject tag = TagsManager.getInstance(MapTagsActivity.this).getTagFromName(name);
                             String finalLongName = tag.longName;
                             if (infoString.length() != 0) {
-                                String sep = ":";
-                                if (finalLongName.indexOf(":") != -1) {
-                                    sep = " ";
+                                String sep = ":"; //$NON-NLS-1$
+                                if (finalLongName.indexOf(sep) != -1) {
+                                    sep = " "; //$NON-NLS-1$
                                 }
                                 finalLongName = finalLongName + sep + infoString;
                             }

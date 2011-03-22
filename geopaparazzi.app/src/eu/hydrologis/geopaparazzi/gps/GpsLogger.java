@@ -17,12 +17,12 @@
  */
 package eu.hydrologis.geopaparazzi.gps;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LATITUDE;
-import static eu.hydrologis.geopaparazzi.util.Constants.GPSLAST_LONGITUDE;
 import static eu.hydrologis.geopaparazzi.util.Constants.GPSLOGGINGDISTANCEKEY;
 import static eu.hydrologis.geopaparazzi.util.Constants.GPSLOGGINGINTERVALKEY;
 import static eu.hydrologis.geopaparazzi.util.Constants.GPS_LOGGING_DISTANCE;
 import static eu.hydrologis.geopaparazzi.util.Constants.GPS_LOGGING_INTERVAL;
+import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_LAT;
+import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_LON;
 
 import java.io.IOException;
 
@@ -55,6 +55,7 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("nls")
 public class GpsLogger implements GpsManagerListener {
     private static final String LOGTAG = "GPSLOGGER";
 
@@ -174,8 +175,8 @@ public class GpsLogger implements GpsManagerListener {
 
                         // save last known location
                         Editor editor = preferences.edit();
-                        editor.putFloat(GPSLAST_LONGITUDE, (float) gpsLoc.getLongitude());
-                        editor.putFloat(GPSLAST_LATITUDE, (float) gpsLoc.getLatitude());
+                        editor.putFloat(PREFS_KEY_LON, (float) gpsLoc.getLongitude());
+                        editor.putFloat(PREFS_KEY_LAT, (float) gpsLoc.getLatitude());
                         editor.commit();
 
                         // and wait

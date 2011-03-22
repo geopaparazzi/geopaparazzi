@@ -40,7 +40,7 @@ public class DirectoryBrowserActivity extends ListActivity {
     private String intentId;
     private String extention;
     private FileFilter fileFilter;
-    public static final String FOLDER = "folder";
+    public static final String FOLDER = "folder"; //$NON-NLS-1$
 
     private File currentDir;
     private boolean doFolder;

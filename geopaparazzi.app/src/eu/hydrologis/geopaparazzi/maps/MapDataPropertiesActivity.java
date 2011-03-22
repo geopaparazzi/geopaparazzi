@@ -119,8 +119,7 @@ public class MapDataPropertiesActivity extends Activity {
                     try {
                         double[] firstPoint = DaoMaps.getMapFirstPoint(MapDataPropertiesActivity.this, item.getId());
                         if (firstPoint != null) {
-                            ViewportManager.INSTANCE.setCenterTo(firstPoint[0], firstPoint[1], false);
-                            ViewportManager.INSTANCE.invalidateMap();
+                            ViewportManager.INSTANCE.setCenterAndZoomForMapWindowFocus(firstPoint[0], firstPoint[1], null);
                         }
                     } catch (IOException e) {
                         Logger.e(this, e.getLocalizedMessage(), e);

@@ -115,8 +115,7 @@ public class GpxImportActivity extends Activity {
                                         }
                                     }
                                 } else {
-                                    // TODO error
-                                    System.out.println("ERROR");
+                                    Logger.d(this, "ERROR"); //$NON-NLS-1$
                                 }
 
                             } catch (IOException e) {

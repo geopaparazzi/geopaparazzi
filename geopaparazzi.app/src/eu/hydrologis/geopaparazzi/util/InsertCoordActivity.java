@@ -79,8 +79,7 @@ public class InsertCoordActivity extends Activity {
                     public void run() {
                         openMapViewHandler.post(new Runnable(){
                             public void run() {
-                                ViewportManager.INSTANCE.setCenterTo(lon, lat, true);
-                                ViewportManager.INSTANCE.invalidateMap();
+                                ViewportManager.INSTANCE.setCenterAndZoomForMapWindowFocus(lon, lat, null);
                             }
                         });
 

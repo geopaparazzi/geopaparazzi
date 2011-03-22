@@ -61,7 +61,7 @@ public class MapDataListActivity extends ListActivity {
     }
 
     private void refreshList() {
-        Logger.d(this, "refreshing maps list");
+        Logger.d(this, "refreshing maps list"); //$NON-NLS-1$
         mapsItems = new MapItem[0];
         try {
             List<MapItem> mapsList = DaoMaps.getMaps(this);

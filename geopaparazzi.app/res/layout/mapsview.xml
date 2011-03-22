@@ -3,15 +3,11 @@
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
 	android:orientation="vertical" android:id="@+id/osm_frameLayout">
 
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 		android:layout_width="fill_parent" android:layout_height="fill_parent"
-		android:orientation="horizontal" android:id="@+id/innerlayout">
-		<eu.hydrologis.geopaparazzi.maps.MapView
-			android:id="@+id/osmviewid" android:layout_width="fill_parent"
-			android:layout_height="fill_parent" android:layout_weight="1">
-		</eu.hydrologis.geopaparazzi.maps.MapView>
-
-	</LinearLayout>
+		android:id="@+id/innerlayout">
+		<!-- space for map view -->
+	</RelativeLayout>
 
 	<!-- the tools slider -->
 	<FrameLayout android:layout_width="fill_parent"
