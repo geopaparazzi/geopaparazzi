@@ -30,8 +30,8 @@
     
     <string name="nogps_data">No gps data available yet!</string>
     
-    <string name="about">About</string>
-    <string name="exit">Exit</string>
+    <string name="about">about</string>
+    <string name="exit">exit</string>
     <string name="cantcreate_sdcard">Wasn\'t able to create folder on sdcard ({0}). Exiting...</string>
     <string name="sdcard_notexist">Sdcard folder doesn\'t exist or is not writable (is it possible it is mounted on a pc?). Exiting...</string>
     <string name="cantwrite_gpslog">ERROR: couldn\'t write gps log!</string>
@@ -203,9 +203,9 @@
     <string name="decimation_combo_label">Decimation factor</string>
 
 	<!-- added after 2.1.2 -->
-    <string name="reset">New project</string>
+    <string name="reset">new project</string>
     <string name="reset_prompt">Rename the project and start on a new one?</string>
-    <string name="load">Load an existing project</string>
+    <string name="load">noad an existing project</string>
     <string name="phonenumber_hint">Enter comma separated phone numbers...</string>
     <string name="pick_phonenumber_label">...</string>
 

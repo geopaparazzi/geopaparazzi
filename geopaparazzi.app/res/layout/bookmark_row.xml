@@ -4,7 +4,7 @@
 	android:orientation="horizontal" android:background="#FFFFFF"
 	android:layout_marginBottom="5dip" android:layout_marginTop="5dip">
 
-	<Button android:text="..." android:id="@+id/renamebutton"
+	<Button android:text="Ab" android:id="@+id/renamebutton"
 		android:padding="15dip" android:layout_width="wrap_content"
 		android:layout_height="wrap_content"></Button>
 	<Button android:text="->" android:id="@+id/gobutton"
