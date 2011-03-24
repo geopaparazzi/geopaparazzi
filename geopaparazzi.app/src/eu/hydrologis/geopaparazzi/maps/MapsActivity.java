@@ -127,6 +127,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         mapsView = new MapView(this, 256);
         mapController = mapsView.getController();
         mapsView.setMapListener(this);
+        mapsView.setMultiTouchControls(true);
         final RelativeLayout rl = (RelativeLayout) findViewById(R.id.innerlayout);
         rl.addView(this.mapsView, new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
 
