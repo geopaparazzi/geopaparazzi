@@ -205,7 +205,7 @@
 	<!-- added after 2.1.2 -->
     <string name="reset">new project</string>
     <string name="reset_prompt">Rename the project and start on a new one?</string>
-    <string name="load">noad an existing project</string>
+    <string name="load">load an existing project</string>
     <string name="phonenumber_hint">Enter comma separated phone numbers...</string>
     <string name="pick_phonenumber_label">...</string>
 
