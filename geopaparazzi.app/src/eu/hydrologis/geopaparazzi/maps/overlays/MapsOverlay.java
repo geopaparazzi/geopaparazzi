@@ -105,7 +105,7 @@ public class MapsOverlay extends Overlay {
     private HashMap<MapItem, PointsContainer> pointsContainerMap = new HashMap<MapItem, PointsContainer>();
 
     protected void draw( final Canvas canvas, final MapView mapsView, final boolean shadow ) {
-        if (touchDragging || shadow || !doDraw || mapsView.isAnimating() || !DataManager.getInstance().areLogsVisible())
+        if (touchDragging || shadow || !doDraw || mapsView.isAnimating() || !DataManager.getInstance().areMapsVisible())
             return;
 
         BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
