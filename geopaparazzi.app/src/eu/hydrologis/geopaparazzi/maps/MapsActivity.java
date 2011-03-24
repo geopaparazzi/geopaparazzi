@@ -17,9 +17,11 @@
  */
 package eu.hydrologis.geopaparazzi.maps;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.*;
+import static eu.hydrologis.geopaparazzi.util.Constants.E6;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_LAT;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_LON;
+import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_MINIMAPON;
+import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_SCALEBARON;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_ZOOM;
 
 import java.io.IOException;
@@ -54,6 +56,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.Editable;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -193,7 +196,15 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         /* MiniMap */
         {
             mMiniMapOverlay = new MinimapOverlay(this, mapsView.getTileRequestCompleteHandler());
-            this.mapsView.getOverlays().add(mMiniMapOverlay);
+            mapsView.getOverlays().add(mMiniMapOverlay);
+            Display display = getWindowManager().getDefaultDisplay();
+            int width = display.getWidth();
+            int padding = (int) Math.floor(width * 0.05);
+            width = width - padding;
+            int half = (int) Math.floor(width / 2.0);
+            mMiniMapOverlay.setHeight(half);
+            mMiniMapOverlay.setWidth(half);
+            mMiniMapOverlay.setPadding(padding);
             boolean isMinimapon = preferences.getBoolean(PREFS_KEY_MINIMAPON, false);
             mMiniMapOverlay.setEnabled(isMinimapon);
         }
