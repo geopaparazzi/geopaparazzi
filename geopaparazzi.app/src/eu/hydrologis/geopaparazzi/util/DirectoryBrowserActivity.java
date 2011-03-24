@@ -44,6 +44,7 @@ public class DirectoryBrowserActivity extends ListActivity {
 
     private File currentDir;
     private boolean doFolder;
+    private boolean doHidden;
 
     @Override
     public void onCreate( Bundle icicle ) {
@@ -54,6 +55,7 @@ public class DirectoryBrowserActivity extends ListActivity {
         if (extras != null) {
             intentId = extras.getString(Constants.INTENT_ID);
             extention = extras.getString(Constants.EXTENTION);
+            doHidden = extras.getBoolean(Constants.SHOWHIDDEN, false);
             if (extention.equals(FOLDER)) {
                 doFolder = true;
             }
@@ -140,6 +142,9 @@ public class DirectoryBrowserActivity extends ListActivity {
         currentDir = parent;
         items = new ArrayList<String>();
         for( File file : files ) {
+            if (!doHidden && file.getName().startsWith(".")) { //$NON-NLS-1$
+                continue;
+            }
             items.add(file.getPath());
         }
         ArrayAdapter<String> fileList = new ArrayAdapter<String>(this, R.layout.browse_file_row, items);
