@@ -7,7 +7,7 @@
     <string name="longitude">Pituus-aste</string>
     <string name="latitude">Leveys-aste</string>
     <string name="meters">meters</string>
-    
+   
     <string name="app_name">GeoPaparazzi</string>
 
     <string name="notesaved">Muistiinpano tallennettu!</string>
@@ -29,7 +29,7 @@
     <string name="gpsloggingalarm">Estä/lopeta hälytys... </string>
 
     <string name="nogps_data">GPS-tietoa ei vielä saatavilla!</string>
-    
+   
     <string name="about">Info</string>
     <string name="exit">Poistu</string>
     <string name="cantcreate_sdcard">Kansion teko muistikortille ei onnistunut ({0}). Poistutaan...</string>
@@ -45,7 +45,7 @@
     <string name="log_points">Pisteet: </string>
     <string name="log_distance">Etäisyys: </string>
     <string name="satellite_num">Satelliitit: </string>
-    
+   
     <string name="osmview">OSM-kartta</string>
     <string name="googleview">Google-kartat</string>
     <string name="zoomin">Lähennä</string>
@@ -67,7 +67,7 @@
     <string name="color_label">Väri</string>
     <string name="last_position">Viime sijainti</string>
     <string name="distance">Matka [m]:</string>
-    
+   
     <string name="mainmenu_kmlexport">Tallenna kml</string>
     <string name="mainmenu_gpxconvert">Tuo gpx</string>
     <string name="mainmenu_gpsdataselect">Jäljet</string>
@@ -86,7 +86,7 @@
     <string name="mapproperty">Gpx-ominaisuudet: </string>
     <string name="map_zoom">Kohdista gpx-tiedostoon</string>
     <string name="map_delete">Poista gpx-tiedosto</string>
-    
+   
     <string name="gps_preferences">Jäljen tallennusasetukset</string>
     <string name="gps_logging_distance">Tallennusväli matkassa</string>
     <string name="gps_logging_interval">Tallennusväli ajassa</string>
@@ -112,36 +112,38 @@
 
     <string name="gpx_import_title">Tuodaan gpx...</string>
     <string name="gpx_import_message">Tuo tiedosto jälkenä tai pisteinä</string>
-    <string name="gpx_import_checkbox_message">Tuo jälkenä</string> 
+    <string name="gpx_import_checkbox_message">Tuo jälkenä</string>
     <string name="gpx_import_processing">Avataan gpx-tiedostoa...</string>
 
     <string name="osm_additionalinfo">Kohteen tiedot</string>
     <string name="osm_tagsgrid">Lisää kohde ryhmään:</string>
-    
+   
     <string name="error_disk_full">Muistikortti täynnä. Vapauta tilaa ja aloita uudelleen.</string>
-    
+   
     <string name="measureinfo">Viime mittauksen tiedot</string>
     <string name="measureinfo_first">Alkupiste</string>
     <string name="measureinfo_last">Loppupiste</string>
-        
+       
     <string name="text_show_position_on_map">Sijainti kartalla</string>
     <string name="text_start_gps_logging">Aloita jäljen tallennus</string>
     <string name="text_stop_gps_logging">Lopeta jäljen tallennus</string>
     <string name="text_take_a_gps_note">Tee muistiinpano</string>
+    <string name="text_undo_a_gps_note">Poista muistiinpano</string>
     <string name="text_take_picture">Ota kuva</string>
-    <string name="text_logging">Jäljen tallennus</string>
-
+    
     <string name="abouttext">
         GeoPaparazzi VERSION\n
         GeoPaparazin tarjoaa HydroloGIS.\n
         \n
-        Ostamalla tämän ohjelman tuet JGrass- ja BeeGIS-projekteja.\n 
+        Ostamalla tämän ohjelman tuet JGrass- ja BeeGIS-projekteja.\n
         \n
         GeoPaparazzi on BeeGIS-ohjelman versio mobiilikäyttöön. Voit ladata tallennettuja tietoja siitä suoraan BeeGIS-ohjelmaan\n
         \n
         Jälkien visualisointi pohjautuu Arno den Hondin GraphViewiin .\n
         \n
-        Kartat tarjoaa (c) OpenStreetMap contributors, CC-BY-SA.\n
+        The mapping engine is osmdroid.\n
+        \n
+	Kartat tarjoaa (c) OpenStreetMap contributors, CC-BY-SA.\n
         \n
         Pystyhakupalkki peräisin Ardroidista.\n
         \n
@@ -152,17 +154,18 @@
         http://www.hydrologis.eu\n
         http://www.jgrass.org\n
         http://www.beegis.org\n
+	http://code.google.com/p/osmdroid\n
         http://www.openstreetmap.org\n
         http://code.google.com/p/ardroid\n
         http://www.londatiga.net\n
     </string>
-    
+   
     <string name="no_maps_in_list">Gpx-kansio on tyhjä. Käytä Tuo gpx -toimintoa tiedostojen tuomiseksi.</string>
 
     <string name="insert_note">Kirjoita muistiinpano</string>
     <string name="gps_log">Jälki</string>
     <string name="gps_log_name">Anna nimi tai käytä oletusnimeä</string>    
-    
+   
     <string name="text_take_audio">Äänitä</string>
     <string name="audio_recording">Äänitetään... paina lopettaaksesi</string>
     <string name="audio_recording_stop">Lopeta</string>
@@ -179,25 +182,68 @@
 
     <string name="last_note_deleted">Viime muistiinpano poistettu</string>
     <string name="last_note_not_deleted">Muistiinpanon poisto ei onnistunut</string>
-    
-    <string name="text_undo_a_gps_note">Poista muistiinpano</string>
+   
+    <string name="text_logging">Jäljen tallennus</string>
     <string name="text_gpson">GPS aktiivinen</string>
 
     <string name="debug">Tarkista asetukset</string>
     <string name="enable_debug">Tee tarkistusloki</string>
-    
+   
     <string name="gpslogging_only">Tämä toiminto on mahdollinen vain GPS-seurannan aikana.</string>
+    <string name="remove_last_note_prompt">Haluatko todella peruuttamattomasti poistaa viime muistiinpanon?.</string>  
     
-    <string name="remove_last_note_prompt">Haluatko todella peruuttamattomasti poistaa viime muistiinpanon?.</string>   
     <string name="export_for_real">Vie dataa?</string>
-    
+    <string name="up">Ylös</string>
+   
     <string name="installgpsstatus_title">Asenna GPS Status</string>
     <string name="installgpsstatus_message">Geopaparazzi käyttää GPS Status-ohjelmaa kompassi- ja GPS-tietojen näyttämiseen. Haluatko asentaa sen?</string>
 
-	<!-- added after 1.2.1 -->
-	<string name="rendering_preferences">Piirtoasetukset</string>
-	<string name="decimation_combo_label">Häivennyskerroin</string>
-	<string name="reset">Resetoi tiedot</string>
-	<string name="reset_prompt">Tämä resetoi tietokannan ja mediakansion, mutta kartat säilyvät. Vanha tietokanta ja mediakansio säilytetään nimeämällä ne uudelleen päivämäärän mukaan. Ohjelma pitää käynnistää uudelleen. Jatketaanko?</string>
-	<string name="reset_successful">Tietojen resetointi onnistui.</string>    
+        <!-- added after 2.1.1 -->
+    <string name="rendering_preferences">Piirtoasetukset</string>
+    <string name="decimation_combo_label">Häivennyskerroin</string>
+        
+	<!-- added after 2.1.2 -->
+    <string name="reset">Uusi projekti</string>
+    <string name="reset_prompt">Nimetäänkö projekti ja aloitetanko uusi?</string> 
+    <string name="load">Lataa projekti</string>
+    <string name="phonenumber_hint">Lisää puhelinnumeroja, erota numerot pilkulla...</string>
+    <string name="pick_phonenumber_label">...</string>
+    
+	<!-- added after 2.1.4 -->
+    <string name="labels_preferences">Lipukeasetukset</string>
+    <string name="labels_zoom1">Zoomtaso 1</string>
+    <string name="labels_length_zoom1">Lipukepituus tasolle 1</string>
+    <string name="labels_zoom2">Zoomtaso 2</string>
+    <string name="labels_length_zoom2">Lipukepituus tasolle 2</string>
+
+    <string name="select_all">Valitse kaikki</string>
+    <string name="unselect_all">Poista kaikkien valinta</string>
+
+    <string name="delete_visible_notes">Poista näkyvät muistiinpanot</string>
+    <string name="delete_visible_notes_title">POISTA MUISTIINPANOT</string>
+    <string name="delete_visible_notes_prompt">Haluatko todella poistaa muistiinpanot peruuttamattomasti?</string>
+    <string name="delete_visible_bookmarks">Poista näkyvät kirjanmerkit</string>
+    <string name="delete_visible_bookmarks_title">POISTA KIRJANMERKIT</string>
+    <string name="delete_visible_bookmarks_prompt">Haluatko todella poistaa muistiinpanot peruuttamattomasti?</string>
+
+    <string name="mainmenu_addbookmark">Lisää kirjanmerkit</string>
+    <string name="mainmenu_bookmarks">Kirjanmerkit</string>
+
+    <string name="gps_searching_fix">GPS hakee sijaintia</string>
+
+    <string name="bookmarks_list_noavailable">Kirjanmerkkejä ei ole</string>
+    <string name="bookmarks_list_rename">Nimeä kirjanmerkki uudelleen</string>
+
+    <string name="mapsactivity_menu_toggle_minimap">Pienoiskartta</string>
+    <string name="mapsactivity_menu_toggle_scalebar">Mittajana</string>
+    <string name="mapsactivity_menu_tilesource">Karttalähde</string>
+    
+    <string name="mapsactivity_delete_bookmarks">Poistetaan {0} kirjanmerkkiä...</string>
+    <string name="mapsactivity_delete_notes">Poistetaan {0} muistiinpanoa...</string>
+    <string name="mapsactivity_new_bookmark">Uuusi kirjanmerkki</string>
+    <string name="mapsactivity_enter_bookmark_name">Nimeä kirjanmerkki</string>
+
+    <string name="maptagsactivity_error_reading_tags">Virhe kohteita luettaessa</string>
+
+    <string name="geopaparazziactivity_exporting_kmz">Viedään kmz-tiedostoksi...</string>
 </resources>
