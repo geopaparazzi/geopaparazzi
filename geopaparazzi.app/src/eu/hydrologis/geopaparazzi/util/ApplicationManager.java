@@ -92,7 +92,11 @@ public class ApplicationManager implements Serializable {
      */
     public static ApplicationManager getInstance( Context context ) {
         if (applicationManager == null) {
-            applicationManager = new ApplicationManager(context);
+            try {
+                applicationManager = new ApplicationManager(context);
+            } catch (IOException e) {
+                return null;
+            }
         }
         return applicationManager;
     }
@@ -105,7 +109,7 @@ public class ApplicationManager implements Serializable {
         return context;
     }
 
-    private ApplicationManager( Context context ) {
+    private ApplicationManager( Context context ) throws IOException {
         this.context = context;
 
         /*
@@ -148,16 +152,7 @@ public class ApplicationManager implements Serializable {
                 File sdcardDir = Environment.getExternalStorageDirectory();// new
                 geoPaparazziDir = new File(sdcardDir.getAbsolutePath() + PATH_GEOPAPARAZZI);
             } else {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                String ok = context.getResources().getString(R.string.ok);
-                builder.setMessage(R.string.sdcard_notexist).setCancelable(false)
-                        .setPositiveButton(ok, new DialogInterface.OnClickListener(){
-                            public void onClick( DialogInterface dialog, int id ) {
-                            }
-                        });
-                AlertDialog alert = builder.create();
-                alert.show();
-                return;
+                throw new IOException();
             }
         }
 

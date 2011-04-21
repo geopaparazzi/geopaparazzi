@@ -136,6 +136,19 @@ public class GeoPaparazziActivity extends Activity {
             ApplicationManager.resetManager();
             applicationManager = ApplicationManager.getInstance(this);
         }
+        if (applicationManager == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            String ok = getResources().getString(R.string.ok);
+            builder.setMessage(R.string.sdcard_notexist).setCancelable(false)
+                    .setPositiveButton(ok, new DialogInterface.OnClickListener(){
+                        public void onClick( DialogInterface dialog, int id ) {
+                            finish();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+            return;
+        }
 
         checkActionBar();
 
