@@ -416,6 +416,7 @@ public final class R {
         public static final int labels_length_zoom2=0x7f090097;
         /**  added after 2.1.4 
  added after 2.1.4 
+ added after 2.1.4 
          */
         public static final int labels_preferences=0x7f090093;
         public static final int labels_zoom1=0x7f090094;
@@ -487,17 +488,17 @@ public final class R {
         /**  added after 2.1.1 
  hinzugefügt nach Version 2.1.1 
  added after 1.2.1 
- added after 1.2.1 
+ added after 2.1.1 
  added after 2.1.1 
          */
         public static final int rendering_preferences=0x7f09008c;
         /**  added after 2.1.2 
  hinzugefügt nach Version 2.1.2 
  added after 2.1.2 
+ added after 2.1.2 
          */
         public static final int reset=0x7f09008e;
         public static final int reset_prompt=0x7f09008f;
-        public static final int reset_successful=0x7f0900ae;
         public static final int satellite_num=0x7f090026;
         public static final int saveimg=0x7f09002d;
         public static final int sdcard_notexist=0x7f09001b;

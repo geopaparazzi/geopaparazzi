@@ -122,7 +122,6 @@
 
 	<!-- permissions -->
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
-	<uses-permission android:name="android.permission.CAMERA"></uses-permission>
 	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
 	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
@@ -131,10 +130,13 @@
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
 	<uses-permission android:name="android.permission.RECORD_AUDIO"></uses-permission>
 	<uses-permission android:name="android.permission.READ_CONTACTS" />
-	
 	<!-- only for testing purposes
 	<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"></uses-permission>
 	 -->
+	
+	<!-- features -->
+	<uses-feature android:name="android.hardware.camera"></uses-feature>  
+
 	<!-- compatibility -->
 	<uses-sdk android:targetSdkVersion="8" android:minSdkVersion="4"></uses-sdk>
 	<supports-screens android:smallScreens="true"

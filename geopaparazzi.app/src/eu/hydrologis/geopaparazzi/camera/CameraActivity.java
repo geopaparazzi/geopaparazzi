@@ -24,31 +24,15 @@ import java.io.IOException;
 import java.util.Date;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.pm.ActivityInfo;
-import android.graphics.PixelFormat;
-import android.hardware.Camera;
-import android.hardware.Camera.Parameters;
-import android.hardware.Camera.Size;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.ImageButton;
-import eu.hydrologis.geopaparazzi.R;
+import android.provider.MediaStore;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.gps.GpsManager;
 import eu.hydrologis.geopaparazzi.sensors.SensorsManager;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
-import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * The taking pictures activity.
@@ -56,70 +40,30 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public class CameraActivity extends Activity implements SurfaceHolder.Callback {
+public class CameraActivity extends Activity {
 
-    private Camera camera;
-    private boolean isPreviewRunning = false;
-
-    private SurfaceView surfaceView;
-    private SurfaceHolder surfaceHolder;
-    private File picturesDir;
-    private ApplicationManager deviceManager;
-    private ProgressDialog progressDialog;
-    private ImageButton snapButton;
+    private static final int CAMERA_PIC_REQUEST = 1337;
+    private File mediaFolder;
+    private String currentDatestring;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
 
-        getWindow().setFormat(PixelFormat.TRANSLUCENT);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        mediaFolder = ApplicationManager.getInstance(this).getMediaDir();
 
-        setContentView(R.layout.camera);
+        Date date = new Date();
+        currentDatestring = Constants.TIMESTAMPFORMATTER.format(date);
+        String imageFilePath = mediaFolder.getAbsolutePath() + "/IMG_" + currentDatestring + ".jpg";
+        File imgFile = new File(imageFilePath);
+        Uri outputFileUri = Uri.fromFile(imgFile);
 
-        deviceManager = ApplicationManager.getInstance(this);
-        picturesDir = deviceManager.getMediaDir();
-
-        surfaceView = (SurfaceView) findViewById(R.id.surface);
-        surfaceHolder = surfaceView.getHolder();
-        surfaceHolder.addCallback(this);
-        surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-
-        snapButton = (ImageButton) findViewById(R.id.snapButton);
-        snapButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
-                takePicture();
-            }
-        });
-
-        Logger.d(this, "Camera activity created");
+        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+        startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
     }
 
-    public boolean onKeyDown( int keyCode, KeyEvent event ) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            return super.onKeyDown(keyCode, event);
-        }
-        if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_CAMERA) {
-            Thread pictureThread = new Thread(new Runnable(){
-                public void run() {
-                    runOnUiThread(new Runnable(){
-                        public void run() {
-                            takePicture();
-                        }
-                    });
-                }
-            });
-            pictureThread.start();
-            return true;
-        }
-        return false;
-    }
-
-    private boolean takePicture() {
-        this.progressDialog = ProgressDialog.show(this, " Working...", " Retrieving image ", true, false);
-
-        try {
+    protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
+        if (requestCode == CAMERA_PIC_REQUEST) {
             GpsLocation loc = GpsManager.getInstance(this).getLocation();
             double lat = -1;
             double lon = -1;
@@ -139,122 +83,31 @@ public class CameraActivity extends Activity implements SurfaceHolder.Callback {
             // String timeString = String.valueOf(utcTimeInSeconds);
             String azimuthString = String.valueOf((int) azimuth);
 
-            Date date = new Date();
             // create props file
-            final String currentDatestring = Constants.TIMESTAMPFORMATTER.format(date);
-            String propertiesFilePath = picturesDir.getAbsolutePath() + "/IMG_" + currentDatestring + ".properties";
+            String propertiesFilePath = mediaFolder.getAbsolutePath() + "/IMG_" + currentDatestring + ".properties";
             File propertiesFile = new File(propertiesFilePath);
             BufferedWriter bW = null;
             try {
-                bW = new BufferedWriter(new FileWriter(propertiesFile));
-                bW.write("latitude=");
-                bW.write(latString);
-                bW.write("\nlongitude=");
-                bW.write(lonString);
-                bW.write("\nazimuth=");
-                bW.write(azimuthString);
-                bW.write("\naltim=");
-                bW.write(altimString);
-                bW.write("\nutctimestamp=");
-                bW.write(currentDatestring);
-            } catch (IOException e1) {
-                Logger.e(this, e1.getLocalizedMessage(), e1);
-                throw new IOException(e1.getLocalizedMessage());
-            } finally {
-                bW.close();
+                try {
+                    bW = new BufferedWriter(new FileWriter(propertiesFile));
+                    bW.write("latitude=");
+                    bW.write(latString);
+                    bW.write("\nlongitude=");
+                    bW.write(lonString);
+                    bW.write("\nazimuth=");
+                    bW.write(azimuthString);
+                    bW.write("\naltim=");
+                    bW.write(altimString);
+                    bW.write("\nutctimestamp=");
+                    bW.write(currentDatestring);
+                } finally {
+                    bW.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-
-            // add also in internal tags
-            try {
-                Parameters p = camera.getParameters();
-                p.remove("gps-latitude");
-                p.remove("gps-longitude");
-                p.remove("gps-altitude");
-                p.remove("gps-timestamp");
-                p.set("gps-latitude", latString);
-                p.set("gps-longitude", lonString);
-                p.set("gps-altitude", altimString);
-                p.set("gps-timestamp", String.valueOf(date.getTime() / 1000));
-                camera.setParameters(p);
-            } catch (Exception e) {
-                Logger.e(this, e.getLocalizedMessage(), e);
-                // if something goes wrong here, try to ignore internal tags
-            }
-
-            String imageFilePath = picturesDir.getAbsolutePath() + "/IMG_" + currentDatestring + ".jpg";
-            File imgFile = new File(imageFilePath);
-            Camera.PictureCallback captureCallback = new ImageCaptureCallback(imgFile, this);
-            capture(captureCallback);
-
-            return true;
-        } catch (IOException e) {
-            Logger.e(this, e.getLocalizedMessage(), e);
-            alert("An error occurred while taking the picture: " + e.getLocalizedMessage());
-            return false;
-        } finally {
-            this.progressDialog.dismiss();
+            finish();
         }
     }
 
-    private void alert( String msg ) {
-        Log.e("CameraActivity", msg);
-        new AlertDialog.Builder(this).setTitle("An error occurred!").setMessage(msg)
-                .setPositiveButton("Continue", new android.content.DialogInterface.OnClickListener(){
-                    public void onClick( DialogInterface dialog, int arg1 ) {
-                    }
-                }).show();
-    }
-
-    public void surfaceChanged( SurfaceHolder holder, int format, int w, int h ) {
-        Logger.d(this, "Enter surface changed");
-        if (this.isPreviewRunning) {
-            Logger.d(this, "Stopping preview");
-            camera.stopPreview();
-            this.isPreviewRunning = false;
-        }
-        Camera.Parameters p = camera.getParameters();
-        Size previewSize = p.getPreviewSize();
-        Logger.d(this, "Preview size before: " + previewSize.width + "/" + previewSize.height);
-        p.setPreviewSize(previewSize.width, previewSize.height);
-
-        camera.setParameters(p);
-        try {
-            camera.setPreviewDisplay(holder);
-        } catch (IOException e) {
-            Logger.e(this, e.getLocalizedMessage(), e);
-            e.printStackTrace();
-        }
-        camera.startPreview();
-        this.isPreviewRunning = true;
-        Logger.d(this, "Exit surface changed");
-    }
-
-    public void surfaceCreated( SurfaceHolder holder ) {
-        Logger.d(this, "Enter surface created");
-        camera = Camera.open();
-        Logger.d(this, "Exit surface created");
-    }
-
-    public void surfaceDestroyed( SurfaceHolder holder ) {
-        Logger.d(this, "Enter surface destroyed");
-        camera.stopPreview();
-        this.isPreviewRunning = false;
-        camera.release();
-        camera = null;
-        Logger.d(this, "Exit surface destroyed");
-    }
-
-    public boolean capture( Camera.PictureCallback jpegHandler ) {
-        if (camera != null) {
-            camera.takePicture(null, null, jpegHandler);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public void startPreview() {
-        camera.startPreview();
-        this.isPreviewRunning = true;
-    }
 }

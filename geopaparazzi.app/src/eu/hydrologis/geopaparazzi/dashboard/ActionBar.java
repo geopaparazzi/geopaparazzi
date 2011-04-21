@@ -168,7 +168,9 @@ public class ActionBar implements GpsManagerListener {
         }
         case R.id.action_bar_compass: {
             String gpsStatusAction = "com.eclipsim.gpsstatus.VIEW";
-            String gpsStatusPackage = "com.eclipsim.gpsstatus";
+            String gpsStatusPackage = "com.binarytoys.ulysse";
+//            String gpsStatusAction = "com.eclipsim.gpsstatus.VIEW";
+//            String gpsStatusPackage = "com.eclipsim.gpsstatus";
             final Context context = actionBarView.getContext();
             List<PackageInfo> installedPackages = context.getPackageManager().getInstalledPackages(PackageManager.GET_ACTIVITIES);
             boolean hasGpsStatus = false;
