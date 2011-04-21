@@ -31,9 +31,9 @@ import android.widget.CheckBox;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.gpx.parser.GpxParser;
-import eu.hydrologis.geopaparazzi.gpx.parser.WayPoint;
 import eu.hydrologis.geopaparazzi.gpx.parser.GpxParser.Route;
 import eu.hydrologis.geopaparazzi.gpx.parser.GpxParser.TrackSegment;
+import eu.hydrologis.geopaparazzi.gpx.parser.WayPoint;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 

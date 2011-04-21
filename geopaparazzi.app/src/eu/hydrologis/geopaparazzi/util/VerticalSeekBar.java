@@ -19,6 +19,8 @@ package eu.hydrologis.geopaparazzi.util;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.widget.ProgressBar;
+import android.widget.SeekBar;
 
 
 

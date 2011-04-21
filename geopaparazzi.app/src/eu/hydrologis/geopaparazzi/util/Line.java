@@ -17,9 +17,12 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
+import static java.lang.Math.abs;
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
+
 import java.util.ArrayList;
 import java.util.List;
-import static java.lang.Math.*;
 
 import android.location.Location;
 

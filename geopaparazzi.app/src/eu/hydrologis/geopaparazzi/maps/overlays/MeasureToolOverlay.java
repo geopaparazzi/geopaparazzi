@@ -17,11 +17,8 @@
  */
 package eu.hydrologis.geopaparazzi.maps.overlays;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.E6;
-import static java.lang.Math.*;
-import static org.osmdroid.util.constants.GeoConstants.FEET_PER_METER;
-import static org.osmdroid.util.constants.GeoConstants.METERS_PER_NAUTICAL_MILE;
-import static org.osmdroid.util.constants.GeoConstants.METERS_PER_STATUTE_MILE;
+import static java.lang.Math.abs;
+import static java.lang.Math.round;
 
 import org.osmdroid.ResourceProxy;
 import org.osmdroid.util.BoundingBoxE6;

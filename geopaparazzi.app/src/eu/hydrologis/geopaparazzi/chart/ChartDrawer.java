@@ -20,8 +20,8 @@ package eu.hydrologis.geopaparazzi.chart;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.RectF;
 import android.graphics.Paint.Align;
+import android.graphics.RectF;
 
 /**
  * A chart drawer for canvases.

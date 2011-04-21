@@ -20,9 +20,9 @@ package eu.hydrologis.geopaparazzi.gpx;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.hydrologis.geopaparazzi.gpx.parser.WayPoint;
 import eu.hydrologis.geopaparazzi.gpx.parser.GpxParser.Route;
 import eu.hydrologis.geopaparazzi.gpx.parser.GpxParser.TrackSegment;
+import eu.hydrologis.geopaparazzi.gpx.parser.WayPoint;
 
 /**
  * Item representing a gpx file.

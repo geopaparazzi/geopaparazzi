@@ -77,7 +77,7 @@ public class ActionBar implements GpsManagerListener {
         this.applicationManager = applicationManager;
         this.gpsManager = gpsManager;
         this.sensorsManager = sensorsManager;
-        
+
         gpsManager.addListener(this);
 
         initVars();
@@ -168,17 +168,17 @@ public class ActionBar implements GpsManagerListener {
         }
         case R.id.action_bar_compass: {
             String gpsStatusAction = "com.eclipsim.gpsstatus.VIEW";
-            String gpsStatusPackage = "com.binarytoys.ulysse";
-//            String gpsStatusAction = "com.eclipsim.gpsstatus.VIEW";
-//            String gpsStatusPackage = "com.eclipsim.gpsstatus";
+            String gpsStatusPackage = "com.eclipsim.gpsstatus";
             final Context context = actionBarView.getContext();
             List<PackageInfo> installedPackages = context.getPackageManager().getInstalledPackages(PackageManager.GET_ACTIVITIES);
             boolean hasGpsStatus = false;
+            Logger.d(this, "Installed packages:");
             for( PackageInfo packageInfo : installedPackages ) {
                 String packageName = packageInfo.packageName;
-                // Logger.i(this, packageName);
+                Logger.d(this, packageName);
                 if (packageName.startsWith(gpsStatusPackage)) {
                     hasGpsStatus = true;
+                    Logger.d(this, "Found package: " + packageName);
                     break;
                 }
             }

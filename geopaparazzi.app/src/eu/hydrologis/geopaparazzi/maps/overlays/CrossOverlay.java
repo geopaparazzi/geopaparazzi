@@ -23,14 +23,13 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.MapView.Projection;
 import org.osmdroid.views.overlay.Overlay;
 
-import eu.hydrologis.geopaparazzi.util.debug.Logger;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * Overlay to show the cross.
