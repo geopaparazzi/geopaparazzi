@@ -18,6 +18,7 @@
 package eu.hydrologis.geopaparazzi.maps;
 
 import static eu.hydrologis.geopaparazzi.util.Constants.E6;
+import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_COMPASSON;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_LAT;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_LON;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_MINIMAPON;
@@ -41,6 +42,7 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.MinimapOverlay;
+import org.osmdroid.views.overlay.MyLocationOverlay;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 
 import android.app.Activity;
@@ -100,7 +102,8 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
     private static final int MENU_TILE_SOURCE_ID = 3;
     private static final int MENU_MINIMAP_ID = 4;
     private static final int MENU_SCALE_ID = 5;
-    private static final int GO_TO = 6;
+    private static final int MENU_COMPASS_ID = 6;
+    private static final int GO_TO = 7;
 
     private DecimalFormat formatter = new DecimalFormat("00"); //$NON-NLS-1$
     private Button zoomInButton;
@@ -120,6 +123,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
     private CrossOverlay mCrossOverlay;
     private MapsOverlay mMapsOverlay;
     private MeasureToolOverlay mMeasureOverlay;
+    private MyLocationOverlay mCompassOverlay;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -191,6 +195,16 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                     - getResources().getDisplayMetrics().xdpi / 2, 10);
             boolean isScalebaron = preferences.getBoolean(PREFS_KEY_SCALEBARON, false);
             mScaleBarOverlay.setEnabled(isScalebaron);
+        }
+
+        /* Compass Overlay */
+        {
+            mCompassOverlay = new MyLocationOverlay(this, mapsView);
+            mapsView.getOverlays().add(mCompassOverlay);
+            mCompassOverlay.disableMyLocation();
+            mCompassOverlay.enableCompass();
+            boolean isCompasson = preferences.getBoolean(PREFS_KEY_COMPASSON, false);
+            mCompassOverlay.setEnabled(isCompasson);
         }
 
         /* MiniMap */
@@ -458,14 +472,15 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         menu.add(Menu.NONE, MENU_MAPDATA, 2, R.string.mainmenu_mapdataselect).setIcon(android.R.drawable.ic_menu_compass);
         menu.add(Menu.NONE, MENU_MINIMAP_ID, 3, R.string.mapsactivity_menu_toggle_minimap).setIcon(R.drawable.ic_menu_minimap);
         menu.add(Menu.NONE, MENU_SCALE_ID, 4, R.string.mapsactivity_menu_toggle_scalebar).setIcon(R.drawable.ic_menu_scalebar);
-        final SubMenu subMenu = menu.addSubMenu(Menu.NONE, MENU_TILE_SOURCE_ID, 5, R.string.mapsactivity_menu_tilesource)
+        menu.add(Menu.NONE, MENU_COMPASS_ID, 5, R.string.mapsactivity_menu_toggle_compass).setIcon(R.drawable.ic_menu_compass);
+        final SubMenu subMenu = menu.addSubMenu(Menu.NONE, MENU_TILE_SOURCE_ID, 6, R.string.mapsactivity_menu_tilesource)
                 .setIcon(R.drawable.ic_menu_tilesource);
         {
             for( final ITileSource tileSource : TileSourceFactory.getTileSources() ) {
                 subMenu.add(0, 1000 + tileSource.ordinal(), Menu.NONE, tileSource.localizedName(mResourceProxy));
             }
         }
-        menu.add(Menu.NONE, GO_TO, 6, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
+        menu.add(Menu.NONE, GO_TO, 7, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
         return true;
     }
 
@@ -519,6 +534,13 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
             mapsView.invalidate();
             Editor editor2 = preferences.edit();
             editor2.putBoolean(PREFS_KEY_SCALEBARON, isScalebarEnabled);
+            return true;
+        case MENU_COMPASS_ID:
+            boolean isCompassEnabled = !mCompassOverlay.isEnabled();
+            mCompassOverlay.setEnabled(isCompassEnabled);
+            mapsView.invalidate();
+            Editor editor3 = preferences.edit();
+            editor3.putBoolean(PREFS_KEY_COMPASSON, isCompassEnabled);
             return true;
         case GO_TO: {
             Intent intent = new Intent(Constants.INSERT_COORD);

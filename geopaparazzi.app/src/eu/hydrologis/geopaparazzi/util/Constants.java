@@ -140,6 +140,7 @@ public interface Constants {
     public static final String VIEW_CENTER_LON = "MAPSVIEW_CENTER_LON";
     public static final String PREFS_KEY_MINIMAPON = "PREFS_KEY_MINIMAPON";
     public static final String PREFS_KEY_SCALEBARON = "PREFS_KEY_SCALEBARON";
+    public static final String PREFS_KEY_COMPASSON = "PREFS_KEY_COMPASSON";
 
     public static final int MAP_TYPE_POINT = 0;
     public static final int MAP_TYPE_LINE = 1;

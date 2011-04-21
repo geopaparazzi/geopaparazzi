@@ -246,4 +246,6 @@
     <string name="maptagsactivity_error_reading_tags">Error in reading tags</string>
 
     <string name="geopaparazziactivity_exporting_kmz">Exporting to kmz...</string>
+	<!-- added after 2.3.1 -->
+    <string name="mapsactivity_menu_toggle_compass">toggle compass</string>
 </resources>
