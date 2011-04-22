@@ -30,6 +30,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Note;
+import eu.hydrologis.geopaparazzi.util.debug.Debug;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -149,7 +150,7 @@ public class DaoNotes {
         query = query.replaceFirst("XXX", String.valueOf(s));
         query = query.replaceFirst("XXX", String.valueOf(n));
 
-        // Logger.i("DAONOTES", "Query: " + query);
+        // if (Debug.D) Logger.i("DAONOTES", "Query: " + query);
 
         Cursor c = sqliteDatabase.rawQuery(query, null);
         List<Note> notes = new ArrayList<Note>();
@@ -223,7 +224,7 @@ public class DaoNotes {
             db.rawQuery(checkColumnQuery, null);
             // if it comes to this point, the form column
             // exists already. Nothing to do.
-            Logger.i("DAONOTES", "Database already contains form column. Skipping upgrade.");
+            if (Debug.D) Logger.i("DAONOTES", "Database already contains form column. Skipping upgrade.");
             return;
         } catch (Exception e) {
             // ignore and add column
@@ -236,7 +237,7 @@ public class DaoNotes {
         sB.append(COLUMN_FORM).append(" CLOB;");
         String addColumnQuery = sB.toString();
 
-        Logger.i("DAONOTES", "Upgrading database from version 1 to version 2.");
+        if (Debug.D) Logger.i("DAONOTES", "Upgrading database from version 1 to version 2.");
 
         db.beginTransaction();
         try {
@@ -288,7 +289,7 @@ public class DaoNotes {
         String CREATE_INDEX_NOTES_X_BY_Y = sB.toString();
 
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
-        Logger.i("DAONOTES", "Create the notes table.");
+        if (Debug.D) Logger.i("DAONOTES", "Create the notes table.");
 
         sqliteDatabase.beginTransaction();
         try {

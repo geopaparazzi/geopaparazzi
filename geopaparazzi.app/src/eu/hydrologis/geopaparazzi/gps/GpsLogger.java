@@ -44,6 +44,7 @@ import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DatabaseManager;
+import eu.hydrologis.geopaparazzi.util.debug.Debug;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -114,7 +115,7 @@ public class GpsLogger implements GpsManagerListener {
                     java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
                     long gpsLogId = DaoGpsLog.addGpsLog(context, now, now, logName, 2f, "red", true);
                     currentRecordedLogId = gpsLogId;
-                    Logger.i(LOGTAG, "Starting gps logging. Logid: " + gpsLogId);
+                    if (Debug.D) Logger.i(LOGTAG, "Starting gps logging. Logid: " + gpsLogId);
 
                     // get preferences
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -122,7 +123,7 @@ public class GpsLogger implements GpsManagerListener {
                     float minDistance = Float.parseFloat(minDistanceStr);
                     String intervalStr = preferences.getString(GPSLOGGINGINTERVALKEY, String.valueOf(GPS_LOGGING_INTERVAL));
                     long waitForSecs = Long.parseLong(intervalStr);
-                    Logger.d(LOGTAG, "Waiting interval: " + waitForSecs);
+                    if (Debug.D) Logger.d(LOGTAG, "Waiting interval: " + waitForSecs);
 
                     currentPointsNum = 0;
                     currentDistance = 0;
@@ -137,9 +138,9 @@ public class GpsLogger implements GpsManagerListener {
                         }
 
                         float lastDistance = previousLogLoc.distanceTo(gpsLoc);
-                        Logger.d(LOGTAG, "gpsloc: " + gpsLoc.getLatitude() + "/" + gpsLoc.getLongitude());
-                        Logger.d(LOGTAG, "previousLoc: " + previousLogLoc.getLatitude() + "/" + previousLogLoc.getLongitude());
-                        Logger.d(LOGTAG, "distance: " + lastDistance + " - mindistance: " + minDistance);
+                        if (Debug.D) Logger.d(LOGTAG, "gpsloc: " + gpsLoc.getLatitude() + "/" + gpsLoc.getLongitude());
+                        if (Debug.D) Logger.d(LOGTAG, "previousLoc: " + previousLogLoc.getLatitude() + "/" + previousLogLoc.getLongitude());
+                        if (Debug.D) Logger.d(LOGTAG, "distance: " + lastDistance + " - mindistance: " + minDistance);
                         // ignore near points
                         if (lastDistance < minDistance) {
                             waitGpsInterval(waitForSecs);
@@ -184,7 +185,7 @@ public class GpsLogger implements GpsManagerListener {
                     }
 
                     if (currentPointsNum < 2) {
-                        Logger.i(LOGTAG, "Removing gpslog, since too few points were added. Logid: " + gpsLogId);
+                        if (Debug.D) Logger.i(LOGTAG, "Removing gpslog, since too few points were added. Logid: " + gpsLogId);
                         DaoGpsLog.deleteGpslog(context, gpsLogId);
                     } else {
                         // set the end timestamp
@@ -214,7 +215,7 @@ public class GpsLogger implements GpsManagerListener {
                     playAlert();
                     isLogging = false;
                 }
-                Logger.d(this, "Exit logging...");
+                if (Debug.D) Logger.d(this, "Exit logging...");
             }
 
             private void waitGpsInterval( long waitForSecs ) {

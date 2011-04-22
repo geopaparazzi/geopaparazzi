@@ -44,6 +44,7 @@ import eu.hydrologis.geopaparazzi.maps.MapItem;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.PointsContainer;
+import eu.hydrologis.geopaparazzi.util.debug.Debug;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -241,7 +242,7 @@ public class DaoMaps {
             sb.append("WHERE ").append(COLUMN_MAPID).append("=").append(mapid);
 
             String query = sb.toString();
-            Logger.i(TAG, query);
+            if (Debug.D) Logger.i(TAG, query);
             // sqliteDatabase.execSQL(query);
             SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
             sqlUpdate.execute();
@@ -256,7 +257,7 @@ public class DaoMaps {
                 sb.append("WHERE ").append(COLUMN_ID).append("=").append(mapid);
 
                 query = sb.toString();
-                Logger.i(TAG, query);
+                if (Debug.D) Logger.i(TAG, query);
                 sqlUpdate = sqliteDatabase.compileStatement(query);
                 sqlUpdate.execute();
                 sqlUpdate.close();
@@ -283,7 +284,7 @@ public class DaoMaps {
             sb.append(COLUMN_PROPERTIES_VISIBLE).append("=").append(visible ? 1 : 0).append(" ");
 
             String query = sb.toString();
-            Logger.i(TAG, query);
+            if (Debug.D) Logger.i(TAG, query);
             // sqliteDatabase.execSQL(query);
             SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
             sqlUpdate.execute();
@@ -419,7 +420,7 @@ public class DaoMaps {
         }
         c.close();
         // Logger.i(TAG, "Read points = " + index);
-        Logger.d("DAOMAPS", "Maps jumped: " + jump);
+        if (Debug.D) Logger.d("DAOMAPS", "Maps jumped: " + jump);
         return pointsContainer;
     }
 
@@ -665,7 +666,7 @@ public class DaoMaps {
         String CREATE_INDEX_MAPS_MAPID_X_Y = sB.toString();
 
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
-        Logger.i(TAG, "Create the maps_data table.");
+        if (Debug.D) Logger.i(TAG, "Create the maps_data table.");
         sqliteDatabase.execSQL(CREATE_TABLE_MAPS_DATA);
         sqliteDatabase.execSQL(CREATE_INDEX_MAPS_ID);
         sqliteDatabase.execSQL(CREATE_INDEX_MAPS_X_BY_Y);
@@ -685,7 +686,7 @@ public class DaoMaps {
         sB.append(");");
         String CREATE_TABLE_GPSLOGS = sB.toString();
 
-        Logger.i(TAG, "Create the maps table.");
+        if (Debug.D) Logger.i(TAG, "Create the maps table.");
         sqliteDatabase.execSQL(CREATE_TABLE_GPSLOGS);
 
         /*
@@ -710,7 +711,7 @@ public class DaoMaps {
         sB.append(");");
         String CREATE_TABLE_GPSLOGS_PROPERTIES = sB.toString();
 
-        Logger.i(TAG, "Create the maps properties table.");
+        if (Debug.D) Logger.i(TAG, "Create the maps properties table.");
         sqliteDatabase.execSQL(CREATE_TABLE_GPSLOGS_PROPERTIES);
 
     }

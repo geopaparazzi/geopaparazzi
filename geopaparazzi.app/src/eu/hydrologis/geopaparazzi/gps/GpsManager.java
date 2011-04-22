@@ -82,7 +82,7 @@ public class GpsManager implements LocationListener, Listener {
             gpsManager.checkLoggerExists();
             gpsManager.checkGps();
             gpsManager.startListening();
-            Logger.d(gpsManager, "STARTED LISTENING");
+            if (Debug.D) Logger.d(gpsManager, "STARTED LISTENING");
         }
         // woke up from death and has the manager already but isn't listening any more
         if (!gpsManager.isGpsListening()) {
@@ -90,7 +90,7 @@ public class GpsManager implements LocationListener, Listener {
             gpsManager.checkLoggerExists();
             gpsManager.checkGps();
             gpsManager.startListening();
-            Logger.d(gpsManager, "STARTED LISTENING AFTER REVIEW");
+            if (Debug.D) Logger.d(gpsManager, "STARTED LISTENING AFTER REVIEW");
         }
         return gpsManager;
     }
@@ -134,10 +134,10 @@ public class GpsManager implements LocationListener, Listener {
      */
     public void startListening() {
         if (Debug.doMock) {
-            Logger.d(this, "Using Mock locations");
+            if (Debug.D) Logger.d(this, "Using Mock locations");
             TestMock.startMocking(locationManager, gpsManager);
         } else {
-            Logger.d(this, "Using GPS");
+            if (Debug.D) Logger.d(this, "Using GPS");
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000l, 0f, gpsManager);
             locationManager.addGpsStatusListener(gpsManager);
         }
@@ -151,9 +151,9 @@ public class GpsManager implements LocationListener, Listener {
         boolean gpsIsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         // List<String> allProviders = locationManager.getAllProviders();
         // for( String string : allProviders ) {
-        // Logger.i(this, "Loctaion Providers: " + string);
+        // if (Debug.D) Logger.i(this, "Loctaion Providers: " + string);
         // }
-        Logger.i(this, "Gps is on: " + gpsIsEnabled);
+        if (Debug.D) Logger.i(this, "Gps is on: " + gpsIsEnabled);
         return gpsIsEnabled;
     }
 
@@ -295,14 +295,14 @@ public class GpsManager implements LocationListener, Listener {
             if (gpsLoc != null)
                 hasGPSFix = (SystemClock.elapsedRealtime() - mLastLocationMillis) < 3000;
             // if (hasGPSFix) { // A fix has been acquired.
-            // Logger.i(this, "Fix acquired");
+            // if (Debug.D) Logger.i(this, "Fix acquired");
             // } else { // The fix has been lost.
-            // Logger.i(this, "Fix lost");
+            // if (Debug.D) Logger.i(this, "Fix lost");
             // }
 
             break;
         case GpsStatus.GPS_EVENT_FIRST_FIX:
-            Logger.i(this, "First fix");
+            if (Debug.D) Logger.i(this, "First fix");
             hasGPSFix = true;
             break;
         }

@@ -46,6 +46,7 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
+import eu.hydrologis.geopaparazzi.util.debug.Debug;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -99,7 +100,7 @@ public class BookmarksOverlay extends Overlay {
 
     public void setDoDraw( boolean doDraw ) {
         this.doDraw = doDraw;
-        Logger.d(this, "Will draw: " + doDraw);
+        if (Debug.D) Logger.d(this, "Will draw: " + doDraw);
     }
 
     public void setGpsUpdate( boolean gpsUpdate ) {

@@ -49,6 +49,7 @@ import eu.hydrologis.geopaparazzi.maps.MapItem;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.PointsContainer;
+import eu.hydrologis.geopaparazzi.util.debug.Debug;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -96,7 +97,7 @@ public class MapsOverlay extends Overlay {
 
     public void setDoDraw( boolean doDraw ) {
         this.doDraw = doDraw;
-        Logger.d(this, "Will draw: " + doDraw);
+        if (Debug.D) Logger.d(this, "Will draw: " + doDraw);
     }
 
     public void setGpsUpdate( boolean gpsUpdate ) {

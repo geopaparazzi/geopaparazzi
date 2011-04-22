@@ -49,6 +49,7 @@ import android.widget.TextView;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.util.Constants;
+import eu.hydrologis.geopaparazzi.util.debug.Debug;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -90,7 +91,7 @@ public class GpsDataListActivity extends ListActivity {
     }
 
     private void refreshList() {
-        Logger.d(this, "refreshing gps maps list"); //$NON-NLS-1$
+        if (Debug.D) Logger.d(this, "refreshing gps maps list"); //$NON-NLS-1$
         gpslogItems = new MapItem[0];
         try {
             List<MapItem> logsList = DaoGpsLog.getGpslogs(this);

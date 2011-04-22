@@ -38,6 +38,7 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.view.MotionEvent;
 import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi.util.debug.Debug;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -87,7 +88,7 @@ public class MeasureToolOverlay extends Overlay {
 
     public void setDoDraw( boolean doDraw ) {
         this.doDraw = doDraw;
-        Logger.d(this, "Will draw: " + doDraw);
+        if (Debug.D) Logger.d(this, "Will draw: " + doDraw);
     }
 
     protected void draw( final Canvas canvas, final MapView mapsView, final boolean shadow ) {
@@ -121,7 +122,7 @@ public class MeasureToolOverlay extends Overlay {
         x = center.x - textWidth / 2;
         canvas.drawText(distanceText, x, upper + delta + textHeight, measureTextPaint);
 
-        Logger.d(this, "Drawing measure path text: " + upper);
+        if (Debug.D) Logger.d(this, "Drawing measure path text: " + upper);
     }
 
     public void setMeasureMode( boolean isOn ) {

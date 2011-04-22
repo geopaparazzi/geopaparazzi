@@ -23,25 +23,32 @@ package eu.hydrologis.geopaparazzi.util.debug;
  * @author Andrea Antonello (www.hydrologis.com)
  *
  */
-public interface Debug {
+public class Debug {
+    /**
+     * Flag to define if we are in debug mode.
+     * 
+     * <p>For release = <code>false</code>.
+     */
+    public final static boolean D = true;
+
     /**
      * Flag to define the use of mock locations instead of the gps.
      * 
      * <p>For release = <code>false</code>.
      */
-    boolean doMock = false;
+    public final static boolean doMock = false;
 
     /**
      * Flag to define normal drawing of renderers, as opposed to drawing some debug info.
      * 
      * <p>For release = <code>true</code>.
      */
-    boolean doDrawNormal = true;
+    public final static boolean doDrawNormal = true;
 
     /**
      * Flag to define if the tags file should be overwritten. 
      * 
      * <p>For release = <code>false</code>.
      */
-    boolean doOverwriteTags = false;
+    public final static boolean doOverwriteTags = false;
 }

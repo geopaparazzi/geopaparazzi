@@ -27,6 +27,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
+import eu.hydrologis.geopaparazzi.util.debug.Debug;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -102,7 +103,7 @@ public class DaoBookmarks {
             sb.append("WHERE ").append(COLUMN_ID).append("=").append(id);
 
             String query = sb.toString();
-            Logger.i("DAOBOOKMARKS", query);
+            if (Debug.D) Logger.i("DAOBOOKMARKS", query);
             SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
             sqlUpdate.execute();
             sqlUpdate.close();
@@ -218,7 +219,7 @@ public class DaoBookmarks {
         String CREATE_INDEX_BOOKMARKS_X_BY_Y = sB.toString();
 
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
-        Logger.i("DAOBOOKMARKS", "Create the bookmarks table.");
+        if (Debug.D) Logger.i("DAOBOOKMARKS", "Create the bookmarks table.");
 
         sqliteDatabase.beginTransaction();
         try {

@@ -42,6 +42,7 @@ import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
+import eu.hydrologis.geopaparazzi.util.debug.Debug;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -69,7 +70,7 @@ public class BookmarksListActivity extends ListActivity {
     }
 
     private void refreshList() {
-        Logger.d(this, "refreshing bookmarks list"); //$NON-NLS-1$
+        if (Debug.D) Logger.d(this, "refreshing bookmarks list"); //$NON-NLS-1$
         try {
             List<Bookmark> bookmarksList = DaoBookmarks.getAllBookmarks(this);
 

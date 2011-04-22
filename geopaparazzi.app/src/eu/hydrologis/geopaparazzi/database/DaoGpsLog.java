@@ -40,6 +40,7 @@ import eu.hydrologis.geopaparazzi.maps.MapItem;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.LineArray;
+import eu.hydrologis.geopaparazzi.util.debug.Debug;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -240,7 +241,7 @@ public class DaoGpsLog {
             sb.append("WHERE ").append(COLUMN_LOGID).append("=").append(logid);
 
             String query = sb.toString();
-            Logger.i("DAOGPSLOG", query);
+            if (Debug.D) Logger.i("DAOGPSLOG", query);
             // sqliteDatabase.execSQL(query);
             SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
             sqlUpdate.execute();
@@ -255,7 +256,7 @@ public class DaoGpsLog {
                 sb.append("WHERE ").append(COLUMN_ID).append("=").append(logid);
 
                 query = sb.toString();
-                Logger.i("DAOGPSLOG", query);
+                if (Debug.D) Logger.i("DAOGPSLOG", query);
                 sqlUpdate = sqliteDatabase.compileStatement(query);
                 sqlUpdate.execute();
                 sqlUpdate.close();
@@ -282,7 +283,7 @@ public class DaoGpsLog {
             sb.append(COLUMN_PROPERTIES_VISIBLE).append("=").append(visible ? 1 : 0).append(" ");
 
             String query = sb.toString();
-            Logger.i("DAOGPSLOG", query);
+            if (Debug.D) Logger.i("DAOGPSLOG", query);
             // sqliteDatabase.execSQL(query);
             SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
             sqlUpdate.execute();
@@ -334,7 +335,7 @@ public class DaoGpsLog {
             sb.append("WHERE ").append(COLUMN_LOGID).append("=").append(logidToRemove);
 
             query = sb.toString();
-            Logger.i("DAOGPSLOG", query);
+            if (Debug.D) Logger.i("DAOGPSLOG", query);
             // sqliteDatabase.execSQL(query);
             sqlUpdate = sqliteDatabase.compileStatement(query);
             sqlUpdate.execute();
@@ -458,7 +459,7 @@ public class DaoGpsLog {
                 line.addPoint(lon, lat);
                 c.moveToNext();
             }
-            Logger.d("DAOGPSLOG", "Logs jumped: " + jump + " with thres: " + decimationFactor);
+            if (Debug.D) Logger.d("DAOGPSLOG", "Logs jumped: " + jump + " with thres: " + decimationFactor);
             // Set<Entry<Long, LineArray>> entrySet = linesMap.entrySet();
             // for( Entry<Long, LineArray> entry : entrySet ) {
             // Logger.d("DAOGPSLOG", "Found for log: " + entry.getKey() + " points: " +
@@ -542,7 +543,7 @@ public class DaoGpsLog {
                 }
                 c.moveToNext();
             }
-            Logger.d("DAOGPSLOG", "Log points jumped: " + jump + " with thres: " + decimationFactor);
+            if (Debug.D) Logger.d("DAOGPSLOG", "Log points jumped: " + jump + " with thres: " + decimationFactor);
         } finally {
             if (c != null)
                 c.close();
@@ -756,7 +757,7 @@ public class DaoGpsLog {
         String CREATE_INDEX_GPSLOG_LOGID_X_Y = sB.toString();
 
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
-        Logger.i("DAOGPSLOG", "Create the gpslog_data table.");
+        if (Debug.D) Logger.i("DAOGPSLOG", "Create the gpslog_data table.");
         sqliteDatabase.execSQL(CREATE_TABLE_GPSLOG_DATA);
         sqliteDatabase.execSQL(CREATE_INDEX_GPSLOG_ID);
         sqliteDatabase.execSQL(CREATE_INDEX_GPSLOG_TS);
@@ -777,7 +778,7 @@ public class DaoGpsLog {
         sB.append(");");
         String CREATE_TABLE_GPSLOGS = sB.toString();
 
-        Logger.i("DAOGPSLOG", "Create the gpslogs table.");
+        if (Debug.D) Logger.i("DAOGPSLOG", "Create the gpslogs table.");
         sqliteDatabase.execSQL(CREATE_TABLE_GPSLOGS);
 
         /*
@@ -802,7 +803,7 @@ public class DaoGpsLog {
         sB.append(");");
         String CREATE_TABLE_GPSLOGS_PROPERTIES = sB.toString();
 
-        Logger.i("DAOGPSLOG", "Create the gpslogs properties table.");
+        if (Debug.D) Logger.i("DAOGPSLOG", "Create the gpslogs properties table.");
         sqliteDatabase.execSQL(CREATE_TABLE_GPSLOGS_PROPERTIES);
 
     }
@@ -821,7 +822,7 @@ public class DaoGpsLog {
             sb.append("WHERE ").append(COLUMN_ID).append("=").append(logid);
 
             String query = sb.toString();
-            Logger.i("DAOGPSLOG", query);
+            if (Debug.D) Logger.i("DAOGPSLOG", query);
             SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
             sqlUpdate.execute();
             sqlUpdate.close();

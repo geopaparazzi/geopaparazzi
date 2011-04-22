@@ -42,6 +42,7 @@ import eu.hydrologis.geopaparazzi.gps.GpsManager;
 import eu.hydrologis.geopaparazzi.gps.GpsManagerListener;
 import eu.hydrologis.geopaparazzi.sensors.SensorsManager;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
+import eu.hydrologis.geopaparazzi.util.debug.Debug;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -193,10 +194,10 @@ public class ActionBar implements GpsManagerListener {
                 // if a list is available, check if the status gps is installed
                 for( PackageInfo packageInfo : installedPackages ) {
                     String packageName = packageInfo.packageName;
-                    Logger.d(this, packageName);
+                    if (Debug.D) Logger.d(this, packageName);
                     if (packageName.startsWith(gpsStatusPackage)) {
                         hasGpsStatus = true;
-                        Logger.d(this, "Found package: " + packageName);
+                        if (Debug.D) Logger.d(this, "Found package: " + packageName);
                         break;
                     }
                 }
@@ -296,21 +297,21 @@ public class ActionBar implements GpsManagerListener {
         Resources resources = gpsOnOffView.getResources();
 
         if (gpsManager.isGpsEnabled()) {
-            Logger.d(this, "GPS seems to be on");
+            if (Debug.D) Logger.d(this, "GPS seems to be on");
             if (gpsManager.isGpsLogging()) {
-                Logger.d(this, "GPS seems to be also logging");
+                if (Debug.D) Logger.d(this, "GPS seems to be also logging");
                 gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_logging));
             } else {
                 if (gpsManager.hasGpsFix()) {
-                    Logger.d(this, "GPS has fix");
+                    if (Debug.D) Logger.d(this, "GPS has fix");
                     gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_hasfix_notlogging));
                 } else {
-                    Logger.d(this, "GPS is not logging");
+                    if (Debug.D) Logger.d(this, "GPS is not logging");
                     gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_notlogging));
                 }
             }
         } else {
-            Logger.d(this, "GPS seems to be off");
+            if (Debug.D) Logger.d(this, "GPS seems to be off");
             gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_off));
         }
         // }
@@ -323,7 +324,7 @@ public class ActionBar implements GpsManagerListener {
 
     public void onStatusChanged( boolean newHasFix ) {
         if (hasFix != newHasFix) {
-            Logger.d(this, "Check logging on gps fix update.");
+            if (Debug.D) Logger.d(this, "Check logging on gps fix update.");
             checkLogging();
             hasFix = newHasFix;
         }

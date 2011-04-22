@@ -56,6 +56,7 @@ import eu.hydrologis.geopaparazzi.database.DatabaseManager;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.gps.GpsManager;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
+import eu.hydrologis.geopaparazzi.util.debug.Debug;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -275,14 +276,14 @@ public class ApplicationManager implements Serializable {
         pictureQuickaction.setOnClickListener(new OnClickListener(){
             public void onClick( View v ) {
                 try {
-                    Logger.d(this, "Asking location");
+                    if (Debug.D) Logger.d(this, "Asking location");
                     GpsLocation loc = GpsManager.getInstance(context).getLocation();
                     if (loc != null) {
-                        Logger.d(this, "Location != null");
+                        if (Debug.D) Logger.d(this, "Location != null");
                         Intent intent = new Intent(Constants.TAKE_PICTURE);
                         context.startActivity(intent);
                     } else {
-                        Logger.d(this, "Location == null");
+                        if (Debug.D) Logger.d(this, "Location == null");
                         openDialog(R.string.gpslogging_only, context);
                     }
                     qa.dismiss();

@@ -70,6 +70,7 @@ import eu.hydrologis.geopaparazzi.util.DirectoryBrowserActivity;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.Note;
 import eu.hydrologis.geopaparazzi.util.Picture;
+import eu.hydrologis.geopaparazzi.util.debug.Debug;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -410,7 +411,7 @@ public class GeoPaparazziActivity extends Activity {
     }
 
     public void finish() {
-        Logger.d(this, "Finish called!"); //$NON-NLS-1$
+        if (Debug.D) Logger.d(this, "Finish called!"); //$NON-NLS-1$
         // save last location just in case
         GpsLocation loc = gpsManager.getLocation();
         if (loc != null) {
@@ -619,7 +620,7 @@ public class GeoPaparazziActivity extends Activity {
                     try {
                         if (msg.length() > 160) {
                             msg = msg.substring(0, 160);
-                            Logger.i("SmsIntent", "Trimming msg to: " + msg);
+                            if (Debug.D) Logger.i("SmsIntent", "Trimming msg to: " + msg);
                         }
                         mng.sendTextMessage(number, null, msg, dummyEvent, dummyEvent);
                         Toast.makeText(this, R.string.message_sent, Toast.LENGTH_LONG).show();

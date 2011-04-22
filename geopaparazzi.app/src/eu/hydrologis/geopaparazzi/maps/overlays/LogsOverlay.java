@@ -43,6 +43,7 @@ import eu.hydrologis.geopaparazzi.gps.GpsManager;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
 import eu.hydrologis.geopaparazzi.maps.MapItem;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
+import eu.hydrologis.geopaparazzi.util.debug.Debug;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -73,7 +74,7 @@ public class LogsOverlay extends Overlay {
 
     public void setDoDraw( boolean doDraw ) {
         this.doDraw = doDraw;
-        Logger.d(this, "Will draw: " + doDraw); //$NON-NLS-1$
+        if (Debug.D) Logger.d(this, "Will draw: " + doDraw); //$NON-NLS-1$
     }
 
     public void setGpsUpdate( boolean gpsUpdate ) {

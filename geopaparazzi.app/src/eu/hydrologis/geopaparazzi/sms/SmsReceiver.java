@@ -30,6 +30,7 @@ import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.util.Constants;
+import eu.hydrologis.geopaparazzi.util.debug.Debug;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -60,7 +61,7 @@ public class SmsReceiver extends BroadcastReceiver {
                 for( Object pdu : pdus ) {
                     smsMessage = SmsMessage.createFromPdu((byte[]) pdu);
                     String body = smsMessage.getDisplayMessageBody();
-                    Logger.i(this, "Got message: " + body);
+                    if (Debug.D) Logger.i(this, "Got message: " + body);
                     if (body.toLowerCase().matches(".*geopap.*")) {
                         break;
                     }
@@ -122,7 +123,7 @@ public class SmsReceiver extends BroadcastReceiver {
                 }
 
                 String msg = sB.toString();
-                Logger.i(this, msg);
+                if (Debug.D) Logger.i(this, msg);
                 sendGPSData(context, smsMessage, msg);
             }
         }
@@ -135,14 +136,14 @@ public class SmsReceiver extends BroadcastReceiver {
         String addr = inMessage.getOriginatingAddress();
         // Make sure there's a valid return address.
         if (addr == null) {
-            Logger.i(this, "Unable to get Address from Sent Message");
+            if (Debug.D) Logger.i(this, "Unable to get Address from Sent Message");
         } else {
-            Logger.i(this, "Sending to: " + addr);
+            if (Debug.D) Logger.i(this, "Sending to: " + addr);
         }
         try {
             if (msg.length() > 160) {
                 msg = msg.substring(0, 160);
-                Logger.i(this, "Trimming msg to: " + msg);
+                if (Debug.D) Logger.i(this, "Trimming msg to: " + msg);
             }
             mng.sendTextMessage(addr, null, msg, dummyEvent, dummyEvent);
         } catch (Exception e) {

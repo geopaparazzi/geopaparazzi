@@ -29,6 +29,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import eu.hydrologis.geopaparazzi.util.debug.Debug;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -53,7 +54,7 @@ public class CrossOverlay extends Overlay {
 
     public void setDoDraw( boolean doDraw ) {
         this.doDraw = doDraw;
-        Logger.d(this, "Will draw: " + doDraw); //$NON-NLS-1$
+        if (Debug.D) Logger.d(this, "Will draw: " + doDraw); //$NON-NLS-1$
     }
 
     protected void draw( final Canvas canvas, final MapView mapsView, final boolean shadow ) {

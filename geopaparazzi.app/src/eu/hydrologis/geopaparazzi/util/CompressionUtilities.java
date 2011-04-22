@@ -29,6 +29,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+import eu.hydrologis.geopaparazzi.util.debug.Debug;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -152,7 +153,7 @@ public class CompressionUtilities {
             String name = files[i].getName();
             File file = files[i];
             if (!file.exists()) {
-                Logger.d("COMPRESSIONUTILITIES", "Skipping: " + name);
+                if (Debug.D) Logger.d("COMPRESSIONUTILITIES", "Skipping: " + name);
                 continue;
             }
             BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
