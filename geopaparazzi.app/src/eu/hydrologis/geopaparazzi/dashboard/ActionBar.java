@@ -18,6 +18,7 @@
 package eu.hydrologis.geopaparazzi.dashboard;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
@@ -170,18 +171,43 @@ public class ActionBar implements GpsManagerListener {
             String gpsStatusAction = "com.eclipsim.gpsstatus.VIEW";
             String gpsStatusPackage = "com.eclipsim.gpsstatus";
             final Context context = actionBarView.getContext();
-            List<PackageInfo> installedPackages = context.getPackageManager().getInstalledPackages(PackageManager.GET_ACTIVITIES);
             boolean hasGpsStatus = false;
-            Logger.d(this, "Installed packages:");
-            for( PackageInfo packageInfo : installedPackages ) {
-                String packageName = packageInfo.packageName;
-                Logger.d(this, packageName);
-                if (packageName.startsWith(gpsStatusPackage)) {
-                    hasGpsStatus = true;
-                    Logger.d(this, "Found package: " + packageName);
-                    break;
+            List<PackageInfo> installedPackages = new ArrayList<PackageInfo>();
+
+            { // try to get the installed packages list. Seems to have troubles over different
+              // versions, so trying them all
+                try {
+                    installedPackages = context.getPackageManager().getInstalledPackages(0);
+                } catch (Exception e) {
+                    // ignore
                 }
+                if (installedPackages.size() == 0)
+                    try {
+                        installedPackages = context.getPackageManager().getInstalledPackages(PackageManager.GET_ACTIVITIES);
+                    } catch (Exception e) {
+                        // ignore
+                    }
             }
+
+            if (installedPackages.size() > 0) {
+                // if a list is available, check if the status gps is installed
+                for( PackageInfo packageInfo : installedPackages ) {
+                    String packageName = packageInfo.packageName;
+                    Logger.d(this, packageName);
+                    if (packageName.startsWith(gpsStatusPackage)) {
+                        hasGpsStatus = true;
+                        Logger.d(this, "Found package: " + packageName);
+                        break;
+                    }
+                }
+            } else {
+                /*
+                 * if no package list is available, for now try to fire it up anyways.
+                 * This has been a problem for a user on droidx with android 2.2.1.
+                 */
+                hasGpsStatus = true;
+            }
+
             if (hasGpsStatus) {
                 Intent intent = new Intent(gpsStatusAction);
                 context.startActivity(intent);
