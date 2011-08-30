@@ -32,16 +32,17 @@ import java.util.Date;
 import java.util.List;
 
 import org.osmdroid.ResourceProxy;
+import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.events.MapListener;
 import org.osmdroid.events.ScrollEvent;
 import org.osmdroid.events.ZoomEvent;
 import org.osmdroid.tileprovider.tilesource.ITileSource;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.tileprovider.tilesource.bing.BingMapTileSource;
 import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapController;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.MinimapOverlay;
 import org.osmdroid.views.overlay.MyLocationOverlay;
 import org.osmdroid.views.overlay.ScaleBarOverlay;
 
@@ -85,6 +86,7 @@ import eu.hydrologis.geopaparazzi.maps.overlays.GpsPositionOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.LogsOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.MapsOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.MeasureToolOverlay;
+import eu.hydrologis.geopaparazzi.maps.overlays.MinimapOverlayWithCross;
 import eu.hydrologis.geopaparazzi.maps.overlays.NotesOverlay;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
@@ -115,7 +117,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
     private MapController mapController;
     private ResourceProxy mResourceProxy;
     private ScaleBarOverlay mScaleBarOverlay;
-    private MinimapOverlay mMiniMapOverlay;
+    private MinimapOverlayWithCross mMiniMapOverlay;
     private LogsOverlay mLogsOverlay;
     private NotesOverlay mNotesOverlay;
     private BookmarksOverlay mBookmarksOverlay;
@@ -208,12 +210,14 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         }
 
         /* MiniMap */
+        int width;
+        int padding;
+        Display display = getWindowManager().getDefaultDisplay();
         {
-            mMiniMapOverlay = new MinimapOverlay(this, mapsView.getTileRequestCompleteHandler());
+            mMiniMapOverlay = new MinimapOverlayWithCross(this, mapsView.getTileRequestCompleteHandler());
             mapsView.getOverlays().add(mMiniMapOverlay);
-            Display display = getWindowManager().getDefaultDisplay();
-            int width = display.getWidth();
-            int padding = (int) Math.floor(width * 0.05);
+            width = display.getWidth();
+            padding = (int) Math.floor(width * 0.05);
             width = width - padding;
             int half = (int) Math.floor(width / 2.0);
             mMiniMapOverlay.setHeight(half);
@@ -338,7 +342,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         ImageButton addnotebytagButton = (ImageButton) findViewById(R.id.addnotebytagbutton);
         addnotebytagButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                GeoPoint mapCenter = mapsView.getMapCenter();
+                IGeoPoint mapCenter = mapsView.getMapCenter();
                 Intent osmTagsIntent = new Intent(Constants.TAGS);
                 osmTagsIntent.putExtra(Constants.VIEW_CENTER_LAT, mapCenter.getLatitudeE6() / E6);
                 osmTagsIntent.putExtra(Constants.VIEW_CENTER_LON, mapCenter.getLongitudeE6() / E6);
@@ -399,7 +403,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
     public void onWindowFocusChanged( boolean hasFocus ) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (!hasFocus) {
-            GeoPoint mapCenter = mapsView.getMapCenter();
+            IGeoPoint mapCenter = mapsView.getMapCenter();
             Editor editor = preferences.edit();
             editor.putFloat(PREFS_KEY_LON, (float) (mapCenter.getLongitudeE6() / E6));
             editor.putFloat(PREFS_KEY_LAT, (float) (mapCenter.getLatitudeE6() / E6));
@@ -461,7 +465,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
     }
 
     public double[] getCenterLonLat() {
-        GeoPoint mapCenter = mapsView.getMapCenter();
+        IGeoPoint mapCenter = mapsView.getMapCenter();
         double[] lonLat = {mapCenter.getLongitudeE6() / 6d, mapCenter.getLatitudeE6() / 6d};
         return lonLat;
     }
@@ -476,6 +480,8 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         final SubMenu subMenu = menu.addSubMenu(Menu.NONE, MENU_TILE_SOURCE_ID, 6, R.string.mapsactivity_menu_tilesource)
                 .setIcon(R.drawable.ic_menu_tilesource);
         {
+            // BingMapTileSource source = new BingMapTileSource("en");
+            // TileSourceFactory.addTileSource(source);
             for( final ITileSource tileSource : TileSourceFactory.getTileSources() ) {
                 subMenu.add(0, 1000 + tileSource.ordinal(), Menu.NONE, tileSource.localizedName(mResourceProxy));
             }
@@ -656,7 +662,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
     }
 
     private void addBookmark() {
-        GeoPoint mapCenter = mapsView.getMapCenter();
+        IGeoPoint mapCenter = mapsView.getMapCenter();
         final float centerLat = mapCenter.getLatitudeE6() / E6;
         final float centerLon = mapCenter.getLongitudeE6() / E6;
         final EditText input = new EditText(this);
@@ -767,6 +773,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
 
     private int maxZoomLevel;
     private int minZoomLevel;
+
     public void onLocationChanged( GpsLocation loc ) {
         if (loc == null) {
             return;

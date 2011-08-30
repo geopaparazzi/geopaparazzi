@@ -22,7 +22,7 @@ import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_LAT;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_LON;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_ZOOM;
 
-import org.osmdroid.util.GeoPoint;
+import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.views.MapView;
 
 import android.content.SharedPreferences;
@@ -81,7 +81,7 @@ public enum ViewportManager {
         }
 
         MapView mapsView = mapsActivity.getMapsView();
-        GeoPoint mapCenter = mapsView.getMapCenter();
+        IGeoPoint mapCenter = mapsView.getMapCenter();
         int zoomLevel = mapsView.getZoomLevel();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mapsActivity);
         Editor editor = preferences.edit();

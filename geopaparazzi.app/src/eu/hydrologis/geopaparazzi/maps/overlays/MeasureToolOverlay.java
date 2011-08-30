@@ -21,6 +21,7 @@ import static java.lang.Math.abs;
 import static java.lang.Math.round;
 
 import org.osmdroid.ResourceProxy;
+import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -59,18 +60,18 @@ public class MeasureToolOverlay extends Overlay {
     private int lastX;
     private int lastY;
 
-    private boolean imperial = false;
-    private boolean nautical = false;
+    // private boolean imperial = false;
+    // private boolean nautical = false;
 
     private float measuredDistance = Float.NaN;
     private String distanceString;
-    private final ResourceProxy resourceProxy;
+    // private final ResourceProxy resourceProxy;
 
     private final Point tmpP = new Point();
 
     public MeasureToolOverlay( final Context ctx, final ResourceProxy pResourceProxy ) {
         super(pResourceProxy);
-        this.resourceProxy = pResourceProxy;
+        // this.resourceProxy = pResourceProxy;
 
         measurePaint.setAntiAlias(true);
         measurePaint.setColor(Color.DKGRAY);
@@ -88,7 +89,8 @@ public class MeasureToolOverlay extends Overlay {
 
     public void setDoDraw( boolean doDraw ) {
         this.doDraw = doDraw;
-        if (Debug.D) Logger.d(this, "Will draw: " + doDraw);
+        if (Debug.D)
+            Logger.d(this, "Will draw: " + doDraw);
     }
 
     protected void draw( final Canvas canvas, final MapView mapsView, final boolean shadow ) {
@@ -98,7 +100,7 @@ public class MeasureToolOverlay extends Overlay {
         canvas.drawPath(measurePath, measurePaint);
 
         Projection pj = mapsView.getProjection();
-        GeoPoint mapCenter = mapsView.getMapCenter();
+        IGeoPoint mapCenter = mapsView.getMapCenter();
         Point center = pj.toMapPixels(mapCenter, null);
         BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
         int latNorthE6 = boundingBox.getLatNorthE6();
@@ -122,7 +124,8 @@ public class MeasureToolOverlay extends Overlay {
         x = center.x - textWidth / 2;
         canvas.drawText(distanceText, x, upper + delta + textHeight, measureTextPaint);
 
-        if (Debug.D) Logger.d(this, "Drawing measure path text: " + upper);
+        if (Debug.D)
+            Logger.d(this, "Drawing measure path text: " + upper);
     }
 
     public void setMeasureMode( boolean isOn ) {
@@ -157,7 +160,7 @@ public class MeasureToolOverlay extends Overlay {
             // Logger.d(this, "First point....");
             measuredDistance = 0;
             measurePath.reset();
-            GeoPoint firstGeoPoint = pj.fromPixels(currentX, currentY);
+            IGeoPoint firstGeoPoint = pj.fromPixels(currentX, currentY);
             pj.toMapPixels(firstGeoPoint, tmpP);
             measurePath.moveTo(tmpP.x, tmpP.y);
             break;
@@ -169,12 +172,14 @@ public class MeasureToolOverlay extends Overlay {
                 lastY = currentY;
                 return true;
             }
-            GeoPoint currentGeoPoint = pj.fromPixels(currentX, currentY);
+            IGeoPoint currentGeoPoint = pj.fromPixels(currentX, currentY);
             pj.toMapPixels(currentGeoPoint, tmpP);
             measurePath.lineTo(tmpP.x, tmpP.y);
             // the measurement
-            GeoPoint previousGeoPoint = pj.fromPixels(lastX, lastY);
-            float distanceTo = currentGeoPoint.distanceTo(previousGeoPoint);
+            IGeoPoint previousGeoPoint = pj.fromPixels(lastX, lastY);
+
+            GeoPoint tmpPoint = new GeoPoint(currentGeoPoint.getLatitudeE6(), currentGeoPoint.getLongitudeE6());
+            float distanceTo = tmpPoint.distanceTo(previousGeoPoint);
             lastX = currentX;
             lastY = currentY;
             measuredDistance = measuredDistance + distanceTo;

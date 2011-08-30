@@ -18,7 +18,7 @@
 package eu.hydrologis.geopaparazzi.maps.overlays;
 
 import org.osmdroid.ResourceProxy;
-import org.osmdroid.util.GeoPoint;
+import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.MapView.Projection;
 import org.osmdroid.views.overlay.Overlay;
@@ -62,8 +62,10 @@ public class CrossOverlay extends Overlay {
             return;
 
         Projection pj = mapsView.getProjection();
-        GeoPoint mapCenter = mapsView.getMapCenter();
+        IGeoPoint mapCenter = mapsView.getMapCenter();
         Point center = pj.toMapPixels(mapCenter, null);
+        
+        Logger.i(this, "CROSS IN: " + center.x + "/" + center.y);
 
         path.reset();
         path.moveTo(center.x, center.y - 20);
