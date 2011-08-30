@@ -488,7 +488,6 @@ public final class R {
         public static final int prompt_gpsenable=0x7f090036;
         public static final int remove_last_note_prompt=0x7f090087;
         /**  added after 2.1.1 
- added after 1.2.1 
          */
         public static final int rendering_preferences=0x7f09008c;
         /**  added after 2.1.2 
