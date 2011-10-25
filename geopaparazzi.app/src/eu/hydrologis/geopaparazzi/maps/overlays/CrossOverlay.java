@@ -54,7 +54,8 @@ public class CrossOverlay extends Overlay {
 
     public void setDoDraw( boolean doDraw ) {
         this.doDraw = doDraw;
-        if (Debug.D) Logger.d(this, "Will draw: " + doDraw); //$NON-NLS-1$
+        if (Debug.D)
+            Logger.d(this, "Will draw: " + doDraw); //$NON-NLS-1$
     }
 
     protected void draw( final Canvas canvas, final MapView mapsView, final boolean shadow ) {
@@ -64,8 +65,8 @@ public class CrossOverlay extends Overlay {
         Projection pj = mapsView.getProjection();
         IGeoPoint mapCenter = mapsView.getMapCenter();
         Point center = pj.toMapPixels(mapCenter, null);
-        
-        Logger.i(this, "CROSS IN: " + center.x + "/" + center.y);
+
+        // Logger.i(this, "CROSS IN: " + center.x + "/" + center.y);
 
         path.reset();
         path.moveTo(center.x, center.y - 20);
