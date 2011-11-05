@@ -56,7 +56,7 @@ public class DirectoryBrowserActivity extends ListActivity {
             intentId = extras.getString(Constants.INTENT_ID);
             extention = extras.getString(Constants.EXTENTION);
             doHidden = extras.getBoolean(Constants.SHOWHIDDEN, false);
-            if (extention.equals(FOLDER)) {
+            if (extention != null && extention.equals(FOLDER)) {
                 doFolder = true;
             }
 
