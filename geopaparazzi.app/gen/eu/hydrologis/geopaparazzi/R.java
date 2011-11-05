@@ -524,22 +524,23 @@ public final class R {
         public static final int zoomout=0x7f09002a;
     }
     public static final class style {
-        public static final int Animations=0x7f0a0002;
+        public static final int Animations=0x7f0a0003;
         /**  PopDownMenu 
          */
-        public static final int Animations_PopDownMenu=0x7f0a0003;
-        public static final int Animations_PopDownMenu_Center=0x7f0a0006;
-        public static final int Animations_PopDownMenu_Left=0x7f0a0004;
-        public static final int Animations_PopDownMenu_Reflect=0x7f0a0007;
-        public static final int Animations_PopDownMenu_Right=0x7f0a0005;
+        public static final int Animations_PopDownMenu=0x7f0a0004;
+        public static final int Animations_PopDownMenu_Center=0x7f0a0007;
+        public static final int Animations_PopDownMenu_Left=0x7f0a0005;
+        public static final int Animations_PopDownMenu_Reflect=0x7f0a0008;
+        public static final int Animations_PopDownMenu_Right=0x7f0a0006;
         /**  PopUpMenu 
          */
-        public static final int Animations_PopUpMenu=0x7f0a0008;
-        public static final int Animations_PopUpMenu_Center=0x7f0a000b;
-        public static final int Animations_PopUpMenu_Left=0x7f0a0009;
-        public static final int Animations_PopUpMenu_Reflect=0x7f0a000c;
-        public static final int Animations_PopUpMenu_Right=0x7f0a000a;
+        public static final int Animations_PopUpMenu=0x7f0a0009;
+        public static final int Animations_PopUpMenu_Center=0x7f0a000c;
+        public static final int Animations_PopUpMenu_Left=0x7f0a000a;
+        public static final int Animations_PopUpMenu_Reflect=0x7f0a000d;
+        public static final int Animations_PopUpMenu_Right=0x7f0a000b;
         public static final int buttonFont=0x7f0a0000;
+        public static final int dashBoardText=0x7f0a0002;
         public static final int redButtonFont=0x7f0a0001;
     }
     public static final class xml {
