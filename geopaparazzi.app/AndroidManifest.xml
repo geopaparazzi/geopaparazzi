@@ -139,7 +139,7 @@
 	-->
 
 	<!-- compatibility -->
-	<uses-sdk android:targetSdkVersion="8" android:minSdkVersion="4"></uses-sdk>
+	<uses-sdk android:targetSdkVersion="14" android:minSdkVersion="4"></uses-sdk>
 	<supports-screens android:smallScreens="true"
 		android:normalScreens="true" android:largeScreens="true"
 		android:anyDensity="true" android:resizeable="true"></supports-screens>
