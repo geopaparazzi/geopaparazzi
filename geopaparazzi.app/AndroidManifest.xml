@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="eu.hydrologis.geopaparazzi" android:versionName="2.4.1" android:versionCode="22">
+	package="eu.hydrologis.geopaparazzi" android:versionName="2.4.2" android:versionCode="23">
 	<application android:icon="@drawable/icon" android:label="@string/app_name"
 		android:theme="@android:style/Theme.NoTitleBar">
 		<activity android:label="@string/app_name"
@@ -138,7 +138,7 @@
 
 
 	<!-- compatibility -->
-	<uses-sdk android:targetSdkVersion="14" android:minSdkVersion="5"></uses-sdk>
+	<uses-sdk android:targetSdkVersion="8" android:minSdkVersion="5"></uses-sdk>
 	<supports-screens android:smallScreens="true"
 		android:normalScreens="true" android:largeScreens="true"
 		android:anyDensity="true" android:resizeable="true"></supports-screens>

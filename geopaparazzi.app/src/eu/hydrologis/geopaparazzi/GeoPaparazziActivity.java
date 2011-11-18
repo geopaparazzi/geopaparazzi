@@ -342,6 +342,8 @@ public class GeoPaparazziActivity extends Activity {
         }
     }
 
+    // public boolean onPrepareOptionsMenu (Menu menu) {
+    @Override
     public boolean onCreateOptionsMenu( Menu menu ) {
         super.onCreateOptionsMenu(menu);
         menu.add(Menu.NONE, MENU_SETTINGS, 0, R.string.mainmenu_preferences).setIcon(android.R.drawable.ic_menu_preferences);
@@ -350,6 +352,7 @@ public class GeoPaparazziActivity extends Activity {
         menu.add(Menu.NONE, MENU_EXIT, 3, R.string.exit).setIcon(android.R.drawable.ic_lock_power_off);
         menu.add(Menu.NONE, MENU_ABOUT, 4, R.string.about).setIcon(android.R.drawable.ic_menu_info_details);
 
+        Logger.i(this, "CALLED: onCreateOptionsMenu");
         return true;
     }
 
@@ -401,17 +404,20 @@ public class GeoPaparazziActivity extends Activity {
 
     public boolean onKeyDown( int keyCode, KeyEvent event ) {
         // force to exit through the exit button
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
+        switch( keyCode ) {
+        case KeyEvent.KEYCODE_BACK:
             if (sliderIsOpen) {
                 slidingDrawer.animateClose();
             }
             return true;
         }
         return super.onKeyDown(keyCode, event);
+
     }
 
     public void finish() {
-        if (Debug.D) Logger.d(this, "Finish called!"); //$NON-NLS-1$
+        if (Debug.D)
+            Logger.d(this, "Finish called!"); //$NON-NLS-1$
         // save last location just in case
         GpsLocation loc = gpsManager.getLocation();
         if (loc != null) {
@@ -620,7 +626,8 @@ public class GeoPaparazziActivity extends Activity {
                     try {
                         if (msg.length() > 160) {
                             msg = msg.substring(0, 160);
-                            if (Debug.D) Logger.i("SmsIntent", "Trimming msg to: " + msg);
+                            if (Debug.D)
+                                Logger.i("SmsIntent", "Trimming msg to: " + msg);
                         }
                         mng.sendTextMessage(number, null, msg, dummyEvent, dummyEvent);
                         Toast.makeText(this, R.string.message_sent, Toast.LENGTH_LONG).show();
