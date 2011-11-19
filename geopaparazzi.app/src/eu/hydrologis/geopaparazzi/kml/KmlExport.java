@@ -21,6 +21,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +56,9 @@ public class KmlExport {
         if (name == null) {
             name = "Geopaparazzi Export";
         }
+
+        File mediaFolder = ApplicationManager.getInstance(context).getMediaDir();
+        List<File> existingImages = new ArrayList<File>();
 
         /*
          * write the internal kml file
@@ -108,8 +112,15 @@ public class KmlExport {
                 if (line.getLatList().size() > 1)
                     bW.write(line.toKmlString());
             }
+
             for( Image image : imageList ) {
-                bW.write(image.toKmlString());
+                File imageFile = new File(mediaFolder.getParentFile(), image.getPath());
+                if (imageFile.exists()) {
+                    bW.write(image.toKmlString());
+                    existingImages.add(imageFile);
+                } else {
+                    Logger.w(this, "Can't find image: " + imageFile.getAbsolutePath());
+                }
             }
 
             bW.write("</Document>\n");
@@ -122,12 +133,11 @@ public class KmlExport {
         /*
          * create the kmz file with the base kml and all the pictures
          */
-        File mediaFolder = ApplicationManager.getInstance(context).getMediaDir();
-        File[] files = new File[1 + imageList.size()];
+
+        File[] files = new File[1 + existingImages.size()];
         files[0] = kmlFile;
         for( int i = 0; i < files.length - 1; i++ ) {
-            String relativePath = imageList.get(i).getPath();
-            files[i + 1] = new File(mediaFolder.getParentFile(), relativePath);
+            files[i + 1] = existingImages.get(i);
         }
         CompressionUtilities.createZipFromFiles(outputFile, files);
 

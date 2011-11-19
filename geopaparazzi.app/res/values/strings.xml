@@ -246,4 +246,7 @@
     <string name="geopaparazziactivity_exporting_kmz">Exporting to kmz...</string>
 	<!-- added after 2.3.1 -->
     <string name="mapsactivity_menu_toggle_compass">toggle compass</string>
+    
+	<!-- added after 2.4.3 -->
+    <string name="imagesvisibilityToggle">Toggle images visibility</string>
 </resources>

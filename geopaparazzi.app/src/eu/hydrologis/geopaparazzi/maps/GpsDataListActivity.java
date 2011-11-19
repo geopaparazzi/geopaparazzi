@@ -91,7 +91,8 @@ public class GpsDataListActivity extends ListActivity {
     }
 
     private void refreshList() {
-        if (Debug.D) Logger.d(this, "refreshing gps maps list"); //$NON-NLS-1$
+        if (Debug.D)
+            Logger.d(this, "refreshing gps maps list"); //$NON-NLS-1$
         gpslogItems = new MapItem[0];
         try {
             List<MapItem> logsList = DaoGpsLog.getGpslogs(this);
@@ -223,6 +224,14 @@ public class GpsDataListActivity extends ListActivity {
     }
 
     private void handleNotes() {
+        // images selection
+        CheckBox imagesView = (CheckBox) findViewById(R.id.imagesvisible);
+        imagesView.setChecked(DataManager.getInstance().areImagesVisible());
+        imagesView.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+            public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
+                DataManager.getInstance().setImagesVisible(isChecked);
+            }
+        });
         // notes selection
         CheckBox notesView = (CheckBox) findViewById(R.id.notesvisible);
         notesView.setChecked(DataManager.getInstance().areNotesVisible());

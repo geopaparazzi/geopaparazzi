@@ -71,7 +71,7 @@ public class ImagesOverlay extends Overlay {
         this.context = ctx;
 
         if (imageIcon == null) {
-            imageIcon = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.current_position);
+            imageIcon = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.image);
             imageIconWidth = imageIcon.getWidth();
             imageIconHeight = imageIcon.getHeight();
         }
