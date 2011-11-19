@@ -90,7 +90,7 @@ public class MeasureToolOverlay extends Overlay {
     public void setDoDraw( boolean doDraw ) {
         this.doDraw = doDraw;
         if (Debug.D)
-            Logger.d(this, "Will draw: " + doDraw);
+            Logger.d(this, "Will draw: " + doDraw); //$NON-NLS-1$
     }
 
     protected void draw( final Canvas canvas, final MapView mapsView, final boolean shadow ) {
@@ -125,7 +125,7 @@ public class MeasureToolOverlay extends Overlay {
         canvas.drawText(distanceText, x, upper + delta + textHeight, measureTextPaint);
 
         if (Debug.D)
-            Logger.d(this, "Drawing measure path text: " + upper);
+            Logger.d(this, "Drawing measure path text: " + upper); //$NON-NLS-1$
     }
 
     public void setMeasureMode( boolean isOn ) {

@@ -82,6 +82,7 @@ import eu.hydrologis.geopaparazzi.gps.GpsManagerListener;
 import eu.hydrologis.geopaparazzi.maps.overlays.BookmarksOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.CrossOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.GpsPositionOverlay;
+import eu.hydrologis.geopaparazzi.maps.overlays.ImagesOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.LogsOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.MapsOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.MeasureToolOverlay;
@@ -125,6 +126,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
     private MapsOverlay mMapsOverlay;
     private MeasureToolOverlay mMeasureOverlay;
     private MyLocationOverlay mCompassOverlay;
+    private ImagesOverlay mImagesOverlay;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -153,6 +155,12 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         {
             mLogsOverlay = new LogsOverlay(this, mResourceProxy);
             this.mapsView.getOverlays().add(mLogsOverlay);
+        }
+
+        /* images */
+        {
+            mImagesOverlay = new ImagesOverlay(this, mResourceProxy);
+            this.mapsView.getOverlays().add(mImagesOverlay);
         }
 
         /* gps notes */
@@ -753,6 +761,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                         mMapsOverlay.setDoDraw(true);
                         mLogsOverlay.setDoDraw(true);
                         mNotesOverlay.setDoDraw(true);
+                        mImagesOverlay.setDoDraw(true);
                         mBookmarksOverlay.setDoDraw(true);
                         mGpsOverlay.setDoDraw(true);
                         inalidateMap();
@@ -766,6 +775,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         mMapsOverlay.setDoDraw(false);
         mLogsOverlay.setDoDraw(false);
         mNotesOverlay.setDoDraw(false);
+        mImagesOverlay.setDoDraw(false);
         mBookmarksOverlay.setDoDraw(false);
         mGpsOverlay.setDoDraw(false);
     }
@@ -787,6 +797,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         mMapsOverlay.setGpsUpdate(true);
         mLogsOverlay.setGpsUpdate(true);
         mNotesOverlay.setGpsUpdate(true);
+        mImagesOverlay.setGpsUpdate(true);
         mBookmarksOverlay.setGpsUpdate(true);
         mGpsOverlay.setLoc(loc);
         mapsView.invalidate();

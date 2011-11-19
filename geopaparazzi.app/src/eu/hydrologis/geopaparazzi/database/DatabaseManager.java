@@ -35,7 +35,7 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
 @SuppressWarnings("nls")
 public class DatabaseManager {
 
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 4;
 
     public static final String DEBUG_TAG = "DATABASEMANAGER";
 
@@ -44,7 +44,7 @@ public class DatabaseManager {
     public static final float BUFFER = 0.001f;
 
     private static DatabaseManager dbManager = null;
-    
+
     private DatabaseManager() {
     }
 
@@ -82,13 +82,15 @@ public class DatabaseManager {
             databaseHelper = new DatabaseOpenHelper(databaseFile);
 
             SQLiteDatabase db = databaseHelper.getWritableDatabase(context);
-            if (Debug.D) Logger.i(DEBUG_TAG, "Database: " + db.getPath());
-            if (Debug.D) Logger.i(DEBUG_TAG, "Database Version: " + db.getVersion());
-            if (Debug.D) Logger.i(DEBUG_TAG, "Database Page Size: " + db.getPageSize());
-            if (Debug.D) Logger.i(DEBUG_TAG, "Database Max Size: " + db.getMaximumSize());
-            if (Debug.D) Logger.i(DEBUG_TAG, "Database Open?  " + db.isOpen());
-            if (Debug.D) Logger.i(DEBUG_TAG, "Database readonly?  " + db.isReadOnly());
-            if (Debug.D) Logger.i(DEBUG_TAG, "Database Locked by current thread?  " + db.isDbLockedByCurrentThread());
+            if (Debug.D) {
+                Logger.i(DEBUG_TAG, "Database: " + db.getPath());
+                Logger.i(DEBUG_TAG, "Database Version: " + db.getVersion());
+                Logger.i(DEBUG_TAG, "Database Page Size: " + db.getPageSize());
+                Logger.i(DEBUG_TAG, "Database Max Size: " + db.getMaximumSize());
+                Logger.i(DEBUG_TAG, "Database Open?  " + db.isOpen());
+                Logger.i(DEBUG_TAG, "Database readonly?  " + db.isReadOnly());
+                Logger.i(DEBUG_TAG, "Database Locked by current thread?  " + db.isDbLockedByCurrentThread());
+            }
         }
 
         return databaseHelper.getWritableDatabase(context);
@@ -96,9 +98,11 @@ public class DatabaseManager {
 
     public void closeDatabase() {
         if (databaseHelper != null) {
-            if (Debug.D) Logger.i(DEBUG_TAG, "Closing database");
+            if (Debug.D)
+                Logger.i(DEBUG_TAG, "Closing database");
             databaseHelper.close();
-            if (Debug.D) Logger.i(DEBUG_TAG, "Database closed");
+            if (Debug.D)
+                Logger.i(DEBUG_TAG, "Database closed");
             databaseHelper = null;
             dbManager = null;
         }
@@ -115,15 +119,18 @@ public class DatabaseManager {
 
         public void open( Context context ) throws IOException {
             if (databaseFile.exists()) {
-                if (Debug.D) Logger.i("SQLiteHelper", "Opening database at " + databaseFile);
+                if (Debug.D)
+                    Logger.i("SQLiteHelper", "Opening database at " + databaseFile);
                 db = SQLiteDatabase.openOrCreateDatabase(databaseFile, null);
                 int dbVersion = db.getVersion();
                 if (DATABASE_VERSION > dbVersion)
                     upgrade(DATABASE_VERSION, dbVersion, context);
             } else {
-                if (Debug.D) Logger.i("SQLiteHelper", "Creating database at " + databaseFile);
-                if (Debug.D) Logger.d(dbManager, "db folder exists: " + databaseFile.getParentFile().exists());
-                if (Debug.D) Logger.d(dbManager, "db folder is writable: " + databaseFile.getParentFile().canWrite());
+                if (Debug.D) {
+                    Logger.i("SQLiteHelper", "Creating database at " + databaseFile);
+                    Logger.d(dbManager, "db folder exists: " + databaseFile.getParentFile().exists());
+                    Logger.d(dbManager, "db folder is writable: " + databaseFile.getParentFile().canWrite());
+                }
                 db = SQLiteDatabase.openOrCreateDatabase(databaseFile, null);
                 create(context);
             }
@@ -137,6 +144,12 @@ public class DatabaseManager {
             db = null;
         }
 
+        /**
+         * Create the db from scratch.
+         * 
+         * @param context
+         * @throws IOException
+         */
         public void create( Context context ) throws IOException {
             db.setLocale(Locale.getDefault());
             db.setLockingEnabled(false);
@@ -147,24 +160,36 @@ public class DatabaseManager {
             DaoGpsLog.createTables(context);
             DaoMaps.createTables(context);
             DaoBookmarks.createTables(context);
+            DaoImages.createTables(context);
         }
 
+        /**
+         * Upgrade the db if necessary.
+         * 
+         * @param newDbVersion
+         * @param oldDbVersion
+         * @param context
+         * @throws IOException
+         */
         public void upgrade( int newDbVersion, int oldDbVersion, Context context ) throws IOException {
-            if (newDbVersion == 3 && oldDbVersion == 1) {
+            if (oldDbVersion == 1) {
                 DaoNotes.upgradeNotesFromDB1ToDB2(db);
             }
-            if (newDbVersion == 3 && oldDbVersion == 2) {
+            if (oldDbVersion == 2) {
                 DaoBookmarks.createTables(context);
-                db.beginTransaction();
-                try {
-                    db.setTransactionSuccessful();
-                    db.setVersion(3);
-                } catch (Exception e) {
-                    Logger.e("DAOBOOKMARKS", e.getLocalizedMessage(), e);
-                    throw new IOException(e.getLocalizedMessage());
-                } finally {
-                    db.endTransaction();
-                }
+            }
+            if (oldDbVersion == 3) {
+                DaoImages.createTables(context);
+            }
+            db.beginTransaction();
+            try {
+                db.setTransactionSuccessful();
+                db.setVersion(newDbVersion);
+            } catch (Exception e) {
+                Logger.e(this, e.getLocalizedMessage(), e);
+                throw new IOException(e.getLocalizedMessage());
+            } finally {
+                db.endTransaction();
             }
         }
 

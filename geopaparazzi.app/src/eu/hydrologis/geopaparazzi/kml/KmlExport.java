@@ -25,10 +25,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import android.content.Context;
+
+import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.CompressionUtilities;
+import eu.hydrologis.geopaparazzi.util.Image;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.Note;
-import eu.hydrologis.geopaparazzi.util.Picture;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -47,7 +50,8 @@ public class KmlExport {
         this.outputFile = outputFile;
     }
 
-    public void export( List<Note> notes, HashMap<Long, Line> linesMap, List<Picture> picturesList ) throws IOException {
+    public void export( Context context, List<Note> notes, HashMap<Long, Line> linesMap, List<Image> imageList )
+            throws IOException {
         if (name == null) {
             name = "Geopaparazzi Export";
         }
@@ -104,8 +108,8 @@ public class KmlExport {
                 if (line.getLatList().size() > 1)
                     bW.write(line.toKmlString());
             }
-            for( Picture picture : picturesList ) {
-                bW.write(picture.toKmlString());
+            for( Image image : imageList ) {
+                bW.write(image.toKmlString());
             }
 
             bW.write("</Document>\n");
@@ -118,10 +122,12 @@ public class KmlExport {
         /*
          * create the kmz file with the base kml and all the pictures
          */
-        File[] files = new File[1 + picturesList.size()];
+        File mediaFolder = ApplicationManager.getInstance(context).getMediaDir();
+        File[] files = new File[1 + imageList.size()];
         files[0] = kmlFile;
         for( int i = 0; i < files.length - 1; i++ ) {
-            files[i + 1] = new File(picturesList.get(i).getPicturePath());
+            String relativePath = imageList.get(i).getPath();
+            files[i + 1] = new File(mediaFolder.getParentFile(), relativePath);
         }
         CompressionUtilities.createZipFromFiles(outputFile, files);
 

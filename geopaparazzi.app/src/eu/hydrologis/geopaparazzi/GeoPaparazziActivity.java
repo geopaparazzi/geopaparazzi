@@ -55,6 +55,7 @@ import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.ActionItem;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
+import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.DatabaseManager;
@@ -67,9 +68,9 @@ import eu.hydrologis.geopaparazzi.sensors.SensorsManager;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.DirectoryBrowserActivity;
+import eu.hydrologis.geopaparazzi.util.Image;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.Note;
-import eu.hydrologis.geopaparazzi.util.Picture;
 import eu.hydrologis.geopaparazzi.util.debug.Debug;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
@@ -525,13 +526,13 @@ public class GeoPaparazziActivity extends Activity {
                     /*
                      * add pictures
                      */
-                    List<Picture> picturesList = applicationManager.getPictures();
+                    List<Image> imagesList = DaoImages.getImagesList(GeoPaparazziActivity.this);
 
                     File kmlExportDir = applicationManager.getKmlExportDir();
                     String filename = "geopaparazzi_" + Constants.TIMESTAMPFORMATTER.format(new Date()) + ".kmz"; //$NON-NLS-1$ //$NON-NLS-2$
                     kmlOutputFile = new File(kmlExportDir, filename);
                     KmlExport export = new KmlExport(null, kmlOutputFile);
-                    export.export(notesList, linesList, picturesList);
+                    export.export(GeoPaparazziActivity.this, notesList, linesList, imagesList);
 
                     kmlHandler.sendEmptyMessage(0);
                 } catch (IOException e) {

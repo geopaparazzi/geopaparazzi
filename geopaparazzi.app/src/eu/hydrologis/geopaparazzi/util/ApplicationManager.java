@@ -25,15 +25,11 @@ import static eu.hydrologis.geopaparazzi.util.Constants.PATH_MEDIA;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Properties;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -202,44 +198,6 @@ public class ApplicationManager implements Serializable {
         Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
     }
 
-    /**
-     * Gets the list of pictures.
-     * 
-     * @return the list of pictures.
-     */
-    @SuppressWarnings("nls")
-    public List<Picture> getPictures() {
-        List<Picture> picturesList = new ArrayList<Picture>();
-        File picturesDir = getMediaDir();
-        File[] pictures = picturesDir.listFiles();
-        for( int i = 0; i < pictures.length; i++ ) {
-            File picture = pictures[i];
-            String name = picture.getName();
-
-            if (name.endsWith("jpg") || name.endsWith("JPG")) {
-                String nameWithoutExtention = FileUtils.getNameWithoutExtention(picture);
-                String propsName = nameWithoutExtention + ".properties";
-                File propsFile = new File(picture.getParentFile(), propsName);
-                if (propsFile.exists()) {
-                    try {
-                        Properties p = new Properties();
-                        p.load(new FileInputStream(propsFile));
-
-                        double lat = Double.parseDouble(p.getProperty("latitude"));
-                        double lon = Double.parseDouble(p.getProperty("longitude"));
-
-                        Picture pic = new Picture(lon, lat, picture.getAbsolutePath());
-                        picturesList.add(pic);
-                    } catch (Exception e) {
-                        Logger.e(this, e.getLocalizedMessage(), e);
-                        continue;
-                    }
-                }
-            }
-        }
-        return picturesList;
-    }
-
     private void openDialog( int message, Context activity ) {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setMessage(message).setCancelable(false).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
@@ -276,14 +234,17 @@ public class ApplicationManager implements Serializable {
         pictureQuickaction.setOnClickListener(new OnClickListener(){
             public void onClick( View v ) {
                 try {
-                    if (Debug.D) Logger.d(this, "Asking location");
+                    if (Debug.D)
+                        Logger.d(this, "Asking location");
                     GpsLocation loc = GpsManager.getInstance(context).getLocation();
                     if (loc != null) {
-                        if (Debug.D) Logger.d(this, "Location != null");
+                        if (Debug.D)
+                            Logger.d(this, "Location != null");
                         Intent intent = new Intent(Constants.TAKE_PICTURE);
                         context.startActivity(intent);
                     } else {
-                        if (Debug.D) Logger.d(this, "Location == null");
+                        if (Debug.D)
+                            Logger.d(this, "Location == null");
                         openDialog(R.string.gpslogging_only, context);
                     }
                     qa.dismiss();

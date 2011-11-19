@@ -33,6 +33,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.gps.GpsManager;
 import eu.hydrologis.geopaparazzi.sensors.SensorsManager;
@@ -53,14 +54,15 @@ public class CameraActivity extends Activity {
     private File mediaFolder;
     private String currentDatestring;
     private String imageFilePath;
+    private Date currentDate;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
 
         mediaFolder = ApplicationManager.getInstance(this).getMediaDir();
 
-        Date date = new Date();
-        currentDatestring = TIMESTAMPFORMATTER.format(date);
+        currentDate = new Date();
+        currentDatestring = TIMESTAMPFORMATTER.format(currentDate);
         imageFilePath = mediaFolder.getAbsolutePath() + "/IMG_" + currentDatestring + ".jpg";
         File imgFile = new File(imageFilePath);
         Uri outputFileUri = Uri.fromFile(imgFile);
@@ -142,6 +144,14 @@ public class CameraActivity extends Activity {
                 } finally {
                     bW.close();
                 }
+
+                /*
+                 * add the image to the database
+                 */
+                String relativeImageFilePath = mediaFolder.getName() + "/IMG_" + currentDatestring + ".jpg";
+                DaoImages.addImage(this, lon, lat, altim, azimuth, new java.sql.Date(currentDate.getTime()), "",
+                        relativeImageFilePath);
+
             } catch (Exception e) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage("An error occurred while adding gps info to the picture.").setCancelable(false)

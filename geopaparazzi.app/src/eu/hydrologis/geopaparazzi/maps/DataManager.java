@@ -69,6 +69,14 @@ public class DataManager {
         this.areNotesVisible = areNotesVisible;
     }
 
+    private boolean areImagesVisible = true;
+    public boolean areImagesVisible() {
+        return areImagesVisible;
+    }
+    public void setImagesVisible( boolean areImagesVisible ) {
+        this.areImagesVisible = areImagesVisible;
+    }
+
     private boolean areLogsVisible = false;
     public boolean areLogsVisible() {
         return areLogsVisible;
