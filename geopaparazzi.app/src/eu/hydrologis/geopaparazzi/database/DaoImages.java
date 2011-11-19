@@ -169,8 +169,8 @@ public class DaoImages {
             double altim = c.getDouble(3);
             double azim = c.getDouble(4);
             String path = c.getString(5);
-            String text = c.getString(6);
-            String date = c.getString(7);
+            String date = c.getString(6);
+            String text = c.getString(7);
 
             Image image = new Image(id, text, lon, lat, altim, azim, path, date);
             images.add(image);
