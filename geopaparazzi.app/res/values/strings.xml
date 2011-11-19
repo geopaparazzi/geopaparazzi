@@ -253,4 +253,5 @@
     <string name="notefromgps">gps note</string>
     <string name="quicknotes">QUICK GPS NOTES</string>
     <string name="formnotes">FORM BASED NOTES</string>
+    <string name="an_error_occurred_while_creating_the_chart_">An error occurred while creating the chart.</string>
 </resources>

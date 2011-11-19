@@ -19,7 +19,6 @@ package eu.hydrologis.geopaparazzi.util;
 
 import static eu.hydrologis.geopaparazzi.util.Constants.BASEFOLDERKEY;
 import static eu.hydrologis.geopaparazzi.util.Constants.DECIMATION_FACTOR;
-import static eu.hydrologis.geopaparazzi.util.Constants.E6;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_GEOPAPARAZZI;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_KMLEXPORT;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_MEDIA;
@@ -31,8 +30,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.Date;
-
-import org.osmdroid.api.IGeoPoint;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -219,6 +216,7 @@ public class ApplicationManager implements Serializable {
             public void onClick( View v ) {
                 GpsLocation loc = GpsManager.getInstance(context).getLocation();
                 if (loc != null) {
+                    // TODO check if this is better than having the simple notes upfront
                     // Intent intent = new Intent(Constants.TAKE_NOTE);
                     // context.startActivity(intent);
 

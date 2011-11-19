@@ -198,4 +198,10 @@
   <string name="maptagsactivity_error_reading_tags">Errore nella lettura dei tag</string>
   <string name="geopaparazziactivity_exporting_kmz">Sto esportando in kmz...</string>
   <string name="mapsactivity_menu_toggle_compass">cambia bussola</string>
+  <string name="imagesvisibilityToggle">Alterna visibilità immagini</string>
+  <string name="imagefromgps">immagine gps</string>
+  <string name="notefromgps">nota gps</string>
+  <string name="quicknotes">NOTE GPS RAPIDE</string>
+  <string name="formnotes">NOTE BASATE SU SCHEDE</string>
+  <string name="an_error_occurred_while_creating_the_chart_">Si è verificato un errore durante la creazione del grafico.</string>
 </resources>

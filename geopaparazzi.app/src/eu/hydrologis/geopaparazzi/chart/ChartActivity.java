@@ -60,7 +60,7 @@ public class ChartActivity extends Activity {
             }
 
         } else {
-            Toast.makeText(this, "An error occurred while creating the chart.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.an_error_occurred_while_creating_the_chart_, Toast.LENGTH_LONG).show();
         }
 
     }

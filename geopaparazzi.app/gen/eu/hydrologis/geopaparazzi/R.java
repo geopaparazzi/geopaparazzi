@@ -351,6 +351,7 @@ public final class R {
         public static final int abouttext=0x7f090070;
         public static final int address=0x7f090030;
         public static final int altim=0x7f090020;
+        public static final int an_error_occurred_while_creating_the_chart_=0x7f0900b4;
         public static final int app_name=0x7f090007;
         public static final int askaddress=0x7f090031;
         public static final int askcoord=0x7f09002f;
