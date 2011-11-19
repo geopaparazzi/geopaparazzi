@@ -19,6 +19,7 @@ package eu.hydrologis.geopaparazzi.util;
 
 import static eu.hydrologis.geopaparazzi.util.Constants.BASEFOLDERKEY;
 import static eu.hydrologis.geopaparazzi.util.Constants.DECIMATION_FACTOR;
+import static eu.hydrologis.geopaparazzi.util.Constants.E6;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_GEOPAPARAZZI;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_KMLEXPORT;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_MEDIA;
@@ -30,6 +31,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.Date;
+
+import org.osmdroid.api.IGeoPoint;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -216,8 +219,15 @@ public class ApplicationManager implements Serializable {
             public void onClick( View v ) {
                 GpsLocation loc = GpsManager.getInstance(context).getLocation();
                 if (loc != null) {
-                    Intent intent = new Intent(Constants.TAKE_NOTE);
-                    context.startActivity(intent);
+                    // Intent intent = new Intent(Constants.TAKE_NOTE);
+                    // context.startActivity(intent);
+
+                    double latitude = loc.getLatitude();
+                    double longitude = loc.getLongitude();
+                    Intent osmTagsIntent = new Intent(Constants.TAGS);
+                    osmTagsIntent.putExtra(Constants.VIEW_CENTER_LAT, latitude);
+                    osmTagsIntent.putExtra(Constants.VIEW_CENTER_LON, longitude);
+                    context.startActivity(osmTagsIntent);
                 } else {
                     openDialog(R.string.gpslogging_only, context);
                 }

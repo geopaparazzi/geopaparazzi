@@ -132,7 +132,25 @@ public interface Constants {
     public static final String PREFS_KEY_ZOOM = "PREFS_KEY_ZOOM";
     public static final String PREFS_KEY_GPSLOG4PROPERTIES = "PREFS_KEY_GPSLOG4PROPERTIES";
     public static final String PREFS_KEY_MAP4PROPERTIES = "PREFS_KEY_MAP4PROPERTIES";
+    /**
+     * Key used by the gps logger to store the lat in the prefs. 
+     * 
+     * <p>
+     * The gps logger uses this key to regularly store the
+     * gps data recorded, so this should not be used to store own
+     * data, which would be overwritten. 
+     * </p>
+     */
     public static final String PREFS_KEY_LAT = "PREFS_KEY_LAT";
+    /**
+     * Key used by the gps logger to store the lon in the prefs. 
+     * 
+     * <p>
+     * The gps logger uses this key to regularly store the
+     * gps data recorded, so this should not be used to store own
+     * data, which would be overwritten. 
+     * </p>
+     */
     public static final String PREFS_KEY_LON = "PREFS_KEY_LON";
     public static final String PREFS_KEY_ZOOM1 = "labels_zoom1";
     public static final String PREFS_KEY_ZOOM1_LABELLENGTH = "labels_length_zoom1";
