@@ -352,7 +352,6 @@ public class GeoPaparazziActivity extends Activity {
         menu.add(Menu.NONE, MENU_EXIT, 3, R.string.exit).setIcon(android.R.drawable.ic_lock_power_off);
         menu.add(Menu.NONE, MENU_ABOUT, 4, R.string.about).setIcon(android.R.drawable.ic_menu_info_details);
 
-        Logger.i(this, "CALLED: onCreateOptionsMenu");
         return true;
     }
 

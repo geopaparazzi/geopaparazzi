@@ -18,6 +18,7 @@
 package eu.hydrologis.geopaparazzi.util;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
 import android.graphics.Color;
@@ -115,6 +116,7 @@ public interface Constants {
 
     public final String PATH_GEOPAPARAZZIDATA = File.separator + GEOPAPARAZZI;
 
+    public final DecimalFormat DECIMAL_FORMATTER_2 = new DecimalFormat("0.00");
     public final SimpleDateFormat TIMESTAMPFORMATTER = new SimpleDateFormat("yyyyMMdd_HHmmss");
     public final SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     public final SimpleDateFormat TIME_FORMATTER_SQLITE = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
