@@ -59,6 +59,23 @@ public class MapTagsActivity extends Activity {
 
         additionalInfoText = (EditText) findViewById(R.id.osm_additionalinfo_id);
 
+        Button imageButton = (Button) findViewById(R.id.imagefromtag);
+        imageButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                Intent intent = new Intent(Constants.TAKE_PICTURE);
+                MapTagsActivity.this.startActivity(intent);
+                finish();
+            }
+        });
+        Button noteButton = (Button) findViewById(R.id.notefromtag);
+        noteButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                Intent intent = new Intent(Constants.TAKE_NOTE);
+                MapTagsActivity.this.startActivity(intent);
+                finish();
+            }
+        });
+
         GridView buttonGridView = (GridView) findViewById(R.id.osmgridview);
         try {
             tagNamesArray = TagsManager.getInstance(this).getTagsArrays();
@@ -81,6 +98,7 @@ public class MapTagsActivity extends Activity {
                             StringBuilder sB = new StringBuilder(additionalInfoText.getText());
                             String infoString = sB.toString();
                             String name = tagNamesArray[position];
+
                             TagObject tag = TagsManager.getInstance(MapTagsActivity.this).getTagFromName(name);
                             String finalLongName = tag.longName;
                             if (infoString.length() != 0) {
@@ -106,7 +124,6 @@ public class MapTagsActivity extends Activity {
                                 // insert as it is
                                 DaoNotes.addNote(getContext(), longitude, latitude, -1.0, sqlDate, finalLongName, null);
                             }
-
                         } catch (Exception e) {
                             Logger.e(this, e.getLocalizedMessage(), e);
                             e.printStackTrace();

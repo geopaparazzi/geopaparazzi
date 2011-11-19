@@ -1,21 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainosmtagslayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical"
+    android:padding="10px" >
 
-<LinearLayout android:id="@+id/mainosmtagslayout"
-	android:layout_height="fill_parent" android:layout_width="fill_parent"
-	android:orientation="vertical" xmlns:android="http://schemas.android.com/apk/res/android"
-	android:background="#FFFFFF" android:padding="10px">
+    <TextView
+        android:id="@+id/quicknotesfromtag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dip"
+        android:text="@string/quicknotes" />
 
-	<TextView android:layout_height="wrap_content"
-		android:layout_width="fill_parent" android:text="@string/osm_additionalinfo" android:paddingBottom="5px"/>
-	<EditText android:layout_height="wrap_content"
-		android:layout_width="fill_parent" android:text=""
-		android:id="@+id/osm_additionalinfo_id" android:paddingBottom="5px"/>
+    <LinearLayout
+        android:id="@+id/linearLayout1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
 
-	<TextView android:layout_height="wrap_content"
-		android:text="@string/osm_tagsgrid" android:layout_width="fill_parent" android:paddingBottom="5px"/>
+        <Button
+            android:id="@+id/imagefromtag"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/imagefromgps" />
 
-	<GridView android:id="@+id/osmgridview" android:layout_width="fill_parent"
-		android:layout_height="fill_parent" android:numColumns="3"
-		android:verticalSpacing="5dp" android:horizontalSpacing="5dp"
-		xmlns:android="http://schemas.android.com/apk/res/android" />
+        <Button
+            android:id="@+id/notefromtag"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/notefromgps" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/formnotestlabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dip"
+        android:layout_marginTop="10dip"
+        android:text="@string/formnotes" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:paddingBottom="5px"
+        android:text="@string/osm_additionalinfo" />
+
+    <EditText
+        android:id="@+id/osm_additionalinfo_id"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="5px"
+        android:text="" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:paddingBottom="5px"
+        android:text="@string/osm_tagsgrid" />
+
+    <GridView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/osmgridview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:horizontalSpacing="5dp"
+        android:numColumns="3"
+        android:verticalSpacing="5dp" />
+
 </LinearLayout>

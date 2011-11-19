@@ -66,7 +66,7 @@ public class TagsManager {
 
     private static TagsManager tagsManager;
 
-    private static String[] tagsArrays;
+    private static String[] tagsArrays = new String[0];
 
     /**
      * Gets the manager singleton. 

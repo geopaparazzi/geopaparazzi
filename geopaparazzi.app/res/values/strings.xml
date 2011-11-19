@@ -249,4 +249,8 @@
     
 	<!-- added after 2.4.3 -->
     <string name="imagesvisibilityToggle">Toggle images visibility</string>
+    <string name="imagefromgps">gps image</string>
+    <string name="notefromgps">gps note</string>
+    <string name="quicknotes">QUICK GPS NOTES</string>
+    <string name="formnotes">FORM BASED NOTES</string>
 </resources>

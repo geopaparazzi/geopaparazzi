@@ -231,6 +231,7 @@ public final class R {
         public static final int form_ok=0x7f0b001d;
         public static final int form_scroll=0x7f0b001b;
         public static final int form_tag=0x7f0b001a;
+        public static final int formnotestlabel=0x7f0b008e;
         public static final int gobutton=0x7f0b000d;
         public static final int gpsOnOff=0x7f0b000b;
         public static final int gpslog_cancel=0x7f0b0044;
@@ -244,6 +245,7 @@ public final class R {
         public static final int handle=0x7f0b0033;
         public static final int header2=0x7f0b0084;
         public static final int icon=0x7f0b0087;
+        public static final int imagefromtag=0x7f0b008c;
         public static final int imagesvisible=0x7f0b0049;
         public static final int imagevisibletext=0x7f0b004a;
         public static final int innerlayout=0x7f0b005d;
@@ -254,6 +256,7 @@ public final class R {
         public static final int latitudetext=0x7f0b0054;
         public static final int latitudetext_first=0x7f0b0074;
         public static final int latitudetext_last=0x7f0b0079;
+        public static final int linearLayout1=0x7f0b008b;
         public static final int longitudelabel=0x7f0b0051;
         public static final int longitudelabel_first=0x7f0b0071;
         public static final int longitudelabel_last=0x7f0b0076;
@@ -276,6 +279,7 @@ public final class R {
         public static final int measuredistancetext=0x7f0b006f;
         public static final int measureinfo=0x7f0b006d;
         public static final int noteentry=0x7f0b007b;
+        public static final int notefromtag=0x7f0b008d;
         public static final int notescolorLabel=0x7f0b004e;
         public static final int notescolor_spinner=0x7f0b004f;
         public static final int notesrow_container=0x7f0b0048;
@@ -284,11 +288,12 @@ public final class R {
         public static final int noteswidthText=0x7f0b004d;
         public static final int ok=0x7f0b007c;
         public static final int okbutton=0x7f0b0011;
-        public static final int osm_additionalinfo_id=0x7f0b008a;
+        public static final int osm_additionalinfo_id=0x7f0b008f;
         public static final int osm_frameLayout=0x7f0b005c;
-        public static final int osmgridview=0x7f0b008b;
+        public static final int osmgridview=0x7f0b0090;
         public static final int panicbutton=0x7f0b0036;
         public static final int phonenumber_text=0x7f0b007e;
+        public static final int quicknotesfromtag=0x7f0b008a;
         public static final int removebookmarkbutton=0x7f0b0069;
         public static final int removenotesbutton=0x7f0b0067;
         public static final int renamebutton=0x7f0b000c;
@@ -379,6 +384,7 @@ public final class R {
         public static final int error_disk_full=0x7f090066;
         public static final int exit=0x7f090019;
         public static final int export_for_real=0x7f090088;
+        public static final int formnotes=0x7f0900b3;
         public static final int geopaparazziactivity_exporting_kmz=0x7f0900ad;
         public static final int googleview=0x7f090028;
         public static final int goto_coordinate=0x7f09002e;
@@ -409,8 +415,11 @@ public final class R {
         public static final int gpx_points_folder=0x7f090055;
         public static final int gpxnonsaved=0x7f09000f;
         public static final int help_needed=0x7f09007e;
+        public static final int imagefromgps=0x7f0900b0;
         public static final int imagenonsaved=0x7f090011;
         public static final int imagesaved=0x7f090010;
+        /**  added after 2.4.3 
+         */
         public static final int imagesvisibilityToggle=0x7f0900af;
         public static final int insert_note=0x7f090072;
         public static final int installgpsstatus_message=0x7f09008b;
@@ -472,6 +481,7 @@ public final class R {
         public static final int nogps_data=0x7f090017;
         public static final int nogpscoordinate=0x7f09002c;
         public static final int notecancel=0x7f09000a;
+        public static final int notefromgps=0x7f0900b1;
         public static final int notenonsaved=0x7f090009;
         public static final int notesaved=0x7f090008;
         public static final int notesvisibilityToggle=0x7f09000b;
@@ -490,6 +500,7 @@ public final class R {
         public static final int phonenumber_hint=0x7f090091;
         public static final int pick_phonenumber_label=0x7f090092;
         public static final int prompt_gpsenable=0x7f090036;
+        public static final int quicknotes=0x7f0900b2;
         public static final int remove_last_note_prompt=0x7f090087;
         /**  added after 2.1.1 
          */
