@@ -96,9 +96,15 @@
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".maps.OsmCategoryActivity">
+		<activity android:name=".osm.OsmCategoryActivity">
 			<intent-filter>
 				<action android:name="eu.hydrologis.geopaparazzi.maps.OSMCATEGORYACTIVITY" />
+				<category android:name="android.intent.category.DEFAULT" />
+			</intent-filter>
+		</activity>
+		<activity android:name=".osm.OsmFormActivity">
+			<intent-filter>
+				<action android:name="eu.hydrologis.geopaparazzi.osm.OSMFORMACTIVITY" />
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>

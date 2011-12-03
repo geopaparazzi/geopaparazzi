@@ -15,35 +15,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi.maps;
-
-import java.sql.Date;
+package eu.hydrologis.geopaparazzi.osm;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.provider.MediaStore.Images.ImageColumns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.database.DaoNotes;
-import eu.hydrologis.geopaparazzi.maps.TagsManager.TagObject;
-import eu.hydrologis.geopaparazzi.osm.OsmImageCache;
-import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
-import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * Osm category activity showing the available tags.
@@ -79,7 +66,11 @@ public class OsmCategoryActivity extends Activity {
                 osmButton.setImageDrawable(icon);
                 osmButton.setOnClickListener(new Button.OnClickListener(){
                     public void onClick( View v ) {
-
+                        Intent osmCategoryIntent = new Intent(Constants.OSMFORMACTIVITY);
+                        osmCategoryIntent.putExtra(Constants.OSM_CATEGORY_KEY, category);
+                        osmCategoryIntent.putExtra(Constants.OSM_TAG_KEY, tagName);
+                        startActivity(osmCategoryIntent);
+                        finish();
                     }
                 });
 

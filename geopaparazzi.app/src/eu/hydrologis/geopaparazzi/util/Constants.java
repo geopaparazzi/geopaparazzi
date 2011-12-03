@@ -55,6 +55,7 @@ public interface Constants {
     public final String TAGS = "eu.hydrologis.geopaparazzi.maps.TAGS";
     public final String FORM = "eu.hydrologis.geopaparazzi.maps.tags.FORM";
     public final String OSMCATEGORYACTIVITY = "eu.hydrologis.geopaparazzi.maps.OSMCATEGORYACTIVITY";
+    public final String OSMFORMACTIVITY = "eu.hydrologis.geopaparazzi.osm.OSMFORMACTIVITY";
 
     public final String ID = "ID";
     public final String INTENT_ID = "INTENT_ID";
@@ -182,4 +183,5 @@ public interface Constants {
      * OSM
      */
     public static final String OSM_CATEGORY_KEY = "OSM_CATEGORY_KEY";
+    public static final String OSM_TAG_KEY = "OSM_TAG_KEY";
 }
