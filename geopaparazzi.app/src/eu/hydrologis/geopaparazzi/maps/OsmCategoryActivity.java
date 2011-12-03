@@ -21,7 +21,9 @@ import java.sql.Date;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.provider.MediaStore.Images.ImageColumns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +40,7 @@ import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.maps.TagsManager.TagObject;
+import eu.hydrologis.geopaparazzi.osm.OsmImageCache;
 import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
@@ -49,12 +52,14 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
  */
 public class OsmCategoryActivity extends Activity {
 
+    private String category;
+
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
         setContentView(R.layout.osmcategorytags);
 
         Bundle extras = getIntent().getExtras();
-        String category = extras.getString(Constants.OSM_CATEGORY_KEY);
+        category = extras.getString(Constants.OSM_CATEGORY_KEY);
 
         final String[] itemsForCategory = OsmTagsManager.getInstance().getItemsForCategory(this, category);
 
@@ -66,14 +71,15 @@ public class OsmCategoryActivity extends Activity {
                 View inflate = LayoutInflater.from(OsmCategoryActivity.this).inflate(R.layout.osm_button_layout, parent, false);
 
                 final TextView text = (TextView) inflate.findViewById(R.id.osm_item_text);
-                text.setText(itemsForCategory[position].replaceAll("\\_", " "));
+                final String tagName = itemsForCategory[position];
+                text.setText(tagName.replaceAll("\\_", " "));
 
+                Drawable icon = OsmImageCache.getInstance(OsmCategoryActivity.this).getImageForTag(tagName, category);
                 final ImageButton osmButton = (ImageButton) inflate.findViewById(R.id.osm_item_image);
-                osmButton.setImageResource(R.drawable.bookmark);
+                osmButton.setImageDrawable(icon);
                 osmButton.setOnClickListener(new Button.OnClickListener(){
                     public void onClick( View v ) {
-                        String tagName = text.getText().toString().replaceAll("\\s+", "_");
-                        
+
                     }
                 });
 

@@ -22,7 +22,7 @@
         android:layout_weight="2"
         android:padding="@dimen/dashboard_button_padding"
         android:text="button"
-        android:textColor="@color/hydrogreen"
+        android:textColor="@color/blue"
         android:textStyle="bold" >
     </TextView>
 

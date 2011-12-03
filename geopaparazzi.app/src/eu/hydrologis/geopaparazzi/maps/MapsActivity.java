@@ -459,6 +459,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
 
                 final Button osmButton = new Button(MapsActivity.this);
                 osmButton.setText(categoriesNamesArray[position]);
+                osmButton.setBackgroundResource(R.drawable.osmcategory_button_drawable);
                 osmButton.setOnClickListener(new Button.OnClickListener(){
                     public void onClick( View v ) {
                         String categoryName = osmButton.getText().toString();
