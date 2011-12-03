@@ -466,6 +466,8 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                         Intent osmCategoryIntent = new Intent(Constants.OSMCATEGORYACTIVITY);
                         osmCategoryIntent.putExtra(Constants.OSM_CATEGORY_KEY, categoryName);
                         startActivity(osmCategoryIntent);
+
+                        osmSlidingDrawer.close();
                     }
                 });
                 return osmButton;
