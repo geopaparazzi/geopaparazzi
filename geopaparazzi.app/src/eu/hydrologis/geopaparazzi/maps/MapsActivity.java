@@ -64,8 +64,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -88,6 +91,7 @@ import eu.hydrologis.geopaparazzi.maps.overlays.MapsOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.MeasureToolOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.MinimapOverlayWithCross;
 import eu.hydrologis.geopaparazzi.maps.overlays.NotesOverlay;
+import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Note;
@@ -113,6 +117,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
     private VerticalSeekBar zoomBar;
     private SlidingDrawer slidingDrawer;
     private boolean sliderIsOpen;
+    private boolean osmSliderIsOpen;
     private MapView mapsView;
     private MapController mapController;
     private ResourceProxy mResourceProxy;
@@ -403,6 +408,66 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                 }
             }
         });
+
+        try {
+            handleOsmSliderView();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void handleOsmSliderView() throws Exception {
+        OsmTagsManager osmTagsManager = OsmTagsManager.getInstance(this);
+
+        // slidingdrawer
+        final int slidingId = R.id.osmslide;
+        osmSlidingDrawer = (SlidingDrawer) findViewById(slidingId);
+        osmSlidingDrawer.setVisibility(osmTagsManager.osmViewVisibility());
+        osmSlidingDrawer.setOnDrawerOpenListener(new SlidingDrawer.OnDrawerOpenListener(){
+
+            public void onDrawerOpened() {
+                osmSliderIsOpen = true;
+                enableDrawingWithDelay();
+            }
+        });
+        osmSlidingDrawer.setOnDrawerCloseListener(new SlidingDrawer.OnDrawerCloseListener(){
+            public void onDrawerClosed() {
+                osmSliderIsOpen = false;
+                enableDrawingWithDelay();
+            }
+
+        });
+
+        osmSlidingDrawer.setOnDrawerScrollListener(new SlidingDrawer.OnDrawerScrollListener(){
+            public void onScrollEnded() {
+                disableDrawing();
+            }
+            public void onScrollStarted() {
+                disableDrawing();
+            }
+        });
+
+        GridView buttonGridView = (GridView) findViewById(R.id.osmcategoriesview);
+        final String[] categoriesNamesArray = osmTagsManager.getTagCategories(this);
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.gpslog_row, categoriesNamesArray){
+            public View getView( final int position, View cView, ViewGroup parent ) {
+
+                Button osmButton = new Button(MapsActivity.this);
+                osmButton.setText(categoriesNamesArray[position]);
+                osmButton.setOnClickListener(new Button.OnClickListener(){
+                    public void onClick( View v ) {
+                        Toast.makeText(MapsActivity.this, "bah", Toast.LENGTH_LONG);
+                    }
+                });
+
+                return osmButton;
+            }
+        };
+
+        // setListAdapter(arrayAdapter);
+        buttonGridView.setAdapter(arrayAdapter);
 
     }
 
@@ -744,6 +809,9 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         if (keyCode == KeyEvent.KEYCODE_BACK && sliderIsOpen) {
             slidingDrawer.animateClose();
             return true;
+        } else if (keyCode == KeyEvent.KEYCODE_BACK && osmSliderIsOpen) {
+            osmSlidingDrawer.animateClose();
+            return true;
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -782,6 +850,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
 
     private int maxZoomLevel;
     private int minZoomLevel;
+    private SlidingDrawer osmSlidingDrawer;
 
     public void onLocationChanged( GpsLocation loc ) {
         if (loc == null) {

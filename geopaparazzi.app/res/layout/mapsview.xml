@@ -152,6 +152,11 @@
                 </ImageButton>
             </FrameLayout>
         </SlidingDrawer>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
 
         <SlidingDrawer
             android:id="@+id/osmslide"
@@ -164,22 +169,26 @@
             <ImageView
                 android:id="@+id/osmslidehandle"
                 android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:background="@drawable/right" >
+                android:layout_height="wrap_content"
+                android:background="@drawable/osm" >
             </ImageView>
 
-            <ListView
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@android:id/list"
-                android:layout_width="fill_parent"
+            <LinearLayout
+                android:id="@+id/osmslidecontent"
+                android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
+                android:layout_gravity="center"
                 android:background="#FFFFFF"
-                android:orientation="vertical" >
+                android:orientation="vertical" android:padding="10dip">
 
-                <!-- android:id="@+id/mapsList" -->
-            </ListView>
-
-
+                <GridView
+                    android:id="@+id/osmcategoriesview"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:horizontalSpacing="5dp"
+                    android:numColumns="1"
+                    android:verticalSpacing="5dp" />
+            </LinearLayout>
         </SlidingDrawer>
     </FrameLayout>
 

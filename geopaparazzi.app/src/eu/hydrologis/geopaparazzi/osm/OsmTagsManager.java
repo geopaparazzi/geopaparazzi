@@ -28,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 
 /**
@@ -57,14 +58,12 @@ public class OsmTagsManager {
 
     public static String TAGSFOLDERNAME = "osmtags";
 
-    private static HashMap<String, TagObject> tagsMap = new HashMap<String, TagObject>();
-
     private static OsmTagsManager osmTagsManager;
 
-    private static String[] tagsArrays = new String[0];
     private static String[] tagCategories;
     private File tagsFolderFile;
     private String[] categoriesNames;
+    private boolean osmIsActive;
 
     /**
      * Gets the manager singleton. 
@@ -82,15 +81,19 @@ public class OsmTagsManager {
         return osmTagsManager;
     }
 
+    public int osmViewVisibility() {
+        return osmIsActive ? 0 : 4;
+    }
+
     public synchronized File getTagsFolderFile( Context context ) {
         if (tagsFolderFile == null) {
             File geoPaparazziDir = ApplicationManager.getInstance(context).getGeoPaparazziDir();
-            tagsFolderFile = new File(geoPaparazziDir, TAGSFOLDERNAME);
+            tagsFolderFile = new File(geoPaparazziDir.getParentFile(), TAGSFOLDERNAME);
         }
         return tagsFolderFile;
     }
 
-    private String[] getTagCategories( Context context ) throws Exception {
+    public synchronized String[] getTagCategories( Context context ) throws Exception {
         if (categoriesNames == null) {
             File tagsFolderFile = getTagsFolderFile(context);
             if (tagsFolderFile.exists()) {
@@ -103,111 +106,29 @@ public class OsmTagsManager {
                 for( int i = 0; i < foldersList.length; i++ ) {
                     categoriesNames[i] = foldersList[i].getName();
                 }
+                osmIsActive = true;
                 return categoriesNames;
+            } else {
+                categoriesNames = new String[]{context.getResources().getString(R.string.no_osm_categories_available)};
+                osmIsActive = false;
             }
         }
-        return new String[]{"No OSM categories available"};
+        return categoriesNames;
     }
 
     public String[] getItemsForCategory( Context context, String category ) {
-		File tagsFolderFile = getTagsFolderFile(context);
-		File categoryFolderFile = new File(tagsFolderFile, category);
-		File[] iconFiles = categoryFolderFile.listFiles(new FileFilter(){
-                    public boolean accept( File pathname ) {
-                        return pathname.getName().endsWith("png");
-                    }
-                });
-		String[] iconFileNames = new String[iconFiles.length()];
-
-		for (int i = 0; i < iconFiles.length(); i++) {
-			iconFileNames[i] = iconFiles[i].getName().replace("\\.png","");
-		}
-
+        File tagsFolderFile = getTagsFolderFile(context);
+        File categoryFolderFile = new File(tagsFolderFile, category);
+        File[] iconFiles = categoryFolderFile.listFiles(new FileFilter(){
+            public boolean accept( File pathname ) {
+                return pathname.getName().endsWith("png");
+            }
+        });
+        String[] iconFileNames = new String[iconFiles.length];
+        for( int i = 0; i < iconFiles.length; i++ ) {
+            iconFileNames[i] = iconFiles[i].getName().replace("\\.png", "");
+        }
         return iconFileNames;
     }
 
-    public String[] getTagsArrays() {
-        return tagsArrays;
-    }
-
-    public TagObject getTagFromName( String name ) {
-        return tagsMap.get(name);
-    }
-
-    public static TagObject stringToTagObject( String jsonString ) throws JSONException {
-        JSONObject jsonObject = new JSONObject(jsonString);
-        String shortname = jsonObject.getString(TAG_SHORTNAME);
-        String longname = jsonObject.getString(TAG_LONGNAME);
-
-        TagObject tag = new TagObject();
-        tag.shortName = shortname;
-        tag.longName = longname;
-        if (jsonObject.has(TAG_FORM)) {
-            tag.hasForm = true;
-        }
-        tag.jsonString = jsonString;
-        return tag;
-    }
-
-    /**
-     * Utility method to get the formitems of a form object.
-     * 
-     * <p>Note that the entering json object has to be one 
-     * object of the main array, not THE main array itself, 
-     * i.e. a choice was already done.
-     * 
-     * @param jsonObj the single object.
-     * @return the array of items of the contained form or <code>null</code> if 
-     *          no form is contained.
-     * @throws JSONException
-     */
-    public static JSONArray getFormItems( JSONObject jsonObj ) throws JSONException {
-        if (jsonObj.has(OsmTagsManager.TAG_FORM)) {
-            JSONObject formObj = jsonObj.getJSONObject(OsmTagsManager.TAG_FORM);
-            if (formObj.has(OsmTagsManager.TAG_FORMITEMS)) {
-                JSONArray formItemsArray = formObj.getJSONArray(OsmTagsManager.TAG_FORMITEMS);
-                return formItemsArray;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Utility method to get the combo items of a formitem object.
-     * 
-     * @param formItem the json form <b>item</b>.
-     * @return the array of items.
-     * @throws JSONException
-     */
-    public static JSONArray getComboItems( JSONObject formItem ) throws JSONException {
-        if (formItem.has(OsmTagsManager.TAG_VALUES)) {
-            JSONObject valuesObj = formItem.getJSONObject(OsmTagsManager.TAG_VALUES);
-            if (valuesObj.has(OsmTagsManager.TAG_ITEMS)) {
-                JSONArray itemsArray = valuesObj.getJSONArray(OsmTagsManager.TAG_ITEMS);
-                return itemsArray;
-            }
-        }
-        return null;
-    }
-
-    public static String[] comboItems2StringArray( JSONArray comboItems ) throws JSONException {
-        int length = comboItems.length();
-        String[] itemsArray = new String[length];
-        for( int i = 0; i < length; i++ ) {
-            JSONObject itemObj = comboItems.getJSONObject(i);
-            if (itemObj.has(OsmTagsManager.TAG_ITEM)) {
-                itemsArray[i] = itemObj.getString(OsmTagsManager.TAG_ITEM).trim();
-            } else {
-                itemsArray[i] = " - ";
-            }
-        }
-        return itemsArray;
-    }
-
-    public static class TagObject {
-        public String shortName;
-        public String longName;
-        public boolean hasForm;
-        public String jsonString;
-    }
 }
