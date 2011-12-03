@@ -60,10 +60,8 @@ public class OsmTagsManager {
 
     private static OsmTagsManager osmTagsManager;
 
-    private static String[] tagCategories;
     private File tagsFolderFile;
     private String[] categoriesNames;
-    private boolean osmIsActive;
 
     /**
      * Gets the manager singleton. 
@@ -71,18 +69,11 @@ public class OsmTagsManager {
      * @return the {@link OsmTagsManager} singleton.
      * @throws IOException 
      */
-    public static OsmTagsManager getInstance( Context context ) throws Exception {
+    public static OsmTagsManager getInstance() {
         if (osmTagsManager == null) {
             osmTagsManager = new OsmTagsManager();
-            tagCategories = osmTagsManager.getTagCategories(context);
-            Arrays.sort(tagCategories);
         }
-
         return osmTagsManager;
-    }
-
-    public int osmViewVisibility() {
-        return osmIsActive ? 0 : 4;
     }
 
     public synchronized File getTagsFolderFile( Context context ) {
@@ -106,11 +97,8 @@ public class OsmTagsManager {
                 for( int i = 0; i < foldersList.length; i++ ) {
                     categoriesNames[i] = foldersList[i].getName();
                 }
-                osmIsActive = true;
+                Arrays.sort(categoriesNames);
                 return categoriesNames;
-            } else {
-                categoriesNames = new String[]{context.getResources().getString(R.string.no_osm_categories_available)};
-                osmIsActive = false;
             }
         }
         return categoriesNames;

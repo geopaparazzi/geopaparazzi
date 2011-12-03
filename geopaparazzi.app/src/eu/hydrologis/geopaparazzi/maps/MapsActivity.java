@@ -94,6 +94,7 @@ import eu.hydrologis.geopaparazzi.maps.overlays.NotesOverlay;
 import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
+import eu.hydrologis.geopaparazzi.util.DirectoryBrowserActivity;
 import eu.hydrologis.geopaparazzi.util.Note;
 import eu.hydrologis.geopaparazzi.util.ResourceProxyImpl;
 import eu.hydrologis.geopaparazzi.util.VerticalSeekBar;
@@ -418,12 +419,15 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
     }
 
     private void handleOsmSliderView() throws Exception {
-        OsmTagsManager osmTagsManager = OsmTagsManager.getInstance(this);
+        OsmTagsManager osmTagsManager = OsmTagsManager.getInstance();
+        final String[] categoriesNamesArray = osmTagsManager.getTagCategories(this);
+
+        int visibility = categoriesNamesArray != null ? 0 : 4;
 
         // slidingdrawer
         final int slidingId = R.id.osmslide;
         osmSlidingDrawer = (SlidingDrawer) findViewById(slidingId);
-        osmSlidingDrawer.setVisibility(osmTagsManager.osmViewVisibility());
+        osmSlidingDrawer.setVisibility(visibility);
         osmSlidingDrawer.setOnDrawerOpenListener(new SlidingDrawer.OnDrawerOpenListener(){
 
             public void onDrawerOpened() {
@@ -449,26 +453,24 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         });
 
         GridView buttonGridView = (GridView) findViewById(R.id.osmcategoriesview);
-        final String[] categoriesNamesArray = osmTagsManager.getTagCategories(this);
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.gpslog_row, categoriesNamesArray){
             public View getView( final int position, View cView, ViewGroup parent ) {
 
-                Button osmButton = new Button(MapsActivity.this);
+                final Button osmButton = new Button(MapsActivity.this);
                 osmButton.setText(categoriesNamesArray[position]);
                 osmButton.setOnClickListener(new Button.OnClickListener(){
                     public void onClick( View v ) {
-                        Toast.makeText(MapsActivity.this, "bah", Toast.LENGTH_LONG);
+                        String categoryName = osmButton.getText().toString();
+                        Intent osmCategoryIntent = new Intent(Constants.OSMCATEGORYACTIVITY);
+                        osmCategoryIntent.putExtra(Constants.OSM_CATEGORY_KEY, categoryName);
+                        startActivity(osmCategoryIntent);
                     }
                 });
-
                 return osmButton;
             }
         };
-
-        // setListAdapter(arrayAdapter);
         buttonGridView.setAdapter(arrayAdapter);
-
     }
 
     @Override
