@@ -39,6 +39,12 @@ import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 @SuppressWarnings("nls")
 public class OsmTagsManager {
 
+    private static final String MAINICON_POSTFIX = ".n.48.png";
+    public static final String ICON_POSTFIX_LOWDENSITY = ".n.32.png";
+    public static final String ICON_POSTFIX_MEDIUMDENSITY = ".n.48.png";
+    public static final String ICON_POSTFIX_HIGHDENSITY = ".n.64.png";
+    public static final String ICON_POSTFIX_XLARGE = ".n.64.png";
+
     public static final String TAG_LONGNAME = "longname";
     public static final String TAG_SHORTNAME = "shortname";
     public static final String TAG_FORM = "form";
@@ -109,12 +115,12 @@ public class OsmTagsManager {
         File categoryFolderFile = new File(tagsFolderFile, category);
         File[] iconFiles = categoryFolderFile.listFiles(new FileFilter(){
             public boolean accept( File pathname ) {
-                return pathname.getName().endsWith("png");
+                return pathname.getName().endsWith(MAINICON_POSTFIX);
             }
         });
         String[] iconFileNames = new String[iconFiles.length];
         for( int i = 0; i < iconFiles.length; i++ ) {
-            iconFileNames[i] = iconFiles[i].getName().replace("\\.png", "");
+            iconFileNames[i] = iconFiles[i].getName().replace(MAINICON_POSTFIX, "");
         }
         return iconFileNames;
     }
