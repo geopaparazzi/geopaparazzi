@@ -12,6 +12,7 @@
         android:id="@+id/osmtagsgridview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:gravity="center_horizontal"
         android:horizontalSpacing="5dp"
         android:numColumns="5"
         android:verticalSpacing="5dp" />

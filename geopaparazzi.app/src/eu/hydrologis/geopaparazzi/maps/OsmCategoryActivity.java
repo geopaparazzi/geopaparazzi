@@ -22,12 +22,18 @@ import java.sql.Date;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
@@ -54,18 +60,24 @@ public class OsmCategoryActivity extends Activity {
 
         GridView buttonGridView = (GridView) findViewById(R.id.osmtagsgridview);
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.gpslog_row, itemsForCategory){
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.osm_button_layout, itemsForCategory){
             public View getView( final int position, View cView, ViewGroup parent ) {
 
-                Button osmButton = new Button(OsmCategoryActivity.this);
-                osmButton.setText(itemsForCategory[position]);
-                // osmButton.setImageResource(R.drawable.gps);
+                View inflate = LayoutInflater.from(OsmCategoryActivity.this).inflate(R.layout.osm_button_layout, parent, false);
+
+                final TextView text = (TextView) inflate.findViewById(R.id.osm_item_text);
+                text.setText(itemsForCategory[position].replaceAll("\\_", " "));
+
+                final ImageButton osmButton = (ImageButton) inflate.findViewById(R.id.osm_item_image);
+                osmButton.setImageResource(R.drawable.bookmark);
                 osmButton.setOnClickListener(new Button.OnClickListener(){
                     public void onClick( View v ) {
+                        String tagName = text.getText().toString().replaceAll("\\s+", "_");
+                        
                     }
                 });
 
-                return osmButton;
+                return inflate;
             }
         };
 
