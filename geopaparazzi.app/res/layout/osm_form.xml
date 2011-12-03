@@ -3,7 +3,7 @@
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
 	android:orientation="vertical" android:background="#FFFFFF">
 
-	<TextView android:id="@+id/osmform_tag" android:layout_width="fill_parent"
+	<TextView android:id="@+id/osmform_textview" android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:text="test"
 		android:textColor="@color/gpsblue_stroke" android:textStyle="bold"
 		android:padding="5dp" android:gravity="center_horizontal"

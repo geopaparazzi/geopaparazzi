@@ -301,7 +301,7 @@ public final class R {
         public static final int osmform_cancel=0x7f0b0088;
         public static final int osmform_linear=0x7f0b0086;
         public static final int osmform_ok=0x7f0b0087;
-        public static final int osmform_tag=0x7f0b0085;
+        public static final int osmform_textview=0x7f0b0085;
         public static final int osmgridview=0x7f0b009c;
         public static final int osmslide=0x7f0b006d;
         public static final int osmslidecontent=0x7f0b006e;

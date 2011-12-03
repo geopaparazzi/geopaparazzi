@@ -81,10 +81,18 @@ public class OsmFormActivity extends Activity {
         category = extras.getString(Constants.OSM_CATEGORY_KEY);
         tagName = extras.getString(Constants.OSM_TAG_KEY);
 
+        TextView textView = (TextView) findViewById(R.id.osmform_textview);
+        StringBuilder sb = new StringBuilder();
+        sb.append(tagName);
+        sb.append(" (");
+        sb.append(category);
+        sb.append(")");
+        textView.setText(sb.toString());
+
         try {
             File tagsFolderFile = OsmTagsManager.getInstance().getTagsFolderFile(this);
 
-            StringBuilder sb = new StringBuilder();
+            sb = new StringBuilder();
             sb.append(category);
             sb.append("/");
             sb.append(tagName);
