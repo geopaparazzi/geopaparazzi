@@ -179,7 +179,8 @@
                 android:layout_height="fill_parent"
                 android:layout_gravity="center"
                 android:background="#FFFFFF"
-                android:orientation="vertical" android:padding="10dip">
+                android:orientation="vertical"
+                android:padding="10dip" >
 
                 <GridView
                     android:id="@+id/osmcategoriesview"
@@ -187,7 +188,17 @@
                     android:layout_height="fill_parent"
                     android:horizontalSpacing="5dp"
                     android:numColumns="1"
+                    android:layout_weight="1"
                     android:verticalSpacing="5dp" />
+
+                <Button
+                    android:id="@+id/syncosmbutton"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="5dip"
+                    android:layout_weight="10"
+                    android:text="Sync OSM notes with server" >
+                </Button>
             </LinearLayout>
         </SlidingDrawer>
     </FrameLayout>

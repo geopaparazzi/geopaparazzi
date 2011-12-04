@@ -1,0 +1,37 @@
+<wps:Execute service="WPS" version="1.0.0"
+	xmlns:wps="http://www.opengis.net/wps/1.0.0" xmlns:ows="http://www.opengis.net/ows/1.1"
+	xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.opengis.net/wps/1.0.0/../wpsExecute_request.xsd">
+	<ows:Identifier>zoosm_geopaparazzi</ows:Identifier>
+	<wps:DataInputs>
+		<wps:Input>
+			<ows:Identifier>username</ows:Identifier>
+			<wps:Data>
+				<wps:LiteralData>
+					USERNAME
+</wps:LiteralData>
+			</wps:Data>
+		</wps:Input>
+		<wps:Input>
+			<ows:Identifier>password</ows:Identifier>
+			<wps:Data>
+				<wps:LiteralData>
+					PASSWORD
+</wps:LiteralData>
+			</wps:Data>
+		</wps:Input>
+		<wps:Input>
+			<ows:Identifier>inputvector</ows:Identifier>
+			<wps:Data>
+				<wps:ComplexData mimeType="application/json">
+					JSON
+</wps:ComplexData>
+			</wps:Data>
+		</wps:Input>
+	</wps:DataInputs>
+	<wps:ResponseForm>
+		<wps:RawDataOutput>
+			<ows:Identifier>output</ows:Identifier>
+		</wps:RawDataOutput>
+	</wps:ResponseForm>
+</wps:Execute>

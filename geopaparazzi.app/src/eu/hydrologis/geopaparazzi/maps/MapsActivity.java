@@ -49,6 +49,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -92,6 +93,8 @@ import eu.hydrologis.geopaparazzi.maps.overlays.MeasureToolOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.MinimapOverlayWithCross;
 import eu.hydrologis.geopaparazzi.maps.overlays.NotesOverlay;
 import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
+import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
+import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Note;
@@ -474,6 +477,29 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
             }
         };
         buttonGridView.setAdapter(arrayAdapter);
+
+        Button syncOsmButton = (Button) findViewById(R.id.syncosmbutton);
+        syncOsmButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                Context context = getApplicationContext();
+                try {
+                    OsmUtilities.sendOsmNotes(context);
+                    Toast.makeText(context, "OSM notes properly uploaded.", Toast.LENGTH_LONG);
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setMessage("An error occurred while uploading OSM tags: " + e.getLocalizedMessage())
+                            .setCancelable(false).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                                public void onClick( DialogInterface dialog, int id ) {
+                                }
+                            });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                }
+            }
+        });
+
     }
 
     @Override
