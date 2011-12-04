@@ -208,7 +208,7 @@ public class OsmFormActivity extends Activity {
 
             try {
                 if (text != null)
-                    update(key, text);
+                    FormUtilities.update(formItemsArray, key, text);
             } catch (JSONException e) {
                 Logger.e(this, e.getLocalizedMessage(), e);
                 e.printStackTrace();
@@ -216,17 +216,6 @@ public class OsmFormActivity extends Activity {
 
         }
 
-    }
-
-    private void update( String key, String value ) throws JSONException {
-        int length = formItemsArray.length();
-        for( int i = 0; i < length; i++ ) {
-            JSONObject itemObject = formItemsArray.getJSONObject(i);
-            String objKey = itemObject.getString(TAG_KEY).trim();
-            if (objKey.equals(key)) {
-                itemObject.put(TAG_VALUE, value);
-            }
-        }
     }
 
 }

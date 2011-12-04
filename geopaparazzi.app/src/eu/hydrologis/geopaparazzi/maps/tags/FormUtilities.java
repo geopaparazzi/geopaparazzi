@@ -17,6 +17,10 @@
  */
 package eu.hydrologis.geopaparazzi.maps.tags;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.Context;
 import android.text.InputType;
 import android.view.View;
@@ -37,7 +41,7 @@ import eu.hydrologis.geopaparazzi.R;
  */
 @SuppressWarnings("nls")
 public class FormUtilities {
-    
+
     /**
      * Type for a {@link TextView} containing generic text.
      */
@@ -84,8 +88,7 @@ public class FormUtilities {
      * Type for picture element.
      */
     public static final String TYPE_PICTURE = "picture";
-    
-    
+
     public static final String TAG_LONGNAME = "longname";
     public static final String TAG_SHORTNAME = "shortname";
     public static final String TAG_FORM = "form";
@@ -96,7 +99,6 @@ public class FormUtilities {
     public static final String TAG_ITEMS = "items";
     public static final String TAG_ITEM = "item";
     public static final String TAG_TYPE = "type";
-    
 
     /**
      * Adds a {@link TextView} to the supplied mainView.
@@ -243,6 +245,25 @@ public class FormUtilities {
 
         textLayout.addView(spinner);
         return spinner;
+    }
+
+    /**
+     * Updates a form items array with the given kay/value pair.
+     * 
+     * @param formItemsArray the array to update.
+     * @param key the key of the item to update.
+     * @param value the new value to use.
+     * @throws JSONException
+     */
+    public static void update( JSONArray formItemsArray, String key, String value ) throws JSONException {
+        int length = formItemsArray.length();
+        for( int i = 0; i < length; i++ ) {
+            JSONObject itemObject = formItemsArray.getJSONObject(i);
+            String objKey = itemObject.getString(TAG_KEY).trim();
+            if (objKey.equals(key)) {
+                itemObject.put(TAG_VALUE, value);
+            }
+        }
     }
 
 }
