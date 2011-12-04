@@ -78,6 +78,7 @@ public class OsmFormActivity extends Activity {
         Bundle extras = getIntent().getExtras();
         category = extras.getString(Constants.OSM_CATEGORY_KEY);
         tagName = extras.getString(Constants.OSM_TAG_KEY);
+        formLongnameDefinition = tagName;
 
         TextView textView = (TextView) findViewById(R.id.osmform_textview);
         StringBuilder sb = new StringBuilder();
@@ -110,8 +111,8 @@ public class OsmFormActivity extends Activity {
         }
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        latitude = preferences.getFloat(Constants.VIEW_CENTER_LAT, 0f);
-        longitude = preferences.getFloat(Constants.VIEW_CENTER_LON, 0f);
+        latitude = preferences.getFloat(Constants.PREFS_KEY_MAPCENTER_LAT, 0f);
+        longitude = preferences.getFloat(Constants.PREFS_KEY_MAPCENTER_LON, 0f);
 
         LinearLayout mainView = (LinearLayout) findViewById(R.id.osmform_linear);
         Button okButton = (Button) findViewById(R.id.osmform_ok);
@@ -121,6 +122,7 @@ public class OsmFormActivity extends Activity {
                 try {
                     storeNote();
                     endString = jsonFormObject.toString();
+                    
                     Date sqlDate = new Date(System.currentTimeMillis());
                     DaoNotes.addNote(OsmFormActivity.this, longitude, latitude, -1.0, sqlDate, formLongnameDefinition, endString);
                     finish();
@@ -209,6 +211,9 @@ public class OsmFormActivity extends Activity {
             try {
                 if (text != null)
                     FormUtilities.update(formItemsArray, key, text);
+                
+                FormUtilities.updateExtras(formItemsArray, latitude, longitude, category, tagName);
+                
             } catch (JSONException e) {
                 Logger.e(this, e.getLocalizedMessage(), e);
                 e.printStackTrace();

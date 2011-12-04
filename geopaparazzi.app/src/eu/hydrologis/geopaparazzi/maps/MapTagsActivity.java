@@ -52,8 +52,8 @@ public class MapTagsActivity extends Activity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            latitude = extras.getFloat(Constants.VIEW_CENTER_LAT);
-            longitude = extras.getFloat(Constants.VIEW_CENTER_LON);
+            latitude = extras.getFloat(Constants.PREFS_KEY_MAPCENTER_LAT);
+            longitude = extras.getFloat(Constants.PREFS_KEY_MAPCENTER_LON);
 
             // if not passed as center, use the ones saved by the logger regularly
             if (latitude == 0.0)
@@ -122,8 +122,8 @@ public class MapTagsActivity extends Activity {
                                 formIntent.putExtra(Constants.FORMJSON_KEY, jsonString);
                                 formIntent.putExtra(Constants.FORMSHORTNAME_KEY, tag.shortName);
                                 formIntent.putExtra(Constants.FORMLONGNAME_KEY, finalLongName);
-                                formIntent.putExtra(Constants.VIEW_CENTER_LAT, latitude);
-                                formIntent.putExtra(Constants.VIEW_CENTER_LON, longitude);
+                                formIntent.putExtra(Constants.PREFS_KEY_MAPCENTER_LAT, latitude);
+                                formIntent.putExtra(Constants.PREFS_KEY_MAPCENTER_LON, longitude);
                                 startActivity(formIntent);
                             } else {
                                 // insert as it is

@@ -82,7 +82,7 @@ public class FormUtilities {
      * 
      * <p>This is needed in case of abstraction of forms.</p>
      */
-    public static final String TYPE_PRIMARYKEY = "primarykey";
+    public static final String TYPE_PRIMARYKEY = "primary_key";
 
     /**
      * Type for picture element.
@@ -266,4 +266,32 @@ public class FormUtilities {
         }
     }
 
+    /**
+     * Update those fields that do not generate widgets.
+     * 
+     * @param formItemsArray the items array.
+     * @param latitude the lat value.
+     * @param longitude the long value.
+     * @param category the category of the tag.
+     * @param tagName the tag name.
+     * @throws JSONException 
+     */
+    public static void updateExtras( JSONArray formItemsArray, float latitude, float longitude, String category, String tagName )
+            throws JSONException {
+        int length = formItemsArray.length();
+        for( int i = 0; i < length; i++ ) {
+            JSONObject itemObject = formItemsArray.getJSONObject(i);
+            String objKey = itemObject.getString(TAG_KEY).trim();
+            String objType = itemObject.getString(TAG_TYPE).trim();
+            if (objKey.equals(TYPE_LATITUDE)) {
+                itemObject.put(TAG_VALUE, latitude);
+            } else if (objKey.equals(TYPE_LONGITUDE)) {
+                itemObject.put(TAG_VALUE, longitude);
+            }
+            if (objType.equals(TYPE_PRIMARYKEY)) {
+                itemObject.put(TAG_VALUE, tagName);
+            }
+        }
+
+    }
 }

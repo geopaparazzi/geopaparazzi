@@ -223,8 +223,8 @@ public class ApplicationManager implements Serializable {
                     double latitude = loc.getLatitude();
                     double longitude = loc.getLongitude();
                     Intent osmTagsIntent = new Intent(Constants.TAGS);
-                    osmTagsIntent.putExtra(Constants.VIEW_CENTER_LAT, latitude);
-                    osmTagsIntent.putExtra(Constants.VIEW_CENTER_LON, longitude);
+                    osmTagsIntent.putExtra(Constants.PREFS_KEY_MAPCENTER_LAT, latitude);
+                    osmTagsIntent.putExtra(Constants.PREFS_KEY_MAPCENTER_LON, longitude);
                     context.startActivity(osmTagsIntent);
                 } else {
                     openDialog(R.string.gpslogging_only, context);

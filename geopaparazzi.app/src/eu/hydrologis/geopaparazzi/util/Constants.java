@@ -123,11 +123,8 @@ public interface Constants {
     public final SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     public final SimpleDateFormat TIME_FORMATTER_SQLITE = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public static final int GPS_LOGGING_INTERVAL = 10;
-    public static final float GPS_LOGGING_DISTANCE = 5f;
-
-    public static final double EARTH_RADIUS_KM = 6378.137;
-    public static final double WGS84FLATTENING = 1 / 298.257223563;
+    public static final int GPS_LOGGING_INTERVAL = 3;
+    public static final float GPS_LOGGING_DISTANCE = 1f;
 
     public static final String PREFS_KEY_NOTES_COLOR = "PREFS_KEY_NOTES_COLOR";
     public static final String PREFS_KEY_NOTES_WIDTH = "PREFS_KEY_NOTES_WIDTH";
@@ -154,12 +151,33 @@ public interface Constants {
      * </p>
      */
     public static final String PREFS_KEY_LON = "PREFS_KEY_LON";
+
+    /**
+     * Key used to store the mapview center latitude.
+     * 
+     * <p>
+     * This is used every time the map center changes,
+     * so this should not be used to store own
+     * data, which would be overwritten. 
+     * </p>
+     */
+    public static final String PREFS_KEY_MAPCENTER_LAT = "PREFS_KEY_MAPCENTER_LAT";
+
+    /**
+     * Key used to store the mapview center longitude.
+     * 
+     * <p>
+     * This is used every time the map center changes,
+     * so this should not be used to store own
+     * data, which would be overwritten. 
+     * </p>
+     */
+    public static final String PREFS_KEY_MAPCENTER_LON = "PREFS_KEY_MAPCENTER_LON";
+
     public static final String PREFS_KEY_ZOOM1 = "labels_zoom1";
     public static final String PREFS_KEY_ZOOM1_LABELLENGTH = "labels_length_zoom1";
     public static final String PREFS_KEY_ZOOM2 = "labels_zoom2";
     public static final String PREFS_KEY_ZOOM2_LABELLENGTH = "labels_length_zoom2";
-    public static final String VIEW_CENTER_LAT = "MAPSVIEW_CENTER_LAT";
-    public static final String VIEW_CENTER_LON = "MAPSVIEW_CENTER_LON";
     public static final String PREFS_KEY_MINIMAPON = "PREFS_KEY_MINIMAPON";
     public static final String PREFS_KEY_SCALEBARON = "PREFS_KEY_SCALEBARON";
     public static final String PREFS_KEY_COMPASSON = "PREFS_KEY_COMPASSON";

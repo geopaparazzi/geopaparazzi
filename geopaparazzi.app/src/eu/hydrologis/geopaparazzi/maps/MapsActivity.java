@@ -22,7 +22,7 @@ import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_COMPASSON;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_LAT;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_LON;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_MINIMAPON;
-import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_SCALEBARON;
+import static eu.hydrologis.geopaparazzi.util.Constants.*;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_ZOOM;
 
 import java.io.IOException;
@@ -94,10 +94,10 @@ import eu.hydrologis.geopaparazzi.maps.overlays.NotesOverlay;
 import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
-import eu.hydrologis.geopaparazzi.util.DirectoryBrowserActivity;
 import eu.hydrologis.geopaparazzi.util.Note;
 import eu.hydrologis.geopaparazzi.util.ResourceProxyImpl;
 import eu.hydrologis.geopaparazzi.util.VerticalSeekBar;
+import eu.hydrologis.geopaparazzi.util.debug.Debug;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -199,7 +199,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
             this.mapsView.getOverlays().add(mMeasureOverlay);
         }
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
         /* Scale Bar Overlay */
         {
             mScaleBarOverlay = new ScaleBarOverlay(this, mResourceProxy);
@@ -357,8 +357,8 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
             public void onClick( View v ) {
                 IGeoPoint mapCenter = mapsView.getMapCenter();
                 Intent osmTagsIntent = new Intent(Constants.TAGS);
-                osmTagsIntent.putExtra(Constants.VIEW_CENTER_LAT, mapCenter.getLatitudeE6() / E6);
-                osmTagsIntent.putExtra(Constants.VIEW_CENTER_LON, mapCenter.getLongitudeE6() / E6);
+                osmTagsIntent.putExtra(Constants.PREFS_KEY_MAPCENTER_LAT, mapCenter.getLatitudeE6() / E6);
+                osmTagsIntent.putExtra(Constants.PREFS_KEY_MAPCENTER_LON, mapCenter.getLongitudeE6() / E6);
                 startActivity(osmTagsIntent);
             }
         });
@@ -543,7 +543,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
 
     public double[] getCenterLonLat() {
         IGeoPoint mapCenter = mapsView.getMapCenter();
-        double[] lonLat = {mapCenter.getLongitudeE6() / 6d, mapCenter.getLatitudeE6() / 6d};
+        double[] lonLat = {mapCenter.getLongitudeE6() / E6, mapCenter.getLatitudeE6() / E6};
         return lonLat;
     }
 
@@ -856,6 +856,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
     private int maxZoomLevel;
     private int minZoomLevel;
     private SlidingDrawer osmSlidingDrawer;
+    private SharedPreferences preferences;
 
     public void onLocationChanged( GpsLocation loc ) {
         if (loc == null) {
@@ -881,14 +882,34 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
     }
 
     public boolean onScroll( ScrollEvent event ) {
+        updateCenterPref();
         return true;
     }
 
+    private void updateCenterPref() {
+        IGeoPoint mapCenter = mapsView.getMapCenter();
+        double lon = mapCenter.getLongitudeE6() / E6;
+        double lat = mapCenter.getLatitudeE6() / E6;
+
+        if (Debug.D) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Map Center moved: ");
+            sb.append(lon);
+            sb.append("/");
+            sb.append(lat);
+            Logger.d(this, sb.toString());
+        }
+        Editor editor = preferences.edit();
+        editor.putFloat(PREFS_KEY_MAPCENTER_LON, (float) lon);
+        editor.putFloat(PREFS_KEY_MAPCENTER_LAT, (float) lat);
+        editor.commit();
+    }
     public boolean onZoom( ZoomEvent event ) {
         int zoomLevel = event.getZoomLevel();
         if (zoomInButton != null) {
             setZoomGuiText(zoomLevel);
         }
+        updateCenterPref();
         return true;
     }
 

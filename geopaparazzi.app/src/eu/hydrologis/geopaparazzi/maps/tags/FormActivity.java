@@ -80,8 +80,8 @@ public class FormActivity extends Activity {
             formJsonString = extras.getString(Constants.FORMJSON_KEY);
             // formShortnameDefinition = extras.getString(Constants.FORMSHORTNAME_KEY);
             formLongnameDefinition = extras.getString(Constants.FORMLONGNAME_KEY);
-            latitude = extras.getFloat(Constants.VIEW_CENTER_LAT);
-            longitude = extras.getFloat(Constants.VIEW_CENTER_LON);
+            latitude = extras.getFloat(Constants.PREFS_KEY_MAPCENTER_LAT);
+            longitude = extras.getFloat(Constants.PREFS_KEY_MAPCENTER_LON);
         }
 
         if (formJsonString == null) {
