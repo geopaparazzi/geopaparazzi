@@ -146,8 +146,6 @@ public class FormActivity extends Activity {
                     addBooleanView(mainView, key, value);
                 } else if (type.equals(TagsManager.TYPE_STRINGCOMBO)) {
                     addComboView(mainView, key, value, jsonObject);
-                } else if (type.equals(TagsManager.TYPE_DOUBLECOMBO)) {
-                    addComboView(mainView, key, value, jsonObject);
                 } else {
                     throw new RuntimeException("Type non implemented yet: " + type);
                 }

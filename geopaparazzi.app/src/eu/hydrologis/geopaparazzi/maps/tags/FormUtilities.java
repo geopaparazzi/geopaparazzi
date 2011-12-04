@@ -17,24 +17,17 @@
  */
 package eu.hydrologis.geopaparazzi.maps.tags;
 
-import java.util.HashMap;
-import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.Context;
 import android.text.InputType;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.maps.TagsManager;
 
 /**
  * Utilities methods for form stuff.
@@ -58,7 +51,7 @@ public class FormUtilities {
      *             <li>2: phone</li>
      *             <li>3: date</li>
      *          </ul>
-     * @return
+     * @return the added view.
      */
     public static View addTextView( Context context, LinearLayout mainView, String key, String value, int type ) {
         LinearLayout textLayout = new LinearLayout(context);
@@ -101,8 +94,16 @@ public class FormUtilities {
         return editView;
     }
 
-    public static void addBooleanView( Context context, HashMap<String, View> key2WidgetMap, List<String> keyList,
-            LinearLayout mainView, String key, String value ) {
+    /**
+     * Adds a {@link CheckBox} to the supplied mainView.
+     * 
+     * @param context the context.
+     * @param mainView the main view to which to add the new widget to.
+     * @param key the key identifying the widget.
+     * @param value the value to put in the widget.
+     * @return the added view.
+     */
+    public static View addBooleanView( Context context, LinearLayout mainView, String key, String value ) {
         LinearLayout textLayout = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.WRAP_CONTENT);
@@ -119,33 +120,35 @@ public class FormUtilities {
 
         textLayout.addView(textView);
 
-        Spinner spinner = new Spinner(context);
-        spinner.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        spinner.setPadding(15, 5, 15, 5);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context, R.array.true_false,
-                android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        CheckBox checkbox = new CheckBox(context);
+        checkbox.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        checkbox.setPadding(15, 5, 15, 5);
 
         if (value != null) {
-            String[] stringArray = context.getResources().getStringArray(R.array.true_false);
-            for( int i = 0; i < stringArray.length; i++ ) {
-                if (stringArray[i].equals(value.trim())) {
-                    spinner.setSelection(i);
-                    break;
-                }
+            if (value.trim().toLowerCase().equals("true")) { //$NON-NLS-1$
+                checkbox.setSelected(true);
+            } else {
+                checkbox.setSelected(false);
             }
         }
 
-        textLayout.addView(spinner);
+        textLayout.addView(checkbox);
 
-        key2WidgetMap.put(key, spinner);
-        keyList.add(key);
-
+        return checkbox;
     }
 
-    public static void addComboView( Context context, HashMap<String, View> key2WidgetMap, List<String> keyList,
-            LinearLayout mainView, String key, String value, JSONObject jsonObject ) throws JSONException {
+    /**
+     * Adds a {@link Spinner} to the supplied mainView.
+     * 
+     * @param context the context.
+     * @param mainView the main view to which to add the new widget to.
+     * @param key the key identifying the widget.
+     * @param value the value to put in the widget.
+     * @param itemsArray the items to put in the spinner.
+     * @return 
+     * @return the added view.
+     */
+    public static View addComboView( Context context, LinearLayout mainView, String key, String value, String[] itemsArray ) {
         LinearLayout textLayout = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.WRAP_CONTENT);
@@ -160,9 +163,6 @@ public class FormUtilities {
         textView.setText(key);
         textView.setTextColor(context.getResources().getColor(R.color.hydrogreen));
         textLayout.addView(textView);
-
-        JSONArray comboItems = TagsManager.getComboItems(jsonObject);
-        String[] itemsArray = TagsManager.comboItems2StringArray(comboItems);
 
         Spinner spinner = new Spinner(context);
         spinner.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
@@ -181,9 +181,7 @@ public class FormUtilities {
         }
 
         textLayout.addView(spinner);
-
-        key2WidgetMap.put(key, spinner);
-        keyList.add(key);
+        return spinner;
     }
 
 }

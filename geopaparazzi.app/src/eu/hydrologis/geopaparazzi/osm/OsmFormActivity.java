@@ -34,18 +34,15 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.text.InputType;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.maps.TagsManager;
+import eu.hydrologis.geopaparazzi.maps.tags.FormUtilities;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.FileUtils;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
@@ -167,19 +164,22 @@ public class OsmFormActivity extends Activity {
                     type = jsonObject.getString(TagsManager.TAG_TYPE).trim();
                 }
 
+                View addedView = null;
                 if (type.equals(TagsManager.TYPE_STRING)) {
-                    addTextView(mainView, key, value, false);
+                    addedView = FormUtilities.addTextView(this, mainView, key, value, 0);
                 } else if (type.equals(TagsManager.TYPE_DOUBLE)) {
-                    addTextView(mainView, key, value, true);
+                    addedView = FormUtilities.addTextView(this, mainView, key, value, 1);
                 } else if (type.equals(TagsManager.TYPE_BOOLEAN)) {
-                    addBooleanView(mainView, key, value);
+                    addedView = FormUtilities.addBooleanView(this, mainView, key, value);
                 } else if (type.equals(TagsManager.TYPE_STRINGCOMBO)) {
-                    addComboView(mainView, key, value, jsonObject);
-                } else if (type.equals(TagsManager.TYPE_DOUBLECOMBO)) {
-                    addComboView(mainView, key, value, jsonObject);
+                    JSONArray comboItems = TagsManager.getComboItems(jsonObject);
+                    String[] itemsArray = TagsManager.comboItems2StringArray(comboItems);
+                    addedView = FormUtilities.addComboView(this, mainView, key, value, itemsArray);
                 } else {
                     System.out.println("Type non implemented yet: " + type);
                 }
+                key2WidgetMap.put(key, addedView);
+                keyList.add(key);
             }
 
         } catch (JSONException e) {
@@ -226,122 +226,6 @@ public class OsmFormActivity extends Activity {
                 itemObject.put(TagsManager.TAG_VALUE, value);
             }
         }
-    }
-
-    private void addTextView( LinearLayout mainView, String key, String value, boolean numeric ) {
-        LinearLayout textLayout = new LinearLayout(this);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
-                LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(10, 10, 10, 10);
-        textLayout.setLayoutParams(layoutParams);
-        textLayout.setOrientation(LinearLayout.VERTICAL);
-        // textLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.formitem_background));
-        mainView.addView(textLayout);
-
-        TextView textView = new TextView(this);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        textView.setPadding(2, 2, 2, 2);
-        textView.setText(key);
-        textView.setTextColor(getResources().getColor(R.color.hydrogreen));
-
-        textLayout.addView(textView);
-
-        EditText editView = new EditText(this);
-        editView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        editView.setPadding(15, 5, 15, 5);
-        editView.setText(value);
-        if (numeric) {
-            editView.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        }
-
-        textLayout.addView(editView);
-
-        key2WidgetMap.put(key, editView);
-        keyList.add(key);
-
-    }
-
-    private void addBooleanView( LinearLayout mainView, String key, String value ) {
-        LinearLayout textLayout = new LinearLayout(this);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
-                LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(10, 10, 10, 10);
-        textLayout.setLayoutParams(layoutParams);
-        textLayout.setOrientation(LinearLayout.VERTICAL);
-        mainView.addView(textLayout);
-
-        TextView textView = new TextView(this);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        textView.setPadding(2, 2, 2, 2);
-        textView.setText(key);
-        textView.setTextColor(getResources().getColor(R.color.hydrogreen));
-
-        textLayout.addView(textView);
-
-        Spinner spinner = new Spinner(this);
-        spinner.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        spinner.setPadding(15, 5, 15, 5);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.true_false,
-                android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-
-        if (value != null) {
-            String[] stringArray = getResources().getStringArray(R.array.true_false);
-            for( int i = 0; i < stringArray.length; i++ ) {
-                if (stringArray[i].equals(value.trim())) {
-                    spinner.setSelection(i);
-                    break;
-                }
-            }
-        }
-
-        textLayout.addView(spinner);
-
-        key2WidgetMap.put(key, spinner);
-        keyList.add(key);
-
-    }
-
-    private void addComboView( LinearLayout mainView, String key, String value, JSONObject jsonObject ) throws JSONException {
-        LinearLayout textLayout = new LinearLayout(this);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
-                LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(10, 10, 10, 10);
-        textLayout.setLayoutParams(layoutParams);
-        textLayout.setOrientation(LinearLayout.VERTICAL);
-        mainView.addView(textLayout);
-
-        TextView textView = new TextView(this);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        textView.setPadding(2, 2, 2, 2);
-        textView.setText(key);
-        textView.setTextColor(getResources().getColor(R.color.hydrogreen));
-        textLayout.addView(textView);
-
-        JSONArray comboItems = TagsManager.getComboItems(jsonObject);
-        String[] itemsArray = TagsManager.comboItems2StringArray(comboItems);
-
-        Spinner spinner = new Spinner(this);
-        spinner.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        spinner.setPadding(15, 5, 15, 5);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, itemsArray);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        if (value != null) {
-            for( int i = 0; i < itemsArray.length; i++ ) {
-                if (itemsArray[i].equals(value.trim())) {
-                    spinner.setSelection(i);
-                    break;
-                }
-            }
-        }
-
-        textLayout.addView(spinner);
-
-        key2WidgetMap.put(key, spinner);
-        keyList.add(key);
     }
 
 }
