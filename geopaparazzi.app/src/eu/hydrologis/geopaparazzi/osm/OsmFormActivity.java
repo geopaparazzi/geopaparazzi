@@ -18,6 +18,7 @@
 package eu.hydrologis.geopaparazzi.osm;
 
 import java.io.File;
+import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.*;
 import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -154,24 +155,24 @@ public class OsmFormActivity extends Activity {
             for( int i = 0; i < length; i++ ) {
                 JSONObject jsonObject = formItemsArray.getJSONObject(i);
 
-                String key = jsonObject.getString(TagsManager.TAG_KEY).trim();
+                String key = jsonObject.getString(TAG_KEY).trim();
                 String value = "";
-                if (jsonObject.has(TagsManager.TAG_VALUE)) {
-                    value = jsonObject.getString(TagsManager.TAG_VALUE).trim();
+                if (jsonObject.has(TAG_VALUE)) {
+                    value = jsonObject.getString(TAG_VALUE).trim();
                 }
-                String type = TagsManager.TYPE_STRING;
-                if (jsonObject.has(TagsManager.TAG_TYPE)) {
-                    type = jsonObject.getString(TagsManager.TAG_TYPE).trim();
+                String type = TYPE_STRING;
+                if (jsonObject.has(TAG_TYPE)) {
+                    type = jsonObject.getString(TAG_TYPE).trim();
                 }
 
                 View addedView = null;
-                if (type.equals(TagsManager.TYPE_STRING)) {
+                if (type.equals(TYPE_STRING)) {
                     addedView = FormUtilities.addTextView(this, mainView, key, value, 0);
-                } else if (type.equals(TagsManager.TYPE_DOUBLE)) {
+                } else if (type.equals(TYPE_DOUBLE)) {
                     addedView = FormUtilities.addTextView(this, mainView, key, value, 1);
-                } else if (type.equals(TagsManager.TYPE_BOOLEAN)) {
+                } else if (type.equals(TYPE_BOOLEAN)) {
                     addedView = FormUtilities.addBooleanView(this, mainView, key, value);
-                } else if (type.equals(TagsManager.TYPE_STRINGCOMBO)) {
+                } else if (type.equals(TYPE_STRINGCOMBO)) {
                     JSONArray comboItems = TagsManager.getComboItems(jsonObject);
                     String[] itemsArray = TagsManager.comboItems2StringArray(comboItems);
                     addedView = FormUtilities.addComboView(this, mainView, key, value, itemsArray);
@@ -191,7 +192,7 @@ public class OsmFormActivity extends Activity {
 
     private void storeNote() throws JSONException {
         // update the name with info
-        jsonFormObject.put(TagsManager.TAG_LONGNAME, formLongnameDefinition);
+        jsonFormObject.put(TAG_LONGNAME, formLongnameDefinition);
 
         // update the items
         for( String key : keyList ) {
@@ -221,9 +222,9 @@ public class OsmFormActivity extends Activity {
         int length = formItemsArray.length();
         for( int i = 0; i < length; i++ ) {
             JSONObject itemObject = formItemsArray.getJSONObject(i);
-            String objKey = itemObject.getString(TagsManager.TAG_KEY).trim();
+            String objKey = itemObject.getString(TAG_KEY).trim();
             if (objKey.equals(key)) {
-                itemObject.put(TagsManager.TAG_VALUE, value);
+                itemObject.put(TAG_VALUE, value);
             }
         }
     }

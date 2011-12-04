@@ -35,7 +35,68 @@ import eu.hydrologis.geopaparazzi.R;
  * @author Andrea Antonello (www.hydrologis.com)
  * @since 2.6
  */
+@SuppressWarnings("nls")
 public class FormUtilities {
+    
+    /**
+     * Type for a {@link TextView} containing generic text.
+     */
+    public static final String TYPE_STRING = "string";
+
+    /**
+     * Type for a {@link TextView} containing generic numbers.
+     */
+    public static final String TYPE_DOUBLE = "double";
+
+    /**
+     * Type for a {@link CheckBox}.
+     */
+    public static final String TYPE_BOOLEAN = "boolean";
+
+    /**
+     * Type for a {@link Spinner}.
+     */
+    public static final String TYPE_STRINGCOMBO = "stringcombo";
+
+    /**
+     * Type for a hidden widget, which just needs to be kept as it is but not displayed.
+     */
+    public static final String TYPE_HIDDEN = "hidden";
+
+    /**
+     * Type for latitude, which can be substituted by the engine if necessary.
+     */
+    public static final String TYPE_LATITUDE = "LATITUDE";
+
+    /**
+     * Type for longitude, which can be substituted by the engine if necessary.
+     */
+    public static final String TYPE_LONGITUDE = "LONGITUDE";
+
+    /**
+     * Type for a hidden item, the value of which needs to get the name of the element.
+     * 
+     * <p>This is needed in case of abstraction of forms.</p>
+     */
+    public static final String TYPE_PRIMARYKEY = "primarykey";
+
+    /**
+     * Type for picture element.
+     */
+    public static final String TYPE_PICTURE = "picture";
+    
+    
+    public static final String TAG_LONGNAME = "longname";
+    public static final String TAG_SHORTNAME = "shortname";
+    public static final String TAG_FORM = "form";
+    public static final String TAG_FORMITEMS = "formitems";
+    public static final String TAG_KEY = "key";
+    public static final String TAG_VALUE = "value";
+    public static final String TAG_VALUES = "values";
+    public static final String TAG_ITEMS = "items";
+    public static final String TAG_ITEM = "item";
+    public static final String TAG_TYPE = "type";
+    
 
     /**
      * Adds a {@link TextView} to the supplied mainView.

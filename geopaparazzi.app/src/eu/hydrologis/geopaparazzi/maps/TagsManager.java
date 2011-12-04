@@ -17,6 +17,14 @@
  */
 package eu.hydrologis.geopaparazzi.maps;
 
+import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_FORM;
+import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_FORMITEMS;
+import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_ITEM;
+import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_ITEMS;
+import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_LONGNAME;
+import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_SHORTNAME;
+import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_VALUES;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -31,9 +39,6 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.res.AssetManager;
-import android.widget.CheckBox;
-import android.widget.Spinner;
-import android.widget.TextView;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.FileUtils;
 import eu.hydrologis.geopaparazzi.util.debug.Debug;
@@ -45,64 +50,6 @@ import eu.hydrologis.geopaparazzi.util.debug.Debug;
  */
 @SuppressWarnings("nls")
 public class TagsManager {
-
-    public static final String TAG_LONGNAME = "longname";
-    public static final String TAG_SHORTNAME = "shortname";
-    public static final String TAG_FORM = "form";
-    public static final String TAG_FORMITEMS = "formitems";
-    public static final String TAG_KEY = "key";
-    public static final String TAG_VALUE = "value";
-    public static final String TAG_VALUES = "values";
-    public static final String TAG_ITEMS = "items";
-    public static final String TAG_ITEM = "item";
-    public static final String TAG_TYPE = "type";
-
-    /**
-     * Type for a {@link TextView} containing generic text.
-     */
-    public static final String TYPE_STRING = "string";
-
-    /**
-     * Type for a {@link TextView} containing generic numbers.
-     */
-    public static final String TYPE_DOUBLE = "double";
-
-    /**
-     * Type for a {@link CheckBox}.
-     */
-    public static final String TYPE_BOOLEAN = "boolean";
-
-    /**
-     * Type for a {@link Spinner}.
-     */
-    public static final String TYPE_STRINGCOMBO = "stringcombo";
-
-    /**
-     * Type for a hidden widget, which just needs to be kept as it is but not displayed.
-     */
-    public static final String TYPE_HIDDEN = "hidden";
-
-    /**
-     * Type for latitude, which can be substituted by the engine if necessary.
-     */
-    public static final String TYPE_LATITUDE = "LATITUDE";
-
-    /**
-     * Type for longitude, which can be substituted by the engine if necessary.
-     */
-    public static final String TYPE_LONGITUDE = "LONGITUDE";
-
-    /**
-     * Type for a hidden item, the value of which needs to get the name of the element.
-     * 
-     * <p>This is needed in case of abstraction of forms.</p>
-     */
-    public static final String TYPE_PRIMARYKEY = "primarykey";
-
-    /**
-     * Type for picture element.
-     */
-    public static final String TYPE_PICTURE = "picture";
 
     /**
      * Type for barcode element.
@@ -197,10 +144,10 @@ public class TagsManager {
      * @throws JSONException
      */
     public static JSONArray getFormItems( JSONObject jsonObj ) throws JSONException {
-        if (jsonObj.has(TagsManager.TAG_FORM)) {
-            JSONObject formObj = jsonObj.getJSONObject(TagsManager.TAG_FORM);
-            if (formObj.has(TagsManager.TAG_FORMITEMS)) {
-                JSONArray formItemsArray = formObj.getJSONArray(TagsManager.TAG_FORMITEMS);
+        if (jsonObj.has(TAG_FORM)) {
+            JSONObject formObj = jsonObj.getJSONObject(TAG_FORM);
+            if (formObj.has(TAG_FORMITEMS)) {
+                JSONArray formItemsArray = formObj.getJSONArray(TAG_FORMITEMS);
                 return formItemsArray;
             }
         }
@@ -215,10 +162,10 @@ public class TagsManager {
      * @throws JSONException
      */
     public static JSONArray getComboItems( JSONObject formItem ) throws JSONException {
-        if (formItem.has(TagsManager.TAG_VALUES)) {
-            JSONObject valuesObj = formItem.getJSONObject(TagsManager.TAG_VALUES);
-            if (valuesObj.has(TagsManager.TAG_ITEMS)) {
-                JSONArray itemsArray = valuesObj.getJSONArray(TagsManager.TAG_ITEMS);
+        if (formItem.has(TAG_VALUES)) {
+            JSONObject valuesObj = formItem.getJSONObject(TAG_VALUES);
+            if (valuesObj.has(TAG_ITEMS)) {
+                JSONArray itemsArray = valuesObj.getJSONArray(TAG_ITEMS);
                 return itemsArray;
             }
         }
@@ -230,8 +177,8 @@ public class TagsManager {
         String[] itemsArray = new String[length];
         for( int i = 0; i < length; i++ ) {
             JSONObject itemObj = comboItems.getJSONObject(i);
-            if (itemObj.has(TagsManager.TAG_ITEM)) {
-                itemsArray[i] = itemObj.getString(TagsManager.TAG_ITEM).trim();
+            if (itemObj.has(TAG_ITEM)) {
+                itemsArray[i] = itemObj.getString(TAG_ITEM).trim();
             } else {
                 itemsArray[i] = " - ";
             }

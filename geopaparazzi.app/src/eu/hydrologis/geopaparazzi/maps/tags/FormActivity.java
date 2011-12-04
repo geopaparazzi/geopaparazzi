@@ -17,6 +17,15 @@
  */
 package eu.hydrologis.geopaparazzi.maps.tags;
 
+import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_KEY;
+import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_LONGNAME;
+import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_TYPE;
+import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_VALUE;
+import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TYPE_BOOLEAN;
+import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TYPE_DOUBLE;
+import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TYPE_STRING;
+import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TYPE_STRINGCOMBO;
+
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,12 +39,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -128,27 +133,32 @@ public class FormActivity extends Activity {
             for( int i = 0; i < length; i++ ) {
                 JSONObject jsonObject = formItemsArray.getJSONObject(i);
 
-                String key = jsonObject.getString(TagsManager.TAG_KEY).trim();
+                String key = jsonObject.getString(TAG_KEY).trim();
                 String value = "";
-                if (jsonObject.has(TagsManager.TAG_VALUE)) {
-                    value = jsonObject.getString(TagsManager.TAG_VALUE).trim();
+                if (jsonObject.has(TAG_VALUE)) {
+                    value = jsonObject.getString(TAG_VALUE).trim();
                 }
-                String type = TagsManager.TYPE_STRING;
-                if (jsonObject.has(TagsManager.TAG_TYPE)) {
-                    type = jsonObject.getString(TagsManager.TAG_TYPE).trim();
+                String type = FormUtilities.TYPE_STRING;
+                if (jsonObject.has(TAG_TYPE)) {
+                    type = jsonObject.getString(TAG_TYPE).trim();
                 }
 
-                if (type.equals(TagsManager.TYPE_STRING)) {
-                    addTextView(mainView, key, value, false);
-                } else if (type.equals(TagsManager.TYPE_DOUBLE)) {
-                    addTextView(mainView, key, value, true);
-                } else if (type.equals(TagsManager.TYPE_BOOLEAN)) {
-                    addBooleanView(mainView, key, value);
-                } else if (type.equals(TagsManager.TYPE_STRINGCOMBO)) {
-                    addComboView(mainView, key, value, jsonObject);
+                View addedView = null;
+                if (type.equals(TYPE_STRING)) {
+                    addedView = FormUtilities.addTextView(this, mainView, key, value, 0);
+                } else if (type.equals(TYPE_DOUBLE)) {
+                    addedView = FormUtilities.addTextView(this, mainView, key, value, 1);
+                } else if (type.equals(TYPE_BOOLEAN)) {
+                    addedView = FormUtilities.addBooleanView(this, mainView, key, value);
+                } else if (type.equals(TYPE_STRINGCOMBO)) {
+                    JSONArray comboItems = TagsManager.getComboItems(jsonObject);
+                    String[] itemsArray = TagsManager.comboItems2StringArray(comboItems);
+                    addedView = FormUtilities.addComboView(this, mainView, key, value, itemsArray);
                 } else {
-                    throw new RuntimeException("Type non implemented yet: " + type);
+                    System.out.println("Type non implemented yet: " + type);
                 }
+                key2WidgetMap.put(key, addedView);
+                keyList.add(key);
 
             }
 
@@ -161,7 +171,7 @@ public class FormActivity extends Activity {
 
     private void storeNote() throws JSONException {
         // update the name with info
-        jsonFormObject.put(TagsManager.TAG_LONGNAME, formLongnameDefinition);
+        jsonFormObject.put(TAG_LONGNAME, formLongnameDefinition);
 
         // update the items
         for( String key : keyList ) {
@@ -191,127 +201,11 @@ public class FormActivity extends Activity {
         int length = formItemsArray.length();
         for( int i = 0; i < length; i++ ) {
             JSONObject itemObject = formItemsArray.getJSONObject(i);
-            String objKey = itemObject.getString(TagsManager.TAG_KEY).trim();
+            String objKey = itemObject.getString(TAG_KEY).trim();
             if (objKey.equals(key)) {
-                itemObject.put(TagsManager.TAG_VALUE, value);
+                itemObject.put(TAG_VALUE, value);
             }
         }
-    }
-
-    private void addTextView( LinearLayout mainView, String key, String value, boolean numeric ) {
-        LinearLayout textLayout = new LinearLayout(this);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
-                LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(10, 10, 10, 10);
-        textLayout.setLayoutParams(layoutParams);
-        textLayout.setOrientation(LinearLayout.VERTICAL);
-        // textLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.formitem_background));
-        mainView.addView(textLayout);
-
-        TextView textView = new TextView(this);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        textView.setPadding(2, 2, 2, 2);
-        textView.setText(key);
-        textView.setTextColor(getResources().getColor(R.color.hydrogreen));
-
-        textLayout.addView(textView);
-
-        EditText editView = new EditText(this);
-        editView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        editView.setPadding(15, 5, 15, 5);
-        editView.setText(value);
-        if (numeric) {
-            editView.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-        }
-
-        textLayout.addView(editView);
-
-        key2WidgetMap.put(key, editView);
-        keyList.add(key);
-
-    }
-
-    private void addBooleanView( LinearLayout mainView, String key, String value ) {
-        LinearLayout textLayout = new LinearLayout(this);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
-                LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(10, 10, 10, 10);
-        textLayout.setLayoutParams(layoutParams);
-        textLayout.setOrientation(LinearLayout.VERTICAL);
-        mainView.addView(textLayout);
-
-        TextView textView = new TextView(this);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        textView.setPadding(2, 2, 2, 2);
-        textView.setText(key);
-        textView.setTextColor(getResources().getColor(R.color.hydrogreen));
-
-        textLayout.addView(textView);
-
-        Spinner spinner = new Spinner(this);
-        spinner.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        spinner.setPadding(15, 5, 15, 5);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.true_false,
-                android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-
-        if (value != null) {
-            String[] stringArray = getResources().getStringArray(R.array.true_false);
-            for( int i = 0; i < stringArray.length; i++ ) {
-                if (stringArray[i].equals(value.trim())) {
-                    spinner.setSelection(i);
-                    break;
-                }
-            }
-        }
-
-        textLayout.addView(spinner);
-
-        key2WidgetMap.put(key, spinner);
-        keyList.add(key);
-
-    }
-
-    private void addComboView( LinearLayout mainView, String key, String value, JSONObject jsonObject ) throws JSONException {
-        LinearLayout textLayout = new LinearLayout(this);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
-                LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(10, 10, 10, 10);
-        textLayout.setLayoutParams(layoutParams);
-        textLayout.setOrientation(LinearLayout.VERTICAL);
-        mainView.addView(textLayout);
-
-        TextView textView = new TextView(this);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        textView.setPadding(2, 2, 2, 2);
-        textView.setText(key);
-        textView.setTextColor(getResources().getColor(R.color.hydrogreen));
-        textLayout.addView(textView);
-
-        JSONArray comboItems = TagsManager.getComboItems(jsonObject);
-        String[] itemsArray = TagsManager.comboItems2StringArray(comboItems);
-
-        Spinner spinner = new Spinner(this);
-        spinner.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        spinner.setPadding(15, 5, 15, 5);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, itemsArray);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        if (value != null) {
-            for( int i = 0; i < itemsArray.length; i++ ) {
-                if (itemsArray[i].equals(value.trim())) {
-                    spinner.setSelection(i);
-                    break;
-                }
-            }
-        }
-
-        textLayout.addView(spinner);
-
-        key2WidgetMap.put(key, spinner);
-        keyList.add(key);
     }
 
 }

@@ -21,6 +21,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import eu.hydrologis.geopaparazzi.maps.TagsManager;
+import eu.hydrologis.geopaparazzi.maps.tags.FormUtilities;
 
 /**
  * Represents a note (log or map).
@@ -115,8 +116,8 @@ public class Note {
 
             for( int i = 0; i < formItems.length(); i++ ) {
                 JSONObject formItem = formItems.getJSONObject(i);
-                String key = formItem.getString(TagsManager.TAG_KEY);
-                String value = formItem.getString(TagsManager.TAG_VALUE);
+                String key = formItem.getString(FormUtilities.TAG_KEY);
+                String value = formItem.getString(FormUtilities.TAG_VALUE);
 
                 sB.append("<tr>");
                 sB.append("<td style=\"text-align: left; vertical-align: top; width: 50%;\">");
