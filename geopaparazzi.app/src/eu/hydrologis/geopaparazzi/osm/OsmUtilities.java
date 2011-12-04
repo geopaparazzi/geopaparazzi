@@ -65,10 +65,14 @@ public class OsmUtilities {
         for( Note note : notesList ) {
             String form = note.getForm();
             if (form != null) {
+                sb.append(",\n[");
                 sb.append(form);
+                sb.append("]");
             }
         }
         String json = sb.toString();
+        json = json.substring(1);
+        
         wpsXmlString = wpsXmlString.replaceFirst("JSON", json);
 
         String response = NetworkUtilities.sendPost(serverUrl, wpsXmlString, null, null);
