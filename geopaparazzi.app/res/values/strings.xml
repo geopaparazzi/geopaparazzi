@@ -253,6 +253,13 @@
     <string name="notefromgps">gps note</string>
     <string name="quicknotes">QUICK GPS NOTES</string>
     <string name="formnotes">FORM BASED NOTES</string>
+    
+	<!-- added after 2.5.0 -->
     <string name="an_error_occurred_while_creating_the_chart_">An error occurred while creating the chart.</string>
     <string name="no_osm_categories_available">No OSM categories available</string>
+    
+    <string name="osm_preferences">OpenStreetMap Preferences</string>
+    <string name="osm_user_label">Username</string>
+    <string name="osm_password_label">Password</string>
+    <string name="osm_server_label">Server to connect to</string>
 </resources>

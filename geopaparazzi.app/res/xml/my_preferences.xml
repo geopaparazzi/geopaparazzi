@@ -1,60 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orderingFromXml="true">
-	<PreferenceScreen android:title="@string/gps_preferences"
-		android:order="1">
+    android:orderingFromXml="true" >
 
-		<EditTextPreference android:order="3"
-			android:key="gps_logging_distance" android:title="@string/gps_logging_distance"
-			android:defaultValue="0" android:inputType="number"></EditTextPreference>
-		<ListPreference android:entryValues="@array/gps_time_value"
-			android:entries="@array/gps_time_name" android:title="@string/gps_logging_interval"
-			android:order="4" android:key="gps_logging_interval"
-			android:defaultValue="5"></ListPreference>
-	</PreferenceScreen>
-	<PreferenceScreen android:title="@string/sms_preferences"
-		android:order="6">
-		<!-- <PreferenceCategory android:title="@string/sms_sending" android:order="10"> 
+    <PreferenceScreen
+        android:order="1"
+        android:title="@string/gps_preferences" >
+
+        <EditTextPreference
+            android:defaultValue="0"
+            android:inputType="number"
+            android:key="gps_logging_distance"
+            android:order="3"
+            android:title="@string/gps_logging_distance" >
+        </EditTextPreference>
+
+        <ListPreference
+            android:defaultValue="5"
+            android:entries="@array/gps_time_name"
+            android:entryValues="@array/gps_time_value"
+            android:key="gps_logging_interval"
+            android:order="4"
+            android:title="@string/gps_logging_interval" >
+        </ListPreference>
+    </PreferenceScreen>
+
+    <PreferenceScreen
+        android:order="6"
+        android:title="@string/sms_preferences" >
+
+        <!--
+             <PreferenceCategory android:title="@string/sms_sending" android:order="10"> 
 			<EditTextPreference android:order="11" android:key="@string/sms_number" android:title="@string/sms_number" 
 			android:defaultValue=""></EditTextPreference> <ListPreference android:entryValues="@array/sms_time_value" 
 			android:entries="@array/sms_time_name" android:title="@string/sms_sending_interval" 
 			android:order="12" android:key="@string/sms_sending_interval" android:defaultValue="0"></ListPreference> 
-			</PreferenceCategory> -->
-		<CheckBoxPreference android:key="sms_catcher"
-			android:title="@string/sms_catcher" android:order="7">
-		</CheckBoxPreference>
-		<!-- <eu.hydrologis.geopaparazzi.preferences.PhoneNumberPreference android:order="8" 
-			android:key="panic_number" android:title="@string/panic_number"> </eu.hydrologis.geopaparazzi.preferences.PhoneNumberPreference> -->
-		<EditTextPreference android:order="8"
-			android:key="panic_number" android:title="@string/panic_number"
-			android:defaultValue=""></EditTextPreference>
-	</PreferenceScreen>
-	<PreferenceScreen android:title="@string/rendering_preferences"
-		android:order="9">
-		<ListPreference android:entryValues="@array/decimation_factor"
-			android:entries="@array/decimation_factor" android:title="@string/decimation_combo_label"
-			android:order="10" android:key="decimation_list"
-			android:defaultValue="5"></ListPreference>
-	</PreferenceScreen>
-	<PreferenceScreen android:title="@string/debug"
-		android:order="998">
-		<CheckBoxPreference android:key="@string/enable_debug"
-			android:title="@string/enable_debug" android:order="999">
-		</CheckBoxPreference>
-	</PreferenceScreen>
-	<PreferenceScreen android:title="@string/labels_preferences"
-		android:order="13">
-		<EditTextPreference android:order="14" android:key="labels_zoom1"
-			android:title="@string/labels_zoom1" android:defaultValue="14"
-			android:inputType="number"></EditTextPreference>
-		<EditTextPreference android:order="15"
-			android:key="labels_length_zoom1" android:title="@string/labels_length_zoom1"
-			android:defaultValue="4" android:inputType="number"></EditTextPreference>
-		<EditTextPreference android:order="16" android:key="labels_zoom2"
-			android:title="@string/labels_zoom2" android:defaultValue="17"
-			android:inputType="number"></EditTextPreference>
-		<EditTextPreference android:order="17"
-			android:key="labels_length_zoom2" android:title="@string/labels_length_zoom2"
-			android:defaultValue="-1" android:inputType="number"></EditTextPreference>
-	</PreferenceScreen>
+			</PreferenceCategory>
+        -->
+
+        <CheckBoxPreference
+            android:key="sms_catcher"
+            android:order="7"
+            android:title="@string/sms_catcher" >
+        </CheckBoxPreference>
+        <!--
+             <eu.hydrologis.geopaparazzi.preferences.PhoneNumberPreference android:order="8" 
+			android:key="panic_number" android:title="@string/panic_number"> </eu.hydrologis.geopaparazzi.preferences.PhoneNumberPreference>
+        -->
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="panic_number"
+            android:order="8"
+            android:title="@string/panic_number" >
+        </EditTextPreference>
+    </PreferenceScreen>
+
+    <PreferenceScreen
+        android:order="9"
+        android:title="@string/rendering_preferences" >
+
+        <ListPreference
+            android:defaultValue="5"
+            android:entries="@array/decimation_factor"
+            android:entryValues="@array/decimation_factor"
+            android:key="decimation_list"
+            android:order="10"
+            android:title="@string/decimation_combo_label" >
+        </ListPreference>
+    </PreferenceScreen>
+
+    <PreferenceScreen
+        android:order="998"
+        android:title="@string/debug" >
+
+        <CheckBoxPreference
+            android:key="@string/enable_debug"
+            android:order="999"
+            android:title="@string/enable_debug" >
+        </CheckBoxPreference>
+    </PreferenceScreen>
+
+    <PreferenceScreen
+        android:order="13"
+        android:title="@string/labels_preferences" >
+
+        <EditTextPreference
+            android:defaultValue="14"
+            android:inputType="number"
+            android:key="labels_zoom1"
+            android:order="14"
+            android:title="@string/labels_zoom1" >
+        </EditTextPreference>
+
+        <EditTextPreference
+            android:defaultValue="4"
+            android:inputType="number"
+            android:key="labels_length_zoom1"
+            android:order="15"
+            android:title="@string/labels_length_zoom1" >
+        </EditTextPreference>
+
+        <EditTextPreference
+            android:defaultValue="17"
+            android:inputType="number"
+            android:key="labels_zoom2"
+            android:order="16"
+            android:title="@string/labels_zoom2" >
+        </EditTextPreference>
+
+        <EditTextPreference
+            android:defaultValue="-1"
+            android:inputType="number"
+            android:key="labels_length_zoom2"
+            android:order="17"
+            android:title="@string/labels_length_zoom2" >
+        </EditTextPreference>
+    </PreferenceScreen>
+
+    <PreferenceScreen
+        android:order="18"
+        android:title="@string/osm_preferences" >
+
+        <EditTextPreference
+            android:key="osm_user_key"
+            android:order="19"
+            android:title="@string/osm_user_label" >
+        </EditTextPreference>
+
+        <EditTextPreference
+            android:inputType="textPassword"
+            android:key="osm_pwd_key"
+            android:order="20"
+            android:title="@string/osm_password_label" >
+        </EditTextPreference>
+
+        <EditTextPreference
+            android:key="osm_server_key"
+            android:order="21"
+            android:title="@string/osm_server_label" >
+        </EditTextPreference>
+    </PreferenceScreen>
+
 </PreferenceScreen>

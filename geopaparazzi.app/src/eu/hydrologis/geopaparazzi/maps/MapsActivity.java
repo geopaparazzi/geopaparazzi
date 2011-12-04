@@ -886,24 +886,6 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         return true;
     }
 
-    private void updateCenterPref() {
-        IGeoPoint mapCenter = mapsView.getMapCenter();
-        double lon = mapCenter.getLongitudeE6() / E6;
-        double lat = mapCenter.getLatitudeE6() / E6;
-
-        if (Debug.D) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("Map Center moved: ");
-            sb.append(lon);
-            sb.append("/");
-            sb.append(lat);
-            Logger.d(this, sb.toString());
-        }
-        Editor editor = preferences.edit();
-        editor.putFloat(PREFS_KEY_MAPCENTER_LON, (float) lon);
-        editor.putFloat(PREFS_KEY_MAPCENTER_LAT, (float) lat);
-        editor.commit();
-    }
     public boolean onZoom( ZoomEvent event ) {
         int zoomLevel = event.getZoomLevel();
         if (zoomInButton != null) {
@@ -913,4 +895,22 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         return true;
     }
 
+    private void updateCenterPref() {
+        IGeoPoint mapCenter = mapsView.getMapCenter();
+        double lon = mapCenter.getLongitudeE6() / E6;
+        double lat = mapCenter.getLatitudeE6() / E6;
+
+        if (Debug.D) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Map Center moved: "); //$NON-NLS-1$
+            sb.append(lon);
+            sb.append("/"); //$NON-NLS-1$
+            sb.append(lat);
+            Logger.d(this, sb.toString());
+        }
+        Editor editor = preferences.edit();
+        editor.putFloat(PREFS_KEY_MAPCENTER_LON, (float) lon);
+        editor.putFloat(PREFS_KEY_MAPCENTER_LAT, (float) lat);
+        editor.commit();
+    }
 }
