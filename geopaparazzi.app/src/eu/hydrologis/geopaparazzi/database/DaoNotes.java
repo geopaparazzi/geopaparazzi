@@ -56,10 +56,10 @@ public class DaoNotes {
      *  <li>1 = osm note</li>
      * </ul>
      * </p>
-     * 
-     * 
      */
     private static final String COLUMN_TYPE = "type";
+
+
 
     public static final String TABLE_NOTES = "notes";
 

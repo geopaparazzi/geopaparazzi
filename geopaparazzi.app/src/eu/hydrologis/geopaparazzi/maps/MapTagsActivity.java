@@ -31,6 +31,7 @@ import android.widget.GridView;
 import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
+import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.maps.TagsManager.TagObject;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
@@ -127,7 +128,8 @@ public class MapTagsActivity extends Activity {
                                 startActivity(formIntent);
                             } else {
                                 // insert as it is
-                                DaoNotes.addNote(getContext(), longitude, latitude, -1.0, sqlDate, finalLongName, null);
+                                DaoNotes.addNote(getContext(), longitude, latitude, -1.0, sqlDate, finalLongName, null,
+                                        NoteType.SIMPLE.getTypeNum());
                             }
                         } catch (Exception e) {
                             Logger.e(this, e.getLocalizedMessage(), e);

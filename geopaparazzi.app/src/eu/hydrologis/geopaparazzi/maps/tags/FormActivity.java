@@ -46,6 +46,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
+import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.maps.TagsManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
@@ -101,7 +102,8 @@ public class FormActivity extends Activity {
                     storeNote();
                     endString = jsonFormObject.toString();
                     Date sqlDate = new Date(System.currentTimeMillis());
-                    DaoNotes.addNote(FormActivity.this, longitude, latitude, -1.0, sqlDate, formLongnameDefinition, endString);
+                    DaoNotes.addNote(FormActivity.this, longitude, latitude, -1.0, sqlDate, formLongnameDefinition, endString,
+                            NoteType.SIMPLE.getTypeNum());
                     finish();
                 } catch (Exception e) {
                     Logger.e(this, e.getLocalizedMessage(), e);

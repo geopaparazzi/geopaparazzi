@@ -29,6 +29,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
+import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
@@ -62,14 +63,13 @@ public class NoteActivity extends Activity {
             coordsFromExtras = true;
         }
 
-
         noteText = (EditText) findViewById(R.id.noteentry);
         noteText.setLines(linesNum);
 
         Button saveButton = (Button) findViewById(R.id.ok);
         saveButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                
+
                 GpsLocation loc = GpsManager.getInstance(NoteActivity.this).getLocation();
                 try {
 
@@ -95,7 +95,8 @@ public class NoteActivity extends Activity {
                     StringBuilder sB = new StringBuilder(noteText.getText());
                     String noteString = sB.toString();
 
-                    DaoNotes.addNote(NoteActivity.this, longitude, latitude, altitude, sqlDate, noteString, null);
+                    DaoNotes.addNote(NoteActivity.this, longitude, latitude, altitude, sqlDate, noteString, null,
+                            NoteType.SIMPLE.getTypeNum());
                 } catch (IOException e) {
                     Logger.e(this, e.getLocalizedMessage(), e);
                     e.printStackTrace();
