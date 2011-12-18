@@ -932,15 +932,36 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         double lon = loc.getLongitude();
         int latE6 = (int) ((float) lat * E6);
         int lonE6 = (int) ((float) lon * E6);
-        boolean centerOnGps = preferences.getBoolean(Constants.PREFS_KEY_AUTOMATIC_CENTER_GPS, true);
-        if (!boundingBox.contains(latE6, lonE6)) {
+        boolean centerOnGps = preferences.getBoolean(Constants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
+
+        int sE6 = boundingBox.getLatSouthE6();
+        int nE6 = boundingBox.getLatNorthE6();
+        int eE6 = boundingBox.getLonEastE6();
+        int wE6 = boundingBox.getLonWestE6();
+        int paddingX = (int) (boundingBox.getLongitudeSpanE6() * 0.2);
+        int paddingY = (int) (boundingBox.getLatitudeSpanE6() * 0.2);
+        int newEE6 = eE6 - paddingX;
+        int newWE6 = wE6 + paddingX;
+        int newSE6 = sE6 + paddingY;
+        int newNE6 = nE6 - paddingY;
+        BoundingBoxE6 smallerBounds = new BoundingBoxE6(newNE6, newEE6, newSE6, newWE6);
+        System.out.println(boundingBox);
+        System.out.println(smallerBounds);
+        boolean doCenter = false;
+        if (!smallerBounds.contains(latE6, lonE6)) {
             if (centerOnGps) {
-                setNewCenter(lon, lat, false);
-                if (Debug.D)
-                    Logger.i(this, "recentering triggered"); //$NON-NLS-1$                
-            } else {
+                doCenter = true;
+            }
+        }
+        if (!boundingBox.contains(latE6, lonE6)) {
+            if (!centerOnGps) {
                 return;
             }
+        }
+        if (doCenter) {
+            setNewCenter(lon, lat, false);
+            if (Debug.D)
+                Logger.i(this, "recentering triggered"); //$NON-NLS-1$                
         }
 
         mMapsOverlay.setGpsUpdate(true);
@@ -951,7 +972,6 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         mGpsOverlay.setLoc(loc);
         mapsView.invalidate();
     }
-
     public void onStatusChanged( boolean hasFix ) {
     }
 

@@ -67,8 +67,9 @@
             android:order="10"
             android:title="@string/decimation_combo_label" >
         </ListPreference>
+
         <CheckBoxPreference
-            android:key="@string/enable_automatic_center_on_gps"
+            android:key="enable_automatic_center_on_gps"
             android:order="11"
             android:title="@string/enable_automatic_center_on_gps" >
         </CheckBoxPreference>
@@ -79,7 +80,7 @@
         android:title="@string/debug" >
 
         <CheckBoxPreference
-            android:key="@string/enable_debug"
+            android:key="enable_debug"
             android:order="999"
             android:title="@string/enable_debug" >
         </CheckBoxPreference>
