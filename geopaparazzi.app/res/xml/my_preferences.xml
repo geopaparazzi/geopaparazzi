@@ -67,6 +67,11 @@
             android:order="10"
             android:title="@string/decimation_combo_label" >
         </ListPreference>
+        <CheckBoxPreference
+            android:key="@string/enable_automatic_center_on_gps"
+            android:order="11"
+            android:title="@string/enable_automatic_center_on_gps" >
+        </CheckBoxPreference>
     </PreferenceScreen>
 
     <PreferenceScreen

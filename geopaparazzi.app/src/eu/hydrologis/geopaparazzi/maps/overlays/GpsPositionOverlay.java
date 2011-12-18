@@ -18,6 +18,7 @@
 package eu.hydrologis.geopaparazzi.maps.overlays;
 
 import org.osmdroid.ResourceProxy;
+import org.osmdroid.util.BoundingBoxE6;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.MapView.Projection;
@@ -28,6 +29,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Point;
+import android.graphics.Rect;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.util.debug.Debug;
@@ -59,7 +61,8 @@ public class GpsPositionOverlay extends Overlay {
 
     public void setDoDraw( boolean doDraw ) {
         this.doDraw = doDraw;
-        if (Debug.D) Logger.d(this, "Will draw: " + doDraw); //$NON-NLS-1$
+        if (Debug.D)
+            Logger.d(this, "Will draw: " + doDraw); //$NON-NLS-1$
     }
 
     public void setLoc( GpsLocation loc ) {
@@ -76,6 +79,7 @@ public class GpsPositionOverlay extends Overlay {
         GeoPoint g = new GeoPoint(lat, lon);
         Point mapPixels = pj.toMapPixels(g, null);
         canvas.drawBitmap(gpsIcon, mapPixels.x - gpsIconWidth / 2f, mapPixels.y - gpsIconHeight / 2f, null);
+
     }
 
 }

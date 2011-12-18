@@ -23,6 +23,7 @@ package eu.hydrologis.geopaparazzi.util;
 
 import java.io.*;
 
+@SuppressWarnings("nls")
 public class Base64 {
 
     static final char[] charTab =

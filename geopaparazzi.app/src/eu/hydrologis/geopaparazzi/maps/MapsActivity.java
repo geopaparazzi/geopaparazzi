@@ -516,12 +516,10 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                                                 e.printStackTrace();
                                             }
                                         }
-                                    })
-                                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                                    }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
                                         public void onClick( DialogInterface dialog, int id ) {
                                         }
-                                    })
-                                    ;
+                                    });
                             AlertDialog alertDialog = builder.create();
                             alertDialog.show();
                         } else {
@@ -930,10 +928,19 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
             return;
         }
         BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
-        int lat = (int) ((float) loc.getLatitude() * E6);
-        int lon = (int) ((float) loc.getLongitude() * E6);
-        if (!boundingBox.contains(lat, lon)) {
-            return;
+        double lat = loc.getLatitude();
+        double lon = loc.getLongitude();
+        int latE6 = (int) ((float) lat * E6);
+        int lonE6 = (int) ((float) lon * E6);
+        boolean centerOnGps = preferences.getBoolean(Constants.PREFS_KEY_AUTOMATIC_CENTER_GPS, true);
+        if (!boundingBox.contains(latE6, lonE6)) {
+            if (centerOnGps) {
+                setNewCenter(lon, lat, false);
+                if (Debug.D)
+                    Logger.i(this, "recentering triggered"); //$NON-NLS-1$                
+            } else {
+                return;
+            }
         }
 
         mMapsOverlay.setGpsUpdate(true);
@@ -973,7 +980,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
             sb.append(lon);
             sb.append("/"); //$NON-NLS-1$
             sb.append(lat);
-            Logger.d(this, sb.toString());
+            Logger.i(this, sb.toString());
         }
         Editor editor = preferences.edit();
         editor.putFloat(PREFS_KEY_MAPCENTER_LON, (float) lon);

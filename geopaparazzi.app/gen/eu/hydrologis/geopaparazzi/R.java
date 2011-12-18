@@ -404,6 +404,7 @@ public final class R {
         public static final int delete_visible_notes_title=0x7f09009b;
         public static final int distance=0x7f09003b;
         public static final int emptyaddress=0x7f090034;
+        public static final int enable_automatic_center_on_gps=0x7f0900bc;
         public static final int enable_debug=0x7f090085;
         public static final int error_disk_full=0x7f090066;
         public static final int exit=0x7f090019;

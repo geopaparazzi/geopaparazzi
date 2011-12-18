@@ -174,6 +174,8 @@ public interface Constants {
      */
     public static final String PREFS_KEY_MAPCENTER_LON = "PREFS_KEY_MAPCENTER_LON";
 
+    public static final String PREFS_KEY_AUTOMATIC_CENTER_GPS = "enable_automatic_center_on_gps";
+
     public static final String PREFS_KEY_ZOOM1 = "labels_zoom1";
     public static final String PREFS_KEY_ZOOM1_LABELLENGTH = "labels_length_zoom1";
     public static final String PREFS_KEY_ZOOM2 = "labels_zoom2";
