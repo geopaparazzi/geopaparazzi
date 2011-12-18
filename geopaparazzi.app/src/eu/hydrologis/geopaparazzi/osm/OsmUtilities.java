@@ -26,6 +26,7 @@ import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.util.NetworkUtilities;
 import eu.hydrologis.geopaparazzi.util.Note;
+import eu.hydrologis.geopaparazzi.util.debug.Debug;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 import android.content.Context;
@@ -93,7 +94,6 @@ public class OsmUtilities {
 
         List<Note> notesList = DaoNotes.getNotesList(context);
         StringBuilder sb = new StringBuilder();
-        sb.append("[\n");
         for( Note note : notesList ) {
             if (note.getType() == NoteType.OSM.getTypeNum()) {
                 String form = note.getForm();
@@ -103,15 +103,24 @@ public class OsmUtilities {
                 }
             }
         }
+        String notesString = sb.toString();
+        notesString = notesString.substring(1);
+        sb = new StringBuilder();
+        sb.append("[");
+        sb.append(notesString);
         sb.append("]");
 
         String json = sb.toString();
-        json = json.substring(1);
+        // json = json.substring(1);
 
         wpsXmlString = wpsXmlString.replaceFirst("JSON", json);
+        if (Debug.D)
+            Logger.d("OSMUTILITIES", "WPSXML SENT: " + wpsXmlString);
+        System.out.println(wpsXmlString);
 
         String response = NetworkUtilities.sendPost(serverUrl, wpsXmlString, null, null);
-        Logger.i("OSMUTILITIES", response);
+        if (Debug.D)
+            Logger.i("OSMUTILITIES", "RESPONSE FROM SERVER:" + response);
         return response;
     }
 

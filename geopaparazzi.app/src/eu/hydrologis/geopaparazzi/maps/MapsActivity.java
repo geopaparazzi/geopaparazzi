@@ -82,6 +82,7 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
+import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.gps.GpsManager;
 import eu.hydrologis.geopaparazzi.gps.GpsManagerListener;
@@ -509,8 +510,18 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                             builder.setMessage(msg).setCancelable(false)
                                     .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
                                         public void onClick( DialogInterface dialog, int id ) {
+                                            try {
+                                                DaoNotes.deleteNotesByType(MapsActivity.this, NoteType.OSM);
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
                                         }
-                                    });
+                                    })
+                                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                                        public void onClick( DialogInterface dialog, int id ) {
+                                        }
+                                    })
+                                    ;
                             AlertDialog alertDialog = builder.create();
                             alertDialog.show();
                         } else {

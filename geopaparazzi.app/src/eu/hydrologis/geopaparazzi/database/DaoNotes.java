@@ -59,8 +59,6 @@ public class DaoNotes {
      */
     private static final String COLUMN_TYPE = "type";
 
-
-
     public static final String TABLE_NOTES = "notes";
 
     private static long LASTINSERTEDNOTE_ID = -1;
@@ -97,6 +95,24 @@ public class DaoNotes {
         try {
             // delete note
             String query = "delete from " + TABLE_NOTES + " where " + COLUMN_ID + " = " + id;
+            SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
+            sqlUpdate.execute();
+
+            sqliteDatabase.setTransactionSuccessful();
+        } catch (Exception e) {
+            Logger.e("DAONOTES", e.getLocalizedMessage(), e);
+            throw new IOException(e.getLocalizedMessage());
+        } finally {
+            sqliteDatabase.endTransaction();
+        }
+    }
+
+    public static void deleteNotesByType( Context context, NoteType noteType ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        sqliteDatabase.beginTransaction();
+        try {
+            // delete note
+            String query = "delete from " + TABLE_NOTES + " where " + COLUMN_TYPE + " = " + noteType.getTypeNum();
             SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
             sqlUpdate.execute();
 
