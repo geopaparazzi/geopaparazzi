@@ -1,3 +1,20 @@
+/*
+ * Geopaparazzi - Digital field mapping on Android based devices
+ * Copyright (C) 2010  HydroloGIS (www.hydrologis.com)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.hydrologis.geopaparazzi.osm;
 
 import java.io.IOException;
@@ -16,10 +33,16 @@ import android.content.SharedPreferences.Editor;
 import android.content.res.AssetManager;
 import android.preference.PreferenceManager;
 
+/**
+ * Utilities class for handling OSM matters.
+ * 
+ * @author Andrea Antonello (www.hydrologis.com)
+ */
+@SuppressWarnings("nls")
 public class OsmUtilities {
     private static final String TEST = "test";
     /**
-     * Server url for data upload
+     * Server url for data upload.
      */
     private static final String SERVER = "http://lucadelu.org/cgi-bin/zoo_loader.cgi";
 
@@ -27,6 +50,12 @@ public class OsmUtilities {
     public static final String PREF_KEY_PWD = "osm_pwd_key";
     public static final String PREF_KEY_SERVER = "osm_server_key";
 
+    /**
+     * Send OSM notes to the server.
+     * 
+     * @param context the context.
+     * @throws Exception
+     */
     public static void sendOsmNotes( Context context ) throws Exception {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String user = preferences.getString(PREF_KEY_USER, TEST);
@@ -71,10 +100,10 @@ public class OsmUtilities {
             }
         }
         sb.append("]");
-        
+
         String json = sb.toString();
         json = json.substring(1);
-        
+
         wpsXmlString = wpsXmlString.replaceFirst("JSON", json);
 
         String response = NetworkUtilities.sendPost(serverUrl, wpsXmlString, null, null);

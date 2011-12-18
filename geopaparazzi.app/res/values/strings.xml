@@ -262,4 +262,6 @@
     <string name="osm_user_label">Username</string>
     <string name="osm_password_label">Password</string>
     <string name="osm_server_label">Server to connect to</string>
+    <string name="osm_notes_properly_uploaded">OSM notes properly uploaded.</string>
+    <string name="an_error_occurred_while_uploading_osm_tags">"An error occurred while uploading OSM tags: "</string>
 </resources>

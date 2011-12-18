@@ -374,6 +374,7 @@ public final class R {
         /**  added after 2.5.0 
          */
         public static final int an_error_occurred_while_creating_the_chart_=0x7f0900b4;
+        public static final int an_error_occurred_while_uploading_osm_tags=0x7f0900bb;
         public static final int app_name=0x7f090007;
         public static final int askaddress=0x7f090031;
         public static final int askcoord=0x7f09002f;
@@ -514,6 +515,7 @@ public final class R {
         public static final int okcoord=0x7f090002;
         public static final int osm_additionalinfo=0x7f090064;
         public static final int osm_folder=0x7f090053;
+        public static final int osm_notes_properly_uploaded=0x7f0900ba;
         public static final int osm_password_label=0x7f0900b8;
         public static final int osm_preferences=0x7f0900b6;
         public static final int osm_server_label=0x7f0900b9;

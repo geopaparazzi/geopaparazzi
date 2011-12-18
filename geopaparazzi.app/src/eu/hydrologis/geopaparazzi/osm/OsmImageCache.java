@@ -2,10 +2,8 @@ package eu.hydrologis.geopaparazzi.osm;
 
 import java.io.File;
 import java.lang.ref.SoftReference;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 
-import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 
@@ -40,7 +38,7 @@ public class OsmImageCache {
         File tagsFolderFile = OsmTagsManager.getInstance().getTagsFolderFile(context);
         StringBuilder sb = new StringBuilder();
         sb.append(category);
-        sb.append("/");
+        sb.append("/"); //$NON-NLS-1$
         sb.append(tagName);
         sb.append(OsmTagsManager.ICON_POSTFIX_XLARGE);
         String relativePath = sb.toString();

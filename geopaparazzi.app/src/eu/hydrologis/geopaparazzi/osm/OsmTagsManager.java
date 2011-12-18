@@ -21,14 +21,8 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.content.Context;
-import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 
 /**

@@ -35,7 +35,7 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
 @SuppressWarnings("nls")
 public class DatabaseManager {
 
-    public static final int DATABASE_VERSION = 4;
+    public static final int DATABASE_VERSION = 5;
 
     public static final String DEBUG_TAG = "DATABASEMANAGER";
 
@@ -175,11 +175,14 @@ public class DatabaseManager {
             if (oldDbVersion == 1) {
                 DaoNotes.upgradeNotesFromDB1ToDB2(db);
             }
-            if (oldDbVersion == 2) {
+            if (oldDbVersion <= 2) {
                 DaoBookmarks.createTables(context);
             }
-            if (oldDbVersion == 3) {
+            if (oldDbVersion <= 3) {
                 DaoImages.createTables(context);
+            }
+            if (oldDbVersion <= 4) {
+                DaoNotes.upgradeNotesFromDB4ToDB5(db);
             }
             db.beginTransaction();
             try {
@@ -192,6 +195,7 @@ public class DatabaseManager {
                 db.endTransaction();
             }
         }
+
 
         public SQLiteDatabase getWritableDatabase( Context context ) throws IOException {
             if (db == null)

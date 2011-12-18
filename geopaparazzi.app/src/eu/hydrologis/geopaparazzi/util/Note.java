@@ -36,6 +36,7 @@ public class Note {
     private final double lat;
     private final double altim;
     private final String form;
+    private final int type;
 
     /**
      * A wrapper for a note.
@@ -47,8 +48,9 @@ public class Note {
      * @param lat
      * @param altim
      * @param form the form.
+     * @param type 
      */
-    public Note( long id, String name, String description, double lon, double lat, double altim, String form ) {
+    public Note( long id, String name, String description, double lon, double lat, double altim, String form, int type ) {
         this.id = id;
         if (name != null) {
             this.name = name;
@@ -64,6 +66,7 @@ public class Note {
         this.lat = lat;
         this.altim = altim;
         this.form = form;
+        this.type = type;
     }
 
     public long getId() {
@@ -92,6 +95,10 @@ public class Note {
 
     public String getForm() {
         return form;
+    }
+    
+    public int getType() {
+        return type;
     }
 
     @SuppressWarnings("nls")

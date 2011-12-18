@@ -484,12 +484,12 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                 Context context = getApplicationContext();
                 try {
                     OsmUtilities.sendOsmNotes(context);
-                    Toast.makeText(context, "OSM notes properly uploaded.", Toast.LENGTH_LONG);
+                    Toast.makeText(context, R.string.osm_notes_properly_uploaded, Toast.LENGTH_LONG);
                 } catch (Exception e) {
                     e.printStackTrace();
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setMessage("An error occurred while uploading OSM tags: " + e.getLocalizedMessage())
+                    builder.setMessage(R.string.an_error_occurred_while_uploading_osm_tags + e.getLocalizedMessage())
                             .setCancelable(false).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
                                 public void onClick( DialogInterface dialog, int id ) {
                                 }

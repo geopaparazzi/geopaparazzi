@@ -14,7 +14,7 @@
         android:layout_height="fill_parent"
         android:gravity="center_horizontal"
         android:horizontalSpacing="5dp"
-        android:numColumns="3"
+        android:numColumns="5"
         android:verticalSpacing="5dp" />
 
 </LinearLayout>
