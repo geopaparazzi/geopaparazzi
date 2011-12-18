@@ -62,14 +62,16 @@ public class OsmUtilities {
 
         List<Note> notesList = DaoNotes.getNotesList(context);
         StringBuilder sb = new StringBuilder();
+        sb.append("[\n");
         for( Note note : notesList ) {
             String form = note.getForm();
             if (form != null) {
-                sb.append(",\n[");
+                sb.append(",\n");
                 sb.append(form);
-                sb.append("]");
             }
         }
+        sb.append("]");
+        
         String json = sb.toString();
         json = json.substring(1);
         
