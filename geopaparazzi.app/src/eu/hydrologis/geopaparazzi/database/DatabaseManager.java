@@ -196,7 +196,6 @@ public class DatabaseManager {
             }
         }
 
-
         public SQLiteDatabase getWritableDatabase( Context context ) throws IOException {
             if (db == null)
                 open(context);

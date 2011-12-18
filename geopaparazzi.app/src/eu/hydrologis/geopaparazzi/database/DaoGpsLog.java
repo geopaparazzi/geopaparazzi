@@ -543,7 +543,7 @@ public class DaoGpsLog {
                 }
                 c.moveToNext();
             }
-            if (Debug.D) Logger.d("DAOGPSLOG", "Log points jumped: " + jump + " with thres: " + decimationFactor);
+//            if (Debug.D) Logger.d("DAOGPSLOG", "Log points jumped: " + jump + " with thres: " + decimationFactor);
         } finally {
             if (c != null)
                 c.close();

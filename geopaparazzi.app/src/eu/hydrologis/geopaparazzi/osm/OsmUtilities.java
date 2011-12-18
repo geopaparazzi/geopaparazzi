@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
+import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.util.NetworkUtilities;
 import eu.hydrologis.geopaparazzi.util.Note;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
@@ -54,9 +55,10 @@ public class OsmUtilities {
      * Send OSM notes to the server.
      * 
      * @param context the context.
+     * @return the server response.
      * @throws Exception
      */
-    public static void sendOsmNotes( Context context ) throws Exception {
+    public static String sendOsmNotes( Context context ) throws Exception {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String user = preferences.getString(PREF_KEY_USER, TEST);
         if (user.length() == 0) {
@@ -93,10 +95,12 @@ public class OsmUtilities {
         StringBuilder sb = new StringBuilder();
         sb.append("[\n");
         for( Note note : notesList ) {
-            String form = note.getForm();
-            if (form != null) {
-                sb.append(",\n");
-                sb.append(form);
+            if (note.getType() == NoteType.OSM.getTypeNum()) {
+                String form = note.getForm();
+                if (form != null) {
+                    sb.append(",\n");
+                    sb.append(form);
+                }
             }
         }
         sb.append("]");
@@ -108,6 +112,7 @@ public class OsmUtilities {
 
         String response = NetworkUtilities.sendPost(serverUrl, wpsXmlString, null, null);
         Logger.i("OSMUTILITIES", response);
+        return response;
     }
 
     /**

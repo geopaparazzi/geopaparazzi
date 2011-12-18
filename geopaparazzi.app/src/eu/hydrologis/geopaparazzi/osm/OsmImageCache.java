@@ -10,12 +10,12 @@ import android.graphics.drawable.Drawable;
 public class OsmImageCache {
 
     private static OsmImageCache osmImageCache = null;
-    private final Context context;
 
     private LinkedHashMap<String, SoftReference<Drawable>> imageMap = new LinkedHashMap<String, SoftReference<Drawable>>();
+    private File tagsFolderFile;
 
     private OsmImageCache( Context context ) {
-        this.context = context;
+        tagsFolderFile = OsmTagsManager.getInstance().getTagsFolderFile(context);
     }
 
     // public void dispose(){
@@ -34,8 +34,6 @@ public class OsmImageCache {
     }
 
     public Drawable getImageForTag( String tagName, String category ) {
-
-        File tagsFolderFile = OsmTagsManager.getInstance().getTagsFolderFile(context);
         StringBuilder sb = new StringBuilder();
         sb.append(category);
         sb.append("/"); //$NON-NLS-1$
@@ -44,7 +42,7 @@ public class OsmImageCache {
         String relativePath = sb.toString();
 
         SoftReference<Drawable> softReference = imageMap.get(relativePath);
-        if (softReference == null) {
+        if (softReference == null || softReference.get() == null) {
             File tagImageFile = new File(tagsFolderFile, sb.toString());
             Drawable drawable = Drawable.createFromPath(tagImageFile.getAbsolutePath());
             softReference = new SoftReference<Drawable>(drawable);

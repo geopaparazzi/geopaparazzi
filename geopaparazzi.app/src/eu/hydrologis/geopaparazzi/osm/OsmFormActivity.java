@@ -123,7 +123,6 @@ public class OsmFormActivity extends Activity {
                 try {
                     storeNote();
                     endString = jsonFormObject.toString();
-
                     Date sqlDate = new Date(System.currentTimeMillis());
                     DaoNotes.addNote(OsmFormActivity.this, longitude, latitude, -1.0, sqlDate, formLongnameDefinition, endString,
                             NoteType.OSM.getTypeNum());

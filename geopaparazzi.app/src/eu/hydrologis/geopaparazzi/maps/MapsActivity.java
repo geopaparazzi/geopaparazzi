@@ -51,11 +51,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -482,22 +482,51 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         Button syncOsmButton = (Button) findViewById(R.id.syncosmbutton);
         syncOsmButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                Context context = getApplicationContext();
-                try {
-                    OsmUtilities.sendOsmNotes(context);
-                    Toast.makeText(context, R.string.osm_notes_properly_uploaded, Toast.LENGTH_LONG);
-                } catch (Exception e) {
-                    e.printStackTrace();
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setMessage(R.string.an_error_occurred_while_uploading_osm_tags + e.getLocalizedMessage())
-                            .setCancelable(false).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
-                                public void onClick( DialogInterface dialog, int id ) {
-                                }
-                            });
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
-                }
+                new AsyncTask<String, Void, String>(){
+                    private Exception e = null;
+
+                    protected String doInBackground( String... params ) {
+                        String response = null;
+                        try {
+                            response = OsmUtilities.sendOsmNotes(getApplicationContext());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            this.e = e;
+                        }
+                        return response;
+                    }
+
+                    protected void onPostExecute( String response ) {
+                        if (e == null) {
+                            String msg = getResources().getString(R.string.osm_notes_properly_uploaded);
+                            if (!response.toLowerCase().trim().equals("ok")) { //$NON-NLS-1$
+                                msg = getResources().getString(R.string.an_error_occurred_while_uploading_osm_tags) + response;
+                            }
+                            osmSlidingDrawer.close();
+                            // Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG);
+                            AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+                            builder.setMessage(msg).setCancelable(false)
+                                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                                        public void onClick( DialogInterface dialog, int id ) {
+                                        }
+                                    });
+                            AlertDialog alertDialog = builder.create();
+                            alertDialog.show();
+                        } else {
+                            String msg = getResources().getString(R.string.an_error_occurred_while_uploading_osm_tags);
+                            AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+                            builder.setMessage(msg + e.getLocalizedMessage()).setCancelable(false)
+                                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                                        public void onClick( DialogInterface dialog, int id ) {
+                                        }
+                                    });
+                            AlertDialog alertDialog = builder.create();
+                            alertDialog.show();
+                        }
+                    }
+                }.execute((String) null);
+
             }
         });
 
