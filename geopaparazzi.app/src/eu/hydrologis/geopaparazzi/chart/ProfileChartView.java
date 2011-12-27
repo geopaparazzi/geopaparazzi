@@ -88,7 +88,7 @@ import android.view.View;
 import eu.hydrologis.geopaparazzi.util.DynamicDoubleArray;
 import eu.hydrologis.geopaparazzi.util.Line;
 
-public class AFreeChartView extends View implements ChartChangeListener, ChartProgressListener {
+public class ProfileChartView extends View implements ChartChangeListener, ChartProgressListener {
 
     /** The user interface thread handler. */
     private Handler mHandler;
@@ -101,19 +101,19 @@ public class AFreeChartView extends View implements ChartChangeListener, ChartPr
 
     private Line line;
 
-    public AFreeChartView( Context context ) {
+    public ProfileChartView( Context context ) {
         super(context);
         mHandler = new Handler();
         this.initialize();
     }
 
-    public AFreeChartView( Context context, AttributeSet attrs ) {
+    public ProfileChartView( Context context, AttributeSet attrs ) {
         super(context, attrs);
         mHandler = new Handler();
         this.initialize();
     }
 
-    public AFreeChartView( Context context, AttributeSet attrs, Line line, String title, String xLabel, String yLabel ) {
+    public ProfileChartView( Context context, AttributeSet attrs, Line line, String title, String xLabel, String yLabel ) {
         super(context, attrs);
         this.line = line;
         this.title = title;

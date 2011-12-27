@@ -137,8 +137,6 @@
 	    \n
 	    GeoPaparazzi is the little brother of BeeGIS and as such is able to load collected data into it.\n
 	    \n
-	    The chart view is adapted from the GraphView by Arno den Hond.\n
-	    \n
 	    The mapping engine is osmdroid.\n
 	    \n
 	    The maps are from (c) OpenStreetMap contributors, CC-BY-SA.\n

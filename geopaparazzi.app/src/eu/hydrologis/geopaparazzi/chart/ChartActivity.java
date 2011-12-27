@@ -117,7 +117,7 @@ public class ChartActivity extends Activity {
         // String[] verlabels = new String[]{f.format(max), f.format(min)};
         // String[] horlabels = new String[]{"0", "" + (int) line.getLength() + "[m]"};
 
-        AFreeChartView chartView = new AFreeChartView(this, null, line, getString(R.string.chart_profile_view), "distance",
+        ProfileChartView chartView = new ProfileChartView(this, null, line, getString(R.string.chart_profile_view), "distance",
                 "elevation");
         // GraphView graphView = new GraphView(this, null, pts,
         // getString(R.string.chart_profile_view), horlabels, verlabels,
