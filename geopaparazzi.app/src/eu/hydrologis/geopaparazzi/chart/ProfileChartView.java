@@ -43,7 +43,10 @@
 
 package eu.hydrologis.geopaparazzi.chart;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EventListener;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.afree.chart.AFreeChart;
@@ -59,10 +62,12 @@ import org.afree.chart.event.ChartChangeEvent;
 import org.afree.chart.event.ChartChangeListener;
 import org.afree.chart.event.ChartProgressEvent;
 import org.afree.chart.event.ChartProgressListener;
+import org.afree.chart.plot.Marker;
 import org.afree.chart.plot.Movable;
 import org.afree.chart.plot.Plot;
 import org.afree.chart.plot.PlotOrientation;
 import org.afree.chart.plot.PlotRenderingInfo;
+import org.afree.chart.plot.ValueMarker;
 import org.afree.chart.plot.XYPlot;
 import org.afree.chart.plot.Zoomable;
 import org.afree.chart.renderer.xy.XYItemRenderer;
@@ -73,6 +78,7 @@ import org.afree.data.xy.XYSeriesCollection;
 import org.afree.graphics.SolidColor;
 import org.afree.graphics.geom.Dimension;
 import org.afree.graphics.geom.RectShape;
+import org.afree.ui.Layer;
 import org.afree.ui.RectangleInsets;
 
 import android.content.Context;
@@ -1034,6 +1040,8 @@ public class ProfileChartView extends View implements ChartChangeListener, Chart
 
     private double yMax;
 
+    private boolean selectionMode;
+
     /**
      * Zoom 
      * @param ev
@@ -1218,4 +1226,90 @@ public class ProfileChartView extends View implements ChartChangeListener, Chart
     public void chartProgress( ChartProgressEvent event ) {
         // does nothing - override if necessary
     }
+
+    public void setSelectionMode( boolean selectionMode ) {
+        this.selectionMode = selectionMode;
+        if (!selectionMode) {
+            clearMarkers();
+        }
+    }
+
+    private void clearMarkers() {
+        Plot plot = chart.getPlot();
+        if (plot instanceof XYPlot) {
+            XYPlot xyPlot = (XYPlot) plot;
+            Collection domainMarkers = xyPlot.getDomainMarkers(Layer.BACKGROUND);
+            for( Object object : domainMarkers ) {
+                if (object instanceof Marker) {
+                    Marker marker = (Marker) object;
+                    xyPlot.removeDomainMarker(marker);
+                }
+            }
+        }
+    }
+
+    public void zoomToSelection( double xMin2, double xMax2, double yMin2, double yMax2 ) {
+        XYPlot plot = (XYPlot) chart.getPlot();
+
+        xMin = xMin2;
+        xMax = xMax2;
+        yMin = yMin2;
+        yMax = yMax2;
+
+        NumberAxis domainAxis = (NumberAxis) plot.getDomainAxis();
+        domainAxis.setRange(xMin, xMax);
+        ValueAxis valueAxis = plot.getRangeAxis();
+        valueAxis.setRange(yMin, yMax);
+
+        invalidate();
+    }
+
+    // public boolean onTouchEvent( MotionEvent ev ) {
+    // super.onTouchEvent(ev);
+    // int action = ev.getAction();
+    // switch( action & MotionEvent.ACTION_MASK ) {
+    // case MotionEvent.ACTION_DOWN:
+    // case MotionEvent.ACTION_POINTER_DOWN:
+    // case MotionEvent.ACTION_MOVE:
+    // break;
+    // case MotionEvent.ACTION_UP:
+    // case MotionEvent.ACTION_POINTER_UP:
+    // Plot plot = chart.getPlot();
+    // if (plot instanceof XYPlot) {
+    // double xValue = -1;
+    // double yValue = -1;
+    // XYPlot xyPlot = (XYPlot) plot;
+    // int x = (int) (ev.getX() / this.scaleX);
+    // int y = (int) (ev.getY() / this.scaleY);
+    // PlotRenderingInfo plotInfo = info.getPlotInfo();
+    // RectShape dataArea = plotInfo.getDataArea();
+    // if (dataArea.contains(x, y)) {
+    // ValueAxis xaxis = xyPlot.getDomainAxis();
+    // if (xaxis != null) {
+    // xValue = xaxis.java2DToValue(x, plotInfo.getDataArea(), xyPlot.getDomainAxisEdge());
+    // }
+    // ValueAxis yaxis = xyPlot.getRangeAxis();
+    // if (yaxis != null) {
+    // yValue = yaxis.java2DToValue(y, plotInfo.getDataArea(), xyPlot.getRangeAxisEdge());
+    // }
+    // }
+    // final double fxValue = xValue;
+    // final double fyValue = yValue;
+    // new AsyncTask<String, Void, String>(){
+    // protected String doInBackground( String... params ) {
+    // return "";
+    // }
+    // @SuppressWarnings("nls")
+    // protected void onPostExecute( String response ) { // on UI thread!
+    // Log.i("TIMESERIDEMO", fxValue + "/" + fyValue);
+    // Toast.makeText(getContext(), fxValue + "/" + fyValue, Toast.LENGTH_LONG);
+    // }
+    // }.execute((String) null);
+    // }
+    // break;
+    // default:
+    // break;
+    // }
+    // return true;
+    // }
 }

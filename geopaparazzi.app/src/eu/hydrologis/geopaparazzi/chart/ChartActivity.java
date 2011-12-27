@@ -18,9 +18,25 @@
 package eu.hydrologis.geopaparazzi.chart;
 
 import java.io.IOException;
+import java.nio.CharBuffer;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.afree.chart.AFreeChart;
+import org.afree.chart.ChartRenderingInfo;
+import org.afree.chart.ChartTouchEvent;
+import org.afree.chart.ChartTouchListener;
+import org.afree.chart.axis.ValueAxis;
+import org.afree.chart.plot.Marker;
+import org.afree.chart.plot.Plot;
+import org.afree.chart.plot.PlotRenderingInfo;
+import org.afree.chart.plot.ValueMarker;
+import org.afree.chart.plot.XYPlot;
 import org.afree.data.xy.XYDataset;
+import org.afree.graphics.geom.RectShape;
+import org.afree.ui.Layer;
+import org.afree.ui.RectangleInsets;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -28,9 +44,15 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
+import eu.hydrologis.geopaparazzi.maps.GpsDataPropertiesActivity;
+import eu.hydrologis.geopaparazzi.maps.ViewportManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.debug.Debug;
@@ -43,12 +65,19 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class ChartActivity extends Activity {
-    private DecimalFormat f = new DecimalFormat("0.0"); //$NON-NLS-1$
+public class ChartActivity extends Activity implements ChartTouchListener {
+    private Button zoomtoButton;
+    private CheckBox selectionCheckbox;
+    private ProfileChartView chartView;
+
+    private List<Marker> markers = new ArrayList<Marker>();
+    private List<double[]> markerValues = new ArrayList<double[]>();
 
     @Override
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.profilechart);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -70,73 +99,104 @@ public class ChartActivity extends Activity {
 
     }
 
-    // private void makeXYPlot( GpxItem item ) {
-    // String[] verlabels = new String[]{f.format(item.getN()), f.format(item.getS())};
-    // String[] horlabels = new String[]{f.format(item.getW()), f.format(item.getE())};
-    //
-    // List<PointF3D> points = item.read();
-    // float[] pts = new float[points.size()];
-    // for( int i = 0; i < pts.length; i++ ) {
-    // PointF3D point = points.get(i);
-    // pts[i] = point.y;
-    // }
-    // item.clear();
-    //
-    // GraphView graphView = new GraphView(this, null, pts, "XY View", horlabels, verlabels,
-    // ChartDrawer.LINE);
-    //
-    // Paint back = new Paint();
-    // back.setColor(Color.WHITE);
-    // Paint chart = new Paint();
-    // chart.setColor(Color.RED);
-    // Paint labels = new Paint();
-    // labels.setColor(Color.BLACK);
-    // Paint axis = new Paint();
-    // axis.setColor(Color.DKGRAY);
-    // graphView.setProperties(axis, labels, chart, back);
-    // setContentView(graphView);
-    // }
-
     @SuppressWarnings("nls")
     private void makeProfilePlot( final Line line ) {
-        // DynamicDoubleArray altims = line.getAltimList();
-        // DynamicDoubleArray lats = line.getLatList();
-        // DynamicDoubleArray longs = line.getLonList();
-        // float[] yValue = new float[altims.size()];
-        // float[] xValue = new float[altims.size()];
-        // float max = Float.NEGATIVE_INFINITY;
-        // float min = Float.POSITIVE_INFINITY;
-        // for( int i = 0; i < pts.length; i++ ) {
-        // float altim = altims.get(i).floatValue();
-        // if (altim > max) {
-        // max = altim;
-        // }
-        // if (altim < min) {
-        // min = altim;
-        // }
-        // pts[i] = altim;
-        // }
-        // altims.clear();
-        // String[] verlabels = new String[]{f.format(max), f.format(min)};
-        // String[] horlabels = new String[]{"0", "" + (int) line.getLength() + "[m]"};
 
-        final ProfileChartView chartView = new ProfileChartView(this, null);
-        // GraphView graphView = new GraphView(this, null, pts,
-        // getString(R.string.chart_profile_view), horlabels, verlabels,
-        // ChartDrawer.LINE);
+        chartView = (ProfileChartView) findViewById(R.id.profilechartview);
+        chartView.addChartTouchListener(this);
+
+        selectionCheckbox = (CheckBox) findViewById(R.id.selectionmodecheck);
+        selectionCheckbox.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                boolean checked = selectionCheckbox.isChecked();
+                zoomtoButton.setEnabled(checked);
+                markers.clear();
+                markerValues.clear();
+                chartView.setSelectionMode(checked);
+            }
+        });
+
+        zoomtoButton = (Button) findViewById(R.id.zoomtobutton);
+        zoomtoButton.setEnabled(false);
+        zoomtoButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+
+                if (markerValues.size() > 0) {
+                    double[] values = markerValues.get(0);
+                    double xMin = values[0];
+                    double yMin = values[1];
+                    double xMax = values[0];
+                    double yMax = values[1];
+
+                    if (markerValues.size() > 1) {
+                        values = markerValues.get(1);
+                        xMin = Math.min(xMin, values[0]);
+                        yMin = Math.min(yMin, values[1]);
+                        xMax = Math.max(xMax, values[0]);
+                        yMax = Math.max(yMax, values[1]);
+                    }
+                    chartView.zoomToSelection(xMin, xMax, yMin, yMax);
+                }
+
+            }
+        });
+
+        // final ProfileChartView chartView = new ProfileChartView(this, null);
         final ProgressDialog progressDialog = ProgressDialog.show(this, "", "Loading data...");
-        
+
         new AsyncTask<String, Void, XYDataset>(){
             protected XYDataset doInBackground( String... params ) {
                 return chartView.createDataset(line);
             }
-            
+
             protected void onPostExecute( XYDataset dataset ) {
                 chartView.setDataset(dataset, getString(R.string.chart_profile_view), "distance [m]", "elevation [m]");
                 progressDialog.dismiss();
             }
         }.execute((String) null);
 
-        setContentView(chartView);
+        // setContentView(chartView);
+    }
+
+    public void chartTouched( ChartTouchEvent event ) {
+
+        if (selectionCheckbox.isChecked()) {
+            AFreeChart chart = event.getChart();
+            MotionEvent motionEvent = event.getTrigger();
+            ChartRenderingInfo info = chartView.getChartRenderingInfo();
+
+            int x = (int) (motionEvent.getX() / chartView.getScaleX());
+            int y = (int) (motionEvent.getY() / chartView.getScaleY());
+
+            Plot plot = chart.getPlot();
+            if (plot instanceof XYPlot) {
+                double xValue = -1;
+                double yValue = -1;
+                XYPlot xyPlot = (XYPlot) plot;
+                PlotRenderingInfo plotInfo = info.getPlotInfo();
+                RectShape dataArea = plotInfo.getDataArea();
+                if (dataArea.contains(x, y)) {
+                    ValueAxis xaxis = xyPlot.getDomainAxis();
+                    if (xaxis != null) {
+                        xValue = xaxis.java2DToValue(x, plotInfo.getDataArea(), xyPlot.getDomainAxisEdge());
+                    }
+                    ValueAxis yaxis = xyPlot.getRangeAxis();
+                    if (yaxis != null) {
+                        yValue = yaxis.java2DToValue(y, plotInfo.getDataArea(), xyPlot.getRangeAxisEdge());
+                    }
+                }
+
+                if (markers.size() == 2) {
+                    Marker remove = markers.remove(0);
+                    markerValues.remove(0);
+                    xyPlot.removeDomainMarker(remove, Layer.BACKGROUND);
+                }
+                Marker marker = new ValueMarker(xValue, eu.hydrologis.geopaparazzi.R.color.green, 1.0f);
+                marker.setLabelOffset(new RectangleInsets(2, 5, 2, 5));
+                xyPlot.addDomainMarker(marker, Layer.BACKGROUND);
+                markers.add(marker);
+                markerValues.add(new double[]{xValue, yValue});
+            }
+        }
     }
 }
