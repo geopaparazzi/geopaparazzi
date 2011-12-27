@@ -19,16 +19,19 @@ package eu.hydrologis.geopaparazzi.chart;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.List;
-import org.afree.chart.AFreeChart;
+
+import org.afree.data.xy.XYDataset;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.util.Constants;
-import eu.hydrologis.geopaparazzi.util.DynamicDoubleArray;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.debug.Debug;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
@@ -95,7 +98,7 @@ public class ChartActivity extends Activity {
     // }
 
     @SuppressWarnings("nls")
-    private void makeProfilePlot( Line line ) {
+    private void makeProfilePlot( final Line line ) {
         // DynamicDoubleArray altims = line.getAltimList();
         // DynamicDoubleArray lats = line.getLatList();
         // DynamicDoubleArray longs = line.getLonList();
@@ -117,11 +120,23 @@ public class ChartActivity extends Activity {
         // String[] verlabels = new String[]{f.format(max), f.format(min)};
         // String[] horlabels = new String[]{"0", "" + (int) line.getLength() + "[m]"};
 
-        ProfileChartView chartView = new ProfileChartView(this, null, line, getString(R.string.chart_profile_view), "distance",
-                "elevation");
+        final ProfileChartView chartView = new ProfileChartView(this, null);
         // GraphView graphView = new GraphView(this, null, pts,
         // getString(R.string.chart_profile_view), horlabels, verlabels,
         // ChartDrawer.LINE);
+        final ProgressDialog progressDialog = ProgressDialog.show(this, "", "Loading data...");
+        
+        new AsyncTask<String, Void, XYDataset>(){
+            protected XYDataset doInBackground( String... params ) {
+                return chartView.createDataset(line);
+            }
+            
+            protected void onPostExecute( XYDataset dataset ) {
+                chartView.setDataset(dataset, getString(R.string.chart_profile_view), "distance [m]", "elevation [m]");
+                progressDialog.dismiss();
+            }
+        }.execute((String) null);
+
         setContentView(chartView);
     }
 }

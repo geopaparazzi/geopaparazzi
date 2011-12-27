@@ -361,10 +361,11 @@ public final class R {
         public static final int osmcategorytags=0x7f030015;
         public static final int phonenumberpref=0x7f030016;
         public static final int popup=0x7f030017;
-        public static final int quickaction=0x7f030018;
-        public static final int quickaction_item=0x7f030019;
-        public static final int quickaction_item2=0x7f03001a;
-        public static final int tags=0x7f03001b;
+        public static final int profilechart=0x7f030018;
+        public static final int quickaction=0x7f030019;
+        public static final int quickaction_item=0x7f03001a;
+        public static final int quickaction_item2=0x7f03001b;
+        public static final int tags=0x7f03001c;
     }
     public static final class string {
         public static final int about=0x7f090018;

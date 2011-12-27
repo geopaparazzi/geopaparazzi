@@ -93,32 +93,20 @@ public class ProfileChartView extends View implements ChartChangeListener, Chart
     /** The user interface thread handler. */
     private Handler mHandler;
 
-    private String title;
-
-    private String xLabel;
-
-    private String yLabel;
-
-    private Line line;
-
     public ProfileChartView( Context context ) {
         super(context);
         mHandler = new Handler();
         this.initialize();
     }
 
+    // public ProfileChartView( Context context, AttributeSet attrs ) {
+    // super(context, attrs);
+    // mHandler = new Handler();
+    // this.initialize();
+    // }
+
     public ProfileChartView( Context context, AttributeSet attrs ) {
         super(context, attrs);
-        mHandler = new Handler();
-        this.initialize();
-    }
-
-    public ProfileChartView( Context context, AttributeSet attrs, Line line, String title, String xLabel, String yLabel ) {
-        super(context, attrs);
-        this.line = line;
-        this.title = title;
-        this.xLabel = xLabel;
-        this.yLabel = yLabel;
 
         mHandler = new Handler();
         this.initialize();
@@ -128,6 +116,7 @@ public class ProfileChartView extends View implements ChartChangeListener, Chart
      * initialize parameters
      */
     private void initialize() {
+
         this.chartMotionListeners = new CopyOnWriteArrayList<ChartTouchListener>();
         this.info = new ChartRenderingInfo();
         this.minimumDrawWidth = DEFAULT_MINIMUM_DRAW_WIDTH;
@@ -145,57 +134,15 @@ public class ProfileChartView extends View implements ChartChangeListener, Chart
     }
 
     /**
-     * Creates a chart.
-     *
-     * @param dataset  a dataset.
-     *
-     * @return A chart.
+     * Create a dataset based on supplied data.
+     * 
+     * @param line the chart data.
+     * @param title the title.
+     * @param xLabel the x axis label.
+     * @param yLabel the y axis label.
      */
-    private AFreeChart createChart( XYDataset dataset ) {
-
-        AFreeChart chart = ChartFactory.createXYLineChart(title, xLabel, yLabel, dataset, // data
-                PlotOrientation.VERTICAL, false, // create legend?
-                true, // generate tooltips?
-                false // generate URLs?
-                );
-
-        chart.setBackgroundPaintType(new SolidColor(Color.WHITE));
-
-        XYPlot plot = (XYPlot) chart.getPlot();
-        plot.setBackgroundPaintType(new SolidColor(Color.LTGRAY));
-        plot.setDomainGridlinePaintType(new SolidColor(Color.WHITE));
-        plot.setRangeGridlinePaintType(new SolidColor(Color.WHITE));
-        plot.setAxisOffset(new RectangleInsets(5.0, 5.0, 5.0, 5.0));
-        // plot.setDomainCrosshairVisible(true);
-        // plot.setRangeCrosshairVisible(true);
-
-        XYItemRenderer r = plot.getRenderer();
-        if (r instanceof XYLineAndShapeRenderer) {
-            XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) r;
-            renderer.setBaseShapesVisible(true);
-            renderer.setBaseShapesFilled(true);
-            renderer.setDrawSeriesLineAsPath(true);
-        }
-
-        NumberAxis axis = (NumberAxis) plot.getDomainAxis();
-        axis.setRange(xMin, xMax);
-        ValueAxis valueAxis = plot.getRangeAxis();
-        valueAxis.setRange(yMin, yMax);
-        // axis.setDateFormatOverride(new SimpleDateFormat("MMM-yyyy"));
-
-        return chart;
-
-    }
-
-    /**
-     * Creates a dataset, consisting of two series of monthly data.
-     *
-     * @return The dataset.
-     */
-    private XYDataset createDataset() {
-
+    public XYSeriesCollection createDataset( Line line ) {
         XYSeries xyS = new XYSeries("profile", true, true);
-
         DynamicDoubleArray altimList = line.getAltimList();
         DynamicDoubleArray latList = line.getLatList();
         DynamicDoubleArray lonList = line.getLonList();
@@ -240,7 +187,87 @@ public class ProfileChartView extends View implements ChartChangeListener, Chart
 
         XYSeriesCollection xySC = new XYSeriesCollection();
         xySC.addSeries(xyS);
+        return xySC;
+    }
 
+    /**
+     * Draw the given dataset on the chart.
+     * 
+     * @param xyDataset the dataset to draw.
+     */
+    public void setDataset( XYDataset xyDataset, String title, String xLabel, String yLabel ) {
+        chart.setTitle(title);
+        XYPlot plot = (XYPlot) chart.getPlot();
+        plot.setDataset(xyDataset);
+
+        NumberAxis domainAxis = (NumberAxis) plot.getDomainAxis();
+        domainAxis.setRange(xMin, xMax);
+        domainAxis.setLabel(xLabel);
+        ValueAxis valueAxis = plot.getRangeAxis();
+        valueAxis.setRange(yMin, yMax);
+        valueAxis.setLabel(xLabel);
+
+        invalidate();
+    }
+
+    /**
+     * Creates a chart.
+     *
+     * @param dataset  a dataset.
+     *
+     * @return A chart.
+     */
+    private AFreeChart createChart( XYDataset dataset ) {
+
+        AFreeChart chart = ChartFactory.createXYLineChart("", "", "", dataset, // data
+                PlotOrientation.VERTICAL, false, // create legend?
+                true, // generate tooltips?
+                false // generate URLs?
+                );
+
+        chart.setBackgroundPaintType(new SolidColor(Color.WHITE));
+
+        XYPlot plot = (XYPlot) chart.getPlot();
+        plot.setBackgroundPaintType(new SolidColor(Color.LTGRAY));
+        plot.setDomainGridlinePaintType(new SolidColor(Color.WHITE));
+        plot.setRangeGridlinePaintType(new SolidColor(Color.WHITE));
+        plot.setAxisOffset(new RectangleInsets(5.0, 5.0, 5.0, 5.0));
+        // plot.setDomainCrosshairVisible(true);
+        // plot.setRangeCrosshairVisible(true);
+
+        XYItemRenderer r = plot.getRenderer();
+        if (r instanceof XYLineAndShapeRenderer) {
+            XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) r;
+            renderer.setBaseShapesVisible(true);
+            renderer.setBaseShapesFilled(true);
+            renderer.setDrawSeriesLineAsPath(true);
+        }
+
+        NumberAxis axis = (NumberAxis) plot.getDomainAxis();
+        axis.setRange(xMin, xMax);
+        ValueAxis valueAxis = plot.getRangeAxis();
+        valueAxis.setRange(yMin, yMax);
+        // axis.setDateFormatOverride(new SimpleDateFormat("MMM-yyyy"));
+
+        return chart;
+
+    }
+
+    /**
+     * Creates an empty dataset.
+     *
+     * @return The dataset.
+     */
+    private XYDataset createDataset() {
+        XYSeries xyS = new XYSeries("profile", true, true);
+        xyS.add(0, 0);
+        xMin = -1;
+        xMax = 1;
+        yMin = -1;
+        yMax = 1;
+
+        XYSeriesCollection xySC = new XYSeriesCollection();
+        xySC.addSeries(xyS);
         return xySC;
     }
 
