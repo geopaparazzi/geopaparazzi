@@ -34,12 +34,12 @@ import android.location.Location;
 public class Line {
 
     private final String fileName;
-    private final List<Double> latList;
-    private final List<Double> lonList;
-    private final List<Double> altimList;
+    private final DynamicDoubleArray latList;
+    private final DynamicDoubleArray lonList;
+    private final DynamicDoubleArray altimList;
     private final List<String> dateList;
 
-    public Line( String fileName, List<Double> lonList, List<Double> latList, List<Double> altimList, List<String> dateList ) {
+    public Line( String fileName, DynamicDoubleArray lonList, DynamicDoubleArray latList, DynamicDoubleArray altimList, List<String> dateList ) {
         this.fileName = fileName;
         this.lonList = lonList;
         this.latList = latList;
@@ -50,13 +50,17 @@ public class Line {
 
     public Line( String logid ) {
         this.fileName = logid;
-        this.lonList = new ArrayList<Double>();
-        this.latList = new ArrayList<Double>();
-        this.altimList = new ArrayList<Double>();
+        this.lonList = new DynamicDoubleArray();
+        this.latList = new DynamicDoubleArray();
+        this.altimList = new DynamicDoubleArray();
         this.dateList = new ArrayList<String>();
     }
 
     public void addPoint( double lon, double lat, double altim, String date ) {
+        if (lat < 0.0001 && lon < 0.0001) {
+            // don't add points in 0,0
+            return;
+        }
         this.lonList.add(lon);
         this.latList.add(lat);
         this.altimList.add(altim);
@@ -67,15 +71,15 @@ public class Line {
         return fileName;
     }
 
-    public List<Double> getLatList() {
+    public DynamicDoubleArray getLatList() {
         return latList;
     }
 
-    public List<Double> getLonList() {
+    public DynamicDoubleArray getLonList() {
         return lonList;
     }
 
-    public List<Double> getAltimList() {
+    public DynamicDoubleArray getAltimList() {
         return altimList;
     }
 

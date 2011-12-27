@@ -20,6 +20,7 @@ package eu.hydrologis.geopaparazzi.chart;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
+import org.afree.chart.AFreeChart;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.util.Constants;
+import eu.hydrologis.geopaparazzi.util.DynamicDoubleArray;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.debug.Debug;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
@@ -94,26 +96,32 @@ public class ChartActivity extends Activity {
 
     @SuppressWarnings("nls")
     private void makeProfilePlot( Line line ) {
-        List<Double> altims = line.getAltimList();
-        float[] pts = new float[altims.size()];
-        float max = Float.NEGATIVE_INFINITY;
-        float min = Float.POSITIVE_INFINITY;
-        for( int i = 0; i < pts.length; i++ ) {
-            float altim = altims.get(i).floatValue();
-            if (altim > max) {
-                max = altim;
-            }
-            if (altim < min) {
-                min = altim;
-            }
-            pts[i] = altim;
-        }
+        // DynamicDoubleArray altims = line.getAltimList();
+        // DynamicDoubleArray lats = line.getLatList();
+        // DynamicDoubleArray longs = line.getLonList();
+        // float[] yValue = new float[altims.size()];
+        // float[] xValue = new float[altims.size()];
+        // float max = Float.NEGATIVE_INFINITY;
+        // float min = Float.POSITIVE_INFINITY;
+        // for( int i = 0; i < pts.length; i++ ) {
+        // float altim = altims.get(i).floatValue();
+        // if (altim > max) {
+        // max = altim;
+        // }
+        // if (altim < min) {
+        // min = altim;
+        // }
+        // pts[i] = altim;
+        // }
         // altims.clear();
-        String[] verlabels = new String[]{f.format(max), f.format(min)};
-        String[] horlabels = new String[]{"0", "" + (int) line.getLength() + "[m]"};
+        // String[] verlabels = new String[]{f.format(max), f.format(min)};
+        // String[] horlabels = new String[]{"0", "" + (int) line.getLength() + "[m]"};
 
-        GraphView graphView = new GraphView(this, null, pts, getString(R.string.chart_profile_view), horlabels, verlabels,
-                ChartDrawer.LINE);
-        setContentView(graphView);
+        AFreeChartView chartView = new AFreeChartView(this, null, line, getString(R.string.chart_profile_view), "distance",
+                "elevation");
+        // GraphView graphView = new GraphView(this, null, pts,
+        // getString(R.string.chart_profile_view), horlabels, verlabels,
+        // ChartDrawer.LINE);
+        setContentView(chartView);
     }
 }

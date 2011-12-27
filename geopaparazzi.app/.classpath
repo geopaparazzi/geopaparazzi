@@ -10,5 +10,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="libs/osmdroid-third-party-3.0.5.jar"/>
+	<classpathentry kind="lib" path="libs/afreegraphics.jar"/>
+	<classpathentry kind="lib" path="libs/afreechart-0.0.3.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
