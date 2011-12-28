@@ -43,9 +43,11 @@
 
 package eu.hydrologis.geopaparazzi.chart;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EventListener;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.afree.chart.AFreeChart;
@@ -188,6 +190,11 @@ public class ProfileChartView extends View implements ChartChangeListener, Chart
             xyS.add(summedDistance, elev);
         }
         xMax = summedDistance;
+
+        xMaxAll = xMax;
+        xMinAll = xMin;
+        yMaxAll = yMax;
+        yMinAll = yMin;
 
         XYSeriesCollection xySC = new XYSeriesCollection();
         xySC.addSeries(xyS);
@@ -444,7 +451,9 @@ public class ProfileChartView extends View implements ChartChangeListener, Chart
                 mNowTimeMillis = System.currentTimeMillis();
                 if (mNowTimeMillis - mPrevTimeMillis < 400) {
                     if (chart.getPlot() instanceof Movable) {
-                        restoreAutoBounds();
+                        // restoreAutoBounds();
+                        zoomToSelection(xMinAll, xMaxAll, yMinAll, yMaxAll);
+
                         mScale = 1.0f;
                         inertialMovedFlag = false;
                     }
@@ -824,7 +833,7 @@ public class ProfileChartView extends View implements ChartChangeListener, Chart
     protected void onDraw( Canvas canvas ) {
         super.onDraw(canvas);
 
-        inertialMove();
+        // inertialMove();
 
         paintComponent(canvas);
     }
@@ -1031,12 +1040,13 @@ public class ProfileChartView extends View implements ChartChangeListener, Chart
     private SingleTouchStartInfo singleTouchStartInfo = null;
 
     private double xMin;
-
     private double xMax;
-
     private double yMin;
-
     private double yMax;
+    private double xMinAll;
+    private double xMaxAll;
+    private double yMinAll;
+    private double yMaxAll;
 
     /**
      * Zoom 
@@ -1229,13 +1239,18 @@ public class ProfileChartView extends View implements ChartChangeListener, Chart
             XYPlot xyPlot = (XYPlot) plot;
             Collection< ? > domainMarkers = xyPlot.getDomainMarkers(Layer.BACKGROUND);
             if (domainMarkers != null) {
-                synchronized (domainMarkers) {
-                    Iterator< ? > iterator = domainMarkers.iterator();
-                    while( iterator.hasNext() ) {
-                        Marker marker = (Marker) iterator.next();
-                        xyPlot.removeDomainMarker(marker, Layer.BACKGROUND);
-                    }
+                Iterator< ? > iterator = domainMarkers.iterator();
+                // store the keys in a list first to escape a ConcurrentModificationException
+                List<Marker> tmpMarkers = new ArrayList<Marker>();
+                while( iterator.hasNext() ) {
+                    Marker marker = (Marker) iterator.next();
+                    tmpMarkers.add(marker);
                 }
+                // now remove them
+                for( Marker marker : tmpMarkers ) {
+                    xyPlot.removeDomainMarker(marker, Layer.BACKGROUND);
+                }
+
                 invalidate();
             }
         }
@@ -1246,14 +1261,16 @@ public class ProfileChartView extends View implements ChartChangeListener, Chart
 
         xMin = xMin2;
         xMax = xMax2;
-        yMin = yMin2;
-        yMax = yMax2;
 
         NumberAxis domainAxis = (NumberAxis) plot.getDomainAxis();
         domainAxis.setRange(xMin, xMax);
-        // ValueAxis valueAxis = plot.getRangeAxis();
-        // valueAxis.setRange(yMin, yMax);
 
+        if (!Double.isNaN(yMin2) && !Double.isNaN(yMax2)) {
+            yMin = yMin2;
+            yMax = yMax2;
+            ValueAxis valueAxis = plot.getRangeAxis();
+            valueAxis.setRange(yMin, yMax);
+        }
         invalidate();
     }
 

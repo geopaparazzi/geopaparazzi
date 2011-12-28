@@ -130,7 +130,7 @@ public class ChartActivity extends Activity implements ChartTouchListener {
                         xMax = Math.max(xMax, values[0]);
                         yMax = Math.max(yMax, values[1]);
                     }
-                    chartView.zoomToSelection(xMin, xMax, yMin, yMax);
+                    chartView.zoomToSelection(xMin, xMax, Double.NaN, Double.NaN);
                 }
 
             }
