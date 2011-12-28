@@ -1089,6 +1089,7 @@ public class ProfileChartView extends View implements ChartChangeListener, Chart
         invalidate();
     }
 
+    // inertialmove has been disabled to avoid infinite panning
     private void inertialMove() {
         if (inertialMovedFlag == true) {
             RectShape dataArea = this.info.getPlotInfo().getDataArea();
