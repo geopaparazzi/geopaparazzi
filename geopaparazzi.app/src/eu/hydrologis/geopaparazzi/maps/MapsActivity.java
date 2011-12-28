@@ -425,9 +425,15 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
 
     private void handleOsmSliderView() throws Exception {
         OsmTagsManager osmTagsManager = OsmTagsManager.getInstance();
-        final String[] categoriesNamesArray = osmTagsManager.getTagCategories(this);
+        String[] categoriesNamesArray = osmTagsManager.getTagCategories(this);
 
-        int visibility = categoriesNamesArray != null ? 0 : 4;
+        int visibility = 0;
+        if (categoriesNamesArray == null) {
+            categoriesNamesArray = new String[]{""};
+            visibility = 4;
+        }
+
+        final String[] categoriesNamesArrayFinal = categoriesNamesArray;
 
         // slidingdrawer
         final int slidingId = R.id.osmslide;
@@ -459,11 +465,11 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
 
         GridView buttonGridView = (GridView) findViewById(R.id.osmcategoriesview);
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.gpslog_row, categoriesNamesArray){
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.gpslog_row, categoriesNamesArrayFinal){
             public View getView( final int position, View cView, ViewGroup parent ) {
 
                 final Button osmButton = new Button(MapsActivity.this);
-                osmButton.setText(categoriesNamesArray[position]);
+                osmButton.setText(categoriesNamesArrayFinal[position]);
                 osmButton.setBackgroundResource(R.drawable.osmcategory_button_drawable);
                 osmButton.setOnClickListener(new Button.OnClickListener(){
                     public void onClick( View v ) {

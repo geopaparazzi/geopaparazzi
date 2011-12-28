@@ -43,10 +43,9 @@
 
 package eu.hydrologis.geopaparazzi.chart;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EventListener;
-import java.util.List;
+import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.afree.chart.AFreeChart;
@@ -67,7 +66,6 @@ import org.afree.chart.plot.Movable;
 import org.afree.chart.plot.Plot;
 import org.afree.chart.plot.PlotOrientation;
 import org.afree.chart.plot.PlotRenderingInfo;
-import org.afree.chart.plot.ValueMarker;
 import org.afree.chart.plot.XYPlot;
 import org.afree.chart.plot.Zoomable;
 import org.afree.chart.renderer.xy.XYItemRenderer;
@@ -1040,8 +1038,6 @@ public class ProfileChartView extends View implements ChartChangeListener, Chart
 
     private double yMax;
 
-    private boolean selectionMode;
-
     /**
      * Zoom 
      * @param ev
@@ -1227,23 +1223,20 @@ public class ProfileChartView extends View implements ChartChangeListener, Chart
         // does nothing - override if necessary
     }
 
-    public void setSelectionMode( boolean selectionMode ) {
-        this.selectionMode = selectionMode;
-        if (!selectionMode) {
-            clearMarkers();
-        }
-    }
-
-    private void clearMarkers() {
+    public void clearMarkers() {
         Plot plot = chart.getPlot();
         if (plot instanceof XYPlot) {
             XYPlot xyPlot = (XYPlot) plot;
-            Collection domainMarkers = xyPlot.getDomainMarkers(Layer.BACKGROUND);
-            for( Object object : domainMarkers ) {
-                if (object instanceof Marker) {
-                    Marker marker = (Marker) object;
-                    xyPlot.removeDomainMarker(marker);
+            Collection< ? > domainMarkers = xyPlot.getDomainMarkers(Layer.BACKGROUND);
+            if (domainMarkers != null) {
+                synchronized (domainMarkers) {
+                    Iterator< ? > iterator = domainMarkers.iterator();
+                    while( iterator.hasNext() ) {
+                        Marker marker = (Marker) iterator.next();
+                        xyPlot.removeDomainMarker(marker, Layer.BACKGROUND);
+                    }
                 }
+                invalidate();
             }
         }
     }
@@ -1258,8 +1251,8 @@ public class ProfileChartView extends View implements ChartChangeListener, Chart
 
         NumberAxis domainAxis = (NumberAxis) plot.getDomainAxis();
         domainAxis.setRange(xMin, xMax);
-        ValueAxis valueAxis = plot.getRangeAxis();
-        valueAxis.setRange(yMin, yMax);
+        // ValueAxis valueAxis = plot.getRangeAxis();
+        // valueAxis.setRange(yMin, yMax);
 
         invalidate();
     }

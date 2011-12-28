@@ -18,8 +18,6 @@
 package eu.hydrologis.geopaparazzi.chart;
 
 import java.io.IOException;
-import java.nio.CharBuffer;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,9 +37,7 @@ import org.afree.ui.Layer;
 import org.afree.ui.RectangleInsets;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -51,8 +47,6 @@ import android.widget.CheckBox;
 import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
-import eu.hydrologis.geopaparazzi.maps.GpsDataPropertiesActivity;
-import eu.hydrologis.geopaparazzi.maps.ViewportManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.debug.Debug;
@@ -112,7 +106,8 @@ public class ChartActivity extends Activity implements ChartTouchListener {
                 zoomtoButton.setEnabled(checked);
                 markers.clear();
                 markerValues.clear();
-                chartView.setSelectionMode(checked);
+                if (!checked)
+                    chartView.clearMarkers();
             }
         });
 
@@ -196,6 +191,7 @@ public class ChartActivity extends Activity implements ChartTouchListener {
                 xyPlot.addDomainMarker(marker, Layer.BACKGROUND);
                 markers.add(marker);
                 markerValues.add(new double[]{xValue, yValue});
+                chartView.invalidate();
             }
         }
     }
