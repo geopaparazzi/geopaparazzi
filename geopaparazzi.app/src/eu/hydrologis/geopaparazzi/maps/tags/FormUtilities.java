@@ -42,6 +42,9 @@ import eu.hydrologis.geopaparazzi.R;
 @SuppressWarnings("nls")
 public class FormUtilities {
 
+    public static final String COLON = ":";
+    public static final String UNDERSCORE = "_";
+
     /**
      * Type for a {@link TextView} containing generic text.
      */
@@ -129,7 +132,7 @@ public class FormUtilities {
         TextView textView = new TextView(context);
         textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
-        textView.setText(key);
+        textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " "));
         textView.setTextColor(context.getResources().getColor(R.color.hydrogreen));
 
         textLayout.addView(textView);
@@ -178,7 +181,7 @@ public class FormUtilities {
         TextView textView = new TextView(context);
         textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
-        textView.setText(key);
+        textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " "));
         textView.setTextColor(context.getResources().getColor(R.color.hydrogreen));
 
         textLayout.addView(textView);
@@ -223,7 +226,7 @@ public class FormUtilities {
         TextView textView = new TextView(context);
         textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
-        textView.setText(key);
+        textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " "));
         textView.setTextColor(context.getResources().getColor(R.color.hydrogreen));
         textLayout.addView(textView);
 

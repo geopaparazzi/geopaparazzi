@@ -136,6 +136,7 @@ public class OsmTagsManager {
         for( int i = 0; i < iconFiles.length; i++ ) {
             iconFileNames[i] = iconFiles[i].getName().replace(MAINICON_POSTFIX, "");
         }
+        Arrays.sort(iconFileNames);
         return iconFileNames;
     }
 

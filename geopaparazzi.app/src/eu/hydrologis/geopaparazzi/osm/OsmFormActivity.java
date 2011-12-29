@@ -56,6 +56,7 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
  */
 @SuppressWarnings("nls")
 public class OsmFormActivity extends Activity {
+
     private String formJsonString;
     // private String formShortnameDefinition;
     private String formLongnameDefinition;
@@ -83,7 +84,7 @@ public class OsmFormActivity extends Activity {
 
         TextView textView = (TextView) findViewById(R.id.osmform_textview);
         StringBuilder sb = new StringBuilder();
-        sb.append(tagName);
+        sb.append(tagName.replace(FormUtilities.UNDERSCORE, " ").replace(FormUtilities.COLON, " "));
         sb.append(" (");
         sb.append(category);
         sb.append(")");

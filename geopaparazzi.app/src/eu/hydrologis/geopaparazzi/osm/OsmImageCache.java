@@ -38,7 +38,7 @@ public class OsmImageCache {
         sb.append(category);
         sb.append("/"); //$NON-NLS-1$
         sb.append(tagName);
-        sb.append(OsmTagsManager.ICON_POSTFIX_XLARGE);
+        sb.append(OsmTagsManager.ICON_POSTFIX_MEDIUMDENSITY);
         String relativePath = sb.toString();
 
         SoftReference<Drawable> softReference = imageMap.get(relativePath);
