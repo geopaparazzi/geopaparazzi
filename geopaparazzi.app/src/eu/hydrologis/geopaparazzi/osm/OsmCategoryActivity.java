@@ -70,7 +70,7 @@ public class OsmCategoryActivity extends Activity {
                         osmCategoryIntent.putExtra(Constants.OSM_CATEGORY_KEY, category);
                         osmCategoryIntent.putExtra(Constants.OSM_TAG_KEY, tagName);
                         startActivity(osmCategoryIntent);
-                        finish();
+                        // finish();
                     }
                 });
 

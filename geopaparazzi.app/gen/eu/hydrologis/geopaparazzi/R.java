@@ -412,6 +412,7 @@ public final class R {
         public static final int enable_automatic_center_on_gps=0x7f0900bc;
         public static final int enable_debug=0x7f090085;
         public static final int error_disk_full=0x7f090066;
+        public static final int error_json_osm=0x7f0900c1;
         public static final int exit=0x7f090019;
         public static final int export_for_real=0x7f090088;
         public static final int formnotes=0x7f0900b3;
@@ -560,7 +561,6 @@ public final class R {
         public static final int sms_preferences=0x7f090056;
         public static final int sms_sending=0x7f090057;
         public static final int sms_sending_interval=0x7f090058;
-        public static final int sync_osm_notes_with_server=0x7f0900c1;
         public static final int text_gpson=0x7f090083;
         public static final int text_logging=0x7f090082;
         public static final int text_show_position_on_map=0x7f09006a;

@@ -53,6 +53,19 @@ public class OsmUtilities {
     public static final String PREF_KEY_SERVER = "osm_server_key";
 
     /**
+     * Response message for an error in the json string.
+     */
+    public static final String ERROR_JSON = "error_json";
+    /**
+     * Response message for an error in the osm login or the osm server.
+     */
+    public static final String ERROR_OSM = "error_osm";
+    /**
+     * Response message for successful upload to OSM.
+     */
+    public static final String FEATURES_IMPORTED = "features_imported";
+
+    /**
      * Send OSM notes to the server.
      * 
      * @param context the context.
@@ -116,7 +129,7 @@ public class OsmUtilities {
         wpsXmlString = wpsXmlString.replaceFirst("JSON", json);
         if (Debug.D)
             Logger.d("OSMUTILITIES", "WPSXML SENT: " + wpsXmlString);
-        System.out.println(wpsXmlString);
+        // System.out.println(wpsXmlString);
 
         String response = NetworkUtilities.sendPost(serverUrl, wpsXmlString, null, null);
         if (Debug.D)

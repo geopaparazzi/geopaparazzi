@@ -266,5 +266,5 @@
     <string name="loading_data">Loading data...</string>
     <string name="profilelable_distance">distance [m]</string>
     <string name="profilelable_elevation">elevation [m]</string>
-    <string name="sync_osm_notes_with_server">Sync OSM notes with server</string>
+    <string name="error_json_osm">The send json form is not valid. Please check your icons and form data.</string>
 </resources>

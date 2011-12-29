@@ -99,6 +99,7 @@ import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
+import eu.hydrologis.geopaparazzi.util.NetworkUtilities;
 import eu.hydrologis.geopaparazzi.util.Note;
 import eu.hydrologis.geopaparazzi.util.ResourceProxyImpl;
 import eu.hydrologis.geopaparazzi.util.VerticalSeekBar;
@@ -490,6 +491,18 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         syncOsmButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
 
+                if (!NetworkUtilities.isNetworkAvailable(getApplicationContext())) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+                    builder.setMessage("This function is available only with an active network connection.").setCancelable(false)
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                                public void onClick( DialogInterface dialog, int id ) {
+                                }
+                            });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                    return;
+                }
+
                 new AsyncTask<String, Void, String>(){
                     private Exception e = null;
 
@@ -507,10 +520,23 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                     protected void onPostExecute( String response ) {
                         if (e == null) {
                             String msg = getResources().getString(R.string.osm_notes_properly_uploaded);
-                            if (!response.toLowerCase().trim().equals("ok")) { //$NON-NLS-1$
-                                msg = getResources().getString(R.string.an_error_occurred_while_uploading_osm_tags) + response;
+                            if (response.toLowerCase().trim().startsWith(OsmUtilities.FEATURES_IMPORTED)) {
+                                String leftOver = response.replaceFirst(OsmUtilities.FEATURES_IMPORTED, "");
+                                if (leftOver.trim().length() > 0) {
+                                    // TODO tell how many imported
+                                }
+                                // msg =
+                                // getResources().getString(R.string.an_error_occurred_while_uploading_osm_tags)
+                                // + response;
+                            } else if (response.toLowerCase().trim().startsWith(OsmUtilities.ERROR_JSON)) {
+                                msg = getString(R.string.error_json_osm);
+                            } else if (response.toLowerCase().trim().startsWith(OsmUtilities.ERROR_OSM)) {
+                                msg = "An error occurred while connecting to the OSM server. Please check your login and passwors. It is also possible that the OSM server is not available.";
                             }
-                            osmSlidingDrawer.close();
+
+                            // TODO check if we want the slider to close
+                            // osmSlidingDrawer.close();
+
                             // Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG);
                             AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
                             builder.setMessage(msg).setCancelable(false)
