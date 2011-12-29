@@ -91,6 +91,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.util.DynamicDoubleArray;
 import eu.hydrologis.geopaparazzi.util.Line;
 
@@ -148,7 +149,7 @@ public class ProfileChartView extends View implements ChartChangeListener, Chart
      * @param yLabel the y axis label.
      */
     public XYSeriesCollection createDataset( Line line ) {
-        XYSeries xyS = new XYSeries("profile", true, true);
+        XYSeries xyS = new XYSeries(R.string.profile, true, true);
         DynamicDoubleArray altimList = line.getAltimList();
         DynamicDoubleArray latList = line.getLatList();
         DynamicDoubleArray lonList = line.getLonList();
@@ -270,7 +271,7 @@ public class ProfileChartView extends View implements ChartChangeListener, Chart
      * @return The dataset.
      */
     private XYDataset createDataset() {
-        XYSeries xyS = new XYSeries("profile", true, true);
+        XYSeries xyS = new XYSeries(R.string.profile, true, true);
         xyS.add(0, 0);
         xMin = -1;
         xMax = 1;
@@ -1090,6 +1091,7 @@ public class ProfileChartView extends View implements ChartChangeListener, Chart
     }
 
     // inertialmove has been disabled to avoid infinite panning
+    @SuppressWarnings("unused")
     private void inertialMove() {
         if (inertialMovedFlag == true) {
             RectShape dataArea = this.info.getPlotInfo().getDataArea();

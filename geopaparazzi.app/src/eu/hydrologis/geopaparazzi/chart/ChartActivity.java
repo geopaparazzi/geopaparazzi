@@ -137,7 +137,7 @@ public class ChartActivity extends Activity implements ChartTouchListener {
         });
 
         // final ProfileChartView chartView = new ProfileChartView(this, null);
-        final ProgressDialog progressDialog = ProgressDialog.show(this, "", "Loading data...");
+        final ProgressDialog progressDialog = ProgressDialog.show(this, "", getString(R.string.loading_data));
 
         new AsyncTask<String, Void, XYDataset>(){
             protected XYDataset doInBackground( String... params ) {
@@ -145,7 +145,8 @@ public class ChartActivity extends Activity implements ChartTouchListener {
             }
 
             protected void onPostExecute( XYDataset dataset ) {
-                chartView.setDataset(dataset, getString(R.string.chart_profile_view), "distance [m]", "elevation [m]");
+                chartView.setDataset(dataset, getString(R.string.chart_profile_view), getString(R.string.profilelable_distance),
+                        getString(R.string.profilelable_elevation));
                 progressDialog.dismiss();
             }
         }.execute((String) null);

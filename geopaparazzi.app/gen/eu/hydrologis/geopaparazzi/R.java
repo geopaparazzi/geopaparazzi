@@ -469,6 +469,7 @@ public final class R {
         public static final int lat=0x7f090021;
         public static final int latitude=0x7f090005;
         public static final int load=0x7f090090;
+        public static final int loading_data=0x7f0900be;
         public static final int log_distance=0x7f090025;
         public static final int log_points=0x7f090024;
         public static final int loggingoff=0x7f090012;
@@ -535,6 +536,9 @@ public final class R {
         public static final int panic_upper=0x7f09007c;
         public static final int phonenumber_hint=0x7f090091;
         public static final int pick_phonenumber_label=0x7f090092;
+        public static final int profile=0x7f0900bd;
+        public static final int profilelable_distance=0x7f0900bf;
+        public static final int profilelable_elevation=0x7f0900c0;
         public static final int prompt_gpsenable=0x7f090036;
         public static final int quicknotes=0x7f0900b2;
         public static final int remove_last_note_prompt=0x7f090087;
@@ -556,6 +560,7 @@ public final class R {
         public static final int sms_preferences=0x7f090056;
         public static final int sms_sending=0x7f090057;
         public static final int sms_sending_interval=0x7f090058;
+        public static final int sync_osm_notes_with_server=0x7f0900c1;
         public static final int text_gpson=0x7f090083;
         public static final int text_logging=0x7f090082;
         public static final int text_show_position_on_map=0x7f09006a;

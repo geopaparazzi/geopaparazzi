@@ -209,7 +209,7 @@
                     android:layout_height="fill_parent"
                     android:layout_margin="5dip"
                     android:layout_weight="10"
-                    android:text="Sync OSM notes with server" >
+                    android:text="@string/sync_osm_notes_with_server" >
                 </Button>
             </LinearLayout>
         </SlidingDrawer>

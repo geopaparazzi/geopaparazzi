@@ -262,4 +262,9 @@
     <string name="osm_notes_properly_uploaded">OSM notes properly uploaded.\n\nDo you want to remove the uploaded notes from the device?</string>
     <string name="an_error_occurred_while_uploading_osm_tags">An error occurred while uploading OSM tags: </string>
     <string name="enable_automatic_center_on_gps">Automatic center on GPS</string>
+    <string name="profile">profile</string>
+    <string name="loading_data">Loading data...</string>
+    <string name="profilelable_distance">distance [m]</string>
+    <string name="profilelable_elevation">elevation [m]</string>
+    <string name="sync_osm_notes_with_server">Sync OSM notes with server</string>
 </resources>

@@ -195,9 +195,8 @@
                     android:id="@+id/syncosmbutton"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:layout_margin="5dip"
-                    android:layout_weight="10"
-                    android:text="Sync OSM notes with server" >
+                    android:layout_weight="5"
+                    android:text="@string/sync_osm_notes_with_server" >
                 </Button>
             </LinearLayout>
         </SlidingDrawer>
