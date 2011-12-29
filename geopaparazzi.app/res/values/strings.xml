@@ -267,4 +267,6 @@
     <string name="profilelable_distance">distance [m]</string>
     <string name="profilelable_elevation">elevation [m]</string>
     <string name="error_json_osm">The send json form is not valid. Please check your icons and form data.</string>
+    <string name="available_only_with_network">This function is available only with an active network connection.</string>
+    <string name="error_osm_server">An error occurred while connecting to the OSM server. Please check your login and password. It is also possible that the OSM server is not available.</string>
 </resources>

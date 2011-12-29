@@ -385,6 +385,7 @@ public final class R {
         public static final int askcoord=0x7f09002f;
         public static final int audio_recording=0x7f090076;
         public static final int audio_recording_stop=0x7f090077;
+        public static final int available_only_with_network=0x7f0900c2;
         public static final int azimuth=0x7f090023;
         public static final int bookmarks_list_noavailable=0x7f0900a3;
         public static final int bookmarks_list_rename=0x7f0900a4;
@@ -413,6 +414,7 @@ public final class R {
         public static final int enable_debug=0x7f090085;
         public static final int error_disk_full=0x7f090066;
         public static final int error_json_osm=0x7f0900c1;
+        public static final int error_osm_server=0x7f0900c3;
         public static final int exit=0x7f090019;
         public static final int export_for_real=0x7f090088;
         public static final int formnotes=0x7f0900b3;
