@@ -1,0 +1,13 @@
+[{
+        "shortname": "",
+        "longname":"",
+        "form": {
+                "formitems":[
+                    {"key":"barrier", "value":"kissing_gate", "type":"hidden"},
+                    {"key":"foot", "value":"", "type":"boolean"},
+                    {"key":"bicycle", "value":"", "type":"boolean"},
+                    {"key":"LONGITUDE", "value":"", "type":"hidden"},
+                    {"key":"LATITUDE", "value":"", "type":"hidden"}
+        ]
+    }
+}]

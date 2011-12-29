@@ -1,0 +1,175 @@
+[{
+	"shortname": "cassonetto",
+	"longname":"cassonetto",
+	"form": {
+		"formitems":[
+		    {"key":"TRANSPONDER", "value":"", "type":"string"},
+		    {"key":"CODICE A BARRE", "value":"", "type":"string"},
+		    {"key":"COLORE", "value":"", 
+             "values":{ "items":[
+                      { "item":"" },
+                      { "item":"BIANCO" },
+                      { "item":"BLU" },
+                      { "item":"GIALLO" },
+                      { "item":"LEGNO" },
+                      { "item":"MARRONE" },
+                      { "item":"METALLO" },
+                      { "item":"ROSSO" },
+                      { "item":"VERDE" }
+                  ]
+              } ,
+              "type":"stringcombo"},
+		    {"key":"VERIFICHE", "value":"", 
+             "values":{ "items":[
+                      { "item":"" },
+                      { "item":"CHIUSA" },
+                      { "item":"DA ETICH" },
+                      { "item":"DEMO" },
+                      { "item":"DISC" },
+                      { "item":"FAR" },
+                      { "item":"FINE ATT" },
+                      { "item":"MAI" },
+                      { "item":"MAI TROV" },
+                      { "item":"NON FIRMA" },
+                      { "item":"NON REP" },
+                      { "item":"PAN" },
+                      { "item":"SCARIC" },
+                      { "item":"SERA" },
+                      { "item":"SI" },
+                      { "item":"SOSPESA" },
+                      { "item":"SVUOTATO" },
+                      { "item":"TRASFERITA" }
+                  ]
+              } ,
+		      "type":"stringcombo"},
+		    {"key":"VOLUME", "value":"", 
+             "values":{ "items":[
+                      { "item":"" },
+                      { "item":"50" },
+                      { "item":"80" },
+                      { "item":"110" },
+                      { "item":"120" },
+                      { "item":"240" },
+                      { "item":"660" },
+                      { "item":"1000" },
+                      { "item":"1100" },
+                      { "item":"1700" },
+                      { "item":"2000" },
+                      { "item":"2500" },
+                      { "item":"3000" },
+                      { "item":"3300" },
+                      { "item":"4500" }
+                  ]
+              } ,
+		      "type":"stringcombo"},
+		    {"key":"TIPOLOGIA", "value":"", 
+             "values":{ "items":[
+                      { "item":"" },
+                      { "item":"ABI" },
+                      { "item":"CAR" },
+                      { "item":"FAR" },
+                      { "item":"MUL" },
+                      { "item":"ORG" },
+                      { "item":"PAN" },
+                      { "item":"PIL" },
+                      { "item":"RSU" },
+                      { "item":"RSUTATA11" },
+                      { "item":"RSUTATA17" },
+                      { "item":"VARIE" },
+                      { "item":"VETRO/LATT" }
+                  ]
+              } ,
+		      "type":"stringcombo"},
+		    {"key":"STATO", "value":"", 
+             "values":{ "items":[
+                      { "item":"" },
+                      { "item":"ADESIVO MANCANTE" },
+                      { "item":"ALTRO" },
+                      { "item":"BRUCIATO" },
+                      { "item":"BUONO" },
+                      { "item":"COPERCHIO RIPARARE" },
+                      { "item":"COPERCHIO ROTTO" },
+                      { "item":"COPERCHIO SOSTITUIRE" },
+                      { "item":"DISTRUTTO" },
+                      { "item":"MEDIOCRE" },
+                      { "item":"NUOVO" },
+                      { "item":"OTTIMO" },
+                      { "item":"PEDALE ROTTO" },
+                      { "item":"PORTELLO MANCANTE" },
+                      { "item":"RIPARARE" },
+                      { "item":"ROTTO" },
+                      { "item":"RUOTE ROTTE" },
+                      { "item":"SCARSO" },
+                      { "item":"SCHIACCIATO" },
+                      { "item":"SENZA COPERCHIO" },
+                      { "item":"SFONDATO" },
+                      { "item":"SOSTITUIRE" },
+                      { "item":"SOSTITUIRE CORPERCHIO" }
+                  ]
+              } ,
+		      "type":"stringcombo"},
+		    {"key":"COMUNE", "value":"", 
+             "values":{ "items":[
+                      { "item":"" },
+                      { "item":"ARCO" },
+                      { "item":"BEZZECCA" },
+                      { "item":"CONCEI" },
+                      { "item":"DEPOSITO" },
+                      { "item":"DISCARICA" },
+                      { "item":"DRENA" },
+                      { "item":"DRO" },
+                      { "item":"MOLINA" },
+                      { "item":"NAGO TORBOLE" },
+                      { "item":"PIEVE" },
+                      { "item":"RIVA" },
+                      { "item":"TENNO" },
+                      { "item":"TIARNO DI SOPRA" },
+                      { "item":"TIARNO DI SOTTO" },
+                      { "item":"VARONE" }
+                  ]
+              } ,
+		      "type":"stringcombo"},
+		    {"key":"CODICE VIA", "value":"", "type":"string"},
+		    {"key":"INDIRIZZO", "value":"", "type":"string"},
+		    {"key":"CIVICO", "value":"VALUE@CIVICO", "type":"string"},
+		    {"key":"UBICAZIONE", "value":"", 
+             "values":{ "items":[
+                      { "item":"" },
+                      { "item":"CONDOMINIALE" },
+                      { "item":"DEDICATO" },
+                      { "item":"DEPOSITO" },
+                      { "item":"STRADALE" }
+                  ]
+              } ,
+              "type":"stringcombo"},
+		    {"key":"INSEGNA", "value":"", "type":"string"},
+		    {"key":"INTESTATARIO TIA", "value":"", "type":"string"},
+		    {"key":"NOTE", "value":"", "type":"string"},
+		    {"key":"DATA MODIFICA", "value":"", "type":"string"},
+		    {"key":"LATITUDINE", "value":"", "type":"string"},
+		    {"key":"LONGITUDINE", "value":"", "type":"string"},
+		    {"key":"FOTO", "value":"", "type":"string"}
+		]
+	}
+},{
+    "shortname": "isola",
+    "longname":"isola",
+    "form": {
+        "formitems":[
+            {"key":"NOME", "value":"nome isola", "type":"string"},
+            {"key":"RECINTATA", "value":"no", 
+             "values":{ "items":[
+                              { "item":"si" },
+                              { "item":"no" }
+                          ]
+                      } ,
+              "type":"stringcombo"},
+            {"key":"NOTE", "value":"note isola", "type":"string"},
+            {"key":"DATA MODIFICA", "value":"", "type":"string"},
+            {"key":"LATITUDINE", "value":"", "type":"string"},
+            {"key":"LONGITUDINE", "value":"", "type":"string"},
+            {"key":"FOTO", "value":"", "type":"string"}
+        ]
+    }
+}]
+	

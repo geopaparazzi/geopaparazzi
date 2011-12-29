@@ -1,0 +1,14 @@
+[{
+        "shortname": "",
+        "longname":"",
+        "form": {
+                "formitems":[
+                    {"key":"place", "value":"", "type":"primary_key"},
+                    {"key":"name", "value":"", "type":"string"},
+                    {"key":"wikipedia", "value":"", "type":"string"},
+                    {"key":"population", "value":"", "type":"string"},
+                    {"key":"LONGITUDE", "value":"", "type":"hidden"},
+                    {"key":"LATITUDE", "value":"", "type":"hidden"}
+                ]
+        }
+}]

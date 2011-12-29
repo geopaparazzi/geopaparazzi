@@ -1,0 +1,16 @@
+[{
+        "shortname": "",
+        "longname":"",
+        "form": {
+                "formitems":[
+                    {"key":"barrier", "value":"", "type":"primary_key"},
+                    {"key":"foot", "value":"", "type":"boolean"},
+                    {"key":"bicycle", "value":"", "type":"boolean"},
+                    {"key":"horse", "value":"", "type":"boolean"},
+                    {"key":"motorcycle", "value":"", "type":"boolean"},
+                    {"key":"motorcar", "value":"", "type":"boolean"},
+                    {"key":"LONGITUDE", "value":"", "type":"hidden"},
+                    {"key":"LATITUDE", "value":"", "type":"hidden"}
+        ]
+    }
+}]

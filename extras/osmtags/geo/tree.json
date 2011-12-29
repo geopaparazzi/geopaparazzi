@@ -1,0 +1,16 @@
+[{
+        "shortname": "",
+        "longname":"",
+        "form": {
+                "formitems":[
+                    {"key":"natural", "value":"tree", "type":"hidden"},
+                    {"key":"name", "value":"", "type":"string"},
+                    {"key":"name:botanical", "value":"", "type":"string"},
+                    {"key":"natural", "value":"", "type":"string"},
+                    {"key":"height", "value":"", "type":"string"},
+                    {"key":"type", "value":"", "type":"string"},
+                    {"key":"LONGITUDE", "value":"", "type":"hidden"},
+                    {"key":"LATITUDE", "value":"", "type":"hidden"}
+                ]
+        }
+}]

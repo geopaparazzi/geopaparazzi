@@ -1,0 +1,16 @@
+[{
+        "shortname": "",
+        "longname":"",
+        "form": {
+                "formitems":[
+                    {"key":"addr:housenumber", "value":"", "type":"string"},
+                    {"key":"addr:housename", "value":"", "type":"string"},
+                    {"key":"addr:street", "value":"", "type":"string"},
+                    {"key":"addr:city", "value":"", "type":"string"},
+                    {"key":"addr:postcode", "value":"", "type":"string"},
+                    {"key":"addr:country", "value":"", "type":"string"},
+                    {"key":"LONGITUDE", "value":"", "type":"hidden"},
+                    {"key":"LATITUDE", "value":"", "type":"hidden"}
+                ]
+        }
+}]
