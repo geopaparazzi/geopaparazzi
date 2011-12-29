@@ -143,6 +143,7 @@
         <EditTextPreference
             android:key="osm_server_key"
             android:order="21"
+            android:defaultValue="http://lucadelu.org/cgi-bin/zoo_loader.cgi"
             android:title="@string/osm_server_label" >
         </EditTextPreference>
     </PreferenceScreen>

@@ -385,6 +385,7 @@ public final class R {
         public static final int askcoord=0x7f09002f;
         public static final int audio_recording=0x7f090076;
         public static final int audio_recording_stop=0x7f090077;
+        public static final int available_only_with_network=0x7f0900c2;
         public static final int azimuth=0x7f090023;
         public static final int bookmarks_list_noavailable=0x7f0900a3;
         public static final int bookmarks_list_rename=0x7f0900a4;
@@ -412,6 +413,8 @@ public final class R {
         public static final int enable_automatic_center_on_gps=0x7f0900bc;
         public static final int enable_debug=0x7f090085;
         public static final int error_disk_full=0x7f090066;
+        public static final int error_json_osm=0x7f0900c1;
+        public static final int error_osm_server=0x7f0900c3;
         public static final int exit=0x7f090019;
         public static final int export_for_real=0x7f090088;
         public static final int formnotes=0x7f0900b3;
@@ -469,6 +472,7 @@ public final class R {
         public static final int lat=0x7f090021;
         public static final int latitude=0x7f090005;
         public static final int load=0x7f090090;
+        public static final int loading_data=0x7f0900be;
         public static final int log_distance=0x7f090025;
         public static final int log_points=0x7f090024;
         public static final int loggingoff=0x7f090012;
@@ -535,6 +539,9 @@ public final class R {
         public static final int panic_upper=0x7f09007c;
         public static final int phonenumber_hint=0x7f090091;
         public static final int pick_phonenumber_label=0x7f090092;
+        public static final int profile=0x7f0900bd;
+        public static final int profilelable_distance=0x7f0900bf;
+        public static final int profilelable_elevation=0x7f0900c0;
         public static final int prompt_gpsenable=0x7f090036;
         public static final int quicknotes=0x7f0900b2;
         public static final int remove_last_note_prompt=0x7f090087;

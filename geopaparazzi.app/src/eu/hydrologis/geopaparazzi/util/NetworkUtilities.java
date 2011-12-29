@@ -1,13 +1,19 @@
 package eu.hydrologis.geopaparazzi.util;
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
+
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 
 @SuppressWarnings("nls")
 public class NetworkUtilities {
@@ -118,17 +124,50 @@ public class NetworkUtilities {
             wr.write(bytes);
             wr.flush();
 
-            String responseMessage = conn.getResponseMessage();
-            return responseMessage;
+            int responseCode = conn.getResponseCode();
+            StringBuilder returnMessageBuilder = new StringBuilder();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
+                while( true ) {
+                    String line = br.readLine();
+                    if (line == null)
+                        break;
+                    returnMessageBuilder.append(line + "\n");
+                }
+                br.close();
+            }
+
+            return returnMessageBuilder.toString();
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
         } finally {
-            if (wr != null)
-                wr.close();
             if (conn != null)
                 conn.disconnect();
         }
+    }
+
+    /**
+     * Checks is the network is available.
+     * 
+     * @param context the {@link Context}.
+     * @return true if the network is available.
+     */
+    public static boolean isNetworkAvailable( Context context ) {
+        ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity == null) {
+            return false;
+        } else {
+            NetworkInfo[] info = connectivity.getAllNetworkInfo();
+            if (info != null) {
+                for( int i = 0; i < info.length; i++ ) {
+                    if (info[i].getState() == NetworkInfo.State.CONNECTED) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
 }

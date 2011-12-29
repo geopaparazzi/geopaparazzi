@@ -99,6 +99,7 @@ import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
+import eu.hydrologis.geopaparazzi.util.NetworkUtilities;
 import eu.hydrologis.geopaparazzi.util.Note;
 import eu.hydrologis.geopaparazzi.util.ResourceProxyImpl;
 import eu.hydrologis.geopaparazzi.util.VerticalSeekBar;
@@ -478,7 +479,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                         osmCategoryIntent.putExtra(Constants.OSM_CATEGORY_KEY, categoryName);
                         startActivity(osmCategoryIntent);
 
-                        osmSlidingDrawer.close();
+                        // osmSlidingDrawer.close();
                     }
                 });
                 return osmButton;
@@ -489,6 +490,21 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         Button syncOsmButton = (Button) findViewById(R.id.syncosmbutton);
         syncOsmButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
+
+                if (!NetworkUtilities.isNetworkAvailable(getApplicationContext())) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+                    builder.setMessage(R.string.available_only_with_network).setCancelable(false)
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                                public void onClick( DialogInterface dialog, int id ) {
+                                }
+                            });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                    return;
+                }
+
+                final ProgressDialog progressDialog = ProgressDialog
+                        .show(MapsActivity.this, "", getString(R.string.loading_data));
 
                 new AsyncTask<String, Void, String>(){
                     private Exception e = null;
@@ -505,39 +521,50 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                     }
 
                     protected void onPostExecute( String response ) {
+                        progressDialog.dismiss();
                         if (e == null) {
                             String msg = getResources().getString(R.string.osm_notes_properly_uploaded);
-                            if (!response.toLowerCase().trim().equals("ok")) { //$NON-NLS-1$
-                                msg = getResources().getString(R.string.an_error_occurred_while_uploading_osm_tags) + response;
+                            if (response.toLowerCase().trim().startsWith(OsmUtilities.FEATURES_IMPORTED)) {
+                                String leftOver = response.replaceFirst(OsmUtilities.FEATURES_IMPORTED, "");
+                                if (leftOver.trim().length() > 0) {
+                                    String text = leftOver.substring(1);
+                                    text = text.replaceFirst("\\_", "/");
+
+                                    msg = MessageFormat.format("Some of the features were uploaded, but not all of them ({0}).",
+                                            text);
+                                    openAlertDialog(msg);
+                                } else {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+                                    builder.setMessage(msg).setCancelable(false)
+                                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                                                public void onClick( DialogInterface dialog, int id ) {
+                                                    try {
+                                                        DaoNotes.deleteNotesByType(MapsActivity.this, NoteType.OSM);
+                                                    } catch (IOException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+                                            }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                                                public void onClick( DialogInterface dialog, int id ) {
+                                                }
+                                            });
+                                    AlertDialog alertDialog = builder.create();
+                                    alertDialog.show();
+                                }
+                            } else if (response.toLowerCase().trim().contains(OsmUtilities.ERROR_JSON)) {
+                                msg = getString(R.string.error_json_osm);
+                                openAlertDialog(msg);
+                            } else if (response.toLowerCase().trim().contains(OsmUtilities.ERROR_OSM)) {
+                                msg = getString(R.string.error_osm_server);
+                                openAlertDialog(msg);
                             }
-                            osmSlidingDrawer.close();
-                            // Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG);
-                            AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
-                            builder.setMessage(msg).setCancelable(false)
-                                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
-                                        public void onClick( DialogInterface dialog, int id ) {
-                                            try {
-                                                DaoNotes.deleteNotesByType(MapsActivity.this, NoteType.OSM);
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                    }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
-                                        public void onClick( DialogInterface dialog, int id ) {
-                                        }
-                                    });
-                            AlertDialog alertDialog = builder.create();
-                            alertDialog.show();
+
+                            // TODO check if we want the slider to close
+                            // osmSlidingDrawer.close();
+
                         } else {
                             String msg = getResources().getString(R.string.an_error_occurred_while_uploading_osm_tags);
-                            AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
-                            builder.setMessage(msg + e.getLocalizedMessage()).setCancelable(false)
-                                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
-                                        public void onClick( DialogInterface dialog, int id ) {
-                                        }
-                                    });
-                            AlertDialog alertDialog = builder.create();
-                            alertDialog.show();
+                            openAlertDialog(msg + e.getLocalizedMessage());
                         }
                     }
                 }.execute((String) null);
@@ -545,6 +572,21 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
             }
         });
 
+    }
+
+    /**
+     * Open an alert dialog with a message and an ok button.
+     * 
+     * @param msg the message to show.
+     */
+    private void openAlertDialog( String msg ) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+        builder.setMessage(msg).setCancelable(false).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+            public void onClick( DialogInterface dialog, int id ) {
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     @Override

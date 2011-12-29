@@ -76,6 +76,12 @@ public class OsmTagsManager {
         return osmTagsManager;
     }
 
+    /**
+     * Get the file of the root folder for OSM tags.
+     * 
+     * @param context the {@link Context}.
+     * @return the root folder for OSM tags.
+     */
     public synchronized File getTagsFolderFile( Context context ) {
         if (tagsFolderFile == null) {
             File geoPaparazziDir = ApplicationManager.getInstance(context).getGeoPaparazziDir();
@@ -84,6 +90,13 @@ public class OsmTagsManager {
         return tagsFolderFile;
     }
 
+    /**
+     * Get the available OSM categories. 
+     * 
+     * @param context the {@link Context}.
+     * @return the names of the categories.
+     * @throws Exception
+     */
     public synchronized String[] getTagCategories( Context context ) throws Exception {
         if (categoriesNames == null) {
             File tagsFolderFile = getTagsFolderFile(context);
@@ -104,6 +117,13 @@ public class OsmTagsManager {
         return categoriesNames;
     }
 
+    /**
+     * Get all the item names for a given category.
+     * 
+     * @param context the {@link Context}.
+     * @param category the category from which to fetch the items.
+     * @return the names of the items of the category. 
+     */
     public String[] getItemsForCategory( Context context, String category ) {
         File tagsFolderFile = getTagsFolderFile(context);
         File categoryFolderFile = new File(tagsFolderFile, category);
