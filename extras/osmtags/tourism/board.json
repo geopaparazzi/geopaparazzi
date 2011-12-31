@@ -7,7 +7,7 @@
  		    {"key":"information", "value":"board", "type":"hidden"},  
                     {"key":"name", "value":"", "type":"string"},  
                     {"key":"board_type", "value":"", 
-                    "values":{ "items":[
+                      "values":{ "items":[
                               { "item":"" },
                               { "item":"notice" },
                               { "item":"history" },
@@ -16,7 +16,8 @@
                               { "item":"plants" },
                               { "item":"board" }
                           ]
-                      }, "type":"stringcombo"},
+                      }, "type":"stringcombo"
+                    },
 		    {"key":"description", "value":"", "type":"string"},
                     {"key":"LONGITUDE", "value":"", "type":"hidden"},
                     {"key":"LATITUDE", "value":"", "type":"hidden"}

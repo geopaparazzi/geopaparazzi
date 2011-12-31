@@ -13,12 +13,13 @@
                     {"key":"recycling:plastic", "value":"",  "type":"boolean"},
                     {"key":"recycling:scrap_metal", "value":"",  "type":"boolean"},
                     {"key":"recycling_type", "value":"", 
-                    "values":{ "items":[
+                      "values":{ "items":[
                               { "item":"" },
                               { "item":"center" },
                               { "item":"container" }
                           ]
-                      }, "type":"stringcombo"},
+                      }, "type":"stringcombo"
+                    },
                     {"key":"LONGITUDE", "value":"", "type":"hidden"},
                     {"key":"LATITUDE", "value":"", "type":"hidden"}
                 ]

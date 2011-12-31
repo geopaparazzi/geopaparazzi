@@ -7,13 +7,14 @@
                     {"key":"operator", "value":"", "type":"string"},
                     {"key":"ref", "value":"", "type":"string"},
                     {"key":"wheelchair", "value":"", 
-                    "values":{ "items":[
+                      "values":{ "items":[
                               { "item":"" },
                               { "item":"yes" },
                               { "item":"limited" },
                               { "item":"no" }
                           ]
-                      }, "type":"stringcombo"},
+                      }, "type":"stringcombo"
+                    },
                     {"key":"fee", "value":"",  "type":"boolean"}
                     {"key":"note", "value":"", "type":"string"},
                     {"key":"LONGITUDE", "value":"", "type":"hidden"},

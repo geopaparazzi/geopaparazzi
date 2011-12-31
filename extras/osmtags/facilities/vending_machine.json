@@ -5,7 +5,7 @@
                 "formitems":[
                     {"key":"amenity", "value":"vending_machine", "type":"hidden"},
                     {"key":"vending", "value":"", 
-                    "values":{ "items":[
+                      "values":{ "items":[
                               { "item":"" },
                               { "item":"yes" },
                               { "item":"wlan" },
@@ -13,7 +13,8 @@
                               { "item":"terminal" },
                               { "item":"no" }
                           ]
-                      }, "type":"stringcombo"},
+                      }, "type":"stringcombo"
+                    },
                     {"key":"operator", "value":"", "type":"string"},
                     {"key":"ref", "value":"", "type":"string"},
                     {"key":"note", "value":"", "type":"string"},

@@ -9,6 +9,6 @@
                     {"key":"wikipedia", "value":"", "type":"string"},
                     {"key":"LONGITUDE", "value":"", "type":"hidden"},
                     {"key":"LATITUDE", "value":"", "type":"hidden"}
-        ]
-    }
+                ]
+        }
 }]

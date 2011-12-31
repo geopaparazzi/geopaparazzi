@@ -5,31 +5,34 @@
                 "formitems":[
                     {"key":"amenity", "value":"clock", "type":"hidden"},
                     {"key":"display", "value":"", 
-                    "values":{ "items":[
+                      "values":{ "items":[
                               { "item":"" },
                               { "item":"analog" },
                               { "item":"digital" },
                               { "item":"sundial" },
                               { "item":"unorthodox" }
                           ]
-                      }, "type":"stringcombo"},
+                      }, "type":"stringcombo"
+                    },
                     {"key":"support", "value":"", 
-                    "values":{ "items":[
+                      "values":{ "items":[
                               { "item":"" },
                               { "item":"pole" },
                               { "item":"wall_mounted" },
                               { "item":"billboard" },
                               { "item":"ground" }
                           ]
-                      }, "type":"stringcombo"},
+                      }, "type":"stringcombo"
+                    },
                     {"key":"visibility", "value":"", 
-                    "values":{ "items":[
+                      "values":{ "items":[
                               { "item":"" },
                               { "item":"house" },
                               { "item":"street" },
                               { "item":"area" }
                           ]
-                      }, "type":"stringcombo"},
+                      }, "type":"stringcombo"
+                    },
                     {"key":"date", "value":"",  "type":"boolean"},
                     {"key":"barometer", "value":"",  "type":"boolean"},
                     {"key":"hygrometer", "value":"",  "type":"boolean"},
