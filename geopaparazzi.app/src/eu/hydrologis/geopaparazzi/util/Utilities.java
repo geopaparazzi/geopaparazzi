@@ -49,4 +49,59 @@ public class Utilities {
         }
         return sb.toString();
     }
+
+    /**
+     * Tries to adapt a value to the supplied type.
+     * 
+     * @param value the value to adapt. 
+     * @param adaptee the class to adapt to.
+     * @return the adapted object or <code>null</code>, if it fails.
+     */
+    public static <T> T adapt( Object value, Class<T> adaptee ) {
+        if (value instanceof Number) {
+            Number num = (Number) value;
+            if (adaptee.isAssignableFrom(Double.class)) {
+                return adaptee.cast(num.doubleValue());
+            } else if (adaptee.isAssignableFrom(Float.class)) {
+                return adaptee.cast(num.floatValue());
+            } else if (adaptee.isAssignableFrom(Integer.class)) {
+                return adaptee.cast(num.intValue());
+            } else if (adaptee.isAssignableFrom(Long.class)) {
+                return adaptee.cast(num.longValue());
+            } else if (adaptee.isAssignableFrom(String.class)) {
+                return adaptee.cast(num.toString());
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else if (value instanceof String) {
+            if (adaptee.isAssignableFrom(Double.class)) {
+                try {
+                    Double parsed = Double.parseDouble((String) value);
+                    return adaptee.cast(parsed);
+                } catch (Exception e) {
+                    return null;
+                }
+            } else if (adaptee.isAssignableFrom(Float.class)) {
+                try {
+                    Float parsed = Float.parseFloat((String) value);
+                    return adaptee.cast(parsed);
+                } catch (Exception e) {
+                    return null;
+                }
+            } else if (adaptee.isAssignableFrom(Integer.class)) {
+                try {
+                    Integer parsed = Integer.parseInt((String) value);
+                    return adaptee.cast(parsed);
+                } catch (Exception e) {
+                    return null;
+                }
+            } else if (adaptee.isAssignableFrom(String.class)) {
+                return adaptee.cast(value);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        } else {
+            throw new IllegalArgumentException("Can't adapt attribute of type: " + value.getClass().getCanonicalName());
+        }
+    }
 }
