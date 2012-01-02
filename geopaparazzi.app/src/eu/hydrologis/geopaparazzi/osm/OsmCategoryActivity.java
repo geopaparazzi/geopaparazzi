@@ -59,7 +59,7 @@ public class OsmCategoryActivity extends Activity {
 
                 final TextView text = (TextView) inflate.findViewById(R.id.osm_item_text);
                 final String tagName = itemsForCategory[position];
-                text.setText(tagName.replaceAll("\\_", " ")); //$NON-NLS-1$ //$NON-NLS-2$
+                text.setText(tagName.replaceAll("_", " ")); //$NON-NLS-1$ //$NON-NLS-2$
 
                 Drawable icon = OsmImageCache.getInstance(OsmCategoryActivity.this).getImageForTag(tagName, category);
                 final ImageButton osmButton = (ImageButton) inflate.findViewById(R.id.osm_item_image);
