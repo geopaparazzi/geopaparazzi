@@ -23,9 +23,11 @@ package eu.hydrologis.geopaparazzi.osm.filters;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class NotNullConstraint implements IConstraint {
+public class MandatoryConstraint implements IConstraint {
 
     private boolean isValid = false;
+    
+    private String description = "mandatory";
 
     public void applyConstraint( Object value ) {
         if (value ==null) {
@@ -42,6 +44,10 @@ public class NotNullConstraint implements IConstraint {
 
     public boolean isValid() {
         return isValid;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
 }

@@ -217,7 +217,7 @@ public class ProfileChartView extends View implements ChartChangeListener, Chart
         domainAxis.setLabel(xLabel);
         ValueAxis valueAxis = plot.getRangeAxis();
         valueAxis.setRange(yMin, yMax);
-        valueAxis.setLabel(xLabel);
+        valueAxis.setLabel(yLabel);
 
         invalidate();
     }

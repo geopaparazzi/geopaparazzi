@@ -92,6 +92,16 @@ public class FormUtilities {
      */
     public static final String TYPE_PICTURE = "picture";
 
+    /**
+     * A constraint that defines the item as mandatory.
+     */
+    public static final String CONSTRAINT_MANDATORY = "mandatory";
+
+    /**
+     * A constraint that defines a range for the value.
+     */
+    public static final String CONSTRAINT_RANGE = "range";
+
     public static final String TAG_LONGNAME = "longname";
     public static final String TAG_SHORTNAME = "shortname";
     public static final String TAG_FORM = "form";
@@ -117,9 +127,11 @@ public class FormUtilities {
      *             <li>2: phone</li>
      *             <li>3: date</li>
      *          </ul>
+     * @param constraintDescription 
      * @return the added view.
      */
-    public static View addTextView( Context context, LinearLayout mainView, String key, String value, int type ) {
+    public static View addTextView( Context context, LinearLayout mainView, String key, String value, int type,
+            String constraintDescription ) {
         LinearLayout textLayout = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.WRAP_CONTENT);
@@ -132,7 +144,7 @@ public class FormUtilities {
         TextView textView = new TextView(context);
         textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
-        textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " "));
+        textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
         textView.setTextColor(context.getResources().getColor(R.color.hydrogreen));
 
         textLayout.addView(textView);
@@ -167,9 +179,11 @@ public class FormUtilities {
      * @param mainView the main view to which to add the new widget to.
      * @param key the key identifying the widget.
      * @param value the value to put in the widget.
+     * @param constraintDescription 
      * @return the added view.
      */
-    public static View addBooleanView( Context context, LinearLayout mainView, String key, String value ) {
+    public static View addBooleanView( Context context, LinearLayout mainView, String key, String value,
+            String constraintDescription ) {
         LinearLayout textLayout = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.WRAP_CONTENT);
@@ -181,7 +195,7 @@ public class FormUtilities {
         TextView textView = new TextView(context);
         textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
-        textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " "));
+        textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
         textView.setTextColor(context.getResources().getColor(R.color.hydrogreen));
 
         textLayout.addView(textView);
@@ -211,10 +225,12 @@ public class FormUtilities {
      * @param key the key identifying the widget.
      * @param value the value to put in the widget.
      * @param itemsArray the items to put in the spinner.
+     * @param constraintDescription 
      * @return 
      * @return the added view.
      */
-    public static View addComboView( Context context, LinearLayout mainView, String key, String value, String[] itemsArray ) {
+    public static View addComboView( Context context, LinearLayout mainView, String key, String value, String[] itemsArray,
+            String constraintDescription ) {
         LinearLayout textLayout = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.WRAP_CONTENT);
@@ -226,7 +242,7 @@ public class FormUtilities {
         TextView textView = new TextView(context);
         textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
-        textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " "));
+        textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
         textView.setTextColor(context.getResources().getColor(R.color.hydrogreen));
         textLayout.addView(textView);
 

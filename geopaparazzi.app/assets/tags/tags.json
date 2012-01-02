@@ -107,7 +107,7 @@
                        } ,
             "value":"5 < PH < 7",
             "type":"stringcombo"},
-            {"key":"number of served fountains", "value":"", "type":"double"},  
+            {"key":"number of served fountains", "value":"", "type":"double", "range":"[2,5)", "mandatory":"yes"},  
             {"key":"working", "value":"false", "type":"boolean"},
             {"key":"needs", 
              "values":{ "items":[
@@ -118,8 +118,8 @@
                        } ,
             "value":"PH < 5",
             "type":"stringcombo"},
-            {"key":"material", "value":"", "type":"string"},  
-            {"key":"volume [m3]", "value":"", "type":"double"}  
+            {"key":"material", "value":"", "type":"string", "mandatory":"yes"},  
+            {"key":"volume [m3]", "value":"", "type":"double", "range":"[2,5)"}  
         ]
     }
 },{

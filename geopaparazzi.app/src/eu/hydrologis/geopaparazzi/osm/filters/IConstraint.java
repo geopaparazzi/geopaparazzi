@@ -37,4 +37,11 @@ public interface IConstraint {
      * @return <code>true</code> if the constraint applies.
      */
     public boolean isValid();
+    
+    /**
+     * Getter for the description of the constraint.
+     * 
+     * @return the description of the constraint.
+     */
+    public String getDescription();
 }

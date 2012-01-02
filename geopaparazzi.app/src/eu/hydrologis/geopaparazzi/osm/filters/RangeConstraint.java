@@ -41,6 +41,15 @@ public class RangeConstraint implements IConstraint {
     }
 
     public void applyConstraint( Object value ) {
+        if (value instanceof String) {
+            String str = (String) value;
+            if (str.length() == 0) {
+                // empty can be still ok, we just check for ranges if we have a value
+                isValid = true;
+                return;
+            }
+        }
+
         Double adapted = Utilities.adapt(value, Double.class);
         if (adapted != null) {
             double doubleValue = adapted.doubleValue();
@@ -59,6 +68,24 @@ public class RangeConstraint implements IConstraint {
 
     public boolean isValid() {
         return isValid;
+    }
+
+    public String getDescription() {
+        StringBuilder sb = new StringBuilder();
+        if (includeLow) {
+            sb.append("[");
+        } else {
+            sb.append("(");
+        }
+        sb.append(lowValue);
+        sb.append(",");
+        sb.append(highValue);
+        if (includeHigh) {
+            sb.append("]");
+        } else {
+            sb.append(")");
+        }
+        return sb.toString();
     }
 
 }

@@ -17,6 +17,8 @@
  */
 package eu.hydrologis.geopaparazzi.maps.tags;
 
+import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.CONSTRAINT_MANDATORY;
+import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.CONSTRAINT_RANGE;
 import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_KEY;
 import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_LONGNAME;
 import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_TYPE;
@@ -27,6 +29,7 @@ import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TYPE_STRING;
 import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TYPE_STRINGCOMBO;
 
 import java.sql.Date;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +51,11 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.maps.TagsManager;
+import eu.hydrologis.geopaparazzi.osm.filters.Constraints;
+import eu.hydrologis.geopaparazzi.osm.filters.MandatoryConstraint;
+import eu.hydrologis.geopaparazzi.osm.filters.RangeConstraint;
 import eu.hydrologis.geopaparazzi.util.Constants;
+import eu.hydrologis.geopaparazzi.util.Utilities;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
@@ -63,6 +70,7 @@ public class FormActivity extends Activity {
     private String formLongnameDefinition;
 
     private HashMap<String, View> key2WidgetMap = new HashMap<String, View>();
+    private HashMap<String, Constraints> key2ConstraintsMap = new HashMap<String, Constraints>();
     private List<String> keyList = new ArrayList<String>();
     private JSONArray formItemsArray;
     private JSONObject jsonFormObject;
@@ -75,6 +83,7 @@ public class FormActivity extends Activity {
 
         key2WidgetMap.clear();
         keyList.clear();
+        key2ConstraintsMap.clear();
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -99,12 +108,24 @@ public class FormActivity extends Activity {
             public void onClick( View v ) {
                 String endString = "";
                 try {
-                    storeNote();
-                    endString = jsonFormObject.toString();
-                    Date sqlDate = new Date(System.currentTimeMillis());
-                    DaoNotes.addNote(FormActivity.this, longitude, latitude, -1.0, sqlDate, formLongnameDefinition, endString,
-                            NoteType.SIMPLE.getTypeNum());
-                    finish();
+                    String result = storeNote();
+                    if (result == null) {
+                        endString = jsonFormObject.toString();
+                        Date sqlDate = new Date(System.currentTimeMillis());
+                        DaoNotes.addNote(FormActivity.this, longitude, latitude, -1.0, sqlDate, formLongnameDefinition,
+                                endString, NoteType.SIMPLE.getTypeNum());
+                        finish();
+                    } else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(FormActivity.this);
+                        String msg = MessageFormat.format(getString(R.string.check_valid_field), result);
+                        builder.setMessage(msg).setCancelable(false)
+                                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                                    public void onClick( DialogInterface dialog, int id ) {
+                                    }
+                                });
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.show();
+                    }
                 } catch (Exception e) {
                     Logger.e(this, e.getLocalizedMessage(), e);
                     e.printStackTrace();
@@ -145,17 +166,40 @@ public class FormActivity extends Activity {
                     type = jsonObject.getString(TAG_TYPE).trim();
                 }
 
+                Constraints constraints = new Constraints();
+                if (jsonObject.has(CONSTRAINT_MANDATORY)) {
+                    String mandatory = jsonObject.getString(CONSTRAINT_MANDATORY).trim();
+                    if (mandatory.trim().equals("yes")) {
+                        constraints.addConstraint(new MandatoryConstraint());
+                    }
+                }
+                if (jsonObject.has(CONSTRAINT_RANGE)) {
+                    String range = jsonObject.getString(CONSTRAINT_RANGE).trim();
+                    String[] rangeSplit = range.split(",");
+                    if (rangeSplit.length == 2) {
+                        boolean lowIncluded = rangeSplit[0].startsWith("[") ? true : false;
+                        String lowStr = rangeSplit[0].substring(1);
+                        Double low = Utilities.adapt(lowStr, Double.class);
+                        boolean highIncluded = rangeSplit[1].endsWith("]") ? true : false;
+                        String highStr = rangeSplit[1].substring(0, rangeSplit[1].length() - 1);
+                        Double high = Utilities.adapt(highStr, Double.class);
+                        constraints.addConstraint(new RangeConstraint(low, lowIncluded, high, highIncluded));
+                    }
+                }
+                key2ConstraintsMap.put(key, constraints);
+                String constraintDescription = constraints.getDescription();
+
                 View addedView = null;
                 if (type.equals(TYPE_STRING)) {
-                    addedView = FormUtilities.addTextView(this, mainView, key, value, 0);
+                    addedView = FormUtilities.addTextView(this, mainView, key, value, 0, constraintDescription);
                 } else if (type.equals(TYPE_DOUBLE)) {
-                    addedView = FormUtilities.addTextView(this, mainView, key, value, 1);
+                    addedView = FormUtilities.addTextView(this, mainView, key, value, 1, constraintDescription);
                 } else if (type.equals(TYPE_BOOLEAN)) {
-                    addedView = FormUtilities.addBooleanView(this, mainView, key, value);
+                    addedView = FormUtilities.addBooleanView(this, mainView, key, value, constraintDescription);
                 } else if (type.equals(TYPE_STRINGCOMBO)) {
                     JSONArray comboItems = TagsManager.getComboItems(jsonObject);
                     String[] itemsArray = TagsManager.comboItems2StringArray(comboItems);
-                    addedView = FormUtilities.addComboView(this, mainView, key, value, itemsArray);
+                    addedView = FormUtilities.addComboView(this, mainView, key, value, itemsArray, constraintDescription);
                 } else {
                     System.out.println("Type non implemented yet: " + type);
                 }
@@ -171,12 +215,14 @@ public class FormActivity extends Activity {
 
     }
 
-    private void storeNote() throws JSONException {
+    private String storeNote() throws JSONException {
         // update the name with info
         jsonFormObject.put(TAG_LONGNAME, formLongnameDefinition);
 
         // update the items
         for( String key : keyList ) {
+            Constraints constraints = key2ConstraintsMap.get(key);
+
             View view = key2WidgetMap.get(key);
             String text = null;
             if (view instanceof TextView) {
@@ -187,6 +233,10 @@ public class FormActivity extends Activity {
                 text = spinner.getSelectedItem().toString();
             }
 
+            if (!constraints.isValid(text)) {
+                return key;
+            }
+
             try {
                 if (text != null)
                     FormUtilities.update(formItemsArray, key, text);
@@ -195,6 +245,8 @@ public class FormActivity extends Activity {
                 e.printStackTrace();
             }
         }
+
+        return null;
     }
 
 }

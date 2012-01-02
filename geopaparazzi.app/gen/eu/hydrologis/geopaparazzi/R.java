@@ -396,6 +396,7 @@ public final class R {
         public static final int cantwrite_gpslog=0x7f09001c;
         public static final int centerongps=0x7f09002b;
         public static final int chart_profile_view=0x7f09005f;
+        public static final int check_valid_field=0x7f0900c4;
         public static final int color_label=0x7f090039;
         public static final int databaseError=0x7f09005e;
         public static final int database_new=0x7f09005d;
