@@ -17,23 +17,32 @@
  */
 package eu.hydrologis.geopaparazzi.osm;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import eu.hydrologis.geopaparazzi.database.DaoNotes;
-import eu.hydrologis.geopaparazzi.database.NoteType;
-import eu.hydrologis.geopaparazzi.util.NetworkUtilities;
-import eu.hydrologis.geopaparazzi.util.Note;
-import eu.hydrologis.geopaparazzi.util.debug.Debug;
-import eu.hydrologis.geopaparazzi.util.debug.Logger;
-
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.AssetManager;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi.database.DaoNotes;
+import eu.hydrologis.geopaparazzi.database.NoteType;
+import eu.hydrologis.geopaparazzi.util.ApplicationManager;
+import eu.hydrologis.geopaparazzi.util.CompressionUtilities;
+import eu.hydrologis.geopaparazzi.util.NetworkUtilities;
+import eu.hydrologis.geopaparazzi.util.Note;
+import eu.hydrologis.geopaparazzi.util.Utilities;
+import eu.hydrologis.geopaparazzi.util.debug.Debug;
+import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * Utilities class for handling OSM matters.
@@ -164,4 +173,83 @@ public class OsmUtilities {
         String file = new String(bArray);
         return file;
     }
+
+    private static String osmTagsZipUrlPath = "http://geopaparazzi.googlecode.com/files/osmtags.zip";
+
+    /**
+     * Download the osm tags archive if necessary.
+     * 
+     * @param activity
+     */
+    public static void handleOsmTagsDownload( final Activity activity ) {
+
+        try {
+            String[] tagCategories = OsmTagsManager.getInstance().getTagCategories(activity);
+            if (tagCategories != null) {
+                return;
+            }
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+
+        new AlertDialog.Builder(activity).setTitle("OSM tags").setMessage("Do you want to download the OSM tags?")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                    public void onClick( DialogInterface dialog, int whichButton ) {
+                    }
+                }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                    public void onClick( DialogInterface dialog, int whichButton ) {
+                        final File parentFile = ApplicationManager.getInstance(activity).getGeoPaparazziDir().getParentFile();
+                        final File osmZipFile = new File(parentFile, "osmtags.zip");
+                        File osmFolderFile = new File(parentFile, "osmtags");
+
+                        if (osmFolderFile.exists() && osmFolderFile.isDirectory()) {
+                            Utilities
+                                    .messageDialog(activity,
+                                            "An osm tags folder already exists. Please remove the folder before trying to download the tags.");
+                            return;
+                        }
+
+                        if (!NetworkUtilities.isNetworkAvailable(activity)) {
+                            Utilities.messageDialog(activity, activity.getString(R.string.available_only_with_network));
+                            return;
+                        }
+
+                        final ProgressDialog progressDialog = ProgressDialog.show(activity, "",
+                                activity.getString(R.string.loading_data));
+
+                        new AsyncTask<String, Void, String>(){
+                            protected String doInBackground( String... params ) {
+
+                                try {
+                                    NetworkUtilities.sendGetRequest4File(osmTagsZipUrlPath, osmZipFile, null, null, null);
+                                } catch (Exception e) {
+                                    Utilities.messageDialog(activity, "An error occurred while downloading the OSM tags.");
+                                    e.printStackTrace();
+                                    return "";
+                                }
+
+                                try {
+                                    CompressionUtilities.unzipFolder(osmZipFile.getAbsolutePath(), parentFile.getAbsolutePath());
+                                } catch (IOException e) {
+                                    Utilities.messageDialog(activity,
+                                            "An error occurred while unzipping the OSM tags to the device.");
+                                    e.printStackTrace();
+                                    return "";
+                                } finally {
+                                    osmZipFile.delete();
+                                }
+                                return "";
+                            }
+
+                            protected void onPostExecute( String dataset ) {
+                                progressDialog.dismiss();
+                            }
+                        }.execute((String) null);
+
+                    }
+                }).show();
+
+    }
+
 }

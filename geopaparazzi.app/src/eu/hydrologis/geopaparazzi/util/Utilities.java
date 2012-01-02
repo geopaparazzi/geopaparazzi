@@ -17,6 +17,11 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.os.AsyncTask;
+import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.util.debug.Debug;
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
@@ -103,5 +108,30 @@ public class Utilities {
         } else {
             throw new IllegalArgumentException("Can't adapt attribute of type: " + value.getClass().getCanonicalName());
         }
+    }
+
+    /**
+     * Execute a message dialog in an {@link AsyncTask}.
+     * 
+     * @param context the {@link Context} to use.
+     * @param msg the message to show.
+     */
+    public static void messageDialog( final Context context, final String msg ) {
+        new AsyncTask<String, Void, String>(){
+            protected String doInBackground( String... params ) {
+                return "";
+            }
+
+            protected void onPostExecute( String response ) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage(msg).setCancelable(false)
+                        .setPositiveButton(context.getString(R.string.ok), new DialogInterface.OnClickListener(){
+                            public void onClick( DialogInterface dialog, int id ) {
+                            }
+                        });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            }
+        }.execute((String) null);
     }
 }

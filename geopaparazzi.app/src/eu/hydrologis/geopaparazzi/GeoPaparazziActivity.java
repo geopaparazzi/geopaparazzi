@@ -64,6 +64,7 @@ import eu.hydrologis.geopaparazzi.gps.GpsManager;
 import eu.hydrologis.geopaparazzi.kml.KmlExport;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
 import eu.hydrologis.geopaparazzi.maps.MapItem;
+import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
 import eu.hydrologis.geopaparazzi.sensors.SensorsManager;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
@@ -244,6 +245,8 @@ public class GeoPaparazziActivity extends Activity {
             e.printStackTrace();
             Toast.makeText(this, R.string.databaseError, Toast.LENGTH_LONG).show();
         }
+
+        OsmUtilities.handleOsmTagsDownload(this);
     }
 
     private void checkDebugLogger() {
