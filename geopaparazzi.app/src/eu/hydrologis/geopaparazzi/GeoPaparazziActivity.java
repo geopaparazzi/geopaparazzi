@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeSet;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -54,6 +55,7 @@ import android.widget.Toast;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.ActionItem;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction;
+import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
@@ -67,8 +69,10 @@ import eu.hydrologis.geopaparazzi.maps.MapItem;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
 import eu.hydrologis.geopaparazzi.sensors.SensorsManager;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
+import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.DirectoryBrowserActivity;
+import eu.hydrologis.geopaparazzi.util.FileUtils;
 import eu.hydrologis.geopaparazzi.util.Image;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.Note;
@@ -239,6 +243,7 @@ public class GeoPaparazziActivity extends Activity {
 
         try {
             DatabaseManager.getInstance().getDatabase(this);
+            checkExtraBookmarks();
             checkMapsAndLogsVisibility();
         } catch (IOException e) {
             Logger.e(this, e.getLocalizedMessage(), e);
@@ -565,6 +570,42 @@ public class GeoPaparazziActivity extends Activity {
             }
         }
         DataManager.getInstance().setLogsVisible(oneVisible);
+    }
+
+    /**
+     * Checks for a bookmarks.csv file in the geopaparazzi folder and in case integrates them.
+     * 
+     * @throws IOException
+     */
+    private void checkExtraBookmarks() throws IOException {
+        File geoPaparazziDir = applicationManager.getGeoPaparazziDir();
+        File bookmarksfile = new File(geoPaparazziDir, "bookmarks.csv"); //$NON-NLS-1$
+        if (bookmarksfile.exists()) {
+            // try to load it
+            List<Bookmark> allBookmarks = DaoBookmarks.getAllBookmarks(this);
+            TreeSet<String> bookmarksNames = new TreeSet<String>();
+            for( Bookmark bookmark : allBookmarks ) {
+                String tmpName = bookmark.getName();
+                bookmarksNames.add(tmpName.trim());
+            }
+
+            List<String> bookmarksList = FileUtils.readfileToList(bookmarksfile);
+            for( String bookmarkLine : bookmarksList ) {
+                String[] split = bookmarkLine.split(","); //$NON-NLS-1$
+                // bookmarks are of type: 45.46564, 11.58969, Agritur BeB In Valle
+                if (split.length != 3) {
+                    continue;
+                }
+                String name = split[0].trim();
+                if (bookmarksNames.contains(name)) {
+                    continue;
+                }
+                double lat = Double.parseDouble(split[1]);
+                double lon = Double.parseDouble(split[2]);
+
+                DaoBookmarks.addBookmark(this, lon, lat, name, 16.0, -1, -1, -1, -1);
+            }
+        }
     }
 
     @Override

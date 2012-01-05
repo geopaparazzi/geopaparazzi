@@ -27,6 +27,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
@@ -75,9 +77,37 @@ public class FileUtils {
             br = new BufferedReader(new FileReader(file));
             String line = null;
             while( (line = br.readLine()) != null ) {
+                if (line.length() == 0 || line.startsWith("#")) { //$NON-NLS-1$
+                    continue;
+                }
                 sb.append(line).append("\n"); //$NON-NLS-1$
             }
             return sb.toString();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    Logger.e("FILEUTILS", e.getLocalizedMessage(), e); //$NON-NLS-1$
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static List<String> readfileToList( File file ) throws IOException {
+        BufferedReader br = null;
+        List<String> linesList = new ArrayList<String>();
+        try {
+            br = new BufferedReader(new FileReader(file));
+            String line = null;
+            while( (line = br.readLine()) != null ) {
+                if (line.length() == 0 || line.startsWith("#")) { //$NON-NLS-1$
+                    continue;
+                }
+                linesList.add(line.trim());
+            }
+            return linesList;
         } finally {
             if (br != null) {
                 try {
