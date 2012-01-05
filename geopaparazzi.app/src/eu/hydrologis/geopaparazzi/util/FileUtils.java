@@ -18,10 +18,12 @@
 package eu.hydrologis.geopaparazzi.util;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -80,6 +82,23 @@ public class FileUtils {
             if (br != null) {
                 try {
                     br.close();
+                } catch (IOException e) {
+                    Logger.e("FILEUTILS", e.getLocalizedMessage(), e); //$NON-NLS-1$
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static void writefile( String text, File file ) throws IOException {
+        BufferedWriter bw = null;
+        try {
+            bw = new BufferedWriter(new FileWriter(file));
+            bw.write(text);
+        } finally {
+            if (bw != null) {
+                try {
+                    bw.close();
                 } catch (IOException e) {
                     Logger.e("FILEUTILS", e.getLocalizedMessage(), e); //$NON-NLS-1$
                     e.printStackTrace();

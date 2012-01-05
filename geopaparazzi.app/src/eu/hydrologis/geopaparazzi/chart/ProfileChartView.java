@@ -88,12 +88,13 @@ import android.graphics.PointF;
 import android.location.Location;
 import android.os.Handler;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.util.DynamicDoubleArray;
 import eu.hydrologis.geopaparazzi.util.Line;
+import eu.hydrologis.geopaparazzi.util.debug.Debug;
+import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 public class ProfileChartView extends View implements ChartChangeListener, ChartProgressListener {
 
@@ -173,10 +174,10 @@ public class ProfileChartView extends View implements ChartChangeListener, Chart
 
             double distance = 0.0;
             if (i > 0) {
-                Location thisLoc = new Location("dummy1");
+                Location thisLoc = new Location("dummy1"); //$NON-NLS-1$
                 thisLoc.setLongitude(lon);
                 thisLoc.setLatitude(lat);
-                Location thatLoc = new Location("dummy2");
+                Location thatLoc = new Location("dummy2"); //$NON-NLS-1$
                 thatLoc.setLongitude(plon);
                 thatLoc.setLatitude(plat);
                 distance = thisLoc.distanceTo(thatLoc);
@@ -229,6 +230,7 @@ public class ProfileChartView extends View implements ChartChangeListener, Chart
      *
      * @return A chart.
      */
+    @SuppressWarnings("nls")
     private AFreeChart createChart( XYDataset dataset ) {
 
         AFreeChart chart = ChartFactory.createXYLineChart("", "", "", dataset, // data
@@ -414,7 +416,8 @@ public class ProfileChartView extends View implements ChartChangeListener, Chart
         switch( action & MotionEvent.ACTION_MASK ) {
         case MotionEvent.ACTION_DOWN:
         case MotionEvent.ACTION_POINTER_DOWN:
-            Log.i("TouchEvent", "ACTION_DOWN");
+            if (Debug.D)
+                Logger.i(this, "ACTION_DOWN"); //$NON-NLS-1$
             if (count == 2 && this.multiTouchStartInfo == null) {
                 setMultiTouchStartInfo(ev);
             } else if (count == 1 && this.singleTouchStartInfo == null) {
@@ -425,7 +428,8 @@ public class ProfileChartView extends View implements ChartChangeListener, Chart
 
             break;
         case MotionEvent.ACTION_MOVE:
-            Log.i("TouchEvent", "ACTION_MOVE");
+            if (Debug.D)
+                Logger.i(this, "ACTION_MOVE"); //$NON-NLS-1$
             if (count == 1 && this.singleTouchStartInfo != null) {
                 moveAdjustment(ev);
             } else if (count == 2 && this.multiTouchStartInfo != null) {
@@ -438,7 +442,8 @@ public class ProfileChartView extends View implements ChartChangeListener, Chart
             break;
         case MotionEvent.ACTION_UP:
         case MotionEvent.ACTION_POINTER_UP:
-            Log.i("TouchEvent", "ACTION_UP");
+            if (Debug.D)
+                Logger.i(this, "ACTION_UP"); //$NON-NLS-1$
             if (count <= 2) {
                 this.multiTouchStartInfo = null;
                 this.singleTouchStartInfo = null;
@@ -563,7 +568,7 @@ public class ProfileChartView extends View implements ChartChangeListener, Chart
     private void move( PointF source, double moveBoundX, double moveBoundY, double dataAreaWidth, double dataAreaHeight ) {
 
         if (source == null) {
-            throw new IllegalArgumentException("Null 'source' argument");
+            throw new IllegalArgumentException("Null 'source' argument"); //$NON-NLS-1$
         }
 
         double hMovePercent = moveBoundX / dataAreaWidth;
@@ -1174,7 +1179,7 @@ public class ProfileChartView extends View implements ChartChangeListener, Chart
      */
     public void addChartTouchListener( ChartTouchListener listener ) {
         if (listener == null) {
-            throw new IllegalArgumentException("Null 'listener' argument.");
+            throw new IllegalArgumentException("Null 'listener' argument."); //$NON-NLS-1$
         }
         this.chartMotionListeners.add(listener);
     }

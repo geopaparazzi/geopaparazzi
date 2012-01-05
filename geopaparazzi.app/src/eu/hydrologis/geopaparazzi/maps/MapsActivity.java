@@ -95,6 +95,7 @@ import eu.hydrologis.geopaparazzi.maps.overlays.MapsOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.MeasureToolOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.MinimapOverlayWithCross;
 import eu.hydrologis.geopaparazzi.maps.overlays.NotesOverlay;
+import eu.hydrologis.geopaparazzi.mixare.MixareHandler;
 import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
@@ -116,7 +117,8 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
     private static final int MENU_MINIMAP_ID = 4;
     private static final int MENU_SCALE_ID = 5;
     private static final int MENU_COMPASS_ID = 6;
-    private static final int GO_TO = 7;
+    private static final int MENU_MIXARE_ID = 7;
+    private static final int GO_TO = 8;
 
     private DecimalFormat formatter = new DecimalFormat("00"); //$NON-NLS-1$
     private Button zoomInButton;
@@ -430,7 +432,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
 
         int visibility = 0;
         if (categoriesNamesArray == null) {
-            categoriesNamesArray = new String[]{""};
+            categoriesNamesArray = new String[]{""}; //$NON-NLS-1$
             visibility = 4;
         }
 
@@ -504,7 +506,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                 }
 
                 final ProgressDialog progressDialog = ProgressDialog
-                        .show(MapsActivity.this, "", getString(R.string.loading_data));
+                        .show(MapsActivity.this, "", getString(R.string.loading_data)); //$NON-NLS-1$
 
                 new AsyncTask<String, Void, String>(){
                     private Exception e = null;
@@ -525,10 +527,10 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                         if (e == null) {
                             String msg = getResources().getString(R.string.osm_notes_properly_uploaded);
                             if (response.toLowerCase().trim().startsWith(OsmUtilities.FEATURES_IMPORTED)) {
-                                String leftOver = response.replaceFirst(OsmUtilities.FEATURES_IMPORTED, "");
+                                String leftOver = response.replaceFirst(OsmUtilities.FEATURES_IMPORTED, ""); //$NON-NLS-1$
                                 if (leftOver.trim().length() > 0) {
                                     String text = leftOver.substring(1);
-                                    text = text.replaceFirst("\\_", "/");
+                                    text = text.replaceFirst("\\_", "/"); //$NON-NLS-1$//$NON-NLS-2$
 
                                     msg = MessageFormat.format("Some of the features were uploaded, but not all of them ({0}).",
                                             text);
@@ -667,7 +669,8 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         menu.add(Menu.NONE, MENU_MINIMAP_ID, 3, R.string.mapsactivity_menu_toggle_minimap).setIcon(R.drawable.ic_menu_minimap);
         menu.add(Menu.NONE, MENU_SCALE_ID, 4, R.string.mapsactivity_menu_toggle_scalebar).setIcon(R.drawable.ic_menu_scalebar);
         menu.add(Menu.NONE, MENU_COMPASS_ID, 5, R.string.mapsactivity_menu_toggle_compass).setIcon(R.drawable.ic_menu_compass);
-        final SubMenu subMenu = menu.addSubMenu(Menu.NONE, MENU_TILE_SOURCE_ID, 6, R.string.mapsactivity_menu_tilesource)
+        menu.add(Menu.NONE, MENU_MIXARE_ID, 6, R.string.view_in_mixare).setIcon(R.drawable.icon_datasource);
+        final SubMenu subMenu = menu.addSubMenu(Menu.NONE, MENU_TILE_SOURCE_ID, 7, R.string.mapsactivity_menu_tilesource)
                 .setIcon(R.drawable.ic_menu_tilesource);
         {
             // BingMapTileSource source = new BingMapTileSource("en");
@@ -676,7 +679,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                 subMenu.add(0, 1000 + tileSource.ordinal(), Menu.NONE, tileSource.localizedName(mResourceProxy));
             }
         }
-        menu.add(Menu.NONE, GO_TO, 7, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
+        menu.add(Menu.NONE, GO_TO, 8, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
         return true;
     }
 
@@ -738,6 +741,25 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
             Editor editor3 = preferences.edit();
             editor3.putBoolean(PREFS_KEY_COMPASSON, isCompassEnabled);
             return true;
+        case MENU_MIXARE_ID:
+            MixareHandler mixareHandler = new MixareHandler();
+            if (!mixareHandler.isMixareInstalled(this)) {
+                mixareHandler.installMixareFromMarket(this);
+                return true;
+            }
+            BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
+            float n = boundingBox.getLatNorthE6() / E6;
+            float s = boundingBox.getLatSouthE6() / E6;
+            float w = boundingBox.getLonWestE6() / E6;
+            float e = boundingBox.getLonEastE6() / E6;
+
+            try {
+                mixareHandler.runRegionOnMixare(this, n, s, w, e);
+                return true;
+            } catch (Exception e1) {
+                e1.printStackTrace();
+                return false;
+            }
         case GO_TO: {
             Intent intent = new Intent(Constants.INSERT_COORD);
             startActivity(intent);
@@ -993,8 +1015,8 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         int newSE6 = sE6 + paddingY;
         int newNE6 = nE6 - paddingY;
         BoundingBoxE6 smallerBounds = new BoundingBoxE6(newNE6, newEE6, newSE6, newWE6);
-        System.out.println(boundingBox);
-        System.out.println(smallerBounds);
+        // System.out.println(boundingBox);
+        // System.out.println(smallerBounds);
         boolean doCenter = false;
         if (!smallerBounds.contains(latE6, lonE6)) {
             if (centerOnGps) {

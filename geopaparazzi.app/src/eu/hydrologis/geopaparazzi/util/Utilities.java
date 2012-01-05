@@ -106,7 +106,7 @@ public class Utilities {
                 throw new IllegalArgumentException();
             }
         } else {
-            throw new IllegalArgumentException("Can't adapt attribute of type: " + value.getClass().getCanonicalName());
+            throw new IllegalArgumentException("Can't adapt attribute of type: " + value.getClass().getCanonicalName()); //$NON-NLS-1$
         }
     }
 
@@ -119,7 +119,7 @@ public class Utilities {
     public static void messageDialog( final Context context, final String msg ) {
         new AsyncTask<String, Void, String>(){
             protected String doInBackground( String... params ) {
-                return "";
+                return ""; //$NON-NLS-1$
             }
 
             protected void onPostExecute( String response ) {

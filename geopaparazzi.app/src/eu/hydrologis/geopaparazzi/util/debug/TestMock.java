@@ -33,8 +33,8 @@ import eu.hydrologis.geopaparazzi.maps.ViewportManager;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class TestMock {
-    private static double lat = 45;
-    private static double lon = 11;
+    private static double lat = 46.681034;
+    private static double lon = 11.13507645;
     private static double alt = 100;
     private static long date = new Date().getTime();
     public static String MOCK_PROVIDER_NAME = LocationManager.GPS_PROVIDER;
