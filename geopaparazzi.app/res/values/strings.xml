@@ -270,5 +270,5 @@
     <string name="available_only_with_network">This function is available only with an active network connection.</string>
     <string name="error_osm_server">An error occurred while connecting to the OSM server. Please check your login and password. It is also possible that the OSM server is not available.</string>
     <string name="check_valid_field">Please check that the field \"{0}\" is valid.</string>
-    <string name="view_in_mixare">View in Mixare</string>
+    <string name="view_in_mixare">view in mixare</string>
 </resources>

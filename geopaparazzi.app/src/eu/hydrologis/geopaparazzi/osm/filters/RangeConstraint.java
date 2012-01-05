@@ -70,6 +70,7 @@ public class RangeConstraint implements IConstraint {
         return isValid;
     }
 
+    @SuppressWarnings("nls")
     public String getDescription() {
         StringBuilder sb = new StringBuilder();
         if (includeLow) {

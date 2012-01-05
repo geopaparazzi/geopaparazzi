@@ -27,7 +27,7 @@ public class MandatoryConstraint implements IConstraint {
 
     private boolean isValid = false;
     
-    private String description = "mandatory";
+    private String description = "mandatory"; //$NON-NLS-1$
 
     public void applyConstraint( Object value ) {
         if (value ==null) {

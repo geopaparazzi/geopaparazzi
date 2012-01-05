@@ -43,6 +43,7 @@ public class Constraints {
         return true;
     }
 
+    @SuppressWarnings("nls")
     public String getDescription() {
         StringBuilder sb = new StringBuilder();
         for( IConstraint constraint : constraints ) {
