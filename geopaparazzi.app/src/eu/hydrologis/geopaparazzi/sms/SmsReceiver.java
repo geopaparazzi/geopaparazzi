@@ -43,7 +43,7 @@ public class SmsReceiver extends BroadcastReceiver {
     private static final String SMS_REC_ACTION = "android.provider.Telephony.SMS_RECEIVED"; //$NON-NLS-1$
 
     @Override
-    public void onReceive( Context context, Intent intent ) {
+    public void onReceive( final Context context, Intent intent ) {
         if (intent.getAction().equals(SmsReceiver.SMS_REC_ACTION)) {
 
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -61,14 +61,18 @@ public class SmsReceiver extends BroadcastReceiver {
                 for( Object pdu : pdus ) {
                     smsMessage = SmsMessage.createFromPdu((byte[]) pdu);
                     String body = smsMessage.getDisplayMessageBody();
-                    if (Debug.D) Logger.i(this, "Got message: " + body);
+                    if (body == null) {
+                        continue;
+                    }
+                    if (Debug.D)
+                        Logger.i(this, "Got message: " + body);
                     if (body.toLowerCase().matches(".*geopap.*")) {
                         break;
                     }
                     smsMessage = null;
                 }
             }
-            if (smsMessage != null) {
+            if (smsMessage != null && smsMessage.getOriginatingAddress() != null) {
                 // if (loc == null) {
                 // Logger.i("SMSRECEIVER", "Setting a dummy location");
                 // loc = new GpsLocation(new Location("dummy"));
@@ -84,6 +88,9 @@ public class SmsReceiver extends BroadcastReceiver {
                     String latString = String.valueOf(gpsLat).replaceAll(",", ".");
                     String lonString = String.valueOf(gpsLon).replaceAll(",", ".");
                     // http://www.openstreetmap.org/?lat=46.068941&lon=11.169849&zoom=18&layers=M&mlat=42.95647&mlon=12.70393
+
+                    // http://maps.google.com/maps?q=46.068941,11.169849&z=16
+
                     sB.append(lastPosition).append(":");
                     sB.append("http://www.openstreetmap.org/?lat=");
                     sB.append(latString);
@@ -123,7 +130,8 @@ public class SmsReceiver extends BroadcastReceiver {
                 }
 
                 String msg = sB.toString();
-                if (Debug.D) Logger.i(this, msg);
+                if (Debug.D)
+                    Logger.i(this, msg);
                 sendGPSData(context, smsMessage, msg);
             }
         }
@@ -136,14 +144,17 @@ public class SmsReceiver extends BroadcastReceiver {
         String addr = inMessage.getOriginatingAddress();
         // Make sure there's a valid return address.
         if (addr == null) {
-            if (Debug.D) Logger.i(this, "Unable to get Address from Sent Message");
+            if (Debug.D)
+                Logger.i(this, "Unable to get Address from Sent Message");
         } else {
-            if (Debug.D) Logger.i(this, "Sending to: " + addr);
+            if (Debug.D)
+                Logger.i(this, "Sending to: " + addr);
         }
         try {
             if (msg.length() > 160) {
                 msg = msg.substring(0, 160);
-                if (Debug.D) Logger.i(this, "Trimming msg to: " + msg);
+                if (Debug.D)
+                    Logger.i(this, "Trimming msg to: " + msg);
             }
             mng.sendTextMessage(addr, null, msg, dummyEvent, dummyEvent);
         } catch (Exception e) {
