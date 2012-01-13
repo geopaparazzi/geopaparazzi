@@ -1,0 +1,73 @@
+[zoosmarazzi]
+ Title = Import data from Geopaparazzi on OpenStreetMap. 
+ Abstract = ZOO service for an automathic import of data from Geopaparazzi on OpenStreetMap database.
+ processVersion = 1
+ storeSupported = true
+ statusSupported = true
+ serviceType = Python
+ serviceProvider = zoosmarazzi
+ <MetaData lang="en">
+   title = geopaposm
+ </MetaData>
+ <MetaData lang="it">
+   title = geopaposm
+ </MetaData>
+ <DataInputs>
+  [inputvector]
+   Title = The input data source name
+   Abstract = The input data source name.
+   minOccurs = 1
+   maxOccurs = 1
+   <ComplexData>
+    <Default>
+     mimeType = application/json
+     encoding = UTF-8    
+    </Default>
+    <Supported>
+     mimeType = text/xml
+     encoding = UTF-8
+     schema = http://schemas.opengis.net/gml/3.1.0/base/feature.xsd
+     asReference = true 
+    </Supported>
+   </ComplexData>   
+  [username]
+   Title = The OpenStreetMap's username
+   Abstract = The username of OpenStreetMap project.
+   minOccurs = 1
+   maxOccurs = 1
+   <LiteralData>
+    DataType = string
+    <Default>
+    </Default>  
+   </LiteralData>
+  [password]
+   Title = The OpenStreetMap's password
+   Abstract = The password of OpenStreetMap project.
+   minOccurs = 1
+   maxOccurs = 1
+   <LiteralData>
+    DataType = string
+    <Default>
+    </Default>  
+   </LiteralData>
+  [changeset]
+   Title = The changeset's description
+   Abstract = A text rappresenting the changeset's description.
+   minOccurs = 0
+   maxOccurs = 1
+   <LiteralData>
+    DataType = string
+    <Default>
+    </Default>  
+   </LiteralData>
+ </DataInputs>
+ <DataOutputs>
+  [output]
+   Title = A string of correct import
+   Abstract = When import terminate a success string is returned
+   <LiteralData>
+    DataType = string
+    <Default>
+    </Default>  
+   </LiteralData>
+ </DataOutputs>  
