@@ -51,7 +51,6 @@ cd facilities
   mv firestation.n.${SIZE}.png fire_hydrant.n.${SIZE}.png
   generateonepng.sh -f $PREFIX/svg/food/drinkingtap.svg -c '#0000ff' -s $SIZE
   mv drinkingtap.n.${SIZE}.png drinking_water.n.${SIZE}.png
-  generateonepng.sh -f $PREFIX/svg/shopping/vending_machine.svg -c '#0000ff' -s $SIZE
   rm -f *.p.* *.glow.* 
 cd ..
 
@@ -152,3 +151,54 @@ cd tourism
   mv unknown.n.${SIZE}.png place_of_worship.n.${SIZE}.png
   rm -f *.p.* *.glow.* 
 cd ..
+
+cd shop
+  generateonepng.sh -f $PREFIX/svg/shopping/bakery.svg -c '#0000ff' -s $SIZE
+  generateonepng.sh -f $PREFIX/svg/shopping/book.svg -c '#0000ff' -s $SIZE
+  mv book.n.${SIZE}.png books.n.${SIZE}.png
+  generateonepng.sh -f $PREFIX/svg/shopping/butcher.svg -c '#0000ff' -s $SIZE
+  generateonepng.sh -f $PREFIX/svg/shopping/clothes.svg -c '#0000ff' -s $SIZE
+  generateonepng.sh -f $PREFIX/svg/shopping/computer.svg -c '#0000ff' -s $SIZE
+  generateonepng.sh -f $PREFIX/svg/shopping/fish.svg -c '#0000ff' -s $SIZE
+  mv fish.n.${SIZE}.png seefood.n.${SIZE}.png
+  generateonepng.sh -f $PREFIX/svg/shopping/florist.svg -c '#0000ff' -s $SIZE
+  generateonepng.sh -f $PREFIX/svg/shopping/deli.svg -c '#0000ff' -s $SIZE
+  generateonepng.sh -f $PREFIX/svg/shopping/diy.svg -c '#0000ff' -s $SIZE
+  mv diy.n.${SIZE}.png doityourself.n.${SIZE}.png
+  generateonepng.sh -f $PREFIX/svg/shopping/greengrocer.svg -c '#0000ff' -s $SIZE
+  generateonepng.sh -f $PREFIX/svg/shopping/hairdresser.svg -c '#0000ff' -s $SIZE
+  generateonepng.sh -f $PREFIX/svg/shopping/hifi.svg -c '#0000ff' -s $SIZE
+  generateonepng.sh -f $PREFIX/svg/shopping/jewelry.svg -c '#0000ff' -s $SIZE
+  generateonepng.sh -f $PREFIX/svg/shopping/kiosk.svg -c '#0000ff' -s $SIZE
+  generateonepng.sh -f $PREFIX/svg/shopping/laundrette.svg -c '#0000ff' -s $SIZE
+  mv laundrette.n.${SIZE}.png laundry.n.${SIZE}.png
+  generateonepng.sh -f $PREFIX/svg/shopping/mobile_phone.svg -c '#0000ff' -s $SIZE
+  generateonepng.sh -f $PREFIX/svg/shopping/music.svg -c '#0000ff' -s $SIZE
+  mv music.n.${SIZE}.png musical_instrument.n.${SIZE}.png
+  generateonepng.sh -f $PREFIX/svg/shopping/newspaper.svg -c '#0000ff' -s $SIZE
+  generateonepng.sh -f $PREFIX/svg/shopping/pet2.svg -c '#0000ff' -s $SIZE
+  mv pet2.n.${SIZE}.png pet.n.${SIZE}.png
+  generateonepng.sh -f $PREFIX/svg/shopping/photo.svg -c '#0000ff' -s $SIZE
+  generateonepng.sh -f $PREFIX/svg/shopping/supermarket.svg -c '#0000ff' -s $SIZE
+  generateonepng.sh -f $PREFIX/svg/shopping/tobacco.svg -c '#0000ff' -s $SIZE
+  generateonepng.sh -f $PREFIX/svg/shopping/video_rental.svg -c '#0000ff' -s $SIZE
+  generateonepng.sh -f $PREFIX/svg/shopping/vending_machine.svg -c '#0000ff' -s $SIZE
+  rm -f *.p.* *.glow.* 
+cd ..
+
+# cd transport_bicycle
+#   generateonepng.sh -f $PREFIX/svg/transport/parking_bicycle.svg -c '#0000ff' -s $SIZE
+#   generateonepng.sh -f $PREFIX/svg/transport/rental_bicycle.svg -c '#0000ff' -s $SIZE
+#   generateonepng.sh -f $PREFIX/svg/shopping/bicycle2.svg -c '#0000ff' -s $SIZE
+#   mv bicycle2.n.${SIZE}.png shop_bicycle.n.${SIZE}.png
+#   rm -f *.p.* *.glow.*
+# cd ..
+# 
+# cd transport_car
+#   generateonepng.sh -f $PREFIX/svg/shopping/ -c '#0000ff' -s $SIZE
+#   generateonepng.sh -f $PREFIX/svg/shopping/ -c '#0000ff' -s $SIZE
+#   generateonepng.sh -f $PREFIX/svg/shopping/ -c '#0000ff' -s $SIZE
+#   mv bicycle2.n.${SIZE}.png shop_bicycle.n.${SIZE}.png
+#   rm -f *.p.* *.glow.*
+# 
+# cd ..
