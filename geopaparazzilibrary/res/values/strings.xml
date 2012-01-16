@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World!</string>
+    <string name="app_name">GeopaparazziLibrary</string>
+    <string name="cancel">cancel</string>
+    <string name="ok">ok</string>
+    <string name="up">up</string>
+    <string name="cantcreate_sdcard">Wasn\'t able to create folder on sdcard ({0}). Exiting...</string>
+    <string name="sdcard_notexist">Sdcard folder doesn\'t exist or is not writable (is it possible it is mounted on a pc?). Exiting...</string>
+    <string name="error_disk_full">The disk to which to log to seems to be full. Free some memory and start again.</string>
+    <string name="cantwrite_gpslog">ERROR: couldn\'t write gps log!</string>
+    <string name="gpsloggingoff">Stopped gps logging.</string>
+    <string name="gpsloggingon">Started gps logging...</string>
+    <string name="gpsloggingalarm">Avoid/stop alarm... </string>
+    <string name="prompt_gpsenable">Your gps is disabled! Would you like to enable it?</string>
+    <string name="last_position">Last position at</string>
+    <string name="last_position_unknown">Sorry, could not identify the location properly.</string>
+    <string name="cantcreate_img_folder">Can\'t create the folder into which to save the image.</string>
+    <string name="gpx_import_title">Line or Point?</string>
+    <string name="gpx_import_message">Choose whether the file is to be imported as points or lines.</string>
+    <string name="gpx_import_checkbox_message">Force import as line?</string>
+    <string name="gpx_import_processing">Importing gpx...</string>
+    <string name="insert_note">insert your note here</string>
+    <string name="notesaved">Note successfully saved!</string>
+    <string name="notenonsaved">An error occurred while saving the Note!</string>
+    <string name="notecancel">Note not saved as requested by user.</string>
+</resources>
