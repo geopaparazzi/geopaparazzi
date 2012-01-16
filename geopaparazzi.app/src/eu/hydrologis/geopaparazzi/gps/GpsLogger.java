@@ -41,11 +41,11 @@ import android.net.Uri;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
+import eu.geopaparazzi.library.util.debug.Debug;
+import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DatabaseManager;
-import eu.hydrologis.geopaparazzi.util.debug.Debug;
-import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * The Gps engine, used to put logs into the database.

@@ -29,12 +29,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.Toast;
+import eu.geopaparazzi.library.camera.CameraActivity;
+import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.maps.TagsManager.TagObject;
 import eu.hydrologis.geopaparazzi.util.Constants;
-import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * Osm tags adding activity.
@@ -68,7 +69,7 @@ public class MapTagsActivity extends Activity {
         Button imageButton = (Button) findViewById(R.id.imagefromtag);
         imageButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                Intent intent = new Intent(Constants.TAKE_PICTURE);
+                Intent intent = new Intent(MapTagsActivity.this, CameraActivity.class);
                 MapTagsActivity.this.startActivity(intent);
                 finish();
             }

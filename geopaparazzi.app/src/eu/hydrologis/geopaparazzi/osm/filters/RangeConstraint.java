@@ -17,7 +17,7 @@
  */
 package eu.hydrologis.geopaparazzi.osm.filters;
 
-import eu.hydrologis.geopaparazzi.util.Utilities;
+import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * A numeric range constraint.

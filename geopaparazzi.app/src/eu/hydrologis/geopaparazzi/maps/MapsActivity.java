@@ -78,6 +78,10 @@ import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.SlidingDrawer;
 import android.widget.Toast;
+import eu.geopaparazzi.library.mixare.MixareHandler;
+import eu.geopaparazzi.library.network.NetworkUtilities;
+import eu.geopaparazzi.library.util.debug.Debug;
+import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
@@ -95,17 +99,14 @@ import eu.hydrologis.geopaparazzi.maps.overlays.MapsOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.MeasureToolOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.MinimapOverlayWithCross;
 import eu.hydrologis.geopaparazzi.maps.overlays.NotesOverlay;
-import eu.hydrologis.geopaparazzi.mixare.MixareHandler;
+import eu.hydrologis.geopaparazzi.mixare.MixareUtilities;
 import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
-import eu.hydrologis.geopaparazzi.util.NetworkUtilities;
 import eu.hydrologis.geopaparazzi.util.Note;
 import eu.hydrologis.geopaparazzi.util.ResourceProxyImpl;
 import eu.hydrologis.geopaparazzi.util.VerticalSeekBar;
-import eu.hydrologis.geopaparazzi.util.debug.Debug;
-import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
@@ -754,7 +755,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
             float e = boundingBox.getLonEastE6() / E6;
 
             try {
-                mixareHandler.runRegionOnMixare(this, n, s, w, e);
+                MixareUtilities.runRegionOnMixare(this, n, s, w, e);
                 return true;
             } catch (Exception e1) {
                 e1.printStackTrace();

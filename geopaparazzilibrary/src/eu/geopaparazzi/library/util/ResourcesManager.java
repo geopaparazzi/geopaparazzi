@@ -49,7 +49,7 @@ public class ResourcesManager implements Serializable {
 
     private File databaseFile;
 
-    private static ResourcesManager applicationManager;
+    private static ResourcesManager resourcesManager;
 
     /**
      * The getter for the {@link ResourcesManager} singleton.
@@ -65,18 +65,18 @@ public class ResourcesManager implements Serializable {
      * @return the {@link ResourcesManager} instance.
      */
     public synchronized static ResourcesManager getInstance( Context context ) {
-        if (applicationManager == null) {
+        if (resourcesManager == null) {
             try {
-                applicationManager = new ResourcesManager(context);
+                resourcesManager = new ResourcesManager(context);
             } catch (IOException e) {
                 return null;
             }
         }
-        return applicationManager;
+        return resourcesManager;
     }
 
     public static void resetManager() {
-        applicationManager = null;
+        resourcesManager = null;
     }
 
     public Context getContext() {

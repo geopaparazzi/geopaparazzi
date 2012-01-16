@@ -24,6 +24,8 @@ import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_LON;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +54,11 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SlidingDrawer;
 import android.widget.Toast;
+import eu.geopaparazzi.library.kml.KmlRepresenter;
+import eu.geopaparazzi.library.kml.KmzExport;
+import eu.geopaparazzi.library.util.FileUtilities;
+import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.ActionItem;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction;
@@ -63,7 +70,6 @@ import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.DatabaseManager;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.gps.GpsManager;
-import eu.hydrologis.geopaparazzi.kml.KmlExport;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
 import eu.hydrologis.geopaparazzi.maps.MapItem;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
@@ -71,8 +77,6 @@ import eu.hydrologis.geopaparazzi.sensors.SensorsManager;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
-import eu.hydrologis.geopaparazzi.util.DirectoryBrowserActivity;
-import eu.hydrologis.geopaparazzi.util.FileUtils;
 import eu.hydrologis.geopaparazzi.util.Image;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.Note;
@@ -319,7 +323,7 @@ public class GeoPaparazziActivity extends Activity {
             break;
         }
         case R.id.dashboard_import_item_button: {
-            Intent browseIntent = new Intent(Constants.DIRECTORYBROWSER);
+            Intent browseIntent = new Intent(this, DirectoryBrowserActivity.class);
             browseIntent.putExtra(Constants.INTENT_ID, Constants.GPXIMPORT);
             browseIntent.putExtra(Constants.EXTENTION, ".gpx"); //$NON-NLS-1$
             startActivity(browseIntent);
@@ -378,7 +382,7 @@ public class GeoPaparazziActivity extends Activity {
             resetData();
             return true;
         case MENU_LOAD:
-            Intent browseIntent = new Intent(Constants.DIRECTORYBROWSER);
+            Intent browseIntent = new Intent(this, DirectoryBrowserActivity.class);
             browseIntent.putExtra(Constants.EXTENTION, DirectoryBrowserActivity.FOLDER);
             startActivityForResult(browseIntent, BROWSERRETURNCODE);
             return true;
@@ -523,30 +527,41 @@ public class GeoPaparazziActivity extends Activity {
 
             public void run() {
                 try {
+                    List<KmlRepresenter> kmlRepresenterList = new ArrayList<KmlRepresenter>();
                     /*
                      * add gps logs
                      */
-                    HashMap<Long, Line> linesList = DaoGpsLog.getLinesMap(GeoPaparazziActivity.this);
+                    HashMap<Long, Line> linesMap = DaoGpsLog.getLinesMap(GeoPaparazziActivity.this);
+                    Collection<Line> linesCollection = linesMap.values();
+                    for( Line line : linesCollection ) {
+                        kmlRepresenterList.add(line);
+                    }
                     /*
                      * get notes
                      */
                     List<Note> notesList = DaoNotes.getNotesList(GeoPaparazziActivity.this);
+                    for( Note note : notesList ) {
+                        kmlRepresenterList.add(note);
+                    }
                     /*
                      * add pictures
                      */
                     List<Image> imagesList = DaoImages.getImagesList(GeoPaparazziActivity.this);
+                    for( Image image : imagesList ) {
+                        kmlRepresenterList.add(image);
+                    }
 
                     File kmlExportDir = applicationManager.getKmlExportDir();
                     String filename = "geopaparazzi_" + Constants.TIMESTAMPFORMATTER.format(new Date()) + ".kmz"; //$NON-NLS-1$ //$NON-NLS-2$
                     kmlOutputFile = new File(kmlExportDir, filename);
-                    KmlExport export = new KmlExport(null, kmlOutputFile);
-                    export.export(GeoPaparazziActivity.this, notesList, linesList, imagesList);
+                    KmzExport export = new KmzExport(null, kmlOutputFile);
+                    export.export(GeoPaparazziActivity.this, kmlRepresenterList);
 
                     kmlHandler.sendEmptyMessage(0);
                 } catch (IOException e) {
                     Logger.e(this, e.getLocalizedMessage(), e);
                     e.printStackTrace();
-                    Toast.makeText(GeoPaparazziActivity.this, R.string.kmlnonsaved, Toast.LENGTH_LONG).show();
+                    Utilities.toast(GeoPaparazziActivity.this, R.string.kmlnonsaved, Toast.LENGTH_LONG);
                 }
             }
         }.start();
@@ -589,7 +604,7 @@ public class GeoPaparazziActivity extends Activity {
                 bookmarksNames.add(tmpName.trim());
             }
 
-            List<String> bookmarksList = FileUtils.readfileToList(bookmarksfile);
+            List<String> bookmarksList = FileUtilities.readfileToList(bookmarksfile);
             for( String bookmarkLine : bookmarksList ) {
                 String[] split = bookmarkLine.split(","); //$NON-NLS-1$
                 // bookmarks are of type: Agritur BeB In Valle, 45.46564, 11.58969

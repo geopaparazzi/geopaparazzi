@@ -15,25 +15,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi.kml;
+package eu.geopaparazzi.library.kml;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 
 import android.content.Context;
-
-import eu.hydrologis.geopaparazzi.util.ApplicationManager;
-import eu.hydrologis.geopaparazzi.util.CompressionUtilities;
-import eu.hydrologis.geopaparazzi.util.Image;
-import eu.hydrologis.geopaparazzi.util.Line;
-import eu.hydrologis.geopaparazzi.util.Note;
-import eu.hydrologis.geopaparazzi.util.debug.Logger;
+import eu.geopaparazzi.library.util.CompressionUtilities;
+import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
  * A kmz exporter for notes, logs and pics.
@@ -41,23 +35,29 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public class KmlExport {
+public class KmzExport {
 
     private final File outputFile;
     private String name;
 
-    public KmlExport( String name, File outputFile ) {
+    /**
+     * Constructor.
+     * 
+     * @param name a name for the kmz.
+     * @param outputFile the path in which to create the kmz.
+     */
+    public KmzExport( String name, File outputFile ) {
         this.name = name;
         this.outputFile = outputFile;
     }
 
-    public void export( Context context, List<Note> notes, HashMap<Long, Line> linesMap, List<Image> imageList )
-            throws IOException {
+    public void export( Context context, List<KmlRepresenter> kmlRepresenters ) throws IOException {
         if (name == null) {
             name = "Geopaparazzi Export";
         }
 
-        File mediaFolder = ApplicationManager.getInstance(context).getMediaDir();
+        File applicationDir = ResourcesManager.getInstance(context).getApplicationDir();
+
         List<File> existingImages = new ArrayList<File>();
 
         /*
@@ -99,27 +99,22 @@ public class KmlExport {
             bW.write("</ListStyle>\n");
             bW.write("</Style>\n");
 
-            for( Note note : notes ) {
+            for( KmlRepresenter kmlRepresenter : kmlRepresenters ) {
                 try {
-                    bW.write(note.toKmlString());
+                    bW.write(kmlRepresenter.toKmlString());
+
+                    if (kmlRepresenter.hasImage()) {
+                        String imagePath = kmlRepresenter.getImagePath();
+                        File imageFile = new File(applicationDir, imagePath);
+                        if (imageFile.exists()) {
+                            existingImages.add(imageFile);
+                        } else {
+                            Logger.w(this, "Can't find image: " + imageFile.getAbsolutePath());
+                        }
+                    }
                 } catch (Exception e) {
                     Logger.e(this, e.getLocalizedMessage(), e);
                     e.printStackTrace();
-                }
-            }
-            Collection<Line> lines = linesMap.values();
-            for( Line line : lines ) {
-                if (line.getLatList().size() > 1)
-                    bW.write(line.toKmlString());
-            }
-
-            for( Image image : imageList ) {
-                File imageFile = new File(mediaFolder.getParentFile(), image.getPath());
-                if (imageFile.exists()) {
-                    bW.write(image.toKmlString());
-                    existingImages.add(imageFile);
-                } else {
-                    Logger.w(this, "Can't find image: " + imageFile.getAbsolutePath());
                 }
             }
 

@@ -38,13 +38,13 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.view.MotionEvent;
+import eu.geopaparazzi.library.util.debug.Debug;
+import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.gps.GpsManager;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
 import eu.hydrologis.geopaparazzi.maps.MapItem;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
-import eu.hydrologis.geopaparazzi.util.debug.Debug;
-import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * Overlay to show gps logs.

@@ -33,16 +33,16 @@ import android.content.SharedPreferences.Editor;
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import eu.geopaparazzi.library.network.NetworkUtilities;
+import eu.geopaparazzi.library.util.CompressionUtilities;
+import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.library.util.debug.Debug;
+import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
-import eu.hydrologis.geopaparazzi.util.CompressionUtilities;
-import eu.hydrologis.geopaparazzi.util.NetworkUtilities;
 import eu.hydrologis.geopaparazzi.util.Note;
-import eu.hydrologis.geopaparazzi.util.Utilities;
-import eu.hydrologis.geopaparazzi.util.debug.Debug;
-import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * Utilities class for handling OSM matters.
@@ -205,13 +205,15 @@ public class OsmUtilities {
 
                         if (osmFolderFile.exists() && osmFolderFile.isDirectory()) {
                             Utilities
-                                    .messageDialog(activity,
-                                            "An osm tags folder already exists. Please remove the folder before trying to download the tags.");
+                                    .messageDialog(
+                                            activity,
+                                            "An osm tags folder already exists. Please remove the folder before trying to download the tags.",
+                                            null);
                             return;
                         }
 
                         if (!NetworkUtilities.isNetworkAvailable(activity)) {
-                            Utilities.messageDialog(activity, activity.getString(R.string.available_only_with_network));
+                            Utilities.messageDialog(activity, activity.getString(R.string.available_only_with_network), null);
                             return;
                         }
 
@@ -224,7 +226,7 @@ public class OsmUtilities {
                                 try {
                                     NetworkUtilities.sendGetRequest4File(osmTagsZipUrlPath, osmZipFile, null, null, null);
                                 } catch (Exception e) {
-                                    Utilities.messageDialog(activity, "An error occurred while downloading the OSM tags.");
+                                    Utilities.messageDialog(activity, "An error occurred while downloading the OSM tags.", null);
                                     e.printStackTrace();
                                     return "";
                                 }
@@ -233,7 +235,7 @@ public class OsmUtilities {
                                     CompressionUtilities.unzipFolder(osmZipFile.getAbsolutePath(), parentFile.getAbsolutePath());
                                 } catch (IOException e) {
                                     Utilities.messageDialog(activity,
-                                            "An error occurred while unzipping the OSM tags to the device.");
+                                            "An error occurred while unzipping the OSM tags to the device.", null);
                                     e.printStackTrace();
                                     return "";
                                 } finally {

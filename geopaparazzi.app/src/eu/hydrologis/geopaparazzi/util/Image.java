@@ -19,12 +19,14 @@ package eu.hydrologis.geopaparazzi.util;
 
 import java.io.File;
 
+import eu.geopaparazzi.library.kml.KmlRepresenter;
+
 /**
  * Represents an image.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class Image {
+public class Image implements KmlRepresenter{
     private final String name;
     private final long id;
     private final double lon;
@@ -120,5 +122,13 @@ public class Image {
         sB.append("</Placemark>\n");
 
         return sB.toString();
+    }
+
+    public boolean hasImage() {
+        return true;
+    }
+
+    public String getImagePath() {
+        return path;
     }
 }

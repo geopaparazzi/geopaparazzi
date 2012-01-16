@@ -17,9 +17,7 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.BASEFOLDERKEY;
 import static eu.hydrologis.geopaparazzi.util.Constants.DECIMATION_FACTOR;
-import static eu.hydrologis.geopaparazzi.util.Constants.PATH_GEOPAPARAZZI;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_KMLEXPORT;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_MEDIA;
 
@@ -37,23 +35,23 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaRecorder;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
-import android.widget.Toast;
+import eu.geopaparazzi.library.camera.CameraActivity;
+import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.library.util.debug.Debug;
+import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.ActionItem;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction;
-import eu.hydrologis.geopaparazzi.database.DatabaseManager;
 import eu.hydrologis.geopaparazzi.gps.GpsLocation;
 import eu.hydrologis.geopaparazzi.gps.GpsManager;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
-import eu.hydrologis.geopaparazzi.util.debug.Debug;
-import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * Singleton that takes care of all the sensors and gps and loggings.
@@ -72,6 +70,7 @@ public class ApplicationManager implements Serializable {
 
     private File debugLogFile;
 
+    private ResourcesManager resourcesManager;
     private static ApplicationManager applicationManager;
 
     /**
@@ -127,50 +126,25 @@ public class ApplicationManager implements Serializable {
          *    |        
          *    `--- export
          */
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String baseFolder = preferences.getString(BASEFOLDERKEY, ""); //$NON-NLS-1$
-        geoPaparazziDir = new File(baseFolder);
-        if (baseFolder == null || baseFolder.length() == 0 || !geoPaparazziDir.getParentFile().exists()
-                || !geoPaparazziDir.getParentFile().canWrite()) {
-            // the folder doesn't exist for some reason, fallback on default
-            String state = Environment.getExternalStorageState();
-            boolean mExternalStorageAvailable;
-            boolean mExternalStorageWriteable;
-            if (Environment.MEDIA_MOUNTED.equals(state)) {
-                mExternalStorageAvailable = mExternalStorageWriteable = true;
-            } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-                mExternalStorageAvailable = true;
-                mExternalStorageWriteable = false;
-            } else {
-                mExternalStorageAvailable = mExternalStorageWriteable = false;
-            }
-            if (mExternalStorageAvailable && mExternalStorageWriteable) {
-                File sdcardDir = Environment.getExternalStorageDirectory();// new
-                geoPaparazziDir = new File(sdcardDir.getAbsolutePath() + PATH_GEOPAPARAZZI);
-            } else {
-                throw new IOException();
-            }
-        }
-
-        String geoPaparazziDirPath = geoPaparazziDir.getAbsolutePath();
-        if (!geoPaparazziDir.exists())
-            if (!geoPaparazziDir.mkdir())
-                alert(MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard), geoPaparazziDirPath));
-        databaseFile = new File(geoPaparazziDirPath, DatabaseManager.DATABASE_NAME);
-        mediaDir = new File(geoPaparazziDirPath + PATH_MEDIA);
-
+        resourcesManager = ResourcesManager.getInstance(context);
+        geoPaparazziDir = resourcesManager.getApplicationDir();
+        databaseFile = resourcesManager.getDatabaseFile();
+        mediaDir = new File(geoPaparazziDir, PATH_MEDIA);
         if (!mediaDir.exists())
             if (!mediaDir.mkdir())
-                alert(MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
-                        mediaDir.getAbsolutePath()));
-        debugLogFile = new File(geoPaparazziDirPath, "debug.log"); //$NON-NLS-1$
+                Utilities.messageDialog(
+                        context,
+                        MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
+                                mediaDir.getAbsolutePath()), null);
+        debugLogFile = resourcesManager.getDebugLogFile();
 
-        kmlExportDir = new File(geoPaparazziDirPath + PATH_KMLEXPORT);
+        kmlExportDir = new File(geoPaparazziDir, PATH_KMLEXPORT);
         if (!kmlExportDir.exists())
             if (!kmlExportDir.mkdir())
-                alert(MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
-                        kmlExportDir.getAbsolutePath()));
+                Utilities.messageDialog(
+                        context,
+                        MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
+                                kmlExportDir.getAbsolutePath()), null);
 
     }
 
@@ -194,20 +168,6 @@ public class ApplicationManager implements Serializable {
         return mediaDir;
     }
 
-    private void alert( String msg ) {
-        Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
-    }
-
-    private void openDialog( int message, Context activity ) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setMessage(message).setCancelable(false).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
-            public void onClick( DialogInterface dialog, int id ) {
-            }
-        });
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-    }
-
     public ActionItem getNotesQuickAction( final QuickAction qa ) {
         ActionItem notesQuickaction = new ActionItem();
         notesQuickaction.setTitle("Geonote"); //$NON-NLS-1$
@@ -227,7 +187,7 @@ public class ApplicationManager implements Serializable {
                     osmTagsIntent.putExtra(Constants.PREFS_KEY_MAPCENTER_LON, longitude);
                     context.startActivity(osmTagsIntent);
                 } else {
-                    openDialog(R.string.gpslogging_only, context);
+                    Utilities.messageDialog(context, R.string.gpslogging_only, null);
                 }
                 qa.dismiss();
             }
@@ -248,12 +208,12 @@ public class ApplicationManager implements Serializable {
                     if (loc != null) {
                         if (Debug.D)
                             Logger.d(this, "Location != null");
-                        Intent intent = new Intent(Constants.TAKE_PICTURE);
+                        Intent intent = new Intent(context, CameraActivity.class);
                         context.startActivity(intent);
                     } else {
                         if (Debug.D)
                             Logger.d(this, "Location == null");
-                        openDialog(R.string.gpslogging_only, context);
+                        Utilities.messageDialog(context, R.string.gpslogging_only, null);
                     }
                     qa.dismiss();
                 } catch (Exception e) {
@@ -330,7 +290,7 @@ public class ApplicationManager implements Serializable {
                                 }).show();
 
                     } else {
-                        openDialog(R.string.gpslogging_only, context);
+                        Utilities.messageDialog(context, R.string.gpslogging_only, null);
                     }
                 } catch (Exception e) {
                     Logger.e(this, e.getLocalizedMessage(), e);
@@ -369,7 +329,7 @@ public class ApplicationManager implements Serializable {
                                     }
                                 }).setCancelable(false).show();
                     } else {
-                        openDialog(R.string.gpslogging_only, context);
+                        Utilities.messageDialog(context, R.string.gpslogging_only, null);
                     }
                 }
                 qa.dismiss();

@@ -42,6 +42,8 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.preference.PreferenceManager;
 import android.view.MotionEvent;
+import eu.geopaparazzi.library.util.debug.Debug;
+import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
@@ -49,8 +51,6 @@ import eu.hydrologis.geopaparazzi.maps.MapItem;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.PointsContainer;
-import eu.hydrologis.geopaparazzi.util.debug.Debug;
-import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * Overlay to show imported maps.

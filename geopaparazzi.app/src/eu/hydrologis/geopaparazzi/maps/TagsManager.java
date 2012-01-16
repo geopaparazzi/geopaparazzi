@@ -39,9 +39,9 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import eu.geopaparazzi.library.util.FileUtilities;
+import eu.geopaparazzi.library.util.debug.Debug;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
-import eu.hydrologis.geopaparazzi.util.FileUtils;
-import eu.hydrologis.geopaparazzi.util.debug.Debug;
 
 /**
  * Singleton that takes care of tags.
@@ -91,12 +91,12 @@ public class TagsManager {
             AssetManager assetManager = context.getAssets();
             InputStream inputStream = assetManager.open("tags/tags.json");
 
-            FileUtils.copyFile(inputStream, new FileOutputStream(tagsFile));
+            FileUtilities.copyFile(inputStream, new FileOutputStream(tagsFile));
         }
 
         if (tagsFile.exists()) {
             tagsMap.clear();
-            String tagsFileString = FileUtils.readfile(tagsFile);
+            String tagsFileString = FileUtilities.readfile(tagsFile);
             JSONArray tagArrayObj = new JSONArray(tagsFileString);
             int tagsNum = tagArrayObj.length();
             for( int i = 0; i < tagsNum; i++ ) {

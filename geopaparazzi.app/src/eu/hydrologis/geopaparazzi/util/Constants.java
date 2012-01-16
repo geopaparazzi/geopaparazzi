@@ -35,7 +35,7 @@ public interface Constants {
      * intent names
      */
     public final String MAIN = "android.intent.action.MAIN";
-    public final String TAKE_PICTURE = "eu.hydrologis.geopaparazzi.camera.TAKE_PICTURE";
+    
     public final String TAKE_NOTE = "eu.hydrologis.geopaparazzi.camera.TAKE_NOTE";
     public final String TOGGLE_GPS = "eu.hydrologis.geopaparazzi.camera.TOGGLE_GPS";
     public final String MAP_VIEW = "eu.hydrologis.geopaparazzi.maps.MAP_VIEW";
@@ -50,7 +50,6 @@ public interface Constants {
     public final String VIEW_IN_CHART = "eu.hydrologis.geopaparazzi.chart.VIEW_IN_CHART";
     public final String MEASUREMENT_INFO = "eu.hydrologis.geopaparazzi.maps.MEASUREMENT_INFO";
     public final String ABOUT = "eu.hydrologis.geopaparazzi.util.ABOUT";
-    public final String DIRECTORYBROWSER = "eu.hydrologis.geopaparazzi.util.DIRECTORYBROWSER";
     public final String GPXIMPORT = "eu.hydrologis.geopaparazzi.gpx.GPXIMPORT";
     public final String TAGS = "eu.hydrologis.geopaparazzi.maps.TAGS";
     public final String FORM = "eu.hydrologis.geopaparazzi.maps.tags.FORM";

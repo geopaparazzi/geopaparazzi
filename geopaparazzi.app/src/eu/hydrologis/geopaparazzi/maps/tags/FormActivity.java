@@ -47,6 +47,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
@@ -55,8 +57,6 @@ import eu.hydrologis.geopaparazzi.osm.filters.Constraints;
 import eu.hydrologis.geopaparazzi.osm.filters.MandatoryConstraint;
 import eu.hydrologis.geopaparazzi.osm.filters.RangeConstraint;
 import eu.hydrologis.geopaparazzi.util.Constants;
-import eu.hydrologis.geopaparazzi.util.Utilities;
-import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * The form activity.

@@ -15,34 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.library.kml;
+package eu.geopaparazzi.library.util.activities;
 
 /**
- * Interface for objects that are able to represent theirself as kml.
+ * The names to call activities.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
- *
  */
-public interface KmlRepresenter {
-    /**
-     * Transforms the object in its kml representation.
-     *  
-     * @return the kml representation.
-     */
-    public String toKmlString() throws Exception;
-    
-    
-    /**
-     * Getter for image flag.
-     * 
-     * @return <code>true</code> if the object has also an image that needs to be embedded in the kmz.
-     */
-    public boolean hasImage();
-    
-    /**
-     * Getter for the relative image path against the application folder. 
-     * 
-     * @return the image path.
-     */
-    public String getImagePath();
+public interface ActivitiesNames {
+    public final String CAMERA_ACTIVITY = "eu.geopaparazzi.library.camera.CameraActivity";
 }

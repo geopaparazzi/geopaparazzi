@@ -31,10 +31,10 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.SystemClock;
+import eu.geopaparazzi.library.util.debug.Debug;
+import eu.geopaparazzi.library.util.debug.Logger;
+import eu.geopaparazzi.library.util.debug.TestMock;
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.util.debug.Debug;
-import eu.hydrologis.geopaparazzi.util.debug.Logger;
-import eu.hydrologis.geopaparazzi.util.debug.TestMock;
 
 /**
  * Singleton that takes care of gps matters.
