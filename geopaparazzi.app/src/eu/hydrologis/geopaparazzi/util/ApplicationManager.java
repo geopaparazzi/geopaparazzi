@@ -51,6 +51,7 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.ActionItem;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction;
+import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
 
 /**
@@ -323,7 +324,9 @@ public class ApplicationManager implements Serializable {
                                         if (newName == null || newName.length() < 1) {
                                             newName = defaultLogName;
                                         }
-                                        gpsManager.startLogging(newName);
+
+                                        DaoGpsLog daoGpsLog = new DaoGpsLog();
+                                        gpsManager.startLogging(newName, daoGpsLog);
                                         actionBar.checkLogging();
                                         DataManager.getInstance().setLogsVisible(true);
                                     }
