@@ -54,11 +54,15 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SlidingDrawer;
 import android.widget.Toast;
+import eu.geopaparazzi.library.gps.GpsLocation;
+import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
 import eu.geopaparazzi.library.kml.KmzExport;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity;
+import eu.geopaparazzi.library.util.debug.Debug;
+import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.ActionItem;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction;
@@ -68,8 +72,6 @@ import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.DatabaseManager;
-import eu.hydrologis.geopaparazzi.gps.GpsLocation;
-import eu.hydrologis.geopaparazzi.gps.GpsManager;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
 import eu.hydrologis.geopaparazzi.maps.MapItem;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
@@ -80,8 +82,6 @@ import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Image;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.Note;
-import eu.hydrologis.geopaparazzi.util.debug.Debug;
-import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * The main {@link Activity activity} of GeoPaparazzi.

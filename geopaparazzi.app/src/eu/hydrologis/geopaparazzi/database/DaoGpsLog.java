@@ -36,6 +36,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.graphics.Path;
 import android.graphics.Point;
+import eu.geopaparazzi.library.gps.IGpsLogDbHelper;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.maps.MapItem;
@@ -47,7 +48,7 @@ import eu.hydrologis.geopaparazzi.util.LineArray;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public class DaoGpsLog {
+public class DaoGpsLog implements IGpsLogDbHelper {
     private static final String COLUMN_ID = "_id";
 
     private static final String COLUMN_DATA_TS = "ts";
@@ -81,8 +82,8 @@ public class DaoGpsLog {
      * @return the id of the new created log.
      * @throws IOException 
      */
-    public static long addGpsLog( Context context, Date startTs, Date endTs, String text, float width, String color,
-            boolean visible ) throws IOException {
+    public long addGpsLog( Context context, Date startTs, Date endTs, String text, float width, String color, boolean visible )
+            throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         sqliteDatabase.beginTransaction();
         long rowId;
@@ -115,8 +116,9 @@ public class DaoGpsLog {
         return rowId;
     }
 
-    public static void addGpsLogDataPoint( SQLiteDatabase sqliteDatabase, long gpslogId, double lon, double lat, double altim,
-            Date timestamp ) throws IOException {
+    public void addGpsLogDataPoint( Context context, long gpslogId, double lon, double lat, double altim, Date timestamp )
+            throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         ContentValues values = new ContentValues();
         values.put(COLUMN_LOGID, (int) gpslogId);
         values.put(COLUMN_DATA_LON, lon);
@@ -124,6 +126,66 @@ public class DaoGpsLog {
         values.put(COLUMN_DATA_ALTIM, altim);
         values.put(COLUMN_DATA_TS, dateFormatter.format(timestamp));
         sqliteDatabase.insertOrThrow(TABLE_DATA, null, values);
+    }
+
+    public void deleteGpslog( Context context, long id ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        sqliteDatabase.beginTransaction();
+        try {
+            // delete log
+            String query = "delete from " + TABLE_GPSLOGS + " where " + COLUMN_ID + " = " + id;
+            SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
+            sqlUpdate.execute();
+            sqlUpdate.close();
+
+            // delete properties
+            query = "delete from " + TABLE_PROPERTIES + " where " + COLUMN_LOGID + " = " + id;
+            sqlUpdate = sqliteDatabase.compileStatement(query);
+            sqlUpdate.execute();
+            sqlUpdate.close();
+
+            // delete data
+            query = "delete from " + TABLE_DATA + " where " + COLUMN_LOGID + " = " + id;
+            sqlUpdate = sqliteDatabase.compileStatement(query);
+            sqlUpdate.execute();
+            sqlUpdate.close();
+
+            sqliteDatabase.setTransactionSuccessful();
+        } catch (Exception e) {
+            Logger.e("DOAGPSLOG", e.getLocalizedMessage(), e);
+            throw new IOException(e.getLocalizedMessage());
+        } finally {
+            sqliteDatabase.endTransaction();
+        }
+    }
+
+    public void setEndTs( Context context, long logid, Date end ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        try {
+            sqliteDatabase.beginTransaction();
+
+            StringBuilder sb = new StringBuilder();
+            sb = new StringBuilder();
+            sb.append("UPDATE ");
+            sb.append(TABLE_GPSLOGS);
+            sb.append(" SET ");
+            sb.append(COLUMN_LOG_ENDTS).append("='").append(dateFormatter.format(end)).append("' ");
+            sb.append("WHERE ").append(COLUMN_ID).append("=").append(logid);
+
+            String query = sb.toString();
+            if (Debug.D)
+                Logger.i("DAOGPSLOG", query);
+            SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
+            sqlUpdate.execute();
+            sqlUpdate.close();
+
+            sqliteDatabase.setTransactionSuccessful();
+        } catch (Exception e) {
+            Logger.e("DAOGPSLOG", e.getLocalizedMessage(), e);
+            throw new IOException(e.getLocalizedMessage());
+        } finally {
+            sqliteDatabase.endTransaction();
+        }
     }
 
     /**
@@ -194,37 +256,6 @@ public class DaoGpsLog {
         return logsList;
     }
 
-    public static void deleteGpslog( Context context, long id ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
-        sqliteDatabase.beginTransaction();
-        try {
-            // delete log
-            String query = "delete from " + TABLE_GPSLOGS + " where " + COLUMN_ID + " = " + id;
-            SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
-            sqlUpdate.execute();
-            sqlUpdate.close();
-
-            // delete properties
-            query = "delete from " + TABLE_PROPERTIES + " where " + COLUMN_LOGID + " = " + id;
-            sqlUpdate = sqliteDatabase.compileStatement(query);
-            sqlUpdate.execute();
-            sqlUpdate.close();
-
-            // delete data
-            query = "delete from " + TABLE_DATA + " where " + COLUMN_LOGID + " = " + id;
-            sqlUpdate = sqliteDatabase.compileStatement(query);
-            sqlUpdate.execute();
-            sqlUpdate.close();
-
-            sqliteDatabase.setTransactionSuccessful();
-        } catch (Exception e) {
-            Logger.e("DOAGPSLOG", e.getLocalizedMessage(), e);
-            throw new IOException(e.getLocalizedMessage());
-        } finally {
-            sqliteDatabase.endTransaction();
-        }
-    }
-
     public static void updateLogProperties( Context context, long logid, String color, float width, boolean visible, String name )
             throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
@@ -241,7 +272,8 @@ public class DaoGpsLog {
             sb.append("WHERE ").append(COLUMN_LOGID).append("=").append(logid);
 
             String query = sb.toString();
-            if (Debug.D) Logger.i("DAOGPSLOG", query);
+            if (Debug.D)
+                Logger.i("DAOGPSLOG", query);
             // sqliteDatabase.execSQL(query);
             SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
             sqlUpdate.execute();
@@ -256,7 +288,8 @@ public class DaoGpsLog {
                 sb.append("WHERE ").append(COLUMN_ID).append("=").append(logid);
 
                 query = sb.toString();
-                if (Debug.D) Logger.i("DAOGPSLOG", query);
+                if (Debug.D)
+                    Logger.i("DAOGPSLOG", query);
                 sqlUpdate = sqliteDatabase.compileStatement(query);
                 sqlUpdate.execute();
                 sqlUpdate.close();
@@ -283,7 +316,8 @@ public class DaoGpsLog {
             sb.append(COLUMN_PROPERTIES_VISIBLE).append("=").append(visible ? 1 : 0).append(" ");
 
             String query = sb.toString();
-            if (Debug.D) Logger.i("DAOGPSLOG", query);
+            if (Debug.D)
+                Logger.i("DAOGPSLOG", query);
             // sqliteDatabase.execSQL(query);
             SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
             sqlUpdate.execute();
@@ -335,7 +369,8 @@ public class DaoGpsLog {
             sb.append("WHERE ").append(COLUMN_LOGID).append("=").append(logidToRemove);
 
             query = sb.toString();
-            if (Debug.D) Logger.i("DAOGPSLOG", query);
+            if (Debug.D)
+                Logger.i("DAOGPSLOG", query);
             // sqliteDatabase.execSQL(query);
             sqlUpdate = sqliteDatabase.compileStatement(query);
             sqlUpdate.execute();
@@ -459,7 +494,8 @@ public class DaoGpsLog {
                 line.addPoint(lon, lat);
                 c.moveToNext();
             }
-            if (Debug.D) Logger.d("DAOGPSLOG", "Logs jumped: " + jump + " with thres: " + decimationFactor);
+            if (Debug.D)
+                Logger.d("DAOGPSLOG", "Logs jumped: " + jump + " with thres: " + decimationFactor);
             // Set<Entry<Long, LineArray>> entrySet = linesMap.entrySet();
             // for( Entry<Long, LineArray> entry : entrySet ) {
             // Logger.d("DAOGPSLOG", "Found for log: " + entry.getKey() + " points: " +
@@ -543,7 +579,8 @@ public class DaoGpsLog {
                 }
                 c.moveToNext();
             }
-//            if (Debug.D) Logger.d("DAOGPSLOG", "Log points jumped: " + jump + " with thres: " + decimationFactor);
+            // if (Debug.D) Logger.d("DAOGPSLOG", "Log points jumped: " + jump + " with thres: " +
+            // decimationFactor);
         } finally {
             if (c != null)
                 c.close();
@@ -757,7 +794,8 @@ public class DaoGpsLog {
         String CREATE_INDEX_GPSLOG_LOGID_X_Y = sB.toString();
 
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
-        if (Debug.D) Logger.i("DAOGPSLOG", "Create the gpslog_data table.");
+        if (Debug.D)
+            Logger.i("DAOGPSLOG", "Create the gpslog_data table.");
         sqliteDatabase.execSQL(CREATE_TABLE_GPSLOG_DATA);
         sqliteDatabase.execSQL(CREATE_INDEX_GPSLOG_ID);
         sqliteDatabase.execSQL(CREATE_INDEX_GPSLOG_TS);
@@ -778,7 +816,8 @@ public class DaoGpsLog {
         sB.append(");");
         String CREATE_TABLE_GPSLOGS = sB.toString();
 
-        if (Debug.D) Logger.i("DAOGPSLOG", "Create the gpslogs table.");
+        if (Debug.D)
+            Logger.i("DAOGPSLOG", "Create the gpslogs table.");
         sqliteDatabase.execSQL(CREATE_TABLE_GPSLOGS);
 
         /*
@@ -803,37 +842,10 @@ public class DaoGpsLog {
         sB.append(");");
         String CREATE_TABLE_GPSLOGS_PROPERTIES = sB.toString();
 
-        if (Debug.D) Logger.i("DAOGPSLOG", "Create the gpslogs properties table.");
+        if (Debug.D)
+            Logger.i("DAOGPSLOG", "Create the gpslogs properties table.");
         sqliteDatabase.execSQL(CREATE_TABLE_GPSLOGS_PROPERTIES);
 
-    }
-
-    public static void setEndTs( Context context, long logid, Date end ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
-        try {
-            sqliteDatabase.beginTransaction();
-
-            StringBuilder sb = new StringBuilder();
-            sb = new StringBuilder();
-            sb.append("UPDATE ");
-            sb.append(TABLE_GPSLOGS);
-            sb.append(" SET ");
-            sb.append(COLUMN_LOG_ENDTS).append("='").append(dateFormatter.format(end)).append("' ");
-            sb.append("WHERE ").append(COLUMN_ID).append("=").append(logid);
-
-            String query = sb.toString();
-            if (Debug.D) Logger.i("DAOGPSLOG", query);
-            SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
-            sqlUpdate.execute();
-            sqlUpdate.close();
-
-            sqliteDatabase.setTransactionSuccessful();
-        } catch (Exception e) {
-            Logger.e("DAOGPSLOG", e.getLocalizedMessage(), e);
-            throw new IOException(e.getLocalizedMessage());
-        } finally {
-            sqliteDatabase.endTransaction();
-        }
     }
 
 }

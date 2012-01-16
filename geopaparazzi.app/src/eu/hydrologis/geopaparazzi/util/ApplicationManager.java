@@ -41,6 +41,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import eu.geopaparazzi.library.camera.CameraActivity;
+import eu.geopaparazzi.library.gps.GpsLocation;
+import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.debug.Debug;
@@ -49,8 +51,6 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.ActionItem;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction;
-import eu.hydrologis.geopaparazzi.gps.GpsLocation;
-import eu.hydrologis.geopaparazzi.gps.GpsManager;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
 
 /**
