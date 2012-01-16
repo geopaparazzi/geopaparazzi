@@ -592,7 +592,7 @@ public class GeoPaparazziActivity extends Activity {
             List<String> bookmarksList = FileUtils.readfileToList(bookmarksfile);
             for( String bookmarkLine : bookmarksList ) {
                 String[] split = bookmarkLine.split(","); //$NON-NLS-1$
-                // bookmarks are of type: 45.46564, 11.58969, Agritur BeB In Valle
+                // bookmarks are of type: Agritur BeB In Valle, 45.46564, 11.58969
                 if (split.length != 3) {
                     continue;
                 }
