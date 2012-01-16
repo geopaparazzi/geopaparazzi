@@ -43,8 +43,10 @@ import android.widget.EditText;
 import eu.geopaparazzi.library.camera.CameraActivity;
 import eu.geopaparazzi.library.gps.GpsLocation;
 import eu.geopaparazzi.library.gps.GpsManager;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.library.util.activities.NoteActivity;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
@@ -181,11 +183,11 @@ public class ApplicationManager implements Serializable {
                     // Intent intent = new Intent(Constants.TAKE_NOTE);
                     // context.startActivity(intent);
 
-                    double latitude = loc.getLatitude();
-                    double longitude = loc.getLongitude();
-                    Intent osmTagsIntent = new Intent(Constants.TAGS);
-                    osmTagsIntent.putExtra(Constants.PREFS_KEY_MAPCENTER_LAT, latitude);
-                    osmTagsIntent.putExtra(Constants.PREFS_KEY_MAPCENTER_LON, longitude);
+                    float latitude = (float) loc.getLatitude();
+                    float longitude = (float) loc.getLongitude();
+                    Intent osmTagsIntent = new Intent(context, NoteActivity.class );
+                    osmTagsIntent.putExtra(LibraryConstants.PREFS_KEY_LAT, latitude);
+                    osmTagsIntent.putExtra(LibraryConstants.PREFS_KEY_LON, longitude);
                     context.startActivity(osmTagsIntent);
                 } else {
                     Utilities.messageDialog(context, R.string.gpslogging_only, null);

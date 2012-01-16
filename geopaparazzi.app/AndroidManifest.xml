@@ -10,13 +10,6 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".gps.NoteActivity"
-			android:configChanges="keyboardHidden|orientation">
-			<intent-filter>
-				<action android:name="eu.hydrologis.geopaparazzi.camera.TAKE_NOTE" />
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
-		</activity>
 		<activity android:name=".maps.GpsDataPropertiesActivity">
 			<intent-filter>
 				<action android:name="eu.hydrologis.geopaparazzi.maps.GPSLOG_PROPERTIES" />
@@ -119,7 +112,6 @@
             android:name="eu.geopaparazzi.library.camera.CameraActivity" >
             <intent-filter >
                 <action android:name="eu.geopaparazzi.library.camera.CameraActivity" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -129,6 +121,15 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:configChanges="keyboardHidden|orientation"
+            android:name="eu.geopaparazzi.library.util.activities.NoteActivity" >
+            <intent-filter >
+                <action android:name="eu.geopaparazzi.library.util.activities.NoteActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        
         <receiver android:name=".sms.SmsReceiver" android:enabled="true">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />

@@ -28,14 +28,15 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.CheckBox;
+import eu.geopaparazzi.library.gpx.GpxItem;
+import eu.geopaparazzi.library.gpx.parser.GpxParser;
+import eu.geopaparazzi.library.gpx.parser.GpxParser.Route;
+import eu.geopaparazzi.library.gpx.parser.GpxParser.TrackSegment;
+import eu.geopaparazzi.library.gpx.parser.WayPoint;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
-import eu.hydrologis.geopaparazzi.gpx.parser.GpxParser;
-import eu.hydrologis.geopaparazzi.gpx.parser.GpxParser.Route;
-import eu.hydrologis.geopaparazzi.gpx.parser.GpxParser.TrackSegment;
-import eu.hydrologis.geopaparazzi.gpx.parser.WayPoint;
 import eu.hydrologis.geopaparazzi.util.Constants;
 
 /**

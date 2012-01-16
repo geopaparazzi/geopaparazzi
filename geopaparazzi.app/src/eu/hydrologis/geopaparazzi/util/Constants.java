@@ -35,26 +35,26 @@ public interface Constants {
      * intent names
      */
     public final String MAIN = "android.intent.action.MAIN";
-    
-    public final String TAKE_NOTE = "eu.hydrologis.geopaparazzi.camera.TAKE_NOTE";
-    public final String TOGGLE_GPS = "eu.hydrologis.geopaparazzi.camera.TOGGLE_GPS";
-    public final String MAP_VIEW = "eu.hydrologis.geopaparazzi.maps.MAP_VIEW";
-    public final String VIEW_COMPASS = "eu.hydrologis.geopaparazzi.compass.VIEW_COMPASS";
-    public final String INSERT_COORD = "eu.hydrologis.geopaparazzi.util.INSERT_COORD";
-    public final String EXPORT_KML = "eu.hydrologis.geopaparazzi.kml.EXPORT_KML";
-    public final String GPSLOG_DATALIST = "eu.hydrologis.geopaparazzi.maps.GPSLOG_DATALIST";
-    public final String GPSLOG_PROPERTIES = "eu.hydrologis.geopaparazzi.maps.GPSLOG_PROPERTIES";
-    public final String MAPSDATALIST = "eu.hydrologis.geopaparazzi.maps.MAPSDATALIST";
-    public final String MAPDATAPROPERTIES = "eu.hydrologis.geopaparazzi.maps.MAPDATAPROPERTIES";
-    public final String PREFERENCES = "eu.hydrologis.geopaparazzi.preferences.PREFERENCES";
-    public final String VIEW_IN_CHART = "eu.hydrologis.geopaparazzi.chart.VIEW_IN_CHART";
-    public final String MEASUREMENT_INFO = "eu.hydrologis.geopaparazzi.maps.MEASUREMENT_INFO";
-    public final String ABOUT = "eu.hydrologis.geopaparazzi.util.ABOUT";
-    public final String GPXIMPORT = "eu.hydrologis.geopaparazzi.gpx.GPXIMPORT";
-    public final String TAGS = "eu.hydrologis.geopaparazzi.maps.TAGS";
-    public final String FORM = "eu.hydrologis.geopaparazzi.maps.tags.FORM";
-    public final String OSMCATEGORYACTIVITY = "eu.hydrologis.geopaparazzi.maps.OSMCATEGORYACTIVITY";
-    public final String OSMFORMACTIVITY = "eu.hydrologis.geopaparazzi.osm.OSMFORMACTIVITY";
+
+    // public final String TOGGLE_GPS = "eu.hydrologis.geopaparazzi.camera.TOGGLE_GPS";
+    // public final String MAP_VIEW = "eu.hydrologis.geopaparazzi.maps.MAP_VIEW";
+    // public final String VIEW_COMPASS = "eu.hydrologis.geopaparazzi.compass.VIEW_COMPASS";
+    // public final String INSERT_COORD = "eu.hydrologis.geopaparazzi.util.INSERT_COORD";
+    // public final String EXPORT_KML = "eu.hydrologis.geopaparazzi.kml.EXPORT_KML";
+    // public final String GPSLOG_DATALIST = "eu.hydrologis.geopaparazzi.maps.GPSLOG_DATALIST";
+    // public final String GPSLOG_PROPERTIES = "eu.hydrologis.geopaparazzi.maps.GPSLOG_PROPERTIES";
+    // public final String MAPSDATALIST = "eu.hydrologis.geopaparazzi.maps.MAPSDATALIST";
+    // public final String MAPDATAPROPERTIES = "eu.hydrologis.geopaparazzi.maps.MAPDATAPROPERTIES";
+    // public final String PREFERENCES = "eu.hydrologis.geopaparazzi.preferences.PREFERENCES";
+    // public final String VIEW_IN_CHART = "eu.hydrologis.geopaparazzi.chart.VIEW_IN_CHART";
+    // public final String MEASUREMENT_INFO = "eu.hydrologis.geopaparazzi.maps.MEASUREMENT_INFO";
+    // public final String ABOUT = "eu.hydrologis.geopaparazzi.util.ABOUT";
+    // public final String GPXIMPORT = "eu.hydrologis.geopaparazzi.gpx.GPXIMPORT";
+    // public final String TAGS = "eu.hydrologis.geopaparazzi.maps.TAGS";
+    // public final String FORM = "eu.hydrologis.geopaparazzi.maps.tags.FORM";
+    // public final String OSMCATEGORYACTIVITY =
+    // "eu.hydrologis.geopaparazzi.maps.OSMCATEGORYACTIVITY";
+    // public final String OSMFORMACTIVITY = "eu.hydrologis.geopaparazzi.osm.OSMFORMACTIVITY";
 
     public final String ID = "ID";
     public final String INTENT_ID = "INTENT_ID";
