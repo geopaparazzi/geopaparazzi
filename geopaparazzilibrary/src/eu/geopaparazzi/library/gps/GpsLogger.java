@@ -119,10 +119,20 @@ public class GpsLogger implements GpsManagerListener {
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
                     String minDistanceStr = preferences.getString(PREFS_KEY_GPSLOGGINGDISTANCE,
                             String.valueOf(GPS_LOGGING_DISTANCE));
-                    float minDistance = Float.parseFloat(minDistanceStr);
+                    float minDistance = 1f;
+                    try {
+                        minDistance = Float.parseFloat(minDistanceStr);
+                    } catch (Exception e) {
+                        // ignore and use default
+                    }
                     String intervalStr = preferences
                             .getString(PREFS_KEY_GPSLOGGINGINTERVAL, String.valueOf(GPS_LOGGING_INTERVAL));
-                    long waitForSecs = Long.parseLong(intervalStr);
+                    long waitForSecs = 3;
+                    try {
+                        waitForSecs = Long.parseLong(intervalStr);
+                    } catch (Exception e) {
+                        // ignore and use default
+                    }
                     if (Debug.D)
                         Logger.d(LOGTAG, "Waiting interval: " + waitForSecs);
 

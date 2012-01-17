@@ -31,7 +31,6 @@ import java.util.TreeSet;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -40,7 +39,6 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.telephony.SmsManager;
 import android.text.Editable;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -56,6 +54,7 @@ import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
 import eu.geopaparazzi.library.kml.KmzExport;
 import eu.geopaparazzi.library.sensors.SensorsManager;
+import eu.geopaparazzi.library.sms.SmsUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
@@ -634,7 +633,6 @@ public class GeoPaparazziActivity extends Activity {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         final String panicNumbersString = preferences.getString(PANICKEY, "");
         // Make sure there's a valid return address.
-
         if (panicNumbersString == null || panicNumbersString.length() == 0 || panicNumbersString.matches(".*[A-Za-z].*")) {
             Utilities.messageDialog(this, R.string.panic_number_notset, null);
         } else {
@@ -644,46 +642,15 @@ public class GeoPaparazziActivity extends Activity {
                 if (number.length() == 0) {
                     continue;
                 }
-                GpsLocation loc = gpsManager.getLocation();
-                if (loc != null) {
-                    SmsManager mng = SmsManager.getDefault();
-                    PendingIntent dummyEvent = PendingIntent
-                            .getBroadcast(this, 0, new Intent("com.devx.SMSExample.IGNORE_ME"), 0);
-
-                    String latString = String.valueOf(loc.getLatitude()).replaceAll(",", ".");
-                    String lonString = String.valueOf(loc.getLongitude()).replaceAll(",", ".");
-                    StringBuilder sB = new StringBuilder();
+                if (gpsManager.isGpsLogging()) {
                     String lastPosition;
                     if (doPanic) {
                         lastPosition = getString(R.string.help_needed);
                     } else {
                         lastPosition = getString(R.string.last_position);
                     }
-                    sB.append(lastPosition).append(":");
-                    sB.append("http://www.openstreetmap.org/?lat=");
-                    sB.append(latString);
-                    sB.append("&lon=");
-                    sB.append(lonString);
-                    sB.append("&zoom=14");
-                    sB.append("&layers=M&mlat=");
-                    sB.append(latString);
-                    sB.append("&mlon=");
-                    sB.append(lonString);
-                    String msg = sB.toString();
-
-                    try {
-                        if (msg.length() > 160) {
-                            msg = msg.substring(0, 160);
-                            if (Debug.D)
-                                Logger.i("SmsIntent", "Trimming msg to: " + msg);
-                        }
-                        mng.sendTextMessage(number, null, msg, dummyEvent, dummyEvent);
-                        Toast.makeText(this, R.string.message_sent, Toast.LENGTH_LONG).show();
-                    } catch (Exception e) {
-                        Logger.e(this, e.getLocalizedMessage(), e);
-                        Utilities.messageDialog(this, R.string.panic_number_notset, null);
-                    }
-
+                    String positionText = SmsUtilities.createPositionText(this, lastPosition);
+                    SmsUtilities.sendSMS(this, number, positionText);
                 } else {
                     Utilities.messageDialog(this, R.string.gpslogging_only, null);
                 }

@@ -32,4 +32,5 @@
     <string name="wrongLongitude">Longitude has to be a number between -180 and 180.</string>
     <string name="wrongLatitude">Latitude has to be a number between -90 and 90.</string>
     <string name="okcoord">use coord</string>
+    <string name="message_sent">Message sent</string>
 </resources>
