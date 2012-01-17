@@ -47,7 +47,7 @@ import eu.hydrologis.geopaparazzi.util.Constants;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class MapTagsActivity extends Activity {
-    private static final int NOTE_RETURN_CODE = -666;
+    private static final int NOTE_RETURN_CODE = 666;
     private EditText additionalInfoText;
     private float latitude;
     private float longitude;
