@@ -21,6 +21,8 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
+import eu.hydrologis.geopaparazzi.gpx.GpxImportActivity;
+
 import android.graphics.Color;
 
 /**
@@ -49,7 +51,10 @@ public interface Constants {
     // public final String VIEW_IN_CHART = "eu.hydrologis.geopaparazzi.chart.VIEW_IN_CHART";
     // public final String MEASUREMENT_INFO = "eu.hydrologis.geopaparazzi.maps.MEASUREMENT_INFO";
     // public final String ABOUT = "eu.hydrologis.geopaparazzi.util.ABOUT";
-    // public final String GPXIMPORT = "eu.hydrologis.geopaparazzi.gpx.GPXIMPORT";
+    /**
+     * Intent id to run the {@link GpxImportActivity}.
+     */
+    public final String GPXIMPORT = "eu.hydrologis.geopaparazzi.gpx.GPXIMPORT";
     // public final String TAGS = "eu.hydrologis.geopaparazzi.maps.TAGS";
     // public final String FORM = "eu.hydrologis.geopaparazzi.maps.tags.FORM";
     // public final String OSMCATEGORYACTIVITY =

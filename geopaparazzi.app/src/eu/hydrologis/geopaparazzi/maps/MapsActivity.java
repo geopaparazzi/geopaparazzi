@@ -83,6 +83,8 @@ import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.gps.GpsManagerListener;
 import eu.geopaparazzi.library.mixare.MixareHandler;
 import eu.geopaparazzi.library.network.NetworkUtilities;
+import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.activities.InsertCoordActivity;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
@@ -113,6 +115,8 @@ import eu.hydrologis.geopaparazzi.util.VerticalSeekBar;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class MapsActivity extends Activity implements GpsManagerListener, MapListener {
+    private static final int INSERTCOORD_RETURN_CODE = -666;
+
     private static final int MENU_GPSDATA = 1;
     private static final int MENU_MAPDATA = 2;
     private static final int MENU_TILE_SOURCE_ID = 3;
@@ -763,8 +767,8 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                 return false;
             }
         case GO_TO: {
-            Intent intent = new Intent(Constants.INSERT_COORD);
-            startActivity(intent);
+            Intent intent = new Intent(this, InsertCoordActivity.class);
+            startActivityForResult(intent, INSERTCOORD_RETURN_CODE);
             return true;
         }
         default:
@@ -773,6 +777,20 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
             mMiniMapOverlay.setTileSource(tileSource);
         }
         return super.onMenuItemSelected(featureId, item);
+    }
+
+    protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch( requestCode ) {
+        case (INSERTCOORD_RETURN_CODE): {
+            if (resultCode == Activity.RESULT_OK) {
+                double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0f);
+                double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0f);
+                ViewportManager.INSTANCE.setCenterAndZoomForMapWindowFocus(lon, lat, null);
+            }
+            break;
+        }
+        }
     }
 
     private void deleteVisibleBookmarks() {

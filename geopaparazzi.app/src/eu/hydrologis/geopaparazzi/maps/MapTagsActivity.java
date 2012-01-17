@@ -30,11 +30,15 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.Toast;
 import eu.geopaparazzi.library.camera.CameraActivity;
+import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.library.util.activities.NoteActivity;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.maps.TagsManager.TagObject;
+import eu.hydrologis.geopaparazzi.maps.tags.FormActivity;
 import eu.hydrologis.geopaparazzi.util.Constants;
 
 /**
@@ -43,6 +47,7 @@ import eu.hydrologis.geopaparazzi.util.Constants;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class MapTagsActivity extends Activity {
+    private static final int NOTE_RETURN_CODE = -666;
     private EditText additionalInfoText;
     private float latitude;
     private float longitude;
@@ -77,8 +82,8 @@ public class MapTagsActivity extends Activity {
         Button noteButton = (Button) findViewById(R.id.notefromtag);
         noteButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                Intent intent = new Intent(Constants.TAKE_NOTE);
-                MapTagsActivity.this.startActivity(intent);
+                Intent intent = new Intent(MapTagsActivity.this, NoteActivity.class);
+                MapTagsActivity.this.startActivityForResult(intent, NOTE_RETURN_CODE);
                 finish();
             }
         });
@@ -120,7 +125,7 @@ public class MapTagsActivity extends Activity {
                                 // launch form activity
                                 String jsonString = tag.jsonString;
 
-                                Intent formIntent = new Intent(Constants.FORM);
+                                Intent formIntent = new Intent(MapTagsActivity.this, FormActivity.class);
                                 formIntent.putExtra(Constants.FORMJSON_KEY, jsonString);
                                 formIntent.putExtra(Constants.FORMSHORTNAME_KEY, tag.shortName);
                                 formIntent.putExtra(Constants.FORMLONGNAME_KEY, finalLongName);
@@ -148,4 +153,32 @@ public class MapTagsActivity extends Activity {
         // setListAdapter(arrayAdapter);
         buttonGridView.setAdapter(arrayAdapter);
     }
+
+    protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch( requestCode ) {
+        case (NOTE_RETURN_CODE): {
+            if (resultCode == Activity.RESULT_OK) {
+                String[] noteArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_NOTE);
+                if (noteArray != null) {
+                    try {
+                        double lon = Double.parseDouble(noteArray[0]);
+                        double lat = Double.parseDouble(noteArray[1]);
+                        double elev = Double.parseDouble(noteArray[2]);
+                        java.util.Date date = LibraryConstants.TIME_FORMATTER.parse(noteArray[3]);
+                        DaoNotes.addNote(this, lon, lat, elev, new Date(date.getTime()), noteArray[4], null,
+                                NoteType.SIMPLE.getTypeNum());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+
+                        Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
+                    }
+                }
+
+            }
+            break;
+        }
+        }
+    }
+
 }

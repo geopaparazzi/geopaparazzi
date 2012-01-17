@@ -74,8 +74,11 @@ import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.DatabaseManager;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
 import eu.hydrologis.geopaparazzi.maps.MapItem;
+import eu.hydrologis.geopaparazzi.maps.MapsActivity;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
+import eu.hydrologis.geopaparazzi.preferences.PreferencesActivity;
 import eu.hydrologis.geopaparazzi.sensors.SensorsManager;
+import eu.hydrologis.geopaparazzi.util.AboutActivity;
 import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
@@ -318,7 +321,7 @@ public class GeoPaparazziActivity extends Activity {
             break;
         }
         case R.id.dashboard_map_item_button: {
-            Intent mapIntent = new Intent(Constants.MAP_VIEW);
+            Intent mapIntent = new Intent(this, MapsActivity.class);
             startActivity(mapIntent);
             break;
         }
@@ -371,11 +374,11 @@ public class GeoPaparazziActivity extends Activity {
     public boolean onMenuItemSelected( int featureId, MenuItem item ) {
         switch( item.getItemId() ) {
         case MENU_ABOUT:
-            Intent intent = new Intent(Constants.ABOUT);
+            Intent intent = new Intent(this, AboutActivity.class);
             startActivity(intent);
             return true;
         case MENU_SETTINGS:
-            Intent preferencesIntent = new Intent(Constants.PREFERENCES);
+            Intent preferencesIntent = new Intent(this, PreferencesActivity.class);
             startActivity(preferencesIntent);
             return true;
         case MENU_RESET:
