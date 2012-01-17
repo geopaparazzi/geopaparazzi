@@ -17,7 +17,7 @@
  */
 package eu.geopaparazzi.library.gps;
 
-import static eu.geopaparazzi.library.util.LibraryConstants.GPS_LOGGING_DISTANCE;
+import static eu.geopaparazzi.library.util.LibraryConstants.*;
 import static eu.geopaparazzi.library.util.LibraryConstants.GPS_LOGGING_INTERVAL;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGINGDISTANCE;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGINGINTERVAL;
@@ -187,6 +187,7 @@ public class GpsLogger implements GpsManagerListener {
                         Editor editor = preferences.edit();
                         editor.putFloat(PREFS_KEY_LON, (float) gpsLoc.getLongitude());
                         editor.putFloat(PREFS_KEY_LAT, (float) gpsLoc.getLatitude());
+                        editor.putFloat(PREFS_KEY_ELEV, (float) gpsLoc.getAltitude());
                         editor.commit();
 
                         // and wait

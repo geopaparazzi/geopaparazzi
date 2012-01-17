@@ -42,6 +42,7 @@ public interface LibraryConstants {
      * </p>
      */
     public static final String PREFS_KEY_LAT = "PREFS_KEY_LAT"; //$NON-NLS-1$
+
     /**
      * Key used by the gps logger to store the lon in the prefs. 
      * 
@@ -54,14 +55,30 @@ public interface LibraryConstants {
     public static final String PREFS_KEY_LON = "PREFS_KEY_LON"; //$NON-NLS-1$
 
     /**
+     * Key used by the gps logger to store the elev in the prefs. 
+     * 
+     * <p>
+     * The gps logger uses this key to regularly store the
+     * gps data recorded, so this should not be used to store own
+     * data, which would be overwritten. 
+     * </p>
+     */
+    public static final String PREFS_KEY_ELEV = "PREFS_KEY_ELEV"; //$NON-NLS-1$
+
+    /**
      * Key used to pass a lat temporarily through bundles. 
      */
     public static final String LATITUDE = "LATITUDE"; //$NON-NLS-1$
-    
+
     /**
      * Key used to pass a lon temporarily through bundles. 
      */
-    public static final String LONGITUDE= "LONGITUDE"; //$NON-NLS-1$
+    public static final String LONGITUDE = "LONGITUDE"; //$NON-NLS-1$
+
+    /**
+     * Key used to pass an elevation temporarily through bundles. 
+     */
+    public static final String ELEVATION = "ELEVATION"; //$NON-NLS-1$
 
     /**
      * Key used to store and retrieve the base folder of the application. 

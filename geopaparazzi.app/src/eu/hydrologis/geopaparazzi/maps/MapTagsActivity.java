@@ -49,8 +49,9 @@ import eu.hydrologis.geopaparazzi.util.Constants;
 public class MapTagsActivity extends Activity {
     private static final int NOTE_RETURN_CODE = 666;
     private EditText additionalInfoText;
-    private float latitude;
-    private float longitude;
+    private double latitude;
+    private double longitude;
+    private double elevation;
     private String[] tagNamesArray;
 
     public void onCreate( Bundle icicle ) {
@@ -59,14 +60,9 @@ public class MapTagsActivity extends Activity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            latitude = extras.getFloat(Constants.PREFS_KEY_MAPCENTER_LAT);
-            longitude = extras.getFloat(Constants.PREFS_KEY_MAPCENTER_LON);
-
-            // if not passed as center, use the ones saved by the logger regularly
-            if (latitude == 0.0)
-                latitude = extras.getFloat(LibraryConstants.PREFS_KEY_LAT);
-            if (longitude == 0.0)
-                longitude = extras.getFloat(LibraryConstants.PREFS_KEY_LON);
+            latitude = extras.getDouble(LibraryConstants.LATITUDE);
+            longitude = extras.getDouble(LibraryConstants.LONGITUDE);
+            elevation = extras.getDouble(LibraryConstants.ELEVATION);
         }
 
         additionalInfoText = (EditText) findViewById(R.id.osm_additionalinfo_id);
@@ -75,6 +71,10 @@ public class MapTagsActivity extends Activity {
         imageButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
                 Intent intent = new Intent(MapTagsActivity.this, CameraActivity.class);
+                intent.putExtra(LibraryConstants.LONGITUDE, longitude);
+                intent.putExtra(LibraryConstants.LATITUDE, latitude);
+                intent.putExtra(LibraryConstants.ELEVATION, elevation);
+
                 MapTagsActivity.this.startActivity(intent);
                 finish();
             }

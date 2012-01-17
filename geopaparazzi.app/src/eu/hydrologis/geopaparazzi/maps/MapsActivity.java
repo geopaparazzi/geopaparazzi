@@ -369,8 +369,9 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
             public void onClick( View v ) {
                 IGeoPoint mapCenter = mapsView.getMapCenter();
                 Intent osmTagsIntent = new Intent(MapsActivity.this, MapTagsActivity.class);
-                osmTagsIntent.putExtra(Constants.PREFS_KEY_MAPCENTER_LAT, mapCenter.getLatitudeE6() / E6);
-                osmTagsIntent.putExtra(Constants.PREFS_KEY_MAPCENTER_LON, mapCenter.getLongitudeE6() / E6);
+                osmTagsIntent.putExtra(LibraryConstants.LATITUDE, mapCenter.getLatitudeE6() / E6);
+                osmTagsIntent.putExtra(LibraryConstants.LONGITUDE, mapCenter.getLongitudeE6() / E6);
+                osmTagsIntent.putExtra(LibraryConstants.ELEVATION, 0.0);
                 startActivity(osmTagsIntent);
             }
         });

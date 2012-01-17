@@ -29,8 +29,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import eu.geopaparazzi.library.R;
-import eu.geopaparazzi.library.gps.GpsLocation;
-import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.sensors.SensorsManager;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
@@ -48,6 +46,12 @@ import eu.geopaparazzi.library.util.debug.Logger;
  * value, that one is used as relative path inside the application folder.
  * </p>
  * <p>
+ * The bundle is supposed to contain the gps position available through the keys:
+ * {@link LibraryConstants#LONGITUDE},{@link LibraryConstants#LATITUDE},
+ * {@link LibraryConstants#ELEVATION}
+ * </p>
+ * 
+ * <p>
  * The activity returns the relative path to the generated image, that can be
  * retrieved through the {@link LibraryConstants#PREFS_KEY_PATH} key from
  * the bundle.
@@ -63,6 +67,9 @@ public class CameraActivity extends Activity {
     private String currentDatestring;
     private String imageFilePath;
     private Date currentDate;
+    private double lon;
+    private double lat;
+    private double elevation;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -75,6 +82,11 @@ public class CameraActivity extends Activity {
             if (imageSaveFolderPath != null && imageSaveFolderPath.length() > 0) {
                 imageSaveFolder = new File(applicationDir, imageSaveFolderPath);
             }
+            lon = extras.getDouble(LibraryConstants.LONGITUDE);
+            lat = extras.getDouble(LibraryConstants.LATITUDE);
+            elevation = extras.getDouble(LibraryConstants.ELEVATION);
+        } else {
+            throw new RuntimeException("Not implemented yet...");
         }
 
         if (!imageSaveFolder.exists()) {
@@ -110,15 +122,6 @@ public class CameraActivity extends Activity {
 
     protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
         if (requestCode == CAMERA_PIC_REQUEST) {
-            GpsLocation loc = GpsManager.getInstance(this).getLocation();
-            double lat = -1;
-            double lon = -1;
-            double altim = -1;
-            if (loc != null) {
-                lat = loc.getLatitude();
-                lon = loc.getLongitude();
-                altim = loc.getAltitude();
-            }
             SensorsManager sensorsManager = SensorsManager.getInstance(this);
             double azimuth = sensorsManager.getPictureAzimuth();
 
@@ -135,7 +138,7 @@ public class CameraActivity extends Activity {
 
             String latString = Utilities.degreeDecimal2ExifFormat(lat);
             String lonString = Utilities.degreeDecimal2ExifFormat(lon);
-            String altimString = String.valueOf(altim);
+            String altimString = String.valueOf(elevation);
             String azimuthString = String.valueOf((int) azimuth);
 
             if (Debug.D) {
@@ -146,7 +149,7 @@ public class CameraActivity extends Activity {
                 ExifInterface exif = new ExifInterface(imageFilePath);
 
                 String azz = (int) (azimuth * 100.0) + "/100";
-                String alt = (int) (altim * 100.0) + "/100";
+                String alt = (int) (elevation * 100.0) + "/100";
                 exif.setAttribute("GPSImgDirection", azz);
                 // exif.setAttribute("GPSImgDirectionRef", "M");
                 exif.setAttribute("GPSAltitude", alt);
