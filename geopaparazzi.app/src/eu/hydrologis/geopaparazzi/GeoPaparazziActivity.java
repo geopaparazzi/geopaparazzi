@@ -17,7 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.BASEFOLDERKEY;
 import static eu.hydrologis.geopaparazzi.util.Constants.PANICKEY;
 
 import java.io.File;
@@ -150,16 +149,11 @@ public class GeoPaparazziActivity extends Activity {
             applicationManager = ApplicationManager.getInstance(this);
         }
         if (applicationManager == null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            String ok = getResources().getString(R.string.ok);
-            builder.setMessage(R.string.sdcard_notexist).setCancelable(false)
-                    .setPositiveButton(ok, new DialogInterface.OnClickListener(){
-                        public void onClick( DialogInterface dialog, int id ) {
-                            finish();
-                        }
-                    });
-            AlertDialog alert = builder.create();
-            alert.show();
+            Utilities.messageDialog(this, R.string.sdcard_notexist, new Runnable(){
+                public void run() {
+                    finish();
+                }
+            });
             return;
         }
 
@@ -404,7 +398,7 @@ public class GeoPaparazziActivity extends Activity {
                 if (chosenFolderToLoad != null && new File(chosenFolderToLoad).getParentFile().exists()) {
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     Editor editor = preferences.edit();
-                    editor.putString(BASEFOLDERKEY, chosenFolderToLoad);
+                    editor.putString(LibraryConstants.PREFS_KEY_BASEFOLDER, chosenFolderToLoad);
                     editor.commit();
                     Intent intent = getIntent();
                     finish();
@@ -494,7 +488,7 @@ public class GeoPaparazziActivity extends Activity {
                                 // editor.putString(BASEFOLDERKEY,
                                 // newGeopaparazziDirFile.getAbsolutePath());
                             }
-                            editor.putString(BASEFOLDERKEY, ""); //$NON-NLS-1$
+                            editor.putString(LibraryConstants.PREFS_KEY_BASEFOLDER, ""); //$NON-NLS-1$
                             editor.commit();
 
                             Intent intent = getIntent();
@@ -642,14 +636,7 @@ public class GeoPaparazziActivity extends Activity {
         // Make sure there's a valid return address.
 
         if (panicNumbersString == null || panicNumbersString.length() == 0 || panicNumbersString.matches(".*[A-Za-z].*")) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(R.string.panic_number_notset).setCancelable(false)
-                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
-                        public void onClick( DialogInterface dialog, int id ) {
-                        }
-                    });
-            AlertDialog alertDialog = builder.create();
-            alertDialog.show();
+            Utilities.messageDialog(this, R.string.panic_number_notset, null);
         } else {
             String[] numbers = panicNumbersString.split(";");
             for( String number : numbers ) {
@@ -694,25 +681,11 @@ public class GeoPaparazziActivity extends Activity {
                         Toast.makeText(this, R.string.message_sent, Toast.LENGTH_LONG).show();
                     } catch (Exception e) {
                         Logger.e(this, e.getLocalizedMessage(), e);
-                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                        builder.setMessage(R.string.panic_number_notset).setCancelable(false)
-                                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
-                                    public void onClick( DialogInterface dialog, int id ) {
-                                    }
-                                });
-                        AlertDialog alertDialog = builder.create();
-                        alertDialog.show();
+                        Utilities.messageDialog(this, R.string.panic_number_notset, null);
                     }
 
                 } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setMessage(R.string.gpslogging_only).setCancelable(false)
-                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
-                                public void onClick( DialogInterface dialog, int id ) {
-                                }
-                            });
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
+                    Utilities.messageDialog(this, R.string.gpslogging_only, null);
                 }
             }
         }
