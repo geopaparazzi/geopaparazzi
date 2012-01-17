@@ -17,14 +17,12 @@
  */
 package eu.geopaparazzi.library.sms;
 
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.util.LibraryConstants;
@@ -60,8 +58,6 @@ public class SmsReceiverPositionSender extends BroadcastReceiver {
             if (!doCatch) {
                 return;
             }
-            float gpsLon = preferences.getFloat(LibraryConstants.PREFS_KEY_LON, -9999);
-            float gpsLat = preferences.getFloat(LibraryConstants.PREFS_KEY_LAT, -9999);
 
             Bundle bundle = intent.getExtras();
             SmsMessage smsMessage = null;
@@ -82,91 +78,19 @@ public class SmsReceiverPositionSender extends BroadcastReceiver {
                 }
             }
             if (smsMessage != null && smsMessage.getOriginatingAddress() != null) {
-                // if (loc == null) {
-                // Logger.i("SMSRECEIVER", "Setting a dummy location");
-                // loc = new GpsLocation(new Location("dummy"));
-                // loc.setLatitude(46.674056);
-                // loc.setLongitude(11.132294);
-                // loc.setTime(new Date().getTime());
-                // }
-
-                StringBuilder sB = new StringBuilder();
-                if (gpsLon != -9999) {
-                    String lastPosition = context.getString(R.string.last_position);
-
-                    String latString = String.valueOf(gpsLat).replaceAll(",", ".");
-                    String lonString = String.valueOf(gpsLon).replaceAll(",", ".");
-                    // http://www.openstreetmap.org/?lat=46.068941&lon=11.169849&zoom=18&layers=M&mlat=42.95647&mlon=12.70393
-                    // http://maps.google.com/maps?q=46.068941,11.169849&z=16
-
-                    sB.append(lastPosition).append(":");
-                    sB.append("http://www.openstreetmap.org/?lat=");
-                    sB.append(latString);
-                    sB.append("&lon=");
-                    sB.append(lonString);
-                    sB.append("&zoom=14");
-                    sB.append("&layers=M&mlat=");
-                    sB.append(latString);
-                    sB.append("&mlon=");
-                    sB.append(lonString);
-
-                    String msg = sB.toString();
-
-                    // Location previousLoc = loc.getPreviousLoc();
-                    // if (previousLoc != null) {
-                    // Logger.i("SMSRECEIVER", "Has also previous location");
-                    // double plat = previousLoc.getLatitude();
-                    // double plon = previousLoc.getLongitude();
-                    // sB.append("\nPrevious location was:\n");
-                    // sB.append("http://www.openstreetmap.org/?lat=");
-                    // sB.append(String.valueOf(plat).replaceAll(",", "."));
-                    // sB.append("&lon=");
-                    // sB.append(String.valueOf(plon).replaceAll(",", "."));
-                    // sB.append("&zoom=18");
-                    // sB.append("&layers=M&mlat=");
-                    // sB.append(latString);
-                    // sB.append("&mlon=");
-                    // sB.append(lonString);
-                    // }
-
-                    if (sB.toString().length() > 160) {
-                        // if longer than 160 chars it will not work
-                        sB = new StringBuilder(msg);
-                    }
-                } else {
-                    sB.append(context.getString(R.string.last_position_unknown));
+                String msg = null;
+                String lastPosition = context.getString(R.string.last_position);
+                msg = SmsUtilities.createPositionText(context, lastPosition);
+                if (msg.length() > 160) {
+                    // if longer than 160 chars it will not work, try using only url
+                    msg = SmsUtilities.createPositionText(context, null);
                 }
 
-                String msg = sB.toString();
                 if (Debug.D)
                     Logger.i(this, msg);
-                sendGPSData(context, smsMessage, msg);
+                String addr = smsMessage.getOriginatingAddress();
+                SmsUtilities.sendSMS(context, addr, msg);
             }
-        }
-    }
-
-    private void sendGPSData( Context context, SmsMessage inMessage, String msg ) {
-        SmsManager mng = SmsManager.getDefault();
-        PendingIntent dummyEvent = PendingIntent.getBroadcast(context, 0, new Intent("com.devx.SMSExample.IGNORE_ME"), 0);
-
-        String addr = inMessage.getOriginatingAddress();
-        // Make sure there's a valid return address.
-        if (addr == null) {
-            if (Debug.D)
-                Logger.i(this, "Unable to get Address from Sent Message");
-        } else {
-            if (Debug.D)
-                Logger.i(this, "Sending to: " + addr);
-        }
-        try {
-            if (msg.length() > 160) {
-                msg = msg.substring(0, 160);
-                if (Debug.D)
-                    Logger.i(this, "Trimming msg to: " + msg);
-            }
-            mng.sendTextMessage(addr, null, msg, dummyEvent, dummyEvent);
-        } catch (Exception e) {
-            Logger.e(this, "SendException", e);
         }
     }
 
