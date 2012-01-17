@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat;
  */
 public interface LibraryConstants {
 
+    public final float E6 = 1000000f;
     public final DecimalFormat DECIMAL_FORMATTER_2 = new DecimalFormat("0.00"); //$NON-NLS-1$
     public final SimpleDateFormat TIMESTAMPFORMATTER = new SimpleDateFormat("yyyyMMdd_HHmmss"); //$NON-NLS-1$
     public final SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //$NON-NLS-1$
@@ -34,6 +35,9 @@ public interface LibraryConstants {
 
     /**
      * Key used by the gps logger to store the lat in the prefs. 
+     * 
+     * <p><b>Note that this will always be *E6 and of type float, so to
+     * get the actual value you will have to divide by E6.</b>
      * 
      * <p>
      * The gps logger uses this key to regularly store the
@@ -44,7 +48,10 @@ public interface LibraryConstants {
     public static final String PREFS_KEY_LAT = "PREFS_KEY_LAT"; //$NON-NLS-1$
 
     /**
-     * Key used by the gps logger to store the lon in the prefs. 
+     * Key used by the gps logger to store the lon in the prefs.
+     *  
+     * <p><b>Note that this will always be *E6 and of type float, so to
+     * get the actual value you will have to divide by E6.</b>
      * 
      * <p>
      * The gps logger uses this key to regularly store the

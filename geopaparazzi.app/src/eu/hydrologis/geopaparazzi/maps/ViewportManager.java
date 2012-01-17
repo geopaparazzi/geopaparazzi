@@ -17,7 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.maps;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.E6;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_ZOOM;
 
 import org.osmdroid.api.IGeoPoint;
@@ -27,6 +26,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.hydrologis.geopaparazzi.util.Constants;
 
 /**
  * Singleton that takes care of viewport sync.
@@ -85,14 +85,14 @@ public enum ViewportManager {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mapsActivity);
         Editor editor = preferences.edit();
         if (centerX != null) {
-            editor.putFloat(LibraryConstants.PREFS_KEY_LON, centerX.floatValue());
+            editor.putFloat(Constants.PREFS_KEY_MAPCENTER_LON, centerX.floatValue());
         } else {
-            editor.putFloat(LibraryConstants.PREFS_KEY_LON, (float) (mapCenter.getLongitudeE6() / E6));
+            editor.putFloat(Constants.PREFS_KEY_MAPCENTER_LON, (float) (mapCenter.getLongitudeE6() / LibraryConstants.E6));
         }
         if (centerY != null) {
-            editor.putFloat(LibraryConstants.PREFS_KEY_LAT, centerY.floatValue());
+            editor.putFloat(Constants.PREFS_KEY_MAPCENTER_LAT, centerY.floatValue());
         } else {
-            editor.putFloat(LibraryConstants.PREFS_KEY_LAT, (float) (mapCenter.getLatitudeE6() / E6));
+            editor.putFloat(Constants.PREFS_KEY_MAPCENTER_LAT, (float) (mapCenter.getLatitudeE6() / LibraryConstants.E6));
         }
         if (zoom != null) {
             editor.putInt(PREFS_KEY_ZOOM, zoom);

@@ -67,8 +67,6 @@ public interface Constants {
     public final String MEASUREDIST = "MEASUREDIST";
     public final String NSEW_COORDS = "NSEW_COORDS";
 
-    public final float E6 = 1000000f;
-
     public static final String GEOPAPARAZZI = "geopaparazzi";
     public final String PATH_MEDIA = File.separator + "media";
     public final String PATH_KMLEXPORT = File.separator + "export";

@@ -41,6 +41,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 
@@ -148,6 +149,10 @@ public class GpsLogger implements GpsManagerListener {
                             previousLogLoc = gpsLoc;
                         }
 
+                        double recLon = gpsLoc.getLongitude();
+                        double recLat = gpsLoc.getLatitude();
+                        double recAlt = gpsLoc.getAltitude();
+
                         float lastDistance = previousLogLoc.distanceTo(gpsLoc);
                         if (Debug.D)
                             Logger.d(LOGTAG, "gpsloc: " + gpsLoc.getLatitude() + "/" + gpsLoc.getLongitude());
@@ -160,17 +165,6 @@ public class GpsLogger implements GpsManagerListener {
                             waitGpsInterval(waitForSecs);
                             continue;
                         }
-
-                        StringBuilder sB = new StringBuilder();
-                        double recLon = gpsLoc.getLongitude();
-                        double recLat = gpsLoc.getLatitude();
-                        double recAlt = gpsLoc.getAltitude();
-                        String timeStringSql = gpsLoc.getTimeStringSql();
-                        sB.append(recLon).append(",");
-                        sB.append(recLat).append(",");
-                        sB.append(recAlt).append(",");
-                        sB.append(timeStringSql);
-                        sB.append("\n");
 
                         try {
                             dbHelper.addGpsLogDataPoint(context, gpsLogId, recLon, recLat, recAlt, gpsLoc.getSqlDate());
@@ -185,9 +179,9 @@ public class GpsLogger implements GpsManagerListener {
 
                         // save last known location
                         Editor editor = preferences.edit();
-                        editor.putFloat(PREFS_KEY_LON, (float) gpsLoc.getLongitude());
-                        editor.putFloat(PREFS_KEY_LAT, (float) gpsLoc.getLatitude());
-                        editor.putFloat(PREFS_KEY_ELEV, (float) gpsLoc.getAltitude());
+                        editor.putFloat(PREFS_KEY_LON, (float) recLon * LibraryConstants.E6);
+                        editor.putFloat(PREFS_KEY_LAT, (float) recLat * LibraryConstants.E6);
+                        editor.putFloat(PREFS_KEY_ELEV, (float) recAlt);
                         editor.commit();
 
                         // and wait

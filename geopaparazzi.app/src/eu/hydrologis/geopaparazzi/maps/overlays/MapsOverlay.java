@@ -17,8 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.maps.overlays;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.E6;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +40,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.preference.PreferenceManager;
 import android.view.MotionEvent;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
@@ -110,10 +109,10 @@ public class MapsOverlay extends Overlay {
             return;
 
         BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
-        float y0 = boundingBox.getLatNorthE6() / E6;
-        float y1 = boundingBox.getLatSouthE6() / E6;
-        float x0 = boundingBox.getLonWestE6() / E6;
-        float x1 = boundingBox.getLonEastE6() / E6;
+        float y0 = boundingBox.getLatNorthE6() / LibraryConstants.E6;
+        float y1 = boundingBox.getLatSouthE6() / LibraryConstants.E6;
+        float x0 = boundingBox.getLonWestE6() / LibraryConstants.E6;
+        float x1 = boundingBox.getLonEastE6() / LibraryConstants.E6;
 
         Projection pj = mapsView.getProjection();
 

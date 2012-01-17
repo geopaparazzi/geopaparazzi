@@ -17,7 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.maps;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.E6;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_COMPASSON;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_MAPCENTER_LAT;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_MAPCENTER_LON;
@@ -369,8 +368,8 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
             public void onClick( View v ) {
                 IGeoPoint mapCenter = mapsView.getMapCenter();
                 Intent osmTagsIntent = new Intent(MapsActivity.this, MapTagsActivity.class);
-                osmTagsIntent.putExtra(LibraryConstants.LATITUDE, mapCenter.getLatitudeE6() / E6);
-                osmTagsIntent.putExtra(LibraryConstants.LONGITUDE, mapCenter.getLongitudeE6() / E6);
+                osmTagsIntent.putExtra(LibraryConstants.LATITUDE, (double) (mapCenter.getLatitudeE6() / LibraryConstants.E6));
+                osmTagsIntent.putExtra(LibraryConstants.LONGITUDE, (double) (mapCenter.getLongitudeE6() / LibraryConstants.E6));
                 osmTagsIntent.putExtra(LibraryConstants.ELEVATION, 0.0);
                 startActivity(osmTagsIntent);
             }
@@ -602,13 +601,13 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         if (!hasFocus) {
             IGeoPoint mapCenter = mapsView.getMapCenter();
             Editor editor = preferences.edit();
-            editor.putFloat(LibraryConstants.PREFS_KEY_LON, (float) (mapCenter.getLongitudeE6() / E6));
-            editor.putFloat(LibraryConstants.PREFS_KEY_LAT, (float) (mapCenter.getLatitudeE6() / E6));
+            editor.putFloat(Constants.PREFS_KEY_MAPCENTER_LON, (float) (mapCenter.getLongitudeE6() / LibraryConstants.E6));
+            editor.putFloat(Constants.PREFS_KEY_MAPCENTER_LAT, (float) (mapCenter.getLatitudeE6() / LibraryConstants.E6));
             editor.putInt(PREFS_KEY_ZOOM, mapsView.getZoomLevel());
             editor.commit();
         } else {
-            float lastCenterLon = preferences.getFloat(LibraryConstants.PREFS_KEY_LON, 0f);
-            float lastCenterLat = preferences.getFloat(LibraryConstants.PREFS_KEY_LAT, 0f);
+            float lastCenterLon = preferences.getFloat(Constants.PREFS_KEY_MAPCENTER_LON, 0f);
+            float lastCenterLat = preferences.getFloat(Constants.PREFS_KEY_MAPCENTER_LAT, 0f);
             final int zoom = preferences.getInt(PREFS_KEY_ZOOM, 16);
             mapController.setCenter(new GeoPoint(lastCenterLat, lastCenterLon));
             mapController.setZoom(zoom);
@@ -657,13 +656,14 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
     public void setNewCenterAtZoom( final double centerX, final double centerY, final int zoom ) {
         mapsView.getController().setZoom(zoom);
         setZoomGuiText(zoom);
-        mapsView.getController().setCenter(new GeoPoint((int) (centerX * E6), (int) (centerY * E6)));
+        mapsView.getController().setCenter(
+                new GeoPoint((int) (centerX * LibraryConstants.E6), (int) (centerY * LibraryConstants.E6)));
         mapsView.postInvalidate();
     }
 
     public double[] getCenterLonLat() {
         IGeoPoint mapCenter = mapsView.getMapCenter();
-        double[] lonLat = {mapCenter.getLongitudeE6() / E6, mapCenter.getLatitudeE6() / E6};
+        double[] lonLat = {mapCenter.getLongitudeE6() / LibraryConstants.E6, mapCenter.getLatitudeE6() / LibraryConstants.E6};
         return lonLat;
     }
 
@@ -753,10 +753,10 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                 return true;
             }
             BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
-            float n = boundingBox.getLatNorthE6() / E6;
-            float s = boundingBox.getLatSouthE6() / E6;
-            float w = boundingBox.getLonWestE6() / E6;
-            float e = boundingBox.getLonEastE6() / E6;
+            float n = boundingBox.getLatNorthE6() / LibraryConstants.E6;
+            float s = boundingBox.getLatSouthE6() / LibraryConstants.E6;
+            float w = boundingBox.getLonWestE6() / LibraryConstants.E6;
+            float e = boundingBox.getLonEastE6() / LibraryConstants.E6;
 
             try {
                 MixareUtilities.runRegionOnMixare(this, n, s, w, e);
@@ -806,10 +806,10 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                     public void onClick( DialogInterface dialog, int whichButton ) {
                         try {
                             BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
-                            float n = boundingBox.getLatNorthE6() / E6;
-                            float s = boundingBox.getLatSouthE6() / E6;
-                            float w = boundingBox.getLonWestE6() / E6;
-                            float e = boundingBox.getLonEastE6() / E6;
+                            float n = boundingBox.getLatNorthE6() / LibraryConstants.E6;
+                            float s = boundingBox.getLatSouthE6() / LibraryConstants.E6;
+                            float w = boundingBox.getLonWestE6() / LibraryConstants.E6;
+                            float e = boundingBox.getLonEastE6() / LibraryConstants.E6;
                             final List<Bookmark> bookmarksInBounds = DaoBookmarks.getBookmarksInWorldBounds(MapsActivity.this, n,
                                     s, w, e);
                             int bookmarksNum = bookmarksInBounds.size();
@@ -856,10 +856,10 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                     public void onClick( DialogInterface dialog, int whichButton ) {
                         try {
                             BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
-                            float n = boundingBox.getLatNorthE6() / E6;
-                            float s = boundingBox.getLatSouthE6() / E6;
-                            float w = boundingBox.getLonWestE6() / E6;
-                            float e = boundingBox.getLonEastE6() / E6;
+                            float n = boundingBox.getLatNorthE6() / LibraryConstants.E6;
+                            float s = boundingBox.getLatSouthE6() / LibraryConstants.E6;
+                            float w = boundingBox.getLonWestE6() / LibraryConstants.E6;
+                            float e = boundingBox.getLonEastE6() / LibraryConstants.E6;
                             final List<Note> notesInBounds = DaoNotes.getNotesInWorldBounds(MapsActivity.this, n, s, w, e);
 
                             int notesNum = notesInBounds.size();
@@ -897,8 +897,8 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
 
     private void addBookmark() {
         IGeoPoint mapCenter = mapsView.getMapCenter();
-        final float centerLat = mapCenter.getLatitudeE6() / E6;
-        final float centerLon = mapCenter.getLongitudeE6() / E6;
+        final float centerLat = mapCenter.getLatitudeE6() / LibraryConstants.E6;
+        final float centerLon = mapCenter.getLongitudeE6() / LibraryConstants.E6;
         final EditText input = new EditText(this);
         final String newDate = LibraryConstants.TIME_FORMATTER.format(new Date());
         final String proposedName = "bookmark " + newDate; //$NON-NLS-1$
@@ -921,10 +921,10 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
 
                             int zoom = mapsView.getZoomLevel();
                             BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
-                            float n = boundingBox.getLatNorthE6() / E6;
-                            float s = boundingBox.getLatSouthE6() / E6;
-                            float w = boundingBox.getLonWestE6() / E6;
-                            float e = boundingBox.getLonEastE6() / E6;
+                            float n = boundingBox.getLatNorthE6() / LibraryConstants.E6;
+                            float s = boundingBox.getLatSouthE6() / LibraryConstants.E6;
+                            float w = boundingBox.getLonWestE6() / LibraryConstants.E6;
+                            float e = boundingBox.getLonEastE6() / LibraryConstants.E6;
                             DaoBookmarks.addBookmark(getApplicationContext(), centerLon, centerLat, newName, zoom, n, s, w, e);
                             mapsView.invalidate();
                         } catch (IOException e) {
@@ -1022,8 +1022,8 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
         double lat = loc.getLatitude();
         double lon = loc.getLongitude();
-        int latE6 = (int) ((float) lat * E6);
-        int lonE6 = (int) ((float) lon * E6);
+        int latE6 = (int) ((float) lat * LibraryConstants.E6);
+        int lonE6 = (int) ((float) lon * LibraryConstants.E6);
         boolean centerOnGps = preferences.getBoolean(Constants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
 
         int sE6 = boundingBox.getLatSouthE6();
@@ -1083,8 +1083,8 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
 
     private void updateCenterPref() {
         IGeoPoint mapCenter = mapsView.getMapCenter();
-        double lon = mapCenter.getLongitudeE6() / E6;
-        double lat = mapCenter.getLatitudeE6() / E6;
+        double lon = mapCenter.getLongitudeE6() / LibraryConstants.E6;
+        double lat = mapCenter.getLatitudeE6() / LibraryConstants.E6;
 
         if (Debug.D) {
             StringBuilder sb = new StringBuilder();
