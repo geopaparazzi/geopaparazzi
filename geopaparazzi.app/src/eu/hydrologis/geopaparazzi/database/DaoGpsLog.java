@@ -37,10 +37,10 @@ import android.database.sqlite.SQLiteStatement;
 import android.graphics.Path;
 import android.graphics.Point;
 import eu.geopaparazzi.library.gps.IGpsLogDbHelper;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.maps.MapItem;
-import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.LineArray;
 
@@ -69,8 +69,8 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     public static final String TABLE_DATA = "gpslog_data";
     public static final String TABLE_PROPERTIES = "gpslogsproperties";
 
-    private static SimpleDateFormat dateFormatter = Constants.TIME_FORMATTER_SQLITE;
-    private static SimpleDateFormat dateFormatterForFile = Constants.TIMESTAMPFORMATTER;
+    private static SimpleDateFormat dateFormatter = LibraryConstants.TIME_FORMATTER_SQLITE;
+    private static SimpleDateFormat dateFormatterForFile = LibraryConstants.TIMESTAMPFORMATTER;
 
     /**
      * Creates a new gpslog entry and returns the id.

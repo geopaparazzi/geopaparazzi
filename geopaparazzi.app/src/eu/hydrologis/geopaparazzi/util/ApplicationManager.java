@@ -249,7 +249,7 @@ public class ApplicationManager implements Serializable {
                             audioRecorder = new MediaRecorder();
                         }
                         File mediaDir = applicationManager.getMediaDir();
-                        final String currentDatestring = Constants.TIMESTAMPFORMATTER.format(new Date());
+                        final String currentDatestring = LibraryConstants.TIMESTAMPFORMATTER.format(new Date());
                         String audioFilePathNoExtention = mediaDir.getAbsolutePath() + "/AUDIO_" + currentDatestring;
 
                         audioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -315,7 +315,7 @@ public class ApplicationManager implements Serializable {
                 if (!gpsManager.isGpsLogging()) {
                     GpsLocation loc = gpsManager.getLocation();
                     if (loc != null) {
-                        final String defaultLogName = "log_" + Constants.TIMESTAMPFORMATTER.format(new Date()); //$NON-NLS-1$
+                        final String defaultLogName = "log_" + LibraryConstants.TIMESTAMPFORMATTER.format(new Date()); //$NON-NLS-1$
                         final EditText input = new EditText(context);
                         input.setText(defaultLogName);
                         new AlertDialog.Builder(context).setTitle(R.string.gps_log).setMessage(R.string.gps_log_name)

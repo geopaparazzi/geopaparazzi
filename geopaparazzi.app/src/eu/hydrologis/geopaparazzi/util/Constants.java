@@ -36,8 +36,7 @@ public interface Constants {
     /*
      * intent names
      */
-    public final String MAIN = "android.intent.action.MAIN";
-
+    // public final String MAIN = "android.intent.action.MAIN";
     // public final String TOGGLE_GPS = "eu.hydrologis.geopaparazzi.camera.TOGGLE_GPS";
     // public final String MAP_VIEW = "eu.hydrologis.geopaparazzi.maps.MAP_VIEW";
     // public final String VIEW_COMPASS = "eu.hydrologis.geopaparazzi.compass.VIEW_COMPASS";
@@ -74,87 +73,15 @@ public interface Constants {
 
     public final float E6 = 1000000f;
 
-    /**
-     * Threshold for the sensor values in degrees (azimuth, pitch, roll).
-     */
-    public final int SENSORTHRESHOLD = 1;
-
-    /**
-     * Time threshold for gps position in milliseconds.
-     */
-    public final int TIMETHRESHOLD = 3000;
-
-    /**
-     * Position threshold for gps position in meters.
-     */
-    public final int POSITIONTHRESHOLD = 3;
-
-    /**
-     * Default latitude if no value is available.
-     */
-    public final double DEFAULT_LAT = Double.POSITIVE_INFINITY;
-
-    /**
-     * Default longitude if no value is available.
-     */
-    public final double DEFAULT_LON = Double.POSITIVE_INFINITY;
-
-    /**
-     * The text color for the compass text.
-     */
-    public final int COMPASS_TEXT_COLOR = Color.BLACK;
-
-    /**
-     * The needle color.
-     */
-    public final int COMPASS_NEEDLE_COLOR = Color.RED;
-
-    /**
-     * The needle alpha.
-     */
-    public final int COMPASS_NEEDLE_ALPHA = 150;
-
     public static final String GEOPAPARAZZI = "geopaparazzi";
-    public final String PATH_GEOPAPARAZZI = File.separator + GEOPAPARAZZI;
     public final String PATH_MEDIA = File.separator + "media";
-    public final String PATH_NOTES = File.separator + "notes";
     public final String PATH_KMLEXPORT = File.separator + "export";
-
-    public final String PATH_GEOPAPARAZZIDATA = File.separator + GEOPAPARAZZI;
-
-    public final DecimalFormat DECIMAL_FORMATTER_2 = new DecimalFormat("0.00");
-    public final SimpleDateFormat TIMESTAMPFORMATTER = new SimpleDateFormat("yyyyMMdd_HHmmss");
-    public final SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    public final SimpleDateFormat TIME_FORMATTER_SQLITE = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-    public static final int GPS_LOGGING_INTERVAL = 3;
-    public static final float GPS_LOGGING_DISTANCE = 1f;
 
     public static final String PREFS_KEY_NOTES_COLOR = "PREFS_KEY_NOTES_COLOR";
     public static final String PREFS_KEY_NOTES_WIDTH = "PREFS_KEY_NOTES_WIDTH";
     public static final String PREFS_KEY_ZOOM = "PREFS_KEY_ZOOM";
     public static final String PREFS_KEY_GPSLOG4PROPERTIES = "PREFS_KEY_GPSLOG4PROPERTIES";
     public static final String PREFS_KEY_MAP4PROPERTIES = "PREFS_KEY_MAP4PROPERTIES";
-    /**
-     * Key used by the gps logger to store the lat in the prefs. 
-     * 
-     * <p>
-     * The gps logger uses this key to regularly store the
-     * gps data recorded, so this should not be used to store own
-     * data, which would be overwritten. 
-     * </p>
-     */
-    public static final String PREFS_KEY_LAT = "PREFS_KEY_LAT";
-    /**
-     * Key used by the gps logger to store the lon in the prefs. 
-     * 
-     * <p>
-     * The gps logger uses this key to regularly store the
-     * gps data recorded, so this should not be used to store own
-     * data, which would be overwritten. 
-     * </p>
-     */
-    public static final String PREFS_KEY_LON = "PREFS_KEY_LON";
 
     /**
      * Key used to store the mapview center latitude.

@@ -64,9 +64,9 @@ public class MapTagsActivity extends Activity {
 
             // if not passed as center, use the ones saved by the logger regularly
             if (latitude == 0.0)
-                latitude = extras.getFloat(Constants.PREFS_KEY_LAT);
+                latitude = extras.getFloat(LibraryConstants.PREFS_KEY_LAT);
             if (longitude == 0.0)
-                longitude = extras.getFloat(Constants.PREFS_KEY_LON);
+                longitude = extras.getFloat(LibraryConstants.PREFS_KEY_LON);
         }
 
         additionalInfoText = (EditText) findViewById(R.id.osm_additionalinfo_id);

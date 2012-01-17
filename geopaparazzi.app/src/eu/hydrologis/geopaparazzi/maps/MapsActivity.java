@@ -19,8 +19,6 @@ package eu.hydrologis.geopaparazzi.maps;
 
 import static eu.hydrologis.geopaparazzi.util.Constants.E6;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_COMPASSON;
-import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_LAT;
-import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_LON;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_MAPCENTER_LAT;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_MAPCENTER_LON;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_MINIMAPON;
@@ -254,8 +252,8 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
             mMiniMapOverlay.setEnabled(isMinimapon);
         }
 
-        float lastCenterLon = preferences.getFloat(PREFS_KEY_LON, 0f);
-        float lastCenterLat = preferences.getFloat(PREFS_KEY_LAT, 0f);
+        float lastCenterLon = preferences.getFloat(LibraryConstants.PREFS_KEY_LON, 0f);
+        float lastCenterLat = preferences.getFloat(LibraryConstants.PREFS_KEY_LAT, 0f);
         final int zoom = preferences.getInt(Constants.PREFS_KEY_ZOOM, 16);
         mapController.setCenter(new GeoPoint(lastCenterLat, lastCenterLon));
         mapController.setZoom(zoom);
@@ -603,13 +601,13 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         if (!hasFocus) {
             IGeoPoint mapCenter = mapsView.getMapCenter();
             Editor editor = preferences.edit();
-            editor.putFloat(PREFS_KEY_LON, (float) (mapCenter.getLongitudeE6() / E6));
-            editor.putFloat(PREFS_KEY_LAT, (float) (mapCenter.getLatitudeE6() / E6));
+            editor.putFloat(LibraryConstants.PREFS_KEY_LON, (float) (mapCenter.getLongitudeE6() / E6));
+            editor.putFloat(LibraryConstants.PREFS_KEY_LAT, (float) (mapCenter.getLatitudeE6() / E6));
             editor.putInt(PREFS_KEY_ZOOM, mapsView.getZoomLevel());
             editor.commit();
         } else {
-            float lastCenterLon = preferences.getFloat(PREFS_KEY_LON, 0f);
-            float lastCenterLat = preferences.getFloat(PREFS_KEY_LAT, 0f);
+            float lastCenterLon = preferences.getFloat(LibraryConstants.PREFS_KEY_LON, 0f);
+            float lastCenterLat = preferences.getFloat(LibraryConstants.PREFS_KEY_LAT, 0f);
             final int zoom = preferences.getInt(PREFS_KEY_ZOOM, 16);
             mapController.setCenter(new GeoPoint(lastCenterLat, lastCenterLon));
             mapController.setZoom(zoom);
@@ -898,7 +896,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         final float centerLat = mapCenter.getLatitudeE6() / E6;
         final float centerLon = mapCenter.getLongitudeE6() / E6;
         final EditText input = new EditText(this);
-        final String newDate = Constants.TIME_FORMATTER.format(new Date());
+        final String newDate = LibraryConstants.TIME_FORMATTER.format(new Date());
         final String proposedName = "bookmark " + newDate; //$NON-NLS-1$
         input.setText(proposedName);
         Builder builder = new AlertDialog.Builder(this).setTitle(R.string.mapsactivity_new_bookmark);

@@ -19,8 +19,6 @@ package eu.hydrologis.geopaparazzi;
 
 import static eu.hydrologis.geopaparazzi.util.Constants.BASEFOLDERKEY;
 import static eu.hydrologis.geopaparazzi.util.Constants.PANICKEY;
-import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_LAT;
-import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_LON;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,6 +58,7 @@ import eu.geopaparazzi.library.kml.KmlRepresenter;
 import eu.geopaparazzi.library.kml.KmzExport;
 import eu.geopaparazzi.library.sensors.SensorsManager;
 import eu.geopaparazzi.library.util.FileUtilities;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity;
 import eu.geopaparazzi.library.util.debug.Debug;
@@ -438,8 +437,8 @@ public class GeoPaparazziActivity extends Activity {
         if (loc != null) {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             Editor editor = preferences.edit();
-            editor.putFloat(PREFS_KEY_LON, (float) loc.getLongitude());
-            editor.putFloat(PREFS_KEY_LAT, (float) loc.getLatitude());
+            editor.putFloat(LibraryConstants.PREFS_KEY_LON, (float) loc.getLongitude());
+            editor.putFloat(LibraryConstants.PREFS_KEY_LAT, (float) loc.getLatitude());
             editor.commit();
         }
 
@@ -461,7 +460,7 @@ public class GeoPaparazziActivity extends Activity {
         if (name.equals(Constants.GEOPAPARAZZI)) {
             doRename = true;
         }
-        final String defaultLogName = Constants.GEOPAPARAZZI + "_" + Constants.TIMESTAMPFORMATTER.format(new Date()); //$NON-NLS-1$
+        final String defaultLogName = Constants.GEOPAPARAZZI + "_" + LibraryConstants.TIMESTAMPFORMATTER.format(new Date()); //$NON-NLS-1$
         final EditText input = new EditText(this);
         input.setText(defaultLogName);
         Builder builder = new AlertDialog.Builder(this).setTitle(R.string.reset);
@@ -555,7 +554,7 @@ public class GeoPaparazziActivity extends Activity {
                     }
 
                     File kmlExportDir = applicationManager.getKmlExportDir();
-                    String filename = "geopaparazzi_" + Constants.TIMESTAMPFORMATTER.format(new Date()) + ".kmz"; //$NON-NLS-1$ //$NON-NLS-2$
+                    String filename = "geopaparazzi_" + LibraryConstants.TIMESTAMPFORMATTER.format(new Date()) + ".kmz"; //$NON-NLS-1$ //$NON-NLS-2$
                     kmlOutputFile = new File(kmlExportDir, filename);
                     KmzExport export = new KmzExport(null, kmlOutputFile);
                     export.export(GeoPaparazziActivity.this, kmlRepresenterList);

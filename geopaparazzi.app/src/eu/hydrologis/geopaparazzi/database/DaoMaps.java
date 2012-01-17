@@ -40,6 +40,7 @@ import eu.geopaparazzi.library.gpx.parser.GpxParser.TrackSegment;
 import eu.geopaparazzi.library.gpx.parser.RoutePoint;
 import eu.geopaparazzi.library.gpx.parser.TrackPoint;
 import eu.geopaparazzi.library.gpx.parser.WayPoint;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.maps.MapItem;
@@ -75,7 +76,7 @@ public class DaoMaps {
     public static final String TABLE_DATA = "maps_data";
     public static final String TABLE_PROPERTIES = "mapsproperties";
 
-    private static SimpleDateFormat dateFormatter = Constants.TIME_FORMATTER_SQLITE;
+    private static SimpleDateFormat dateFormatter = LibraryConstants.TIME_FORMATTER_SQLITE;
 
     /**
      * Creates a new map entry and returns the id.
