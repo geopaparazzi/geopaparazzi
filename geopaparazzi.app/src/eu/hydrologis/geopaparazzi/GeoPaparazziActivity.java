@@ -247,7 +247,7 @@ public class GeoPaparazziActivity extends Activity {
         } catch (IOException e) {
             Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
-            Toast.makeText(this, R.string.databaseError, Toast.LENGTH_LONG).show();
+            Utilities.toast(this, R.string.databaseError, Toast.LENGTH_LONG);
         }
 
         OsmUtilities.handleOsmTagsDownload(this);
@@ -287,12 +287,11 @@ public class GeoPaparazziActivity extends Activity {
                         public void onClick( DialogInterface dialog, int whichButton ) {
                             try {
                                 DaoNotes.deleteLastInsertedNote(GeoPaparazziActivity.this);
-                                Toast.makeText(GeoPaparazziActivity.this, R.string.last_note_deleted, Toast.LENGTH_LONG).show();
+                                Utilities.toast(GeoPaparazziActivity.this, R.string.last_note_deleted, Toast.LENGTH_LONG);
                             } catch (IOException e) {
                                 Logger.e(this, e.getLocalizedMessage(), e);
                                 e.printStackTrace();
-                                Toast.makeText(GeoPaparazziActivity.this, R.string.last_note_not_deleted, Toast.LENGTH_LONG)
-                                        .show();
+                                Utilities.toast(GeoPaparazziActivity.this, R.string.last_note_not_deleted, Toast.LENGTH_LONG);
                             }
                         }
                     }).show();
@@ -435,7 +434,7 @@ public class GeoPaparazziActivity extends Activity {
             editor.commit();
         }
 
-        Toast.makeText(this, R.string.loggingoff, Toast.LENGTH_LONG).show();
+        Utilities.toast(this, R.string.loggingoff, Toast.LENGTH_LONG);
         // stop all logging
         gpsManager.stopListening();
         gpsManager.stopLogging();
@@ -445,8 +444,8 @@ public class GeoPaparazziActivity extends Activity {
     }
 
     private boolean doRename = false;
-    private void resetData() {
 
+    private void resetData() {
         File geoPaparazziDir = applicationManager.getGeoPaparazziDir();
         String name = geoPaparazziDir.getName();
         doRename = false;
@@ -506,17 +505,16 @@ public class GeoPaparazziActivity extends Activity {
         public void handleMessage( android.os.Message msg ) {
             kmlProgressDialog.dismiss();
             if (kmlOutputFile.exists()) {
-                Toast.makeText(GeoPaparazziActivity.this, R.string.kmlsaved + kmlOutputFile.getAbsolutePath(), Toast.LENGTH_LONG)
-                        .show();
+                Utilities
+                        .toast(GeoPaparazziActivity.this, R.string.kmlsaved + kmlOutputFile.getAbsolutePath(), Toast.LENGTH_LONG);
             } else {
-                Toast.makeText(GeoPaparazziActivity.this, R.string.kmlnonsaved, Toast.LENGTH_LONG).show();
+                Utilities.toast(GeoPaparazziActivity.this, R.string.kmlnonsaved, Toast.LENGTH_LONG);
             }
         };
     };
     private SlidingDrawer slidingDrawer;
 
     private void exportToKml() {
-
         kmlProgressDialog = ProgressDialog.show(this, getString(R.string.geopaparazziactivity_exporting_kmz), "", true, true); //$NON-NLS-1$
         new Thread(){
 

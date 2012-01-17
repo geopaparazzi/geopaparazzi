@@ -18,12 +18,8 @@
 package eu.hydrologis.geopaparazzi.util;
 
 import java.io.File;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 
 import eu.hydrologis.geopaparazzi.gpx.GpxImportActivity;
-
-import android.graphics.Color;
 
 /**
  * Various constants.
