@@ -251,10 +251,12 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
             mMiniMapOverlay.setEnabled(isMinimapon);
         }
 
-        float lastCenterLon = preferences.getFloat(LibraryConstants.PREFS_KEY_LON, 0f);
-        float lastCenterLat = preferences.getFloat(LibraryConstants.PREFS_KEY_LAT, 0f);
+        float lastGpsLon = preferences.getFloat(LibraryConstants.PREFS_KEY_LON, 0f) / LibraryConstants.E6;
+        float lastGpsLat = preferences.getFloat(LibraryConstants.PREFS_KEY_LAT, 0f) / LibraryConstants.E6;
+        float lastCenterLon = preferences.getFloat(Constants.PREFS_KEY_MAPCENTER_LON, lastGpsLon);
+        float lastCenterLat = preferences.getFloat(Constants.PREFS_KEY_MAPCENTER_LAT, lastGpsLat);
         final int zoom = preferences.getInt(Constants.PREFS_KEY_ZOOM, 16);
-        mapController.setCenter(new GeoPoint(lastCenterLat, lastCenterLon));
+        mapController.setCenter(new GeoPoint((double) lastCenterLat, (double) lastCenterLon));
         mapController.setZoom(zoom);
 
         maxZoomLevel = mapsView.getMaxZoomLevel();
@@ -595,26 +597,21 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         alertDialog.show();
     }
 
-    @Override
-    public void onWindowFocusChanged( boolean hasFocus ) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if (!hasFocus) {
-            IGeoPoint mapCenter = mapsView.getMapCenter();
-            Editor editor = preferences.edit();
-            editor.putFloat(Constants.PREFS_KEY_MAPCENTER_LON, (float) (mapCenter.getLongitudeE6() / LibraryConstants.E6));
-            editor.putFloat(Constants.PREFS_KEY_MAPCENTER_LAT, (float) (mapCenter.getLatitudeE6() / LibraryConstants.E6));
-            editor.putInt(PREFS_KEY_ZOOM, mapsView.getZoomLevel());
-            editor.commit();
-        } else {
-            float lastCenterLon = preferences.getFloat(Constants.PREFS_KEY_MAPCENTER_LON, 0f);
-            float lastCenterLat = preferences.getFloat(Constants.PREFS_KEY_MAPCENTER_LAT, 0f);
-            final int zoom = preferences.getInt(PREFS_KEY_ZOOM, 16);
-            mapController.setCenter(new GeoPoint(lastCenterLat, lastCenterLon));
-            mapController.setZoom(zoom);
-            setZoomGuiText(zoom);
-        }
-        super.onWindowFocusChanged(hasFocus);
-    }
+//    @Override
+//    public void onWindowFocusChanged( boolean hasFocus ) {
+//        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+//        if (!hasFocus) {
+//            saveCenterPref();
+//        } else {
+//            float lastCenterLon = preferences.getFloat(Constants.PREFS_KEY_MAPCENTER_LON, 0f);
+//            float lastCenterLat = preferences.getFloat(Constants.PREFS_KEY_MAPCENTER_LAT, 0f);
+//            final int zoom = preferences.getInt(PREFS_KEY_ZOOM, 16);
+//            mapController.setCenter(new GeoPoint(lastCenterLat, lastCenterLon));
+//            mapController.setZoom(zoom);
+//            setZoomGuiText(zoom);
+//        }
+//        super.onWindowFocusChanged(hasFocus);
+//    }
 
     // @Override
     // protected void onPause() {
@@ -1068,7 +1065,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
     }
 
     public boolean onScroll( ScrollEvent event ) {
-        updateCenterPref();
+        saveCenterPref();
         return true;
     }
 
@@ -1077,11 +1074,11 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         if (zoomInButton != null) {
             setZoomGuiText(zoomLevel);
         }
-        updateCenterPref();
+        saveCenterPref();
         return true;
     }
 
-    private void updateCenterPref() {
+    private synchronized void saveCenterPref() {
         IGeoPoint mapCenter = mapsView.getMapCenter();
         double lon = mapCenter.getLongitudeE6() / LibraryConstants.E6;
         double lat = mapCenter.getLatitudeE6() / LibraryConstants.E6;
@@ -1097,6 +1094,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         Editor editor = preferences.edit();
         editor.putFloat(PREFS_KEY_MAPCENTER_LON, (float) lon);
         editor.putFloat(PREFS_KEY_MAPCENTER_LAT, (float) lat);
+        editor.putInt(PREFS_KEY_ZOOM, mapsView.getZoomLevel());
         editor.commit();
     }
 }

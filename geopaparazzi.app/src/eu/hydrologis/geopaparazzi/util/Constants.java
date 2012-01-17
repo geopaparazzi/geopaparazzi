@@ -80,6 +80,8 @@ public interface Constants {
     /**
      * Key used to store the mapview center latitude.
      * 
+     * <p><b>Note that this value is a normal latitude value (i.e. not *E6).</b>
+     * 
      * <p>
      * This is used every time the map center changes,
      * so this should not be used to store own
@@ -90,6 +92,8 @@ public interface Constants {
 
     /**
      * Key used to store the mapview center longitude.
+     * 
+     * <p><b>Note that this value is a normal longitude value (i.e. not *E6).</b>
      * 
      * <p>
      * This is used every time the map center changes,
