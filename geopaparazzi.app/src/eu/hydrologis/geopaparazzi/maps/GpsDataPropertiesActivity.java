@@ -35,6 +35,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi.chart.ChartActivity;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.util.Constants;
 
@@ -118,7 +119,7 @@ public class GpsDataPropertiesActivity extends Activity {
             final Button chartButton = (Button) findViewById(R.id.gpslog_chart);
             chartButton.setOnClickListener(new Button.OnClickListener(){
                 public void onClick( View v ) {
-                    Intent intent = new Intent(Constants.VIEW_IN_CHART);
+                    Intent intent = new Intent(GpsDataPropertiesActivity.this, ChartActivity.class);
                     intent.putExtra(Constants.ID, item.getId());
                     startActivity(intent);
                 }

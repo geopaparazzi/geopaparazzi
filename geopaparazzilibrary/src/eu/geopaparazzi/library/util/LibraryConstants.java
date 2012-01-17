@@ -54,6 +54,16 @@ public interface LibraryConstants {
     public static final String PREFS_KEY_LON = "PREFS_KEY_LON"; //$NON-NLS-1$
 
     /**
+     * Key used to pass a lat temporarily through bundles. 
+     */
+    public static final String LATITUDE = "LATITUDE"; //$NON-NLS-1$
+    
+    /**
+     * Key used to pass a lon temporarily through bundles. 
+     */
+    public static final String LONGITUDE= "LONGITUDE"; //$NON-NLS-1$
+
+    /**
      * Key used to store and retrieve the base folder of the application. 
      */
     public static final String PREFS_KEY_BASEFOLDER = "PREFS_KEY_BASEFOLDER"; //$NON-NLS-1$

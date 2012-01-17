@@ -25,4 +25,11 @@
     <string name="notesaved">Note successfully saved!</string>
     <string name="notenonsaved">An error occurred while saving the Note!</string>
     <string name="notecancel">Note not saved as requested by user.</string>
+    
+    <string name="longitude">longitude</string>
+    <string name="latitude">latitude</string>
+    <string name="askcoord">Please insert the coordinates to go to</string>
+    <string name="wrongLongitude">Longitude has to be a number between -180 and 180.</string>
+    <string name="wrongLatitude">Latitude has to be a number between -90 and 90.</string>
+    <string name="okcoord">use coord</string>
 </resources>

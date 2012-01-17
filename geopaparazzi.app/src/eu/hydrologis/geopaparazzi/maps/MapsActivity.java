@@ -100,6 +100,7 @@ import eu.hydrologis.geopaparazzi.maps.overlays.MeasureToolOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.MinimapOverlayWithCross;
 import eu.hydrologis.geopaparazzi.maps.overlays.NotesOverlay;
 import eu.hydrologis.geopaparazzi.mixare.MixareUtilities;
+import eu.hydrologis.geopaparazzi.osm.OsmCategoryActivity;
 import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
@@ -365,7 +366,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         addnotebytagButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
                 IGeoPoint mapCenter = mapsView.getMapCenter();
-                Intent osmTagsIntent = new Intent(Constants.TAGS);
+                Intent osmTagsIntent = new Intent(MapsActivity.this, MapTagsActivity.class);
                 osmTagsIntent.putExtra(Constants.PREFS_KEY_MAPCENTER_LAT, mapCenter.getLatitudeE6() / E6);
                 osmTagsIntent.putExtra(Constants.PREFS_KEY_MAPCENTER_LON, mapCenter.getLongitudeE6() / E6);
                 startActivity(osmTagsIntent);
@@ -478,7 +479,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                 osmButton.setOnClickListener(new Button.OnClickListener(){
                     public void onClick( View v ) {
                         String categoryName = osmButton.getText().toString();
-                        Intent osmCategoryIntent = new Intent(Constants.OSMCATEGORYACTIVITY);
+                        Intent osmCategoryIntent = new Intent(MapsActivity.this, OsmCategoryActivity.class);
                         osmCategoryIntent.putExtra(Constants.OSM_CATEGORY_KEY, categoryName);
                         startActivity(osmCategoryIntent);
 
@@ -688,7 +689,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         switch( item.getItemId() ) {
         case MENU_GPSDATA:
-            Intent gpsDatalistIntent = new Intent(Constants.GPSLOG_DATALIST);
+            Intent gpsDatalistIntent = new Intent(this, GpsDataListActivity.class);
             startActivity(gpsDatalistIntent);
             return true;
 
@@ -707,7 +708,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                     alertDialog.show();
                     return true;
                 } else {
-                    Intent mapDatalistIntent = new Intent(Constants.MAPSDATALIST);
+                    Intent mapDatalistIntent = new Intent(this, MapDataListActivity.class);
                     startActivity(mapDatalistIntent);
                     return true;
                 }

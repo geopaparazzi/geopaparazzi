@@ -62,7 +62,8 @@ public class MapDataListActivity extends ListActivity {
     }
 
     private void refreshList() {
-        if (Debug.D) Logger.d(this, "refreshing maps list"); //$NON-NLS-1$
+        if (Debug.D)
+            Logger.d(this, "refreshing maps list"); //$NON-NLS-1$
         mapsItems = new MapItem[0];
         try {
             List<MapItem> mapsList = DaoMaps.getMaps(this);
@@ -116,7 +117,7 @@ public class MapDataListActivity extends ListActivity {
     }
 
     protected void onListItemClick( ListView parent, View v, int position, long id ) {
-        Intent intent = new Intent(Constants.MAPDATAPROPERTIES);
+        Intent intent = new Intent(this, MapDataListActivity.class);
         intent.putExtra(Constants.PREFS_KEY_MAP4PROPERTIES, mapsItems[position]);
         startActivity(intent);
     }
