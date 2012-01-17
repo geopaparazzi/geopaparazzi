@@ -256,8 +256,18 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         float lastCenterLon = preferences.getFloat(Constants.PREFS_KEY_MAPCENTER_LON, lastGpsLon);
         float lastCenterLat = preferences.getFloat(Constants.PREFS_KEY_MAPCENTER_LAT, lastGpsLat);
         final int zoom = preferences.getInt(Constants.PREFS_KEY_ZOOM, 16);
-        mapController.setCenter(new GeoPoint((double) lastCenterLat, (double) lastCenterLon));
+        GeoPoint geoPoint = new GeoPoint((double) lastCenterLat, (double) lastCenterLon);
+        mapController.setCenter(geoPoint);
+        
+        IGeoPoint mapCenter = mapsView.getMapCenter();
+        double lon = mapCenter.getLongitudeE6() / LibraryConstants.E6;
+        double lat = mapCenter.getLatitudeE6() / LibraryConstants.E6;
+        
         mapController.setZoom(zoom);
+      
+        mapCenter = mapsView.getMapCenter();
+        lon = mapCenter.getLongitudeE6() / LibraryConstants.E6;
+        lat = mapCenter.getLatitudeE6() / LibraryConstants.E6;
 
         maxZoomLevel = mapsView.getMaxZoomLevel();
         minZoomLevel = mapsView.getMinZoomLevel();
@@ -597,21 +607,19 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         alertDialog.show();
     }
 
-//    @Override
-//    public void onWindowFocusChanged( boolean hasFocus ) {
-//        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-//        if (!hasFocus) {
-//            saveCenterPref();
-//        } else {
-//            float lastCenterLon = preferences.getFloat(Constants.PREFS_KEY_MAPCENTER_LON, 0f);
-//            float lastCenterLat = preferences.getFloat(Constants.PREFS_KEY_MAPCENTER_LAT, 0f);
-//            final int zoom = preferences.getInt(PREFS_KEY_ZOOM, 16);
-//            mapController.setCenter(new GeoPoint(lastCenterLat, lastCenterLon));
-//            mapController.setZoom(zoom);
-//            setZoomGuiText(zoom);
-//        }
-//        super.onWindowFocusChanged(hasFocus);
-//    }
+    @Override
+    public void onWindowFocusChanged( boolean hasFocus ) {
+        //        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (hasFocus) {
+            float lastCenterLon = preferences.getFloat(Constants.PREFS_KEY_MAPCENTER_LON, 0f);
+            float lastCenterLat = preferences.getFloat(Constants.PREFS_KEY_MAPCENTER_LAT, 0f);
+            final int zoom = preferences.getInt(PREFS_KEY_ZOOM, 16);
+            mapController.setCenter(new GeoPoint(lastCenterLat, lastCenterLon));
+            mapController.setZoom(zoom);
+            setZoomGuiText(zoom);
+        }
+        super.onWindowFocusChanged(hasFocus);
+    }
 
     // @Override
     // protected void onPause() {
