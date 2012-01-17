@@ -46,12 +46,6 @@
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".util.InsertCoordActivity">
-			<intent-filter>
-				<action android:name="eu.hydrologis.geopaparazzi.util.INSERT_COORD" />
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
-		</activity>
 		<activity android:name=".preferences.PreferencesActivity">
 			<intent-filter>
 				<action android:name="eu.hydrologis.geopaparazzi.preferences.PREFERENCES" />
@@ -129,8 +123,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:name="eu.geopaparazzi.library.util.activities.InsertCoordActivity">
+            <intent-filter>
+                <action android:name="eu.hydrologis.geopaparazzi.util.INSERT_COORD" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         
-        <receiver android:name=".sms.SmsReceiver" android:enabled="true">
+        <receiver android:name="eu.hydrologis.trashmapper.sms.SmsReceiver" android:enabled="true">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>

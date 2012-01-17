@@ -26,6 +26,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
@@ -61,7 +62,7 @@ public class InsertCoordActivity extends Activity {
                     }
                 } catch (Exception e1) {
                     Logger.e(this, e1.getLocalizedMessage(), e1);
-                    Toast.makeText(InsertCoordActivity.this, R.string.wrongLongitude, Toast.LENGTH_LONG).show();
+                    Utilities.toast(InsertCoordActivity.this, R.string.wrongLongitude, Toast.LENGTH_LONG);
                     return;
                 }
                 String latString = String.valueOf(latText.getText());
@@ -72,14 +73,18 @@ public class InsertCoordActivity extends Activity {
                     }
                 } catch (Exception e1) {
                     Logger.e(this, e1.getLocalizedMessage(), e1);
-                    Toast.makeText(InsertCoordActivity.this, R.string.wrongLatitude, Toast.LENGTH_LONG).show();
+                    Utilities.toast(InsertCoordActivity.this, R.string.wrongLatitude, Toast.LENGTH_LONG);
                     return;
                 }
 
-                Intent intent = new Intent((String) null);
+                Intent intent = getIntent();
                 intent.putExtra(LibraryConstants.LATITUDE, lat);
                 intent.putExtra(LibraryConstants.LONGITUDE, lon);
+                // if (getParent() == null) {
                 setResult(Activity.RESULT_OK, intent);
+                // } else {
+                // getParent().setResult(Activity.RESULT_OK, intent);
+                // }
 
                 finish();
             }

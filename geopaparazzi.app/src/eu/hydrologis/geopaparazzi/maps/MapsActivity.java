@@ -99,12 +99,12 @@ import eu.hydrologis.geopaparazzi.maps.overlays.MapsOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.MeasureToolOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.MinimapOverlayWithCross;
 import eu.hydrologis.geopaparazzi.maps.overlays.NotesOverlay;
-import eu.hydrologis.geopaparazzi.mixare.MixareUtilities;
 import eu.hydrologis.geopaparazzi.osm.OsmCategoryActivity;
 import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
+import eu.hydrologis.geopaparazzi.util.MixareUtilities;
 import eu.hydrologis.geopaparazzi.util.Note;
 import eu.hydrologis.geopaparazzi.util.ResourceProxyImpl;
 import eu.hydrologis.geopaparazzi.util.VerticalSeekBar;
@@ -113,7 +113,7 @@ import eu.hydrologis.geopaparazzi.util.VerticalSeekBar;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class MapsActivity extends Activity implements GpsManagerListener, MapListener {
-    private static final int INSERTCOORD_RETURN_CODE = -666;
+    private static final int INSERTCOORD_RETURN_CODE = 666;
 
     private static final int MENU_GPSDATA = 1;
     private static final int MENU_MAPDATA = 2;
@@ -778,6 +778,9 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
     }
 
     protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
+        if (Debug.D) {
+            Logger.d(this, "Activity returned");
+        }
         super.onActivityResult(requestCode, resultCode, data);
         switch( requestCode ) {
         case (INSERTCOORD_RETURN_CODE): {

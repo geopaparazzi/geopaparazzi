@@ -14,9 +14,41 @@
             android:name="eu.geopaparazzi.library.camera.CameraActivity" >
             <intent-filter >
                 <action android:name="eu.geopaparazzi.library.camera.CameraActivity" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:name="eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity" >
+            <intent-filter >
+                <action android:name="eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:configChanges="keyboardHidden|orientation"
+            android:name="eu.geopaparazzi.library.util.activities.NoteActivity" >
+            <intent-filter >
+                <action android:name="eu.geopaparazzi.library.util.activities.NoteActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name="eu.geopaparazzi.library.util.activities.InsertCoordActivity" >
+            <intent-filter >
+                <action android:name="eu.geopaparazzi.library.util.activities.InsertCoordActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:enabled="true"
+            android:name="eu.hydrologis.trashmapper.sms.SmsReceiver" >
+            <intent-filter >
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

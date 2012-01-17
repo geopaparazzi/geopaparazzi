@@ -15,25 +15,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi.mixare;
+package eu.hydrologis.geopaparazzi.util;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import eu.geopaparazzi.library.mixare.MixareHandler;
-import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.PointF3D;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
-import eu.hydrologis.geopaparazzi.util.ApplicationManager;
-import eu.hydrologis.geopaparazzi.util.Bookmark;
-import eu.hydrologis.geopaparazzi.util.Note;
 
 /**
  * Utilities for interaction with the Mixare project. 
