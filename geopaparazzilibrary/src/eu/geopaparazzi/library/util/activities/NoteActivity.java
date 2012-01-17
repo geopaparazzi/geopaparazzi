@@ -28,8 +28,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import eu.geopaparazzi.library.R;
-import eu.geopaparazzi.library.gps.GpsLocation;
-import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.debug.Logger;
@@ -61,9 +59,9 @@ public class NoteActivity extends Activity {
     private int LANDSCAPE_LINES = 5;
     private int PORTRAIT_LINES = 14;
     private int linesNum = PORTRAIT_LINES;
-    private boolean coordsFromExtras = false;
-    private float latitude;
-    private float longitude;
+    private double latitude;
+    private double longitude;
+    private double elevation;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -71,9 +69,9 @@ public class NoteActivity extends Activity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            latitude = extras.getFloat(LibraryConstants.PREFS_KEY_LAT);
-            longitude = extras.getFloat(LibraryConstants.PREFS_KEY_LON);
-            coordsFromExtras = true;
+            latitude = extras.getDouble(LibraryConstants.LATITUDE);
+            longitude = extras.getDouble(LibraryConstants.LONGITUDE);
+            elevation = extras.getDouble(LibraryConstants.ELEVATION);
         }
 
         noteText = (EditText) findViewById(R.id.noteentry);
@@ -82,29 +80,8 @@ public class NoteActivity extends Activity {
         Button saveButton = (Button) findViewById(R.id.ok);
         saveButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-
-                GpsLocation loc = GpsManager.getInstance(NoteActivity.this).getLocation();
                 try {
-
-                    double altitude;
-                    Date sqlDate;
-                    if (!coordsFromExtras) {
-                        if (loc == null) {
-                            longitude = 0f;
-                            latitude = 0f;
-                            altitude = 0f;
-                            sqlDate = new Date(System.currentTimeMillis());
-                        } else {
-                            longitude = (float) loc.getLongitude();
-                            latitude = (float) loc.getLatitude();
-                            altitude = loc.getAltitude();
-                            sqlDate = loc.getSqlDate();
-                        }
-                    } else {
-                        altitude = 0.0;
-                        sqlDate = new Date(System.currentTimeMillis());
-                    }
-
+                    Date sqlDate = new Date(System.currentTimeMillis());
                     StringBuilder sB = new StringBuilder(noteText.getText());
                     String noteString = sB.toString();
 
@@ -113,7 +90,7 @@ public class NoteActivity extends Activity {
                     String[] noteArray = {//
                     String.valueOf(longitude), //
                             String.valueOf(latitude), //
-                            String.valueOf(altitude), //
+                            String.valueOf(elevation), //
                             sqlDateString, //
                             noteString};
 

@@ -78,15 +78,16 @@ public class MapTagsActivity extends Activity {
                 intent.putExtra(LibraryConstants.ELEVATION, elevation);
 
                 MapTagsActivity.this.startActivityForResult(intent, CAMERA_RETURN_CODE);
-                finish();
             }
         });
         Button noteButton = (Button) findViewById(R.id.notefromtag);
         noteButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
                 Intent intent = new Intent(MapTagsActivity.this, NoteActivity.class);
+                intent.putExtra(LibraryConstants.LONGITUDE, longitude);
+                intent.putExtra(LibraryConstants.LATITUDE, latitude);
+                intent.putExtra(LibraryConstants.ELEVATION, elevation);
                 MapTagsActivity.this.startActivityForResult(intent, NOTE_RETURN_CODE);
-                finish();
             }
         });
 
@@ -203,6 +204,7 @@ public class MapTagsActivity extends Activity {
             break;
         }
         }
+        finish();
     }
 
 }

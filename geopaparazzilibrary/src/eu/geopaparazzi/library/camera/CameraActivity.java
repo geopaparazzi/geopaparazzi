@@ -198,6 +198,7 @@ public class CameraActivity extends Activity {
                 Utilities.messageDialog(this, "An error occurred while adding gps info to the picture.", null);
                 e.printStackTrace();
             }
+            finish();
         }
     }
 
