@@ -88,6 +88,11 @@ public interface LibraryConstants {
     public static final String ELEVATION = "ELEVATION"; //$NON-NLS-1$
 
     /**
+     * Key used to pass an azimuth value temporarily through bundles. 
+     */
+    public static final String AZIMUTH = "AZIMUTH"; //$NON-NLS-1$
+
+    /**
      * Key used to store and retrieve the base folder of the application. 
      */
     public static final String PREFS_KEY_BASEFOLDER = "PREFS_KEY_BASEFOLDER"; //$NON-NLS-1$

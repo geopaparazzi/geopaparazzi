@@ -35,6 +35,7 @@ import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.NoteActivity;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.maps.TagsManager.TagObject;
@@ -48,6 +49,7 @@ import eu.hydrologis.geopaparazzi.util.Constants;
  */
 public class MapTagsActivity extends Activity {
     private static final int NOTE_RETURN_CODE = 666;
+    private static final int CAMERA_RETURN_CODE = 667;
     private EditText additionalInfoText;
     private double latitude;
     private double longitude;
@@ -75,7 +77,7 @@ public class MapTagsActivity extends Activity {
                 intent.putExtra(LibraryConstants.LATITUDE, latitude);
                 intent.putExtra(LibraryConstants.ELEVATION, elevation);
 
-                MapTagsActivity.this.startActivity(intent);
+                MapTagsActivity.this.startActivityForResult(intent, CAMERA_RETURN_CODE);
                 finish();
             }
         });
@@ -168,6 +170,28 @@ public class MapTagsActivity extends Activity {
                         java.util.Date date = LibraryConstants.TIME_FORMATTER.parse(noteArray[3]);
                         DaoNotes.addNote(this, lon, lat, elev, new Date(date.getTime()), noteArray[4], null,
                                 NoteType.SIMPLE.getTypeNum());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+
+                        Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
+                    }
+                }
+
+            }
+            break;
+        }
+        case (CAMERA_RETURN_CODE): {
+            if (resultCode == Activity.RESULT_OK) {
+                String relativeImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
+                if (relativeImagePath != null) {
+                    try {
+                        double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
+                        double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
+                        double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
+                        double azim = data.getDoubleExtra(LibraryConstants.AZIMUTH, 0.0);
+
+                        DaoImages.addImage(this, lon, lat, elev, azim, new Date(new java.util.Date().getTime()), "",
+                                relativeImagePath);
                     } catch (Exception e) {
                         e.printStackTrace();
 

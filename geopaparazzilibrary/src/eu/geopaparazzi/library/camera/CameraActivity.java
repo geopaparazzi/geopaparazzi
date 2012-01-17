@@ -48,7 +48,7 @@ import eu.geopaparazzi.library.util.debug.Logger;
  * <p>
  * The bundle is supposed to contain the gps position available through the keys:
  * {@link LibraryConstants#LONGITUDE},{@link LibraryConstants#LATITUDE},
- * {@link LibraryConstants#ELEVATION}
+ * {@link LibraryConstants#ELEVATION},{@link LibraryConstants#AZIMUTH} 
  * </p>
  * 
  * <p>
@@ -114,16 +114,13 @@ public class CameraActivity extends Activity {
         startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
     }
 
-    private void handleIntent( String relativePath ) {
-        Intent intent = new Intent((String) null);
-        intent.putExtra(LibraryConstants.PREFS_KEY_PATH, relativePath);
-        setResult(Activity.RESULT_OK, intent);
-    }
-
     protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
         if (requestCode == CAMERA_PIC_REQUEST) {
             SensorsManager sensorsManager = SensorsManager.getInstance(this);
             double azimuth = sensorsManager.getPictureAzimuth();
+
+            double latitude = lat;
+            double longitude = lon;
 
             String latRef = "N";
             String lonRef = "E";
@@ -188,13 +185,19 @@ public class CameraActivity extends Activity {
                  * add the image to the database
                  */
                 String relativeImageFilePath = mediaFolder.getName() + "/IMG_" + currentDatestring + ".jpg";
-                handleIntent(relativeImageFilePath);
+
+                Intent intent = getIntent();
+                intent.putExtra(LibraryConstants.PREFS_KEY_PATH, relativeImageFilePath);
+                intent.putExtra(LibraryConstants.LATITUDE, latitude);
+                intent.putExtra(LibraryConstants.LONGITUDE, longitude);
+                intent.putExtra(LibraryConstants.ELEVATION, elevation);
+                intent.putExtra(LibraryConstants.AZIMUTH, azimuth);
+                setResult(Activity.RESULT_OK, intent);
 
             } catch (Exception e) {
                 Utilities.messageDialog(this, "An error occurred while adding gps info to the picture.", null);
                 e.printStackTrace();
             }
-            finish();
         }
     }
 
