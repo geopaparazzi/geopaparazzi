@@ -117,7 +117,7 @@ public class MapDataListActivity extends ListActivity {
     }
 
     protected void onListItemClick( ListView parent, View v, int position, long id ) {
-        Intent intent = new Intent(this, MapDataListActivity.class);
+        Intent intent = new Intent(this, MapDataPropertiesActivity.class);
         intent.putExtra(Constants.PREFS_KEY_MAP4PROPERTIES, mapsItems[position]);
         startActivity(intent);
     }

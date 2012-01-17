@@ -133,7 +133,7 @@ public class GpsDataListActivity extends ListActivity {
 
     @Override
     protected void onListItemClick( ListView parent, View v, int position, long id ) {
-        Intent intent = new Intent(this, GpsDataListActivity.class);
+        Intent intent = new Intent(this, GpsDataPropertiesActivity.class);
         intent.putExtra(Constants.PREFS_KEY_GPSLOG4PROPERTIES, gpslogItems[position]);
         startActivity(intent);
     }
