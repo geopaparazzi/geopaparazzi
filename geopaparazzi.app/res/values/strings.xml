@@ -25,15 +25,15 @@
     <string name="loggingoff">Stopped all sensors.</string>
     <string name="loggingon">Started gps and sensor logging.</string>
     <string name="gpsloggingoff">Stopped gps logging.</string>
-    <string name="gpsloggingon">Started gps logging...</string>
-    <string name="gpsloggingalarm">Avoid/stop alarm... </string>
+    <string name="gpsloggingon">Started gps logging…</string>
+    <string name="gpsloggingalarm">Avoid/stop alarm… </string>
     
     <string name="nogps_data">No gps data available yet!</string>
     
     <string name="about">about</string>
     <string name="exit">exit</string>
-    <string name="cantcreate_sdcard">Wasn\'t able to create folder on sdcard ({0}). Exiting...</string>
-    <string name="sdcard_notexist">Sdcard folder doesn\'t exist or is not writable (is it possible it is mounted on a pc?). Exiting...</string>
+    <string name="cantcreate_sdcard">Wasn\'t able to create folder on sdcard ({0}). Exiting…</string>
+    <string name="sdcard_notexist">Sdcard folder doesn\'t exist or is not writable (is it possible it is mounted on a pc?). Exiting…</string>
     <string name="cantwrite_gpslog">ERROR: couldn\'t write gps log!</string>
     <string name="cantclose_gpslog">ERROR: couldn\'t close gps log!</string>
     <string name="gpslogthread_interrupted">ERROR: gps log thread interrupted!</string>
@@ -113,7 +113,7 @@
 	<string name="gpx_import_title">Line or Point?</string>
 	<string name="gpx_import_message">Choose whether the file is to be imported as points or lines.</string>
 	<string name="gpx_import_checkbox_message">Force import as line?</string>
-	<string name="gpx_import_processing">Importing gpx...</string>
+	<string name="gpx_import_processing">Importing gpx…</string>
 
 	<string name="osm_additionalinfo">Add info to tag</string>
 	<string name="osm_tagsgrid">Choose a tag to insert</string>
@@ -139,7 +139,7 @@
 	    \n
 	    The mapping engine is osmdroid.\n
 	    \n
-	    The maps are from (c) OpenStreetMap contributors, CC-BY-SA.\n
+	    The maps are from © OpenStreetMap contributors, CC-BY-SA.\n
 	    \n
 	    The Vertical Seekbar comes from ardroid.\n
 	    \n
@@ -163,7 +163,7 @@
 	<string name="gps_log_name">Insert a gps log name or accept the default one</string>
 	
 	<string name="text_take_audio">record audio</string>
-	<string name="audio_recording">Recording audio... push here to stop</string>
+	<string name="audio_recording">Recording audio… push here to stop</string>
 	<string name="audio_recording_stop">stop</string>
 
 	<string name="panic">panic!</string>
@@ -202,8 +202,8 @@
     <string name="reset">new project</string>
     <string name="reset_prompt">Rename the project and start on a new one?</string>
     <string name="load">load an existing project</string>
-    <string name="phonenumber_hint">Enter comma separated phone numbers...</string>
-    <string name="pick_phonenumber_label">...</string>
+    <string name="phonenumber_hint">Enter comma separated phone numbers…</string>
+    <string name="pick_phonenumber_label">…</string>
 
 	<!-- added after 2.1.4 -->
     <string name="labels_preferences">Labels preferences</string>
@@ -234,14 +234,14 @@
     <string name="mapsactivity_menu_toggle_scalebar">toggle scalebar</string>
     <string name="mapsactivity_menu_tilesource">tile source</string>
     
-    <string name="mapsactivity_delete_bookmarks">Deleting {0} bookmarks...</string>
-    <string name="mapsactivity_delete_notes">Deleting {0} notes...</string>
+    <string name="mapsactivity_delete_bookmarks">Deleting {0} bookmarks…</string>
+    <string name="mapsactivity_delete_notes">Deleting {0} notes…</string>
     <string name="mapsactivity_new_bookmark">New bookmark</string>
     <string name="mapsactivity_enter_bookmark_name">Enter a name for the new bookmark (optional)</string>
 
     <string name="maptagsactivity_error_reading_tags">Error in reading tags</string>
 
-    <string name="geopaparazziactivity_exporting_kmz">Exporting to kmz...</string>
+    <string name="geopaparazziactivity_exporting_kmz">Exporting to kmz…</string>
 	<!-- added after 2.3.1 -->
     <string name="mapsactivity_menu_toggle_compass">toggle compass</string>
     
@@ -263,7 +263,7 @@
     <string name="an_error_occurred_while_uploading_osm_tags">An error occurred while uploading OSM tags: </string>
     <string name="enable_automatic_center_on_gps">Automatic center on GPS</string>
     <string name="profile">profile</string>
-    <string name="loading_data">Loading data...</string>
+    <string name="loading_data">Loading data…</string>
     <string name="profilelable_distance">distance [m]</string>
     <string name="profilelable_elevation">elevation [m]</string>
     <string name="error_json_osm">The send json form is not valid. Please check your icons and form data.</string>

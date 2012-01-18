@@ -22,13 +22,13 @@
   <string name="loggingoff">Fermati tutti i sensori.</string>
   <string name="loggingon">Partiti gps e sensori.</string>
   <string name="gpsloggingoff">Fermato gps.</string>
-  <string name="gpsloggingon">Partito gps...</string>
-  <string name="gpsloggingalarm">Evita/ferma allarme... </string>
+  <string name="gpsloggingon">Partito gps…</string>
+  <string name="gpsloggingalarm">Evita/ferma allarme… </string>
   <string name="nogps_data">Al momento nessun dato gps è disponibile!</string>
   <string name="about">Informazioni</string>
   <string name="exit">Esci</string>
-  <string name="cantcreate_sdcard">Non è stato possibile creare la cartella sulla scheda SD ({0}). Uscita...</string>
-  <string name="sdcard_notexist">Scheda SD non esiste o non è scrivibile (è possibile sia aperta su un pc?). Uscita...</string>
+  <string name="cantcreate_sdcard">Non è stato possibile creare la cartella sulla scheda SD ({0}). Uscita…</string>
+  <string name="sdcard_notexist">Scheda SD non esiste o non è scrivibile (è possibile sia aperta su un pc?). Uscita…</string>
   <string name="cantwrite_gpslog">ERRORE: non è stato possibile scrivere il log gps!</string>
   <string name="cantclose_gpslog">ERRORE: non è stato possibile chiudere il log gps!</string>
   <string name="gpslogthread_interrupted">ERRORE: il log gps è stato interrotto!</string>
@@ -100,7 +100,7 @@
   <string name="gpx_import_title">Linea o punto?</string>
   <string name="gpx_import_message">Scegli se importare il file come linee o punti.</string>
   <string name="gpx_import_checkbox_message">Forza import come linee?</string>
-  <string name="gpx_import_processing">Importo gpx...</string>
+  <string name="gpx_import_processing">Importo gpx…</string>
   <string name="osm_additionalinfo">Aggiungi informazione al tag</string>
   <string name="osm_tagsgrid">Scegli un tag da inserire</string>
   <string name="error_disk_full">Il disco sul quale salvo i dati sembra essere pieno. Libera la memoria e riavvia l\'applicazione.</string>
@@ -117,9 +117,9 @@
 GeoPaparazzi VERSION
 è sviluppato da HydroloGIS
 
-GeoPaparazzi è il fratello minore e in quanto tale è capace di caricarvi i suoi dati.
+GeoPaparazzi è il fratello minore di BeeGIS e in quanto tale è capace di caricarvi i suoi dati.
 
-Le mappe sono di (c) OpenStreetMap contributors, CC-BY-SA.
+Le mappe sono di © OpenStreetMap contributors, CC-BY-SA.
 
 La Vertical Seekbar proviene da ardroid.
 
@@ -138,7 +138,7 @@ http://www.openclipart.org</string>
   <string name="gps_log">traccia gps</string>
   <string name="gps_log_name">Inserire un nome per la traccia gps o accettare il nome preimpostato</string>
   <string name="text_take_audio">registra audio</string>
-  <string name="audio_recording">Sto registrando... seleziona per fermare</string>
+  <string name="audio_recording">Sto registrando… seleziona per fermare</string>
   <string name="audio_recording_stop">ferma</string>
   <string name="panic">panico!</string>
   <string name="panic_number">Setta il panic number</string>
@@ -165,8 +165,8 @@ http://www.openclipart.org</string>
   <string name="reset">Nuovo progetto</string>
   <string name="reset_prompt">Rinominare il progetto ed iniziarne uno nuovo?</string>
   <string name="load">caricare un progetto esistente</string>
-  <string name="phonenumber_hint">Inserire numeri separati da virgole...</string>
-  <string name="pick_phonenumber_label">...</string>
+  <string name="phonenumber_hint">Inserire numeri separati da virgole…</string>
+  <string name="pick_phonenumber_label">…</string>
   <string name="labels_preferences">Settaggi etichette</string>
   <string name="labels_zoom1">Livello di zoom 1</string>
   <string name="labels_length_zoom1">Lunghezza etichette livello 1</string>
@@ -188,12 +188,12 @@ http://www.openclipart.org</string>
   <string name="mapsactivity_menu_toggle_minimap">cambia minimappa</string>
   <string name="mapsactivity_menu_toggle_scalebar">cambia scala</string>
   <string name="mapsactivity_menu_tilesource">sorgente tile</string>
-  <string name="mapsactivity_delete_bookmarks">Sto cancellando {0} segnalibri...</string>
-  <string name="mapsactivity_delete_notes">Sto cancellando {0} note...</string>
+  <string name="mapsactivity_delete_bookmarks">Sto cancellando {0} segnalibri…</string>
+  <string name="mapsactivity_delete_notes">Sto cancellando {0} note…</string>
   <string name="mapsactivity_new_bookmark">Nuovo segnalibro</string>
   <string name="mapsactivity_enter_bookmark_name">Inserisci un nome per il nuovo segnalibro (opzionale)</string>
   <string name="maptagsactivity_error_reading_tags">Errore nella lettura dei tag</string>
-  <string name="geopaparazziactivity_exporting_kmz">Sto esportando in kmz...</string>
+  <string name="geopaparazziactivity_exporting_kmz">Sto esportando in kmz…</string>
   <string name="mapsactivity_menu_toggle_compass">cambia bussola</string>
   <string name="imagesvisibilityToggle">Alterna visibilità immagini</string>
   <string name="imagefromgps">immagine gps</string>
