@@ -83,6 +83,7 @@ import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Image;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.Note;
+import eu.hydrologis.geopaparazzi.util.QuickActionsFactory;
 
 /**
  * The main {@link Activity activity} of GeoPaparazzi.
@@ -267,13 +268,15 @@ public class GeoPaparazziActivity extends Activity {
 
     }
 
+    private final int RETURNCODE_NOTES = 666;
+    private final int RETURNCODE_PICS = 667;
     public void push( int id, View v ) {
         switch( id ) {
         case R.id.dashboard_note_item_button: {
             QuickAction qa = new QuickAction(v);
-            qa.addActionItem(applicationManager.getNotesQuickAction(qa));
-            qa.addActionItem(applicationManager.getPicturesQuickAction(qa));
-            qa.addActionItem(applicationManager.getAudioQuickAction(qa));
+            qa.addActionItem(QuickActionsFactory.INSTANCE.getNotesQuickAction(qa, this, RETURNCODE_NOTES));
+            qa.addActionItem(QuickActionsFactory.INSTANCE.getPicturesQuickAction(qa, this, RETURNCODE_PICS));
+            qa.addActionItem(QuickActionsFactory.INSTANCE.getAudioQuickAction(qa, this, applicationManager.getMediaDir()));
             qa.setAnimStyle(QuickAction.ANIM_AUTO);
             qa.show();
             break;
@@ -302,10 +305,10 @@ public class GeoPaparazziActivity extends Activity {
         case R.id.dashboard_log_item_button: {
             QuickAction qa = new QuickAction(v);
             if (gpsManager.isGpsLogging()) {
-                ActionItem stopLogQuickAction = applicationManager.getStopLogQuickAction(actionBar, qa);
+                ActionItem stopLogQuickAction = QuickActionsFactory.INSTANCE.getStopLogQuickAction(actionBar, qa, this);
                 qa.addActionItem(stopLogQuickAction);
             } else {
-                ActionItem startLogQuickAction = applicationManager.getStartLogQuickAction(actionBar, qa);
+                ActionItem startLogQuickAction = QuickActionsFactory.INSTANCE.getStartLogQuickAction(actionBar, qa, this);
                 qa.addActionItem(startLogQuickAction);
             }
             qa.setAnimStyle(QuickAction.ANIM_AUTO);
