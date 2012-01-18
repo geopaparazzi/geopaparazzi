@@ -132,8 +132,8 @@ public class MapTagsActivity extends Activity {
                                 formIntent.putExtra(Constants.FORMJSON_KEY, jsonString);
                                 formIntent.putExtra(Constants.FORMSHORTNAME_KEY, tag.shortName);
                                 formIntent.putExtra(Constants.FORMLONGNAME_KEY, finalLongName);
-                                formIntent.putExtra(LibraryConstants.PREFS_KEY_MAPCENTER_LAT, latitude);
-                                formIntent.putExtra(LibraryConstants.PREFS_KEY_MAPCENTER_LON, longitude);
+                                formIntent.putExtra(LibraryConstants.LATITUDE, latitude);
+                                formIntent.putExtra(LibraryConstants.LONGITUDE, longitude);
                                 startActivity(formIntent);
                             } else {
                                 // insert as it is

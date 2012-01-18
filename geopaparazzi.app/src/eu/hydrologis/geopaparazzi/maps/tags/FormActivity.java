@@ -75,8 +75,8 @@ public class FormActivity extends Activity {
     private List<String> keyList = new ArrayList<String>();
     private JSONArray formItemsArray;
     private JSONObject jsonFormObject;
-    private float latitude;
-    private float longitude;
+    private double latitude;
+    private double longitude;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -91,8 +91,8 @@ public class FormActivity extends Activity {
             formJsonString = extras.getString(Constants.FORMJSON_KEY);
             // formShortnameDefinition = extras.getString(Constants.FORMSHORTNAME_KEY);
             formLongnameDefinition = extras.getString(Constants.FORMLONGNAME_KEY);
-            latitude = extras.getFloat(LibraryConstants.LATITUDE);
-            longitude = extras.getFloat(LibraryConstants.LONGITUDE);
+            latitude = extras.getDouble(LibraryConstants.LATITUDE);
+            longitude = extras.getDouble(LibraryConstants.LONGITUDE);
         }
 
         if (formJsonString == null) {

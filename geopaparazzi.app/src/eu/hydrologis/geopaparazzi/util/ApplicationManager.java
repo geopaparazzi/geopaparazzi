@@ -21,40 +21,17 @@ import static eu.hydrologis.geopaparazzi.util.Constants.DECIMATION_FACTOR;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_KMLEXPORT;
 import static eu.hydrologis.geopaparazzi.util.Constants.PATH_MEDIA;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.MessageFormat;
-import java.util.Date;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.MediaRecorder;
 import android.preference.PreferenceManager;
-import android.text.Editable;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.EditText;
-import eu.geopaparazzi.library.camera.CameraActivity;
-import eu.geopaparazzi.library.gps.GpsLocation;
-import eu.geopaparazzi.library.gps.GpsManager;
-import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.library.util.activities.NoteActivity;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
-import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.ActionItem;
-import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction;
-import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
-import eu.hydrologis.geopaparazzi.maps.DataManager;
 
 /**
  * Singleton that takes care of all the sensors and gps and loggings.
