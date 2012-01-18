@@ -20,9 +20,9 @@ package eu.hydrologis.geopaparazzi.util;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import eu.geopaparazzi.library.forms.FormUtilities;
+import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
-import eu.hydrologis.geopaparazzi.maps.TagsManager;
-import eu.hydrologis.geopaparazzi.maps.tags.FormUtilities;
 
 /**
  * Represents a note (log or map).

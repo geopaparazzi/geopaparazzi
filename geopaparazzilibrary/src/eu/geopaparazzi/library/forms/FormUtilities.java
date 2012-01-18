@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi.maps.tags;
+package eu.geopaparazzi.library.forms;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,7 +31,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import eu.hydrologis.geopaparazzi.R;
+import eu.geopaparazzi.library.R;
 
 /**
  * Utilities methods for form stuff.

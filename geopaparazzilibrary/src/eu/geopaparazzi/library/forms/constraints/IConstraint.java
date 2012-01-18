@@ -15,39 +15,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi.osm.filters;
-
+package eu.geopaparazzi.library.forms.constraints;
 
 /**
- * A constraint to check for the content not being empty.
+ * An interface for constraints.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class MandatoryConstraint implements IConstraint {
+public interface IConstraint {
 
-    private boolean isValid = false;
+    /**
+     * Applies the current filter to the supplied value.
+     * 
+     * @param value the value to check.
+     */
+    public void applyConstraint( Object value );
+
+    /**
+     * Getter for the constraint's result.
+     * 
+     * @return <code>true</code> if the constraint applies.
+     */
+    public boolean isValid();
     
-    private String description = "mandatory"; //$NON-NLS-1$
-
-    public void applyConstraint( Object value ) {
-        if (value ==null) {
-            isValid = false;
-        }else{
-            String string = value.toString();
-            if(string.length()>0){
-                isValid = true;
-            }else{
-                isValid = false;
-            }
-        }
-    }
-
-    public boolean isValid() {
-        return isValid;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
+    /**
+     * Getter for the description of the constraint.
+     * 
+     * @return the description of the constraint.
+     */
+    public String getDescription();
 }

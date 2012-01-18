@@ -86,16 +86,12 @@ public interface Constants {
     public static final int MAP_TYPE_LINE = 1;
     public static final int MAP_TYPE_POLYGON = 2;
 
-//    public static final String BASEFOLDERKEY = "geopaparazzi_basefolder_key";
+    // public static final String BASEFOLDERKEY = "geopaparazzi_basefolder_key";
     public static final String DECIMATION_FACTOR = "decimation_list";
     public static final String GPSLOGGINGINTERVALKEY = "gps_logging_interval";
     public static final String GPSLOGGINGDISTANCEKEY = "gps_logging_distance";
     public static final String SMSCATCHERKEY = "sms_catcher";
     public static final String PANICKEY = "panic_number";
-
-    public static final String FORMJSON_KEY = "formjson_key";
-    public static final String FORMSHORTNAME_KEY = "formshortname_key";
-    public static final String FORMLONGNAME_KEY = "formlongname_key";
 
     /*
      * OSM

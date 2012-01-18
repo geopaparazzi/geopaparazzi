@@ -33,4 +33,6 @@
     <string name="wrongLatitude">Latitude has to be a number between -90 and 90.</string>
     <string name="okcoord">use coord</string>
     <string name="message_sent">Message sent</string>
+    
+    <string name="check_valid_field">Please check that the field \"{0}\" is valid.</string>
 </resources>

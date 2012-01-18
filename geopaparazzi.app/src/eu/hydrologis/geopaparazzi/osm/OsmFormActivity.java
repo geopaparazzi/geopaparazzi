@@ -17,16 +17,16 @@
  */
 package eu.hydrologis.geopaparazzi.osm;
 
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.CONSTRAINT_MANDATORY;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.CONSTRAINT_RANGE;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_KEY;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_LONGNAME;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_TYPE;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_VALUE;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TYPE_BOOLEAN;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TYPE_DOUBLE;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TYPE_STRING;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TYPE_STRINGCOMBO;
+import static eu.geopaparazzi.library.forms.FormUtilities.CONSTRAINT_MANDATORY;
+import static eu.geopaparazzi.library.forms.FormUtilities.CONSTRAINT_RANGE;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_KEY;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_LONGNAME;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_TYPE;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_VALUE;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_BOOLEAN;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_DOUBLE;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRING;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRINGCOMBO;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,6 +51,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import eu.geopaparazzi.library.forms.FormUtilities;
+import eu.geopaparazzi.library.forms.TagsManager;
+import eu.geopaparazzi.library.forms.constraints.Constraints;
+import eu.geopaparazzi.library.forms.constraints.MandatoryConstraint;
+import eu.geopaparazzi.library.forms.constraints.RangeConstraint;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.Utilities;
@@ -58,11 +63,6 @@ import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
-import eu.hydrologis.geopaparazzi.maps.TagsManager;
-import eu.hydrologis.geopaparazzi.maps.tags.FormUtilities;
-import eu.hydrologis.geopaparazzi.osm.filters.Constraints;
-import eu.hydrologis.geopaparazzi.osm.filters.MandatoryConstraint;
-import eu.hydrologis.geopaparazzi.osm.filters.RangeConstraint;
 import eu.hydrologis.geopaparazzi.util.Constants;
 
 /**
@@ -74,7 +74,6 @@ import eu.hydrologis.geopaparazzi.util.Constants;
 public class OsmFormActivity extends Activity {
 
     private String formJsonString;
-    // private String formShortnameDefinition;
     private String formLongnameDefinition;
 
     private HashMap<String, View> key2WidgetMap = new HashMap<String, View>();

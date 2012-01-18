@@ -30,6 +30,9 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.Toast;
 import eu.geopaparazzi.library.camera.CameraActivity;
+import eu.geopaparazzi.library.forms.FormActivity;
+import eu.geopaparazzi.library.forms.TagsManager;
+import eu.geopaparazzi.library.forms.TagsManager.TagObject;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.NoteActivity;
@@ -38,9 +41,6 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
-import eu.hydrologis.geopaparazzi.maps.TagsManager.TagObject;
-import eu.hydrologis.geopaparazzi.maps.tags.FormActivity;
-import eu.hydrologis.geopaparazzi.util.Constants;
 
 /**
  * Osm tags adding activity.
@@ -50,6 +50,7 @@ import eu.hydrologis.geopaparazzi.util.Constants;
 public class MapTagsActivity extends Activity {
     private static final int NOTE_RETURN_CODE = 666;
     private static final int CAMERA_RETURN_CODE = 667;
+    private static final int FORM_RETURN_CODE = 668;
     private EditText additionalInfoText;
     private double latitude;
     private double longitude;
@@ -129,12 +130,11 @@ public class MapTagsActivity extends Activity {
                                 String jsonString = tag.jsonString;
 
                                 Intent formIntent = new Intent(MapTagsActivity.this, FormActivity.class);
-                                formIntent.putExtra(Constants.FORMJSON_KEY, jsonString);
-                                formIntent.putExtra(Constants.FORMSHORTNAME_KEY, tag.shortName);
-                                formIntent.putExtra(Constants.FORMLONGNAME_KEY, finalLongName);
+                                formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_JSON, jsonString);
+                                formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_NAME, finalLongName); // tag.shortName);
                                 formIntent.putExtra(LibraryConstants.LATITUDE, latitude);
                                 formIntent.putExtra(LibraryConstants.LONGITUDE, longitude);
-                                startActivity(formIntent);
+                                startActivityForResult(formIntent, FORM_RETURN_CODE);
                             } else {
                                 // insert as it is
                                 DaoNotes.addNote(getContext(), longitude, latitude, -1.0, sqlDate, finalLongName, null,
@@ -160,6 +160,25 @@ public class MapTagsActivity extends Activity {
     protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
         super.onActivityResult(requestCode, resultCode, data);
         switch( requestCode ) {
+        case (FORM_RETURN_CODE): {
+            if (resultCode == Activity.RESULT_OK) {
+                String[] formArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_FORM);
+                if (formArray != null) {
+                    try {
+                        double lon = Double.parseDouble(formArray[0]);
+                        double lat = Double.parseDouble(formArray[1]);
+                        double elev = Double.parseDouble(formArray[2]);
+                        java.util.Date date = LibraryConstants.TIME_FORMATTER_SQLITE.parse(formArray[3]);
+                        DaoNotes.addNote(this, lon, lat, elev, new Date(date.getTime()), formArray[4], formArray[5],
+                                NoteType.SIMPLE.getTypeNum());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
+                    }
+                }
+            }
+            break;
+        }
         case (NOTE_RETURN_CODE): {
             if (resultCode == Activity.RESULT_OK) {
                 String[] noteArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_NOTE);

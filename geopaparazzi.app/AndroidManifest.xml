@@ -88,12 +88,6 @@
 				<category android:name="android.intent.category.DEFAULT" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".maps.tags.FormActivity">
-			<intent-filter>
-				<action android:name="eu.hydrologis.geopaparazzi.maps.tags.FORM" />
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
-		</activity>
 		<activity android:name=".maps.BookmarksListActivity">
 			<intent-filter>
 				<action android:name="eu.hydrologis.geopaparazzi.maps.BOOKMARKSLISTACTIVITY" />
@@ -125,7 +119,13 @@
         </activity>
         <activity android:name="eu.geopaparazzi.library.util.activities.InsertCoordActivity">
             <intent-filter>
-                <action android:name="eu.hydrologis.geopaparazzi.util.INSERT_COORD" />
+                <action android:name="eu.geopaparazzi.library.util.activities.InsertCoordActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name="eu.geopaparazzi.library.forms.FormActivity">
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.forms.FormActivity" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

@@ -15,18 +15,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi.maps.tags;
+package eu.geopaparazzi.library.forms;
 
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.CONSTRAINT_MANDATORY;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.CONSTRAINT_RANGE;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_KEY;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_LONGNAME;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_TYPE;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_VALUE;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TYPE_BOOLEAN;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TYPE_DOUBLE;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TYPE_STRING;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TYPE_STRINGCOMBO;
+import static eu.geopaparazzi.library.forms.FormUtilities.CONSTRAINT_MANDATORY;
+import static eu.geopaparazzi.library.forms.FormUtilities.CONSTRAINT_RANGE;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_KEY;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_LONGNAME;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_TYPE;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_VALUE;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_BOOLEAN;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_DOUBLE;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRING;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRINGCOMBO;
 
 import java.sql.Date;
 import java.text.MessageFormat;
@@ -39,28 +39,34 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.forms.constraints.Constraints;
+import eu.geopaparazzi.library.forms.constraints.MandatoryConstraint;
+import eu.geopaparazzi.library.forms.constraints.RangeConstraint;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.debug.Logger;
-import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.database.DaoNotes;
-import eu.hydrologis.geopaparazzi.database.NoteType;
-import eu.hydrologis.geopaparazzi.maps.TagsManager;
-import eu.hydrologis.geopaparazzi.osm.filters.Constraints;
-import eu.hydrologis.geopaparazzi.osm.filters.MandatoryConstraint;
-import eu.hydrologis.geopaparazzi.osm.filters.RangeConstraint;
-import eu.hydrologis.geopaparazzi.util.Constants;
 
 /**
  * The form activity.
+ * 
+ * <p>This returns an array of {@link String} data that can be retrieved
+ * through: {@link LibraryConstants#PREFS_KEY_FORM} and contain:</p>
+ * <ul>
+ *   <li>longitude</li>
+ *   <li>latitude</li>
+ *   <li>elevation (or -1.0)</li>
+ *   <li>timestamp</li>
+ *   <li>a name for the form</li>
+ *   <li>the filled form data json</li>
+ * </ul>
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
@@ -68,7 +74,7 @@ import eu.hydrologis.geopaparazzi.util.Constants;
 public class FormActivity extends Activity {
     private String formJsonString;
     // private String formShortnameDefinition;
-    private String formLongnameDefinition;
+    private String formNameDefinition;
 
     private HashMap<String, View> key2WidgetMap = new HashMap<String, View>();
     private HashMap<String, Constraints> key2ConstraintsMap = new HashMap<String, Constraints>();
@@ -88,9 +94,8 @@ public class FormActivity extends Activity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            formJsonString = extras.getString(Constants.FORMJSON_KEY);
-            // formShortnameDefinition = extras.getString(Constants.FORMSHORTNAME_KEY);
-            formLongnameDefinition = extras.getString(Constants.FORMLONGNAME_KEY);
+            formJsonString = extras.getString(LibraryConstants.PREFS_KEY_FORM_JSON);
+            formNameDefinition = extras.getString(LibraryConstants.PREFS_KEY_FORM_NAME);
             latitude = extras.getDouble(LibraryConstants.LATITUDE);
             longitude = extras.getDouble(LibraryConstants.LONGITUDE);
         }
@@ -101,43 +106,42 @@ public class FormActivity extends Activity {
         }
 
         TextView tagTextView = (TextView) findViewById(R.id.form_tag);
-        tagTextView.setText(formLongnameDefinition);
+        tagTextView.setText(formNameDefinition);
 
         LinearLayout mainView = (LinearLayout) findViewById(R.id.form_linear);
         Button okButton = (Button) findViewById(R.id.form_ok);
         okButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                String endString = "";
+                String finalJsonString = "";
                 try {
                     String result = storeNote();
                     if (result == null) {
-                        endString = jsonFormObject.toString();
+                        finalJsonString = jsonFormObject.toString();
                         Date sqlDate = new Date(System.currentTimeMillis());
-                        DaoNotes.addNote(FormActivity.this, longitude, latitude, -1.0, sqlDate, formLongnameDefinition,
-                                endString, NoteType.SIMPLE.getTypeNum());
+                        String timestamp = LibraryConstants.TIME_FORMATTER_SQLITE.format(sqlDate);
+                        // DaoNotes.addNote(FormActivity.this, longitude, latitude, -1.0, sqlDate,
+                        // formNameDefinition,
+                        // finalJsonString, NoteType.SIMPLE.getTypeNum());
+
+                        String[] formDataArray = {//
+                        String.valueOf(longitude), //
+                                String.valueOf(latitude), //
+                                "-1.0", //
+                                timestamp, formNameDefinition, //
+                                finalJsonString};
+
+                        Intent intent = new Intent((String) null);
+                        intent.putExtra(LibraryConstants.PREFS_KEY_FORM, formDataArray);
+                        setResult(Activity.RESULT_OK, intent);
+
                         finish();
                     } else {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(FormActivity.this);
                         String msg = MessageFormat.format(getString(R.string.check_valid_field), result);
-                        builder.setMessage(msg).setCancelable(false)
-                                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
-                                    public void onClick( DialogInterface dialog, int id ) {
-                                    }
-                                });
-                        AlertDialog alertDialog = builder.create();
-                        alertDialog.show();
+                        Utilities.messageDialog(FormActivity.this, msg, null);
                     }
                 } catch (Exception e) {
                     Logger.e(this, e.getLocalizedMessage(), e);
-                    e.printStackTrace();
-                    AlertDialog.Builder builder = new AlertDialog.Builder(FormActivity.this);
-                    builder.setMessage("An error occurred while saving:\n" + endString).setCancelable(false)
-                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
-                                public void onClick( DialogInterface dialog, int id ) {
-                                }
-                            });
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
+                    Utilities.messageDialog(FormActivity.this, "An error occurred while saving:\n" + finalJsonString, null);
                 }
             }
 
@@ -218,7 +222,7 @@ public class FormActivity extends Activity {
 
     private String storeNote() throws JSONException {
         // update the name with info
-        jsonFormObject.put(TAG_LONGNAME, formLongnameDefinition);
+        jsonFormObject.put(TAG_LONGNAME, formNameDefinition);
 
         // update the items
         for( String key : keyList ) {

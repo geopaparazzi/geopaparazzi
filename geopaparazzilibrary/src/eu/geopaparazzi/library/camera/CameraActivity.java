@@ -75,12 +75,12 @@ public class CameraActivity extends Activity {
         super.onCreate(icicle);
 
         Bundle extras = getIntent().getExtras();
-        File applicationDir = ResourcesManager.getInstance(this).getApplicationDir();
-        File imageSaveFolder = new File(applicationDir, "media");
+        File imageSaveFolder = ResourcesManager.getInstance(this).getMediaDir();
         if (extras != null) {
-            String imageSaveFolderPath = extras.getString(LibraryConstants.PREFS_KEY_CAMERA_IMAGESAVEFOLDER);
-            if (imageSaveFolderPath != null && imageSaveFolderPath.length() > 0) {
-                imageSaveFolder = new File(applicationDir, imageSaveFolderPath);
+            String imageSaveFolderRelativePath = extras.getString(LibraryConstants.PREFS_KEY_CAMERA_IMAGESAVEFOLDER);
+            if (imageSaveFolderRelativePath != null && imageSaveFolderRelativePath.length() > 0) {
+                File applicationDir = ResourcesManager.getInstance(this).getApplicationDir();
+                imageSaveFolder = new File(applicationDir, imageSaveFolderRelativePath);
             }
             lon = extras.getDouble(LibraryConstants.LONGITUDE);
             lat = extras.getDouble(LibraryConstants.LATITUDE);

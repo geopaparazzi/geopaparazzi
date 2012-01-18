@@ -71,7 +71,7 @@ public interface LibraryConstants {
      * </p>
      */
     public static final String PREFS_KEY_ELEV = "PREFS_KEY_ELEV"; //$NON-NLS-1$
-    
+
     /**
      * Key used to store the mapview center latitude.
      * 
@@ -161,6 +161,22 @@ public interface LibraryConstants {
      */
     public static final String PREFS_KEY_CAMERA_IMAGESAVEFOLDER = "PREFS_KEY_CAMERA_IMAGESAVEFOLDER"; //$NON-NLS-1$
 
+    /**
+     * Key used to define form data that are passed through any workflow. 
+     */
+    public static final String PREFS_KEY_FORM = "PREFS_KEY_FORM";
+
+    /**
+     * Key used to define a json form that is passed through any workflow. 
+     */
+    public static final String PREFS_KEY_FORM_JSON = "PREFS_KEY_FORM_JSON";
+    
+    /**
+     * Key used to define a form name that is passed through any workflow. 
+     */
+    public static final String PREFS_KEY_FORM_NAME = "PREFS_KEY_FORM_NAME";
+
+    
     /**
      * Default gps logging interval.
      */

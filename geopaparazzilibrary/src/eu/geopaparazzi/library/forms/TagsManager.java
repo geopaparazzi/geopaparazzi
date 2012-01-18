@@ -15,15 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi.maps;
+package eu.geopaparazzi.library.forms;
 
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_FORM;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_FORMITEMS;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_ITEM;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_ITEMS;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_LONGNAME;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_SHORTNAME;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_VALUES;
+import static eu.geopaparazzi.library.forms.FormUtilities.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -45,6 +39,16 @@ import eu.geopaparazzi.library.util.debug.Debug;
 
 /**
  * Singleton that takes care of tags.
+ * 
+ * <p>The tags are looked for in the following places:</p>
+ * <ul>
+ *  <li>a file named <b>tags.json</b> inside the application folder (Which 
+ *      is retrieved via {@link ResourcesManager#getApplicationDir()}</li>
+ *  <li>or, if the above is missing, a file named <b>tags/tags.json</b> in
+ *      the asset folder of the project. In that case the file is copied over 
+ *      to the file in the first point.</li>
+ * </ul>
+ * 
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
@@ -70,7 +74,7 @@ public class TagsManager {
      * @return the {@link TagsManager} singleton.
      * @throws IOException 
      */
-    public static TagsManager getInstance( Context context ) throws Exception {
+    public static synchronized TagsManager getInstance( Context context ) throws Exception {
         if (tagsManager == null) {
             tagsManager = new TagsManager();
             getFileTags(context);
@@ -78,15 +82,13 @@ public class TagsManager {
             Set<String> tagsSet = tagsMap.keySet();
             tagsArrays = (String[]) tagsSet.toArray(new String[tagsSet.size()]);
             Arrays.sort(tagsArrays);
-
         }
-
         return tagsManager;
     }
 
     private static void getFileTags( Context context ) throws Exception {
-        File geoPaparazziDir = ResourcesManager.getInstance(context).getApplicationDir();
-        File tagsFile = new File(geoPaparazziDir, TAGSFILENAME);
+        File applicationDir = ResourcesManager.getInstance(context).getApplicationDir();
+        File tagsFile = new File(applicationDir, TAGSFILENAME);
         if (!tagsFile.exists() || Debug.doOverwriteTags) {
             AssetManager assetManager = context.getAssets();
             InputStream inputStream = assetManager.open("tags/tags.json");
