@@ -1,164 +1,203 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="eu.hydrologis.geopaparazzi" android:versionName="2.6.0RC" android:versionCode="26">
-	<application android:icon="@drawable/icon" android:label="@string/app_name"
-		android:theme="@android:style/Theme.NoTitleBar">
-		<activity android:label="@string/app_name"
-			android:configChanges="orientation" android:name=".GeoPaparazziActivity">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-				<category android:name="android.intent.category.LAUNCHER" />
-			</intent-filter>
-		</activity>
-		<activity android:name=".maps.GpsDataPropertiesActivity">
-			<intent-filter>
-				<action android:name="eu.hydrologis.geopaparazzi.maps.GPSLOG_PROPERTIES" />
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
-		</activity>
-		<activity android:name=".maps.GpsDataListActivity">
-			<intent-filter>
-				<action android:name="eu.hydrologis.geopaparazzi.maps.GPSLOG_DATALIST" />
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
-		</activity>
-		<activity android:name=".maps.MapDataPropertiesActivity">
-			<intent-filter>
-				<action android:name="eu.hydrologis.geopaparazzi.maps.MAPDATAPROPERTIES" />
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
-		</activity>
-		<activity android:name=".maps.MapDataListActivity">
-			<intent-filter>
-				<action android:name="eu.hydrologis.geopaparazzi.maps.MAPSDATALIST" />
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
-		</activity>
-		<activity android:name=".maps.MapsActivity">
-			<intent-filter>
-				<action android:name="eu.hydrologis.geopaparazzi.maps.MAP_VIEW" />
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
-		</activity>
-		<activity android:name=".util.AboutActivity">
-			<intent-filter>
-				<action android:name="eu.hydrologis.geopaparazzi.util.ABOUT" />
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
-		</activity>
-		<activity android:name=".preferences.PreferencesActivity">
-			<intent-filter>
-				<action android:name="eu.hydrologis.geopaparazzi.preferences.PREFERENCES" />
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
-		</activity>
-		<activity android:name=".chart.ChartActivity">
-			<intent-filter>
-				<action android:name="eu.hydrologis.geopaparazzi.chart.VIEW_IN_CHART" />
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
-		</activity>
-		<activity android:name=".gpx.GpxImportActivity">
-			<intent-filter>
-				<action android:name="eu.hydrologis.geopaparazzi.gpx.GPXIMPORT" />
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
-		</activity>
-		<activity android:name=".maps.MapTagsActivity">
-			<intent-filter>
-				<action android:name="eu.hydrologis.geopaparazzi.maps.TAGS" />
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
-		</activity>
-		<activity android:name=".osm.OsmCategoryActivity">
-			<intent-filter>
-				<action android:name="eu.hydrologis.geopaparazzi.maps.OSMCATEGORYACTIVITY" />
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
-		</activity>
-		<activity android:name=".osm.OsmFormActivity">
-			<intent-filter>
-				<action android:name="eu.hydrologis.geopaparazzi.osm.OSMFORMACTIVITY" />
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
-		</activity>
-		<activity android:name=".maps.MeasureInfoActivity">
-			<intent-filter>
-				<action android:name="eu.hydrologis.geopaparazzi.maps.MEASUREMENT_INFO" />
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
-		</activity>
-		<activity android:name=".maps.BookmarksListActivity">
-			<intent-filter>
-				<action android:name="eu.hydrologis.geopaparazzi.maps.BOOKMARKSLISTACTIVITY" />
-				<category android:name="android.intent.category.DEFAULT" />
-			</intent-filter>
-		</activity>
+    package="eu.hydrologis.geopaparazzi"
+    android:versionCode="26"
+    android:versionName="2.6.0RC" >
+
+    <!-- permissions -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <!--
+    only for testing purposes 
+	<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"></uses-permission> 
+    -->
+
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" >
+    </uses-feature>
+
+    <!-- compatibility -->
+    <uses-sdk
+        android:minSdkVersion="5"
+        android:targetSdkVersion="8" >
+    </uses-sdk>
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:resizeable="true"
+        android:smallScreens="true" >
+    </supports-screens>
+
+    <application
+        android:icon="@drawable/icon"
+        android:label="@string/app_name"
+        android:theme="@android:style/Theme.NoTitleBar" >
+        <activity
+            android:name=".GeoPaparazziActivity"
+            android:configChanges="orientation"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".maps.GpsDataPropertiesActivity" >
+            <intent-filter>
+                <action android:name="eu.hydrologis.geopaparazzi.maps.GPSLOG_PROPERTIES" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".maps.GpsDataListActivity" >
+            <intent-filter>
+                <action android:name="eu.hydrologis.geopaparazzi.maps.GPSLOG_DATALIST" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".maps.MapDataPropertiesActivity" >
+            <intent-filter>
+                <action android:name="eu.hydrologis.geopaparazzi.maps.MAPDATAPROPERTIES" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".maps.MapDataListActivity" >
+            <intent-filter>
+                <action android:name="eu.hydrologis.geopaparazzi.maps.MAPSDATALIST" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".maps.MapsActivity" >
+            <intent-filter>
+                <action android:name="eu.hydrologis.geopaparazzi.maps.MAP_VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".util.AboutActivity" >
+            <intent-filter>
+                <action android:name="eu.hydrologis.geopaparazzi.util.ABOUT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".preferences.PreferencesActivity" >
+            <intent-filter>
+                <action android:name="eu.hydrologis.geopaparazzi.preferences.PREFERENCES" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".chart.ChartActivity" >
+            <intent-filter>
+                <action android:name="eu.hydrologis.geopaparazzi.chart.VIEW_IN_CHART" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".gpx.GpxImportActivity" >
+            <intent-filter>
+                <action android:name="eu.hydrologis.geopaparazzi.gpx.GPXIMPORT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".maps.MapTagsActivity" >
+            <intent-filter>
+                <action android:name="eu.hydrologis.geopaparazzi.maps.TAGS" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".osm.OsmCategoryActivity" >
+            <intent-filter>
+                <action android:name="eu.hydrologis.geopaparazzi.maps.OSMCATEGORYACTIVITY" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".osm.OsmFormActivity" >
+            <intent-filter>
+                <action android:name="eu.hydrologis.geopaparazzi.osm.OSMFORMACTIVITY" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".maps.MeasureInfoActivity" >
+            <intent-filter>
+                <action android:name="eu.hydrologis.geopaparazzi.maps.MEASUREMENT_INFO" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".maps.BookmarksListActivity" >
+            <intent-filter>
+                <action android:name="eu.hydrologis.geopaparazzi.maps.BOOKMARKSLISTACTIVITY" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <!-- FROM LIBRARY -->
         <activity
-            android:configChanges="orientation"
-            android:name="eu.geopaparazzi.library.camera.CameraActivity" >
-            <intent-filter >
+            android:name="eu.geopaparazzi.library.camera.CameraActivity"
+            android:configChanges="orientation" >
+            <intent-filter>
                 <action android:name="eu.geopaparazzi.library.camera.CameraActivity" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity android:name="eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity" >
-            <intent-filter >
+            <intent-filter>
                 <action android:name="eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:configChanges="keyboardHidden|orientation"
-            android:name="eu.geopaparazzi.library.util.activities.NoteActivity" >
-            <intent-filter >
+            android:name="eu.geopaparazzi.library.util.activities.NoteActivity"
+            android:configChanges="keyboardHidden|orientation" >
+            <intent-filter>
                 <action android:name="eu.geopaparazzi.library.util.activities.NoteActivity" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="eu.geopaparazzi.library.util.activities.InsertCoordActivity">
+        <activity android:name="eu.geopaparazzi.library.util.activities.InsertCoordActivity" >
             <intent-filter>
                 <action android:name="eu.geopaparazzi.library.util.activities.InsertCoordActivity" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="eu.geopaparazzi.library.forms.FormActivity">
+        <activity android:name="eu.geopaparazzi.library.forms.FormActivity" >
             <intent-filter>
                 <action android:name="eu.geopaparazzi.library.forms.FormActivity" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        
-        <receiver android:name="eu.hydrologis.trashmapper.sms.SmsReceiver" android:enabled="true">
+
+        <receiver
+            android:name="eu.hydrologis.trashmapper.sms.SmsReceiver"
+            android:enabled="true" >
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
-	</application>
+    </application>
 
-	<!-- permissions -->
-	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
-	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
-	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
-	<uses-permission android:name="android.permission.RECEIVE_SMS"></uses-permission>
-	<uses-permission android:name="android.permission.SEND_SMS"></uses-permission>
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
-	<uses-permission android:name="android.permission.RECORD_AUDIO"></uses-permission>
-	<uses-permission android:name="android.permission.READ_CONTACTS" />
-	<!-- only for testing purposes 
-	<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"></uses-permission> 
-	-->
-
-	<uses-feature android:name="android.hardware.telephony"
-		android:required="false"></uses-feature>
-
-
-	<!-- compatibility -->
-	<uses-sdk android:targetSdkVersion="8" android:minSdkVersion="5"></uses-sdk>
-	<supports-screens android:smallScreens="true"
-		android:normalScreens="true" android:largeScreens="true"
-		android:anyDensity="true" android:resizeable="true"></supports-screens>
-
-</manifest> 
+</manifest>

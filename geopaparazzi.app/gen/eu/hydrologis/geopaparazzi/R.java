@@ -242,7 +242,7 @@ public final class R {
         public static final int gpslogname=0x7f0b0033;
         public static final int gpslogsList=0x7f0b0040;
         public static final int gpsproplabel=0x7f0b0032;
-        public static final int handle=0x7f0b002c;
+        public static final int handle=0x7f0b002e;
         public static final int header2=0x7f0b0081;
         public static final int icon=0x7f0b0084;
         public static final int imagefromtag=0x7f0b0088;
@@ -307,7 +307,7 @@ public final class R {
         public static final int selectionmodecheck=0x7f0b007f;
         public static final int sep1=0x7f0b0006;
         public static final int sep3=0x7f0b0008;
-        public static final int slide=0x7f0b002e;
+        public static final int slide=0x7f0b002c;
         public static final int statusupdatebutton=0x7f0b0030;
         public static final int syncosmbutton=0x7f0b006a;
         public static final int title=0x7f0b0085;

@@ -25,7 +25,7 @@
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:paddingLeft="10dp"
-        android:text="default_value"
+        android:text=""
         android:textColor="@color/black" />
 
 </RelativeLayout>

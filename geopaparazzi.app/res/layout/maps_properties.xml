@@ -25,9 +25,10 @@
             android:id="@+id/mapname"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:inputType="text"
             android:padding="5dp"
             android:paddingBottom="15dp"
-            android:text="default_value" />
+            android:text="" />
 
         <TextView
             android:id="@+id/widthLabel"

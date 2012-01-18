@@ -1,38 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent" android:layout_height="fill_parent"
-	android:orientation="vertical" android:background="#FFFFFF">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white"
+    android:orientation="vertical" >
 
-	<TextView android:id="@+id/osmform_textview" android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:text="test"
-		android:textColor="@color/gpsblue_stroke" android:textStyle="bold"
-		android:padding="5dp" android:gravity="center_horizontal"
-		android:layout_margin="10dp" />
+    <TextView
+        android:id="@+id/osmform_textview"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="center_horizontal"
+        android:padding="5dp"
+        android:text="test"
+        android:textColor="@color/gpsblue_stroke"
+        android:textStyle="bold" />
 
-	<ScrollView android:id="@+id/form_scroll"
-		android:layout_height="wrap_content" android:layout_width="fill_parent">
-		<LinearLayout android:layout_width="fill_parent"
-			android:layout_height="wrap_content" android:orientation="vertical">
-			<LinearLayout android:id="@+id/osmform_linear"
-				android:layout_width="fill_parent" android:layout_height="wrap_content"
-				android:orientation="vertical">
-			</LinearLayout>
+    <ScrollView
+        android:id="@+id/form_scroll"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
 
-			<LinearLayout android:layout_width="fill_parent"
-				android:layout_height="wrap_content" android:orientation="horizontal"
-				android:layout_margin="20dp">
-				<Button android:text="@string/ok" android:id="@+id/osmform_ok"
-					android:layout_width="fill_parent" android:layout_height="wrap_content"
-					android:layout_weight="1" android:padding="5dp"></Button>
-				<Button android:text="@string/cancel" android:id="@+id/osmform_cancel"
-					android:layout_width="fill_parent" android:layout_height="wrap_content"
-					android:layout_weight="1" android:padding="5dp"></Button>
-			</LinearLayout>
-		</LinearLayout>
-	</ScrollView>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
 
+            <LinearLayout
+                android:id="@+id/osmform_linear"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+            </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:orientation="horizontal" >
 
+                <Button
+                    android:id="@+id/osmform_ok"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:padding="5dp"
+                    android:text="@string/ok" >
+                </Button>
+
+                <Button
+                    android:id="@+id/osmform_cancel"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:padding="5dp"
+                    android:text="@string/cancel" >
+                </Button>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>
-	
