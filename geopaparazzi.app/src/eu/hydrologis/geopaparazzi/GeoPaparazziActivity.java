@@ -323,8 +323,10 @@ public class GeoPaparazziActivity extends Activity {
         }
         case R.id.dashboard_import_item_button: {
             Intent browseIntent = new Intent(this, DirectoryBrowserActivity.class);
-            browseIntent.putExtra(Constants.INTENT_ID, Constants.GPXIMPORT);
-            browseIntent.putExtra(Constants.EXTENTION, ".gpx"); //$NON-NLS-1$
+            browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, applicationManager.getGeoPaparazziDir()
+                    .getAbsolutePath());
+            browseIntent.putExtra(DirectoryBrowserActivity.INTENT_ID, Constants.GPXIMPORT);
+            browseIntent.putExtra(DirectoryBrowserActivity.EXTENTION, ".gpx"); //$NON-NLS-1$
             startActivity(browseIntent);
             break;
         }
@@ -382,7 +384,9 @@ public class GeoPaparazziActivity extends Activity {
             return true;
         case MENU_LOAD:
             Intent browseIntent = new Intent(this, DirectoryBrowserActivity.class);
-            browseIntent.putExtra(Constants.EXTENTION, DirectoryBrowserActivity.FOLDER);
+            browseIntent.putExtra(DirectoryBrowserActivity.EXTENTION, DirectoryBrowserActivity.FOLDER);
+            browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, applicationManager.getGeoPaparazziDir()
+                    .getAbsolutePath());
             startActivityForResult(browseIntent, RETURNCODE_BROWSE_FOR_NEW_PREOJECT);
             return true;
         case MENU_EXIT:
@@ -397,7 +401,7 @@ public class GeoPaparazziActivity extends Activity {
         switch( requestCode ) {
         case (RETURNCODE_BROWSE_FOR_NEW_PREOJECT): {
             if (resultCode == Activity.RESULT_OK) {
-                String chosenFolderToLoad = data.getStringExtra(Constants.PATH);
+                String chosenFolderToLoad = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
                 if (chosenFolderToLoad != null && new File(chosenFolderToLoad).getParentFile().exists()) {
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     Editor editor = preferences.edit();

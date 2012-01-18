@@ -33,11 +33,11 @@ import eu.geopaparazzi.library.gpx.parser.GpxParser;
 import eu.geopaparazzi.library.gpx.parser.GpxParser.Route;
 import eu.geopaparazzi.library.gpx.parser.GpxParser.TrackSegment;
 import eu.geopaparazzi.library.gpx.parser.WayPoint;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
-import eu.hydrologis.geopaparazzi.util.Constants;
 
 /**
  * Gpx file import activity.
@@ -54,7 +54,7 @@ public class GpxImportActivity extends Activity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            path = extras.getString(Constants.PATH);
+            path = extras.getString(LibraryConstants.PREFS_KEY_PATH);
 
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
 

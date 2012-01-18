@@ -57,10 +57,6 @@ public interface Constants {
     // public final String OSMFORMACTIVITY = "eu.hydrologis.geopaparazzi.osm.OSMFORMACTIVITY";
 
     public final String ID = "ID";
-    public final String INTENT_ID = "INTENT_ID";
-    public final String EXTENTION = "EXTENTION";
-    public final String SHOWHIDDEN = "SHOWHIDDEN";
-    public final String PATH = "PATH";
     public final String ISLINE = "ISLINE";
     public final String MEASURECOORDSX = "MEASURECOORDSX";
     public final String MEASURECOORDSY = "MEASURECOORDSY";

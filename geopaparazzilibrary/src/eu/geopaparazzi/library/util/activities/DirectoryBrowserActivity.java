@@ -35,13 +35,13 @@ import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.util.LibraryConstants;
 
 public class DirectoryBrowserActivity extends ListActivity {
-    public final String STARTFOLDERPATH = "STARTFOLDERPATH"; //$NON-NLS-1$
+    public static final String STARTFOLDERPATH = "STARTFOLDERPATH"; //$NON-NLS-1$
     /**
      * Key for a new intent to launch on the resulting path.
      */
-    public final String INTENT_ID = "INTENT_ID"; //$NON-NLS-1$
-    public final String EXTENTION = "EXTENTION"; //$NON-NLS-1$
-    public final String SHOWHIDDEN = "SHOWHIDDEN"; //$NON-NLS-1$
+    public static final String INTENT_ID = "INTENT_ID"; //$NON-NLS-1$
+    public static final String EXTENTION = "EXTENTION"; //$NON-NLS-1$
+    public static final String SHOWHIDDEN = "SHOWHIDDEN"; //$NON-NLS-1$
     public static final String FOLDER = "folder"; //$NON-NLS-1$
 
     private List<String> items = null;
