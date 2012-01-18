@@ -197,6 +197,10 @@ public class GpsManager implements LocationListener, Listener {
     }
 
     public boolean isGpsLogging() {
+        if (Debug.doMock) {
+            if (TestMock.isOn) return true;
+        }
+        
         if (gpsLogger == null) {
             return false;
         }
