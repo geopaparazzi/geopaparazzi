@@ -3,7 +3,7 @@
     android:id="@+id/gpslogsList"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#FFFFFF"
+    android:background="@color/white"
     android:orientation="vertical" >
 
     <RelativeLayout
@@ -11,7 +11,7 @@
         android:id="@+id/notesrow_container"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:padding="5px" >
+        android:padding="5dp" >
 
         <CheckBox
             android:id="@+id/imagesvisible"
@@ -27,7 +27,7 @@
             android:layout_alignBaseline="@+id/imagesvisible"
             android:layout_centerHorizontal="true"
             android:layout_toRightOf="@+id/imagesvisible"
-            android:paddingLeft="10px"
+            android:paddingLeft="10dp"
             android:text="@string/imagesvisibilityToggle"
             android:textColor="@color/black" />
 
@@ -45,7 +45,7 @@
             android:layout_alignBaseline="@+id/notesvisible"
             android:layout_centerHorizontal="true"
             android:layout_toRightOf="@+id/notesvisible"
-            android:paddingLeft="10px"
+            android:paddingLeft="10dp"
             android:text="@string/notesvisibilityToggle"
             android:textColor="@color/black" />
 
@@ -56,8 +56,8 @@
             android:layout_alignParentLeft="true"
             android:layout_alignRight="@+id/noteswidthLabel"
             android:layout_below="@+id/notesvisible"
-            android:layout_marginRight="10px"
-            android:padding="15px"
+            android:layout_marginRight="10dp"
+            android:padding="15dp"
             android:text="@string/width_label"
             android:textColor="@color/black" />
 
@@ -75,8 +75,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/noteswidthLabel"
-            android:layout_marginRight="10px"
-            android:padding="15px"
+            android:layout_marginRight="10dp"
+            android:padding="15dp"
             android:text="@string/color_label"
             android:textColor="@color/black" >
         </TextView>

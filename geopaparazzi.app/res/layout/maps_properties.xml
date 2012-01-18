@@ -1,49 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView android:layout_width="fill_parent"
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:padding="5px" android:layout_height="fill_parent"
-	android:orientation="vertical" android:background="#FFFFFF">
-	<LinearLayout android:layout_width="fill_parent"
-		android:id="@+id/row_container" android:padding="5px"
-		android:layout_height="fill_parent" android:orientation="vertical"
-		android:background="#FFFFFF">
-		<TextView android:layout_height="wrap_content"
-			android:layout_width="wrap_content" android:id="@+id/mapproplabel"
-			android:text="@string/mapproperty" android:padding="5dp" />
-		<EditText android:layout_height="wrap_content"
-			android:layout_width="fill_parent" android:padding="5dp"
-			android:paddingBottom="15dp" android:text="default_value" android:id="@+id/mapname" />
-		<TextView android:layout_height="wrap_content"
-			android:layout_width="wrap_content" android:id="@+id/widthLabel"
-			android:text="@string/width_label" android:padding="5dp" />
-		<Spinner android:layout_height="wrap_content"
-			android:layout_width="fill_parent" android:id="@+id/widthText"
-			android:text="1" android:padding="5dp" android:paddingBottom="15dp" />
-		<TextView android:layout_height="wrap_content"
-			android:layout_width="wrap_content" android:id="@+id/colorLabel"
-			android:padding="5dp" android:text="@string/color_label"></TextView>
-		<Spinner android:id="@+id/color_spinner" android:layout_width="fill_parent"
-			android:layout_height="wrap_content" android:padding="5dp"
-			android:paddingBottom="15dp" />
-		<Button android:text="@string/map_zoom" android:id="@+id/map_zoom"
-			android:layout_height="wrap_content" android:layout_width="fill_parent"
-			android:padding="5dp" android:layout_marginTop="25dp"></Button>
-		<Button android:text="@string/map_delete" android:id="@+id/map_delete"
-			android:layout_height="wrap_content" android:layout_width="fill_parent"
-			android:padding="5dp" android:layout_marginBottom="25dp"></Button>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="5dp" >
 
-		<LinearLayout android:layout_width="fill_parent"
-			xmlns:android="http://schemas.android.com/apk/res/android"
-			android:id="@+id/row_container5" android:layout_margin="15dp"
-			android:padding="5dp" android:layout_height="wrap_content"
-			android:orientation="horizontal">
-			<Button android:text="@string/ok" android:id="@+id/map_ok"
-				android:layout_width="fill_parent" android:layout_height="wrap_content"
-				android:layout_weight="1"></Button>
-			<Button android:text="@string/cancel" android:id="@+id/map_cancel"
-				android:layout_width="fill_parent" android:layout_height="wrap_content"
-				android:layout_weight="1"></Button>
-		</LinearLayout>
+    <LinearLayout
+        android:id="@+id/row_container"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFF"
+        android:orientation="vertical"
+        android:padding="5dp" >
 
-	</LinearLayout>
+        <TextView
+            android:id="@+id/mapproplabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="@string/mapproperty" />
+
+        <EditText
+            android:id="@+id/mapname"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:paddingBottom="15dp"
+            android:text="default_value" />
+
+        <TextView
+            android:id="@+id/widthLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="@string/width_label" />
+
+        <Spinner
+            android:id="@+id/widthText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:paddingBottom="15dp"
+            android:text="1" />
+
+        <TextView
+            android:id="@+id/colorLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="@string/color_label" >
+        </TextView>
+
+        <Spinner
+            android:id="@+id/color_spinner"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:paddingBottom="15dp" />
+
+        <Button
+            android:id="@+id/map_zoom"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:padding="5dp"
+            android:text="@string/map_zoom" >
+        </Button>
+
+        <Button
+            android:id="@+id/map_delete"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="25dp"
+            android:padding="5dp"
+            android:text="@string/map_delete" >
+        </Button>
+
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/row_container5"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:orientation="horizontal"
+            android:padding="5dp" >
+
+            <Button
+                android:id="@+id/map_ok"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/ok" >
+            </Button>
+
+            <Button
+                android:id="@+id/map_cancel"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/cancel" >
+            </Button>
+        </LinearLayout>
+    </LinearLayout>
+
 </ScrollView>
