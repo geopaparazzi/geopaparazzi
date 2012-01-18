@@ -130,7 +130,7 @@ public class FormActivity extends Activity {
                                 timestamp, formNameDefinition, //
                                 finalJsonString};
 
-                        Intent intent = new Intent((String) null);
+                        Intent intent = getIntent();
                         intent.putExtra(LibraryConstants.PREFS_KEY_FORM, formDataArray);
                         setResult(Activity.RESULT_OK, intent);
 
@@ -141,7 +141,12 @@ public class FormActivity extends Activity {
                     }
                 } catch (Exception e) {
                     Logger.e(this, e.getLocalizedMessage(), e);
-                    Utilities.messageDialog(FormActivity.this, "An error occurred while saving:\n" + finalJsonString, null);
+                    Utilities.messageDialog(FormActivity.this, "An error occurred while saving:\n" + finalJsonString,
+                            new Runnable(){
+                                public void run() {
+                                    finish();
+                                }
+                            });
                 }
             }
 

@@ -94,7 +94,7 @@ public class NoteActivity extends Activity {
                             sqlDateString, //
                             noteString};
 
-                    Intent intent = new Intent((String) null);
+                    Intent intent = getIntent();
                     intent.putExtra(LibraryConstants.PREFS_KEY_NOTE, noteArray);
                     setResult(Activity.RESULT_OK, intent);
 

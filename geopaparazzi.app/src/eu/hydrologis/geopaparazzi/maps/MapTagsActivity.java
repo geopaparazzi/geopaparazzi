@@ -145,7 +145,6 @@ public class MapTagsActivity extends Activity {
                             e.printStackTrace();
                             Toast.makeText(MapTagsActivity.this, R.string.notenonsaved, Toast.LENGTH_LONG).show();
                         }
-                        finish();
                     }
                 });
 
