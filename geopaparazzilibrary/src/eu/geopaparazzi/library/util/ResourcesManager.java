@@ -26,6 +26,7 @@ import java.text.MessageFormat;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -166,6 +167,22 @@ public class ResourcesManager implements Serializable {
      */
     public File getApplicationDir() {
         return applicationDir;
+    }
+
+    /**
+     * Sets a new application folder. 
+     * 
+     * <p>Note that this will reset all the folders and resources that are bound 
+     * to it. For example there might be the need to recreate the database file.</p>
+     * 
+     * @param path the path to the new application.
+     */
+    public void setApplicationDir( String path ) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        Editor editor = preferences.edit();
+        editor.putString(LibraryConstants.PREFS_KEY_BASEFOLDER, path);
+        editor.commit();
+        resetManager();
     }
 
     /**

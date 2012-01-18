@@ -513,9 +513,6 @@ public class GeoPaparazziActivity extends Activity {
                 }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
                         try {
-                            SharedPreferences preferences = PreferenceManager
-                                    .getDefaultSharedPreferences(getApplicationContext());
-                            Editor editor = preferences.edit();
                             if (doRename) {
                                 Editable value = input.getText();
                                 String newName = value.toString();
@@ -529,11 +526,13 @@ public class GeoPaparazziActivity extends Activity {
                                 if (!geopaparazziDirFile.renameTo(newGeopaparazziDirFile)) {
                                     throw new IOException("Unable to rename the geopaparazzi folder."); //$NON-NLS-1$
                                 }
-                                // editor.putString(BASEFOLDERKEY,
-                                // newGeopaparazziDirFile.getAbsolutePath());
+
+                                ResourcesManager.getInstance(GeoPaparazziActivity.this).setApplicationDir(
+                                        newGeopaparazziDirFile.getAbsolutePath());
+                            } else {
+                                // reset to default
+                                ResourcesManager.getInstance(GeoPaparazziActivity.this).setApplicationDir("");
                             }
-                            editor.putString(LibraryConstants.PREFS_KEY_BASEFOLDER, ""); //$NON-NLS-1$
-                            editor.commit();
 
                             Intent intent = getIntent();
                             finish();
