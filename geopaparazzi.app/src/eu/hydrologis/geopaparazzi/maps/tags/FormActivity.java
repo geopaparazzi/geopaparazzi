@@ -47,6 +47,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
@@ -90,8 +91,8 @@ public class FormActivity extends Activity {
             formJsonString = extras.getString(Constants.FORMJSON_KEY);
             // formShortnameDefinition = extras.getString(Constants.FORMSHORTNAME_KEY);
             formLongnameDefinition = extras.getString(Constants.FORMLONGNAME_KEY);
-            latitude = extras.getFloat(Constants.PREFS_KEY_MAPCENTER_LAT);
-            longitude = extras.getFloat(Constants.PREFS_KEY_MAPCENTER_LON);
+            latitude = extras.getFloat(LibraryConstants.LATITUDE);
+            longitude = extras.getFloat(LibraryConstants.LONGITUDE);
         }
 
         if (formJsonString == null) {

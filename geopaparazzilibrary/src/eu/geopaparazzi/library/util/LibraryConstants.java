@@ -71,6 +71,40 @@ public interface LibraryConstants {
      * </p>
      */
     public static final String PREFS_KEY_ELEV = "PREFS_KEY_ELEV"; //$NON-NLS-1$
+    
+    /**
+     * Key used to store the mapview center latitude.
+     * 
+     * <p><b>Note that this will always be *E6 and of type float, so to
+     * get the actual value you will have to divide by E6.</b>
+     * 
+     * <p>
+     * This is used every time the map center changes,
+     * so this should not be used to store own
+     * data, which would be overwritten. 
+     * </p>
+     */
+    public static final String PREFS_KEY_MAPCENTER_LAT = "PREFS_KEY_MAPCENTER_LAT";
+
+    /**
+     * Key used to store the mapview center longitude.
+     * 
+     * <p><b>Note that this will always be *E6 and of type float, so to
+     * get the actual value you will have to divide by E6.</b>
+     * 
+     * <p>
+     * This is used every time the map center changes,
+     * so this should not be used to store own
+     * data, which would be overwritten. 
+     * </p>
+     */
+    public static final String PREFS_KEY_MAPCENTER_LON = "PREFS_KEY_MAPCENTER_LON";
+
+    /**
+     * Key used to store the mapview zoom level.
+     * 
+     */
+    public static final String PREFS_KEY_MAP_ZOOM = "PREFS_KEY_MAP_ZOOM";
 
     /**
      * Key used to pass a lat temporarily through bundles. 

@@ -18,11 +18,8 @@
 package eu.hydrologis.geopaparazzi.maps;
 
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_COMPASSON;
-import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_MAPCENTER_LAT;
-import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_MAPCENTER_LON;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_MINIMAPON;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_SCALEBARON;
-import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_ZOOM;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -81,6 +78,7 @@ import eu.geopaparazzi.library.gps.GpsManagerListener;
 import eu.geopaparazzi.library.mixare.MixareHandler;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.activities.InsertCoordActivity;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
@@ -251,24 +249,20 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
             mMiniMapOverlay.setEnabled(isMinimapon);
         }
 
-        float lastGpsLon = preferences.getFloat(LibraryConstants.PREFS_KEY_LON, 0f) / LibraryConstants.E6;
-        float lastGpsLat = preferences.getFloat(LibraryConstants.PREFS_KEY_LAT, 0f) / LibraryConstants.E6;
-        float lastCenterLon = preferences.getFloat(Constants.PREFS_KEY_MAPCENTER_LON, lastGpsLon);
-        float lastCenterLat = preferences.getFloat(Constants.PREFS_KEY_MAPCENTER_LAT, lastGpsLat);
-        final int zoom = preferences.getInt(Constants.PREFS_KEY_ZOOM, 16);
-        GeoPoint geoPoint = new GeoPoint((double) lastCenterLat, (double) lastCenterLon);
-        mapController.setZoom(zoom);
+        final double[] mapCenterLocation = PositionUtilities.getMapCenterFromPreferences(preferences, true);
+        GeoPoint geoPoint = new GeoPoint(mapCenterLocation[1], mapCenterLocation[0]);
+        mapController.setZoom((int) mapCenterLocation[2]);
         mapController.setCenter(geoPoint);
-        
+
         maxZoomLevel = mapsView.getMaxZoomLevel();
         minZoomLevel = mapsView.getMinZoomLevel();
 
         // zoom bar
         zoomBar = (VerticalSeekBar) findViewById(R.id.ZoomBar);
         zoomBar.setMax(maxZoomLevel);
-        zoomBar.setProgress(zoom);
+        zoomBar.setProgress((int) mapCenterLocation[2]);
         zoomBar.setOnSeekBarChangeListener(new VerticalSeekBar.OnSeekBarChangeListener(){
-            private int progress = zoom;
+            private int progress = (int) mapCenterLocation[2];
             public void onStopTrackingTouch( VerticalSeekBar seekBar ) {
                 setZoomGuiText(progress);
                 mapsView.getController().setZoom(progress);
@@ -286,11 +280,11 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
             }
         });
 
-        int zoomInLevel = zoom + 1;
+        int zoomInLevel = (int) mapCenterLocation[2] + 1;
         if (zoomInLevel > maxZoomLevel) {
             zoomInLevel = maxZoomLevel;
         }
-        int zoomOutLevel = zoom - 1;
+        int zoomOutLevel = (int) mapCenterLocation[2] - 1;
         if (zoomOutLevel < minZoomLevel) {
             zoomOutLevel = minZoomLevel;
         }
@@ -600,14 +594,12 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
 
     @Override
     public void onWindowFocusChanged( boolean hasFocus ) {
-        //        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        // SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (hasFocus) {
-            float lastCenterLon = preferences.getFloat(Constants.PREFS_KEY_MAPCENTER_LON, 0f);
-            float lastCenterLat = preferences.getFloat(Constants.PREFS_KEY_MAPCENTER_LAT, 0f);
-            final int zoom = preferences.getInt(PREFS_KEY_ZOOM, 16);
-            mapController.setZoom(zoom);
-            mapController.setCenter(new GeoPoint(lastCenterLat, lastCenterLon));
-            setZoomGuiText(zoom);
+            double[] lastCenter = PositionUtilities.getMapCenterFromPreferences(preferences, true);
+            mapController.setZoom((int) lastCenter[2]);
+            mapController.setCenter(new GeoPoint(lastCenter[1], lastCenter[0]));
+            setZoomGuiText((int) lastCenter[2]);
         }
         super.onWindowFocusChanged(hasFocus);
     }
@@ -1090,10 +1082,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
             sb.append(lat);
             Logger.i(this, sb.toString());
         }
-        Editor editor = preferences.edit();
-        editor.putFloat(PREFS_KEY_MAPCENTER_LON, (float) lon);
-        editor.putFloat(PREFS_KEY_MAPCENTER_LAT, (float) lat);
-        editor.putInt(PREFS_KEY_ZOOM, mapsView.getZoomLevel());
-        editor.commit();
+
+        PositionUtilities.putMapCenterInPreferences(preferences, lon, lat, mapsView.getZoomLevel());
     }
 }

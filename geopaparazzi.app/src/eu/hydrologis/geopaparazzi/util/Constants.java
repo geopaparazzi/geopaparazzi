@@ -73,35 +73,8 @@ public interface Constants {
 
     public static final String PREFS_KEY_NOTES_COLOR = "PREFS_KEY_NOTES_COLOR";
     public static final String PREFS_KEY_NOTES_WIDTH = "PREFS_KEY_NOTES_WIDTH";
-    public static final String PREFS_KEY_ZOOM = "PREFS_KEY_ZOOM";
     public static final String PREFS_KEY_GPSLOG4PROPERTIES = "PREFS_KEY_GPSLOG4PROPERTIES";
     public static final String PREFS_KEY_MAP4PROPERTIES = "PREFS_KEY_MAP4PROPERTIES";
-
-    /**
-     * Key used to store the mapview center latitude.
-     * 
-     * <p><b>Note that this value is a normal latitude value (i.e. not *E6).</b>
-     * 
-     * <p>
-     * This is used every time the map center changes,
-     * so this should not be used to store own
-     * data, which would be overwritten. 
-     * </p>
-     */
-    public static final String PREFS_KEY_MAPCENTER_LAT = "PREFS_KEY_MAPCENTER_LAT";
-
-    /**
-     * Key used to store the mapview center longitude.
-     * 
-     * <p><b>Note that this value is a normal longitude value (i.e. not *E6).</b>
-     * 
-     * <p>
-     * This is used every time the map center changes,
-     * so this should not be used to store own
-     * data, which would be overwritten. 
-     * </p>
-     */
-    public static final String PREFS_KEY_MAPCENTER_LON = "PREFS_KEY_MAPCENTER_LON";
 
     public static final String PREFS_KEY_AUTOMATIC_CENTER_GPS = "enable_automatic_center_on_gps";
 

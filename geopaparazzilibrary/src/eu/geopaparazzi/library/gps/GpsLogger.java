@@ -17,12 +17,10 @@
  */
 package eu.geopaparazzi.library.gps;
 
-import static eu.geopaparazzi.library.util.LibraryConstants.*;
+import static eu.geopaparazzi.library.util.LibraryConstants.GPS_LOGGING_DISTANCE;
 import static eu.geopaparazzi.library.util.LibraryConstants.GPS_LOGGING_INTERVAL;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGINGDISTANCE;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGINGINTERVAL;
-import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_LAT;
-import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_LON;
 
 import java.io.IOException;
 
@@ -30,7 +28,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.database.sqlite.SQLiteFullException;
 import android.location.Location;
 import android.media.AudioManager;
@@ -41,7 +38,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 import eu.geopaparazzi.library.R;
-import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 
@@ -178,11 +175,7 @@ public class GpsLogger implements GpsManagerListener {
                         previousLogLoc = gpsLoc;
 
                         // save last known location
-                        Editor editor = preferences.edit();
-                        editor.putFloat(PREFS_KEY_LON, (float) recLon * LibraryConstants.E6);
-                        editor.putFloat(PREFS_KEY_LAT, (float) recLat * LibraryConstants.E6);
-                        editor.putFloat(PREFS_KEY_ELEV, (float) recAlt);
-                        editor.commit();
+                        PositionUtilities.putGpsLocationInPreferences(preferences, recLon, recLat, recAlt);
 
                         // and wait
                         waitGpsInterval(waitForSecs);

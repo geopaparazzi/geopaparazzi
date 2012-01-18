@@ -295,7 +295,7 @@ public class FormUtilities {
      * @param tagName the tag name.
      * @throws JSONException 
      */
-    public static void updateExtras( JSONArray formItemsArray, float latitude, float longitude, String category, String tagName )
+    public static void updateExtras( JSONArray formItemsArray, double latitude, double longitude, String category, String tagName )
             throws JSONException {
         int length = formItemsArray.length();
         for( int i = 0; i < length; i++ ) {

@@ -57,6 +57,7 @@ import eu.geopaparazzi.library.sensors.SensorsManager;
 import eu.geopaparazzi.library.sms.SmsUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity;
 import eu.geopaparazzi.library.util.debug.Debug;
@@ -427,11 +428,8 @@ public class GeoPaparazziActivity extends Activity {
         // save last location just in case
         GpsLocation loc = gpsManager.getLocation();
         if (loc != null) {
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-            Editor editor = preferences.edit();
-            editor.putFloat(LibraryConstants.PREFS_KEY_LON, (float) loc.getLongitude());
-            editor.putFloat(LibraryConstants.PREFS_KEY_LAT, (float) loc.getLatitude());
-            editor.commit();
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+            PositionUtilities.putGpsLocationInPreferences(preferences, loc.getLongitude(), loc.getLatitude(), loc.getAltitude());
         }
 
         Utilities.toast(this, R.string.loggingoff, Toast.LENGTH_LONG);

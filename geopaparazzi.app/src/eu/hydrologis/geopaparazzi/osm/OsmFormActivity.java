@@ -52,6 +52,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import eu.geopaparazzi.library.util.FileUtilities;
+import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
@@ -81,8 +82,8 @@ public class OsmFormActivity extends Activity {
     private List<String> keyList = new ArrayList<String>();
     private JSONArray formItemsArray;
     private JSONObject jsonFormObject;
-    private float latitude;
-    private float longitude;
+    private double latitude;
+    private double longitude;
     private String category;
     private String tagName;
 
@@ -130,8 +131,10 @@ public class OsmFormActivity extends Activity {
         }
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        latitude = preferences.getFloat(Constants.PREFS_KEY_MAPCENTER_LAT, 0f);
-        longitude = preferences.getFloat(Constants.PREFS_KEY_MAPCENTER_LON, 0f);
+        double[] mapCenter = PositionUtilities.getMapCenterFromPreferences(preferences, true);
+
+        latitude = mapCenter[1];
+        longitude = mapCenter[0];
 
         LinearLayout mainView = (LinearLayout) findViewById(R.id.osmform_linear);
         Button okButton = (Button) findViewById(R.id.osmform_ok);
