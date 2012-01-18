@@ -71,6 +71,7 @@ import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.DatabaseManager;
+import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
 import eu.hydrologis.geopaparazzi.maps.MapItem;
 import eu.hydrologis.geopaparazzi.maps.MapsActivity;
@@ -103,7 +104,9 @@ public class GeoPaparazziActivity extends Activity {
     private ProgressDialog kmlProgressDialog;
 
     private File kmlOutputFile = null;
-    private static final int BROWSERRETURNCODE = 666;
+    private final int RETURNCODE_BROWSE_FOR_NEW_PREOJECT = 665;
+    private final int RETURNCODE_NOTES = 666;
+    private final int RETURNCODE_PICS = 667;
 
     private boolean sliderIsOpen = false;
     private GpsManager gpsManager;
@@ -268,8 +271,6 @@ public class GeoPaparazziActivity extends Activity {
 
     }
 
-    private final int RETURNCODE_NOTES = 666;
-    private final int RETURNCODE_PICS = 667;
     public void push( int id, View v ) {
         switch( id ) {
         case R.id.dashboard_note_item_button: {
@@ -382,7 +383,7 @@ public class GeoPaparazziActivity extends Activity {
         case MENU_LOAD:
             Intent browseIntent = new Intent(this, DirectoryBrowserActivity.class);
             browseIntent.putExtra(Constants.EXTENTION, DirectoryBrowserActivity.FOLDER);
-            startActivityForResult(browseIntent, BROWSERRETURNCODE);
+            startActivityForResult(browseIntent, RETURNCODE_BROWSE_FOR_NEW_PREOJECT);
             return true;
         case MENU_EXIT:
             finish();
@@ -394,7 +395,7 @@ public class GeoPaparazziActivity extends Activity {
     protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
         super.onActivityResult(requestCode, resultCode, data);
         switch( requestCode ) {
-        case (BROWSERRETURNCODE): {
+        case (RETURNCODE_BROWSE_FOR_NEW_PREOJECT): {
             if (resultCode == Activity.RESULT_OK) {
                 String chosenFolderToLoad = data.getStringExtra(Constants.PATH);
                 if (chosenFolderToLoad != null && new File(chosenFolderToLoad).getParentFile().exists()) {
@@ -405,6 +406,45 @@ public class GeoPaparazziActivity extends Activity {
                     Intent intent = getIntent();
                     finish();
                     startActivity(intent);
+                }
+            }
+            break;
+        }
+        case (RETURNCODE_NOTES): {
+            if (resultCode == Activity.RESULT_OK) {
+                String[] noteArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_NOTE);
+                if (noteArray != null) {
+                    try {
+                        double lon = Double.parseDouble(noteArray[0]);
+                        double lat = Double.parseDouble(noteArray[1]);
+                        double elev = Double.parseDouble(noteArray[2]);
+                        Date date = LibraryConstants.TIME_FORMATTER.parse(noteArray[3]);
+                        DaoNotes.addNote(this, lon, lat, elev, new java.sql.Date(date.getTime()), noteArray[4], null,
+                                NoteType.SIMPLE.getTypeNum());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
+                    }
+                }
+            }
+            break;
+        }
+        case (RETURNCODE_PICS): {
+            if (resultCode == Activity.RESULT_OK) {
+                String relativeImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
+                if (relativeImagePath != null) {
+                    try {
+                        double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
+                        double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
+                        double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
+                        double azim = data.getDoubleExtra(LibraryConstants.AZIMUTH, 0.0);
+                        DaoImages.addImage(this, lon, lat, elev, azim, new java.sql.Date(new Date().getTime()), "",
+                                relativeImagePath);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+
+                        Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
+                    }
                 }
             }
             break;
