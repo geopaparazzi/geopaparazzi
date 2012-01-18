@@ -35,13 +35,13 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.CompressionUtilities;
+import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
-import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Note;
 
 /**
@@ -199,7 +199,7 @@ public class OsmUtilities {
                     }
                 }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
-                        final File parentFile = ApplicationManager.getInstance(activity).getGeoPaparazziDir().getParentFile();
+                        final File parentFile = ResourcesManager.getInstance(activity).getApplicationDir().getParentFile();
                         final File osmZipFile = new File(parentFile, "osmtags.zip");
                         File osmFolderFile = new File(parentFile, "osmtags");
 

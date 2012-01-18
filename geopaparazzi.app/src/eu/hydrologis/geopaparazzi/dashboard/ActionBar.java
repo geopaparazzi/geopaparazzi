@@ -43,7 +43,6 @@ import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.actionbar.ActionItem;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.actionbar.QuickAction;
-import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 
 /**
  * The action bar utilities class.
@@ -69,8 +68,7 @@ public class ActionBar implements GpsManagerListener {
     private final SensorsManager sensorsManager;
     private boolean hasFix;
 
-    public ActionBar( View actionBarView, ApplicationManager applicationManager, GpsManager gpsManager,
-            SensorsManager sensorsManager ) {
+    public ActionBar( View actionBarView, GpsManager gpsManager, SensorsManager sensorsManager ) {
         this.actionBarView = actionBarView;
         this.gpsManager = gpsManager;
         this.sensorsManager = sensorsManager;
@@ -117,10 +115,9 @@ public class ActionBar implements GpsManagerListener {
 
     }
 
-    public static ActionBar getActionBar( Activity activity, int activityId, ApplicationManager applicationManager,
-            GpsManager gpsManager, SensorsManager sensorsManager ) {
+    public static ActionBar getActionBar( Activity activity, int activityId, GpsManager gpsManager, SensorsManager sensorsManager ) {
         View view = activity.findViewById(activityId);
-        return new ActionBar(view, applicationManager, gpsManager, sensorsManager);
+        return new ActionBar(view, gpsManager, sensorsManager);
     }
 
     public void setTitle( int titleResourceId, int titleViewId ) {

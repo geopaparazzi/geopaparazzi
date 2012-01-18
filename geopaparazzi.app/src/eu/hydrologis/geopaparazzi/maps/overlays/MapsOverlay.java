@@ -47,8 +47,8 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
 import eu.hydrologis.geopaparazzi.maps.MapItem;
-import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Constants;
+import eu.hydrologis.geopaparazzi.util.GpUtilities;
 import eu.hydrologis.geopaparazzi.util.PointsContainer;
 
 /**
@@ -78,8 +78,7 @@ public class MapsOverlay extends Overlay {
     public MapsOverlay( final Context ctx, final ResourceProxy pResourceProxy ) {
         super(pResourceProxy);
         this.context = ctx;
-        ApplicationManager applicationManager = ApplicationManager.getInstance(context);
-        decimationFactor = applicationManager.getDecimationFactor();
+        decimationFactor = GpUtilities.getDecimationFactor(ctx);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(ctx);
         zoomLevel1 = Integer.parseInt(preferences.getString(Constants.PREFS_KEY_ZOOM1, "14"));

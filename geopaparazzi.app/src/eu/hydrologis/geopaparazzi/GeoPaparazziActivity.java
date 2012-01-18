@@ -58,6 +58,7 @@ import eu.geopaparazzi.library.sms.SmsUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
+import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity;
 import eu.geopaparazzi.library.util.debug.Debug;
@@ -78,7 +79,6 @@ import eu.hydrologis.geopaparazzi.maps.MapsActivity;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
 import eu.hydrologis.geopaparazzi.preferences.PreferencesActivity;
 import eu.hydrologis.geopaparazzi.util.AboutActivity;
-import eu.hydrologis.geopaparazzi.util.ApplicationManager;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Image;
@@ -99,7 +99,7 @@ public class GeoPaparazziActivity extends Activity {
     private static final int MENU_RESET = 4;
     private static final int MENU_LOAD = 5;
 
-    private ApplicationManager applicationManager;
+    private ResourcesManager resourcesManager;
     private ActionBar actionBar;
     private ProgressDialog kmlProgressDialog;
 
@@ -132,7 +132,7 @@ public class GeoPaparazziActivity extends Activity {
         checkDebugLogger();
 
         if (actionBar == null) {
-            actionBar = ActionBar.getActionBar(this, R.id.action_bar, applicationManager, gpsManager, sensorManager);
+            actionBar = ActionBar.getActionBar(this, R.id.action_bar, gpsManager, sensorManager);
             actionBar.setTitle(R.string.app_name, R.id.action_bar_title);
         }
         actionBar.checkLogging();
@@ -146,13 +146,13 @@ public class GeoPaparazziActivity extends Activity {
         sensorManager = SensorsManager.getInstance(this);
 
         Object stateObj = getLastNonConfigurationInstance();
-        if (stateObj instanceof ApplicationManager) {
-            applicationManager = (ApplicationManager) stateObj;
+        if (stateObj instanceof ResourcesManager) {
+            resourcesManager = (ResourcesManager) stateObj;
         } else {
-            ApplicationManager.resetManager();
-            applicationManager = ApplicationManager.getInstance(this);
+            ResourcesManager.resetManager();
+            resourcesManager = ResourcesManager.getInstance(this);
         }
-        if (applicationManager == null) {
+        if (resourcesManager == null) {
             Utilities.messageDialog(this, R.string.sdcard_notexist, new Runnable(){
                 public void run() {
                     finish();
@@ -263,7 +263,7 @@ public class GeoPaparazziActivity extends Activity {
         String key = getString(R.string.enable_debug);
         boolean logToFile = preferences.getBoolean(key, false);
         if (logToFile) {
-            File debugLogFile = applicationManager.getDebugLogFile();
+            File debugLogFile = resourcesManager.getDebugLogFile();
             new Logger(debugLogFile);
         } else {
             new Logger(null);
@@ -277,7 +277,7 @@ public class GeoPaparazziActivity extends Activity {
             QuickAction qa = new QuickAction(v);
             qa.addActionItem(QuickActionsFactory.INSTANCE.getNotesQuickAction(qa, this, RETURNCODE_NOTES));
             qa.addActionItem(QuickActionsFactory.INSTANCE.getPicturesQuickAction(qa, this, RETURNCODE_PICS));
-            qa.addActionItem(QuickActionsFactory.INSTANCE.getAudioQuickAction(qa, this, applicationManager.getMediaDir()));
+            qa.addActionItem(QuickActionsFactory.INSTANCE.getAudioQuickAction(qa, this, resourcesManager.getMediaDir()));
             qa.setAnimStyle(QuickAction.ANIM_AUTO);
             qa.show();
             break;
@@ -323,7 +323,7 @@ public class GeoPaparazziActivity extends Activity {
         }
         case R.id.dashboard_import_item_button: {
             Intent browseIntent = new Intent(this, DirectoryBrowserActivity.class);
-            browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, applicationManager.getGeoPaparazziDir()
+            browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, resourcesManager.getApplicationDir()
                     .getAbsolutePath());
             browseIntent.putExtra(DirectoryBrowserActivity.INTENT_ID, Constants.GPXIMPORT);
             browseIntent.putExtra(DirectoryBrowserActivity.EXTENTION, ".gpx"); //$NON-NLS-1$
@@ -385,7 +385,7 @@ public class GeoPaparazziActivity extends Activity {
         case MENU_LOAD:
             Intent browseIntent = new Intent(this, DirectoryBrowserActivity.class);
             browseIntent.putExtra(DirectoryBrowserActivity.EXTENTION, DirectoryBrowserActivity.FOLDER);
-            browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, applicationManager.getGeoPaparazziDir()
+            browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, resourcesManager.getApplicationDir()
                     .getAbsolutePath());
             startActivityForResult(browseIntent, RETURNCODE_BROWSE_FOR_NEW_PREOJECT);
             return true;
@@ -403,7 +403,7 @@ public class GeoPaparazziActivity extends Activity {
             if (resultCode == Activity.RESULT_OK) {
                 String chosenFolderToLoad = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
                 if (chosenFolderToLoad != null && new File(chosenFolderToLoad).getParentFile().exists()) {
-                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
                     Editor editor = preferences.edit();
                     editor.putString(LibraryConstants.PREFS_KEY_BASEFOLDER, chosenFolderToLoad);
                     editor.commit();
@@ -484,14 +484,15 @@ public class GeoPaparazziActivity extends Activity {
         gpsManager.stopListening();
         gpsManager.stopLogging();
         DatabaseManager.getInstance().closeDatabase();
-        applicationManager = null;
+        ResourcesManager.resetManager();
+        resourcesManager = null;
         super.finish();
     }
 
     private boolean doRename = false;
 
     private void resetData() {
-        File geoPaparazziDir = applicationManager.getGeoPaparazziDir();
+        File geoPaparazziDir = resourcesManager.getApplicationDir();
         String name = geoPaparazziDir.getName();
         doRename = false;
         if (name.equals(Constants.GEOPAPARAZZI)) {
@@ -521,7 +522,7 @@ public class GeoPaparazziActivity extends Activity {
                                 if (newName == null || newName.length() < 1) {
                                     newName = defaultLogName;
                                 }
-                                File geopaparazziDirFile = applicationManager.getGeoPaparazziDir();
+                                File geopaparazziDirFile = resourcesManager.getApplicationDir();
                                 DatabaseManager.getInstance().closeDatabase();
                                 File geopaparazziParentFile = geopaparazziDirFile.getParentFile();
                                 File newGeopaparazziDirFile = new File(geopaparazziParentFile.getAbsolutePath(), newName);
@@ -589,7 +590,7 @@ public class GeoPaparazziActivity extends Activity {
                         kmlRepresenterList.add(image);
                     }
 
-                    File kmlExportDir = applicationManager.getKmlExportDir();
+                    File kmlExportDir = resourcesManager.getExportDir();
                     String filename = "geopaparazzi_" + LibraryConstants.TIMESTAMPFORMATTER.format(new Date()) + ".kmz"; //$NON-NLS-1$ //$NON-NLS-2$
                     kmlOutputFile = new File(kmlExportDir, filename);
                     KmzExport export = new KmzExport(null, kmlOutputFile);
@@ -631,7 +632,7 @@ public class GeoPaparazziActivity extends Activity {
      * @throws IOException
      */
     private void checkExtraBookmarks() throws IOException {
-        File geoPaparazziDir = applicationManager.getGeoPaparazziDir();
+        File geoPaparazziDir = resourcesManager.getApplicationDir();
         File bookmarksfile = new File(geoPaparazziDir, "bookmarks.csv"); //$NON-NLS-1$
         if (bookmarksfile.exists()) {
             // try to load it
@@ -663,7 +664,7 @@ public class GeoPaparazziActivity extends Activity {
 
     @Override
     public Object onRetainNonConfigurationInstance() {
-        return applicationManager;
+        return resourcesManager;
     }
 
     /**

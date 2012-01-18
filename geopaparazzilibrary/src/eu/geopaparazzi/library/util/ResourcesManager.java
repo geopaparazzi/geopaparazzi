@@ -41,13 +41,19 @@ import eu.geopaparazzi.library.R;
 public class ResourcesManager implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    private static final String PATH_MEDIA = "media";
+
+    private static final String PATH_EXPORT = "export";
+
     private Context context;
 
     private File applicationDir;
-
     private File debugLogFile;
-
     private File databaseFile;
+
+    private File mediaDir;
+
+    private File exportDir;
 
     private static ResourcesManager resourcesManager;
 
@@ -98,6 +104,8 @@ public class ResourcesManager implements Serializable {
          * applicationname 
          *    | 
          *    |--- applicationname.db 
+         *    |--- media  (folder)
+         *    |--- export  (folder)
          *    `--- debug.log 
          */
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -133,6 +141,22 @@ public class ResourcesManager implements Serializable {
                         null);
         databaseFile = new File(applicationDirPath, databaseName);
         debugLogFile = new File(applicationDirPath, "debug.log"); //$NON-NLS-1$
+
+        mediaDir = new File(applicationDir, PATH_MEDIA);
+        if (!mediaDir.exists())
+            if (!mediaDir.mkdir())
+                Utilities.messageDialog(
+                        context,
+                        MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
+                                mediaDir.getAbsolutePath()), null);
+
+        exportDir = new File(applicationDir, PATH_EXPORT);
+        if (!exportDir.exists())
+            if (!exportDir.mkdir())
+                Utilities.messageDialog(
+                        context,
+                        MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
+                                exportDir.getAbsolutePath()), null);
     }
 
     /**
@@ -157,12 +181,30 @@ public class ResourcesManager implements Serializable {
     }
 
     /**
-     * Get the path to the log file.
+     * Get the {@link File} to the log file.
      * 
-     * @return the path to the log file. 
+     * @return the {@link File} to the log file. 
      */
     public File getDebugLogFile() {
         return debugLogFile;
+    }
+
+    /**
+     * Get the default media folder.
+     * 
+     * @return the default media folder.
+     */
+    public File getMediaDir() {
+        return mediaDir;
+    }
+
+    /**
+     * Get the default export folder.
+     * 
+     * @return the default export folder.
+     */
+    public File getExportDir() {
+        return exportDir;
     }
 
 }

@@ -43,7 +43,7 @@ import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
 import eu.hydrologis.geopaparazzi.maps.MapItem;
-import eu.hydrologis.geopaparazzi.util.ApplicationManager;
+import eu.hydrologis.geopaparazzi.util.GpUtilities;
 
 /**
  * Overlay to show gps logs.
@@ -67,8 +67,7 @@ public class LogsOverlay extends Overlay {
     public LogsOverlay( final Context ctx, final ResourceProxy pResourceProxy ) {
         super(pResourceProxy);
         this.context = ctx;
-        ApplicationManager applicationManager = ApplicationManager.getInstance(context);
-        decimationFactor = applicationManager.getDecimationFactor();
+        decimationFactor = GpUtilities.getDecimationFactor(ctx);
     }
 
     public void setDoDraw( boolean doDraw ) {
