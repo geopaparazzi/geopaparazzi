@@ -1,20 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="cancel">cancel</string>
-    <string name="ok">ok</string>
-    <string name="okcoord">use coord</string>
-    <string name="okaddress">use address</string>
-    <string name="longitude">longitude</string>
-    <string name="latitude">latitude</string>
     <string name="meters">meters</string>
     
     <string name="app_name">GeoPaparazzi</string>
 
-    <string name="notesaved">Note successfully saved!</string>
-    <string name="notenonsaved">An error occurred while saving the Note!</string>
-    <string name="notecancel">Note not saved as requested by user.</string>
     <string name="notesvisibilityToggle">Toggle notes visibility.</string>
-
     <string name="gpslogsvisibilityToggle">Toggle gps logs visibility.</string>
 
     <string name="kmlsaved">Kml successfully exported to: </string>
@@ -24,17 +15,11 @@
     <string name="imagenonsaved">An error occurred while saving the image!</string>
     <string name="loggingoff">Stopped all sensors.</string>
     <string name="loggingon">Started gps and sensor logging.</string>
-    <string name="gpsloggingoff">Stopped gps logging.</string>
-    <string name="gpsloggingon">Started gps logging…</string>
-    <string name="gpsloggingalarm">Avoid/stop alarm… </string>
     
     <string name="nogps_data">No gps data available yet!</string>
     
     <string name="about">about</string>
     <string name="exit">exit</string>
-    <string name="cantcreate_sdcard">Wasn\'t able to create folder on sdcard ({0}). Exiting…</string>
-    <string name="sdcard_notexist">Sdcard folder doesn\'t exist or is not writable (is it possible it is mounted on a pc?). Exiting…</string>
-    <string name="cantwrite_gpslog">ERROR: couldn\'t write gps log!</string>
     <string name="cantclose_gpslog">ERROR: couldn\'t close gps log!</string>
     <string name="gpslogthread_interrupted">ERROR: gps log thread interrupted!</string>
     <string name="utctime">time: </string>
@@ -54,18 +39,14 @@
 	<string name="nogpscoordinate">The gps didn\'t send any coordinate yet. Try again in a minute.</string>
 	<string name="saveimg">Saving tile to disk</string>
 	<string name="goto_coordinate">go to coordinate</string>
-	<string name="askcoord">Please insert the coordinates to go to</string>
 	<string name="address">Address</string>
 	<string name="askaddress">Or use an address if you are connected to internet</string>
-	<string name="wrongLongitude">Longitude has to be a number between -180 and 180.</string>
-	<string name="wrongLatitude">Latitude has to be a number between -90 and 90.</string>
 	<string name="emptyaddress">Please insert an address.</string>
 	<string name="cantretrievefromaddress">Could not retrieve the location from the supplied address.</string>
 	<string name="prompt_gpsenable">Your gps is disabled! Would you like to enable it?</string>
 	<string name="nogps4google">The gps didn\'t supply any position yet. Can\'t Visualize any position on map.</string>
 	<string name="width_label">width</string>
 	<string name="color_label">color</string>
-	<string name="last_position">Last position at</string>
 	<string name="distance">Distance [m]</string>
 
 	<string name="mainmenu_kmlexport">export kml</string>
@@ -118,8 +99,6 @@
 	<string name="osm_additionalinfo">Add info to tag</string>
 	<string name="osm_tagsgrid">Choose a tag to insert</string>
 	
-	<string name="error_disk_full">The disk to which to log to seems to be full. Free some memory and start again.</string>
-	
 	<string name="measureinfo">Last measurement info</string>
 	<string name="measureinfo_first">First point</string>
 	<string name="measureinfo_last">Last point</string>
@@ -158,7 +137,6 @@
 	
 	<string name="no_maps_in_list">There are no maps in the list. To import maps, use the import gpx function from the menu.</string>
 	
-	<string name="insert_note">insert your note here</string>
 	<string name="gps_log">gps log</string>
 	<string name="gps_log_name">Insert a gps log name or accept the default one</string>
 	
@@ -189,7 +167,6 @@
     <string name="remove_last_note_prompt">Do you really want to remove the last text note? This can\'t be undone.</string>
     
     <string name="export_for_real">Export data?</string>
-    <string name="up">up</string>
 
     <string name="installgpsstatus_title">Install GPS Status</string>
     <string name="installgpsstatus_message">Geopaparazzi uses the Gps Status Application as compass and gps info view. Do you want to install it?</string>
