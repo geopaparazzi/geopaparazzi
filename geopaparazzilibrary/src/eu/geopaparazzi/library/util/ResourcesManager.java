@@ -42,9 +42,9 @@ import eu.geopaparazzi.library.R;
 public class ResourcesManager implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private static final String PATH_MEDIA = "media";
+    private static final String PATH_MEDIA = "media"; //$NON-NLS-1$
 
-    private static final String PATH_EXPORT = "export";
+    private static final String PATH_EXPORT = "export"; //$NON-NLS-1$
 
     private Context context;
 
@@ -112,8 +112,14 @@ public class ResourcesManager implements Serializable {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String baseFolder = preferences.getString(PREFS_KEY_BASEFOLDER, ""); //$NON-NLS-1$
         applicationDir = new File(baseFolder);
-        if (baseFolder == null || baseFolder.length() == 0 || !applicationDir.getParentFile().exists()
-                || !applicationDir.getParentFile().canWrite()) {
+        File parentFile = applicationDir.getParentFile();
+        boolean parentExists = false;
+        boolean parentCanWrite = false;
+        if (parentFile != null) {
+            parentExists = parentFile.exists();
+            parentCanWrite = parentFile.canWrite();
+        }
+        if (baseFolder.length() == 0 || !parentExists || !parentCanWrite) {
             // the folder doesn't exist for some reason, fallback on default
             String state = Environment.getExternalStorageState();
             boolean mExternalStorageAvailable;
@@ -127,7 +133,7 @@ public class ResourcesManager implements Serializable {
                 mExternalStorageAvailable = mExternalStorageWriteable = false;
             }
             if (mExternalStorageAvailable && mExternalStorageWriteable) {
-                File sdcardDir = Environment.getExternalStorageDirectory();// new
+                File sdcardDir = Environment.getExternalStorageDirectory();
                 applicationDir = new File(sdcardDir, applicationLabel);
             } else {
                 throw new IOException();
@@ -136,10 +142,12 @@ public class ResourcesManager implements Serializable {
 
         String applicationDirPath = applicationDir.getAbsolutePath();
         if (!applicationDir.exists())
-            if (!applicationDir.mkdir())
-                Utilities.messageDialog(context,
-                        MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard), applicationDirPath),
-                        null);
+            if (!applicationDir.mkdirs()) {
+                String msg = "Wasn\'t able to create folder on sdcard ({0}). Exiting...";
+                // String msg = context.getResources().getString(R.string.cantcreate_sdcard);
+                String msgFormat = MessageFormat.format(msg, applicationDirPath);
+                Utilities.messageDialog(context, msgFormat, null);
+            }
         databaseFile = new File(applicationDirPath, databaseName);
         debugLogFile = new File(applicationDirPath, "debug.log"); //$NON-NLS-1$
 
