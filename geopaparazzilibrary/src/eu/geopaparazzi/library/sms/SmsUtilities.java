@@ -25,7 +25,7 @@ import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
 import android.widget.Toast;
 import eu.geopaparazzi.library.R;
-import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
@@ -47,12 +47,15 @@ public class SmsUtilities {
      */
     public static String createPositionText( final Context context, String messageText ) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        float gpsLon = preferences.getFloat(LibraryConstants.PREFS_KEY_LON, -9999);
-        float gpsLat = preferences.getFloat(LibraryConstants.PREFS_KEY_LAT, -9999);
+
+        double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
+        if (gpsLocation == null) {
+            gpsLocation = PositionUtilities.getMapCenterFromPreferences(preferences, false);
+        }
         StringBuilder sB = new StringBuilder();
-        if (gpsLon != -9999) {
-            String latString = String.valueOf(gpsLat).replaceAll(",", ".");
-            String lonString = String.valueOf(gpsLon).replaceAll(",", ".");
+        if (gpsLocation != null) {
+            String latString = String.valueOf(gpsLocation[1]).replaceAll(",", ".");
+            String lonString = String.valueOf(gpsLocation[0]).replaceAll(",", ".");
             // http://www.osm.org/?lat=46.068941&lon=11.169849&zoom=18&layers=M&mlat=42.95647&mlon=12.70393&GeoSMS
             // http://maps.google.com/maps?q=46.068941,11.169849&GeoSMS
 
