@@ -473,6 +473,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             int previousScreenX = Integer.MAX_VALUE;
             int previousScreenY = Integer.MAX_VALUE;
 
+            @SuppressWarnings("unused")
             int jump = 0;
             while( !c.isAfterLast() ) {
                 float lon = c.getFloat(0);
@@ -552,6 +553,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             int previousScreenX = Integer.MAX_VALUE;
             int previousScreenY = Integer.MAX_VALUE;
 
+            @SuppressWarnings("unused")
             int jump = 0;
             boolean first = true;
             while( !c.isAfterLast() ) {

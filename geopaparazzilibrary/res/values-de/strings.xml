@@ -11,7 +11,7 @@
   <string name="gpsloggingoff">GPS-Log gestoppt.</string>
   <string name="gpsloggingon">GPS-Log gestartet...</string>
   <string name="gpsloggingalarm">Unterdrücke/stoppe Alarm...</string>
-  <string name="last_position">Letzte Position bei</string>
+  <string name="last_position">Letzte Position</string>
   <string name="gpx_import_processing">Importiere GPX...</string>
   <string name="insert_note">Notiz hier einfügen</string>
   <string name="notesaved">Notiz erfolgreich gespeichert!</string>

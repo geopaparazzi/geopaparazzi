@@ -209,7 +209,7 @@ public class MapTagsActivity extends Activity {
                         double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
                         double azim = data.getDoubleExtra(LibraryConstants.AZIMUTH, 0.0);
 
-                        DaoImages.addImage(this, lon, lat, elev, azim, new Date(new java.util.Date().getTime()), "",
+                        DaoImages.addImage(this, lon, lat, elev, azim, new Date(new java.util.Date().getTime()), "", //$NON-NLS-1$
                                 relativeImagePath);
                     } catch (Exception e) {
                         e.printStackTrace();

@@ -84,6 +84,7 @@
 	<string name="sms_catching">Sms catching</string>
 	<string name="sms_number">Phone number for automatic sms sending</string>
 	<string name="sms_catcher">Enable sms catcher</string>
+	<string name="sms_type">Use OGC geosms instead of OSM based</string>
 
 	<string name="database_preferences">Database preferences</string>
 	<string name="database_new">Create a new database on restart</string>
@@ -151,7 +152,7 @@
 
 	<string name="panic_upper">  PANIC!  </string>
 	<string name="send_status_update">send position</string>
-	<string name="help_needed">Help needed at</string>
+	<string name="help_needed">Help needed!</string>
 	<string name="message_sent">Message sent</string>
 
 	<string name="last_note_deleted">Deleted last note</string>

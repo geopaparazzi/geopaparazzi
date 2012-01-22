@@ -10,7 +10,7 @@
   <string name="gpsloggingoff">Parado el gps.</string>
   <string name="gpsloggingon">Encendido el gps.</string>
   <string name="gpsloggingalarm">Evitar/parar alarma... </string>
-  <string name="last_position">última posición a</string>
+  <string name="last_position">última posición</string>
   <string name="gpx_import_processing">Importando gpx...</string>
   <string name="insert_note">insertar su nota aquí</string>
   <string name="notesaved">Nota guardada con éxito!</string>

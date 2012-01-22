@@ -48,7 +48,6 @@ import eu.hydrologis.geopaparazzi.database.DaoNotes;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-@SuppressWarnings("nls")
 public class MixareUtilities {
 
     /**

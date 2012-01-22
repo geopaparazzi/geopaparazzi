@@ -398,7 +398,9 @@ public class DaoMaps {
         int previousScreenY = Integer.MAX_VALUE;
 
         PointsContainer pointsContainer = new PointsContainer("log_" + mapId);
+        @SuppressWarnings("unused")
         int index = 0;
+        @SuppressWarnings("unused")
         int jump = 0;
         while( !c.isAfterLast() ) {
             float lon = c.getFloat(0);

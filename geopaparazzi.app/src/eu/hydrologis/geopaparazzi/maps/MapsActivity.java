@@ -768,7 +768,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
 
     protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
         if (Debug.D) {
-            Logger.d(this, "Activity returned");
+            Logger.d(this, "Activity returned"); //$NON-NLS-1$
         }
         super.onActivityResult(requestCode, resultCode, data);
         switch( requestCode ) {

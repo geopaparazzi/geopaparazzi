@@ -442,7 +442,7 @@ public class GeoPaparazziActivity extends Activity {
                         double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
                         double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
                         double azim = data.getDoubleExtra(LibraryConstants.AZIMUTH, 0.0);
-                        DaoImages.addImage(this, lon, lat, elev, azim, new java.sql.Date(new Date().getTime()), "",
+                        DaoImages.addImage(this, lon, lat, elev, azim, new java.sql.Date(new Date().getTime()), "", //$NON-NLS-1$
                                 relativeImagePath);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -531,7 +531,7 @@ public class GeoPaparazziActivity extends Activity {
                                         newGeopaparazziDirFile.getAbsolutePath());
                             } else {
                                 // reset to default
-                                ResourcesManager.getInstance(GeoPaparazziActivity.this).setApplicationDir("");
+                                ResourcesManager.getInstance(GeoPaparazziActivity.this).setApplicationDir(""); //$NON-NLS-1$
                             }
 
                             Intent intent = getIntent();

@@ -24,6 +24,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.widget.Button;
+import eu.geopaparazzi.library.R;
 
 /**
  * A dialog that permits multiple selection.
@@ -86,7 +87,7 @@ public class MultipleChoiceDialog {
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Select...");
+        builder.setTitle(R.string.select_dotdot);
         builder.setMultiChoiceItems(items, checkedValues, dialogListener);
         AlertDialog dialog = builder.create();
         dialog.show();

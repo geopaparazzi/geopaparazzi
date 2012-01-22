@@ -13,7 +13,7 @@
     <string name="gpsloggingon">Started gps logging...</string>
     <string name="gpsloggingalarm">Avoid/stop alarm... </string>
     <string name="prompt_gpsenable">Your gps is disabled! Would you like to enable it?</string>
-    <string name="last_position">Last position at</string>
+    <string name="last_position">Last position</string>
     <string name="last_position_unknown">Sorry, could not identify the location properly.</string>
     <string name="cantcreate_img_folder">Can\'t create the folder into which to save the image.</string>
     <string name="gpx_import_title">Line or Point?</string>
@@ -34,4 +34,6 @@
     <string name="message_sent">Message sent</string>
     
     <string name="check_valid_field">Please check that the field \"{0}\" is valid.</string>
+    
+    <string name="select_dotdot">Select...</string>
 </resources>

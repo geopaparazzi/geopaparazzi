@@ -53,20 +53,29 @@ public class SmsUtilities {
         if (gpsLon != -9999) {
             String latString = String.valueOf(gpsLat).replaceAll(",", ".");
             String lonString = String.valueOf(gpsLon).replaceAll(",", ".");
-            // http://www.openstreetmap.org/?lat=46.068941&lon=11.169849&zoom=18&layers=M&mlat=42.95647&mlon=12.70393
-            // http://maps.google.com/maps?q=46.068941,11.169849&z=16
+            // http://www.osm.org/?lat=46.068941&lon=11.169849&zoom=18&layers=M&mlat=42.95647&mlon=12.70393&GeoSMS
+            // http://maps.google.com/maps?q=46.068941,11.169849&GeoSMS
 
+            // google maps has the url that is geosms compliant
+            sB.append("http://maps.google.com/maps?q=");
+            sB.append(latString);
+            sB.append(",");
+            sB.append(lonString);
+            sB.append("&GeoSMS");
+
+            // TODO use OSM again when the coordinates in the url will be geosms compliant
+            // sB.append("http://www.osm.org/?lat=");
+            // sB.append(latString);
+            // sB.append("&lon=");
+            // sB.append(lonString);
+            // sB.append("&zoom=14");
+            // sB.append("&layers=M&mlat=");
+            // sB.append(latString);
+            // sB.append("&mlon=");
+            // sB.append(lonString);
+            // sB.append("&GeoSMS");
             if (messageText != null)
-                sB.append(messageText).append(":");
-            sB.append("http://www.openstreetmap.org/?lat=");
-            sB.append(latString);
-            sB.append("&lon=");
-            sB.append(lonString);
-            sB.append("&zoom=14");
-            sB.append("&layers=M&mlat=");
-            sB.append(latString);
-            sB.append("&mlon=");
-            sB.append(lonString);
+                sB.append(" ").append(messageText);
 
             String msg = sB.toString();
             if (sB.toString().length() > 160) {
