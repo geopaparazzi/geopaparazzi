@@ -17,7 +17,7 @@
  */
 package eu.hydrologis.geopaparazzi.osm;
 
-import static eu.geopaparazzi.library.forms.FormUtilities.CONSTRAINT_MANDATORY;
+import static eu.geopaparazzi.library.forms.FormUtilities.*;
 import static eu.geopaparazzi.library.forms.FormUtilities.CONSTRAINT_RANGE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_KEY;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_LONGNAME;
@@ -234,6 +234,11 @@ public class OsmFormActivity extends Activity {
                     JSONArray comboItems = TagsManager.getComboItems(jsonObject);
                     String[] itemsArray = TagsManager.comboItems2StringArray(comboItems);
                     addedView = FormUtilities.addComboView(this, mainView, key, value, itemsArray, constraintDescription);
+                } else if (type.equals(TYPE_STRINGMULTIPLECHOICE)) {
+                    JSONArray comboItems = TagsManager.getComboItems(jsonObject);
+                    String[] itemsArray = TagsManager.comboItems2StringArray(comboItems);
+                    addedView = FormUtilities
+                            .addMultiSelectionView(this, mainView, key, value, itemsArray, constraintDescription);
                 } else {
                     System.out.println("Type non implemented yet: " + type);
                 }
@@ -265,6 +270,12 @@ public class OsmFormActivity extends Activity {
             } else if (view instanceof Spinner) {
                 Spinner spinner = (Spinner) view;
                 text = spinner.getSelectedItem().toString();
+            } else if (view instanceof Button) {
+                Button button = (Button) view;
+                text = button.getText().toString();
+                if (text.trim().equals("...")) {
+                    text = "";
+                }
             }
 
             if (!constraints.isValid(text)) {

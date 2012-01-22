@@ -39,10 +39,19 @@ public class MultipleChoiceDialog {
      * 
      * @param context the {@link Context} to use.
      * @param parentButton the parent {@link Button} that will be updated and contain
-     *              the text of csv of the selected items.
+     *              the text of semicolon separated list of the selected items.
      * @param items the items to be presented in the dialog.
      */
     public void open( Context context, final Button parentButton, final String[] items ) {
+
+        String buttonString = parentButton.getText().toString();
+        if (!buttonString.equals("...")) { //$NON-NLS-1$
+            // we have values already
+            String[] split = buttonString.split(";"); //$NON-NLS-1$
+            for( String string : split ) {
+                allSelected.add(string);
+            }
+        }
 
         boolean[] checkedValues = new boolean[items.length];
         int count = items.length;
@@ -53,6 +62,9 @@ public class MultipleChoiceDialog {
         DialogInterface.OnMultiChoiceClickListener dialogListener = new DialogInterface.OnMultiChoiceClickListener(){
             @Override
             public void onClick( DialogInterface dialog, int which, boolean isChecked ) {
+                if (items[which].length() == 0) {
+                    return;
+                }
                 if (isChecked) {
                     allSelected.add(items[which]);
                 } else {
@@ -61,11 +73,14 @@ public class MultipleChoiceDialog {
                 StringBuilder sB = new StringBuilder();
 
                 for( CharSequence selected : allSelected )
-                    sB.append("," + selected); //$NON-NLS-1$
+                    sB.append(";" + selected); //$NON-NLS-1$
 
                 String buttonString = ""; //$NON-NLS-1$
-                if (sB.length() > 0)
+                if (sB.length() > 0) {
                     buttonString = sB.substring(1);
+                } else {
+                    buttonString = "..."; //$NON-NLS-1$
+                }
                 parentButton.setText(buttonString);
             }
         };

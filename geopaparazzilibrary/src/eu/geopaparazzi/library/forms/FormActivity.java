@@ -27,6 +27,7 @@ import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_BOOLEAN;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_DOUBLE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRING;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRINGCOMBO;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRINGMULTIPLECHOICE;
 
 import java.sql.Date;
 import java.text.MessageFormat;
@@ -210,6 +211,11 @@ public class FormActivity extends Activity {
                     JSONArray comboItems = TagsManager.getComboItems(jsonObject);
                     String[] itemsArray = TagsManager.comboItems2StringArray(comboItems);
                     addedView = FormUtilities.addComboView(this, mainView, key, value, itemsArray, constraintDescription);
+                } else if (type.equals(TYPE_STRINGMULTIPLECHOICE)) {
+                    JSONArray comboItems = TagsManager.getComboItems(jsonObject);
+                    String[] itemsArray = TagsManager.comboItems2StringArray(comboItems);
+                    addedView = FormUtilities
+                            .addMultiSelectionView(this, mainView, key, value, itemsArray, constraintDescription);
                 } else {
                     System.out.println("Type non implemented yet: " + type);
                 }
@@ -241,6 +247,12 @@ public class FormActivity extends Activity {
             } else if (view instanceof Spinner) {
                 Spinner spinner = (Spinner) view;
                 text = spinner.getSelectedItem().toString();
+            } else if (view instanceof Button) {
+                Button button = (Button) view;
+                text = button.getText().toString();
+                if (text.trim().equals("...")) {
+                    text = "";
+                }
             }
 
             if (!constraints.isValid(text)) {

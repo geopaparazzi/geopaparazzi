@@ -26,12 +26,14 @@ import android.text.InputType;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.util.MultipleChoiceDialog;
 
 /**
  * Utilities methods for form stuff.
@@ -64,6 +66,11 @@ public class FormUtilities {
      * Type for a {@link Spinner}.
      */
     public static final String TYPE_STRINGCOMBO = "stringcombo";
+
+    /**
+     * Type for a {@link MuSpinner}.
+     */
+    public static final String TYPE_STRINGMULTIPLECHOICE = "multistringcombo";
 
     /**
      * Type for a hidden widget, which just needs to be kept as it is but not displayed.
@@ -226,7 +233,6 @@ public class FormUtilities {
      * @param value the value to put in the widget.
      * @param itemsArray the items to put in the spinner.
      * @param constraintDescription 
-     * @return 
      * @return the added view.
      */
     public static View addComboView( Context context, LinearLayout mainView, String key, String value, String[] itemsArray,
@@ -264,6 +270,49 @@ public class FormUtilities {
 
         textLayout.addView(spinner);
         return spinner;
+    }
+
+    /**
+     * Adds a {@link MultipleChoiceDialog} to the supplied mainView.
+     * 
+     * @param context the context.
+     * @param mainView the main view to which to add the new widget to.
+     * @param key the key identifying the widget.
+     * @param value the value to put in the widget.
+     * @param itemsArray the items to put in the spinner.
+     * @param constraintDescription 
+     * @return the added view.
+     */
+    public static View addMultiSelectionView( final Context context, LinearLayout mainView, String key, String value,
+            final String[] itemsArray, String constraintDescription ) {
+        LinearLayout textLayout = new LinearLayout(context);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
+                LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(10, 10, 10, 10);
+        textLayout.setLayoutParams(layoutParams);
+        textLayout.setOrientation(LinearLayout.VERTICAL);
+        mainView.addView(textLayout);
+
+        TextView textView = new TextView(context);
+        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        textView.setPadding(2, 2, 2, 2);
+        textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
+        textView.setTextColor(context.getResources().getColor(R.color.hydrogreen));
+        textLayout.addView(textView);
+
+        final Button button = new Button(context);
+        button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        button.setPadding(15, 5, 15, 5);
+        button.setText("...");
+        button.setOnClickListener(new View.OnClickListener(){
+            public void onClick( View v ) {
+                MultipleChoiceDialog dialog = new MultipleChoiceDialog();
+                dialog.open(context, button, itemsArray);
+            }
+        });
+
+        textLayout.addView(button);
+        return button;
     }
 
     /**
