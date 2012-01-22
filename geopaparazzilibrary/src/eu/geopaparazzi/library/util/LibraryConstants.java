@@ -84,7 +84,7 @@ public interface LibraryConstants {
      * data, which would be overwritten. 
      * </p>
      */
-    public static final String PREFS_KEY_MAPCENTER_LAT = "PREFS_KEY_MAPCENTER_LAT";
+    public static final String PREFS_KEY_MAPCENTER_LAT = "PREFS_KEY_MAPCENTER_LAT"; //$NON-NLS-1$
 
     /**
      * Key used to store the mapview center longitude.
@@ -98,13 +98,13 @@ public interface LibraryConstants {
      * data, which would be overwritten. 
      * </p>
      */
-    public static final String PREFS_KEY_MAPCENTER_LON = "PREFS_KEY_MAPCENTER_LON";
+    public static final String PREFS_KEY_MAPCENTER_LON = "PREFS_KEY_MAPCENTER_LON"; //$NON-NLS-1$
 
     /**
      * Key used to store the mapview zoom level.
      * 
      */
-    public static final String PREFS_KEY_MAP_ZOOM = "PREFS_KEY_MAP_ZOOM";
+    public static final String PREFS_KEY_MAP_ZOOM = "PREFS_KEY_MAP_ZOOM"; //$NON-NLS-1$
 
     /**
      * Key used to pass a lat temporarily through bundles. 
@@ -164,19 +164,18 @@ public interface LibraryConstants {
     /**
      * Key used to define form data that are passed through any workflow. 
      */
-    public static final String PREFS_KEY_FORM = "PREFS_KEY_FORM";
+    public static final String PREFS_KEY_FORM = "PREFS_KEY_FORM"; //$NON-NLS-1$
 
     /**
      * Key used to define a json form that is passed through any workflow. 
      */
-    public static final String PREFS_KEY_FORM_JSON = "PREFS_KEY_FORM_JSON";
-    
+    public static final String PREFS_KEY_FORM_JSON = "PREFS_KEY_FORM_JSON"; //$NON-NLS-1$
+
     /**
      * Key used to define a form name that is passed through any workflow. 
      */
-    public static final String PREFS_KEY_FORM_NAME = "PREFS_KEY_FORM_NAME";
+    public static final String PREFS_KEY_FORM_NAME = "PREFS_KEY_FORM_NAME"; //$NON-NLS-1$
 
-    
     /**
      * Default gps logging interval.
      */

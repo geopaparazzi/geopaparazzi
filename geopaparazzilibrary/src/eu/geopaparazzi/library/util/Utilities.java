@@ -57,6 +57,37 @@ public class Utilities {
     }
 
     /**
+     * Convert exif format to decimal degree.
+     * 
+     * @param exifFormat the exif string of the gps position.
+     * @return the decimal degree.
+     */
+    @SuppressWarnings("nls")
+    public static double exifFormat2degreeDecimal( String exifFormat ) {
+        // latitude=44/1,10/1,28110/1000
+        String[] exifSplit = exifFormat.trim().split(",");
+
+        String[] value = exifSplit[0].split("/");
+
+        double tmp1 = Double.parseDouble(value[0]);
+        double tmp2 = Double.parseDouble(value[1]);
+        double degree = tmp1 / tmp2;
+
+        value = exifSplit[1].split("/");
+        tmp1 = Double.parseDouble(value[0]);
+        tmp2 = Double.parseDouble(value[1]);
+        double minutes = tmp1 / tmp2;
+
+        value = exifSplit[2].split("/");
+        tmp1 = Double.parseDouble(value[0]);
+        tmp2 = Double.parseDouble(value[1]);
+        double seconds = tmp1 / tmp2;
+
+        double result = degree + (minutes / 60.0) + (seconds / 3600.0);
+        return result;
+    }
+
+    /**
      * Calculates the hypothenuse as of the Pythagorean theorem.
      * 
      * @param d1 the length of the first leg.

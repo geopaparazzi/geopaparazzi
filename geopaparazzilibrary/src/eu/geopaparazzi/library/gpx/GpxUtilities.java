@@ -81,7 +81,7 @@ public class GpxUtilities {
             }
         } else {
             if (Debug.D)
-                Logger.d("GPXUTILITIES", "ERROR"); //$NON-NLS-1$
+                Logger.d("GPXUTILITIES", "ERROR"); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return gpxItems;
 

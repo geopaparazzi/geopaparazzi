@@ -168,9 +168,9 @@ public class CameraActivity extends Activity {
                 try {
                     bW = new BufferedWriter(new FileWriter(propertiesFile));
                     bW.write("latitude=");
-                    bW.write(latString);
+                    bW.write(String.valueOf(lat));
                     bW.write("\nlongitude=");
-                    bW.write(lonString);
+                    bW.write(String.valueOf(lon));
                     bW.write("\nazimuth=");
                     bW.write(azimuthString);
                     bW.write("\naltim=");

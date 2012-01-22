@@ -319,7 +319,7 @@ public class XYChartView extends View implements ChartChangeListener, ChartProgr
      * @return The dataset.
      */
     private XYDataset createEmptyDataset() {
-        XYSeries xyS = new XYSeries("", true, true);
+        XYSeries xyS = new XYSeries("", true, true); //$NON-NLS-1$
         xyS.add(0, 0);
         xMin = -1;
         xMax = 1;

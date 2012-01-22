@@ -143,8 +143,7 @@ public class ResourcesManager implements Serializable {
         String applicationDirPath = applicationDir.getAbsolutePath();
         if (!applicationDir.exists())
             if (!applicationDir.mkdirs()) {
-                String msg = "Wasn\'t able to create folder on sdcard ({0}). Exiting...";
-                // String msg = context.getResources().getString(R.string.cantcreate_sdcard);
+                String msg = context.getResources().getString(R.string.cantcreate_sdcard);
                 String msgFormat = MessageFormat.format(msg, applicationDirPath);
                 Utilities.messageDialog(context, msgFormat, null);
             }

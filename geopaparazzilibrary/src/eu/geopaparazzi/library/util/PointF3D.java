@@ -31,7 +31,7 @@ public class PointF3D extends PointF {
     private float z = Float.NaN;
     private boolean hasZ = false;
 
-    private String description = "";
+    private String description = ""; //$NON-NLS-1$
 
     public PointF3D( float x, float y ) {
         super(x, y);

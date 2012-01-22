@@ -23,5 +23,5 @@ package eu.geopaparazzi.library.util.activities;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public interface ActivitiesNames {
-    public final String CAMERA_ACTIVITY = "eu.geopaparazzi.library.camera.CameraActivity";
+    public final String CAMERA_ACTIVITY = "eu.geopaparazzi.library.camera.CameraActivity"; //$NON-NLS-1$
 }
