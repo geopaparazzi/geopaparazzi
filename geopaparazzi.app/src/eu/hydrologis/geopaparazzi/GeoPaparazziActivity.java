@@ -685,18 +685,18 @@ public class GeoPaparazziActivity extends Activity {
                 if (number.length() == 0) {
                     continue;
                 }
-                if (gpsManager.isGpsLogging()) {
-                    String lastPosition;
-                    if (doPanic) {
-                        lastPosition = getString(R.string.help_needed);
-                    } else {
-                        lastPosition = getString(R.string.last_position);
-                    }
-                    String positionText = SmsUtilities.createPositionText(this, lastPosition);
-                    SmsUtilities.sendSMS(this, number, positionText);
+                // if (gpsManager.isGpsLogging()) {
+                String lastPosition;
+                if (doPanic) {
+                    lastPosition = getString(R.string.help_needed);
                 } else {
-                    Utilities.messageDialog(this, R.string.gpslogging_only, null);
+                    lastPosition = getString(R.string.last_position);
                 }
+                String positionText = SmsUtilities.createPositionText(this, lastPosition);
+                SmsUtilities.sendSMS(this, number, positionText);
+                // } else {
+                // Utilities.messageDialog(this, R.string.gpslogging_only, null);
+                // }
             }
         }
 

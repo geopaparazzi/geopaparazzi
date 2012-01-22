@@ -23,8 +23,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
+import android.telephony.TelephonyManager;
 import android.widget.Toast;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.debug.Debug;
@@ -54,8 +56,8 @@ public class SmsUtilities {
         }
         StringBuilder sB = new StringBuilder();
         if (gpsLocation != null) {
-            String latString = String.valueOf(gpsLocation[1]).replaceAll(",", ".");
-            String lonString = String.valueOf(gpsLocation[0]).replaceAll(",", ".");
+            String latString = LibraryConstants.COORDINATE_FORMATTER.format(gpsLocation[1]).replaceAll(",", ".");
+            String lonString = LibraryConstants.COORDINATE_FORMATTER.format(gpsLocation[0]).replaceAll(",", ".");
             // http://www.osm.org/?lat=46.068941&lon=11.169849&zoom=18&layers=M&mlat=42.95647&mlon=12.70393&GeoSMS
             // http://maps.google.com/maps?q=46.068941,11.169849&GeoSMS
 
@@ -100,6 +102,16 @@ public class SmsUtilities {
      * @param msg the SMS body text.
      */
     public static void sendSMS( Context context, String number, String msg ) {
+        Object systemService = context.getSystemService(Context.TELEPHONY_SERVICE);
+        if (systemService instanceof TelephonyManager) {
+            TelephonyManager telManager = (TelephonyManager) systemService;
+            String networkOperator = telManager.getNetworkOperator();
+            if (networkOperator.trim().length() == 0) {
+                Utilities.messageDialog(context, "This functionality works only when connected to a GSM network.", null);
+                return;
+            }
+        }
+
         SmsManager mng = SmsManager.getDefault();
         PendingIntent dummyEvent = PendingIntent.getBroadcast(context, 0, new Intent("com.devx.SMSExample.IGNORE_ME"), 0);
         try {

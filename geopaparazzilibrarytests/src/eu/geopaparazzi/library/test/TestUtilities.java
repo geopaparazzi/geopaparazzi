@@ -17,6 +17,7 @@
  */
 package eu.geopaparazzi.library.test;
 
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 import junit.framework.TestCase;
 
@@ -31,4 +32,12 @@ public class TestUtilities extends TestCase {
         double degree = Utilities.exifFormat2degreeDecimal(exifFormat);
         assertEquals(decimalDegree, degree, 0.000001);
     }
+
+    public void testNumberFormats() {
+        double num = 11.467;
+        String numStr = LibraryConstants.COORDINATE_FORMATTER.format(num);
+
+        assertEquals("11.46700000", numStr);
+    }
+
 }

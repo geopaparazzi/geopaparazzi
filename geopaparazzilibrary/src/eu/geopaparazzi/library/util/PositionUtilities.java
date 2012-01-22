@@ -20,6 +20,8 @@ package eu.geopaparazzi.library.util;
 import static eu.geopaparazzi.library.util.LibraryConstants.*;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_LAT;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_LON;
+import eu.geopaparazzi.library.util.debug.Debug;
+import eu.geopaparazzi.library.util.debug.Logger;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
@@ -40,11 +42,17 @@ public class PositionUtilities {
      * @param latitude  the latitude in its real value.
      * @param elevation the elevation in meters.
      */
+    @SuppressWarnings("nls")
     public static void putGpsLocationInPreferences( SharedPreferences preferences, double longitude, double latitude,
             double elevation ) {
         Editor editor = preferences.edit();
-        editor.putFloat(PREFS_KEY_LON, (float) longitude * LibraryConstants.E6);
-        editor.putFloat(PREFS_KEY_LAT, (float) latitude * LibraryConstants.E6);
+        float longFloat = (float) longitude * LibraryConstants.E6;
+        float latFloat = (float) latitude * LibraryConstants.E6;
+        if (Debug.D) {
+            Logger.d("POSITIONUTILITIES", "putGpsLocation: " + longFloat + "/" + latFloat);
+        }
+        editor.putFloat(PREFS_KEY_LON, longFloat);
+        editor.putFloat(PREFS_KEY_LAT, latFloat);
         editor.putFloat(PREFS_KEY_ELEV, (float) elevation);
         editor.commit();
     }
@@ -57,6 +65,7 @@ public class PositionUtilities {
      * @param preferences the preferences to use.
      * @return the array containing [lon, lat, elevation].
      */
+    @SuppressWarnings("nls")
     public static double[] getGpsLocationFromPreferences( SharedPreferences preferences ) {
         float lonFloat = preferences.getFloat(PREFS_KEY_LON, -9999f);
         float latFloat = preferences.getFloat(PREFS_KEY_LAT, -9999f);
@@ -65,6 +74,9 @@ public class PositionUtilities {
         }
         double lon = (double) lonFloat / LibraryConstants.E6;
         double lat = (double) latFloat / LibraryConstants.E6;
+        if (Debug.D) {
+            Logger.d("POSITIONUTILITIES", "getGpsLocation: " + lon + "/" + lat);
+        }
         double elevation = (double) preferences.getFloat(PREFS_KEY_ELEV, 0f);
         return new double[]{lon, lat, elevation};
     }
@@ -79,10 +91,16 @@ public class PositionUtilities {
      * @param latitude  the latitude in its real value.
      * @param zoom the zoomlevel.
      */
+    @SuppressWarnings("nls")
     public static void putMapCenterInPreferences( SharedPreferences preferences, double longitude, double latitude, float zoom ) {
         Editor editor = preferences.edit();
-        editor.putFloat(PREFS_KEY_MAPCENTER_LON, (float) longitude * LibraryConstants.E6);
-        editor.putFloat(PREFS_KEY_MAPCENTER_LAT, (float) latitude * LibraryConstants.E6);
+        float longFloat = (float) longitude * LibraryConstants.E6;
+        float latFloat = (float) latitude * LibraryConstants.E6;
+        if (Debug.D) {
+            Logger.d("POSITIONUTILITIES", "putMapCenter: " + longFloat + "/" + latFloat);
+        }
+        editor.putFloat(PREFS_KEY_MAPCENTER_LON, longFloat);
+        editor.putFloat(PREFS_KEY_MAPCENTER_LAT, latFloat);
         editor.putFloat(PREFS_KEY_MAP_ZOOM, zoom);
         editor.commit();
     }
@@ -98,6 +116,7 @@ public class PositionUtilities {
      *          allows for the result to never be <code>null</code>.
      * @return the array containing [lon, lat, zoom].
      */
+    @SuppressWarnings("nls")
     public static double[] getMapCenterFromPreferences( SharedPreferences preferences, boolean backOnGpsAndZero ) {
         float lonFloat = preferences.getFloat(PREFS_KEY_MAPCENTER_LON, -9999f);
         float latFloat = preferences.getFloat(PREFS_KEY_MAPCENTER_LAT, -9999f);
@@ -107,6 +126,9 @@ public class PositionUtilities {
                 // try to get the last gps location
                 double[] lastGpsLocation = getGpsLocationFromPreferences(preferences);
                 if (lastGpsLocation != null) {
+                    if (Debug.D) {
+                        Logger.d("POSITIONUTILITIES", "getMapCenter-fromgps: " + lastGpsLocation[0] + "/" + lastGpsLocation[1]);
+                    }
                     return new double[]{lastGpsLocation[0], lastGpsLocation[1], zoom};
                 } else {
                     // give up on 0,0
@@ -118,6 +140,9 @@ public class PositionUtilities {
         }
         double lon = (double) lonFloat / LibraryConstants.E6;
         double lat = (double) latFloat / LibraryConstants.E6;
+        if (Debug.D) {
+            Logger.d("POSITIONUTILITIES", "getMapCenter-fromgps: " + lon + "/" + lat);
+        }
         return new double[]{lon, lat, zoom};
     }
 

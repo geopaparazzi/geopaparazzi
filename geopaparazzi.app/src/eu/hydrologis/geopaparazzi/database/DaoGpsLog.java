@@ -495,8 +495,8 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 line.addPoint(lon, lat);
                 c.moveToNext();
             }
-            if (Debug.D)
-                Logger.d("DAOGPSLOG", "Logs jumped: " + jump + " with thres: " + decimationFactor);
+            // if (Debug.D)
+            // Logger.d("DAOGPSLOG", "Logs jumped: " + jump + " with thres: " + decimationFactor);
             // Set<Entry<Long, LineArray>> entrySet = linesMap.entrySet();
             // for( Entry<Long, LineArray> entry : entrySet ) {
             // Logger.d("DAOGPSLOG", "Found for log: " + entry.getKey() + " points: " +
@@ -581,8 +581,9 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 }
                 c.moveToNext();
             }
-            if (Debug.D)
-                Logger.d("DAOGPSLOG", "Log points jumped: " + jump + " with thres: " + decimationFactor);
+            // if (Debug.D)
+            // Logger.d("DAOGPSLOG", "Log points jumped: " + jump + " with thres: " +
+            // decimationFactor);
         } finally {
             if (c != null)
                 c.close();
