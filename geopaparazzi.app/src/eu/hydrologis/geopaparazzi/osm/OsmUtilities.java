@@ -78,10 +78,11 @@ public class OsmUtilities {
      * Send OSM notes to the server.
      * 
      * @param context the context.
+     * @param description the changeset description.
      * @return the server response.
      * @throws Exception
      */
-    public static String sendOsmNotes( Context context ) throws Exception {
+    public static String sendOsmNotes( Context context, String description ) throws Exception {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String user = preferences.getString(PREF_KEY_USER, TEST);
         if (user.length() == 0) {
@@ -113,6 +114,7 @@ public class OsmUtilities {
 
         wpsXmlString = wpsXmlString.replaceFirst("USERNAME", user);
         wpsXmlString = wpsXmlString.replaceFirst("PASSWORD", pwd);
+        wpsXmlString = wpsXmlString.replaceFirst("CHANGESET", description);
 
         List<Note> notesList = DaoNotes.getNotesList(context);
         StringBuilder sb = new StringBuilder();

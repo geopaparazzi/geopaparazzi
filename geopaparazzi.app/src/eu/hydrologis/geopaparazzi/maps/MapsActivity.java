@@ -21,6 +21,7 @@ import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_COMPASSON;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_MINIMAPON;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_SCALEBARON;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
@@ -79,13 +80,16 @@ import eu.geopaparazzi.library.mixare.MixareHandler;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
+import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.activities.InsertCoordActivity;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
+import eu.hydrologis.geopaparazzi.GeoPaparazziActivity;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
+import eu.hydrologis.geopaparazzi.database.DatabaseManager;
 import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.maps.overlays.BookmarksOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.CrossOverlay;
@@ -506,16 +510,37 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                     return;
                 }
 
+                final EditText input = new EditText(MapsActivity.this);
+                input.setText("");
+                Builder builder = new AlertDialog.Builder(MapsActivity.this);
+                builder.setTitle("Set description");
+                builder.setMessage("Insert a changeset description");
+                builder.setView(input);
+                builder.setIcon(android.R.drawable.ic_dialog_alert)
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                            public void onClick( DialogInterface dialog, int whichButton ) {
+                                sync("");
+                            }
+                        }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                            public void onClick( DialogInterface dialog, int whichButton ) {
+                                Editable value = input.getText();
+                                String newName = value.toString();
+                                sync(newName);
+                            }
+                        }).setCancelable(false).show();
+
+            }
+
+            private void sync( final String description ) {
                 final ProgressDialog progressDialog = ProgressDialog
                         .show(MapsActivity.this, "", getString(R.string.loading_data)); //$NON-NLS-1$
-
                 new AsyncTask<String, Void, String>(){
                     private Exception e = null;
 
                     protected String doInBackground( String... params ) {
                         String response = null;
                         try {
-                            response = OsmUtilities.sendOsmNotes(getApplicationContext());
+                            response = OsmUtilities.sendOsmNotes(MapsActivity.this, description);
                         } catch (Exception e) {
                             e.printStackTrace();
                             this.e = e;
@@ -571,7 +596,6 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                         }
                     }
                 }.execute((String) null);
-
             }
         });
 
