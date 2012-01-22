@@ -48,6 +48,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -264,18 +265,22 @@ public class OsmFormActivity extends Activity {
 
             View view = key2WidgetMap.get(key);
             String text = null;
-            if (view instanceof TextView) {
-                TextView textView = (TextView) view;
-                text = textView.getText().toString();
-            } else if (view instanceof Spinner) {
-                Spinner spinner = (Spinner) view;
-                text = spinner.getSelectedItem().toString();
+            if (view instanceof CheckBox) {
+                CheckBox checkBox = (CheckBox) view;
+                boolean checked = checkBox.isChecked();
+                text = checked ? "true" : "false";
             } else if (view instanceof Button) {
                 Button button = (Button) view;
                 text = button.getText().toString();
                 if (text.trim().equals("...")) {
                     text = "";
                 }
+            } else if (view instanceof TextView) {
+                TextView textView = (TextView) view;
+                text = textView.getText().toString();
+            } else if (view instanceof Spinner) {
+                Spinner spinner = (Spinner) view;
+                text = spinner.getSelectedItem().toString();
             }
 
             if (!constraints.isValid(text)) {
