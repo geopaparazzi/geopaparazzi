@@ -118,9 +118,13 @@ public class GpsManager implements LocationListener, Listener {
     }
 
     /**
-     * Stops listening to all the devices.
+     * Disposes the GpsManager and with it all connected services.
      */
-    public void stopListening() {
+    public void dispose() {
+        if (isLogging()) {
+            stopLogging();
+        }
+
         if (locationManager != null) {
             locationManager.removeUpdates(gpsManager);
             locationManager.removeGpsStatusListener(gpsManager);
@@ -132,9 +136,9 @@ public class GpsManager implements LocationListener, Listener {
     }
 
     /**
-     * Starts listening to all the devices.
+     * Starts listening to the gps provider.
      */
-    public void startListening() {
+    private void startListening() {
         if (Debug.doMock) {
             if (Debug.D)
                 Logger.d(this, "Using Mock locations");
@@ -148,7 +152,14 @@ public class GpsManager implements LocationListener, Listener {
         isListening = true;
     }
 
-    public boolean isGpsEnabled() {
+    /**
+     * Checks if the GPS is switched on.
+     * 
+     * <p>Does not say if the GPS is supplying valid data.</p>
+     * 
+     * @return <code>true</code> if the GPS is switched on.
+     */
+    public boolean isEnabled() {
         if (locationManager == null) {
             return false;
         }
@@ -162,16 +173,38 @@ public class GpsManager implements LocationListener, Listener {
         return gpsIsEnabled;
     }
 
-    public boolean isGpsListening() {
+    /**
+     * Checks if the GPS has a valid fix, i.e. valid data to serve.
+     * 
+     * @return <code>true</code> if the GPS is in a usable logging state.
+     */
+    public boolean hasValidData() {
+        return hasGPSFix && getLocation() != null;
+    }
+
+    /**
+     * Checks if the GPS is currently recording a log.
+     * 
+     * @return <code>true</code> if the GPS is currently used to record data.
+     */
+    public boolean isLogging() {
+        if (Debug.doMock) {
+            if (TestMock.isOn)
+                return true;
+        }
+
+        if (gpsLogger == null) {
+            return false;
+        }
+        return gpsLogger.isLogging();
+    }
+
+    private boolean isGpsListening() {
         return isListening;
     }
 
-    public boolean hasGpsFix() {
-        return hasGPSFix;
-    }
-
-    public void checkGps() {
-        if (!isGpsEnabled()) {
+    private void checkGps() {
+        if (!isEnabled()) {
             String prompt = context.getResources().getString(R.string.prompt_gpsenable);
             String ok = context.getResources().getString(R.string.ok);
             String cancel = context.getResources().getString(R.string.cancel);
@@ -194,17 +227,6 @@ public class GpsManager implements LocationListener, Listener {
 
     public GpsLocation getLocation() {
         return gpsLoc;
-    }
-
-    public boolean isGpsLogging() {
-        if (Debug.doMock) {
-            if (TestMock.isOn) return true;
-        }
-        
-        if (gpsLogger == null) {
-            return false;
-        }
-        return gpsLogger.isLogging();
     }
 
     public int getCurrentRunningGpsLogPointsNum() {

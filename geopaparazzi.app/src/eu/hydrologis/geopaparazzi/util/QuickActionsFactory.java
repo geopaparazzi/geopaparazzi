@@ -71,7 +71,7 @@ public enum QuickActionsFactory {
         notesQuickaction.setIcon(activity.getResources().getDrawable(R.drawable.quickaction_notes));
         notesQuickaction.setOnClickListener(new OnClickListener(){
             public void onClick( View v ) {
-                if (GpsManager.getInstance(activity).isGpsLogging()) {
+                if (GpsManager.getInstance(activity).hasValidData()) {
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
                     double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
 
@@ -106,7 +106,7 @@ public enum QuickActionsFactory {
                 try {
                     if (Debug.D)
                         Logger.d(this, "Asking location");
-                    if (GpsManager.getInstance(activity).isGpsLogging()) {
+                    if (GpsManager.getInstance(activity).hasValidData()) {
                         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
                         double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
 
@@ -138,7 +138,7 @@ public enum QuickActionsFactory {
         audioQuickaction.setOnClickListener(new OnClickListener(){
             public void onClick( View v ) {
                 try {
-                    if (GpsManager.getInstance(context).isGpsLogging()) {
+                    if (GpsManager.getInstance(context).hasValidData()) {
                         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
                         double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
                         String latString = String.valueOf(gpsLocation[1]);
@@ -211,7 +211,7 @@ public enum QuickActionsFactory {
         startLogQuickaction.setOnClickListener(new OnClickListener(){
             public void onClick( View v ) {
                 final GpsManager gpsManager = GpsManager.getInstance(context);
-                if (gpsManager.isGpsLogging()) {
+                if (gpsManager.hasValidData()) {
                     final String defaultLogName = "log_" + LibraryConstants.TIMESTAMPFORMATTER.format(new Date()); //$NON-NLS-1$
                     final EditText input = new EditText(context);
                     input.setText(defaultLogName);
@@ -246,7 +246,7 @@ public enum QuickActionsFactory {
         stopLogQuickaction.setOnClickListener(new OnClickListener(){
             public void onClick( View v ) {
                 GpsManager gpsManager = GpsManager.getInstance(context);
-                if (gpsManager.isGpsLogging()) {
+                if (gpsManager.isLogging()) {
                     gpsManager.stopLogging();
                     actionBar.checkLogging();
                 }

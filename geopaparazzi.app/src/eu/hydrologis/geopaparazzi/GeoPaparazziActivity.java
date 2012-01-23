@@ -305,7 +305,7 @@ public class GeoPaparazziActivity extends Activity {
         }
         case R.id.dashboard_log_item_button: {
             QuickAction qa = new QuickAction(v);
-            if (gpsManager.isGpsLogging()) {
+            if (gpsManager.isLogging()) {
                 ActionItem stopLogQuickAction = QuickActionsFactory.INSTANCE.getStopLogQuickAction(actionBar, qa, this);
                 qa.addActionItem(stopLogQuickAction);
             } else {
@@ -480,10 +480,9 @@ public class GeoPaparazziActivity extends Activity {
         }
 
         Utilities.toast(this, R.string.loggingoff, Toast.LENGTH_LONG);
-        // stop all logging
-        gpsManager.stopListening();
-        gpsManager.stopLogging();
-        DatabaseManager.getInstance().closeDatabase();
+
+        gpsManager.dispose();
+        
         ResourcesManager.resetManager();
         resourcesManager = null;
         super.finish();

@@ -227,16 +227,16 @@ public class ActionBar implements GpsManagerListener {
         GpsLocation loc = gpsManager.getLocation();
 
         StringBuilder sb = new StringBuilder();
-        if (loc == null || !gpsManager.isGpsEnabled()) {
+        if (loc == null || !gpsManager.isEnabled()) {
             // Logger.d("COMPASSVIEW", "Location from gps is null!");
             sb.append(nodataString);
             sb.append("\n");
-            if (gpsManager.isGpsEnabled()) {
-                if (!gpsManager.hasGpsFix()) {
+            if (gpsManager.isEnabled()) {
+                if (!gpsManager.hasValidData()) {
                     sb.append(acquirefixString);
                 } else {
                     sb.append(gpsonString);
-                    sb.append(": ").append(gpsManager.isGpsEnabled()); //$NON-NLS-1$
+                    sb.append(": ").append(gpsManager.isEnabled()); //$NON-NLS-1$
                 }
             }
             sb.append("\n");
@@ -257,7 +257,7 @@ public class ActionBar implements GpsManagerListener {
             sb.append(" ").append((int) (360 - azimuth)); //$NON-NLS-1$
             sb.append("\n");
             sb.append(loggingString);
-            sb.append(": ").append(gpsManager.isGpsLogging()); //$NON-NLS-1$
+            sb.append(": ").append(gpsManager.isLogging()); //$NON-NLS-1$
         }
         return sb.toString();
     }
@@ -266,15 +266,15 @@ public class ActionBar implements GpsManagerListener {
         View gpsOnOffView = actionBarView.findViewById(R.id.gpsOnOff);
         Resources resources = gpsOnOffView.getResources();
 
-        if (gpsManager.isGpsEnabled()) {
+        if (gpsManager.isEnabled()) {
             if (Debug.D)
                 Logger.d(this, "GPS seems to be on");
-            if (gpsManager.isGpsLogging()) {
+            if (gpsManager.isLogging()) {
                 if (Debug.D)
                     Logger.d(this, "GPS seems to be also logging");
                 gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_logging));
             } else {
-                if (gpsManager.hasGpsFix()) {
+                if (gpsManager.hasValidData()) {
                     if (Debug.D)
                         Logger.d(this, "GPS has fix");
                     gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_hasfix_notlogging));

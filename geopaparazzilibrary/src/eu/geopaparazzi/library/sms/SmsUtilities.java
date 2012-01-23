@@ -21,6 +21,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
@@ -125,6 +126,62 @@ public class SmsUtilities {
         } catch (Exception e) {
             Logger.e(context, e.getLocalizedMessage(), e);
             Utilities.messageDialog(context, "An error occurred while sending the SMS.", null);
+        }
+    }
+
+    /**
+     * Parses a GeoSMS body and tries to extract the coordinates to show them.
+     * 
+     * @param context the {@link Context} to use.
+     * @param smsBody the body of the sms.
+     */
+    public static void openGeoSms( final Context context, String smsBody ) {
+        /*
+         * a geosms is supposed to be at least in the form:
+         * 
+         * http://url?params...?XYZASD=lat,lon?params...?GeoSMS
+         */
+        String[] split = smsBody.toLowerCase().split("\\?");
+        for( String string : split ) {
+            if (string.startsWith("http") || string.startsWith("www")) {
+                continue;
+            }
+            if (string.contains("=") && string.contains(",")) {
+                String[] coordsParams = string.split("=");
+                if (coordsParams.length == 2) {
+                    String possibleCoordinates = coordsParams[1];
+                    if (possibleCoordinates.contains(",")) {
+                        String[] coordsSplit = possibleCoordinates.split(",");
+                        if (coordsSplit.length == 2) {
+                            String latStr = coordsSplit[0].trim();
+                            String lonStr = coordsSplit[1].trim();
+                            try {
+                                double lat = Double.parseDouble(latStr);
+                                double lon = Double.parseDouble(lonStr);
+                                StringBuilder sb = new StringBuilder();
+                                sb.append("geo:");
+                                sb.append(lat);
+                                sb.append(",");
+                                sb.append(lon);
+                                final String geoCoords = sb.toString();
+
+                                Utilities.messageDialog(context,
+                                        "A GeoSMS just arrived, do you want to show the contained position?", new Runnable(){
+                                            public void run() {
+                                                final Intent myIntent = new Intent(android.content.Intent.ACTION_VIEW, Uri
+                                                        .parse(geoCoords));
+                                                context.startActivity(myIntent);
+                                            }
+                                        });
+                            } catch (Exception e) {
+                                // ignore the param, it was not a coordinate block
+                            }
+
+                        }
+                    }
+                }
+            }
+
         }
 
     }

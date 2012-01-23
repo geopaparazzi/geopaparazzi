@@ -59,37 +59,49 @@ public class SmsReceiverPositionSender extends BroadcastReceiver {
                 return;
             }
 
+            boolean isGeosms = false;
+            boolean isGeopapsms = false;
+
             Bundle bundle = intent.getExtras();
             SmsMessage smsMessage = null;
+            String body = null;
             if (bundle != null) {
                 Object[] pdus = (Object[]) bundle.get("pdus");
                 for( Object pdu : pdus ) {
                     smsMessage = SmsMessage.createFromPdu((byte[]) pdu);
-                    String body = smsMessage.getDisplayMessageBody();
+                    body = smsMessage.getDisplayMessageBody();
                     if (body == null) {
                         continue;
                     }
                     if (Debug.D)
                         Logger.i(this, "Got message: " + body);
                     if (body.toLowerCase().matches(".*geopap.*")) {
-                        break;
+                        isGeopapsms = true;
+                    }
+                    if (body.toLowerCase().matches(".*geosms.*")) {
+                        isGeosms = true;
                     }
                     smsMessage = null;
                 }
             }
-            if (smsMessage != null && smsMessage.getOriginatingAddress() != null) {
-                String msg = null;
-                String lastPosition = context.getString(R.string.last_position);
-                msg = SmsUtilities.createPositionText(context, lastPosition);
-                if (msg.length() > 160) {
-                    // if longer than 160 chars it will not work, try using only url
-                    msg = SmsUtilities.createPositionText(context, null);
-                }
+            if (body != null && smsMessage != null && smsMessage.getOriginatingAddress() != null) {
+                if (isGeopapsms) {
+                    String msg = null;
+                    String lastPosition = context.getString(R.string.last_position);
+                    msg = SmsUtilities.createPositionText(context, lastPosition);
+                    if (msg.length() > 160) {
+                        // if longer than 160 chars it will not work, try using only url
+                        msg = SmsUtilities.createPositionText(context, null);
+                    }
 
-                if (Debug.D)
-                    Logger.i(this, msg);
-                String addr = smsMessage.getOriginatingAddress();
-                SmsUtilities.sendSMS(context, addr, msg);
+                    if (Debug.D)
+                        Logger.i(this, msg);
+                    String addr = smsMessage.getOriginatingAddress();
+                    SmsUtilities.sendSMS(context, addr, msg);
+                }
+                if (isGeosms) {
+                    SmsUtilities.openGeoSms(context, body);
+                }
             }
         }
     }
