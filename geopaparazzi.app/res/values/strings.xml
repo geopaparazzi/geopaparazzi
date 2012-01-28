@@ -249,4 +249,6 @@
     <string name="error_osm_server">An error occurred while connecting to the OSM server. Please check your login and password. It is also possible that the OSM server is not available.</string>
     <string name="check_valid_field">Please check that the field \"{0}\" is valid.</string>
     <string name="view_in_mixare">view in mixare</string>
+    <string name="add_message">ADD MESSAGE</string>
+    <string name="insert_an_optional_text_to_send_with_the_geosms">Insert an optional text to send with the GeoSMS</string>
 </resources>

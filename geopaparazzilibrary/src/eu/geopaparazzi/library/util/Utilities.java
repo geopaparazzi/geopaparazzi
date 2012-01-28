@@ -18,9 +18,12 @@
 package eu.geopaparazzi.library.util;
 
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.text.Editable;
+import android.widget.EditText;
 import android.widget.Toast;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.util.debug.Debug;
@@ -223,5 +226,40 @@ public class Utilities {
     public static void toast( final Context context, final int msgId, final int length ) {
         String msg = context.getString(msgId);
         toast(context, msg, length);
+    }
+
+    /**
+     * Execute a message dialog in an {@link AsyncTask}.
+     * 
+     * @param context the {@link Context} to use.
+     * @param title a title for the input dialog.
+     * @param message a message to show.
+     * @param defaultText a default text to fill in. 
+     * @param textRunnable optional {@link TextRunnable} to trigger after ok was pressed. 
+     */
+    public static void inputMessageDialog( final Context context, final String title, final String message,
+            final String defaultText, final TextRunnable textRunnable ) {
+        final EditText input = new EditText(context);
+        input.setText(defaultText);
+        Builder builder = new AlertDialog.Builder(context).setTitle(title);
+        builder.setMessage(message);
+        builder.setView(input);
+        builder.setIcon(android.R.drawable.ic_dialog_alert)
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                    public void onClick( DialogInterface dialog, int whichButton ) {
+                    }
+                }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                    public void onClick( DialogInterface dialog, int whichButton ) {
+                        Editable value = input.getText();
+                        String newText = value.toString();
+                        if (newText == null || newText.length() < 1) {
+                            newText = defaultText;
+                        }
+                        if (textRunnable != null) {
+                            textRunnable.setText(newText);
+                            new Thread(textRunnable).start();
+                        }
+                    }
+                }).setCancelable(false).show();
     }
 }

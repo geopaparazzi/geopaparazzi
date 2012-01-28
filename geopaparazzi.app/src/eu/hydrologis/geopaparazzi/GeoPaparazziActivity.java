@@ -49,6 +49,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SlidingDrawer;
 import android.widget.Toast;
+import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.gps.GpsLocation;
 import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
@@ -344,11 +345,30 @@ public class GeoPaparazziActivity extends Activity {
             break;
         }
         case R.id.panicbutton: {
-            sendPosition(true);
+            sendPosition(null);
             break;
         }
         case R.id.statusupdatebutton: {
-            sendPosition(false);
+            final String lastPositionStr = getString(R.string.last_position);
+            final EditText input = new EditText(this);
+            input.setText(lastPositionStr);
+            Builder builder = new AlertDialog.Builder(this).setTitle(eu.hydrologis.geopaparazzi.R.string.add_message);
+            builder.setMessage(eu.hydrologis.geopaparazzi.R.string.insert_an_optional_text_to_send_with_the_geosms);
+            builder.setView(input);
+            builder.setIcon(android.R.drawable.ic_dialog_alert)
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                        public void onClick( DialogInterface dialog, int whichButton ) {
+                        }
+                    }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                        public void onClick( DialogInterface dialog, int whichButton ) {
+                            Editable value = input.getText();
+                            String newText = value.toString();
+                            if (newText == null || newText.length() < 1) {
+                                newText = lastPositionStr;
+                            }
+                            sendPosition(newText);
+                        }
+                    }).setCancelable(false).show();
             break;
         }
         default:
@@ -482,7 +502,7 @@ public class GeoPaparazziActivity extends Activity {
         Utilities.toast(this, R.string.loggingoff, Toast.LENGTH_LONG);
 
         gpsManager.dispose();
-        
+
         ResourcesManager.resetManager();
         resourcesManager = null;
         super.finish();
@@ -668,10 +688,10 @@ public class GeoPaparazziActivity extends Activity {
     /**
      * Send the panic or status update message.
      * 
-     * @param doPanic make the panic message as opposed to just a status update.
+     * @param theTextToRunOn make the panic message as opposed to just a status update.
      */
     @SuppressWarnings("nls")
-    private void sendPosition( boolean doPanic ) {
+    private void sendPosition( String theTextToRunOn ) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         final String panicNumbersString = preferences.getString(PANICKEY, "");
         // Make sure there's a valid return address.
@@ -686,10 +706,10 @@ public class GeoPaparazziActivity extends Activity {
                 }
                 // if (gpsManager.isGpsLogging()) {
                 String lastPosition;
-                if (doPanic) {
+                if (theTextToRunOn == null) {
                     lastPosition = getString(R.string.help_needed);
                 } else {
-                    lastPosition = getString(R.string.last_position);
+                    lastPosition = theTextToRunOn;
                 }
                 String positionText = SmsUtilities.createPositionText(this, lastPosition);
                 SmsUtilities.sendSMS(this, number, positionText);

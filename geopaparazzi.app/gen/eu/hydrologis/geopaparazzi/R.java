@@ -357,6 +357,7 @@ public final class R {
     public static final class string {
         public static final int about=0x7f0700b1;
         public static final int abouttext=0x7f0700fd;
+        public static final int add_message=0x7f07014f;
         public static final int address=0x7f0700c5;
         public static final int altim=0x7f0700b6;
         /**  added after 2.5.0 
@@ -447,6 +448,7 @@ public final class R {
         /**  added after 2.4.3 
          */
         public static final int imagesvisibilityToggle=0x7f070139;
+        public static final int insert_an_optional_text_to_send_with_the_geosms=0x7f070150;
         public static final int insert_note=0x7f070047;
         public static final int installgpsstatus_message=0x7f070115;
         public static final int installgpsstatus_title=0x7f070114;
