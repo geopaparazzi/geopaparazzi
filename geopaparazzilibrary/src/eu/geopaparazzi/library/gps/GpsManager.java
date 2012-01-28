@@ -24,6 +24,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.GpsStatus;
 import android.location.GpsStatus.Listener;
 import android.location.Location;
@@ -31,7 +32,9 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.geopaparazzi.library.util.debug.TestMock;
@@ -70,10 +73,12 @@ public class GpsManager implements LocationListener, Listener {
     private long mLastLocationMillis;
     private boolean hasGPSFix = false;
     private boolean isListening = false;
+    private SharedPreferences preferences;
 
     private GpsManager( Context context ) {
         this.context = context;
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        preferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     public synchronized static GpsManager getInstance( Context context ) {
@@ -287,6 +292,12 @@ public class GpsManager implements LocationListener, Listener {
         for( GpsManagerListener listener : listeners ) {
             listener.onLocationChanged(gpsLoc);
         }
+        // save last known location
+        double recLon = gpsLoc.getLongitude();
+        double recLat = gpsLoc.getLatitude();
+        double recAlt = gpsLoc.getAltitude();
+        PositionUtilities.putGpsLocationInPreferences(preferences, recLon, recLat, recAlt);
+
         previousLoc = loc;
     }
 

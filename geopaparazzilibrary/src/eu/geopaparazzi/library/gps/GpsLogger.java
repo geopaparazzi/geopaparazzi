@@ -38,7 +38,6 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 import eu.geopaparazzi.library.R;
-import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 
@@ -173,9 +172,6 @@ public class GpsLogger implements GpsManagerListener {
                         currentDistance = currentDistance + lastDistance;
 
                         previousLogLoc = gpsLoc;
-
-                        // save last known location
-                        PositionUtilities.putGpsLocationInPreferences(preferences, recLon, recLat, recAlt);
 
                         // and wait
                         waitGpsInterval(waitForSecs);
