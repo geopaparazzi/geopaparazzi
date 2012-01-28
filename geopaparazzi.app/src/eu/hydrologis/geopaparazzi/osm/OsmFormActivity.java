@@ -131,7 +131,7 @@ public class OsmFormActivity extends Activity {
         }
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        double[] mapCenter = PositionUtilities.getMapCenterFromPreferences(preferences, true);
+        double[] mapCenter = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
 
         latitude = mapCenter[1];
         longitude = mapCenter[0];

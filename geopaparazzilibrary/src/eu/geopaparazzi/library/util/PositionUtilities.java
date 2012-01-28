@@ -32,6 +32,9 @@ import android.content.SharedPreferences.Editor;
  */
 public class PositionUtilities {
 
+    private static final float NOVALUE_CHECKVALUE = -9998f;
+    private static final float NOVALUE = -9999f;
+
     /**
      * Insert the gps position data in the preferences.
      * 
@@ -67,9 +70,13 @@ public class PositionUtilities {
      */
     @SuppressWarnings("nls")
     public static double[] getGpsLocationFromPreferences( SharedPreferences preferences ) {
-        float lonFloat = preferences.getFloat(PREFS_KEY_LON, -9999f);
-        float latFloat = preferences.getFloat(PREFS_KEY_LAT, -9999f);
-        if (lonFloat < -9998f || latFloat < -9998f) {
+        float lonFloat = preferences.getFloat(PREFS_KEY_LON, NOVALUE);
+        float latFloat = preferences.getFloat(PREFS_KEY_LAT, NOVALUE);
+        if (lonFloat < NOVALUE_CHECKVALUE || latFloat < NOVALUE_CHECKVALUE) {
+            return null;
+        }
+        if (lonFloat == 0f && latFloat == 0f) {
+            // we also do not believe in 0,0
             return null;
         }
         double lon = (double) lonFloat / LibraryConstants.E6;
@@ -111,18 +118,21 @@ public class PositionUtilities {
      * <p>This method handles float->double conversion of the values where necessary.</p>
      * 
      * @param preferences the preferences to use.
-     * @param backOnGpsAndZero if set to <code>true</code> and the map center was not set,
-     *          it backs on the gps position. If that is also unknown, it returns 0,0. This
-     *          allows for the result to never be <code>null</code>.
+     * @param backOnGps if set to <code>true</code> and the map center was not set,
+     *          it backs on the gps position.
+     * @param backOnZero if set to <code>true</code> it assures that
+     *          the result is never <code>null</code>. In case 0,0 is used.
+     *          Note that this can be used only if backOnGps is true, else
+     *          it will be ignored.
      * @return the array containing [lon, lat, zoom].
      */
     @SuppressWarnings("nls")
-    public static double[] getMapCenterFromPreferences( SharedPreferences preferences, boolean backOnGpsAndZero ) {
-        float lonFloat = preferences.getFloat(PREFS_KEY_MAPCENTER_LON, -9999f);
-        float latFloat = preferences.getFloat(PREFS_KEY_MAPCENTER_LAT, -9999f);
+    public static double[] getMapCenterFromPreferences( SharedPreferences preferences, boolean backOnGps, boolean backOnZero ) {
+        float lonFloat = preferences.getFloat(PREFS_KEY_MAPCENTER_LON, NOVALUE);
+        float latFloat = preferences.getFloat(PREFS_KEY_MAPCENTER_LAT, NOVALUE);
         float zoom = preferences.getFloat(PREFS_KEY_MAP_ZOOM, 16f);
-        if (lonFloat < -9998f || latFloat < -9998f) {
-            if (backOnGpsAndZero) {
+        if (lonFloat < NOVALUE_CHECKVALUE || latFloat < NOVALUE_CHECKVALUE) {
+            if (backOnGps) {
                 // try to get the last gps location
                 double[] lastGpsLocation = getGpsLocationFromPreferences(preferences);
                 if (lastGpsLocation != null) {
@@ -131,8 +141,12 @@ public class PositionUtilities {
                     }
                     return new double[]{lastGpsLocation[0], lastGpsLocation[1], zoom};
                 } else {
-                    // give up on 0,0
-                    return new double[]{0.0, 0.0, zoom};
+                    if (backOnZero) {
+                        // give up on 0,0
+                        return new double[]{0.0, 0.0, zoom};
+                    } else {
+                        return null;
+                    }
                 }
             } else {
                 return null;

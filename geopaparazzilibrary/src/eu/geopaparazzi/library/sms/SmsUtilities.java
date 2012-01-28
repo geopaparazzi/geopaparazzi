@@ -53,7 +53,7 @@ public class SmsUtilities {
 
         double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
         if (gpsLocation == null) {
-            gpsLocation = PositionUtilities.getMapCenterFromPreferences(preferences, false);
+            gpsLocation = PositionUtilities.getMapCenterFromPreferences(preferences, false, false);
         }
         StringBuilder sB = new StringBuilder();
         if (gpsLocation != null) {

@@ -253,7 +253,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
             mMiniMapOverlay.setEnabled(isMinimapon);
         }
 
-        final double[] mapCenterLocation = PositionUtilities.getMapCenterFromPreferences(preferences, true);
+        final double[] mapCenterLocation = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
         GeoPoint geoPoint = new GeoPoint(mapCenterLocation[1], mapCenterLocation[0]);
         mapController.setZoom((int) mapCenterLocation[2]);
         mapController.setCenter(geoPoint);
@@ -620,7 +620,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
     public void onWindowFocusChanged( boolean hasFocus ) {
         // SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (hasFocus) {
-            double[] lastCenter = PositionUtilities.getMapCenterFromPreferences(preferences, true);
+            double[] lastCenter = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
             mapController.setZoom((int) lastCenter[2]);
             mapController.setCenter(new GeoPoint(lastCenter[1], lastCenter[0]));
             setZoomGuiText((int) lastCenter[2]);
