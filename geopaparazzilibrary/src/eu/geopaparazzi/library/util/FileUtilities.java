@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -185,6 +186,23 @@ public class FileUtilities {
         }
         filehandle.deleteOnExit();
         return true;
+    }
+
+    /**
+     * Checks if a given file exists in a supplied folder.
+     * 
+     * @param fileName the name of the file to check.
+     * @param folder the folder.
+     * @return <code>true</code>, if the file exists
+     */
+    public static boolean fileExistsInFolder( final String fileName, File folder ) {
+        File[] listFiles = folder.listFiles(new FilenameFilter(){
+            public boolean accept( File arg0, String tmpName ) {
+                return fileName.trim().equals(tmpName.trim());
+            }
+        });
+
+        return listFiles.length > 0;
     }
 
 }

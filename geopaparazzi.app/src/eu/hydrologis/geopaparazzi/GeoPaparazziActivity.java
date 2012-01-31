@@ -40,6 +40,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -508,50 +509,55 @@ public class GeoPaparazziActivity extends Activity {
         super.finish();
     }
 
-    private boolean doRename = false;
-
+    private AlertDialog alertDialog = null;
     private void resetData() {
-        File geoPaparazziDir = resourcesManager.getApplicationDir();
-        String name = geoPaparazziDir.getName();
-        doRename = false;
-        if (name.equals(Constants.GEOPAPARAZZI)) {
-            doRename = true;
-        }
-        final String defaultLogName = Constants.GEOPAPARAZZI + "_" + LibraryConstants.TIMESTAMPFORMATTER.format(new Date()); //$NON-NLS-1$
+        final String enterNewProjectString = getString(eu.hydrologis.geopaparazzi.R.string.enter_a_name_for_the_new_project);
+        final String projectExistingString = getString(eu.hydrologis.geopaparazzi.R.string.chosen_project_exists);
+
+        final File applicationParentDir = resourcesManager.getApplicationParentDir();
+        final String newGeopaparazziDirName = Constants.GEOPAPARAZZI
+                + "_" + LibraryConstants.TIMESTAMPFORMATTER.format(new Date()); //$NON-NLS-1$
         final EditText input = new EditText(this);
-        input.setText(defaultLogName);
+        input.setText(newGeopaparazziDirName);
+        input.addTextChangedListener(new TextWatcher(){
+            public void onTextChanged( CharSequence s, int start, int before, int count ) {
+            }
+            public void beforeTextChanged( CharSequence s, int start, int count, int after ) {
+            }
+            public void afterTextChanged( Editable s ) {
+                String newName = s.toString();
+                File newProjectFile = new File(applicationParentDir, newName);
+                if (newName == null || newName.length() < 1) {
+                    alertDialog.setMessage(enterNewProjectString);
+                    alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                } else if (newProjectFile.exists()) {
+                    alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                    alertDialog.setMessage(projectExistingString);
+                } else {
+                    alertDialog.setMessage(enterNewProjectString);
+                    alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                }
+            }
+        });
         Builder builder = new AlertDialog.Builder(this).setTitle(R.string.reset);
-        if (doRename) {
-            builder.setMessage(R.string.reset_prompt);
-            builder.setView(input);
-        }
-        builder.setIcon(android.R.drawable.ic_dialog_alert)
+        builder.setMessage(enterNewProjectString);
+        builder.setView(input);
+        alertDialog = builder.setIcon(android.R.drawable.ic_dialog_alert)
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
                     }
                 }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
                         try {
-                            if (doRename) {
-                                Editable value = input.getText();
-                                String newName = value.toString();
-                                if (newName == null || newName.length() < 1) {
-                                    newName = defaultLogName;
-                                }
-                                File geopaparazziDirFile = resourcesManager.getApplicationDir();
-                                DatabaseManager.getInstance().closeDatabase();
-                                File geopaparazziParentFile = geopaparazziDirFile.getParentFile();
-                                File newGeopaparazziDirFile = new File(geopaparazziParentFile.getAbsolutePath(), newName);
-                                if (!geopaparazziDirFile.renameTo(newGeopaparazziDirFile)) {
-                                    throw new IOException("Unable to rename the geopaparazzi folder."); //$NON-NLS-1$
-                                }
-
-                                ResourcesManager.getInstance(GeoPaparazziActivity.this).setApplicationDir(
-                                        newGeopaparazziDirFile.getAbsolutePath());
-                            } else {
-                                // reset to default
-                                ResourcesManager.getInstance(GeoPaparazziActivity.this).setApplicationDir(""); //$NON-NLS-1$
+                            Editable value = input.getText();
+                            String newName = value.toString();
+                            DatabaseManager.getInstance().closeDatabase();
+                            File newGeopaparazziDirFile = new File(applicationParentDir.getAbsolutePath(), newName);
+                            if (!newGeopaparazziDirFile.mkdir()) {
+                                throw new IOException("Unable to create the geopaparazzi folder."); //$NON-NLS-1$
                             }
+                            ResourcesManager.getInstance(GeoPaparazziActivity.this).setApplicationDir(
+                                    newGeopaparazziDirFile.getAbsolutePath());
 
                             Intent intent = getIntent();
                             finish();
@@ -562,7 +568,9 @@ public class GeoPaparazziActivity extends Activity {
                             Toast.makeText(GeoPaparazziActivity.this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                         }
                     }
-                }).setCancelable(false).show();
+                }).setCancelable(false).create();
+        alertDialog.show();
+
     }
 
     private Handler kmlHandler = new Handler(){

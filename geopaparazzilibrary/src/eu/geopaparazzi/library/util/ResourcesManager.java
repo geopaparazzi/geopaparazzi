@@ -177,6 +177,15 @@ public class ResourcesManager implements Serializable {
     }
 
     /**
+     * Get the file to the main application's parent folder.
+     * 
+     * @return the {@link File} to the app's parent folder.
+     */
+    public File getApplicationParentDir() {
+        return applicationDir.getParentFile();
+    }
+
+    /**
      * Sets a new application folder. 
      * 
      * <p>Note that this will reset all the folders and resources that are bound 
