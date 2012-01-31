@@ -75,6 +75,7 @@
   <string name="sms_catching">Accetta Sms</string>
   <string name="sms_number">Numero per invio automatico di sms</string>
   <string name="sms_catcher">Attiva accettazione sms</string>
+  <string name="sms_type">Utilizzare geosms OGC invece di quello basato su OSM</string>
   <string name="database_preferences">Settaggi database</string>
   <string name="database_new">Crea un nuovo database al riavvio</string>
   <string name="databaseError">è avvenuto un error durante la connessione al database!</string>
@@ -127,7 +128,7 @@ http://www.openclipart.org</string>
   <string name="panic_for_real">Sei sicuro di voler spedire un update della posizione?</string>
   <string name="panic_upper">  PANICO!  </string>
   <string name="send_status_update">manda posizione</string>
-  <string name="help_needed">Serve aiuto a</string>
+  <string name="help_needed">E\' necessario aiuto!</string>
   <string name="message_sent">Messaggio spedito</string>
   <string name="last_note_deleted">Rimossa ultima nota</string>
   <string name="last_note_not_deleted">Non è stato possibile rimuovere l\'ultima nota</string>
@@ -198,4 +199,8 @@ http://www.openclipart.org</string>
   <string name="error_osm_server">Si è verificato un errore durante la connessione al server OSM. Si prega di controllare login e password. È anche possibile che il server OSM non è disponibile.</string>
   <string name="check_valid_field">Si prega di verificare che il campo "{0}" è valido.</string>
   <string name="view_in_mixare">visualizza a mixare</string>
+  <string name="add_message">AGGIUNGI MESSAGGIO</string>
+  <string name="insert_an_optional_text_to_send_with_the_geosms">Inserire un testo opzionale da inviare con il GeoSMS</string>
+  <string name="enter_a_name_for_the_new_project">Inserire un nome per il nuovo progetto</string>
+  <string name="chosen_project_exists">Un progetto dallo stesso nome esiste già, si prega di scegliere un altro nome</string>
 </resources>
