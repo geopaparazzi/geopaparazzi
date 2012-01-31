@@ -86,17 +86,18 @@ public class MixareHandler {
      */
     private String generateMixareData( Context context, List<PointF3D> points ) throws Exception {
         StringBuilder sb = new StringBuilder();
-        sb.append("{\n");
 
         int size = points.size();
         for( int i = 0; i < size; i++ ) {
             PointF3D p3d = points.get(i);
             String json = dataToString(i, p3d.y, p3d.x, p3d.getZ(), p3d.getDescription());
+            if (i > 0) {
+                sb.append(",");
+            }
             sb.append(json);
         }
-        sb.append("}\n");
 
-        String jsonString = sb.substring(1);
+        String jsonString = sb.toString();
 
         StringBuilder finalSb = new StringBuilder();
         finalSb.append("{\n");
@@ -111,11 +112,13 @@ public class MixareHandler {
 
     private String dataToString( int id, double lat, double lon, double elev, String title ) {
         StringBuilder sb = new StringBuilder();
+        sb.append("{\n");
         sb.append("\"id\": \"").append(id).append("\",").append("\n");
         sb.append("\"lat\": \"").append(lat).append("\",").append("\n");
         sb.append("\"lng\": \"").append(lon).append("\",").append("\n");
         sb.append("\"elevation\": \"").append(0).append("\",").append("\n");
         sb.append("\"title\": \"").append(title).append("\"").append("\n");
+        sb.append("}\n");
         return sb.toString();
     }
 

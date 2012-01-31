@@ -382,6 +382,7 @@ public final class R {
         public static final int centerongps=0x7f0700c1;
         public static final int chart_profile_view=0x7f0700f1;
         public static final int check_valid_field=0x7f070052;
+        public static final int chosen_project_exists=0x7f070152;
         public static final int color_label=0x7f0700cb;
         public static final int connection_problem_notification_title=0x7f0700a3;
         public static final int databaseError=0x7f0700f0;
@@ -403,6 +404,7 @@ public final class R {
         public static final int emptyaddress=0x7f0700c7;
         public static final int enable_automatic_center_on_gps=0x7f070146;
         public static final int enable_debug=0x7f070110;
+        public static final int enter_a_name_for_the_new_project=0x7f070151;
         public static final int error_disk_full=0x7f07003a;
         public static final int error_json_osm=0x7f07014b;
         public static final int error_osm_server=0x7f07014d;
