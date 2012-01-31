@@ -17,6 +17,7 @@
  */
 package eu.hydrologis.geopaparazzi.maps;
 
+import java.io.File;
 import java.sql.Date;
 
 import android.app.Activity;
@@ -34,6 +35,7 @@ import eu.geopaparazzi.library.forms.FormActivity;
 import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geopaparazzi.library.forms.TagsManager.TagObject;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.NoteActivity;
 import eu.geopaparazzi.library.util.debug.Logger;
@@ -203,6 +205,10 @@ public class MapTagsActivity extends Activity {
             if (resultCode == Activity.RESULT_OK) {
                 String relativeImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
                 if (relativeImagePath != null) {
+                    File imgFile = new File(ResourcesManager.getInstance(this).getMediaDir().getParentFile(), relativeImagePath);
+                    if (!imgFile.exists()) {
+                        return;
+                    }
                     try {
                         double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
                         double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);

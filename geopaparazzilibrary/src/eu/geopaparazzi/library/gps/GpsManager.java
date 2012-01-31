@@ -179,6 +179,10 @@ public class GpsManager implements LocationListener, Listener {
      * @return <code>true</code> if the GPS is in a usable logging state.
      */
     public boolean hasValidData() {
+        if (Debug.doMock) {
+            if (TestMock.isOn)
+                return true;
+        }
         return hasGPSFix && getLocation() != null;
     }
 
@@ -188,10 +192,10 @@ public class GpsManager implements LocationListener, Listener {
      * @return <code>true</code> if the GPS is currently used to record data.
      */
     public boolean isLogging() {
-        if (Debug.doMock) {
-            if (TestMock.isOn)
-                return true;
-        }
+        // if (Debug.doMock) {
+        // if (TestMock.isOn)
+        // return true;
+        // }
 
         if (gpsLogger == null) {
             return false;

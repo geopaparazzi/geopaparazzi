@@ -34,6 +34,17 @@ import eu.geopaparazzi.library.gps.GpsManager;
 public class TestMock {
     private static double lat = 46.681034;
     private static double lon = 11.13507645;
+
+    static {
+        // set office
+        lat = 46.48193;
+        lon = 11.330099;
+        // set home
+        // lat = 46.681034;
+        // lon = 11.13507645;
+
+    }
+
     private static double alt = 100;
     private static long date = new Date().getTime();
     public static String MOCK_PROVIDER_NAME = LocationManager.GPS_PROVIDER;

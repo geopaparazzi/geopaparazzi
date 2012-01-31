@@ -458,6 +458,10 @@ public class GeoPaparazziActivity extends Activity {
             if (resultCode == Activity.RESULT_OK) {
                 String relativeImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
                 if (relativeImagePath != null) {
+                    File imgFile = new File(resourcesManager.getMediaDir().getParentFile(), relativeImagePath);
+                    if (!imgFile.exists()) {
+                        return;
+                    }
                     try {
                         double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
                         double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
