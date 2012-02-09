@@ -23,9 +23,9 @@ import java.util.Locale;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import eu.hydrologis.geopaparazzi.util.ApplicationManager;
-import eu.hydrologis.geopaparazzi.util.debug.Debug;
-import eu.hydrologis.geopaparazzi.util.debug.Logger;
+import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.debug.Debug;
+import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
  * The database manager.
@@ -38,8 +38,6 @@ public class DatabaseManager {
     public static final int DATABASE_VERSION = 5;
 
     public static final String DEBUG_TAG = "DATABASEMANAGER";
-
-    public static final String DATABASE_NAME = "geopaparazzi.db";
 
     public static final float BUFFER = 0.001f;
 
@@ -77,7 +75,7 @@ public class DatabaseManager {
             // }
             //
             // }
-            File databaseFile = ApplicationManager.getInstance(context).getDatabaseFile();
+            File databaseFile = ResourcesManager.getInstance(context).getDatabaseFile();
 
             databaseHelper = new DatabaseOpenHelper(databaseFile);
 

@@ -45,12 +45,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
+import eu.geopaparazzi.library.chart.XYChartView;
+import eu.geopaparazzi.library.util.DynamicDoubleArray;
+import eu.geopaparazzi.library.util.debug.Debug;
+import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Line;
-import eu.hydrologis.geopaparazzi.util.debug.Debug;
-import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * Activity that creates a chartview.
@@ -62,7 +64,7 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
 public class ChartActivity extends Activity implements ChartTouchListener {
     private Button zoomtoButton;
     private CheckBox selectionCheckbox;
-    private ProfileChartView chartView;
+    private XYChartView chartView;
 
     private List<Marker> markers = new ArrayList<Marker>();
     private List<double[]> markerValues = new ArrayList<double[]>();
@@ -96,7 +98,7 @@ public class ChartActivity extends Activity implements ChartTouchListener {
     @SuppressWarnings("nls")
     private void makeProfilePlot( final Line line ) {
 
-        chartView = (ProfileChartView) findViewById(R.id.profilechartview);
+        chartView = (XYChartView) findViewById(R.id.profilechartview);
         chartView.addChartTouchListener(this);
 
         selectionCheckbox = (CheckBox) findViewById(R.id.selectionmodecheck);
@@ -141,7 +143,14 @@ public class ChartActivity extends Activity implements ChartTouchListener {
 
         new AsyncTask<String, Void, XYDataset>(){
             protected XYDataset doInBackground( String... params ) {
-                return chartView.createDataset(line);
+                DynamicDoubleArray altimList = line.getAltimList();
+                DynamicDoubleArray latList = line.getLatList();
+                DynamicDoubleArray lonList = line.getLonList();
+                double[] altimArray = altimList.getInternalArray();
+                double[] latArray = latList.getInternalArray();
+                double[] lonArray = lonList.getInternalArray();
+                String title = ChartActivity.this.getString(R.string.profile);
+                return chartView.createDatasetFromProfile(lonArray, latArray, altimArray, title);
             }
 
             protected void onPostExecute( XYDataset dataset ) {

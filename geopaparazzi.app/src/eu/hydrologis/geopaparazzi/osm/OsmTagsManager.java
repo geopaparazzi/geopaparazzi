@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import android.content.Context;
-import eu.hydrologis.geopaparazzi.util.ApplicationManager;
+import eu.geopaparazzi.library.util.ResourcesManager;
 
 /**
  * Singleton that takes care of tags.
@@ -84,7 +84,7 @@ public class OsmTagsManager {
      */
     public synchronized File getTagsFolderFile( Context context ) {
         if (tagsFolderFile == null) {
-            File geoPaparazziDir = ApplicationManager.getInstance(context).getGeoPaparazziDir();
+            File geoPaparazziDir = ResourcesManager.getInstance(context).getApplicationDir();
             tagsFolderFile = new File(geoPaparazziDir.getParentFile(), TAGSFOLDERNAME);
         }
         return tagsFolderFile;

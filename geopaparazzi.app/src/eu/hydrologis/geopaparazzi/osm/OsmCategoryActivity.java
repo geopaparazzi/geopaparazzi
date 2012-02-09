@@ -66,7 +66,7 @@ public class OsmCategoryActivity extends Activity {
                 osmButton.setImageDrawable(icon);
                 osmButton.setOnClickListener(new Button.OnClickListener(){
                     public void onClick( View v ) {
-                        Intent osmCategoryIntent = new Intent(Constants.OSMFORMACTIVITY);
+                        Intent osmCategoryIntent = new Intent(OsmCategoryActivity.this, OsmFormActivity.class);
                         osmCategoryIntent.putExtra(Constants.OSM_CATEGORY_KEY, category);
                         osmCategoryIntent.putExtra(Constants.OSM_TAG_KEY, tagName);
                         startActivity(osmCategoryIntent);

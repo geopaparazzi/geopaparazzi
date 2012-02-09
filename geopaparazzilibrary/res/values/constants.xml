@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	Copyright (C) 2010, 2011 Herbert von Broeuschmeul
+	Copyright (C) 2010, 2011 BluetoothGPS4Droid Project
+	  
+	This file is part of BluetoothGPS4Droid.
+	
+	BluetoothGPS4Droid is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	BluetoothGPS4Droid is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+	
+	You should have received a copy of the GNU General Public License
+	along with BluetoothGPS4Droid. If not, see : http://www.gnu.org/licenses/.
+-->
+<resources>
+	<string name="versionName">1.2.3</string>
+
+    <string name="pref_start_gps_key">startGps</string>
+    <string name="pref_gps_location_provider_key">gpsLocationProviderKey</string>
+    <string name="pref_replace_std_gps_key">replaceStdtGps</string>
+    <string name="pref_force_enable_provider_key">forceEnableProvider</string>
+    <string name="pref_mock_gps_name_key">mockGpsName</string>
+    <string name="pref_connection_retries_key">connectionRetries</string>
+    <string name="pref_recording_key">trackRecording</string>
+    <string name="pref_trackfile_directory_key">trackFileDirectory</string>
+    <string name="pref_trackfile_prefix_key">trackFilePrefix</string>
+    <string name="pref_bluetooth_device_key">bluetoothDevice</string>
+    <string name="pref_about_key">about</string>
+
+    <string name="pref_sirf_gps_key">sirfGps</string>
+    <string name="pref_sirf_enable_gga_key">enableGGA</string>
+    <string name="pref_sirf_enable_rmc_key">enableRMC</string>
+    <string name="pref_sirf_enable_gll_key">enableGLL</string>
+    <string name="pref_sirf_enable_vtg_key">enableVTG</string>
+    <string name="pref_sirf_enable_gsa_key">enableGSA</string>
+    <string name="pref_sirf_enable_gsv_key">enableGSV</string>
+    <string name="pref_sirf_enable_zda_key">enableZDA</string>
+    <string name="pref_sirf_enable_sbas_key">enableSBAS</string>
+    <string name="pref_sirf_enable_nmea_key">enableNMEA</string>
+    <string name="pref_sirf_enable_static_navigation_key">enableStaticNavigation</string>
+
+    <string name="defaultConnectionRetries">5</string>
+    <string name="defaultTrackFileDirectory">/sdcard/nmea</string>
+    <string name="defaultTrackFilePrefix">btnmeatrack</string>
+    <string name="defaultMockGpsName">bluetooth_gps</string>
+
+    
+    <string name="sirf_nmea_gga_on">PSRF103,00,00,01,01</string>
+    <string name="sirf_nmea_gga_off">PSRF103,00,00,00,01</string>
+    <string name="sirf_nmea_rmc_on">PSRF103,04,00,01,01</string>
+    <string name="sirf_nmea_rmc_off">PSRF103,04,00,00,01</string>
+    <string name="sirf_nmea_gll_on">PSRF103,01,00,01,01</string>
+    <string name="sirf_nmea_gll_off">PSRF103,01,00,00,01</string>
+    <string name="sirf_nmea_gsa_on">PSRF103,02,00,05,01</string>
+    <string name="sirf_nmea_gsa_off">PSRF103,02,00,00,01</string>
+    <string name="sirf_nmea_gsv_on">PSRF103,03,00,05,01</string>
+    <string name="sirf_nmea_gsv_off">PSRF103,03,00,00,01</string>
+    <string name="sirf_nmea_vtg_on">PSRF103,05,00,01,01</string>
+    <string name="sirf_nmea_vtg_off">PSRF103,05,00,00,01</string>
+    <string name="sirf_nmea_zda_on">PSRF103,08,00,01,01</string>
+    <string name="sirf_nmea_zda_off">PSRF103,08,00,00,01</string>
+
+    <string name="sirf_nmea_to_binary">PSRF100,0,38400,8,1,0</string>
+    
+    <string name="sirf_nmea_sbas_on">PSRF151,01</string>
+    <string name="sirf_nmea_sbas_off">PSRF151,00</string>
+    
+    <string name="sirf_bin_static_nav_on">8F01</string>
+    <string name="sirf_bin_static_nav_off">8F00</string> 
+    <string name="sirf_bin_to_nmea">8702</string>
+    <string name="sirf_bin_to_nmea_38400">810201010001050105010001000100010001000100019600</string>
+    <string name="sirf_bin_to_nmea_38400_alt" formatted="false">8102%02X01%02X01%02X01%02X01%02X01%02X01%02X01%02X01%02X0100019600</string>
+    <string name="sirf_bin_dgps_ext_on">85020000000000</string>
+    <string name="sirf_bin_dgps_sbas_on">85010000000000</string>
+    <string name="sirf_software_version">8400</string>   
+</resources>

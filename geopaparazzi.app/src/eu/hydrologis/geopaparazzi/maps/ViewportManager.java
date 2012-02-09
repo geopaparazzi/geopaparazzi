@@ -17,17 +17,13 @@
  */
 package eu.hydrologis.geopaparazzi.maps;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.E6;
-import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_LAT;
-import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_LON;
-import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_ZOOM;
-
 import org.osmdroid.api.IGeoPoint;
 import org.osmdroid.views.MapView;
 
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
+import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.PositionUtilities;
 
 /**
  * Singleton that takes care of viewport sync.
@@ -84,23 +80,22 @@ public enum ViewportManager {
         IGeoPoint mapCenter = mapsView.getMapCenter();
         int zoomLevel = mapsView.getZoomLevel();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mapsActivity);
-        Editor editor = preferences.edit();
+        float cx = 0f;
+        float cy = 0f;
         if (centerX != null) {
-            editor.putFloat(PREFS_KEY_LON, centerX.floatValue());
+            cx = centerX.floatValue();
         } else {
-            editor.putFloat(PREFS_KEY_LON, (float) (mapCenter.getLongitudeE6() / E6));
+            cx = (float) (mapCenter.getLongitudeE6() / LibraryConstants.E6);
         }
         if (centerY != null) {
-            editor.putFloat(PREFS_KEY_LAT, centerY.floatValue());
+            cy = centerY.floatValue();
         } else {
-            editor.putFloat(PREFS_KEY_LAT, (float) (mapCenter.getLatitudeE6() / E6));
+            cy = (float) (mapCenter.getLatitudeE6() / LibraryConstants.E6);
         }
         if (zoom != null) {
-            editor.putInt(PREFS_KEY_ZOOM, zoom);
-        } else {
-            editor.putInt(PREFS_KEY_ZOOM, zoomLevel);
+            zoomLevel = zoom;
         }
-        editor.commit();
+        PositionUtilities.putMapCenterInPreferences(preferences, cx, cy, zoomLevel);
     }
 
     // public void zoomToSpan( BoundingBoxE6 bbox ) {

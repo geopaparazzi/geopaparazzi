@@ -24,9 +24,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.maps.ViewportManager;
-import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * Activity to get to a location by coordinate.

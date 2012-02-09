@@ -2,14 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#FFFFFF"
+    android:background="@color/white"
     android:orientation="vertical" >
-    <eu.hydrologis.geopaparazzi.chart.ProfileChartView
+
+    <eu.geopaparazzi.library.chart.XYChartView
         android:id="@+id/profilechartview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1" >
-    </eu.hydrologis.geopaparazzi.chart.ProfileChartView>
+    </eu.geopaparazzi.library.chart.XYChartView>
 
     <RelativeLayout
         android:id="@+id/operationslayout"
@@ -22,7 +23,8 @@
             android:id="@+id/selectionmodecheck"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="selection mode" android:textColor="@color/black"/>
+            android:text="selection mode"
+            android:textColor="@color/black" />
 
         <Button
             android:id="@+id/zoomtobutton"

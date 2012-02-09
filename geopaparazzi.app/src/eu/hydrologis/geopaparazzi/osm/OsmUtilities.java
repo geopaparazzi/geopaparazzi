@@ -33,16 +33,16 @@ import android.content.SharedPreferences.Editor;
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import eu.geopaparazzi.library.network.NetworkUtilities;
+import eu.geopaparazzi.library.util.CompressionUtilities;
+import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.library.util.debug.Debug;
+import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
-import eu.hydrologis.geopaparazzi.util.ApplicationManager;
-import eu.hydrologis.geopaparazzi.util.CompressionUtilities;
-import eu.hydrologis.geopaparazzi.util.NetworkUtilities;
 import eu.hydrologis.geopaparazzi.util.Note;
-import eu.hydrologis.geopaparazzi.util.Utilities;
-import eu.hydrologis.geopaparazzi.util.debug.Debug;
-import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * Utilities class for handling OSM matters.
@@ -78,10 +78,11 @@ public class OsmUtilities {
      * Send OSM notes to the server.
      * 
      * @param context the context.
+     * @param description the changeset description.
      * @return the server response.
      * @throws Exception
      */
-    public static String sendOsmNotes( Context context ) throws Exception {
+    public static String sendOsmNotes( Context context, String description ) throws Exception {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String user = preferences.getString(PREF_KEY_USER, TEST);
         if (user.length() == 0) {
@@ -113,6 +114,7 @@ public class OsmUtilities {
 
         wpsXmlString = wpsXmlString.replaceFirst("USERNAME", user);
         wpsXmlString = wpsXmlString.replaceFirst("PASSWORD", pwd);
+        wpsXmlString = wpsXmlString.replaceFirst("CHANGESET", description);
 
         List<Note> notesList = DaoNotes.getNotesList(context);
         StringBuilder sb = new StringBuilder();
@@ -199,19 +201,21 @@ public class OsmUtilities {
                     }
                 }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
-                        final File parentFile = ApplicationManager.getInstance(activity).getGeoPaparazziDir().getParentFile();
+                        final File parentFile = ResourcesManager.getInstance(activity).getApplicationDir().getParentFile();
                         final File osmZipFile = new File(parentFile, "osmtags.zip");
                         File osmFolderFile = new File(parentFile, "osmtags");
 
                         if (osmFolderFile.exists() && osmFolderFile.isDirectory()) {
                             Utilities
-                                    .messageDialog(activity,
-                                            "An osm tags folder already exists. Please remove the folder before trying to download the tags.");
+                                    .messageDialog(
+                                            activity,
+                                            "An osm tags folder already exists. Please remove the folder before trying to download the tags.",
+                                            null);
                             return;
                         }
 
                         if (!NetworkUtilities.isNetworkAvailable(activity)) {
-                            Utilities.messageDialog(activity, activity.getString(R.string.available_only_with_network));
+                            Utilities.messageDialog(activity, activity.getString(R.string.available_only_with_network), null);
                             return;
                         }
 
@@ -224,7 +228,7 @@ public class OsmUtilities {
                                 try {
                                     NetworkUtilities.sendGetRequest4File(osmTagsZipUrlPath, osmZipFile, null, null, null);
                                 } catch (Exception e) {
-                                    Utilities.messageDialog(activity, "An error occurred while downloading the OSM tags.");
+                                    Utilities.messageDialog(activity, "An error occurred while downloading the OSM tags.", null);
                                     e.printStackTrace();
                                     return "";
                                 }
@@ -233,7 +237,7 @@ public class OsmUtilities {
                                     CompressionUtilities.unzipFolder(osmZipFile.getAbsolutePath(), parentFile.getAbsolutePath());
                                 } catch (IOException e) {
                                     Utilities.messageDialog(activity,
-                                            "An error occurred while unzipping the OSM tags to the device.");
+                                            "An error occurred while unzipping the OSM tags to the device.", null);
                                     e.printStackTrace();
                                     return "";
                                 } finally {

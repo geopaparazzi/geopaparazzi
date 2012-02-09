@@ -17,16 +17,16 @@
  */
 package eu.hydrologis.geopaparazzi.osm;
 
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.CONSTRAINT_MANDATORY;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.CONSTRAINT_RANGE;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_KEY;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_LONGNAME;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_TYPE;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TAG_VALUE;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TYPE_BOOLEAN;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TYPE_DOUBLE;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TYPE_STRING;
-import static eu.hydrologis.geopaparazzi.maps.tags.FormUtilities.TYPE_STRINGCOMBO;
+import static eu.geopaparazzi.library.forms.FormUtilities.*;
+import static eu.geopaparazzi.library.forms.FormUtilities.CONSTRAINT_RANGE;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_KEY;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_LONGNAME;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_TYPE;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_VALUE;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_BOOLEAN;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_DOUBLE;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRING;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRINGCOMBO;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,21 +48,23 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import eu.geopaparazzi.library.forms.FormUtilities;
+import eu.geopaparazzi.library.forms.TagsManager;
+import eu.geopaparazzi.library.forms.constraints.Constraints;
+import eu.geopaparazzi.library.forms.constraints.MandatoryConstraint;
+import eu.geopaparazzi.library.forms.constraints.RangeConstraint;
+import eu.geopaparazzi.library.util.FileUtilities;
+import eu.geopaparazzi.library.util.PositionUtilities;
+import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
-import eu.hydrologis.geopaparazzi.maps.TagsManager;
-import eu.hydrologis.geopaparazzi.maps.tags.FormUtilities;
-import eu.hydrologis.geopaparazzi.osm.filters.Constraints;
-import eu.hydrologis.geopaparazzi.osm.filters.MandatoryConstraint;
-import eu.hydrologis.geopaparazzi.osm.filters.RangeConstraint;
 import eu.hydrologis.geopaparazzi.util.Constants;
-import eu.hydrologis.geopaparazzi.util.FileUtils;
-import eu.hydrologis.geopaparazzi.util.Utilities;
-import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * The osm form activity.
@@ -73,7 +75,6 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
 public class OsmFormActivity extends Activity {
 
     private String formJsonString;
-    // private String formShortnameDefinition;
     private String formLongnameDefinition;
 
     private HashMap<String, View> key2WidgetMap = new HashMap<String, View>();
@@ -81,8 +82,8 @@ public class OsmFormActivity extends Activity {
     private List<String> keyList = new ArrayList<String>();
     private JSONArray formItemsArray;
     private JSONObject jsonFormObject;
-    private float latitude;
-    private float longitude;
+    private double latitude;
+    private double longitude;
     private String category;
     private String tagName;
 
@@ -124,14 +125,16 @@ public class OsmFormActivity extends Activity {
                 sb.append(".json");
                 tagsJsonFile = new File(tagsFolderFile, sb.toString());
             }
-            formJsonString = FileUtils.readfile(tagsJsonFile);
+            formJsonString = FileUtilities.readfile(tagsJsonFile);
         } catch (IOException e1) {
             e1.printStackTrace();
         }
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        latitude = preferences.getFloat(Constants.PREFS_KEY_MAPCENTER_LAT, 0f);
-        longitude = preferences.getFloat(Constants.PREFS_KEY_MAPCENTER_LON, 0f);
+        double[] mapCenter = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
+
+        latitude = mapCenter[1];
+        longitude = mapCenter[0];
 
         LinearLayout mainView = (LinearLayout) findViewById(R.id.osmform_linear);
         Button okButton = (Button) findViewById(R.id.osmform_ok);
@@ -232,6 +235,11 @@ public class OsmFormActivity extends Activity {
                     JSONArray comboItems = TagsManager.getComboItems(jsonObject);
                     String[] itemsArray = TagsManager.comboItems2StringArray(comboItems);
                     addedView = FormUtilities.addComboView(this, mainView, key, value, itemsArray, constraintDescription);
+                } else if (type.equals(TYPE_STRINGMULTIPLECHOICE)) {
+                    JSONArray comboItems = TagsManager.getComboItems(jsonObject);
+                    String[] itemsArray = TagsManager.comboItems2StringArray(comboItems);
+                    addedView = FormUtilities
+                            .addMultiSelectionView(this, mainView, key, value, itemsArray, constraintDescription);
                 } else {
                     System.out.println("Type non implemented yet: " + type);
                 }
@@ -257,7 +265,17 @@ public class OsmFormActivity extends Activity {
 
             View view = key2WidgetMap.get(key);
             String text = null;
-            if (view instanceof TextView) {
+            if (view instanceof CheckBox) {
+                CheckBox checkBox = (CheckBox) view;
+                boolean checked = checkBox.isChecked();
+                text = checked ? "true" : "false";
+            } else if (view instanceof Button) {
+                Button button = (Button) view;
+                text = button.getText().toString();
+                if (text.trim().equals("...")) {
+                    text = "";
+                }
+            } else if (view instanceof TextView) {
                 TextView textView = (TextView) view;
                 text = textView.getText().toString();
             } else if (view instanceof Spinner) {

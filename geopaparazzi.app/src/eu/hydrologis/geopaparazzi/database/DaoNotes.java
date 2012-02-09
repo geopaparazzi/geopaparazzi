@@ -28,10 +28,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
-import eu.hydrologis.geopaparazzi.util.Constants;
+import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.debug.Debug;
+import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.util.Note;
-import eu.hydrologis.geopaparazzi.util.debug.Debug;
-import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
@@ -63,7 +63,7 @@ public class DaoNotes {
 
     private static long LASTINSERTEDNOTE_ID = -1;
 
-    private static SimpleDateFormat dateFormatter = Constants.TIME_FORMATTER_SQLITE;
+    private static SimpleDateFormat dateFormatter = LibraryConstants.TIME_FORMATTER_SQLITE;
 
     public static void addNote( Context context, double lon, double lat, double altim, Date timestamp, String text, String form,
             int type ) throws IOException {

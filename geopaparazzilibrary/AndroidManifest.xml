@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="eu.geopaparazzi.library"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk android:minSdkVersion="8" />
+
+    <!--
+        <uses-permission android:name="android.permission.BLUETOOTH" />
+        <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+        <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+        <uses-permission android:name="android.permission.INTERNET" />
+        <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+        <uses-permission android:name="android.permission.RECEIVE_SMS" />
+        <uses-permission android:name="android.permission.SEND_SMS" />
+        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+        <uses-permission android:name="android.permission.RECORD_AUDIO" />
+        <uses-permission android:name="android.permission.READ_CONTACTS" />    -->
+
+    <application
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name" >
+        <activity
+            android:name="eu.geopaparazzi.library.camera.CameraActivity"
+            android:configChanges="orientation" >
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.camera.CameraActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name="eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity" >
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="eu.geopaparazzi.library.util.activities.NoteActivity"
+            android:configChanges="keyboardHidden|orientation" >
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.util.activities.NoteActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name="eu.geopaparazzi.library.util.activities.InsertCoordActivity" >
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.util.activities.InsertCoordActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name="eu.geopaparazzi.library.forms.FormActivity" >
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.forms.FormActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name="eu.geopaparazzi.library.bluetooth.BluetoothPreferencesActivity" >
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.bluetooth.BluetoothPreferencesActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name="eu.geopaparazzi.library.bluetooth.BluetoothProviderService"
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="org.broeuschmeul.android.gps.bluetooth.tracker.nmea.intent.action.START_TRACK_RECORDING" >
+                    <category android:name="android.intent.category.DEFAULT" />
+                </action>
+                <action android:name="org.broeuschmeul.android.gps.bluetooth.tracker.nmea.intent.action.STOP_TRACK_RECORDING" >
+                    <category android:name="android.intent.category.DEFAULT" />
+                </action>
+                <action android:name="org.broeuschmeul.android.gps.bluetooth.provider.nmea.intent.action.START_GPS_PROVIDER" >
+                    <category android:name="android.intent.category.DEFAULT" />
+                </action>
+                <action android:name="org.broeuschmeul.android.gps.bluetooth.provider.nmea.intent.action.STOP_GPS_PROVIDER" >
+                    <category android:name="android.intent.category.DEFAULT" />
+                </action>
+                <action android:name="org.broeuschmeul.android.gps.bluetooth.provider.nmea.intent.action.CONFIGURE_SIRF_GPS" >
+                    <category android:name="android.intent.category.DEFAULT" />
+                </action>
+            </intent-filter>
+        </service>
+
+        <receiver
+            android:name="eu.hydrologis.trashmapper.sms.SmsReceiver"
+            android:enabled="true" >
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

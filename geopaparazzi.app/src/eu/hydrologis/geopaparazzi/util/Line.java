@@ -25,13 +25,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.location.Location;
+import eu.geopaparazzi.library.kml.KmlRepresenter;
+import eu.geopaparazzi.library.util.DynamicDoubleArray;
 
 /**
  * Represents a line (log or map).
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class Line {
+public class Line implements KmlRepresenter {
 
     private final String fileName;
     private final DynamicDoubleArray latList;
@@ -131,5 +133,13 @@ public class Line {
         sB.append("</Placemark>\n");
 
         return sB.toString();
+    }
+
+    public boolean hasImage() {
+        return false;
+    }
+
+    public String getImagePath() {
+        return null;
     }
 }

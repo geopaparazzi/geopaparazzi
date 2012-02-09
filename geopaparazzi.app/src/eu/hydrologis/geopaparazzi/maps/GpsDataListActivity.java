@@ -46,11 +46,11 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import eu.geopaparazzi.library.util.debug.Debug;
+import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.util.Constants;
-import eu.hydrologis.geopaparazzi.util.debug.Debug;
-import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * Gpx listing activity.
@@ -133,7 +133,7 @@ public class GpsDataListActivity extends ListActivity {
 
     @Override
     protected void onListItemClick( ListView parent, View v, int position, long id ) {
-        Intent intent = new Intent(Constants.GPSLOG_PROPERTIES);
+        Intent intent = new Intent(this, GpsDataPropertiesActivity.class);
         intent.putExtra(Constants.PREFS_KEY_GPSLOG4PROPERTIES, gpslogItems[position]);
         startActivity(intent);
     }

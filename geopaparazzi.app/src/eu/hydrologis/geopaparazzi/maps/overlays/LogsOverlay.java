@@ -17,8 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.maps.overlays;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.E6;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -38,13 +36,14 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.view.MotionEvent;
+import eu.geopaparazzi.library.gps.GpsManager;
+import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.debug.Debug;
+import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
-import eu.hydrologis.geopaparazzi.gps.GpsManager;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
 import eu.hydrologis.geopaparazzi.maps.MapItem;
-import eu.hydrologis.geopaparazzi.util.ApplicationManager;
-import eu.hydrologis.geopaparazzi.util.debug.Debug;
-import eu.hydrologis.geopaparazzi.util.debug.Logger;
+import eu.hydrologis.geopaparazzi.util.GpUtilities;
 
 /**
  * Overlay to show gps logs.
@@ -68,13 +67,13 @@ public class LogsOverlay extends Overlay {
     public LogsOverlay( final Context ctx, final ResourceProxy pResourceProxy ) {
         super(pResourceProxy);
         this.context = ctx;
-        ApplicationManager applicationManager = ApplicationManager.getInstance(context);
-        decimationFactor = applicationManager.getDecimationFactor();
+        decimationFactor = GpUtilities.getDecimationFactor(ctx);
     }
 
     public void setDoDraw( boolean doDraw ) {
         this.doDraw = doDraw;
-        if (Debug.D) Logger.d(this, "Will draw: " + doDraw); //$NON-NLS-1$
+        if (Debug.D)
+            Logger.d(this, "Will draw: " + doDraw); //$NON-NLS-1$
     }
 
     public void setGpsUpdate( boolean gpsUpdate ) {
@@ -95,10 +94,10 @@ public class LogsOverlay extends Overlay {
         }
 
         BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
-        float y0 = boundingBox.getLatNorthE6() / E6;
-        float y1 = boundingBox.getLatSouthE6() / E6;
-        float x0 = boundingBox.getLonWestE6() / E6;
-        float x1 = boundingBox.getLonEastE6() / E6;
+        float y0 = boundingBox.getLatNorthE6() / LibraryConstants.E6;
+        float y1 = boundingBox.getLatSouthE6() / LibraryConstants.E6;
+        float x0 = boundingBox.getLonWestE6() / LibraryConstants.E6;
+        float x1 = boundingBox.getLonEastE6() / LibraryConstants.E6;
 
         Projection pj = mapsView.getProjection();
 

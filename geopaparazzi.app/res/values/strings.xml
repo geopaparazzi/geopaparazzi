@@ -1,20 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="cancel">cancel</string>
-    <string name="ok">ok</string>
-    <string name="okcoord">use coord</string>
-    <string name="okaddress">use address</string>
-    <string name="longitude">longitude</string>
-    <string name="latitude">latitude</string>
     <string name="meters">meters</string>
     
     <string name="app_name">GeoPaparazzi</string>
 
-    <string name="notesaved">Note successfully saved!</string>
-    <string name="notenonsaved">An error occurred while saving the Note!</string>
-    <string name="notecancel">Note not saved as requested by user.</string>
     <string name="notesvisibilityToggle">Toggle notes visibility.</string>
-
     <string name="gpslogsvisibilityToggle">Toggle gps logs visibility.</string>
 
     <string name="kmlsaved">Kml successfully exported to: </string>
@@ -24,17 +15,11 @@
     <string name="imagenonsaved">An error occurred while saving the image!</string>
     <string name="loggingoff">Stopped all sensors.</string>
     <string name="loggingon">Started gps and sensor logging.</string>
-    <string name="gpsloggingoff">Stopped gps logging.</string>
-    <string name="gpsloggingon">Started gps logging...</string>
-    <string name="gpsloggingalarm">Avoid/stop alarm... </string>
     
     <string name="nogps_data">No gps data available yet!</string>
     
     <string name="about">about</string>
     <string name="exit">exit</string>
-    <string name="cantcreate_sdcard">Wasn\'t able to create folder on sdcard ({0}). Exiting...</string>
-    <string name="sdcard_notexist">Sdcard folder doesn\'t exist or is not writable (is it possible it is mounted on a pc?). Exiting...</string>
-    <string name="cantwrite_gpslog">ERROR: couldn\'t write gps log!</string>
     <string name="cantclose_gpslog">ERROR: couldn\'t close gps log!</string>
     <string name="gpslogthread_interrupted">ERROR: gps log thread interrupted!</string>
     <string name="utctime">time: </string>
@@ -54,18 +39,14 @@
 	<string name="nogpscoordinate">The gps didn\'t send any coordinate yet. Try again in a minute.</string>
 	<string name="saveimg">Saving tile to disk</string>
 	<string name="goto_coordinate">go to coordinate</string>
-	<string name="askcoord">Please insert the coordinates to go to</string>
 	<string name="address">Address</string>
 	<string name="askaddress">Or use an address if you are connected to internet</string>
-	<string name="wrongLongitude">Longitude has to be a number between -180 and 180.</string>
-	<string name="wrongLatitude">Latitude has to be a number between -90 and 90.</string>
 	<string name="emptyaddress">Please insert an address.</string>
 	<string name="cantretrievefromaddress">Could not retrieve the location from the supplied address.</string>
 	<string name="prompt_gpsenable">Your gps is disabled! Would you like to enable it?</string>
 	<string name="nogps4google">The gps didn\'t supply any position yet. Can\'t Visualize any position on map.</string>
 	<string name="width_label">width</string>
 	<string name="color_label">color</string>
-	<string name="last_position">Last position at</string>
 	<string name="distance">Distance [m]</string>
 
 	<string name="mainmenu_kmlexport">export kml</string>
@@ -103,6 +84,7 @@
 	<string name="sms_catching">Sms catching</string>
 	<string name="sms_number">Phone number for automatic sms sending</string>
 	<string name="sms_catcher">Enable sms catcher</string>
+	<string name="sms_type">Use OGC geosms instead of OSM based</string>
 
 	<string name="database_preferences">Database preferences</string>
 	<string name="database_new">Create a new database on restart</string>
@@ -113,12 +95,10 @@
 	<string name="gpx_import_title">Line or Point?</string>
 	<string name="gpx_import_message">Choose whether the file is to be imported as points or lines.</string>
 	<string name="gpx_import_checkbox_message">Force import as line?</string>
-	<string name="gpx_import_processing">Importing gpx...</string>
+	<string name="gpx_import_processing">Importing gpx…</string>
 
 	<string name="osm_additionalinfo">Add info to tag</string>
 	<string name="osm_tagsgrid">Choose a tag to insert</string>
-	
-	<string name="error_disk_full">The disk to which to log to seems to be full. Free some memory and start again.</string>
 	
 	<string name="measureinfo">Last measurement info</string>
 	<string name="measureinfo_first">First point</string>
@@ -139,7 +119,7 @@
 	    \n
 	    The mapping engine is osmdroid.\n
 	    \n
-	    The maps are from (c) OpenStreetMap contributors, CC-BY-SA.\n
+	    The maps are from © OpenStreetMap contributors, CC-BY-SA.\n
 	    \n
 	    The Vertical Seekbar comes from ardroid.\n
 	    \n
@@ -158,12 +138,11 @@
 	
 	<string name="no_maps_in_list">There are no maps in the list. To import maps, use the import gpx function from the menu.</string>
 	
-	<string name="insert_note">insert your note here</string>
 	<string name="gps_log">gps log</string>
 	<string name="gps_log_name">Insert a gps log name or accept the default one</string>
 	
 	<string name="text_take_audio">record audio</string>
-	<string name="audio_recording">Recording audio... push here to stop</string>
+	<string name="audio_recording">Recording audio… push here to stop</string>
 	<string name="audio_recording_stop">stop</string>
 
 	<string name="panic">panic!</string>
@@ -173,7 +152,7 @@
 
 	<string name="panic_upper">  PANIC!  </string>
 	<string name="send_status_update">send position</string>
-	<string name="help_needed">Help needed at</string>
+	<string name="help_needed">Help needed!</string>
 	<string name="message_sent">Message sent</string>
 
 	<string name="last_note_deleted">Deleted last note</string>
@@ -189,7 +168,6 @@
     <string name="remove_last_note_prompt">Do you really want to remove the last text note? This can\'t be undone.</string>
     
     <string name="export_for_real">Export data?</string>
-    <string name="up">up</string>
 
     <string name="installgpsstatus_title">Install GPS Status</string>
     <string name="installgpsstatus_message">Geopaparazzi uses the Gps Status Application as compass and gps info view. Do you want to install it?</string>
@@ -202,8 +180,8 @@
     <string name="reset">new project</string>
     <string name="reset_prompt">Rename the project and start on a new one?</string>
     <string name="load">load an existing project</string>
-    <string name="phonenumber_hint">Enter comma separated phone numbers...</string>
-    <string name="pick_phonenumber_label">...</string>
+    <string name="phonenumber_hint">Enter comma separated phone numbers…</string>
+    <string name="pick_phonenumber_label">…</string>
 
 	<!-- added after 2.1.4 -->
     <string name="labels_preferences">Labels preferences</string>
@@ -234,22 +212,22 @@
     <string name="mapsactivity_menu_toggle_scalebar">toggle scalebar</string>
     <string name="mapsactivity_menu_tilesource">tile source</string>
     
-    <string name="mapsactivity_delete_bookmarks">Deleting {0} bookmarks...</string>
-    <string name="mapsactivity_delete_notes">Deleting {0} notes...</string>
+    <string name="mapsactivity_delete_bookmarks">Deleting {0} bookmarks…</string>
+    <string name="mapsactivity_delete_notes">Deleting {0} notes…</string>
     <string name="mapsactivity_new_bookmark">New bookmark</string>
     <string name="mapsactivity_enter_bookmark_name">Enter a name for the new bookmark (optional)</string>
 
     <string name="maptagsactivity_error_reading_tags">Error in reading tags</string>
 
-    <string name="geopaparazziactivity_exporting_kmz">Exporting to kmz...</string>
+    <string name="geopaparazziactivity_exporting_kmz">Exporting to kmz…</string>
 	<!-- added after 2.3.1 -->
     <string name="mapsactivity_menu_toggle_compass">toggle compass</string>
     
 	<!-- added after 2.4.3 -->
     <string name="imagesvisibilityToggle">Toggle images visibility</string>
-    <string name="imagefromgps">gps image</string>
-    <string name="notefromgps">gps note</string>
-    <string name="quicknotes">QUICK GPS NOTES</string>
+    <string name="imagefromgps">map center image</string>
+    <string name="notefromgps">map center note</string>
+    <string name="quicknotes">MAP CENTER NOTES</string>
     <string name="formnotes">FORM BASED NOTES</string>
     
 	<!-- added after 2.5.0 -->
@@ -263,7 +241,7 @@
     <string name="an_error_occurred_while_uploading_osm_tags">An error occurred while uploading OSM tags: </string>
     <string name="enable_automatic_center_on_gps">Automatic center on GPS</string>
     <string name="profile">profile</string>
-    <string name="loading_data">Loading data...</string>
+    <string name="loading_data">Loading data…</string>
     <string name="profilelable_distance">distance [m]</string>
     <string name="profilelable_elevation">elevation [m]</string>
     <string name="error_json_osm">The send json form is not valid. Please check your icons and form data.</string>
@@ -271,4 +249,8 @@
     <string name="error_osm_server">An error occurred while connecting to the OSM server. Please check your login and password. It is also possible that the OSM server is not available.</string>
     <string name="check_valid_field">Please check that the field \"{0}\" is valid.</string>
     <string name="view_in_mixare">view in mixare</string>
+    <string name="add_message">ADD MESSAGE</string>
+    <string name="insert_an_optional_text_to_send_with_the_geosms">Insert an optional text to send with the GeoSMS</string>
+    <string name="enter_a_name_for_the_new_project">Enter a name for the new project</string>
+    <string name="chosen_project_exists">The chosen project name already exists, please chose another name</string>
 </resources>

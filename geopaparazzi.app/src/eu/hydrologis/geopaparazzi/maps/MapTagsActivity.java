@@ -17,6 +17,7 @@
  */
 package eu.hydrologis.geopaparazzi.maps;
 
+import java.io.File;
 import java.sql.Date;
 
 import android.app.Activity;
@@ -29,12 +30,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.Toast;
+import eu.geopaparazzi.library.camera.CameraActivity;
+import eu.geopaparazzi.library.forms.FormActivity;
+import eu.geopaparazzi.library.forms.TagsManager;
+import eu.geopaparazzi.library.forms.TagsManager.TagObject;
+import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.library.util.activities.NoteActivity;
+import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
-import eu.hydrologis.geopaparazzi.maps.TagsManager.TagObject;
-import eu.hydrologis.geopaparazzi.util.Constants;
-import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * Osm tags adding activity.
@@ -42,9 +50,13 @@ import eu.hydrologis.geopaparazzi.util.debug.Logger;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class MapTagsActivity extends Activity {
+    private static final int NOTE_RETURN_CODE = 666;
+    private static final int CAMERA_RETURN_CODE = 667;
+    private static final int FORM_RETURN_CODE = 668;
     private EditText additionalInfoText;
-    private float latitude;
-    private float longitude;
+    private double latitude;
+    private double longitude;
+    private double elevation;
     private String[] tagNamesArray;
 
     public void onCreate( Bundle icicle ) {
@@ -53,14 +65,9 @@ public class MapTagsActivity extends Activity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            latitude = extras.getFloat(Constants.PREFS_KEY_MAPCENTER_LAT);
-            longitude = extras.getFloat(Constants.PREFS_KEY_MAPCENTER_LON);
-
-            // if not passed as center, use the ones saved by the logger regularly
-            if (latitude == 0.0)
-                latitude = extras.getFloat(Constants.PREFS_KEY_LAT);
-            if (longitude == 0.0)
-                longitude = extras.getFloat(Constants.PREFS_KEY_LON);
+            latitude = extras.getDouble(LibraryConstants.LATITUDE);
+            longitude = extras.getDouble(LibraryConstants.LONGITUDE);
+            elevation = extras.getDouble(LibraryConstants.ELEVATION);
         }
 
         additionalInfoText = (EditText) findViewById(R.id.osm_additionalinfo_id);
@@ -68,17 +75,22 @@ public class MapTagsActivity extends Activity {
         Button imageButton = (Button) findViewById(R.id.imagefromtag);
         imageButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                Intent intent = new Intent(Constants.TAKE_PICTURE);
-                MapTagsActivity.this.startActivity(intent);
-                finish();
+                Intent intent = new Intent(MapTagsActivity.this, CameraActivity.class);
+                intent.putExtra(LibraryConstants.LONGITUDE, longitude);
+                intent.putExtra(LibraryConstants.LATITUDE, latitude);
+                intent.putExtra(LibraryConstants.ELEVATION, elevation);
+
+                MapTagsActivity.this.startActivityForResult(intent, CAMERA_RETURN_CODE);
             }
         });
         Button noteButton = (Button) findViewById(R.id.notefromtag);
         noteButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                Intent intent = new Intent(Constants.TAKE_NOTE);
-                MapTagsActivity.this.startActivity(intent);
-                finish();
+                Intent intent = new Intent(MapTagsActivity.this, NoteActivity.class);
+                intent.putExtra(LibraryConstants.LONGITUDE, longitude);
+                intent.putExtra(LibraryConstants.LATITUDE, latitude);
+                intent.putExtra(LibraryConstants.ELEVATION, elevation);
+                MapTagsActivity.this.startActivityForResult(intent, NOTE_RETURN_CODE);
             }
         });
 
@@ -119,13 +131,12 @@ public class MapTagsActivity extends Activity {
                                 // launch form activity
                                 String jsonString = tag.jsonString;
 
-                                Intent formIntent = new Intent(Constants.FORM);
-                                formIntent.putExtra(Constants.FORMJSON_KEY, jsonString);
-                                formIntent.putExtra(Constants.FORMSHORTNAME_KEY, tag.shortName);
-                                formIntent.putExtra(Constants.FORMLONGNAME_KEY, finalLongName);
-                                formIntent.putExtra(Constants.PREFS_KEY_MAPCENTER_LAT, latitude);
-                                formIntent.putExtra(Constants.PREFS_KEY_MAPCENTER_LON, longitude);
-                                startActivity(formIntent);
+                                Intent formIntent = new Intent(MapTagsActivity.this, FormActivity.class);
+                                formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_JSON, jsonString);
+                                formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_NAME, finalLongName); // tag.shortName);
+                                formIntent.putExtra(LibraryConstants.LATITUDE, latitude);
+                                formIntent.putExtra(LibraryConstants.LONGITUDE, longitude);
+                                startActivityForResult(formIntent, FORM_RETURN_CODE);
                             } else {
                                 // insert as it is
                                 DaoNotes.addNote(getContext(), longitude, latitude, -1.0, sqlDate, finalLongName, null,
@@ -136,7 +147,6 @@ public class MapTagsActivity extends Activity {
                             e.printStackTrace();
                             Toast.makeText(MapTagsActivity.this, R.string.notenonsaved, Toast.LENGTH_LONG).show();
                         }
-                        finish();
                     }
                 });
 
@@ -147,4 +157,78 @@ public class MapTagsActivity extends Activity {
         // setListAdapter(arrayAdapter);
         buttonGridView.setAdapter(arrayAdapter);
     }
+
+    protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch( requestCode ) {
+        case (FORM_RETURN_CODE): {
+            if (resultCode == Activity.RESULT_OK) {
+                String[] formArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_FORM);
+                if (formArray != null) {
+                    try {
+                        double lon = Double.parseDouble(formArray[0]);
+                        double lat = Double.parseDouble(formArray[1]);
+                        double elev = Double.parseDouble(formArray[2]);
+                        java.util.Date date = LibraryConstants.TIME_FORMATTER_SQLITE.parse(formArray[3]);
+                        DaoNotes.addNote(this, lon, lat, elev, new Date(date.getTime()), formArray[4], formArray[5],
+                                NoteType.SIMPLE.getTypeNum());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
+                    }
+                }
+            }
+            break;
+        }
+        case (NOTE_RETURN_CODE): {
+            if (resultCode == Activity.RESULT_OK) {
+                String[] noteArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_NOTE);
+                if (noteArray != null) {
+                    try {
+                        double lon = Double.parseDouble(noteArray[0]);
+                        double lat = Double.parseDouble(noteArray[1]);
+                        double elev = Double.parseDouble(noteArray[2]);
+                        java.util.Date date = LibraryConstants.TIME_FORMATTER.parse(noteArray[3]);
+                        DaoNotes.addNote(this, lon, lat, elev, new Date(date.getTime()), noteArray[4], null,
+                                NoteType.SIMPLE.getTypeNum());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+
+                        Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
+                    }
+                }
+
+            }
+            break;
+        }
+        case (CAMERA_RETURN_CODE): {
+            if (resultCode == Activity.RESULT_OK) {
+                String relativeImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
+                if (relativeImagePath != null) {
+                    File imgFile = new File(ResourcesManager.getInstance(this).getMediaDir().getParentFile(), relativeImagePath);
+                    if (!imgFile.exists()) {
+                        return;
+                    }
+                    try {
+                        double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
+                        double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
+                        double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
+                        double azim = data.getDoubleExtra(LibraryConstants.AZIMUTH, 0.0);
+
+                        DaoImages.addImage(this, lon, lat, elev, azim, new Date(new java.util.Date().getTime()), "", //$NON-NLS-1$
+                                relativeImagePath);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+
+                        Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
+                    }
+                }
+
+            }
+            break;
+        }
+        }
+        finish();
+    }
+
 }

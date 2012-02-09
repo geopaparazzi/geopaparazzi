@@ -20,15 +20,16 @@ package eu.hydrologis.geopaparazzi.util;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import eu.hydrologis.geopaparazzi.maps.TagsManager;
-import eu.hydrologis.geopaparazzi.maps.tags.FormUtilities;
+import eu.geopaparazzi.library.forms.FormUtilities;
+import eu.geopaparazzi.library.forms.TagsManager;
+import eu.geopaparazzi.library.kml.KmlRepresenter;
 
 /**
  * Represents a note (log or map).
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class Note {
+public class Note implements KmlRepresenter{
     private final String name;
     private final String description;
     private final long id;
@@ -148,5 +149,13 @@ public class Note {
         sB.append("</Placemark>\n");
 
         return sB.toString();
+    }
+
+    public boolean hasImage() {
+        return false;
+    }
+
+    public String getImagePath() {
+        return null;
     }
 }

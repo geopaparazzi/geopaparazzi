@@ -17,16 +17,11 @@
  */
 package eu.hydrologis.geopaparazzi.maps;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.E6;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_COMPASSON;
-import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_LAT;
-import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_LON;
-import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_MAPCENTER_LAT;
-import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_MAPCENTER_LON;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_MINIMAPON;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_SCALEBARON;
-import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_ZOOM;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
@@ -78,14 +73,24 @@ import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.SlidingDrawer;
 import android.widget.Toast;
+import eu.geopaparazzi.library.gps.GpsLocation;
+import eu.geopaparazzi.library.gps.GpsManager;
+import eu.geopaparazzi.library.gps.GpsManagerListener;
+import eu.geopaparazzi.library.mixare.MixareHandler;
+import eu.geopaparazzi.library.network.NetworkUtilities;
+import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.PositionUtilities;
+import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.activities.InsertCoordActivity;
+import eu.geopaparazzi.library.util.debug.Debug;
+import eu.geopaparazzi.library.util.debug.Logger;
+import eu.hydrologis.geopaparazzi.GeoPaparazziActivity;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
+import eu.hydrologis.geopaparazzi.database.DatabaseManager;
 import eu.hydrologis.geopaparazzi.database.NoteType;
-import eu.hydrologis.geopaparazzi.gps.GpsLocation;
-import eu.hydrologis.geopaparazzi.gps.GpsManager;
-import eu.hydrologis.geopaparazzi.gps.GpsManagerListener;
 import eu.hydrologis.geopaparazzi.maps.overlays.BookmarksOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.CrossOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.GpsPositionOverlay;
@@ -95,22 +100,22 @@ import eu.hydrologis.geopaparazzi.maps.overlays.MapsOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.MeasureToolOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.MinimapOverlayWithCross;
 import eu.hydrologis.geopaparazzi.maps.overlays.NotesOverlay;
-import eu.hydrologis.geopaparazzi.mixare.MixareHandler;
+import eu.hydrologis.geopaparazzi.osm.OsmCategoryActivity;
 import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
-import eu.hydrologis.geopaparazzi.util.NetworkUtilities;
+import eu.hydrologis.geopaparazzi.util.MixareUtilities;
 import eu.hydrologis.geopaparazzi.util.Note;
 import eu.hydrologis.geopaparazzi.util.ResourceProxyImpl;
 import eu.hydrologis.geopaparazzi.util.VerticalSeekBar;
-import eu.hydrologis.geopaparazzi.util.debug.Debug;
-import eu.hydrologis.geopaparazzi.util.debug.Logger;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class MapsActivity extends Activity implements GpsManagerListener, MapListener {
+    private static final int INSERTCOORD_RETURN_CODE = 666;
+
     private static final int MENU_GPSDATA = 1;
     private static final int MENU_MAPDATA = 2;
     private static final int MENU_TILE_SOURCE_ID = 3;
@@ -248,11 +253,10 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
             mMiniMapOverlay.setEnabled(isMinimapon);
         }
 
-        float lastCenterLon = preferences.getFloat(PREFS_KEY_LON, 0f);
-        float lastCenterLat = preferences.getFloat(PREFS_KEY_LAT, 0f);
-        final int zoom = preferences.getInt(Constants.PREFS_KEY_ZOOM, 16);
-        mapController.setCenter(new GeoPoint(lastCenterLat, lastCenterLon));
-        mapController.setZoom(zoom);
+        final double[] mapCenterLocation = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
+        GeoPoint geoPoint = new GeoPoint(mapCenterLocation[1], mapCenterLocation[0]);
+        mapController.setZoom((int) mapCenterLocation[2]);
+        mapController.setCenter(geoPoint);
 
         maxZoomLevel = mapsView.getMaxZoomLevel();
         minZoomLevel = mapsView.getMinZoomLevel();
@@ -260,9 +264,9 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         // zoom bar
         zoomBar = (VerticalSeekBar) findViewById(R.id.ZoomBar);
         zoomBar.setMax(maxZoomLevel);
-        zoomBar.setProgress(zoom);
+        zoomBar.setProgress((int) mapCenterLocation[2]);
         zoomBar.setOnSeekBarChangeListener(new VerticalSeekBar.OnSeekBarChangeListener(){
-            private int progress = zoom;
+            private int progress = (int) mapCenterLocation[2];
             public void onStopTrackingTouch( VerticalSeekBar seekBar ) {
                 setZoomGuiText(progress);
                 mapsView.getController().setZoom(progress);
@@ -280,11 +284,11 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
             }
         });
 
-        int zoomInLevel = zoom + 1;
+        int zoomInLevel = (int) mapCenterLocation[2] + 1;
         if (zoomInLevel > maxZoomLevel) {
             zoomInLevel = maxZoomLevel;
         }
-        int zoomOutLevel = zoom - 1;
+        int zoomOutLevel = (int) mapCenterLocation[2] - 1;
         if (zoomOutLevel < minZoomLevel) {
             zoomOutLevel = minZoomLevel;
         }
@@ -364,9 +368,10 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         addnotebytagButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
                 IGeoPoint mapCenter = mapsView.getMapCenter();
-                Intent osmTagsIntent = new Intent(Constants.TAGS);
-                osmTagsIntent.putExtra(Constants.PREFS_KEY_MAPCENTER_LAT, mapCenter.getLatitudeE6() / E6);
-                osmTagsIntent.putExtra(Constants.PREFS_KEY_MAPCENTER_LON, mapCenter.getLongitudeE6() / E6);
+                Intent osmTagsIntent = new Intent(MapsActivity.this, MapTagsActivity.class);
+                osmTagsIntent.putExtra(LibraryConstants.LATITUDE, (double) (mapCenter.getLatitudeE6() / LibraryConstants.E6));
+                osmTagsIntent.putExtra(LibraryConstants.LONGITUDE, (double) (mapCenter.getLongitudeE6() / LibraryConstants.E6));
+                osmTagsIntent.putExtra(LibraryConstants.ELEVATION, 0.0);
                 startActivity(osmTagsIntent);
             }
         });
@@ -477,7 +482,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                 osmButton.setOnClickListener(new Button.OnClickListener(){
                     public void onClick( View v ) {
                         String categoryName = osmButton.getText().toString();
-                        Intent osmCategoryIntent = new Intent(Constants.OSMCATEGORYACTIVITY);
+                        Intent osmCategoryIntent = new Intent(MapsActivity.this, OsmCategoryActivity.class);
                         osmCategoryIntent.putExtra(Constants.OSM_CATEGORY_KEY, categoryName);
                         startActivity(osmCategoryIntent);
 
@@ -505,16 +510,37 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                     return;
                 }
 
+                final EditText input = new EditText(MapsActivity.this);
+                input.setText("");
+                Builder builder = new AlertDialog.Builder(MapsActivity.this);
+                builder.setTitle("Set description");
+                builder.setMessage("Insert a changeset description");
+                builder.setView(input);
+                builder.setIcon(android.R.drawable.ic_dialog_alert)
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                            public void onClick( DialogInterface dialog, int whichButton ) {
+                                sync("");
+                            }
+                        }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                            public void onClick( DialogInterface dialog, int whichButton ) {
+                                Editable value = input.getText();
+                                String newName = value.toString();
+                                sync(newName);
+                            }
+                        }).setCancelable(false).show();
+
+            }
+
+            private void sync( final String description ) {
                 final ProgressDialog progressDialog = ProgressDialog
                         .show(MapsActivity.this, "", getString(R.string.loading_data)); //$NON-NLS-1$
-
                 new AsyncTask<String, Void, String>(){
                     private Exception e = null;
 
                     protected String doInBackground( String... params ) {
                         String response = null;
                         try {
-                            response = OsmUtilities.sendOsmNotes(getApplicationContext());
+                            response = OsmUtilities.sendOsmNotes(MapsActivity.this, description);
                         } catch (Exception e) {
                             e.printStackTrace();
                             this.e = e;
@@ -570,7 +596,6 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                         }
                     }
                 }.execute((String) null);
-
             }
         });
 
@@ -593,21 +618,12 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
 
     @Override
     public void onWindowFocusChanged( boolean hasFocus ) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if (!hasFocus) {
-            IGeoPoint mapCenter = mapsView.getMapCenter();
-            Editor editor = preferences.edit();
-            editor.putFloat(PREFS_KEY_LON, (float) (mapCenter.getLongitudeE6() / E6));
-            editor.putFloat(PREFS_KEY_LAT, (float) (mapCenter.getLatitudeE6() / E6));
-            editor.putInt(PREFS_KEY_ZOOM, mapsView.getZoomLevel());
-            editor.commit();
-        } else {
-            float lastCenterLon = preferences.getFloat(PREFS_KEY_LON, 0f);
-            float lastCenterLat = preferences.getFloat(PREFS_KEY_LAT, 0f);
-            final int zoom = preferences.getInt(PREFS_KEY_ZOOM, 16);
-            mapController.setCenter(new GeoPoint(lastCenterLat, lastCenterLon));
-            mapController.setZoom(zoom);
-            setZoomGuiText(zoom);
+        // SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (hasFocus) {
+            double[] lastCenter = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
+            mapController.setZoom((int) lastCenter[2]);
+            mapController.setCenter(new GeoPoint(lastCenter[1], lastCenter[0]));
+            setZoomGuiText((int) lastCenter[2]);
         }
         super.onWindowFocusChanged(hasFocus);
     }
@@ -652,13 +668,14 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
     public void setNewCenterAtZoom( final double centerX, final double centerY, final int zoom ) {
         mapsView.getController().setZoom(zoom);
         setZoomGuiText(zoom);
-        mapsView.getController().setCenter(new GeoPoint((int) (centerX * E6), (int) (centerY * E6)));
+        mapsView.getController().setCenter(
+                new GeoPoint((int) (centerX * LibraryConstants.E6), (int) (centerY * LibraryConstants.E6)));
         mapsView.postInvalidate();
     }
 
     public double[] getCenterLonLat() {
         IGeoPoint mapCenter = mapsView.getMapCenter();
-        double[] lonLat = {mapCenter.getLongitudeE6() / E6, mapCenter.getLatitudeE6() / E6};
+        double[] lonLat = {mapCenter.getLongitudeE6() / LibraryConstants.E6, mapCenter.getLatitudeE6() / LibraryConstants.E6};
         return lonLat;
     }
 
@@ -687,7 +704,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         switch( item.getItemId() ) {
         case MENU_GPSDATA:
-            Intent gpsDatalistIntent = new Intent(Constants.GPSLOG_DATALIST);
+            Intent gpsDatalistIntent = new Intent(this, GpsDataListActivity.class);
             startActivity(gpsDatalistIntent);
             return true;
 
@@ -706,7 +723,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                     alertDialog.show();
                     return true;
                 } else {
-                    Intent mapDatalistIntent = new Intent(Constants.MAPSDATALIST);
+                    Intent mapDatalistIntent = new Intent(this, MapDataListActivity.class);
                     startActivity(mapDatalistIntent);
                     return true;
                 }
@@ -748,21 +765,21 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                 return true;
             }
             BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
-            float n = boundingBox.getLatNorthE6() / E6;
-            float s = boundingBox.getLatSouthE6() / E6;
-            float w = boundingBox.getLonWestE6() / E6;
-            float e = boundingBox.getLonEastE6() / E6;
+            float n = boundingBox.getLatNorthE6() / LibraryConstants.E6;
+            float s = boundingBox.getLatSouthE6() / LibraryConstants.E6;
+            float w = boundingBox.getLonWestE6() / LibraryConstants.E6;
+            float e = boundingBox.getLonEastE6() / LibraryConstants.E6;
 
             try {
-                mixareHandler.runRegionOnMixare(this, n, s, w, e);
+                MixareUtilities.runRegionOnMixare(this, n, s, w, e);
                 return true;
             } catch (Exception e1) {
                 e1.printStackTrace();
                 return false;
             }
         case GO_TO: {
-            Intent intent = new Intent(Constants.INSERT_COORD);
-            startActivity(intent);
+            Intent intent = new Intent(this, InsertCoordActivity.class);
+            startActivityForResult(intent, INSERTCOORD_RETURN_CODE);
             return true;
         }
         default:
@@ -771,6 +788,23 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
             mMiniMapOverlay.setTileSource(tileSource);
         }
         return super.onMenuItemSelected(featureId, item);
+    }
+
+    protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
+        if (Debug.D) {
+            Logger.d(this, "Activity returned"); //$NON-NLS-1$
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+        switch( requestCode ) {
+        case (INSERTCOORD_RETURN_CODE): {
+            if (resultCode == Activity.RESULT_OK) {
+                double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0f);
+                double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0f);
+                ViewportManager.INSTANCE.setCenterAndZoomForMapWindowFocus(lon, lat, null);
+            }
+            break;
+        }
+        }
     }
 
     private void deleteVisibleBookmarks() {
@@ -784,10 +818,10 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                     public void onClick( DialogInterface dialog, int whichButton ) {
                         try {
                             BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
-                            float n = boundingBox.getLatNorthE6() / E6;
-                            float s = boundingBox.getLatSouthE6() / E6;
-                            float w = boundingBox.getLonWestE6() / E6;
-                            float e = boundingBox.getLonEastE6() / E6;
+                            float n = boundingBox.getLatNorthE6() / LibraryConstants.E6;
+                            float s = boundingBox.getLatSouthE6() / LibraryConstants.E6;
+                            float w = boundingBox.getLonWestE6() / LibraryConstants.E6;
+                            float e = boundingBox.getLonEastE6() / LibraryConstants.E6;
                             final List<Bookmark> bookmarksInBounds = DaoBookmarks.getBookmarksInWorldBounds(MapsActivity.this, n,
                                     s, w, e);
                             int bookmarksNum = bookmarksInBounds.size();
@@ -834,10 +868,10 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                     public void onClick( DialogInterface dialog, int whichButton ) {
                         try {
                             BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
-                            float n = boundingBox.getLatNorthE6() / E6;
-                            float s = boundingBox.getLatSouthE6() / E6;
-                            float w = boundingBox.getLonWestE6() / E6;
-                            float e = boundingBox.getLonEastE6() / E6;
+                            float n = boundingBox.getLatNorthE6() / LibraryConstants.E6;
+                            float s = boundingBox.getLatSouthE6() / LibraryConstants.E6;
+                            float w = boundingBox.getLonWestE6() / LibraryConstants.E6;
+                            float e = boundingBox.getLonEastE6() / LibraryConstants.E6;
                             final List<Note> notesInBounds = DaoNotes.getNotesInWorldBounds(MapsActivity.this, n, s, w, e);
 
                             int notesNum = notesInBounds.size();
@@ -875,10 +909,10 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
 
     private void addBookmark() {
         IGeoPoint mapCenter = mapsView.getMapCenter();
-        final float centerLat = mapCenter.getLatitudeE6() / E6;
-        final float centerLon = mapCenter.getLongitudeE6() / E6;
+        final float centerLat = mapCenter.getLatitudeE6() / LibraryConstants.E6;
+        final float centerLon = mapCenter.getLongitudeE6() / LibraryConstants.E6;
         final EditText input = new EditText(this);
-        final String newDate = Constants.TIME_FORMATTER.format(new Date());
+        final String newDate = LibraryConstants.TIME_FORMATTER.format(new Date());
         final String proposedName = "bookmark " + newDate; //$NON-NLS-1$
         input.setText(proposedName);
         Builder builder = new AlertDialog.Builder(this).setTitle(R.string.mapsactivity_new_bookmark);
@@ -899,10 +933,10 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
 
                             int zoom = mapsView.getZoomLevel();
                             BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
-                            float n = boundingBox.getLatNorthE6() / E6;
-                            float s = boundingBox.getLatSouthE6() / E6;
-                            float w = boundingBox.getLonWestE6() / E6;
-                            float e = boundingBox.getLonEastE6() / E6;
+                            float n = boundingBox.getLatNorthE6() / LibraryConstants.E6;
+                            float s = boundingBox.getLatSouthE6() / LibraryConstants.E6;
+                            float w = boundingBox.getLonWestE6() / LibraryConstants.E6;
+                            float e = boundingBox.getLonEastE6() / LibraryConstants.E6;
                             DaoBookmarks.addBookmark(getApplicationContext(), centerLon, centerLat, newName, zoom, n, s, w, e);
                             mapsView.invalidate();
                         } catch (IOException e) {
@@ -1000,8 +1034,8 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
         double lat = loc.getLatitude();
         double lon = loc.getLongitude();
-        int latE6 = (int) ((float) lat * E6);
-        int lonE6 = (int) ((float) lon * E6);
+        int latE6 = (int) ((float) lat * LibraryConstants.E6);
+        int lonE6 = (int) ((float) lon * LibraryConstants.E6);
         boolean centerOnGps = preferences.getBoolean(Constants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
 
         int sE6 = boundingBox.getLatSouthE6();
@@ -1046,7 +1080,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
     }
 
     public boolean onScroll( ScrollEvent event ) {
-        updateCenterPref();
+        saveCenterPref();
         return true;
     }
 
@@ -1055,14 +1089,14 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         if (zoomInButton != null) {
             setZoomGuiText(zoomLevel);
         }
-        updateCenterPref();
+        saveCenterPref();
         return true;
     }
 
-    private void updateCenterPref() {
+    private synchronized void saveCenterPref() {
         IGeoPoint mapCenter = mapsView.getMapCenter();
-        double lon = mapCenter.getLongitudeE6() / E6;
-        double lat = mapCenter.getLatitudeE6() / E6;
+        double lon = mapCenter.getLongitudeE6() / LibraryConstants.E6;
+        double lat = mapCenter.getLatitudeE6() / LibraryConstants.E6;
 
         if (Debug.D) {
             StringBuilder sb = new StringBuilder();
@@ -1072,9 +1106,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
             sb.append(lat);
             Logger.i(this, sb.toString());
         }
-        Editor editor = preferences.edit();
-        editor.putFloat(PREFS_KEY_MAPCENTER_LON, (float) lon);
-        editor.putFloat(PREFS_KEY_MAPCENTER_LAT, (float) lat);
-        editor.commit();
+
+        PositionUtilities.putMapCenterInPreferences(preferences, lon, lat, mapsView.getZoomLevel());
     }
 }

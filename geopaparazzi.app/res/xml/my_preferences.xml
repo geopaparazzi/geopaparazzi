@@ -5,7 +5,6 @@
     <PreferenceScreen
         android:order="1"
         android:title="@string/gps_preferences" >
-
         <EditTextPreference
             android:defaultValue="0"
             android:inputType="number"
@@ -22,14 +21,13 @@
             android:order="4"
             android:title="@string/gps_logging_interval" >
         </ListPreference>
-        
+
         <CheckBoxPreference
             android:key="enable_automatic_center_on_gps"
             android:order="5"
             android:title="@string/enable_automatic_center_on_gps" >
         </CheckBoxPreference>
     </PreferenceScreen>
-
     <PreferenceScreen
         android:order="6"
         android:title="@string/sms_preferences" >
@@ -44,7 +42,7 @@
         -->
 
         <CheckBoxPreference
-            android:key="sms_catcher"
+            android:key="PREFS_KEY_SMSCATCHER"
             android:order="7"
             android:title="@string/sms_catcher" >
         </CheckBoxPreference>
@@ -56,95 +54,81 @@
         <EditTextPreference
             android:defaultValue=""
             android:key="panic_number"
-            android:order="8"
+            android:order="10"
             android:title="@string/panic_number" >
         </EditTextPreference>
     </PreferenceScreen>
-
     <PreferenceScreen
-        android:order="9"
+        android:order="20"
         android:title="@string/rendering_preferences" >
-
         <ListPreference
             android:defaultValue="5"
             android:entries="@array/decimation_factor"
             android:entryValues="@array/decimation_factor"
             android:key="decimation_list"
-            android:order="10"
+            android:order="21"
             android:title="@string/decimation_combo_label" >
         </ListPreference>
-
     </PreferenceScreen>
-
     <PreferenceScreen
         android:order="998"
         android:title="@string/debug" >
-
         <CheckBoxPreference
             android:key="enable_debug"
             android:order="999"
             android:title="@string/enable_debug" >
         </CheckBoxPreference>
     </PreferenceScreen>
-
     <PreferenceScreen
-        android:order="13"
+        android:order="30"
         android:title="@string/labels_preferences" >
-
         <EditTextPreference
             android:defaultValue="14"
             android:inputType="number"
             android:key="labels_zoom1"
-            android:order="14"
+            android:order="31"
             android:title="@string/labels_zoom1" >
         </EditTextPreference>
-
         <EditTextPreference
             android:defaultValue="4"
             android:inputType="number"
             android:key="labels_length_zoom1"
-            android:order="15"
+            android:order="32"
             android:title="@string/labels_length_zoom1" >
         </EditTextPreference>
-
         <EditTextPreference
             android:defaultValue="17"
             android:inputType="number"
             android:key="labels_zoom2"
-            android:order="16"
+            android:order="33"
             android:title="@string/labels_zoom2" >
         </EditTextPreference>
-
         <EditTextPreference
             android:defaultValue="-1"
             android:inputType="number"
             android:key="labels_length_zoom2"
-            android:order="17"
+            android:order="34"
             android:title="@string/labels_length_zoom2" >
         </EditTextPreference>
     </PreferenceScreen>
-
     <PreferenceScreen
-        android:order="18"
+        android:order="40"
         android:title="@string/osm_preferences" >
-
         <EditTextPreference
             android:key="osm_user_key"
-            android:order="19"
+            android:order="41"
             android:title="@string/osm_user_label" >
         </EditTextPreference>
-
         <EditTextPreference
             android:inputType="textPassword"
             android:key="osm_pwd_key"
-            android:order="20"
+            android:order="42"
             android:title="@string/osm_password_label" >
         </EditTextPreference>
-
         <EditTextPreference
-            android:key="osm_server_key"
-            android:order="21"
             android:defaultValue="http://lucadelu.org/cgi-bin/zoo_loader.cgi"
+            android:key="osm_server_key"
+            android:order="43"
             android:title="@string/osm_server_label" >
         </EditTextPreference>
     </PreferenceScreen>

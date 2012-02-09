@@ -22,6 +22,12 @@
 				<wps:LiteralData><![CDATA[PASSWORD]]></wps:LiteralData>
 			</wps:Data>
 		</wps:Input>
+		<wps:Input>
+			<ows:Identifier>changeset</ows:Identifier>
+			<wps:Data>
+				<wps:LiteralData><![CDATA[CHANGESET]]></wps:LiteralData>
+			</wps:Data>
+		</wps:Input>
 	</wps:DataInputs>
 	<wps:ResponseForm>
 		<wps:RawDataOutput>

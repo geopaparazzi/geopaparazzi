@@ -3,9 +3,9 @@
     android:id="@+id/mainosmtagslayout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#FFFFFF"
+    android:background="@color/white"
     android:orientation="vertical"
-    android:padding="10px" >
+    android:padding="10dip" >
 
     <TextView
         android:id="@+id/quicknotesfromtag"
@@ -46,21 +46,22 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dip"
-        android:paddingBottom="5px"
+        android:paddingBottom="5dip"
         android:text="@string/osm_additionalinfo" />
 
     <EditText
         android:id="@+id/osm_additionalinfo_id"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="5px"
+        android:inputType="text"
+        android:paddingBottom="5dip"
         android:text="" />
 
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dip"
-        android:paddingBottom="5px"
+        android:paddingBottom="5dip"
         android:text="@string/osm_tagsgrid" />
 
     <GridView
