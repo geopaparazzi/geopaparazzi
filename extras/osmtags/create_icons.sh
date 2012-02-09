@@ -179,6 +179,9 @@ cd shop
   generateonepng.sh -f $PREFIX/svg/shopping/pet2.svg -c '#0000ff' -s $SIZE
   mv pet2.n.${SIZE}.png pet.n.${SIZE}.png
   generateonepng.sh -f $PREFIX/svg/shopping/photo.svg -c '#0000ff' -s $SIZE
+  generateonepng.sh -f $PREFIX/svg/shopping/shoes.svg -c '#0000ff' -s $SIZE
+  generateonepng.sh -f $PREFIX/svg/shopping/sport.svg -c '#0000ff' -s $SIZE
+
   generateonepng.sh -f $PREFIX/svg/shopping/supermarket.svg -c '#0000ff' -s $SIZE
   generateonepng.sh -f $PREFIX/svg/shopping/tobacco.svg -c '#0000ff' -s $SIZE
   generateonepng.sh -f $PREFIX/svg/shopping/video_rental.svg -c '#0000ff' -s $SIZE
