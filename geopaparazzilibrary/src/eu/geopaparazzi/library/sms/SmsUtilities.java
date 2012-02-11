@@ -17,6 +17,8 @@
  */
 package eu.geopaparazzi.library.sms;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -150,6 +152,10 @@ public class SmsUtilities {
                 String[] coordsParams = string.split("=");
                 if (coordsParams.length == 2) {
                     String possibleCoordinates = coordsParams[1];
+                    if (possibleCoordinates.contains("&")) {
+                        int indexOfAmper = possibleCoordinates.indexOf('&');
+                        possibleCoordinates = possibleCoordinates.substring(0, indexOfAmper);
+                    }
                     if (possibleCoordinates.contains(",")) {
                         String[] coordsSplit = possibleCoordinates.split(",");
                         if (coordsSplit.length == 2) {
@@ -165,14 +171,40 @@ public class SmsUtilities {
                                 sb.append(lon);
                                 final String geoCoords = sb.toString();
 
-                                Utilities.messageDialog(context,
-                                        "A GeoSMS just arrived, do you want to show the contained position?", new Runnable(){
-                                            public void run() {
-                                                final Intent myIntent = new Intent(android.content.Intent.ACTION_VIEW, Uri
-                                                        .parse(geoCoords));
-                                                context.startActivity(myIntent);
-                                            }
-                                        });
+                                // AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                                // builder.setMessage("A GeoSMS just arrived, do you want to show the contained position?").setCancelable(false)
+                                // .setPositiveButton(context.getString(R.string.ok), new
+                                // DialogInterface.OnClickListener(){
+                                // public void onClick( DialogInterface dialog, int id ) {
+//                                final Intent myIntent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(geoCoords));
+//                                context.startActivity(myIntent);
+
+                                NotificationManager notifier = (NotificationManager) context
+                                        .getSystemService(Context.NOTIFICATION_SERVICE);
+                                int icon = R.drawable.ic_launcher;
+                                Notification notification = new Notification(icon, "Simple Notification",
+                                        System.currentTimeMillis());
+                                final Intent myIntent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(geoCoords));
+                                PendingIntent contentIntent = PendingIntent.getActivity(context, 0, myIntent, 0);
+                                notification.setLatestEventInfo(context, "Hi!!", "This is a simple notification", contentIntent);
+                                notification.flags |= Notification.FLAG_AUTO_CANCEL;
+                                notifier.notify(0x007, notification);
+
+                                // }
+                                // });
+                                // AlertDialog alertDialog = builder.create();
+                                // alertDialog.show();
+
+                                // Utilities.messageDialog(context,
+                                // "A GeoSMS just arrived, do you want to show the contained position?",
+                                // new Runnable(){
+                                // public void run() {
+                                // final Intent myIntent = new
+                                // Intent(android.content.Intent.ACTION_VIEW, Uri
+                                // .parse(geoCoords));
+                                // context.startActivity(myIntent);
+                                // }
+                                // });
                             } catch (Exception e) {
                                 // ignore the param, it was not a coordinate block
                             }

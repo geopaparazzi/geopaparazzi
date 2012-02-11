@@ -192,7 +192,7 @@
         </activity>
 
         <receiver
-            android:name="eu.hydrologis.trashmapper.sms.SmsReceiver"
+            android:name="eu.geopaparazzi.library.sms.SmsReceiverPositionSender"
             android:enabled="true" >
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />

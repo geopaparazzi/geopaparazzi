@@ -21,8 +21,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.sax.StartElementListener;
 import android.telephony.SmsMessage;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.util.LibraryConstants;
@@ -81,7 +83,6 @@ public class SmsReceiverPositionSender extends BroadcastReceiver {
                     if (body.toLowerCase().matches(".*geosms.*")) {
                         isGeosms = true;
                     }
-                    smsMessage = null;
                 }
             }
             if (body != null && smsMessage != null && smsMessage.getOriginatingAddress() != null) {
