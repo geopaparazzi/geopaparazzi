@@ -18,6 +18,7 @@
 package eu.hydrologis.geopaparazzi.maps;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -31,6 +32,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,14 +55,17 @@ import eu.hydrologis.geopaparazzi.util.Bookmark;
 public class BookmarksListActivity extends ListActivity {
     private String[] bookmarksNames;
     private Map<String, Bookmark> bookmarksMap = new HashMap<String, Bookmark>();
-    private Comparator<Bookmark> bookmarksSorter = new ItemComparators.BookmarksComparator(true);
+    private Comparator<Bookmark> bookmarksSorter = new ItemComparators.BookmarksComparator(false);
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
 
-        setContentView(R.layout.mapslist);
+        setContentView(R.layout.bookmarkslist);
 
         refreshList();
+
+        filterText = (EditText) findViewById(R.id.search_box);
+        filterText.addTextChangedListener(filterTextWatcher);
     }
 
     @Override
@@ -69,8 +74,14 @@ public class BookmarksListActivity extends ListActivity {
         refreshList();
     }
 
+    protected void onDestroy() {
+        super.onDestroy();
+        filterText.removeTextChangedListener(filterTextWatcher);
+    }
+
     private void refreshList() {
-        if (Debug.D) Logger.d(this, "refreshing bookmarks list"); //$NON-NLS-1$
+        if (Debug.D)
+            Logger.d(this, "refreshing bookmarks list"); //$NON-NLS-1$
         try {
             List<Bookmark> bookmarksList = DaoBookmarks.getAllBookmarks(this);
 
@@ -92,7 +103,42 @@ public class BookmarksListActivity extends ListActivity {
             e.printStackTrace();
         }
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.bookmark_row, bookmarksNames){
+        redoAdapter();
+    }
+
+    private void filterList( String filterText ) {
+        if (Debug.D)
+            Logger.d(this, "filter bookmarks list"); //$NON-NLS-1$
+        try {
+            List<Bookmark> bookmarksList = DaoBookmarks.getAllBookmarks(this);
+            Collections.sort(bookmarksList, bookmarksSorter);
+
+            bookmarksMap.clear();
+            filterText = ".*" + filterText.toLowerCase() + ".*";
+            List<String> namesList = new ArrayList<String>();
+            for( Bookmark bookmark : bookmarksList ) {
+                String name = bookmark.getName();
+                String nameLower = name.toLowerCase();
+                if (nameLower.matches(filterText)) {
+                    namesList.add(name);
+                    bookmarksMap.put(name, bookmark);
+                }
+            }
+
+            bookmarksNames = namesList.toArray(new String[0]);
+            if (bookmarksList.size() == 0) {
+                bookmarksNames = new String[]{getResources().getString(R.string.bookmarks_list_noavailable)};
+            }
+        } catch (IOException e) {
+            Logger.e(this, e.getLocalizedMessage(), e);
+            e.printStackTrace();
+        }
+
+        redoAdapter();
+    }
+
+    private void redoAdapter() {
+        arrayAdapter = new ArrayAdapter<String>(this, R.layout.bookmark_row, bookmarksNames){
             @Override
             public View getView( int position, View cView, ViewGroup parent ) {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -151,7 +197,24 @@ public class BookmarksListActivity extends ListActivity {
             }
 
         };
+
         setListAdapter(arrayAdapter);
     }
+
+    private TextWatcher filterTextWatcher = new TextWatcher(){
+
+        public void afterTextChanged( Editable s ) {
+        }
+
+        public void beforeTextChanged( CharSequence s, int start, int count, int after ) {
+        }
+
+        public void onTextChanged( CharSequence s, int start, int before, int count ) {
+            // arrayAdapter.getFilter().filter(s);
+            filterList(s.toString());
+        }
+    };
+    private ArrayAdapter<String> arrayAdapter;
+    private EditText filterText;
 
 }

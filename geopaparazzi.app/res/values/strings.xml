@@ -255,4 +255,5 @@
     <string name="enter_a_name_for_the_new_project">Enter a name for the new project</string>
     <string name="chosen_project_exists">The chosen project name already exists, please chose another name</string>
     <string name="gps_use_coarse">Use network based position instead of gps (needs restart)</string>
+    <string name="type_to_filter">type to filter</string>
 </resources>
