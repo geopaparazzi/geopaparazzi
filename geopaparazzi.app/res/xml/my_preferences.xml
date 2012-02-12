@@ -114,21 +114,26 @@
     <PreferenceScreen
         android:order="40"
         android:title="@string/osm_preferences" >
+        <CheckBoxPreference
+            android:key="PREFS_KEY_DOOSM"
+            android:order="41"
+            android:title="@string/osm_do_it" >
+        </CheckBoxPreference>
         <EditTextPreference
             android:key="osm_user_key"
-            android:order="41"
+            android:order="42"
             android:title="@string/osm_user_label" >
         </EditTextPreference>
         <EditTextPreference
             android:inputType="textPassword"
             android:key="osm_pwd_key"
-            android:order="42"
+            android:order="43"
             android:title="@string/osm_password_label" >
         </EditTextPreference>
         <EditTextPreference
             android:defaultValue="http://lucadelu.org/cgi-bin/zoo_loader.cgi"
             android:key="osm_server_key"
-            android:order="43"
+            android:order="44"
             android:title="@string/osm_server_label" >
         </EditTextPreference>
     </PreferenceScreen>

@@ -357,19 +357,19 @@ public final class R {
     public static final class string {
         public static final int about=0x7f0700b1;
         public static final int abouttext=0x7f0700fd;
-        public static final int add_message=0x7f07014f;
+        public static final int add_message=0x7f070150;
         public static final int address=0x7f0700c5;
         public static final int altim=0x7f0700b6;
         /**  added after 2.5.0 
          */
         public static final int an_error_occurred_while_creating_the_chart_=0x7f07013e;
-        public static final int an_error_occurred_while_uploading_osm_tags=0x7f070145;
+        public static final int an_error_occurred_while_uploading_osm_tags=0x7f070146;
         public static final int app_name=0x7f070034;
         public static final int askaddress=0x7f0700c6;
         public static final int askcoord=0x7f07004d;
         public static final int audio_recording=0x7f070102;
         public static final int audio_recording_stop=0x7f070103;
-        public static final int available_only_with_network=0x7f07014c;
+        public static final int available_only_with_network=0x7f07014d;
         public static final int azimuth=0x7f0700b9;
         public static final int bookmarks_list_noavailable=0x7f07012d;
         public static final int bookmarks_list_rename=0x7f07012e;
@@ -382,7 +382,7 @@ public final class R {
         public static final int centerongps=0x7f0700c1;
         public static final int chart_profile_view=0x7f0700f1;
         public static final int check_valid_field=0x7f070052;
-        public static final int chosen_project_exists=0x7f070152;
+        public static final int chosen_project_exists=0x7f070153;
         public static final int color_label=0x7f0700cb;
         public static final int connection_problem_notification_title=0x7f0700a3;
         public static final int databaseError=0x7f0700f0;
@@ -402,12 +402,12 @@ public final class R {
         public static final int delete_visible_notes_title=0x7f070125;
         public static final int distance=0x7f0700cc;
         public static final int emptyaddress=0x7f0700c7;
-        public static final int enable_automatic_center_on_gps=0x7f070146;
+        public static final int enable_automatic_center_on_gps=0x7f070147;
         public static final int enable_debug=0x7f070110;
-        public static final int enter_a_name_for_the_new_project=0x7f070151;
+        public static final int enter_a_name_for_the_new_project=0x7f070152;
         public static final int error_disk_full=0x7f07003a;
-        public static final int error_json_osm=0x7f07014b;
-        public static final int error_osm_server=0x7f07014d;
+        public static final int error_json_osm=0x7f07014c;
+        public static final int error_osm_server=0x7f07014e;
         public static final int exit=0x7f0700b2;
         public static final int export_for_real=0x7f070113;
         public static final int foreground_gps_provider_started_notification=0x7f0700a1;
@@ -450,7 +450,7 @@ public final class R {
         /**  added after 2.4.3 
          */
         public static final int imagesvisibilityToggle=0x7f070139;
-        public static final int insert_an_optional_text_to_send_with_the_geosms=0x7f070150;
+        public static final int insert_an_optional_text_to_send_with_the_geosms=0x7f070151;
         public static final int insert_note=0x7f070047;
         public static final int installgpsstatus_message=0x7f070115;
         public static final int installgpsstatus_title=0x7f070114;
@@ -470,7 +470,7 @@ public final class R {
         public static final int lat=0x7f0700b7;
         public static final int latitude=0x7f07004c;
         public static final int load=0x7f07011a;
-        public static final int loading_data=0x7f070148;
+        public static final int loading_data=0x7f070149;
         public static final int log_distance=0x7f0700bb;
         public static final int log_points=0x7f0700ba;
         public static final int loggingoff=0x7f0700ae;
@@ -534,13 +534,14 @@ public final class R {
         public static final int ok=0x7f070036;
         public static final int okcoord=0x7f070050;
         public static final int osm_additionalinfo=0x7f0700f2;
+        public static final int osm_do_it=0x7f070141;
         public static final int osm_folder=0x7f0700e4;
-        public static final int osm_notes_properly_uploaded=0x7f070144;
-        public static final int osm_password_label=0x7f070142;
+        public static final int osm_notes_properly_uploaded=0x7f070145;
+        public static final int osm_password_label=0x7f070143;
         public static final int osm_preferences=0x7f070140;
-        public static final int osm_server_label=0x7f070143;
+        public static final int osm_server_label=0x7f070144;
         public static final int osm_tagsgrid=0x7f0700f3;
-        public static final int osm_user_label=0x7f070141;
+        public static final int osm_user_label=0x7f070142;
         public static final int osmview=0x7f0700bd;
         public static final int panic=0x7f070104;
         public static final int panic_for_real=0x7f070107;
@@ -636,9 +637,9 @@ public final class R {
         public static final int pref_trackfile_prefix_key=0x7f070009;
         public static final int pref_trackfile_prefix_summary=0x7f070069;
         public static final int pref_trackfile_prefix_title=0x7f070068;
-        public static final int profile=0x7f070147;
-        public static final int profilelable_distance=0x7f070149;
-        public static final int profilelable_elevation=0x7f07014a;
+        public static final int profile=0x7f070148;
+        public static final int profilelable_distance=0x7f07014a;
+        public static final int profilelable_elevation=0x7f07014b;
         public static final int prompt_gpsenable=0x7f07003f;
         public static final int quicknotes=0x7f07013c;
         public static final int remove_last_note_prompt=0x7f070112;
@@ -702,7 +703,7 @@ public final class R {
         public static final int up=0x7f070037;
         public static final int utctime=0x7f0700b5;
         public static final int versionName=0x7f070000;
-        public static final int view_in_mixare=0x7f07014e;
+        public static final int view_in_mixare=0x7f07014f;
         public static final int width_label=0x7f0700ca;
         public static final int wrongLatitude=0x7f07004f;
         public static final int wrongLongitude=0x7f07004e;

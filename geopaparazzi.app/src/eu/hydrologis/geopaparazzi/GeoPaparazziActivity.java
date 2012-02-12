@@ -257,7 +257,10 @@ public class GeoPaparazziActivity extends Activity {
             Utilities.toast(this, R.string.databaseError, Toast.LENGTH_LONG);
         }
 
-        OsmUtilities.handleOsmTagsDownload(this);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean doOsmPref = preferences.getBoolean(Constants.PREFS_KEY_DOOSM, false);
+        if (doOsmPref)
+            OsmUtilities.handleOsmTagsDownload(this);
     }
 
     private void checkDebugLogger() {

@@ -142,6 +142,11 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
     private MeasureToolOverlay mMeasureOverlay;
     private MyLocationOverlay mCompassOverlay;
     private ImagesOverlay mImagesOverlay;
+    private int maxZoomLevel;
+    private int minZoomLevel;
+    private SlidingDrawer osmSlidingDrawer;
+    private SharedPreferences preferences;
+    private boolean doOsm;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -434,7 +439,13 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         int visibility = 0;
         if (categoriesNamesArray == null) {
             categoriesNamesArray = new String[]{""}; //$NON-NLS-1$
-            visibility = 4;
+            visibility = 4; // invisible
+        }
+        doOsm = visibility != 4;
+        boolean doOsmPref = preferences.getBoolean(Constants.PREFS_KEY_DOOSM, false);
+        doOsm = doOsm && doOsmPref;
+        if (!doOsm) {
+            visibility = 4; // invisible
         }
 
         final String[] categoriesNamesArrayFinal = categoriesNamesArray;
@@ -443,157 +454,160 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         final int slidingId = R.id.osmslide;
         osmSlidingDrawer = (SlidingDrawer) findViewById(slidingId);
         osmSlidingDrawer.setVisibility(visibility);
-        osmSlidingDrawer.setOnDrawerOpenListener(new SlidingDrawer.OnDrawerOpenListener(){
 
-            public void onDrawerOpened() {
-                osmSliderIsOpen = true;
-                enableDrawingWithDelay();
-            }
-        });
-        osmSlidingDrawer.setOnDrawerCloseListener(new SlidingDrawer.OnDrawerCloseListener(){
-            public void onDrawerClosed() {
-                osmSliderIsOpen = false;
-                enableDrawingWithDelay();
-            }
+        if (doOsm) {
+            osmSlidingDrawer.setOnDrawerOpenListener(new SlidingDrawer.OnDrawerOpenListener(){
 
-        });
-
-        osmSlidingDrawer.setOnDrawerScrollListener(new SlidingDrawer.OnDrawerScrollListener(){
-            public void onScrollEnded() {
-                disableDrawing();
-            }
-            public void onScrollStarted() {
-                disableDrawing();
-            }
-        });
-
-        GridView buttonGridView = (GridView) findViewById(R.id.osmcategoriesview);
-
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.gpslog_row, categoriesNamesArrayFinal){
-            public View getView( final int position, View cView, ViewGroup parent ) {
-
-                final Button osmButton = new Button(MapsActivity.this);
-                osmButton.setText(categoriesNamesArrayFinal[position]);
-                osmButton.setBackgroundResource(R.drawable.osmcategory_button_drawable);
-                osmButton.setOnClickListener(new Button.OnClickListener(){
-                    public void onClick( View v ) {
-                        String categoryName = osmButton.getText().toString();
-                        Intent osmCategoryIntent = new Intent(MapsActivity.this, OsmCategoryActivity.class);
-                        osmCategoryIntent.putExtra(Constants.OSM_CATEGORY_KEY, categoryName);
-                        startActivity(osmCategoryIntent);
-
-                        // osmSlidingDrawer.close();
-                    }
-                });
-                return osmButton;
-            }
-        };
-        buttonGridView.setAdapter(arrayAdapter);
-
-        Button syncOsmButton = (Button) findViewById(R.id.syncosmbutton);
-        syncOsmButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
-
-                if (!NetworkUtilities.isNetworkAvailable(getApplicationContext())) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
-                    builder.setMessage(R.string.available_only_with_network).setCancelable(false)
-                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
-                                public void onClick( DialogInterface dialog, int id ) {
-                                }
-                            });
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
-                    return;
+                public void onDrawerOpened() {
+                    osmSliderIsOpen = true;
+                    enableDrawingWithDelay();
+                }
+            });
+            osmSlidingDrawer.setOnDrawerCloseListener(new SlidingDrawer.OnDrawerCloseListener(){
+                public void onDrawerClosed() {
+                    osmSliderIsOpen = false;
+                    enableDrawingWithDelay();
                 }
 
-                final EditText input = new EditText(MapsActivity.this);
-                input.setText("");
-                Builder builder = new AlertDialog.Builder(MapsActivity.this);
-                builder.setTitle("Set description");
-                builder.setMessage("Insert a changeset description");
-                builder.setView(input);
-                builder.setIcon(android.R.drawable.ic_dialog_alert)
-                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
-                            public void onClick( DialogInterface dialog, int whichButton ) {
-                                sync("");
-                            }
-                        }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
-                            public void onClick( DialogInterface dialog, int whichButton ) {
-                                Editable value = input.getText();
-                                String newName = value.toString();
-                                sync(newName);
-                            }
-                        }).setCancelable(false).show();
+            });
 
-            }
+            osmSlidingDrawer.setOnDrawerScrollListener(new SlidingDrawer.OnDrawerScrollListener(){
+                public void onScrollEnded() {
+                    disableDrawing();
+                }
+                public void onScrollStarted() {
+                    disableDrawing();
+                }
+            });
 
-            private void sync( final String description ) {
-                final ProgressDialog progressDialog = ProgressDialog
-                        .show(MapsActivity.this, "", getString(R.string.loading_data)); //$NON-NLS-1$
-                new AsyncTask<String, Void, String>(){
-                    private Exception e = null;
+            GridView buttonGridView = (GridView) findViewById(R.id.osmcategoriesview);
 
-                    protected String doInBackground( String... params ) {
-                        String response = null;
-                        try {
-                            response = OsmUtilities.sendOsmNotes(MapsActivity.this, description);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            this.e = e;
-                        }
-                        return response;
-                    }
+            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.gpslog_row, categoriesNamesArrayFinal){
+                public View getView( final int position, View cView, ViewGroup parent ) {
 
-                    protected void onPostExecute( String response ) {
-                        progressDialog.dismiss();
-                        if (e == null) {
-                            String msg = getResources().getString(R.string.osm_notes_properly_uploaded);
-                            if (response.toLowerCase().trim().startsWith(OsmUtilities.FEATURES_IMPORTED)) {
-                                String leftOver = response.replaceFirst(OsmUtilities.FEATURES_IMPORTED, ""); //$NON-NLS-1$
-                                if (leftOver.trim().length() > 0) {
-                                    String text = leftOver.substring(1);
-                                    text = text.replaceFirst("\\_", "/"); //$NON-NLS-1$//$NON-NLS-2$
+                    final Button osmButton = new Button(MapsActivity.this);
+                    osmButton.setText(categoriesNamesArrayFinal[position]);
+                    osmButton.setBackgroundResource(R.drawable.osmcategory_button_drawable);
+                    osmButton.setOnClickListener(new Button.OnClickListener(){
+                        public void onClick( View v ) {
+                            String categoryName = osmButton.getText().toString();
+                            Intent osmCategoryIntent = new Intent(MapsActivity.this, OsmCategoryActivity.class);
+                            osmCategoryIntent.putExtra(Constants.OSM_CATEGORY_KEY, categoryName);
+                            startActivity(osmCategoryIntent);
 
-                                    msg = MessageFormat.format("Some of the features were uploaded, but not all of them ({0}).",
-                                            text);
-                                    openAlertDialog(msg);
-                                } else {
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
-                                    builder.setMessage(msg).setCancelable(false)
-                                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
-                                                public void onClick( DialogInterface dialog, int id ) {
-                                                    try {
-                                                        DaoNotes.deleteNotesByType(MapsActivity.this, NoteType.OSM);
-                                                    } catch (IOException e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                }
-                                            }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
-                                                public void onClick( DialogInterface dialog, int id ) {
-                                                }
-                                            });
-                                    AlertDialog alertDialog = builder.create();
-                                    alertDialog.show();
-                                }
-                            } else if (response.toLowerCase().trim().contains(OsmUtilities.ERROR_JSON)) {
-                                msg = getString(R.string.error_json_osm);
-                                openAlertDialog(msg);
-                            } else if (response.toLowerCase().trim().contains(OsmUtilities.ERROR_OSM)) {
-                                msg = getString(R.string.error_osm_server);
-                                openAlertDialog(msg);
-                            }
-
-                            // TODO check if we want the slider to close
                             // osmSlidingDrawer.close();
-
-                        } else {
-                            String msg = getResources().getString(R.string.an_error_occurred_while_uploading_osm_tags);
-                            openAlertDialog(msg + e.getLocalizedMessage());
                         }
+                    });
+                    return osmButton;
+                }
+            };
+            buttonGridView.setAdapter(arrayAdapter);
+
+            Button syncOsmButton = (Button) findViewById(R.id.syncosmbutton);
+            syncOsmButton.setOnClickListener(new Button.OnClickListener(){
+                public void onClick( View v ) {
+
+                    if (!NetworkUtilities.isNetworkAvailable(getApplicationContext())) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+                        builder.setMessage(R.string.available_only_with_network).setCancelable(false)
+                                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                                    public void onClick( DialogInterface dialog, int id ) {
+                                    }
+                                });
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.show();
+                        return;
                     }
-                }.execute((String) null);
-            }
-        });
+
+                    final EditText input = new EditText(MapsActivity.this);
+                    input.setText("");
+                    Builder builder = new AlertDialog.Builder(MapsActivity.this);
+                    builder.setTitle("Set description");
+                    builder.setMessage("Insert a changeset description");
+                    builder.setView(input);
+                    builder.setIcon(android.R.drawable.ic_dialog_alert)
+                            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                                public void onClick( DialogInterface dialog, int whichButton ) {
+                                    sync("");
+                                }
+                            }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                                public void onClick( DialogInterface dialog, int whichButton ) {
+                                    Editable value = input.getText();
+                                    String newName = value.toString();
+                                    sync(newName);
+                                }
+                            }).setCancelable(false).show();
+
+                }
+
+                private void sync( final String description ) {
+                    final ProgressDialog progressDialog = ProgressDialog.show(MapsActivity.this,
+                            "", getString(R.string.loading_data)); //$NON-NLS-1$
+                    new AsyncTask<String, Void, String>(){
+                        private Exception e = null;
+
+                        protected String doInBackground( String... params ) {
+                            String response = null;
+                            try {
+                                response = OsmUtilities.sendOsmNotes(MapsActivity.this, description);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                this.e = e;
+                            }
+                            return response;
+                        }
+
+                        protected void onPostExecute( String response ) {
+                            progressDialog.dismiss();
+                            if (e == null) {
+                                String msg = getResources().getString(R.string.osm_notes_properly_uploaded);
+                                if (response.toLowerCase().trim().startsWith(OsmUtilities.FEATURES_IMPORTED)) {
+                                    String leftOver = response.replaceFirst(OsmUtilities.FEATURES_IMPORTED, ""); //$NON-NLS-1$
+                                    if (leftOver.trim().length() > 0) {
+                                        String text = leftOver.substring(1);
+                                        text = text.replaceFirst("\\_", "/"); //$NON-NLS-1$//$NON-NLS-2$
+
+                                        msg = MessageFormat.format(
+                                                "Some of the features were uploaded, but not all of them ({0}).", text);
+                                        openAlertDialog(msg);
+                                    } else {
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+                                        builder.setMessage(msg).setCancelable(false)
+                                                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                                                    public void onClick( DialogInterface dialog, int id ) {
+                                                        try {
+                                                            DaoNotes.deleteNotesByType(MapsActivity.this, NoteType.OSM);
+                                                        } catch (IOException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                    }
+                                                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                                                    public void onClick( DialogInterface dialog, int id ) {
+                                                    }
+                                                });
+                                        AlertDialog alertDialog = builder.create();
+                                        alertDialog.show();
+                                    }
+                                } else if (response.toLowerCase().trim().contains(OsmUtilities.ERROR_JSON)) {
+                                    msg = getString(R.string.error_json_osm);
+                                    openAlertDialog(msg);
+                                } else if (response.toLowerCase().trim().contains(OsmUtilities.ERROR_OSM)) {
+                                    msg = getString(R.string.error_osm_server);
+                                    openAlertDialog(msg);
+                                }
+
+                                // TODO check if we want the slider to close
+                                // osmSlidingDrawer.close();
+
+                            } else {
+                                String msg = getResources().getString(R.string.an_error_occurred_while_uploading_osm_tags);
+                                openAlertDialog(msg + e.getLocalizedMessage());
+                            }
+                        }
+                    }.execute((String) null);
+                }
+            });
+        }
 
     }
 
@@ -1017,11 +1031,6 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         mBookmarksOverlay.setDoDraw(false);
         mGpsOverlay.setDoDraw(false);
     }
-
-    private int maxZoomLevel;
-    private int minZoomLevel;
-    private SlidingDrawer osmSlidingDrawer;
-    private SharedPreferences preferences;
 
     public void onLocationChanged( GpsLocation loc ) {
         if (loc == null) {
