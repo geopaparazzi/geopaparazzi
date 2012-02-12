@@ -27,9 +27,15 @@
             android:order="5"
             android:title="@string/enable_automatic_center_on_gps" >
         </CheckBoxPreference>
+
+        <CheckBoxPreference
+            android:key="PREFS_KEY_GPS_USE_NETWORK_POSITION"
+            android:order="6"
+            android:title="@string/gps_use_coarse" >
+        </CheckBoxPreference>
     </PreferenceScreen>
     <PreferenceScreen
-        android:order="6"
+        android:order="7"
         android:title="@string/sms_preferences" >
 
         <!--
@@ -43,7 +49,7 @@
 
         <CheckBoxPreference
             android:key="PREFS_KEY_SMSCATCHER"
-            android:order="7"
+            android:order="8"
             android:title="@string/sms_catcher" >
         </CheckBoxPreference>
         <!--

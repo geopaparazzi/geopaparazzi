@@ -426,6 +426,7 @@ public final class R {
         public static final int gps_native_settings=0x7f0700e0;
         public static final int gps_preferences=0x7f0700dd;
         public static final int gps_searching_fix=0x7f07012c;
+        public static final int gps_use_coarse=0x7f070154;
         public static final int gpslog_chart=0x7f0700d7;
         public static final int gpslog_delete=0x7f0700d9;
         public static final int gpslog_zoom=0x7f0700d8;

@@ -34,6 +34,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
@@ -74,11 +75,13 @@ public class GpsManager implements LocationListener, Listener {
     private boolean hasGPSFix = false;
     private boolean isListening = false;
     private SharedPreferences preferences;
+    private boolean useNetworkPositions;
 
     private GpsManager( Context context ) {
         this.context = context;
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        useNetworkPositions = preferences.getBoolean(LibraryConstants.PREFS_KEY_GPS_USE_NETWORK_POSITION, false);
     }
 
     public synchronized static GpsManager getInstance( Context context ) {
@@ -151,7 +154,11 @@ public class GpsManager implements LocationListener, Listener {
         } else {
             if (Debug.D)
                 Logger.d(this, "Using GPS");
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000l, 0f, gpsManager);
+            if (useNetworkPositions) {
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000l, 0f, gpsManager);
+            } else {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000l, 0f, gpsManager);
+            }
             locationManager.addGpsStatusListener(gpsManager);
         }
         isListening = true;
@@ -168,11 +175,12 @@ public class GpsManager implements LocationListener, Listener {
         if (locationManager == null) {
             return false;
         }
-        boolean gpsIsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        // List<String> allProviders = locationManager.getAllProviders();
-        // for( String string : allProviders ) {
-        // if (Debug.D) Logger.i(this, "Loctaion Providers: " + string);
-        // }
+        boolean gpsIsEnabled;
+        if (useNetworkPositions) {
+            gpsIsEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        } else {
+            gpsIsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        }
         if (Debug.D)
             Logger.i(this, "Gps is on: " + gpsIsEnabled);
         return gpsIsEnabled;

@@ -163,6 +163,11 @@ public interface LibraryConstants {
     public static final String PREFS_KEY_CAMERA_IMAGESAVEFOLDER = "PREFS_KEY_CAMERA_IMAGESAVEFOLDER"; //$NON-NLS-1$
 
     /**
+     * Key used to define if the network should be used instead of the GPS. 
+     */
+    public static final String PREFS_KEY_GPS_USE_NETWORK_POSITION = "PREFS_KEY_GPS_USE_NETWORK_POSITION"; //$NON-NLS-1$
+
+    /**
      * Key used to define form data that are passed through any workflow. 
      */
     public static final String PREFS_KEY_FORM = "PREFS_KEY_FORM"; //$NON-NLS-1$
