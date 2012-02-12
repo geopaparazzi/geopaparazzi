@@ -716,7 +716,6 @@ public class GeoPaparazziActivity extends Activity {
                 if (number.length() == 0) {
                     continue;
                 }
-                // if (gpsManager.isGpsLogging()) {
                 String lastPosition;
                 if (theTextToRunOn == null) {
                     lastPosition = getString(R.string.help_needed);
@@ -725,9 +724,6 @@ public class GeoPaparazziActivity extends Activity {
                 }
                 String positionText = SmsUtilities.createPositionText(this, lastPosition);
                 SmsUtilities.sendSMS(this, number, positionText);
-                // } else {
-                // Utilities.messageDialog(this, R.string.gpslogging_only, null);
-                // }
             }
         }
 

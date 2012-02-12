@@ -171,40 +171,17 @@ public class SmsUtilities {
                                 sb.append(lon);
                                 final String geoCoords = sb.toString();
 
-                                // AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                                // builder.setMessage("A GeoSMS just arrived, do you want to show the contained position?").setCancelable(false)
-                                // .setPositiveButton(context.getString(R.string.ok), new
-                                // DialogInterface.OnClickListener(){
-                                // public void onClick( DialogInterface dialog, int id ) {
-//                                final Intent myIntent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(geoCoords));
-//                                context.startActivity(myIntent);
-
                                 NotificationManager notifier = (NotificationManager) context
                                         .getSystemService(Context.NOTIFICATION_SERVICE);
-                                int icon = R.drawable.ic_launcher;
-                                Notification notification = new Notification(icon, "Simple Notification",
-                                        System.currentTimeMillis());
+                                int icon = R.drawable.current_position;
+                                Notification notification = new Notification(icon, "Incoming GeoSMS", System.currentTimeMillis());
                                 final Intent myIntent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(geoCoords));
                                 PendingIntent contentIntent = PendingIntent.getActivity(context, 0, myIntent, 0);
-                                notification.setLatestEventInfo(context, "Hi!!", "This is a simple notification", contentIntent);
+                                notification.setLatestEventInfo(context, "GeoSMS",
+                                        "Select here to open the GeoSMS with a dedicated application", contentIntent);
                                 notification.flags |= Notification.FLAG_AUTO_CANCEL;
                                 notifier.notify(0x007, notification);
 
-                                // }
-                                // });
-                                // AlertDialog alertDialog = builder.create();
-                                // alertDialog.show();
-
-                                // Utilities.messageDialog(context,
-                                // "A GeoSMS just arrived, do you want to show the contained position?",
-                                // new Runnable(){
-                                // public void run() {
-                                // final Intent myIntent = new
-                                // Intent(android.content.Intent.ACTION_VIEW, Uri
-                                // .parse(geoCoords));
-                                // context.startActivity(myIntent);
-                                // }
-                                // });
                             } catch (Exception e) {
                                 // ignore the param, it was not a coordinate block
                             }
