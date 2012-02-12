@@ -4,14 +4,9 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="lib" path="libs/slf4j-android-1.5.8.jar"/>
-	<classpathentry kind="lib" path="libs/osmdroid-android-3.0.5.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:file:/home/moovida/SOFTWARE/OMSDROID/osmdroid-android-docs-3.0.5.zip!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="libs/osmdroid-third-party-3.0.5.jar"/>
-	<classpathentry kind="lib" path="libs/afreegraphics.jar"/>
-	<classpathentry kind="lib" path="libs/afreechart-0.0.3.jar"/>
+	<classpathentry kind="lib" path="libs/osmdroid-android-3.0.8-SNAPSHOT.jar"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+	<classpathentry kind="lib" path="/GeopaparazziLibrary/libs/afreechart-0.0.3.jar"/>
+	<classpathentry kind="lib" path="/GeopaparazziLibrary/libs/afreegraphics.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
