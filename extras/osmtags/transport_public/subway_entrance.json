@@ -1,0 +1,13 @@
+[{
+        "shortname": "",
+        "longname":"",
+        "form": {
+                "formitems":[
+                    {"key":"railway", "value":"", "type":"primary_key"},
+                    {"key":"name", "value":"", "type":"string"},
+                    {"key":"operator", "value":"", "type":"string"},
+                    {"key":"wheelchair", "value":"", "type":"boolean"},
+                    {"key":"bicycle", "value":"", "type":"boolean"}
+                ]
+        }
+}]

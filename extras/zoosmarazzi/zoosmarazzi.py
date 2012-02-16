@@ -158,8 +158,13 @@ def zoosmarazzi(conf,inputs,outputs):
         nodeDef = {unicode('id'):iD}
         # for each value put it to tags or coordinate
         for v in values:
+	    
             if v['value'] != '':
-                if v['key'] == 'LONGITUDE':
+		if v['type'] == 'boolean' and v['value'] == 'false':
+		    continue
+		elif v['type'] == 'boolean' and v['value'] == 'true':
+		    tags[v['key']] = 'yes'
+                elif v['key'] == 'LONGITUDE':
                     nodeDef[unicode('lon')] = v['value']
                 elif v['key'] == 'LATITUDE':
                     nodeDef[unicode('lat')] = v['value']
