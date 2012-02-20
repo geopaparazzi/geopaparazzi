@@ -1,0 +1,25 @@
+[{
+        "shortname": "",
+        "longname":"",
+        "form": {
+                "formitems":[
+                    {"key":"amenity", "value":"", "type":"primary_key"},
+                    {"key":"name", "value":"", "type":"string"},
+                    {"key":"capability", "value":"", "type":"string"},
+                    {"key":"bicycle_parking", "value":"", 
+                      "values":{ "items":[
+                                { "item":"anchors" },
+                                { "item":"ground_slots" },
+                                { "item":"informal" },
+                                { "item":"lockers" },
+                                { "item":"shed" },
+                                { "item":"sheffield" },
+                                { "item":"stands" },
+                                { "item":"wall_loops" }
+                            ]
+                        }, "type":"stringcombo"
+                    },
+                    {"key":"covered", "value":"", "type":"boolean"}
+                ]
+        }
+}]
