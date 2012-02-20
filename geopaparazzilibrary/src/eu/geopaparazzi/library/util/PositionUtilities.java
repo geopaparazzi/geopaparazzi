@@ -72,15 +72,15 @@ public class PositionUtilities {
     public static double[] getGpsLocationFromPreferences( SharedPreferences preferences ) {
         float lonFloat = preferences.getFloat(PREFS_KEY_LON, NOVALUE);
         float latFloat = preferences.getFloat(PREFS_KEY_LAT, NOVALUE);
-        if (lonFloat < NOVALUE_CHECKVALUE || latFloat < NOVALUE_CHECKVALUE) {
+        double lon = (double) lonFloat / LibraryConstants.E6;
+        double lat = (double) latFloat / LibraryConstants.E6;
+        if (lon < NOVALUE_CHECKVALUE || lat < NOVALUE_CHECKVALUE) {
             return null;
         }
-        if (lonFloat == 0f && latFloat == 0f) {
+        if (lon == 0f && lat == 0f) {
             // we also do not believe in 0,0
             return null;
         }
-        double lon = (double) lonFloat / LibraryConstants.E6;
-        double lat = (double) latFloat / LibraryConstants.E6;
         if (Debug.D) {
             Logger.d("POSITIONUTILITIES", "getGpsLocation: " + lon + "/" + lat);
         }
@@ -131,7 +131,9 @@ public class PositionUtilities {
         float lonFloat = preferences.getFloat(PREFS_KEY_MAPCENTER_LON, NOVALUE);
         float latFloat = preferences.getFloat(PREFS_KEY_MAPCENTER_LAT, NOVALUE);
         float zoom = preferences.getFloat(PREFS_KEY_MAP_ZOOM, 16f);
-        if (lonFloat < NOVALUE_CHECKVALUE || latFloat < NOVALUE_CHECKVALUE) {
+        double lon = (double) lonFloat / LibraryConstants.E6;
+        double lat = (double) latFloat / LibraryConstants.E6;
+        if (lon < NOVALUE_CHECKVALUE || lat < NOVALUE_CHECKVALUE) {
             if (backOnGps) {
                 // try to get the last gps location
                 double[] lastGpsLocation = getGpsLocationFromPreferences(preferences);
@@ -152,8 +154,7 @@ public class PositionUtilities {
                 return null;
             }
         }
-        double lon = (double) lonFloat / LibraryConstants.E6;
-        double lat = (double) latFloat / LibraryConstants.E6;
+
         if (Debug.D) {
             Logger.d("POSITIONUTILITIES", "getMapCenter-fromgps: " + lon + "/" + lat);
         }
