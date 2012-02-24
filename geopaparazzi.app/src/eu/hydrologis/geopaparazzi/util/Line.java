@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.location.Location;
+import eu.geopaparazzi.library.gpx.GpxRepresenter;
+import eu.geopaparazzi.library.gpx.GpxUtilities;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
 import eu.geopaparazzi.library.util.DynamicDoubleArray;
 
@@ -33,25 +35,30 @@ import eu.geopaparazzi.library.util.DynamicDoubleArray;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class Line implements KmlRepresenter {
+public class Line implements KmlRepresenter, GpxRepresenter {
 
-    private final String fileName;
+    private final String name;
     private final DynamicDoubleArray latList;
     private final DynamicDoubleArray lonList;
     private final DynamicDoubleArray altimList;
     private final List<String> dateList;
+    private boolean boundsAreDirty = true;
+    private double minLat = 0.0;
+    private double minLon = 0.0;
+    private double maxLat = 0.0;
+    private double maxLon = 0.0;
 
-    public Line( String fileName, DynamicDoubleArray lonList, DynamicDoubleArray latList, DynamicDoubleArray altimList, List<String> dateList ) {
-        this.fileName = fileName;
+    public Line( String name, DynamicDoubleArray lonList, DynamicDoubleArray latList, DynamicDoubleArray altimList,
+            List<String> dateList ) {
+        this.name = name;
         this.lonList = lonList;
         this.latList = latList;
         this.altimList = altimList;
         this.dateList = dateList;
-
     }
 
     public Line( String logid ) {
-        this.fileName = logid;
+        this.name = logid;
         this.lonList = new DynamicDoubleArray();
         this.latList = new DynamicDoubleArray();
         this.altimList = new DynamicDoubleArray();
@@ -63,6 +70,7 @@ public class Line implements KmlRepresenter {
             // don't add points in 0,0
             return;
         }
+        boundsAreDirty = true;
         this.lonList.add(lon);
         this.latList.add(lat);
         this.altimList.add(altim);
@@ -70,7 +78,7 @@ public class Line implements KmlRepresenter {
     }
 
     public String getfileName() {
-        return fileName;
+        return name;
     }
 
     public DynamicDoubleArray getLatList() {
@@ -118,7 +126,7 @@ public class Line implements KmlRepresenter {
     public String toKmlString() {
         StringBuilder sB = new StringBuilder();
         sB.append("<Placemark>\n");
-        sB.append("<name>" + fileName + "</name>\n");
+        sB.append("<name>" + name + "</name>\n");
         sB.append("<visibility>1</visibility>\n");
         sB.append("<LineString>\n");
         sB.append("<tessellate>1</tessellate>\n");
@@ -140,6 +148,65 @@ public class Line implements KmlRepresenter {
     }
 
     public String getImagePath() {
+        return null;
+    }
+
+    private void calculateBounds() {
+        if (boundsAreDirty) {
+            double[] latArray = latList.getInternalArray();
+            minLat = Double.POSITIVE_INFINITY;
+            maxLat = Double.NEGATIVE_INFINITY;
+            for( double d : latArray ) {
+                minLat = Math.min(d, minLat);
+                maxLat = Math.min(d, maxLat);
+            }
+            double[] lonArray = lonList.getInternalArray();
+            minLon = Double.POSITIVE_INFINITY;
+            maxLon = Double.NEGATIVE_INFINITY;
+            for( double d : lonArray ) {
+                minLon = Math.min(d, minLon);
+                maxLon = Math.min(d, maxLon);
+            }
+            boundsAreDirty = false;
+        }
+    }
+
+    public double getMinLat() {
+        calculateBounds();
+        return minLat;
+    }
+
+    public double getMinLon() {
+        calculateBounds();
+        return minLon;
+    }
+
+    public double getMaxLat() {
+        calculateBounds();
+        return maxLat;
+    }
+
+    public double getMaxLon() {
+        calculateBounds();
+        return maxLon;
+    }
+
+    @SuppressWarnings("nls")
+    public String toGpxString() throws Exception {
+        StringBuilder sb = new StringBuilder();
+        sb.append(GpxUtilities.GPX_TRACK_START).append("\n");
+        sb.append(GpxUtilities.getTrackNameString(name)).append("\n");
+        sb.append(GpxUtilities.GPX_TRACKSEGMENT_START).append("\n");
+        double[] latArray = latList.getInternalArray();
+        double[] lonArray = lonList.getInternalArray();
+        double[] altimArray = altimList.getInternalArray();
+        for( int i = 0; i < latArray.length; i++ ) {
+            String dateString = dateList.get(i);
+            String trackPointString = GpxUtilities.getTrackPointString(latArray[i], lonArray[i], altimArray[i], dateString);
+            sb.append(trackPointString);
+        }
+        sb.append(GpxUtilities.GPX_TRACKSEGMENT_END).append("\n");
+        sb.append(GpxUtilities.GPX_TRACK_END).append("\n");
         return null;
     }
 }

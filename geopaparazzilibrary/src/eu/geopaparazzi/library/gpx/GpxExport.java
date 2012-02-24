@@ -81,7 +81,7 @@ public class GpxExport {
             }
 
             bW.write("<bounds minlat=\"" + minLat + "\" minlon=\"" + minLon + "\" maxlat=\"" + maxLat + "\" maxlon=\"" + maxLon
-                    + "\"/>");
+                    + "\"/>\n");
             for( GpxRepresenter gpxRepresenter : gpxRepresenters ) {
                 try {
                     bW.write(gpxRepresenter.toGpxString());
@@ -90,7 +90,7 @@ public class GpxExport {
                     e.printStackTrace();
                 }
             }
-            bW.write("</gpx>");
+            bW.write("</gpx>\n");
         } finally {
             if (bW != null)
                 bW.close();
