@@ -207,6 +207,6 @@ public class Line implements KmlRepresenter, GpxRepresenter {
         }
         sb.append(GpxUtilities.GPX_TRACKSEGMENT_END).append("\n");
         sb.append(GpxUtilities.GPX_TRACK_END).append("\n");
-        return null;
+        return sb.toString();
     }
 }

@@ -83,6 +83,7 @@ import eu.hydrologis.geopaparazzi.preferences.PreferencesActivity;
 import eu.hydrologis.geopaparazzi.util.AboutActivity;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
+import eu.hydrologis.geopaparazzi.util.ExportActivity;
 import eu.hydrologis.geopaparazzi.util.Image;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.Note;
@@ -103,9 +104,7 @@ public class GeoPaparazziActivity extends Activity {
 
     private ResourcesManager resourcesManager;
     private ActionBar actionBar;
-    private ProgressDialog kmlProgressDialog;
 
-    private File kmlOutputFile = null;
     private final int RETURNCODE_BROWSE_FOR_NEW_PREOJECT = 665;
     private final int RETURNCODE_NOTES = 666;
     private final int RETURNCODE_PICS = 667;
@@ -336,16 +335,8 @@ public class GeoPaparazziActivity extends Activity {
             break;
         }
         case R.id.dashboard_export_item_button: {
-            new AlertDialog.Builder(this).setTitle(R.string.export_for_real).setIcon(android.R.drawable.ic_dialog_info)
-                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
-                        public void onClick( DialogInterface dialog, int whichButton ) {
-                        }
-                    }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
-                        public void onClick( DialogInterface dialog, int whichButton ) {
-                            exportToKml();
-                        }
-                    }).show();
-
+            Intent exportIntent = new Intent(this, ExportActivity.class);
+            startActivity(exportIntent);
             break;
         }
         case R.id.panicbutton: {
@@ -580,64 +571,9 @@ public class GeoPaparazziActivity extends Activity {
 
     }
 
-    private Handler kmlHandler = new Handler(){
-        public void handleMessage( android.os.Message msg ) {
-            kmlProgressDialog.dismiss();
-            if (kmlOutputFile.exists()) {
-                Utilities
-                        .toast(GeoPaparazziActivity.this, R.string.kmlsaved + kmlOutputFile.getAbsolutePath(), Toast.LENGTH_LONG);
-            } else {
-                Utilities.toast(GeoPaparazziActivity.this, R.string.kmlnonsaved, Toast.LENGTH_LONG);
-            }
-        };
-    };
+
     private SlidingDrawer slidingDrawer;
-
-    private void exportToKml() {
-        kmlProgressDialog = ProgressDialog.show(this, getString(R.string.geopaparazziactivity_exporting_kmz), "", true, true); //$NON-NLS-1$
-        new Thread(){
-
-            public void run() {
-                try {
-                    List<KmlRepresenter> kmlRepresenterList = new ArrayList<KmlRepresenter>();
-                    /*
-                     * add gps logs
-                     */
-                    HashMap<Long, Line> linesMap = DaoGpsLog.getLinesMap(GeoPaparazziActivity.this);
-                    Collection<Line> linesCollection = linesMap.values();
-                    for( Line line : linesCollection ) {
-                        kmlRepresenterList.add(line);
-                    }
-                    /*
-                     * get notes
-                     */
-                    List<Note> notesList = DaoNotes.getNotesList(GeoPaparazziActivity.this);
-                    for( Note note : notesList ) {
-                        kmlRepresenterList.add(note);
-                    }
-                    /*
-                     * add pictures
-                     */
-                    List<Image> imagesList = DaoImages.getImagesList(GeoPaparazziActivity.this);
-                    for( Image image : imagesList ) {
-                        kmlRepresenterList.add(image);
-                    }
-
-                    File kmlExportDir = resourcesManager.getExportDir();
-                    String filename = "geopaparazzi_" + LibraryConstants.TIMESTAMPFORMATTER.format(new Date()) + ".kmz"; //$NON-NLS-1$ //$NON-NLS-2$
-                    kmlOutputFile = new File(kmlExportDir, filename);
-                    KmzExport export = new KmzExport(null, kmlOutputFile);
-                    export.export(GeoPaparazziActivity.this, kmlRepresenterList);
-
-                    kmlHandler.sendEmptyMessage(0);
-                } catch (IOException e) {
-                    Logger.e(this, e.getLocalizedMessage(), e);
-                    e.printStackTrace();
-                    Utilities.toast(GeoPaparazziActivity.this, R.string.kmlnonsaved, Toast.LENGTH_LONG);
-                }
-            }
-        }.start();
-    }
+    
 
     private void checkMapsAndLogsVisibility() throws IOException {
         List<MapItem> maps = DaoMaps.getMaps(this);
