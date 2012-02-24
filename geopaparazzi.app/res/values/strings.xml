@@ -256,4 +256,8 @@
     <string name="chosen_project_exists">The chosen project name already exists, please chose another name</string>
     <string name="gps_use_coarse">Use network based position instead of gps (needs restart)</string>
     <string name="type_to_filter">type to filter</string>
+    <string name="geopapcloud_preferences">Geopap-Cloud Preferences</string>
+    <string name="geopapcloud_user_label">Username</string>
+    <string name="geopapcloud_password_label">Password</string>
+    <string name="geopapcloud_server_label">Server to connect to</string>
 </resources>

@@ -143,5 +143,26 @@
             android:title="@string/osm_server_label" >
         </EditTextPreference>
     </PreferenceScreen>
+    <PreferenceScreen
+        android:order="50"
+        android:title="@string/geopapcloud_preferences" >
+        <EditTextPreference
+            android:key="geopapcloud_user_key"
+            android:order="52"
+            android:title="@string/geopapcloud_user_label" >
+        </EditTextPreference>
+        <EditTextPreference
+            android:inputType="textPassword"
+            android:key="geopapcloud_pwd_key"
+            android:order="53"
+            android:title="@string/geopapcloud_password_label" >
+        </EditTextPreference>
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="geopapcloud_server_key"
+            android:order="54"
+            android:title="@string/geopapcloud_server_label" >
+        </EditTextPreference>
+    </PreferenceScreen>
 
 </PreferenceScreen>

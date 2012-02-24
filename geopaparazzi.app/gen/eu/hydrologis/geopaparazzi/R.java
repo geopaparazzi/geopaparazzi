@@ -421,6 +421,10 @@ public final class R {
         public static final int foreground_service_started_notification_title=0x7f0700a0;
         public static final int formnotes=0x7f07013d;
         public static final int geopaparazziactivity_exporting_kmz=0x7f070137;
+        public static final int geopapcloud_password_label=0x7f070158;
+        public static final int geopapcloud_preferences=0x7f070156;
+        public static final int geopapcloud_server_label=0x7f070159;
+        public static final int geopapcloud_user_label=0x7f070157;
         public static final int googleview=0x7f0700be;
         public static final int goto_coordinate=0x7f0700c4;
         public static final int gps_log=0x7f0700ff;
