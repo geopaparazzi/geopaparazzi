@@ -22,6 +22,8 @@ import org.json.JSONObject;
 
 import eu.geopaparazzi.library.forms.FormUtilities;
 import eu.geopaparazzi.library.forms.TagsManager;
+import eu.geopaparazzi.library.gpx.GpxRepresenter;
+import eu.geopaparazzi.library.gpx.GpxUtilities;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
 
 /**
@@ -29,7 +31,7 @@ import eu.geopaparazzi.library.kml.KmlRepresenter;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class Note implements KmlRepresenter{
+public class Note implements KmlRepresenter, GpxRepresenter {
     private final String name;
     private final String description;
     private final long id;
@@ -97,7 +99,7 @@ public class Note implements KmlRepresenter{
     public String getForm() {
         return form;
     }
-    
+
     public int getType() {
         return type;
     }
@@ -157,5 +159,26 @@ public class Note implements KmlRepresenter{
 
     public String getImagePath() {
         return null;
+    }
+
+    public double getMinLat() {
+        return lat;
+    }
+
+    public double getMinLon() {
+        return lon;
+    }
+
+    public double getMaxLat() {
+        return lat;
+    }
+
+    public double getMaxLon() {
+        return lon;
+    }
+
+    public String toGpxString() throws Exception {
+        String wayPointString = GpxUtilities.getWayPointString(lat, lon, altim, name, description);
+        return wayPointString;
     }
 }
