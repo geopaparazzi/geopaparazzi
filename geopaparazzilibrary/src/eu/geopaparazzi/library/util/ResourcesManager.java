@@ -58,6 +58,8 @@ public class ResourcesManager implements Serializable {
 
     private static ResourcesManager resourcesManager;
 
+    private String applicationLabel;
+
     /**
      * The getter for the {@link ResourcesManager} singleton.
      * 
@@ -90,10 +92,14 @@ public class ResourcesManager implements Serializable {
         return context;
     }
 
+    public String getApplicationName() {
+        return applicationLabel;
+    }
+
     private ResourcesManager( Context context ) throws IOException {
         this.context = context;
         ApplicationInfo appInfo = context.getApplicationInfo();
-        String applicationLabel = context.getPackageManager().getApplicationLabel(appInfo).toString();
+        applicationLabel = context.getPackageManager().getApplicationLabel(appInfo).toString();
         applicationLabel = applicationLabel.toLowerCase();
 
         String databaseName = applicationLabel + ".db"; //$NON-NLS-1$

@@ -45,15 +45,17 @@ public class CompressionUtilities {
      * @param srcFolder path to the folder to be compressed.
      * @param destZipFile path to the final output zip file.
      * @param addBaseFolder flag to decide whether to add also the provided base folder or not.
+     * @param excludeNames names of files to exclude.
      */
-    static public void zipFolder( String srcFolder, String destZipFile, boolean addBaseFolder ) throws IOException {
+    static public void zipFolder( String srcFolder, String destZipFile, boolean addBaseFolder, String... excludeNames )
+            throws IOException {
         if (new File(srcFolder).isDirectory()) {
             ZipOutputStream zip = null;
             FileOutputStream fileWriter = null;
             try {
                 fileWriter = new FileOutputStream(destZipFile);
                 zip = new ZipOutputStream(fileWriter);
-                addFolderToZip("", srcFolder, zip, addBaseFolder); //$NON-NLS-1$
+                addFolderToZip("", srcFolder, zip, addBaseFolder, excludeNames); //$NON-NLS-1$
             } finally {
                 if (zip != null) {
                     zip.flush();
@@ -105,17 +107,21 @@ public class CompressionUtilities {
         zf.close();
     }
 
-    static private void addToZip( String path, String srcFile, ZipOutputStream zip ) throws IOException {
-        File folder = new File(srcFile);
-        if (folder.isDirectory()) {
-            addFolderToZip(path, srcFile, zip, true);
+    static private void addToZip( String path, String srcFile, ZipOutputStream zip, String... excludeNames ) throws IOException {
+        File file = new File(srcFile);
+        if (file.isDirectory()) {
+            addFolderToZip(path, srcFile, zip, true, excludeNames);
         } else {
+            if (isInArray(file.getName(), excludeNames)) {
+                // jump if excluded
+                return;
+            }
             byte[] buf = new byte[1024];
             int len;
             FileInputStream in = null;
             try {
                 in = new FileInputStream(srcFile);
-                zip.putNextEntry(new ZipEntry(path + File.separator + folder.getName()));
+                zip.putNextEntry(new ZipEntry(path + File.separator + file.getName()));
                 while( (len = in.read(buf)) > 0 ) {
                     zip.write(buf, 0, len);
                 }
@@ -126,11 +132,20 @@ public class CompressionUtilities {
         }
     }
 
-    static private void addFolderToZip( String path, String srcFolder, ZipOutputStream zip, boolean addFolder )
-            throws IOException {
+    static private void addFolderToZip( String path, String srcFolder, ZipOutputStream zip, boolean addFolder,
+            String... excludeNames ) throws IOException {
+        if (isInArray(srcFolder, excludeNames)) {
+            // jump folder if excluded
+            return;
+        }
         File folder = new File(srcFolder);
         String listOfFiles[] = folder.list();
         for( int i = 0; i < listOfFiles.length; i++ ) {
+            if (isInArray(listOfFiles[i], excludeNames)) {
+                // jump if excluded
+                continue;
+            }
+
             String folderPath = null;
             if (path.length() < 1) {
                 folderPath = folder.getName();
@@ -138,8 +153,16 @@ public class CompressionUtilities {
                 folderPath = path + File.separator + folder.getName();
             }
             String srcFile = srcFolder + File.separator + listOfFiles[i];
-            addToZip(folderPath, srcFile, zip);
+            addToZip(folderPath, srcFile, zip, excludeNames);
         }
+    }
+    private static boolean isInArray( String checkString, String[] array ) {
+        for( String arrayString : array ) {
+            if (arrayString.trim().equals(checkString.trim())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @SuppressWarnings("nls")
@@ -153,7 +176,8 @@ public class CompressionUtilities {
             String name = files[i].getName();
             File file = files[i];
             if (!file.exists()) {
-                if (Debug.D) Logger.d("COMPRESSIONUTILITIES", "Skipping: " + name);
+                if (Debug.D)
+                    Logger.d("COMPRESSIONUTILITIES", "Skipping: " + name);
                 continue;
             }
             BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));

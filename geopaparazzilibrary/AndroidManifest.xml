@@ -62,7 +62,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="eu.geopaparazzi.library.bluetooth.BluetoothPreferencesActivity" >
+        <activity android:name=".bluetooth.BluetoothPreferencesActivity" >
             <intent-filter>
                 <action android:name="eu.geopaparazzi.library.bluetooth.BluetoothPreferencesActivity" />
 
@@ -71,7 +71,7 @@
         </activity>
 
         <service
-            android:name="eu.geopaparazzi.library.bluetooth.BluetoothProviderService"
+            android:name=".bluetooth.BluetoothProviderService"
             android:enabled="true"
             android:exported="true" >
             <intent-filter>
@@ -94,7 +94,7 @@
         </service>
 
         <receiver
-            android:name="eu.geopaparazzi.library.sms.SmsReceiverPositionSender"
+            android:name=".sms.SmsReceiverPositionSender"
             android:enabled="true" >
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />

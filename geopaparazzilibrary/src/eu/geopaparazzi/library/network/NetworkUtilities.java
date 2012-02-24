@@ -1,8 +1,26 @@
+/*
+ * Geopaparazzi - Digital field mapping on Android based devices
+ * Copyright (C) 2010  HydroloGIS (www.hydrologis.com)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.geopaparazzi.library.network;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,12 +29,17 @@ import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import eu.geopaparazzi.library.util.Base64;
-
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import eu.geopaparazzi.library.util.Base64;
+import eu.geopaparazzi.library.util.debug.Logger;
 
+/**
+ * Network utils methods.
+ * 
+ * @author Andrea Antonello (www.hydrologis.com)
+ */
 @SuppressWarnings("nls")
 public class NetworkUtilities {
 
@@ -144,6 +167,60 @@ public class NetworkUtilities {
             e.printStackTrace();
             throw e;
         } finally {
+            if (conn != null)
+                conn.disconnect();
+        }
+    }
+
+    public static String sendFilePost( String urlStr, File file, String user, String password ) throws Exception {
+        BufferedOutputStream wr = null;
+        FileInputStream fis = null;
+        HttpURLConnection conn = null;
+        try {
+            // Authenticator.setDefault(new Authenticator(){
+            // protected PasswordAuthentication getPasswordAuthentication() {
+            // return new PasswordAuthentication("test", "test".toCharArray());
+            // }
+            // });
+            conn = makeNewConnection(urlStr);
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            conn.setChunkedStreamingMode(0);
+            conn.setUseCaches(false);
+
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(user);
+            stringBuilder.append(":");
+            stringBuilder.append(password);
+            conn.setRequestProperty("Authorization", "Basic " + Base64.encode(stringBuilder.toString().getBytes()));
+            conn.connect();
+
+            wr = new BufferedOutputStream(conn.getOutputStream());
+            fis = new FileInputStream(file);
+            int bytesAvailable = fis.available();
+            int bufferSize = Math.min(bytesAvailable, maxBufferSize);
+            Logger.i("NETWORKUTILITIES", "BUFFER USED: " + bufferSize);
+            byte[] buffer = new byte[bufferSize];
+            int bytesRead = fis.read(buffer, 0, bufferSize);
+            while( bytesRead > 0 ) {
+                wr.write(buffer, 0, bufferSize);
+                bytesAvailable = fis.available();
+                bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                bytesRead = fis.read(buffer, 0, bufferSize);
+            }
+            wr.flush();
+
+            String responseMessage = conn.getResponseMessage();
+            return responseMessage;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            if (wr != null)
+                wr.close();
+            if (fis != null)
+                fis.close();
             if (conn != null)
                 conn.disconnect();
         }
