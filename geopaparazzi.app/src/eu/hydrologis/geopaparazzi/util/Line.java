@@ -154,18 +154,21 @@ public class Line implements KmlRepresenter, GpxRepresenter {
     private void calculateBounds() {
         if (boundsAreDirty) {
             double[] latArray = latList.getInternalArray();
+            int size = latList.size();
             minLat = Double.POSITIVE_INFINITY;
             maxLat = Double.NEGATIVE_INFINITY;
-            for( double d : latArray ) {
+            for( int i = 0; i < size; i++ ) {
+                double d = latArray[i];
                 minLat = Math.min(d, minLat);
-                maxLat = Math.min(d, maxLat);
+                maxLat = Math.max(d, maxLat);
             }
             double[] lonArray = lonList.getInternalArray();
             minLon = Double.POSITIVE_INFINITY;
             maxLon = Double.NEGATIVE_INFINITY;
-            for( double d : lonArray ) {
+            for( int i = 0; i < size; i++ ) {
+                double d = lonArray[i];
                 minLon = Math.min(d, minLon);
-                maxLon = Math.min(d, maxLon);
+                maxLon = Math.max(d, maxLon);
             }
             boundsAreDirty = false;
         }
@@ -197,10 +200,11 @@ public class Line implements KmlRepresenter, GpxRepresenter {
         sb.append(GpxUtilities.GPX_TRACK_START).append("\n");
         sb.append(GpxUtilities.getTrackNameString(name)).append("\n");
         sb.append(GpxUtilities.GPX_TRACKSEGMENT_START).append("\n");
+        int size = latList.size();
         double[] latArray = latList.getInternalArray();
         double[] lonArray = lonList.getInternalArray();
         double[] altimArray = altimList.getInternalArray();
-        for( int i = 0; i < latArray.length; i++ ) {
+        for( int i = 0; i < size; i++ ) {
             String dateString = dateList.get(i);
             String trackPointString = GpxUtilities.getTrackPointString(latArray[i], lonArray[i], altimArray[i], dateString);
             sb.append(trackPointString);

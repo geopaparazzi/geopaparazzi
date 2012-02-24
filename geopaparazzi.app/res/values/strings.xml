@@ -8,8 +8,8 @@
     <string name="notesvisibilityToggle">Toggle notes visibility.</string>
     <string name="gpslogsvisibilityToggle">Toggle gps logs visibility.</string>
 
-    <string name="kmlsaved">Kml successfully exported to: </string>
-    <string name="kmlnonsaved">An error occurred while exporting to kml!</string>
+    <string name="kmlsaved">Data successfully exported to: </string>
+    <string name="kmlnonsaved">An error occurred during the data export!</string>
     <string name="gpxnonsaved">An error occurred while converting to gpx!</string>
     <string name="imagesaved">Image successfully saved!</string>
     <string name="imagenonsaved">An error occurred while saving the image!</string>
@@ -49,7 +49,7 @@
 	<string name="color_label">color</string>
 	<string name="distance">Distance [m]</string>
 
-	<string name="mainmenu_kmlexport">export kml</string>
+	<string name="mainmenu_kmlexport">export</string>
 	<string name="mainmenu_gpxconvert">import gpx</string>
 	<string name="mainmenu_gpsdataselect">gps data list</string>
 	<string name="mainmenu_mapdataselect">map data list</string>
@@ -219,7 +219,7 @@
 
     <string name="maptagsactivity_error_reading_tags">Error in reading tags</string>
 
-    <string name="geopaparazziactivity_exporting_kmz">Exporting to kmz…</string>
+    <string name="geopaparazziactivity_exporting_kmz">Exporting…</string>
 	<!-- added after 2.3.1 -->
     <string name="mapsactivity_menu_toggle_compass">toggle compass</string>
     

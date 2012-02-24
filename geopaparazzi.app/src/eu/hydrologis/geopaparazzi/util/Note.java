@@ -178,7 +178,8 @@ public class Note implements KmlRepresenter, GpxRepresenter {
     }
 
     public String toGpxString() throws Exception {
-        String wayPointString = GpxUtilities.getWayPointString(lat, lon, altim, name, description);
+        String descr = description.replaceAll("\n", "; ");  //$NON-NLS-1$//$NON-NLS-2$
+        String wayPointString = GpxUtilities.getWayPointString(lat, lon, altim, name, descr);
         return wayPointString;
     }
 }

@@ -34,6 +34,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import eu.geopaparazzi.library.gpx.GpxExport;
+import eu.geopaparazzi.library.gpx.GpxRepresenter;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
 import eu.geopaparazzi.library.kml.KmzExport;
 import eu.geopaparazzi.library.util.LibraryConstants;
@@ -52,6 +54,7 @@ import eu.hydrologis.geopaparazzi.database.DaoNotes;
 public class ExportActivity extends Activity {
 
     private ProgressDialog kmlProgressDialog;
+    private ProgressDialog gpxProgressDialog;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -66,7 +69,7 @@ public class ExportActivity extends Activity {
         ImageButton gpxExportButton = (ImageButton) findViewById(R.id.gpxExportButton);
         gpxExportButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-
+                exportGpx();
             }
         });
         ImageButton cloudExportButton = (ImageButton) findViewById(R.id.cloudExportButton);
@@ -123,6 +126,64 @@ public class ExportActivity extends Activity {
 
             protected void onPostExecute( String response ) { // on UI thread!
                 kmlProgressDialog.dismiss();
+                String msg = ""; //$NON-NLS-1$
+                if (response.length() > 0) {
+                    msg = getString(R.string.kmlsaved) + response;
+                } else {
+                    msg = getString(R.string.kmlnonsaved);
+                }
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(ExportActivity.this);
+                builder.setMessage(msg).setCancelable(false)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                            public void onClick( DialogInterface dialog, int id ) {
+                            }
+                        });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            }
+        }.execute((String) null);
+    }
+
+    private void exportGpx() {
+        gpxProgressDialog = ProgressDialog.show(ExportActivity.this, getString(R.string.geopaparazziactivity_exporting_kmz),
+                "", true, true); //$NON-NLS-1$
+        new AsyncTask<String, Void, String>(){
+            protected String doInBackground( String... params ) {
+                try {
+                    List<GpxRepresenter> gpxRepresenterList = new ArrayList<GpxRepresenter>();
+                    /*
+                     * add gps logs
+                     */
+                    HashMap<Long, Line> linesMap = DaoGpsLog.getLinesMap(ExportActivity.this);
+                    Collection<Line> linesCollection = linesMap.values();
+                    for( Line line : linesCollection ) {
+                        gpxRepresenterList.add(line);
+                    }
+                    /*
+                     * get notes
+                     */
+                    List<Note> notesList = DaoNotes.getNotesList(ExportActivity.this);
+                    for( Note note : notesList ) {
+                        gpxRepresenterList.add(note);
+                    }
+
+                    File gpxExportDir = ResourcesManager.getInstance(ExportActivity.this).getExportDir();
+                    String filename = "geopaparazzi_" + LibraryConstants.TIMESTAMPFORMATTER.format(new Date()) + ".gpx"; //$NON-NLS-1$ //$NON-NLS-2$
+                    File gpxOutputFile = new File(gpxExportDir, filename);
+                    GpxExport export = new GpxExport(null, gpxOutputFile);
+                    export.export(ExportActivity.this, gpxRepresenterList);
+
+                    return gpxOutputFile.getAbsolutePath();
+                } catch (IOException e) {
+                    Logger.e(this, e.getLocalizedMessage(), e);
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+
+            protected void onPostExecute( String response ) { // on UI thread!
+                gpxProgressDialog.dismiss();
                 String msg = ""; //$NON-NLS-1$
                 if (response.length() > 0) {
                     msg = getString(R.string.kmlsaved) + response;
