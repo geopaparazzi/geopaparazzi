@@ -44,37 +44,34 @@ public enum WebProjectManager {
      * @param user the username for authentication.
      * @param passwd the password for authentication.
      * @return the return code.
-     * @throws Exception
      */
-    public ReturnCodes uploadProject( Context context, boolean addMedia, String server, String user, String passwd )
-            throws Exception {
-        ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
-        File appFolder = resourcesManager.getApplicationDir();
-        String mediaFodlerName = resourcesManager.getMediaDir().getName();
-
-        File zipFile = new File(appFolder.getParentFile(), resourcesManager.getApplicationName());
-        if (zipFile.exists()) {
-            if (!zipFile.delete()) {
-                throw new IOException();
-            }
-        }
-        if (addMedia) {
-            CompressionUtilities.zipFolder(appFolder.getAbsolutePath(), zipFile.getAbsolutePath(), true);
-        } else {
-            CompressionUtilities.zipFolder(appFolder.getAbsolutePath(), zipFile.getAbsolutePath(), true, mediaFodlerName);
-        }
-
-        String result = ""; //$NON-NLS-1$
+    public ReturnCodes uploadProject( Context context, boolean addMedia, String server, String user, String passwd ) {
         try {
-            result = NetworkUtilities.sendFilePost(server, zipFile, user, passwd);
+            ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
+            File appFolder = resourcesManager.getApplicationDir();
+            String mediaFodlerName = resourcesManager.getMediaDir().getName();
+
+            File zipFile = new File(appFolder.getParentFile(), resourcesManager.getApplicationName());
+            if (zipFile.exists()) {
+                if (!zipFile.delete()) {
+                    throw new IOException();
+                }
+            }
+            if (addMedia) {
+                CompressionUtilities.zipFolder(appFolder.getAbsolutePath(), zipFile.getAbsolutePath(), true);
+            } else {
+                CompressionUtilities.zipFolder(appFolder.getAbsolutePath(), zipFile.getAbsolutePath(), true, mediaFodlerName);
+            }
+
+            String result = NetworkUtilities.sendFilePost(server, zipFile, user, passwd);
+            if (Debug.D) {
+                Logger.i(this, result);
+            }
+            return ReturnCodes.OK;
         } catch (Exception e) {
             e.printStackTrace();
             return ReturnCodes.ERROR;
         }
-        if (Debug.D) {
-            Logger.i(this, result);
-        }
-        return ReturnCodes.OK;
     }
 
     /**
@@ -85,20 +82,19 @@ public enum WebProjectManager {
      * @param user the username for authentication.
      * @param passwd the password for authentication.
      * @return the return code.
-     * @throws Exception
      */
-    public ReturnCodes downloadProject( Context context, String server, String user, String passwd ) throws Exception {
-        ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
-        File appFolder = resourcesManager.getApplicationDir();
-
-        File zipFile = new File(appFolder.getParentFile(), resourcesManager.getApplicationName());
-        if (zipFile.exists()) {
-            if (!zipFile.delete()) {
-                throw new IOException();
-            }
-        }
-
+    public ReturnCodes downloadProject( Context context, String server, String user, String passwd ) {
         try {
+            ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
+            File appFolder = resourcesManager.getApplicationDir();
+
+            File zipFile = new File(appFolder.getParentFile(), resourcesManager.getApplicationName());
+            if (zipFile.exists()) {
+                if (!zipFile.delete()) {
+                    throw new IOException();
+                }
+            }
+
             NetworkUtilities.sendGetRequest4File(server, zipFile, null, user, passwd);
 
             // now remove the zip file

@@ -29,8 +29,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -38,9 +40,13 @@ import eu.geopaparazzi.library.gpx.GpxExport;
 import eu.geopaparazzi.library.gpx.GpxRepresenter;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
 import eu.geopaparazzi.library.kml.KmzExport;
+import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.debug.Logger;
+import eu.geopaparazzi.library.webproject.ReturnCodes;
+import eu.geopaparazzi.library.webproject.WebProjectManager;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
@@ -52,6 +58,10 @@ import eu.hydrologis.geopaparazzi.database.DaoNotes;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class ExportActivity extends Activity {
+
+    public static final String PREF_KEY_USER = "geopapcloud_user_key"; //$NON-NLS-1$
+    public static final String PREF_KEY_PWD = "geopapcloud_pwd_key"; //$NON-NLS-1$
+    public static final String PREF_KEY_SERVER = "geopapcloud_server_key";//$NON-NLS-1$
 
     private ProgressDialog kmlProgressDialog;
     private ProgressDialog gpxProgressDialog;
@@ -75,6 +85,30 @@ public class ExportActivity extends Activity {
         ImageButton cloudExportButton = (ImageButton) findViewById(R.id.cloudExportButton);
         cloudExportButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
+                ExportActivity context = ExportActivity.this;
+                if (!NetworkUtilities.isNetworkAvailable(context)) {
+                    Utilities.messageDialog(context, context.getString(R.string.available_only_with_network), null);
+                    return;
+                }
+
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+                String user = preferences.getString(PREF_KEY_USER, ""); //$NON-NLS-1$
+                String pwd = preferences.getString(PREF_KEY_PWD, ""); //$NON-NLS-1$
+                String serverUrl = preferences.getString(PREF_KEY_SERVER, ""); //$NON-NLS-1$
+
+                if (user.length() == 0 || pwd.length() == 0 || serverUrl.length() == 0) {
+                    Utilities.messageDialog(context,
+                            "The geopap-cloud preferences are not set properly. Please check your settings.", null);
+                    return;
+                }
+
+                boolean addMedia = false;
+                ReturnCodes returnCode = WebProjectManager.INSTANCE.uploadProject(context, addMedia, serverUrl, user, pwd);
+                if (returnCode == ReturnCodes.ERROR) {
+                    Utilities.messageDialog(context, "An error occurred while uploading the project to the Geopap-cloud", null);
+                } else {
+                    Utilities.messageDialog(context, "The project has been succesfully uploaded to the Geopap-cloud", null);
+                }
 
             }
         });
