@@ -34,7 +34,64 @@ import eu.geopaparazzi.library.util.debug.Logger;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("nls")
 public class GpxUtilities {
+
+    public static final String GPX_TRACK_START = "<trk>";
+    public static final String GPX_TRACK_END = "</trk>";
+    public static final String GPX_TRACKSEGMENT_START = "<trkseg>";
+    public static final String GPX_TRACKSEGMENT_END = "</trkseg>";
+
+    /**
+     * Creates a Waypoint string from the point values.
+     * 
+     * @param lat latitude of the point.
+     * @param lon longitude of the point.
+     * @param elev elevation of the point.
+     * @param name the name of the point.
+     * @param desc a description of the point.
+     * @return the waypoint string.
+     */
+    public static String getWayPointString( double lat, double lon, double elev, String name, String desc ) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<wpt lat=\"" + lat + "\" lon=\"" + lon + "\">").append("\n");
+        sb.append("  <ele>" + elev + "</ele>").append("\n");
+        sb.append("  <name>" + name + "</name>").append("\n");
+        sb.append("  <cmt>" + desc + "</cmt>").append("\n");
+        sb.append("  <desc>" + desc + "</desc>").append("\n");
+        sb.append("</wpt>").append("\n");
+        return sb.toString();
+    }
+
+    /**
+     * Creates a Trackpoint string from the point values.
+     * 
+     * @param lat latitude of the point.
+     * @param lon longitude of the point.
+     * @param elev elevation of the point.
+     * @param time the time at which the point was taken.
+     * @return the trackpoint string.
+     */
+    public static String getTrackPointString( double lat, double lon, double elev, String time ) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<trkpt lat=\"" + lat + "\" lon=\"" + lon + "\">").append("\n");
+        sb.append("  <ele>" + elev + "</ele>").append("\n");
+        sb.append("  <time>" + time + "</time>").append("\n");
+        sb.append("</trkpt>").append("\n");
+        return sb.toString();
+    }
+
+    /**
+     * Creates a Track name string from the name.
+     * 
+     * @param name the name of the track.
+     * @return the gpx string.
+     */
+    public static String getTrackNameString( String name ) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<name>" + name + "</name>").append("\n");
+        return sb.toString();
+    }
 
     public static List<GpxItem> readGpxData( Context context, String path, boolean asLines ) {
         List<GpxItem> gpxItems = new ArrayList<GpxItem>();
