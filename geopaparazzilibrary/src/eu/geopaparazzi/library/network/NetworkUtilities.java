@@ -32,7 +32,8 @@ import javax.net.ssl.HttpsURLConnection;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import eu.geopaparazzi.library.util.Base64;
+import android.util.Base64;
+import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
@@ -43,7 +44,7 @@ import eu.geopaparazzi.library.util.debug.Logger;
 @SuppressWarnings("nls")
 public class NetworkUtilities {
 
-    public static final int maxBufferSize = 4096;
+    public static final long maxBufferSize = 4096;
 
     private static HttpURLConnection makeNewConnection( String fileUrl ) throws Exception {
         // boolean doHttps =
@@ -84,11 +85,7 @@ public class NetworkUtilities {
         conn.setUseCaches(false);
 
         if (user != null && password != null) {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(user);
-            stringBuilder.append(":");
-            stringBuilder.append(password);
-            conn.setRequestProperty("Authorization", "Basic " + Base64.encode(stringBuilder.toString().getBytes()));
+            conn.setRequestProperty("Authorization", getB64Auth(user, password));
         }
         conn.connect();
 
@@ -98,11 +95,11 @@ public class NetworkUtilities {
             in = conn.getInputStream();
             out = new FileOutputStream(file);
 
-            byte[] buffer = new byte[maxBufferSize];
-            int bytesRead = in.read(buffer, 0, maxBufferSize);
+            byte[] buffer = new byte[(int) maxBufferSize];
+            int bytesRead = in.read(buffer, 0, (int) maxBufferSize);
             while( bytesRead > 0 ) {
                 out.write(buffer, 0, bytesRead);
-                bytesRead = in.read(buffer, 0, maxBufferSize);
+                bytesRead = in.read(buffer, 0, (int) maxBufferSize);
             }
             out.flush();
 
@@ -135,11 +132,7 @@ public class NetworkUtilities {
             conn.setChunkedStreamingMode(0);
             conn.setUseCaches(false);
             if (user != null && password != null) {
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append(user);
-                stringBuilder.append(":");
-                stringBuilder.append(password);
-                conn.setRequestProperty("Authorization", "Basic " + Base64.encode(stringBuilder.toString().getBytes()));
+                conn.setRequestProperty("Authorization", getB64Auth(user, password));
             }
             conn.connect();
 
@@ -177,6 +170,8 @@ public class NetworkUtilities {
         FileInputStream fis = null;
         HttpURLConnection conn = null;
         try {
+            fis = new FileInputStream(file);
+            long fileSize = file.length();// fis.available();
             // Authenticator.setDefault(new Authenticator(){
             // protected PasswordAuthentication getPasswordAuthentication() {
             // return new PasswordAuthentication("test", "test".toCharArray());
@@ -189,25 +184,42 @@ public class NetworkUtilities {
             conn.setChunkedStreamingMode(0);
             conn.setUseCaches(false);
 
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(user);
-            stringBuilder.append(":");
-            stringBuilder.append(password);
-            conn.setRequestProperty("Authorization", "Basic " + Base64.encode(stringBuilder.toString().getBytes()));
+            // conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            conn.setRequestProperty("Content-Type", "application/x-zip-compressed");
+            conn.setRequestProperty("Content-Length", "" + fileSize);
+            conn.setRequestProperty("Connection", "Keep-Alive");
+
+            if (user != null && password != null) {
+                conn.setRequestProperty("Authorization", getB64Auth(user, password));
+            }
             conn.connect();
 
             wr = new BufferedOutputStream(conn.getOutputStream());
-            fis = new FileInputStream(file);
-            int bytesAvailable = fis.available();
-            int bufferSize = Math.min(bytesAvailable, maxBufferSize);
+            long bufferSize = Math.min(fileSize, maxBufferSize);
+            long bytesAvailable = fileSize;
             Logger.i("NETWORKUTILITIES", "BUFFER USED: " + bufferSize);
-            byte[] buffer = new byte[bufferSize];
-            int bytesRead = fis.read(buffer, 0, bufferSize);
+            byte[] buffer = new byte[(int) bufferSize];
+            int bytesRead = fis.read(buffer, 0, (int) bufferSize);
+            long totalBytesWritten = 0;
             while( bytesRead > 0 ) {
-                wr.write(buffer, 0, bufferSize);
-                bytesAvailable = fis.available();
+                wr.write(buffer, 0, (int) bufferSize);
+                totalBytesWritten = totalBytesWritten + bufferSize;
+
+                if (totalBytesWritten >= fileSize)
+                    break;
+
+                // if (Debug.D) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("AVAILABLE BYYYYTES: ");
+                sb.append(bytesAvailable);
+                sb.append("/");
+                sb.append(totalBytesWritten);
+                sb.append("/");
+                sb.append(fileSize);
+                Logger.d("NETWORKUTILITIES", sb.toString());
+                // }
                 bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                bytesRead = fis.read(buffer, 0, bufferSize);
+                bytesRead = fis.read(buffer, 0, (int) bufferSize);
             }
             wr.flush();
 
@@ -224,6 +236,12 @@ public class NetworkUtilities {
             if (conn != null)
                 conn.disconnect();
         }
+    }
+
+    private static String getB64Auth( String login, String pass ) {
+        String source = login + ":" + pass;
+        String ret = "Basic " + Base64.encodeToString(source.getBytes(), Base64.URL_SAFE | Base64.NO_WRAP);
+        return ret;
     }
 
     /**

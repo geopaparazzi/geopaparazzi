@@ -51,7 +51,7 @@ public enum WebProjectManager {
             File appFolder = resourcesManager.getApplicationDir();
             String mediaFodlerName = resourcesManager.getMediaDir().getName();
 
-            File zipFile = new File(appFolder.getParentFile(), resourcesManager.getApplicationName());
+            File zipFile = new File(appFolder.getParentFile(), resourcesManager.getApplicationName() + ".zip"); //$NON-NLS-1$
             if (zipFile.exists()) {
                 if (!zipFile.delete()) {
                     throw new IOException();
@@ -67,7 +67,12 @@ public enum WebProjectManager {
             if (Debug.D) {
                 Logger.i(this, result);
             }
-            return ReturnCodes.OK;
+            result = result.trim();
+            if (result.equals("0")) { //$NON-NLS-1$
+                return ReturnCodes.OK;
+            } else {
+                return ReturnCodes.ERROR;
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return ReturnCodes.ERROR;
@@ -88,7 +93,7 @@ public enum WebProjectManager {
             ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
             File appFolder = resourcesManager.getApplicationDir();
 
-            File zipFile = new File(appFolder.getParentFile(), resourcesManager.getApplicationName());
+            File zipFile = new File(appFolder.getParentFile(), resourcesManager.getApplicationName() + ".zip"); //$NON-NLS-1$
             if (zipFile.exists()) {
                 if (!zipFile.delete()) {
                     throw new IOException();

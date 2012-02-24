@@ -29,10 +29,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -85,24 +83,45 @@ public class ExportActivity extends Activity {
         ImageButton cloudExportButton = (ImageButton) findViewById(R.id.cloudExportButton);
         cloudExportButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                ExportActivity context = ExportActivity.this;
+                final ExportActivity context = ExportActivity.this;
                 if (!NetworkUtilities.isNetworkAvailable(context)) {
                     Utilities.messageDialog(context, context.getString(R.string.available_only_with_network), null);
                     return;
                 }
 
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-                String user = preferences.getString(PREF_KEY_USER, ""); //$NON-NLS-1$
-                String pwd = preferences.getString(PREF_KEY_PWD, ""); //$NON-NLS-1$
-                String serverUrl = preferences.getString(PREF_KEY_SERVER, ""); //$NON-NLS-1$
+                // SharedPreferences preferences =
+                // PreferenceManager.getDefaultSharedPreferences(context);
+                //                String user = preferences.getString(PREF_KEY_USER, ""); //$NON-NLS-1$
+                //                String pwd = preferences.getString(PREF_KEY_PWD, ""); //$NON-NLS-1$
+                //                String serverUrl = preferences.getString(PREF_KEY_SERVER, ""); //$NON-NLS-1$
+                //
+                // if (user.length() == 0 || pwd.length() == 0 || serverUrl.length() == 0) {
+                // Utilities.messageDialog(context,
+                // "The geopap-cloud preferences are not set properly. Please check your settings.",
+                // null);
+                // return;
+                // }
 
-                if (user.length() == 0 || pwd.length() == 0 || serverUrl.length() == 0) {
-                    Utilities.messageDialog(context,
-                            "The geopap-cloud preferences are not set properly. Please check your settings.", null);
-                    return;
-                }
+                final String serverUrl = "http://www.giovanniallegri.it/test/geopapup.php";
+                final String user = null;
+                final String pwd = null;
 
-                boolean addMedia = false;
+                new AlertDialog.Builder(context).setTitle("MEDIA UPLOAD")
+                        .setMessage("Do you also want to upload the images in the project?")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener(){
+                            public void onClick( DialogInterface dialog, int whichButton ) {
+                                sendProject(context, serverUrl, user, pwd, false);
+                            }
+                        }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                            public void onClick( DialogInterface dialog, int whichButton ) {
+                                sendProject(context, serverUrl, user, pwd, true);
+                            }
+                        }).show();
+
+            }
+
+            private void sendProject( ExportActivity context, String serverUrl, String user, String pwd, boolean addMedia ) {
                 ReturnCodes returnCode = WebProjectManager.INSTANCE.uploadProject(context, addMedia, serverUrl, user, pwd);
                 if (returnCode == ReturnCodes.ERROR) {
                     Utilities.messageDialog(context, "An error occurred while uploading the project to the Geopap-cloud", null);
