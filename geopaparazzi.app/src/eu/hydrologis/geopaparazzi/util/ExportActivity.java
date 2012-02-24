@@ -109,7 +109,6 @@ public class ExportActivity extends Activity {
                 } else {
                     Utilities.messageDialog(context, "The project has been succesfully uploaded to the Geopap-cloud", null);
                 }
-
             }
         });
     }
