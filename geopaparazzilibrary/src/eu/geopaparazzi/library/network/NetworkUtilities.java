@@ -196,7 +196,6 @@ public class NetworkUtilities {
 
             wr = new BufferedOutputStream(conn.getOutputStream());
             long bufferSize = Math.min(fileSize, maxBufferSize);
-            long bytesAvailable = fileSize;
             Logger.i("NETWORKUTILITIES", "BUFFER USED: " + bufferSize);
             byte[] buffer = new byte[(int) bufferSize];
             int bytesRead = fis.read(buffer, 0, (int) bufferSize);
@@ -204,26 +203,26 @@ public class NetworkUtilities {
             while( bytesRead > 0 ) {
                 wr.write(buffer, 0, (int) bufferSize);
                 totalBytesWritten = totalBytesWritten + bufferSize;
+                if (Debug.D) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("AVAILABLE BYYYYTES: ");
+                    sb.append(totalBytesWritten);
+                    sb.append("/");
+                    sb.append(fileSize);
+                    Logger.d("NETWORKUTILITIES", sb.toString());
+                }
 
                 if (totalBytesWritten >= fileSize)
                     break;
 
-                // if (Debug.D) {
-                StringBuilder sb = new StringBuilder();
-                sb.append("AVAILABLE BYYYYTES: ");
-                sb.append(bytesAvailable);
-                sb.append("/");
-                sb.append(totalBytesWritten);
-                sb.append("/");
-                sb.append(fileSize);
-                Logger.d("NETWORKUTILITIES", sb.toString());
-                // }
-                bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                bufferSize = Math.min(fileSize - totalBytesWritten, maxBufferSize);
                 bytesRead = fis.read(buffer, 0, (int) bufferSize);
             }
             wr.flush();
 
             String responseMessage = conn.getResponseMessage();
+            if (Debug.D)
+                Logger.d("NETWORKUTILITIES", "POST RESPONSE: " + responseMessage);
             return responseMessage;
         } catch (Exception e) {
             e.printStackTrace();
@@ -237,7 +236,6 @@ public class NetworkUtilities {
                 conn.disconnect();
         }
     }
-
     private static String getB64Auth( String login, String pass ) {
         String source = login + ":" + pass;
         String ret = "Basic " + Base64.encodeToString(source.getBytes(), Base64.URL_SAFE | Base64.NO_WRAP);
