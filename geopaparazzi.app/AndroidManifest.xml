@@ -150,7 +150,7 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </activity>
+        </activity><activity android:name=".util.ExportActivity"></activity>
         <!-- FROM LIBRARY -->
         <activity
             android:name="eu.geopaparazzi.library.camera.CameraActivity"
@@ -199,6 +199,7 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
+        
     </application>
 
 </manifest>

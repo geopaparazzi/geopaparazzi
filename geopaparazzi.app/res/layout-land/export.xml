@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="horizontal" >
+
+    <ImageButton
+        android:id="@+id/kmzExportButton"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:background="@drawable/action_bar_button_drawable"
+        android:src="@drawable/action_bar_info" />
+
+    <ImageButton
+        android:id="@+id/gpxExportButton"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:background="@drawable/action_bar_button_drawable"
+        android:src="@drawable/addnote" />
+
+    <ImageButton
+        android:id="@+id/cloudExportButton"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:background="@drawable/action_bar_button_drawable"
+        android:src="@drawable/addbookmark" />
+
+</LinearLayout>
