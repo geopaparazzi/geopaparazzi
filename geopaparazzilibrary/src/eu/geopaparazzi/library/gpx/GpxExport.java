@@ -76,8 +76,8 @@ public class GpxExport {
             for( GpxRepresenter gpxRepresenter : gpxRepresenters ) {
                 minLat = Math.min(minLat, gpxRepresenter.getMinLat());
                 minLon = Math.min(minLon, gpxRepresenter.getMinLon());
-                maxLat = Math.min(maxLat, gpxRepresenter.getMaxLat());
-                maxLon = Math.min(maxLon, gpxRepresenter.getMaxLon());
+                maxLat = Math.max(maxLat, gpxRepresenter.getMaxLat());
+                maxLon = Math.max(maxLon, gpxRepresenter.getMaxLon());
             }
 
             bW.write("<bounds minlat=\"" + minLat + "\" minlon=\"" + minLon + "\" maxlat=\"" + maxLat + "\" maxlon=\"" + maxLon

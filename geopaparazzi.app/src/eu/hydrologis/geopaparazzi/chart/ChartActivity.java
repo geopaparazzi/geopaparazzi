@@ -143,12 +143,9 @@ public class ChartActivity extends Activity implements ChartTouchListener {
 
         new AsyncTask<String, Void, XYDataset>(){
             protected XYDataset doInBackground( String... params ) {
-                DynamicDoubleArray altimList = line.getAltimList();
-                DynamicDoubleArray latList = line.getLatList();
-                DynamicDoubleArray lonList = line.getLonList();
-                double[] altimArray = altimList.getInternalArray();
-                double[] latArray = latList.getInternalArray();
-                double[] lonArray = lonList.getInternalArray();
+                DynamicDoubleArray altimArray = line.getAltimList();
+                DynamicDoubleArray latArray = line.getLatList();
+                DynamicDoubleArray lonArray = line.getLonList();
                 String title = ChartActivity.this.getString(R.string.profile);
                 return chartView.createDatasetFromProfile(lonArray, latArray, altimArray, title);
             }

@@ -90,6 +90,7 @@ import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import eu.geopaparazzi.library.util.DynamicDoubleArray;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 
@@ -160,20 +161,20 @@ public class XYChartView extends View implements ChartChangeListener, ChartProgr
      * @param seriesName the name to label the serie with.
      * @return the {@link XYSeriesCollection dataset}.
      */
-    public XYSeriesCollection createDatasetFromXY( double[] xArray, double[] yArray, String seriesName ) {
+    public XYSeriesCollection createDatasetFromXY( DynamicDoubleArray xArray, DynamicDoubleArray yArray, String seriesName ) {
         XYSeries xyS = new XYSeries(seriesName, true, true);
 
-        xMin = xArray[0];
-        xMax = xArray[xArray.length - 1];
+        int size = xArray.size();
+        xMin = xArray.get(0);
+        xMax = xArray.get(size - 1);
         yMin = Double.POSITIVE_INFINITY;
         yMax = Double.NEGATIVE_INFINITY;
 
-        for( int i = 0; i < xArray.length; i++ ) {
-
-            yMin = Math.min(yMin, yArray[i]);
-            yMax = Math.max(yMax, yArray[i]);
-
-            xyS.add(xArray[i], yArray[i]);
+        for( int i = 0; i < size; i++ ) {
+            double y = yArray.get(i);
+            yMin = Math.min(yMin, y);
+            yMax = Math.max(yMax, y);
+            xyS.add(xArray.get(i), y);
         }
 
         xMaxAll = xMax;
@@ -202,8 +203,8 @@ public class XYChartView extends View implements ChartChangeListener, ChartProgr
      * @param seriesName the name to label the serie with.
      * @return the {@link XYSeriesCollection dataset}.
      */
-    public XYSeriesCollection createDatasetFromProfile( double[] lonArray, double[] latArray, double[] elevArray,
-            String seriesName ) {
+    public XYSeriesCollection createDatasetFromProfile( DynamicDoubleArray lonArray, DynamicDoubleArray latArray,
+            DynamicDoubleArray elevArray, String seriesName ) {
         XYSeries xyS = new XYSeries(seriesName, true, true);
 
         xMin = 0;
@@ -214,10 +215,10 @@ public class XYChartView extends View implements ChartChangeListener, ChartProgr
         double plat = 0;
         double plon = 0;
         double summedDistance = 0.0;
-        for( int i = 0; i < lonArray.length; i++ ) {
-            double elev = elevArray[i];
-            double lat = latArray[i];
-            double lon = lonArray[i];
+        for( int i = 0; i < lonArray.size(); i++ ) {
+            double elev = elevArray.get(i);
+            double lat = latArray.get(i);
+            double lon = lonArray.get(i);
 
             double distance = 0.0;
             if (i > 0) {
