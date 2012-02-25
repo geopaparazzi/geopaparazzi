@@ -7,26 +7,32 @@
 
     <ImageButton
         android:id="@+id/kmzExportButton"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="fill_parent"
+        android:layout_gravity="center_horizontal"
         android:layout_weight="1"
         android:background="@drawable/action_bar_button_drawable"
-        android:src="@drawable/action_bar_info" />
+        android:padding="20dip"
+        android:src="@drawable/export_kmz" />
 
     <ImageButton
         android:id="@+id/gpxExportButton"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="fill_parent"
+        android:layout_gravity="center_horizontal"
         android:layout_weight="1"
         android:background="@drawable/action_bar_button_drawable"
-        android:src="@drawable/addnote" />
+        android:padding="20dip"
+        android:src="@drawable/export_gpx" />
 
     <ImageButton
         android:id="@+id/cloudExportButton"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="fill_parent"
+        android:layout_gravity="center_horizontal"
         android:layout_weight="1"
         android:background="@drawable/action_bar_button_drawable"
-        android:src="@drawable/addbookmark" />
+        android:padding="20dip"
+        android:src="@drawable/export_cloud" />
 
 </LinearLayout>
