@@ -117,6 +117,8 @@
 	    GeoPaparazzi VERSION\n
 	    is brought to you by HydroloGIS.\n
 	    \n
+	    cloud support comes from a collaboration with gis3w.\n
+	    \n
 	    GeoPaparazzi is the little brother of BeeGIS and as such is able to load collected data into it.\n
 	    \n
 	    The mapping engine is osmdroid.\n
@@ -129,9 +131,9 @@
 	    \n
 	    Links:\n
 	    http://www.geopaparazzi.eu\n
-	    http://www.hydrologis.eu\n
-	    http://www.jgrass.org\n
 	    http://www.beegis.org\n
+	    http://www.hydrologis.eu\n
+	    http://http://www.gis3w.it\n
 	    http://code.google.com/p/osmdroid\n
 	    http://www.openstreetmap.org\n
 	    http://code.google.com/p/ardroid\n
