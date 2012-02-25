@@ -68,7 +68,7 @@ public enum WebProjectManager {
                 Logger.i(this, result);
             }
             result = result.trim();
-            if (result.equals("0")) { //$NON-NLS-1$
+            if (result.toLowerCase().equals("ok")) { //$NON-NLS-1$
                 return ReturnCodes.OK;
             } else {
                 return ReturnCodes.ERROR;

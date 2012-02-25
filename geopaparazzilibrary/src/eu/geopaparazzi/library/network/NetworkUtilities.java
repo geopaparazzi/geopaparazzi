@@ -19,8 +19,10 @@ package eu.geopaparazzi.library.network;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -33,6 +35,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Base64;
+import android.util.Log;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 
@@ -181,13 +184,14 @@ public class NetworkUtilities {
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
             conn.setDoInput(true);
-            conn.setChunkedStreamingMode(0);
-            conn.setUseCaches(false);
+            // conn.setChunkedStreamingMode(0);
+            conn.setUseCaches(true);
 
+            // conn.setRequestProperty("Accept-Encoding", "gzip ");
             // conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             conn.setRequestProperty("Content-Type", "application/x-zip-compressed");
-            conn.setRequestProperty("Content-Length", "" + fileSize);
-            conn.setRequestProperty("Connection", "Keep-Alive");
+            // conn.setRequestProperty("Content-Length", "" + fileSize);
+            // conn.setRequestProperty("Connection", "Keep-Alive");
 
             if (user != null && password != null) {
                 conn.setRequestProperty("Authorization", getB64Auth(user, password));
@@ -264,6 +268,64 @@ public class NetworkUtilities {
         }
         return false;
     }
+
+    // public static String uploadFile( Context context, String urlStr, File file, String user,
+    // String password ) {
+    // try {
+    // FileInputStream fileInputStream = new FileInputStream(file);
+    // String lineEnd = "\r\n";
+    // String twoHyphens = "--";
+    // String boundary = "*****";
+    // // ------------------ CLIENT REQUEST
+    // URL connectURL = new URL(urlStr);
+    // HttpURLConnection conn = (HttpURLConnection) connectURL.openConnection();
+    // conn.setDoInput(true);
+    // conn.setDoOutput(true);
+    // conn.setUseCaches(false);
+    // conn.setRequestMethod("POST");
+    // conn.setRequestProperty("Connection", "Keep-Alive");
+    // conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+    //
+    // DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
+    // dos.writeBytes(twoHyphens + boundary + lineEnd);
+    // dos.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" +
+    // file.getName() + "\"" + lineEnd);
+    // dos.writeBytes(lineEnd);
+    //
+    // // create a buffer of maximum size
+    // int bytesAvailable = fileInputStream.available();
+    // int maxBufferSize = 1024;
+    // int bufferSize = Math.min(bytesAvailable, maxBufferSize);
+    // byte[] buffer = new byte[bufferSize];
+    // // read file and write it into form...
+    // int bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+    // while( bytesRead > 0 ) {
+    // dos.write(buffer, 0, bufferSize);
+    // bytesAvailable = fileInputStream.available();
+    // bufferSize = Math.min(bytesAvailable, maxBufferSize);
+    // bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+    // }
+    // dos.writeBytes(lineEnd);
+    // dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+    // fileInputStream.close();
+    // dos.flush();
+    //
+    // InputStream is = conn.getInputStream();
+    // int ch;
+    // StringBuffer b = new StringBuffer();
+    // while( (ch = is.read()) != -1 ) {
+    // b.append((char) ch);
+    // }
+    // String s = b.toString();
+    // Log.i("Response", s);
+    // dos.close();
+    // return s;
+    //
+    // } catch (Exception e) {
+    // e.printStackTrace();
+    // return null;
+    // }
+    // }
 
     // public void executeMultipartPost() throws Exception {
     //
