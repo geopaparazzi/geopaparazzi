@@ -19,10 +19,8 @@ package eu.geopaparazzi.library.network;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -35,7 +33,6 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Base64;
-import android.util.Log;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 
@@ -63,18 +60,18 @@ public class NetworkUtilities {
     }
 
     /**
-    * Sends an HTTP GET request to a url
-    *
-    * @param urlStr - The URL of the server. (Example: " http://www.yahoo.com/search")
-    * @param file the output file.
-    * @param requestParameters - all the request parameters (Example: "param1=val1&param2=val2"). 
-    *           Note: This method will add the question mark (?) to the request - 
-    *           DO NOT add it yourself
-    * @param user
-    * @param password
-    * @return - The response from the end point
+     * Sends an HTTP GET request to a url
+     *
+     * @param urlStr - The URL of the server. (Example: " http://www.yahoo.com/search")
+     * @param file the output file.
+     * @param requestParameters - all the request parameters (Example: "param1=val1&param2=val2"). 
+     *           Note: This method will add the question mark (?) to the request - 
+     *           DO NOT add it yourself
+     * @param user
+     * @param password
+     * @return - The response from the end point
      * @throws Exception 
-    */
+     */
     public static void sendGetRequest4File( String urlStr, File file, String requestParameters, String user, String password )
             throws Exception {
         if (requestParameters != null && requestParameters.length() > 0) {
@@ -84,7 +81,7 @@ public class NetworkUtilities {
         conn.setRequestMethod("GET");
         conn.setDoOutput(true);
         conn.setDoInput(true);
-        conn.setChunkedStreamingMode(0);
+        // conn.setChunkedStreamingMode(0);
         conn.setUseCaches(false);
 
         if (user != null && password != null) {
@@ -132,7 +129,7 @@ public class NetworkUtilities {
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
             conn.setDoInput(true);
-            conn.setChunkedStreamingMode(0);
+            // conn.setChunkedStreamingMode(0);
             conn.setUseCaches(false);
             if (user != null && password != null) {
                 conn.setRequestProperty("Authorization", getB64Auth(user, password));
@@ -168,13 +165,23 @@ public class NetworkUtilities {
         }
     }
 
+    /**
+     * Send a file via HTTP POST with basic authentication.
+     * 
+     * @param urlStr the server url to POST to.
+     * @param file the file to send.
+     * @param user the user or <code>null</code>.
+     * @param password the password or <code>null</code>.
+     * @return the return string from the POST.
+     * @throws Exception
+     */
     public static String sendFilePost( String urlStr, File file, String user, String password ) throws Exception {
         BufferedOutputStream wr = null;
         FileInputStream fis = null;
         HttpURLConnection conn = null;
         try {
             fis = new FileInputStream(file);
-            long fileSize = file.length();// fis.available();
+            long fileSize = file.length();
             // Authenticator.setDefault(new Authenticator(){
             // protected PasswordAuthentication getPasswordAuthentication() {
             // return new PasswordAuthentication("test", "test".toCharArray());
@@ -207,15 +214,6 @@ public class NetworkUtilities {
             while( bytesRead > 0 ) {
                 wr.write(buffer, 0, (int) bufferSize);
                 totalBytesWritten = totalBytesWritten + bufferSize;
-                if (Debug.D) {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("AVAILABLE BYYYYTES: ");
-                    sb.append(totalBytesWritten);
-                    sb.append("/");
-                    sb.append(fileSize);
-                    Logger.d("NETWORKUTILITIES", sb.toString());
-                }
-
                 if (totalBytesWritten >= fileSize)
                     break;
 
@@ -240,6 +238,7 @@ public class NetworkUtilities {
                 conn.disconnect();
         }
     }
+
     private static String getB64Auth( String login, String pass ) {
         String source = login + ":" + pass;
         String ret = "Basic " + Base64.encodeToString(source.getBytes(), Base64.URL_SAFE | Base64.NO_WRAP);
