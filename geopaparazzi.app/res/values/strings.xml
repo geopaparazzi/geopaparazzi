@@ -281,4 +281,8 @@
     <string name="media_upload">MEDIA UPLOAD</string>
 
     <string name="also_upload_images_in_the_project">Do you also want to upload the images in the project?</string>
+
+    <string name="osm_insert_a_changeset_description">Insert a changeset description</string>
+
+    <string name="set_description">Set description</string>
 </resources>

@@ -114,7 +114,7 @@ public class BookmarksListActivity extends ListActivity {
             Collections.sort(bookmarksList, bookmarksSorter);
 
             bookmarksMap.clear();
-            filterText = ".*" + filterText.toLowerCase() + ".*";
+            filterText = ".*" + filterText.toLowerCase() + ".*"; //$NON-NLS-1$ //$NON-NLS-2$
             List<String> namesList = new ArrayList<String>();
             for( Bookmark bookmark : bookmarksList ) {
                 String name = bookmark.getName();

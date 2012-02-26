@@ -520,15 +520,15 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                     }
 
                     final EditText input = new EditText(MapsActivity.this);
-                    input.setText("");
+                    input.setText(""); //$NON-NLS-1$
                     Builder builder = new AlertDialog.Builder(MapsActivity.this);
-                    builder.setTitle("Set description");
-                    builder.setMessage("Insert a changeset description");
+                    builder.setTitle(R.string.set_description);
+                    builder.setMessage(R.string.osm_insert_a_changeset_description);
                     builder.setView(input);
                     builder.setIcon(android.R.drawable.ic_dialog_alert)
                             .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
                                 public void onClick( DialogInterface dialog, int whichButton ) {
-                                    sync("");
+                                    sync(""); //$NON-NLS-1$
                                 }
                             }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
                                 public void onClick( DialogInterface dialog, int whichButton ) {

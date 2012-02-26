@@ -430,7 +430,7 @@ public final class R {
         public static final int foreground_nmea_recording_started_notification=0x7f0700a4;
         public static final int foreground_service_started_notification_title=0x7f0700a2;
         public static final int formnotes=0x7f07013e;
-        public static final int geopaparazziactivity_exporting_kmz=0x7f070164;
+        public static final int geopaparazziactivity_exporting_kmz=0x7f070166;
         public static final int geopapcloud_password_label=0x7f070159;
         public static final int geopapcloud_preferences=0x7f070157;
         public static final int geopapcloud_server_label=0x7f07015a;
@@ -559,6 +559,7 @@ public final class R {
         public static final int osm_additionalinfo=0x7f0700f4;
         public static final int osm_do_it=0x7f070142;
         public static final int osm_folder=0x7f0700e6;
+        public static final int osm_insert_a_changeset_description=0x7f070164;
         public static final int osm_notes_properly_uploaded=0x7f070146;
         public static final int osm_password_label=0x7f070144;
         public static final int osm_preferences=0x7f070141;
@@ -682,6 +683,7 @@ public final class R {
         public static final int send_status_update=0x7f07010b;
         public static final int service_closed_because_connection_problem_notification=0x7f0700a7;
         public static final int service_closed_because_connection_problem_notification_title=0x7f0700a6;
+        public static final int set_description=0x7f070165;
         public static final int sirf_bin_dgps_ext_on=0x7f070031;
         public static final int sirf_bin_dgps_sbas_on=0x7f070032;
         public static final int sirf_bin_static_nav_off=0x7f07002d;
