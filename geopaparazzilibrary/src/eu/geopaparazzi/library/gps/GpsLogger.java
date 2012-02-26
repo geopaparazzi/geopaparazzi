@@ -38,6 +38,7 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 
@@ -205,7 +206,7 @@ public class GpsLogger implements GpsManagerListener {
                     String msg = context.getResources().getString(R.string.cantwrite_gpslog);
                     Logger.e(this, msg, e);
                     // FIXME
-                    // Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
+                    Utilities.toast(context, msg, Toast.LENGTH_LONG);
                     // playAlert();
                     isLogging = false;
                 }
@@ -221,18 +222,18 @@ public class GpsLogger implements GpsManagerListener {
                     e.printStackTrace();
                     String msg = context.getResources().getString(R.string.cantwrite_gpslog);
                     Logger.e(this, msg, e);
-                    Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
+                    Utilities.toast(context, msg, Toast.LENGTH_LONG);
                 }
             }
         };
         t.start();
 
-        Toast.makeText(context, R.string.gpsloggingon, Toast.LENGTH_SHORT).show();
+        Utilities.toast(context, R.string.gpsloggingon, Toast.LENGTH_SHORT);
     }
 
     public void stopLogging() {
         isLogging = false;
-        Toast.makeText(context, R.string.gpsloggingoff, Toast.LENGTH_SHORT).show();
+        Utilities.toast(context, R.string.gpsloggingoff, Toast.LENGTH_SHORT);
     }
 
     public int getCurrentPointsNum() {
