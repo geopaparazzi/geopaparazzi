@@ -206,7 +206,7 @@ public class GpsLogger implements GpsManagerListener {
                     Logger.e(this, msg, e);
                     // FIXME
                     // Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
-                    playAlert();
+                    // playAlert();
                     isLogging = false;
                 }
                 if (Debug.D)
