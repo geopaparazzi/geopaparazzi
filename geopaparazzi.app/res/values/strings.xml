@@ -52,6 +52,7 @@
 	<string name="distance">Distance [m]</string>
 
 	<string name="mainmenu_kmlexport">export</string>
+	<string name="mainmenu_import">import</string>
 	<string name="mainmenu_gpxconvert">import gpx</string>
 	<string name="mainmenu_gpsdataselect">gps data list</string>
 	<string name="mainmenu_mapdataselect">map data list</string>

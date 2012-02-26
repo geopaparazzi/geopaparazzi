@@ -152,7 +152,7 @@
                 <TextView
                     android:id="@+id/dashboard_import_item_text"
                     style="@style/dashBoardText"
-                    android:text="@string/mainmenu_gpxconvert" >
+                    android:text="@string/mainmenu_import" >
                 </TextView>
             </LinearLayout>
 
