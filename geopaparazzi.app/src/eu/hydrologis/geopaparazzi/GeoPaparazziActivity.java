@@ -77,6 +77,7 @@ import eu.hydrologis.geopaparazzi.util.AboutActivity;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.ExportActivity;
+import eu.hydrologis.geopaparazzi.util.ImportActivity;
 import eu.hydrologis.geopaparazzi.util.QuickActionsFactory;
 
 /**
@@ -316,12 +317,8 @@ public class GeoPaparazziActivity extends Activity {
             break;
         }
         case R.id.dashboard_import_item_button: {
-            Intent browseIntent = new Intent(this, DirectoryBrowserActivity.class);
-            browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, resourcesManager.getApplicationDir()
-                    .getAbsolutePath());
-            browseIntent.putExtra(DirectoryBrowserActivity.INTENT_ID, Constants.GPXIMPORT);
-            browseIntent.putExtra(DirectoryBrowserActivity.EXTENTION, ".gpx"); //$NON-NLS-1$
-            startActivity(browseIntent);
+            Intent exportIntent = new Intent(this, ImportActivity.class);
+            startActivity(exportIntent);
             break;
         }
         case R.id.dashboard_export_item_button: {
@@ -561,9 +558,7 @@ public class GeoPaparazziActivity extends Activity {
 
     }
 
-
     private SlidingDrawer slidingDrawer;
-    
 
     private void checkMapsAndLogsVisibility() throws IOException {
         List<MapItem> maps = DaoMaps.getMaps(this);

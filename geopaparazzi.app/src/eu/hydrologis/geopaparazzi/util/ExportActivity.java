@@ -17,6 +17,7 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
+import static eu.hydrologis.geopaparazzi.util.Constants.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,10 +59,6 @@ import eu.hydrologis.geopaparazzi.database.DaoNotes;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class ExportActivity extends Activity {
-
-    public static final String PREF_KEY_USER = "geopapcloud_user_key"; //$NON-NLS-1$
-    public static final String PREF_KEY_PWD = "geopapcloud_pwd_key"; //$NON-NLS-1$
-    public static final String PREF_KEY_SERVER = "geopapcloud_server_key";//$NON-NLS-1$
 
     private ProgressDialog kmlProgressDialog;
     private ProgressDialog gpxProgressDialog;

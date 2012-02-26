@@ -99,4 +99,12 @@ public interface Constants {
     public static final String OSM_CATEGORY_KEY = "OSM_CATEGORY_KEY";
     public static final String OSM_TAG_KEY = "OSM_TAG_KEY";
     public static final String PREFS_KEY_DOOSM = "PREFS_KEY_DOOSM";
+    
+    /*
+     * CLOUD
+     */
+    public static final String PREF_KEY_USER = "geopapcloud_user_key"; //$NON-NLS-1$
+    public static final String PREF_KEY_PWD = "geopapcloud_pwd_key"; //$NON-NLS-1$
+    public static final String PREF_KEY_SERVER = "geopapcloud_server_key";//$NON-NLS-1$
+    
 }
