@@ -4,6 +4,8 @@
     <string name="app_name">GeopaparazziLibrary</string>
     <string name="cancel">cancel</string>
     <string name="ok">ok</string>
+    <string name="yes">yes</string>
+    <string name="no">no</string>
     <string name="up">up</string>
     <string name="cantcreate_sdcard">Wasn\'t able to create folder on sdcard ({0}). Exiting...</string>
     <string name="sdcard_notexist">Sdcard folder doesn\'t exist or is not writable (is it possible it is mounted on a pc?). Exiting...</string>

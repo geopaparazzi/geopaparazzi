@@ -223,8 +223,8 @@ public class GpsManager implements LocationListener, Listener {
     private void checkGps() {
         if (!isEnabled()) {
             String prompt = context.getResources().getString(R.string.prompt_gpsenable);
-            String ok = context.getResources().getString(R.string.ok);
-            String cancel = context.getResources().getString(R.string.cancel);
+            String ok = context.getResources().getString(R.string.yes);
+            String cancel = context.getResources().getString(R.string.no);
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setMessage(prompt).setCancelable(false).setPositiveButton(ok, new DialogInterface.OnClickListener(){
                 public void onClick( DialogInterface dialog, int id ) {

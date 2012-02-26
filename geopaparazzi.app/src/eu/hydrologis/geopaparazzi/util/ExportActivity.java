@@ -29,8 +29,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -63,6 +65,7 @@ public class ExportActivity extends Activity {
 
     private ProgressDialog kmlProgressDialog;
     private ProgressDialog gpxProgressDialog;
+    private ProgressDialog cloudProgressDialog;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -89,52 +92,81 @@ public class ExportActivity extends Activity {
                     return;
                 }
 
-                // SharedPreferences preferences =
-                // PreferenceManager.getDefaultSharedPreferences(context);
-                //                String user = preferences.getString(PREF_KEY_USER, ""); //$NON-NLS-1$
-                //                String pwd = preferences.getString(PREF_KEY_PWD, ""); //$NON-NLS-1$
-                //                String serverUrl = preferences.getString(PREF_KEY_SERVER, ""); //$NON-NLS-1$
-                //
-                // if (user.length() == 0 || pwd.length() == 0 || serverUrl.length() == 0) {
-                // Utilities.messageDialog(context,
-                // "The geopap-cloud preferences are not set properly. Please check your settings.",
-                // null);
-                // return;
-                // }
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+                final String user = preferences.getString(PREF_KEY_USER, ""); //$NON-NLS-1$
+                final String pwd = preferences.getString(PREF_KEY_PWD, ""); //$NON-NLS-1$
+                final String serverUrl = preferences.getString(PREF_KEY_SERVER, ""); //$NON-NLS-1$
 
-                final String serverUrl = "http://www.giovanniallegri.it/test/geopapup.php";
-                final String user = null;
-                final String pwd = null;
+                if (user.length() == 0 || pwd.length() == 0 || serverUrl.length() == 0) {
+                    Utilities.messageDialog(context, R.string.error_set_cloud_settings, null);
+                    return;
+                }
 
-                new AlertDialog.Builder(context).setTitle("MEDIA UPLOAD")
-                        .setMessage("Do you also want to upload the images in the project?")
-                        .setIcon(android.R.drawable.ic_dialog_alert)
+                // final String serverUrl = "http://www.giovanniallegri.it/test/geopapup.php";
+                // final String user = null;
+                // final String pwd = null;
+
+                new AlertDialog.Builder(context).setTitle(R.string.media_upload)
+                        .setMessage(R.string.also_upload_images_in_the_project).setIcon(android.R.drawable.ic_dialog_alert)
                         .setNegativeButton(R.string.no, new DialogInterface.OnClickListener(){
                             public void onClick( DialogInterface dialog, int whichButton ) {
-                                sendProject(context, serverUrl, user, pwd, false);
+                                exportToCloud(context, serverUrl, user, pwd, false);
                             }
-                        }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                        }).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener(){
                             public void onClick( DialogInterface dialog, int whichButton ) {
-                                sendProject(context, serverUrl, user, pwd, true);
+                                exportToCloud(context, serverUrl, user, pwd, true);
+                            }
+                        }).setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                            public void onClick( DialogInterface dialog, int whichButton ) {
                             }
                         }).show();
-
-            }
-
-            private void sendProject( ExportActivity context, String serverUrl, String user, String pwd, boolean addMedia ) {
-                ReturnCodes returnCode = WebProjectManager.INSTANCE.uploadProject(context, addMedia, serverUrl, user, pwd);
-                if (returnCode == ReturnCodes.ERROR) {
-                    Utilities.messageDialog(context, "An error occurred while uploading the project to the Geopap-cloud", null);
-                } else {
-                    Utilities.messageDialog(context, "The project has been succesfully uploaded to the Geopap-cloud", null);
-                }
             }
         });
     }
 
+    private void exportToCloud( final ExportActivity context, final String serverUrl, final String user, final String pwd,
+            final boolean addMedia ) {
+
+        cloudProgressDialog = ProgressDialog.show(ExportActivity.this, getString(R.string.exporting_data),
+                context.getString(R.string.exporting_data_to_the_cloud), true, true);
+        new AsyncTask<String, Void, Integer>(){
+            protected Integer doInBackground( String... params ) {
+                try {
+                    ReturnCodes returnCode = WebProjectManager.INSTANCE.uploadProject(context, addMedia, serverUrl, user, pwd);
+                    return returnCode.getMsgCode();
+                } catch (Exception e) {
+                    Logger.e(this, e.getLocalizedMessage(), e);
+                    e.printStackTrace();
+                    return ReturnCodes.ERROR.getMsgCode();
+                }
+            }
+
+            protected void onPostExecute( Integer response ) { // on UI thread!
+                cloudProgressDialog.dismiss();
+                ReturnCodes code = ReturnCodes.get4Code(response);
+                String msg;
+                if (code == ReturnCodes.ERROR) {
+                    msg = getString(R.string.error_uploadig_project_to_cloud);
+                } else {
+                    msg = getString(R.string.project_succesfully_uploaded_to_cloud);
+                }
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(ExportActivity.this);
+                builder.setMessage(msg).setCancelable(false)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                            public void onClick( DialogInterface dialog, int id ) {
+                            }
+                        });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            }
+        }.execute((String) null);
+
+    }
+
     private void exportKmz() {
-        kmlProgressDialog = ProgressDialog.show(ExportActivity.this, getString(R.string.geopaparazziactivity_exporting_kmz),
-                "", true, true); //$NON-NLS-1$
+        kmlProgressDialog = ProgressDialog.show(ExportActivity.this, getString(R.string.exporting_data),
+                getString(R.string.exporting_data_to_kmz), true, true);
         new AsyncTask<String, Void, String>(){
             protected String doInBackground( String... params ) {
                 try {
@@ -198,8 +230,8 @@ public class ExportActivity extends Activity {
     }
 
     private void exportGpx() {
-        gpxProgressDialog = ProgressDialog.show(ExportActivity.this, getString(R.string.geopaparazziactivity_exporting_kmz),
-                "", true, true); //$NON-NLS-1$
+        gpxProgressDialog = ProgressDialog.show(ExportActivity.this, getString(R.string.exporting_data),
+                getString(R.string.exporting_data_to_gpx), true, true);
         new AsyncTask<String, Void, String>(){
             protected String doInBackground( String... params ) {
                 try {

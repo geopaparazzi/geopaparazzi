@@ -223,7 +223,6 @@
 
     <string name="maptagsactivity_error_reading_tags">Error in reading tags</string>
 
-    <string name="geopaparazziactivity_exporting_kmz">Exporting…</string>
 	<!-- added after 2.3.1 -->
     <string name="mapsactivity_menu_toggle_compass">toggle compass</string>
     
@@ -264,4 +263,22 @@
     <string name="geopapcloud_user_label">Username</string>
     <string name="geopapcloud_password_label">Password</string>
     <string name="geopapcloud_server_label">Server to connect to</string>
+
+    <string name="exporting_data">Exporting data</string>
+
+    <string name="error_set_cloud_settings">The geopap-cloud preferences are not set properly. Please check your settings.</string>
+
+    <string name="exporting_data_to_the_cloud">Exporting data to the cloud.</string>
+
+    <string name="error_uploadig_project_to_cloud">An error occurred while uploading the project to the Geopap-cloud</string>
+
+    <string name="project_succesfully_uploaded_to_cloud">The project has been succesfully uploaded to the Geopap-cloud</string>
+
+    <string name="exporting_data_to_kmz">Exporting data to KMZ.</string>
+
+    <string name="exporting_data_to_gpx">Exporting data to GPX</string>
+
+    <string name="media_upload">MEDIA UPLOAD</string>
+
+    <string name="also_upload_images_in_the_project">Do you also want to upload the images in the project?</string>
 </resources>
