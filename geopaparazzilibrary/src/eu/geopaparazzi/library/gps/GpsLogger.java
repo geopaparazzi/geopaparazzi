@@ -24,17 +24,10 @@ import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGING
 
 import java.io.IOException;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteFullException;
 import android.location.Location;
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 import eu.geopaparazzi.library.R;
@@ -71,8 +64,8 @@ public class GpsLogger implements GpsManagerListener {
 
     private boolean isLogging = false;
 
-    private MediaPlayer mMediaPlayer;
-    private boolean doPlayAlarm = false;
+    // private MediaPlayer mMediaPlayer;
+    // private boolean doPlayAlarm = false;
 
     private int currentPointsNum;
     private float currentDistance;
@@ -196,18 +189,13 @@ public class GpsLogger implements GpsManagerListener {
                     e.printStackTrace();
                     String msg = context.getResources().getString(R.string.error_disk_full);
                     Logger.e(this, msg, e);
-                    // ResourcesManager.getInstance(getContext()).alertDialog(msg);
-                    // FIXME
-                    // Toasts.longAsyncToast(context, msg);
-                    // Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
+                    Utilities.toast(context, msg, Toast.LENGTH_LONG);
                     isLogging = false;
                 } catch (Exception e) {
                     e.printStackTrace();
                     String msg = context.getResources().getString(R.string.cantwrite_gpslog);
                     Logger.e(this, msg, e);
-                    // FIXME
                     Utilities.toast(context, msg, Toast.LENGTH_LONG);
-                    // playAlert();
                     isLogging = false;
                 }
                 if (Debug.D)
@@ -248,64 +236,65 @@ public class GpsLogger implements GpsManagerListener {
     // SOUND HANDLING
     // /////////////////////////////////////////////////
 
-    private Handler alertDialogHandler = new Handler(){
+    // private Handler alertDialogHandler = new Handler(){
+    //
+    // public void handleMessage( android.os.Message msg ) {
+    // mMediaPlayer = new MediaPlayer();
+    // doPlayAlarm = true;
+    // AlertDialog.Builder builder = new AlertDialog.Builder(context);
+    // String ok = context.getResources().getString(R.string.ok);
+    // builder.setMessage(R.string.gpsloggingalarm).setCancelable(false)
+    // .setPositiveButton(ok, new DialogInterface.OnClickListener(){
+    // public void onClick( DialogInterface dialog, int id ) {
+    // doPlayAlarm = false;
+    // if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+    // mMediaPlayer.stop();
+    // mMediaPlayer = null;
+    // }
+    // }
+    // });
+    // AlertDialog alertDialog = builder.create();
+    // alertDialog.show();
+    // };
+    // };
 
-        public void handleMessage( android.os.Message msg ) {
-            mMediaPlayer = new MediaPlayer();
-            doPlayAlarm = true;
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            String ok = context.getResources().getString(R.string.ok);
-            builder.setMessage(R.string.gpsloggingalarm).setCancelable(false)
-                    .setPositiveButton(ok, new DialogInterface.OnClickListener(){
-                        public void onClick( DialogInterface dialog, int id ) {
-                            doPlayAlarm = false;
-                            if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
-                                mMediaPlayer.stop();
-                                mMediaPlayer = null;
-                            }
-                        }
-                    });
-            AlertDialog alertDialog = builder.create();
-            alertDialog.show();
-        };
-    };
+    // private Handler alertSoundHandler = new Handler(){
+    // public void handleMessage( android.os.Message msg ) {
+    // try {
+    // if (doPlayAlarm == false) {
+    // return;
+    // }
+    // Uri alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+    // mMediaPlayer.setDataSource(context, alert);
+    // final AudioManager audioManager = (AudioManager)
+    // context.getSystemService(Context.AUDIO_SERVICE);
+    // if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
+    // mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
+    // mMediaPlayer.setLooping(true);
+    // mMediaPlayer.prepare();
+    // mMediaPlayer.start();
+    // }
+    // } catch (Exception e) {
+    // Logger.e(this, e.getLocalizedMessage(), e);
+    // e.printStackTrace();
+    // }
+    // };
+    // };
 
-    private Handler alertSoundHandler = new Handler(){
-        public void handleMessage( android.os.Message msg ) {
-            try {
-                if (doPlayAlarm == false) {
-                    return;
-                }
-                Uri alert = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-                mMediaPlayer.setDataSource(context, alert);
-                final AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-                if (audioManager.getStreamVolume(AudioManager.STREAM_ALARM) != 0) {
-                    mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
-                    mMediaPlayer.setLooping(true);
-                    mMediaPlayer.prepare();
-                    mMediaPlayer.start();
-                }
-            } catch (Exception e) {
-                Logger.e(this, e.getLocalizedMessage(), e);
-                e.printStackTrace();
-            }
-        };
-    };
-
-    private void playAlert() {
-        try {
-            alertDialogHandler.sendEmptyMessage(0);
-            int index = 0;
-            while( index < 3 ) {
-                Thread.sleep(1000);
-                index++;
-            }
-            alertSoundHandler.sendEmptyMessage(0);
-        } catch (InterruptedException e) {
-            Logger.e(this, e.getLocalizedMessage(), e);
-            e.printStackTrace();
-        }
-    }
+    // private void playAlert() {
+    // try {
+    // alertDialogHandler.sendEmptyMessage(0);
+    // int index = 0;
+    // while( index < 3 ) {
+    // Thread.sleep(1000);
+    // index++;
+    // }
+    // alertSoundHandler.sendEmptyMessage(0);
+    // } catch (InterruptedException e) {
+    // Logger.e(this, e.getLocalizedMessage(), e);
+    // e.printStackTrace();
+    // }
+    // }
 
     public void onLocationChanged( GpsLocation loc ) {
         gpsLoc = new GpsLocation(loc);
