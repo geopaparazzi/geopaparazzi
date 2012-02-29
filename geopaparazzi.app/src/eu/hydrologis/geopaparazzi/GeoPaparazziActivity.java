@@ -112,14 +112,12 @@ public class GeoPaparazziActivity extends Activity {
 
     protected void onResume() {
         super.onResume();
-        if (resourcesManager != null)
-            checkActionBar();
+        checkActionBar();
     }
 
     public void onWindowFocusChanged( boolean hasFocus ) {
         super.onWindowFocusChanged(hasFocus);
-        if (resourcesManager != null)
-            checkActionBar();
+        checkActionBar();
     }
 
     private void checkActionBar() {
@@ -132,7 +130,6 @@ public class GeoPaparazziActivity extends Activity {
         actionBar.checkLogging();
 
     }
-
     private void init() {
         Object stateObj = getLastNonConfigurationInstance();
         if (stateObj instanceof ResourcesManager) {
@@ -158,6 +155,8 @@ public class GeoPaparazziActivity extends Activity {
                     });
             AlertDialog alertDialog = builder.create();
             alertDialog.show();
+        } else {
+            initIfOk();
         }
 
     }
