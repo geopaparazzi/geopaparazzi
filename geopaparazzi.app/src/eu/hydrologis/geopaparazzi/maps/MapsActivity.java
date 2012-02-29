@@ -568,7 +568,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                                         text = text.replaceFirst("\\_", "/"); //$NON-NLS-1$//$NON-NLS-2$
 
                                         msg = MessageFormat.format(
-                                                "Some of the features were uploaded, but not all of them ({0}).", text);
+                                                "Some of the features were uploaded, but not all of them ({0}).", text); //$NON-NLS-1$
                                         openAlertDialog(msg);
                                     } else {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);

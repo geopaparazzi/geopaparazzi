@@ -51,179 +51,22 @@ import eu.geopaparazzi.library.util.debug.Logger;
  * @author Herbert von Broeuschmeul
  *
  */
-public enum BluetoothManager2 {
-    BLUETOOTHMANAGER;
+@SuppressWarnings("nls")
+public class BluetoothManager2 implements BluetoothNotificationHandler {
 
     /**
      * Tag used for log messages
      */
     private static final String LOG_TAG = "BluetoothManager";
 
-    /**
-     * A utility class used to manage the communication with the bluetooth GPS whn the connection has been established.
-     * It is used to read NMEA data from the GPS or to send SIRF III binary commands or SIRF III NMEA commands to the GPS.
-     * You should run the main read loop in one thread and send the commands in a separate one.   
-     * 
-     * @author Herbert von Broeuschmeul
-     *
-     */
-    private class ConnectedGps extends Thread {
-        /**
-         * GPS bluetooth socket used for communication. 
-         */
-        private final BluetoothSocket socket;
-        /**
-         * GPS InputStream from which we read data. 
-         */
-        private final InputStream in;
-        /**
-         * GPS output stream to which we send data (SIRF III binary commands). 
-         */
-        private final OutputStream out;
-        /**
-         * GPS output stream to which we send data (SIRF III NMEA commands). 
-         */
-        private final PrintStream out2;
-        /**
-         * A boolean which indicates if the GPS is ready to receive data. 
-         * In fact we consider that the GPS is ready when it begins to sends data...
-         */
-        private boolean ready = false;
-
-        public ConnectedGps( BluetoothSocket socket ) {
-            this.socket = socket;
-            InputStream tmpIn = null;
-            OutputStream tmpOut = null;
-            PrintStream tmpOut2 = null;
-            try {
-                tmpIn = socket.getInputStream();
-                tmpOut = socket.getOutputStream();
-                if (tmpOut != null) {
-                    tmpOut2 = new PrintStream(tmpOut, false, "US-ASCII");
-                }
-            } catch (IOException e) {
-                if (Debug.D)
-                    if (Debug.D)
-                        Logger.e(LOG_TAG, "error while getting socket streams", e);
-            }
-            in = tmpIn;
-            out = tmpOut;
-            out2 = tmpOut2;
-        }
-
-        public boolean isReady() {
-            return ready;
-        }
-
-        public void run() {
-            try {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in, "US-ASCII"));
-                String s;
-                long now = SystemClock.uptimeMillis();
-                long lastRead = now;
-                while( (enabled) && (now < lastRead + 5000) ) {
-                    if (reader.ready()) {
-                        s = reader.readLine();
-                        if (Debug.D)
-                            Logger.i(LOG_TAG, "data: " + System.currentTimeMillis() + " " + s);
-                        notifySentence(s + "\r\n");
-                        ready = true;
-                        lastRead = SystemClock.uptimeMillis();
-                    } else {
-                        if (Debug.D)
-                            Logger.d(LOG_TAG, "data: not ready " + System.currentTimeMillis());
-                        SystemClock.sleep(500);
-                    }
-                    now = SystemClock.uptimeMillis();
-                }
-            } catch (IOException e) {
-                if (Debug.D)
-                    Logger.e(LOG_TAG, "error while getting data", e);
-            } finally {
-                // cleanly closing everything...
-                this.close();
-                disableIfNeeded();
-            }
-        }
-
-        /**
-         * Write to the connected OutStream.
-         * @param buffer  The bytes to write
-         */
-        public void write( byte[] buffer ) {
-            try {
-                do {
-                    Thread.sleep(100);
-                } while( (enabled) && (!ready) );
-                if ((enabled) && (ready)) {
-                    out.write(buffer);
-                    out.flush();
-                }
-            } catch (IOException e) {
-                if (Debug.D)
-                    Logger.e(LOG_TAG, "Exception during write", e);
-            } catch (InterruptedException e) {
-                if (Debug.D)
-                    Logger.e(LOG_TAG, "Exception during write", e);
-            }
-        }
-        /**
-         * Write to the connected OutStream.
-         * @param buffer  The data to write
-         */
-        public void write( String buffer ) {
-            try {
-                do {
-                    Thread.sleep(100);
-                } while( (enabled) && (!ready) );
-                if ((enabled) && (ready)) {
-                    out2.print(buffer);
-                    out2.flush();
-                }
-            } catch (InterruptedException e) {
-                if (Debug.D)
-                    Logger.e(LOG_TAG, "Exception during write", e);
-            }
-        }
-
-        public void close() {
-            ready = false;
-            try {
-                if (Debug.D)
-                    Logger.d(LOG_TAG, "closing Bluetooth GPS output sream");
-                in.close();
-            } catch (IOException e) {
-                if (Debug.D)
-                    Logger.e(LOG_TAG, "error while closing GPS NMEA output stream", e);
-            } finally {
-                try {
-                    if (Debug.D)
-                        Logger.d(LOG_TAG, "closing Bluetooth GPS input streams");
-                    out2.close();
-                    out.close();
-                } catch (IOException e) {
-                    if (Debug.D)
-                        Logger.e(LOG_TAG, "error while closing GPS input streams", e);
-                } finally {
-                    try {
-                        if (Debug.D)
-                            Logger.d(LOG_TAG, "closing Bluetooth GPS socket");
-                        socket.close();
-                    } catch (IOException e) {
-                        if (Debug.D)
-                            Logger.e(LOG_TAG, "error while closing GPS socket", e);
-                    }
-                }
-            }
-        }
-    }
+    private static BluetoothManager2 bluetoothManager;
 
     private BluetoothSocket gpsSocket;
     private String gpsDeviceAddress;
     private boolean enabled = false;
     private ScheduledExecutorService connectionAndReadingPool;
-    private List<IBluetoothListener> bluetoothListeners = new ArrayList<IBluetoothListener>();
-    private ConnectedGps connectedGps;
+
+    private GPBluetoothDevice connectedBluetoothDevice;
     private int disableReason = 0;
     private Notification connectionProblemNotification;
     private Notification serviceStoppedNotification;
@@ -232,6 +75,16 @@ public enum BluetoothManager2 {
     private int maxConnectionRetries;
     private int nbRetriesRemaining;
     private boolean connected = false;
+
+    private BluetoothManager2() {
+    }
+
+    public static BluetoothManager2 getInstance() {
+        if (bluetoothManager == null) {
+            bluetoothManager = new BluetoothManager2();
+        }
+        return bluetoothManager;
+    }
 
     /**
      * @param callingService
@@ -265,22 +118,6 @@ public enum BluetoothManager2 {
         // appContext.getString(R.string.service_closed_because_connection_problem_notification_title),
         // appContext.getString(R.string.service_closed_because_connection_problem_notification),
         // restartPendingIntent);
-    }
-
-    /**
-     * Notifies the reception of a NMEA sentence from the bluetooth GPS to registered NMEA listeners.
-     * 
-     * @param sentence  the complete NMEA sentence received from the bluetooth GPS (i.e. $....*XY where XY is the checksum)
-     */
-    private void notifySentence( final String sentence ) {
-        if (enabled) {
-            final long timestamp = System.currentTimeMillis();
-            if (sentence != null) {
-                for( final IBluetoothListener listener : bluetoothListeners ) {
-                    listener.onStringDataReceived(timestamp, sentence);
-                }
-            }
-        }
     }
 
     private void setDisableReason( int reasonId ) {
@@ -369,11 +206,12 @@ public enum BluetoothManager2 {
                                                 "current device: " + gpsDevice.getName() + " -- " + gpsDevice.getAddress());
                                     if ((bluetoothAdapter.isEnabled()) && (nbRetriesRemaining > 0)) {
                                         try {
-                                            if (connectedGps != null) {
-                                                connectedGps.close();
+                                            if (connectedBluetoothDevice != null) {
+                                                connectedBluetoothDevice.close();
                                             }
                                             if ((gpsSocket != null)
-                                                    && ((connectedGps == null) || (connectedGps.socket != gpsSocket))) {
+                                                    && ((connectedBluetoothDevice == null) || (connectedBluetoothDevice
+                                                            .getSocket() != gpsSocket))) {
                                                 if (Debug.D)
                                                     Logger.d(LOG_TAG, "trying to close old socket");
                                                 gpsSocket.close();
@@ -420,8 +258,8 @@ public enum BluetoothManager2 {
                                             notificationManager.cancel(R.string.connection_problem_notification_title);
                                             if (Debug.D)
                                                 Logger.i(LOG_TAG, "starting socket reading task");
-                                            connectedGps = new ConnectedGps(gpsSocket);
-                                            connectionAndReadingPool.execute(connectedGps);
+                                            connectedBluetoothDevice = new GPBluetoothDevice(gpsSocket, BluetoothManager2.this);
+                                            connectionAndReadingPool.execute(connectedBluetoothDevice);
                                             if (Debug.D)
                                                 Logger.i(LOG_TAG, "socket reading thread started");
                                         }
@@ -550,10 +388,11 @@ public enum BluetoothManager2 {
                     }
                     if (!connectionAndReadingPool.isTerminated()) {
                         connectionAndReadingPool.shutdownNow();
-                        if (connectedGps != null) {
-                            connectedGps.close();
+                        if (connectedBluetoothDevice != null) {
+                            connectedBluetoothDevice.close();
                         }
-                        if ((gpsSocket != null) && ((connectedGps == null) || (connectedGps.socket != gpsSocket))) {
+                        if ((gpsSocket != null)
+                                && ((connectedBluetoothDevice == null) || (connectedBluetoothDevice.getSocket() != gpsSocket))) {
                             try {
                                 if (Debug.D)
                                     Logger.d(LOG_TAG, "closing Bluetooth GPS socket");
@@ -567,40 +406,9 @@ public enum BluetoothManager2 {
                 }
             };
             new Thread(closeAndShutdown).start();
-            bluetoothListeners.clear();
             if (Debug.D)
                 Logger.d(LOG_TAG, "Bluetooth GPS manager disabled");
         }
-    }
-
-    /**
-     * Adds an NMEA listener.
-     * In fact, it delegates to the NMEA parser. 
-     * 
-     * @see NmeaParser#addNmeaListener(NmeaListener)
-     * @param listener	a {@link NmeaListener} object to register
-     * @return	true if the listener was successfully added
-     */
-    public boolean addListener( IBluetoothListener listener ) {
-        if (!bluetoothListeners.contains(listener)) {
-            if (Debug.D)
-                Logger.d(LOG_TAG, "adding new listener");
-            bluetoothListeners.add(listener);
-        }
-        return true;
-    }
-
-    /**
-     * Removes an NMEA listener.
-     * In fact, it delegates to the NMEA parser. 
-     * 
-     * @see NmeaParser#removeNmeaListener(NmeaListener)
-     * @param listener	a {@link NmeaListener} object to remove 
-     */
-    public void removeListener( IBluetoothListener listener ) {
-        if (Debug.D)
-            Logger.d(LOG_TAG, "removing listener");
-        bluetoothListeners.remove(listener);
     }
 
     /**
@@ -612,13 +420,13 @@ public enum BluetoothManager2 {
         if (Debug.D)
             Logger.d(LOG_TAG, "sending string sentence: " + command);
         if (isEnabled()) {
-            while( (enabled) && ((!connected) || (connectedGps == null) || (!connectedGps.isReady())) ) {
+            while( (enabled) && ((!connected) || (connectedBluetoothDevice == null) || (!connectedBluetoothDevice.isReady())) ) {
                 if (Debug.D)
                     Logger.i(LOG_TAG, "writing thread is not ready");
                 SystemClock.sleep(500);
             }
-            if (isEnabled() && (connectedGps != null)) {
-                connectedGps.write(command);
+            if (isEnabled() && (connectedBluetoothDevice != null)) {
+                connectedBluetoothDevice.write(command);
                 if (Debug.D)
                     Logger.d(LOG_TAG, "sent string sentence: " + command);
             }
@@ -635,13 +443,13 @@ public enum BluetoothManager2 {
         if (Debug.D)
             Logger.d(LOG_TAG, "sending binary sentence");
         if (isEnabled()) {
-            while( (enabled) && ((!connected) || (connectedGps == null) || (!connectedGps.isReady())) ) {
+            while( (enabled) && ((!connected) || (connectedBluetoothDevice == null) || (!connectedBluetoothDevice.isReady())) ) {
                 if (Debug.D)
                     Logger.i(LOG_TAG, "writing thread is not ready");
                 SystemClock.sleep(500);
             }
-            if (isEnabled() && (connectedGps != null)) {
-                connectedGps.write(command);
+            if (isEnabled() && (connectedBluetoothDevice != null)) {
+                connectedBluetoothDevice.write(command);
             }
         }
     }

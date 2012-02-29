@@ -70,7 +70,7 @@
 //     * @author Herbert von Broeuschmeul
 //     *
 //     */
-//    private class ConnectedGps extends Thread {
+//    private class GPBluetoothDevice extends Thread {
 //        /**
 //         * GPS bluetooth socket used for communication. 
 //         */
@@ -93,7 +93,7 @@
 //         */
 //        private boolean ready = false;
 //
-//        public ConnectedGps( BluetoothSocket socket ) {
+//        public GPBluetoothDevice( BluetoothSocket socket ) {
 //            this.socket = socket;
 //            InputStream tmpIn = null;
 //            OutputStream tmpOut = null;
@@ -213,7 +213,7 @@
 //    private boolean enabled = false;
 //    private ScheduledExecutorService connectionAndReadingPool;
 //    private List<IBluetoothListener> bluetoothListeners = new ArrayList<IBluetoothListener>();
-//    private ConnectedGps connectedGps;
+//    private GPBluetoothDevice connectedGps;
 //    private int disableReason = 0;
 //    private Notification connectionProblemNotification;
 //    private Notification serviceStoppedNotification;
@@ -319,7 +319,7 @@
 //                // Log.e(LOG_TAG, "GPS location provider OFF");
 //                // disable(R.string.msg_gps_provider_disabled);
 //            } else {
-//                final BluetoothDevice gpsDevice = bluetoothAdapter.getRemoteDevice(gpsDeviceAddress);
+//                final GPBluetoothDevice gpsDevice = bluetoothAdapter.getRemoteDevice(gpsDeviceAddress);
 //                if (gpsDevice == null) {
 //                    Log.e(LOG_TAG, "GPS device not found");
 //                    disable(R.string.msg_bluetooth_gps_unavaible);
@@ -393,7 +393,7 @@
 //                                            nbRetriesRemaining = 1 + maxConnectionRetries;
 //                                            notificationManager.cancel(R.string.connection_problem_notification_title);
 //                                            Log.v(LOG_TAG, "starting socket reading task");
-//                                            connectedGps = new ConnectedGps(gpsSocket);
+//                                            connectedGps = new GPBluetoothDevice(gpsSocket);
 //                                            connectionAndReadingPool.execute(connectedGps);
 //                                            Log.v(LOG_TAG, "socket reading thread started");
 //                                        }
