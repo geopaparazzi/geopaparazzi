@@ -143,6 +143,27 @@ public class GeoPaparazziActivity extends Activity {
         }
 
         if (resourcesManager == null) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(eu.hydrologis.geopaparazzi.R.string.no_sdcard_use_internal_memory).setCancelable(false)
+                    .setPositiveButton(this.getString(R.string.yes), new DialogInterface.OnClickListener(){
+                        public void onClick( DialogInterface dialog, int id ) {
+                            ResourcesManager.setUseInternalMemory(true);
+                            resourcesManager = ResourcesManager.getInstance(GeoPaparazziActivity.this);
+                            initIfOk();
+                        }
+                    }).setNegativeButton(this.getString(R.string.no), new DialogInterface.OnClickListener(){
+                        public void onClick( DialogInterface dialog, int id ) {
+                            finish();
+                        }
+                    });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        }
+
+    }
+
+    private void initIfOk() {
+        if (resourcesManager == null) {
             Utilities.messageDialog(this, R.string.sdcard_notexist, new Runnable(){
                 public void run() {
                     finish();
@@ -253,6 +274,9 @@ public class GeoPaparazziActivity extends Activity {
         boolean doOsmPref = preferences.getBoolean(Constants.PREFS_KEY_DOOSM, false);
         if (doOsmPref)
             OsmUtilities.handleOsmTagsDownload(this);
+
+        Utilities.toast(this, getString(eu.hydrologis.geopaparazzi.R.string.loaded_project_in)
+                + resourcesManager.getApplicationDir().getAbsolutePath(), Toast.LENGTH_LONG);
     }
 
     private void checkDebugLogger() {

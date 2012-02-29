@@ -433,7 +433,7 @@ public final class R {
         public static final int foreground_nmea_recording_started_notification=0x7f0700a4;
         public static final int foreground_service_started_notification_title=0x7f0700a2;
         public static final int formnotes=0x7f07013f;
-        public static final int geopaparazziactivity_exporting_kmz=0x7f070169;
+        public static final int geopaparazziactivity_exporting_kmz=0x7f07016b;
         public static final int geopapcloud_password_label=0x7f07015a;
         public static final int geopapcloud_preferences=0x7f070158;
         public static final int geopapcloud_server_label=0x7f07015b;
@@ -496,6 +496,7 @@ public final class R {
         public static final int lat=0x7f0700b9;
         public static final int latitude=0x7f07004e;
         public static final int load=0x7f07011d;
+        public static final int loaded_project_in=0x7f070169;
         public static final int loading_data=0x7f07014b;
         public static final int log_distance=0x7f0700bd;
         public static final int log_points=0x7f0700bc;
@@ -552,6 +553,7 @@ public final class R {
         public static final int no=0x7f070038;
         public static final int no_maps_in_list=0x7f070101;
         public static final int no_osm_categories_available=0x7f070141;
+        public static final int no_sdcard_use_internal_memory=0x7f07016a;
         public static final int nogps4google=0x7f0700cb;
         public static final int nogps_data=0x7f0700b2;
         public static final int nogpscoordinate=0x7f0700c4;

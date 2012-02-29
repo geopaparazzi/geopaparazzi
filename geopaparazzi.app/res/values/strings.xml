@@ -278,4 +278,6 @@
     <string name="also_upload_images_in_the_project">Do you also want to upload the images in the project?</string>
     <string name="osm_insert_a_changeset_description">Insert a changeset description</string>
     <string name="set_description">Set description</string>
+    <string name="loaded_project_in">Loaded project in:</string>
+    <string name="no_sdcard_use_internal_memory">No sdcard seems to be available (check if it is not mounted on a PC). Do you want to use the device\'s internal memory instead? Please note that in this case the map view will not show any map for space reasons.</string>
 </resources>

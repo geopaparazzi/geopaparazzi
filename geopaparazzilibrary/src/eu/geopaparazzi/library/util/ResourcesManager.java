@@ -60,6 +60,11 @@ public class ResourcesManager implements Serializable {
 
     private String applicationLabel;
 
+    private static boolean useInternalMemory = false;
+    public static void setUseInternalMemory( boolean useInternalMemory ) {
+        ResourcesManager.useInternalMemory = useInternalMemory;
+    }
+
     /**
      * The getter for the {@link ResourcesManager} singleton.
      * 
@@ -141,6 +146,8 @@ public class ResourcesManager implements Serializable {
             if (mExternalStorageAvailable && mExternalStorageWriteable) {
                 File sdcardDir = Environment.getExternalStorageDirectory();
                 applicationDir = new File(sdcardDir, applicationLabel);
+            } else if (useInternalMemory) {
+                applicationDir = context.getDir(applicationLabel, Context.MODE_PRIVATE);
             } else {
                 throw new IOException();
             }
