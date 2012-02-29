@@ -112,12 +112,14 @@ public class GeoPaparazziActivity extends Activity {
 
     protected void onResume() {
         super.onResume();
-        checkActionBar();
+        if (resourcesManager != null)
+            checkActionBar();
     }
 
     public void onWindowFocusChanged( boolean hasFocus ) {
         super.onWindowFocusChanged(hasFocus);
-        checkActionBar();
+        if (resourcesManager != null)
+            checkActionBar();
     }
 
     private void checkActionBar() {
@@ -132,11 +134,6 @@ public class GeoPaparazziActivity extends Activity {
     }
 
     private void init() {
-        setContentView(R.layout.geopap_main);
-
-        gpsManager = GpsManager.getInstance(this);
-        sensorManager = SensorsManager.getInstance(this);
-
         Object stateObj = getLastNonConfigurationInstance();
         if (stateObj instanceof ResourcesManager) {
             resourcesManager = (ResourcesManager) stateObj;
@@ -144,6 +141,7 @@ public class GeoPaparazziActivity extends Activity {
             ResourcesManager.resetManager();
             resourcesManager = ResourcesManager.getInstance(this);
         }
+
         if (resourcesManager == null) {
             Utilities.messageDialog(this, R.string.sdcard_notexist, new Runnable(){
                 public void run() {
@@ -152,6 +150,10 @@ public class GeoPaparazziActivity extends Activity {
             });
             return;
         }
+        setContentView(R.layout.geopap_main);
+
+        gpsManager = GpsManager.getInstance(this);
+        sensorManager = SensorsManager.getInstance(this);
 
         checkActionBar();
 
@@ -479,6 +481,11 @@ public class GeoPaparazziActivity extends Activity {
         if (Debug.D)
             Logger.d(this, "Finish called!"); //$NON-NLS-1$
         // save last location just in case
+        if (resourcesManager == null) {
+            super.finish();
+            return;
+        }
+
         GpsLocation loc = gpsManager.getLocation();
         if (loc != null) {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
