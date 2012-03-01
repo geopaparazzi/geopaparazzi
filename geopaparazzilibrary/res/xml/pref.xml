@@ -34,6 +34,7 @@
 		android:title="@string/pref_start_gps_title"
 		android:summaryOn="@string/pref_start_gps_summary_on"
 		android:summaryOff="@string/pref_start_gps_summary_off" />
+	<!-- LOCATION PROVIDER OPTIONS
 	<PreferenceScreen
 		android:dependency="@string/pref_start_gps_key"
 		android:shouldDisableView="true"
@@ -68,6 +69,8 @@
 			android:inputType="numberDecimal"
 			android:summary="@string/pref_connection_retries_summary" />
 	</PreferenceScreen>
+	 -->
+	 <!--  SIRF OPTIONS
 	<CheckBoxPreference 
 		android:key="@string/pref_sirf_gps_key"
 		android:persistent="true"
@@ -159,6 +162,8 @@
 				android:summaryOff="@string/pref_enable_static_navigation_summary_off" />
 		</PreferenceCategory>
 	</PreferenceScreen>
+	 -->
+	 <!-- OTHERS
 	<CheckBoxPreference
 		android:enabled="true"
 		android:key="@string/pref_recording_key"
@@ -178,4 +183,5 @@
 			android:defaultValue="@string/defaultTrackFilePrefix"
 			android:summary="@string/pref_trackfile_prefix_summary" />
 	</PreferenceScreen>
+	 -->
 </PreferenceScreen>

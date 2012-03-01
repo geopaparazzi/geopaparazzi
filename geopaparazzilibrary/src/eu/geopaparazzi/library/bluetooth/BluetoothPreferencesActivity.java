@@ -116,16 +116,25 @@ public class BluetoothPreferencesActivity extends PreferenceActivity
         prefDevices.setEntries(entries);
 
         Preference pref = (Preference) findPreference(IBluetoothListener.PREF_TRACK_RECORDING);
-        pref.setEnabled(sharedPref.getBoolean(IBluetoothListener.PREF_START_GPS_PROVIDER, false));
-
+        if (pref != null) {
+            pref.setEnabled(sharedPref.getBoolean(IBluetoothListener.PREF_START_GPS_PROVIDER, false));
+            pref = null;
+        }
         pref = (Preference) findPreference(IBluetoothListener.PREF_MOCK_GPS_NAME);
-        String mockProvider = sharedPref.getString(IBluetoothListener.PREF_MOCK_GPS_NAME, getString(R.string.defaultMockGpsName));
-        pref.setSummary(getString(R.string.pref_mock_gps_name_summary, mockProvider));
+        if (pref != null) {
+            String mockProvider = sharedPref.getString(IBluetoothListener.PREF_MOCK_GPS_NAME,
+                    getString(R.string.defaultMockGpsName));
+            pref.setSummary(getString(R.string.pref_mock_gps_name_summary, mockProvider));
+            pref = null;
+        }
 
         pref = (Preference) findPreference(IBluetoothListener.PREF_CONNECTION_RETRIES);
-        String maxConnRetries = sharedPref.getString(IBluetoothListener.PREF_CONNECTION_RETRIES,
-                getString(R.string.defaultConnectionRetries));
-        pref.setSummary(getString(R.string.pref_connection_retries_summary, maxConnRetries));
+        if (pref != null) {
+            String maxConnRetries = sharedPref.getString(IBluetoothListener.PREF_CONNECTION_RETRIES,
+                    getString(R.string.defaultConnectionRetries));
+            pref.setSummary(getString(R.string.pref_connection_retries_summary, maxConnRetries));
+            pref = null;
+        }
 
         /*
          * do not handle location provider, we do not do gps
