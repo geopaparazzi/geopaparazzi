@@ -10,19 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.bluetooth.BluetoothSocket;
-import android.location.GpsStatus.NmeaListener;
 import android.os.SystemClock;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
-     * A utility class used to manage the communication with the bluetooth GPS whn the connection has been established.
-     * It is used to read NMEA data from the GPS or to send SIRF III binary commands or SIRF III NMEA commands to the GPS.
-     * You should run the main read loop in one thread and send the commands in a separate one.   
-     * 
-     *
-     */
-/**
+ * A utility class used to manage the communication with the bluetooth GPS whn the connection has been established.
+ * It is used to read NMEA data from the GPS or to send SIRF III binary commands or SIRF III NMEA commands to the GPS.
+ * You should run the main read loop in one thread and send the commands in a separate one.   
  * 
  * @author Herbert von Broeuschmeul
  * @author Andrea Antonello (www.hydrologis.com)
@@ -46,7 +41,7 @@ public class GPBluetoothDevice extends Thread {
      * GPS output stream to which we send data (SIRF III NMEA commands). 
      */
     private final PrintStream out2;
-    
+
     /**
      * A boolean which indicates if the GPS is ready to receive data. 
      * In fact we consider that the GPS is ready when it begins to sends data...
@@ -71,8 +66,7 @@ public class GPBluetoothDevice extends Thread {
             }
         } catch (IOException e) {
             if (Debug.D)
-                if (Debug.D)
-                    Logger.e(LOG_TAG, "error while getting socket streams", e);
+                Logger.e(LOG_TAG, "error while getting socket streams", e);
         }
         in = tmpIn;
         out = tmpOut;
@@ -106,9 +100,9 @@ public class GPBluetoothDevice extends Thread {
                     ready = true;
                     lastRead = SystemClock.uptimeMillis();
                 } else {
-                    if (Debug.D)
-                        Logger.d(LOG_TAG, "data: not ready " + System.currentTimeMillis());
-                    SystemClock.sleep(500);
+                    // if (Debug.D)
+                    // Logger.d(LOG_TAG, "data: not ready " + System.currentTimeMillis());
+                    SystemClock.sleep(50);
                 }
                 now = SystemClock.uptimeMillis();
             }
