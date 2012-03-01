@@ -94,8 +94,8 @@ public class GPBluetoothDevice extends Thread {
             while( (enabled) && (now < lastRead + 5000) ) {
                 if (reader.ready()) {
                     s = reader.readLine();
-                    if (Debug.D)
-                        Logger.i(LOG_TAG, "data: " + System.currentTimeMillis() + " " + s);
+                    // if (Debug.D)
+                    // Logger.i(LOG_TAG, "data: " + System.currentTimeMillis() + " " + s);
                     notifySentence(s + "\r\n");
                     ready = true;
                     lastRead = SystemClock.uptimeMillis();
