@@ -20,26 +20,21 @@
 
 package eu.geopaparazzi.library.bluetooth;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
-import android.location.GpsStatus.NmeaListener;
+import android.content.Intent;
 import android.os.SystemClock;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.util.debug.Debug;
@@ -61,8 +56,8 @@ public class BluetoothManager2 implements BluetoothNotificationHandler {
 
     private static BluetoothManager2 bluetoothManager;
 
-    private BluetoothSocket gpsSocket;
-    private String gpsDeviceAddress;
+    private BluetoothSocket bluetoothSocket;
+    private String deviceAddress;
     private boolean enabled = false;
     private ScheduledExecutorService connectionAndReadingPool;
 
@@ -87,69 +82,84 @@ public class BluetoothManager2 implements BluetoothNotificationHandler {
     }
 
     /**
-     * @param callingService
-     * @param deviceAddress
-     * @param maxRetries
+     * Set device parameters.
+     * 
+     * Note that this has to be called before doing anything else.
+     * 
+     * @param context the {@link Context} to use.
+     * @param deviceAddress the address of the device.
+     * @param maxRetries maximum number of tries to do for connection.
      */
-    public void connect( Context context, String deviceAddress, int maxRetries ) {
-        this.gpsDeviceAddress = deviceAddress;
+    public void setParameters( Context context, String deviceAddress, int maxRetries ) {
+        this.deviceAddress = deviceAddress;
         this.maxConnectionRetries = maxRetries;
         this.nbRetriesRemaining = 1 + maxRetries;
         this.appContext = context;
-        // sharedPreferences = PreferenceManager.getDefaultSharedPreferences(callingService);
-        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // connectionProblemNotification = new Notification();
-        // connectionProblemNotification.icon = R.drawable.ic_stat_notify;
-        // Intent stopIntent = new Intent(BluetoothProviderService.ACTION_STOP_GPS_PROVIDER);
-        // // PendingIntent stopPendingIntent = PendingIntent.getService(appContext, 0, stopIntent,
-        // // PendingIntent.FLAG_CANCEL_CURRENT);
-        // PendingIntent stopPendingIntent = PendingIntent.getService(appContext, 0, stopIntent,
-        // PendingIntent.FLAG_CANCEL_CURRENT);
-        // connectionProblemNotification.contentIntent = stopPendingIntent;
-        //
-        // serviceStoppedNotification = new Notification();
-        // serviceStoppedNotification.icon = R.drawable.ic_stat_notify;
-        // Intent restartIntent = new Intent(BluetoothProviderService.ACTION_START_GPS_PROVIDER);
-        // PendingIntent restartPendingIntent = PendingIntent.getService(appContext, 0,
-        // restartIntent,
-        // PendingIntent.FLAG_CANCEL_CURRENT);
-        // serviceStoppedNotification.setLatestEventInfo(appContext,
-        // appContext.getString(R.string.service_closed_because_connection_problem_notification_title),
-        // appContext.getString(R.string.service_closed_because_connection_problem_notification),
-        // restartPendingIntent);
+        prepare();
     }
 
+    /**
+     * Prepare notifications and intents for start and stop of the device.
+     */
+    private void prepare() {
+        notificationManager = (NotificationManager) appContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        connectionProblemNotification = new Notification();
+        connectionProblemNotification.icon = R.drawable.ic_stat_notify;
+        Intent stopIntent = new Intent(IBluetoothListener.ACTION_STOP_GPS_PROVIDER);
+        PendingIntent stopPendingIntent = PendingIntent.getService(appContext, 0, stopIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        connectionProblemNotification.contentIntent = stopPendingIntent;
+
+        serviceStoppedNotification = new Notification();
+        serviceStoppedNotification.icon = R.drawable.ic_stat_notify;
+        Intent restartIntent = new Intent(IBluetoothListener.ACTION_START_GPS_PROVIDER);
+        PendingIntent restartPendingIntent = PendingIntent.getService(appContext, 0, restartIntent,
+                PendingIntent.FLAG_CANCEL_CURRENT);
+        serviceStoppedNotification.setLatestEventInfo(appContext,
+                appContext.getString(R.string.service_closed_because_connection_problem_notification_title),
+                appContext.getString(R.string.service_closed_because_connection_problem_notification), restartPendingIntent);
+    }
+
+    /**
+     * Set the reason for stopping.
+     * 
+     * @param reasonId the message id of the reason.
+     */
     private void setDisableReason( int reasonId ) {
         disableReason = reasonId;
     }
 
     /**
-     * @return
+     * Get the reason for stopping.
+     * 
+     * @return the message id of the reason.
      */
     public int getDisableReason() {
         return disableReason;
     }
 
     /**
-     * @return true if the bluetooth GPS is enabled
+     * Checks if the device is enabled.
+     * 
+     * @return <code>true</code> if the bluetooth device is enabled.
      */
     public synchronized boolean isEnabled() {
         return enabled;
     }
 
     /**
-     * Enables the bluetooth GPS Provider.
-     * @return
+     * Enables the bluetooth device.
+     * 
+     * @return <code>true</code> if everything went well.
      */
     public synchronized boolean enable() {
         notificationManager.cancel(R.string.service_closed_because_connection_problem_notification_title);
         if (!enabled) {
             if (Debug.D)
-                Logger.d(LOG_TAG, "enabling Bluetooth GPS manager");
+                Logger.d(LOG_TAG, "enabling Bluetooth device manager");
+
             final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             if (bluetoothAdapter == null) {
-                // Device does not support Bluetooth
                 if (Debug.D)
                     Logger.w(LOG_TAG, "Device does not support Bluetooth");
                 disable(R.string.msg_bluetooth_unsupported);
@@ -171,7 +181,7 @@ public class BluetoothManager2 implements BluetoothNotificationHandler {
                 // if(Debug.D) Logger.e(LOG_TAG, "GPS location provider OFF");
                 // disable(R.string.msg_gps_provider_disabled);
             } else {
-                final BluetoothDevice gpsDevice = bluetoothAdapter.getRemoteDevice(gpsDeviceAddress);
+                final BluetoothDevice gpsDevice = bluetoothAdapter.getRemoteDevice(deviceAddress);
                 if (gpsDevice == null) {
                     if (Debug.D)
                         Logger.w(LOG_TAG, "GPS device not found");
@@ -182,16 +192,14 @@ public class BluetoothManager2 implements BluetoothNotificationHandler {
                     try {
                         // gpsSocket =
                         // gpsDevice.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
-
                         // UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-                        Method m = gpsDevice.getClass().getMethod("createRfcommSocket", new Class[]{int.class});
-                        gpsSocket = (BluetoothSocket) m.invoke(gpsDevice, 1);
+                        bluetoothSocket = createSocket(gpsDevice);
                     } catch (Exception e) {
                         if (Debug.D)
                             Logger.e(LOG_TAG, "Error during connection", e);
-                        gpsSocket = null;
+                        bluetoothSocket = null;
                     }
-                    if (gpsSocket == null) {
+                    if (bluetoothSocket == null) {
                         if (Debug.D)
                             Logger.w(LOG_TAG, "Error while establishing connection: no socket");
                         disable(R.string.msg_bluetooth_gps_unavaible);
@@ -209,12 +217,12 @@ public class BluetoothManager2 implements BluetoothNotificationHandler {
                                             if (connectedBluetoothDevice != null) {
                                                 connectedBluetoothDevice.close();
                                             }
-                                            if ((gpsSocket != null)
+                                            if ((bluetoothSocket != null)
                                                     && ((connectedBluetoothDevice == null) || (connectedBluetoothDevice
-                                                            .getSocket() != gpsSocket))) {
+                                                            .getSocket() != bluetoothSocket))) {
                                                 if (Debug.D)
                                                     Logger.d(LOG_TAG, "trying to close old socket");
-                                                gpsSocket.close();
+                                                bluetoothSocket.close();
                                             }
                                         } catch (IOException e) {
                                             if (Debug.D)
@@ -226,13 +234,13 @@ public class BluetoothManager2 implements BluetoothNotificationHandler {
                                             // .fromString("00001101-0000-1000-8000-00805F9B34FB"));
                                             Method m = gpsDevice.getClass().getMethod("createRfcommSocket",
                                                     new Class[]{int.class});
-                                            gpsSocket = (BluetoothSocket) m.invoke(gpsDevice, 1);
+                                            bluetoothSocket = (BluetoothSocket) m.invoke(gpsDevice, 1);
                                         } catch (Exception e) {
                                             if (Debug.D)
                                                 Logger.e(LOG_TAG, "Error during connection", e);
-                                            gpsSocket = null;
+                                            bluetoothSocket = null;
                                         }
-                                        if (gpsSocket == null) {
+                                        if (bluetoothSocket == null) {
                                             if (Debug.D)
                                                 Logger.w(LOG_TAG, "Error while establishing connection: no socket");
                                             disable(R.string.msg_bluetooth_gps_unavaible);
@@ -246,7 +254,7 @@ public class BluetoothManager2 implements BluetoothNotificationHandler {
                                             // until it succeeds or throws an exception
                                             if (Debug.D)
                                                 Logger.i(LOG_TAG, "connecting to socket");
-                                            gpsSocket.connect();
+                                            bluetoothSocket.connect();
                                             if (Debug.D)
                                                 Logger.d(LOG_TAG, "connected to socket");
                                             connected = true;
@@ -258,7 +266,9 @@ public class BluetoothManager2 implements BluetoothNotificationHandler {
                                             notificationManager.cancel(R.string.connection_problem_notification_title);
                                             if (Debug.D)
                                                 Logger.i(LOG_TAG, "starting socket reading task");
-                                            connectedBluetoothDevice = new GPBluetoothDevice(gpsSocket, BluetoothManager2.this);
+                                            connectedBluetoothDevice = new GPBluetoothDevice(bluetoothSocket,
+                                                    BluetoothManager2.this);
+                                            connectedBluetoothDevice.setEnabled(true);
                                             connectionAndReadingPool.execute(connectedBluetoothDevice);
                                             if (Debug.D)
                                                 Logger.i(LOG_TAG, "socket reading thread started");
@@ -279,6 +289,7 @@ public class BluetoothManager2 implements BluetoothNotificationHandler {
                                 }
                             }
                         };
+
                         this.enabled = true;
                         if (Debug.D)
                             Logger.d(LOG_TAG, "Bluetooth GPS manager enabled");
@@ -295,6 +306,21 @@ public class BluetoothManager2 implements BluetoothNotificationHandler {
             }
         }
         return this.enabled;
+    }
+
+    /**
+     * Create the rfcomm socket.
+     * 
+     * @param bluetoothDevice
+     * @return the created socket or <code>null</code>.
+     * @throws NoSuchMethodException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
+    private BluetoothSocket createSocket( final BluetoothDevice bluetoothDevice ) throws NoSuchMethodException,
+            IllegalAccessException, InvocationTargetException {
+        Method m = bluetoothDevice.getClass().getMethod("createRfcommSocket", new Class[]{int.class});
+        return (BluetoothSocket) m.invoke(bluetoothDevice, 1);
     }
 
     /**
@@ -351,6 +377,17 @@ public class BluetoothManager2 implements BluetoothNotificationHandler {
     }
 
     /**
+     * Returns the {@link GPBluetoothDevice}. 
+     * 
+     * <p>Can be used to attach listeners to the device.
+     * 
+     * @return the device or <code>null</code>.
+     */
+    public GPBluetoothDevice getConnectedBluetoothDevice() {
+        return connectedBluetoothDevice;
+    }
+
+    /**
      * Disables the bluetooth GPS provider.
      * 
      * It will: 
@@ -362,6 +399,9 @@ public class BluetoothManager2 implements BluetoothNotificationHandler {
      * If the bluetooth provider is closed because of a problem, a notification is displayed.
      */
     public synchronized void disable() {
+        if (!enabled) {
+            return;
+        }
         notificationManager.cancel(R.string.connection_problem_notification_title);
         if (getDisableReason() != 0) {
             serviceStoppedNotification.when = System.currentTimeMillis();
@@ -376,6 +416,7 @@ public class BluetoothManager2 implements BluetoothNotificationHandler {
         if (enabled) {
             if (Debug.D)
                 Logger.d(LOG_TAG, "disabling Bluetooth GPS manager");
+            connectedBluetoothDevice.setEnabled(false);
             enabled = false;
             connectionAndReadingPool.shutdown();
             Runnable closeAndShutdown = new Runnable(){
@@ -391,12 +432,12 @@ public class BluetoothManager2 implements BluetoothNotificationHandler {
                         if (connectedBluetoothDevice != null) {
                             connectedBluetoothDevice.close();
                         }
-                        if ((gpsSocket != null)
-                                && ((connectedBluetoothDevice == null) || (connectedBluetoothDevice.getSocket() != gpsSocket))) {
+                        if ((bluetoothSocket != null)
+                                && ((connectedBluetoothDevice == null) || (connectedBluetoothDevice.getSocket() != bluetoothSocket))) {
                             try {
                                 if (Debug.D)
                                     Logger.d(LOG_TAG, "closing Bluetooth GPS socket");
-                                gpsSocket.close();
+                                bluetoothSocket.close();
                             } catch (IOException closeException) {
                                 if (Debug.D)
                                     Logger.e(LOG_TAG, "error while closing socket", closeException);

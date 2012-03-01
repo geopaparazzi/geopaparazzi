@@ -20,9 +20,13 @@ import eu.geopaparazzi.library.util.debug.Logger;
      * It is used to read NMEA data from the GPS or to send SIRF III binary commands or SIRF III NMEA commands to the GPS.
      * You should run the main read loop in one thread and send the commands in a separate one.   
      * 
-     * @author Herbert von Broeuschmeul
      *
      */
+/**
+ * 
+ * @author Herbert von Broeuschmeul
+ * @author Andrea Antonello (www.hydrologis.com)
+ */
 @SuppressWarnings("nls")
 public class GPBluetoothDevice extends Thread {
     private static final String LOG_TAG = "GPBluetoothDevice";
@@ -42,6 +46,7 @@ public class GPBluetoothDevice extends Thread {
      * GPS output stream to which we send data (SIRF III NMEA commands). 
      */
     private final PrintStream out2;
+    
     /**
      * A boolean which indicates if the GPS is ready to receive data. 
      * In fact we consider that the GPS is ready when it begins to sends data...
@@ -118,7 +123,7 @@ public class GPBluetoothDevice extends Thread {
     }
 
     /**
-     * Notifies the reception of a NMEA sentence from the bluetooth GPS to registered NMEA listeners.
+     * Notifies the reception of a string from the bluetooth device to registered {@link IBluetoothListener}s.
      * 
      * @param sentence  the complete NMEA sentence received from the bluetooth GPS (i.e. $....*XY where XY is the checksum)
      */
@@ -135,7 +140,8 @@ public class GPBluetoothDevice extends Thread {
 
     /**
      * Write to the connected OutStream.
-     * @param buffer  The bytes to write
+     * 
+     * @param buffer the bytes to write.
      */
     public void write( byte[] buffer ) {
         try {
@@ -154,9 +160,11 @@ public class GPBluetoothDevice extends Thread {
                 Logger.e(LOG_TAG, "Exception during write", e);
         }
     }
+
     /**
      * Write to the connected OutStream.
-     * @param buffer  The data to write
+     * 
+     * @param buffer the data to write.
      */
     public void write( String buffer ) {
         try {
@@ -173,6 +181,9 @@ public class GPBluetoothDevice extends Thread {
         }
     }
 
+    /**
+     * closing the connection to the device.
+     */
     public void close() {
         ready = false;
         try {
@@ -206,32 +217,25 @@ public class GPBluetoothDevice extends Thread {
     }
 
     /**
-     * Adds an NMEA listener.
-     * In fact, it delegates to the NMEA parser. 
+     * Adds an {@link IBluetoothListener}.
      * 
-     * @see NmeaParser#addNmeaListener(NmeaListener)
-     * @param listener  a {@link NmeaListener} object to register
-     * @return  true if the listener was successfully added
+     * @param listener the listener to add.
+     * @return true if the listener was added.
      */
     public boolean addListener( IBluetoothListener listener ) {
         if (!bluetoothListeners.contains(listener)) {
-            if (Debug.D)
-                Logger.d(LOG_TAG, "adding new listener");
             bluetoothListeners.add(listener);
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**
-     * Removes an NMEA listener.
-     * In fact, it delegates to the NMEA parser. 
+     * Removes an {@link IBluetoothListener}.
      * 
-     * @see NmeaParser#removeNmeaListener(NmeaListener)
-     * @param listener  a {@link NmeaListener} object to remove 
+     * @param listener the listener to remove.
      */
     public void removeListener( IBluetoothListener listener ) {
-        if (Debug.D)
-            Logger.d(LOG_TAG, "removing listener");
         bluetoothListeners.remove(listener);
     }
 }

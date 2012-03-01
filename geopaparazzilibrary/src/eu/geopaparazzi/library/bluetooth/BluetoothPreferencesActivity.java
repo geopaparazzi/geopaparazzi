@@ -48,6 +48,7 @@ import eu.geopaparazzi.library.util.Utilities;
  * @author Herbert von Broeuschmeul
  *
  */
+@SuppressWarnings("nls")
 public class BluetoothPreferencesActivity extends PreferenceActivity
         implements
             OnPreferenceChangeListener,
@@ -56,7 +57,7 @@ public class BluetoothPreferencesActivity extends PreferenceActivity
     /**
      * Tag used for log messages
      */
-    private static final String LOG_TAG = "BlueGPS";
+    private static final String LOG_TAG = "BluetoothPreferencesActivity";
 
     private SharedPreferences sharedPref;
     private BluetoothAdapter bluetoothAdapter = null;
@@ -113,27 +114,34 @@ public class BluetoothPreferencesActivity extends PreferenceActivity
         }
         prefDevices.setEntryValues(entryValues);
         prefDevices.setEntries(entries);
+
         Preference pref = (Preference) findPreference(IBluetoothListener.PREF_TRACK_RECORDING);
         pref.setEnabled(sharedPref.getBoolean(IBluetoothListener.PREF_START_GPS_PROVIDER, false));
+
         pref = (Preference) findPreference(IBluetoothListener.PREF_MOCK_GPS_NAME);
         String mockProvider = sharedPref.getString(IBluetoothListener.PREF_MOCK_GPS_NAME, getString(R.string.defaultMockGpsName));
         pref.setSummary(getString(R.string.pref_mock_gps_name_summary, mockProvider));
+
         pref = (Preference) findPreference(IBluetoothListener.PREF_CONNECTION_RETRIES);
         String maxConnRetries = sharedPref.getString(IBluetoothListener.PREF_CONNECTION_RETRIES,
                 getString(R.string.defaultConnectionRetries));
         pref.setSummary(getString(R.string.pref_connection_retries_summary, maxConnRetries));
-        pref = (Preference) findPreference(IBluetoothListener.PREF_GPS_LOCATION_PROVIDER);
-        if (sharedPref.getBoolean(IBluetoothListener.PREF_REPLACE_STD_GPS, true)) {
-            String s = getString(R.string.pref_gps_location_provider_summary);
-            pref.setSummary(s);
-            Log.v(LOG_TAG, "loc. provider: " + s);
-            Log.v(LOG_TAG, "loc. provider: " + pref.getSummary());
-        } else {
-            String s = getString(R.string.pref_mock_gps_name_summary, mockProvider);
-            pref.setSummary(s);
-            Log.v(LOG_TAG, "loc. provider: " + s);
-            Log.v(LOG_TAG, "loc. provider: " + pref.getSummary());
-        }
+
+        /*
+         * do not handle location provider, we do not do gps
+         */
+        // pref = (Preference) findPreference(IBluetoothListener.PREF_GPS_LOCATION_PROVIDER);
+        // if (sharedPref.getBoolean(IBluetoothListener.PREF_REPLACE_STD_GPS, true)) {
+        // String s = getString(R.string.pref_gps_location_provider_summary);
+        // pref.setSummary(s);
+        // Log.v(LOG_TAG, "loc. provider: " + s);
+        // Log.v(LOG_TAG, "loc. provider: " + pref.getSummary());
+        // } else {
+        // String s = getString(R.string.pref_mock_gps_name_summary, mockProvider);
+        // pref.setSummary(s);
+        // Log.v(LOG_TAG, "loc. provider: " + s);
+        // Log.v(LOG_TAG, "loc. provider: " + pref.getSummary());
+        // }
         this.onContentChanged();
     }
 
@@ -145,7 +153,6 @@ public class BluetoothPreferencesActivity extends PreferenceActivity
 
     @Override
     public boolean onPreferenceChange( Preference preference, Object newValue ) {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -158,35 +165,34 @@ public class BluetoothPreferencesActivity extends PreferenceActivity
                 pref.setChecked(val);
             } else if (val) {
                 start();
-                // startService(new Intent(IBluetoothListener.ACTION_START_GPS_PROVIDER));
             } else {
                 stop();
-                // startService(new Intent(IBluetoothListener.ACTION_STOP_GPS_PROVIDER));
             }
-        } else if (IBluetoothListener.PREF_TRACK_RECORDING.equals(key)) {
-            boolean val = sharedPreferences.getBoolean(key, false);
-            CheckBoxPreference pref = (CheckBoxPreference) findPreference(key);
-            if (pref.isChecked() != val) {
-                pref.setChecked(val);
-            } else if (val) {
-                startService(new Intent(IBluetoothListener.ACTION_START_TRACK_RECORDING));
-            } else {
-                startService(new Intent(IBluetoothListener.ACTION_STOP_TRACK_RECORDING));
-            }
-        } else if (IBluetoothListener.PREF_BLUETOOTH_DEVICE.equals(key)) {
-            updateDevicePreferenceSummary();
-        } else if (IBluetoothListener.PREF_SIRF_ENABLE_GLL.equals(key) //
-                || IBluetoothListener.PREF_SIRF_ENABLE_GGA.equals(key)//
-                || IBluetoothListener.PREF_SIRF_ENABLE_RMC.equals(key)//
-                || IBluetoothListener.PREF_SIRF_ENABLE_VTG.equals(key)//
-                || IBluetoothListener.PREF_SIRF_ENABLE_GSA.equals(key)//
-                || IBluetoothListener.PREF_SIRF_ENABLE_GSV.equals(key)//
-                || IBluetoothListener.PREF_SIRF_ENABLE_ZDA.equals(key)//
-                || IBluetoothListener.PREF_SIRF_ENABLE_SBAS.equals(key)//
-                || IBluetoothListener.PREF_SIRF_ENABLE_NMEA.equals(key)//
-                || IBluetoothListener.PREF_SIRF_ENABLE_STATIC_NAVIGATION.equals(key)) {
-            enableSirfFeature(key);
         }
+        // else if (IBluetoothListener.PREF_TRACK_RECORDING.equals(key)) {
+        // boolean val = sharedPreferences.getBoolean(key, false);
+        // CheckBoxPreference pref = (CheckBoxPreference) findPreference(key);
+        // if (pref.isChecked() != val) {
+        // pref.setChecked(val);
+        // } else if (val) {
+        // startService(new Intent(IBluetoothListener.ACTION_START_TRACK_RECORDING));
+        // } else {
+        // startService(new Intent(IBluetoothListener.ACTION_STOP_TRACK_RECORDING));
+        // }
+        // } else if (IBluetoothListener.PREF_BLUETOOTH_DEVICE.equals(key)) {
+        // updateDevicePreferenceSummary();
+        // } else if (IBluetoothListener.PREF_SIRF_ENABLE_GLL.equals(key) //
+        // || IBluetoothListener.PREF_SIRF_ENABLE_GGA.equals(key)//
+        // || IBluetoothListener.PREF_SIRF_ENABLE_RMC.equals(key)//
+        // || IBluetoothListener.PREF_SIRF_ENABLE_VTG.equals(key)//
+        // || IBluetoothListener.PREF_SIRF_ENABLE_GSA.equals(key)//
+        // || IBluetoothListener.PREF_SIRF_ENABLE_GSV.equals(key)//
+        // || IBluetoothListener.PREF_SIRF_ENABLE_ZDA.equals(key)//
+        // || IBluetoothListener.PREF_SIRF_ENABLE_SBAS.equals(key)//
+        // || IBluetoothListener.PREF_SIRF_ENABLE_NMEA.equals(key)//
+        // || IBluetoothListener.PREF_SIRF_ENABLE_STATIC_NAVIGATION.equals(key)) {
+        // enableSirfFeature(key);
+        // }
         this.updateDevicePreferenceList();
     }
 
@@ -196,24 +202,17 @@ public class BluetoothPreferencesActivity extends PreferenceActivity
         String deviceAddress = sharedPreferences.getString(IBluetoothListener.PREF_BLUETOOTH_DEVICE, null);
         int maxConRetries = Integer.parseInt(sharedPreferences.getString(IBluetoothListener.PREF_CONNECTION_RETRIES,
                 this.getString(R.string.defaultConnectionRetries)));
-        BluetoothManager2 gpsManager = BluetoothManager2.getInstance();
-        if (!gpsManager.isEnabled()) {
+        BluetoothManager2 bluetoothDeviceManager = BluetoothManager2.getInstance();
+        if (!bluetoothDeviceManager.isEnabled()) {
             if (BluetoothAdapter.checkBluetoothAddress(deviceAddress)) {
-                // String mockProvider = LocationManager.GPS_PROVIDER;
-                // if (!sharedPreferences.getBoolean(PREF_REPLACE_STD_GPS, true)) {
-                // mockProvider = sharedPreferences.getString(PREF_MOCK_GPS_NAME,
-                // getString(R.string.defaultMockGpsName));
-                // }
-                // gpsManager = new BluetoothManager(this, deviceAddress, maxConRetries);
-                gpsManager.connect(this, deviceAddress, maxConRetries);
-                boolean enabled = gpsManager.enable();
-                // Bundle extras = intent.getExtras();
+                bluetoothDeviceManager.setParameters(this, deviceAddress, maxConRetries);
+
+                boolean enabled = bluetoothDeviceManager.enable();
                 if (sharedPreferences.getBoolean(IBluetoothListener.PREF_START_GPS_PROVIDER, false) != enabled) {
                     edit.putBoolean(IBluetoothListener.PREF_START_GPS_PROVIDER, enabled);
                     edit.commit();
                 }
                 if (enabled) {
-                    // gpsManager.enableMockLocationProvider(mockProvider);
                     Notification notification = new Notification(R.drawable.ic_stat_notify,
                             this.getString(R.string.foreground_gps_provider_started_notification), System.currentTimeMillis());
                     Intent myIntent = new Intent(this, BluetoothPreferencesActivity.class);
@@ -247,14 +246,14 @@ public class BluetoothPreferencesActivity extends PreferenceActivity
         BluetoothManager2.getInstance().disable();
     }
 
-    private void enableSirfFeature( String key ) {
-        CheckBoxPreference pref = (CheckBoxPreference) (findPreference(key));
-        if (pref.isChecked() != sharedPref.getBoolean(key, false)) {
-            pref.setChecked(sharedPref.getBoolean(key, false));
-        } else {
-            Intent configIntent = new Intent(IBluetoothListener.ACTION_CONFIGURE_SIRF_GPS);
-            configIntent.putExtra(key, pref.isChecked());
-            startService(configIntent);
-        }
-    }
+    // private void enableSirfFeature( String key ) {
+    // CheckBoxPreference pref = (CheckBoxPreference) (findPreference(key));
+    // if (pref.isChecked() != sharedPref.getBoolean(key, false)) {
+    // pref.setChecked(sharedPref.getBoolean(key, false));
+    // } else {
+    // Intent configIntent = new Intent(IBluetoothListener.ACTION_CONFIGURE_SIRF_GPS);
+    // configIntent.putExtra(key, pref.isChecked());
+    // startService(configIntent);
+    // }
+    // }
 }

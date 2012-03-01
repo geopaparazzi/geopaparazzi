@@ -6,6 +6,7 @@ package eu.geopaparazzi.library.bluetooth;
  * @author Andrea Antonello (www.hydrologis.com)
  *
  */
+@SuppressWarnings("nls")
 public interface IBluetoothListener {
     public static final String PREF_START_GPS_PROVIDER = "startGps";
     public static final String PREF_GPS_LOCATION_PROVIDER = "gpsLocationProviderKey";
