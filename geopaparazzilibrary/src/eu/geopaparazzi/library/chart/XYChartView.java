@@ -257,6 +257,10 @@ public class XYChartView extends View implements ChartChangeListener, ChartProgr
      * @param xyDataset the dataset to draw.
      */
     public void setDataset( XYDataset xyDataset, String title, String xLabel, String yLabel ) {
+        if (xyDataset == null) {
+            xyDataset = createEmptyDataset();
+        }
+
         chart.setTitle(title);
         XYPlot plot = (XYPlot) chart.getPlot();
         plot.setDataset(xyDataset);
