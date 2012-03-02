@@ -23,9 +23,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import eu.geopaparazzi.library.network.NetworkUtilities;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity;
+import eu.geopaparazzi.library.webproject.WebProjectsListActivity;
 import eu.hydrologis.geopaparazzi.R;
 
 /**
@@ -49,26 +52,17 @@ public class ImportActivity extends Activity {
         cloudImportButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
                 final ImportActivity context = ImportActivity.this;
-                Utilities.messageDialog(context, "Not implemented yet", null); //$NON-NLS-1$
 
-                // if (!NetworkUtilities.isNetworkAvailable(context)) {
-                // Utilities.messageDialog(context,
-                // context.getString(R.string.available_only_with_network), null);
-                // return;
-                // }
-                //
-                // SharedPreferences preferences =
-                // PreferenceManager.getDefaultSharedPreferences(context);
-                //                final String user = preferences.getString(PREF_KEY_USER, ""); //$NON-NLS-1$
-                //                final String pwd = preferences.getString(PREF_KEY_PWD, ""); //$NON-NLS-1$
-                //                final String serverUrl = preferences.getString(PREF_KEY_SERVER, ""); //$NON-NLS-1$
-                //
-                // if (user.length() == 0 || pwd.length() == 0 || serverUrl.length() == 0) {
-                // Utilities.messageDialog(context, R.string.error_set_cloud_settings, null);
-                // return;
-                // }
-                //
-                // importFromCloud(context, serverUrl, user, pwd);
+                if (!NetworkUtilities.isNetworkAvailable(context)) {
+                    Utilities.messageDialog(context, context.getString(R.string.available_only_with_network), null);
+                    return;
+                }
+
+                Intent browseIntent = new Intent(ImportActivity.this, WebProjectsListActivity.class);
+                browseIntent.putExtra(LibraryConstants.PREFS_KEY_URL, "test");
+                browseIntent.putExtra(LibraryConstants.PREFS_KEY_USER, "dummyuser");
+                browseIntent.putExtra(LibraryConstants.PREFS_KEY_PWD, "dummypwd");
+                startActivity(browseIntent);
             }
         });
     }

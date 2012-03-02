@@ -17,6 +17,9 @@
  */
 package eu.geopaparazzi.library.webproject;
 
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_LONGNAME;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_SHORTNAME;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,8 +29,13 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.Context;
 import android.content.res.AssetManager;
+import eu.geopaparazzi.library.forms.TagsManager.TagObject;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.CompressionUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
@@ -178,11 +186,39 @@ public enum WebProjectManager {
      * 
      * @param json the json string.
      * @return the list of {@link Webproject}.
+     * @throws JSONException 
      */
-    public static List<Webproject> json2WebprojectsList( String json ) {
+    public static List<Webproject> json2WebprojectsList( String json ) throws Exception {
+        List<Webproject> wpList = new ArrayList<Webproject>();
 
-        // TODO
-        return new ArrayList<Webproject>();
+        JSONArray tagArrayObj = new JSONArray(json);
+        int tagsNum = tagArrayObj.length();
+        if (tagsNum != 2) {
+            throw new IOException("Two tags expected");
+        }
+        JSONObject errorObject = tagArrayObj.getJSONObject(0);
+        JSONObject projectsObject = tagArrayObj.getJSONObject(1);
+        JSONArray jsonArray = projectsObject.getJSONArray("projects");
+        int projectNum = jsonArray.length();
+        for( int i = 0; i < projectNum; i++ ) {
+            JSONObject projectObject = tagArrayObj.getJSONObject(i);
+            String id = projectObject.getString("id");
+            String title = projectObject.getString("title");
+            String date = projectObject.getString("date");
+            String author = projectObject.getString("author");
+            String name = projectObject.getString("name");
+            String size = projectObject.getString("size");
+
+            Webproject wp = new Webproject();
+            wp.author = author;
+            wp.date = date;
+            wp.name = name;
+            wp.title = title;
+            wp.id = Long.parseLong(id);
+            wp.size = Long.parseLong(size);
+            wpList.add(wp);
+        }
+        return wpList;
     }
 
 }
