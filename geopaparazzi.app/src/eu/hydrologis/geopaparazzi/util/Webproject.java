@@ -51,4 +51,29 @@ public class Webproject {
      */
     public String date;
 
+    /**
+     * Checks if the project info match the supplied string.
+     * 
+     * @param pattern the pattern to match.
+     * @return <code>true</code> if the pattern matches any info.
+     */
+    public boolean matches( String pattern ) {
+        pattern = pattern.toLowerCase();
+        if (name.toLowerCase().contains(pattern)) {
+            return true;
+        }
+        if (title.toLowerCase().contains(pattern)) {
+            return true;
+        }
+        if (author.toLowerCase().contains(pattern)) {
+            return true;
+        }
+        if (date.toLowerCase().contains(pattern)) {
+            return true;
+        }
+        if (String.valueOf(id).toLowerCase().contains(pattern)) {
+            return true;
+        }
+        return false;
+    }
 }
