@@ -116,7 +116,7 @@ public class WebProjectsListActivity extends ListActivity {
 
     private void filterList( String filterText ) {
         if (Debug.D)
-            Logger.d(this, "filter bookmarks list"); //$NON-NLS-1$
+            Logger.d(this, "filter projects list"); //$NON-NLS-1$
 
         projectListToLoad.clear();
         for( Webproject project : projectList ) {

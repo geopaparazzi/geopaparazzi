@@ -26,7 +26,6 @@
     <string name="notesaved">Note successfully saved!</string>
     <string name="notenonsaved">An error occurred while saving the Note!</string>
     <string name="notecancel">Note not saved as requested by user.</string>
-    
     <string name="longitude">longitude</string>
     <string name="latitude">latitude</string>
     <string name="askcoord">Please insert the coordinates to go to</string>
@@ -34,12 +33,11 @@
     <string name="wrongLatitude">Latitude has to be a number between -90 and 90.</string>
     <string name="okcoord">use coord</string>
     <string name="message_sent">Message sent</string>
-    
     <string name="check_valid_field">Please check that the field \"{0}\" is valid.</string>
-    
     <string name="select_dotdot">Select...</string>
     <string name="type_to_filter">type to filter</string>
-    
+    <string name="webprojects_list_title">Remote Projects List</string>
+
     <!-- bluetooth stuff -->
     <string name="pref_start_gps_title">Start/Stop GPS</string>
     <string name="pref_start_gps_summary_off">Bluetooth GPS is off</string>
@@ -66,10 +64,9 @@
     <string name="pref_trackfile_directory_title">Trackfiles directory</string>
     <string name="pref_trackfile_directory_summary">Select the directory for the track files</string>
     <string name="pref_bluetooth_device_title">Choose Bluetooth GPS</string>
-    <string name="pref_bluetooth_device_summary">"Current device: %s"</string>    
+    <string name="pref_bluetooth_device_summary">"Current device: %s"</string>
     <string name="pref_about_title">About</string>
-    <string name="pref_about_summary"></string>    
-
+    <string name="pref_about_summary"></string>
     <string name="pref_sirf_gps_title">SiRF GPS</string>
     <string name="pref_sirf_gps_summary_off">"Use SiRF Options"</string>
     <string name="pref_sirf_gps_summary_on">"Don't SiRF Options"</string>
@@ -105,7 +102,6 @@
     <string name="pref_enable_static_navigation_title">Static Navigation</string>
     <string name="pref_enable_static_navigation_summary_off">Static Navigation disabled</string>
     <string name="pref_enable_static_navigation_summary_on">Static Navigation enabled</string>
-
     <string name="msg_gps_provider_started">Bluetooth GPS... started</string>
     <string name="msg_gps_provider_stopped">Bluetooth GPS... stopped</string>
     <string name="msg_gps_provider_already_started">Bluetooth GPS... is already on</string>
@@ -123,11 +119,13 @@
     <string name="foreground_gps_provider_started_notification">BlueGps service started</string>
     <string name="foreground_nmea_recording_started_notification">BlueGps NMEA recording service started</string>
     <string name="connection_problem_notification_title">BlueGps: connection problem</string>
+
     <plurals name="connection_problem_notification">
         <item quantity="one">Will retry one more time before closing</item>
         <item quantity="other">Will retry %d more times before closing</item>
     </plurals>
+
     <string name="service_closed_because_connection_problem_notification_title">BlueGps stopped</string>
     <string name="service_closed_because_connection_problem_notification">"Reason: %s"</string>
-    
+
 </resources>
