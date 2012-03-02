@@ -33,7 +33,6 @@ import javax.net.ssl.HttpsURLConnection;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -289,27 +288,21 @@ public class NetworkUtilities {
         if (user != null && password != null) {
             httpGet.addHeader("Authorization", getB64Auth(user, password));
         }
-        try {
-            HttpResponse response = client.execute(httpGet);
-            StatusLine statusLine = response.getStatusLine();
-            int statusCode = statusLine.getStatusCode();
-            if (statusCode == 200) {
-                HttpEntity entity = response.getEntity();
-                InputStream content = entity.getContent();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(content));
-                String line;
-                while( (line = reader.readLine()) != null ) {
-                    builder.append(line);
-                }
-            } else {
-                String message = "Failed to download file";
-                Logger.d(TAG, message);
-                throw new IOException(message);
+        HttpResponse response = client.execute(httpGet);
+        StatusLine statusLine = response.getStatusLine();
+        int statusCode = statusLine.getStatusCode();
+        if (statusCode == 200) {
+            HttpEntity entity = response.getEntity();
+            InputStream content = entity.getContent();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(content));
+            String line;
+            while( (line = reader.readLine()) != null ) {
+                builder.append(line);
             }
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } else {
+            String message = "Failed to download file";
+            Logger.d(TAG, message);
+            throw new IOException(message);
         }
         return builder.toString();
     }

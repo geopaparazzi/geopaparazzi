@@ -15,21 +15,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi.util;
+package eu.geopaparazzi.library.webproject;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.PREF_KEY_PWD;
-import static eu.hydrologis.geopaparazzi.util.Constants.PREF_KEY_SERVER;
-import static eu.hydrologis.geopaparazzi.util.Constants.PREF_KEY_USER;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_PWD;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_URL;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_USER;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import android.app.ListActivity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -38,12 +36,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
+import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
-import eu.geopaparazzi.library.webproject.WebProjectManager;
-import eu.geopaparazzi.library.webproject.Webproject;
-import eu.hydrologis.geopaparazzi.R;
 
 /**
  * Web projects listing activity.
@@ -61,7 +57,9 @@ public class WebProjectsListActivity extends ListActivity {
         super.onCreate(icicle);
         setContentView(R.layout.webprojectlist);
 
-        refreshList();
+        final String user = icicle.getString(PREFS_KEY_USER);
+        final String pwd = icicle.getString(PREFS_KEY_PWD);
+        final String url = icicle.getString(PREFS_KEY_URL);
 
         filterText = (EditText) findViewById(R.id.search_box);
         filterText.addTextChangedListener(filterTextWatcher);
@@ -70,25 +68,20 @@ public class WebProjectsListActivity extends ListActivity {
 
             protected String doInBackground( String... params ) {
                 WebProjectsListActivity context = WebProjectsListActivity.this;
-
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-                final String user = preferences.getString(PREF_KEY_USER, ""); //$NON-NLS-1$
-                final String pwd = preferences.getString(PREF_KEY_PWD, ""); //$NON-NLS-1$
-                final String serverUrl = preferences.getString(PREF_KEY_SERVER, ""); //$NON-NLS-1$
-
-                if (user.length() == 0 || pwd.length() == 0 || serverUrl.length() == 0) {
-                    return "settings";
+                try {
+                    projectList = WebProjectManager.INSTANCE.downloadProjectList(context, url, user, pwd);
+                    projectListToLoad = projectList;
+                    return "";
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return "error";
                 }
-
-                projectList = WebProjectManager.INSTANCE.downloadProjectList(context, serverUrl, user, pwd);
-                projectListToLoad = projectList;
-                return "";
             }
 
             protected void onPostExecute( String response ) { // on UI thread!
                 WebProjectsListActivity context = WebProjectsListActivity.this;
-                if (response.equals("settings")) {
-                    Utilities.messageDialog(context, R.string.error_set_cloud_settings, null);
+                if (response.equals("error")) {
+                    Utilities.messageDialog(context, "An error occurred while retrieving the projects list.", null);
                 } else {
                     refreshList();
                 }
@@ -126,7 +119,7 @@ public class WebProjectsListActivity extends ListActivity {
     private void refreshList() {
         if (Debug.D)
             Logger.d(this, "refreshing projects list"); //$NON-NLS-1$
-        arrayAdapter = new ArrayAdapter<Webproject>(this, R.layout.bookmark_row, projectListToLoad){
+        arrayAdapter = new ArrayAdapter<Webproject>(this, R.layout.webprojectsrow, projectListToLoad){
             @Override
             public View getView( int position, View cView, ViewGroup parent ) {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);

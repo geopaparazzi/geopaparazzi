@@ -38,6 +38,7 @@
     <string name="check_valid_field">Please check that the field \"{0}\" is valid.</string>
     
     <string name="select_dotdot">Select...</string>
+    <string name="type_to_filter">type to filter</string>
     
     <!-- bluetooth stuff -->
     <string name="pref_start_gps_title">Start/Stop GPS</string>

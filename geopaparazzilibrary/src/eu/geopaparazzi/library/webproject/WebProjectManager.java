@@ -146,17 +146,13 @@ public enum WebProjectManager {
      * @param user the username for authentication.
      * @param passwd the password for authentication.
      * @return the project list.
+     * @throws Exception 
      */
-    public List<Webproject> downloadProjectList( Context context, String server, String user, String passwd ) {
-        try {
-            String getResponse = NetworkUtilities.sendGetRequest(server, null, user, passwd);
-            List<Webproject> webprojectsList = json2WebprojectsList(getResponse);
+    public List<Webproject> downloadProjectList( Context context, String server, String user, String passwd ) throws Exception {
+        String getResponse = NetworkUtilities.sendGetRequest(server, null, user, passwd);
+        List<Webproject> webprojectsList = json2WebprojectsList(getResponse);
 
-            return webprojectsList;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        return webprojectsList;
     }
 
     /**

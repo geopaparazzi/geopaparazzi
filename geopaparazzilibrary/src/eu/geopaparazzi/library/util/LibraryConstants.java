@@ -184,6 +184,21 @@ public interface LibraryConstants {
     public static final String PREFS_KEY_FORM_NAME = "PREFS_KEY_FORM_NAME"; //$NON-NLS-1$
 
     /**
+     * Key used to define a user name that is passed through any workflow. 
+     */
+    public static final String PREFS_KEY_USER = "PREFS_KEY_USER"; //$NON-NLS-1$
+
+    /**
+     * Key used to define a password that is passed through any workflow. 
+     */
+    public static final String PREFS_KEY_PWD = "PREFS_KEY_PWD"; //$NON-NLS-1$
+
+    /**
+     * Key used to define a url that is passed through any workflow. 
+     */
+    public static final String PREFS_KEY_URL = "PREFS_KEY_URL"; //$NON-NLS-1$
+
+    /**
      * Default gps logging interval.
      */
     public static final int GPS_LOGGING_INTERVAL = 3;
