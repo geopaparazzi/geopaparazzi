@@ -17,14 +17,20 @@
  */
 package eu.geopaparazzi.library.webproject;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.CompressionUtilities;
+import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
@@ -149,9 +155,21 @@ public enum WebProjectManager {
      * @throws Exception 
      */
     public List<Webproject> downloadProjectList( Context context, String server, String user, String passwd ) throws Exception {
-        String getResponse = NetworkUtilities.sendGetRequest(server, null, user, passwd);
-        List<Webproject> webprojectsList = json2WebprojectsList(getResponse);
-
+        String jsonString = "[]";
+        if (server.equals("test")) {
+            AssetManager assetManager = context.getAssets();
+            InputStream inputStream = assetManager.open("tags/cloudtest.json");
+            BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while( (line = br.readLine()) != null ) {
+                sb.append(line).append("\n");
+            }
+            jsonString = sb.toString();
+        } else {
+            jsonString = NetworkUtilities.sendGetRequest(server, null, user, passwd);
+        }
+        List<Webproject> webprojectsList = json2WebprojectsList(jsonString);
         return webprojectsList;
     }
 
@@ -162,6 +180,7 @@ public enum WebProjectManager {
      * @return the list of {@link Webproject}.
      */
     public static List<Webproject> json2WebprojectsList( String json ) {
+
         // TODO
         return new ArrayList<Webproject>();
     }
