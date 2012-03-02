@@ -22,6 +22,7 @@ import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_URL;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_USER;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -66,9 +67,10 @@ public class WebProjectsListActivity extends ListActivity {
         super.onCreate(icicle);
         setContentView(R.layout.webprojectlist);
 
-        user = icicle.getString(PREFS_KEY_USER);
-        pwd = icicle.getString(PREFS_KEY_PWD);
-        url = icicle.getString(PREFS_KEY_URL);
+        Bundle extras = getIntent().getExtras();
+        user = extras.getString(PREFS_KEY_USER);
+        pwd = extras.getString(PREFS_KEY_PWD);
+        url = extras.getString(PREFS_KEY_URL);
 
         filterText = (EditText) findViewById(R.id.search_box);
         filterText.addTextChangedListener(filterTextWatcher);
@@ -79,7 +81,9 @@ public class WebProjectsListActivity extends ListActivity {
                 WebProjectsListActivity context = WebProjectsListActivity.this;
                 try {
                     projectList = WebProjectManager.INSTANCE.downloadProjectList(context, url, user, pwd);
-                    projectListToLoad = projectList;
+                    for( Webproject wp : projectList ) {
+                        projectListToLoad.add(wp);
+                    }
                     return "";
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -140,7 +144,7 @@ public class WebProjectsListActivity extends ListActivity {
                 TextView dateText = (TextView) rowView.findViewById(R.id.datetext);
                 TextView sizeText = (TextView) rowView.findViewById(R.id.sizetext);
 
-                final Webproject webproject = projectList.get(position);
+                final Webproject webproject = projectListToLoad.get(position);
                 titleText.setText(webproject.name);
                 descriptionText.setText(webproject.title);
                 authorText.setText(webproject.author);

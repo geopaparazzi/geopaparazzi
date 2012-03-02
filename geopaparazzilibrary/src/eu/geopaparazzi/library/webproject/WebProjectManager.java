@@ -198,10 +198,10 @@ public enum WebProjectManager {
         }
         JSONObject errorObject = tagArrayObj.getJSONObject(0);
         JSONObject projectsObject = tagArrayObj.getJSONObject(1);
-        JSONArray jsonArray = projectsObject.getJSONArray("projects");
-        int projectNum = jsonArray.length();
+        JSONArray projectsArray = projectsObject.getJSONArray("projects");
+        int projectNum = projectsArray.length();
         for( int i = 0; i < projectNum; i++ ) {
-            JSONObject projectObject = tagArrayObj.getJSONObject(i);
+            JSONObject projectObject = projectsArray.getJSONObject(i);
             String id = projectObject.getString("id");
             String title = projectObject.getString("title");
             String date = projectObject.getString("date");
