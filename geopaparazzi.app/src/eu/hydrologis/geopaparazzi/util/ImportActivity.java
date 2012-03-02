@@ -45,8 +45,8 @@ public class ImportActivity extends Activity {
                 importGpx();
             }
         });
-        ImageButton cloudExportButton = (ImageButton) findViewById(R.id.cloudImportButton);
-        cloudExportButton.setOnClickListener(new Button.OnClickListener(){
+        ImageButton cloudImportButton = (ImageButton) findViewById(R.id.cloudImportButton);
+        cloudImportButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
                 final ImportActivity context = ImportActivity.this;
                 Utilities.messageDialog(context, "Not implemented yet", null); //$NON-NLS-1$
