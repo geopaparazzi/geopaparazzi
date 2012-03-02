@@ -139,7 +139,7 @@ public class WebProjectsListActivity extends ListActivity {
                 TextView dateText = (TextView) rowView.findViewById(R.id.datetext);
                 TextView sizeText = (TextView) rowView.findViewById(R.id.sizetext);
 
-                Webproject webproject = projectList.get(position);
+                final Webproject webproject = projectList.get(position);
                 titleText.setText(webproject.name);
                 descriptionText.setText(webproject.title);
                 authorText.setText(webproject.author);
@@ -150,7 +150,7 @@ public class WebProjectsListActivity extends ListActivity {
                 ImageView imageText = (ImageView) rowView.findViewById(R.id.downloadproject_image);
                 imageText.setOnClickListener(new View.OnClickListener(){
                     public void onClick( View v ) {
-                        downloadProject();
+                        downloadProject(webproject);
                     }
                 });
                 return rowView;
@@ -175,12 +175,13 @@ public class WebProjectsListActivity extends ListActivity {
         }
     };
 
-    private void downloadProject() {
+    private void downloadProject( final Webproject webproject ) {
         final ProgressDialog cloudProgressDialog = ProgressDialog.show(this, "Downloading project...",
                 "Downloading selected project to the device.", true, true);
         new AsyncTask<String, Void, Integer>(){
             protected Integer doInBackground( String... params ) {
                 try {
+                    url = url + webproject.id;
                     ReturnCodes returnCode = WebProjectManager.INSTANCE.downloadProject(WebProjectsListActivity.this, url, user,
                             pwd);
                     return returnCode.getMsgCode();
@@ -212,5 +213,4 @@ public class WebProjectsListActivity extends ListActivity {
             }
         }.execute((String) null);
     }
-
 }
