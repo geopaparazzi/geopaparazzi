@@ -22,7 +22,6 @@ import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_URL;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_USER;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -186,9 +185,9 @@ public class WebProjectsListActivity extends ListActivity {
         new AsyncTask<String, Void, Integer>(){
             protected Integer doInBackground( String... params ) {
                 try {
-                    url = url + webproject.id;
-                    ReturnCodes returnCode = WebProjectManager.INSTANCE.downloadProject(WebProjectsListActivity.this, url, user,
-                            pwd);
+                    String newurl = url + webproject.id;
+                    ReturnCodes returnCode = WebProjectManager.INSTANCE.downloadProject(WebProjectsListActivity.this, newurl,
+                            user, pwd);
                     return returnCode.getMsgCode();
                 } catch (Exception e) {
                     Logger.e(this, e.getLocalizedMessage(), e);
