@@ -19,6 +19,8 @@ package eu.geopaparazzi.library.webproject;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import eu.geopaparazzi.library.network.NetworkUtilities;
@@ -56,19 +58,13 @@ public enum WebProjectManager {
      * 
      * @param context the {@link Context} to use.
      * @param addMedia defines if also the images in media should be included.
-     * @param server the server to which to upload ({@link #UPLOADPATH} 
-     *               will be added at the end of the server string in this method).
+     * @param server the server to which to upload.
      * @param user the username for authentication.
      * @param passwd the password for authentication.
      * @return the return code.
      */
     public ReturnCodes uploadProject( Context context, boolean addMedia, String server, String user, String passwd ) {
         try {
-            if (!server.endsWith("/")) {
-                server = server + "/";
-            }
-            server = server + UPLOADPATH;
-
             ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
             File appFolder = resourcesManager.getApplicationDir();
             String mediaFodlerName = resourcesManager.getMediaDir().getName();
@@ -105,19 +101,13 @@ public enum WebProjectManager {
      * Downloads a project from the given server via GET.
      * 
      * @param context the {@link Context} to use.
-     * @param server the server from which to download ({@link #DOWNLOADPATH} 
-     *               will be added at the end of the server string in this method).
+     * @param server the server from which to download.
      * @param user the username for authentication.
      * @param passwd the password for authentication.
      * @return the return code.
      */
     public ReturnCodes downloadProject( Context context, String server, String user, String passwd ) {
         try {
-            if (!server.endsWith("/")) {
-                server = server + "/";
-            }
-            server = server + DOWNLOADPATH;
-
             ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
             File appFolder = resourcesManager.getApplicationDir();
 
@@ -146,6 +136,38 @@ public enum WebProjectManager {
             e.printStackTrace();
             return ReturnCodes.ERROR;
         }
+    }
+
+    /**
+     * Downloads the project list from the given server via GET.
+     * 
+     * @param context the {@link Context} to use.
+     * @param server the server from which to download.
+     * @param user the username for authentication.
+     * @param passwd the password for authentication.
+     * @return the project list.
+     */
+    public List<Webproject> downloadProjectList( Context context, String server, String user, String passwd ) {
+        try {
+            String getResponse = NetworkUtilities.sendGetRequest(server, null, user, passwd);
+            List<Webproject> webprojectsList = json2WebprojectsList(getResponse);
+
+            return webprojectsList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * Transform a json string to a list of webprojects.
+     * 
+     * @param json the json string.
+     * @return the list of {@link Webproject}.
+     */
+    public static List<Webproject> json2WebprojectsList( String json ) {
+        // TODO
+        return new ArrayList<Webproject>();
     }
 
 }

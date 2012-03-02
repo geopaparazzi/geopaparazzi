@@ -22,12 +22,21 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -44,6 +53,7 @@ import eu.geopaparazzi.library.util.debug.Logger;
 @SuppressWarnings("nls")
 public class NetworkUtilities {
 
+    private static final String TAG = "NETWORKUTILITIES";
     public static final long maxBufferSize = 4096;
 
     private static HttpURLConnection makeNewConnection( String fileUrl ) throws Exception {
@@ -207,7 +217,7 @@ public class NetworkUtilities {
 
             wr = new BufferedOutputStream(conn.getOutputStream());
             long bufferSize = Math.min(fileSize, maxBufferSize);
-            Logger.i("NETWORKUTILITIES", "BUFFER USED: " + bufferSize);
+            Logger.i(TAG, "BUFFER USED: " + bufferSize);
             byte[] buffer = new byte[(int) bufferSize];
             int bytesRead = fis.read(buffer, 0, (int) bufferSize);
             long totalBytesWritten = 0;
@@ -224,7 +234,7 @@ public class NetworkUtilities {
 
             String responseMessage = conn.getResponseMessage();
             if (Debug.D)
-                Logger.d("NETWORKUTILITIES", "POST RESPONSE: " + responseMessage);
+                Logger.d(TAG, "POST RESPONSE: " + responseMessage);
             return responseMessage;
         } catch (Exception e) {
             e.printStackTrace();
@@ -266,6 +276,42 @@ public class NetworkUtilities {
             }
         }
         return false;
+    }
+
+    public static String sendGetRequest( String urlStr, String requestParameters, String user, String password ) throws Exception {
+        if (requestParameters != null && requestParameters.length() > 0) {
+            urlStr += "?" + requestParameters;
+        }
+        StringBuilder builder = new StringBuilder();
+        HttpClient client = new DefaultHttpClient();
+        HttpGet httpGet = new HttpGet(urlStr);
+
+        if (user != null && password != null) {
+            httpGet.addHeader("Authorization", getB64Auth(user, password));
+        }
+        try {
+            HttpResponse response = client.execute(httpGet);
+            StatusLine statusLine = response.getStatusLine();
+            int statusCode = statusLine.getStatusCode();
+            if (statusCode == 200) {
+                HttpEntity entity = response.getEntity();
+                InputStream content = entity.getContent();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(content));
+                String line;
+                while( (line = reader.readLine()) != null ) {
+                    builder.append(line);
+                }
+            } else {
+                String message = "Failed to download file";
+                Logger.d(TAG, message);
+                throw new IOException(message);
+            }
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return builder.toString();
     }
 
     // public static String uploadFile( Context context, String urlStr, File file, String user,
