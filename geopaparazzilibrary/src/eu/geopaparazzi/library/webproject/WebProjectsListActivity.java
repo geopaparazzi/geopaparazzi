@@ -29,6 +29,7 @@ import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -198,18 +199,33 @@ public class WebProjectsListActivity extends ListActivity {
                 String msg;
                 if (code == ReturnCodes.ERROR) {
                     msg = "An error occurred while downloading the project.";
+                    AlertDialog.Builder builder = new AlertDialog.Builder(WebProjectsListActivity.this);
+                    builder.setMessage(msg).setCancelable(false)
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                                public void onClick( DialogInterface dialog, int id ) {
+                                }
+                            });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
                 } else {
-                    msg = "The project has been successfully downloaded.";
+                    msg = "The project has been successfully downloaded. Load the new project?";
+                    AlertDialog.Builder builder = new AlertDialog.Builder(WebProjectsListActivity.this);
+                    builder.setMessage(msg).setCancelable(false)
+                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener(){
+                                public void onClick( DialogInterface dialog, int id ) {
+                                    Intent i = getBaseContext().getPackageManager().getLaunchIntentForPackage(
+                                            getBaseContext().getPackageName());
+                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(i);
+                                }
+                            }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener(){
+                                public void onClick( DialogInterface dialog, int id ) {
+                                }
+                            });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
                 }
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(WebProjectsListActivity.this);
-                builder.setMessage(msg).setCancelable(false)
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
-                            public void onClick( DialogInterface dialog, int id ) {
-                            }
-                        });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
             }
         }.execute((String) null);
     }
