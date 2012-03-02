@@ -24,8 +24,11 @@ import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_USER;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -35,6 +38,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.util.Utilities;
@@ -53,13 +57,17 @@ public class WebProjectsListActivity extends ListActivity {
     private List<Webproject> projectList = new ArrayList<Webproject>();
     private List<Webproject> projectListToLoad = new ArrayList<Webproject>();
 
+    private String user;
+    private String pwd;
+    private String url;
+
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
         setContentView(R.layout.webprojectlist);
 
-        final String user = icicle.getString(PREFS_KEY_USER);
-        final String pwd = icicle.getString(PREFS_KEY_PWD);
-        final String url = icicle.getString(PREFS_KEY_URL);
+        user = icicle.getString(PREFS_KEY_USER);
+        pwd = icicle.getString(PREFS_KEY_PWD);
+        url = icicle.getString(PREFS_KEY_URL);
 
         filterText = (EditText) findViewById(R.id.search_box);
         filterText.addTextChangedListener(filterTextWatcher);
@@ -139,6 +147,12 @@ public class WebProjectsListActivity extends ListActivity {
                 int kbSize = (int) (webproject.size / 1024.0);
                 sizeText.setText(kbSize + "Kb");
 
+                ImageView imageText = (ImageView) rowView.findViewById(R.id.downloadproject_image);
+                imageText.setOnClickListener(new View.OnClickListener(){
+                    public void onClick( View v ) {
+                        downloadProject();
+                    }
+                });
                 return rowView;
             }
 
@@ -160,5 +174,43 @@ public class WebProjectsListActivity extends ListActivity {
             filterList(s.toString());
         }
     };
+
+    private void downloadProject() {
+        final ProgressDialog cloudProgressDialog = ProgressDialog.show(this, "Downloading project...",
+                "Downloading selected project to the device.", true, true);
+        new AsyncTask<String, Void, Integer>(){
+            protected Integer doInBackground( String... params ) {
+                try {
+                    ReturnCodes returnCode = WebProjectManager.INSTANCE.downloadProject(WebProjectsListActivity.this, url, user,
+                            pwd);
+                    return returnCode.getMsgCode();
+                } catch (Exception e) {
+                    Logger.e(this, e.getLocalizedMessage(), e);
+                    e.printStackTrace();
+                    return ReturnCodes.ERROR.getMsgCode();
+                }
+            }
+
+            protected void onPostExecute( Integer response ) { // on UI thread!
+                cloudProgressDialog.dismiss();
+                ReturnCodes code = ReturnCodes.get4Code(response);
+                String msg;
+                if (code == ReturnCodes.ERROR) {
+                    msg = "An error occurred while downloading the project.";
+                } else {
+                    msg = "The project has been successfully downloaded.";
+                }
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(WebProjectsListActivity.this);
+                builder.setMessage(msg).setCancelable(false)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                            public void onClick( DialogInterface dialog, int id ) {
+                            }
+                        });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            }
+        }.execute((String) null);
+    }
 
 }

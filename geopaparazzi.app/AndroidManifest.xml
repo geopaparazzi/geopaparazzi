@@ -195,6 +195,13 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:name="eu.geopaparazzi.library.webproject.WebProjectsListActivity" >
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.webproject.WebProjectsListActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <receiver
             android:name="eu.geopaparazzi.library.sms.SmsReceiverPositionSender"
