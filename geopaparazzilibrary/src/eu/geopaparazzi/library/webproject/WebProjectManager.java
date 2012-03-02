@@ -32,26 +32,48 @@ import eu.geopaparazzi.library.util.debug.Logger;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("nls")
 public enum WebProjectManager {
     INSTANCE;
+
+    /**
+     * The relative path appended to the server url to compose the upload url.
+     */
+    public static String UPLOADPATH = "upload";
+
+    /**
+     * The relative path appended to the server url to compose the download projects list url.
+     */
+    public static String DOWNLOADPATH = "download";
+
+    /**
+     * The id parameter name to use in the server url. 
+     */
+    public static String ID = "id";
 
     /**
      * Uploads a project folder as zip to the given server via POST.
      * 
      * @param context the {@link Context} to use.
      * @param addMedia defines if also the images in media should be included.
-     * @param server the server to which to upload.
+     * @param server the server to which to upload ({@link #UPLOADPATH} 
+     *               will be added at the end of the server string in this method).
      * @param user the username for authentication.
      * @param passwd the password for authentication.
      * @return the return code.
      */
     public ReturnCodes uploadProject( Context context, boolean addMedia, String server, String user, String passwd ) {
         try {
+            if (!server.endsWith("/")) {
+                server = server + "/";
+            }
+            server = server + UPLOADPATH;
+
             ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
             File appFolder = resourcesManager.getApplicationDir();
             String mediaFodlerName = resourcesManager.getMediaDir().getName();
 
-            File zipFile = new File(appFolder.getParentFile(), resourcesManager.getApplicationName() + ".zip"); //$NON-NLS-1$
+            File zipFile = new File(appFolder.getParentFile(), resourcesManager.getApplicationName() + ".zip");
             if (zipFile.exists()) {
                 if (!zipFile.delete()) {
                     throw new IOException();
@@ -68,7 +90,7 @@ public enum WebProjectManager {
                 Logger.i(this, result);
             }
             result = result.trim();
-            if (result.toLowerCase().equals("ok")) { //$NON-NLS-1$
+            if (result.toLowerCase().equals("ok")) {
                 return ReturnCodes.OK;
             } else {
                 return ReturnCodes.ERROR;
@@ -83,17 +105,23 @@ public enum WebProjectManager {
      * Downloads a project from the given server via GET.
      * 
      * @param context the {@link Context} to use.
-     * @param server the server to which to upload.
+     * @param server the server from which to download ({@link #DOWNLOADPATH} 
+     *               will be added at the end of the server string in this method).
      * @param user the username for authentication.
      * @param passwd the password for authentication.
      * @return the return code.
      */
     public ReturnCodes downloadProject( Context context, String server, String user, String passwd ) {
         try {
+            if (!server.endsWith("/")) {
+                server = server + "/";
+            }
+            server = server + DOWNLOADPATH;
+
             ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
             File appFolder = resourcesManager.getApplicationDir();
 
-            File zipFile = new File(appFolder.getParentFile(), resourcesManager.getApplicationName() + ".zip"); //$NON-NLS-1$
+            File zipFile = new File(appFolder.getParentFile(), resourcesManager.getApplicationName() + ".zip");
             if (zipFile.exists()) {
                 if (!zipFile.delete()) {
                     throw new IOException();
