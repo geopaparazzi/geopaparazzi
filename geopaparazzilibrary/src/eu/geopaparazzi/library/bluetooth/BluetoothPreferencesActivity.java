@@ -211,7 +211,7 @@ public class BluetoothPreferencesActivity extends PreferenceActivity
         String deviceAddress = sharedPreferences.getString(IBluetoothListener.PREF_BLUETOOTH_DEVICE, null);
         int maxConRetries = Integer.parseInt(sharedPreferences.getString(IBluetoothListener.PREF_CONNECTION_RETRIES,
                 this.getString(R.string.defaultConnectionRetries)));
-        BluetoothManager2 bluetoothDeviceManager = BluetoothManager2.getInstance();
+        BluetoothManager bluetoothDeviceManager = BluetoothManager.getInstance();
         if (!bluetoothDeviceManager.isEnabled()) {
             if (BluetoothAdapter.checkBluetoothAddress(deviceAddress)) {
                 bluetoothDeviceManager.setParameters(this, deviceAddress, maxConRetries);
@@ -252,7 +252,7 @@ public class BluetoothPreferencesActivity extends PreferenceActivity
             edit.commit();
         }
 
-        BluetoothManager2.getInstance().disable();
+        BluetoothManager.getInstance().disable();
     }
 
     // private void enableSirfFeature( String key ) {

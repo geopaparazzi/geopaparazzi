@@ -23,8 +23,8 @@ import eu.geopaparazzi.library.util.debug.Logger;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public class GPBluetoothDevice extends Thread implements IBluetoothDevice {
-    private static final String LOG_TAG = "GPBluetoothDevice";
+public class NmeaGpsDevice implements IBluetoothDevice {
+    private static final String LOG_TAG = "NmeaGpsDevice";
     /**
      * GPS bluetooth socket used for communication. 
      */
@@ -52,14 +52,14 @@ public class GPBluetoothDevice extends Thread implements IBluetoothDevice {
     private List<IBluetoothListener> bluetoothListeners = new ArrayList<IBluetoothListener>();
     private BluetoothEnablementHandler notificationHandler;
 
-    public GPBluetoothDevice() {
+    public NmeaGpsDevice() {
     }
 
     /* (non-Javadoc)
      * @see eu.geopaparazzi.library.bluetooth.IBluetoothDevice#prepare(android.bluetooth.BluetoothSocket, eu.geopaparazzi.library.bluetooth.BluetoothEnablementHandler)
      */
     @Override
-    public void prepare( BluetoothSocket socket, BluetoothEnablementHandler notificationHandler ) {
+    public void initialize( BluetoothSocket socket, BluetoothEnablementHandler notificationHandler ) {
         this.socket = socket;
         this.notificationHandler = notificationHandler;
         InputStream tmpIn = null;
@@ -145,7 +145,7 @@ public class GPBluetoothDevice extends Thread implements IBluetoothDevice {
             final long timestamp = System.currentTimeMillis();
             if (sentence != null) {
                 for( final IBluetoothListener listener : bluetoothListeners ) {
-                    listener.onStringDataReceived(timestamp, sentence);
+                    listener.onDataReceived(timestamp, sentence);
                 }
             }
         }
@@ -248,5 +248,23 @@ public class GPBluetoothDevice extends Thread implements IBluetoothDevice {
     @Override
     public void removeListener( IBluetoothListener listener ) {
         bluetoothListeners.remove(listener);
+    }
+
+    @Override
+    public String checkRequirements() {
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public <T> T adapt( Class<T> adaptee ) {
+        if (adaptee.isAssignableFrom(NmeaGpsDevice.class)) {
+            return adaptee.cast(this);
+        }
+        return null;
     }
 }

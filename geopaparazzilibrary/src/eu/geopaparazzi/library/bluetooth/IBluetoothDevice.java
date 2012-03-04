@@ -20,19 +20,38 @@ package eu.geopaparazzi.library.bluetooth;
 import android.bluetooth.BluetoothSocket;
 
 /**
- * Represents a generic bluetooth device.
+ * Represents a generic bluetooth device {@link Runnable}.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public interface IBluetoothDevice {
+public interface IBluetoothDevice extends Runnable{
 
     /**
-     * Prepare the device by passing in the socket and an enablement handler.
+     * Get the vendor name of the device.
+     * 
+     * @return the name of the device.
+     */
+    public String getName();
+
+    /**
+     * Checks the requirements of the device against the operating system. 
+     * 
+     * @return <code>null</code> if requirements are fine. Summary of problems in case of warnings or errors.
+     */
+    public String checkRequirements();
+
+    /**
+     * Initialize the device by passing in the socket and an enablement handler.
      * 
      * @param socket the socket to use for dialog with the device.
      * @param enablementHandler the handler that is used for enable/disable events.
      */
-    public abstract void prepare( BluetoothSocket socket, BluetoothEnablementHandler enablementHandler );
+    public abstract void initialize( BluetoothSocket socket, BluetoothEnablementHandler enablementHandler );
+
+    /**
+     * Close the connection to the device.
+     */
+    public abstract void close();
 
     /**
      * Checks if the device is ready to transmit data.
@@ -58,11 +77,6 @@ public interface IBluetoothDevice {
     public abstract BluetoothSocket getSocket();
 
     /**
-     * Close the connection to the device.
-     */
-    public abstract void close();
-
-    /**
      * Adds an {@link IBluetoothListener}.
      * 
      * @param listener the listener to add.
@@ -77,4 +91,11 @@ public interface IBluetoothDevice {
      */
     public abstract void removeListener( IBluetoothListener listener );
 
+    /**
+     * Adapt the device.
+     * 
+     * @param adaptee the class to adapt to.
+     * @return the adapted object.
+     */
+    public <T> T adapt(Class<T> adaptee);
 }
