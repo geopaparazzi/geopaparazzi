@@ -1,6 +1,6 @@
 package eu.geopaparazzi.library.bluetooth;
 
-public interface BluetoothNotificationHandler {
+public interface BluetoothEnablementHandler {
 
     public boolean enable();
     

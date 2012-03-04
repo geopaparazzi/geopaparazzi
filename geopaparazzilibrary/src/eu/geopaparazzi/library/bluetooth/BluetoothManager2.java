@@ -41,13 +41,14 @@ import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
- * This class is used to establish and manage the connection with the bluetooth GPS.
+ * This class is used to establish and manage the connection with the bluetooth device.
  * 
  * @author Herbert von Broeuschmeul
+ * @author Andrea Antonello (www.hydrologis.com)
  *
  */
 @SuppressWarnings("nls")
-public class BluetoothManager2 implements BluetoothNotificationHandler {
+public class BluetoothManager2 implements BluetoothEnablementHandler {
 
     /**
      * Tag used for log messages
@@ -81,16 +82,35 @@ public class BluetoothManager2 implements BluetoothNotificationHandler {
         return bluetoothManager;
     }
 
+    private void checkBluetoothDevice() {
+        if (connectedBluetoothDevice == null) {
+            throw new IllegalArgumentException("No bluetooth device avaliable. Did you call setBluetoothDevice?");
+        }
+    }
+
+    /**
+     * Set the bluetooth device to use.
+     * 
+     * <b>Note that this has to be called before doing anything else.</b>
+     * 
+     * @param connectedBluetoothDevice the device to connect.
+     */
+    public void setBluetoothDevice( GPBluetoothDevice connectedBluetoothDevice ) {
+        this.connectedBluetoothDevice = connectedBluetoothDevice;
+    }
+
     /**
      * Set device parameters.
      * 
-     * Note that this has to be called before doing anything else.
+     * <b>Note that this has to be called after the {@link #setBluetoothDevice(GPBluetoothDevice)} and
+     *  before doing anything else.</b>
      * 
      * @param context the {@link Context} to use.
      * @param deviceAddress the address of the device.
      * @param maxRetries maximum number of tries to do for connection.
      */
     public void setParameters( Context context, String deviceAddress, int maxRetries ) {
+        checkBluetoothDevice();
         this.deviceAddress = deviceAddress;
         this.maxConnectionRetries = maxRetries;
         this.nbRetriesRemaining = 1 + maxRetries;
@@ -153,6 +173,7 @@ public class BluetoothManager2 implements BluetoothNotificationHandler {
      * @return <code>true</code> if everything went well.
      */
     public synchronized boolean enable() {
+        checkBluetoothDevice();
         notificationManager.cancel(R.string.service_closed_because_connection_problem_notification_title);
         if (!enabled) {
             if (Debug.D)
@@ -266,8 +287,8 @@ public class BluetoothManager2 implements BluetoothNotificationHandler {
                                             notificationManager.cancel(R.string.connection_problem_notification_title);
                                             if (Debug.D)
                                                 Logger.i(LOG_TAG, "starting socket reading task");
-                                            connectedBluetoothDevice = new GPBluetoothDevice(bluetoothSocket,
-                                                    BluetoothManager2.this);
+                                            connectedBluetoothDevice = new GPBluetoothDevice();
+                                            connectedBluetoothDevice.prepare(bluetoothSocket, BluetoothManager2.this);
                                             connectedBluetoothDevice.setEnabled(true);
                                             connectionAndReadingPool.execute(connectedBluetoothDevice);
                                             if (Debug.D)
@@ -383,7 +404,8 @@ public class BluetoothManager2 implements BluetoothNotificationHandler {
      * 
      * @return the device or <code>null</code>.
      */
-    public GPBluetoothDevice getConnectedBluetoothDevice() {
+    public IBluetoothDevice getConnectedBluetoothDevice() {
+        checkBluetoothDevice();
         return connectedBluetoothDevice;
     }
 
@@ -458,6 +480,7 @@ public class BluetoothManager2 implements BluetoothNotificationHandler {
      * @param command	the complete NMEA sentence (i.e. $....*XY where XY is the checksum).
      */
     public void sendStringCommand( final String command ) {
+        checkBluetoothDevice();
         if (Debug.D)
             Logger.d(LOG_TAG, "sending string sentence: " + command);
         if (isEnabled()) {
@@ -481,6 +504,7 @@ public class BluetoothManager2 implements BluetoothNotificationHandler {
      * (i.e. with the <em>Start Sequence</em>, <em>Payload Length</em>, <em>Payload</em>, <em>Message Checksum</em> and <em>End Sequence</em>).
      */
     public void sendBinaryCommand( final byte[] command ) {
+        checkBluetoothDevice();
         if (Debug.D)
             Logger.d(LOG_TAG, "sending binary sentence");
         if (isEnabled()) {

@@ -23,24 +23,24 @@ import eu.geopaparazzi.library.util.debug.Logger;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public class GPBluetoothDevice extends Thread {
+public class GPBluetoothDevice extends Thread implements IBluetoothDevice {
     private static final String LOG_TAG = "GPBluetoothDevice";
     /**
      * GPS bluetooth socket used for communication. 
      */
-    private final BluetoothSocket socket;
+    private BluetoothSocket socket;
     /**
      * GPS InputStream from which we read data. 
      */
-    private final InputStream in;
+    private InputStream in;
     /**
      * GPS output stream to which we send data (SIRF III binary commands). 
      */
-    private final OutputStream out;
+    private OutputStream out;
     /**
      * GPS output stream to which we send data (SIRF III NMEA commands). 
      */
-    private final PrintStream out2;
+    private PrintStream out2;
 
     /**
      * A boolean which indicates if the GPS is ready to receive data. 
@@ -50,9 +50,16 @@ public class GPBluetoothDevice extends Thread {
     private boolean enabled;
 
     private List<IBluetoothListener> bluetoothListeners = new ArrayList<IBluetoothListener>();
-    private final BluetoothNotificationHandler notificationHandler;
+    private BluetoothEnablementHandler notificationHandler;
 
-    public GPBluetoothDevice( BluetoothSocket socket, BluetoothNotificationHandler notificationHandler ) {
+    public GPBluetoothDevice() {
+    }
+
+    /* (non-Javadoc)
+     * @see eu.geopaparazzi.library.bluetooth.IBluetoothDevice#prepare(android.bluetooth.BluetoothSocket, eu.geopaparazzi.library.bluetooth.BluetoothEnablementHandler)
+     */
+    @Override
+    public void prepare( BluetoothSocket socket, BluetoothEnablementHandler notificationHandler ) {
         this.socket = socket;
         this.notificationHandler = notificationHandler;
         InputStream tmpIn = null;
@@ -73,14 +80,26 @@ public class GPBluetoothDevice extends Thread {
         out2 = tmpOut2;
     }
 
+    /* (non-Javadoc)
+     * @see eu.geopaparazzi.library.bluetooth.IBluetoothDevice#isReady()
+     */
+    @Override
     public boolean isReady() {
         return ready;
     }
 
+    /* (non-Javadoc)
+     * @see eu.geopaparazzi.library.bluetooth.IBluetoothDevice#setEnabled(boolean)
+     */
+    @Override
     public void setEnabled( boolean enabled ) {
         this.enabled = enabled;
     }
 
+    /* (non-Javadoc)
+     * @see eu.geopaparazzi.library.bluetooth.IBluetoothDevice#getSocket()
+     */
+    @Override
     public BluetoothSocket getSocket() {
         return socket;
     }
@@ -175,9 +194,10 @@ public class GPBluetoothDevice extends Thread {
         }
     }
 
-    /**
-     * closing the connection to the device.
+    /* (non-Javadoc)
+     * @see eu.geopaparazzi.library.bluetooth.IBluetoothDevice#close()
      */
+    @Override
     public void close() {
         ready = false;
         try {
@@ -210,12 +230,10 @@ public class GPBluetoothDevice extends Thread {
         }
     }
 
-    /**
-     * Adds an {@link IBluetoothListener}.
-     * 
-     * @param listener the listener to add.
-     * @return true if the listener was added.
+    /* (non-Javadoc)
+     * @see eu.geopaparazzi.library.bluetooth.IBluetoothDevice#addListener(eu.geopaparazzi.library.bluetooth.IBluetoothListener)
      */
+    @Override
     public boolean addListener( IBluetoothListener listener ) {
         if (!bluetoothListeners.contains(listener)) {
             bluetoothListeners.add(listener);
@@ -224,11 +242,10 @@ public class GPBluetoothDevice extends Thread {
         return false;
     }
 
-    /**
-     * Removes an {@link IBluetoothListener}.
-     * 
-     * @param listener the listener to remove.
+    /* (non-Javadoc)
+     * @see eu.geopaparazzi.library.bluetooth.IBluetoothDevice#removeListener(eu.geopaparazzi.library.bluetooth.IBluetoothListener)
      */
+    @Override
     public void removeListener( IBluetoothListener listener ) {
         bluetoothListeners.remove(listener);
     }
