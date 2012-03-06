@@ -60,7 +60,7 @@ public class ResourcesManager implements Serializable {
 
     private String applicationLabel;
 
-    private static boolean useInternalMemory = false;
+    private static boolean useInternalMemory = true;
     public static void setUseInternalMemory( boolean useInternalMemory ) {
         ResourcesManager.useInternalMemory = useInternalMemory;
     }
@@ -82,7 +82,7 @@ public class ResourcesManager implements Serializable {
         if (resourcesManager == null) {
             try {
                 resourcesManager = new ResourcesManager(context);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 return null;
             }
         }
@@ -101,12 +101,17 @@ public class ResourcesManager implements Serializable {
         return applicationLabel;
     }
 
-    private ResourcesManager( Context context ) throws IOException {
-        this.context = context;
+    private ResourcesManager( Context context ) throws Exception {
+        this.context = context.getApplicationContext();
         ApplicationInfo appInfo = context.getApplicationInfo();
-        applicationLabel = context.getPackageManager().getApplicationLabel(appInfo).toString();
-        applicationLabel = applicationLabel.toLowerCase();
 
+        String packageName = appInfo.packageName;
+        int lastDot = packageName.lastIndexOf('.');
+        String applicationLabel = packageName.replace('.', '_');
+        if (lastDot != -1) {
+            applicationLabel = packageName.substring(lastDot + 1, packageName.length());
+        }
+        applicationLabel = applicationLabel.toLowerCase();
         String databaseName = applicationLabel + ".db"; //$NON-NLS-1$
         /*
          * take care to create all the folders needed
