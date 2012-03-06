@@ -357,7 +357,7 @@ public class XYChartView extends View implements ChartChangeListener, ChartProgr
     public static final int DEFAULT_MINIMUM_DRAW_HEIGHT = 10;
 
     /** The default limit above which chart scaling kicks in. */
-    public static final int DEFAULT_MAXIMUM_DRAW_WIDTH = 1024;
+    public static final int DEFAULT_MAXIMUM_DRAW_WIDTH = 1280;
 
     /** The default limit above which chart scaling kicks in. */
     public static final int DEFAULT_MAXIMUM_DRAW_HEIGHT = 1000;
