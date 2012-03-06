@@ -39,9 +39,9 @@
     <string name="webprojects_list_title">Remote Projects List</string>
 
     <!-- bluetooth stuff -->
-    <string name="pref_start_gps_title">Start/Stop GPS</string>
-    <string name="pref_start_gps_summary_off">Bluetooth GPS is off</string>
-    <string name="pref_start_gps_summary_on">Bluetooth GPS is on</string>
+    <string name="pref_start_gps_title">Start/Stop device</string>
+    <string name="pref_start_gps_summary_off">Bluetooth device is off</string>
+    <string name="pref_start_gps_summary_on">Bluetooth device is on</string>
     <string name="pref_start_gps_params_title">GPS Options (SiRF)</string>
     <string name="pref_gps_location_provider_title">Location provider options</string>
     <string name="pref_gps_location_provider_summary">Bluetooth GPS will replace internal GPS</string>
@@ -63,7 +63,7 @@
     <string name="pref_trackfile_prefix_summary">Select the prefix for the track files</string>
     <string name="pref_trackfile_directory_title">Trackfiles directory</string>
     <string name="pref_trackfile_directory_summary">Select the directory for the track files</string>
-    <string name="pref_bluetooth_device_title">Choose Bluetooth GPS</string>
+    <string name="pref_bluetooth_device_title">Choose Bluetooth Device</string>
     <string name="pref_bluetooth_device_summary">"Current device: %s"</string>
     <string name="pref_about_title">About</string>
     <string name="pref_about_summary"></string>
