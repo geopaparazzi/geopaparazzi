@@ -95,6 +95,7 @@ public enum WebProjectManager {
                 CompressionUtilities.zipFolder(appFolder.getAbsolutePath(), zipFile.getAbsolutePath(), true, mediaFodlerName);
             }
 
+            server = server + "/" + UPLOADPATH;
             String result = NetworkUtilities.sendFilePost(server, zipFile, user, passwd);
             if (Debug.D) {
                 Logger.i(this, result);
@@ -175,6 +176,7 @@ public enum WebProjectManager {
             }
             jsonString = sb.toString();
         } else {
+            server = server + "/" + DOWNLOADPATH;
             jsonString = NetworkUtilities.sendGetRequest(server, null, user, passwd);
         }
         List<Webproject> webprojectsList = json2WebprojectsList(jsonString);
@@ -191,14 +193,17 @@ public enum WebProjectManager {
     public static List<Webproject> json2WebprojectsList( String json ) throws Exception {
         List<Webproject> wpList = new ArrayList<Webproject>();
 
-        JSONArray tagArrayObj = new JSONArray(json);
-        int tagsNum = tagArrayObj.length();
-        if (tagsNum != 2) {
-            throw new IOException("Two tags expected");
-        }
-        JSONObject errorObject = tagArrayObj.getJSONObject(0);
-        JSONObject projectsObject = tagArrayObj.getJSONObject(1);
-        JSONArray projectsArray = projectsObject.getJSONArray("projects");
+        JSONObject jsonObject = new JSONObject(json);
+
+        // JSONArray tagArrayObj = new JSONArray(json);
+        // int tagsNum = tagArrayObj.length();
+        // if (tagsNum != 2) {
+        // throw new IOException("Two tags expected");
+        // }
+        // JSONObject errorObject = tagArrayObj.getJSONObject(0);
+        // JSONObject projectsObject = tagArrayObj.getJSONObject(1);
+        // JSONArray projectsArray = projectsObject.getJSONArray("projects");
+        JSONArray projectsArray = jsonObject.getJSONArray("projects");
         int projectNum = projectsArray.length();
         for( int i = 0; i < projectNum; i++ ) {
             JSONObject projectObject = projectsArray.getJSONObject(i);
@@ -215,7 +220,11 @@ public enum WebProjectManager {
             wp.name = name;
             wp.title = title;
             wp.id = Long.parseLong(id);
-            wp.size = Long.parseLong(size);
+            try {
+                wp.size = Long.parseLong(size);
+            } catch (Exception e) {
+                // unused for now
+            }
             wpList.add(wp);
         }
         return wpList;

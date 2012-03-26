@@ -19,7 +19,9 @@ package eu.hydrologis.geopaparazzi.util;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -58,11 +60,21 @@ public class ImportActivity extends Activity {
                     return;
                 }
 
-                Intent browseIntent = new Intent(ImportActivity.this, WebProjectsListActivity.class);
-                browseIntent.putExtra(LibraryConstants.PREFS_KEY_URL, "test");
-                browseIntent.putExtra(LibraryConstants.PREFS_KEY_USER, "dummyuser");
-                browseIntent.putExtra(LibraryConstants.PREFS_KEY_PWD, "dummypwd");
-                startActivity(browseIntent);
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(ImportActivity.this);
+                String server = preferences.getString("geopapcloud_server_key", "");
+                String user = preferences.getString("geopapcloud_user_key", "dummyuser");
+                String passwd = preferences.getString("geopapcloud_pwd_key", "dummypwd");
+
+                if (server.length() == 0) {
+                    Utilities.messageDialog(context, R.string.error_set_cloud_settings, null);
+                    return;
+                }
+
+                Intent webImportIntent = new Intent(ImportActivity.this, WebProjectsListActivity.class);
+                webImportIntent.putExtra(LibraryConstants.PREFS_KEY_URL, server);
+                webImportIntent.putExtra(LibraryConstants.PREFS_KEY_USER, user);
+                webImportIntent.putExtra(LibraryConstants.PREFS_KEY_PWD, passwd);
+                startActivity(webImportIntent);
             }
         });
     }
