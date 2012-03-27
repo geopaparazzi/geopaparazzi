@@ -138,7 +138,7 @@ public enum WebProjectManager {
             NetworkUtilities.sendGetRequest4File(server, zipFile, null, user, passwd);
 
             // now remove the zip file
-            CompressionUtilities.unzipFolder(zipFile.getAbsolutePath(), appFolder.getParentFile().getAbsolutePath());
+            CompressionUtilities.unzipFolder(zipFile.getAbsolutePath(), appFolder.getParentFile().getAbsolutePath(), true);
             /*
              * remove the zip file
              */
@@ -154,7 +154,7 @@ public enum WebProjectManager {
             if (message.startsWith(ReturnCodes.FILEEXISTS.getMsgString())) {
                 return message;
             }
-            
+
             e.printStackTrace();
             return ReturnCodes.ERROR.getMsgString();
         }

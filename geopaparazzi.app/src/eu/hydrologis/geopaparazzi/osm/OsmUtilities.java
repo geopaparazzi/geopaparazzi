@@ -234,7 +234,8 @@ public class OsmUtilities {
                                 }
 
                                 try {
-                                    CompressionUtilities.unzipFolder(osmZipFile.getAbsolutePath(), parentFile.getAbsolutePath());
+                                    CompressionUtilities.unzipFolder(osmZipFile.getAbsolutePath(), parentFile.getAbsolutePath(),
+                                            true);
                                 } catch (IOException e) {
                                     Utilities.messageDialog(activity,
                                             "An error occurred while unzipping the OSM tags to the device.", null);

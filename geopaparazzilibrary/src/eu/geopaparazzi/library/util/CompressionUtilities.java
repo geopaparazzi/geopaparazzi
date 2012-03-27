@@ -23,6 +23,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.zip.CRC32;
 import java.util.zip.ZipEntry;
@@ -75,41 +77,51 @@ public class CompressionUtilities {
      * 
      * @param zipFile the zip file that needs to be unzipped
      * @param destFolder the folder into which unzip the zip file and create the folder structure
+     * @param addTimeStamp if <code>true</code>, the timestamp is added if the base folder already exists.
+     * @return the name of the internal base folder or <code>null</code>.
+     * @throws IOException 
      */
-    public static void unzipFolder( String zipFile, String destFolder ) throws IOException {
+    public static String unzipFolder( String zipFile, String destFolder, boolean addTimeStamp ) throws IOException {
+        SimpleDateFormat dateTimeFormatter = new SimpleDateFormat("yyyyMMddHHmmss"); //$NON-NLS-1$
+
         ZipFile zf = new ZipFile(zipFile);
         Enumeration< ? extends ZipEntry> zipEnum = zf.entries();
 
-        boolean isFirst = true;
+        String firstName = null;
+        String newFirstName = null;
+
         while( zipEnum.hasMoreElements() ) {
             ZipEntry item = (ZipEntry) zipEnum.nextElement();
 
-            if (item.isDirectory()) {
-                File newdir = new File(destFolder + File.separator + item.getName());
-                if (isFirst) {
-                    isFirst = false;
-                    Logger.d("COMPRESSIONUTILS", "Checking for existing: " + newdir);
-                    if (newdir.exists()) {
-                        throw new IOException(ReturnCodes.FILEEXISTS.getMsgString() + " " + newdir);
+            String itemName = item.getName();
+            if (firstName == null) {
+                int firstSlash = itemName.indexOf('/');
+                if (firstSlash != -1) {
+                    firstName = itemName.substring(0, firstSlash);
+                    newFirstName = firstName;
+                    File baseFile = new File(destFolder + File.separator + firstName);
+                    if (baseFile.exists()) {
+                        if (addTimeStamp) {
+                            newFirstName = firstName + "_" + dateTimeFormatter.format(new Date());
+                        } else {
+                            throw new IOException(ReturnCodes.FILEEXISTS.getMsgString() + " " + baseFile);
+                        }
                     }
                 }
-                newdir.mkdir();
+            }
+            itemName = itemName.replaceFirst(firstName, newFirstName);
+
+            if (item.isDirectory()) {
+                File newdir = new File(destFolder + File.separator + itemName);
+                if (!newdir.mkdir())
+                    throw new IOException();
             } else {
-                String newfilePath = destFolder + File.separator + item.getName();
+                String newfilePath = destFolder + File.separator + itemName;
                 File newFile = new File(newfilePath);
-                if (isFirst) {
-                    isFirst = false;
-                    File parentFile = newFile.getParentFile();
-                    if (!parentFile.exists()) {
-                        parentFile.mkdirs();
-                    } else {
-                        throw new IOException(ReturnCodes.FILEEXISTS.getMsgString() + " " + parentFile);
-                    }
-                } else {
-                    File parentFile = newFile.getParentFile();
-                    if (!parentFile.exists()) {
-                        parentFile.mkdirs();
-                    }
+                File parentFile = newFile.getParentFile();
+                if (!parentFile.exists()) {
+                    if (!parentFile.mkdirs())
+                        throw new IOException();
                 }
                 InputStream is = zf.getInputStream(item);
                 FileOutputStream fos = new FileOutputStream(newfilePath);
@@ -123,6 +135,8 @@ public class CompressionUtilities {
             }
         }
         zf.close();
+
+        return newFirstName;
     }
 
     static private void addToZip( String path, String srcFile, ZipOutputStream zip, String... excludeNames ) throws IOException {
