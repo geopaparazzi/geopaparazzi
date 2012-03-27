@@ -323,7 +323,6 @@ public final class R {
         public static final int selectionmodecheck=0x7f0c0085;
         public static final int sep1=0x7f0c0006;
         public static final int sep3=0x7f0c0008;
-        public static final int sizetext=0x7f0c0099;
         public static final int slide=0x7f0c0030;
         public static final int statusupdatebutton=0x7f0c0034;
         public static final int syncosmbutton=0x7f0c0070;

@@ -74,6 +74,8 @@ public class WebProjectsListActivity extends ListActivity {
         filterText = (EditText) findViewById(R.id.search_box);
         filterText.addTextChangedListener(filterTextWatcher);
 
+        final ProgressDialog downloadProjectListDialog = ProgressDialog.show(this, "Downloading...",
+                "Downloading projects list from server.");
         new AsyncTask<String, Void, String>(){
 
             protected String doInBackground( String... params ) {
@@ -91,6 +93,7 @@ public class WebProjectsListActivity extends ListActivity {
             }
 
             protected void onPostExecute( String response ) { // on UI thread!
+                downloadProjectListDialog.dismiss();
                 WebProjectsListActivity context = WebProjectsListActivity.this;
                 if (response.equals("error")) {
                     Utilities.messageDialog(context, "An error occurred while retrieving the projects list.", null);
@@ -141,15 +144,15 @@ public class WebProjectsListActivity extends ListActivity {
                 TextView descriptionText = (TextView) rowView.findViewById(R.id.descriptiontext);
                 TextView authorText = (TextView) rowView.findViewById(R.id.authortext);
                 TextView dateText = (TextView) rowView.findViewById(R.id.datetext);
-                TextView sizeText = (TextView) rowView.findViewById(R.id.sizetext);
+                // TextView sizeText = (TextView) rowView.findViewById(R.id.sizetext);
 
                 final Webproject webproject = projectListToLoad.get(position);
                 titleText.setText(webproject.name);
                 descriptionText.setText(webproject.title);
                 authorText.setText(webproject.author);
                 dateText.setText(webproject.date);
-                int kbSize = (int) (webproject.size / 1024.0);
-                sizeText.setText(kbSize + "Kb");
+                // int kbSize = (int) (webproject.size / 1024.0);
+                // sizeText.setText(kbSize + "Kb");
 
                 ImageView imageText = (ImageView) rowView.findViewById(R.id.downloadproject_image);
                 imageText.setOnClickListener(new View.OnClickListener(){

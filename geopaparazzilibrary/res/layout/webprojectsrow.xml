@@ -12,14 +12,14 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/package_download"/>
-
+        android:src="@drawable/package_download" />
+
     <TextView
         android:id="@+id/titletext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/downloadproject_image"
-        android:layout_toLeftOf="@+id/datetext"
         android:layout_toRightOf="@+id/downloadproject_image"
         android:text="Title"
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/titletext"
-        android:layout_toRightOf="@+id/downloadproject_image"
+        android:layout_alignLeft="@+id/titletext"
         android:text="Description"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/black" />
@@ -40,34 +40,22 @@
         android:id="@+id/authortext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/titletext"
+        android:layout_alignParentRight="true"
         android:layout_below="@+id/descriptiontext"
-        android:layout_toLeftOf="@+id/datetext"
-        android:layout_toRightOf="@+id/downloadproject_image"
         android:text="Author"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/black" />
-
+
     <TextView
         android:id="@+id/datetext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/authortext"
-        android:layout_alignBottom="@+id/authortext"
+        android:layout_alignLeft="@+id/titletext"
         android:layout_alignParentRight="true"
+        android:layout_below="@+id/authortext"
         android:text="Date"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="@color/black" />
-
-    <TextView
-        android:id="@+id/sizetext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/titletext"
-        android:layout_alignBottom="@+id/titletext"
-        android:layout_alignParentRight="true"
-        android:text="Size"
-        android:textAppearance="?android:attr/textAppearanceSmall" 
-        android:textColor="@color/black"
-        />
 
 </RelativeLayout>
