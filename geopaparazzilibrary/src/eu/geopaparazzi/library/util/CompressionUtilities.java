@@ -31,6 +31,7 @@ import java.util.zip.ZipOutputStream;
 
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
+import eu.geopaparazzi.library.webproject.ReturnCodes;
 
 /**
  * Utilities class to zip and unzip folders.
@@ -85,12 +86,19 @@ public class CompressionUtilities {
 
             if (item.isDirectory()) {
                 File newdir = new File(dir + File.separator + item.getName());
+                Logger.d("COMPRESSIONUTILS", "Checking for existing: " + newdir);
+                if (newdir.exists()) {
+                    throw new IOException(ReturnCodes.FILEEXISTS.getMsgString() + " " + newdir);
+                }
                 newdir.mkdir();
             } else {
                 String newfilePath = dir + File.separator + item.getName();
                 File newFile = new File(newfilePath);
-                if (!newFile.getParentFile().exists()) {
-                    newFile.getParentFile().mkdirs();
+                File parentFile = newFile.getParentFile();
+                if (!parentFile.exists()) {
+                    parentFile.mkdirs();
+                } else {
+                    throw new IOException(ReturnCodes.FILEEXISTS.getMsgString() + " " + parentFile);
                 }
 
                 InputStream is = zf.getInputStream(item);

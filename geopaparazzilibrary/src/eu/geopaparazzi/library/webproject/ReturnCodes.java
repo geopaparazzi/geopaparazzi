@@ -27,7 +27,7 @@ public enum ReturnCodes {
     PROBLEM_LOGIN(1, "An error occurred during the login process. Check your account settings."), //
     ERROR(2, "An error occurred during the sync."), //
     NETWORKMISSING(3, "This operation is possible only with an active network connection."), //
-    FILEEXISTS(4, "The file exists.");
+    FILEEXISTS(4, "The file exists. Won't overwrite.");
 
     private final String msgString;
     private final int msgCode;

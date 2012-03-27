@@ -199,7 +199,7 @@ public final class R {
         public static final int arrow_down=0x7f0c0082;
         public static final int arrow_up=0x7f0c0081;
         public static final int askcoordlabel=0x7f0c004f;
-        public static final int authortext=0x7f0c0098;
+        public static final int authortext=0x7f0c0097;
         public static final int bookmarkrow=0x7f0c000c;
         public static final int bookmarkslistbutton=0x7f0c0069;
         public static final int browsebuttonslayout=0x7f0c000f;
@@ -232,8 +232,8 @@ public final class R {
         public static final int dashboard_undoitem_text=0x7f0c0023;
         public static final int dashboard_undonote_item=0x7f0c0021;
         public static final int dashboard_undonote_item_button=0x7f0c0022;
-        public static final int datetext=0x7f0c0096;
-        public static final int descriptiontext=0x7f0c0097;
+        public static final int datetext=0x7f0c0098;
+        public static final int descriptiontext=0x7f0c0096;
         public static final int do_phonenumber_picker=0x7f0c007e;
         public static final int downloadproject_image=0x7f0c0095;
         public static final int filename=0x7f0c0043;

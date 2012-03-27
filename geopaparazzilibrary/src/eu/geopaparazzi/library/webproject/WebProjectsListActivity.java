@@ -29,7 +29,6 @@ import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -185,46 +184,45 @@ public class WebProjectsListActivity extends ListActivity {
     private void downloadProject( final Webproject webproject ) {
         final ProgressDialog cloudProgressDialog = ProgressDialog.show(this, "Downloading project...",
                 "Downloading selected project to the device.", true, true);
-        new AsyncTask<String, Void, Integer>(){
-            protected Integer doInBackground( String... params ) {
+        new AsyncTask<String, Void, String>(){
+            protected String doInBackground( String... params ) {
                 try {
-                    String newurl = url + webproject.id;
-                    ReturnCodes returnCode = WebProjectManager.INSTANCE.downloadProject(WebProjectsListActivity.this, newurl,
-                            user, pwd);
-                    return returnCode.getMsgCode();
+                    String returnCode = WebProjectManager.INSTANCE.downloadProject(WebProjectsListActivity.this, url, user, pwd,
+                            webproject);
+                    return returnCode;
                 } catch (Exception e) {
                     Logger.e(this, e.getLocalizedMessage(), e);
                     e.printStackTrace();
-                    return ReturnCodes.ERROR.getMsgCode();
+                    return e.getMessage();
                 }
             }
 
-            protected void onPostExecute( Integer response ) { // on UI thread!
+            protected void onPostExecute( String response ) { // on UI thread!
                 cloudProgressDialog.dismiss();
-                ReturnCodes code = ReturnCodes.get4Code(response);
-                String msg;
-                if (code == ReturnCodes.ERROR) {
-                    msg = "An error occurred while downloading the project.";
-                    AlertDialog.Builder builder = new AlertDialog.Builder(WebProjectsListActivity.this);
-                    builder.setMessage(msg).setCancelable(false)
-                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
-                                public void onClick( DialogInterface dialog, int id ) {
-                                }
-                            });
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
+                if (response.startsWith(ReturnCodes.OK.getMsgString())) {
+                    String msg = "The project has been successfully downloaded.";// . Load the new
+                    // project?";
+                    Utilities.messageDialog(WebProjectsListActivity.this, msg, null);
+                    // AlertDialog.Builder builder = new
+                    // AlertDialog.Builder(WebProjectsListActivity.this);
+                    // builder.setMessage(msg).setCancelable(false)
+                    // .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener(){
+                    // public void onClick( DialogInterface dialog, int id ) {
+                    // Intent i = getBaseContext().getPackageManager().getLaunchIntentForPackage(
+                    // getBaseContext().getPackageName());
+                    // i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    // startActivity(i);
+                    // }
+                    // }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener(){
+                    // public void onClick( DialogInterface dialog, int id ) {
+                    // }
+                    // });
+                    // AlertDialog alertDialog = builder.create();
+                    // alertDialog.show();
                 } else {
-                    msg = "The project has been successfully downloaded. Load the new project?";
                     AlertDialog.Builder builder = new AlertDialog.Builder(WebProjectsListActivity.this);
-                    builder.setMessage(msg).setCancelable(false)
-                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener(){
-                                public void onClick( DialogInterface dialog, int id ) {
-                                    Intent i = getBaseContext().getPackageManager().getLaunchIntentForPackage(
-                                            getBaseContext().getPackageName());
-                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    startActivity(i);
-                                }
-                            }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener(){
+                    builder.setMessage(response).setCancelable(false)
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
                                 public void onClick( DialogInterface dialog, int id ) {
                                 }
                             });

@@ -119,9 +119,10 @@ public enum WebProjectManager {
      * @param server the server from which to download.
      * @param user the username for authentication.
      * @param passwd the password for authentication.
+     * @param webproject the project to download. 
      * @return the return code.
      */
-    public ReturnCodes downloadProject( Context context, String server, String user, String passwd ) {
+    public String downloadProject( Context context, String server, String user, String passwd, Webproject webproject ) {
         try {
             ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
             File appFolder = resourcesManager.getApplicationDir();
@@ -133,10 +134,11 @@ public enum WebProjectManager {
                 }
             }
 
+            server = server + "/" + DOWNLOADPATH + "/" + webproject.id;
             NetworkUtilities.sendGetRequest4File(server, zipFile, null, user, passwd);
 
             // now remove the zip file
-            CompressionUtilities.unzipFolder(zipFile.getAbsolutePath(), appFolder.getAbsolutePath());
+            CompressionUtilities.unzipFolder(zipFile.getAbsolutePath(), appFolder.getParentFile().getAbsolutePath());
             /*
              * remove the zip file
              */
@@ -146,10 +148,15 @@ public enum WebProjectManager {
                 }
             }
 
-            return ReturnCodes.OK;
+            return ReturnCodes.OK.getMsgString();
         } catch (Exception e) {
+            String message = e.getMessage();
+            if (message.startsWith(ReturnCodes.FILEEXISTS.getMsgString())) {
+                return message;
+            }
+            
             e.printStackTrace();
-            return ReturnCodes.ERROR;
+            return ReturnCodes.ERROR.getMsgString();
         }
     }
 
