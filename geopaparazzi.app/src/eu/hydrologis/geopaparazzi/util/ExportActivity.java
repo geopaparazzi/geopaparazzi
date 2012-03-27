@@ -28,6 +28,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -36,6 +37,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import eu.geopaparazzi.library.gpx.GpxExport;
 import eu.geopaparazzi.library.gpx.GpxRepresenter;
@@ -90,35 +92,45 @@ public class ExportActivity extends Activity {
                 }
 
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-                final String user = preferences.getString(PREF_KEY_USER, ""); //$NON-NLS-1$
-                final String pwd = preferences.getString(PREF_KEY_PWD, ""); //$NON-NLS-1$
+                final String user = preferences.getString(PREF_KEY_USER, "geopaparazziuser"); //$NON-NLS-1$
+                final String pwd = preferences.getString(PREF_KEY_PWD, "geopaparazzipwd"); //$NON-NLS-1$
                 final String serverUrl = preferences.getString(PREF_KEY_SERVER, ""); //$NON-NLS-1$
-
-                if (user.length() == 0 || pwd.length() == 0 || serverUrl.length() == 0) {
+                if (serverUrl.length() == 0) {
                     Utilities.messageDialog(context, R.string.error_set_cloud_settings, null);
                     return;
                 }
 
-                // final String serverUrl = "http://www.giovanniallegri.it/test/geopapup.php";
-                // final String user = null;
-                // final String pwd = null;
-
-                new AlertDialog.Builder(context).setTitle(R.string.media_upload)
-                        .setMessage(R.string.also_upload_images_in_the_project).setIcon(android.R.drawable.ic_dialog_alert)
-                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener(){
-                            public void onClick( DialogInterface dialog, int whichButton ) {
-                                exportToCloud(context, serverUrl, user, pwd, false);
-                            }
-                        }).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener(){
-                            public void onClick( DialogInterface dialog, int whichButton ) {
-                                exportToCloud(context, serverUrl, user, pwd, true);
-                            }
-                        }).setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener(){
-                            public void onClick( DialogInterface dialog, int whichButton ) {
-                            }
-                        }).show();
+                Builder builder = new AlertDialog.Builder(context).setTitle(R.string.media_upload)
+                        .setMessage("Enter a description for the project").setIcon(android.R.drawable.ic_dialog_alert);
+                final EditText input = new EditText(ExportActivity.this);
+                input.setText("");
+                builder.setView(input);
+                AlertDialog alertDialog = builder.setNegativeButton("No Images", new DialogInterface.OnClickListener(){
+                    public void onClick( DialogInterface dialog, int whichButton ) {
+                        addProjectDescription(input);
+                        exportToCloud(context, serverUrl, user, pwd, false);
+                    }
+                }).setPositiveButton("With Images", new DialogInterface.OnClickListener(){
+                    public void onClick( DialogInterface dialog, int whichButton ) {
+                        addProjectDescription(input);
+                        exportToCloud(context, serverUrl, user, pwd, true);
+                    }
+                }).setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                    public void onClick( DialogInterface dialog, int whichButton ) {
+                    }
+                }).create();
+                alertDialog.show();
             }
         });
+    }
+
+    private void addProjectDescription( final EditText input ) {
+        try {
+            String description = input.getText().toString();
+            ResourcesManager.getInstance(ExportActivity.this).addProjectDescription(description);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void exportToCloud( final ExportActivity context, final String serverUrl, final String user, final String pwd,

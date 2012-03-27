@@ -17,6 +17,9 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
+import static eu.hydrologis.geopaparazzi.util.Constants.PREF_KEY_PWD;
+import static eu.hydrologis.geopaparazzi.util.Constants.PREF_KEY_SERVER;
+import static eu.hydrologis.geopaparazzi.util.Constants.PREF_KEY_USER;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -61,9 +64,9 @@ public class ImportActivity extends Activity {
                 }
 
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(ImportActivity.this);
-                String server = preferences.getString("geopapcloud_server_key", "");
-                String user = preferences.getString("geopapcloud_user_key", "dummyuser");
-                String passwd = preferences.getString("geopapcloud_pwd_key", "dummypwd");
+                final String user = preferences.getString(PREF_KEY_USER, "geopaparazziuser"); //$NON-NLS-1$
+                final String passwd = preferences.getString(PREF_KEY_PWD, "geopaparazzipwd"); //$NON-NLS-1$
+                final String server = preferences.getString(PREF_KEY_SERVER, ""); //$NON-NLS-1$
 
                 if (server.length() == 0) {
                     Utilities.messageDialog(context, R.string.error_set_cloud_settings, null);

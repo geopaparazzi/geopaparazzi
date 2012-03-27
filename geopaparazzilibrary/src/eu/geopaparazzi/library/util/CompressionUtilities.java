@@ -79,28 +79,38 @@ public class CompressionUtilities {
     public static void unzipFolder( String zipFile, String destFolder ) throws IOException {
         ZipFile zf = new ZipFile(zipFile);
         Enumeration< ? extends ZipEntry> zipEnum = zf.entries();
-        String dir = destFolder;
 
+        boolean isFirst = true;
         while( zipEnum.hasMoreElements() ) {
             ZipEntry item = (ZipEntry) zipEnum.nextElement();
 
             if (item.isDirectory()) {
-                File newdir = new File(dir + File.separator + item.getName());
-                Logger.d("COMPRESSIONUTILS", "Checking for existing: " + newdir);
-                if (newdir.exists()) {
-                    throw new IOException(ReturnCodes.FILEEXISTS.getMsgString() + " " + newdir);
+                File newdir = new File(destFolder + File.separator + item.getName());
+                if (isFirst) {
+                    isFirst = false;
+                    Logger.d("COMPRESSIONUTILS", "Checking for existing: " + newdir);
+                    if (newdir.exists()) {
+                        throw new IOException(ReturnCodes.FILEEXISTS.getMsgString() + " " + newdir);
+                    }
                 }
                 newdir.mkdir();
             } else {
-                String newfilePath = dir + File.separator + item.getName();
+                String newfilePath = destFolder + File.separator + item.getName();
                 File newFile = new File(newfilePath);
-                File parentFile = newFile.getParentFile();
-                if (!parentFile.exists()) {
-                    parentFile.mkdirs();
+                if (isFirst) {
+                    isFirst = false;
+                    File parentFile = newFile.getParentFile();
+                    if (!parentFile.exists()) {
+                        parentFile.mkdirs();
+                    } else {
+                        throw new IOException(ReturnCodes.FILEEXISTS.getMsgString() + " " + parentFile);
+                    }
                 } else {
-                    throw new IOException(ReturnCodes.FILEEXISTS.getMsgString() + " " + parentFile);
+                    File parentFile = newFile.getParentFile();
+                    if (!parentFile.exists()) {
+                        parentFile.mkdirs();
+                    }
                 }
-
                 InputStream is = zf.getInputStream(item);
                 FileOutputStream fos = new FileOutputStream(newfilePath);
                 byte[] buffer = new byte[512];
