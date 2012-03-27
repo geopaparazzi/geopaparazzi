@@ -107,7 +107,7 @@ public class ResourcesManager implements Serializable {
 
         String packageName = appInfo.packageName;
         int lastDot = packageName.lastIndexOf('.');
-        String applicationLabel = packageName.replace('.', '_');
+        applicationLabel = packageName.replace('.', '_');
         if (lastDot != -1) {
             applicationLabel = packageName.substring(lastDot + 1, packageName.length());
         }
@@ -256,6 +256,18 @@ public class ResourcesManager implements Serializable {
      */
     public File getExportDir() {
         return exportDir;
+    }
+
+    /**
+     * Update the description file of the project.
+     * 
+     * @param description a new description for the project.
+     * @throws IOException
+     */
+    public void addProjectDescription( String description ) throws IOException {
+        File applicationDir = getApplicationDir();
+        File descriptionFile = new File(applicationDir, "description");
+        FileUtilities.writefile(description, descriptionFile);
     }
 
 }
