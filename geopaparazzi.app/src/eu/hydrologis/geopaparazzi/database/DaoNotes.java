@@ -23,6 +23,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mapsforge.android.maps.overlay.OverlayItem;
+import org.mapsforge.core.GeoPoint;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -237,6 +240,44 @@ public class DaoNotes {
             description.append(date);
             Note note = new Note(id, text, description.toString(), lon, lat, altim, form, type);
             notesList.add(note);
+            c.moveToNext();
+        }
+        c.close();
+        return notesList;
+    }
+
+    /**
+     * Get the list of notes from the db as OverlayItems.
+     * 
+     * @return list of notes.
+     * @throws IOException
+     */
+    public static List<OverlayItem> getNoteOverlaysList( Context context ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        List<OverlayItem> notesList = new ArrayList<OverlayItem>();
+        String asColumnsToReturn[] = {COLUMN_ID, COLUMN_LON, COLUMN_LAT, COLUMN_ALTIM, COLUMN_TS, COLUMN_TEXT, COLUMN_FORM,
+                COLUMN_TYPE};
+        String strSortOrder = "_id ASC";
+        Cursor c = sqliteDatabase.query(TABLE_NOTES, asColumnsToReturn, null, null, null, null, strSortOrder);
+        c.moveToFirst();
+        while( !c.isAfterLast() ) {
+            long id = c.getLong(0);
+            double lon = c.getDouble(1);
+            double lat = c.getDouble(2);
+            double altim = c.getDouble(3);
+            String date = c.getString(4);
+            String text = c.getString(5);
+            String form = c.getString(6);
+            int type = c.getInt(7);
+
+            StringBuilder description = new StringBuilder();
+            description.append(text);
+            description.append("\n");
+            description.append(date);
+
+            OverlayItem item1 = new OverlayItem(new GeoPoint(lat, lon), text, description.toString());
+            notesList.add(item1);
+
             c.moveToNext();
         }
         c.close();

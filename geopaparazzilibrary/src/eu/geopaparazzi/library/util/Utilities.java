@@ -22,6 +22,7 @@ import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.os.Looper;
 import android.text.Editable;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -35,6 +36,14 @@ import eu.geopaparazzi.library.util.debug.Logger;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class Utilities {
+    /**
+     * Checks if we are on the UI thread.
+     * 
+     * @return <code>true</code> if we are on the UI thread.
+     */
+    public static boolean isCurrentThreadTheUiThread() {
+        return Looper.getMainLooper().getThread() == Thread.currentThread();
+    }
 
     /**
      * Convert decimal degrees to exif format.

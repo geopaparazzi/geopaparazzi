@@ -21,25 +21,22 @@ import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_COMPASSON;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_MINIMAPON;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_SCALEBARON;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.osmdroid.ResourceProxy;
-import org.osmdroid.api.IGeoPoint;
-import org.osmdroid.events.MapListener;
-import org.osmdroid.events.ScrollEvent;
-import org.osmdroid.events.ZoomEvent;
-import org.osmdroid.tileprovider.tilesource.ITileSource;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.util.BoundingBoxE6;
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapController;
-import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.MyLocationOverlay;
-import org.osmdroid.views.overlay.ScaleBarOverlay;
+import org.mapsforge.android.maps.DebugSettings;
+import org.mapsforge.android.maps.MapActivity;
+import org.mapsforge.android.maps.MapView;
+import org.mapsforge.android.maps.MapViewPosition;
+import org.mapsforge.android.maps.Projection;
+import org.mapsforge.android.maps.overlay.ArrayItemizedOverlay;
+import org.mapsforge.android.maps.overlay.ItemizedOverlay;
+import org.mapsforge.android.maps.overlay.OverlayItem;
+import org.mapsforge.core.GeoPoint;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -49,8 +46,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
@@ -87,15 +87,7 @@ import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
-import eu.hydrologis.geopaparazzi.maps.overlays.BookmarksOverlay;
-import eu.hydrologis.geopaparazzi.maps.overlays.CrossOverlay;
-import eu.hydrologis.geopaparazzi.maps.overlays.GpsPositionOverlay;
-import eu.hydrologis.geopaparazzi.maps.overlays.ImagesOverlay;
-import eu.hydrologis.geopaparazzi.maps.overlays.LogsOverlay;
-import eu.hydrologis.geopaparazzi.maps.overlays.MapsOverlay;
-import eu.hydrologis.geopaparazzi.maps.overlays.MeasureToolOverlay;
-import eu.hydrologis.geopaparazzi.maps.overlays.MinimapOverlayWithCross;
-import eu.hydrologis.geopaparazzi.maps.overlays.NotesOverlay;
+import eu.hydrologis.geopaparazzi.maps.overlays.NotesItemizedOverlay;
 import eu.hydrologis.geopaparazzi.osm.OsmCategoryActivity;
 import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
@@ -103,13 +95,12 @@ import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.MixareUtilities;
 import eu.hydrologis.geopaparazzi.util.Note;
-import eu.hydrologis.geopaparazzi.util.ResourceProxyImpl;
 import eu.hydrologis.geopaparazzi.util.VerticalSeekBar;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class MapsActivity extends Activity implements GpsManagerListener, MapListener {
+public class MapsActivity extends MapActivity implements GpsManagerListener {
     private static final int INSERTCOORD_RETURN_CODE = 666;
 
     private static final int MENU_GPSDATA = 1;
@@ -128,20 +119,16 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
     private SlidingDrawer slidingDrawer;
     private boolean sliderIsOpen;
     private boolean osmSliderIsOpen;
-    private MapView mapsView;
-    private MapController mapController;
-    private ResourceProxy mResourceProxy;
-    private ScaleBarOverlay mScaleBarOverlay;
-    private MinimapOverlayWithCross mMiniMapOverlay;
-    private LogsOverlay mLogsOverlay;
-    private NotesOverlay mNotesOverlay;
-    private BookmarksOverlay mBookmarksOverlay;
-    private GpsPositionOverlay mGpsOverlay;
-    private CrossOverlay mCrossOverlay;
-    private MapsOverlay mMapsOverlay;
-    private MeasureToolOverlay mMeasureOverlay;
-    private MyLocationOverlay mCompassOverlay;
-    private ImagesOverlay mImagesOverlay;
+    private MapView mapView;
+    // private MinimapOverlayWithCross mMiniMapOverlay;
+    // private LogsOverlay mLogsOverlay;
+    // private NotesOverlay mNotesOverlay;
+    // private BookmarksOverlay mBookmarksOverlay;
+    // private GpsPositionOverlay mGpsOverlay;
+    // private CrossOverlay mCrossOverlay;
+    // private MapsOverlay mMapsOverlay;
+    // private MeasureToolOverlay mMeasureOverlay;
+    // private ImagesOverlay mImagesOverlay;
     private int maxZoomLevel;
     private int minZoomLevel;
     private SlidingDrawer osmSlidingDrawer;
@@ -152,115 +139,143 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         super.onCreate(icicle);
         setContentView(R.layout.mapsview);
 
-        mResourceProxy = new ResourceProxyImpl(getApplicationContext());
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        mapsView = new MapView(this, 256);
-        mapController = mapsView.getController();
-        mapsView.setMapListener(this);
-        mapsView.setMultiTouchControls(true);
+        mapView = new MapView(this);
+        mapView.setClickable(true);
+        mapView.setBuiltInZoomControls(true);
+        File mapFile = new File(Environment.getExternalStorageDirectory().getPath(), "download/italy.map");
+        if (!mapFile.exists()) {
+            mapFile = new File(Environment.getExternalStorageDirectory().getPath(), "download/berlin.map");
+            if (!mapFile.exists()) {
+                mapFile = new File(Environment.getExternalStorageDirectory().getPath(), "berlin.map");
+                if (!mapFile.exists()) {
+                    throw new RuntimeException();
+                }
+            }
+        }
+        mapView.setMapFile(mapFile);
+
+        // boolean drawTileFrames = preferences.getBoolean("drawTileFrames", false);
+        // boolean drawTileCoordinates = preferences.getBoolean("drawTileCoordinates", false);
+        // boolean highlightWaterTiles = preferences.getBoolean("highlightWaterTiles", false);
+        // DebugSettings debugSettings = new DebugSettings(true, true, highlightWaterTiles);
+        // this.mapView.setDebugSettings(debugSettings);
+
         final RelativeLayout rl = (RelativeLayout) findViewById(R.id.innerlayout);
-        rl.addView(this.mapsView, new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+        rl.addView(mapView, new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
 
         ViewportManager.INSTANCE.setMapActivity(this);
 
         GpsManager.getInstance(this).addListener(this);
 
         /* imported maps */
-        {
-            mMapsOverlay = new MapsOverlay(this, mResourceProxy);
-            this.mapsView.getOverlays().add(mMapsOverlay);
-        }
+        // {
+        // mMapsOverlay = new MapsOverlay(this, mResourceProxy);
+        // this.mapsView.getOverlays().add(mMapsOverlay);
+        // }
 
         /* gps logs */
-        {
-            mLogsOverlay = new LogsOverlay(this, mResourceProxy);
-            this.mapsView.getOverlays().add(mLogsOverlay);
-        }
+        // {
+        // mLogsOverlay = new LogsOverlay(this, mResourceProxy);
+        // this.mapsView.getOverlays().add(mLogsOverlay);
+        // }
 
         /* images */
-        {
-            mImagesOverlay = new ImagesOverlay(this, mResourceProxy);
-            this.mapsView.getOverlays().add(mImagesOverlay);
-        }
+        // {
+        // mImagesOverlay = new ImagesOverlay(this, mResourceProxy);
+        // this.mapsView.getOverlays().add(mImagesOverlay);
+        // }
 
         /* gps notes */
-        {
-            mNotesOverlay = new NotesOverlay(this, mResourceProxy);
-            this.mapsView.getOverlays().add(mNotesOverlay);
+        // {
+        // mNotesOverlay = new NotesOverlay(this, mResourceProxy);
+        // this.mapsView.getOverlays().add(mNotesOverlay);
+        // }
+        try {
+            Drawable itemDefaultMarker = getResources().getDrawable(R.drawable.marker_red);
+            ArrayItemizedOverlay itemizedOverlay = new NotesItemizedOverlay(itemDefaultMarker, this);
+            List<OverlayItem> noteOverlaysList = DaoNotes.getNoteOverlaysList(this);
+            itemizedOverlay.addItems(noteOverlaysList);
+        } catch (IOException e1) {
+            e1.printStackTrace();
         }
 
-        /* bookmarks */
-        {
-            mBookmarksOverlay = new BookmarksOverlay(this, mResourceProxy);
-            this.mapsView.getOverlays().add(mBookmarksOverlay);
-        }
+        // /* bookmarks */
+        // {
+        // mBookmarksOverlay = new BookmarksOverlay(this, mResourceProxy);
+        // this.mapsView.getOverlays().add(mBookmarksOverlay);
+        // }
+        //
+        // /* gps position */
+        // {
+        // mGpsOverlay = new GpsPositionOverlay(this, mResourceProxy);
+        // this.mapsView.getOverlays().add(mGpsOverlay);
+        // }
+        //
+        // /* cross */
+        // {
+        // mCrossOverlay = new CrossOverlay(this, mResourceProxy);
+        // this.mapsView.getOverlays().add(mCrossOverlay);
+        // }
+        //
+        // /* measure tool */
+        // {
+        // mMeasureOverlay = new MeasureToolOverlay(this, mResourceProxy);
+        // this.mapsView.getOverlays().add(mMeasureOverlay);
+        // }
 
-        /* gps position */
-        {
-            mGpsOverlay = new GpsPositionOverlay(this, mResourceProxy);
-            this.mapsView.getOverlays().add(mGpsOverlay);
-        }
-
-        /* cross */
-        {
-            mCrossOverlay = new CrossOverlay(this, mResourceProxy);
-            this.mapsView.getOverlays().add(mCrossOverlay);
-        }
-
-        /* measure tool */
-        {
-            mMeasureOverlay = new MeasureToolOverlay(this, mResourceProxy);
-            this.mapsView.getOverlays().add(mMeasureOverlay);
-        }
-
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
         /* Scale Bar Overlay */
-        {
-            mScaleBarOverlay = new ScaleBarOverlay(this, mResourceProxy);
-            mapsView.getOverlays().add(mScaleBarOverlay);
-            // Scale bar tries to draw as 1-inch, so to put it in the top center, set x offset to
-            // half screen width, minus half an inch.
-            mScaleBarOverlay.setScaleBarOffset(getResources().getDisplayMetrics().widthPixels / 2
-                    - getResources().getDisplayMetrics().xdpi / 2, 10);
-            boolean isScalebaron = preferences.getBoolean(PREFS_KEY_SCALEBARON, false);
-            mScaleBarOverlay.setEnabled(isScalebaron);
-        }
+        // {
+        // mScaleBarOverlay = new ScaleBarOverlay(this, mResourceProxy);
+        // mapsView.getOverlays().add(mScaleBarOverlay);
+        // // Scale bar tries to draw as 1-inch, so to put it in the top center, set x offset to
+        // // half screen width, minus half an inch.
+        // mScaleBarOverlay.setScaleBarOffset(getResources().getDisplayMetrics().widthPixels / 2
+        // - getResources().getDisplayMetrics().xdpi / 2, 10);
+        // boolean isScalebaron = preferences.getBoolean(PREFS_KEY_SCALEBARON, false);
+        // mScaleBarOverlay.setEnabled(isScalebaron);
+        // }
+        //
+        // /* Compass Overlay */
+        // {
+        // mCompassOverlay = new MyLocationOverlay(this, mapsView);
+        // mapsView.getOverlays().add(mCompassOverlay);
+        // mCompassOverlay.disableMyLocation();
+        // mCompassOverlay.enableCompass();
+        // boolean isCompasson = preferences.getBoolean(PREFS_KEY_COMPASSON, false);
+        // mCompassOverlay.setEnabled(isCompasson);
+        // }
 
-        /* Compass Overlay */
-        {
-            mCompassOverlay = new MyLocationOverlay(this, mapsView);
-            mapsView.getOverlays().add(mCompassOverlay);
-            mCompassOverlay.disableMyLocation();
-            mCompassOverlay.enableCompass();
-            boolean isCompasson = preferences.getBoolean(PREFS_KEY_COMPASSON, false);
-            mCompassOverlay.setEnabled(isCompasson);
-        }
-
-        /* MiniMap */
-        int width;
-        int padding;
-        Display display = getWindowManager().getDefaultDisplay();
-        {
-            mMiniMapOverlay = new MinimapOverlayWithCross(this, mapsView.getTileRequestCompleteHandler());
-            mapsView.getOverlays().add(mMiniMapOverlay);
-            width = display.getWidth();
-            padding = (int) Math.floor(width * 0.05);
-            width = width - padding;
-            int half = (int) Math.floor(width / 2.0);
-            mMiniMapOverlay.setHeight(half);
-            mMiniMapOverlay.setWidth(half);
-            mMiniMapOverlay.setPadding(padding);
-            boolean isMinimapon = preferences.getBoolean(PREFS_KEY_MINIMAPON, false);
-            mMiniMapOverlay.setEnabled(isMinimapon);
-        }
+        // /* MiniMap */
+        // int width;
+        // int padding;
+        // Display display = getWindowManager().getDefaultDisplay();
+        // {
+        // mMiniMapOverlay = new MinimapOverlayWithCross(this,
+        // mapsView.getTileRequestCompleteHandler());
+        // mapsView.getOverlays().add(mMiniMapOverlay);
+        // width = display.getWidth();
+        // padding = (int) Math.floor(width * 0.05);
+        // width = width - padding;
+        // int half = (int) Math.floor(width / 2.0);
+        // mMiniMapOverlay.setHeight(half);
+        // mMiniMapOverlay.setWidth(half);
+        // mMiniMapOverlay.setPadding(padding);
+        // boolean isMinimapon = preferences.getBoolean(PREFS_KEY_MINIMAPON, false);
+        // mMiniMapOverlay.setEnabled(isMinimapon);
+        // }
 
         final double[] mapCenterLocation = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
         GeoPoint geoPoint = new GeoPoint(mapCenterLocation[1], mapCenterLocation[0]);
-        mapController.setZoom((int) mapCenterLocation[2]);
-        mapController.setCenter(geoPoint);
+        mapView.getController().setZoom((int) mapCenterLocation[2]);
+        // mapView.getController().setCenter(geoPoint);
 
-        maxZoomLevel = mapsView.getMaxZoomLevel();
-        minZoomLevel = mapsView.getMinZoomLevel();
+        GeoPoint berlinPoint = new GeoPoint(52.514446, 13.350150);
+        mapView.getController().setCenter(berlinPoint);
+
+        maxZoomLevel = mapView.getMapZoomControls().getZoomLevelMax();
+        minZoomLevel = mapView.getMapZoomControls().getZoomLevelMin();
 
         // zoom bar
         zoomBar = (VerticalSeekBar) findViewById(R.id.ZoomBar);
@@ -270,7 +285,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
             private int progress = (int) mapCenterLocation[2];
             public void onStopTrackingTouch( VerticalSeekBar seekBar ) {
                 setZoomGuiText(progress);
-                mapsView.getController().setZoom(progress);
+                mapView.getController().setZoom(progress);
                 inalidateMap();
                 //                Logger.d(this, "Zoomed to: " + progress); //$NON-NLS-1$
             }
@@ -300,7 +315,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                 String text = zoomInButton.getText().toString();
                 int newZoom = Integer.parseInt(text);
                 setZoomGuiText(newZoom);
-                mapsView.getController().setZoom(newZoom);
+                mapView.getController().setZoom(newZoom);
                 inalidateMap();
             }
         });
@@ -311,7 +326,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                 String text = zoomOutButton.getText().toString();
                 int newZoom = Integer.parseInt(text);
                 setZoomGuiText(newZoom);
-                mapsView.getController().setZoom(newZoom);
+                mapView.getController().setZoom(newZoom);
                 inalidateMap();
             }
         });
@@ -368,10 +383,11 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         ImageButton addnotebytagButton = (ImageButton) findViewById(R.id.addnotebytagbutton);
         addnotebytagButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                IGeoPoint mapCenter = mapsView.getMapCenter();
+                MapViewPosition mapPosition = mapView.getMapPosition();
+                GeoPoint mapCenter = mapPosition.getMapCenter();
                 Intent osmTagsIntent = new Intent(MapsActivity.this, MapTagsActivity.class);
-                osmTagsIntent.putExtra(LibraryConstants.LATITUDE, (double) (mapCenter.getLatitudeE6() / LibraryConstants.E6));
-                osmTagsIntent.putExtra(LibraryConstants.LONGITUDE, (double) (mapCenter.getLongitudeE6() / LibraryConstants.E6));
+                osmTagsIntent.putExtra(LibraryConstants.LATITUDE, (double) (mapCenter.latitudeE6 / LibraryConstants.E6));
+                osmTagsIntent.putExtra(LibraryConstants.LONGITUDE, (double) (mapCenter.longitudeE6 / LibraryConstants.E6));
                 osmTagsIntent.putExtra(LibraryConstants.ELEVATION, 0.0);
                 startActivity(osmTagsIntent);
             }
@@ -409,18 +425,18 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         final ImageButton toggleMeasuremodeButton = (ImageButton) findViewById(R.id.togglemeasuremodebutton);
         toggleMeasuremodeButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                boolean isInMeasureMode = mMeasureOverlay.isInMeasureMode();
-                mMeasureOverlay.setMeasureMode(!isInMeasureMode);
-                if (!isInMeasureMode) {
-                    toggleMeasuremodeButton.setBackgroundResource(R.drawable.measuremode_on);
-                } else {
-                    toggleMeasuremodeButton.setBackgroundResource(R.drawable.measuremode);
-                }
-                if (!isInMeasureMode) {
-                    disableDrawing();
-                } else {
-                    enableDrawingWithDelay();
-                }
+                // boolean isInMeasureMode = mMeasureOverlay.isInMeasureMode();
+                // mMeasureOverlay.setMeasureMode(!isInMeasureMode);
+                // if (!isInMeasureMode) {
+                // toggleMeasuremodeButton.setBackgroundResource(R.drawable.measuremode_on);
+                // } else {
+                // toggleMeasuremodeButton.setBackgroundResource(R.drawable.measuremode);
+                // }
+                // if (!isInMeasureMode) {
+                // disableDrawing();
+                // } else {
+                // enableDrawingWithDelay();
+                // }
             }
         });
 
@@ -631,8 +647,11 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         // SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (hasFocus) {
             double[] lastCenter = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
-            mapController.setZoom((int) lastCenter[2]);
-            mapController.setCenter(new GeoPoint(lastCenter[1], lastCenter[0]));
+
+            GeoPoint geoPoint = new GeoPoint(lastCenter[1], lastCenter[0]);
+            mapView.getController().setZoom((int) lastCenter[2]);
+            mapView.getController().setCenter(geoPoint);
+
             setZoomGuiText((int) lastCenter[2]);
         }
         super.onWindowFocusChanged(hasFocus);
@@ -649,12 +668,8 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
     // super.onPause();
     // }
 
-    public MapController getMapController() {
-        return mapController;
-    }
-
-    public MapView getMapsView() {
-        return mapsView;
+    public MapView getMapView() {
+        return mapView;
     }
 
     private void setZoomGuiText( int newZoom ) {
@@ -672,20 +687,19 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
     }
 
     public void setNewCenter( double lon, double lat, boolean drawIcon ) {
-        mapController.setCenter(new GeoPoint(lat, lon));
+        mapView.getController().setCenter(new GeoPoint(lat, lon));
     }
 
     public void setNewCenterAtZoom( final double centerX, final double centerY, final int zoom ) {
-        mapsView.getController().setZoom(zoom);
+        mapView.getController().setZoom(zoom);
         setZoomGuiText(zoom);
-        mapsView.getController().setCenter(
+        mapView.getController().setCenter(
                 new GeoPoint((int) (centerX * LibraryConstants.E6), (int) (centerY * LibraryConstants.E6)));
-        mapsView.postInvalidate();
     }
 
     public double[] getCenterLonLat() {
-        IGeoPoint mapCenter = mapsView.getMapCenter();
-        double[] lonLat = {mapCenter.getLongitudeE6() / LibraryConstants.E6, mapCenter.getLatitudeE6() / LibraryConstants.E6};
+        GeoPoint mapCenter = mapView.getMapPosition().getMapCenter();
+        double[] lonLat = {mapCenter.longitudeE6 / LibraryConstants.E6, mapCenter.latitudeE6 / LibraryConstants.E6};
         return lonLat;
     }
 
@@ -699,13 +713,14 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
         menu.add(Menu.NONE, MENU_MIXARE_ID, 6, R.string.view_in_mixare).setIcon(R.drawable.icon_datasource);
         final SubMenu subMenu = menu.addSubMenu(Menu.NONE, MENU_TILE_SOURCE_ID, 7, R.string.mapsactivity_menu_tilesource)
                 .setIcon(R.drawable.ic_menu_tilesource);
-        {
-            // BingMapTileSource source = new BingMapTileSource("en");
-            // TileSourceFactory.addTileSource(source);
-            for( final ITileSource tileSource : TileSourceFactory.getTileSources() ) {
-                subMenu.add(0, 1000 + tileSource.ordinal(), Menu.NONE, tileSource.localizedName(mResourceProxy));
-            }
-        }
+        // {
+        // // BingMapTileSource source = new BingMapTileSource("en");
+        // // TileSourceFactory.addTileSource(source);
+        // for( final ITileSource tileSource : TileSourceFactory.getTileSources() ) {
+        // subMenu.add(0, 1000 + tileSource.ordinal(), Menu.NONE,
+        // tileSource.localizedName(mResourceProxy));
+        // }
+        // }
         menu.add(Menu.NONE, GO_TO, 8, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
         return true;
     }
@@ -743,45 +758,41 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                 return false;
             }
         case MENU_TILE_SOURCE_ID:
-            this.mapsView.invalidate();
+            // this.mapsView.invalidate();
             return true;
 
-        case MENU_MINIMAP_ID:
-            boolean isMinimapEnabled = !mMiniMapOverlay.isEnabled();
-            mMiniMapOverlay.setEnabled(isMinimapEnabled);
-            mapsView.invalidate();
-            Editor editor1 = preferences.edit();
-            editor1.putBoolean(PREFS_KEY_MINIMAPON, isMinimapEnabled);
-            editor1.commit();
-            return true;
-        case MENU_SCALE_ID:
-            boolean isScalebarEnabled = !mScaleBarOverlay.isEnabled();
-            mScaleBarOverlay.setEnabled(isScalebarEnabled);
-            mapsView.invalidate();
-            Editor editor2 = preferences.edit();
-            editor2.putBoolean(PREFS_KEY_SCALEBARON, isScalebarEnabled);
-            return true;
-        case MENU_COMPASS_ID:
-            boolean isCompassEnabled = !mCompassOverlay.isEnabled();
-            mCompassOverlay.setEnabled(isCompassEnabled);
-            mapsView.invalidate();
-            Editor editor3 = preferences.edit();
-            editor3.putBoolean(PREFS_KEY_COMPASSON, isCompassEnabled);
-            return true;
+            // case MENU_MINIMAP_ID:
+            // boolean isMinimapEnabled = !mMiniMapOverlay.isEnabled();
+            // mMiniMapOverlay.setEnabled(isMinimapEnabled);
+            // mapsView.invalidate();
+            // Editor editor1 = preferences.edit();
+            // editor1.putBoolean(PREFS_KEY_MINIMAPON, isMinimapEnabled);
+            // editor1.commit();
+            // return true;
+            // case MENU_SCALE_ID:
+            // boolean isScalebarEnabled = !mScaleBarOverlay.isEnabled();
+            // mScaleBarOverlay.setEnabled(isScalebarEnabled);
+            // mapsView.invalidate();
+            // Editor editor2 = preferences.edit();
+            // editor2.putBoolean(PREFS_KEY_SCALEBARON, isScalebarEnabled);
+            // return true;
+            // case MENU_COMPASS_ID:
+            // boolean isCompassEnabled = !mCompassOverlay.isEnabled();
+            // mCompassOverlay.setEnabled(isCompassEnabled);
+            // mapsView.invalidate();
+            // Editor editor3 = preferences.edit();
+            // editor3.putBoolean(PREFS_KEY_COMPASSON, isCompassEnabled);
+            // return true;
         case MENU_MIXARE_ID:
             MixareHandler mixareHandler = new MixareHandler();
             if (!mixareHandler.isMixareInstalled(this)) {
                 mixareHandler.installMixareFromMarket(this);
                 return true;
             }
-            BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
-            float n = boundingBox.getLatNorthE6() / LibraryConstants.E6;
-            float s = boundingBox.getLatSouthE6() / LibraryConstants.E6;
-            float w = boundingBox.getLonWestE6() / LibraryConstants.E6;
-            float e = boundingBox.getLonEastE6() / LibraryConstants.E6;
+            float[] nswe = getMapWorldBounds();
 
             try {
-                MixareUtilities.runRegionOnMixare(this, n, s, w, e);
+                MixareUtilities.runRegionOnMixare(this, nswe[0], nswe[1], nswe[2], nswe[3]);
                 return true;
             } catch (Exception e1) {
                 e1.printStackTrace();
@@ -793,11 +804,44 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
             return true;
         }
         default:
-            ITileSource tileSource = TileSourceFactory.getTileSource(item.getItemId() - 1000);
-            mapsView.setTileSource(tileSource);
-            mMiniMapOverlay.setTileSource(tileSource);
+            // ITileSource tileSource = TileSourceFactory.getTileSource(item.getItemId() - 1000);
+            // mapsView.setTileSource(tileSource);
+            // mMiniMapOverlay.setTileSource(tileSource);
         }
         return super.onMenuItemSelected(featureId, item);
+    }
+
+    /**
+     * Retrieves the map world bounds in degrees. 
+     * 
+     * @return the [n,s,w,e] in degrees.
+     */
+    private float[] getMapWorldBounds() {
+        float[] nswe = getMapWorldBoundsE6();
+        float n = nswe[0] / LibraryConstants.E6;
+        float s = nswe[1] / LibraryConstants.E6;
+        float w = nswe[2] / LibraryConstants.E6;
+        float e = nswe[3] / LibraryConstants.E6;
+        return new float[]{n, s, w, e};
+    }
+
+    /**
+     * Retrieves the map world bounds in microdegrees. 
+     * 
+     * @return the [n,s,w,e] in midrodegrees.
+     */
+    private float[] getMapWorldBoundsE6() {
+        Projection projection = mapView.getProjection();
+        int latitudeSpan = projection.getLatitudeSpan();
+        int longitudeSpan = projection.getLongitudeSpan();
+        MapViewPosition mapPosition = mapView.getMapPosition();
+        GeoPoint c = mapPosition.getMapCenter();
+        float n = (c.latitudeE6 + latitudeSpan / 2);
+        float s = (c.latitudeE6 - latitudeSpan / 2);
+        float w = (c.longitudeE6 - longitudeSpan / 2);
+        float e = (c.longitudeE6 + longitudeSpan / 2);
+        float[] nswe = {n, s, w, e};
+        return nswe;
     }
 
     protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
@@ -827,13 +871,9 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                 }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
                         try {
-                            BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
-                            float n = boundingBox.getLatNorthE6() / LibraryConstants.E6;
-                            float s = boundingBox.getLatSouthE6() / LibraryConstants.E6;
-                            float w = boundingBox.getLonWestE6() / LibraryConstants.E6;
-                            float e = boundingBox.getLonEastE6() / LibraryConstants.E6;
-                            final List<Bookmark> bookmarksInBounds = DaoBookmarks.getBookmarksInWorldBounds(MapsActivity.this, n,
-                                    s, w, e);
+                            float[] nswe = getMapWorldBounds();
+                            final List<Bookmark> bookmarksInBounds = DaoBookmarks.getBookmarksInWorldBounds(MapsActivity.this,
+                                    nswe[0], nswe[1], nswe[2], nswe[3]);
                             int bookmarksNum = bookmarksInBounds.size();
 
                             bookmarksRemoveDialog = new ProgressDialog(MapsActivity.this);
@@ -877,12 +917,10 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                 }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
                         try {
-                            BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
-                            float n = boundingBox.getLatNorthE6() / LibraryConstants.E6;
-                            float s = boundingBox.getLatSouthE6() / LibraryConstants.E6;
-                            float w = boundingBox.getLonWestE6() / LibraryConstants.E6;
-                            float e = boundingBox.getLonEastE6() / LibraryConstants.E6;
-                            final List<Note> notesInBounds = DaoNotes.getNotesInWorldBounds(MapsActivity.this, n, s, w, e);
+                            float[] nswe = getMapWorldBounds();
+
+                            final List<Note> notesInBounds = DaoNotes.getNotesInWorldBounds(MapsActivity.this, nswe[0], nswe[1],
+                                    nswe[2], nswe[3]);
 
                             int notesNum = notesInBounds.size();
 
@@ -918,9 +956,9 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
     }
 
     private void addBookmark() {
-        IGeoPoint mapCenter = mapsView.getMapCenter();
-        final float centerLat = mapCenter.getLatitudeE6() / LibraryConstants.E6;
-        final float centerLon = mapCenter.getLongitudeE6() / LibraryConstants.E6;
+        GeoPoint mapCenter = mapView.getMapPosition().getMapCenter();
+        final float centerLat = mapCenter.latitudeE6 / LibraryConstants.E6;
+        final float centerLon = mapCenter.longitudeE6 / LibraryConstants.E6;
         final EditText input = new EditText(this);
         final String newDate = LibraryConstants.TIME_FORMATTER.format(new Date());
         final String proposedName = "bookmark " + newDate; //$NON-NLS-1$
@@ -941,14 +979,11 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                                 newName = proposedName;;
                             }
 
-                            int zoom = mapsView.getZoomLevel();
-                            BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
-                            float n = boundingBox.getLatNorthE6() / LibraryConstants.E6;
-                            float s = boundingBox.getLatSouthE6() / LibraryConstants.E6;
-                            float w = boundingBox.getLonWestE6() / LibraryConstants.E6;
-                            float e = boundingBox.getLonEastE6() / LibraryConstants.E6;
-                            DaoBookmarks.addBookmark(getApplicationContext(), centerLon, centerLat, newName, zoom, n, s, w, e);
-                            mapsView.invalidate();
+                            int zoom = mapView.getMapPosition().getZoomLevel();
+                            float[] nswe = getMapWorldBounds();
+                            DaoBookmarks.addBookmark(getApplicationContext(), centerLon, centerLat, newName, zoom, nswe[0],
+                                    nswe[1], nswe[2], nswe[3]);
+                            mapView.invalidateOnUiThread();
                         } catch (IOException e) {
                             Logger.e(this, e.getLocalizedMessage(), e);
                             e.printStackTrace();
@@ -957,7 +992,6 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                     }
                 }).setCancelable(false).show();
     }
-
     private boolean bookmarksDeleted = false;
     private ProgressDialog bookmarksRemoveDialog;
     private Handler bookmarksRemoveHandler = new Handler(){
@@ -966,7 +1000,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                 bookmarksRemoveDialog.incrementProgressBy(1);
             } else {
                 bookmarksRemoveDialog.dismiss();
-                mapsView.invalidate();
+                mapView.invalidateOnUiThread();
             }
         }
     };
@@ -979,13 +1013,13 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                 notesRemoveDialog.incrementProgressBy(1);
             } else {
                 notesRemoveDialog.dismiss();
-                mapsView.invalidate();
+                mapView.invalidateOnUiThread();
             }
         }
     };
 
     public void inalidateMap() {
-        mapsView.invalidate();
+        mapView.invalidateOnUiThread();
     }
 
     public boolean onKeyDown( int keyCode, KeyEvent event ) {
@@ -1010,12 +1044,12 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        mMapsOverlay.setDoDraw(true);
-                        mLogsOverlay.setDoDraw(true);
-                        mNotesOverlay.setDoDraw(true);
-                        mImagesOverlay.setDoDraw(true);
-                        mBookmarksOverlay.setDoDraw(true);
-                        mGpsOverlay.setDoDraw(true);
+                        // mMapsOverlay.setDoDraw(true);
+                        // mLogsOverlay.setDoDraw(true);
+                        // mNotesOverlay.setDoDraw(true);
+                        // mImagesOverlay.setDoDraw(true);
+                        // mBookmarksOverlay.setDoDraw(true);
+                        // mGpsOverlay.setDoDraw(true);
                         inalidateMap();
                     }
                 });
@@ -1024,36 +1058,38 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
     }
 
     private void disableDrawing() {
-        mMapsOverlay.setDoDraw(false);
-        mLogsOverlay.setDoDraw(false);
-        mNotesOverlay.setDoDraw(false);
-        mImagesOverlay.setDoDraw(false);
-        mBookmarksOverlay.setDoDraw(false);
-        mGpsOverlay.setDoDraw(false);
+        // mMapsOverlay.setDoDraw(false);
+        // mLogsOverlay.setDoDraw(false);
+        // mNotesOverlay.setDoDraw(false);
+        // mImagesOverlay.setDoDraw(false);
+        // mBookmarksOverlay.setDoDraw(false);
+        // mGpsOverlay.setDoDraw(false);
     }
 
     public void onLocationChanged( GpsLocation loc ) {
         if (loc == null) {
             return;
         }
-        BoundingBoxE6 boundingBox = mapsView.getBoundingBox();
+        float[] nsweE6 = getMapWorldBoundsE6();
         double lat = loc.getLatitude();
         double lon = loc.getLongitude();
         int latE6 = (int) ((float) lat * LibraryConstants.E6);
         int lonE6 = (int) ((float) lon * LibraryConstants.E6);
         boolean centerOnGps = preferences.getBoolean(Constants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
 
-        int sE6 = boundingBox.getLatSouthE6();
-        int nE6 = boundingBox.getLatNorthE6();
-        int eE6 = boundingBox.getLonEastE6();
-        int wE6 = boundingBox.getLonWestE6();
-        int paddingX = (int) (boundingBox.getLongitudeSpanE6() * 0.2);
-        int paddingY = (int) (boundingBox.getLatitudeSpanE6() * 0.2);
+        int nE6 = (int) nsweE6[0];
+        int sE6 = (int) nsweE6[1];
+        int wE6 = (int) nsweE6[2];
+        int eE6 = (int) nsweE6[3];
+        Projection p = mapView.getProjection();
+        int paddingX = (int) (p.getLongitudeSpan() * 0.2);
+        int paddingY = (int) (p.getLatitudeSpan() * 0.2);
         int newEE6 = eE6 - paddingX;
         int newWE6 = wE6 + paddingX;
         int newSE6 = sE6 + paddingY;
         int newNE6 = nE6 - paddingY;
-        BoundingBoxE6 smallerBounds = new BoundingBoxE6(newNE6, newEE6, newSE6, newWE6);
+
+        RectF smallerBounds = new RectF(newWE6, newNE6, newWE6, newSE6);
         // System.out.println(boundingBox);
         // System.out.println(smallerBounds);
         boolean doCenter = false;
@@ -1062,7 +1098,7 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                 doCenter = true;
             }
         }
-        if (!boundingBox.contains(latE6, lonE6)) {
+        if (!smallerBounds.contains(latE6, lonE6)) {
             if (!centerOnGps) {
                 return;
             }
@@ -1073,35 +1109,36 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
                 Logger.i(this, "recentering triggered"); //$NON-NLS-1$                
         }
 
-        mMapsOverlay.setGpsUpdate(true);
-        mLogsOverlay.setGpsUpdate(true);
-        mNotesOverlay.setGpsUpdate(true);
-        mImagesOverlay.setGpsUpdate(true);
-        mBookmarksOverlay.setGpsUpdate(true);
-        mGpsOverlay.setLoc(loc);
-        mapsView.invalidate();
+        // mMapsOverlay.setGpsUpdate(true);
+        // mLogsOverlay.setGpsUpdate(true);
+        // mNotesOverlay.setGpsUpdate(true);
+        // mImagesOverlay.setGpsUpdate(true);
+        // mBookmarksOverlay.setGpsUpdate(true);
+        // mGpsOverlay.setLoc(loc);
+        mapView.invalidateOnUiThread();
     }
     public void onStatusChanged( boolean hasFix ) {
     }
 
-    public boolean onScroll( ScrollEvent event ) {
-        saveCenterPref();
-        return true;
-    }
-
-    public boolean onZoom( ZoomEvent event ) {
-        int zoomLevel = event.getZoomLevel();
-        if (zoomInButton != null) {
-            setZoomGuiText(zoomLevel);
-        }
-        saveCenterPref();
-        return true;
-    }
+    // public boolean onScroll( ScrollEvent event ) {
+    // saveCenterPref();
+    // return true;
+    // }
+    //
+    // public boolean onZoom( ZoomEvent event ) {
+    // int zoomLevel = event.getZoomLevel();
+    // if (zoomInButton != null) {
+    // setZoomGuiText(zoomLevel);
+    // }
+    // saveCenterPref();
+    // return true;
+    // }
 
     private synchronized void saveCenterPref() {
-        IGeoPoint mapCenter = mapsView.getMapCenter();
-        double lon = mapCenter.getLongitudeE6() / LibraryConstants.E6;
-        double lat = mapCenter.getLatitudeE6() / LibraryConstants.E6;
+        MapViewPosition mapPosition = mapView.getMapPosition();
+        GeoPoint mapCenter = mapPosition.getMapCenter();
+        double lon = mapCenter.longitudeE6 / LibraryConstants.E6;
+        double lat = mapCenter.latitudeE6 / LibraryConstants.E6;
 
         if (Debug.D) {
             StringBuilder sb = new StringBuilder();
@@ -1112,6 +1149,6 @@ public class MapsActivity extends Activity implements GpsManagerListener, MapLis
             Logger.i(this, sb.toString());
         }
 
-        PositionUtilities.putMapCenterInPreferences(preferences, lon, lat, mapsView.getZoomLevel());
+        PositionUtilities.putMapCenterInPreferences(preferences, lon, lat, mapPosition.getZoomLevel());
     }
 }

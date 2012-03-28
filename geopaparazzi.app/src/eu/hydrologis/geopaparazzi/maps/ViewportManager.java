@@ -17,8 +17,9 @@
  */
 package eu.hydrologis.geopaparazzi.maps;
 
-import org.osmdroid.api.IGeoPoint;
-import org.osmdroid.views.MapView;
+import org.mapsforge.android.maps.MapView;
+import org.mapsforge.android.maps.MapViewPosition;
+import org.mapsforge.core.GeoPoint;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -47,7 +48,7 @@ public enum ViewportManager {
             return;
         }
         // mapsActivity.setZoomGuiText(zoom);
-        mapsActivity.getMapController().setZoom(zoom);
+        mapsActivity.getMapView().getController().setZoom(zoom);
     }
 
     public void setBoundsTo( double n, double s, double w, double e ) {
@@ -76,21 +77,22 @@ public enum ViewportManager {
             return;
         }
 
-        MapView mapsView = mapsActivity.getMapsView();
-        IGeoPoint mapCenter = mapsView.getMapCenter();
-        int zoomLevel = mapsView.getZoomLevel();
+        MapView mapsView = mapsActivity.getMapView();
+        MapViewPosition mapPosition = mapsView.getMapPosition();
+        GeoPoint mapCenter = mapPosition.getMapCenter();
+        int zoomLevel = mapPosition.getZoomLevel();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mapsActivity);
         float cx = 0f;
         float cy = 0f;
         if (centerX != null) {
             cx = centerX.floatValue();
         } else {
-            cx = (float) (mapCenter.getLongitudeE6() / LibraryConstants.E6);
+            cx = (float) (mapCenter.longitudeE6 / LibraryConstants.E6);
         }
         if (centerY != null) {
             cy = centerY.floatValue();
         } else {
-            cy = (float) (mapCenter.getLatitudeE6() / LibraryConstants.E6);
+            cy = (float) (mapCenter.latitudeE6 / LibraryConstants.E6);
         }
         if (zoom != null) {
             zoomLevel = zoom;
@@ -115,7 +117,7 @@ public enum ViewportManager {
         if (mapsActivity == null) {
             return;
         }
-        mapsActivity.getMapsView().postInvalidate();
+        mapsActivity.getMapView().postInvalidate();
     }
 
     public double[] getCenterLonLat() {
@@ -129,7 +131,7 @@ public enum ViewportManager {
         if (mapsActivity == null) {
             return 0;
         }
-        return mapsActivity.getMapsView().getZoomLevel();
+        return mapsActivity.getMapView().getMapPosition().getZoomLevel();
     }
 
 }

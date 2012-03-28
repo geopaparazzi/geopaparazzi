@@ -25,8 +25,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.osmdroid.util.GeoPoint;
-import org.osmdroid.views.MapView.Projection;
+import org.mapsforge.android.maps.Projection;
+import org.mapsforge.core.GeoPoint;
+
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -406,7 +407,7 @@ public class DaoMaps {
             String name = c.getString(3);
 
             GeoPoint g = new GeoPoint(lat, lon);
-            Point mapPixels = pj.toMapPixels(g, null);
+            Point mapPixels = pj.toPixels(g, null);
             // check if on screen it would be placed on the same pixel
             int screenX = mapPixels.x;
             int screenY = mapPixels.y;
