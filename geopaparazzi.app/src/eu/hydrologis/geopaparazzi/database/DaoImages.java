@@ -23,6 +23,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mapsforge.android.maps.overlay.OverlayItem;
+import org.mapsforge.core.GeoPoint;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -173,6 +176,32 @@ public class DaoImages {
             String text = c.getString(7);
 
             Image image = new Image(id, text, lon, lat, altim, azim, path, date);
+            images.add(image);
+            c.moveToNext();
+        }
+        c.close();
+        return images;
+    }
+
+    public static List<OverlayItem> getImagesOverlayList( Context context ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        List<OverlayItem> images = new ArrayList<OverlayItem>();
+        String asColumnsToReturn[] = {COLUMN_ID, COLUMN_LON, COLUMN_LAT, COLUMN_ALTIM, COLUMN_AZIM, COLUMN_PATH, COLUMN_TS,
+                COLUMN_TEXT};
+        String strSortOrder = "_id ASC";
+        Cursor c = sqliteDatabase.query(TABLE_IMAGES, asColumnsToReturn, null, null, null, null, strSortOrder);
+        c.moveToFirst();
+        while( !c.isAfterLast() ) {
+            long id = c.getLong(0);
+            double lon = c.getDouble(1);
+            double lat = c.getDouble(2);
+            double altim = c.getDouble(3);
+            double azim = c.getDouble(4);
+            String path = c.getString(5);
+            String date = c.getString(6);
+            String text = c.getString(7);
+
+            OverlayItem image = new OverlayItem(new GeoPoint(lat, lon), path, text);
             images.add(image);
             c.moveToNext();
         }

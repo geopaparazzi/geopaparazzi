@@ -90,9 +90,11 @@ import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
+import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
+import eu.hydrologis.geopaparazzi.maps.overlays.ImageItemizedOverlay;
 import eu.hydrologis.geopaparazzi.maps.overlays.NotesItemizedOverlay;
 import eu.hydrologis.geopaparazzi.osm.OsmCategoryActivity;
 import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
@@ -186,7 +188,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener {
         // mLogsOverlay = new LogsOverlay(this, mResourceProxy);
         // this.mapsView.getOverlays().add(mLogsOverlay);
         // }
-
         try {
             ArrayWayOverlay wayOverlay = new ArrayWayOverlay(null, null);
             List<OverlayWay> logOverlaysList = DaoGpsLog.getGpslogOverlays(this);
@@ -201,6 +202,15 @@ public class MapsActivity extends MapActivity implements GpsManagerListener {
         // mImagesOverlay = new ImagesOverlay(this, mResourceProxy);
         // this.mapsView.getOverlays().add(mImagesOverlay);
         // }
+        try {
+            Drawable imageMarker = getResources().getDrawable(R.drawable.image);
+            ArrayItemizedOverlay imagesOverlay = new ImageItemizedOverlay(imageMarker, this);
+            List<OverlayItem> imagesOverlaysList = DaoImages.getImagesOverlayList(this);
+            imagesOverlay.addItems(imagesOverlaysList);
+            mapView.getOverlays().add(imagesOverlay);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
 
         /* gps notes */
         // {
