@@ -64,8 +64,10 @@ import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.SubMenu;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -108,7 +110,7 @@ import eu.hydrologis.geopaparazzi.util.VerticalSeekBar;
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class MapsActivity extends MapActivity implements GpsManagerListener {
+public class MapsActivity extends MapActivity implements GpsManagerListener, OnTouchListener {
     private static final int INSERTCOORD_RETURN_CODE = 666;
 
     private static final int MENU_GPSDATA = 1;
@@ -151,7 +153,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener {
 
         mapView = new MapView(this);
         mapView.setClickable(true);
-        mapView.setBuiltInZoomControls(true);
+        mapView.setBuiltInZoomControls(false);
         File mapFile = new File(Environment.getExternalStorageDirectory().getPath(), "download/italy.map");
         if (!mapFile.exists()) {
             mapFile = new File(Environment.getExternalStorageDirectory().getPath(), "download/berlin.map");
@@ -163,6 +165,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener {
             }
         }
         mapView.setMapFile(mapFile);
+        
+        mapView.setOnTouchListener(this);
 
         // boolean drawTileFrames = preferences.getBoolean("drawTileFrames", false);
         // boolean drawTileCoordinates = preferences.getBoolean("drawTileCoordinates", false);
@@ -481,6 +485,13 @@ public class MapsActivity extends MapActivity implements GpsManagerListener {
             e.printStackTrace();
         }
 
+    }
+    
+    public boolean onTouch( View v, MotionEvent event ) {
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            saveCenterPref();
+        }
+        return false;
     }
 
     private void handleOsmSliderView() throws Exception {
@@ -1184,4 +1195,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener {
 
         PositionUtilities.putMapCenterInPreferences(preferences, lon, lat, mapPosition.getZoomLevel());
     }
+
+
 }
