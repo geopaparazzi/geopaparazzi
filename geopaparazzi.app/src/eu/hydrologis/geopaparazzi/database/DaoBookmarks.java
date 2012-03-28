@@ -21,6 +21,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.mapsforge.android.maps.overlay.OverlayItem;
+import org.mapsforge.core.GeoPoint;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -103,7 +106,8 @@ public class DaoBookmarks {
             sb.append("WHERE ").append(COLUMN_ID).append("=").append(id);
 
             String query = sb.toString();
-            if (Debug.D) Logger.i("DAOBOOKMARKS", query);
+            if (Debug.D)
+                Logger.i("DAOBOOKMARKS", query);
             SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
             sqlUpdate.execute();
             sqlUpdate.close();
@@ -188,6 +192,26 @@ public class DaoBookmarks {
         return bookmarks;
     }
 
+    public static List<OverlayItem> getBookmarksOverlays( Context context ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        String query = "SELECT lon, lat, text FROM " + TABLE_BOOKMARKS;
+
+        Cursor c = sqliteDatabase.rawQuery(query, null);
+        List<OverlayItem> bookmarks = new ArrayList<OverlayItem>();
+        c.moveToFirst();
+        while( !c.isAfterLast() ) {
+            double lon = c.getDouble(0);
+            double lat = c.getDouble(1);
+            String text = c.getString(2);
+
+            OverlayItem bookmark = new OverlayItem(new GeoPoint(lat, lon), text, text);
+            bookmarks.add(bookmark);
+            c.moveToNext();
+        }
+        c.close();
+        return bookmarks;
+    }
+
     public static void createTables( Context context ) throws IOException {
         StringBuilder sB = new StringBuilder();
 
@@ -219,7 +243,8 @@ public class DaoBookmarks {
         String CREATE_INDEX_BOOKMARKS_X_BY_Y = sB.toString();
 
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
-        if (Debug.D) Logger.i("DAOBOOKMARKS", "Create the bookmarks table.");
+        if (Debug.D)
+            Logger.i("DAOBOOKMARKS", "Create the bookmarks table.");
 
         sqliteDatabase.beginTransaction();
         try {

@@ -21,12 +21,6 @@
 //import java.util.ArrayList;
 //import java.util.List;
 //
-//import org.osmdroid.ResourceProxy;
-//import org.osmdroid.util.BoundingBoxE6;
-//import org.osmdroid.util.GeoPoint;
-//import org.osmdroid.views.MapView;
-//import org.osmdroid.views.MapView.Projection;
-//import org.osmdroid.views.overlay.Overlay;
 //
 //import android.content.Context;
 //import android.content.SharedPreferences;

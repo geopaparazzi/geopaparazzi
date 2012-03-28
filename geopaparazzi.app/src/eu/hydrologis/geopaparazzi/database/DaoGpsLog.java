@@ -27,14 +27,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.mapsforge.android.maps.Projection;
+import org.mapsforge.android.maps.overlay.OverlayWay;
 import org.mapsforge.core.GeoPoint;
-
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import eu.geopaparazzi.library.gps.IGpsLogDbHelper;
@@ -255,6 +257,120 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         // Logger.d(DEBUG_TAG, "gave logs: " + logsList.size());
 
         return logsList;
+    }
+
+    /**
+     * Get the gps logs.
+     * 
+     * @return the logs list
+     * @throws IOException
+     */
+    public static List<OverlayWay> getGpslogOverlays( Context context ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        List<OverlayWay> logsList = new ArrayList<OverlayWay>();
+
+        StringBuilder sB = new StringBuilder();
+        sB.append("select l.");
+        sB.append(COLUMN_ID);
+        sB.append(" AS ");
+        sB.append(COLUMN_ID);
+        sB.append(", l.");
+        sB.append(COLUMN_LOG_TEXT);
+        sB.append(", p.");
+        sB.append(COLUMN_PROPERTIES_COLOR);
+        sB.append(", p.");
+        sB.append(COLUMN_PROPERTIES_WIDTH);
+        sB.append(", p.");
+        sB.append(COLUMN_PROPERTIES_VISIBLE);
+        sB.append(" from ");
+        sB.append(TABLE_GPSLOGS);
+        sB.append(" l, ");
+        sB.append(TABLE_PROPERTIES);
+        sB.append(" p where l.");
+        sB.append(COLUMN_ID);
+        sB.append(" = p.");
+        sB.append(COLUMN_LOGID);
+        sB.append(" order by ");
+        sB.append(COLUMN_ID);
+        String query = sB.toString();
+
+        Cursor c = null;
+        try {
+            c = sqliteDatabase.rawQuery(query, null);
+            c.moveToFirst();
+            while( !c.isAfterLast() ) {
+                long logid = c.getLong(0);
+                String text = c.getString(1);
+                String color = c.getString(2);
+                double width = c.getDouble(3);
+                int visible = c.getInt(4);
+                // Logger.d(DEBUG_TAG, "Res: " + logid + "/" + color + "/" + width + "/" + visible +
+                // "/" +
+                // text);
+
+                Paint wayPaintOutline = new Paint(Paint.ANTI_ALIAS_FLAG);
+                wayPaintOutline.setStyle(Paint.Style.STROKE);
+                int lineColor = Color.parseColor(color);
+                wayPaintOutline.setColor(lineColor);
+                wayPaintOutline.setAlpha(255);
+                wayPaintOutline.setStrokeWidth((float) width);
+                wayPaintOutline.setStrokeJoin(Paint.Join.ROUND);
+
+                OverlayWay way = new OverlayWay();
+                List<GeoPoint> gpslogGeoPoints = getGpslogGeoPoints(sqliteDatabase, logid, -1);
+                way.setPaint(null, wayPaintOutline);
+                GeoPoint[] geoPoints = gpslogGeoPoints.toArray(new GeoPoint[0]);
+                way.setWayNodes(new GeoPoint[][]{geoPoints});
+                // item.setId(logid);
+                // item.setVisible(visible == 1 ? true : false);
+                logsList.add(way);
+                c.moveToNext();
+            }
+        } finally {
+            if (c != null)
+                c.close();
+        }
+
+        // Logger.d(DEBUG_TAG, "Query: " + query);
+        // Logger.d(DEBUG_TAG, "gave logs: " + logsList.size());
+
+        return logsList;
+    }
+
+    public static List<GeoPoint> getGpslogGeoPoints( SQLiteDatabase sqliteDatabase, long logId, int pointsNum )
+            throws IOException {
+
+        String asColumnsToReturn[] = {COLUMN_DATA_LON, COLUMN_DATA_LAT};
+        String strSortOrder = COLUMN_DATA_TS + " ASC";
+        String strWhere = COLUMN_LOGID + "=" + logId;
+        Cursor c = null;
+        try {
+            c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, null, null, null, strSortOrder);
+            int count = c.getCount();
+            int jump = 0;
+            if (pointsNum != -1 && count > pointsNum) {
+                jump = (int) Math.ceil((double) count / pointsNum);
+            }
+
+            c.moveToFirst();
+            List<GeoPoint> line = new ArrayList<GeoPoint>();
+            while( !c.isAfterLast() ) {
+                double lon = c.getDouble(0);
+                double lat = c.getDouble(1);
+                line.add(new GeoPoint(lat, lon));
+                c.moveToNext();
+                for( int i = 1; i < jump; i++ ) {
+                    c.moveToNext();
+                    if (c.isAfterLast()) {
+                        break;
+                    }
+                }
+            }
+            return line;
+        } finally {
+            if (c != null)
+                c.close();
+        }
     }
 
     public static void updateLogProperties( Context context, long logid, String color, float width, boolean visible, String name )

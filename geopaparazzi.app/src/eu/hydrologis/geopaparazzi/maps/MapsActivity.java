@@ -34,8 +34,10 @@ import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.MapViewPosition;
 import org.mapsforge.android.maps.Projection;
 import org.mapsforge.android.maps.overlay.ArrayItemizedOverlay;
+import org.mapsforge.android.maps.overlay.ArrayWayOverlay;
 import org.mapsforge.android.maps.overlay.ItemizedOverlay;
 import org.mapsforge.android.maps.overlay.OverlayItem;
+import org.mapsforge.android.maps.overlay.OverlayWay;
 import org.mapsforge.core.GeoPoint;
 
 import android.app.Activity;
@@ -46,6 +48,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Color;
+import android.graphics.DashPathEffect;
+import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -84,6 +89,7 @@ import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
+import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
@@ -181,6 +187,15 @@ public class MapsActivity extends MapActivity implements GpsManagerListener {
         // this.mapsView.getOverlays().add(mLogsOverlay);
         // }
 
+        try {
+            ArrayWayOverlay wayOverlay = new ArrayWayOverlay(null, null);
+            List<OverlayWay> logOverlaysList = DaoGpsLog.getGpslogOverlays(this);
+            wayOverlay.addWays(logOverlaysList);
+            mapView.getOverlays().add(wayOverlay);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+
         /* images */
         // {
         // mImagesOverlay = new ImagesOverlay(this, mResourceProxy);
@@ -193,10 +208,11 @@ public class MapsActivity extends MapActivity implements GpsManagerListener {
         // this.mapsView.getOverlays().add(mNotesOverlay);
         // }
         try {
-            Drawable itemDefaultMarker = getResources().getDrawable(R.drawable.marker_red);
-            ArrayItemizedOverlay itemizedOverlay = new NotesItemizedOverlay(itemDefaultMarker, this);
+            Drawable redMarker = getResources().getDrawable(R.drawable.marker_red);
+            ArrayItemizedOverlay notesOverlay = new NotesItemizedOverlay(redMarker, this);
             List<OverlayItem> noteOverlaysList = DaoNotes.getNoteOverlaysList(this);
-            itemizedOverlay.addItems(noteOverlaysList);
+            notesOverlay.addItems(noteOverlaysList);
+            mapView.getOverlays().add(notesOverlay);
         } catch (IOException e1) {
             e1.printStackTrace();
         }
@@ -206,6 +222,18 @@ public class MapsActivity extends MapActivity implements GpsManagerListener {
         // mBookmarksOverlay = new BookmarksOverlay(this, mResourceProxy);
         // this.mapsView.getOverlays().add(mBookmarksOverlay);
         // }
+
+        try {
+            Drawable bookmarkMarker = getResources().getDrawable(R.drawable.bookmark);
+            ArrayItemizedOverlay bookmarksOverlay = new NotesItemizedOverlay(bookmarkMarker, this);
+            List<OverlayItem> bookmarksOverlays = DaoBookmarks.getBookmarksOverlays(this);
+
+            bookmarksOverlay.addItems(bookmarksOverlays);
+            mapView.getOverlays().add(bookmarksOverlay);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+
         //
         // /* gps position */
         // {
@@ -269,10 +297,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener {
         final double[] mapCenterLocation = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
         GeoPoint geoPoint = new GeoPoint(mapCenterLocation[1], mapCenterLocation[0]);
         mapView.getController().setZoom((int) mapCenterLocation[2]);
-        // mapView.getController().setCenter(geoPoint);
-
-        GeoPoint berlinPoint = new GeoPoint(52.514446, 13.350150);
-        mapView.getController().setCenter(berlinPoint);
+        mapView.getController().setCenter(geoPoint);
 
         maxZoomLevel = mapView.getMapZoomControls().getZoomLevelMax();
         minZoomLevel = mapView.getMapZoomControls().getZoomLevelMin();
@@ -1089,9 +1114,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener {
         int newSE6 = sE6 + paddingY;
         int newNE6 = nE6 - paddingY;
 
-        RectF smallerBounds = new RectF(newWE6, newNE6, newWE6, newSE6);
-        // System.out.println(boundingBox);
-        // System.out.println(smallerBounds);
+        RectF smallerBounds = new RectF(newWE6, newNE6, newEE6, newSE6);
         boolean doCenter = false;
         if (!smallerBounds.contains(latE6, lonE6)) {
             if (centerOnGps) {
