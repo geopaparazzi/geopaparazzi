@@ -33,9 +33,7 @@ import org.mapsforge.android.maps.MapActivity;
 import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.MapViewPosition;
 import org.mapsforge.android.maps.Projection;
-import org.mapsforge.android.maps.overlay.ArrayItemizedOverlay;
-import org.mapsforge.android.maps.overlay.ArrayWayOverlay;
-import org.mapsforge.android.maps.overlay.ItemizedOverlay;
+import org.mapsforge.android.maps.overlay.ArrayGenericOverlay;
 import org.mapsforge.android.maps.overlay.OverlayItem;
 import org.mapsforge.android.maps.overlay.OverlayWay;
 import org.mapsforge.core.GeoPoint;
@@ -165,7 +163,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             }
         }
         mapView.setMapFile(mapFile);
-        
+
         mapView.setOnTouchListener(this);
 
         // boolean drawTileFrames = preferences.getBoolean("drawTileFrames", false);
@@ -188,33 +186,41 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         // }
 
         /* gps logs */
-        // {
-        // mLogsOverlay = new LogsOverlay(this, mResourceProxy);
-        // this.mapsView.getOverlays().add(mLogsOverlay);
-        // }
+        ArrayGenericOverlay genericOverlay = new ArrayGenericOverlay();
         try {
-            ArrayWayOverlay wayOverlay = new ArrayWayOverlay(null, null);
             List<OverlayWay> logOverlaysList = DaoGpsLog.getGpslogOverlays(this);
-            wayOverlay.addWays(logOverlaysList);
-            mapView.getOverlays().add(wayOverlay);
+            genericOverlay.addWays(logOverlaysList);
+            mapView.getOverlays().add(genericOverlay);
         } catch (IOException e1) {
             e1.printStackTrace();
         }
+        // try {
+        // ArrayWayOverlay wayOverlay = new ArrayWayOverlay(null, null);
+        // List<OverlayWay> logOverlaysList = DaoGpsLog.getGpslogOverlays(this);
+        // wayOverlay.addWays(logOverlaysList);
+        // mapView.getOverlays().add(wayOverlay);
+        // } catch (IOException e1) {
+        // e1.printStackTrace();
+        // }
 
         /* images */
-        // {
-        // mImagesOverlay = new ImagesOverlay(this, mResourceProxy);
-        // this.mapsView.getOverlays().add(mImagesOverlay);
-        // }
         try {
             Drawable imageMarker = getResources().getDrawable(R.drawable.image);
-            ArrayItemizedOverlay imagesOverlay = new ImageItemizedOverlay(imageMarker, this);
-            List<OverlayItem> imagesOverlaysList = DaoImages.getImagesOverlayList(this);
-            imagesOverlay.addItems(imagesOverlaysList);
-            mapView.getOverlays().add(imagesOverlay);
+            Drawable newImageMarker = ArrayGenericOverlay.boundCenter(imageMarker);
+            List<OverlayItem> imagesOverlaysList = DaoImages.getImagesOverlayList(this, newImageMarker);
+            genericOverlay.addItems(imagesOverlaysList);
         } catch (IOException e1) {
             e1.printStackTrace();
         }
+        // try {
+        // Drawable imageMarker = getResources().getDrawable(R.drawable.image);
+        // ArrayItemizedOverlay imagesOverlay = new ImageItemizedOverlay(imageMarker, this);
+        // List<OverlayItem> imagesOverlaysList = DaoImages.getImagesOverlayList(this);
+        // imagesOverlay.addItems(imagesOverlaysList);
+        // mapView.getOverlays().add(imagesOverlay);
+        // } catch (IOException e1) {
+        // e1.printStackTrace();
+        // }
 
         /* gps notes */
         // {
@@ -223,13 +229,22 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         // }
         try {
             Drawable redMarker = getResources().getDrawable(R.drawable.marker_red);
-            ArrayItemizedOverlay notesOverlay = new NotesItemizedOverlay(redMarker, this);
-            List<OverlayItem> noteOverlaysList = DaoNotes.getNoteOverlaysList(this);
-            notesOverlay.addItems(noteOverlaysList);
-            mapView.getOverlays().add(notesOverlay);
+            Drawable newRedMarker = ArrayGenericOverlay.boundCenter(redMarker);
+            List<OverlayItem> noteOverlaysList = DaoNotes.getNoteOverlaysList(this, newRedMarker);
+            genericOverlay.addItems(noteOverlaysList);
         } catch (IOException e1) {
             e1.printStackTrace();
         }
+
+        // try {
+        // Drawable redMarker = getResources().getDrawable(R.drawable.marker_red);
+        // ArrayItemizedOverlay notesOverlay = new NotesItemizedOverlay(redMarker, this);
+        // List<OverlayItem> noteOverlaysList = DaoNotes.getNoteOverlaysList(this);
+        // notesOverlay.addItems(noteOverlaysList);
+        // mapView.getOverlays().add(notesOverlay);
+        // } catch (IOException e1) {
+        // e1.printStackTrace();
+        // }
 
         // /* bookmarks */
         // {
@@ -239,11 +254,9 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
         try {
             Drawable bookmarkMarker = getResources().getDrawable(R.drawable.bookmark);
-            ArrayItemizedOverlay bookmarksOverlay = new NotesItemizedOverlay(bookmarkMarker, this);
-            List<OverlayItem> bookmarksOverlays = DaoBookmarks.getBookmarksOverlays(this);
-
-            bookmarksOverlay.addItems(bookmarksOverlays);
-            mapView.getOverlays().add(bookmarksOverlay);
+            Drawable newBookmarkMarker = ArrayGenericOverlay.boundCenter(bookmarkMarker);
+            List<OverlayItem> bookmarksOverlays = DaoBookmarks.getBookmarksOverlays(this, newBookmarkMarker);
+            genericOverlay.addItems(bookmarksOverlays);
         } catch (IOException e1) {
             e1.printStackTrace();
         }
@@ -486,7 +499,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         }
 
     }
-    
+
     public boolean onTouch( View v, MotionEvent event ) {
         if (event.getAction() == MotionEvent.ACTION_UP) {
             saveCenterPref();
@@ -1195,6 +1208,5 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
         PositionUtilities.putMapCenterInPreferences(preferences, lon, lat, mapPosition.getZoomLevel());
     }
-
 
 }

@@ -31,6 +31,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import android.graphics.drawable.Drawable;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
@@ -183,7 +184,7 @@ public class DaoImages {
         return images;
     }
 
-    public static List<OverlayItem> getImagesOverlayList( Context context ) throws IOException {
+    public static List<OverlayItem> getImagesOverlayList( Context context, Drawable marker ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         List<OverlayItem> images = new ArrayList<OverlayItem>();
         String asColumnsToReturn[] = {COLUMN_ID, COLUMN_LON, COLUMN_LAT, COLUMN_ALTIM, COLUMN_AZIM, COLUMN_PATH, COLUMN_TS,
@@ -201,7 +202,7 @@ public class DaoImages {
             String date = c.getString(6);
             String text = c.getString(7);
 
-            OverlayItem image = new OverlayItem(new GeoPoint(lat, lon), path, text);
+            OverlayItem image = new OverlayItem(new GeoPoint(lat, lon), path, text, marker);
             images.add(image);
             c.moveToNext();
         }

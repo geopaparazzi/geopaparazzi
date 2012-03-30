@@ -31,6 +31,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import android.graphics.drawable.Drawable;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
@@ -248,11 +249,12 @@ public class DaoNotes {
 
     /**
      * Get the list of notes from the db as OverlayItems.
+     * @param marker 
      * 
      * @return list of notes.
      * @throws IOException
      */
-    public static List<OverlayItem> getNoteOverlaysList( Context context ) throws IOException {
+    public static List<OverlayItem> getNoteOverlaysList( Context context, Drawable marker ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         List<OverlayItem> notesList = new ArrayList<OverlayItem>();
         String asColumnsToReturn[] = {COLUMN_ID, COLUMN_LON, COLUMN_LAT, COLUMN_ALTIM, COLUMN_TS, COLUMN_TEXT, COLUMN_FORM,
@@ -275,7 +277,7 @@ public class DaoNotes {
             description.append("\n");
             description.append(date);
 
-            OverlayItem item1 = new OverlayItem(new GeoPoint(lat, lon), text, description.toString());
+            OverlayItem item1 = new OverlayItem(new GeoPoint(lat, lon), text, description.toString(), marker);
             notesList.add(item1);
 
             c.moveToNext();

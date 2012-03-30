@@ -29,6 +29,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import android.graphics.drawable.Drawable;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
@@ -192,7 +193,7 @@ public class DaoBookmarks {
         return bookmarks;
     }
 
-    public static List<OverlayItem> getBookmarksOverlays( Context context ) throws IOException {
+    public static List<OverlayItem> getBookmarksOverlays( Context context, Drawable marker ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         String query = "SELECT lon, lat, text FROM " + TABLE_BOOKMARKS;
 
@@ -204,7 +205,7 @@ public class DaoBookmarks {
             double lat = c.getDouble(1);
             String text = c.getString(2);
 
-            OverlayItem bookmark = new OverlayItem(new GeoPoint(lat, lon), text, text);
+            OverlayItem bookmark = new OverlayItem(new GeoPoint(lat, lon), text, text, marker);
             bookmarks.add(bookmark);
             c.moveToNext();
         }
