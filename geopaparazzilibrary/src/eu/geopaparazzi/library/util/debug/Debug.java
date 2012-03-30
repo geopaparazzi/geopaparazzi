@@ -29,14 +29,14 @@ public class Debug {
      * 
      * <p>For release = <code>false</code>.
      */
-    public final static boolean D = false;
+    public final static boolean D = true;
 
     /**
      * Flag to define the use of mock locations instead of the gps.
      * 
      * <p>For release = <code>false</code>.
      */
-    public final static boolean doMock = false;
+    public final static boolean doMock = true;
 
     /**
      * Flag to define normal drawing of renderers, as opposed to drawing some debug info.

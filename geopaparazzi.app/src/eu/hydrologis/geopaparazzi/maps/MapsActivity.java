@@ -37,6 +37,8 @@ import org.mapsforge.android.maps.MapScaleBar.TextField;
 import org.mapsforge.android.maps.mapgenerator.MapGenerator;
 import org.mapsforge.android.maps.mapgenerator.MapGeneratorFactory;
 import org.mapsforge.android.maps.mapgenerator.MapGeneratorInternal;
+import org.mapsforge.android.maps.overlay.ArrayCircleOverlay;
+import org.mapsforge.android.maps.overlay.OverlayCircle;
 import org.mapsforge.android.maps.overlay.OverlayItem;
 import org.mapsforge.android.maps.overlay.OverlayWay;
 import org.mapsforge.core.GeoPoint;
@@ -48,6 +50,8 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -196,6 +200,23 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         dataOverlay = new ArrayGenericOverlay(this);
         mapView.getOverlays().add(dataOverlay);
         readData();
+
+        // set up the paint objects for the location overlay
+        Paint circleOverlayFill = new Paint(Paint.ANTI_ALIAS_FLAG);
+        circleOverlayFill.setStyle(Paint.Style.FILL);
+        circleOverlayFill.setColor(Color.BLUE);
+        circleOverlayFill.setAlpha(48);
+
+        Paint circleOverlayOutline = new Paint(Paint.ANTI_ALIAS_FLAG);
+        circleOverlayOutline.setStyle(Paint.Style.STROKE);
+        circleOverlayOutline.setColor(Color.BLUE);
+        circleOverlayOutline.setAlpha(128);
+        circleOverlayOutline.setStrokeWidth(2);
+
+        circleOverlay = new ArrayCircleOverlay(circleOverlayFill, circleOverlayOutline);
+        gpsOverlayCircle = new OverlayCircle();
+        circleOverlay.addCircle(gpsOverlayCircle);
+        mapView.getOverlays().add(circleOverlay);
 
         //
         // /* gps position */
@@ -412,7 +433,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 List<OverlayItem> noteOverlaysList = DaoNotes.getNoteOverlaysList(this, newNotesMarker);
                 dataOverlay.addItems(noteOverlaysList);
             }
-            
+
             /* bookmarks */
             Drawable bookmarkMarker = getResources().getDrawable(R.drawable.bookmark);
             Drawable newBookmarkMarker = ArrayGenericOverlay.boundCenter(bookmarkMarker);
@@ -1002,6 +1023,10 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
     private ArrayGenericOverlay dataOverlay;
 
+    private ArrayCircleOverlay circleOverlay;
+
+    private OverlayCircle gpsOverlayCircle;
+
     public void inalidateMap() {
         mapView.invalidateOnUiThread();
     }
@@ -1054,6 +1079,10 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         if (loc == null) {
             return;
         }
+
+        if (this.mapView.getWidth() <= 0 || this.mapView.getWidth() <= 0) {
+            return;
+        }
         float[] nsweE6 = getMapWorldBoundsE6();
         double lat = loc.getLatitude();
         double lon = loc.getLongitude();
@@ -1065,6 +1094,22 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         int sE6 = (int) nsweE6[1];
         int wE6 = (int) nsweE6[2];
         int eE6 = (int) nsweE6[3];
+
+        RectF bounds = new RectF(wE6, nE6, eE6, sE6);
+        if (!bounds.contains(latE6, lonE6)) {
+            GeoPoint point = new GeoPoint(latE6, lonE6);
+            float accuracy = loc.getAccuracy();
+            if (accuracy < 1) {
+                accuracy = 4;
+            }
+            if (Debug.D)
+                Logger.i(
+                        this,
+                        "point update: " + point.getLatitude() + "/" + point.getLongitude() + "/" + accuracy + "/" + loc.getAccuracy()); //$NON-NLS-1$                
+            gpsOverlayCircle.setCircleData(point, accuracy);
+            circleOverlay.requestRedraw();
+        }
+
         Projection p = mapView.getProjection();
         int paddingX = (int) (p.getLongitudeSpan() * 0.2);
         int paddingY = (int) (p.getLatitudeSpan() * 0.2);
@@ -1091,14 +1136,9 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 Logger.i(this, "recentering triggered"); //$NON-NLS-1$                
         }
 
-        // mMapsOverlay.setGpsUpdate(true);
-        // mLogsOverlay.setGpsUpdate(true);
-        // mNotesOverlay.setGpsUpdate(true);
-        // mImagesOverlay.setGpsUpdate(true);
-        // mBookmarksOverlay.setGpsUpdate(true);
-        // mGpsOverlay.setLoc(loc);
-        mapView.invalidateOnUiThread();
+        // mapView.invalidateOnUiThread();
     }
+
     public void onStatusChanged( boolean hasFix ) {
     }
 

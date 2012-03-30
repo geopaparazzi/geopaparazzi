@@ -25,9 +25,6 @@ import org.mapsforge.android.maps.overlay.OverlayItem;
 import org.mapsforge.android.maps.overlay.OverlayWay;
 import org.mapsforge.core.GeoPoint;
 
-import eu.geopaparazzi.library.util.ResourcesManager;
-import eu.hydrologis.geopaparazzi.maps.DataManager;
-
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
@@ -40,6 +37,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import eu.geopaparazzi.library.util.ResourcesManager;
 
 /**
  * GenericOverlay is an abstract base class to display {@link OverlayWay OverlayWays}. The class defines some methods to
@@ -52,7 +50,7 @@ import android.net.Uri;
  * @param <Generic>
  *            the type of ways handled by this overlay.
  */
-public abstract class GenericOverlay<Generic extends IOverlayGeneric> extends Overlay {
+public abstract class GenericOverlay extends Overlay {
     private static final String THREAD_NAME = "GenericOverlay";
     private static final int ITEM_INITIAL_CAPACITY = 8;
 
