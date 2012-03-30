@@ -34,7 +34,7 @@ public class ArrayGenericOverlay extends GenericOverlay {
 
     private final List<OverlayWay> overlayWays;
     private final List<OverlayItem> overlayItems;
-
+    
     /**
      */
     public ArrayGenericOverlay( Context context ) {

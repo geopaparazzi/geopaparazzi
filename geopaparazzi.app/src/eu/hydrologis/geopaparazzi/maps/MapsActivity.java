@@ -30,15 +30,13 @@ import java.util.Set;
 
 import org.mapsforge.android.maps.MapActivity;
 import org.mapsforge.android.maps.MapScaleBar;
+import org.mapsforge.android.maps.MapScaleBar.TextField;
 import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.MapViewPosition;
 import org.mapsforge.android.maps.Projection;
-import org.mapsforge.android.maps.MapScaleBar.TextField;
 import org.mapsforge.android.maps.mapgenerator.MapGenerator;
 import org.mapsforge.android.maps.mapgenerator.MapGeneratorFactory;
 import org.mapsforge.android.maps.mapgenerator.MapGeneratorInternal;
-import org.mapsforge.android.maps.overlay.ArrayCircleOverlay;
-import org.mapsforge.android.maps.overlay.OverlayCircle;
 import org.mapsforge.android.maps.overlay.OverlayItem;
 import org.mapsforge.android.maps.overlay.OverlayWay;
 import org.mapsforge.core.GeoPoint;
@@ -52,7 +50,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.RectF;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -97,6 +95,7 @@ import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.maps.overlays.ArrayGenericOverlay;
+import eu.hydrologis.geopaparazzi.maps.overlays.GpsOverlay;
 import eu.hydrologis.geopaparazzi.osm.OsmCategoryActivity;
 import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
@@ -201,30 +200,19 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         mapView.getOverlays().add(dataOverlay);
         readData();
 
-        // set up the paint objects for the location overlay
-        Paint circleOverlayFill = new Paint(Paint.ANTI_ALIAS_FLAG);
-        circleOverlayFill.setStyle(Paint.Style.FILL);
-        circleOverlayFill.setColor(Color.BLUE);
-        circleOverlayFill.setAlpha(48);
+        Drawable gpsMarker = getResources().getDrawable(R.drawable.current_position);
+        Paint gpsFill = new Paint(Paint.ANTI_ALIAS_FLAG);
+        gpsFill.setStyle(Paint.Style.FILL);
+        gpsFill.setColor(Color.BLUE);
+        gpsFill.setAlpha(48);
+        Paint gpsOutline = new Paint(Paint.ANTI_ALIAS_FLAG);
+        gpsOutline.setStyle(Paint.Style.STROKE);
+        gpsOutline.setColor(Color.BLUE);
+        gpsOutline.setAlpha(128);
+        gpsOutline.setStrokeWidth(2);
+        gpsOverlay = new GpsOverlay(gpsFill, gpsOutline, gpsMarker);
+        mapView.getOverlays().add(gpsOverlay);
 
-        Paint circleOverlayOutline = new Paint(Paint.ANTI_ALIAS_FLAG);
-        circleOverlayOutline.setStyle(Paint.Style.STROKE);
-        circleOverlayOutline.setColor(Color.BLUE);
-        circleOverlayOutline.setAlpha(128);
-        circleOverlayOutline.setStrokeWidth(2);
-
-        circleOverlay = new ArrayCircleOverlay(circleOverlayFill, circleOverlayOutline);
-        gpsOverlayCircle = new OverlayCircle();
-        circleOverlay.addCircle(gpsOverlayCircle);
-        mapView.getOverlays().add(circleOverlay);
-
-        //
-        // /* gps position */
-        // {
-        // mGpsOverlay = new GpsPositionOverlay(this, mResourceProxy);
-        // this.mapsView.getOverlays().add(mGpsOverlay);
-        // }
-        //
         // /* measure tool */
         // {
         // mMeasureOverlay = new MeasureToolOverlay(this, mResourceProxy);
@@ -729,7 +717,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     }
 
     public boolean onMenuItemSelected( int featureId, MenuItem item ) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         switch( item.getItemId() ) {
         case MENU_GPSDATA:
             Intent gpsDatalistIntent = new Intent(this, GpsDataListActivity.class);
@@ -1023,9 +1010,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
     private ArrayGenericOverlay dataOverlay;
 
-    private ArrayCircleOverlay circleOverlay;
-
-    private OverlayCircle gpsOverlayCircle;
+    private GpsOverlay gpsOverlay;
 
     public void inalidateMap() {
         mapView.invalidateOnUiThread();
@@ -1095,19 +1080,12 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         int wE6 = (int) nsweE6[2];
         int eE6 = (int) nsweE6[3];
 
-        RectF bounds = new RectF(wE6, nE6, eE6, sE6);
-        if (!bounds.contains(latE6, lonE6)) {
+        // Rect bounds = new Rect(wE6, nE6, eE6, sE6);
+        if (lonE6 > wE6 && lonE6 < eE6 && latE6 > sE6 && latE6 < nE6) {
             GeoPoint point = new GeoPoint(latE6, lonE6);
             float accuracy = loc.getAccuracy();
-            if (accuracy < 1) {
-                accuracy = 4;
-            }
-            if (Debug.D)
-                Logger.i(
-                        this,
-                        "point update: " + point.getLatitude() + "/" + point.getLongitude() + "/" + accuracy + "/" + loc.getAccuracy()); //$NON-NLS-1$                
-            gpsOverlayCircle.setCircleData(point, accuracy);
-            circleOverlay.requestRedraw();
+            gpsOverlay.setGpsPosition(point, accuracy);
+            gpsOverlay.requestRedraw();
         }
 
         Projection p = mapView.getProjection();
@@ -1118,14 +1096,14 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         int newSE6 = sE6 + paddingY;
         int newNE6 = nE6 - paddingY;
 
-        RectF smallerBounds = new RectF(newWE6, newNE6, newEE6, newSE6);
+        Rect smallerBounds = new Rect(newWE6, newNE6, newEE6, newSE6);
         boolean doCenter = false;
-        if (!smallerBounds.contains(latE6, lonE6)) {
+        if (!smallerBounds.contains(lonE6, latE6)) {
             if (centerOnGps) {
                 doCenter = true;
             }
         }
-        if (!smallerBounds.contains(latE6, lonE6)) {
+        if (!smallerBounds.contains(lonE6, latE6)) {
             if (!centerOnGps) {
                 return;
             }

@@ -124,6 +124,7 @@ public abstract class GenericOverlay extends Overlay {
         crossPaint.setColor(Color.GRAY);
         crossPaint.setStrokeWidth(1f);
         crossPaint.setStyle(Paint.Style.STROKE);
+
     }
 
     /**
