@@ -173,45 +173,9 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         // this.mapsView.getOverlays().add(mMapsOverlay);
         // }
 
-        /* gps logs */
-        ArrayGenericOverlay genericOverlay = new ArrayGenericOverlay(this);
-        try {
-            List<OverlayWay> logOverlaysList = DaoGpsLog.getGpslogOverlays(this);
-            genericOverlay.addWays(logOverlaysList);
-            mapView.getOverlays().add(genericOverlay);
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-
-        /* images */
-        try {
-            Drawable imageMarker = getResources().getDrawable(R.drawable.image);
-            Drawable newImageMarker = ArrayGenericOverlay.boundCenter(imageMarker);
-            List<OverlayItem> imagesOverlaysList = DaoImages.getImagesOverlayList(this, newImageMarker);
-            genericOverlay.addItems(imagesOverlaysList);
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-
-        /* gps notes */
-        try {
-            Drawable notesMarker = getResources().getDrawable(R.drawable.goto_position);
-            Drawable newNotesMarker = ArrayGenericOverlay.boundCenter(notesMarker);
-            List<OverlayItem> noteOverlaysList = DaoNotes.getNoteOverlaysList(this, newNotesMarker);
-            genericOverlay.addItems(noteOverlaysList);
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-
-        // /* bookmarks */
-        try {
-            Drawable bookmarkMarker = getResources().getDrawable(R.drawable.bookmark);
-            Drawable newBookmarkMarker = ArrayGenericOverlay.boundCenter(bookmarkMarker);
-            List<OverlayItem> bookmarksOverlays = DaoBookmarks.getBookmarksOverlays(this, newBookmarkMarker);
-            genericOverlay.addItems(bookmarksOverlays);
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
+        dataOverlay = new ArrayGenericOverlay(this);
+        mapView.getOverlays().add(dataOverlay);
+        readData();
 
         //
         // /* gps position */
@@ -452,12 +416,43 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
     }
 
+    private void readData() {
+        try {
+            dataOverlay.clearItems();
+            dataOverlay.clearWays();
+            
+            List<OverlayWay> logOverlaysList = DaoGpsLog.getGpslogOverlays(this);
+            dataOverlay.addWays(logOverlaysList);
+
+            /* images */
+            Drawable imageMarker = getResources().getDrawable(R.drawable.image);
+            Drawable newImageMarker = ArrayGenericOverlay.boundCenter(imageMarker);
+            List<OverlayItem> imagesOverlaysList = DaoImages.getImagesOverlayList(this, newImageMarker);
+            dataOverlay.addItems(imagesOverlaysList);
+
+            /* gps notes */
+            Drawable notesMarker = getResources().getDrawable(R.drawable.goto_position);
+            Drawable newNotesMarker = ArrayGenericOverlay.boundCenter(notesMarker);
+            List<OverlayItem> noteOverlaysList = DaoNotes.getNoteOverlaysList(this, newNotesMarker);
+            dataOverlay.addItems(noteOverlaysList);
+
+            /* bookmarks */
+            Drawable bookmarkMarker = getResources().getDrawable(R.drawable.bookmark);
+            Drawable newBookmarkMarker = ArrayGenericOverlay.boundCenter(bookmarkMarker);
+            List<OverlayItem> bookmarksOverlays = DaoBookmarks.getBookmarksOverlays(this, newBookmarkMarker);
+            dataOverlay.addItems(bookmarksOverlays);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+    }
+
     public boolean onTouch( View v, MotionEvent event ) {
         if (event.getAction() == MotionEvent.ACTION_UP) {
             saveCenterPref();
         }
         return false;
     }
+    
 
     private void handleOsmSliderView() throws Exception {
         OsmTagsManager osmTagsManager = OsmTagsManager.getInstance();
@@ -664,6 +659,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             mapView.getController().setCenter(geoPoint);
 
             setZoomGuiText((int) lastCenter[2]);
+            
+            readData();
         }
         super.onWindowFocusChanged(hasFocus);
     }
@@ -1028,6 +1025,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             }
         }
     };
+
+    private ArrayGenericOverlay dataOverlay;
 
     public void inalidateMap() {
         mapView.invalidateOnUiThread();
