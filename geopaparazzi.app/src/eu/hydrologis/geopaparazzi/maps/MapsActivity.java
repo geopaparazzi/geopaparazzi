@@ -17,10 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.maps;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_COMPASSON;
-import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_MINIMAPON;
-import static eu.hydrologis.geopaparazzi.util.Constants.PREFS_KEY_SCALEBARON;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -28,12 +24,10 @@ import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.mapsforge.android.maps.DebugSettings;
 import org.mapsforge.android.maps.MapActivity;
 import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.MapViewPosition;
 import org.mapsforge.android.maps.Projection;
-import org.mapsforge.android.maps.overlay.ArrayGenericOverlay;
 import org.mapsforge.android.maps.overlay.OverlayItem;
 import org.mapsforge.android.maps.overlay.OverlayWay;
 import org.mapsforge.core.GeoPoint;
@@ -45,10 +39,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.graphics.Color;
-import android.graphics.DashPathEffect;
-import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -58,7 +48,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.Editable;
-import android.view.Display;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -94,8 +83,7 @@ import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
-import eu.hydrologis.geopaparazzi.maps.overlays.ImageItemizedOverlay;
-import eu.hydrologis.geopaparazzi.maps.overlays.NotesItemizedOverlay;
+import eu.hydrologis.geopaparazzi.maps.overlays.ArrayGenericOverlay;
 import eu.hydrologis.geopaparazzi.osm.OsmCategoryActivity;
 import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
