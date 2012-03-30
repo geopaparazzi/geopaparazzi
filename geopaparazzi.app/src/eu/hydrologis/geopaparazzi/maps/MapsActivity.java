@@ -29,9 +29,11 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.mapsforge.android.maps.MapActivity;
+import org.mapsforge.android.maps.MapScaleBar;
 import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.MapViewPosition;
 import org.mapsforge.android.maps.Projection;
+import org.mapsforge.android.maps.MapScaleBar.TextField;
 import org.mapsforge.android.maps.mapgenerator.MapGenerator;
 import org.mapsforge.android.maps.mapgenerator.MapGeneratorFactory;
 import org.mapsforge.android.maps.mapgenerator.MapGeneratorInternal;
@@ -165,8 +167,12 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             }
         }
         mapView.setMapFile(mapFile);
-
         mapView.setOnTouchListener(this);
+
+        MapScaleBar mapScaleBar = this.mapView.getMapScaleBar();
+        mapScaleBar.setImperialUnits(false);
+        mapScaleBar.setText(TextField.KILOMETER, " km");
+        mapScaleBar.setText(TextField.METER, " m");
 
         // boolean drawTileFrames = preferences.getBoolean("drawTileFrames", false);
         // boolean drawTileCoordinates = preferences.getBoolean("drawTileCoordinates", false);
@@ -196,12 +202,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         // {
         // mGpsOverlay = new GpsPositionOverlay(this, mResourceProxy);
         // this.mapsView.getOverlays().add(mGpsOverlay);
-        // }
-        //
-        // /* cross */
-        // {
-        // mCrossOverlay = new CrossOverlay(this, mResourceProxy);
-        // this.mapsView.getOverlays().add(mCrossOverlay);
         // }
         //
         // /* measure tool */
@@ -738,21 +738,11 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         case MENU_TILE_SOURCE_ID:
             return true;
 
-            // case MENU_MINIMAP_ID:
-            // boolean isMinimapEnabled = !mMiniMapOverlay.isEnabled();
-            // mMiniMapOverlay.setEnabled(isMinimapEnabled);
-            // mapsView.invalidate();
-            // Editor editor1 = preferences.edit();
-            // editor1.putBoolean(PREFS_KEY_MINIMAPON, isMinimapEnabled);
-            // editor1.commit();
-            // return true;
-            // case MENU_SCALE_ID:
-            // boolean isScalebarEnabled = !mScaleBarOverlay.isEnabled();
-            // mScaleBarOverlay.setEnabled(isScalebarEnabled);
-            // mapsView.invalidate();
-            // Editor editor2 = preferences.edit();
-            // editor2.putBoolean(PREFS_KEY_SCALEBARON, isScalebarEnabled);
-            // return true;
+        case MENU_SCALE_ID:
+            MapScaleBar mapScaleBar = mapView.getMapScaleBar();
+            boolean showMapScaleBar = mapScaleBar.isShowMapScaleBar();
+            mapScaleBar.setShowMapScaleBar(!showMapScaleBar);
+            return true;
             // case MENU_COMPASS_ID:
             // boolean isCompassEnabled = !mCompassOverlay.isEnabled();
             // mCompassOverlay.setEnabled(isCompassEnabled);
