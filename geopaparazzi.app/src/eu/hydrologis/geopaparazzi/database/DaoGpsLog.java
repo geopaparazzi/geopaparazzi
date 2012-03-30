@@ -299,31 +299,34 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             c = sqliteDatabase.rawQuery(query, null);
             c.moveToFirst();
             while( !c.isAfterLast() ) {
-                long logid = c.getLong(0);
-                String text = c.getString(1);
-                String color = c.getString(2);
-                double width = c.getDouble(3);
                 int visible = c.getInt(4);
-                // Logger.d(DEBUG_TAG, "Res: " + logid + "/" + color + "/" + width + "/" + visible +
-                // "/" +
-                // text);
+                if (visible == 1) {
+                    long logid = c.getLong(0);
+                    String text = c.getString(1);
+                    String color = c.getString(2);
+                    double width = c.getDouble(3);
+                    // Logger.d(DEBUG_TAG, "Res: " + logid + "/" + color + "/" + width + "/" +
+                    // visible +
+                    // "/" +
+                    // text);
 
-                Paint wayPaintOutline = new Paint(Paint.ANTI_ALIAS_FLAG);
-                wayPaintOutline.setStyle(Paint.Style.STROKE);
-                int lineColor = Color.parseColor(color);
-                wayPaintOutline.setColor(lineColor);
-                wayPaintOutline.setAlpha(255);
-                wayPaintOutline.setStrokeWidth((float) width);
-                wayPaintOutline.setStrokeJoin(Paint.Join.ROUND);
+                    Paint wayPaintOutline = new Paint(Paint.ANTI_ALIAS_FLAG);
+                    wayPaintOutline.setStyle(Paint.Style.STROKE);
+                    int lineColor = Color.parseColor(color);
+                    wayPaintOutline.setColor(lineColor);
+                    wayPaintOutline.setAlpha(255);
+                    wayPaintOutline.setStrokeWidth((float) width);
+                    wayPaintOutline.setStrokeJoin(Paint.Join.ROUND);
 
-                OverlayWay way = new OverlayWay();
-                List<GeoPoint> gpslogGeoPoints = getGpslogGeoPoints(sqliteDatabase, logid, -1);
-                way.setPaint(null, wayPaintOutline);
-                GeoPoint[] geoPoints = gpslogGeoPoints.toArray(new GeoPoint[0]);
-                way.setWayNodes(new GeoPoint[][]{geoPoints});
-                // item.setId(logid);
-                // item.setVisible(visible == 1 ? true : false);
-                logsList.add(way);
+                    OverlayWay way = new OverlayWay();
+                    List<GeoPoint> gpslogGeoPoints = getGpslogGeoPoints(sqliteDatabase, logid, -1);
+                    way.setPaint(null, wayPaintOutline);
+                    GeoPoint[] geoPoints = gpslogGeoPoints.toArray(new GeoPoint[0]);
+                    way.setWayNodes(new GeoPoint[][]{geoPoints});
+                    // item.setId(logid);
+                    // item.setVisible(visible == 1 ? true : false);
+                    logsList.add(way);
+                }
                 c.moveToNext();
             }
         } finally {
