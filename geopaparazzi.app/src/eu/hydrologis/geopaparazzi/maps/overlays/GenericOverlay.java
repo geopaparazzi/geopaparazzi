@@ -32,6 +32,7 @@ import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
@@ -100,6 +101,12 @@ public abstract class GenericOverlay<Generic extends IOverlayGeneric> extends Ov
     private List<Integer> visibleItemsRedraw;
     private final Context context;
 
+    /*
+     * cross stuff
+     */
+    private Path crossPath;
+    private Paint crossPaint = new Paint();
+
     /**
      * Create a {@link OverlayWay} wrapped type.
      */
@@ -112,6 +119,12 @@ public abstract class GenericOverlay<Generic extends IOverlayGeneric> extends Ov
         this.itemPosition = new Point();
         this.visibleItems = new ArrayList<Integer>(ITEM_INITIAL_CAPACITY);
         this.visibleItemsRedraw = new ArrayList<Integer>(ITEM_INITIAL_CAPACITY);
+
+        crossPath = new Path();
+        crossPaint.setAntiAlias(true);
+        crossPaint.setColor(Color.GRAY);
+        crossPaint.setStrokeWidth(1f);
+        crossPaint.setStyle(Paint.Style.STROKE);
     }
 
     /**
@@ -302,6 +315,17 @@ public abstract class GenericOverlay<Generic extends IOverlayGeneric> extends Ov
             this.visibleItems = this.visibleItemsRedraw;
             this.visibleItemsRedraw = visibleItemsTemp;
         }
+
+        /*
+         * draw cross on top
+         */
+        Point center = new Point(canvas.getWidth() / 2, canvas.getHeight() / 2);
+        crossPath.reset();
+        crossPath.moveTo(center.x, center.y - 20);
+        crossPath.lineTo(center.x, center.y + 20);
+        crossPath.moveTo(center.x - 20, center.y);
+        crossPath.lineTo(center.x + 20, center.y);
+        canvas.drawPath(crossPath, crossPaint);
 
     }
 
