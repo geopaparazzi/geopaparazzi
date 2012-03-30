@@ -205,7 +205,7 @@ public class DaoBookmarks {
             double lat = c.getDouble(1);
             String text = c.getString(2);
 
-            OverlayItem bookmark = new OverlayItem(new GeoPoint(lat, lon), text, text, marker);
+            OverlayItem bookmark = new OverlayItem(new GeoPoint(lat, lon), text, null, marker);
             bookmarks.add(bookmark);
             c.moveToNext();
         }

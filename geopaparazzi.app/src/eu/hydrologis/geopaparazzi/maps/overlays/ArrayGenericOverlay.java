@@ -21,6 +21,8 @@ import java.util.List;
 import org.mapsforge.android.maps.overlay.OverlayItem;
 import org.mapsforge.android.maps.overlay.OverlayWay;
 
+import android.content.Context;
+
 /**
  * ArrayGenericOverlay is a thread-safe implementation of the {@link GenericOverlay} class using an {@link ArrayList} as
  * internal data structure. Default paints for all {@link OverlayWay OverlayWays} without individual paints can be
@@ -35,8 +37,8 @@ public class ArrayGenericOverlay extends GenericOverlay<IOverlayGeneric> {
 
 	/**
 	 */
-	public ArrayGenericOverlay() {
-		super();
+	public ArrayGenericOverlay(Context context) {
+		super(context);
 		this.overlayWays = new ArrayList<OverlayWay>(INITIAL_CAPACITY);
 		this.overlayItems = new ArrayList<OverlayItem>(INITIAL_CAPACITY);
 	}

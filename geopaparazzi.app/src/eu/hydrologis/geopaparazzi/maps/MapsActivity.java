@@ -174,7 +174,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         // }
 
         /* gps logs */
-        ArrayGenericOverlay genericOverlay = new ArrayGenericOverlay();
+        ArrayGenericOverlay genericOverlay = new ArrayGenericOverlay(this);
         try {
             List<OverlayWay> logOverlaysList = DaoGpsLog.getGpslogOverlays(this);
             genericOverlay.addWays(logOverlaysList);
@@ -182,14 +182,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-        // try {
-        // ArrayWayOverlay wayOverlay = new ArrayWayOverlay(null, null);
-        // List<OverlayWay> logOverlaysList = DaoGpsLog.getGpslogOverlays(this);
-        // wayOverlay.addWays(logOverlaysList);
-        // mapView.getOverlays().add(wayOverlay);
-        // } catch (IOException e1) {
-        // e1.printStackTrace();
-        // }
 
         /* images */
         try {
@@ -200,46 +192,18 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-        // try {
-        // Drawable imageMarker = getResources().getDrawable(R.drawable.image);
-        // ArrayItemizedOverlay imagesOverlay = new ImageItemizedOverlay(imageMarker, this);
-        // List<OverlayItem> imagesOverlaysList = DaoImages.getImagesOverlayList(this);
-        // imagesOverlay.addItems(imagesOverlaysList);
-        // mapView.getOverlays().add(imagesOverlay);
-        // } catch (IOException e1) {
-        // e1.printStackTrace();
-        // }
 
         /* gps notes */
-        // {
-        // mNotesOverlay = new NotesOverlay(this, mResourceProxy);
-        // this.mapsView.getOverlays().add(mNotesOverlay);
-        // }
         try {
-            Drawable redMarker = getResources().getDrawable(R.drawable.marker_red);
-            Drawable newRedMarker = ArrayGenericOverlay.boundCenter(redMarker);
-            List<OverlayItem> noteOverlaysList = DaoNotes.getNoteOverlaysList(this, newRedMarker);
+            Drawable notesMarker = getResources().getDrawable(R.drawable.goto_position);
+            Drawable newNotesMarker = ArrayGenericOverlay.boundCenter(notesMarker);
+            List<OverlayItem> noteOverlaysList = DaoNotes.getNoteOverlaysList(this, newNotesMarker);
             genericOverlay.addItems(noteOverlaysList);
         } catch (IOException e1) {
             e1.printStackTrace();
         }
 
-        // try {
-        // Drawable redMarker = getResources().getDrawable(R.drawable.marker_red);
-        // ArrayItemizedOverlay notesOverlay = new NotesItemizedOverlay(redMarker, this);
-        // List<OverlayItem> noteOverlaysList = DaoNotes.getNoteOverlaysList(this);
-        // notesOverlay.addItems(noteOverlaysList);
-        // mapView.getOverlays().add(notesOverlay);
-        // } catch (IOException e1) {
-        // e1.printStackTrace();
-        // }
-
         // /* bookmarks */
-        // {
-        // mBookmarksOverlay = new BookmarksOverlay(this, mResourceProxy);
-        // this.mapsView.getOverlays().add(mBookmarksOverlay);
-        // }
-
         try {
             Drawable bookmarkMarker = getResources().getDrawable(R.drawable.bookmark);
             Drawable newBookmarkMarker = ArrayGenericOverlay.boundCenter(bookmarkMarker);
