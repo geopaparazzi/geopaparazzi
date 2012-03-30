@@ -22,12 +22,19 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.mapsforge.android.maps.MapActivity;
 import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.MapViewPosition;
 import org.mapsforge.android.maps.Projection;
+import org.mapsforge.android.maps.mapgenerator.MapGenerator;
+import org.mapsforge.android.maps.mapgenerator.MapGeneratorFactory;
+import org.mapsforge.android.maps.mapgenerator.MapGeneratorInternal;
 import org.mapsforge.android.maps.overlay.OverlayItem;
 import org.mapsforge.android.maps.overlay.OverlayWay;
 import org.mapsforge.core.GeoPoint;
@@ -108,6 +115,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     private static final int MENU_MIXARE_ID = 7;
     private static final int GO_TO = 8;
 
+    private HashMap<Integer, String> tileSourcesMap = null;
+
     private DecimalFormat formatter = new DecimalFormat("00"); //$NON-NLS-1$
     private Button zoomInButton;
     private Button zoomOutButton;
@@ -134,6 +143,11 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
         setContentView(R.layout.mapsview);
+
+        tileSourcesMap = new LinkedHashMap<Integer, String>();
+        tileSourcesMap.put(1001, MapGeneratorInternal.DATABASE_RENDERER.name());
+        tileSourcesMap.put(1002, MapGeneratorInternal.MAPNIK.name());
+        tileSourcesMap.put(1003, MapGeneratorInternal.OPENCYCLEMAP.name());
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -194,47 +208,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         // {
         // mMeasureOverlay = new MeasureToolOverlay(this, mResourceProxy);
         // this.mapsView.getOverlays().add(mMeasureOverlay);
-        // }
-
-        /* Scale Bar Overlay */
-        // {
-        // mScaleBarOverlay = new ScaleBarOverlay(this, mResourceProxy);
-        // mapsView.getOverlays().add(mScaleBarOverlay);
-        // // Scale bar tries to draw as 1-inch, so to put it in the top center, set x offset to
-        // // half screen width, minus half an inch.
-        // mScaleBarOverlay.setScaleBarOffset(getResources().getDisplayMetrics().widthPixels / 2
-        // - getResources().getDisplayMetrics().xdpi / 2, 10);
-        // boolean isScalebaron = preferences.getBoolean(PREFS_KEY_SCALEBARON, false);
-        // mScaleBarOverlay.setEnabled(isScalebaron);
-        // }
-        //
-        // /* Compass Overlay */
-        // {
-        // mCompassOverlay = new MyLocationOverlay(this, mapsView);
-        // mapsView.getOverlays().add(mCompassOverlay);
-        // mCompassOverlay.disableMyLocation();
-        // mCompassOverlay.enableCompass();
-        // boolean isCompasson = preferences.getBoolean(PREFS_KEY_COMPASSON, false);
-        // mCompassOverlay.setEnabled(isCompasson);
-        // }
-
-        // /* MiniMap */
-        // int width;
-        // int padding;
-        // Display display = getWindowManager().getDefaultDisplay();
-        // {
-        // mMiniMapOverlay = new MinimapOverlayWithCross(this,
-        // mapsView.getTileRequestCompleteHandler());
-        // mapsView.getOverlays().add(mMiniMapOverlay);
-        // width = display.getWidth();
-        // padding = (int) Math.floor(width * 0.05);
-        // width = width - padding;
-        // int half = (int) Math.floor(width / 2.0);
-        // mMiniMapOverlay.setHeight(half);
-        // mMiniMapOverlay.setWidth(half);
-        // mMiniMapOverlay.setPadding(padding);
-        // boolean isMinimapon = preferences.getBoolean(PREFS_KEY_MINIMAPON, false);
-        // mMiniMapOverlay.setEnabled(isMinimapon);
         // }
 
         final double[] mapCenterLocation = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
@@ -420,7 +393,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         try {
             dataOverlay.clearItems();
             dataOverlay.clearWays();
-            
+
             List<OverlayWay> logOverlaysList = DaoGpsLog.getGpslogOverlays(this);
             dataOverlay.addWays(logOverlaysList);
 
@@ -452,7 +425,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         }
         return false;
     }
-    
 
     private void handleOsmSliderView() throws Exception {
         OsmTagsManager osmTagsManager = OsmTagsManager.getInstance();
@@ -659,7 +631,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             mapView.getController().setCenter(geoPoint);
 
             setZoomGuiText((int) lastCenter[2]);
-            
+
             readData();
         }
         super.onWindowFocusChanged(hasFocus);
@@ -721,14 +693,12 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         menu.add(Menu.NONE, MENU_MIXARE_ID, 6, R.string.view_in_mixare).setIcon(R.drawable.icon_datasource);
         final SubMenu subMenu = menu.addSubMenu(Menu.NONE, MENU_TILE_SOURCE_ID, 7, R.string.mapsactivity_menu_tilesource)
                 .setIcon(R.drawable.ic_menu_tilesource);
-        // {
-        // // BingMapTileSource source = new BingMapTileSource("en");
-        // // TileSourceFactory.addTileSource(source);
-        // for( final ITileSource tileSource : TileSourceFactory.getTileSources() ) {
-        // subMenu.add(0, 1000 + tileSource.ordinal(), Menu.NONE,
-        // tileSource.localizedName(mResourceProxy));
-        // }
-        // }
+        {
+            Set<Entry<Integer, String>> entrySet = tileSourcesMap.entrySet();
+            for( Entry<Integer, String> entry : entrySet ) {
+                subMenu.add(0, entry.getKey(), Menu.NONE, entry.getValue());
+            }
+        }
         menu.add(Menu.NONE, GO_TO, 8, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
         return true;
     }
@@ -766,7 +736,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 return false;
             }
         case MENU_TILE_SOURCE_ID:
-            // this.mapsView.invalidate();
             return true;
 
             // case MENU_MINIMAP_ID:
@@ -812,9 +781,20 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             return true;
         }
         default:
-            // ITileSource tileSource = TileSourceFactory.getTileSource(item.getItemId() - 1000);
-            // mapsView.setTileSource(tileSource);
-            // mMiniMapOverlay.setTileSource(tileSource);
+
+            String name = item.getTitle().toString();
+            MapGeneratorInternal mapGeneratorInternalNew;
+            try {
+                mapGeneratorInternalNew = MapGeneratorInternal.valueOf(name);
+            } catch (IllegalArgumentException e) {
+                mapGeneratorInternalNew = MapGeneratorInternal.DATABASE_RENDERER;
+            }
+            // if (mapGeneratorInternalNew != this.mapGeneratorInternal) {
+            MapGenerator mapGenerator = MapGeneratorFactory.createMapGenerator(mapGeneratorInternalNew);
+            this.mapView.setMapGenerator(mapGenerator);
+            // this.mapGeneratorInternal = mapGeneratorInternalNew;
+            // }
+
         }
         return super.onMenuItemSelected(featureId, item);
     }
