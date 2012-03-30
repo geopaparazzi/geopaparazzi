@@ -398,17 +398,21 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             dataOverlay.addWays(logOverlaysList);
 
             /* images */
-            Drawable imageMarker = getResources().getDrawable(R.drawable.image);
-            Drawable newImageMarker = ArrayGenericOverlay.boundCenter(imageMarker);
-            List<OverlayItem> imagesOverlaysList = DaoImages.getImagesOverlayList(this, newImageMarker);
-            dataOverlay.addItems(imagesOverlaysList);
+            if (DataManager.getInstance().areImagesVisible()) {
+                Drawable imageMarker = getResources().getDrawable(R.drawable.image);
+                Drawable newImageMarker = ArrayGenericOverlay.boundCenter(imageMarker);
+                List<OverlayItem> imagesOverlaysList = DaoImages.getImagesOverlayList(this, newImageMarker);
+                dataOverlay.addItems(imagesOverlaysList);
+            }
 
             /* gps notes */
-            Drawable notesMarker = getResources().getDrawable(R.drawable.goto_position);
-            Drawable newNotesMarker = ArrayGenericOverlay.boundCenter(notesMarker);
-            List<OverlayItem> noteOverlaysList = DaoNotes.getNoteOverlaysList(this, newNotesMarker);
-            dataOverlay.addItems(noteOverlaysList);
-
+            if (DataManager.getInstance().areNotesVisible()) {
+                Drawable notesMarker = getResources().getDrawable(R.drawable.goto_position);
+                Drawable newNotesMarker = ArrayGenericOverlay.boundCenter(notesMarker);
+                List<OverlayItem> noteOverlaysList = DaoNotes.getNoteOverlaysList(this, newNotesMarker);
+                dataOverlay.addItems(noteOverlaysList);
+            }
+            
             /* bookmarks */
             Drawable bookmarkMarker = getResources().getDrawable(R.drawable.bookmark);
             Drawable newBookmarkMarker = ArrayGenericOverlay.boundCenter(bookmarkMarker);

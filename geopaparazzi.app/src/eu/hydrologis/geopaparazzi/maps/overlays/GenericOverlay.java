@@ -26,6 +26,7 @@ import org.mapsforge.android.maps.overlay.OverlayWay;
 import org.mapsforge.core.GeoPoint;
 
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.hydrologis.geopaparazzi.maps.DataManager;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -239,6 +240,7 @@ public abstract class GenericOverlay<Generic extends IOverlayGeneric> extends Ov
         /*
          * ITEMS
          */
+
         // erase the list of visible items
         this.visibleItemsRedraw.clear();
 
