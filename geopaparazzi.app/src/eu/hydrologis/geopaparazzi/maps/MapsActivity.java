@@ -210,7 +210,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         gpsOutline.setColor(Color.BLUE);
         gpsOutline.setAlpha(128);
         gpsOutline.setStrokeWidth(2);
-        gpsOverlay = new GpsOverlay(gpsFill, gpsOutline, gpsMarker);
+        gpsOverlay = new GpsOverlay(this, gpsFill, gpsOutline, gpsMarker);
         mapView.getOverlays().add(gpsOverlay);
 
         // /* measure tool */

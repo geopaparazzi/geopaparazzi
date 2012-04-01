@@ -21,14 +21,19 @@ import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.Projection;
 import org.mapsforge.android.maps.overlay.ItemizedOverlay;
 import org.mapsforge.android.maps.overlay.Overlay;
+import org.mapsforge.android.maps.overlay.OverlayWay;
 import org.mapsforge.core.GeoPoint;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import eu.geopaparazzi.library.gps.GpsManager;
+import eu.geopaparazzi.library.util.debug.Debug;
+import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
  * GpsOverlay is an abstract base class to display {@link GpsData OverlayCircles}. The class defines some
@@ -55,6 +60,10 @@ public class GpsOverlay extends Overlay {
 
     private GpsData overlayGps;
     private final Drawable marker;
+    private final Context context;
+
+    private Path gpsPath;
+    OverlayWay gpslogOverlay;
 
     /**
      * @param defaultPaintFill
@@ -62,8 +71,9 @@ public class GpsOverlay extends Overlay {
      * @param defaultPaintOutline
      *            the default paint which will be used to draw the circle outlines (may be null).
      */
-    public GpsOverlay( Paint defaultPaintFill, Paint defaultPaintOutline, Drawable marker ) {
+    public GpsOverlay( Context context, Paint defaultPaintFill, Paint defaultPaintOutline, Drawable marker ) {
         super();
+        this.context = context;
         this.marker = marker;
         overlayGps = new GpsData();
         this.defaultPaintFill = defaultPaintFill;
@@ -73,6 +83,8 @@ public class GpsOverlay extends Overlay {
         this.visibleCircles = new ArrayList<Integer>(INITIAL_CAPACITY);
         this.visibleCirclesRedraw = new ArrayList<Integer>(INITIAL_CAPACITY);
         this.path = new Path();
+        this.gpsPath = new Path();
+        gpslogOverlay = new OverlayWay(null, defaultPaintOutline);
 
         marker = ItemizedOverlay.boundCenter(marker);
     }
@@ -93,7 +105,7 @@ public class GpsOverlay extends Overlay {
         return false;
     }
 
-    private void drawPathOnCanvas( Canvas canvas, GpsData overlayCircle ) {
+    private void drawCircleOnCanvas( Canvas canvas, GpsData overlayCircle ) {
         if (overlayCircle.hasPaint) {
             // use the paints from the current circle
             if (overlayCircle.paintOutline != null) {
@@ -119,6 +131,47 @@ public class GpsOverlay extends Overlay {
 
     @Override
     protected void drawOverlayBitmap( Canvas canvas, Point drawPosition, Projection projection, byte drawZoomLevel ) {
+        /*
+         * gps logging track
+         */
+
+        GpsManager gpsManager = GpsManager.getInstance(context);
+        if (gpsManager.isLogging()) {
+            // if a track is recorded, show it
+            synchronized (gpslogOverlay) {
+                List<double[]> logPoints = gpsManager.getCurrentRecordedGpsLog();
+                int size = logPoints.size();
+                if (size > 1) {
+                    List<GeoPoint> pList = new ArrayList<GeoPoint>();
+                    for( double[] lonLat : logPoints ) {
+                        pList.add(new GeoPoint(lonLat[1], lonLat[0]));
+                    }
+                    GeoPoint[] geoPoints = pList.toArray(new GeoPoint[0]);
+                    gpslogOverlay.setWayNodes(new GeoPoint[][]{geoPoints});
+                    // make sure that the current way has way nodes
+                    if (gpslogOverlay.wayNodes != null && gpslogOverlay.wayNodes.length != 0) {
+                        // make sure that the cached way node positions are valid
+                        if (drawZoomLevel != gpslogOverlay.cachedZoomLevel) {
+                            for( int i = 0; i < gpslogOverlay.cachedWayPositions.length; ++i ) {
+                                for( int j = 0; j < gpslogOverlay.cachedWayPositions[i].length; ++j ) {
+                                    gpslogOverlay.cachedWayPositions[i][j] = projection.toPoint(gpslogOverlay.wayNodes[i][j],
+                                            gpslogOverlay.cachedWayPositions[i][j], drawZoomLevel);
+                                }
+                            }
+                            gpslogOverlay.cachedZoomLevel = drawZoomLevel;
+                        }
+
+                        assembleWayPath(drawPosition, gpslogOverlay);
+                        drawWayPathOnCanvas(canvas, gpslogOverlay);
+                    }
+                }
+            }
+        }
+
+        /*
+         * GPS position
+         */
+
         // erase the list of visible circles
         this.visibleCirclesRedraw.clear();
 
@@ -163,7 +216,7 @@ public class GpsOverlay extends Overlay {
 
                     if (overlayGps.hasPaint || this.hasDefaultPaint) {
                         if (circleRadius > 0) {
-                            drawPathOnCanvas(canvas, overlayGps);
+                            drawCircleOnCanvas(canvas, overlayGps);
                         }
 
                         // get the position of the marker
@@ -195,6 +248,24 @@ public class GpsOverlay extends Overlay {
             List<Integer> visibleCirclesTemp = this.visibleCircles;
             this.visibleCircles = this.visibleCirclesRedraw;
             this.visibleCirclesRedraw = visibleCirclesTemp;
+        }
+    }
+
+    private void assembleWayPath( Point drawPosition, OverlayWay overlayWay ) {
+        this.gpsPath.reset();
+        for( int i = 0; i < overlayWay.cachedWayPositions.length; ++i ) {
+            this.gpsPath.moveTo(overlayWay.cachedWayPositions[i][0].x - drawPosition.x, overlayWay.cachedWayPositions[i][0].y
+                    - drawPosition.y);
+            for( int j = 1; j < overlayWay.cachedWayPositions[i].length; ++j ) {
+                this.gpsPath.lineTo(overlayWay.cachedWayPositions[i][j].x - drawPosition.x, overlayWay.cachedWayPositions[i][j].y
+                        - drawPosition.y);
+            }
+        }
+    }
+
+    private void drawWayPathOnCanvas( Canvas canvas, OverlayWay overlayWay ) {
+        if (this.defaultPaintOutline != null) {
+            canvas.drawPath(this.gpsPath, this.defaultPaintOutline);
         }
     }
 

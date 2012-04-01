@@ -23,6 +23,8 @@ import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGING
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGINGINTERVAL;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -64,6 +66,8 @@ public class GpsLogger implements GpsManagerListener {
 
     private boolean isLogging = false;
 
+    private List<double[]> currentXY = new ArrayList<double[]>();
+
     // private MediaPlayer mMediaPlayer;
     // private boolean doPlayAlarm = false;
 
@@ -94,7 +98,12 @@ public class GpsLogger implements GpsManagerListener {
      * @param logName a name for the new log or <code>null</code>.
      */
     public void startLogging( final String logName, final IGpsLogDbHelper dbHelper ) {
+        if (isLogging) {
+            // we do not start twice
+            return;
+        }
         isLogging = true;
+        currentXY.clear();
 
         Thread t = new Thread(){
 
@@ -158,6 +167,7 @@ public class GpsLogger implements GpsManagerListener {
 
                         try {
                             dbHelper.addGpsLogDataPoint(context, gpsLogId, recLon, recLat, recAlt, gpsLoc.getSqlDate());
+                            currentXY.add(new double[]{recLon, recLat});
                         } catch (Exception e) {
                             Logger.e(this, e.getLocalizedMessage(), e);
                             throw new IOException(e.getLocalizedMessage());
@@ -190,13 +200,14 @@ public class GpsLogger implements GpsManagerListener {
                     String msg = context.getResources().getString(R.string.error_disk_full);
                     Logger.e(this, msg, e);
                     Utilities.toast(context, msg, Toast.LENGTH_LONG);
-                    isLogging = false;
                 } catch (Exception e) {
                     e.printStackTrace();
                     String msg = context.getResources().getString(R.string.cantwrite_gpslog);
                     Logger.e(this, msg, e);
                     Utilities.toast(context, msg, Toast.LENGTH_LONG);
+                } finally {
                     isLogging = false;
+                    currentXY.clear();
                 }
                 if (Debug.D)
                     Logger.d(this, "Exit logging...");
@@ -222,6 +233,19 @@ public class GpsLogger implements GpsManagerListener {
     public void stopLogging() {
         isLogging = false;
         Utilities.toast(context, R.string.gpsloggingoff, Toast.LENGTH_SHORT);
+    }
+
+    /**
+     * Get the current recorded log.
+     * 
+     * @return the list of lon,lat.
+     */
+    public List<double[]> getCurrentRecordedLog() {
+        if (isLogging) {
+            return currentXY;
+        } else {
+            return null;
+        }
     }
 
     public int getCurrentPointsNum() {

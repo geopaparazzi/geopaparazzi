@@ -187,20 +187,15 @@ public class DaoImages {
     public static List<OverlayItem> getImagesOverlayList( Context context, Drawable marker ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         List<OverlayItem> images = new ArrayList<OverlayItem>();
-        String asColumnsToReturn[] = {COLUMN_ID, COLUMN_LON, COLUMN_LAT, COLUMN_ALTIM, COLUMN_AZIM, COLUMN_PATH, COLUMN_TS,
-                COLUMN_TEXT};
+        String asColumnsToReturn[] = {COLUMN_LON, COLUMN_LAT, COLUMN_PATH, COLUMN_TEXT};
         String strSortOrder = "_id ASC";
         Cursor c = sqliteDatabase.query(TABLE_IMAGES, asColumnsToReturn, null, null, null, null, strSortOrder);
         c.moveToFirst();
         while( !c.isAfterLast() ) {
-            long id = c.getLong(0);
-            double lon = c.getDouble(1);
-            double lat = c.getDouble(2);
-            double altim = c.getDouble(3);
-            double azim = c.getDouble(4);
-            String path = c.getString(5);
-            String date = c.getString(6);
-            String text = c.getString(7);
+            double lon = c.getDouble(0);
+            double lat = c.getDouble(1);
+            String path = c.getString(2);
+            String text = c.getString(3);
 
             OverlayItem image = new OverlayItem(new GeoPoint(lat, lon), path, text, marker);
             images.add(image);

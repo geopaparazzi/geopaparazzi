@@ -274,8 +274,6 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         sB.append(COLUMN_ID);
         sB.append(" AS ");
         sB.append(COLUMN_ID);
-        sB.append(", l.");
-        sB.append(COLUMN_LOG_TEXT);
         sB.append(", p.");
         sB.append(COLUMN_PROPERTIES_COLOR);
         sB.append(", p.");
@@ -299,12 +297,11 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             c = sqliteDatabase.rawQuery(query, null);
             c.moveToFirst();
             while( !c.isAfterLast() ) {
-                int visible = c.getInt(4);
+                int visible = c.getInt(3);
                 if (visible == 1) {
                     long logid = c.getLong(0);
-                    String text = c.getString(1);
-                    String color = c.getString(2);
-                    double width = c.getDouble(3);
+                    String color = c.getString(1);
+                    double width = c.getDouble(2);
                     // Logger.d(DEBUG_TAG, "Res: " + logid + "/" + color + "/" + width + "/" +
                     // visible +
                     // "/" +
@@ -320,12 +317,14 @@ public class DaoGpsLog implements IGpsLogDbHelper {
 
                     OverlayWay way = new OverlayWay();
                     List<GeoPoint> gpslogGeoPoints = getGpslogGeoPoints(sqliteDatabase, logid, -1);
-                    way.setPaint(null, wayPaintOutline);
-                    GeoPoint[] geoPoints = gpslogGeoPoints.toArray(new GeoPoint[0]);
-                    way.setWayNodes(new GeoPoint[][]{geoPoints});
-                    // item.setId(logid);
-                    // item.setVisible(visible == 1 ? true : false);
-                    logsList.add(way);
+                    if (gpslogGeoPoints.size() > 1) {
+                        way.setPaint(null, wayPaintOutline);
+                        GeoPoint[] geoPoints = gpslogGeoPoints.toArray(new GeoPoint[0]);
+                        way.setWayNodes(new GeoPoint[][]{geoPoints});
+                        // item.setId(logid);
+                        // item.setVisible(visible == 1 ? true : false);
+                        logsList.add(way);
+                    }
                 }
                 c.moveToNext();
             }
@@ -340,7 +339,26 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         return logsList;
     }
 
-    public static List<GeoPoint> getGpslogGeoPoints( SQLiteDatabase sqliteDatabase, long logId, int pointsNum )
+    /**
+     * Get a gpslog by id.
+     * 
+     * @param context the {@link Context}.
+     * @param logId the log id.
+     * @param paintOutline the paint to use.
+     * @return the way overlay.
+     * @throws IOException
+     */
+    public static OverlayWay getGpslogOverlayById( Context context, long logId, Paint paintOutline ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        OverlayWay way = new OverlayWay();
+        List<GeoPoint> gpslogGeoPoints = getGpslogGeoPoints(sqliteDatabase, logId, -1);
+        way.setPaint(null, paintOutline);
+        GeoPoint[] geoPoints = gpslogGeoPoints.toArray(new GeoPoint[0]);
+        way.setWayNodes(new GeoPoint[][]{geoPoints});
+        return way;
+    }
+
+    private static List<GeoPoint> getGpslogGeoPoints( SQLiteDatabase sqliteDatabase, long logId, int pointsNum )
             throws IOException {
 
         String asColumnsToReturn[] = {COLUMN_DATA_LON, COLUMN_DATA_LAT};
