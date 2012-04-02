@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.Projection;
+import org.mapsforge.android.maps.overlay.ItemizedOverlay;
 import org.mapsforge.android.maps.overlay.Overlay;
 import org.mapsforge.android.maps.overlay.OverlayItem;
 import org.mapsforge.android.maps.overlay.OverlayWay;
@@ -37,7 +38,11 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.debug.Debug;
+import eu.geopaparazzi.library.util.debug.Logger;
+import eu.hydrologis.geopaparazzi.R;
 
 /**
  * GenericOverlay is an abstract base class to display {@link OverlayWay OverlayWays}. The class defines some methods to
@@ -106,6 +111,22 @@ public abstract class GenericOverlay extends Overlay {
     private Path crossPath;
     private Paint crossPaint = new Paint();
 
+    /*
+     * gps stuff
+     */
+    private final Point circlePosition;
+    private final Path path;
+
+    private GpsData overlayGps;
+    private Drawable gpsMarker;
+
+    private Path gpsPath;
+    private OverlayWay gpslogOverlay;
+    private Paint gpsOutline;
+    private Paint gpsFill;
+
+    private List<GeoPoint> currentGps = new ArrayList<GeoPoint>();
+
     /**
      * Create a {@link OverlayWay} wrapped type.
      */
@@ -125,6 +146,27 @@ public abstract class GenericOverlay extends Overlay {
         crossPaint.setStrokeWidth(1f);
         crossPaint.setStyle(Paint.Style.STROKE);
 
+        // gps
+        overlayGps = new GpsData();
+        this.circlePosition = new Point();
+        this.path = new Path();
+        this.gpsPath = new Path();
+
+        gpsMarker = context.getResources().getDrawable(R.drawable.current_position);
+        gpsFill = new Paint(Paint.ANTI_ALIAS_FLAG);
+        gpsFill.setStyle(Paint.Style.FILL);
+        gpsFill.setColor(Color.BLUE);
+        gpsFill.setAlpha(48);
+        gpsOutline = new Paint(Paint.ANTI_ALIAS_FLAG);
+        gpsOutline.setStyle(Paint.Style.STROKE);
+        gpsOutline.setColor(Color.BLUE);
+        gpsOutline.setAlpha(128);
+        gpsOutline.setStrokeWidth(2);
+        gpsMarker = ItemizedOverlay.boundCenter(gpsMarker);
+
+        gpslogOverlay = new OverlayWay(null, gpsOutline);
+
+        currentGps.clear();
     }
 
     /**
@@ -185,6 +227,42 @@ public abstract class GenericOverlay extends Overlay {
                 canvas.drawPath(this.wayPath, this.defaultWayPaintFill);
             }
         }
+    }
+
+    private void assembleGpsWayPath( Point drawPosition, OverlayWay overlayWay ) {
+        this.gpsPath.reset();
+        for( int i = 0; i < overlayWay.cachedWayPositions.length; ++i ) {
+            this.gpsPath.moveTo(overlayWay.cachedWayPositions[i][0].x - drawPosition.x, overlayWay.cachedWayPositions[i][0].y
+                    - drawPosition.y);
+            for( int j = 1; j < overlayWay.cachedWayPositions[i].length; ++j ) {
+                this.gpsPath.lineTo(overlayWay.cachedWayPositions[i][j].x - drawPosition.x, overlayWay.cachedWayPositions[i][j].y
+                        - drawPosition.y);
+            }
+        }
+    }
+
+    private void drawGpsWayPathOnCanvas( Canvas canvas, OverlayWay overlayWay ) {
+        if (this.gpsOutline != null) {
+            canvas.drawPath(this.gpsPath, this.gpsOutline);
+        }
+    }
+
+    private void drawGpsOnCanvas( Canvas canvas, GpsData gpsCircle ) {
+        canvas.drawPath(this.path, gpsOutline);
+        canvas.drawPath(this.path, gpsFill);
+    }
+
+    @SuppressWarnings("nls")
+    public void setGpsPosition( GeoPoint position, float accuracy ) {
+        GpsManager gpsManager = GpsManager.getInstance(context);
+        if (gpsManager.isLogging()) {
+            currentGps.add(position);
+        } else {
+            currentGps.clear();
+        }
+        if (Debug.D)
+            Logger.d(this, "Set gps data: " + position.getLongitude() + "/" + position.getLatitude() + "/" + accuracy);
+        overlayGps.setCircleData(position, accuracy);
     }
 
     /**
@@ -315,6 +393,99 @@ public abstract class GenericOverlay extends Overlay {
             List<Integer> visibleItemsTemp = this.visibleItems;
             this.visibleItems = this.visibleItemsRedraw;
             this.visibleItemsRedraw = visibleItemsTemp;
+        }
+
+        /*
+         * gps logging track
+         */
+        GpsManager gpsManager = GpsManager.getInstance(context);
+        if (gpsManager.isLogging()) {
+            // if a track is recorded, show it
+            synchronized (gpslogOverlay) {
+                int size = currentGps.size();
+                if (size > 1) {
+                    GeoPoint[] geoPoints = currentGps.toArray(new GeoPoint[0]);
+                    gpslogOverlay.setWayNodes(new GeoPoint[][]{geoPoints});
+                    // make sure that the current way has way nodes
+                    if (gpslogOverlay.wayNodes != null && gpslogOverlay.wayNodes.length != 0) {
+                        // make sure that the cached way node positions are valid
+                        if (drawZoomLevel != gpslogOverlay.cachedZoomLevel) {
+                            for( int i = 0; i < gpslogOverlay.cachedWayPositions.length; ++i ) {
+                                for( int j = 0; j < gpslogOverlay.cachedWayPositions[i].length; ++j ) {
+                                    gpslogOverlay.cachedWayPositions[i][j] = projection.toPoint(gpslogOverlay.wayNodes[i][j],
+                                            gpslogOverlay.cachedWayPositions[i][j], drawZoomLevel);
+                                }
+                            }
+                            gpslogOverlay.cachedZoomLevel = drawZoomLevel;
+                        }
+
+                        assembleGpsWayPath(drawPosition, gpslogOverlay);
+                        drawGpsWayPathOnCanvas(canvas, gpslogOverlay);
+                    }
+                }
+            }
+        }
+
+        /*
+         * GPS position
+         */
+
+        if (isInterrupted() || sizeHasChanged()) {
+            // stop working
+            return;
+        }
+
+        // get the current circle
+        if (overlayGps != null && overlayGps.center != null) {
+            synchronized (overlayGps) {
+                // make sure that the current circle has a center position and a radius
+                if (overlayGps.center != null && overlayGps.radius >= 0) {
+                    // make sure that the cached center position is valid
+                    if (drawZoomLevel != overlayGps.cachedZoomLevel) {
+                        overlayGps.cachedCenterPosition = projection.toPoint(overlayGps.center, overlayGps.cachedCenterPosition,
+                                drawZoomLevel);
+                        overlayGps.cachedZoomLevel = drawZoomLevel;
+                        overlayGps.cachedRadius = projection.metersToPixels(overlayGps.radius, drawZoomLevel);
+                    }
+
+                    // calculate the relative circle position on the canvas
+                    this.circlePosition.x = overlayGps.cachedCenterPosition.x - drawPosition.x;
+                    this.circlePosition.y = overlayGps.cachedCenterPosition.y - drawPosition.y;
+                    float circleRadius = overlayGps.cachedRadius;
+
+                    // check if the bounding box of the circle intersects with the canvas
+                    if ((this.circlePosition.x + circleRadius) >= 0
+                            && (this.circlePosition.x - circleRadius) <= canvas.getWidth()
+                            && (this.circlePosition.y + circleRadius) >= 0
+                            && (this.circlePosition.y - circleRadius) <= canvas.getHeight()) {
+                        // assemble the path
+                        this.path.reset();
+                        this.path.addCircle(this.circlePosition.x, this.circlePosition.y, circleRadius, Path.Direction.CCW);
+
+                        if (circleRadius > 0) {
+                            drawGpsOnCanvas(canvas, overlayGps);
+                        }
+
+                        // get the position of the marker
+                        Rect markerBounds = gpsMarker.copyBounds();
+                        // calculate the bounding box of the marker
+                        int left = this.circlePosition.x + markerBounds.left;
+                        int right = this.circlePosition.x + markerBounds.right;
+                        int top = this.circlePosition.y + markerBounds.top;
+                        int bottom = this.circlePosition.y + markerBounds.bottom;
+                        // check if the bounding box of the marker intersects with the canvas
+                        if (right >= 0 && left <= canvas.getWidth() && bottom >= 0 && top <= canvas.getHeight()) {
+                            // set the position of the marker
+                            gpsMarker.setBounds(left, top, right, bottom);
+                            // draw the item marker on the canvas
+                            gpsMarker.draw(canvas);
+                            // restore the position of the marker
+                            gpsMarker.setBounds(markerBounds);
+                        }
+
+                    }
+                }
+            }
         }
 
         /*

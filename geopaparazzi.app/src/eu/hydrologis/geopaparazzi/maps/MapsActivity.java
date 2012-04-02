@@ -48,8 +48,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -95,7 +93,6 @@ import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.maps.overlays.ArrayGenericOverlay;
-import eu.hydrologis.geopaparazzi.maps.overlays.GpsOverlay;
 import eu.hydrologis.geopaparazzi.osm.OsmCategoryActivity;
 import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
@@ -199,19 +196,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         dataOverlay = new ArrayGenericOverlay(this);
         mapView.getOverlays().add(dataOverlay);
         readData();
-
-        Drawable gpsMarker = getResources().getDrawable(R.drawable.current_position);
-        Paint gpsFill = new Paint(Paint.ANTI_ALIAS_FLAG);
-        gpsFill.setStyle(Paint.Style.FILL);
-        gpsFill.setColor(Color.BLUE);
-        gpsFill.setAlpha(48);
-        Paint gpsOutline = new Paint(Paint.ANTI_ALIAS_FLAG);
-        gpsOutline.setStyle(Paint.Style.STROKE);
-        gpsOutline.setColor(Color.BLUE);
-        gpsOutline.setAlpha(128);
-        gpsOutline.setStrokeWidth(2);
-        gpsOverlay = new GpsOverlay(this, gpsFill, gpsOutline, gpsMarker);
-        mapView.getOverlays().add(gpsOverlay);
 
         // /* measure tool */
         // {
@@ -1010,8 +994,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
     private ArrayGenericOverlay dataOverlay;
 
-    private GpsOverlay gpsOverlay;
-
     public void inalidateMap() {
         mapView.invalidateOnUiThread();
     }
@@ -1084,8 +1066,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         if (lonE6 > wE6 && lonE6 < eE6 && latE6 > sE6 && latE6 < nE6) {
             GeoPoint point = new GeoPoint(latE6, lonE6);
             float accuracy = loc.getAccuracy();
-            gpsOverlay.setGpsPosition(point, accuracy);
-            gpsOverlay.requestRedraw();
+            dataOverlay.setGpsPosition(point, accuracy);
+            dataOverlay.requestRedraw();
         }
 
         Projection p = mapView.getProjection();
