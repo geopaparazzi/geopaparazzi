@@ -18,19 +18,14 @@
 package eu.hydrologis.geopaparazzi.maps;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import org.mapsforge.android.maps.MapActivity;
+import org.mapsforge.android.maps.MapController;
 import org.mapsforge.android.maps.MapScaleBar;
 import org.mapsforge.android.maps.MapScaleBar.TextField;
 import org.mapsforge.android.maps.MapView;
@@ -39,6 +34,7 @@ import org.mapsforge.android.maps.Projection;
 import org.mapsforge.android.maps.mapgenerator.MapGenerator;
 import org.mapsforge.android.maps.mapgenerator.MapGeneratorFactory;
 import org.mapsforge.android.maps.mapgenerator.MapGeneratorInternal;
+import org.mapsforge.android.maps.mapgenerator.databaserenderer.DatabaseRenderer;
 import org.mapsforge.android.maps.overlay.OverlayItem;
 import org.mapsforge.android.maps.overlay.OverlayWay;
 import org.mapsforge.core.GeoPoint;
@@ -50,7 +46,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -62,7 +57,6 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.SubMenu;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
@@ -81,10 +75,8 @@ import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.gps.GpsManagerListener;
 import eu.geopaparazzi.library.mixare.MixareHandler;
 import eu.geopaparazzi.library.network.NetworkUtilities;
-import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
-import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.InsertCoordActivity;
 import eu.geopaparazzi.library.util.debug.Debug;
@@ -116,6 +108,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     private static final int MENU_SCALE_ID = 4;
     private static final int MENU_MIXARE_ID = 5;
     private static final int GO_TO = 6;
+    private static final int CENTER_ON_MAP = 7;
 
     private DecimalFormat formatter = new DecimalFormat("00"); //$NON-NLS-1$
     private Button zoomInButton;
@@ -680,6 +673,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         menu.add(Menu.NONE, MENU_SCALE_ID, 3, R.string.mapsactivity_menu_toggle_scalebar).setIcon(R.drawable.ic_menu_scalebar);
         menu.add(Menu.NONE, MENU_MIXARE_ID, 4, R.string.view_in_mixare).setIcon(R.drawable.icon_datasource);
         menu.add(Menu.NONE, GO_TO, 5, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
+        menu.add(Menu.NONE, CENTER_ON_MAP, 6, "center on map").setIcon(android.R.drawable.ic_menu_mylocation);
         return true;
     }
 
@@ -746,6 +740,18 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         case GO_TO: {
             Intent intent = new Intent(this, InsertCoordActivity.class);
             startActivityForResult(intent, INSERTCOORD_RETURN_CODE);
+            return true;
+        }
+        case CENTER_ON_MAP: {
+            MapGenerator mapGenerator = mapView.getMapGenerator();
+            if (mapGenerator instanceof DatabaseRenderer) {
+                MapController controller = mapView.getController();
+                GeoPoint mapCenter = mapView.getMapDatabase().getMapFileInfo().mapCenter;
+                controller.setCenter(mapCenter);
+                saveCenterPref();
+            } else {
+                Utilities.messageDialog(this, "This operation works only for file based data maps", null);
+            }
             return true;
         }
         default:
