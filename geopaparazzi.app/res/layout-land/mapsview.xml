@@ -112,13 +112,13 @@
                             android:background="@drawable/deletenote" >
                         </ImageButton>
 
-                        <ImageButton
+                       <!-- <ImageButton
                             android:id="@+id/togglemeasuremodebutton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="5dip"
                             android:background="@drawable/measuremode" >
-                        </ImageButton>
+                        </ImageButton> -->
                     </LinearLayout>
 
                     <LinearLayout

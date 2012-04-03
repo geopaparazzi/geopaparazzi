@@ -339,23 +339,24 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             }
         });
 
-        final ImageButton toggleMeasuremodeButton = (ImageButton) findViewById(R.id.togglemeasuremodebutton);
-        toggleMeasuremodeButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
-                // boolean isInMeasureMode = mMeasureOverlay.isInMeasureMode();
-                // mMeasureOverlay.setMeasureMode(!isInMeasureMode);
-                // if (!isInMeasureMode) {
-                // toggleMeasuremodeButton.setBackgroundResource(R.drawable.measuremode_on);
-                // } else {
-                // toggleMeasuremodeButton.setBackgroundResource(R.drawable.measuremode);
-                // }
-                // if (!isInMeasureMode) {
-                // disableDrawing();
-                // } else {
-                // enableDrawingWithDelay();
-                // }
-            }
-        });
+        // final ImageButton toggleMeasuremodeButton = (ImageButton)
+        // findViewById(R.id.togglemeasuremodebutton);
+        // toggleMeasuremodeButton.setOnClickListener(new Button.OnClickListener(){
+        // public void onClick( View v ) {
+        // boolean isInMeasureMode = mMeasureOverlay.isInMeasureMode();
+        // mMeasureOverlay.setMeasureMode(!isInMeasureMode);
+        // if (!isInMeasureMode) {
+        // toggleMeasuremodeButton.setBackgroundResource(R.drawable.measuremode_on);
+        // } else {
+        // toggleMeasuremodeButton.setBackgroundResource(R.drawable.measuremode);
+        // }
+        // if (!isInMeasureMode) {
+        // disableDrawing();
+        // } else {
+        // enableDrawingWithDelay();
+        // }
+        // }
+        // });
 
         try {
             handleOsmSliderView();
