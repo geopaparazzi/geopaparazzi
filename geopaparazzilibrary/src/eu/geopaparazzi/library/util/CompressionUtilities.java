@@ -102,9 +102,9 @@ public class CompressionUtilities {
                     File baseFile = new File(destFolder + File.separator + firstName);
                     if (baseFile.exists()) {
                         if (addTimeStamp) {
-                            newFirstName = firstName + "_" + dateTimeFormatter.format(new Date());
+                            newFirstName = firstName + "_" + dateTimeFormatter.format(new Date()); //$NON-NLS-1$
                         } else {
-                            throw new IOException(ReturnCodes.FILEEXISTS.getMsgString() + " " + baseFile);
+                            throw new IOException(ReturnCodes.FILEEXISTS.getMsgString() + " " + baseFile); //$NON-NLS-1$
                         }
                     }
                 }

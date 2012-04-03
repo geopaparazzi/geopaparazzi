@@ -40,7 +40,6 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Base64;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 

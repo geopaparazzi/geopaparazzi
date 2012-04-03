@@ -18,9 +18,11 @@
 package eu.hydrologis.geopaparazzi.maps;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -48,11 +50,10 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Rect;
+import android.content.SharedPreferences.Editor;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
@@ -80,8 +81,11 @@ import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.gps.GpsManagerListener;
 import eu.geopaparazzi.library.mixare.MixareHandler;
 import eu.geopaparazzi.library.network.NetworkUtilities;
+import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
+import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.InsertCoordActivity;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
@@ -156,18 +160,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         mapView = new MapView(this);
         mapView.setClickable(true);
         mapView.setBuiltInZoomControls(false);
-        File mapFile = new File(Environment.getExternalStorageDirectory().getPath(), "download/italy.map");
-        if (!mapFile.exists()) {
-            mapFile = new File(Environment.getExternalStorageDirectory().getPath(), "download/berlin.map");
-            if (!mapFile.exists()) {
-                mapFile = new File(Environment.getExternalStorageDirectory().getPath(), "berlin.map");
-                if (!mapFile.exists()) {
-                    throw new RuntimeException();
-                }
-            }
-        }
-        mapView.setMapFile(mapFile);
         mapView.setOnTouchListener(this);
+        setTileSource(null, null);
 
         MapScaleBar mapScaleBar = this.mapView.getMapScaleBar();
         mapScaleBar.setImperialUnits(false);
@@ -773,16 +767,112 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             try {
                 mapGeneratorInternalNew = MapGeneratorInternal.valueOf(name);
             } catch (IllegalArgumentException e) {
-                mapGeneratorInternalNew = MapGeneratorInternal.DATABASE_RENDERER;
+                mapGeneratorInternalNew = MapGeneratorInternal.MAPNIK;
             }
-            // if (mapGeneratorInternalNew != this.mapGeneratorInternal) {
-            MapGenerator mapGenerator = MapGeneratorFactory.createMapGenerator(mapGeneratorInternalNew);
-            this.mapView.setMapGenerator(mapGenerator);
-            // this.mapGeneratorInternal = mapGeneratorInternalNew;
-            // }
+            if (mapGeneratorInternalNew.equals(MapGeneratorInternal.DATABASE_RENDERER)) {
+                // check existing maps and ask for which to load
+                File sdcardDir = ResourcesManager.getInstance(this).getSdcardDir();
+                if (sdcardDir == null || !sdcardDir.exists()) {
+                    Utilities
+                            .messageDialog(
+                                    this,
+                                    "Database rendering is supported only from external storage. Could not find external storage, is one available?",
+                                    null);
+                    return true;
+                }
+
+                final List<String> mapPaths = new ArrayList<String>();
+                final List<String> mapNames = new ArrayList<String>();
+
+                File[] mapFiles = sdcardDir.listFiles(new FilenameFilter(){
+                    public boolean accept( File dir, String filename ) {
+                        return filename.endsWith(".map");
+                    }
+                });
+
+                if (mapFiles == null || mapFiles.length == 0) {
+                    Utilities
+                            .messageDialog(
+                                    this,
+                                    "No map files were found on the root of your external storage. Switching to online maps.\nMaps can be downloaded from: http://download.mapsforge.org",
+                                    null);
+                    return true;
+                }
+
+                for( File mapFile : mapFiles ) {
+                    mapPaths.add(mapFile.getAbsolutePath());
+                    mapNames.add(FileUtilities.getNameWithoutExtention(mapFile));
+                }
+
+                String[] mapNamesArrays = mapNames.toArray(new String[0]);
+                boolean[] mapNamesChecked = new boolean[mapNamesArrays.length];
+                DialogInterface.OnMultiChoiceClickListener dialogListener = new DialogInterface.OnMultiChoiceClickListener(){
+                    public void onClick( DialogInterface dialog, int which, boolean isChecked ) {
+                        String mapPath = mapPaths.get(which);
+                        setTileSource(MapGeneratorInternal.DATABASE_RENDERER.toString(), new File(mapPath));
+                        mapChoiceDialog.dismiss();
+                    }
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Select map to use");
+                builder.setMultiChoiceItems(mapNamesArrays, mapNamesChecked, dialogListener);
+                mapChoiceDialog = builder.create();
+                mapChoiceDialog.show();
+            } else {
+                setTileSource(mapGeneratorInternalNew.toString(), null);
+            }
 
         }
         return super.onMenuItemSelected(featureId, item);
+    }
+
+    /**
+     * Sets the tilesource.
+     * 
+     * <p>
+     * If both arguments are set null, it wil try to get info from the preferences,
+     * and used sources are saved into preferences.
+     * </p>
+     * 
+     * @param sourceName if source is <code>null</code>, mapnik is used.
+     * @param mapfile the map file to use in case it is a database based source. 
+     */
+    private void setTileSource( String sourceName, File mapfile ) {
+        MapGeneratorInternal mapGeneratorInternal = MapGeneratorInternal.MAPNIK;
+        if (sourceName == null) {
+            // try from preferences
+            sourceName = preferences.getString(Constants.PREFS_KEY_TILESOURCE, MapGeneratorInternal.MAPNIK.toString());
+        }
+        mapGeneratorInternal = MapGeneratorInternal.valueOf(sourceName);
+
+        if (mapGeneratorInternal.equals(MapGeneratorInternal.DATABASE_RENDERER)) {
+            if (mapfile == null || !mapfile.exists()) {
+                // try from preferences
+                String filePath = preferences.getString(Constants.PREFS_KEY_TILESOURCE_FILE, ""); //$NON-NLS-1$
+                mapfile = new File(filePath);
+                if (!mapfile.exists()) {
+                    mapGeneratorInternal = MapGeneratorInternal.MAPNIK;
+                    Utilities.messageDialog(this, "Could not find map file, switching to MAPNIK tile source.", null);
+                    mapfile = null;
+                }
+            }
+        }
+
+        MapViewPosition mapPosition = mapView.getMapPosition();
+        MapGenerator mapGenerator = MapGeneratorFactory.createMapGenerator(mapGeneratorInternal);
+        mapView.setMapGenerator(mapGenerator);
+        if (mapfile != null)
+            mapView.setMapFile(mapfile);
+
+        mapView.getController().setCenter(mapPosition.getMapCenter());
+        mapView.getController().setZoom(mapPosition.getZoomLevel());
+
+        Editor editor = preferences.edit();
+        editor.putString(Constants.PREFS_KEY_TILESOURCE, sourceName);
+        if (mapfile != null)
+            editor.putString(Constants.PREFS_KEY_TILESOURCE_FILE, mapfile.getAbsolutePath());
+        editor.commit();
     }
 
     /**
@@ -994,6 +1084,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
     private ArrayGenericOverlay dataOverlay;
 
+    private AlertDialog mapChoiceDialog;
+
     public void inalidateMap() {
         mapView.invalidateOnUiThread();
     }
@@ -1078,25 +1170,17 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         int newSE6 = sE6 + paddingY;
         int newNE6 = nE6 - paddingY;
 
-        // Rect smallerBounds = new Rect(newWE6, newNE6, newEE6, newSE6);
         boolean doCenter = false;
         if (!boundsContain(latE6, lonE6, newNE6, newSE6, newWE6, newEE6)) {
             if (centerOnGps) {
                 doCenter = true;
             }
         }
-        // if (!smallerBounds.contains(lonE6, latE6)) {
-        // if (!centerOnGps) {
-        // return;
-        // }
-        // }
         if (doCenter) {
             setNewCenter(lon, lat, false);
             if (Debug.D)
                 Logger.i(this, "recentering triggered"); //$NON-NLS-1$                
         }
-
-        // mapView.invalidateOnUiThread();
     }
 
     private boolean boundsContain( int latE6, int lonE6, int nE6, int sE6, int wE6, int eE6 ) {

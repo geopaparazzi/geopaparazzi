@@ -61,6 +61,8 @@ public class ResourcesManager implements Serializable {
     private String applicationLabel;
 
     private static boolean useInternalMemory = true;
+
+    private File sdcardDir;
     public static void setUseInternalMemory( boolean useInternalMemory ) {
         ResourcesManager.useInternalMemory = useInternalMemory;
     }
@@ -149,7 +151,7 @@ public class ResourcesManager implements Serializable {
                 mExternalStorageAvailable = mExternalStorageWriteable = false;
             }
             if (mExternalStorageAvailable && mExternalStorageWriteable) {
-                File sdcardDir = Environment.getExternalStorageDirectory();
+                sdcardDir = Environment.getExternalStorageDirectory();
                 applicationDir = new File(sdcardDir, applicationLabel);
             } else if (useInternalMemory) {
                 applicationDir = context.getDir(applicationLabel, Context.MODE_PRIVATE);
@@ -201,6 +203,15 @@ public class ResourcesManager implements Serializable {
      */
     public File getApplicationParentDir() {
         return applicationDir.getParentFile();
+    }
+
+    /**
+     * Get the sdcard dir or <code>null</code>.
+     * 
+     * @return the sdcard folder file.
+     */
+    public File getSdcardDir() {
+        return sdcardDir;
     }
 
     /**
@@ -266,7 +277,7 @@ public class ResourcesManager implements Serializable {
      */
     public void addProjectDescription( String description ) throws IOException {
         File applicationDir = getApplicationDir();
-        File descriptionFile = new File(applicationDir, "description");
+        File descriptionFile = new File(applicationDir, "description"); //$NON-NLS-1$
         FileUtilities.writefile(description, descriptionFile);
     }
 

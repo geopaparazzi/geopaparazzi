@@ -107,4 +107,10 @@ public interface Constants {
     public static final String PREF_KEY_PWD = "geopapcloud_pwd_key"; //$NON-NLS-1$
     public static final String PREF_KEY_SERVER = "geopapcloud_server_key";//$NON-NLS-1$
     
+    /*
+     * mapsforge 
+     */
+    public static final String PREFS_KEY_TILESOURCE = "PREFS_KEY_TILESOURCE";
+    public static final String PREFS_KEY_TILESOURCE_FILE = "PREFS_KEY_TILESOURCE_FILE";
+    
 }
