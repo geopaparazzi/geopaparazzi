@@ -36,7 +36,7 @@ public class Debug {
      * 
      * <p>For release = <code>false</code>.
      */
-    public final static boolean doMock = true;
+    public final static boolean doMock = false;
 
     /**
      * Flag to define normal drawing of renderers, as opposed to drawing some debug info.
