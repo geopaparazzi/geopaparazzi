@@ -24,20 +24,20 @@ import org.mapsforge.android.maps.overlay.OverlayWay;
 import android.content.Context;
 
 /**
- * ArrayGenericOverlay is a thread-safe implementation of the {@link GenericOverlay} class using an {@link ArrayList} as
+ * ArrayGeopaparazziOverlay is a thread-safe implementation of the {@link GeopaparazziOverlay} class using an {@link ArrayList} as
  * internal data structure. Default paints for all {@link OverlayWay OverlayWays} without individual paints can be
  * defined via the constructor.
  */
-public class ArrayGenericOverlay extends GenericOverlay {
+public class ArrayGeopaparazziOverlay extends GeopaparazziOverlay {
     private static final int INITIAL_CAPACITY = 8;
-    private static final String THREAD_NAME = "ArrayGenericOverlay";
+    private static final String THREAD_NAME = "ArrayGeopaparazziOverlay";
 
     private final List<OverlayWay> overlayWays;
     private final List<OverlayItem> overlayItems;
     
     /**
      */
-    public ArrayGenericOverlay( Context context ) {
+    public ArrayGeopaparazziOverlay( Context context ) {
         super(context);
         this.overlayWays = new ArrayList<OverlayWay>(INITIAL_CAPACITY);
         this.overlayItems = new ArrayList<OverlayItem>(INITIAL_CAPACITY);

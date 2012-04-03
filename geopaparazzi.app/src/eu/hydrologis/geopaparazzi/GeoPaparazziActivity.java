@@ -20,10 +20,21 @@ package eu.hydrologis.geopaparazzi;
 import static eu.hydrologis.geopaparazzi.util.Constants.PANICKEY;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
+import java.util.Map.Entry;
+
+import org.mapsforge.android.maps.MapViewPosition;
+import org.mapsforge.android.maps.mapgenerator.MapGenerator;
+import org.mapsforge.android.maps.mapgenerator.MapGeneratorFactory;
+import org.mapsforge.android.maps.mapgenerator.MapGeneratorInternal;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -39,6 +50,7 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -89,9 +101,10 @@ public class GeoPaparazziActivity extends Activity {
 
     private static final int MENU_ABOUT = Menu.FIRST;
     private static final int MENU_EXIT = 2;
-    private static final int MENU_SETTINGS = 3;
-    private static final int MENU_RESET = 4;
-    private static final int MENU_LOAD = 5;
+    private static final int MENU_TILE_SOURCE_ID = 3;
+    private static final int MENU_SETTINGS = 4;
+    private static final int MENU_RESET = 5;
+    private static final int MENU_LOAD = 6;
 
     private ResourcesManager resourcesManager;
     private ActionBar actionBar;
@@ -103,9 +116,15 @@ public class GeoPaparazziActivity extends Activity {
     private boolean sliderIsOpen = false;
     private GpsManager gpsManager;
     private SensorsManager sensorManager;
+    private HashMap<Integer, String> tileSourcesMap = null;
+    private AlertDialog mapChoiceDialog;
 
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
+        tileSourcesMap = new LinkedHashMap<Integer, String>();
+        tileSourcesMap.put(1001, MapGeneratorInternal.DATABASE_RENDERER.name());
+        tileSourcesMap.put(1002, MapGeneratorInternal.MAPNIK.name());
+        tileSourcesMap.put(1003, MapGeneratorInternal.OPENCYCLEMAP.name());
 
         init();
     }
@@ -388,10 +407,18 @@ public class GeoPaparazziActivity extends Activity {
     public boolean onCreateOptionsMenu( Menu menu ) {
         super.onCreateOptionsMenu(menu);
         menu.add(Menu.NONE, MENU_SETTINGS, 0, R.string.mainmenu_preferences).setIcon(android.R.drawable.ic_menu_preferences);
-        menu.add(Menu.NONE, MENU_RESET, 1, R.string.reset).setIcon(android.R.drawable.ic_menu_revert);
-        menu.add(Menu.NONE, MENU_LOAD, 2, R.string.load).setIcon(android.R.drawable.ic_menu_set_as);
-        menu.add(Menu.NONE, MENU_EXIT, 3, R.string.exit).setIcon(android.R.drawable.ic_lock_power_off);
-        menu.add(Menu.NONE, MENU_ABOUT, 4, R.string.about).setIcon(android.R.drawable.ic_menu_info_details);
+        final SubMenu subMenu = menu.addSubMenu(Menu.NONE, MENU_TILE_SOURCE_ID, 1, R.string.mapsactivity_menu_tilesource)
+                .setIcon(R.drawable.ic_menu_tilesource);
+        {
+            Set<Entry<Integer, String>> entrySet = tileSourcesMap.entrySet();
+            for( Entry<Integer, String> entry : entrySet ) {
+                subMenu.add(0, entry.getKey(), Menu.NONE, entry.getValue());
+            }
+        }
+        menu.add(Menu.NONE, MENU_RESET, 2, R.string.reset).setIcon(android.R.drawable.ic_menu_revert);
+        menu.add(Menu.NONE, MENU_LOAD, 3, R.string.load).setIcon(android.R.drawable.ic_menu_set_as);
+        menu.add(Menu.NONE, MENU_EXIT, 4, R.string.exit).setIcon(android.R.drawable.ic_lock_power_off);
+        menu.add(Menu.NONE, MENU_ABOUT, 5, R.string.about).setIcon(android.R.drawable.ic_menu_info_details);
 
         return true;
     }
@@ -419,8 +446,112 @@ public class GeoPaparazziActivity extends Activity {
         case MENU_EXIT:
             finish();
             return true;
+        case MENU_TILE_SOURCE_ID:
+            return true;
+        default: {
+            String name = item.getTitle().toString();
+            MapGeneratorInternal mapGeneratorInternalNew;
+            try {
+                mapGeneratorInternalNew = MapGeneratorInternal.valueOf(name);
+            } catch (IllegalArgumentException e) {
+                mapGeneratorInternalNew = MapGeneratorInternal.MAPNIK;
+            }
+            if (mapGeneratorInternalNew.equals(MapGeneratorInternal.DATABASE_RENDERER)) {
+                // check existing maps and ask for which to load
+                File sdcardDir = ResourcesManager.getInstance(this).getSdcardDir();
+                if (sdcardDir == null || !sdcardDir.exists()) {
+                    Utilities
+                            .messageDialog(
+                                    this,
+                                    "Database rendering is supported only from external storage. Could not find external storage, is one available?",
+                                    null);
+                    return true;
+                }
+
+                final List<String> mapPaths = new ArrayList<String>();
+                final List<String> mapNames = new ArrayList<String>();
+
+                File[] mapFiles = sdcardDir.listFiles(new FilenameFilter(){
+                    public boolean accept( File dir, String filename ) {
+                        return filename.endsWith(".map");
+                    }
+                });
+
+                if (mapFiles == null || mapFiles.length == 0) {
+                    Utilities
+                            .messageDialog(
+                                    this,
+                                    "No map files were found on the root of your external storage. Switching to online maps.\nMaps can be downloaded from: http://download.mapsforge.org",
+                                    null);
+                    return true;
+                }
+
+                for( File mapFile : mapFiles ) {
+                    mapPaths.add(mapFile.getAbsolutePath());
+                    mapNames.add(FileUtilities.getNameWithoutExtention(mapFile));
+                }
+
+                String[] mapNamesArrays = mapNames.toArray(new String[0]);
+                boolean[] mapNamesChecked = new boolean[mapNamesArrays.length];
+                DialogInterface.OnMultiChoiceClickListener dialogListener = new DialogInterface.OnMultiChoiceClickListener(){
+                    public void onClick( DialogInterface dialog, int which, boolean isChecked ) {
+                        String mapPath = mapPaths.get(which);
+                        setTileSource(MapGeneratorInternal.DATABASE_RENDERER.toString(), new File(mapPath));
+                        mapChoiceDialog.dismiss();
+                    }
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Select map to use");
+                builder.setMultiChoiceItems(mapNamesArrays, mapNamesChecked, dialogListener);
+                mapChoiceDialog = builder.create();
+                mapChoiceDialog.show();
+            } else {
+                setTileSource(mapGeneratorInternalNew.toString(), null);
+            }
+        }
         }
         return super.onMenuItemSelected(featureId, item);
+    }
+    
+    /**
+     * Sets the tilesource.
+     * 
+     * <p>
+     * If both arguments are set null, it wil try to get info from the preferences,
+     * and used sources are saved into preferences.
+     * </p>
+     * 
+     * @param sourceName if source is <code>null</code>, mapnik is used.
+     * @param mapfile the map file to use in case it is a database based source. 
+     */
+    private void setTileSource( String sourceName, File mapfile ) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        MapGeneratorInternal mapGeneratorInternal = MapGeneratorInternal.MAPNIK;
+        if (sourceName == null) {
+            // try from preferences
+            sourceName = preferences.getString(Constants.PREFS_KEY_TILESOURCE, MapGeneratorInternal.MAPNIK.toString());
+        }
+        mapGeneratorInternal = MapGeneratorInternal.valueOf(sourceName);
+
+        if (mapGeneratorInternal.equals(MapGeneratorInternal.DATABASE_RENDERER)) {
+            if (mapfile == null || !mapfile.exists()) {
+                // try from preferences
+                String filePath = preferences.getString(Constants.PREFS_KEY_TILESOURCE_FILE, ""); //$NON-NLS-1$
+                mapfile = new File(filePath);
+                if (!mapfile.exists()) {
+                    mapGeneratorInternal = MapGeneratorInternal.MAPNIK;
+                    Utilities.messageDialog(this, "Could not find map file, switching to MAPNIK tile source.", null);
+                    mapfile = null;
+                }
+            }
+        }
+
+        Editor editor = preferences.edit();
+        editor.putString(Constants.PREFS_KEY_TILESOURCE, sourceName);
+        if (mapfile != null)
+            editor.putString(Constants.PREFS_KEY_TILESOURCE_FILE, mapfile.getAbsolutePath());
+        editor.commit();
     }
 
     protected void onActivityResult( int requestCode, int resultCode, Intent data ) {

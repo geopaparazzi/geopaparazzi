@@ -93,10 +93,9 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
-import eu.hydrologis.geopaparazzi.database.DaoMaps;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
-import eu.hydrologis.geopaparazzi.maps.overlays.ArrayGenericOverlay;
+import eu.hydrologis.geopaparazzi.maps.overlays.ArrayGeopaparazziOverlay;
 import eu.hydrologis.geopaparazzi.osm.OsmCategoryActivity;
 import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
@@ -114,12 +113,9 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
     private static final int MENU_GPSDATA = 1;
     private static final int MENU_MAPDATA = 2;
-    private static final int MENU_TILE_SOURCE_ID = 3;
     private static final int MENU_SCALE_ID = 4;
     private static final int MENU_MIXARE_ID = 5;
     private static final int GO_TO = 6;
-
-    private HashMap<Integer, String> tileSourcesMap = null;
 
     private DecimalFormat formatter = new DecimalFormat("00"); //$NON-NLS-1$
     private Button zoomInButton;
@@ -139,18 +135,28 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         super.onCreate(icicle);
         setContentView(R.layout.mapsview);
 
-        tileSourcesMap = new LinkedHashMap<Integer, String>();
-        tileSourcesMap.put(1001, MapGeneratorInternal.DATABASE_RENDERER.name());
-        tileSourcesMap.put(1002, MapGeneratorInternal.MAPNIK.name());
-        tileSourcesMap.put(1003, MapGeneratorInternal.OPENCYCLEMAP.name());
-
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         mapView = new MapView(this);
         mapView.setClickable(true);
         mapView.setBuiltInZoomControls(false);
         mapView.setOnTouchListener(this);
-        setTileSource(null, null);
+
+        { // get proper rendeing engine
+            MapGeneratorInternal mapGeneratorInternal = MapGeneratorInternal.MAPNIK;
+            String tileSourceName = preferences.getString(Constants.PREFS_KEY_TILESOURCE, MapGeneratorInternal.MAPNIK.toString());
+            mapGeneratorInternal = MapGeneratorInternal.valueOf(tileSourceName);
+            MapGenerator mapGenerator = MapGeneratorFactory.createMapGenerator(mapGeneratorInternal);
+            mapView.setMapGenerator(mapGenerator);
+            String filePath = preferences.getString(Constants.PREFS_KEY_TILESOURCE_FILE, ""); //$NON-NLS-1$
+            File mapfile = new File(filePath);
+            if (mapfile.exists()) {
+                mapView.setMapFile(mapfile);
+            } else {
+                mapGenerator = MapGeneratorFactory.createMapGenerator(MapGeneratorInternal.MAPNIK);
+                mapView.setMapGenerator(mapGenerator);
+            }
+        }
 
         MapScaleBar mapScaleBar = this.mapView.getMapScaleBar();
         mapScaleBar.setImperialUnits(false);
@@ -176,7 +182,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         // this.mapsView.getOverlays().add(mMapsOverlay);
         // }
 
-        dataOverlay = new ArrayGenericOverlay(this);
+        dataOverlay = new ArrayGeopaparazziOverlay(this);
         mapView.getOverlays().add(dataOverlay);
         readData();
 
@@ -379,7 +385,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             /* images */
             if (DataManager.getInstance().areImagesVisible()) {
                 Drawable imageMarker = getResources().getDrawable(R.drawable.image);
-                Drawable newImageMarker = ArrayGenericOverlay.boundCenter(imageMarker);
+                Drawable newImageMarker = ArrayGeopaparazziOverlay.boundCenter(imageMarker);
                 List<OverlayItem> imagesOverlaysList = DaoImages.getImagesOverlayList(this, newImageMarker);
                 dataOverlay.addItems(imagesOverlaysList);
             }
@@ -387,14 +393,14 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             /* gps notes */
             if (DataManager.getInstance().areNotesVisible()) {
                 Drawable notesMarker = getResources().getDrawable(R.drawable.goto_position);
-                Drawable newNotesMarker = ArrayGenericOverlay.boundCenter(notesMarker);
+                Drawable newNotesMarker = ArrayGeopaparazziOverlay.boundCenter(notesMarker);
                 List<OverlayItem> noteOverlaysList = DaoNotes.getNoteOverlaysList(this, newNotesMarker);
                 dataOverlay.addItems(noteOverlaysList);
             }
 
             /* bookmarks */
             Drawable bookmarkMarker = getResources().getDrawable(R.drawable.bookmark);
-            Drawable newBookmarkMarker = ArrayGenericOverlay.boundCenter(bookmarkMarker);
+            Drawable newBookmarkMarker = ArrayGeopaparazziOverlay.boundCenter(bookmarkMarker);
             List<OverlayItem> bookmarksOverlays = DaoBookmarks.getBookmarksOverlays(this, newBookmarkMarker);
             dataOverlay.addItems(bookmarksOverlays);
         } catch (IOException e1) {
@@ -672,16 +678,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         menu.add(Menu.NONE, MENU_GPSDATA, 1, R.string.mainmenu_gpsdataselect).setIcon(android.R.drawable.ic_menu_compass);
         menu.add(Menu.NONE, MENU_MAPDATA, 2, R.string.mainmenu_mapdataselect).setIcon(android.R.drawable.ic_menu_compass);
         menu.add(Menu.NONE, MENU_SCALE_ID, 3, R.string.mapsactivity_menu_toggle_scalebar).setIcon(R.drawable.ic_menu_scalebar);
-        final SubMenu subMenu = menu.addSubMenu(Menu.NONE, MENU_TILE_SOURCE_ID, 4, R.string.mapsactivity_menu_tilesource)
-                .setIcon(R.drawable.ic_menu_tilesource);
-        {
-            Set<Entry<Integer, String>> entrySet = tileSourcesMap.entrySet();
-            for( Entry<Integer, String> entry : entrySet ) {
-                subMenu.add(0, entry.getKey(), Menu.NONE, entry.getValue());
-            }
-        }
-        menu.add(Menu.NONE, MENU_MIXARE_ID, 5, R.string.view_in_mixare).setIcon(R.drawable.icon_datasource);
-        menu.add(Menu.NONE, GO_TO, 6, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
+        menu.add(Menu.NONE, MENU_MIXARE_ID, 4, R.string.view_in_mixare).setIcon(R.drawable.icon_datasource);
+        menu.add(Menu.NONE, GO_TO, 5, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
         return true;
     }
 
@@ -718,9 +716,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             // e1.printStackTrace();
             // return false;
             // }
-        case MENU_TILE_SOURCE_ID:
-            return true;
-
         case MENU_SCALE_ID:
             MapScaleBar mapScaleBar = mapView.getMapScaleBar();
             boolean showMapScaleBar = mapScaleBar.isShowMapScaleBar();
@@ -754,118 +749,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             return true;
         }
         default:
-
-            String name = item.getTitle().toString();
-            MapGeneratorInternal mapGeneratorInternalNew;
-            try {
-                mapGeneratorInternalNew = MapGeneratorInternal.valueOf(name);
-            } catch (IllegalArgumentException e) {
-                mapGeneratorInternalNew = MapGeneratorInternal.MAPNIK;
-            }
-            if (mapGeneratorInternalNew.equals(MapGeneratorInternal.DATABASE_RENDERER)) {
-                // check existing maps and ask for which to load
-                File sdcardDir = ResourcesManager.getInstance(this).getSdcardDir();
-                if (sdcardDir == null || !sdcardDir.exists()) {
-                    Utilities
-                            .messageDialog(
-                                    this,
-                                    "Database rendering is supported only from external storage. Could not find external storage, is one available?",
-                                    null);
-                    return true;
-                }
-
-                final List<String> mapPaths = new ArrayList<String>();
-                final List<String> mapNames = new ArrayList<String>();
-
-                File[] mapFiles = sdcardDir.listFiles(new FilenameFilter(){
-                    public boolean accept( File dir, String filename ) {
-                        return filename.endsWith(".map");
-                    }
-                });
-
-                if (mapFiles == null || mapFiles.length == 0) {
-                    Utilities
-                            .messageDialog(
-                                    this,
-                                    "No map files were found on the root of your external storage. Switching to online maps.\nMaps can be downloaded from: http://download.mapsforge.org",
-                                    null);
-                    return true;
-                }
-
-                for( File mapFile : mapFiles ) {
-                    mapPaths.add(mapFile.getAbsolutePath());
-                    mapNames.add(FileUtilities.getNameWithoutExtention(mapFile));
-                }
-
-                String[] mapNamesArrays = mapNames.toArray(new String[0]);
-                boolean[] mapNamesChecked = new boolean[mapNamesArrays.length];
-                DialogInterface.OnMultiChoiceClickListener dialogListener = new DialogInterface.OnMultiChoiceClickListener(){
-                    public void onClick( DialogInterface dialog, int which, boolean isChecked ) {
-                        String mapPath = mapPaths.get(which);
-                        setTileSource(MapGeneratorInternal.DATABASE_RENDERER.toString(), new File(mapPath));
-                        mapChoiceDialog.dismiss();
-                    }
-                };
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Select map to use");
-                builder.setMultiChoiceItems(mapNamesArrays, mapNamesChecked, dialogListener);
-                mapChoiceDialog = builder.create();
-                mapChoiceDialog.show();
-            } else {
-                setTileSource(mapGeneratorInternalNew.toString(), null);
-            }
-
         }
         return super.onMenuItemSelected(featureId, item);
-    }
-
-    /**
-     * Sets the tilesource.
-     * 
-     * <p>
-     * If both arguments are set null, it wil try to get info from the preferences,
-     * and used sources are saved into preferences.
-     * </p>
-     * 
-     * @param sourceName if source is <code>null</code>, mapnik is used.
-     * @param mapfile the map file to use in case it is a database based source. 
-     */
-    private void setTileSource( String sourceName, File mapfile ) {
-        MapGeneratorInternal mapGeneratorInternal = MapGeneratorInternal.MAPNIK;
-        if (sourceName == null) {
-            // try from preferences
-            sourceName = preferences.getString(Constants.PREFS_KEY_TILESOURCE, MapGeneratorInternal.MAPNIK.toString());
-        }
-        mapGeneratorInternal = MapGeneratorInternal.valueOf(sourceName);
-
-        if (mapGeneratorInternal.equals(MapGeneratorInternal.DATABASE_RENDERER)) {
-            if (mapfile == null || !mapfile.exists()) {
-                // try from preferences
-                String filePath = preferences.getString(Constants.PREFS_KEY_TILESOURCE_FILE, ""); //$NON-NLS-1$
-                mapfile = new File(filePath);
-                if (!mapfile.exists()) {
-                    mapGeneratorInternal = MapGeneratorInternal.MAPNIK;
-                    Utilities.messageDialog(this, "Could not find map file, switching to MAPNIK tile source.", null);
-                    mapfile = null;
-                }
-            }
-        }
-
-        MapViewPosition mapPosition = mapView.getMapPosition();
-        MapGenerator mapGenerator = MapGeneratorFactory.createMapGenerator(mapGeneratorInternal);
-        mapView.setMapGenerator(mapGenerator);
-        if (mapfile != null)
-            mapView.setMapFile(mapfile);
-
-        mapView.getController().setCenter(mapPosition.getMapCenter());
-        mapView.getController().setZoom(mapPosition.getZoomLevel());
-
-        Editor editor = preferences.edit();
-        editor.putString(Constants.PREFS_KEY_TILESOURCE, sourceName);
-        if (mapfile != null)
-            editor.putString(Constants.PREFS_KEY_TILESOURCE_FILE, mapfile.getAbsolutePath());
-        editor.commit();
     }
 
     /**
@@ -1075,7 +960,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         }
     };
 
-    private ArrayGenericOverlay dataOverlay;
+    private ArrayGeopaparazziOverlay dataOverlay;
 
     private AlertDialog mapChoiceDialog;
 

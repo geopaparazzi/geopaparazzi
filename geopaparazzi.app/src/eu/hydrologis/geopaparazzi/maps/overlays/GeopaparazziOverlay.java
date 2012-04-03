@@ -45,7 +45,7 @@ import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 
 /**
- * GenericOverlay is an abstract base class to display {@link OverlayWay OverlayWays}. The class defines some methods to
+ * GeopaparazziOverlay is an abstract base class to display {@link OverlayWay OverlayWays}. The class defines some methods to
  * access the backing data structure of deriving subclasses.
  * <p>
  * The overlay may be used to show additional ways such as calculated routes. Closed polygons, for example buildings or
@@ -55,8 +55,8 @@ import eu.hydrologis.geopaparazzi.R;
  * @param <Generic>
  *            the type of ways handled by this overlay.
  */
-public abstract class GenericOverlay extends Overlay {
-    private static final String THREAD_NAME = "GenericOverlay";
+public abstract class GeopaparazziOverlay extends Overlay {
+    private static final String THREAD_NAME = "GeopaparazziOverlay";
     private static final int ITEM_INITIAL_CAPACITY = 8;
 
     /**
@@ -122,6 +122,8 @@ public abstract class GenericOverlay extends Overlay {
 
     private Path gpsPath;
     private OverlayWay gpslogOverlay;
+    private Paint gpsTrackPaintYellow;
+    private Paint gpsTrackPaintBlack;
     private Paint gpsOutline;
     private Paint gpsFill;
 
@@ -130,7 +132,7 @@ public abstract class GenericOverlay extends Overlay {
     /**
      * Create a {@link OverlayWay} wrapped type.
      */
-    public GenericOverlay( Context context ) {
+    public GeopaparazziOverlay( Context context ) {
         super();
         this.context = context;
         this.wayPath = new Path();
@@ -157,13 +159,23 @@ public abstract class GenericOverlay extends Overlay {
         gpsFill.setStyle(Paint.Style.FILL);
         gpsFill.setColor(Color.BLUE);
         gpsFill.setAlpha(48);
+
         gpsOutline = new Paint(Paint.ANTI_ALIAS_FLAG);
         gpsOutline.setStyle(Paint.Style.STROKE);
         gpsOutline.setColor(Color.BLUE);
         gpsOutline.setAlpha(128);
         gpsOutline.setStrokeWidth(2);
-        gpsMarker = ItemizedOverlay.boundCenter(gpsMarker);
 
+        gpsTrackPaintYellow = new Paint(Paint.ANTI_ALIAS_FLAG);
+        gpsTrackPaintYellow.setStyle(Paint.Style.STROKE);
+        gpsTrackPaintYellow.setColor(Color.YELLOW);
+        gpsTrackPaintYellow.setStrokeWidth(3);
+        gpsTrackPaintBlack = new Paint(Paint.ANTI_ALIAS_FLAG);
+        gpsTrackPaintBlack.setStyle(Paint.Style.STROKE);
+        gpsTrackPaintBlack.setColor(Color.BLACK);
+        gpsTrackPaintBlack.setStrokeWidth(5);
+
+        gpsMarker = ItemizedOverlay.boundCenter(gpsMarker);
         gpslogOverlay = new OverlayWay(null, gpsOutline);
 
         currentGps.clear();
@@ -242,9 +254,8 @@ public abstract class GenericOverlay extends Overlay {
     }
 
     private void drawGpsWayPathOnCanvas( Canvas canvas, OverlayWay overlayWay ) {
-        if (this.gpsOutline != null) {
-            canvas.drawPath(this.gpsPath, this.gpsOutline);
-        }
+        canvas.drawPath(this.gpsPath, this.gpsTrackPaintBlack);
+        canvas.drawPath(this.gpsPath, this.gpsTrackPaintYellow);
     }
 
     private void drawGpsOnCanvas( Canvas canvas, GpsData gpsCircle ) {
