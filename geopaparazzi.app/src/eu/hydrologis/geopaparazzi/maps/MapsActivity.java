@@ -115,11 +115,9 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     private static final int MENU_GPSDATA = 1;
     private static final int MENU_MAPDATA = 2;
     private static final int MENU_TILE_SOURCE_ID = 3;
-    private static final int MENU_MINIMAP_ID = 4;
-    private static final int MENU_SCALE_ID = 5;
-    private static final int MENU_COMPASS_ID = 6;
-    private static final int MENU_MIXARE_ID = 7;
-    private static final int GO_TO = 8;
+    private static final int MENU_SCALE_ID = 4;
+    private static final int MENU_MIXARE_ID = 5;
+    private static final int GO_TO = 6;
 
     private HashMap<Integer, String> tileSourcesMap = null;
 
@@ -131,15 +129,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     private boolean sliderIsOpen;
     private boolean osmSliderIsOpen;
     private MapView mapView;
-    // private MinimapOverlayWithCross mMiniMapOverlay;
-    // private LogsOverlay mLogsOverlay;
-    // private NotesOverlay mNotesOverlay;
-    // private BookmarksOverlay mBookmarksOverlay;
-    // private GpsPositionOverlay mGpsOverlay;
-    // private CrossOverlay mCrossOverlay;
-    // private MapsOverlay mMapsOverlay;
-    // private MeasureToolOverlay mMeasureOverlay;
-    // private ImagesOverlay mImagesOverlay;
     private int maxZoomLevel;
     private int minZoomLevel;
     private SlidingDrawer osmSlidingDrawer;
@@ -373,6 +362,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        saveCenterPref();
 
     }
 
@@ -625,6 +616,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
             readData();
         }
+        saveCenterPref();
         super.onWindowFocusChanged(hasFocus);
     }
 
@@ -678,11 +670,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         super.onCreateOptionsMenu(menu);
         menu.add(Menu.NONE, MENU_GPSDATA, 1, R.string.mainmenu_gpsdataselect).setIcon(android.R.drawable.ic_menu_compass);
         menu.add(Menu.NONE, MENU_MAPDATA, 2, R.string.mainmenu_mapdataselect).setIcon(android.R.drawable.ic_menu_compass);
-        menu.add(Menu.NONE, MENU_MINIMAP_ID, 3, R.string.mapsactivity_menu_toggle_minimap).setIcon(R.drawable.ic_menu_minimap);
-        menu.add(Menu.NONE, MENU_SCALE_ID, 4, R.string.mapsactivity_menu_toggle_scalebar).setIcon(R.drawable.ic_menu_scalebar);
-        menu.add(Menu.NONE, MENU_COMPASS_ID, 5, R.string.mapsactivity_menu_toggle_compass).setIcon(R.drawable.ic_menu_compass);
-        menu.add(Menu.NONE, MENU_MIXARE_ID, 6, R.string.view_in_mixare).setIcon(R.drawable.icon_datasource);
-        final SubMenu subMenu = menu.addSubMenu(Menu.NONE, MENU_TILE_SOURCE_ID, 7, R.string.mapsactivity_menu_tilesource)
+        menu.add(Menu.NONE, MENU_SCALE_ID, 3, R.string.mapsactivity_menu_toggle_scalebar).setIcon(R.drawable.ic_menu_scalebar);
+        final SubMenu subMenu = menu.addSubMenu(Menu.NONE, MENU_TILE_SOURCE_ID, 4, R.string.mapsactivity_menu_tilesource)
                 .setIcon(R.drawable.ic_menu_tilesource);
         {
             Set<Entry<Integer, String>> entrySet = tileSourcesMap.entrySet();
@@ -690,7 +679,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 subMenu.add(0, entry.getKey(), Menu.NONE, entry.getValue());
             }
         }
-        menu.add(Menu.NONE, GO_TO, 8, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
+        menu.add(Menu.NONE, MENU_MIXARE_ID, 5, R.string.view_in_mixare).setIcon(R.drawable.icon_datasource);
+        menu.add(Menu.NONE, GO_TO, 6, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
         return true;
     }
 
@@ -702,29 +692,31 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             return true;
 
         case MENU_MAPDATA:
-            try {
-                List<MapItem> mapsList = DaoMaps.getMaps(this);
-                int mapsNum = mapsList.size();
-                if (mapsNum < 1) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setMessage(R.string.no_maps_in_list).setCancelable(false)
-                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
-                                public void onClick( DialogInterface dialog, int id ) {
-                                }
-                            });
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
-                    return true;
-                } else {
-                    Intent mapDatalistIntent = new Intent(this, MapDataListActivity.class);
-                    startActivity(mapDatalistIntent);
-                    return true;
-                }
-            } catch (IOException e1) {
-                Logger.e(this, e1.getLocalizedMessage(), e1);
-                e1.printStackTrace();
-                return false;
-            }
+            Utilities.messageDialog(this, "This operation is currently not implemented.", null);
+            return true;
+            // try {
+            // List<MapItem> mapsList = DaoMaps.getMaps(this);
+            // int mapsNum = mapsList.size();
+            // if (mapsNum < 1) {
+            // AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            // builder.setMessage(R.string.no_maps_in_list).setCancelable(false)
+            // .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+            // public void onClick( DialogInterface dialog, int id ) {
+            // }
+            // });
+            // AlertDialog alertDialog = builder.create();
+            // alertDialog.show();
+            // return true;
+            // } else {
+            // Intent mapDatalistIntent = new Intent(this, MapDataListActivity.class);
+            // startActivity(mapDatalistIntent);
+            // return true;
+            // }
+            // } catch (IOException e1) {
+            // Logger.e(this, e1.getLocalizedMessage(), e1);
+            // e1.printStackTrace();
+            // return false;
+            // }
         case MENU_TILE_SOURCE_ID:
             return true;
 
