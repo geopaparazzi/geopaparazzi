@@ -1063,7 +1063,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         int eE6 = (int) nsweE6[3];
 
         // Rect bounds = new Rect(wE6, nE6, eE6, sE6);
-        if (lonE6 > wE6 && lonE6 < eE6 && latE6 > sE6 && latE6 < nE6) {
+        if (boundsContain(latE6, lonE6, nE6, sE6, wE6, eE6)) {
             GeoPoint point = new GeoPoint(latE6, lonE6);
             float accuracy = loc.getAccuracy();
             dataOverlay.setGpsPosition(point, accuracy);
@@ -1078,18 +1078,18 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         int newSE6 = sE6 + paddingY;
         int newNE6 = nE6 - paddingY;
 
-        Rect smallerBounds = new Rect(newWE6, newNE6, newEE6, newSE6);
+        // Rect smallerBounds = new Rect(newWE6, newNE6, newEE6, newSE6);
         boolean doCenter = false;
-        if (!smallerBounds.contains(lonE6, latE6)) {
+        if (!boundsContain(latE6, lonE6, newNE6, newSE6, newWE6, newEE6)) {
             if (centerOnGps) {
                 doCenter = true;
             }
         }
-        if (!smallerBounds.contains(lonE6, latE6)) {
-            if (!centerOnGps) {
-                return;
-            }
-        }
+        // if (!smallerBounds.contains(lonE6, latE6)) {
+        // if (!centerOnGps) {
+        // return;
+        // }
+        // }
         if (doCenter) {
             setNewCenter(lon, lat, false);
             if (Debug.D)
@@ -1097,6 +1097,10 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         }
 
         // mapView.invalidateOnUiThread();
+    }
+
+    private boolean boundsContain( int latE6, int lonE6, int nE6, int sE6, int wE6, int eE6 ) {
+        return lonE6 > wE6 && lonE6 < eE6 && latE6 > sE6 && latE6 < nE6;
     }
 
     public void onStatusChanged( boolean hasFix ) {
