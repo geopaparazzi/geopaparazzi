@@ -20,6 +20,12 @@ package eu.hydrologis.geopaparazzi.util;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREF_KEY_PWD;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREF_KEY_SERVER;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREF_KEY_USER;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.TreeSet;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,12 +35,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import eu.geopaparazzi.library.network.NetworkUtilities;
+import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity;
 import eu.geopaparazzi.library.webproject.WebProjectsListActivity;
 import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 
 /**
  * Activity for export tasks.
@@ -80,12 +88,63 @@ public class ImportActivity extends Activity {
                 startActivity(webImportIntent);
             }
         });
-    }
 
-    // private void importFromCloud( final ImportActivity context, final String serverUrl, final
-    // String user, final String pwd ) {
-    // // TODO
-    // }
+        ImageButton bookmarksImportButton = (ImageButton) findViewById(R.id.bookmarksImportButton);
+        bookmarksImportButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                final ImportActivity context = ImportActivity.this;
+
+                ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
+                File sdcardDir = resourcesManager.getSdcardDir();
+                File bookmarksfile = new File(sdcardDir, "bookmarks.csv"); //$NON-NLS-1$
+                if (bookmarksfile.exists()) {
+                    try {
+                        // try to load it
+                        List<Bookmark> allBookmarks = DaoBookmarks.getAllBookmarks(context);
+                        TreeSet<String> bookmarksNames = new TreeSet<String>();
+                        for( Bookmark bookmark : allBookmarks ) {
+                            String tmpName = bookmark.getName();
+                            bookmarksNames.add(tmpName.trim());
+                        }
+
+                        List<String> bookmarksList = FileUtilities.readfileToList(bookmarksfile);
+                        int imported = 0;
+                        for( String bookmarkLine : bookmarksList ) {
+                            String[] split = bookmarkLine.split(","); //$NON-NLS-1$
+                            // bookmarks are of type: Agritur BeB In Valle, 45.46564, 11.58969
+                            if (split.length != 3) {
+                                continue;
+                            }
+                            String name = split[0].trim();
+                            if (bookmarksNames.contains(name)) {
+                                continue;
+                            }
+                            try {
+                                double lat = Double.parseDouble(split[1]);
+                                double lon = Double.parseDouble(split[2]);
+                                DaoBookmarks.addBookmark(context, lon, lat, name, 16.0, -1, -1, -1, -1);
+                                imported++;
+                            } catch (Exception e) {
+
+                                e.printStackTrace();
+                            }
+                        }
+
+                        Utilities.messageDialog(context, "Successfully imported bookmarks: " + imported, null);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Utilities.messageDialog(context, "An error occurred while importing the bookmarks.", null);
+                    }
+                } else {
+                    Utilities
+                            .messageDialog(
+                                    context,
+                                    "Could not find a bookmarks.csv file in the sdcard root. Please place your bookmarks there to import them.",
+                                    null);
+                }
+            }
+        });
+    }
 
     private void importGpx() {
         Intent browseIntent = new Intent(ImportActivity.this, DirectoryBrowserActivity.class);
