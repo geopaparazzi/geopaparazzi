@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeSet;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -44,6 +45,7 @@ import eu.geopaparazzi.library.gpx.GpxRepresenter;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
 import eu.geopaparazzi.library.kml.KmzExport;
 import eu.geopaparazzi.library.network.NetworkUtilities;
+import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
@@ -51,6 +53,7 @@ import eu.geopaparazzi.library.util.debug.Logger;
 import eu.geopaparazzi.library.webproject.ReturnCodes;
 import eu.geopaparazzi.library.webproject.WebProjectManager;
 import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
@@ -80,6 +83,12 @@ public class ExportActivity extends Activity {
         gpxExportButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
                 exportGpx();
+            }
+        });
+        ImageButton bookmarksExportButton = (ImageButton) findViewById(R.id.bookmarksExportButton);
+        bookmarksExportButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                exportBookmarks();
             }
         });
         ImageButton cloudExportButton = (ImageButton) findViewById(R.id.cloudExportButton);
@@ -294,6 +303,67 @@ public class ExportActivity extends Activity {
                 alertDialog.show();
             }
         }.execute((String) null);
+    }
+
+    private void exportBookmarks() {
+
+        try {
+            List<Bookmark> allBookmarks = DaoBookmarks.getAllBookmarks(this);
+            TreeSet<String> bookmarksNames = new TreeSet<String>();
+            for( Bookmark bookmark : allBookmarks ) {
+                String tmpName = bookmark.getName();
+                bookmarksNames.add(tmpName.trim());
+            }
+
+            List<String> namesToNOTAdd = new ArrayList<String>();
+            ResourcesManager resourcesManager = ResourcesManager.getInstance(this);
+            File sdcardDir = resourcesManager.getSdcardDir();
+            File bookmarksfile = new File(sdcardDir, "bookmarks.csv"); //$NON-NLS-1$
+            StringBuilder sb = new StringBuilder();
+            if (bookmarksfile.exists()) {
+                List<String> bookmarksList = FileUtilities.readfileToList(bookmarksfile);
+                for( String bookmarkLine : bookmarksList ) {
+                    String[] split = bookmarkLine.split(","); //$NON-NLS-1$
+                    // bookmarks are of type: Agritur BeB In Valle, 45.46564, 11.58969, 12
+                    if (split.length < 3) {
+                        continue;
+                    }
+                    String name = split[0].trim();
+                    if (bookmarksNames.contains(name)) {
+                        namesToNOTAdd.add(name);
+                    }
+                }
+                for( String string : bookmarksList ) {
+                    sb.append(string).append("\n");
+                }
+            }
+            int exported = 0;
+            for( Bookmark bookmark : allBookmarks ) {
+                String name = bookmark.getName().trim();
+                if (!namesToNOTAdd.contains(name)) {
+                    sb.append(name);
+                    sb.append(",");
+                    sb.append(bookmark.getLat());
+                    sb.append(",");
+                    sb.append(bookmark.getLon());
+                    sb.append(",");
+                    sb.append(bookmark.getZoom());
+                    sb.append("\n");
+                    exported++;
+                }
+            }
+
+            FileUtilities.writefile(sb.toString(), bookmarksfile);
+            if (bookmarksfile.exists()) {
+                Utilities.messageDialog(this, "New bookmarks added to existing file: " + exported, null);
+            } else {
+                Utilities.messageDialog(this, "Successfully exported bookmarks: " + exported, null);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Utilities.messageDialog(this, "An error occurred while exporting the bookmarks.", null);
+        }
+
     }
 
 }

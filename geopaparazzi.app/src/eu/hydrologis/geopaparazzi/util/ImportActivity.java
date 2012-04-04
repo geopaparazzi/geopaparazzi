@@ -111,8 +111,8 @@ public class ImportActivity extends Activity {
                         int imported = 0;
                         for( String bookmarkLine : bookmarksList ) {
                             String[] split = bookmarkLine.split(","); //$NON-NLS-1$
-                            // bookmarks are of type: Agritur BeB In Valle, 45.46564, 11.58969
-                            if (split.length != 3) {
+                            // bookmarks are of type: Agritur BeB In Valle, 45.46564, 11.58969, 12
+                            if (split.length < 3) {
                                 continue;
                             }
                             String name = split[0].trim();
@@ -120,9 +120,13 @@ public class ImportActivity extends Activity {
                                 continue;
                             }
                             try {
+                                double zoom = 16.0;
+                                if (split.length == 4) {
+                                    zoom = Double.parseDouble(split[3]);
+                                }
                                 double lat = Double.parseDouble(split[1]);
                                 double lon = Double.parseDouble(split[2]);
-                                DaoBookmarks.addBookmark(context, lon, lat, name, 16.0, -1, -1, -1, -1);
+                                DaoBookmarks.addBookmark(context, lon, lat, name, zoom, -1, -1, -1, -1);
                                 imported++;
                             } catch (Exception e) {
 
