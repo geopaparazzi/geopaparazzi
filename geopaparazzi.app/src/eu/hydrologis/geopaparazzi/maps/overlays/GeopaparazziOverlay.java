@@ -653,7 +653,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 intent.setAction(android.content.Intent.ACTION_VIEW);
                 String relativePath = title;
                 File mediaDir = ResourcesManager.getInstance(context).getMediaDir();
-                intent.setDataAndType(Uri.fromFile(new File(mediaDir.getParentFile(), relativePath)), "image/jpg");
+                intent.setDataAndType(Uri.fromFile(new File(mediaDir.getParentFile(), relativePath)), "image/*");
                 context.startActivity(intent);
             } else {
                 Builder builder = new AlertDialog.Builder(this.context);
