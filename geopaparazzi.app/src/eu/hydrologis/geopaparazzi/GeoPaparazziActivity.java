@@ -280,7 +280,6 @@ public class GeoPaparazziActivity extends Activity {
 
         try {
             DatabaseManager.getInstance().getDatabase(this);
-            checkExtraBookmarks();
             checkMapsAndLogsVisibility();
         } catch (IOException e) {
             Logger.e(this, e.getLocalizedMessage(), e);
@@ -739,42 +738,6 @@ public class GeoPaparazziActivity extends Activity {
             }
         }
         DataManager.getInstance().setLogsVisible(oneVisible);
-    }
-
-    /**
-     * Checks for a bookmarks.csv file in the geopaparazzi folder and in case integrates them.
-     * 
-     * @throws IOException
-     */
-    private void checkExtraBookmarks() throws IOException {
-        File geoPaparazziDir = resourcesManager.getApplicationDir();
-        File bookmarksfile = new File(geoPaparazziDir, "bookmarks.csv"); //$NON-NLS-1$
-        if (bookmarksfile.exists()) {
-            // try to load it
-            List<Bookmark> allBookmarks = DaoBookmarks.getAllBookmarks(this);
-            TreeSet<String> bookmarksNames = new TreeSet<String>();
-            for( Bookmark bookmark : allBookmarks ) {
-                String tmpName = bookmark.getName();
-                bookmarksNames.add(tmpName.trim());
-            }
-
-            List<String> bookmarksList = FileUtilities.readfileToList(bookmarksfile);
-            for( String bookmarkLine : bookmarksList ) {
-                String[] split = bookmarkLine.split(","); //$NON-NLS-1$
-                // bookmarks are of type: Agritur BeB In Valle, 45.46564, 11.58969
-                if (split.length != 3) {
-                    continue;
-                }
-                String name = split[0].trim();
-                if (bookmarksNames.contains(name)) {
-                    continue;
-                }
-                double lat = Double.parseDouble(split[1]);
-                double lon = Double.parseDouble(split[2]);
-
-                DaoBookmarks.addBookmark(this, lon, lat, name, 16.0, -1, -1, -1, -1);
-            }
-        }
     }
 
     @Override
