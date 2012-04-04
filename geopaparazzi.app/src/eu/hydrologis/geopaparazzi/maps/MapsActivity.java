@@ -31,6 +31,7 @@ import org.mapsforge.android.maps.MapScaleBar;
 import org.mapsforge.android.maps.MapScaleBar.TextField;
 import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.MapViewPosition;
+import org.mapsforge.android.maps.MapZoomControls;
 import org.mapsforge.android.maps.Projection;
 import org.mapsforge.android.maps.mapgenerator.MapGenerator;
 import org.mapsforge.android.maps.mapgenerator.MapGeneratorFactory;
@@ -725,6 +726,11 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 MapController controller = mapView.getController();
                 GeoPoint mapCenter = mapView.getMapDatabase().getMapFileInfo().mapCenter;
                 controller.setCenter(mapCenter);
+                MapZoomControls mapZoomControls = mapView.getMapZoomControls();
+                int zoomLevelMax = mapZoomControls.getZoomLevelMax();
+                int zoomLevelMin = mapZoomControls.getZoomLevelMin();
+                int middle = (zoomLevelMax - zoomLevelMin) / 2 + zoomLevelMin;
+                controller.setZoom(middle);
                 saveCenterPref();
             } else {
                 Utilities.messageDialog(this, "This operation works only for file based data maps", null);
