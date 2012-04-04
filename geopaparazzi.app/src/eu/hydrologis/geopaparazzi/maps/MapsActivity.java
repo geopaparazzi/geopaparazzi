@@ -24,6 +24,7 @@ import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.mapsforge.android.maps.DebugSettings;
 import org.mapsforge.android.maps.MapActivity;
 import org.mapsforge.android.maps.MapController;
 import org.mapsforge.android.maps.MapScaleBar;
@@ -144,7 +145,9 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             String filePath = preferences.getString(Constants.PREFS_KEY_TILESOURCE_FILE, ""); //$NON-NLS-1$
             File mapfile = new File(filePath);
             if (mapfile.exists()) {
-                mapView.setMapFile(mapfile);
+                if (!mapGenerator.requiresInternetConnection()) {
+                    mapView.setMapFile(mapfile);
+                }
             } else {
                 mapGenerator = MapGeneratorFactory.createMapGenerator(MapGeneratorInternal.MAPNIK);
                 mapView.setMapGenerator(mapGenerator);
@@ -156,11 +159,13 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         mapScaleBar.setText(TextField.KILOMETER, " km");
         mapScaleBar.setText(TextField.METER, " m");
 
-        // boolean drawTileFrames = preferences.getBoolean("drawTileFrames", false);
-        // boolean drawTileCoordinates = preferences.getBoolean("drawTileCoordinates", false);
-        // boolean highlightWaterTiles = preferences.getBoolean("highlightWaterTiles", false);
-        // DebugSettings debugSettings = new DebugSettings(true, true, highlightWaterTiles);
-        // this.mapView.setDebugSettings(debugSettings);
+        if (Debug.D) {
+            // boolean drawTileFrames = preferences.getBoolean("drawTileFrames", false);
+            // boolean drawTileCoordinates = preferences.getBoolean("drawTileCoordinates", false);
+            // boolean highlightWaterTiles = preferences.getBoolean("highlightWaterTiles", false);
+            DebugSettings debugSettings = new DebugSettings(true, true, false);
+            this.mapView.setDebugSettings(debugSettings);
+        }
 
         final RelativeLayout rl = (RelativeLayout) findViewById(R.id.innerlayout);
         rl.addView(mapView, new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
