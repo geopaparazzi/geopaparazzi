@@ -39,7 +39,7 @@
             android:layout_below="@+id/imagesvisible" />
 
         <TextView
-            android:id="@+id/filename"
+            android:id="@+id/notesvisibletext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/notesvisible"
@@ -49,46 +49,6 @@
             android:text="@string/notesvisibilityToggle"
             android:textColor="@color/black" />
 
-        <TextView
-            android:id="@+id/noteswidthLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignRight="@+id/noteswidthLabel"
-            android:layout_below="@+id/notesvisible"
-            android:layout_marginRight="10dp"
-            android:padding="15dp"
-            android:text="@string/width_label"
-            android:textColor="@color/black" />
-
-        <Spinner
-            android:id="@+id/noteswidthText"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/noteswidthLabel"
-            android:layout_toRightOf="@+id/noteswidthLabel"
-            android:text="1" />
-
-        <TextView
-            android:id="@+id/notescolorLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/noteswidthLabel"
-            android:layout_marginRight="10dp"
-            android:padding="15dp"
-            android:text="@string/color_label"
-            android:textColor="@color/black" >
-        </TextView>
-
-        <Spinner
-            android:id="@+id/notescolor_spinner"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/noteswidthText"
-            android:layout_alignRight="@+id/noteswidthText"
-            android:layout_alignTop="@+id/notescolorLabel"
-            android:layout_toRightOf="@+id/notescolorLabel" />
     </RelativeLayout>
 
     <ListView

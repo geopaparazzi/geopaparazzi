@@ -19,7 +19,6 @@ package eu.hydrologis.geopaparazzi.maps;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -27,24 +26,18 @@ import java.util.List;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
@@ -62,14 +55,6 @@ public class GpsDataListActivity extends ListActivity {
     private static final int UNSELECTALL = 2;
     private static final int MERGE_SELECTED = 3;
 
-    // TODO make user sort for some next release (mind, it implies translations)
-    // private static final int SORT_BY_NAME = 2;
-    // private static final int SORT_BY_ID = 3;
-    // private static final int SORT_BY_NAME_REV = 4;
-    // private static final int SORT_BY_ID_REV = 5;
-
-    private static List<String> colorList;
-    private static List<String> widthsList;
     private MapItem[] gpslogItems;
     private Comparator<MapItem> mapItemSorter = new ItemComparators.MapItemIdComparator(true);
 
@@ -77,7 +62,6 @@ public class GpsDataListActivity extends ListActivity {
         super.onCreate(icicle);
 
         setContentView(R.layout.gpslogslist);
-        getResourcesAndColors();
 
         handleNotes();
 
@@ -240,63 +224,6 @@ public class GpsDataListActivity extends ListActivity {
                 DataManager.getInstance().setNotesVisible(isChecked);
             }
         });
-
-        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String color = preferences.getString(Constants.PREFS_KEY_NOTES_COLOR, "red"); //$NON-NLS-1$
-        DataManager.getInstance().setNotesColor(color);
-        final Spinner colorView = (Spinner) findViewById(R.id.notescolor_spinner);
-        ArrayAdapter< ? > colorSpinnerAdapter = ArrayAdapter.createFromResource(GpsDataListActivity.this,
-                R.array.array_colornames, android.R.layout.simple_spinner_item);
-        colorSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        colorView.setAdapter(colorSpinnerAdapter);
-        int colorIndex = colorList.indexOf(color);
-        colorView.setSelection(colorIndex);
-        colorView.setOnItemSelectedListener(new OnItemSelectedListener(){
-            public void onItemSelected( AdapterView< ? > arg0, View arg1, int arg2, long arg3 ) {
-                Object selectedItem = colorView.getSelectedItem();
-                String colorStr = selectedItem.toString();
-
-                DataManager.getInstance().setNotesColor(colorStr);
-                Editor editor = preferences.edit();
-                editor.putString(Constants.PREFS_KEY_NOTES_COLOR, colorStr);
-                editor.commit();
-            }
-            public void onNothingSelected( AdapterView< ? > arg0 ) {
-            }
-        });
-
-        final Spinner widthView = (Spinner) findViewById(R.id.noteswidthText);
-        String width = preferences.getString(Constants.PREFS_KEY_NOTES_WIDTH, "5"); //$NON-NLS-1$
-        DataManager.getInstance().setNotesWidth(Float.parseFloat(width));
-        int widthIndex = widthsList.indexOf(width);
-        ArrayAdapter< ? > widthSpinnerAdapter = ArrayAdapter.createFromResource(GpsDataListActivity.this, R.array.array_widths,
-                android.R.layout.simple_spinner_item);
-        widthSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        widthView.setAdapter(widthSpinnerAdapter);
-        widthView.setSelection(widthIndex);
-        widthView.setOnItemSelectedListener(new OnItemSelectedListener(){
-            public void onItemSelected( AdapterView< ? > arg0, View arg1, int arg2, long arg3 ) {
-                Object selectedItem = widthView.getSelectedItem();
-                String widthStr = selectedItem.toString();
-
-                DataManager.getInstance().setNotesWidth(Float.parseFloat(widthStr));
-                Editor editor = preferences.edit();
-                editor.putString(Constants.PREFS_KEY_NOTES_WIDTH, widthStr);
-                editor.commit();
-            }
-            public void onNothingSelected( AdapterView< ? > arg0 ) {
-            }
-        });
-
-    }
-
-    private void getResourcesAndColors() {
-        if (colorList == null) {
-            String[] colorArray = getResources().getStringArray(R.array.array_colornames);
-            colorList = Arrays.asList(colorArray);
-            String[] widthsArray = getResources().getStringArray(R.array.array_widths);
-            widthsList = Arrays.asList(widthsArray);
-        }
 
     }
 
