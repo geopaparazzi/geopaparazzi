@@ -45,6 +45,7 @@ public class DirectoryBrowserActivity extends ListActivity {
     public static final String FOLDER = "folder"; //$NON-NLS-1$
 
     private List<String> items = null;
+    private List<String> itemsNames = null;
     private File startFolderFile;
     private String intentId;
     private String extention;
@@ -153,13 +154,15 @@ public class DirectoryBrowserActivity extends ListActivity {
         Arrays.sort(files);
         currentDir = parent;
         items = new ArrayList<String>();
+        itemsNames = new ArrayList<String>();
         for( File file : files ) {
             if (!doHidden && file.getName().startsWith(".")) { //$NON-NLS-1$
                 continue;
             }
-            items.add(file.getPath());
+            items.add(file.getAbsolutePath());
+            itemsNames.add(file.getName());
         }
-        ArrayAdapter<String> fileList = new ArrayAdapter<String>(this, R.layout.browse_file_row, items);
+        ArrayAdapter<String> fileList = new ArrayAdapter<String>(this, R.layout.browse_file_row, itemsNames);
         setListAdapter(fileList);
     }
 }

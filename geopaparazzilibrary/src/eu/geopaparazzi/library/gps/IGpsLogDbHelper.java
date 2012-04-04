@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.sql.Date;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 
 /**
  * Interface that helps making the {@link GpsLogger} add point to external databases. 
@@ -28,6 +29,15 @@ import android.content.Context;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public interface IGpsLogDbHelper {
+
+    /**
+     * Get the database.
+     * 
+     * @param context the {@link Context} to use.
+     * @return a writable database.
+     */
+    public SQLiteDatabase getDatabase( Context context ) throws Exception ;
+
     /**
      * Creates a new gpslog entry and returns the log's new id.
      * 
@@ -45,7 +55,9 @@ public interface IGpsLogDbHelper {
     /**
      * Adds a single gps log point to a log.
      * 
-     * @param context the {@link Context} to use.
+     * <p>Transactions have to be opened and closed.</p>
+     * 
+     * @param sqliteDatabase the db to use.
      * @param gpslogId the log id to which to add to.
      * @param lon the lon coordinate.
      * @param lat the lat coordinate.
@@ -53,8 +65,8 @@ public interface IGpsLogDbHelper {
      * @param timestamp the timestamp of the point.
      * @throws IOException
      */
-    public void addGpsLogDataPoint( Context context, long gpslogId, double lon, double lat, double altim, Date timestamp )
-            throws IOException;
+    public void addGpsLogDataPoint( SQLiteDatabase sqliteDatabase, long gpslogId, double lon, double lat, double altim,
+            Date timestamp ) throws IOException;
 
     /**
      * Deletes a gps log from the database. 

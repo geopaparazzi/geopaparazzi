@@ -40,6 +40,12 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import eu.geopaparazzi.library.gps.IGpsLogDbHelper;
+import eu.geopaparazzi.library.gpx.GpxItem;
+import eu.geopaparazzi.library.gpx.parser.GpxParser.Route;
+import eu.geopaparazzi.library.gpx.parser.GpxParser.TrackSegment;
+import eu.geopaparazzi.library.gpx.parser.RoutePoint;
+import eu.geopaparazzi.library.gpx.parser.TrackPoint;
+import eu.geopaparazzi.library.gpx.parser.WayPoint;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
@@ -74,6 +80,11 @@ public class DaoGpsLog implements IGpsLogDbHelper {
 
     private static SimpleDateFormat dateFormatter = LibraryConstants.TIME_FORMATTER_SQLITE;
     private static SimpleDateFormat dateFormatterForFile = LibraryConstants.TIMESTAMPFORMATTER;
+
+    public SQLiteDatabase getDatabase( Context context ) throws Exception {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        return sqliteDatabase;
+    }
 
     /**
      * Creates a new gpslog entry and returns the id.
@@ -119,9 +130,8 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         return rowId;
     }
 
-    public void addGpsLogDataPoint( Context context, long gpslogId, double lon, double lat, double altim, Date timestamp )
-            throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    public void addGpsLogDataPoint( SQLiteDatabase sqliteDatabase, long gpslogId, double lon, double lat, double altim,
+            Date timestamp ) throws IOException {
         ContentValues values = new ContentValues();
         values.put(COLUMN_LOGID, (int) gpslogId);
         values.put(COLUMN_DATA_LON, lon);
@@ -843,6 +853,105 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         }
     }
 
+    /**
+     * Import a gpx in the database.
+     * 
+     * TODO refactor a better design, with the new gox parser this is ugly.
+     * 
+     * @param context
+     * @param gpxItem the gpx wrapper.
+     * @param forceLines if true, forces also waypoints to be imported as tracks.
+     * @throws IOException
+     */
+    public static void importGpxToMap( Context context, GpxItem gpxItem ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        String gpxName = gpxItem.getName();
+
+        // waypoints
+        List<WayPoint> wayPoints = gpxItem.getWayPoints();
+        if (wayPoints.size() > 0) {
+            Date date = new Date(System.currentTimeMillis());
+
+            sqliteDatabase.beginTransaction();
+            try {
+                for( int i = 0; i < wayPoints.size(); i++ ) {
+                    WayPoint point = wayPoints.get(i);
+                    DaoNotes.addNoteNoTransaction(point.getLongitude(), point.getLatitude(), -1.0, date, gpxName, "",
+                            NoteType.SIMPLE.getTypeNum(), sqliteDatabase);
+                }
+                sqliteDatabase.setTransactionSuccessful();
+            } catch (Exception e) {
+                Logger.e("DAOGPSLOG", e.getLocalizedMessage(), e);
+                throw new IOException(e.getLocalizedMessage());
+            } finally {
+                sqliteDatabase.endTransaction();
+            }
+        }
+        // tracks
+        List<TrackSegment> trackSegments = gpxItem.getTrackSegments();
+        if (trackSegments.size() > 0) {
+            float width = 2f;
+            for( TrackSegment trackSegment : trackSegments ) {
+                String tsName = trackSegment.getName();
+                if (tsName == null) {
+                    tsName = "";
+                } else {
+                    tsName = " - " + tsName;
+                }
+                String name = gpxName + tsName;
+
+                Date date = new Date(System.currentTimeMillis());
+
+                DaoGpsLog helper = new DaoGpsLog();
+                long logId = helper.addGpsLog(context, date, date, name, width, "blue", true);
+
+                sqliteDatabase.beginTransaction();
+                try {
+                    long currentTimeMillis = System.currentTimeMillis();
+                    List<TrackPoint> points = trackSegment.getPoints();
+                    for( int i = 0; i < points.size(); i++ ) {
+                        date = new Date(currentTimeMillis + i * 1000l);
+                        TrackPoint point = points.get(i);
+                        helper.addGpsLogDataPoint(sqliteDatabase, logId, point.getLongitude(), point.getLatitude(), -1.0, date);
+                    }
+                    sqliteDatabase.setTransactionSuccessful();
+                } catch (Exception e) {
+                    Logger.e("DAOMAPS", e.getLocalizedMessage(), e);
+                    throw new IOException(e.getLocalizedMessage());
+                } finally {
+                    sqliteDatabase.endTransaction();
+                }
+            }
+        }
+        // routes
+        List<Route> routes = gpxItem.getRoutes();
+        if (routes.size() > 0) {
+            for( Route route : routes ) {
+                String rName = route.getName();
+                if (rName == null) {
+                    rName = gpxName;
+                }
+                Date date = new Date(System.currentTimeMillis());
+                DaoGpsLog helper = new DaoGpsLog();
+                long logId = helper.addGpsLog(context, date, date, rName, 2f, "green", true);
+
+                sqliteDatabase.beginTransaction();
+                try {
+                    List<RoutePoint> points = route.getPoints();
+                    for( int i = 0; i < points.size(); i++ ) {
+                        RoutePoint point = points.get(i);
+                        helper.addGpsLogDataPoint(sqliteDatabase, logId, point.getLongitude(), point.getLatitude(), -1.0, date);
+                    }
+                    sqliteDatabase.setTransactionSuccessful();
+                } catch (Exception e) {
+                    Logger.e("DAOMAPS", e.getLocalizedMessage(), e);
+                    throw new IOException(e.getLocalizedMessage());
+                } finally {
+                    sqliteDatabase.endTransaction();
+                }
+            }
+        }
+    }
     // public static void importGpxToGpslogs( Context context, GpxItem gpxItem ) throws IOException
     // {
     // SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);

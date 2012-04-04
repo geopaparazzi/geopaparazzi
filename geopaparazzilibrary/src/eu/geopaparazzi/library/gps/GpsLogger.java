@@ -28,6 +28,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteFullException;
 import android.location.Location;
 import android.preference.PreferenceManager;
@@ -109,6 +110,7 @@ public class GpsLogger implements GpsManagerListener {
 
             public void run() {
                 try {
+                    SQLiteDatabase sqliteDatabase = dbHelper.getDatabase(context);
                     java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
                     long gpsLogId = dbHelper.addGpsLog(context, now, now, logName, 2f, "red", true);
                     currentRecordedLogId = gpsLogId;
@@ -166,7 +168,7 @@ public class GpsLogger implements GpsManagerListener {
                         }
 
                         try {
-                            dbHelper.addGpsLogDataPoint(context, gpsLogId, recLon, recLat, recAlt, gpsLoc.getSqlDate());
+                            dbHelper.addGpsLogDataPoint(sqliteDatabase, gpsLogId, recLon, recLat, recAlt, gpsLoc.getSqlDate());
                             currentXY.add(new double[]{recLon, recLat});
                         } catch (Exception e) {
                             Logger.e(this, e.getLocalizedMessage(), e);

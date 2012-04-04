@@ -74,15 +74,7 @@ public class DaoNotes {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
         sqliteDatabase.beginTransaction();
         try {
-            ContentValues values = new ContentValues();
-            values.put(COLUMN_LON, lon);
-            values.put(COLUMN_LAT, lat);
-            values.put(COLUMN_ALTIM, altim);
-            values.put(COLUMN_TS, dateFormatter.format(timestamp));
-            values.put(COLUMN_TEXT, text);
-            values.put(COLUMN_FORM, form);
-            values.put(COLUMN_TYPE, type);
-            LASTINSERTEDNOTE_ID = sqliteDatabase.insertOrThrow(TABLE_NOTES, null, values);
+            addNoteNoTransaction(lon, lat, altim, timestamp, text, form, type, sqliteDatabase);
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
@@ -91,6 +83,19 @@ public class DaoNotes {
         } finally {
             sqliteDatabase.endTransaction();
         }
+    }
+
+    public static void addNoteNoTransaction( double lon, double lat, double altim, Date timestamp, String text, String form,
+            int type, SQLiteDatabase sqliteDatabase ) {
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_LON, lon);
+        values.put(COLUMN_LAT, lat);
+        values.put(COLUMN_ALTIM, altim);
+        values.put(COLUMN_TS, dateFormatter.format(timestamp));
+        values.put(COLUMN_TEXT, text);
+        values.put(COLUMN_FORM, form);
+        values.put(COLUMN_TYPE, type);
+        LASTINSERTEDNOTE_ID = sqliteDatabase.insertOrThrow(TABLE_NOTES, null, values);
     }
 
     public static void deleteNote( Context context, long id ) throws IOException {
