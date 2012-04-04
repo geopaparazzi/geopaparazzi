@@ -512,7 +512,7 @@ public class GeoPaparazziActivity extends Activity {
         }
         return super.onMenuItemSelected(featureId, item);
     }
-    
+
     /**
      * Sets the tilesource.
      * 
@@ -564,6 +564,10 @@ public class GeoPaparazziActivity extends Activity {
                     Editor editor = preferences.edit();
                     editor.putString(LibraryConstants.PREFS_KEY_BASEFOLDER, chosenFolderToLoad);
                     editor.commit();
+
+                    DatabaseManager.getInstance().closeDatabase();
+                    ResourcesManager.resetManager();
+
                     Intent intent = getIntent();
                     finish();
                     startActivity(intent);
