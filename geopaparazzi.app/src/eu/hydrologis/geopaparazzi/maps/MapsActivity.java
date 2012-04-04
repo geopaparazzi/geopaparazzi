@@ -83,6 +83,7 @@ import eu.geopaparazzi.library.util.activities.InsertCoordActivity;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
@@ -105,11 +106,11 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     private static final int INSERTCOORD_RETURN_CODE = 666;
 
     private static final int MENU_GPSDATA = 1;
-    private static final int MENU_MAPDATA = 2;
     private static final int MENU_SCALE_ID = 4;
     private static final int MENU_MIXARE_ID = 5;
     private static final int GO_TO = 6;
     private static final int CENTER_ON_MAP = 7;
+    private static final int MENU_COMPASS_ID = 8;
 
     private DecimalFormat formatter = new DecimalFormat("00"); //$NON-NLS-1$
     private Button zoomInButton;
@@ -674,11 +675,12 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     public boolean onCreateOptionsMenu( Menu menu ) {
         super.onCreateOptionsMenu(menu);
         menu.add(Menu.NONE, MENU_GPSDATA, 1, R.string.mainmenu_gpsdataselect).setIcon(android.R.drawable.ic_menu_compass);
-        menu.add(Menu.NONE, MENU_MAPDATA, 2, R.string.mainmenu_mapdataselect).setIcon(android.R.drawable.ic_menu_compass);
         menu.add(Menu.NONE, MENU_SCALE_ID, 3, R.string.mapsactivity_menu_toggle_scalebar).setIcon(R.drawable.ic_menu_scalebar);
-        menu.add(Menu.NONE, MENU_MIXARE_ID, 4, R.string.view_in_mixare).setIcon(R.drawable.icon_datasource);
-        menu.add(Menu.NONE, GO_TO, 5, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
-        menu.add(Menu.NONE, CENTER_ON_MAP, 6, "center on map").setIcon(android.R.drawable.ic_menu_mylocation);
+        menu.add(Menu.NONE, MENU_COMPASS_ID, 4, R.string.mapsactivity_menu_toggle_compass).setIcon(
+                android.R.drawable.ic_menu_compass);
+        menu.add(Menu.NONE, CENTER_ON_MAP, 5, "center on map").setIcon(android.R.drawable.ic_menu_mylocation);
+        menu.add(Menu.NONE, GO_TO, 6, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
+        menu.add(Menu.NONE, MENU_MIXARE_ID, 7, R.string.view_in_mixare).setIcon(R.drawable.icon_datasource);
         return true;
     }
 
@@ -689,44 +691,14 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             startActivity(gpsDatalistIntent);
             return true;
 
-        case MENU_MAPDATA:
-            Utilities.messageDialog(this, "This operation is currently not implemented.", null);
-            return true;
-            // try {
-            // List<MapItem> mapsList = DaoMaps.getMaps(this);
-            // int mapsNum = mapsList.size();
-            // if (mapsNum < 1) {
-            // AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            // builder.setMessage(R.string.no_maps_in_list).setCancelable(false)
-            // .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
-            // public void onClick( DialogInterface dialog, int id ) {
-            // }
-            // });
-            // AlertDialog alertDialog = builder.create();
-            // alertDialog.show();
-            // return true;
-            // } else {
-            // Intent mapDatalistIntent = new Intent(this, MapDataListActivity.class);
-            // startActivity(mapDatalistIntent);
-            // return true;
-            // }
-            // } catch (IOException e1) {
-            // Logger.e(this, e1.getLocalizedMessage(), e1);
-            // e1.printStackTrace();
-            // return false;
-            // }
         case MENU_SCALE_ID:
             MapScaleBar mapScaleBar = mapView.getMapScaleBar();
             boolean showMapScaleBar = mapScaleBar.isShowMapScaleBar();
             mapScaleBar.setShowMapScaleBar(!showMapScaleBar);
             return true;
-            // case MENU_COMPASS_ID:
-            // boolean isCompassEnabled = !mCompassOverlay.isEnabled();
-            // mCompassOverlay.setEnabled(isCompassEnabled);
-            // mapsView.invalidate();
-            // Editor editor3 = preferences.edit();
-            // editor3.putBoolean(PREFS_KEY_COMPASSON, isCompassEnabled);
-            // return true;
+        case MENU_COMPASS_ID:
+            ActionBar.openCompass(this);
+            return true;
         case MENU_MIXARE_ID:
             MixareHandler mixareHandler = new MixareHandler();
             if (!mixareHandler.isMixareInstalled(this)) {

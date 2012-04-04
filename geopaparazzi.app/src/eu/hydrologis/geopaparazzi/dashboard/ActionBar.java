@@ -139,71 +139,74 @@ public class ActionBar implements GpsManagerListener {
             break;
         }
         case R.id.action_bar_compass: {
-            String gpsStatusAction = "com.eclipsim.gpsstatus.VIEW";
-            String gpsStatusPackage = "com.eclipsim.gpsstatus";
-            final Context context = actionBarView.getContext();
-            boolean hasGpsStatus = false;
-            List<PackageInfo> installedPackages = new ArrayList<PackageInfo>();
-
-            { // try to get the installed packages list. Seems to have troubles over different
-              // versions, so trying them all
-                try {
-                    installedPackages = context.getPackageManager().getInstalledPackages(0);
-                } catch (Exception e) {
-                    // ignore
-                }
-                if (installedPackages.size() == 0)
-                    try {
-                        installedPackages = context.getPackageManager().getInstalledPackages(PackageManager.GET_ACTIVITIES);
-                    } catch (Exception e) {
-                        // ignore
-                    }
-            }
-
-            if (installedPackages.size() > 0) {
-                // if a list is available, check if the status gps is installed
-                for( PackageInfo packageInfo : installedPackages ) {
-                    String packageName = packageInfo.packageName;
-                    if (Debug.D)
-                        Logger.d(this, packageName);
-                    if (packageName.startsWith(gpsStatusPackage)) {
-                        hasGpsStatus = true;
-                        if (Debug.D)
-                            Logger.d(this, "Found package: " + packageName);
-                        break;
-                    }
-                }
-            } else {
-                /*
-                 * if no package list is available, for now try to fire it up anyways.
-                 * This has been a problem for a user on droidx with android 2.2.1.
-                 */
-                hasGpsStatus = true;
-            }
-
-            if (hasGpsStatus) {
-                Intent intent = new Intent(gpsStatusAction);
-                context.startActivity(intent);
-            } else {
-                new AlertDialog.Builder(context).setTitle(context.getString(R.string.installgpsstatus_title))
-                        .setMessage(context.getString(R.string.installgpsstatus_message))
-                        .setIcon(android.R.drawable.ic_dialog_info)
-                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
-                            public void onClick( DialogInterface dialog, int whichButton ) {
-                            }
-                        }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
-                            public void onClick( DialogInterface dialog, int whichButton ) {
-                                Intent intent = new Intent(Intent.ACTION_VIEW);
-                                intent.setData(Uri.parse("market://search?q=Gps Status pub:EclipSim"));
-                                context.startActivity(intent);
-                            }
-                        }).show();
-
-            }
+            Context context = actionBarView.getContext();
+            openCompass(context);
             break;
         }
         default:
             break;
+        }
+    }
+
+    public static void openCompass( final Context context ) {
+        String gpsStatusAction = "com.eclipsim.gpsstatus.VIEW";
+        String gpsStatusPackage = "com.eclipsim.gpsstatus";
+        boolean hasGpsStatus = false;
+        List<PackageInfo> installedPackages = new ArrayList<PackageInfo>();
+
+        { // try to get the installed packages list. Seems to have troubles over different
+          // versions, so trying them all
+            try {
+                installedPackages = context.getPackageManager().getInstalledPackages(0);
+            } catch (Exception e) {
+                // ignore
+            }
+            if (installedPackages.size() == 0)
+                try {
+                    installedPackages = context.getPackageManager().getInstalledPackages(PackageManager.GET_ACTIVITIES);
+                } catch (Exception e) {
+                    // ignore
+                }
+        }
+
+        if (installedPackages.size() > 0) {
+            // if a list is available, check if the status gps is installed
+            for( PackageInfo packageInfo : installedPackages ) {
+                String packageName = packageInfo.packageName;
+                if (Debug.D)
+                    Logger.d("ACTIONBAR", packageName);
+                if (packageName.startsWith(gpsStatusPackage)) {
+                    hasGpsStatus = true;
+                    if (Debug.D)
+                        Logger.d("ACTIONBAR", "Found package: " + packageName);
+                    break;
+                }
+            }
+        } else {
+            /*
+             * if no package list is available, for now try to fire it up anyways.
+             * This has been a problem for a user on droidx with android 2.2.1.
+             */
+            hasGpsStatus = true;
+        }
+
+        if (hasGpsStatus) {
+            Intent intent = new Intent(gpsStatusAction);
+            context.startActivity(intent);
+        } else {
+            new AlertDialog.Builder(context).setTitle(context.getString(R.string.installgpsstatus_title))
+                    .setMessage(context.getString(R.string.installgpsstatus_message)).setIcon(android.R.drawable.ic_dialog_info)
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                        public void onClick( DialogInterface dialog, int whichButton ) {
+                        }
+                    }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                        public void onClick( DialogInterface dialog, int whichButton ) {
+                            Intent intent = new Intent(Intent.ACTION_VIEW);
+                            intent.setData(Uri.parse("market://search?q=Gps Status pub:EclipSim"));
+                            context.startActivity(intent);
+                        }
+                    }).show();
+
         }
     }
 
