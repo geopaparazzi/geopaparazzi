@@ -137,27 +137,30 @@ public class ResourcesManager implements Serializable {
             parentExists = parentFile.exists();
             parentCanWrite = parentFile.canWrite();
         }
+        // the folder doesn't exist for some reason, fallback on default
+        String state = Environment.getExternalStorageState();
+        boolean mExternalStorageAvailable;
+        boolean mExternalStorageWriteable;
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            mExternalStorageAvailable = mExternalStorageWriteable = true;
+        } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+            mExternalStorageAvailable = true;
+            mExternalStorageWriteable = false;
+        } else {
+            mExternalStorageAvailable = mExternalStorageWriteable = false;
+        }
+
+        File possibleApplicationDir;
+        if (mExternalStorageAvailable && mExternalStorageWriteable) {
+            sdcardDir = Environment.getExternalStorageDirectory();
+            possibleApplicationDir = new File(sdcardDir, applicationLabel);
+        } else if (useInternalMemory) {
+            possibleApplicationDir = context.getDir(applicationLabel, Context.MODE_PRIVATE);
+        } else {
+            throw new IOException();
+        }
         if (baseFolder.length() == 0 || !parentExists || !parentCanWrite) {
-            // the folder doesn't exist for some reason, fallback on default
-            String state = Environment.getExternalStorageState();
-            boolean mExternalStorageAvailable;
-            boolean mExternalStorageWriteable;
-            if (Environment.MEDIA_MOUNTED.equals(state)) {
-                mExternalStorageAvailable = mExternalStorageWriteable = true;
-            } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-                mExternalStorageAvailable = true;
-                mExternalStorageWriteable = false;
-            } else {
-                mExternalStorageAvailable = mExternalStorageWriteable = false;
-            }
-            if (mExternalStorageAvailable && mExternalStorageWriteable) {
-                sdcardDir = Environment.getExternalStorageDirectory();
-                applicationDir = new File(sdcardDir, applicationLabel);
-            } else if (useInternalMemory) {
-                applicationDir = context.getDir(applicationLabel, Context.MODE_PRIVATE);
-            } else {
-                throw new IOException();
-            }
+            applicationDir = possibleApplicationDir;
         }
 
         String applicationDirPath = applicationDir.getAbsolutePath();
