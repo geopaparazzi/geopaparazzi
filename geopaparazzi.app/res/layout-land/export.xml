@@ -10,9 +10,9 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:padding="20dip"
         android:layout_weight="1"
         android:background="@drawable/action_bar_button_drawable"
+        android:padding="20dip"
         android:src="@drawable/export_kmz" />
 
     <ImageButton
@@ -34,5 +34,15 @@
         android:background="@drawable/action_bar_button_drawable"
         android:padding="20dip"
         android:src="@drawable/export_cloud" />
+
+    <ImageButton
+        android:id="@+id/bookmarksExportButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:background="@drawable/action_bar_button_drawable"
+        android:padding="20dip"
+        android:src="@drawable/export_bookmarks" />
 
 </LinearLayout>

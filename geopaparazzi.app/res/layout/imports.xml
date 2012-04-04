@@ -5,6 +5,7 @@
     android:background="@color/white"
     android:orientation="vertical" >
 
+
     <ImageButton
         android:id="@+id/gpxImportButton"
         android:layout_width="wrap_content"
@@ -24,5 +25,15 @@
         android:background="@drawable/action_bar_button_drawable"
         android:padding="20dip"
         android:src="@drawable/export_cloud" />
+
+    <ImageButton
+        android:id="@+id/bookmarksImportButton"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1"
+        android:background="@drawable/action_bar_button_drawable"
+        android:padding="20dip"
+        android:src="@drawable/export_bookmarks" />
 
 </LinearLayout>
