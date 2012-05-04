@@ -24,7 +24,7 @@ import org.mapsforge.android.maps.overlay.ItemizedOverlay;
 import org.mapsforge.android.maps.overlay.Overlay;
 import org.mapsforge.android.maps.overlay.OverlayItem;
 import org.mapsforge.android.maps.overlay.OverlayWay;
-import org.mapsforge.core.GeoPoint;
+import org.mapsforge.core.model.GeoPoint;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;

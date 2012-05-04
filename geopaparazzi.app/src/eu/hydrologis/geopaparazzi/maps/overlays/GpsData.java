@@ -14,7 +14,8 @@
  */
 package eu.hydrologis.geopaparazzi.maps.overlays;
 
-import org.mapsforge.core.GeoPoint;
+import org.mapsforge.android.maps.overlay.Overlay;
+import org.mapsforge.core.model.GeoPoint;
 
 import android.graphics.Paint;
 import android.graphics.Point;

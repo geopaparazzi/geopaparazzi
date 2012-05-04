@@ -28,7 +28,7 @@ import java.util.List;
 
 import org.mapsforge.android.maps.Projection;
 import org.mapsforge.android.maps.overlay.OverlayWay;
-import org.mapsforge.core.GeoPoint;
+import org.mapsforge.core.model.GeoPoint;
 
 import android.content.ContentValues;
 import android.content.Context;

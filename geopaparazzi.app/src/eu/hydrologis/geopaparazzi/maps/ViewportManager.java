@@ -19,7 +19,7 @@ package eu.hydrologis.geopaparazzi.maps;
 
 import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.MapViewPosition;
-import org.mapsforge.core.GeoPoint;
+import org.mapsforge.core.model.GeoPoint;
 
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;

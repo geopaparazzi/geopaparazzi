@@ -30,8 +30,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.mapsforge.android.maps.mapgenerator.MapGeneratorInternal;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -78,6 +76,7 @@ import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
 import eu.hydrologis.geopaparazzi.maps.MapItem;
 import eu.hydrologis.geopaparazzi.maps.MapsActivity;
+import eu.hydrologis.geopaparazzi.maps.tiles.MapGeneratorInternal;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
 import eu.hydrologis.geopaparazzi.preferences.PreferencesActivity;
 import eu.hydrologis.geopaparazzi.util.AboutActivity;
@@ -119,6 +118,7 @@ public class GeoPaparazziActivity extends Activity {
         tileSourcesMap.put(1001, MapGeneratorInternal.DATABASE_RENDERER.name());
         tileSourcesMap.put(1002, MapGeneratorInternal.MAPNIK.name());
         tileSourcesMap.put(1003, MapGeneratorInternal.OPENCYCLEMAP.name());
+        tileSourcesMap.put(1004, MapGeneratorInternal.CUSTOM.name());
 
         init();
     }

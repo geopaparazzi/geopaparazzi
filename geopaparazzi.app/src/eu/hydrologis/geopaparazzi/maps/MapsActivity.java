@@ -34,12 +34,12 @@ import org.mapsforge.android.maps.MapViewPosition;
 import org.mapsforge.android.maps.MapZoomControls;
 import org.mapsforge.android.maps.Projection;
 import org.mapsforge.android.maps.mapgenerator.MapGenerator;
-import org.mapsforge.android.maps.mapgenerator.MapGeneratorFactory;
-import org.mapsforge.android.maps.mapgenerator.MapGeneratorInternal;
 import org.mapsforge.android.maps.mapgenerator.databaserenderer.DatabaseRenderer;
+import org.mapsforge.android.maps.mapgenerator.tiledownloader.MapnikTileDownloader;
+import org.mapsforge.android.maps.mapgenerator.tiledownloader.OpenCycleMapTileDownloader;
 import org.mapsforge.android.maps.overlay.OverlayItem;
 import org.mapsforge.android.maps.overlay.OverlayWay;
-import org.mapsforge.core.GeoPoint;
+import org.mapsforge.core.model.GeoPoint;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -91,6 +91,8 @@ import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.maps.overlays.ArrayGeopaparazziOverlay;
+import eu.hydrologis.geopaparazzi.maps.tiles.CustomTileDownloader;
+import eu.hydrologis.geopaparazzi.maps.tiles.MapGeneratorInternal;
 import eu.hydrologis.geopaparazzi.osm.OsmCategoryActivity;
 import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
@@ -127,6 +129,19 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     private SharedPreferences preferences;
     private boolean doOsm;
 
+    public static MapGenerator createMapGenerator( MapGeneratorInternal mapGeneratorInternal ) {
+        switch( mapGeneratorInternal ) {
+        case DATABASE_RENDERER:
+            return new DatabaseRenderer();
+        case MAPNIK:
+            return new MapnikTileDownloader();
+        case OPENCYCLEMAP:
+            return new OpenCycleMapTileDownloader();
+        }
+
+        throw new IllegalArgumentException("unknown enum value: " + mapGeneratorInternal);
+    }
+
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
         setContentView(R.layout.mapsview);
@@ -138,21 +153,28 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         mapView.setBuiltInZoomControls(false);
         mapView.setOnTouchListener(this);
 
-        { // get proper rendeing engine
+        { // get proper rendering engine
             MapGeneratorInternal mapGeneratorInternal = MapGeneratorInternal.MAPNIK;
             String tileSourceName = preferences.getString(Constants.PREFS_KEY_TILESOURCE, MapGeneratorInternal.MAPNIK.toString());
             mapGeneratorInternal = MapGeneratorInternal.valueOf(tileSourceName);
-            MapGenerator mapGenerator = MapGeneratorFactory.createMapGenerator(mapGeneratorInternal);
-            mapView.setMapGenerator(mapGenerator);
-            String filePath = preferences.getString(Constants.PREFS_KEY_TILESOURCE_FILE, ""); //$NON-NLS-1$
-            File mapfile = new File(filePath);
-            if (mapfile.exists()) {
-                if (!mapGenerator.requiresInternetConnection()) {
-                    mapView.setMapFile(mapfile);
-                }
+            MapGenerator mapGenerator;
+            if (mapGeneratorInternal != eu.hydrologis.geopaparazzi.maps.tiles.MapGeneratorInternal.CUSTOM) {
+                mapGenerator = createMapGenerator(mapGeneratorInternal);
             } else {
-                mapGenerator = MapGeneratorFactory.createMapGenerator(MapGeneratorInternal.MAPNIK);
-                mapView.setMapGenerator(mapGenerator);
+                mapGenerator = new CustomTileDownloader();
+            }
+            mapView.setMapGenerator(mapGenerator);
+            if (!mapGenerator.requiresInternetConnection()) {
+                // then we assume it needs a mapfile
+                String filePath = preferences.getString(Constants.PREFS_KEY_TILESOURCE_FILE, ""); //$NON-NLS-1$
+                File mapfile = new File(filePath);
+                if (mapfile.exists()) {
+                    mapView.setMapFile(mapfile);
+                } else {
+                    // no mapfile, fallback on mapnik
+                    mapGenerator = createMapGenerator(MapGeneratorInternal.MAPNIK);
+                    mapView.setMapGenerator(mapGenerator);
+                }
             }
         }
 
