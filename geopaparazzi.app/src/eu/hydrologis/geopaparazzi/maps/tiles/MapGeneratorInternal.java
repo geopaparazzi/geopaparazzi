@@ -11,7 +11,6 @@ public enum MapGeneratorInternal {
 	 * @see <a href="http://wiki.openstreetmap.org/wiki/Mapnik">Mapnik</a>
 	 */
 	MAPNIK,
-	CUSTOM,
 
 	/**
 	 * Map tiles are downloaded from the OpenCycleMap server.

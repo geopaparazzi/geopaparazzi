@@ -14,21 +14,19 @@
  */
 package eu.hydrologis.geopaparazzi.maps.tiles;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.logging.Level;
 
 import org.mapsforge.android.maps.mapgenerator.MapGeneratorJob;
 import org.mapsforge.android.maps.mapgenerator.tiledownloader.TileDownloader;
 import org.mapsforge.core.model.Tile;
 
-import eu.geopaparazzi.library.util.debug.Logger;
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import eu.geopaparazzi.library.util.FileUtilities;
 
 /**
  * A MapGenerator that downloads tiles from the Mapnik server at OpenStreetMap.
@@ -37,28 +35,19 @@ public class CustomTileDownloader extends TileDownloader {
 
     // http://88.53.214.52/sitr/rest/services/CACHED/ortofoto_ata20072008_webmercatore/MapServer/tile/{z}/{y}/{x}
 
-    private static final String HOST_NAME = "88.53.214.52/sitr/rest/services/CACHED/ortofoto_ata20072008_webmercatore/MapServer/tile";
-    private static final String PROTOCOL = "http";
+    private static String HOST_NAME;
+    private static final String PROTOCOL = "http"; //$NON-NLS-1$
     private static final byte ZOOM_MAX = 18;
 
-    private final StringBuilder stringBuilder;
+    private String tilePart;
 
-    /**
-     * Constructs a new CustomTileDownloader.
-     */
-    public CustomTileDownloader() {
+    public CustomTileDownloader( String urlTemplate ) {
         super();
-        this.stringBuilder = new StringBuilder();
+        int indexOfZ = urlTemplate.indexOf("ZZZ"); //$NON-NLS-1$
+        HOST_NAME = urlTemplate.substring(0, indexOfZ);
+        tilePart = urlTemplate.substring(indexOfZ);
+        HOST_NAME = HOST_NAME.substring(7);
 
-        try {
-            URL url = new URL(getProtocol(), getHostName(), "/10/394/549.png");
-//            URL url = new URL(
-//                    "http://88.53.214.52/sitr/rest/services/CACHED/ortofoto_ata20072008_webmercatore/MapServer/tile/10/394/549.png");
-            InputStream inputStream = url.openStream();
-            inputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public String getHostName() {
@@ -70,28 +59,23 @@ public class CustomTileDownloader extends TileDownloader {
     }
 
     public String getTilePath( Tile tile ) {
-        this.stringBuilder.setLength(0);
-        this.stringBuilder.append('/');
-        this.stringBuilder.append(tile.zoomLevel);
-        this.stringBuilder.append('/');
-        this.stringBuilder.append(tile.tileY);
-        this.stringBuilder.append('/');
-        this.stringBuilder.append(tile.tileX);
-        this.stringBuilder.append(".png");
+        String tmpTilePart = tilePart.replaceFirst("ZZZ", String.valueOf(tile.zoomLevel)); //$NON-NLS-1$
+        tmpTilePart = tmpTilePart.replaceFirst("XXX", String.valueOf(tile.tileX)); //$NON-NLS-1$
+        tmpTilePart = tmpTilePart.replaceFirst("YYY", String.valueOf(tile.tileY)); //$NON-NLS-1$
 
-        return this.stringBuilder.toString();
+        return tmpTilePart;
     }
-    
+
     @Override
-    public boolean executeJob(MapGeneratorJob mapGeneratorJob, Bitmap bitmap) {
+    public boolean executeJob( MapGeneratorJob mapGeneratorJob, Bitmap bitmap ) {
         try {
             Tile tile = mapGeneratorJob.tile;
-            
+
             StringBuilder sb = new StringBuilder();
-            sb.append("http://");
+            sb.append("http://"); //$NON-NLS-1$
             sb.append(HOST_NAME);
             sb.append(getTilePath(tile));
-            
+
             URL url = new URL(sb.toString());
             InputStream inputStream = url.openStream();
             Bitmap decodedBitmap = BitmapFactory.decodeStream(inputStream);
@@ -121,4 +105,10 @@ public class CustomTileDownloader extends TileDownloader {
     public byte getZoomLevelMax() {
         return ZOOM_MAX;
     }
+
+    public static CustomTileDownloader file2TileDownloader( File file ) throws IOException {
+        String text = FileUtilities.readfile(file).trim();
+        return new CustomTileDownloader(text);
+    }
+
 }

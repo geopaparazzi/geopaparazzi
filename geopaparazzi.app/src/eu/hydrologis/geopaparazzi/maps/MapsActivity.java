@@ -154,19 +154,32 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         mapView.setOnTouchListener(this);
 
         { // get proper rendering engine
-            MapGeneratorInternal mapGeneratorInternal = MapGeneratorInternal.MAPNIK;
-            String tileSourceName = preferences.getString(Constants.PREFS_KEY_TILESOURCE, MapGeneratorInternal.MAPNIK.toString());
-            mapGeneratorInternal = MapGeneratorInternal.valueOf(tileSourceName);
             MapGenerator mapGenerator;
-            if (mapGeneratorInternal != eu.hydrologis.geopaparazzi.maps.tiles.MapGeneratorInternal.CUSTOM) {
+            String tileSourceName = preferences.getString(Constants.PREFS_KEY_TILESOURCE, ""); //$NON-NLS-1$
+            String filePath = preferences.getString(Constants.PREFS_KEY_TILESOURCE_FILE, ""); //$NON-NLS-1$
+
+            MapGeneratorInternal mapGeneratorInternal = null;
+            try {
+                mapGeneratorInternal = MapGeneratorInternal.valueOf(tileSourceName);
+            } catch (IllegalArgumentException e) {
+                // ignore, is custom
+            }
+
+            if (tileSourceName.length() == 0 && filePath != null && new File(filePath).exists()) {
+                try {
+                    mapGenerator = CustomTileDownloader.file2TileDownloader(new File(filePath));
+                } catch (IOException e) {
+                    mapGenerator = createMapGenerator(MapGeneratorInternal.MAPNIK);
+                }
+            } else if (mapGeneratorInternal != null) {
                 mapGenerator = createMapGenerator(mapGeneratorInternal);
             } else {
-                mapGenerator = new CustomTileDownloader();
+                mapGenerator = createMapGenerator(MapGeneratorInternal.MAPNIK);
             }
+
             mapView.setMapGenerator(mapGenerator);
             if (!mapGenerator.requiresInternetConnection()) {
                 // then we assume it needs a mapfile
-                String filePath = preferences.getString(Constants.PREFS_KEY_TILESOURCE_FILE, ""); //$NON-NLS-1$
                 File mapfile = new File(filePath);
                 if (mapfile.exists()) {
                     mapView.setMapFile(mapfile);
@@ -180,8 +193,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
         MapScaleBar mapScaleBar = this.mapView.getMapScaleBar();
         mapScaleBar.setImperialUnits(false);
-        mapScaleBar.setText(TextField.KILOMETER, " km");
-        mapScaleBar.setText(TextField.METER, " m");
+        mapScaleBar.setText(TextField.KILOMETER, " km"); //$NON-NLS-1$
+        mapScaleBar.setText(TextField.METER, " m"); //$NON-NLS-1$
 
         if (Debug.D) {
             // boolean drawTileFrames = preferences.getBoolean("drawTileFrames", false);
@@ -972,8 +985,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     };
 
     private ArrayGeopaparazziOverlay dataOverlay;
-
-    private AlertDialog mapChoiceDialog;
 
     public void inalidateMap() {
         mapView.invalidateOnUiThread();
