@@ -87,7 +87,7 @@ public class CustomTileDownloader extends TileDownloader {
                         String[] coord = value.split("\\s+"); //$NON-NLS-1$
                         double x = Double.parseDouble(coord[0]);
                         double y = Double.parseDouble(coord[1]);
-                        centerPoint = new GeoPoint(x, y);
+                        centerPoint = new GeoPoint(y, x);
                     } catch (NumberFormatException e) {
                         // use default
                     }

@@ -123,8 +123,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     private boolean sliderIsOpen;
     private boolean osmSliderIsOpen;
     private MapView mapView;
-    private int maxZoomLevel;
-    private int minZoomLevel;
+    private int maxZoomLevel = -1;
+    private int minZoomLevel = -1;
     private SlidingDrawer osmSlidingDrawer;
     private SharedPreferences preferences;
     private boolean doOsm;
@@ -168,6 +168,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             if (tileSourceName.length() == 0 && filePath != null && new File(filePath).exists()) {
                 try {
                     mapGenerator = CustomTileDownloader.file2TileDownloader(new File(filePath));
+                    minZoomLevel = mapGenerator.getStartZoomLevel();
+                    maxZoomLevel = mapGenerator.getZoomLevelMax();
                 } catch (IOException e) {
                     mapGenerator = createMapGenerator(MapGeneratorInternal.MAPNIK);
                 }
@@ -188,6 +190,10 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                     mapGenerator = createMapGenerator(MapGeneratorInternal.MAPNIK);
                     mapView.setMapGenerator(mapGenerator);
                 }
+            }
+            if (maxZoomLevel == -1) {
+                maxZoomLevel = mapView.getMapZoomControls().getZoomLevelMax();
+                minZoomLevel = mapView.getMapZoomControls().getZoomLevelMin();
             }
         }
 
@@ -231,9 +237,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         GeoPoint geoPoint = new GeoPoint(mapCenterLocation[1], mapCenterLocation[0]);
         mapView.getController().setZoom((int) mapCenterLocation[2]);
         mapView.getController().setCenter(geoPoint);
-
-        maxZoomLevel = mapView.getMapZoomControls().getZoomLevelMax();
-        minZoomLevel = mapView.getMapZoomControls().getZoomLevelMin();
 
         // zoom bar
         zoomBar = (VerticalSeekBar) findViewById(R.id.ZoomBar);
@@ -757,19 +760,19 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         }
         case CENTER_ON_MAP: {
             MapGenerator mapGenerator = mapView.getMapGenerator();
+            GeoPoint mapCenter;
+            MapController controller = mapView.getController();
             if (mapGenerator instanceof DatabaseRenderer) {
-                MapController controller = mapView.getController();
-                GeoPoint mapCenter = mapView.getMapDatabase().getMapFileInfo().mapCenter;
-                controller.setCenter(mapCenter);
-                MapZoomControls mapZoomControls = mapView.getMapZoomControls();
-                int zoomLevelMax = mapZoomControls.getZoomLevelMax();
-                int zoomLevelMin = mapZoomControls.getZoomLevelMin();
-                int middle = (zoomLevelMax - zoomLevelMin) / 2 + zoomLevelMin;
-                controller.setZoom(middle);
-                saveCenterPref();
+                mapCenter = mapView.getMapDatabase().getMapFileInfo().mapCenter;
             } else {
-                Utilities.messageDialog(this, "This operation works only for file based data maps", null);
+                mapCenter = mapGenerator.getStartPoint();
+                // Utilities.messageDialog(this,
+                // "This operation works only for file based data maps", null);
             }
+            controller.setCenter(mapCenter);
+            int middle = (maxZoomLevel - minZoomLevel) / 2 + minZoomLevel;
+            controller.setZoom(middle);
+            saveCenterPref();
             return true;
         }
         default:
