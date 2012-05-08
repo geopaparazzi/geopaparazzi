@@ -19,9 +19,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.List;
 
 import org.mapsforge.android.maps.mapgenerator.MapGeneratorJob;
 import org.mapsforge.android.maps.mapgenerator.tiledownloader.TileDownloader;
+import org.mapsforge.core.model.GeoPoint;
 import org.mapsforge.core.model.Tile;
 
 import android.graphics.Bitmap;
@@ -36,26 +38,80 @@ public class CustomTileDownloader extends TileDownloader {
     // http://88.53.214.52/sitr/rest/services/CACHED/ortofoto_ata20072008_webmercatore/MapServer/tile/{z}/{y}/{x}
 
     private static String HOST_NAME;
-    private static final String PROTOCOL = "http"; //$NON-NLS-1$
-    private static final byte ZOOM_MAX = 18;
+    private static String PROTOCOL = "http"; //$NON-NLS-1$
+    private static byte ZOOM_MIN = 0;
+    private static byte ZOOM_MAX = 18;
+
+    private GeoPoint centerPoint = new GeoPoint(0, 0);
 
     private String tilePart;
 
-    public CustomTileDownloader( String urlTemplate ) {
+    public CustomTileDownloader( List<String> fileLines ) {
         super();
-        int indexOfZ = urlTemplate.indexOf("ZZZ"); //$NON-NLS-1$
-        HOST_NAME = urlTemplate.substring(0, indexOfZ);
-        tilePart = urlTemplate.substring(indexOfZ);
-        HOST_NAME = HOST_NAME.substring(7);
+
+        for( String line : fileLines ) {
+            line = line.trim();
+            if (line.length() == 0) {
+                continue;
+            }
+
+            int split = line.indexOf('=');
+            if (split != -1) {
+                String value = line.substring(split + 1).trim();
+                if (line.startsWith("url")) {
+
+                    int indexOfZ = value.indexOf("ZZZ"); //$NON-NLS-1$
+                    HOST_NAME = value.substring(0, indexOfZ);
+                    tilePart = value.substring(indexOfZ);
+                    HOST_NAME = HOST_NAME.substring(7);
+                    if (!value.startsWith("http")) {
+                        PROTOCOL = "file:";
+                    }
+                }
+                if (line.startsWith("minzoom")) {
+                    try {
+                        ZOOM_MIN = Byte.valueOf(value);
+                    } catch (Exception e) {
+                        // use default: handle exception
+                    }
+                }
+                if (line.startsWith("maxzoom")) {
+                    try {
+                        ZOOM_MAX = Byte.valueOf(value);
+                    } catch (Exception e) {
+                        // use default: handle exception
+                    }
+                }
+                if (line.startsWith("center")) {
+                    try {
+                        String[] coord = value.split("\\s+"); //$NON-NLS-1$
+                        double x = Double.parseDouble(coord[0]);
+                        double y = Double.parseDouble(coord[1]);
+                        centerPoint = new GeoPoint(x, y);
+                    } catch (NumberFormatException e) {
+                        // use default
+                    }
+                }
+            }
+        }
 
     }
-
     public String getHostName() {
         return HOST_NAME;
     }
 
     public String getProtocol() {
         return PROTOCOL;
+    }
+
+    @Override
+    public GeoPoint getStartPoint() {
+        return centerPoint;
+    }
+
+    @Override
+    public Byte getStartZoomLevel() {
+        return ZOOM_MIN;
     }
 
     public String getTilePath( Tile tile ) {
@@ -107,8 +163,8 @@ public class CustomTileDownloader extends TileDownloader {
     }
 
     public static CustomTileDownloader file2TileDownloader( File file ) throws IOException {
-        String text = FileUtilities.readfile(file).trim();
-        return new CustomTileDownloader(text);
+        List<String> fileLines = FileUtilities.readfileToList(file);
+        return new CustomTileDownloader(fileLines);
     }
 
 }
