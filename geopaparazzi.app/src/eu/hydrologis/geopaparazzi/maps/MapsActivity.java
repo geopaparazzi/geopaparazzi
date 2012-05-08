@@ -79,6 +79,7 @@ import eu.geopaparazzi.library.mixare.MixareHandler;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
+import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.InsertCoordActivity;
 import eu.geopaparazzi.library.util.debug.Debug;
@@ -167,7 +168,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
             if (tileSourceName.length() == 0 && filePath != null && new File(filePath).exists()) {
                 try {
-                    mapGenerator = CustomTileDownloader.file2TileDownloader(new File(filePath));
+                    File sdcardDir = ResourcesManager.getInstance(this).getSdcardDir();
+                    mapGenerator = CustomTileDownloader.file2TileDownloader(new File(filePath), sdcardDir.getAbsolutePath());
                     minZoomLevel = mapGenerator.getStartZoomLevel();
                     maxZoomLevel = mapGenerator.getZoomLevelMax();
                 } catch (IOException e) {

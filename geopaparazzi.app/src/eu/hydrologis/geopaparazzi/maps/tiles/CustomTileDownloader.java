@@ -45,8 +45,9 @@ public class CustomTileDownloader extends TileDownloader {
     private GeoPoint centerPoint = new GeoPoint(0, 0);
 
     private String tilePart;
+    private boolean isFile = false;
 
-    public CustomTileDownloader( List<String> fileLines ) {
+    public CustomTileDownloader( List<String> fileLines, String sdcardPath ) {
         super();
 
         for( String line : fileLines ) {
@@ -63,9 +64,13 @@ public class CustomTileDownloader extends TileDownloader {
                     int indexOfZ = value.indexOf("ZZZ"); //$NON-NLS-1$
                     HOST_NAME = value.substring(0, indexOfZ);
                     tilePart = value.substring(indexOfZ);
-                    HOST_NAME = HOST_NAME.substring(7);
-                    if (!value.startsWith("http")) {
-                        PROTOCOL = "file:";
+                    if (value.startsWith("http")) {
+                        // remove http
+                        HOST_NAME = HOST_NAME.substring(7);
+                    } else {
+                        PROTOCOL = "file";
+                        HOST_NAME = sdcardPath + File.separator + HOST_NAME;
+                        isFile = true;
                     }
                 }
                 if (line.startsWith("minzoom")) {
@@ -128,7 +133,11 @@ public class CustomTileDownloader extends TileDownloader {
             Tile tile = mapGeneratorJob.tile;
 
             StringBuilder sb = new StringBuilder();
-            sb.append("http://"); //$NON-NLS-1$
+            if (isFile) {
+                sb.append("file:"); //$NON-NLS-1$
+            } else {
+                sb.append("http://"); //$NON-NLS-1$
+            }
             sb.append(HOST_NAME);
             sb.append(getTilePath(tile));
 
@@ -162,9 +171,9 @@ public class CustomTileDownloader extends TileDownloader {
         return ZOOM_MAX;
     }
 
-    public static CustomTileDownloader file2TileDownloader( File file ) throws IOException {
+    public static CustomTileDownloader file2TileDownloader( File file, String sdcardPath ) throws IOException {
         List<String> fileLines = FileUtilities.readfileToList(file);
-        return new CustomTileDownloader(fileLines);
+        return new CustomTileDownloader(fileLines, sdcardPath);
     }
 
 }
