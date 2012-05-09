@@ -271,4 +271,56 @@ public class Utilities {
                     }
                 }).setCancelable(false).show();
     }
+
+    /**
+     * Converts TMS tile coordinates to Google Tile coordinates.
+     * 
+     * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
+     * 
+     * @param tx the x tile number.
+     * @param ty the y tile number.
+     * @param zoom the current zoom level.
+     * @return the converted values.
+     */
+    public static int[] tmsTile2GoogleTile( int tx, int ty, int zoom ) {
+        return new int[]{tx, (int) ((Math.pow(2, zoom) - 1) - ty)};
+    }
+
+    /**
+     * Converts Google tile coordinates to TMS Tile coordinates.
+     * 
+     * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
+     * 
+     * @param tx the x tile number.
+     * @param ty the y tile number.
+     * @param zoom the current zoom level.
+     * @return the converted values.
+     */
+    public static int[] googleTile2TmsTile( int tx, int ty, int zoom ) {
+        return new int[]{tx, (int) ((Math.pow(2, zoom) - 1) - ty)};
+    }
+
+    /**
+     * Converts TMS tile coordinates to Microsoft QuadTree.
+     * 
+     * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
+     * 
+     * @return the quadtree key.
+     */
+    public static String QuadTree( int tx, int ty, int zoom ) {
+        String quadKey = ""; //$NON-NLS-1$
+        ty = (int) ((Math.pow(2, zoom) - 1) - ty);
+        for( int i = zoom; i < 0; i-- ) {
+            int digit = 0;
+            int mask = 1 << (i - 1);
+            if ((tx & mask) != 0) {
+                digit += 1;
+            }
+            if ((ty & mask) != 0) {
+                digit += 2;
+            }
+            quadKey += (digit + ""); //$NON-NLS-1$
+        }
+        return quadKey;
+    }
 }

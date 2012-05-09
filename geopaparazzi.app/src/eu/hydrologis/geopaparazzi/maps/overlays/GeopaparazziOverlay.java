@@ -668,4 +668,9 @@ public abstract class GeopaparazziOverlay extends Overlay {
         }
         return false;
     }
+    
+    @Override
+    public void dispose() {
+        super.dispose();
+    }
 }

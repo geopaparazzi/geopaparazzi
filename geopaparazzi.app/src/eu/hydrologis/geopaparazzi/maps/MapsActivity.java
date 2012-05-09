@@ -34,6 +34,7 @@ import org.mapsforge.android.maps.MapViewPosition;
 import org.mapsforge.android.maps.MapZoomControls;
 import org.mapsforge.android.maps.Projection;
 import org.mapsforge.android.maps.mapgenerator.MapGenerator;
+import org.mapsforge.android.maps.mapgenerator.TileCache;
 import org.mapsforge.android.maps.mapgenerator.databaserenderer.DatabaseRenderer;
 import org.mapsforge.android.maps.mapgenerator.tiledownloader.MapnikTileDownloader;
 import org.mapsforge.android.maps.mapgenerator.tiledownloader.OpenCycleMapTileDownloader;
@@ -153,6 +154,14 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         mapView.setClickable(true);
         mapView.setBuiltInZoomControls(false);
         mapView.setOnTouchListener(this);
+
+        // TODO
+        // boolean persistent = preferences.getBoolean("cachePersistence", false);
+        // int capacity = Math.min(preferences.getInt("cacheSize", FILE_SYSTEM_CACHE_SIZE_DEFAULT),
+        // FILE_SYSTEM_CACHE_SIZE_MAX);
+        // TileCache fileSystemTileCache = this.mapView.getFileSystemTileCache();
+        // fileSystemTileCache.setPersistent(persistent);
+        // fileSystemTileCache.setCapacity(capacity);
 
         { // get proper rendering engine
             MapGenerator mapGenerator;
@@ -412,6 +421,12 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
         saveCenterPref();
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        dataOverlay.dispose();
+        super.onDestroy();
     }
 
     private void readData() {

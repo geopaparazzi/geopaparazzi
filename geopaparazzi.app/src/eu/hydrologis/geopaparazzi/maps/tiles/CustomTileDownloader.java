@@ -29,13 +29,19 @@ import org.mapsforge.core.model.Tile;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import eu.geopaparazzi.library.util.FileUtilities;
+import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * A MapGenerator that downloads tiles from the Mapnik server at OpenStreetMap.
  */
 public class CustomTileDownloader extends TileDownloader {
 
-    // http://88.53.214.52/sitr/rest/services/CACHED/ortofoto_ata20072008_webmercatore/MapServer/tile/{z}/{y}/{x}
+    /**
+     * Possible schemas
+     */
+    private enum TILESCHEMA {
+        tms, google
+    }
 
     private static String HOST_NAME;
     private static String PROTOCOL = "http"; //$NON-NLS-1$
@@ -46,6 +52,7 @@ public class CustomTileDownloader extends TileDownloader {
 
     private String tilePart;
     private boolean isFile = false;
+    private TILESCHEMA type = TILESCHEMA.google;
 
     public CustomTileDownloader( List<String> fileLines, String sdcardPath ) {
         super();
@@ -97,6 +104,11 @@ public class CustomTileDownloader extends TileDownloader {
                         // use default
                     }
                 }
+                if (line.startsWith("type")) {
+                    if (value.equals(TILESCHEMA.tms.toString())) {
+                        type = TILESCHEMA.tms;
+                    }
+                }
             }
         }
 
@@ -120,9 +132,19 @@ public class CustomTileDownloader extends TileDownloader {
     }
 
     public String getTilePath( Tile tile ) {
-        String tmpTilePart = tilePart.replaceFirst("ZZZ", String.valueOf(tile.zoomLevel)); //$NON-NLS-1$
-        tmpTilePart = tmpTilePart.replaceFirst("XXX", String.valueOf(tile.tileX)); //$NON-NLS-1$
-        tmpTilePart = tmpTilePart.replaceFirst("YYY", String.valueOf(tile.tileY)); //$NON-NLS-1$
+        int zoomLevel = tile.zoomLevel;
+        int tileX = (int) tile.tileX;
+        int tileY = (int) tile.tileY;
+
+        if (type == TILESCHEMA.tms) {
+            int[] tmsTiles = Utilities.googleTile2TmsTile(tileX, tileY, zoomLevel);
+            tileX = tmsTiles[0];
+            tileY = tmsTiles[1];
+        }
+
+        String tmpTilePart = tilePart.replaceFirst("ZZZ", String.valueOf(zoomLevel)); //$NON-NLS-1$
+        tmpTilePart = tmpTilePart.replaceFirst("XXX", String.valueOf(tileX)); //$NON-NLS-1$
+        tmpTilePart = tmpTilePart.replaceFirst("YYY", String.valueOf(tileY)); //$NON-NLS-1$
 
         return tmpTilePart;
     }

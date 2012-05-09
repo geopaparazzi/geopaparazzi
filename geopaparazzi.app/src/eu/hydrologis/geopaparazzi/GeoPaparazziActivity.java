@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -134,6 +135,8 @@ public class GeoPaparazziActivity extends Activity {
                     return filename.endsWith(".mapurl");
                 }
             });
+            
+            Arrays.sort(mapFiles);
 
             int i = 1004;
             for( File file : mapFiles ) {
