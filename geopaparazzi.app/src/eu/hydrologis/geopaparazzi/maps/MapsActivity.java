@@ -226,8 +226,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         final RelativeLayout rl = (RelativeLayout) findViewById(R.id.innerlayout);
         rl.addView(mapView, new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
 
-        ViewportManager.INSTANCE.setMapActivity(this);
-
         GpsManager.getInstance(this).addListener(this);
 
         /* imported maps */
@@ -427,6 +425,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
     @Override
     protected void onDestroy() {
+        GpsManager.getInstance(this).removeListener(this);
         dataOverlay.dispose();
         super.onDestroy();
     }
@@ -842,7 +841,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             if (resultCode == Activity.RESULT_OK) {
                 double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0f);
                 double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0f);
-                ViewportManager.INSTANCE.setCenterAndZoomForMapWindowFocus(lon, lat, null);
+                setCenterAndZoomForMapWindowFocus(lon, lat, null);
             }
             break;
         }
@@ -1140,6 +1139,38 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         }
 
         PositionUtilities.putMapCenterInPreferences(preferences, lon, lat, mapPosition.getZoomLevel());
+    }
+
+    /**
+     * Set center coords and zoom ready for the {@link MapsActivity} to focus again.
+     * 
+     * <p>In {@link MapsActivity} the {@link MapsActivity#onWindowFocusChanged(boolean)}
+     * will take care to zoom properly.
+     * 
+     * @param centerX the lon coordinate. Can be <code>null</code>.
+     * @param centerY the lat coordinate. Can be <code>null</code>.
+     * @param zoom the zoom. Can be <code>null</code>.
+     */
+    public void setCenterAndZoomForMapWindowFocus( Double centerX, Double centerY, Integer zoom ) {
+        MapViewPosition mapPosition = mapView.getMapPosition();
+        GeoPoint mapCenter = mapPosition.getMapCenter();
+        int zoomLevel = mapPosition.getZoomLevel();
+        float cx = 0f;
+        float cy = 0f;
+        if (centerX != null) {
+            cx = centerX.floatValue();
+        } else {
+            cx = (float) (mapCenter.longitudeE6 / LibraryConstants.E6);
+        }
+        if (centerY != null) {
+            cy = centerY.floatValue();
+        } else {
+            cy = (float) (mapCenter.latitudeE6 / LibraryConstants.E6);
+        }
+        if (zoom != null) {
+            zoomLevel = zoom;
+        }
+        PositionUtilities.putMapCenterInPreferences(preferences, cx, cy, zoomLevel);
     }
 
 }
