@@ -744,7 +744,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         switch( item.getItemId() ) {
         case MENU_GPSDATA:
             Intent gpsDatalistIntent = new Intent(this, GpsDataListActivity.class);
-            startActivity(gpsDatalistIntent);
+            startActivityForResult(gpsDatalistIntent, GPSDATAPROPERTIES_RETURN_CODE);
             return true;
 
         case MENU_SCALE_ID:

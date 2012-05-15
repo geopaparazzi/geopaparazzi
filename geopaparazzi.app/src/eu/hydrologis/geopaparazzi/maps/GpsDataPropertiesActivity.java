@@ -132,8 +132,8 @@ public class GpsDataPropertiesActivity extends Activity {
                         double[] firstPoint = DaoGpsLog.getGpslogFirstPoint(GpsDataPropertiesActivity.this, item.getId());
                         if (firstPoint != null) {
                             Intent intent = getIntent();
-                            intent.putExtra(LibraryConstants.LATITUDE, firstPoint[0]);
-                            intent.putExtra(LibraryConstants.LONGITUDE, firstPoint[1]);
+                            intent.putExtra(LibraryConstants.LATITUDE, firstPoint[1]);
+                            intent.putExtra(LibraryConstants.LONGITUDE, firstPoint[0]);
                             setResult(Activity.RESULT_OK, intent);
                         }
                     } catch (IOException e) {
