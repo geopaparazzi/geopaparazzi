@@ -694,9 +694,9 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     // super.onPause();
     // }
 
-    public MapView getMapView() {
-        return mapView;
-    }
+//    public MapView getMapView() {
+//        return mapView;
+//    }
 
     private void setZoomGuiText( int newZoom ) {
         int zoomInLevel = newZoom + 1;
