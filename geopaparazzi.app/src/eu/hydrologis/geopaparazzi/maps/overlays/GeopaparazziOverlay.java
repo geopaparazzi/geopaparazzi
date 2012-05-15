@@ -56,7 +56,7 @@ import eu.hydrologis.geopaparazzi.R;
  *            the type of ways handled by this overlay.
  */
 public abstract class GeopaparazziOverlay extends Overlay {
-    private static final String THREAD_NAME = "GeopaparazziOverlay";
+    private static final String THREAD_NAME = "GeopaparazziOverlay"; //$NON-NLS-1$
     private static final int ITEM_INITIAL_CAPACITY = 8;
 
     /**
@@ -103,7 +103,6 @@ public abstract class GeopaparazziOverlay extends Overlay {
     private int top;
     private List<Integer> visibleItems;
     private List<Integer> visibleItemsRedraw;
-    private final Context context;
 
     /*
      * cross stuff
@@ -128,6 +127,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
     private Paint gpsFill;
 
     private List<GeoPoint> currentGps = new ArrayList<GeoPoint>();
+    private Context context;
 
     /**
      * Create a {@link OverlayWay} wrapped type.
@@ -547,7 +547,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
     protected boolean checkItemHit( GeoPoint geoPoint, MapView mapView, EventType eventType ) {
         Projection projection = mapView.getProjection();
         Point eventPosition = projection.toPixels(geoPoint, null);
-
+        Context context = mapView.getContext();
         // check if the translation to pixel coordinates has failed
         if (eventPosition == null) {
             return false;
@@ -607,7 +607,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                             break;
 
                         case TAP:
-                            if (onTap(itemIndex.intValue())) {
+                            if (onTap(context, itemIndex.intValue())) {
                                 return true;
                             }
                             break;
@@ -643,7 +643,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
      *            the index of the item that has been tapped.
      * @return true if the event was handled, false otherwise.
      */
-    protected boolean onTap( int index ) {
+    protected boolean onTap( Context context, int index ) {
         OverlayItem item = createItem(index);
         if (item != null) {
             String title = item.getTitle();
@@ -656,7 +656,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 intent.setDataAndType(Uri.fromFile(new File(mediaDir.getParentFile(), relativePath)), "image/*");
                 context.startActivity(intent);
             } else {
-                Builder builder = new AlertDialog.Builder(this.context);
+                Builder builder = new AlertDialog.Builder(context);
                 builder.setIcon(android.R.drawable.ic_menu_info_details);
                 builder.setTitle(title);
                 if (snippet != null && snippet.length() > 0)
@@ -668,9 +668,10 @@ public abstract class GeopaparazziOverlay extends Overlay {
         }
         return false;
     }
-    
+
     @Override
     public void dispose() {
+        context = null;
         super.dispose();
     }
 }

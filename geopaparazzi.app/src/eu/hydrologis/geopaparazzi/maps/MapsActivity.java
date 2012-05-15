@@ -131,6 +131,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     private SharedPreferences preferences;
     private boolean doOsm;
 
+    private ArrayGeopaparazziOverlay dataOverlay;
+
     public static MapGenerator createMapGenerator( MapGeneratorInternal mapGeneratorInternal ) {
         switch( mapGeneratorInternal ) {
         case DATABASE_RENDERER:
@@ -1003,8 +1005,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             }
         }
     };
-
-    private ArrayGeopaparazziOverlay dataOverlay;
 
     public void inalidateMap() {
         mapView.invalidateOnUiThread();
