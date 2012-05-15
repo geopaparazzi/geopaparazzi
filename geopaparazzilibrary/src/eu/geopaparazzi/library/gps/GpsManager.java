@@ -49,7 +49,6 @@ import eu.geopaparazzi.library.util.debug.TestMock;
 public class GpsManager implements LocationListener, Listener {
 
     private static GpsManager gpsManager;
-    private final Context context;
 
     private List<GpsManagerListener> listeners = new ArrayList<GpsManagerListener>();
 
@@ -78,7 +77,6 @@ public class GpsManager implements LocationListener, Listener {
     private boolean useNetworkPositions;
 
     private GpsManager( Context context ) {
-        this.context = context;
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
         useNetworkPositions = preferences.getBoolean(LibraryConstants.PREFS_KEY_GPS_USE_NETWORK_POSITION, false);
@@ -87,8 +85,8 @@ public class GpsManager implements LocationListener, Listener {
     public synchronized static GpsManager getInstance( Context context ) {
         if (gpsManager == null) {
             gpsManager = new GpsManager(context);
-            gpsManager.checkLoggerExists();
-            gpsManager.checkGps();
+            gpsManager.checkLoggerExists(context);
+            gpsManager.checkGps(context);
             gpsManager.startListening();
             if (Debug.D)
                 Logger.d(gpsManager, "STARTED LISTENING");
@@ -96,8 +94,8 @@ public class GpsManager implements LocationListener, Listener {
         // woke up from death and has the manager already but isn't listening any more
         if (!gpsManager.isGpsListening()) {
             gpsManager = new GpsManager(context);
-            gpsManager.checkLoggerExists();
-            gpsManager.checkGps();
+            gpsManager.checkLoggerExists(context);
+            gpsManager.checkGps(context);
             gpsManager.startListening();
             if (Debug.D)
                 Logger.d(gpsManager, "STARTED LISTENING AFTER REVIEW");
@@ -128,9 +126,9 @@ public class GpsManager implements LocationListener, Listener {
     /**
      * Disposes the GpsManager and with it all connected services.
      */
-    public void dispose() {
+    public void dispose( Context context ) {
         if (isLogging()) {
-            stopLogging();
+            stopLogging(context);
         }
 
         if (locationManager != null) {
@@ -220,7 +218,7 @@ public class GpsManager implements LocationListener, Listener {
         return isListening;
     }
 
-    private void checkGps() {
+    private void checkGps( final Context context ) {
         if (!isEnabled()) {
             String prompt = context.getResources().getString(R.string.prompt_gpsenable);
             String ok = context.getResources().getString(R.string.yes);
@@ -270,7 +268,7 @@ public class GpsManager implements LocationListener, Listener {
         return gpsLogger.getCurrentRecordedLog();
     }
 
-    private void checkLoggerExists() {
+    private void checkLoggerExists( Context context ) {
         if (gpsLogger == null) {
             gpsLogger = new GpsLogger(context);
         }
@@ -282,8 +280,8 @@ public class GpsManager implements LocationListener, Listener {
      * @param logName a name for the new gps log or <code>null</code>.
      * @param dbHelper the db helper.
      */
-    public void startLogging( String logName, IGpsLogDbHelper dbHelper ) {
-        checkLoggerExists();
+    public void startLogging( Context context, String logName, IGpsLogDbHelper dbHelper ) {
+        checkLoggerExists(context);
         addListener(gpsLogger);
         gpsLogger.startLogging(logName, dbHelper);
     }
@@ -291,8 +289,8 @@ public class GpsManager implements LocationListener, Listener {
     /**
      * Stop gps logging.
      */
-    public void stopLogging() {
-        checkLoggerExists();
+    public void stopLogging( Context context ) {
+        checkLoggerExists(context);
         gpsLogger.stopLogging();
         removeListener(gpsLogger);
     }
