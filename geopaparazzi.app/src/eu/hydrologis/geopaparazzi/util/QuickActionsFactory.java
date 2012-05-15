@@ -229,7 +229,7 @@ public enum QuickActionsFactory {
                                     }
 
                                     DaoGpsLog daoGpsLog = new DaoGpsLog();
-                                    gpsManager.startLogging(newName, daoGpsLog);
+                                    gpsManager.startLogging(context, newName, daoGpsLog);
                                     actionBar.checkLogging();
                                     DataManager.getInstance().setLogsVisible(true);
                                 }
@@ -251,7 +251,7 @@ public enum QuickActionsFactory {
             public void onClick( View v ) {
                 GpsManager gpsManager = GpsManager.getInstance(context);
                 if (gpsManager.isLogging()) {
-                    gpsManager.stopLogging();
+                    gpsManager.stopLogging(context);
                     actionBar.checkLogging();
                 }
                 qa.dismiss();

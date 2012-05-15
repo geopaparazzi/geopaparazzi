@@ -678,7 +678,7 @@ public class GeoPaparazziActivity extends Activity {
 
         Utilities.toast(this, R.string.loggingoff, Toast.LENGTH_LONG);
 
-        gpsManager.dispose();
+        gpsManager.dispose(this);
 
         ResourcesManager.resetManager();
         resourcesManager = null;
