@@ -33,6 +33,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.chart.ChartActivity;
@@ -130,7 +131,10 @@ public class GpsDataPropertiesActivity extends Activity {
                     try {
                         double[] firstPoint = DaoGpsLog.getGpslogFirstPoint(GpsDataPropertiesActivity.this, item.getId());
                         if (firstPoint != null) {
-                            ViewportManager.INSTANCE.setCenterAndZoomForMapWindowFocus(firstPoint[0], firstPoint[1], null);
+                            Intent intent = getIntent();
+                            intent.putExtra(LibraryConstants.LATITUDE, firstPoint[0]);
+                            intent.putExtra(LibraryConstants.LONGITUDE, firstPoint[1]);
+                            setResult(Activity.RESULT_OK, intent);
                         }
                     } catch (IOException e) {
                         Logger.e(this, e.getLocalizedMessage(), e);
@@ -174,6 +178,7 @@ public class GpsDataPropertiesActivity extends Activity {
 
         }
     }
+    
     private void getResourcesAndColors() {
         if (colorList == null) {
             String[] colorArray = getResources().getStringArray(R.array.array_colornames);

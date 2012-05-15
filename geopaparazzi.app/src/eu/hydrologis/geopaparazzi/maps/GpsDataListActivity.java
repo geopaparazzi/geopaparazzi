@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -39,6 +40,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.TextView;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
@@ -54,6 +56,8 @@ public class GpsDataListActivity extends ListActivity {
     private static final int SELECTALL = 1;
     private static final int UNSELECTALL = 2;
     private static final int MERGE_SELECTED = 3;
+
+    private static final int GPSDATAPROPERTIES_RETURN_CODE = 668;
 
     private MapItem[] gpslogItems;
     private Comparator<MapItem> mapItemSorter = new ItemComparators.MapItemIdComparator(true);
@@ -119,7 +123,27 @@ public class GpsDataListActivity extends ListActivity {
     protected void onListItemClick( ListView parent, View v, int position, long id ) {
         Intent intent = new Intent(this, GpsDataPropertiesActivity.class);
         intent.putExtra(Constants.PREFS_KEY_GPSLOG4PROPERTIES, gpslogItems[position]);
-        startActivity(intent);
+        startActivityForResult(intent, GPSDATAPROPERTIES_RETURN_CODE);
+    }
+
+    protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
+        if (Debug.D) {
+            Logger.d(this, "Activity returned"); //$NON-NLS-1$
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+        switch( requestCode ) {
+        case (GPSDATAPROPERTIES_RETURN_CODE): {
+            if (resultCode == Activity.RESULT_OK) {
+                double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0f);
+                double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0f);
+                Intent intent = getIntent();
+                intent.putExtra(LibraryConstants.LATITUDE, lat);
+                intent.putExtra(LibraryConstants.LONGITUDE, lon);
+                setResult(Activity.RESULT_OK, intent);
+            }
+            break;
+        }
+        }
     }
 
     public boolean onCreateOptionsMenu( Menu menu ) {

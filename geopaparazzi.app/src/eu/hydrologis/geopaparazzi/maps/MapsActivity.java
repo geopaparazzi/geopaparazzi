@@ -107,7 +107,7 @@ import eu.hydrologis.geopaparazzi.util.VerticalSeekBar;
 public class MapsActivity extends MapActivity implements GpsManagerListener, OnTouchListener {
     private static final int INSERTCOORD_RETURN_CODE = 666;
     private static final int BOOKMARKS_RETURN_CODE = 667;
-    private static final int GPSDATAPROPERTIES_RETURN_CODE = 667;
+    private static final int GPSDATAPROPERTIES_RETURN_CODE = 668;
 
     private static final int MENU_GPSDATA = 1;
     private static final int MENU_SCALE_ID = 4;
@@ -850,6 +850,14 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0f);
                 int zoom = data.getIntExtra(LibraryConstants.ZOOMLEVEL, 1);
                 setCenterAndZoomForMapWindowFocus(lon, lat, zoom);
+            }
+            break;
+        }
+        case (GPSDATAPROPERTIES_RETURN_CODE): {
+            if (resultCode == Activity.RESULT_OK) {
+                double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0f);
+                double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0f);
+                setCenterAndZoomForMapWindowFocus(lon, lat, null);
             }
             break;
         }
