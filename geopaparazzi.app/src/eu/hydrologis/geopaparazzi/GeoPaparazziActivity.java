@@ -31,8 +31,6 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.mapsforge.android.maps.mapgenerator.tiledownloader.TileDownloader;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -79,7 +77,6 @@ import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
 import eu.hydrologis.geopaparazzi.maps.MapItem;
 import eu.hydrologis.geopaparazzi.maps.MapsActivity;
-import eu.hydrologis.geopaparazzi.maps.tiles.CustomTileDownloader;
 import eu.hydrologis.geopaparazzi.maps.tiles.MapGeneratorInternal;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
 import eu.hydrologis.geopaparazzi.preferences.PreferencesActivity;
