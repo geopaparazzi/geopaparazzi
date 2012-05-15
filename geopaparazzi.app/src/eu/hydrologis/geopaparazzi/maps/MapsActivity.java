@@ -31,10 +31,8 @@ import org.mapsforge.android.maps.MapScaleBar;
 import org.mapsforge.android.maps.MapScaleBar.TextField;
 import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.MapViewPosition;
-import org.mapsforge.android.maps.MapZoomControls;
 import org.mapsforge.android.maps.Projection;
 import org.mapsforge.android.maps.mapgenerator.MapGenerator;
-import org.mapsforge.android.maps.mapgenerator.TileCache;
 import org.mapsforge.android.maps.mapgenerator.databaserenderer.DatabaseRenderer;
 import org.mapsforge.android.maps.mapgenerator.tiledownloader.MapnikTileDownloader;
 import org.mapsforge.android.maps.mapgenerator.tiledownloader.OpenCycleMapTileDownloader;
@@ -81,7 +79,6 @@ import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
-import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.InsertCoordActivity;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
@@ -109,6 +106,8 @@ import eu.hydrologis.geopaparazzi.util.VerticalSeekBar;
  */
 public class MapsActivity extends MapActivity implements GpsManagerListener, OnTouchListener {
     private static final int INSERTCOORD_RETURN_CODE = 666;
+    private static final int BOOKMARKS_RETURN_CODE = 667;
+    private static final int GPSDATAPROPERTIES_RETURN_CODE = 667;
 
     private static final int MENU_GPSDATA = 1;
     private static final int MENU_SCALE_ID = 4;
@@ -390,7 +389,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         listBookmarksButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
                 Intent intent = new Intent(MapsActivity.this, BookmarksListActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, BOOKMARKS_RETURN_CODE);
             }
         });
 
@@ -694,9 +693,9 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     // super.onPause();
     // }
 
-//    public MapView getMapView() {
-//        return mapView;
-//    }
+    // public MapView getMapView() {
+    // return mapView;
+    // }
 
     private void setZoomGuiText( int newZoom ) {
         int zoomInLevel = newZoom + 1;
@@ -842,6 +841,15 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0f);
                 double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0f);
                 setCenterAndZoomForMapWindowFocus(lon, lat, null);
+            }
+            break;
+        }
+        case (BOOKMARKS_RETURN_CODE): {
+            if (resultCode == Activity.RESULT_OK) {
+                double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0f);
+                double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0f);
+                int zoom = data.getIntExtra(LibraryConstants.ZOOMLEVEL, 1);
+                setCenterAndZoomForMapWindowFocus(lon, lat, zoom);
             }
             break;
         }
