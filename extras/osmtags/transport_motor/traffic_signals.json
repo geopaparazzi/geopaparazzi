@@ -1,0 +1,23 @@
+[{
+        "shortname": "",
+        "longname":"",
+        "form": {
+                "formitems":[
+                    {"key":"highway", "value":"traffic_signal", "type":"hidden"},
+                    {"key":"crossing", "value":"", 
+                      "values":{ "items":[
+                                { "item":"traffic_signals" },
+                                { "item":"uncontrolled" },
+                                { "item":"unmarked" },
+                                { "item":"island" },
+                                { "item":"unknown" },
+                                { "item":"no" }
+                            ]
+                        }, "type":"stringcombo"
+                    },
+                    {"key":"supervised", "value":"", "type":"boolean"},
+                    {"key":"bicycle", "value":"", "type":"boolean"},
+                    {"key":"horse", "value":"", "type":"boolean"}
+                ]
+        }
+}]

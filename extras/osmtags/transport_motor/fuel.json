@@ -1,0 +1,66 @@
+[{
+        "shortname": "",
+        "longname":"",
+        "form": {
+                "formitems":[
+                    {"key":"amenity", "value":"fuel", "type":"hidden"},
+                    {"key":"name", "value":"", "type":"string"},
+                    {"key":"operator", "value":"", "type":"string"},
+                    {"key":"opening_hours", "value":"", "type":"string"},
+                    {"key":"brand", "value":"", 
+                      "values":{ "items":[
+                                { "item":"" },
+                                { "item":"Agip" },
+                                { "item":"Aral" },
+                                { "item":"Avia" },
+                                { "item":"BP" },
+                                { "item":"Chevron" },
+                                { "item":"Citgo" },
+                                { "item":"Esso" },
+                                { "item":"Exxon" },
+                                { "item":"Indipendent" },
+                                { "item":"Gulf" },
+                                { "item":"Mobil" },
+                                { "item":"OMV" },
+                                { "item":"Petro-Canada" },
+                                { "item":"Pioneer" },
+                                { "item":"Q8" },
+                                { "item":"Repsol" },
+                                { "item":"Shell" },
+                                { "item":"Sunoco" },
+                                { "item":"Statoil" },
+                                { "item":"Tamoil" },
+                                { "item":"Texaco" },
+                                { "item":"Total" }
+                            ]
+                        }, "type":"stringcombo"
+                    },
+                    {"key":"shop", "value":"", 
+                      "values":{ "items":[
+                                { "item":"" },
+                                { "item":"yes" },
+                                { "item":"no" },
+                                { "item":"kiosk" },
+                                { "item":"convenience" }
+                            ]
+                        }, "type":"stringcombo"
+                    },
+                    {"key":"fuel:1_25", "value":"", "type":"boolean"},
+                    {"key":"fuel:1_50", "value":"", "type":"boolean"},
+                    {"key":"fuel:GTL_diesel", "value":"", "type":"boolean"},
+                    {"key":"fuel:HGV_diesel", "value":"", "type":"boolean"},
+                    {"key":"fuel:biodiesel", "value":"", "type":"boolean"},
+                    {"key":"fuel:cng", "value":"", "type":"boolean"},
+                    {"key":"fuel:diesel", "value":"", "type":"boolean"},
+                    {"key":"fuel:e10", "value":"", "type":"boolean"},
+                    {"key":"fuel:e85", "value":"", "type":"boolean"},
+                    {"key":"fuel:lpg", "value":"", "type":"boolean"},
+                    {"key":"fuel:octane_100", "value":"", "type":"boolean"},
+                    {"key":"fuel:octane_80", "value":"", "type":"boolean"},
+                    {"key":"fuel:octane_91", "value":"", "type":"boolean"},
+                    {"key":"fuel:octane_92", "value":"", "type":"boolean"},
+                    {"key":"fuel:octane_95", "value":"", "type":"boolean"},
+                    {"key":"fuel:octane_98", "value":"", "type":"boolean"}
+                ]
+        }
+}]

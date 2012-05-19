@@ -1,0 +1,14 @@
+[{
+        "shortname": "",
+        "longname":"",
+        "form": {
+                "formitems":[
+                    {"key":"amenity", "value":"", "type":"primary_key"},
+                    {"key":"operator", "value":"", "type":"string"},
+                    {"key":"name", "value":"", "type":"string"},
+                    {"key":"capacity", "value":"", "type":"string"},
+                    {"key":"opening_hours", "value":"", "type":"string"},
+                    {"key":"website", "value":"", "type":"string"}
+                ]
+        }
+}]
