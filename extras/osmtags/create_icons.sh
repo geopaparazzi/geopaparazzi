@@ -191,31 +191,39 @@ cd ..
 
 cd transport_bicycle
   generateonepng.sh -f $PREFIX/svg/transport/parking_bicycle.svg -c '#0000ff' -s $SIZE
+  mv parking_bicycle.n.${SIZE}.png bicycle_parking.n.${SIZE}.png
   generateonepng.sh -f $PREFIX/svg/transport/rental_bicycle.svg -c '#0000ff' -s $SIZE
+  mv rental_bicycle.n.${SIZE}.png bicycle_rental.n.${SIZE}.png
   generateonepng.sh -f $PREFIX/svg/shopping/bicycle2.svg -c '#0000ff' -s $SIZE
-  mv bicycle2.n.${SIZE}.png shop_bicycle.n.${SIZE}.png
+  mv bicycle2.n.${SIZE}.png bicycle_shop.n.${SIZE}.png
   rm -f *.p.* *.glow.*
 cd ..
 
-# 
-# cd transport_car
-#   generateonepng.sh -f $PREFIX/svg/transport/ -c '#0000ff' -s $SIZE
-#   generateonepng.sh -f $PREFIX/svg/transport/rental_car.svg -c '#0000ff' -s $SIZE
-#   mv rental_car.n.${SIZE}.png car_rental.n.${SIZE}.png
-#   generateonepng.sh -f $PREFIX/svg/shopping/car_repair2.svg -c '#0000ff' -s $SIZE
-#   mv car_repair2.n.${SIZE}.png car_repair.n.${SIZE}.png
-#   generateonepng.sh -f $PREFIX/svg/transport/car_share.png -c '#0000ff' -s $SIZE
-#   mv car_share.n.${SIZE}.png car_sharing.n.${SIZE}.png
-#   generateonepng.sh -f $PREFIX/svg/transport/charging_station.svg -c '#0000ff' -s $SIZE
-#   generateonepng.sh -f $PREFIX/svg/transport/fuel.svg -c '#0000ff' -s $SIZE
-#   generateonepng.sh -f $PREFIX/svg/transport/parking_car.svg -c '#0000ff' -s $SIZE
-#   mv parking_car.n.${SIZE}.png parking.n.${SIZE}.png
-#   generateonepng.sh -f $PREFIX/svg/transport/parking_motorcycle.svg -c '#0000ff' -s $SIZE
-#   mv parking_motorcycle.n.${SIZE}.png motorcycle_parking.n.${SIZE}.png
-#   generateonepng.sh -f $PREFIX/svg/transport/tyres.svg -c '#0000ff' -s $SIZE
-#   rm -f *.p.* *.glow.*
-# 
-# cd ..
+
+cd transport_motor
+  CAR_DEALER
+  generateonepng.sh -f $PREFIX/svg/transport/parking_car.svg -c '#0000ff' -s $SIZE
+  mv parking_car.n.${SIZE}.png car_parking.n.${SIZE}.png
+  generateonepng.sh -f $PREFIX/svg/transport/rental_car.svg -c '#0000ff' -s $SIZE
+  mv rental_car.n.${SIZE}.png car_rental.n.${SIZE}.png
+  generateonepng.sh -f $PREFIX/svg/shopping/car_repair2.svg -c '#0000ff' -s $SIZE
+  mv car_repair2.n.${SIZE}.png car_repair.n.${SIZE}.png
+  generateonepng.sh -f $PREFIX/svg/transport/car_share.svg -c '#0000ff' -s $SIZE
+  mv car_share.n.${SIZE}.png car_sharing.n.${SIZE}.png
+  generateonepng.sh -f $PREFIX/svg/transport/car_wash.svg -c '#0000ff' -s $SIZE
+  generateonepng.sh -f $PREFIX/svg/transport/charging_station.svg -c '#0000ff' -s $SIZE
+  generateonepng.sh -f $PREFIX/svg/transport/zebra_crossing.svg -c '#0000ff' -s $SIZE
+  mv zebra_crossing.n.${SIZE}.png crossing.n.${SIZE}.png
+  generateonepng.sh -f $PREFIX/svg/transport/emergency_phone.svg -c '#0000ff' -s $SIZE
+  generateonepng.sh -f $PREFIX/svg/transport/fuel.svg -c '#0000ff' -s $SIZE
+  generateonepng.sh -f $PREFIX/svg/transport/parking_motorcycle.svg -c '#0000ff' -s $SIZE
+  mv parking_motorcycle.n.${SIZE}.png motorcycle_parking.n.${SIZE}.png
+  generateonepng.sh -f $PREFIX/svg/transport/stop.svg -c '#0000ff' -s $SIZE
+  generateonepng.sh -f $PREFIX/svg/transport/traffic_lights.svg -c '#0000ff' -s $SIZE
+  mv traffic_lights.n.${SIZE}.png traffic_signals.n.${SIZE}.png
+  generateonepng.sh -f $PREFIX/svg/shopping/tyres.svg -c '#0000ff' -s $SIZE
+  rm -f *.p.* *.glow.*
+cd ..
 
 cd transport_public
   generateonepng.sh -f $PREFIX/svg/transport/bus_station.svg -c '#0000ff' -s $SIZE

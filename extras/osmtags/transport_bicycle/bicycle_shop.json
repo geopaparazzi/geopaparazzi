@@ -6,5 +6,6 @@
                     {"key":"shop", "value":"bicycle", "type":"hidden"},
                     {"key":"name", "value":"", "type":"string"},
                     {"key":"opening_hours", "value":"", "type":"string"}
+                ]
         }
 }]

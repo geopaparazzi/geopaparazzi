@@ -3,8 +3,9 @@
         "longname":"",
         "form": {
                 "formitems":[
-                    {"key":"amenity", "value":"bicycle_rental", "type":"hidden"},
+                    {"key":"amenity", "value":"", "type":"primary_key"},
                     {"key":"name", "value":"", "type":"string"},
                     {"key":"opening_hours", "value":"", "type":"string"}
+                ]
         }
 }]
