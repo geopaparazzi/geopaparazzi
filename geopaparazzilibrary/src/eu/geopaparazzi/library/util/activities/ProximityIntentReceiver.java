@@ -1,0 +1,72 @@
+package eu.geopaparazzi.library.util.activities;
+
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
+import android.location.LocationManager;
+import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.gps.GpsManager;
+import eu.geopaparazzi.library.util.debug.Debug;
+import eu.geopaparazzi.library.util.debug.Logger;
+
+/**
+ * @author javacodegeeks
+ *
+ */
+public class ProximityIntentReceiver extends BroadcastReceiver {
+
+    private static final int NOTIFICATION_ID = 1000;
+
+    @Override
+    public void onReceive( Context context, Intent intent ) {
+
+        String key = LocationManager.KEY_PROXIMITY_ENTERING;
+
+        Boolean entering = intent.getBooleanExtra(key, false);
+
+        if (entering) {
+            if (Debug.D)
+                Logger.d(getClass().getSimpleName(), "entering proximity radius"); //$NON-NLS-1$
+            NotificationManager notificationManager = (NotificationManager) context
+                    .getSystemService(Context.NOTIFICATION_SERVICE);
+
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, null, 0);
+
+            Notification notification = createNotification();
+            notification.setLatestEventInfo(context, "Proximity Alert!", "Approaching a point of interest.", pendingIntent);
+            notificationManager.notify(NOTIFICATION_ID, notification);
+
+            GpsManager.getInstance(context).getLocationManager().removeProximityAlert(pendingIntent);
+            context.unregisterReceiver(this);
+        } else {
+            if (Debug.D)
+                Logger.d(getClass().getSimpleName(), "exiting proximity radius"); //$NON-NLS-1$
+        }
+
+    }
+
+    private Notification createNotification() {
+        Notification notification = new Notification();
+
+        notification.icon = R.drawable.current_position;
+        notification.when = System.currentTimeMillis();
+
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        notification.flags |= Notification.FLAG_SHOW_LIGHTS;
+
+        notification.defaults |= Notification.DEFAULT_VIBRATE;
+        notification.defaults |= Notification.DEFAULT_LIGHTS;
+        notification.defaults |= Notification.DEFAULT_SOUND;
+
+        notification.ledARGB = Color.RED;
+        notification.ledOnMS = 1500;
+        notification.ledOffMS = 1500;
+
+        return notification;
+    }
+
+}

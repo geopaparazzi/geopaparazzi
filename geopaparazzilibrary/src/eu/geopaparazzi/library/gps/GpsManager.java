@@ -25,6 +25,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.location.GpsStatus;
 import android.location.GpsStatus.Listener;
@@ -37,7 +38,7 @@ import android.preference.PreferenceManager;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
-import eu.geopaparazzi.library.util.activities.PlaySoundActivity;
+import eu.geopaparazzi.library.util.activities.ProximityIntentReceiver;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.geopaparazzi.library.util.debug.TestMock;
@@ -125,13 +126,21 @@ public class GpsManager implements LocationListener, Listener {
         listeners.remove(listener);
     }
 
+    public LocationManager getLocationManager() {
+        return locationManager;
+    }
+    
     public void addProximityAlert( Context context, double lat, double lon, float radius ) {
-
-        Intent intent = new Intent(context, PlaySoundActivity.class);
-        intent.putExtra(PlaySoundActivity.MESSAGE, "Proximity alert triggered!");
+        String PROX_ALERT_INTENT = "com.javacodegeeks.android.lbs.ProximityAlert";
+        Intent intent = new Intent(PROX_ALERT_INTENT);
+        // intent.putExtra(PlaySoundActivity.MESSAGE, "Proximity alert triggered!");
         PendingIntent proximityIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
 
         locationManager.addProximityAlert(lat, lon, radius, -1, proximityIntent);
+
+        IntentFilter filter = new IntentFilter(PROX_ALERT_INTENT);
+        context.registerReceiver(new ProximityIntentReceiver(), filter);
+
     }
 
     /**

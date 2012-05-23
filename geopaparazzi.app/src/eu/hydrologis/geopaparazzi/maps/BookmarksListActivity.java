@@ -39,7 +39,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -223,9 +222,11 @@ public class BookmarksListActivity extends ListActivity {
                                                     // ignore and use default
                                                 }
                                             }
-                                            BookmarksListActivity context = BookmarksListActivity.this;
+
+                                            Context context = getApplicationContext();
                                             GpsManager.getInstance(context).addProximityAlert(context, bookmark.getLat(),
                                                     bookmark.getLon(), (float) radius);
+
                                             finish();
                                         }
                                     });
