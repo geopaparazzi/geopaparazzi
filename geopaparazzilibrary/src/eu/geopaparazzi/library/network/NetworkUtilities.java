@@ -54,6 +54,19 @@ public class NetworkUtilities {
     private static final String TAG = "NETWORKUTILITIES";
     public static final long maxBufferSize = 4096;
 
+    public static String readUrl( String urlString ) throws Exception {
+        URL url = new URL(urlString);
+        InputStream inputStream = url.openStream();
+        BufferedReader bi = new BufferedReader(new InputStreamReader(inputStream));
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        while( (line = bi.readLine()) != null ) {
+            sb.append(line).append("\n");
+        }
+        inputStream.close();
+        return sb.toString().trim();
+    }
+
     private static HttpURLConnection makeNewConnection( String fileUrl ) throws Exception {
         // boolean doHttps =
         // CorePlugin.getDefault().getPreferenceStore().getBoolean(KeyManager.keys().getHttpConnectionTypeKey());
@@ -249,7 +262,8 @@ public class NetworkUtilities {
 
     private static String getB64Auth( String login, String pass ) {
         String source = login + ":" + pass;
-        String ret = source; //"Basic " + Base64.encodeToString(source.getBytes(), Base64.URL_SAFE | Base64.NO_WRAP);
+        String ret = source; // "Basic " + Base64.encodeToString(source.getBytes(), Base64.URL_SAFE
+                             // | Base64.NO_WRAP);
         return ret;
     }
 
