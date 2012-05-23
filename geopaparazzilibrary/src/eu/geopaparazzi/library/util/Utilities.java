@@ -21,6 +21,9 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Looper;
 import android.text.Editable;
@@ -270,6 +273,13 @@ public class Utilities {
                         }
                     }
                 }).setCancelable(false).show();
+    }
+
+    public static void ring( Context context ) {
+        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Ringtone r = RingtoneManager.getRingtone(context, notification);
+        r.play();
+
     }
 
     /**

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -36,6 +37,7 @@ import android.preference.PreferenceManager;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
+import eu.geopaparazzi.library.util.activities.PlaySoundActivity;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.geopaparazzi.library.util.debug.TestMock;
@@ -121,6 +123,16 @@ public class GpsManager implements LocationListener, Listener {
      */
     public void removeListener( GpsManagerListener listener ) {
         listeners.remove(listener);
+    }
+
+    public void addProximityAlert( Context context, double lat, double lon, float radius ) {
+
+        Intent intent = new Intent(context, PlaySoundActivity.class);
+        Bundle extras = intent.getExtras();
+        extras.putString(PlaySoundActivity.MESSAGE, "Proximity alert triggered!");
+        PendingIntent proximityIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+
+        locationManager.addProximityAlert(lat, lon, radius, -1, proximityIntent);
     }
 
     /**
