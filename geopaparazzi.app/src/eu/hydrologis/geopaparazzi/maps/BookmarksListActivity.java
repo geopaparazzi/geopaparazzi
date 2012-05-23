@@ -226,10 +226,10 @@ public class BookmarksListActivity extends ListActivity {
                                             BookmarksListActivity context = BookmarksListActivity.this;
                                             GpsManager.getInstance(context).addProximityAlert(context, bookmark.getLat(),
                                                     bookmark.getLon(), (float) radius);
+                                            finish();
                                         }
                                     });
                         }
-                        finish();
                     }
                 });
 

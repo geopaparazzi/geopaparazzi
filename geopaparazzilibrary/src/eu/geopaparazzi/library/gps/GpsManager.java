@@ -128,8 +128,7 @@ public class GpsManager implements LocationListener, Listener {
     public void addProximityAlert( Context context, double lat, double lon, float radius ) {
 
         Intent intent = new Intent(context, PlaySoundActivity.class);
-        Bundle extras = intent.getExtras();
-        extras.putString(PlaySoundActivity.MESSAGE, "Proximity alert triggered!");
+        intent.putExtra(PlaySoundActivity.MESSAGE, "Proximity alert triggered!");
         PendingIntent proximityIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
 
         locationManager.addProximityAlert(lat, lon, radius, -1, proximityIntent);
