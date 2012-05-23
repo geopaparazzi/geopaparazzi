@@ -44,7 +44,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.TextRunnable;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
@@ -150,7 +153,7 @@ public class BookmarksListActivity extends ListActivity {
 
                 final TextView bookmarkText = (TextView) rowView.findViewById(R.id.bookmarkrowtext);
                 bookmarkText.setText(bookmarksNames[position]);
-                
+
                 final ImageView renameButton = (ImageView) rowView.findViewById(R.id.renamebutton);
                 renameButton.setOnClickListener(new View.OnClickListener(){
                     public void onClick( View v ) {
@@ -198,6 +201,33 @@ public class BookmarksListActivity extends ListActivity {
                             intent.putExtra(LibraryConstants.ZOOMLEVEL, (int) bookmark.getZoom());
                             // if (getParent() == null) {
                             setResult(Activity.RESULT_OK, intent);
+                        }
+                        finish();
+                    }
+                });
+
+                final ImageView proximityButton = (ImageView) rowView.findViewById(R.id.alertbutton);
+                proximityButton.setOnClickListener(new View.OnClickListener(){
+                    public void onClick( View v ) {
+                        final Bookmark bookmark = bookmarksMap.get(bookmarkText.getText().toString());
+                        if (bookmark != null) {
+
+                            Utilities.inputMessageDialog(BookmarksListActivity.this, "Proximity Radius",
+                                    "Add proximity alert radius in meters.", "100", new TextRunnable(){
+                                        public void run() {
+                                            double radius = 100;
+                                            if (theTextToRunOn.length() > 0) {
+                                                try {
+                                                    radius = Double.parseDouble(theTextToRunOn);
+                                                } catch (Exception e) {
+                                                    // ignore and use default
+                                                }
+                                            }
+                                            BookmarksListActivity context = BookmarksListActivity.this;
+                                            GpsManager.getInstance(context).addProximityAlert(context, bookmark.getLat(),
+                                                    bookmark.getLon(), (float) radius);
+                                        }
+                                    });
                         }
                         finish();
                     }
