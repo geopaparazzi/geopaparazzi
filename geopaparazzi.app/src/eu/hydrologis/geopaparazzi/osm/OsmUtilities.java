@@ -176,7 +176,8 @@ public class OsmUtilities {
         return file;
     }
 
-    private static String osmTagsZipUrlPath = "http://geopaparazzi.googlecode.com/files/osmtags.zip";
+    private static final String osmTagsZipUrlPath = "http://geopaparazzi.googlecode.com/files/osmtags.zip";
+    private static final String osmTagsVersionUrlPath = "http://geopaparazzi.googlecode.com/hg/extras/osmtags/VERSION";
 
     /**
      * Download the osm tags archive if necessary.

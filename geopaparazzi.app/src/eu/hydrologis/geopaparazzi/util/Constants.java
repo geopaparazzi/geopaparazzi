@@ -100,7 +100,6 @@ public interface Constants {
     public static final String OSM_TAG_KEY = "OSM_TAG_KEY";
     public static final String PREFS_KEY_DOOSM = "PREFS_KEY_DOOSM";
     public static final String PREFS_KEY_OSMTAGSVERSION = "PREFS_KEY_OSMTAGSVERSION";
-    public static final String OSMTAGSVERSION_URL = "http://geopaparazzi.googlecode.com/hg/extras/osmtags/VERSION";
     
     /*
      * CLOUD
