@@ -41,6 +41,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import eu.geopaparazzi.library.util.LibraryConstants;
@@ -147,9 +148,10 @@ public class BookmarksListActivity extends ListActivity {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View rowView = inflater.inflate(R.layout.bookmark_row, null);
 
-                final TextView bookmarkText = (TextView) rowView.findViewById(R.id.bookmarkrow);
+                final TextView bookmarkText = (TextView) rowView.findViewById(R.id.bookmarkrowtext);
                 bookmarkText.setText(bookmarksNames[position]);
-                final Button renameButton = (Button) rowView.findViewById(R.id.renamebutton);
+                
+                final ImageView renameButton = (ImageView) rowView.findViewById(R.id.renamebutton);
                 renameButton.setOnClickListener(new View.OnClickListener(){
                     public void onClick( View v ) {
                         final String name = bookmarkText.getText().toString();
@@ -184,7 +186,7 @@ public class BookmarksListActivity extends ListActivity {
                     }
                 });
 
-                final Button goButton = (Button) rowView.findViewById(R.id.gobutton);
+                final ImageView goButton = (ImageView) rowView.findViewById(R.id.gobutton);
                 goButton.setOnClickListener(new View.OnClickListener(){
                     public void onClick( View v ) {
                         Bookmark bookmark = bookmarksMap.get(bookmarkText.getText().toString());

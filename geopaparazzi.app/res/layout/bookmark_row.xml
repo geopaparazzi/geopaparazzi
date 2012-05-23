@@ -1,35 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bookmarksrowlayout"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="5dip"
-    android:layout_marginTop="5dip"
+    android:layout_height="fill_parent"
     android:background="@color/white"
-    android:orientation="horizontal" >
+    android:padding="10dip" >
 
-    <Button
-        android:id="@+id/renamebutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="15dip"
-        android:text="Ab" >
-    </Button>
-
-    <Button
+    <ImageView
         android:id="@+id/gobutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="15dip"
-        android:text="->" >
-    </Button>
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:padding="5dip"
+        android:src="@drawable/ic_tab_goto_selected" />
 
     <TextView
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/bookmarkrow"
-        android:layout_width="fill_parent"
+        android:id="@+id/bookmarkrowtext"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dip"
-        android:text=""
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/alertbutton"
+        android:layout_toRightOf="@+id/gobutton"
+        android:gravity="center_vertical"
+        android:padding="5dip"
+        android:scrollHorizontally="false"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/black" />
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/renamebutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:padding="5dip"
+        android:src="@drawable/ic_tab_rename_selected" />
+
+    <ImageView
+        android:id="@+id/alertbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/renamebutton"
+        android:layout_toLeftOf="@+id/renamebutton"
+        android:padding="5dip"
+        android:src="@drawable/ic_tab_alertsign_selected" />
+
+</RelativeLayout>
