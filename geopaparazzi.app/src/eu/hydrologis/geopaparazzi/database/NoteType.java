@@ -23,15 +23,21 @@ package eu.hydrologis.geopaparazzi.database;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public enum NoteType {
-    SIMPLE(0), OSM(1);
+    POI(0, "POI"), OSM(1, "OSM");
 
     private final int num;
+    private final String def;
 
-    NoteType( int num ) {
+    NoteType( int num , String def) {
         this.num = num;
+        this.def = def;
     }
 
     public int getTypeNum() {
         return num;
+    }
+    
+    public String getDef() {
+        return def;
     }
 }

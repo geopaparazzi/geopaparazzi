@@ -77,6 +77,7 @@ public class FormActivity extends Activity {
     private String formJsonString;
     // private String formShortnameDefinition;
     private String formNameDefinition;
+    private String formCategoryDefinition;
 
     private HashMap<String, View> key2WidgetMap = new HashMap<String, View>();
     private HashMap<String, Constraints> key2ConstraintsMap = new HashMap<String, Constraints>();
@@ -98,6 +99,7 @@ public class FormActivity extends Activity {
         if (extras != null) {
             formJsonString = extras.getString(LibraryConstants.PREFS_KEY_FORM_JSON);
             formNameDefinition = extras.getString(LibraryConstants.PREFS_KEY_FORM_NAME);
+            formCategoryDefinition = extras.getString(LibraryConstants.PREFS_KEY_FORM_CAT);
             latitude = extras.getDouble(LibraryConstants.LATITUDE);
             longitude = extras.getDouble(LibraryConstants.LONGITUDE);
         }
@@ -129,7 +131,9 @@ public class FormActivity extends Activity {
                         String.valueOf(longitude), //
                                 String.valueOf(latitude), //
                                 "-1.0", //
-                                timestamp, formNameDefinition, //
+                                timestamp, //
+                                formNameDefinition, //
+                                formCategoryDefinition, //
                                 finalJsonString};
 
                         Intent intent = getIntent();

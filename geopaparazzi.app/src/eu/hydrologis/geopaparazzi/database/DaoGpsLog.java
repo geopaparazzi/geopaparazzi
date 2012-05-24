@@ -876,8 +876,8 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             try {
                 for( int i = 0; i < wayPoints.size(); i++ ) {
                     WayPoint point = wayPoints.get(i);
-                    DaoNotes.addNoteNoTransaction(point.getLongitude(), point.getLatitude(), -1.0, date, gpxName, "",
-                            NoteType.SIMPLE.getTypeNum(), sqliteDatabase);
+                    DaoNotes.addNoteNoTransaction(point.getLongitude(), point.getLatitude(), -1.0, date, gpxName,
+                            NoteType.POI.getDef(), "", NoteType.POI.getTypeNum(), sqliteDatabase);
                 }
                 sqliteDatabase.setTransactionSuccessful();
             } catch (Exception e) {

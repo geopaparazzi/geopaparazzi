@@ -51,8 +51,6 @@ public class DaoNotes {
     private static final String COLUMN_TEXT = "text";
     private static final String COLUMN_CATEGORY = "cat";
     private static final String COLUMN_FORM = "form";
-
-    public static final String POI = "POI";
     
     /**
      * The type of the note.
@@ -76,7 +74,7 @@ public class DaoNotes {
     public static void addNote( Context context, double lon, double lat, double altim, Date timestamp, String text, String category, String form,
             int type ) throws IOException {
     	if (category==null ) {
-			category = POI;
+			category = NoteType.POI.getDef();
 		}
     	
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
@@ -96,7 +94,7 @@ public class DaoNotes {
     public static void addNoteNoTransaction( double lon, double lat, double altim, Date timestamp, String text, String category, String form,
             int type, SQLiteDatabase sqliteDatabase ) {
     	if (category==null ) {
-			category = POI;
+			category = NoteType.POI.getDef();
 		}
     	
         ContentValues values = new ContentValues();
@@ -377,12 +375,56 @@ public class DaoNotes {
         String addColumnQuery = sB.toString();
 
         if (Debug.D)
-            Logger.i("DAONOTES", "Upgrading database from version 3 to version 4.");
+            Logger.i("DAONOTES", "Upgrading database from version 4 to version 5.");
 
         db.beginTransaction();
         try {
             db.execSQL(addColumnQuery);
             db.setVersion(5);
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            Logger.e("DAONOTES", e.getLocalizedMessage(), e);
+            throw new IOException(e.getLocalizedMessage());
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    public static void upgradeNotesFromDB5ToDB6( SQLiteDatabase db ) throws IOException {
+        StringBuilder sB = new StringBuilder();
+        // make sure the form column doesn't exist
+        sB = new StringBuilder();
+        sB.append("SELECT ");
+        sB.append(COLUMN_CATEGORY);
+        sB.append(" FROM ");
+        sB.append(TABLE_NOTES);
+        sB.append(";");
+        String checkColumnQuery = sB.toString();
+        try {
+            db.rawQuery(checkColumnQuery, null);
+            // if it comes to this point, the type column
+            // exists already. Nothing to do.
+            if (Debug.D)
+                Logger.i("DAONOTES", "Database already contains the category column. Skipping upgrade.");
+            return;
+        } catch (Exception e) {
+            // ignore and add column
+        }
+        
+        sB = new StringBuilder();
+        sB.append("ALTER TABLE ");
+        sB.append(TABLE_NOTES);
+        sB.append(" ADD COLUMN ");
+        sB.append(COLUMN_CATEGORY).append(" TEXT;");
+        String addColumnQuery = sB.toString();
+        
+        if (Debug.D)
+            Logger.i("DAONOTES", "Upgrading database from version 5 to version 6.");
+        
+        db.beginTransaction();
+        try {
+            db.execSQL(addColumnQuery);
+            db.setVersion(6);
             db.setTransactionSuccessful();
         } catch (Exception e) {
             Logger.e("DAONOTES", e.getLocalizedMessage(), e);
@@ -406,6 +448,7 @@ public class DaoNotes {
         sB.append(COLUMN_ALTIM).append(" REAL NOT NULL,");
         sB.append(COLUMN_TS).append(" DATE NOT NULL,");
         sB.append(COLUMN_TEXT).append(" TEXT NOT NULL, ");
+        sB.append(COLUMN_CATEGORY).append(" TEXT, ");
         sB.append(COLUMN_FORM).append(" CLOB, ");
         sB.append(COLUMN_TYPE).append(" INTEGER");
         sB.append(");");

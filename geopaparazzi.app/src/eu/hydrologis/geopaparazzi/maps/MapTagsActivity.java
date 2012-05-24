@@ -115,17 +115,10 @@ public class MapTagsActivity extends Activity {
                             Date sqlDate = new Date(System.currentTimeMillis());
                             StringBuilder sB = new StringBuilder(additionalInfoText.getText());
                             String infoString = sB.toString();
-                            String name = tagNamesArray[position];
+                            String userDefinedButtonName = tagNamesArray[position];
 
-                            TagObject tag = TagsManager.getInstance(MapTagsActivity.this).getTagFromName(name);
-                            String finalLongName = tag.longName;
-                            if (infoString.length() != 0) {
-                                String sep = ":"; //$NON-NLS-1$
-                                if (finalLongName.indexOf(sep) != -1) {
-                                    sep = " "; //$NON-NLS-1$
-                                }
-                                finalLongName = finalLongName + sep + infoString;
-                            }
+                            TagObject tag = TagsManager.getInstance(MapTagsActivity.this).getTagFromName(userDefinedButtonName);
+                            String categoryTagName = tag.longName;
 
                             if (tag.hasForm) {
                                 // launch form activity
@@ -133,14 +126,15 @@ public class MapTagsActivity extends Activity {
 
                                 Intent formIntent = new Intent(MapTagsActivity.this, FormActivity.class);
                                 formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_JSON, jsonString);
-                                formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_NAME, finalLongName); // tag.shortName);
+                                formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_NAME, infoString); // tag.shortName);
+                                formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_CAT, categoryTagName); // tag.shortName);
                                 formIntent.putExtra(LibraryConstants.LATITUDE, latitude);
                                 formIntent.putExtra(LibraryConstants.LONGITUDE, longitude);
                                 startActivityForResult(formIntent, FORM_RETURN_CODE);
                             } else {
                                 // insert as it is
-                                DaoNotes.addNote(getContext(), longitude, latitude, -1.0, sqlDate, finalLongName, 	null,
-                                        NoteType.SIMPLE.getTypeNum());
+                                DaoNotes.addNote(getContext(), longitude, latitude, -1.0, sqlDate, categoryTagName,
+                                        NoteType.POI.getDef(), null, NoteType.POI.getTypeNum());
                                 finish();
                             }
                         } catch (Exception e) {
@@ -170,9 +164,13 @@ public class MapTagsActivity extends Activity {
                         double lon = Double.parseDouble(formArray[0]);
                         double lat = Double.parseDouble(formArray[1]);
                         double elev = Double.parseDouble(formArray[2]);
-                        java.util.Date date = LibraryConstants.TIME_FORMATTER_SQLITE.parse(formArray[3]);
-                        DaoNotes.addNote(this, lon, lat, elev, new Date(date.getTime()), formArray[4], formArray[5],
-                                NoteType.SIMPLE.getTypeNum());
+                        String dateStr = formArray[3];
+                        String nameStr = formArray[4];
+                        String catStr = formArray[5];
+                        String jsonStr = formArray[6];
+                        java.util.Date date = LibraryConstants.TIME_FORMATTER_SQLITE.parse(dateStr);
+                        DaoNotes.addNote(this, lon, lat, elev, new Date(date.getTime()), nameStr, catStr, jsonStr,
+                                NoteType.POI.getTypeNum());
                     } catch (Exception e) {
                         e.printStackTrace();
                         Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
@@ -190,8 +188,8 @@ public class MapTagsActivity extends Activity {
                         double lat = Double.parseDouble(noteArray[1]);
                         double elev = Double.parseDouble(noteArray[2]);
                         java.util.Date date = LibraryConstants.TIME_FORMATTER.parse(noteArray[3]);
-                        DaoNotes.addNote(this, lon, lat, elev, new Date(date.getTime()), noteArray[4], null,
-                                NoteType.SIMPLE.getTypeNum());
+                        DaoNotes.addNote(this, lon, lat, elev, new Date(date.getTime()), noteArray[4], NoteType.POI.getDef(),
+                                null, NoteType.POI.getTypeNum());
                     } catch (Exception e) {
                         e.printStackTrace();
 

@@ -35,7 +35,7 @@ import eu.geopaparazzi.library.util.debug.Logger;
 @SuppressWarnings("nls")
 public class DatabaseManager {
 
-    public static final int DATABASE_VERSION = 5;
+    public static final int DATABASE_VERSION = 6;
 
     public static final String DEBUG_TAG = "DATABASEMANAGER";
 
@@ -181,6 +181,9 @@ public class DatabaseManager {
             }
             if (oldDbVersion <= 4) {
                 DaoNotes.upgradeNotesFromDB4ToDB5(db);
+            }
+            if (oldDbVersion <= 5) {
+                DaoNotes.upgradeNotesFromDB5ToDB6(db);
             }
             db.beginTransaction();
             try {

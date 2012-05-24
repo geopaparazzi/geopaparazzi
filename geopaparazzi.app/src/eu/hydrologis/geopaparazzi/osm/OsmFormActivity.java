@@ -147,7 +147,7 @@ public class OsmFormActivity extends Activity {
                         endString = jsonFormObject.toString();
                         Date sqlDate = new Date(System.currentTimeMillis());
                         DaoNotes.addNote(OsmFormActivity.this, longitude, latitude, -1.0, sqlDate, formLongnameDefinition,
-                                endString, NoteType.OSM.getTypeNum());
+                                NoteType.OSM.getDef(), endString, NoteType.OSM.getTypeNum());
                         finish();
                     } else {
                         AlertDialog.Builder builder = new AlertDialog.Builder(OsmFormActivity.this);

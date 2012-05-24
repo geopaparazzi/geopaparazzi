@@ -189,6 +189,11 @@ public interface LibraryConstants {
     public static final String PREFS_KEY_FORM_NAME = "PREFS_KEY_FORM_NAME"; //$NON-NLS-1$
 
     /**
+     * Key used to define a form category that is passed through any workflow. 
+     */
+    public static final String PREFS_KEY_FORM_CAT = "PREFS_KEY_FORM_CAT"; //$NON-NLS-1$
+
+    /**
      * Key used to define a user name that is passed through any workflow. 
      */
     public static final String PREFS_KEY_USER = "PREFS_KEY_USER"; //$NON-NLS-1$
