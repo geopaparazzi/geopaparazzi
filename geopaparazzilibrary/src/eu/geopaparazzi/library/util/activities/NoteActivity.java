@@ -92,7 +92,10 @@ public class NoteActivity extends Activity {
                             String.valueOf(latitude), //
                             String.valueOf(elevation), //
                             sqlDateString, //
-                            noteString};
+                            noteString,//
+                            "POI", // note category
+                            "" // form
+                            };
 
                     Intent intent = getIntent();
                     intent.putExtra(LibraryConstants.PREFS_KEY_NOTE, noteArray);

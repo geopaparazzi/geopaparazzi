@@ -133,8 +133,8 @@ public class MapTagsActivity extends Activity {
                                 startActivityForResult(formIntent, FORM_RETURN_CODE);
                             } else {
                                 // insert as it is
-                                DaoNotes.addNote(getContext(), longitude, latitude, -1.0, sqlDate, categoryTagName,
-                                        NoteType.POI.getDef(), null, NoteType.POI.getTypeNum());
+                                DaoNotes.addNote(getContext(), longitude, latitude, -1.0, sqlDate,infoString,
+                                        categoryTagName, null, NoteType.POI.getTypeNum());
                                 finish();
                             }
                         } catch (Exception e) {
@@ -188,8 +188,8 @@ public class MapTagsActivity extends Activity {
                         double lat = Double.parseDouble(noteArray[1]);
                         double elev = Double.parseDouble(noteArray[2]);
                         java.util.Date date = LibraryConstants.TIME_FORMATTER.parse(noteArray[3]);
-                        DaoNotes.addNote(this, lon, lat, elev, new Date(date.getTime()), noteArray[4], NoteType.POI.getDef(),
-                                null, NoteType.POI.getTypeNum());
+                        DaoNotes.addNote(this, lon, lat, elev, new Date(date.getTime()), noteArray[4], noteArray[5],
+                                noteArray[6], NoteType.POI.getTypeNum());
                     } catch (Exception e) {
                         e.printStackTrace();
 
