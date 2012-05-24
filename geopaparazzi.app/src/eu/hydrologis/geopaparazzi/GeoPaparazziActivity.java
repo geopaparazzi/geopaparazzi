@@ -132,7 +132,7 @@ public class GeoPaparazziActivity extends Activity {
                     return filename.endsWith(".mapurl");
                 }
             });
-            
+
             Arrays.sort(mapFiles);
 
             int i = 1004;
@@ -608,8 +608,8 @@ public class GeoPaparazziActivity extends Activity {
                         double lat = Double.parseDouble(noteArray[1]);
                         double elev = Double.parseDouble(noteArray[2]);
                         Date date = LibraryConstants.TIME_FORMATTER.parse(noteArray[3]);
-                        DaoNotes.addNote(this, lon, lat, elev, new java.sql.Date(date.getTime()), noteArray[4], null,
-                                NoteType.SIMPLE.getTypeNum());
+                        DaoNotes.addNote(this, lon, lat, elev, new java.sql.Date(date.getTime()), noteArray[4], DaoNotes.POI,
+                                null, NoteType.SIMPLE.getTypeNum());
                     } catch (Exception e) {
                         e.printStackTrace();
                         Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);

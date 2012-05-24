@@ -38,6 +38,7 @@ public class Note implements KmlRepresenter, GpxRepresenter {
     private final double lon;
     private final double lat;
     private final double altim;
+    private final String category;
     private final String form;
     private final int type;
 
@@ -53,7 +54,7 @@ public class Note implements KmlRepresenter, GpxRepresenter {
      * @param form the form.
      * @param type 
      */
-    public Note( long id, String name, String description, double lon, double lat, double altim, String form, int type ) {
+    public Note( long id, String name, String description, double lon, double lat, double altim, String category, String form, int type ) {
         this.id = id;
         if (name != null) {
             this.name = name;
@@ -64,6 +65,11 @@ public class Note implements KmlRepresenter, GpxRepresenter {
             this.description = description;
         } else {
             this.description = ""; //$NON-NLS-1$
+        }
+        if (category != null) {
+        	this.category = category;
+        } else {
+        	this.category = ""; //$NON-NLS-1$
         }
         this.lon = lon;
         this.lat = lat;
@@ -99,6 +105,10 @@ public class Note implements KmlRepresenter, GpxRepresenter {
     public String getForm() {
         return form;
     }
+    
+    public String getCategory() {
+		return category;
+	}
 
     public int getType() {
         return type;
@@ -109,7 +119,7 @@ public class Note implements KmlRepresenter, GpxRepresenter {
         StringBuilder sB = new StringBuilder();
         sB.append("<Placemark>\n");
         sB.append("<styleUrl>#red-pushpin</styleUrl>\n");
-        sB.append("<name>").append(name).append("</name>\n");
+        sB.append("<name>").append(name).append(" (").append(category).append(")").append("</name>\n");
         sB.append("<description>\n");
         sB.append("<![CDATA[\n");
         String descr = description.replaceAll("\n", "</BR></BR>");
