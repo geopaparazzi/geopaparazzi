@@ -139,8 +139,9 @@ public class MapTagsActivity extends Activity {
                                 startActivityForResult(formIntent, FORM_RETURN_CODE);
                             } else {
                                 // insert as it is
-                                DaoNotes.addNote(getContext(), longitude, latitude, -1.0, sqlDate, finalLongName, null,
+                                DaoNotes.addNote(getContext(), longitude, latitude, -1.0, sqlDate, finalLongName, 	null,
                                         NoteType.SIMPLE.getTypeNum());
+                                finish();
                             }
                         } catch (Exception e) {
                             Logger.e(this, e.getLocalizedMessage(), e);
