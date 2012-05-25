@@ -156,7 +156,6 @@ public class DatabaseManager {
             // CREATE TABLES
             DaoNotes.createTables(context);
             DaoGpsLog.createTables(context);
-            DaoMaps.createTables(context);
             DaoBookmarks.createTables(context);
             DaoImages.createTables(context);
         }

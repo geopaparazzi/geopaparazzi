@@ -439,7 +439,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
             /* images */
             if (DataManager.getInstance().areImagesVisible()) {
-                Drawable imageMarker = getResources().getDrawable(R.drawable.image);
+                Drawable imageMarker = getResources().getDrawable(R.drawable.photo);
                 Drawable newImageMarker = ArrayGeopaparazziOverlay.boundCenter(imageMarker);
                 List<OverlayItem> imagesOverlaysList = DaoImages.getImagesOverlayList(this, newImageMarker);
                 dataOverlay.addItems(imagesOverlaysList);
@@ -447,7 +447,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
             /* gps notes */
             if (DataManager.getInstance().areNotesVisible()) {
-                Drawable notesMarker = getResources().getDrawable(R.drawable.goto_position);
+                Drawable notesMarker = getResources().getDrawable(R.drawable.information);
                 Drawable newNotesMarker = ArrayGeopaparazziOverlay.boundCenter(notesMarker);
                 List<OverlayItem> noteOverlaysList = DaoNotes.getNoteOverlaysList(this, newNotesMarker);
                 dataOverlay.addItems(noteOverlaysList);
