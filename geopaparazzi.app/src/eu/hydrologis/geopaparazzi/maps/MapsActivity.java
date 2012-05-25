@@ -440,8 +440,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
     public boolean onTouch( View v, MotionEvent event ) {
         int action = event.getAction();
-        Logger.d(this, "onTouch issued with motionevent: " + action);
         if (Debug.D) {
+            Logger.d(this, "onTouch issued with motionevent: " + action);
         }
         if (action == MotionEvent.ACTION_UP) {
             saveCenterPref();
