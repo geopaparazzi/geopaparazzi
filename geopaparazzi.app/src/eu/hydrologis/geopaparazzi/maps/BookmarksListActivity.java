@@ -101,9 +101,6 @@ public class BookmarksListActivity extends ListActivity {
                 bookmarksNames[index] = name;
                 index++;
             }
-            if (bookmarksList.size() == 0) {
-                bookmarksNames = new String[]{getResources().getString(R.string.bookmarks_list_noavailable)};
-            }
         } catch (IOException e) {
             Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
@@ -132,9 +129,6 @@ public class BookmarksListActivity extends ListActivity {
             }
 
             bookmarksNames = namesList.toArray(new String[0]);
-            if (bookmarksList.size() == 0) {
-                bookmarksNames = new String[]{getResources().getString(R.string.bookmarks_list_noavailable)};
-            }
         } catch (IOException e) {
             Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();

@@ -189,7 +189,8 @@ public class OsmUtilities {
     public static void handleOsmTagsDownload( final Activity activity ) {
 
         if (!NetworkUtilities.isNetworkAvailable(activity)) {
-            Utilities.messageDialog(activity, activity.getString(R.string.available_only_with_network), null);
+            Utilities
+                    .messageDialog(activity, "It is possible to download OSM tags only with an active internet connection", null);
             return;
         }
 
