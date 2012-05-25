@@ -35,6 +35,7 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.CompressionUtilities;
+import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.debug.Debug;
@@ -42,6 +43,7 @@ import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
+import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Note;
 
 /**
@@ -186,16 +188,39 @@ public class OsmUtilities {
      */
     public static void handleOsmTagsDownload( final Activity activity ) {
 
+        if (!NetworkUtilities.isNetworkAvailable(activity)) {
+            Utilities.messageDialog(activity, activity.getString(R.string.available_only_with_network), null);
+            return;
+        }
+
+        boolean doTagsDownload = false;
+        final int[] onlineVersion = new int[]{0};
+        try {
+            String versionString = NetworkUtilities.readUrl(osmTagsVersionUrlPath);
+            onlineVersion[0] = Integer.parseInt(versionString);
+
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
+            int currentOsmVersion = preferences.getInt(Constants.PREFS_KEY_OSMTAGSVERSION, -1);
+
+            if (currentOsmVersion < onlineVersion[0]) {
+                doTagsDownload = true;
+            }
+
+        } catch (Exception e2) {
+            e2.printStackTrace();
+        }
+
         try {
             String[] tagCategories = OsmTagsManager.getInstance().getTagCategories(activity);
-            if (tagCategories != null) {
+            if (tagCategories != null && !doTagsDownload) {
                 return;
             }
         } catch (Exception e1) {
             e1.printStackTrace();
         }
 
-        new AlertDialog.Builder(activity).setTitle("OSM tags").setMessage("Do you want to download the OSM tags?")
+        new AlertDialog.Builder(activity).setTitle("OSM tags")
+                .setMessage("Do you want to download the OSM tags of version " + onlineVersion[0] + "?")
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
@@ -207,12 +232,15 @@ public class OsmUtilities {
                         File osmFolderFile = new File(parentFile, "osmtags");
 
                         if (osmFolderFile.exists() && osmFolderFile.isDirectory()) {
-                            Utilities
-                                    .messageDialog(
-                                            activity,
-                                            "An osm tags folder already exists. Please remove the folder before trying to download the tags.",
-                                            null);
-                            return;
+                            boolean deleteFileOrDir = FileUtilities.deleteFileOrDir(osmFolderFile);
+                            if (!deleteFileOrDir) {
+                                Utilities
+                                        .messageDialog(
+                                                activity,
+                                                "An osm tags folder already exists and it was not possible to remove it. Please remove the folder manually before downloading the new tags.",
+                                                null);
+                                return;
+                            }
                         }
 
                         if (!NetworkUtilities.isNetworkAvailable(activity)) {
@@ -237,6 +265,11 @@ public class OsmUtilities {
                                 try {
                                     CompressionUtilities.unzipFolder(osmZipFile.getAbsolutePath(), parentFile.getAbsolutePath(),
                                             true);
+
+                                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
+                                    Editor editor = preferences.edit();
+                                    editor.putInt(Constants.PREFS_KEY_OSMTAGSVERSION, onlineVersion[0]);
+                                    editor.commit();
                                 } catch (IOException e) {
                                     Utilities.messageDialog(activity,
                                             "An error occurred while unzipping the OSM tags to the device.", null);

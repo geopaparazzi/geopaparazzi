@@ -55,6 +55,7 @@ import android.widget.Toast;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.gps.GpsLocation;
 import eu.geopaparazzi.library.gps.GpsManager;
+import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.sensors.SensorsManager;
 import eu.geopaparazzi.library.sms.SmsUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
