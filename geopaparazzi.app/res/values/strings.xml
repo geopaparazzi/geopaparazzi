@@ -225,7 +225,7 @@
     <string name="maptagsactivity_error_reading_tags">Error in reading tags</string>
 
 	<!-- added after 2.3.1 -->
-    <string name="mapsactivity_menu_toggle_compass">toggle compass</string>
+    <string name="mapsactivity_menu_toggle_compass">open compass</string>
     
 	<!-- added after 2.4.3 -->
     <string name="imagesvisibilityToggle">Toggle images visibility</string>
