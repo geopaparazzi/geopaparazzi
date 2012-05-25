@@ -61,15 +61,6 @@
                         android:textStyle="bold" >
                     </Button>
 
-                    <eu.hydrologis.geopaparazzi.util.VerticalSeekBar
-                        android:id="@+id/ZoomBar"
-                        android:layout_width="26dip"
-                        android:layout_height="fill_parent"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_weight="1"
-                        android:progressDrawable="@drawable/progress_vertical"
-                        android:thumb="@drawable/seek_thumb" />
-
                     <Button
                         android:id="@+id/zoomout"
                         android:layout_width="wrap_content"

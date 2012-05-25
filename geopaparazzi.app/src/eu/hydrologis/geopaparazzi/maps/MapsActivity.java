@@ -99,7 +99,6 @@ import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.MixareUtilities;
 import eu.hydrologis.geopaparazzi.util.Note;
-import eu.hydrologis.geopaparazzi.util.VerticalSeekBar;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
@@ -119,7 +118,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     private DecimalFormat formatter = new DecimalFormat("00"); //$NON-NLS-1$
     private Button zoomInButton;
     private Button zoomOutButton;
-    private VerticalSeekBar zoomBar;
     private SlidingDrawer slidingDrawer;
     private boolean sliderIsOpen;
     private boolean osmSliderIsOpen;
@@ -247,29 +245,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         GeoPoint geoPoint = new GeoPoint(mapCenterLocation[1], mapCenterLocation[0]);
         mapView.getController().setZoom((int) mapCenterLocation[2]);
         mapView.getController().setCenter(geoPoint);
-
-        // zoom bar
-        zoomBar = (VerticalSeekBar) findViewById(R.id.ZoomBar);
-        zoomBar.setMax(maxZoomLevel);
-        zoomBar.setProgress((int) mapCenterLocation[2]);
-        zoomBar.setOnSeekBarChangeListener(new VerticalSeekBar.OnSeekBarChangeListener(){
-            private int progress = (int) mapCenterLocation[2];
-            public void onStopTrackingTouch( VerticalSeekBar seekBar ) {
-                setZoomGuiText(progress);
-                mapView.getController().setZoom(progress);
-                inalidateMap();
-                //                Logger.d(this, "Zoomed to: " + progress); //$NON-NLS-1$
-            }
-
-            public void onStartTrackingTouch( VerticalSeekBar seekBar ) {
-
-            }
-
-            public void onProgressChanged( VerticalSeekBar seekBar, int progress, boolean fromUser ) {
-                this.progress = progress;
-                setZoomGuiText(progress);
-            }
-        });
 
         int zoomInLevel = (int) mapCenterLocation[2] + 1;
         if (zoomInLevel > maxZoomLevel) {
@@ -464,8 +439,31 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     }
 
     public boolean onTouch( View v, MotionEvent event ) {
-        if (event.getAction() == MotionEvent.ACTION_UP) {
+        int action = event.getAction();
+        Logger.d(this, "onTouch issued with motionevent: " + action);
+        if (Debug.D) {
+        }
+        if (action == MotionEvent.ACTION_UP) {
             saveCenterPref();
+            
+            // update zoom ui a bit later. This is ugly but
+            // found no way until there is not event handling 
+            // in mapsforge
+            new Thread(new Runnable(){
+                public void run() {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    runOnUiThread(new Runnable(){
+                        public void run() {
+                            int zoom = mapView.getMapPosition().getZoomLevel();
+                            setZoomGuiText(zoom);
+                        }
+                    });
+                }
+            }).start();
         }
         return false;
     }
@@ -708,7 +706,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         }
         zoomInButton.setText(formatter.format(zoomInLevel));
         zoomOutButton.setText(formatter.format(zoomOutLevel));
-        zoomBar.setProgress(newZoom);
     }
 
     public void setNewCenter( double lon, double lat, boolean drawIcon ) {
