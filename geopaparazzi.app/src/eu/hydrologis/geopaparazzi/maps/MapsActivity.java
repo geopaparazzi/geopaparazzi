@@ -784,8 +784,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 // "This operation works only for file based data maps", null);
             }
             controller.setCenter(mapCenter);
-            int middle = (maxZoomLevel - minZoomLevel) / 2 + minZoomLevel;
-            controller.setZoom(middle);
+            controller.setZoom(minZoomLevel);
             saveCenterPref();
             return true;
         }
