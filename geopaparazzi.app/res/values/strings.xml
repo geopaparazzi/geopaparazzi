@@ -1,66 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="cancel">cancel</string>
     <string name="yes">yes</string>
     <string name="no">no</string>
-    <string name="meters">meters</string>
     
     <string name="app_name">GeoPaparazzi</string>
 
     <string name="notesvisibilityToggle">Toggle notes visibility.</string>
-    <string name="gpslogsvisibilityToggle">Toggle gps logs visibility.</string>
 
     <string name="kmlsaved">Data successfully exported to: </string>
     <string name="kmlnonsaved">An error occurred during the data export!</string>
-    <string name="gpxnonsaved">An error occurred while converting to gpx!</string>
-    <string name="imagesaved">Image successfully saved!</string>
-    <string name="imagenonsaved">An error occurred while saving the image!</string>
     <string name="loggingoff">Stopped all sensors.</string>
-    <string name="loggingon">Started gps and sensor logging.</string>
     
     <string name="nogps_data">No gps data available yet!</string>
     
     <string name="about">about</string>
     <string name="exit">exit</string>
-    <string name="cantclose_gpslog">ERROR: couldn\'t close gps log!</string>
-    <string name="gpslogthread_interrupted">ERROR: gps log thread interrupted!</string>
     <string name="utctime">time: </string>
     <string name="altim">altim: </string>
     <string name="lat">lat: </string>
     <string name="lon">lon: </string>
     <string name="azimuth">azimuth: </string>
-    <string name="log_points">points: </string>
-    <string name="log_distance">distance: </string>
-    <string name="satellite_num">satellites: </string>
     
-	<string name="osmview">osmview</string>
-	<string name="googleview">googleview</string>
-	<string name="zoomin">zoom in</string>
-	<string name="zoomout">zoom out</string>
-	<string name="centerongps">center on gps</string>
-	<string name="nogpscoordinate">The gps didn\'t send any coordinate yet. Try again in a minute.</string>
-	<string name="saveimg">Saving tile to disk</string>
 	<string name="goto_coordinate">go to coordinate</string>
-	<string name="address">Address</string>
-	<string name="askaddress">Or use an address if you are connected to internet</string>
-	<string name="emptyaddress">Please insert an address.</string>
-	<string name="cantretrievefromaddress">Could not retrieve the location from the supplied address.</string>
 	<string name="prompt_gpsenable">Your gps is disabled! Would you like to enable it?</string>
-	<string name="nogps4google">The gps didn\'t supply any position yet. Can\'t Visualize any position on map.</string>
 	<string name="width_label">width</string>
 	<string name="color_label">color</string>
-	<string name="distance">Distance [m]</string>
 
 	<string name="mainmenu_kmlexport">export</string>
 	<string name="mainmenu_import">import</string>
-	<string name="mainmenu_gpxconvert">import gpx</string>
 	<string name="mainmenu_gpsdataselect">gps data list</string>
-	<string name="mainmenu_mapdataselect">map data list</string>
-	<string name="mainmenu_togglemeasure">toggle measure mode</string>
 	<string name="mainmenu_preferences">preferences</string>
 	<string name="mainmenu_merge">merge selected logs</string>
-	<string name="mainmenu_addtags">add note by tag</string>
-	<string name="mainmenu_removelastnote">remove last note</string>
 
 	<string name="gpslogproperty">Properties for: </string>
 	<string name="gpslog_chart">Chart the log</string>
@@ -74,45 +44,21 @@
 	<string name="gps_preferences">Gps preferences</string>
 	<string name="gps_logging_distance">Min gps logging distance</string>
 	<string name="gps_logging_interval">Min gps logging interval</string>
-	<string name="gps_native_settings">Gps page</string>
-	<string name="gps_logging_on">Gps is logging</string>
-	<string name="gps_logging_off">Gps is not logging</string>
-	<string name="mapping_preferences">Mapping preferences</string>
-	<string name="osm_folder">OSM cache folder to use</string>
-	<string name="gpx_lines_folder">GPX lines folder</string>
-	<string name="gpx_points_folder">GPX points folder</string>
 	<string name="sms_preferences">Sms preferences</string>
-	<string name="sms_sending">Sms sending</string>
-	<string name="sms_sending_interval">Sending interval</string>
-	<string name="sms_catching">Sms catching</string>
-	<string name="sms_number">Phone number for automatic sms sending</string>
 	<string name="sms_catcher">Enable sms catcher</string>
-	<string name="sms_type">Use OGC geosms instead of OSM based</string>
 
-	<string name="database_preferences">Database preferences</string>
-	<string name="database_new">Create a new database on restart</string>
 	<string name="databaseError">An error occurred while connecting to the database</string>
 
 	<string name="chart_profile_view">Profile View</string>
 
-	<string name="gpx_import_title">Line or Point?</string>
-	<string name="gpx_import_message">Choose whether the file is to be imported as points or lines.</string>
-	<string name="gpx_import_checkbox_message">Force import as line?</string>
 	<string name="gpx_import_processing">Importing gpx…</string>
 
 	<string name="osm_additionalinfo">Add info to tag</string>
 	<string name="osm_tagsgrid">Choose a tag to insert</string>
 	
-	<string name="measureinfo">Last measurement info</string>
-	<string name="measureinfo_first">First point</string>
-	<string name="measureinfo_last">Last point</string>
-	
 	<string name="text_show_position_on_map">map view</string>
-    <string name="text_start_gps_logging">start logging</string>
-    <string name="text_stop_gps_logging">stop logging</string>
     <string name="text_take_a_gps_note">take note</string>
     <string name="text_undo_a_gps_note">undo note</string>
-    <string name="text_take_picture">take picture</string>
 
 	<string name="abouttext">
 	    GeoPaparazzi VERSION\n
@@ -135,19 +81,15 @@
 	    http://www.londatiga.net\n
 	</string>
 	
-	<string name="no_maps_in_list">There are no maps in the list. To import maps, use the import gpx function from the menu.</string>
-	
 	<string name="gps_log">gps log</string>
 	<string name="gps_log_name">Insert a gps log name or accept the default one</string>
 	
-	<string name="text_take_audio">record audio</string>
 	<string name="audio_recording">Recording audio… push here to stop</string>
 	<string name="audio_recording_stop">stop</string>
 
 	<string name="panic">panic!</string>
 	<string name="panic_number">Panic number</string>
 	<string name="panic_number_notset">No valid panic number seems to be available. Did you set it in the preferences?</string>
-	<string name="panic_for_real">Are you sure you want to send out a position update?</string>
 
 	<string name="panic_upper">  PANIC!  </string>
 	<string name="send_status_update">send position</string>
@@ -166,48 +108,29 @@
     <string name="gpslogging_only">This function is available only when the gps is active and a signal is avaliable.</string>
     <string name="remove_last_note_prompt">Do you really want to remove the last text note? This can\'t be undone.</string>
     
-    <string name="export_for_real">Export data?</string>
-
     <string name="installgpsstatus_title">Install GPS Status</string>
     <string name="installgpsstatus_message">Geopaparazzi uses the Gps Status Application as compass and gps info view. Do you want to install it?</string>
 	
-	<!-- added after 2.1.1 -->
-    <string name="rendering_preferences">Rendering preferences</string>
-    <string name="decimation_combo_label">Decimation factor</string>
 
 	<!-- added after 2.1.2 -->
     <string name="reset">new project</string>
-    <string name="reset_prompt">Rename the project and start on a new one?</string>
     <string name="load">load an existing project</string>
     <string name="phonenumber_hint">Enter comma separated phone numbers…</string>
     <string name="pick_phonenumber_label">…</string>
 
 	<!-- added after 2.1.4 -->
-    <string name="labels_preferences">Labels preferences</string>
-    <string name="labels_zoom1">Zoom level 1</string>
-    <string name="labels_length_zoom1">Labels length for level 1</string>
-    <string name="labels_zoom2">Zoom level 2</string>
-    <string name="labels_length_zoom2">Labels length for level 2</string>
-
     <string name="select_all">Select all</string>
     <string name="unselect_all">Unselect all</string>
 
-    <string name="delete_visible_notes">delete visible notes</string>
     <string name="delete_visible_notes_title">DELETE NOTES</string>
     <string name="delete_visible_notes_prompt">Do you really want to remove all visible notes? This can\'t be undone.</string>
-    <string name="delete_visible_bookmarks">delete visible bookmarks</string>
     <string name="delete_visible_bookmarks_title">DELETE BOOKMARKS</string>
     <string name="delete_visible_bookmarks_prompt">Do you really want to remove all visible bookmarks? This can\'t be undone.</string>
 
-    <string name="mainmenu_addbookmark">add a bookmark</string>
-    <string name="mainmenu_bookmarks">bookmarks</string>
-
     <string name="gps_searching_fix">Gps is trying to acquire fix.</string>
 
-    <string name="bookmarks_list_noavailable">No bookmarks available</string>
     <string name="bookmarks_list_rename">Rename the bookmark</string>
 
-    <string name="mapsactivity_menu_toggle_minimap">toggle minimap</string>
     <string name="mapsactivity_menu_toggle_scalebar">toggle scalebar</string>
     <string name="mapsactivity_menu_tilesource">tile source</string>
     
@@ -230,7 +153,6 @@
     
 	<!-- added after 2.5.0 -->
     <string name="an_error_occurred_while_creating_the_chart_">An error occurred while creating the chart.</string>
-    <string name="no_osm_categories_available">No OSM categories available</string>
     <string name="osm_preferences">OpenStreetMap Preferences</string>
     <string name="osm_do_it">Enable OSM tools</string>
     <string name="osm_user_label">Username</string>
@@ -248,10 +170,6 @@
     <string name="error_osm_server">An error occurred while connecting to the OSM server. Please check your login and password. It is also possible that the OSM server is not available.</string>
     <string name="check_valid_field">Please check that the field \"{0}\" is valid.</string>
     <string name="view_in_mixare">view in mixare</string>
-    <string name="add_message">ADD MESSAGE</string>
-    <string name="insert_an_optional_text_to_send_with_the_geosms">Insert an optional text to send with the GeoSMS</string>
-    <string name="enter_a_name_for_the_new_project">Enter a name for the new project</string>
-    <string name="chosen_project_exists">The chosen project name already exists, please chose another name</string>
     <string name="gps_use_coarse">Use network based position instead of gps (needs restart)</string>
     <string name="type_to_filter">type to filter</string>
     <string name="geopapcloud_preferences">Geopap-Cloud Preferences</string>
@@ -260,16 +178,13 @@
     <string name="geopapcloud_server_label">Server to connect to</string>
 
     <string name="exporting_data">Exporting data</string>
-    <string name="importing_data">Importing data</string>
     <string name="error_set_cloud_settings">The geopap-cloud preferences are not set properly. Please check your settings.</string>
     <string name="exporting_data_to_the_cloud">Exporting data to the cloud.</string>
     <string name="error_uploadig_project_to_cloud">An error occurred while uploading the project to the Geopap-cloud</string>
     <string name="project_succesfully_uploaded_to_cloud">The project has been succesfully uploaded to the Geopap-cloud</string>
     <string name="exporting_data_to_kmz">Exporting data to KMZ.</string>
     <string name="exporting_data_to_gpx">Exporting data to GPX</string>
-    <string name="importing_data_from_gpx">Importing data from GPX</string>
     <string name="media_upload">MEDIA UPLOAD</string>
-    <string name="also_upload_images_in_the_project">Do you also want to upload the images in the project?</string>
     <string name="osm_insert_a_changeset_description">Insert a changeset description</string>
     <string name="set_description">Set description</string>
     <string name="loaded_project_in">Loaded project in:</string>
