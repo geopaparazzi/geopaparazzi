@@ -189,4 +189,9 @@
     <string name="set_description">Set description</string>
     <string name="loaded_project_in">Loaded project in:</string>
     <string name="no_sdcard_use_internal_memory">No sdcard seems to be available (check if it is not mounted on a PC). Do you want to use the device\'s internal memory instead? Please note that in this case the map view will not show any map for space reasons.</string>
+    
+    <string name="add_message">ADD MESSAGE</string>
+    <string name="insert_an_optional_text_to_send_with_the_geosms">Insert an optional text to send with the GeoSMS</string>
+    <string name="enter_a_name_for_the_new_project">Enter a name for the new project</string>
+    <string name="chosen_project_exists">The chosen project name already exists, please chose another name</string>
 </resources>
