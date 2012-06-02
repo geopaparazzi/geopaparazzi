@@ -56,10 +56,23 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginBottom="5dip"
-                        android:background="@drawable/buttoncircle"
-                        android:text="01"
-                        android:textStyle="bold" >
+                        android:background="@drawable/buttoncirclezoomin" >
                     </Button>
+
+                    <TextView
+                        android:id="@+id/zoomlevel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="5dip"
+                        android:shadowColor="@color/white"
+                        android:shadowDx="2"
+                        android:shadowDy="2"
+                        android:shadowRadius="0.01"
+                        android:text="01"
+                        android:textColor="@color/black"
+                        android:textStyle="bold" >
+                    </TextView>
 
                     <Button
                         android:id="@+id/zoomout"
@@ -68,9 +81,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginBottom="5dip"
                         android:layout_marginTop="3dip"
-                        android:background="@drawable/buttoncircle"
-                        android:text="17"
-                        android:textStyle="bold" >
+                        android:background="@drawable/buttoncirclezoomout" >
                     </Button>
                 </LinearLayout>
                 <!-- the tools buttons -->
@@ -103,13 +114,15 @@
                             android:background="@drawable/deletenote" >
                         </ImageButton>
 
-                       <!-- <ImageButton
+                        <!--
+                        <ImageButton
                             android:id="@+id/togglemeasuremodebutton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="5dip"
                             android:background="@drawable/measuremode" >
-                        </ImageButton> -->
+                        </ImageButton>
+                        -->
                     </LinearLayout>
 
                     <LinearLayout
@@ -189,9 +202,9 @@
                     android:id="@+id/osmcategoriesview"
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
+                    android:layout_weight="1"
                     android:horizontalSpacing="5dp"
                     android:numColumns="1"
-                    android:layout_weight="1"
                     android:verticalSpacing="5dp" />
 
                 <Button

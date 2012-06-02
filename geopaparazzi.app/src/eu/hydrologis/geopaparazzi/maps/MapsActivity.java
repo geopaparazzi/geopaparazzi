@@ -70,6 +70,7 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.SlidingDrawer;
 import android.widget.Toast;
@@ -119,8 +120,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     private static final int MENU_COMPASS_ID = 8;
 
     private DecimalFormat formatter = new DecimalFormat("00"); //$NON-NLS-1$
-    private Button zoomInButton;
-    private Button zoomOutButton;
     private SlidingDrawer slidingDrawer;
     private boolean sliderIsOpen;
     private boolean osmSliderIsOpen;
@@ -132,6 +131,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     private boolean doOsm;
 
     private ArrayGeopaparazziOverlay dataOverlay;
+    private Button zoomInButton;
+    private Button zoomOutButton;
 
     public static MapGenerator createMapGenerator( MapGeneratorInternal mapGeneratorInternal ) {
         switch( mapGeneratorInternal ) {
@@ -268,22 +269,25 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             zoomOutLevel = minZoomLevel;
         }
         zoomInButton = (Button) findViewById(R.id.zoomin);
-        zoomInButton.setText(formatter.format(zoomInLevel));
         zoomInButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                String text = zoomInButton.getText().toString();
-                int newZoom = Integer.parseInt(text);
+                String text = zoomLevelText.getText().toString();
+                int currentZoom = Integer.parseInt(text);
+                int newZoom = currentZoom + 1;
                 setZoomGuiText(newZoom);
                 mapView.getController().setZoom(newZoom);
                 inalidateMap();
             }
         });
+
+        zoomLevelText = (TextView) findViewById(R.id.zoomlevel);
+
         zoomOutButton = (Button) findViewById(R.id.zoomout);
-        zoomOutButton.setText(formatter.format(zoomOutLevel));
         zoomOutButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                String text = zoomOutButton.getText().toString();
-                int newZoom = Integer.parseInt(text);
+                String text = zoomLevelText.getText().toString();
+                int currentZoom = Integer.parseInt(text);
+                int newZoom = currentZoom - 1;
                 setZoomGuiText(newZoom);
                 mapView.getController().setZoom(newZoom);
                 inalidateMap();
@@ -709,16 +713,13 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     // }
 
     private void setZoomGuiText( int newZoom ) {
-        int zoomInLevel = newZoom + 1;
-        if (zoomInLevel > maxZoomLevel) {
-            zoomInLevel = maxZoomLevel;
+        if (newZoom > maxZoomLevel) {
+            newZoom = maxZoomLevel;
         }
-        int zoomOutLevel = newZoom - 1;
-        if (zoomOutLevel < minZoomLevel) {
-            zoomOutLevel = minZoomLevel;
+        if (newZoom < minZoomLevel) {
+            newZoom = minZoomLevel;
         }
-        zoomInButton.setText(formatter.format(zoomInLevel));
-        zoomOutButton.setText(formatter.format(zoomOutLevel));
+        zoomLevelText.setText(formatter.format(newZoom));
     }
 
     public void setNewCenter( double lon, double lat, boolean drawIcon ) {
@@ -1029,6 +1030,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             }
         }
     };
+    private TextView zoomLevelText;
 
     public void inalidateMap() {
         mapView.invalidateOnUiThread();
