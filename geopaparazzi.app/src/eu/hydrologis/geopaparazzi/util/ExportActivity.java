@@ -112,7 +112,7 @@ public class ExportActivity extends Activity {
                 Builder builder = new AlertDialog.Builder(context).setTitle(R.string.media_upload)
                         .setMessage("Enter a description for the project").setIcon(android.R.drawable.ic_dialog_alert);
                 final EditText input = new EditText(ExportActivity.this);
-                input.setText("");
+                input.setText(""); //$NON-NLS-1$
                 builder.setView(input);
                 AlertDialog alertDialog = builder.setNegativeButton("No Images", new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
@@ -305,6 +305,7 @@ public class ExportActivity extends Activity {
         }.execute((String) null);
     }
 
+    @SuppressWarnings("nls")
     private void exportBookmarks() {
 
         try {

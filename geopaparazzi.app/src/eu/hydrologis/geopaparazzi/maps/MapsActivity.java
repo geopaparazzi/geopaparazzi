@@ -18,6 +18,8 @@
 package eu.hydrologis.geopaparazzi.maps;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
@@ -76,6 +78,7 @@ import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.gps.GpsManagerListener;
 import eu.geopaparazzi.library.mixare.MixareHandler;
 import eu.geopaparazzi.library.network.NetworkUtilities;
+import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
@@ -195,6 +198,16 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 File mapfile = new File(filePath);
                 if (mapfile.exists()) {
                     mapView.setMapFile(mapfile);
+
+                    String nameNoExt = FileUtilities.getNameWithoutExtention(mapfile);
+                    File xmlFile = new File(mapfile.getParentFile(), nameNoExt + ".xml"); //$NON-NLS-1$
+                    if (xmlFile.exists()) {
+                        try {
+                            mapView.setRenderTheme(xmlFile);
+                        } catch (FileNotFoundException e) {
+                            // ignore the theme
+                        }
+                    }
                 } else {
                     // no mapfile, fallback on mapnik
                     mapGenerator = createMapGenerator(MapGeneratorInternal.MAPNIK);
@@ -445,9 +458,9 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         }
         if (action == MotionEvent.ACTION_UP) {
             saveCenterPref();
-            
+
             // update zoom ui a bit later. This is ugly but
-            // found no way until there is not event handling 
+            // found no way until there is not event handling
             // in mapsforge
             new Thread(new Runnable(){
                 public void run() {
