@@ -123,6 +123,19 @@
                             android:background="@drawable/measuremode" >
                         </ImageButton>
                         -->
+
+                        <Button
+                            android:id="@+id/battery"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_marginBottom="5dip"
+                            android:layout_marginTop="10dip"
+                            android:background="@drawable/battery"
+                            android:text="-"
+                            android:textColor="@color/black"
+                            android:textStyle="bold" >
+                        </Button>
                     </LinearLayout>
 
                     <LinearLayout

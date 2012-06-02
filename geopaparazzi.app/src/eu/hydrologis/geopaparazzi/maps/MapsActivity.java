@@ -19,7 +19,6 @@ package eu.hydrologis.geopaparazzi.maps;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
@@ -46,11 +45,15 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -70,9 +73,9 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.SlidingDrawer;
+import android.widget.TextView;
 import android.widget.Toast;
 import eu.geopaparazzi.library.gps.GpsLocation;
 import eu.geopaparazzi.library.gps.GpsManager;
@@ -133,6 +136,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     private ArrayGeopaparazziOverlay dataOverlay;
     private Button zoomInButton;
     private Button zoomOutButton;
+    private Button batteryButton;
 
     public static MapGenerator createMapGenerator( MapGeneratorInternal mapGeneratorInternal ) {
         switch( mapGeneratorInternal ) {
@@ -150,6 +154,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
         setContentView(R.layout.mapsview);
+
+        registerReceiver(batteryReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -294,6 +300,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             }
         });
 
+        batteryButton = (Button) findViewById(R.id.battery);
+
         // center on gps button
         ImageButton centerOnGps = (ImageButton) findViewById(R.id.center_on_gps_btn);
         centerOnGps.setOnClickListener(new Button.OnClickListener(){
@@ -416,6 +424,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
     @Override
     protected void onDestroy() {
+        unregisterReceiver(batteryReceiver);
         GpsManager.getInstance(this).removeListener(this);
         dataOverlay.dispose();
         super.onDestroy();
@@ -1198,6 +1207,27 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             zoomLevel = zoom;
         }
         PositionUtilities.putMapCenterInPreferences(preferences, cx, cy, zoomLevel);
+    }
+
+    private BroadcastReceiver batteryReceiver = new BroadcastReceiver(){
+        @Override
+        public void onReceive( Context context, Intent intent ) {
+            int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+            int maxValue = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+            int chargedPct = (level * 100) / maxValue;
+            updateBatteryCondition(chargedPct);
+        }
+
+    };
+
+    private void updateBatteryCondition( int level ) {
+        if (Debug.D)
+            Logger.d(this, "BATTERY LEVEL GEOPAP: " + level);
+        if (level > 99) {
+            batteryButton.setText(level);
+        } else {
+            batteryButton.setText(level + "%");
+        }
     }
 
 }
