@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="eu.hydrologis.geopaparazzi"
     android:versionCode="28"
-    android:versionName="3.0.0pre" >
+    android:versionName="3.0.0" >
 
     <!-- permissions -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -19,8 +19,8 @@
 	<!-- <uses-permission android:name="android.permission.READ_CONTACTS" /> -->
     <!--
     only for testing purposes 
-    -->
 	<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"></uses-permission> 
+    -->
 
     <uses-feature
         android:name="android.hardware.telephony"
