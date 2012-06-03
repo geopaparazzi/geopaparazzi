@@ -15,7 +15,6 @@ import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
  * @author javacodegeeks
- *
  */
 public class ProximityIntentReceiver extends BroadcastReceiver {
 
@@ -37,7 +36,7 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, null, 0);
 
             Notification notification = createNotification();
-            notification.setLatestEventInfo(context, "Proximity Alert!", "Approaching a point of interest.", pendingIntent);
+            notification.setLatestEventInfo(context, context.getString(R.string.proximity_alert), context.getString(R.string.approaching_poi), pendingIntent);
             notificationManager.notify(NOTIFICATION_ID, notification);
 
             GpsManager.getInstance(context).getLocationManager().removeProximityAlert(pendingIntent);

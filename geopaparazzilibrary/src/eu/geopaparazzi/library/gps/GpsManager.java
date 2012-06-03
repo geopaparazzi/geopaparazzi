@@ -133,7 +133,6 @@ public class GpsManager implements LocationListener, Listener {
     public void addProximityAlert( Context context, double lat, double lon, float radius ) {
         String PROX_ALERT_INTENT = "com.javacodegeeks.android.lbs.ProximityAlert";
         Intent intent = new Intent(PROX_ALERT_INTENT);
-        // intent.putExtra(PlaySoundActivity.MESSAGE, "Proximity alert triggered!");
         PendingIntent proximityIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
 
         locationManager.addProximityAlert(lat, lon, radius, -1, proximityIntent);

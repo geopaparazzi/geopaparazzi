@@ -93,8 +93,8 @@ public class NoteActivity extends Activity {
                             String.valueOf(elevation), //
                             sqlDateString, //
                             noteString,//
-                            "POI", // note category
-                            "" // form
+                            "POI", // note category //$NON-NLS-1$
+                            "" // form //$NON-NLS-1$
                             };
 
                     Intent intent = getIntent();

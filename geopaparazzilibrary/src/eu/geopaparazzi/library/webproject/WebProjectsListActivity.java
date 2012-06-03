@@ -51,6 +51,8 @@ import eu.geopaparazzi.library.util.debug.Logger;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class WebProjectsListActivity extends ListActivity {
+    private static final String ERROR = "error"; //$NON-NLS-1$
+    
     private ArrayAdapter<Webproject> arrayAdapter;
     private EditText filterText;
 
@@ -73,8 +75,8 @@ public class WebProjectsListActivity extends ListActivity {
         filterText = (EditText) findViewById(R.id.search_box);
         filterText.addTextChangedListener(filterTextWatcher);
 
-        final ProgressDialog downloadProjectListDialog = ProgressDialog.show(this, "Downloading...",
-                "Downloading projects list from server.");
+        final ProgressDialog downloadProjectListDialog = ProgressDialog.show(this, getString(R.string.downloading),
+                getString(R.string.downloading_projects_list_from_server));
         new AsyncTask<String, Void, String>(){
 
             protected String doInBackground( String... params ) {
@@ -84,18 +86,18 @@ public class WebProjectsListActivity extends ListActivity {
                     for( Webproject wp : projectList ) {
                         projectListToLoad.add(wp);
                     }
-                    return "";
+                    return ""; //$NON-NLS-1$
                 } catch (Exception e) {
                     e.printStackTrace();
-                    return "error";
+                    return ERROR;
                 }
             }
 
             protected void onPostExecute( String response ) { // on UI thread!
                 downloadProjectListDialog.dismiss();
                 WebProjectsListActivity context = WebProjectsListActivity.this;
-                if (response.equals("error")) {
-                    Utilities.messageDialog(context, "An error occurred while retrieving the projects list.", null);
+                if (response.equals(ERROR)) {
+                    Utilities.messageDialog(context, R.string.error_projects_list, null);
                 } else {
                     refreshList();
                 }
@@ -182,8 +184,8 @@ public class WebProjectsListActivity extends ListActivity {
     };
 
     private void downloadProject( final Webproject webproject ) {
-        final ProgressDialog cloudProgressDialog = ProgressDialog.show(this, "Downloading project...",
-                "Downloading selected project to the device.", true, true);
+        final ProgressDialog cloudProgressDialog = ProgressDialog.show(this, getString(R.string.downloading_project),
+                getString(R.string.downloading_project_to_the_device), true, true);
         new AsyncTask<String, Void, String>(){
             protected String doInBackground( String... params ) {
                 try {
@@ -200,7 +202,7 @@ public class WebProjectsListActivity extends ListActivity {
             protected void onPostExecute( String response ) { // on UI thread!
                 cloudProgressDialog.dismiss();
                 if (response.startsWith(ReturnCodes.OK.getMsgString())) {
-                    String msg = "The project has been successfully downloaded.";// . Load the new
+                    String msg = getString(R.string.project_successfully_downloaded);// . Load the new
                     // project?";
                     Utilities.messageDialog(WebProjectsListActivity.this, msg, null);
                     // AlertDialog.Builder builder = new

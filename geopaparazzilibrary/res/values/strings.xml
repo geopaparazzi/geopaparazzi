@@ -127,5 +127,13 @@
 
     <string name="service_closed_because_connection_problem_notification_title">BlueGps stopped</string>
     <string name="service_closed_because_connection_problem_notification">"Reason: %s"</string>
+    <string name="downloading">Downloading...</string>
+    <string name="downloading_projects_list_from_server">Downloading projects list from server.</string>
+    <string name="error_projects_list">An error occurred while retrieving the projects list.</string>
+    <string name="downloading_project">Downloading project...</string>
+    <string name="downloading_project_to_the_device">Downloading selected project to the device.</string>
+    <string name="project_successfully_downloaded">The project has been successfully downloaded.</string>
+    <string name="proximity_alert">Proximity Alert!</string>
+    <string name="approaching_poi">Approaching a point of interest.</string>
 
 </resources>
