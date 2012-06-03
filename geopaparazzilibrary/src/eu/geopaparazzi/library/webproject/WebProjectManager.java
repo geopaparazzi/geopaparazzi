@@ -17,12 +17,8 @@
  */
 package eu.geopaparazzi.library.webproject;
 
-import static eu.geopaparazzi.library.forms.FormUtilities.TAG_LONGNAME;
-import static eu.geopaparazzi.library.forms.FormUtilities.TAG_SHORTNAME;
-
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -35,10 +31,8 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.res.AssetManager;
-import eu.geopaparazzi.library.forms.TagsManager.TagObject;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.CompressionUtilities;
-import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;

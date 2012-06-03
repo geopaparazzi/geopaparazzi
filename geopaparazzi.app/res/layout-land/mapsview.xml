@@ -55,7 +55,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="5dip"
+                        android:layout_margin="5dip"
                         android:background="@drawable/buttoncirclezoomin" >
                     </Button>
 
@@ -64,7 +64,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="5dip"
+                        android:layout_margin="5dip"
                         android:shadowColor="@color/white"
                         android:shadowDx="2"
                         android:shadowDy="2"
@@ -79,8 +79,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="5dip"
-                        android:layout_marginTop="3dip"
+                        android:layout_margin="5dip"
                         android:background="@drawable/buttoncirclezoomout" >
                     </Button>
                 </LinearLayout>
@@ -130,7 +129,6 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_horizontal"
                             android:layout_marginBottom="5dip"
-                            android:layout_marginTop="10dip"
                             android:background="@drawable/battery"
                             android:text="-"
                             android:textColor="@color/black"
