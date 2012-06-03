@@ -991,7 +991,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     // return super.onKeyDown(keyCode, event);
     // }
 
-
     public void onLocationChanged( GpsLocation loc ) {
         if (loc == null) {
             return;
@@ -1112,11 +1111,12 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     private void updateBatteryCondition( int level ) {
         if (Debug.D)
             Logger.d(this, "BATTERY LEVEL GEOPAP: " + level); //$NON-NLS-1$
-        if (level > 99) {
-            batteryButton.setText(level);
-        } else {
-            batteryButton.setText(level + "%"); //$NON-NLS-1$
+        StringBuilder sb = new StringBuilder();
+        sb.append(level);
+        if (level < 100) {
+            sb.append("%"); //$NON-NLS-1$
         }
+        batteryButton.setText(sb.toString());
     }
 
 }
