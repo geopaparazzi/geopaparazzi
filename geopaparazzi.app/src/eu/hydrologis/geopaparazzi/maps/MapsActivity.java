@@ -59,7 +59,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.Editable;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -124,8 +123,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
     private DecimalFormat formatter = new DecimalFormat("00"); //$NON-NLS-1$
     private SlidingDrawer slidingDrawer;
-    private boolean sliderIsOpen;
-    private boolean osmSliderIsOpen;
     private MapView mapView;
     private int maxZoomLevel = -1;
     private int minZoomLevel = -1;
@@ -320,31 +317,12 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
         slidingDrawer.setOnDrawerOpenListener(new SlidingDrawer.OnDrawerOpenListener(){
             public void onDrawerOpened() {
-                // Logger.d(this, "Enable drawing");
-                sliderIsOpen = true;
                 slideHandleButton.setBackgroundResource(R.drawable.min);
-                enableDrawingWithDelay();
             }
         });
         slidingDrawer.setOnDrawerCloseListener(new SlidingDrawer.OnDrawerCloseListener(){
             public void onDrawerClosed() {
-                // Logger.d(this, "Enable drawing");
                 slideHandleButton.setBackgroundResource(R.drawable.max);
-                sliderIsOpen = false;
-                enableDrawingWithDelay();
-            }
-
-        });
-
-        slidingDrawer.setOnDrawerScrollListener(new SlidingDrawer.OnDrawerScrollListener(){
-            public void onScrollEnded() {
-                // Logger.d(this, "Scroll End Disable drawing");
-                disableDrawing();
-            }
-
-            public void onScrollStarted() {
-                // Logger.d(this, "Scroll Start Disable drawing");
-                disableDrawing();
             }
         });
 
@@ -518,30 +496,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         osmSlidingDrawer.setVisibility(visibility);
 
         if (doOsm) {
-            osmSlidingDrawer.setOnDrawerOpenListener(new SlidingDrawer.OnDrawerOpenListener(){
-
-                public void onDrawerOpened() {
-                    osmSliderIsOpen = true;
-                    enableDrawingWithDelay();
-                }
-            });
-            osmSlidingDrawer.setOnDrawerCloseListener(new SlidingDrawer.OnDrawerCloseListener(){
-                public void onDrawerClosed() {
-                    osmSliderIsOpen = false;
-                    enableDrawingWithDelay();
-                }
-
-            });
-
-            osmSlidingDrawer.setOnDrawerScrollListener(new SlidingDrawer.OnDrawerScrollListener(){
-                public void onScrollEnded() {
-                    disableDrawing();
-                }
-                public void onScrollStarted() {
-                    disableDrawing();
-                }
-            });
-
             GridView buttonGridView = (GridView) findViewById(R.id.osmcategoriesview);
 
             ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.gpslog_row, categoriesNamesArrayFinal){
@@ -556,8 +510,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                             Intent osmCategoryIntent = new Intent(MapsActivity.this, OsmCategoryActivity.class);
                             osmCategoryIntent.putExtra(Constants.OSM_CATEGORY_KEY, categoryName);
                             startActivity(osmCategoryIntent);
-
-                            // osmSlidingDrawer.close();
                         }
                     });
                     return osmButton;
@@ -658,9 +610,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                                     openAlertDialog(msg);
                                 }
 
-                                // TODO check if we want the slider to close
-                                // osmSlidingDrawer.close();
-
                             } else {
                                 String msg = getResources().getString(R.string.an_error_occurred_while_uploading_osm_tags);
                                 openAlertDialog(msg + e.getLocalizedMessage());
@@ -705,21 +654,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         saveCenterPref();
         super.onWindowFocusChanged(hasFocus);
     }
-
-    // @Override
-    // protected void onPause() {
-    // GeoPoint mapCenter = mapsView.getMapCenter();
-    // SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-    // Editor editor = preferences.edit();
-    // editor.putFloat(GPSLAST_LONGITUDE, mapCenter.getLongitudeE6() / E6);
-    // editor.putFloat(GPSLAST_LATITUDE, mapCenter.getLatitudeE6() / E6);
-    // editor.commit();
-    // super.onPause();
-    // }
-
-    // public MapView getMapView() {
-    // return mapView;
-    // }
 
     private void setZoomGuiText( int newZoom ) {
         if (newZoom > maxZoomLevel) {
@@ -1045,49 +979,18 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         mapView.invalidateOnUiThread();
     }
 
-    public boolean onKeyDown( int keyCode, KeyEvent event ) {
-        // force to exit through the exit button
-        if (keyCode == KeyEvent.KEYCODE_BACK && sliderIsOpen) {
-            slidingDrawer.animateClose();
-            return true;
-        } else if (keyCode == KeyEvent.KEYCODE_BACK && osmSliderIsOpen) {
-            osmSlidingDrawer.animateClose();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
+    // public boolean onKeyDown( int keyCode, KeyEvent event ) {
+    // // force to exit through the exit button
+    // if (keyCode == KeyEvent.KEYCODE_BACK && sliderIsOpen) {
+    // slidingDrawer.animateClose();
+    // return true;
+    // } else if (keyCode == KeyEvent.KEYCODE_BACK && osmSliderIsOpen) {
+    // osmSlidingDrawer.animateClose();
+    // return true;
+    // }
+    // return super.onKeyDown(keyCode, event);
+    // }
 
-    private void enableDrawingWithDelay() {
-        new Thread(new Runnable(){
-            public void run() {
-                runOnUiThread(new Runnable(){
-                    public void run() {
-                        try {
-                            Thread.sleep(300);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        // mMapsOverlay.setDoDraw(true);
-                        // mLogsOverlay.setDoDraw(true);
-                        // mNotesOverlay.setDoDraw(true);
-                        // mImagesOverlay.setDoDraw(true);
-                        // mBookmarksOverlay.setDoDraw(true);
-                        // mGpsOverlay.setDoDraw(true);
-                        inalidateMap();
-                    }
-                });
-            }
-        }).start();
-    }
-
-    private void disableDrawing() {
-        // mMapsOverlay.setDoDraw(false);
-        // mLogsOverlay.setDoDraw(false);
-        // mNotesOverlay.setDoDraw(false);
-        // mImagesOverlay.setDoDraw(false);
-        // mBookmarksOverlay.setDoDraw(false);
-        // mGpsOverlay.setDoDraw(false);
-    }
 
     public void onLocationChanged( GpsLocation loc ) {
         if (loc == null) {
@@ -1144,20 +1047,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
     public void onStatusChanged( boolean hasFix ) {
     }
-
-    // public boolean onScroll( ScrollEvent event ) {
-    // saveCenterPref();
-    // return true;
-    // }
-    //
-    // public boolean onZoom( ZoomEvent event ) {
-    // int zoomLevel = event.getZoomLevel();
-    // if (zoomInButton != null) {
-    // setZoomGuiText(zoomLevel);
-    // }
-    // saveCenterPref();
-    // return true;
-    // }
 
     private synchronized void saveCenterPref() {
         MapViewPosition mapPosition = mapView.getMapPosition();
