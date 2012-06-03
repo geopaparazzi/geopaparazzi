@@ -30,11 +30,11 @@ import android.content.Context;
  */
 public class ArrayGeopaparazziOverlay extends GeopaparazziOverlay {
     private static final int INITIAL_CAPACITY = 8;
-    private static final String THREAD_NAME = "ArrayGeopaparazziOverlay";
+    private static final String THREAD_NAME = "ArrayGeopaparazziOverlay"; //$NON-NLS-1$
 
     private final List<OverlayWay> overlayWays;
     private final List<OverlayItem> overlayItems;
-    
+
     /**
      */
     public ArrayGeopaparazziOverlay( Context context ) {

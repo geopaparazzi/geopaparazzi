@@ -148,7 +148,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             return new OpenCycleMapTileDownloader();
         }
 
-        throw new IllegalArgumentException("unknown enum value: " + mapGeneratorInternal);
+        throw new IllegalArgumentException("unknown enum value: " + mapGeneratorInternal); //$NON-NLS-1$
     }
 
     public void onCreate( Bundle icicle ) {
@@ -467,7 +467,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     public boolean onTouch( View v, MotionEvent event ) {
         int action = event.getAction();
         if (Debug.D) {
-            Logger.d(this, "onTouch issued with motionevent: " + action);
+            Logger.d(this, "onTouch issued with motionevent: " + action); //$NON-NLS-1$
         }
         if (action == MotionEvent.ACTION_UP) {
             saveCenterPref();
@@ -754,7 +754,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         menu.add(Menu.NONE, MENU_SCALE_ID, 3, R.string.mapsactivity_menu_toggle_scalebar).setIcon(R.drawable.ic_menu_scalebar);
         menu.add(Menu.NONE, MENU_COMPASS_ID, 4, R.string.mapsactivity_menu_toggle_compass).setIcon(
                 android.R.drawable.ic_menu_compass);
-        menu.add(Menu.NONE, CENTER_ON_MAP, 5, "center on map").setIcon(android.R.drawable.ic_menu_mylocation);
+        menu.add(Menu.NONE, CENTER_ON_MAP, 5, R.string.center_on_map).setIcon(android.R.drawable.ic_menu_mylocation);
         menu.add(Menu.NONE, GO_TO, 6, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
         menu.add(Menu.NONE, MENU_MIXARE_ID, 7, R.string.view_in_mixare).setIcon(R.drawable.icon_datasource);
         return true;
@@ -1222,11 +1222,11 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
     private void updateBatteryCondition( int level ) {
         if (Debug.D)
-            Logger.d(this, "BATTERY LEVEL GEOPAP: " + level);
+            Logger.d(this, "BATTERY LEVEL GEOPAP: " + level); //$NON-NLS-1$
         if (level > 99) {
             batteryButton.setText(level);
         } else {
-            batteryButton.setText(level + "%");
+            batteryButton.setText(level + "%"); //$NON-NLS-1$
         }
     }
 

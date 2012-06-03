@@ -128,7 +128,7 @@ public class GeoPaparazziActivity extends Activity {
         if (sdcardDir != null && sdcardDir.exists()) {
             File[] mapFiles = sdcardDir.listFiles(new FilenameFilter(){
                 public boolean accept( File dir, String filename ) {
-                    return filename.endsWith(".mapurl");
+                    return filename.endsWith(".mapurl"); //$NON-NLS-1$
                 }
             });
 
@@ -475,11 +475,8 @@ public class GeoPaparazziActivity extends Activity {
                     // check existing maps and ask for which to load
                     File sdcardDir = ResourcesManager.getInstance(this).getSdcardDir();
                     if (sdcardDir == null || !sdcardDir.exists()) {
-                        Utilities
-                                .messageDialog(
-                                        this,
-                                        "Database rendering is supported only from external storage. Could not find external storage, is one available?",
-                                        null);
+                        Utilities.messageDialog(this, eu.hydrologis.geopaparazzi.R.string.no_external_sdcard_for_db_renderer,
+                                null);
                         return true;
                     }
 
@@ -488,16 +485,12 @@ public class GeoPaparazziActivity extends Activity {
 
                     File[] mapFiles = sdcardDir.listFiles(new FilenameFilter(){
                         public boolean accept( File dir, String filename ) {
-                            return filename.endsWith(".map");
+                            return filename.endsWith(".map"); //$NON-NLS-1$
                         }
                     });
 
                     if (mapFiles == null || mapFiles.length == 0) {
-                        Utilities
-                                .messageDialog(
-                                        this,
-                                        "No map files were found on the root of your external storage. Switching to online maps.\nMaps can be downloaded from: http://download.mapsforge.org",
-                                        null);
+                        Utilities.messageDialog(this, eu.hydrologis.geopaparazzi.R.string.no_map_files_found_go_online, null);
                         return true;
                     }
 
@@ -517,7 +510,7 @@ public class GeoPaparazziActivity extends Activity {
                     };
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle("Select map to use");
+                    builder.setTitle(eu.hydrologis.geopaparazzi.R.string.select_map_to_use);
                     builder.setMultiChoiceItems(mapNamesArrays, mapNamesChecked, dialogListener);
                     mapChoiceDialog = builder.create();
                     mapChoiceDialog.show();
@@ -561,7 +554,8 @@ public class GeoPaparazziActivity extends Activity {
                     mapfile = new File(filePath);
                     if (!mapfile.exists()) {
                         mapGeneratorInternal = MapGeneratorInternal.MAPNIK;
-                        Utilities.messageDialog(this, "Could not find map file, switching to MAPNIK tile source.", null);
+                        Utilities
+                                .messageDialog(this, eu.hydrologis.geopaparazzi.R.string.no_map_file_found_going_to_mapnik, null);
                         mapfile = null;
                     }
                 }

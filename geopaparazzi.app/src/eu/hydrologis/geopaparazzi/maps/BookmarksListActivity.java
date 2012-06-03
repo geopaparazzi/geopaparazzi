@@ -205,8 +205,8 @@ public class BookmarksListActivity extends ListActivity {
                         final Bookmark bookmark = bookmarksMap.get(bookmarkText.getText().toString());
                         if (bookmark != null) {
 
-                            Utilities.inputMessageDialog(BookmarksListActivity.this, "Proximity Radius",
-                                    "Add proximity alert radius in meters.", "100", new TextRunnable(){
+                            Utilities.inputMessageDialog(BookmarksListActivity.this, getString(R.string.proximity_radius),
+                                    getString(R.string.add_proximity_radius), "100", new TextRunnable(){ //$NON-NLS-1$
                                         public void run() {
                                             double radius = 100;
                                             if (theTextToRunOn.length() > 0) {

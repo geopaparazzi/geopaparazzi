@@ -134,16 +134,16 @@ public class ImportActivity extends Activity {
                             }
                         }
 
-                        Utilities.messageDialog(context, "Successfully imported bookmarks: " + imported, null);
+                        Utilities.messageDialog(context, R.string.successfully_imported_bookmarks + imported, null);
                     } catch (IOException e) {
                         e.printStackTrace();
-                        Utilities.messageDialog(context, "An error occurred while importing the bookmarks.", null);
+                        Utilities.messageDialog(context, R.string.error_bookmarks_import, null);
                     }
                 } else {
                     Utilities
                             .messageDialog(
                                     context,
-                                    "Could not find a bookmarks.csv file in the sdcard root. Please place your bookmarks there to import them.",
+                                    R.string.no_bookmarks_csv,
                                     null);
                 }
             }

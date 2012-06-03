@@ -54,6 +54,7 @@ public class CustomTileDownloader extends TileDownloader {
     private boolean isFile = false;
     private TILESCHEMA type = TILESCHEMA.google;
 
+    @SuppressWarnings("nls")
     public CustomTileDownloader( List<String> fileLines, String sdcardPath ) {
         super();
 
@@ -68,7 +69,7 @@ public class CustomTileDownloader extends TileDownloader {
                 String value = line.substring(split + 1).trim();
                 if (line.startsWith("url")) {
 
-                    int indexOfZ = value.indexOf("ZZZ"); //$NON-NLS-1$
+                    int indexOfZ = value.indexOf("ZZZ");
                     HOST_NAME = value.substring(0, indexOfZ);
                     tilePart = value.substring(indexOfZ);
                     if (value.startsWith("http")) {

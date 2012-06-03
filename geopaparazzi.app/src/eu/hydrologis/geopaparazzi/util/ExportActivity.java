@@ -110,16 +110,16 @@ public class ExportActivity extends Activity {
                 }
 
                 Builder builder = new AlertDialog.Builder(context).setTitle(R.string.media_upload)
-                        .setMessage("Enter a description for the project").setIcon(android.R.drawable.ic_dialog_alert);
+                        .setMessage(R.string.enter_project_description).setIcon(android.R.drawable.ic_dialog_alert);
                 final EditText input = new EditText(ExportActivity.this);
                 input.setText(""); //$NON-NLS-1$
                 builder.setView(input);
-                AlertDialog alertDialog = builder.setNegativeButton("No Images", new DialogInterface.OnClickListener(){
+                AlertDialog alertDialog = builder.setNegativeButton(R.string.no_images, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
                         addProjectDescription(input);
                         exportToCloud(context, serverUrl, user, pwd, false);
                     }
-                }).setPositiveButton("With Images", new DialogInterface.OnClickListener(){
+                }).setPositiveButton(R.string.with_images, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
                         addProjectDescription(input);
                         exportToCloud(context, serverUrl, user, pwd, true);

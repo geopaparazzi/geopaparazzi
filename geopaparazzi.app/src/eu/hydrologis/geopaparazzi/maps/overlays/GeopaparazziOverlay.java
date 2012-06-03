@@ -648,12 +648,12 @@ public abstract class GeopaparazziOverlay extends Overlay {
         if (item != null) {
             String title = item.getTitle();
             String snippet = item.getSnippet();
-            if (title.toLowerCase().endsWith("jpg")) {
+            if (title.toLowerCase().endsWith("jpg")) { //$NON-NLS-1$
                 Intent intent = new Intent();
                 intent.setAction(android.content.Intent.ACTION_VIEW);
                 String relativePath = title;
                 File mediaDir = ResourcesManager.getInstance(context).getMediaDir();
-                intent.setDataAndType(Uri.fromFile(new File(mediaDir.getParentFile(), relativePath)), "image/*");
+                intent.setDataAndType(Uri.fromFile(new File(mediaDir.getParentFile(), relativePath)), "image/*"); //$NON-NLS-1$
                 context.startActivity(intent);
             } else {
                 Builder builder = new AlertDialog.Builder(context);
@@ -661,7 +661,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 builder.setTitle(title);
                 if (snippet != null && snippet.length() > 0)
                     builder.setMessage(snippet);
-                builder.setPositiveButton("OK", null);
+                builder.setPositiveButton(R.string.ok, null);
                 builder.show();
             }
             return true;

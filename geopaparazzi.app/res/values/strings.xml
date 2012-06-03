@@ -194,4 +194,17 @@
     <string name="insert_an_optional_text_to_send_with_the_geosms">Insert an optional text to send with the GeoSMS</string>
     <string name="enter_a_name_for_the_new_project">Enter a name for the new project</string>
     <string name="chosen_project_exists">The chosen project name already exists, please chose another name</string>
+    <string name="no_external_sdcard_for_db_renderer">Database rendering is supported only from external storage. Could not find external storage, is one available?</string>
+    <string name="no_map_files_found_go_online">No map files were found on the root of your external storage. Switching to online maps.\nMaps can be downloaded from: http://download.mapsforge.org</string>
+    <string name="select_map_to_use">Select map to use</string>
+    <string name="no_map_file_found_going_to_mapnik">Could not find map file, switching to MAPNIK tile source.</string>
+    <string name="enter_project_description">Enter a description for the project</string>
+    <string name="no_images">No Images</string>
+    <string name="with_images">With Images</string>
+    <string name="successfully_imported_bookmarks">"Successfully imported bookmarks: "</string>
+    <string name="error_bookmarks_import">An error occurred while importing the bookmarks.</string>
+    <string name="no_bookmarks_csv">Could not find a bookmarks.csv file in the sdcard root. Please place your bookmarks there to import them.</string>
+    <string name="center_on_map">center on map</string>
+    <string name="proximity_radius">Proximity Radius</string>
+    <string name="add_proximity_radius">Add proximity alert radius in meters.</string>
 </resources>
