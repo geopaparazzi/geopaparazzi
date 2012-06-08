@@ -100,7 +100,7 @@ public class NetworkUtilities {
         }
         HttpURLConnection conn = makeNewConnection(urlStr);
         conn.setRequestMethod("GET");
-        conn.setDoOutput(true);
+        // conn.setDoOutput(true);
         conn.setDoInput(true);
         // conn.setChunkedStreamingMode(0);
         conn.setUseCaches(false);
