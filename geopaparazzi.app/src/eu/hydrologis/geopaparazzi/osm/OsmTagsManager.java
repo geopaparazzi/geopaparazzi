@@ -132,7 +132,11 @@ public class OsmTagsManager {
                 return pathname.getName().endsWith(MAINICON_POSTFIX);
             }
         });
-        String[] iconFileNames = new String[iconFiles.length];
+        int size = 0;
+        if (iconFiles != null) {
+            size = iconFiles.length;
+        }
+        String[] iconFileNames = new String[size];
         for( int i = 0; i < iconFiles.length; i++ ) {
             iconFileNames[i] = iconFiles[i].getName().replace(MAINICON_POSTFIX, "");
         }
