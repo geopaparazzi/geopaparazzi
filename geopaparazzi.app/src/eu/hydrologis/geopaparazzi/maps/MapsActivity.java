@@ -999,44 +999,52 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         if (this.mapView.getWidth() <= 0 || this.mapView.getWidth() <= 0) {
             return;
         }
-        float[] nsweE6 = getMapWorldBoundsE6();
-        double lat = loc.getLatitude();
-        double lon = loc.getLongitude();
-        int latE6 = (int) ((float) lat * LibraryConstants.E6);
-        int lonE6 = (int) ((float) lon * LibraryConstants.E6);
-        boolean centerOnGps = preferences.getBoolean(Constants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
+        try {
+            double lat = loc.getLatitude();
+            double lon = loc.getLongitude();
+            float[] nsweE6 = getMapWorldBoundsE6();
+            int latE6 = (int) ((float) lat * LibraryConstants.E6);
+            int lonE6 = (int) ((float) lon * LibraryConstants.E6);
+            boolean centerOnGps = preferences.getBoolean(Constants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
 
-        int nE6 = (int) nsweE6[0];
-        int sE6 = (int) nsweE6[1];
-        int wE6 = (int) nsweE6[2];
-        int eE6 = (int) nsweE6[3];
+            int nE6 = (int) nsweE6[0];
+            int sE6 = (int) nsweE6[1];
+            int wE6 = (int) nsweE6[2];
+            int eE6 = (int) nsweE6[3];
 
-        // Rect bounds = new Rect(wE6, nE6, eE6, sE6);
-        if (boundsContain(latE6, lonE6, nE6, sE6, wE6, eE6)) {
-            GeoPoint point = new GeoPoint(latE6, lonE6);
-            float accuracy = loc.getAccuracy();
-            dataOverlay.setGpsPosition(point, accuracy);
-            dataOverlay.requestRedraw();
-        }
-
-        Projection p = mapView.getProjection();
-        int paddingX = (int) (p.getLongitudeSpan() * 0.2);
-        int paddingY = (int) (p.getLatitudeSpan() * 0.2);
-        int newEE6 = eE6 - paddingX;
-        int newWE6 = wE6 + paddingX;
-        int newSE6 = sE6 + paddingY;
-        int newNE6 = nE6 - paddingY;
-
-        boolean doCenter = false;
-        if (!boundsContain(latE6, lonE6, newNE6, newSE6, newWE6, newEE6)) {
-            if (centerOnGps) {
-                doCenter = true;
+            // Rect bounds = new Rect(wE6, nE6, eE6, sE6);
+            if (boundsContain(latE6, lonE6, nE6, sE6, wE6, eE6)) {
+                GeoPoint point = new GeoPoint(latE6, lonE6);
+                float accuracy = loc.getAccuracy();
+                dataOverlay.setGpsPosition(point, accuracy);
+                dataOverlay.requestRedraw();
             }
-        }
-        if (doCenter) {
-            setNewCenter(lon, lat, false);
-            if (Debug.D)
-                Logger.i(this, "recentering triggered"); //$NON-NLS-1$                
+
+            Projection p = mapView.getProjection();
+            int paddingX = (int) (p.getLongitudeSpan() * 0.2);
+            int paddingY = (int) (p.getLatitudeSpan() * 0.2);
+            int newEE6 = eE6 - paddingX;
+            int newWE6 = wE6 + paddingX;
+            int newSE6 = sE6 + paddingY;
+            int newNE6 = nE6 - paddingY;
+
+            boolean doCenter = false;
+            if (!boundsContain(latE6, lonE6, newNE6, newSE6, newWE6, newEE6)) {
+                if (centerOnGps) {
+                    doCenter = true;
+                }
+            }
+            if (doCenter) {
+                setNewCenter(lon, lat, false);
+                if (Debug.D)
+                    Logger.i(this, "recentering triggered"); //$NON-NLS-1$                
+            }
+        } catch (Exception e) {
+            if (Debug.D) {
+                Logger.e(this, "On location change error", e); //$NON-NLS-1$
+            }
+            // finish the activity to reset
+            finish();
         }
     }
 
