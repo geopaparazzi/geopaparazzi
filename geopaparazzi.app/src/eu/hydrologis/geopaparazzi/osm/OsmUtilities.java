@@ -182,15 +182,16 @@ public class OsmUtilities {
     private static final String osmTagsVersionUrlPath = "http://geopaparazzi.googlecode.com/hg/extras/osmtags/VERSION";
 
     /**
-     * Download the osm tags archive if necessary.
+     * Download the osm tags archive if necessary and if network is available.
      * 
      * @param activity
      */
     public static void handleOsmTagsDownload( final Activity activity ) {
 
         if (!NetworkUtilities.isNetworkAvailable(activity)) {
-            Utilities
-                    .messageDialog(activity, "It is possible to download OSM tags only with an active internet connection", null);
+            // Utilities
+            // .messageDialog(activity,
+            // "It is possible to download OSM tags only with an active internet connection", null);
             return;
         }
 
