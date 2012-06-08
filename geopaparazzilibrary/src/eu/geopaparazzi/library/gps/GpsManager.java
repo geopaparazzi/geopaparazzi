@@ -233,11 +233,11 @@ public class GpsManager implements LocationListener, Listener {
         return gpsLogger.isLogging();
     }
 
-    private boolean isGpsListening() {
+    public boolean isGpsListening() {
         return isListening;
     }
 
-    private void checkGps( final Context context ) {
+    public void checkGps( final Context context ) {
         if (!isEnabled()) {
             String prompt = context.getResources().getString(R.string.prompt_gpsenable);
             String ok = context.getResources().getString(R.string.yes);

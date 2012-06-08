@@ -266,7 +266,14 @@ public class ActionBar implements GpsManagerListener {
     }
 
     public void checkLogging() {
-        View gpsOnOffView = actionBarView.findViewById(R.id.gpsOnOff);
+        Button gpsOnOffView = (Button) actionBarView.findViewById(R.id.gpsOnOff);
+        gpsOnOffView.setOnClickListener(new View.OnClickListener(){
+            public void onClick( View v ) {
+                Context context = v.getContext();
+                GpsManager.getInstance(context).checkGps(context);
+            }
+        });
+        
         Resources resources = gpsOnOffView.getResources();
 
         if (gpsManager.isEnabled()) {
