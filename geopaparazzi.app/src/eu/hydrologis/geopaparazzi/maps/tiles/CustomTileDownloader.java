@@ -28,8 +28,11 @@ import org.mapsforge.core.model.Tile;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.library.util.debug.Debug;
+import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
  * A MapGenerator that downloads tiles from the Mapnik server at OpenStreetMap.
@@ -166,17 +169,26 @@ public class CustomTileDownloader extends TileDownloader {
 
             URL url = new URL(sb.toString());
             InputStream inputStream = url.openStream();
-            Bitmap decodedBitmap = BitmapFactory.decodeStream(inputStream);
-            inputStream.close();
-
-            // check if the input stream could be decoded into a bitmap
-            if (decodedBitmap == null) {
-                return false;
+            Bitmap decodedBitmap = null;
+            try {
+                decodedBitmap = BitmapFactory.decodeStream(inputStream);
+            } catch (Exception e) {
+                // ignore and set the image as empty
+                if (Debug.D)
+                    Logger.i(this, "Could not find image: " + sb.toString());
+            } finally {
+                inputStream.close();
             }
-
-            // copy all pixels from the decoded bitmap to the color array
-            decodedBitmap.getPixels(this.pixels, 0, Tile.TILE_SIZE, 0, 0, Tile.TILE_SIZE, Tile.TILE_SIZE);
-            decodedBitmap.recycle();
+            // check if the input stream could be decoded into a bitmap
+            if (decodedBitmap != null) {
+                // copy all pixels from the decoded bitmap to the color array
+                decodedBitmap.getPixels(this.pixels, 0, Tile.TILE_SIZE, 0, 0, Tile.TILE_SIZE, Tile.TILE_SIZE);
+                decodedBitmap.recycle();
+            } else {
+                for( int i = 0; i < pixels.length; i++ ) {
+                    pixels[i] = Color.WHITE;
+                }
+            }
 
             // copy all pixels from the color array to the tile bitmap
             bitmap.setPixels(this.pixels, 0, Tile.TILE_SIZE, 0, 0, Tile.TILE_SIZE, Tile.TILE_SIZE);
@@ -189,7 +201,6 @@ public class CustomTileDownloader extends TileDownloader {
             return false;
         }
     }
-
     public byte getZoomLevelMax() {
         return ZOOM_MAX;
     }
