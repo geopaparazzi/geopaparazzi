@@ -245,7 +245,7 @@ public class CameraActivity extends Activity {
         File imageFile = new File(imageFilePath);
 
         if (!imageFile.exists() && cameraTakenMediaFiles.size() > 0) {
-            // was not saved where I wanted, but the camera saved on in the media folder
+            // was not saved where I wanted, but the camera saved one in the media folder
             // try to copy over the one saved by the camera and then delete
             try {
                 File cameraDoubleFile = cameraTakenMediaFiles.get(cameraTakenMediaFiles.size() - 1);
