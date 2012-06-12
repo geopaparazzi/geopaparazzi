@@ -26,7 +26,6 @@ import java.util.Date;
 import java.util.List;
 
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.media.ExifInterface;
