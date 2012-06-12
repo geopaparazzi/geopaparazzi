@@ -20,9 +20,13 @@ package eu.geopaparazzi.library.camera;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.media.ExifInterface;
@@ -31,6 +35,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.sensors.SensorsManager;
+import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
@@ -71,6 +76,7 @@ public class CameraActivity extends Activity {
     private double lon;
     private double lat;
     private double elevation;
+    private int lastImageId;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -112,11 +118,17 @@ public class CameraActivity extends Activity {
 
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+
+        lastImageId = getLastImageId();
+
         startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
     }
 
     protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
         if (requestCode == CAMERA_PIC_REQUEST) {
+
+            checkTakenPictureConsistency();
+
             SensorsManager sensorsManager = SensorsManager.getInstance(this);
             double azimuth = sensorsManager.getPictureAzimuth();
 
@@ -203,12 +215,71 @@ public class CameraActivity extends Activity {
         }
     }
 
-    public String getRealPathFromURI( Uri contentUri ) {
-        String[] proj = {MediaStore.Images.Media.DATA};
-        Cursor cursor = managedQuery(contentUri, proj, null, null, null);
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        return cursor.getString(column_index);
+    private void checkTakenPictureConsistency() {
+        /*
+         * Checking for duplicate images
+         * This is necessary because some camera implementation not only save where you want them to save but also in their default location.
+         */
+        final String[] projection = {MediaStore.Images.ImageColumns.DATA, MediaStore.Images.ImageColumns.DATE_TAKEN,
+                MediaStore.Images.ImageColumns.SIZE, MediaStore.Images.ImageColumns._ID};
+        final String imageOrderBy = MediaStore.Images.Media._ID + " DESC";
+        final String imageWhere = MediaStore.Images.Media._ID + ">?";
+        final String[] imageArguments = {Integer.toString(lastImageId)};
+        Cursor imageCursor = managedQuery(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, imageWhere, imageArguments,
+                imageOrderBy);
+        List<File> cameraTakenMediaFiles = new ArrayList<File>();
+        if (imageCursor.getCount() > 0) {
+            while( imageCursor.moveToNext() ) {
+                // int id =
+                // imageCursor.getInt(imageCursor.getColumnIndex(MediaStore.Images.Media._ID));
+                String path = imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA));
+                // Long takenTimeStamp =
+                // imageCursor.getLong(imageCursor.getColumnIndex(MediaStore.Images.Media.DATE_TAKEN));
+                // Long size =
+                // imageCursor.getLong(imageCursor.getColumnIndex(MediaStore.Images.Media.SIZE));
+                cameraTakenMediaFiles.add(new File(path));
+            }
+        }
+        imageCursor.close();
+
+        File imageFile = new File(imageFilePath);
+
+        if (!imageFile.exists() && cameraTakenMediaFiles.size() > 0) {
+            // was not saved where I wanted, but the camera saved on in the media folder
+            // try to copy over the one saved by the camera and then delete
+            try {
+                File cameraDoubleFile = cameraTakenMediaFiles.get(cameraTakenMediaFiles.size() - 1);
+                FileUtilities.copyFile(cameraDoubleFile, imageFile);
+                cameraDoubleFile.delete();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        for( File cameraTakenFile : cameraTakenMediaFiles ) {
+            // delete the one duplicated
+            cameraTakenFile.delete();
+        }
+    }
+
+    /**
+     * Gets the last image id from the media store.
+     * 
+     * @return the last image id from the media store.
+     */
+    private int getLastImageId() {
+        final String[] imageColumns = {MediaStore.Images.Media._ID};
+        final String imageOrderBy = MediaStore.Images.Media._ID + " DESC";
+        final String imageWhere = null;
+        final String[] imageArguments = null;
+        Cursor imageCursor = managedQuery(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, imageColumns, imageWhere, imageArguments,
+                imageOrderBy);
+        if (imageCursor.moveToFirst()) {
+            int id = imageCursor.getInt(imageCursor.getColumnIndex(MediaStore.Images.Media._ID));
+            imageCursor.close();
+            return id;
+        } else {
+            return 0;
+        }
     }
 
 }
