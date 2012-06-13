@@ -68,6 +68,11 @@ public class FormUtilities {
     public static final String TYPE_DOUBLE = "double";
 
     /**
+     * Type for a {@link EditText} containing date.
+     */
+    public static final String TYPE_DATE = "date";
+
+    /**
      * Type for a {@link CheckBox}.
      */
     public static final String TYPE_BOOLEAN = "boolean";
@@ -148,7 +153,7 @@ public class FormUtilities {
      * @param constraintDescription 
      * @return the added view.
      */
-    public static View addTextView( Context context, LinearLayout mainView, String key, String value, int type,
+    public static View addEditText( Context context, LinearLayout mainView, String key, String value, int type,
             String constraintDescription ) {
         LinearLayout textLayout = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
@@ -372,5 +377,33 @@ public class FormUtilities {
             }
         }
 
+    }
+
+    public static View addTextView( Context context, LinearLayout mainView, String value, int textSize, boolean withLine ) {
+        LinearLayout textLayout = new LinearLayout(context);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
+                LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(10, 10, 10, 10);
+        textLayout.setLayoutParams(layoutParams);
+        textLayout.setOrientation(LinearLayout.VERTICAL);
+        // textLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.formitem_background));
+        mainView.addView(textLayout);
+
+        TextView textView = new TextView(context);
+        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        textView.setPadding(2, 2, 2, 2);
+        textView.setText(value);
+        textView.setTextColor(context.getResources().getColor(R.color.hydrogreen));
+
+        textLayout.addView(textView);
+
+        if (withLine) {
+            View view = new View(context);
+            view.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, 2));
+            view.setBackgroundColor(context.getResources().getColor(R.color.hydrogreen));
+
+            textLayout.addView(view);
+        }
+        return textView;
     }
 }

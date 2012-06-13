@@ -26,7 +26,7 @@ import static eu.geopaparazzi.library.forms.FormUtilities.TAG_VALUE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_BOOLEAN;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_DOUBLE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRING;
-import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRINGCOMBO;
+import static eu.geopaparazzi.library.forms.FormUtilities.*;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRINGMULTIPLECHOICE;
 
 import java.sql.Date;
@@ -207,9 +207,17 @@ public class FormActivity extends Activity {
 
                 View addedView = null;
                 if (type.equals(TYPE_STRING)) {
-                    addedView = FormUtilities.addTextView(this, mainView, key, value, 0, constraintDescription);
+                    addedView = FormUtilities.addEditText(this, mainView, key, value, 0, constraintDescription);
                 } else if (type.equals(TYPE_DOUBLE)) {
-                    addedView = FormUtilities.addTextView(this, mainView, key, value, 1, constraintDescription);
+                    addedView = FormUtilities.addEditText(this, mainView, key, value, 1, constraintDescription);
+                } else if (type.equals(TYPE_DATE)) {
+                    addedView = FormUtilities.addEditText(this, mainView, key, value, 3, constraintDescription);
+                } else if (type.equals(TYPE_LABEL)) {
+                    // int size = TagsManager.getSize(jsonObject);
+                    addedView = FormUtilities.addTextView(this, mainView, value, 1, false);
+                } else if (type.equals(TYPE_LABELWITHLINE)) {
+                    // int size = TagsManager.getSize(jsonObject);
+                    addedView = FormUtilities.addTextView(this, mainView, value, 1, true);
                 } else if (type.equals(TYPE_BOOLEAN)) {
                     addedView = FormUtilities.addBooleanView(this, mainView, key, value, constraintDescription);
                 } else if (type.equals(TYPE_STRINGCOMBO)) {
