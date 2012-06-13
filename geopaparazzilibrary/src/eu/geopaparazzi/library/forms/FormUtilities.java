@@ -48,12 +48,22 @@ public class FormUtilities {
     public static final String UNDERSCORE = "_";
 
     /**
-     * Type for a {@link TextView} containing generic text.
+     * Type for a {@link TextView}.
+     */
+    public static final String TYPE_LABEL = "label";
+
+    /**
+     * Type for a {@link TextView} with line below.
+     */
+    public static final String TYPE_LABELWITHLINE = "lablewithline";
+
+    /**
+     * Type for a {@link EditText} containing generic text.
      */
     public static final String TYPE_STRING = "string";
 
     /**
-     * Type for a {@link TextView} containing generic numbers.
+     * Type for a {@link EditText} containing generic numbers.
      */
     public static final String TYPE_DOUBLE = "double";
 
@@ -119,6 +129,7 @@ public class FormUtilities {
     public static final String TAG_ITEMS = "items";
     public static final String TAG_ITEM = "item";
     public static final String TAG_TYPE = "type";
+    public static final String TAG_SIZE = "size";
 
     /**
      * Adds a {@link TextView} to the supplied mainView.
