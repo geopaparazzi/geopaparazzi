@@ -216,11 +216,11 @@ public class FormActivity extends Activity {
                 } else if (type.equals(TYPE_DATE)) {
                     addedView = FormUtilities.addEditText(this, mainView, key, value, 3, constraintDescription);
                 } else if (type.equals(TYPE_LABEL)) {
-                    // int size = TagsManager.getSize(jsonObject);
-                    addedView = FormUtilities.addTextView(this, mainView, value, 1, false);
+                    String size = jsonObject.getString("size");
+                    addedView = FormUtilities.addTextView(this, mainView, value, size, false);
                 } else if (type.equals(TYPE_LABELWITHLINE)) {
-                    // int size = TagsManager.getSize(jsonObject);
-                    addedView = FormUtilities.addTextView(this, mainView, value, 1, true);
+                    String size = jsonObject.getString("size");
+                    addedView = FormUtilities.addTextView(this, mainView, value, size, true);
                 } else if (type.equals(TYPE_BOOLEAN)) {
                     addedView = FormUtilities.addBooleanView(this, mainView, key, value, constraintDescription);
                 } else if (type.equals(TYPE_STRINGCOMBO)) {

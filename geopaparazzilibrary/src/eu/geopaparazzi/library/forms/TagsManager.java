@@ -55,11 +55,6 @@ import eu.geopaparazzi.library.util.debug.Debug;
 @SuppressWarnings("nls")
 public class TagsManager {
 
-    /**
-     * Type for barcode element.
-     */
-    public static final String TYPE_BARCODE = "barcode";
-
     public static String TAGSFILENAME = "tags.json";
 
     private static HashMap<String, TagObject> tagsMap = new HashMap<String, TagObject>();

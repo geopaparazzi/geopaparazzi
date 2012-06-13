@@ -111,8 +111,17 @@ public class FormUtilities {
 
     /**
      * Type for picture element.
+     * 
+     * <b>Not in use yet.</b>
      */
     public static final String TYPE_PICTURE = "picture";
+
+    /**
+     * Type for barcode element.
+     * 
+     * <b>Not in use yet.</b>
+     */
+    public static final String TYPE_BARCODE = "barcode";
 
     /**
      * A constraint that defines the item as mandatory.
@@ -168,7 +177,7 @@ public class FormUtilities {
         textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
         textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
-        textView.setTextColor(context.getResources().getColor(R.color.hydrogreen));
+        textView.setTextColor(context.getResources().getColor(R.color.formcolor));
 
         textLayout.addView(textView);
 
@@ -219,7 +228,7 @@ public class FormUtilities {
         textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
         textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
-        textView.setTextColor(context.getResources().getColor(R.color.hydrogreen));
+        textView.setTextColor(context.getResources().getColor(R.color.formcolor));
 
         textLayout.addView(textView);
 
@@ -265,7 +274,7 @@ public class FormUtilities {
         textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
         textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
-        textView.setTextColor(context.getResources().getColor(R.color.hydrogreen));
+        textView.setTextColor(context.getResources().getColor(R.color.formcolor));
         textLayout.addView(textView);
 
         Spinner spinner = new Spinner(context);
@@ -313,7 +322,7 @@ public class FormUtilities {
         textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
         textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
-        textView.setTextColor(context.getResources().getColor(R.color.hydrogreen));
+        textView.setTextColor(context.getResources().getColor(R.color.formcolor));
         textLayout.addView(textView);
 
         final Button button = new Button(context);
@@ -379,7 +388,7 @@ public class FormUtilities {
 
     }
 
-    public static View addTextView( Context context, LinearLayout mainView, String value, int textSize, boolean withLine ) {
+    public static View addTextView( Context context, LinearLayout mainView, String value, String size, boolean withLine ) {
         LinearLayout textLayout = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.WRAP_CONTENT);
@@ -393,14 +402,25 @@ public class FormUtilities {
         textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
         textView.setText(value);
-        textView.setTextColor(context.getResources().getColor(R.color.hydrogreen));
 
+        size = size.trim();
+        if (size.equals("large")) {
+            textView.setTextAppearance(context, android.R.attr.textAppearanceLarge);
+        } else if (size.equals("medium")) {
+            textView.setTextAppearance(context, android.R.attr.textAppearanceMedium);
+        } else if (size.equals("small")) {
+            textView.setTextAppearance(context, android.R.attr.textAppearanceSmall);
+        } else {
+            int sizeInt = Integer.parseInt(size);
+            textView.setTextSize(sizeInt);
+        }
+        textView.setTextColor(context.getResources().getColor(R.color.formcolor));
         textLayout.addView(textView);
 
         if (withLine) {
             View view = new View(context);
             view.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, 2));
-            view.setBackgroundColor(context.getResources().getColor(R.color.hydrogreen));
+            view.setBackgroundColor(context.getResources().getColor(R.color.formcolor));
 
             textLayout.addView(view);
         }
