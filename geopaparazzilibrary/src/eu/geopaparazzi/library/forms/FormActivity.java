@@ -172,7 +172,10 @@ public class FormActivity extends Activity {
             for( int i = 0; i < length; i++ ) {
                 JSONObject jsonObject = formItemsArray.getJSONObject(i);
 
-                String key = jsonObject.getString(TAG_KEY).trim();
+                String key = "-";
+                if (jsonObject.has(TAG_KEY))
+                    key = jsonObject.getString(TAG_KEY).trim();
+
                 String value = "";
                 if (jsonObject.has(TAG_VALUE)) {
                     value = jsonObject.getString(TAG_VALUE).trim();
