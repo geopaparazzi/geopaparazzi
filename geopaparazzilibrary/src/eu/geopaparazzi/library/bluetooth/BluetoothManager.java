@@ -256,6 +256,8 @@ public class BluetoothManager implements BluetoothEnablementHandler {
                                         try {
                                             if (connectedBluetoothDevice != null) {
                                                 connectedBluetoothDevice.close();
+                                                if (Debug.D)
+                                                    Logger.d(LOG_TAG, "trying to close leftover device");
                                             }
                                             if ((bluetoothSocket != null)
                                                     && ((connectedBluetoothDevice == null) || (connectedBluetoothDevice
@@ -264,7 +266,7 @@ public class BluetoothManager implements BluetoothEnablementHandler {
                                                     Logger.d(LOG_TAG, "trying to close old socket");
                                                 bluetoothSocket.close();
                                             }
-                                        } catch (IOException e) {
+                                        } catch (Exception e) {
                                             if (Debug.D)
                                                 Logger.e(LOG_TAG, "Error during disconnection", e);
                                         }
