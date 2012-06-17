@@ -29,6 +29,7 @@ public class DynamicDoubleArray {
     private double[] internalArray = null;
     private final int growingSize;
     private int currentPosition = -1;
+    private final int initalSize;
 
     /**
      * Create the array of default size.
@@ -53,6 +54,7 @@ public class DynamicDoubleArray {
      * @param growingSize the size to grow the array additionally, if the array was too small. 
      */
     public DynamicDoubleArray( int initalSize, int growingSize ) {
+        this.initalSize = initalSize;
         this.growingSize = growingSize;
         internalArray = new double[initalSize];
     }
@@ -102,6 +104,21 @@ public class DynamicDoubleArray {
      */
     public int size() {
         return currentPosition + 1;
+    }
+
+    /**
+     * Revert back the array to be empty and in its initial size.
+     */
+    public void clearAsInitial() {
+        currentPosition = -1;
+        internalArray = new double[initalSize];
+    }
+
+    /**
+     * Just reset the counter, so the array starts to be populated from scratch.
+     */
+    public void clearForSameSizeReuse() {
+        currentPosition = -1;
     }
 
     /**
