@@ -177,6 +177,12 @@ public class XYChartView extends View implements ChartChangeListener, ChartProgr
             xyS.add(xArray.get(i), y);
         }
 
+        if (Math.abs(yMin - yMax) < 0.000001) {
+            // wider range
+            yMin = yMin - 1;
+            yMax = yMax + 1;
+        }
+
         xMaxAll = xMax;
         xMinAll = xMin;
         yMaxAll = yMax;
@@ -215,6 +221,12 @@ public class XYChartView extends View implements ChartChangeListener, ChartProgr
             yMin = Math.min(yMin, y);
             yMax = Math.max(yMax, y);
             xyS.add(xArray.get(i).doubleValue(), y);
+        }
+
+        if (Math.abs(yMin - yMax) < 0.000001) {
+            // wider range
+            yMin = yMin - 1;
+            yMax = yMax + 1;
         }
 
         xMaxAll = xMax;

@@ -65,7 +65,7 @@ public class DynamicDoubleArray {
      * @param position the index in which to set the value.
      * @param value the value to set.
      */
-    public void setValue( int position, double value ) {
+    public synchronized void setValue( int position, double value ) {
         if (position >= internalArray.length) {
             double[] newArray = new double[position + growingSize];
             System.arraycopy(internalArray, 0, newArray, 0, internalArray.length);
@@ -80,7 +80,7 @@ public class DynamicDoubleArray {
      * 
      * @param value the value to add.
      */
-    public void add( double value ) {
+    public synchronized void add( double value ) {
         currentPosition = currentPosition + 1;
         setValue(currentPosition, value);
     }
