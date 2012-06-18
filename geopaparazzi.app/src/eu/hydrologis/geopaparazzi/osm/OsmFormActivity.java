@@ -17,16 +17,7 @@
  */
 package eu.hydrologis.geopaparazzi.osm;
 
-import static eu.geopaparazzi.library.forms.FormUtilities.*;
-import static eu.geopaparazzi.library.forms.FormUtilities.CONSTRAINT_RANGE;
-import static eu.geopaparazzi.library.forms.FormUtilities.TAG_KEY;
-import static eu.geopaparazzi.library.forms.FormUtilities.TAG_LONGNAME;
-import static eu.geopaparazzi.library.forms.FormUtilities.TAG_TYPE;
-import static eu.geopaparazzi.library.forms.FormUtilities.TAG_VALUE;
-import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_BOOLEAN;
-import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_DOUBLE;
-import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRING;
-import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRINGCOMBO;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -52,8 +43,6 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import eu.geopaparazzi.library.forms.FormUtilities;
-import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
 import eu.geopaparazzi.library.forms.constraints.MandatoryConstraint;
 import eu.geopaparazzi.library.forms.constraints.RangeConstraint;
