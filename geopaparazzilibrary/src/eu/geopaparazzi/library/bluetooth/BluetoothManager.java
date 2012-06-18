@@ -112,6 +112,8 @@ public class BluetoothManager implements BluetoothEnablementHandler {
      */
     public void setBluetoothDevice( IBluetoothDevice connectedBluetoothDevice ) {
         if (this.connectedBluetoothDevice != null) {
+            this.connectedBluetoothDevice.close();
+            this.connectedBluetoothDevice = null;
             throw new IllegalArgumentException(
                     "The bluetoothdevice can't be set without resetting the manager. Call reset first.");
         }
@@ -256,6 +258,7 @@ public class BluetoothManager implements BluetoothEnablementHandler {
                                         try {
                                             if (connectedBluetoothDevice != null) {
                                                 connectedBluetoothDevice.close();
+                                                connectedBluetoothDevice = null;
                                                 if (Debug.D)
                                                     Logger.d(LOG_TAG, "trying to close leftover device");
                                             }
@@ -473,6 +476,7 @@ public class BluetoothManager implements BluetoothEnablementHandler {
                         connectionAndReadingPool.shutdownNow();
                         if (connectedBluetoothDevice != null) {
                             connectedBluetoothDevice.close();
+                            connectedBluetoothDevice = null;
                         }
                         if ((bluetoothSocket != null)
                                 && ((connectedBluetoothDevice == null) || (connectedBluetoothDevice.getSocket() != bluetoothSocket))) {
