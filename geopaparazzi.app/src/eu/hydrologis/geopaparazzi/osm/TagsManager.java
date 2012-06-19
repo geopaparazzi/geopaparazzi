@@ -17,7 +17,7 @@
  */
 package eu.hydrologis.geopaparazzi.osm;
 
-import static eu.geopaparazzi.library.forms.FormUtilities.*;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.*;
 
 import java.io.File;
 import java.io.FileOutputStream;

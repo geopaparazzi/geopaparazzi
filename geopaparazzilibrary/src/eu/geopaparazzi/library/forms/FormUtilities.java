@@ -135,7 +135,7 @@ public class FormUtilities {
 
     public static final String TAG_LONGNAME = "longname";
     public static final String TAG_SHORTNAME = "shortname";
-    public static final String TAG_FORM = "form";
+    public static final String TAG_FORMS = "forms";
     public static final String TAG_FORMITEMS = "formitems";
     public static final String TAG_KEY = "key";
     public static final String TAG_VALUE = "value";

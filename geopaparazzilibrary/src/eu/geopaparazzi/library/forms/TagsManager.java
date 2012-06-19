@@ -121,7 +121,7 @@ public class TagsManager {
         TagObject tag = new TagObject();
         tag.shortName = shortname;
         tag.longName = longname;
-        if (jsonObject.has(TAG_FORM)) {
+        if (jsonObject.has(TAG_FORMS)) {
             tag.hasForm = true;
         }
         tag.jsonString = jsonString;
@@ -140,13 +140,10 @@ public class TagsManager {
      *          no form is contained.
      * @throws JSONException
      */
-    public static JSONArray getFormItems( JSONObject jsonObj ) throws JSONException {
-        if (jsonObj.has(TAG_FORM)) {
-            JSONObject formObj = jsonObj.getJSONObject(TAG_FORM);
-            if (formObj.has(TAG_FORMITEMS)) {
-                JSONArray formItemsArray = formObj.getJSONArray(TAG_FORMITEMS);
-                return formItemsArray;
-            }
+    public static JSONArray getFormItems( JSONObject formObj ) throws JSONException {
+        if (formObj.has(TAG_FORMITEMS)) {
+            JSONArray formItemsArray = formObj.getJSONArray(TAG_FORMITEMS);
+            return formItemsArray;
         }
         return null;
     }

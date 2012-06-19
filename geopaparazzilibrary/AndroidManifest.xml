@@ -63,6 +63,13 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:name="eu.geopaparazzi.library.forms.FragmentDetailActivity" >
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.forms.FragmentDetailActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name=".bluetooth.BluetoothPreferencesActivity" >
             <intent-filter>
                 <action android:name="eu.geopaparazzi.library.bluetooth.BluetoothPreferencesActivity" />
