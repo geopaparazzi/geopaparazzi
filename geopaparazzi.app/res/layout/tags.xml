@@ -49,14 +49,6 @@
         android:paddingBottom="5dip"
         android:text="@string/osm_additionalinfo" />
 
-    <EditText
-        android:id="@+id/osm_additionalinfo_id"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:inputType="text"
-        android:paddingBottom="5dip"
-        android:text="" />
-
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

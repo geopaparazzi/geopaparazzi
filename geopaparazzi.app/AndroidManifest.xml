@@ -197,6 +197,13 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:name="eu.geopaparazzi.library.forms.FragmentDetailActivity" >
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.forms.FragmentDetailActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name="eu.geopaparazzi.library.webproject.WebProjectsListActivity" >
             <intent-filter>
                 <action android:name="eu.geopaparazzi.library.webproject.WebProjectsListActivity" />

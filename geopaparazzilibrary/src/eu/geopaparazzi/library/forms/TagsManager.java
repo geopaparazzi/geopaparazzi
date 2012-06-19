@@ -17,14 +17,25 @@
  */
 package eu.geopaparazzi.library.forms;
 
-import static eu.geopaparazzi.library.forms.FormUtilities.*;
+import static eu.geopaparazzi.library.forms.FormUtilities.ATTR_FORMNAME;
+import static eu.geopaparazzi.library.forms.FormUtilities.ATTR_FORMS;
+import static eu.geopaparazzi.library.forms.FormUtilities.ATTR_SECTIONNAME;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_FORMITEMS;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_FORMS;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_ITEM;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_ITEMS;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_LONGNAME;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_SHORTNAME;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_VALUES;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Set;
 
 import org.json.JSONArray;
@@ -49,6 +60,44 @@ import eu.geopaparazzi.library.util.debug.Debug;
  *      to the file in the first point.</li>
  * </ul>
  * 
+ * <p>
+ * The tags file is subdivided as follows:
+ * 
+ * [{
+ *      "sectionname": "scheda_sisma",
+ *      "sectiondescription": "this produces a button names scheda_sisma",
+ *      "forms": [
+ *          {
+ *              "formname": "Name of the section, used in the fragments list",
+ *              "formitems": [
+ *                  ....
+ *                  ....
+ *              ]
+ *          },{
+ *              "formname": "This name produces a second fragment",
+ *              "formitems": [
+ *                  ....
+ *                  ....
+ *              ]
+ *          }
+ *      ]
+ *  },{
+ *      "sectionname": "section 2",
+ *      "sectiondescription": "this produces a second button",
+ *      "forms": [
+ *          {
+ *              "formname": "this produces one fragment in the list",
+ *              "formitems": [
+ *                  ....
+ *                  ....
+ *              ]
+ *          },{
+ *      
+ *          }
+ *      ]
+ * }]
+ * 
+ * 
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
@@ -57,11 +106,11 @@ public class TagsManager {
 
     public static String TAGSFILENAME = "tags.json";
 
-    private static HashMap<String, TagObject> tagsMap = new HashMap<String, TagObject>();
+    private LinkedHashMap<String, JSONObject> sectionsMap = null;
 
     private static TagsManager tagsManager;
 
-    private static String[] tagsArrays = new String[0];
+    private String[] sectionNames;
 
     /**
      * Gets the manager singleton. 
@@ -72,16 +121,21 @@ public class TagsManager {
     public static synchronized TagsManager getInstance( Context context ) throws Exception {
         if (tagsManager == null) {
             tagsManager = new TagsManager();
-            getFileTags(context);
-
-            Set<String> tagsSet = tagsMap.keySet();
-            tagsArrays = (String[]) tagsSet.toArray(new String[tagsSet.size()]);
-            Arrays.sort(tagsArrays);
+            tagsManager.getFileTags(context);
         }
         return tagsManager;
     }
 
-    private static void getFileTags( Context context ) throws Exception {
+    /**
+     * Performs the first data reading. Necessary for everything else.
+     * 
+     * @param context
+     * @throws Exception
+     */
+    private void getFileTags( Context context ) throws Exception {
+        if (sectionsMap == null) {
+            sectionsMap = new LinkedHashMap<String, JSONObject>();
+        }
         File applicationDir = ResourcesManager.getInstance(context).getApplicationDir();
         File tagsFile = new File(applicationDir, TAGSFILENAME);
         if (!tagsFile.exists() || Debug.doOverwriteTags) {
@@ -92,25 +146,57 @@ public class TagsManager {
         }
 
         if (tagsFile.exists()) {
-            tagsMap.clear();
+            sectionsMap.clear();
             String tagsFileString = FileUtilities.readfile(tagsFile);
-            JSONArray tagArrayObj = new JSONArray(tagsFileString);
-            int tagsNum = tagArrayObj.length();
+            JSONArray sectionsArrayObj = new JSONArray(tagsFileString);
+            int tagsNum = sectionsArrayObj.length();
             for( int i = 0; i < tagsNum; i++ ) {
-                JSONObject jsonObject = tagArrayObj.getJSONObject(i);
-                TagObject tag = stringToTagObject(jsonObject.toString());
-                tagsMap.put(tag.shortName, tag);
+                JSONObject jsonObject = sectionsArrayObj.getJSONObject(i);
+                if (jsonObject.has(ATTR_SECTIONNAME)) {
+                    String sectionName = jsonObject.get(ATTR_SECTIONNAME).toString();
+                    sectionsMap.put(sectionName, jsonObject);
+                }
             }
-
         }
     }
 
-    public String[] getTagsArrays() {
-        return tagsArrays;
+    public Set<String> getSectionNames() {
+        return sectionsMap.keySet();
     }
 
-    public TagObject getTagFromName( String name ) {
-        return tagsMap.get(name);
+    public JSONObject getSectionByName( String name ) {
+        return sectionsMap.get(name);
+    }
+
+    public List<String> getFormNames4Section( JSONObject section ) throws JSONException {
+        List<String> names = new ArrayList<String>();
+        JSONArray jsonArray = section.getJSONArray(ATTR_FORMS);
+        if (jsonArray != null && jsonArray.length() > 0) {
+            for( int i = 0; i < jsonArray.length(); i++ ) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                if (jsonObject.has(ATTR_FORMNAME)) {
+                    String formName = jsonObject.getString(ATTR_FORMNAME);
+                    names.add(formName);
+                }
+            }
+        }
+        return names;
+    }
+
+    public JSONObject getForm4Name( String formName, JSONObject section ) throws JSONException {
+        JSONArray jsonArray = section.getJSONArray(ATTR_FORMS);
+        if (jsonArray != null && jsonArray.length() > 0) {
+            for( int i = 0; i < jsonArray.length(); i++ ) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                if (jsonObject.has(ATTR_FORMNAME)) {
+                    String tmpFormName = jsonObject.getString(ATTR_FORMNAME);
+                    if (tmpFormName.equals(formName)) {
+                        return jsonObject;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     public static TagObject stringToTagObject( String jsonString ) throws JSONException {

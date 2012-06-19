@@ -133,6 +133,11 @@ public class FormUtilities {
      */
     public static final String CONSTRAINT_RANGE = "range";
 
+    
+    public static final String ATTR_SECTIONNAME = "sectionname";
+    public static final String ATTR_FORMS = "forms";
+    public static final String ATTR_FORMNAME = "formname";
+    
     public static final String TAG_LONGNAME = "longname";
     public static final String TAG_SHORTNAME = "shortname";
     public static final String TAG_FORMS = "forms";

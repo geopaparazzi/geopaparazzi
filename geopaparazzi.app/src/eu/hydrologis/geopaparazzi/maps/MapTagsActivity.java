@@ -19,6 +19,7 @@ package eu.hydrologis.geopaparazzi.maps;
 
 import java.io.File;
 import java.sql.Date;
+import java.util.Set;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -53,7 +54,6 @@ public class MapTagsActivity extends Activity {
     private static final int NOTE_RETURN_CODE = 666;
     private static final int CAMERA_RETURN_CODE = 667;
     private static final int FORM_RETURN_CODE = 668;
-    private EditText additionalInfoText;
     private double latitude;
     private double longitude;
     private double elevation;
@@ -69,8 +69,6 @@ public class MapTagsActivity extends Activity {
             longitude = extras.getDouble(LibraryConstants.LONGITUDE);
             elevation = extras.getDouble(LibraryConstants.ELEVATION);
         }
-
-        additionalInfoText = (EditText) findViewById(R.id.osm_additionalinfo_id);
 
         Button imageButton = (Button) findViewById(R.id.imagefromtag);
         imageButton.setOnClickListener(new Button.OnClickListener(){
@@ -96,7 +94,8 @@ public class MapTagsActivity extends Activity {
 
         GridView buttonGridView = (GridView) findViewById(R.id.osmgridview);
         try {
-            tagNamesArray = TagsManager.getInstance(this).getTagsArrays();
+            Set<String> sectionNames = TagsManager.getInstance(this).getSectionNames();
+            tagNamesArray = sectionNames.toArray(new String[0]);
         } catch (Exception e1) {
             tagNamesArray = new String[]{getString(R.string.maptagsactivity_error_reading_tags)};
             Logger.e(this, e1.getLocalizedMessage(), e1);
@@ -106,37 +105,20 @@ public class MapTagsActivity extends Activity {
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.gpslog_row, tagNamesArray){
             public View getView( final int position, View cView, ViewGroup parent ) {
 
-                Button osmButton = new Button(MapTagsActivity.this);
-                osmButton.setText(tagNamesArray[position]);
+                Button tagButton = new Button(MapTagsActivity.this);
+                tagButton.setText(tagNamesArray[position]);
                 // osmButton.setImageResource(R.drawable.gps);
-                osmButton.setOnClickListener(new Button.OnClickListener(){
+                tagButton.setOnClickListener(new Button.OnClickListener(){
                     public void onClick( View v ) {
                         try {
-                            Date sqlDate = new Date(System.currentTimeMillis());
-                            StringBuilder sB = new StringBuilder(additionalInfoText.getText());
-                            String infoString = sB.toString();
                             String userDefinedButtonName = tagNamesArray[position];
 
-                            TagObject tag = TagsManager.getInstance(MapTagsActivity.this).getTagFromName(userDefinedButtonName);
-                            String categoryTagName = tag.longName;
-
-                            if (tag.hasForm) {
-                                // launch form activity
-                                String jsonString = tag.jsonString;
-
-                                Intent formIntent = new Intent(MapTagsActivity.this, FormActivity.class);
-                                formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_JSON, jsonString);
-                                formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_NAME, infoString); // tag.shortName);
-                                formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_CAT, categoryTagName); // tag.shortName);
-                                formIntent.putExtra(LibraryConstants.LATITUDE, latitude);
-                                formIntent.putExtra(LibraryConstants.LONGITUDE, longitude);
-                                startActivityForResult(formIntent, FORM_RETURN_CODE);
-                            } else {
-                                // insert as it is
-                                DaoNotes.addNote(getContext(), longitude, latitude, -1.0, sqlDate,infoString,
-                                        categoryTagName, null, NoteType.POI.getTypeNum());
-                                finish();
-                            }
+                            // launch form activity
+                            Intent formIntent = new Intent(MapTagsActivity.this, FormActivity.class);
+                            formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_NAME, userDefinedButtonName);
+                            formIntent.putExtra(LibraryConstants.LATITUDE, latitude);
+                            formIntent.putExtra(LibraryConstants.LONGITUDE, longitude);
+                            startActivityForResult(formIntent, FORM_RETURN_CODE);
                         } catch (Exception e) {
                             Logger.e(this, e.getLocalizedMessage(), e);
                             e.printStackTrace();
@@ -145,7 +127,7 @@ public class MapTagsActivity extends Activity {
                     }
                 });
 
-                return osmButton;
+                return tagButton;
             }
         };
 
