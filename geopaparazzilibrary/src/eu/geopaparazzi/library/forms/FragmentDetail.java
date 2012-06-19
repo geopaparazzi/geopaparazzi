@@ -1,47 +1,46 @@
 package eu.geopaparazzi.library.forms;
 
-import static eu.geopaparazzi.library.forms.FormUtilities.*;
+import static eu.geopaparazzi.library.forms.FormUtilities.CONSTRAINT_MANDATORY;
+import static eu.geopaparazzi.library.forms.FormUtilities.CONSTRAINT_RANGE;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_KEY;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_TYPE;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_VALUE;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_BOOLEAN;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_DATE;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_DOUBLE;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_LABEL;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_LABELWITHLINE;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRING;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRINGCOMBO;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRINGMULTIPLECHOICE;
 
-import java.sql.Date;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
-import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
 import eu.geopaparazzi.library.forms.constraints.MandatoryConstraint;
 import eu.geopaparazzi.library.forms.constraints.RangeConstraint;
-import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.library.util.debug.Logger;
 
 public class FragmentDetail extends Fragment {
 
     private HashMap<String, View> key2WidgetMap = new HashMap<String, View>();
     private HashMap<String, Constraints> key2ConstraintsMap = new HashMap<String, Constraints>();
     private List<String> keyList = new ArrayList<String>();
-    private JSONObject formObject;
-    private String selectedFormName;
-    private String sectionName;
-    private JSONObject sectionObject;
+    private LayoutInflater inflater;
+    private ViewGroup container;
 
     @Override
     public void onCreate( Bundle savedInstanceState ) {
@@ -56,31 +55,37 @@ public class FragmentDetail extends Fragment {
 
     @Override
     public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
+        this.inflater = inflater;
+        this.container = container;
         View view = inflater.inflate(R.layout.details, container, false);
+        LinearLayout mainView = (LinearLayout) view.findViewById(R.id.form_linear);
+        generateForm(mainView, null, null);
+        return view;
+    }
 
+    private void generateForm( LinearLayout mainView, String selectedFormName, JSONObject sectionObject ) {
         try {
             FragmentActivity activity = getActivity();
-            FragmentList listFragment = (FragmentList) getFragmentManager().findFragmentById(R.id.listFragment);
-            if (listFragment != null) {
-                selectedFormName = listFragment.getSelectedItemName();
-                sectionObject = listFragment.getSectionObject();
-            } else {
-                if (activity instanceof FragmentDetailActivity) {
-                    FragmentDetailActivity fragmentDetailActivity = (FragmentDetailActivity) activity;
-                    selectedFormName = fragmentDetailActivity.getFormName();
-                    sectionName = fragmentDetailActivity.getSectionName();
-                    sectionObject = TagsManager.getInstance(activity).getSectionByName(sectionName);
+            if (selectedFormName == null || sectionObject == null) {
+                FragmentList listFragment = (FragmentList) getFragmentManager().findFragmentById(R.id.listFragment);
+                if (listFragment != null) {
+                    selectedFormName = listFragment.getSelectedItemName();
+                    sectionObject = listFragment.getSectionObject();
+                } else {
+                    if (activity instanceof FragmentDetailActivity) {
+                        FragmentDetailActivity fragmentDetailActivity = (FragmentDetailActivity) activity;
+                        selectedFormName = fragmentDetailActivity.getFormName();
+                        String sectionName = fragmentDetailActivity.getSectionName();
+                        sectionObject = TagsManager.getInstance(activity).getSectionByName(sectionName);
+                    }
                 }
             }
-
             if (selectedFormName != null) {
-                formObject = TagsManager.getInstance(activity).getForm4Name(selectedFormName, sectionObject);
+                JSONObject formObject = TagsManager.getInstance(activity).getForm4Name(selectedFormName, sectionObject);
 
                 key2WidgetMap.clear();
                 keyList.clear();
                 key2ConstraintsMap.clear();
-
-                LinearLayout mainView = (LinearLayout) view.findViewById(R.id.form_linear);
 
                 JSONArray formItemsArray = TagsManager.getFormItems(formObject);
 
@@ -160,7 +165,12 @@ public class FragmentDetail extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return view;
+    }
+
+    public void setForm( String selectedItemName, JSONObject sectionObject ) {
+        View view = inflater.inflate(R.layout.details, container, false);
+        LinearLayout mainView = (LinearLayout) view.findViewById(R.id.form_linear);
+        generateForm(mainView, selectedItemName, sectionObject);
     }
 
     // private String storeNote() throws JSONException {

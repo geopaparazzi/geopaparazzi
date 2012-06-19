@@ -16,11 +16,10 @@ public class FragmentDetailActivity extends FragmentActivity {
 
         // Need to check if Activity has been switched to landscape mode
         // If yes, finished and go back to the start Activity
-        // if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
-        // {
-        // finish();
-        // return;
-        // }
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            finish();
+            return;
+        }
 
         if (savedInstanceState != null) {
             formName = savedInstanceState.getString(FormUtilities.ATTR_FORMNAME);

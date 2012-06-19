@@ -36,17 +36,16 @@ public class FragmentList extends android.support.v4.app.ListFragment {
     @Override
     public void onListItemClick( ListView l, View v, int position, long id ) {
         selectedItemName = (String) getListAdapter().getItem(position);
-        // FragmentDetail fragment = (FragmentDetail)
-        // getFragmentManager().findFragmentById(R.id.detailFragment);
-        // if (fragment != null && fragment.isInLayout()) {
-        // // fragment.setForm(selectedItemName);
-        // } else {
-        String sectionName = activity.getSectionName();
-        Intent intent = new Intent(getActivity().getApplicationContext(), FragmentDetailActivity.class);
-        intent.putExtra(FormUtilities.ATTR_FORMNAME, selectedItemName);
-        intent.putExtra(FormUtilities.ATTR_SECTIONNAME, sectionName);
-        startActivity(intent);
-        // }
+        FragmentDetail fragment = (FragmentDetail) getFragmentManager().findFragmentById(R.id.detailFragment);
+        if (fragment != null && fragment.isInLayout()) {
+            fragment.setForm(selectedItemName, activity.getSectionObject());
+        } else {
+            String sectionName = activity.getSectionName();
+            Intent intent = new Intent(getActivity().getApplicationContext(), FragmentDetailActivity.class);
+            intent.putExtra(FormUtilities.ATTR_FORMNAME, selectedItemName);
+            intent.putExtra(FormUtilities.ATTR_SECTIONNAME, sectionName);
+            startActivity(intent);
+        }
     }
 
     public String getSelectedItemName() {
