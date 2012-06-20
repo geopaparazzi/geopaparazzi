@@ -185,6 +185,9 @@ public class FragmentDetail extends Fragment {
      * @throws Exception
      */
     public String storeFormItems( boolean doConstraintsCheck ) throws Exception {
+        if (selectedFormName == null) {
+            return null;
+        }
         JSONObject form4Name = TagsManager.getInstance(getActivity()).getForm4Name(selectedFormName, sectionObject);
         JSONArray formItems = TagsManager.getFormItems(form4Name);
 
