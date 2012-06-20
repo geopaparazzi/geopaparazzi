@@ -28,13 +28,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.Toast;
 import eu.geopaparazzi.library.camera.CameraActivity;
 import eu.geopaparazzi.library.forms.FormActivity;
 import eu.geopaparazzi.library.forms.TagsManager;
-import eu.geopaparazzi.library.forms.TagsManager.TagObject;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
@@ -118,6 +116,7 @@ public class MapTagsActivity extends Activity {
                             formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_NAME, userDefinedButtonName);
                             formIntent.putExtra(LibraryConstants.LATITUDE, latitude);
                             formIntent.putExtra(LibraryConstants.LONGITUDE, longitude);
+                            formIntent.putExtra(LibraryConstants.ELEVATION, elevation);
                             startActivityForResult(formIntent, FORM_RETURN_CODE);
                         } catch (Exception e) {
                             Logger.e(this, e.getLocalizedMessage(), e);

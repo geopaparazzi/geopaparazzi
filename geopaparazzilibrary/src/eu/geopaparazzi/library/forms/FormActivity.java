@@ -22,6 +22,7 @@ import static eu.geopaparazzi.library.forms.FormUtilities.CONSTRAINT_RANGE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_KEY;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_VALUE;
 
+import java.sql.Date;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,8 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
@@ -63,8 +66,9 @@ public class FormActivity extends FragmentActivity {
     private static final int MENU_SAVE = Menu.FIRST;
     private static final int MENU_CANCEL = 2;
 
-    private double latitude;
-    private double longitude;
+    private double latitude = -9999.0;
+    private double longitude = -9999.0;
+    private double elevation = -9999.0;
     private String sectionName;
     private JSONObject sectionObject;
     private List<String> formNames4Section = new ArrayList<String>();
@@ -77,6 +81,7 @@ public class FormActivity extends FragmentActivity {
             sectionName = extras.getString(LibraryConstants.PREFS_KEY_FORM_NAME);
             latitude = extras.getDouble(LibraryConstants.LATITUDE);
             longitude = extras.getDouble(LibraryConstants.LONGITUDE);
+            elevation = extras.getDouble(LibraryConstants.ELEVATION);
         }
 
         try {
@@ -189,6 +194,22 @@ public class FormActivity extends FragmentActivity {
                 }
             }
         }
+
+        String sectionObjectString = sectionObject.toString();
+        Date sqlDate = new Date(System.currentTimeMillis());
+        String timestamp = LibraryConstants.TIME_FORMATTER_SQLITE.format(sqlDate);
+
+        String[] formDataArray = {//
+        String.valueOf(longitude), //
+                String.valueOf(latitude), //
+                String.valueOf(elevation), //
+                timestamp, //
+                sectionName, //
+                "POI", //
+                sectionObjectString};
+        Intent intent = getIntent();
+        intent.putExtra(LibraryConstants.PREFS_KEY_FORM, formDataArray);
+        setResult(Activity.RESULT_OK, intent);
     }
 
     public boolean onKeyDown( int keyCode, KeyEvent event ) {
