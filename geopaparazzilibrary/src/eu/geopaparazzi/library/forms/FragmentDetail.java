@@ -41,6 +41,8 @@ public class FragmentDetail extends Fragment {
     private List<String> keyList = new ArrayList<String>();
     private LayoutInflater inflater;
     private ViewGroup container;
+    private String selectedFormName;
+    private JSONObject sectionObject;
 
     @Override
     public void onCreate( Bundle savedInstanceState ) {
@@ -59,11 +61,6 @@ public class FragmentDetail extends Fragment {
         this.container = container;
         View view = inflater.inflate(R.layout.details, container, false);
         LinearLayout mainView = (LinearLayout) view.findViewById(R.id.form_linear);
-        generateForm(mainView, null, null);
-        return view;
-    }
-
-    private void generateForm( LinearLayout mainView, String selectedFormName, JSONObject sectionObject ) {
         try {
             FragmentActivity activity = getActivity();
             if (selectedFormName == null || sectionObject == null) {
@@ -165,12 +162,12 @@ public class FragmentDetail extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return view;
     }
 
     public void setForm( String selectedItemName, JSONObject sectionObject ) {
-        View view = inflater.inflate(R.layout.details, container, false);
-        LinearLayout mainView = (LinearLayout) view.findViewById(R.id.form_linear);
-        generateForm(mainView, selectedItemName, sectionObject);
+        this.selectedFormName = selectedItemName;
+        this.sectionObject = sectionObject;
     }
 
     // private String storeNote() throws JSONException {

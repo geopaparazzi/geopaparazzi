@@ -6,6 +6,7 @@ import org.json.JSONObject;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -36,9 +37,16 @@ public class FragmentList extends android.support.v4.app.ListFragment {
     @Override
     public void onListItemClick( ListView l, View v, int position, long id ) {
         selectedItemName = (String) getListAdapter().getItem(position);
-        FragmentDetail fragment = (FragmentDetail) getFragmentManager().findFragmentById(R.id.detailFragment);
-        if (fragment != null && fragment.isInLayout()) {
-            fragment.setForm(selectedItemName, activity.getSectionObject());
+        FragmentDetail oldFragment = (FragmentDetail) getFragmentManager().findFragmentById(R.id.detailFragment);
+        if (oldFragment != null ){//&& oldFragment.isInLayout()) {
+            FragmentDetail newFragment = new FragmentDetail();
+            newFragment.setForm(selectedItemName, activity.getSectionObject());
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            transaction.remove(oldFragment);
+            transaction.add(R.id.detailFragment, newFragment);
+            // transaction.replace(R.id.detailFragment, newFragment);
+            // transaction.addToBackStack(null); // Ads FirstFragment to the back-stack
+            transaction.commit();
         } else {
             String sectionName = activity.getSectionName();
             Intent intent = new Intent(getActivity().getApplicationContext(), FragmentDetailActivity.class);
