@@ -33,7 +33,7 @@
     <string name="wrongLatitude">Latitude has to be a number between -90 and 90.</string>
     <string name="okcoord">use coord</string>
     <string name="message_sent">Message sent</string>
-    <string name="check_valid_field">Please check that the field \"{0}\" is valid.</string>
+    <string name="check_valid_field">Please check that the field \"{0}\" in section \"{1}\" is valid. Not validated constraints: {2}.</string>
     <string name="select_dotdot">Select…</string>
     <string name="type_to_filter">type to filter</string>
     <string name="webprojects_list_title">Remote Projects List</string>

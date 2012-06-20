@@ -17,29 +17,29 @@
  */
 package eu.geopaparazzi.library.forms;
 
-import static eu.geopaparazzi.library.forms.FormUtilities.TAG_LONGNAME;
+import static eu.geopaparazzi.library.forms.FormUtilities.CONSTRAINT_MANDATORY;
+import static eu.geopaparazzi.library.forms.FormUtilities.CONSTRAINT_RANGE;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_KEY;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_TYPE;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_VALUE;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.Spinner;
-import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
+import eu.geopaparazzi.library.forms.constraints.MandatoryConstraint;
+import eu.geopaparazzi.library.forms.constraints.RangeConstraint;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.debug.Logger;
+import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * The form activity.
@@ -68,9 +68,6 @@ public class FormActivity extends FragmentActivity {
     private String formNameDefinition;
     private String formCategoryDefinition;
 
-    private HashMap<String, View> key2WidgetMap = new HashMap<String, View>();
-    private HashMap<String, Constraints> key2ConstraintsMap = new HashMap<String, Constraints>();
-    private List<String> keyList = new ArrayList<String>();
     private JSONArray formItemsArray;
     private JSONObject jsonFormObject;
     private double latitude;
@@ -82,10 +79,6 @@ public class FormActivity extends FragmentActivity {
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
 
-        key2WidgetMap.clear();
-        keyList.clear();
-        key2ConstraintsMap.clear();
-
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             sectionName = extras.getString(LibraryConstants.PREFS_KEY_FORM_NAME);
@@ -95,6 +88,8 @@ public class FormActivity extends FragmentActivity {
 
         try {
             sectionObject = TagsManager.getInstance(this).getSectionByName(sectionName);
+            // copy the section object, which will be kept around along te activity
+            sectionObject = new JSONObject(sectionObject.toString());
             formNames4Section = TagsManager.getInstance(this).getFormNames4Section(sectionObject);
         } catch (Exception e) {
             e.printStackTrace();
@@ -113,7 +108,11 @@ public class FormActivity extends FragmentActivity {
     public boolean onMenuItemSelected( int featureId, MenuItem item ) {
         switch( item.getItemId() ) {
         case MENU_SAVE:
-            saveAction();
+            try {
+                saveAction();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             return true;
         case MENU_CANCEL:
             finish();
@@ -143,9 +142,61 @@ public class FormActivity extends FragmentActivity {
     public double getLongitude() {
         return longitude;
     }
-    
-    private void saveAction() {
-        
+
+    private void saveAction() throws Exception {
+        // extract constraints
+        List<String> availableFormNames = TagsManager.getInstance(this).getFormNames4Section(sectionObject);
+        for( String formName : availableFormNames ) {
+            JSONObject formObject = TagsManager.getInstance(this).getForm4Name(formName, sectionObject);
+
+            JSONArray formItemsArray = TagsManager.getFormItems(formObject);
+
+            int length = formItemsArray.length();
+            Constraints constraints = new Constraints();
+            String value = null;
+            for( int i = 0; i < length; i++ ) {
+                JSONObject jsonObject = formItemsArray.getJSONObject(i);
+
+                String key = "-";
+                if (jsonObject.has(TAG_KEY))
+                    key = jsonObject.getString(TAG_KEY).trim();
+
+                if (jsonObject.has(TAG_VALUE)) {
+                    value = jsonObject.getString(TAG_VALUE).trim();
+                }
+                String type = FormUtilities.TYPE_STRING;
+                if (jsonObject.has(TAG_TYPE)) {
+                    type = jsonObject.getString(TAG_TYPE).trim();
+                }
+
+                if (jsonObject.has(CONSTRAINT_MANDATORY)) {
+                    String mandatory = jsonObject.getString(CONSTRAINT_MANDATORY).trim();
+                    if (mandatory.trim().equals("yes")) {
+                        constraints.addConstraint(new MandatoryConstraint());
+                    }
+                }
+                if (jsonObject.has(CONSTRAINT_RANGE)) {
+                    String range = jsonObject.getString(CONSTRAINT_RANGE).trim();
+                    String[] rangeSplit = range.split(",");
+                    if (rangeSplit.length == 2) {
+                        boolean lowIncluded = rangeSplit[0].startsWith("[") ? true : false;
+                        String lowStr = rangeSplit[0].substring(1);
+                        Double low = Utilities.adapt(lowStr, Double.class);
+                        boolean highIncluded = rangeSplit[1].endsWith("]") ? true : false;
+                        String highStr = rangeSplit[1].substring(0, rangeSplit[1].length() - 1);
+                        Double high = Utilities.adapt(highStr, Double.class);
+                        constraints.addConstraint(new RangeConstraint(low, lowIncluded, high, highIncluded));
+                    }
+                }
+                if (value == null || !constraints.isValid(value)) {
+                    String constraintDescription = constraints.getDescription();
+                    String validfieldMsg = getString(R.string.check_valid_field);
+                    String msg = MessageFormat.format(validfieldMsg, key, sectionName, constraintDescription);
+                    Utilities.messageDialog(this, msg, null);
+                    return;
+                }
+            }
+        }
     }
 
     // public void onCreate( Bundle icicle ) {
