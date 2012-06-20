@@ -15,6 +15,7 @@
 	<color name="mygreen_light">#66CC99</color>
 	<color name="hydrogreen">#5d9d76</color>
 	<color name="formcolor">#5d9d76</color>
+	<color name="formcolorselected">#ff0000</color>
 	<color name="formbgcolor">#FFFFFF</color>
 	<color name="gpsred_fill">#ff8484</color>
 	<color name="gpsred_stroke">#ff0000</color>

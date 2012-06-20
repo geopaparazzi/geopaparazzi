@@ -5,6 +5,7 @@ import java.util.List;
 import org.json.JSONObject;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 
 public class FragmentList extends android.support.v4.app.ListFragment {
@@ -46,6 +48,20 @@ public class FragmentList extends android.support.v4.app.ListFragment {
     @Override
     public void onListItemClick( ListView l, View v, int position, long id ) {
         selectedItemName = (String) getListAdapter().getItem(position);
+        int childCount = l.getChildCount();
+        for( int i = 0; i < childCount; i++ ) {
+            View childAt = l.getChildAt(i);
+            if (childAt instanceof TextView) {
+                TextView textView = (TextView) childAt;
+                textView.setTypeface(null, Typeface.NORMAL);
+            }
+        }
+        if (v instanceof TextView) {
+            TextView textView = (TextView) v;
+            textView.setTypeface(null, Typeface.BOLD_ITALIC);
+            // textView.setTextColor(v.getResources().getColor(R.color.formcolorselected));
+        }
+
         FragmentDetail oldFragment = (FragmentDetail) getFragmentManager().findFragmentById(R.id.detailFragment);
         if (oldFragment != null) {// && oldFragment.isInLayout()) {
             FragmentDetail newFragment = new FragmentDetail();
