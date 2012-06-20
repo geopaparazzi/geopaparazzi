@@ -337,7 +337,12 @@ public class FormUtilities {
         final Button button = new Button(context);
         button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
         button.setPadding(15, 5, 15, 5);
-        button.setText("...");
+
+        if (value == null || value.length() == 0) {
+            button.setText("...");
+        } else {
+            button.setText(value);
+        }
         button.setOnClickListener(new View.OnClickListener(){
             public void onClick( View v ) {
                 MultipleChoiceDialog dialog = new MultipleChoiceDialog();
