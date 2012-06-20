@@ -5,6 +5,8 @@ import java.util.List;
 import org.json.JSONObject;
 
 import android.content.Intent;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.GradientDrawable.Orientation;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
@@ -31,6 +33,13 @@ public class FragmentList extends android.support.v4.app.ListFragment {
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.fragment_list_item,
                 fragmentTitles.toArray(new String[0]));
+
+        int color = getActivity().getResources().getColor(R.color.formcolor);
+        int[] colors = {0, color, 0}; // red for the example
+        ListView listView = getListView();
+        listView.setDivider(new GradientDrawable(Orientation.RIGHT_LEFT, colors));
+        listView.setDividerHeight(2);
+
         setListAdapter(adapter);
     }
 
@@ -38,7 +47,7 @@ public class FragmentList extends android.support.v4.app.ListFragment {
     public void onListItemClick( ListView l, View v, int position, long id ) {
         selectedItemName = (String) getListAdapter().getItem(position);
         FragmentDetail oldFragment = (FragmentDetail) getFragmentManager().findFragmentById(R.id.detailFragment);
-        if (oldFragment != null ){//&& oldFragment.isInLayout()) {
+        if (oldFragment != null) {// && oldFragment.isInLayout()) {
             FragmentDetail newFragment = new FragmentDetail();
             newFragment.setForm(selectedItemName, activity.getSectionObject());
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
