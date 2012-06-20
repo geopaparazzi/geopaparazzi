@@ -76,6 +76,8 @@ public class CameraActivity extends Activity {
     private double lat;
     private double elevation;
     private int lastImageId;
+    private String imageName;
+    private String imagePropertiesName;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -88,6 +90,7 @@ public class CameraActivity extends Activity {
                 File applicationDir = ResourcesManager.getInstance(this).getApplicationDir();
                 imageSaveFolder = new File(applicationDir, imageSaveFolderRelativePath);
             }
+            imageName = extras.getString(LibraryConstants.PREFS_KEY_CAMERA_IMAGENAME);
             lon = extras.getDouble(LibraryConstants.LONGITUDE);
             lat = extras.getDouble(LibraryConstants.LATITUDE);
             elevation = extras.getDouble(LibraryConstants.ELEVATION);
@@ -111,7 +114,18 @@ public class CameraActivity extends Activity {
 
         currentDate = new Date();
         currentDatestring = LibraryConstants.TIMESTAMPFORMATTER.format(currentDate);
-        imageFilePath = mediaFolder.getAbsolutePath() + "/IMG_" + currentDatestring + ".jpg";
+
+        if (imageName == null) {
+            imageName = "IMG_" + currentDatestring + ".jpg";
+            imagePropertiesName = "IMG_" + currentDatestring + ".properties";
+        } else {
+            imageFilePath = mediaFolder.getAbsolutePath() + File.separator + imageName;
+            File imgFile = new File(imageFilePath);
+            String nameWithoutExtention = FileUtilities.getNameWithoutExtention(imgFile);
+            imagePropertiesName = nameWithoutExtention + ".properties";
+        }
+
+        imageFilePath = mediaFolder.getAbsolutePath() + File.separator + imageName;
         File imgFile = new File(imageFilePath);
         Uri outputFileUri = Uri.fromFile(imgFile);
 
@@ -174,7 +188,7 @@ public class CameraActivity extends Activity {
                 exif.saveAttributes();
 
                 // create props file
-                String propertiesFilePath = mediaFolder.getAbsolutePath() + "/IMG_" + currentDatestring + ".properties";
+                String propertiesFilePath = mediaFolder.getAbsolutePath() + File.separator + imagePropertiesName;
                 File propertiesFile = new File(propertiesFilePath);
                 BufferedWriter bW = null;
                 try {
@@ -196,7 +210,7 @@ public class CameraActivity extends Activity {
                 /*
                  * add the image to the database
                  */
-                String relativeImageFilePath = mediaFolder.getName() + "/IMG_" + currentDatestring + ".jpg";
+                String relativeImageFilePath = mediaFolder.getName() + File.separator + imageName;
 
                 Intent intent = getIntent();
                 intent.putExtra(LibraryConstants.PREFS_KEY_PATH, relativeImageFilePath);

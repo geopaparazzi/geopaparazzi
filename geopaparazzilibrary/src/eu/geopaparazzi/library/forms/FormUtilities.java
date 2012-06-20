@@ -17,11 +17,17 @@
  */
 package eu.geopaparazzi.library.forms;
 
+import java.io.File;
+import java.util.Date;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -33,10 +39,14 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.camera.CameraActivity;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
 import eu.geopaparazzi.library.forms.constraints.MandatoryConstraint;
 import eu.geopaparazzi.library.forms.constraints.RangeConstraint;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.MultipleChoiceDialog;
+import eu.geopaparazzi.library.util.PositionUtilities;
+import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 
 /**
@@ -354,6 +364,69 @@ public class FormUtilities {
         return button;
     }
 
+    public static View addPictureView( final Context context, LinearLayout mainView, String key, String value,
+            final String[] itemsArray, String constraintDescription ) {
+        LinearLayout textLayout = new LinearLayout(context);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
+                LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(10, 10, 10, 10);
+        textLayout.setLayoutParams(layoutParams);
+        textLayout.setOrientation(LinearLayout.VERTICAL);
+        mainView.addView(textLayout);
+
+        TextView textView = new TextView(context);
+        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        textView.setPadding(2, 2, 2, 2);
+        textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
+        textView.setTextColor(context.getResources().getColor(R.color.formcolor));
+        textLayout.addView(textView);
+
+        final Button button = new Button(context);
+        button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        button.setPadding(15, 5, 15, 5);
+        button.setText("Take picture");
+        textLayout.addView(button);
+
+        final EditText imagesText = new EditText(context);
+        imagesText.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        imagesText.setPadding(2, 2, 2, 2);
+        imagesText.setText(value);
+        imagesText.setTextColor(context.getResources().getColor(R.color.black));
+        imagesText.setKeyListener(null);
+        textLayout.addView(textView);
+
+        button.setOnClickListener(new View.OnClickListener(){
+            public void onClick( View v ) {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+                double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
+
+                Date currentDate = new Date();
+                String currentDatestring = LibraryConstants.TIMESTAMPFORMATTER.format(currentDate);
+                File mediaDir = ResourcesManager.getInstance(context).getMediaDir();
+                File imageFile = new File(mediaDir, "IMG_" + currentDatestring + ".jpg");
+                String relativeImagePath = mediaDir.getName() + File.separator + imageFile.getName();
+                String text = imagesText.getText().toString();
+                StringBuilder sb = new StringBuilder();
+                sb.append(text);
+                if (text.length() != 0) {
+                    sb.append(";");
+                }
+                sb.append(relativeImagePath);
+                imagesText.setText(sb.toString());
+                
+                Intent cameraIntent = new Intent(context, CameraActivity.class);
+                cameraIntent.putExtra(LibraryConstants.PREFS_KEY_CAMERA_IMAGENAME, imageFile.getName());
+                if (gpsLocation != null) {
+                    cameraIntent.putExtra(LibraryConstants.LATITUDE, gpsLocation[1]);
+                    cameraIntent.putExtra(LibraryConstants.LONGITUDE, gpsLocation[0]);
+                    cameraIntent.putExtra(LibraryConstants.ELEVATION, gpsLocation[2]);
+                }
+                context.startActivity(cameraIntent);
+            }
+        });
+
+        return imagesText;
+    }
     /**
      * Check an {@link JSONObject object} for constraints and collect them.
      * 
