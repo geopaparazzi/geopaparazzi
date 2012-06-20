@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.os.Bundle;
@@ -27,12 +28,17 @@ import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
 import eu.geopaparazzi.library.forms.constraints.MandatoryConstraint;
 import eu.geopaparazzi.library.forms.constraints.RangeConstraint;
 import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.library.util.debug.Logger;
 
 public class FragmentDetail extends Fragment {
 
@@ -170,48 +176,56 @@ public class FragmentDetail extends Fragment {
         this.sectionObject = sectionObject;
     }
 
-    // private String storeNote() throws JSONException {
-    // // update the name with info
-    // jsonFormObject.put(TAG_LONGNAME, formNameDefinition);
-    //
-    // // update the items
-    // for( String key : keyList ) {
-    // Constraints constraints = key2ConstraintsMap.get(key);
-    //
-    // View view = key2WidgetMap.get(key);
-    // String text = null;
-    // if (view instanceof CheckBox) {
-    // CheckBox checkBox = (CheckBox) view;
-    // boolean checked = checkBox.isChecked();
-    // text = checked ? "true" : "false";
-    // } else if (view instanceof Button) {
-    // Button button = (Button) view;
-    // text = button.getText().toString();
-    // if (text.trim().equals("...")) {
-    // text = "";
-    // }
-    // } else if (view instanceof TextView) {
-    // TextView textView = (TextView) view;
-    // text = textView.getText().toString();
-    // } else if (view instanceof Spinner) {
-    // Spinner spinner = (Spinner) view;
-    // text = spinner.getSelectedItem().toString();
-    // }
-    //
-    // if (!constraints.isValid(text)) {
-    // return key;
-    // }
-    //
-    // try {
-    // if (text != null)
-    // FormUtilities.update(formItemsArray, key, text);
-    // } catch (JSONException e) {
-    // Logger.e(this, e.getLocalizedMessage(), e);
-    // e.printStackTrace();
-    // }
-    // }
-    //
-    // return null;
-    // }
+    /**
+     * Store the form items the widgets.
+     * 
+     * @param doConstraintsCheck if <code>true</code>, a check on all constraints is performed.
+     * @return <code>null</code>, if everything was saved properly, the key of the items
+     *              that didn't pass the constraint check.
+     * @throws Exception
+     */
+    public String storeFormItems( boolean doConstraintsCheck ) throws Exception {
+        JSONObject form4Name = TagsManager.getInstance(getActivity()).getForm4Name(selectedFormName, sectionObject);
+        JSONArray formItems = TagsManager.getFormItems(form4Name);
+
+        // update the items
+        for( String key : keyList ) {
+            Constraints constraints = key2ConstraintsMap.get(key);
+
+            View view = key2WidgetMap.get(key);
+            String text = null;
+            if (view instanceof CheckBox) {
+                CheckBox checkBox = (CheckBox) view;
+                boolean checked = checkBox.isChecked();
+                text = checked ? "true" : "false";
+            } else if (view instanceof Button) {
+                Button button = (Button) view;
+                text = button.getText().toString();
+                if (text.trim().equals("...")) {
+                    text = "";
+                }
+            } else if (view instanceof TextView) {
+                TextView textView = (TextView) view;
+                text = textView.getText().toString();
+            } else if (view instanceof Spinner) {
+                Spinner spinner = (Spinner) view;
+                text = spinner.getSelectedItem().toString();
+            }
+
+            if (doConstraintsCheck && !constraints.isValid(text)) {
+                return key;
+            }
+
+            try {
+                if (text != null)
+                    FormUtilities.update(formItems, key, text);
+            } catch (JSONException e) {
+                Logger.e(this, e.getLocalizedMessage(), e);
+                e.printStackTrace();
+            }
+        }
+
+        return null;
+    }
 
 }

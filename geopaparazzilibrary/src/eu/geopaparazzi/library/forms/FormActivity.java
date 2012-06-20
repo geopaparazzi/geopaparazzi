@@ -113,6 +113,7 @@ public class FormActivity extends FragmentActivity {
     public boolean onMenuItemSelected( int featureId, MenuItem item ) {
         switch( item.getItemId() ) {
         case MENU_SAVE:
+            saveAction();
             return true;
         case MENU_CANCEL:
             finish();
@@ -141,6 +142,10 @@ public class FormActivity extends FragmentActivity {
 
     public double getLongitude() {
         return longitude;
+    }
+    
+    private void saveAction() {
+        
     }
 
     // public void onCreate( Bundle icicle ) {

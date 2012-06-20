@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.util.Utilities;
 
 public class FragmentList extends android.support.v4.app.ListFragment {
     private List<String> fragmentTitles;
@@ -64,6 +65,12 @@ public class FragmentList extends android.support.v4.app.ListFragment {
 
         FragmentDetail oldFragment = (FragmentDetail) getFragmentManager().findFragmentById(R.id.detailFragment);
         if (oldFragment != null) {// && oldFragment.isInLayout()) {
+            try {
+                oldFragment.storeFormItems(false);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Utilities.messageDialog(activity, "An error occurred while storing the form data.", null);
+            }
             FragmentDetail newFragment = new FragmentDetail();
             newFragment.setForm(selectedItemName, activity.getSectionObject());
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
