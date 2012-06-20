@@ -20,7 +20,6 @@ package eu.geopaparazzi.library.forms;
 import static eu.geopaparazzi.library.forms.FormUtilities.CONSTRAINT_MANDATORY;
 import static eu.geopaparazzi.library.forms.FormUtilities.CONSTRAINT_RANGE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_KEY;
-import static eu.geopaparazzi.library.forms.FormUtilities.TAG_TYPE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_VALUE;
 
 import java.text.MessageFormat;
@@ -32,6 +31,7 @@ import org.json.JSONObject;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import eu.geopaparazzi.library.R;
@@ -189,6 +189,15 @@ public class FormActivity extends FragmentActivity {
                 }
             }
         }
+    }
+
+    public boolean onKeyDown( int keyCode, KeyEvent event ) {
+        // force to exit through the exit button, in order to avoid losing info
+        switch( keyCode ) {
+        case KeyEvent.KEYCODE_BACK:
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     // public void onCreate( Bundle icicle ) {
