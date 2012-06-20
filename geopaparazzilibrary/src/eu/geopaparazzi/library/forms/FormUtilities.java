@@ -124,11 +124,9 @@ public class FormUtilities {
     public static final String TYPE_PRIMARYKEY = "primary_key";
 
     /**
-     * Type for picture element.
-     * 
-     * <b>Not in use yet.</b>
+     * Type for pictures element.
      */
-    public static final String TYPE_PICTURE = "picture";
+    public static final String TYPE_PICTURES = "pictures";
 
     /**
      * Type for barcode element.
@@ -365,7 +363,7 @@ public class FormUtilities {
     }
 
     public static View addPictureView( final Context context, LinearLayout mainView, String key, String value,
-            final String[] itemsArray, String constraintDescription ) {
+            String constraintDescription ) {
         LinearLayout textLayout = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.WRAP_CONTENT);
@@ -393,7 +391,7 @@ public class FormUtilities {
         imagesText.setText(value);
         imagesText.setTextColor(context.getResources().getColor(R.color.black));
         imagesText.setKeyListener(null);
-        textLayout.addView(textView);
+        textLayout.addView(imagesText);
 
         button.setOnClickListener(new View.OnClickListener(){
             public void onClick( View v ) {
@@ -413,7 +411,7 @@ public class FormUtilities {
                 }
                 sb.append(relativeImagePath);
                 imagesText.setText(sb.toString());
-                
+
                 Intent cameraIntent = new Intent(context, CameraActivity.class);
                 cameraIntent.putExtra(LibraryConstants.PREFS_KEY_CAMERA_IMAGENAME, imageFile.getName());
                 if (gpsLocation != null) {
@@ -424,7 +422,9 @@ public class FormUtilities {
                 context.startActivity(cameraIntent);
             }
         });
-
+       
+        // TODO thumbnails? ThumbnailUtils.extractThumbnail(null, 0, 0);
+        
         return imagesText;
     }
     /**

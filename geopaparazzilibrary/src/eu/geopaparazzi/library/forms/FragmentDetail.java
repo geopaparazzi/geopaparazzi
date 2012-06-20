@@ -10,7 +10,7 @@ import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_LABEL;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_LABELWITHLINE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRING;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRINGCOMBO;
-import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRINGMULTIPLECHOICE;
+import static eu.geopaparazzi.library.forms.FormUtilities.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -129,6 +129,8 @@ public class FragmentDetail extends Fragment {
                         String[] itemsArray = TagsManager.comboItems2StringArray(comboItems);
                         addedView = FormUtilities.addMultiSelectionView(activity, mainView, key, value, itemsArray,
                                 constraintDescription);
+                    } else if (type.equals(TYPE_PICTURES)) {
+                        addedView = FormUtilities.addPictureView(activity, mainView, key, value, constraintDescription);
                     } else {
                         System.out.println("Type non implemented yet: " + type);
                     }
@@ -143,7 +145,7 @@ public class FragmentDetail extends Fragment {
         }
         return view;
     }
-    
+
     public JSONObject getSectionObject() {
         return sectionObject;
     }
