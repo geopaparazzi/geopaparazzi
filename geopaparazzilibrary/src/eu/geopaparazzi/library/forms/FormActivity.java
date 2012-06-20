@@ -161,11 +161,6 @@ public class FormActivity extends FragmentActivity {
                 if (jsonObject.has(TAG_VALUE)) {
                     value = jsonObject.getString(TAG_VALUE).trim();
                 }
-                String type = FormUtilities.TYPE_STRING;
-                if (jsonObject.has(TAG_TYPE)) {
-                    type = jsonObject.getString(TAG_TYPE).trim();
-                }
-
                 if (jsonObject.has(CONSTRAINT_MANDATORY)) {
                     String mandatory = jsonObject.getString(CONSTRAINT_MANDATORY).trim();
                     if (mandatory.trim().equals("yes")) {
