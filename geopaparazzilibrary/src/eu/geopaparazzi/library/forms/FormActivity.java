@@ -63,13 +63,6 @@ public class FormActivity extends FragmentActivity {
     private static final int MENU_SAVE = Menu.FIRST;
     private static final int MENU_CANCEL = 2;
 
-    private String formJsonString;
-    // private String formShortnameDefinition;
-    private String formNameDefinition;
-    private String formCategoryDefinition;
-
-    private JSONArray formItemsArray;
-    private JSONObject jsonFormObject;
     private double latitude;
     private double longitude;
     private String sectionName;
@@ -89,7 +82,11 @@ public class FormActivity extends FragmentActivity {
         try {
             sectionObject = TagsManager.getInstance(this).getSectionByName(sectionName);
             // copy the section object, which will be kept around along te activity
-            sectionObject = new JSONObject(sectionObject.toString());
+            String sectionObjectString = sectionObject.toString();
+            sectionObjectString = sectionObjectString.replaceAll(LibraryConstants.LATITUDE, String.valueOf(latitude));
+            sectionObjectString = sectionObjectString.replaceAll(LibraryConstants.LONGITUDE, String.valueOf(longitude));
+
+            sectionObject = new JSONObject(sectionObjectString);
             formNames4Section = TagsManager.getInstance(this).getFormNames4Section(sectionObject);
         } catch (Exception e) {
             e.printStackTrace();
@@ -190,8 +187,8 @@ public class FormActivity extends FragmentActivity {
                 }
                 if (value == null || !constraints.isValid(value)) {
                     String constraintDescription = constraints.getDescription();
-                    String validfieldMsg = getString(R.string.check_valid_field);
-                    String msg = MessageFormat.format(validfieldMsg, key, sectionName, constraintDescription);
+                    String validfieldMsg = getString(R.string.form_field_check);
+                    String msg = MessageFormat.format(validfieldMsg, key, formName, constraintDescription);
                     Utilities.messageDialog(this, msg, null);
                     return;
                 }
