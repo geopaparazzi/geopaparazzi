@@ -1,7 +1,5 @@
 package eu.geopaparazzi.library.forms;
 
-import static eu.geopaparazzi.library.forms.FormUtilities.CONSTRAINT_MANDATORY;
-import static eu.geopaparazzi.library.forms.FormUtilities.CONSTRAINT_RANGE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_KEY;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_TYPE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_VALUE;
@@ -35,9 +33,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
-import eu.geopaparazzi.library.forms.constraints.MandatoryConstraint;
-import eu.geopaparazzi.library.forms.constraints.RangeConstraint;
-import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.debug.Logger;
 
 public class FragmentDetail extends Fragment {
@@ -45,8 +40,6 @@ public class FragmentDetail extends Fragment {
     private HashMap<String, View> key2WidgetMap = new HashMap<String, View>();
     private HashMap<String, Constraints> key2ConstraintsMap = new HashMap<String, Constraints>();
     private List<String> keyList = new ArrayList<String>();
-    private LayoutInflater inflater;
-    private ViewGroup container;
     private String selectedFormName;
     private JSONObject sectionObject;
 
@@ -63,8 +56,6 @@ public class FragmentDetail extends Fragment {
 
     @Override
     public View onCreateView( LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState ) {
-        this.inflater = inflater;
-        this.container = container;
         View view = inflater.inflate(R.layout.details, container, false);
         LinearLayout mainView = (LinearLayout) view.findViewById(R.id.form_linear);
         try {
@@ -76,15 +67,15 @@ public class FragmentDetail extends Fragment {
                     sectionObject = listFragment.getSectionObject();
                 } else {
                     if (activity instanceof FragmentDetailActivity) {
+                        // case of portrait mode
                         FragmentDetailActivity fragmentDetailActivity = (FragmentDetailActivity) activity;
                         selectedFormName = fragmentDetailActivity.getFormName();
-                        String sectionName = fragmentDetailActivity.getSectionName();
-                        sectionObject = TagsManager.getInstance(activity).getSectionByName(sectionName);
+                        sectionObject = fragmentDetailActivity.getSectionObject();
                     }
                 }
             }
             if (selectedFormName != null) {
-                JSONObject formObject = TagsManager.getInstance(activity).getForm4Name(selectedFormName, sectionObject);
+                JSONObject formObject = TagsManager.getForm4Name(selectedFormName, sectionObject);
 
                 key2WidgetMap.clear();
                 keyList.clear();
@@ -110,25 +101,7 @@ public class FragmentDetail extends Fragment {
                     }
 
                     Constraints constraints = new Constraints();
-                    if (jsonObject.has(CONSTRAINT_MANDATORY)) {
-                        String mandatory = jsonObject.getString(CONSTRAINT_MANDATORY).trim();
-                        if (mandatory.trim().equals("yes")) {
-                            constraints.addConstraint(new MandatoryConstraint());
-                        }
-                    }
-                    if (jsonObject.has(CONSTRAINT_RANGE)) {
-                        String range = jsonObject.getString(CONSTRAINT_RANGE).trim();
-                        String[] rangeSplit = range.split(",");
-                        if (rangeSplit.length == 2) {
-                            boolean lowIncluded = rangeSplit[0].startsWith("[") ? true : false;
-                            String lowStr = rangeSplit[0].substring(1);
-                            Double low = Utilities.adapt(lowStr, Double.class);
-                            boolean highIncluded = rangeSplit[1].endsWith("]") ? true : false;
-                            String highStr = rangeSplit[1].substring(0, rangeSplit[1].length() - 1);
-                            Double high = Utilities.adapt(highStr, Double.class);
-                            constraints.addConstraint(new RangeConstraint(low, lowIncluded, high, highIncluded));
-                        }
-                    }
+                    FormUtilities.handleConstraints(jsonObject, constraints);
                     key2ConstraintsMap.put(key, constraints);
                     String constraintDescription = constraints.getDescription();
 
@@ -170,6 +143,10 @@ public class FragmentDetail extends Fragment {
         }
         return view;
     }
+    
+    public JSONObject getSectionObject() {
+        return sectionObject;
+    }
 
     public void setForm( String selectedItemName, JSONObject sectionObject ) {
         this.selectedFormName = selectedItemName;
@@ -188,7 +165,7 @@ public class FragmentDetail extends Fragment {
         if (selectedFormName == null) {
             return null;
         }
-        JSONObject form4Name = TagsManager.getInstance(getActivity()).getForm4Name(selectedFormName, sectionObject);
+        JSONObject form4Name = TagsManager.getForm4Name(selectedFormName, sectionObject);
         JSONArray formItems = TagsManager.getFormItems(form4Name);
 
         // update the items

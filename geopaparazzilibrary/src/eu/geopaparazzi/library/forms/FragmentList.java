@@ -2,13 +2,16 @@ package eu.geopaparazzi.library.forms;
 
 import java.util.List;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -21,6 +24,7 @@ public class FragmentList extends android.support.v4.app.ListFragment {
     private List<String> fragmentTitles;
     private String selectedItemName;
     private FormActivity activity;
+    private final int RETURNCODE_DETAILACTIVITY = 665;
 
     @Override
     public void onCreate( Bundle savedInstanceState ) {
@@ -63,6 +67,7 @@ public class FragmentList extends android.support.v4.app.ListFragment {
             // textView.setTextColor(v.getResources().getColor(R.color.formcolorselected));
         }
 
+        JSONObject sectionObject = activity.getSectionObject();
         FragmentDetail oldFragment = (FragmentDetail) getFragmentManager().findFragmentById(R.id.detailFragment);
         if (oldFragment != null) {// && oldFragment.isInLayout()) {
             try {
@@ -71,8 +76,11 @@ public class FragmentList extends android.support.v4.app.ListFragment {
                 e.printStackTrace();
                 Utilities.messageDialog(activity, "An error occurred while storing the form data.", null);
             }
+            FragmentActivity activity2 = oldFragment.getActivity();
+            int id2 = oldFragment.getId();
+
             FragmentDetail newFragment = new FragmentDetail();
-            newFragment.setForm(selectedItemName, activity.getSectionObject());
+            newFragment.setForm(selectedItemName, sectionObject);
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             transaction.remove(oldFragment);
             transaction.add(R.id.detailFragment, newFragment);
@@ -83,8 +91,8 @@ public class FragmentList extends android.support.v4.app.ListFragment {
             String sectionName = activity.getSectionName();
             Intent intent = new Intent(getActivity().getApplicationContext(), FragmentDetailActivity.class);
             intent.putExtra(FormUtilities.ATTR_FORMNAME, selectedItemName);
-            intent.putExtra(FormUtilities.ATTR_SECTIONNAME, sectionName);
-            startActivity(intent);
+            intent.putExtra(FormUtilities.ATTR_SECTIONOBJECTSTR, sectionObject.toString());
+            startActivityForResult(intent, RETURNCODE_DETAILACTIVITY);
         }
     }
 
@@ -94,6 +102,23 @@ public class FragmentList extends android.support.v4.app.ListFragment {
 
     public JSONObject getSectionObject() {
         return activity.getSectionObject();
+    }
+    
+    public void onActivityResult( int requestCode, int resultCode, Intent data ) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch( requestCode ) {
+        case (RETURNCODE_DETAILACTIVITY): {
+            if (resultCode == Activity.RESULT_OK) {
+                String sectionStringObject = data.getStringExtra(FormUtilities.ATTR_SECTIONOBJECTSTR);
+                try {
+                    activity.setSectionObject(new JSONObject(sectionStringObject));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            break;
+        }
+        }
     }
 
 }

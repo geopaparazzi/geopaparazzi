@@ -33,7 +33,11 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.forms.constraints.Constraints;
+import eu.geopaparazzi.library.forms.constraints.MandatoryConstraint;
+import eu.geopaparazzi.library.forms.constraints.RangeConstraint;
 import eu.geopaparazzi.library.util.MultipleChoiceDialog;
+import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * Utilities methods for form stuff.
@@ -133,11 +137,11 @@ public class FormUtilities {
      */
     public static final String CONSTRAINT_RANGE = "range";
 
-    
     public static final String ATTR_SECTIONNAME = "sectionname";
+    public static final String ATTR_SECTIONOBJECTSTR = "sectionobjectstr";
     public static final String ATTR_FORMS = "forms";
     public static final String ATTR_FORMNAME = "formname";
-    
+
     public static final String TAG_LONGNAME = "longname";
     public static final String TAG_SHORTNAME = "shortname";
     public static final String TAG_FORMS = "forms";
@@ -343,6 +347,39 @@ public class FormUtilities {
 
         textLayout.addView(button);
         return button;
+    }
+
+    /**
+     * Check an {@link JSONObject object} for constraints and collect them.
+     * 
+     * @param jsonObject the object to check.
+     * @param constraints the {@link Constraints} object to use or <code>null</code>.
+     * @return the original {@link Constraints} object or a new created.
+     * @throws Exception
+     */
+    public static Constraints handleConstraints( JSONObject jsonObject, Constraints constraints ) throws Exception {
+        if (constraints == null)
+            constraints = new Constraints();
+        if (jsonObject.has(CONSTRAINT_MANDATORY)) {
+            String mandatory = jsonObject.getString(CONSTRAINT_MANDATORY).trim();
+            if (mandatory.trim().equals("yes")) {
+                constraints.addConstraint(new MandatoryConstraint());
+            }
+        }
+        if (jsonObject.has(CONSTRAINT_RANGE)) {
+            String range = jsonObject.getString(CONSTRAINT_RANGE).trim();
+            String[] rangeSplit = range.split(",");
+            if (rangeSplit.length == 2) {
+                boolean lowIncluded = rangeSplit[0].startsWith("[") ? true : false;
+                String lowStr = rangeSplit[0].substring(1);
+                Double low = Utilities.adapt(lowStr, Double.class);
+                boolean highIncluded = rangeSplit[1].endsWith("]") ? true : false;
+                String highStr = rangeSplit[1].substring(0, rangeSplit[1].length() - 1);
+                Double high = Utilities.adapt(highStr, Double.class);
+                constraints.addConstraint(new RangeConstraint(low, lowIncluded, high, highIncluded));
+            }
+        }
+        return constraints;
     }
 
     /**

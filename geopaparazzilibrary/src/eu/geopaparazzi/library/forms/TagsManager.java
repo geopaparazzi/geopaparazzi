@@ -33,7 +33,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
@@ -168,7 +167,7 @@ public class TagsManager {
         return sectionsMap.get(name);
     }
 
-    public List<String> getFormNames4Section( JSONObject section ) throws JSONException {
+    public static List<String> getFormNames4Section( JSONObject section ) throws JSONException {
         List<String> names = new ArrayList<String>();
         JSONArray jsonArray = section.getJSONArray(ATTR_FORMS);
         if (jsonArray != null && jsonArray.length() > 0) {
@@ -183,7 +182,7 @@ public class TagsManager {
         return names;
     }
 
-    public JSONObject getForm4Name( String formName, JSONObject section ) throws JSONException {
+    public static JSONObject getForm4Name( String formName, JSONObject section ) throws JSONException {
         JSONArray jsonArray = section.getJSONArray(ATTR_FORMS);
         if (jsonArray != null && jsonArray.length() > 0) {
             for( int i = 0; i < jsonArray.length(); i++ ) {
