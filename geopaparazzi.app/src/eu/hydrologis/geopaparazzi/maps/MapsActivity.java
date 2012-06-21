@@ -51,6 +51,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.BatteryManager;
@@ -242,12 +243,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
         GpsManager.getInstance(this).addListener(this);
 
-        /* imported maps */
-        // {
-        // mMapsOverlay = new MapsOverlay(this, mResourceProxy);
-        // this.mapsView.getOverlays().add(mMapsOverlay);
-        // }
-
         dataOverlay = new ArrayGeopaparazziOverlay(this);
         mapView.getOverlays().add(dataOverlay);
         readData();
@@ -332,13 +327,27 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         ImageButton addnotebytagButton = (ImageButton) findViewById(R.id.addnotebytagbutton);
         addnotebytagButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
+                // generate screenshot in background in order to not freeze
+                File mediaDir = ResourcesManager.getInstance(MapsActivity.this).getMediaDir();
+                final File tmpImageFile = new File(mediaDir.getParentFile(), LibraryConstants.TMPPNGIMAGENAME);
+                new Thread(new Runnable(){
+                    public void run() {
+                        try {
+                            mapView.takeScreenshot(Bitmap.CompressFormat.PNG, 90, tmpImageFile);
+                        } catch (Exception e) {
+                        }
+                    }
+                }).start();
+
                 MapViewPosition mapPosition = mapView.getMapPosition();
                 GeoPoint mapCenter = mapPosition.getMapCenter();
-                Intent osmTagsIntent = new Intent(MapsActivity.this, MapTagsActivity.class);
-                osmTagsIntent.putExtra(LibraryConstants.LATITUDE, (double) (mapCenter.latitudeE6 / LibraryConstants.E6));
-                osmTagsIntent.putExtra(LibraryConstants.LONGITUDE, (double) (mapCenter.longitudeE6 / LibraryConstants.E6));
-                osmTagsIntent.putExtra(LibraryConstants.ELEVATION, 0.0);
-                startActivity(osmTagsIntent);
+                Intent mapTagsIntent = new Intent(MapsActivity.this, MapTagsActivity.class);
+                mapTagsIntent.putExtra(LibraryConstants.LATITUDE, (double) (mapCenter.latitudeE6 / LibraryConstants.E6));
+                mapTagsIntent.putExtra(LibraryConstants.LONGITUDE, (double) (mapCenter.longitudeE6 / LibraryConstants.E6));
+                mapTagsIntent.putExtra(LibraryConstants.ELEVATION, 0.0);
+                mapTagsIntent.putExtra(LibraryConstants.TMPPNGIMAGENAME, tmpImageFile.getAbsolutePath());
+                startActivity(mapTagsIntent);
+
             }
         });
 
