@@ -134,17 +134,13 @@ public class ImportActivity extends Activity {
                             }
                         }
 
-                        Utilities.messageDialog(context, R.string.successfully_imported_bookmarks + imported, null);
+                        Utilities.messageDialog(context, getString(R.string.successfully_imported_bookmarks) + imported, null);
                     } catch (IOException e) {
                         e.printStackTrace();
                         Utilities.messageDialog(context, R.string.error_bookmarks_import, null);
                     }
                 } else {
-                    Utilities
-                            .messageDialog(
-                                    context,
-                                    R.string.no_bookmarks_csv,
-                                    null);
+                    Utilities.messageDialog(context, R.string.no_bookmarks_csv, null);
                 }
             }
         });
