@@ -84,8 +84,6 @@ public class FormActivity extends FragmentActivity {
             sectionObject = TagsManager.getInstance(this).getSectionByName(sectionName);
             // copy the section object, which will be kept around along te activity
             String sectionObjectString = sectionObject.toString();
-            sectionObjectString = sectionObjectString.replaceAll(LibraryConstants.LATITUDE, String.valueOf(latitude));
-            sectionObjectString = sectionObjectString.replaceAll(LibraryConstants.LONGITUDE, String.valueOf(longitude));
 
             sectionObject = new JSONObject(sectionObjectString);
             formNames4Section = TagsManager.getFormNames4Section(sectionObject);
@@ -132,7 +130,7 @@ public class FormActivity extends FragmentActivity {
     public JSONObject getSectionObject() {
         return sectionObject;
     }
-    
+
     public void setSectionObject( JSONObject sectionObject ) {
         this.sectionObject = sectionObject;
     }
@@ -164,6 +162,19 @@ public class FormActivity extends FragmentActivity {
 
                 if (jsonObject.has(TAG_VALUE)) {
                     value = jsonObject.getString(TAG_VALUE).trim();
+                }
+
+                // inject latitude
+                if (key.equals(LibraryConstants.LATITUDE)) {
+                    String latitudeString = String.valueOf(latitude);
+                    value = latitudeString;
+                    jsonObject.put(TAG_VALUE, latitudeString);
+                }
+                // inject longitude
+                if (key.equals(LibraryConstants.LONGITUDE)) {
+                    String longitudeString = String.valueOf(longitude);
+                    value = longitudeString;
+                    jsonObject.put(TAG_VALUE, longitudeString);
                 }
 
                 Constraints constraints = FormUtilities.handleConstraints(jsonObject, null);
