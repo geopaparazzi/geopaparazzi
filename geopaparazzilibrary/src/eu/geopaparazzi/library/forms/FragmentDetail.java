@@ -12,7 +12,9 @@ import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRING;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRINGCOMBO;
 import static eu.geopaparazzi.library.forms.FormUtilities.*;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -33,6 +35,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
+import eu.geopaparazzi.library.util.FileUtilities;
+import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.debug.Logger;
 
 public class FragmentDetail extends Fragment {
@@ -131,6 +136,20 @@ public class FragmentDetail extends Fragment {
                                 constraintDescription);
                     } else if (type.equals(TYPE_PICTURES)) {
                         addedView = FormUtilities.addPictureView(activity, mainView, key, value, constraintDescription);
+                    } else if (type.equals(TYPE_MAP)) {
+                        if (value == null || value.length() <= 0) {
+                            File applicationDir = ResourcesManager.getInstance(activity).getApplicationDir();
+                            File mediaDir = ResourcesManager.getInstance(activity).getMediaDir();
+                            File tmpImage = new File(applicationDir, LibraryConstants.TMPPNGIMAGENAME);
+                            if (tmpImage.exists()) {
+                                Date currentDate = new Date();
+                                String currentDatestring = LibraryConstants.TIMESTAMPFORMATTER.format(currentDate);
+                                File newImageFile = new File(mediaDir, "IMG_" + currentDatestring + ".png");
+                                FileUtilities.copyFile(tmpImage, newImageFile);
+                                value = newImageFile.getParentFile().getName() + File.separator + newImageFile.getName();
+                            }
+                        }
+                        addedView = FormUtilities.addMapView(activity, mainView, key, value, constraintDescription);
                     } else {
                         System.out.println("Type non implemented yet: " + type);
                     }

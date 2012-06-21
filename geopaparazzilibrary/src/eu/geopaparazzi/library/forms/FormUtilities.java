@@ -28,7 +28,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.view.View;
@@ -47,6 +47,7 @@ import eu.geopaparazzi.library.camera.CameraActivity;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
 import eu.geopaparazzi.library.forms.constraints.MandatoryConstraint;
 import eu.geopaparazzi.library.forms.constraints.RangeConstraint;
+import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.MultipleChoiceDialog;
 import eu.geopaparazzi.library.util.PositionUtilities;
@@ -131,6 +132,11 @@ public class FormUtilities {
      * Type for pictures element.
      */
     public static final String TYPE_PICTURES = "pictures";
+
+    /**
+     * Type for map element.
+     */
+    public static final String TYPE_MAP = "map";
 
     /**
      * Type for barcode element.
@@ -446,32 +452,82 @@ public class FormUtilities {
             File mediaDir = ResourcesManager.getInstance(context).getMediaDir();
             File parentFolder = mediaDir.getParentFile();
             for( String imageRelativePath : imageSplit ) {
-                File image = new File(parentFolder, imageRelativePath);
+                final File image = new File(parentFolder, imageRelativePath);
 
-                BitmapFactory.Options bounds = new BitmapFactory.Options();
-                bounds.inJustDecodeBounds = true;
-                BitmapFactory.decodeFile(image.getAbsolutePath(), bounds);
-                int width = bounds.outWidth;
-                // int height = bounds.outHeight;
-                int newWidth = 100;
-                // int newHeight = (int) ((double) newWidth * height / width);
+                Bitmap thumbnail = FileUtilities.readScaledBitmap(image, 100);
 
-                float sampleSizeF = (float) width / (float) newWidth;
-                int sampleSize = Math.round(sampleSizeF);
-                BitmapFactory.Options resample = new BitmapFactory.Options();
-                resample.inSampleSize = sampleSize;
-
-                Bitmap thumbnail = BitmapFactory.decodeFile(image.getAbsolutePath(), resample);
-                // Bitmap thumbnail = ThumbnailUtils.extractThumbnail(bitmap, newWidth, newHeight);
                 ImageView imageView = new ImageView(context);
                 imageView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
                 imageView.setPadding(5, 5, 5, 5);
                 imageView.setImageBitmap(thumbnail);
+                imageView.setOnClickListener(new View.OnClickListener(){
+                    public void onClick( View v ) {
+                        Intent intent = new Intent();
+                        intent.setAction(android.content.Intent.ACTION_VIEW);
+                        intent.setDataAndType(Uri.fromFile(image), "image/*"); //$NON-NLS-1$
+                        context.startActivity(intent);
+                    }
+                });
                 imageLayout.addView(imageView);
-                // thumbnail.recycle();
             }
 
         }
+
+        return imagesText;
+    }
+
+    /**
+     * @param context
+     * @param mainView
+     * @param key
+     * @param value needs to be a relative path to the media image (ex. media/IMG_20120202.png)
+     * @param constraintDescription
+     * @return
+     */
+    public static View addMapView( final Context context, LinearLayout mainView, String key, String value,
+            String constraintDescription ) {
+        LinearLayout mainLayout = new LinearLayout(context);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
+                LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(10, 10, 10, 10);
+        mainLayout.setLayoutParams(layoutParams);
+        mainLayout.setOrientation(LinearLayout.VERTICAL);
+        mainView.addView(mainLayout);
+
+        TextView textView = new TextView(context);
+        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        textView.setPadding(2, 2, 2, 2);
+        textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
+        textView.setTextColor(context.getResources().getColor(R.color.formcolor));
+        mainLayout.addView(textView);
+
+        final EditText imagesText = new EditText(context);
+        imagesText.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        imagesText.setPadding(2, 2, 2, 2);
+        imagesText.setText(value);
+        imagesText.setTextColor(context.getResources().getColor(R.color.black));
+        imagesText.setKeyListener(null);
+        mainLayout.addView(imagesText);
+
+        File mediaDir = ResourcesManager.getInstance(context).getMediaDir();
+        File parentFolder = mediaDir.getParentFile();
+
+        final File image = new File(parentFolder, value);
+
+        Bitmap thumbnail = FileUtilities.readScaledBitmap(image, 200);
+        ImageView imageView = new ImageView(context);
+        imageView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        imageView.setPadding(5, 5, 5, 5);
+        imageView.setImageBitmap(thumbnail);
+        imageView.setOnClickListener(new View.OnClickListener(){
+            public void onClick( View v ) {
+                Intent intent = new Intent();
+                intent.setAction(android.content.Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.fromFile(image), "image/*"); //$NON-NLS-1$
+                context.startActivity(intent);
+            }
+        });
+        mainLayout.addView(imageView);
 
         return imagesText;
     }

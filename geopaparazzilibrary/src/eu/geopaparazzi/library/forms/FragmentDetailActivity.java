@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
 import eu.geopaparazzi.library.R;
-import eu.geopaparazzi.library.util.LibraryConstants;
 
 public class FragmentDetailActivity extends FragmentActivity {
     private String formName;
