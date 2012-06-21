@@ -29,8 +29,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.BitmapFactory.Options;
-import android.media.ThumbnailUtils;
 import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.view.View;
@@ -41,6 +39,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
@@ -428,16 +427,19 @@ public class FormUtilities {
             }
         });
 
-        // TODO thumbnails? ThumbnailUtils.extractThumbnail(null, 0, 0);
-
         if (imagesText.getText().toString().length() > 0) {
+            ScrollView scrollView = new ScrollView(context);
+            ScrollView.LayoutParams scrollLayoutParams = new ScrollView.LayoutParams(LayoutParams.FILL_PARENT,
+                    LayoutParams.WRAP_CONTENT);
+            scrollView.setLayoutParams(scrollLayoutParams);
+            mainView.addView(scrollView);
+
             LinearLayout imageLayout = new LinearLayout(context);
             LinearLayout.LayoutParams imageLayoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
                     LayoutParams.WRAP_CONTENT);
-            imageLayoutParams.setMargins(10, 10, 10, 10);
             imageLayout.setLayoutParams(imageLayoutParams);
             imageLayout.setOrientation(LinearLayout.HORIZONTAL);
-            mainView.addView(imageLayout);
+            scrollView.addView(imageLayout);
 
             String text = imagesText.getText().toString();
             String[] imageSplit = text.split(";");
