@@ -27,6 +27,10 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
+import android.media.ThumbnailUtils;
 import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.view.View;
@@ -35,6 +39,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -422,9 +427,50 @@ public class FormUtilities {
                 context.startActivity(cameraIntent);
             }
         });
-       
+
         // TODO thumbnails? ThumbnailUtils.extractThumbnail(null, 0, 0);
-        
+
+        if (imagesText.getText().toString().length() > 0) {
+            LinearLayout imageLayout = new LinearLayout(context);
+            LinearLayout.LayoutParams imageLayoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
+                    LayoutParams.WRAP_CONTENT);
+            imageLayoutParams.setMargins(10, 10, 10, 10);
+            imageLayout.setLayoutParams(imageLayoutParams);
+            imageLayout.setOrientation(LinearLayout.HORIZONTAL);
+            mainView.addView(imageLayout);
+
+            String text = imagesText.getText().toString();
+            String[] imageSplit = text.split(";");
+            File mediaDir = ResourcesManager.getInstance(context).getMediaDir();
+            File parentFolder = mediaDir.getParentFile();
+            for( String imageRelativePath : imageSplit ) {
+                File image = new File(parentFolder, imageRelativePath);
+
+                BitmapFactory.Options bounds = new BitmapFactory.Options();
+                bounds.inJustDecodeBounds = true;
+                BitmapFactory.decodeFile(image.getAbsolutePath(), bounds);
+                int width = bounds.outWidth;
+                // int height = bounds.outHeight;
+                int newWidth = 100;
+                // int newHeight = (int) ((double) newWidth * height / width);
+
+                float sampleSizeF = (float) width / (float) newWidth;
+                int sampleSize = Math.round(sampleSizeF);
+                BitmapFactory.Options resample = new BitmapFactory.Options();
+                resample.inSampleSize = sampleSize;
+
+                Bitmap thumbnail = BitmapFactory.decodeFile(image.getAbsolutePath(), resample);
+                // Bitmap thumbnail = ThumbnailUtils.extractThumbnail(bitmap, newWidth, newHeight);
+                ImageView imageView = new ImageView(context);
+                imageView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+                imageView.setPadding(5, 5, 5, 5);
+                imageView.setImageBitmap(thumbnail);
+                imageLayout.addView(imageView);
+                // thumbnail.recycle();
+            }
+
+        }
+
         return imagesText;
     }
     /**
