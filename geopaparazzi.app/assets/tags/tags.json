@@ -1,147 +1,101 @@
-[{
-	"shortname": "fountaine",
-	"longname":"fountaine",
-	"form": {
-		"formitems":[
-		    {"key":"protected", "value":"yes", "type":"boolean"},
-			{"key":"mode of abstraction", 
-			 "values":{ "items":[
-                			     { "item":"solar" },
-                			     { "item":"manual" },
-                			     { "item":"electrical" },
-                			     { "item":"gravity" }
-                                ]
-                       } ,
-            "value":"solar",
-			"type":"stringcombo"},
-			{"key":"PH", 
-			 "values":{ "items":[
-                			     { "item":"PH < 5" },
-                			     { "item":"5 < PH < 7" },
-                			     { "item":"PH > 7" }
-                                ]
-                       } ,
-            "value":"PH < 5",
-			"type":"stringcombo"},
-			{"key":"number of served people", "value":"", "type":"double"},  
-			{"key":"working", "value":"false", "type":"boolean"},
-			{"key":"needs", 
-			 "values":{ "items":[
-                			     { "item":"nothing" },
-                			     { "item":"maintainance" },
-                			     { "item":"rehabilitation" }
-                                ]
-                       } ,
-            "value":"PH < 5",
-			"type":"stringcombo"}
-		]
+[
+    {
+        "sectionname": "image note",
+        "sectiondescription": "note with image",
+        "forms": [
+            {
+                "formname": "text note",
+                "formitems": [
+                    {
+                        "key": "title",
+                        "value": "",
+                        "type": "string",
+                        "mandatory": "yes"
+                    },
+                    {
+                        "key": "description",
+                        "value": "",
+                        "type": "string",
+                        "mandatory": "yes"
+                    }
+                ]
+            },
+            {
+                "formname": "image note",
+                "formitems": [
+					{
+                        "key": "description",
+                        "value": "",
+                        "type": "string",
+                        "mandatory": "yes"
+                    },
+                    {
+						"key": "pictures of the environment around the note",
+                        "value": "",
+                        "type": "pictures"
+					}
+				]
+            }
+        ]
+    },{
+        "sectionname": "map note",
+        "sectiondescription": "note with map image",
+        "forms": [
+            {
+                "formname": "text note",
+                "formitems": [
+                    {
+                        "key": "title",
+                        "value": "",
+                        "type": "string",
+                        "mandatory": "yes"
+                    },
+                    {
+                        "key": "description",
+                        "value": "",
+                        "type": "string",
+                        "mandatory": "yes"
+                    }
+                ]
+            },
+            {
+                "formname": "map image note",
+                "formitems": [
+					{
+                        "key": "description",
+                        "value": "",
+                        "type": "string",
+                        "mandatory": "yes"
+                    },
+                    {
+						"key": "map around note",
+                        "value": "",
+                        "type": "map"
+					}
+				]
+            }
+        ]
+	},{
+        "sectionname": "text note",
+        "sectiondescription": "a simple text note",
+        "forms": [
+            {
+                "formname": "text note",
+                "formitems": [
+                    {
+                        "key": "title",
+                        "value": "",
+                        "type": "string",
+                        "mandatory": "yes"
+                    },
+                    {
+                        "key": "description",
+                        "value": "",
+                        "type": "string",
+                        "mandatory": "yes"
+                    }
+                ]
+            }
+        ]
 	}
-},{
-    "shortname": "spring",
-    "longname":"spring",
-    "form": {
-        "formitems":[
-            {"key":"protected", "value":"yes", "type":"boolean"},
-            {"key":"mode of abstraction", 
-             "values":{ "items":[
-                                 { "item":"solar" },
-                                 { "item":"manual" },
-                                 { "item":"electrical" },
-                                 { "item":"gravity" }
-                                ]
-                       } ,
-            "value":"solar",
-            "type":"stringcombo"},
-            {"key":"PH", 
-             "values":{ "items":[
-                                 { "item":"PH < 5" },
-                                 { "item":"5 < PH < 7" },
-                                 { "item":"PH > 7" }
-                                ]
-                       } ,
-            "value":"PH < 5",
-            "type":"stringcombo"},
-            {"key":"working", "value":"false", "type":"boolean"},
-            {"key":"needs", 
-             "values":{ "items":[
-                                 { "item":"nothing" },
-                                 { "item":"maintainance" },
-                                 { "item":"rehabilitation" }
-                                ]
-                       } ,
-            "value":"PH < 5",
-            "type":"stringcombo"}
-        ]
-    }
-},{
-    "shortname": "tank",
-    "longname":"tank",
-    "form": {
-        "formitems":[
-            {"key":"protected", "value":"yes", "type":"boolean"},
-            {"key":"mode of abstraction", 
-             "values":{ "items":[
-                                 { "item":"solar" },
-                                 { "item":"manual" },
-                                 { "item":"electrical" },
-                                 { "item":"gravity" }
-                                ]
-                       } ,
-            "value":"solar",
-            "type":"stringcombo"},
-            {"key":"in PH", 
-             "values":{ "items":[
-                                 { "item":"PH < 5" },
-                                 { "item":"5 < PH < 7" },
-                                 { "item":"PH > 7" }
-                                ]
-                       } ,
-            "value":"5 < PH < 7",
-            "type":"stringcombo"},
-            {"key":"out PH", 
-             "values":{ "items":[
-                                 { "item":"PH < 5" },
-                                 { "item":"5 < PH < 7" },
-                                 { "item":"PH > 7" }
-                                ]
-                       } ,
-            "value":"5 < PH < 7",
-            "type":"stringcombo"},
-            {"key":"number of served fountains", "value":"", "type":"double", "range":"[2,5)", "mandatory":"yes"},  
-            {"key":"working", "value":"false", "type":"boolean"},
-            {"key":"needs", 
-             "values":{ "items":[
-                                 { "item":"nothing" },
-                                 { "item":"maintainance" },
-                                 { "item":"rehabilitation" }
-                                ]
-                       } ,
-            "value":"PH < 5",
-            "type":"stringcombo"},
-            {"key":"material", "value":"", "type":"string", "mandatory":"yes"},  
-            {"key":"volume [m3]", "value":"", "type":"double", "range":"[2,5)"}  
-        ]
-    }
-},{
-    "shortname": "other",
-    "longname":"other manifacture",
-    "form": {
-        "formitems":[
-            {"key":"description", "value":"", "type":"string"},  
-            {"key":"working", "value":"false", "type":"boolean"},
-            {"key":"needs", 
-             "values":{ "items":[
-                                 { "item":"nothing" },
-                                 { "item":"maintainance" },
-                                 { "item":"rehabilitation" }
-                                ]
-                       } ,
-            "value":"PH < 5",
-            "type":"stringcombo"}
-        ]
-    }
-},{
-	"shortname": "POI",
-	"longname": "POI"
-}]
-	
+]
