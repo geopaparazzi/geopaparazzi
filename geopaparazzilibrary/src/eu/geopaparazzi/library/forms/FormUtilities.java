@@ -18,6 +18,9 @@
 package eu.geopaparazzi.library.forms;
 
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.json.JSONArray;
@@ -30,12 +33,14 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -530,6 +535,81 @@ public class FormUtilities {
         mainLayout.addView(imageView);
 
         return imagesText;
+    }
+
+    /**
+     * Adds a {@link DatePicker} to the supplied mainView.
+     * 
+     * @param context the context.
+     * @param mainView the main view to which to add the new widget to.
+     * @param key the key identifying the widget.
+     * @param value the value to put in the widget.
+     * @param itemsArray the items to put in the spinner.
+     * @param constraintDescription 
+     * @return the added view.
+     */
+    public static View addDateView( final Context context, final Fragment fragment, LinearLayout mainView, String key,
+            String value, String constraintDescription ) {
+        LinearLayout textLayout = new LinearLayout(context);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
+                LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(10, 10, 10, 10);
+        textLayout.setLayoutParams(layoutParams);
+        textLayout.setOrientation(LinearLayout.VERTICAL);
+        mainView.addView(textLayout);
+
+        TextView textView = new TextView(context);
+        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        textView.setPadding(2, 2, 2, 2);
+        textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
+        textView.setTextColor(context.getResources().getColor(R.color.formcolor));
+        textLayout.addView(textView);
+
+        final Button button = new Button(context);
+        button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        button.setPadding(15, 5, 15, 5);
+
+        final SimpleDateFormat dateFormatter = LibraryConstants.DATEONLY_FORMATTER;
+        if (value == null || value.length() == 0) {
+            String dateStr = dateFormatter.format(new Date());
+            button.setText(dateStr);
+        } else {
+            button.setText(value);
+        }
+        button.setOnClickListener(new View.OnClickListener(){
+            public void onClick( View v ) {
+                String dateStr = button.getText().toString();
+                Date date = null;
+                try {
+                    date = dateFormatter.parse(dateStr);
+                } catch (ParseException e) {
+                    // fallback on current date
+                    date = new Date();
+                }
+                final Calendar c = Calendar.getInstance();
+                c.setTime(date);
+                int year = c.get(Calendar.YEAR);
+                int month = c.get(Calendar.MONTH);
+                int day = c.get(Calendar.DAY_OF_MONTH);
+
+                FormDatePickerFragment newFragment = new FormDatePickerFragment(year, month, day, button);
+                newFragment.show(fragment.getFragmentManager(), "datePicker");
+
+                // DatePickerDialog datePickerDialog = new DatePickerDialog(context, new
+                // DatePickerDialog.OnDateSetListener(){
+                // public void onDateSet( DatePicker view, int year, int monthOfYear, int dayOfMonth
+                // ) {
+                // mYear = year;
+                // mMonth = monthOfYear;
+                // mDay = dayOfMonth;
+                // updateDisplay();
+                // }
+                // }, year, month, day);
+            }
+        });
+
+        textLayout.addView(button);
+        return button;
     }
     /**
      * Check an {@link JSONObject object} for constraints and collect them.
