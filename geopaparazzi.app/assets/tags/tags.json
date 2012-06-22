@@ -97,5 +97,120 @@
                 ]
             }
         ]
+	},{
+        "sectionname": "examples",
+        "sectiondescription": "examples of supported form widgets",
+        "forms": [
+            {
+                "formname": "text",
+                "formitems": [
+                    {
+                        "key": "some text",
+                        "value": "",
+                        "type": "string"
+                    }
+                ]
+            },{
+                "formname": "numeric text",
+                "formitems": [
+                    {
+                        "key": "a number",
+                        "value": "",
+                        "type": "double"
+                    }
+                ]
+            },{
+                "formname": "date",
+                "formitems": [
+                    {
+                        "key": "a date",
+                        "value": "",
+                        "type": "date"
+                    }
+                ]
+            },{
+                "formname": "time",
+                "formitems": [
+                    {
+                        "key": "a time",
+                        "value": "",
+                        "type": "time"
+                    }
+                ]
+            },{
+                "formname": "labels",
+                "formitems": [
+                    {
+                        "value": "a simple label of size 20",
+						"size": "20",
+                        "type": "label"
+                    },{
+                        "value": "a underlined label of size 24",
+                        "size": "24",
+                        "type": "labelwithline"
+                    }
+                ]
+            },{
+                "formname": "boolean",
+                "formitems": [
+                    {
+                        "key": "a boolean choice",
+                        "value": "",
+                        "type": "boolean"
+                    }
+                ]
+            },{
+                "formname": "combos",
+                "formitems": [
+                    {
+                        "key": "a single choice combo",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "choice 1"},
+                                {"item": "choice 2"},
+                                {"item": "choice 3"},
+                                {"item": "choice 4"},
+                                {"item": "choice 5"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },{
+                        "key": "a multiple choice combo",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "choice 1"},
+                                {"item": "choice 2"},
+                                {"item": "choice 3"},
+                                {"item": "choice 4"},
+                                {"item": "choice 5"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "multistringcombo"
+                    }
+                ]
+            },{
+                "formname": "pictures",
+                "formitems": [
+                    {
+                        "key": "a picture archive",
+                        "value": "",
+                        "type": "pictures"
+                    }
+                ]
+            },{
+                "formname": "map",
+                "formitems": [
+                    {
+                        "key": "an image of the last seen map",
+                        "value": "",
+                        "type": "map"
+                    }
+                ]
+            }
+        ]
 	}
 ]
