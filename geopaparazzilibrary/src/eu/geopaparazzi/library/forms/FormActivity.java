@@ -30,6 +30,8 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
@@ -71,6 +73,14 @@ public class FormActivity extends FragmentActivity {
 
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
+
+        // make sure the orientation can't be changed once this activity started
+        int currentOrientation = getResources().getConfiguration().orientation;
+        if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
