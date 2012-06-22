@@ -116,8 +116,9 @@ public class FragmentDetail extends Fragment {
                     } else if (type.equals(TYPE_DOUBLE)) {
                         addedView = FormUtilities.addEditText(activity, mainView, key, value, 1, constraintDescription);
                     } else if (type.equals(TYPE_DATE)) {
-                        addedView = FormUtilities.addDateView(activity, FragmentDetail.this, mainView, key, value,
-                                constraintDescription);
+                        addedView = FormUtilities.addDateView(FragmentDetail.this, mainView, key, value, constraintDescription);
+                    } else if (type.equals(TYPE_TIME)) {
+                        addedView = FormUtilities.addTimeView(FragmentDetail.this, mainView, key, value, constraintDescription);
                     } else if (type.equals(TYPE_LABEL)) {
                         String size = jsonObject.getString("size");
                         addedView = FormUtilities.addTextView(activity, mainView, value, size, false);

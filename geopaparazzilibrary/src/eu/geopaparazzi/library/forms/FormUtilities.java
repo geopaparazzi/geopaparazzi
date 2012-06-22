@@ -27,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -79,7 +80,7 @@ public class FormUtilities {
     /**
      * Type for a {@link TextView} with line below.
      */
-    public static final String TYPE_LABELWITHLINE = "lablewithline";
+    public static final String TYPE_LABELWITHLINE = "labelwithline";
 
     /**
      * Type for a {@link EditText} containing generic text.
@@ -92,9 +93,14 @@ public class FormUtilities {
     public static final String TYPE_DOUBLE = "double";
 
     /**
-     * Type for a {@link EditText} containing date.
+     * Type for a {@link Button} containing date.
      */
     public static final String TYPE_DATE = "date";
+
+    /**
+     * Type for a {@link Button} containing time.
+     */
+    public static final String TYPE_TIME = "time";
 
     /**
      * Type for a {@link CheckBox}.
@@ -270,9 +276,9 @@ public class FormUtilities {
 
         if (value != null) {
             if (value.trim().toLowerCase().equals("true")) { //$NON-NLS-1$
-                checkbox.setSelected(true);
+                checkbox.setChecked(true);
             } else {
-                checkbox.setSelected(false);
+                checkbox.setChecked(false);
             }
         }
 
@@ -540,7 +546,7 @@ public class FormUtilities {
     /**
      * Adds a {@link DatePicker} to the supplied mainView.
      * 
-     * @param context the context.
+     * @param fragment the parent {@link Fragment}.
      * @param mainView the main view to which to add the new widget to.
      * @param key the key identifying the widget.
      * @param value the value to put in the widget.
@@ -548,8 +554,10 @@ public class FormUtilities {
      * @param constraintDescription 
      * @return the added view.
      */
-    public static View addDateView( final Context context, final Fragment fragment, LinearLayout mainView, String key,
-            String value, String constraintDescription ) {
+    public static View addDateView( final Fragment fragment, LinearLayout mainView, String key, String value,
+            String constraintDescription ) {
+        Context context = fragment.getActivity();
+
         LinearLayout textLayout = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.WRAP_CONTENT);
@@ -594,23 +602,78 @@ public class FormUtilities {
 
                 FormDatePickerFragment newFragment = new FormDatePickerFragment(year, month, day, button);
                 newFragment.show(fragment.getFragmentManager(), "datePicker");
-
-                // DatePickerDialog datePickerDialog = new DatePickerDialog(context, new
-                // DatePickerDialog.OnDateSetListener(){
-                // public void onDateSet( DatePicker view, int year, int monthOfYear, int dayOfMonth
-                // ) {
-                // mYear = year;
-                // mMonth = monthOfYear;
-                // mDay = dayOfMonth;
-                // updateDisplay();
-                // }
-                // }, year, month, day);
             }
         });
 
         textLayout.addView(button);
         return button;
     }
+
+    /**
+     * Adds a {@link TimePickerDialog} to the supplied mainView.
+     * 
+     * @param fragment the parent {@link Fragment}.
+     * @param mainView the main view to which to add the new widget to.
+     * @param key the key identifying the widget.
+     * @param value the value to put in the widget.
+     * @param itemsArray the items to put in the spinner.
+     * @param constraintDescription 
+     * @return the added view.
+     */
+    public static View addTimeView( final Fragment fragment, LinearLayout mainView, String key, String value,
+            String constraintDescription ) {
+        Context context = fragment.getActivity();
+
+        LinearLayout textLayout = new LinearLayout(context);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
+                LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(10, 10, 10, 10);
+        textLayout.setLayoutParams(layoutParams);
+        textLayout.setOrientation(LinearLayout.VERTICAL);
+        mainView.addView(textLayout);
+
+        TextView textView = new TextView(context);
+        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        textView.setPadding(2, 2, 2, 2);
+        textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
+        textView.setTextColor(context.getResources().getColor(R.color.formcolor));
+        textLayout.addView(textView);
+
+        final Button button = new Button(context);
+        button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        button.setPadding(15, 5, 15, 5);
+
+        final SimpleDateFormat timeFormatter = LibraryConstants.TIMEONLY_FORMATTER;
+        if (value == null || value.length() == 0) {
+            String dateStr = timeFormatter.format(new Date());
+            button.setText(dateStr);
+        } else {
+            button.setText(value);
+        }
+        button.setOnClickListener(new View.OnClickListener(){
+            public void onClick( View v ) {
+                String dateStr = button.getText().toString();
+                Date date = null;
+                try {
+                    date = timeFormatter.parse(dateStr);
+                } catch (ParseException e) {
+                    // fallback on current date
+                    date = new Date();
+                }
+                final Calendar c = Calendar.getInstance();
+                c.setTime(date);
+                int hourOfDay = c.get(Calendar.HOUR_OF_DAY);
+                int minute = c.get(Calendar.MINUTE);
+
+                FormTimePickerFragment newFragment = new FormTimePickerFragment(hourOfDay, minute, true, button);
+                newFragment.show(fragment.getFragmentManager(), "timePicker");
+            }
+        });
+
+        textLayout.addView(button);
+        return button;
+    }
+
     /**
      * Check an {@link JSONObject object} for constraints and collect them.
      * 
