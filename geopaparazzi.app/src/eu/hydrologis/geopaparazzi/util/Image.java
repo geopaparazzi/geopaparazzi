@@ -18,6 +18,8 @@
 package eu.hydrologis.geopaparazzi.util;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import eu.geopaparazzi.library.kml.KmlRepresenter;
 
@@ -124,11 +126,13 @@ public class Image implements KmlRepresenter{
         return sB.toString();
     }
 
-    public boolean hasImage() {
+    public boolean hasImages() {
         return true;
     }
 
-    public String getImagePath() {
-        return path;
+    public List<String> getImagePaths() {
+        List<String> imgs = new ArrayList<String>();
+        imgs.add(path);
+        return imgs;
     }
 }

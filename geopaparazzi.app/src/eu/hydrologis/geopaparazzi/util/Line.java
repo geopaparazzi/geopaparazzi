@@ -143,11 +143,11 @@ public class Line implements KmlRepresenter, GpxRepresenter {
         return sB.toString();
     }
 
-    public boolean hasImage() {
+    public boolean hasImages() {
         return false;
     }
 
-    public String getImagePath() {
+    public List<String> getImagePaths() {
         return null;
     }
 

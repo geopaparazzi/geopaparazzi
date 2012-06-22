@@ -103,13 +103,15 @@ public class KmzExport {
                 try {
                     bW.write(kmlRepresenter.toKmlString());
 
-                    if (kmlRepresenter.hasImage()) {
-                        String imagePath = kmlRepresenter.getImagePath();
-                        File imageFile = new File(applicationDir, imagePath);
-                        if (imageFile.exists()) {
-                            existingImages.add(imageFile);
-                        } else {
-                            Logger.w(this, "Can't find image: " + imageFile.getAbsolutePath());
+                    if (kmlRepresenter.hasImages()) {
+                        List<String> imagePaths = kmlRepresenter.getImagePaths();
+                        for( String imagePath : imagePaths ) {
+                            File imageFile = new File(applicationDir, imagePath);
+                            if (imageFile.exists()) {
+                                existingImages.add(imageFile);
+                            } else {
+                                Logger.w(this, "Can't find image: " + imageFile.getAbsolutePath());
+                            }
                         }
                     }
                 } catch (Exception e) {

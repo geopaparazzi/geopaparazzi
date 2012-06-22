@@ -17,6 +17,10 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -39,8 +43,9 @@ public class Note implements KmlRepresenter, GpxRepresenter {
     private final double lat;
     private final double altim;
     private final String category;
-    private final String form;
+    private final String section;
     private final int type;
+    private List<String> images = new ArrayList<String>();
 
     /**
      * A wrapper for a note.
@@ -51,10 +56,11 @@ public class Note implements KmlRepresenter, GpxRepresenter {
      * @param lon
      * @param lat
      * @param altim
-     * @param form the form.
+     * @param section the section .
      * @param type 
      */
-    public Note( long id, String name, String description, double lon, double lat, double altim, String category, String form, int type ) {
+    public Note( long id, String name, String description, double lon, double lat, double altim, String category, String section,
+            int type ) {
         this.id = id;
         if (name != null) {
             this.name = name;
@@ -67,14 +73,14 @@ public class Note implements KmlRepresenter, GpxRepresenter {
             this.description = ""; //$NON-NLS-1$
         }
         if (category != null) {
-        	this.category = category;
+            this.category = category;
         } else {
-        	this.category = ""; //$NON-NLS-1$
+            this.category = ""; //$NON-NLS-1$
         }
         this.lon = lon;
         this.lat = lat;
         this.altim = altim;
-        this.form = form;
+        this.section = section;
         this.type = type;
     }
 
@@ -103,12 +109,12 @@ public class Note implements KmlRepresenter, GpxRepresenter {
     }
 
     public String getForm() {
-        return form;
+        return section;
     }
-    
+
     public String getCategory() {
-		return category;
-	}
+        return category;
+    }
 
     public int getType() {
         return type;
@@ -119,37 +125,79 @@ public class Note implements KmlRepresenter, GpxRepresenter {
         StringBuilder sB = new StringBuilder();
         sB.append("<Placemark>\n");
         sB.append("<styleUrl>#red-pushpin</styleUrl>\n");
-        sB.append("<name>").append(name).append(" (").append(category).append(")").append("</name>\n");
+        sB.append("<name></name>\n");// .append(name).append(" (").append(category).append(")").append("</name>\n");
         sB.append("<description>\n");
         sB.append("<![CDATA[\n");
-        String descr = description.replaceAll("\n", "</BR></BR>");
-        sB.append("<p>").append(descr).append("</p>\n");
 
-        if (form != null) {
-            JSONArray formItems = TagsManager.getFormItems(new JSONObject(form));
-
-            // table head
-            // <table style="text-align: left; width: 80%;" border="1" cellpadding="5"
-            sB.append("<table style=\"text-align: left; width: 100%;\" border=\"1\" cellpadding=\"5\" cellspacing=\"2\">");
-            // <tbody>
-            sB.append("<tbody>");
-
-            for( int i = 0; i < formItems.length(); i++ ) {
-                JSONObject formItem = formItems.getJSONObject(i);
-                String key = formItem.getString(FormUtilities.TAG_KEY);
-                String value = formItem.getString(FormUtilities.TAG_VALUE);
-
-                sB.append("<tr>");
-                sB.append("<td style=\"text-align: left; vertical-align: top; width: 50%;\">");
-                sB.append(key);
-                sB.append("</td>");
-                sB.append("<td style=\"text-align: left; vertical-align: top; width: 50%;\">");
-                sB.append(value);
-                sB.append("</td>");
-                sB.append("</tr>");
+        if (section != null) {
+            JSONObject sectionObject = new JSONObject(section);
+            if (sectionObject.has(FormUtilities.ATTR_SECTIONNAME)) {
+                String sectionName = sectionObject.getString(FormUtilities.ATTR_SECTIONNAME);
+                sB.append("<h1>").append(sectionName).append("</h1>\n");
             }
-            sB.append("</tbody>");
-            sB.append("</table>");
+
+            List<String> formsNames = TagsManager.getFormNames4Section(sectionObject);
+            for( String formName : formsNames ) {
+                sB.append("<h2>").append(formName).append("</h2>\n");
+
+                sB.append("<table style=\"text-align: left; width: 100%;\" border=\"1\" cellpadding=\"5\" cellspacing=\"2\">");
+                sB.append("<tbody>");
+
+                JSONObject form4Name = TagsManager.getForm4Name(formName, sectionObject);
+                JSONArray formItems = TagsManager.getFormItems(form4Name);
+                for( int i = 0; i < formItems.length(); i++ ) {
+                    JSONObject formItem = formItems.getJSONObject(i);
+                    if (!formItem.has(FormUtilities.TAG_KEY)) {
+                        continue;
+                    }
+
+                    String type = formItem.getString(FormUtilities.TAG_TYPE);
+                    String key = formItem.getString(FormUtilities.TAG_KEY);
+                    String value = formItem.getString(FormUtilities.TAG_VALUE);
+
+                    if (type.equals(FormUtilities.TYPE_PICTURES)) {
+                        if (value.trim().length() == 0) {
+                            continue;
+                        }
+                        String[] imageSplit = value.split(";");
+                        for( String image : imageSplit ) {
+                            File imgFile = new File(image);
+                            String imgName = imgFile.getName();
+                            sB.append("<tr>");
+                            sB.append("<td colspan=\"2\" style=\"text-align: left; vertical-align: top; width: 100%;\">");
+                            sB.append("<img src=\"" + imgName + "\" width=\"300\">");
+                            sB.append("</td>");
+                            sB.append("</tr>");
+
+                            images.add(image);
+                        }
+                    } else if (type.equals(FormUtilities.TYPE_MAP)) {
+                        if (value.trim().length() == 0) {
+                            continue;
+                        }
+                        sB.append("<tr>");
+                        String image = value.trim();
+                        File imgFile = new File(image);
+                        String imgName = imgFile.getName();
+                        sB.append("<td colspan=\"2\" style=\"text-align: left; vertical-align: top; width: 100%;\">");
+                        sB.append("<img src=\"" + imgName + "\" width=\"300\">");
+                        sB.append("</td>");
+                        sB.append("</tr>");
+                        images.add(image);
+                    } else {
+                        sB.append("<tr>");
+                        sB.append("<td style=\"text-align: left; vertical-align: top; width: 50%;\">");
+                        sB.append(key);
+                        sB.append("</td>");
+                        sB.append("<td style=\"text-align: left; vertical-align: top; width: 50%;\">");
+                        sB.append(value);
+                        sB.append("</td>");
+                        sB.append("</tr>");
+                    }
+                }
+                sB.append("</tbody>");
+                sB.append("</table>");
+            }
         }
 
         sB.append("]]>\n");
@@ -163,12 +211,12 @@ public class Note implements KmlRepresenter, GpxRepresenter {
         return sB.toString();
     }
 
-    public boolean hasImage() {
-        return false;
+    public boolean hasImages() {
+        return images.size() > 0;
     }
 
-    public String getImagePath() {
-        return null;
+    public List<String> getImagePaths() {
+        return images;
     }
 
     public double getMinLat() {
@@ -188,7 +236,7 @@ public class Note implements KmlRepresenter, GpxRepresenter {
     }
 
     public String toGpxString() throws Exception {
-        String descr = description.replaceAll("\n", "; ");  //$NON-NLS-1$//$NON-NLS-2$
+        String descr = description.replaceAll("\n", "; "); //$NON-NLS-1$//$NON-NLS-2$
         String wayPointString = GpxUtilities.getWayPointString(lat, lon, altim, name, descr);
         return wayPointString;
     }
