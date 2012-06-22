@@ -36,6 +36,7 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
@@ -182,6 +183,7 @@ public class FormUtilities {
     public static final String TAG_ITEM = "item";
     public static final String TAG_TYPE = "type";
     public static final String TAG_SIZE = "size";
+    public static final String TAG_URL = "url";
 
     /**
      * Adds a {@link TextView} to the supplied mainView.
@@ -240,6 +242,56 @@ public class FormUtilities {
 
         textLayout.addView(editView);
         return editView;
+    }
+
+    public static View addTextView( final Context context, LinearLayout mainView, String value, String size, boolean withLine,
+            final String url ) {
+        LinearLayout textLayout = new LinearLayout(context);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
+                LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins(10, 10, 10, 10);
+        textLayout.setLayoutParams(layoutParams);
+        textLayout.setOrientation(LinearLayout.VERTICAL);
+        // textLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.formitem_background));
+        mainView.addView(textLayout);
+
+        TextView textView = new TextView(context);
+        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        textView.setPadding(2, 2, 2, 2);
+        textView.setText(value);
+
+        size = size.trim();
+        if (size.equals("large")) {
+            textView.setTextAppearance(context, android.R.attr.textAppearanceLarge);
+        } else if (size.equals("medium")) {
+            textView.setTextAppearance(context, android.R.attr.textAppearanceMedium);
+        } else if (size.equals("small")) {
+            textView.setTextAppearance(context, android.R.attr.textAppearanceSmall);
+        } else {
+            int sizeInt = Integer.parseInt(size);
+            textView.setTextSize(sizeInt);
+        }
+        textView.setTextColor(context.getResources().getColor(R.color.formcolor));
+        if (url != null && url.length() > 0) {
+            textView.setMovementMethod(LinkMovementMethod.getInstance());
+            textView.setOnClickListener(new View.OnClickListener(){
+                public void onClick( View v ) {
+                    Uri uri = Uri.parse(url);
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                    context.startActivity(intent);
+                }
+            });
+        }
+        textLayout.addView(textView);
+
+        if (withLine) {
+            View view = new View(context);
+            view.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, 2));
+            view.setBackgroundColor(context.getResources().getColor(R.color.formcolor));
+
+            textLayout.addView(view);
+        }
+        return textView;
     }
 
     /**
@@ -755,42 +807,4 @@ public class FormUtilities {
 
     }
 
-    public static View addTextView( Context context, LinearLayout mainView, String value, String size, boolean withLine ) {
-        LinearLayout textLayout = new LinearLayout(context);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
-                LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(10, 10, 10, 10);
-        textLayout.setLayoutParams(layoutParams);
-        textLayout.setOrientation(LinearLayout.VERTICAL);
-        // textLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.formitem_background));
-        mainView.addView(textLayout);
-
-        TextView textView = new TextView(context);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        textView.setPadding(2, 2, 2, 2);
-        textView.setText(value);
-
-        size = size.trim();
-        if (size.equals("large")) {
-            textView.setTextAppearance(context, android.R.attr.textAppearanceLarge);
-        } else if (size.equals("medium")) {
-            textView.setTextAppearance(context, android.R.attr.textAppearanceMedium);
-        } else if (size.equals("small")) {
-            textView.setTextAppearance(context, android.R.attr.textAppearanceSmall);
-        } else {
-            int sizeInt = Integer.parseInt(size);
-            textView.setTextSize(sizeInt);
-        }
-        textView.setTextColor(context.getResources().getColor(R.color.formcolor));
-        textLayout.addView(textView);
-
-        if (withLine) {
-            View view = new View(context);
-            view.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, 2));
-            view.setBackgroundColor(context.getResources().getColor(R.color.formcolor));
-
-            textLayout.addView(view);
-        }
-        return textView;
-    }
 }

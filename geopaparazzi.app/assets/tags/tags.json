@@ -147,6 +147,11 @@
                     },{
                         "value": "a underlined label of size 24",
                         "size": "24",
+						"type": "labelwithline"
+                    },{
+                        "value": "a label with link to the geopaparazzi homepage",
+                        "url": "http://www.geopaparazzi.eu",
+                        "size": "20",
                         "type": "labelwithline"
                     }
                 ]

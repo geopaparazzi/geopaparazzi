@@ -120,11 +120,21 @@ public class FragmentDetail extends Fragment {
                     } else if (type.equals(TYPE_TIME)) {
                         addedView = FormUtilities.addTimeView(FragmentDetail.this, mainView, key, value, constraintDescription);
                     } else if (type.equals(TYPE_LABEL)) {
-                        String size = jsonObject.getString("size");
-                        addedView = FormUtilities.addTextView(activity, mainView, value, size, false);
+                        String size = "20"; //$NON-NLS-1$
+                        if (jsonObject.has(TAG_SIZE))
+                            size = jsonObject.getString(TAG_SIZE);
+                        String url = null;
+                        if (jsonObject.has(TAG_URL))
+                            url = jsonObject.getString(TAG_URL);
+                        addedView = FormUtilities.addTextView(activity, mainView, value, size, false, url);
                     } else if (type.equals(TYPE_LABELWITHLINE)) {
-                        String size = jsonObject.getString("size");
-                        addedView = FormUtilities.addTextView(activity, mainView, value, size, true);
+                        String size = "20"; //$NON-NLS-1$
+                        if (jsonObject.has(TAG_SIZE))
+                            size = jsonObject.getString(TAG_SIZE);
+                        String url = null;
+                        if (jsonObject.has(TAG_URL))
+                            url = jsonObject.getString(TAG_URL);
+                        addedView = FormUtilities.addTextView(activity, mainView, value, size, true, url);
                     } else if (type.equals(TYPE_BOOLEAN)) {
                         addedView = FormUtilities.addBooleanView(activity, mainView, key, value, constraintDescription);
                     } else if (type.equals(TYPE_STRINGCOMBO)) {
