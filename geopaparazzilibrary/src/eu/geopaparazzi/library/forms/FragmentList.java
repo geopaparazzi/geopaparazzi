@@ -76,8 +76,8 @@ public class FragmentList extends android.support.v4.app.ListFragment {
                 e.printStackTrace();
                 Utilities.messageDialog(activity, "An error occurred while storing the form data.", null);
             }
-            FragmentActivity activity2 = oldFragment.getActivity();
-            int id2 = oldFragment.getId();
+            // FragmentActivity activity2 = oldFragment.getActivity();
+            // int id2 = oldFragment.getId();
 
             FragmentDetail newFragment = new FragmentDetail();
             newFragment.setForm(selectedItemName, sectionObject);
@@ -88,7 +88,7 @@ public class FragmentList extends android.support.v4.app.ListFragment {
             // transaction.addToBackStack(null); // Ads FirstFragment to the back-stack
             transaction.commit();
         } else {
-            String sectionName = activity.getSectionName();
+            // String sectionName = activity.getSectionName();
             Intent intent = new Intent(getActivity().getApplicationContext(), FragmentDetailActivity.class);
             intent.putExtra(FormUtilities.ATTR_FORMNAME, selectedItemName);
             intent.putExtra(FormUtilities.ATTR_SECTIONOBJECTSTR, sectionObject.toString());
@@ -103,7 +103,7 @@ public class FragmentList extends android.support.v4.app.ListFragment {
     public JSONObject getSectionObject() {
         return activity.getSectionObject();
     }
-    
+
     public void onActivityResult( int requestCode, int resultCode, Intent data ) {
         super.onActivityResult(requestCode, resultCode, data);
         switch( requestCode ) {

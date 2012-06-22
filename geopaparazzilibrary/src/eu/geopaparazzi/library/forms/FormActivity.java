@@ -154,7 +154,15 @@ public class FormActivity extends FragmentActivity {
     }
 
     private void saveAction() throws Exception {
-        // extract constraints
+        // if i landscape mode store last inserted info, since that fragment has not been stored
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            FragmentDetail detailFragment = (FragmentDetail) getSupportFragmentManager().findFragmentById(R.id.detailFragment);
+            if (detailFragment != null) {
+                detailFragment.storeFormItems(false);
+            }
+        }
+
+        // extract and check constraints
         List<String> availableFormNames = TagsManager.getFormNames4Section(sectionObject);
         for( String formName : availableFormNames ) {
             JSONObject formObject = TagsManager.getForm4Name(formName, sectionObject);
@@ -198,6 +206,7 @@ public class FormActivity extends FragmentActivity {
             }
         }
 
+        // finally store data
         String sectionObjectString = sectionObject.toString();
         Date sqlDate = new Date(System.currentTimeMillis());
         String timestamp = LibraryConstants.TIME_FORMATTER_SQLITE.format(sqlDate);
