@@ -15,8 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.library.bluetooth;
+package eu.geopaparazzi.library.bluetooth2;
 
+import eu.geopaparazzi.library.bluetooth_tmp.IBluetoothListener;
 import android.bluetooth.BluetoothSocket;
 
 /**
@@ -46,7 +47,7 @@ public interface IBluetoothDevice extends Runnable{
      * @param socket the socket to use for dialog with the device.
      * @param enablementHandler the handler that is used for enable/disable events.
      */
-    public abstract void initialize( BluetoothSocket socket, BluetoothEnablementHandler enablementHandler );
+    public abstract void initialize( BluetoothSocket socket, IBluetoothEnablementHandler enablementHandler );
 
     /**
      * Close the connection to the device.

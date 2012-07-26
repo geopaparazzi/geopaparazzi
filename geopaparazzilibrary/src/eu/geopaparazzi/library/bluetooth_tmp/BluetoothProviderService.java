@@ -1,3 +1,4 @@
+package eu.geopaparazzi.library.bluetooth_tmp;
 ///*
 // * Copyright (C) 2010, 2011 Herbert von Broeuschmeul
 // * Copyright (C) 2010, 2011 BluetoothGPS4Droid Project
@@ -21,7 +22,7 @@
 ///**
 // * 
 // */
-//package eu.geopaparazzi.library.bluetooth;
+//package eu.geopaparazzi.library.bluetooth_tmp;
 //
 //import java.io.BufferedWriter;
 //import java.io.File;

@@ -18,7 +18,7 @@
  *  along with BluetoothGPS4Droid. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.geopaparazzi.library.bluetooth;
+package eu.geopaparazzi.library.bluetooth_tmp;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -36,6 +36,8 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.bluetooth2.IBluetoothEnablementHandler;
+import eu.geopaparazzi.library.bluetooth2.IBluetoothDevice;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 
@@ -47,7 +49,7 @@ import eu.geopaparazzi.library.util.debug.Logger;
  *
  */
 @SuppressWarnings("nls")
-public class BluetoothManager implements BluetoothEnablementHandler {
+public class BluetoothManager implements IBluetoothEnablementHandler {
 
     /**
      * Tag used for log messages

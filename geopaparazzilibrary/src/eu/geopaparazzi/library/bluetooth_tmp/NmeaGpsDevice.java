@@ -1,4 +1,4 @@
-package eu.geopaparazzi.library.bluetooth;
+package eu.geopaparazzi.library.bluetooth_tmp;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,6 +11,8 @@ import java.util.List;
 
 import android.bluetooth.BluetoothSocket;
 import android.os.SystemClock;
+import eu.geopaparazzi.library.bluetooth2.IBluetoothEnablementHandler;
+import eu.geopaparazzi.library.bluetooth2.IBluetoothDevice;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 
@@ -50,16 +52,16 @@ public class NmeaGpsDevice implements IBluetoothDevice {
     private boolean enabled;
 
     private List<IBluetoothListener> bluetoothListeners = new ArrayList<IBluetoothListener>();
-    private BluetoothEnablementHandler notificationHandler;
+    private IBluetoothEnablementHandler notificationHandler;
 
     public NmeaGpsDevice() {
     }
 
     /* (non-Javadoc)
-     * @see eu.geopaparazzi.library.bluetooth.IBluetoothDevice#prepare(android.bluetooth.BluetoothSocket, eu.geopaparazzi.library.bluetooth.BluetoothEnablementHandler)
+     * @see eu.geopaparazzi.library.bluetooth_tmp.IBluetoothDevice#prepare(android.bluetooth.BluetoothSocket, eu.geopaparazzi.library.bluetooth_tmp.BluetoothEnablementHandler)
      */
     @Override
-    public void initialize( BluetoothSocket socket, BluetoothEnablementHandler notificationHandler ) {
+    public void initialize( BluetoothSocket socket, IBluetoothEnablementHandler notificationHandler ) {
         this.socket = socket;
         this.notificationHandler = notificationHandler;
         InputStream tmpIn = null;
@@ -81,7 +83,7 @@ public class NmeaGpsDevice implements IBluetoothDevice {
     }
 
     /* (non-Javadoc)
-     * @see eu.geopaparazzi.library.bluetooth.IBluetoothDevice#isReady()
+     * @see eu.geopaparazzi.library.bluetooth_tmp.IBluetoothDevice#isReady()
      */
     @Override
     public boolean isReady() {
@@ -89,7 +91,7 @@ public class NmeaGpsDevice implements IBluetoothDevice {
     }
 
     /* (non-Javadoc)
-     * @see eu.geopaparazzi.library.bluetooth.IBluetoothDevice#setEnabled(boolean)
+     * @see eu.geopaparazzi.library.bluetooth_tmp.IBluetoothDevice#setEnabled(boolean)
      */
     @Override
     public void setEnabled( boolean enabled ) {
@@ -97,7 +99,7 @@ public class NmeaGpsDevice implements IBluetoothDevice {
     }
 
     /* (non-Javadoc)
-     * @see eu.geopaparazzi.library.bluetooth.IBluetoothDevice#getSocket()
+     * @see eu.geopaparazzi.library.bluetooth_tmp.IBluetoothDevice#getSocket()
      */
     @Override
     public BluetoothSocket getSocket() {
@@ -195,7 +197,7 @@ public class NmeaGpsDevice implements IBluetoothDevice {
     }
 
     /* (non-Javadoc)
-     * @see eu.geopaparazzi.library.bluetooth.IBluetoothDevice#close()
+     * @see eu.geopaparazzi.library.bluetooth_tmp.IBluetoothDevice#close()
      */
     @Override
     public void close() {
@@ -231,7 +233,7 @@ public class NmeaGpsDevice implements IBluetoothDevice {
     }
 
     /* (non-Javadoc)
-     * @see eu.geopaparazzi.library.bluetooth.IBluetoothDevice#addListener(eu.geopaparazzi.library.bluetooth.IBluetoothListener)
+     * @see eu.geopaparazzi.library.bluetooth_tmp.IBluetoothDevice#addListener(eu.geopaparazzi.library.bluetooth_tmp.IBluetoothListener)
      */
     @Override
     public boolean addListener( IBluetoothListener listener ) {
@@ -243,7 +245,7 @@ public class NmeaGpsDevice implements IBluetoothDevice {
     }
 
     /* (non-Javadoc)
-     * @see eu.geopaparazzi.library.bluetooth.IBluetoothDevice#removeListener(eu.geopaparazzi.library.bluetooth.IBluetoothListener)
+     * @see eu.geopaparazzi.library.bluetooth_tmp.IBluetoothDevice#removeListener(eu.geopaparazzi.library.bluetooth_tmp.IBluetoothListener)
      */
     @Override
     public void removeListener( IBluetoothListener listener ) {

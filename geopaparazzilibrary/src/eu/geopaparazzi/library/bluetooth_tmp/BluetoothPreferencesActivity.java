@@ -18,7 +18,7 @@
  *  along with BluetoothGPS4Droid. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package eu.geopaparazzi.library.bluetooth;
+package eu.geopaparazzi.library.bluetooth_tmp;
 
 import java.util.HashSet;
 import java.util.Set;

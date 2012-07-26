@@ -94,29 +94,6 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".bluetooth.BluetoothProviderService"
-            android:enabled="true"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="org.broeuschmeul.android.gps.bluetooth.tracker.nmea.intent.action.START_TRACK_RECORDING" >
-                    <category android:name="android.intent.category.DEFAULT" />
-                </action>
-                <action android:name="org.broeuschmeul.android.gps.bluetooth.tracker.nmea.intent.action.STOP_TRACK_RECORDING" >
-                    <category android:name="android.intent.category.DEFAULT" />
-                </action>
-                <action android:name="org.broeuschmeul.android.gps.bluetooth.provider.nmea.intent.action.START_GPS_PROVIDER" >
-                    <category android:name="android.intent.category.DEFAULT" />
-                </action>
-                <action android:name="org.broeuschmeul.android.gps.bluetooth.provider.nmea.intent.action.STOP_GPS_PROVIDER" >
-                    <category android:name="android.intent.category.DEFAULT" />
-                </action>
-                <action android:name="org.broeuschmeul.android.gps.bluetooth.provider.nmea.intent.action.CONFIGURE_SIRF_GPS" >
-                    <category android:name="android.intent.category.DEFAULT" />
-                </action>
-            </intent-filter>
-        </service>
-
         <receiver
             android:name=".sms.SmsReceiverPositionSender"
             android:enabled="true" >

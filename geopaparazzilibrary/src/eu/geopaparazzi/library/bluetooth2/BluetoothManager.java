@@ -30,7 +30,9 @@ public enum BluetoothManager {
 
     private BluetoothSocket _bluetoothSocket;
 
-    private BluetoothDevice _bluetoothDevice;
+    private IBluetoothDevice _bluetoothDevice;
+
+    private boolean isSocketConnected = false;
 
     private BluetoothManager() {
         _bluetooth = BluetoothAdapter.getDefaultAdapter();
@@ -227,13 +229,25 @@ public enum BluetoothManager {
      * a new connection is made with the new device.</p>
      * 
      * @param bluetoothDevice the device to use.
-     * @throws IOException 
+     * @throws Exception 
      */
-    public synchronized void setBluetoothDevice( BluetoothDevice bluetoothDevice ) throws IOException {
+    public synchronized void setBluetoothDevice( IBluetoothDevice bluetoothDevice ) throws Exception {
+        reset();
+        _bluetoothDevice = bluetoothDevice;
+    }
+
+    /**
+     * Reset the current bluetooth socket and device.
+     * 
+     * @throws Exception
+     */
+    public void reset() throws Exception {
         if (_bluetoothSocket != null) {
             _bluetoothSocket.close();
+            isSocketConnected = false;
+            _bluetoothSocket = null;
         }
-        _bluetoothDevice = bluetoothDevice;
+        _bluetoothDevice = null;
     }
 
     /**
@@ -255,8 +269,12 @@ public enum BluetoothManager {
         return _bluetoothSocket;
     }
 
+    public synchronized IBluetoothDevice getCurrentBluetoothDevice() {
+        return _bluetoothDevice;
+    }
+
     /**
-     * Create a bluetooth (rfcomm) socket.
+     * Create a bluetooth (rfcomm) socket and connect to it.
      * 
      * @param bluetoothDevice the device for which to create the socket for.
      * @return the created socket or <code>null</code>.
@@ -265,5 +283,14 @@ public enum BluetoothManager {
     private void createSocket() throws Exception {
         Method m = _bluetoothDevice.getClass().getMethod("createRfcommSocket", new Class[]{int.class}); //$NON-NLS-1$
         _bluetoothSocket = (BluetoothSocket) m.invoke(_bluetoothDevice, 1);
+        _bluetoothSocket.connect();
+        isSocketConnected = true;
+    }
+
+    /**
+     * @return <code>true</code>, if the device is ready to transfer data through the socket. 
+     */
+    public boolean isIOReady() {
+        return isSocketConnected;
     }
 }
