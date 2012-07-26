@@ -1,10 +1,12 @@
 package eu.geopaparazzi.library.bluetooth2;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -181,6 +183,33 @@ public enum BluetoothManager {
     public void stopStatusChangeListening( Context context ) {
         if (bluetoothState != null) {
             context.unregisterReceiver(bluetoothState);
+        }
+    }
+
+    /**
+     * Get the set of paired devices.
+     * 
+     * @return the set of paired devices or an empty set.
+     */
+    public Set<BluetoothDevice> getBondedDevices() {
+        if (isEnabled()) {
+            return bluetooth.getBondedDevices();
+        } else {
+            return Collections.emptySet();
+        }
+    }
+
+    /**
+     * Get a {@link BluetoothDevice} by its address.
+     * 
+     * @param address te bt device address.
+     * @return the device or <code>null</code>.
+     */
+    public BluetoothDevice getBluetoothDeviceByAddress( String address ) {
+        if (isEnabled()) {
+            return bluetooth.getRemoteDevice(address);
+        } else {
+            return null;
         }
     }
 
