@@ -1,5 +1,7 @@
 package eu.geopaparazzi.library.bluetooth2;
 
+import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -7,6 +9,7 @@ import java.util.Set;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,17 +19,21 @@ import eu.geopaparazzi.library.util.debug.Logger;
 public enum BluetoothManager {
     INSTANCE;
 
-    private BluetoothAdapter bluetooth;
+    private BluetoothAdapter _bluetooth;
 
     /**
      * Registered {@link IBluetoothStatusChangeListener status change listeners}.
      */
-    private Set<IBluetoothStatusChangeListener> statusChangeListeners = new HashSet<IBluetoothStatusChangeListener>();
+    private Set<IBluetoothStatusChangeListener> _statusChangeListeners = new HashSet<IBluetoothStatusChangeListener>();
 
-    private BroadcastReceiver bluetoothState;
+    private BroadcastReceiver _bluetoothState;
+
+    private BluetoothSocket _bluetoothSocket;
+
+    private BluetoothDevice _bluetoothDevice;
 
     private BluetoothManager() {
-        bluetooth = BluetoothAdapter.getDefaultAdapter();
+        _bluetooth = BluetoothAdapter.getDefaultAdapter();
     }
 
     /**
@@ -37,7 +44,7 @@ public enum BluetoothManager {
      * @return <code>true</code> if the device is supported.
      */
     public boolean isSupported() {
-        return bluetooth == null;
+        return _bluetooth == null;
     }
 
     /**
@@ -46,7 +53,7 @@ public enum BluetoothManager {
      * @return <code>true</code> if the bt device is truned on.
      */
     public boolean isEnabled() {
-        if (isSupported() && bluetooth.isEnabled()) {
+        if (isSupported() && _bluetooth.isEnabled()) {
             return true;
         } else {
             return false;
@@ -58,7 +65,7 @@ public enum BluetoothManager {
      */
     public String getAddress() {
         if (isEnabled()) {
-            return bluetooth.getAddress();
+            return _bluetooth.getAddress();
         } else {
             return null;
         }
@@ -69,7 +76,7 @@ public enum BluetoothManager {
      */
     public String getName() {
         if (isEnabled()) {
-            return bluetooth.getName();
+            return _bluetooth.getName();
         } else {
             return null;
         }
@@ -85,7 +92,7 @@ public enum BluetoothManager {
      */
     public int getState() {
         if (isEnabled()) {
-            return bluetooth.getState();
+            return _bluetooth.getState();
         } else {
             return BluetoothAdapter.STATE_OFF;
         }
@@ -121,7 +128,7 @@ public enum BluetoothManager {
      * @param listener the {@link IBluetoothStatusChangeListener listener} to add.
      */
     public void addStatusChangedListener( IBluetoothStatusChangeListener listener ) {
-        statusChangeListeners.add(listener);
+        _statusChangeListeners.add(listener);
     }
 
     /**
@@ -130,7 +137,7 @@ public enum BluetoothManager {
      * @param listener the {@link IBluetoothStatusChangeListener listener} to remove.
      */
     public void removeStatusChangedListener( IBluetoothStatusChangeListener listener ) {
-        statusChangeListeners.remove(listener);
+        _statusChangeListeners.remove(listener);
     }
 
     /**
@@ -139,7 +146,7 @@ public enum BluetoothManager {
      * @param context the {@link Context} to use.
      */
     public void startStatusChangeListening( Context context ) {
-        bluetoothState = new BroadcastReceiver(){
+        _bluetoothState = new BroadcastReceiver(){
             @Override
             public void onReceive( Context context, Intent intent ) {
                 String prevStateExtra = BluetoothAdapter.EXTRA_PREVIOUS_STATE;
@@ -147,7 +154,7 @@ public enum BluetoothManager {
                 int state = intent.getIntExtra(stateExtra, -1);
                 int previousState = intent.getIntExtra(prevStateExtra, -1);
 
-                for( IBluetoothStatusChangeListener listener : statusChangeListeners ) {
+                for( IBluetoothStatusChangeListener listener : _statusChangeListeners ) {
                     listener.bluetoothStatusChanged(previousState, state);
                 }
 
@@ -172,7 +179,7 @@ public enum BluetoothManager {
             }
         };
 
-        context.registerReceiver(bluetoothState, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
+        context.registerReceiver(_bluetoothState, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
     }
 
     /**
@@ -181,8 +188,8 @@ public enum BluetoothManager {
      * @param context the {@link Context} to use.
      */
     public void stopStatusChangeListening( Context context ) {
-        if (bluetoothState != null) {
-            context.unregisterReceiver(bluetoothState);
+        if (_bluetoothState != null) {
+            context.unregisterReceiver(_bluetoothState);
         }
     }
 
@@ -193,7 +200,7 @@ public enum BluetoothManager {
      */
     public Set<BluetoothDevice> getBondedDevices() {
         if (isEnabled()) {
-            return bluetooth.getBondedDevices();
+            return _bluetooth.getBondedDevices();
         } else {
             return Collections.emptySet();
         }
@@ -207,10 +214,56 @@ public enum BluetoothManager {
      */
     public BluetoothDevice getBluetoothDeviceByAddress( String address ) {
         if (isEnabled()) {
-            return bluetooth.getRemoteDevice(address);
+            return _bluetooth.getRemoteDevice(address);
         } else {
             return null;
         }
     }
 
+    /**
+     * Set the {@link BluetoothDevice}.
+     * 
+     * <p>If another one is available, its socket will be closed and 
+     * a new connection is made with the new device.</p>
+     * 
+     * @param bluetoothDevice the device to use.
+     * @throws IOException 
+     */
+    public synchronized void setBluetoothDevice( BluetoothDevice bluetoothDevice ) throws IOException {
+        if (_bluetoothSocket != null) {
+            _bluetoothSocket.close();
+        }
+        _bluetoothDevice = bluetoothDevice;
+    }
+
+    /**
+     * Get the bt socket.
+     * 
+     * <p>The socket is defined when the device is chosen.</p>
+     * 
+     * @return the active bt socket or <code>null</code>.
+     * @throws Exception 
+     */
+    public synchronized BluetoothSocket getSocket() throws Exception {
+        if (_bluetoothSocket == null) {
+            if (isEnabled()) {
+                createSocket();
+            } else {
+                throw new RuntimeException();
+            }
+        }
+        return _bluetoothSocket;
+    }
+
+    /**
+     * Create a bluetooth (rfcomm) socket.
+     * 
+     * @param bluetoothDevice the device for which to create the socket for.
+     * @return the created socket or <code>null</code>.
+     * @throws Exception
+     */
+    private void createSocket() throws Exception {
+        Method m = _bluetoothDevice.getClass().getMethod("createRfcommSocket", new Class[]{int.class}); //$NON-NLS-1$
+        _bluetoothSocket = (BluetoothSocket) m.invoke(_bluetoothDevice, 1);
+    }
 }
