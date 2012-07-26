@@ -85,7 +85,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="eu.geopaparazzi.library.util.activities.PlaySoundActivity"
+            android:name=".util.activities.PlaySoundActivity"
             android:theme="@android:style/Theme.NoDisplay" >
             <intent-filter>
                 <action android:name="eu.geopaparazzi.library.util.activities.PlaySoundActivity" />

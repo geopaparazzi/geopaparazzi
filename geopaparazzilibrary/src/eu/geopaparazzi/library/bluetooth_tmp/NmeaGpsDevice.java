@@ -11,8 +11,8 @@ import java.util.List;
 
 import android.bluetooth.BluetoothSocket;
 import android.os.SystemClock;
-import eu.geopaparazzi.library.bluetooth2.IBluetoothEnablementHandler;
-import eu.geopaparazzi.library.bluetooth2.IBluetoothDevice;
+import eu.geopaparazzi.library.bluetooth.IBluetoothEnablementHandler;
+import eu.geopaparazzi.library.bluetooth.IBluetoothIOHandler;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 
@@ -25,7 +25,7 @@ import eu.geopaparazzi.library.util.debug.Logger;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public class NmeaGpsDevice implements IBluetoothDevice {
+public class NmeaGpsDevice implements IBluetoothIOHandler {
     private static final String LOG_TAG = "NmeaGpsDevice";
     /**
      * GPS bluetooth socket used for communication. 
@@ -52,7 +52,6 @@ public class NmeaGpsDevice implements IBluetoothDevice {
     private boolean enabled;
 
     private List<IBluetoothListener> bluetoothListeners = new ArrayList<IBluetoothListener>();
-    private IBluetoothEnablementHandler notificationHandler;
 
     public NmeaGpsDevice() {
     }
@@ -61,9 +60,8 @@ public class NmeaGpsDevice implements IBluetoothDevice {
      * @see eu.geopaparazzi.library.bluetooth_tmp.IBluetoothDevice#prepare(android.bluetooth.BluetoothSocket, eu.geopaparazzi.library.bluetooth_tmp.BluetoothEnablementHandler)
      */
     @Override
-    public void initialize( BluetoothSocket socket, IBluetoothEnablementHandler notificationHandler ) {
+    public void initialize( BluetoothSocket socket ) {
         this.socket = socket;
-        this.notificationHandler = notificationHandler;
         InputStream tmpIn = null;
         OutputStream tmpOut = null;
         PrintStream tmpOut2 = null;
@@ -133,7 +131,6 @@ public class NmeaGpsDevice implements IBluetoothDevice {
         } finally {
             // cleanly closing everything...
             this.close();
-            notificationHandler.disable();
         }
     }
 

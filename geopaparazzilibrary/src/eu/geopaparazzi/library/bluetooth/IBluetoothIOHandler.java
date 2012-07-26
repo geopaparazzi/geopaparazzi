@@ -15,17 +15,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.library.bluetooth2;
+package eu.geopaparazzi.library.bluetooth;
 
 import eu.geopaparazzi.library.bluetooth_tmp.IBluetoothListener;
 import android.bluetooth.BluetoothSocket;
 
 /**
- * Represents a generic bluetooth device {@link Runnable}.
+ * Represents an IO handler for bluetooth sockets.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public interface IBluetoothDevice extends Runnable{
+public interface IBluetoothIOHandler extends Runnable {
 
     /**
      * Get the vendor name of the device.
@@ -45,9 +45,8 @@ public interface IBluetoothDevice extends Runnable{
      * Initialize the device by passing in the socket and an enablement handler.
      * 
      * @param socket the socket to use for dialog with the device.
-     * @param enablementHandler the handler that is used for enable/disable events.
      */
-    public abstract void initialize( BluetoothSocket socket, IBluetoothEnablementHandler enablementHandler );
+    public abstract void initialize( BluetoothSocket socket );
 
     /**
      * Close the connection to the device.
@@ -98,5 +97,5 @@ public interface IBluetoothDevice extends Runnable{
      * @param adaptee the class to adapt to.
      * @return the adapted object.
      */
-    public <T> T adapt(Class<T> adaptee);
+    public <T> T adapt( Class<T> adaptee );
 }

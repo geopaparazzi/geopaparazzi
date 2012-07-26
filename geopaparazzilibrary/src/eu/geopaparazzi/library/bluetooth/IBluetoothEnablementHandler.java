@@ -1,4 +1,4 @@
-package eu.geopaparazzi.library.bluetooth2;
+package eu.geopaparazzi.library.bluetooth;
 
 public interface IBluetoothEnablementHandler {
 

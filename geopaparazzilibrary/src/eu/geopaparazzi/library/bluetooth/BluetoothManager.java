@@ -1,4 +1,4 @@
-package eu.geopaparazzi.library.bluetooth2;
+package eu.geopaparazzi.library.bluetooth;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -30,12 +30,18 @@ public enum BluetoothManager {
 
     private BluetoothSocket _bluetoothSocket;
 
-    private IBluetoothDevice _bluetoothDevice;
+    private BluetoothDevice _bluetoothDevice;
 
     private boolean isSocketConnected = false;
 
+    private boolean isDummy = false;
+
     private BluetoothManager() {
         _bluetooth = BluetoothAdapter.getDefaultAdapter();
+    }
+
+    public void makeDummy() {
+        isDummy = true;
     }
 
     /**
@@ -46,6 +52,8 @@ public enum BluetoothManager {
      * @return <code>true</code> if the device is supported.
      */
     public boolean isSupported() {
+        if (isDummy)
+            return true;
         return _bluetooth == null;
     }
 
@@ -55,6 +63,8 @@ public enum BluetoothManager {
      * @return <code>true</code> if the bt device is truned on.
      */
     public boolean isEnabled() {
+        if (isDummy)
+            return true;
         if (isSupported() && _bluetooth.isEnabled()) {
             return true;
         } else {
@@ -66,6 +76,8 @@ public enum BluetoothManager {
      * @return the device's hardware address.
      */
     public String getAddress() {
+        if (isDummy)
+            return "dummyaddress";
         if (isEnabled()) {
             return _bluetooth.getAddress();
         } else {
@@ -77,6 +89,8 @@ public enum BluetoothManager {
      * @return the device's userfriendly name.
      */
     public String getName() {
+        if (isDummy)
+            return "dummy device";
         if (isEnabled()) {
             return _bluetooth.getName();
         } else {
@@ -93,6 +107,8 @@ public enum BluetoothManager {
      * @return the state of the bt device.
      */
     public int getState() {
+        if (isDummy)
+            return BluetoothAdapter.STATE_ON;
         if (isEnabled()) {
             return _bluetooth.getState();
         } else {
@@ -223,17 +239,41 @@ public enum BluetoothManager {
     }
 
     /**
+     * Get a {@link BluetoothDevice} by its name.
+     * 
+     * @param name te bt device name.
+     * @return the device or <code>null</code>.
+     */
+    public BluetoothDevice getBluetoothDeviceByName( String name ) {
+        if (isEnabled()) {
+            Set<BluetoothDevice> bondedDevices = getBondedDevices();
+            for( BluetoothDevice bluetoothDevice : bondedDevices ) {
+                if (bluetoothDevice.getName().equals(name)) {
+                    return bluetoothDevice;
+                }
+            }
+            return null;
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Set the {@link BluetoothDevice}.
      * 
      * <p>If another one is available, its socket will be closed and 
      * a new connection is made with the new device.</p>
      * 
      * @param bluetoothDevice the device to use.
+     * @param connect if <code>true</code>, also connect to the socket.
      * @throws Exception 
      */
-    public synchronized void setBluetoothDevice( IBluetoothDevice bluetoothDevice ) throws Exception {
+    public synchronized void setBluetoothDevice( BluetoothDevice bluetoothDevice, boolean connect ) throws Exception {
         reset();
         _bluetoothDevice = bluetoothDevice;
+        if (connect) {
+            getSocket();
+        }
     }
 
     /**
@@ -241,7 +281,7 @@ public enum BluetoothManager {
      * 
      * @throws Exception
      */
-    public void reset() throws Exception {
+    public synchronized void reset() throws Exception {
         if (_bluetoothSocket != null) {
             _bluetoothSocket.close();
             isSocketConnected = false;
@@ -259,6 +299,8 @@ public enum BluetoothManager {
      * @throws Exception 
      */
     public synchronized BluetoothSocket getSocket() throws Exception {
+        if (isDummy)
+            return null;
         if (_bluetoothSocket == null) {
             if (isEnabled()) {
                 createSocket();
@@ -269,7 +311,7 @@ public enum BluetoothManager {
         return _bluetoothSocket;
     }
 
-    public synchronized IBluetoothDevice getCurrentBluetoothDevice() {
+    public synchronized BluetoothDevice getCurrentBluetoothDevice() {
         return _bluetoothDevice;
     }
 
@@ -291,6 +333,24 @@ public enum BluetoothManager {
      * @return <code>true</code>, if the device is ready to transfer data through the socket. 
      */
     public boolean isIOReady() {
+        if (isDummy)
+            return true;
         return isSocketConnected;
+    }
+
+    /**
+     * Initializes 
+     * 
+     * @param iBluetoothDevice
+     * @throws IOException
+     */
+    public void initializeIBluetoothDeviceInternal( IBluetoothIOHandler iBluetoothDevice ) throws IOException {
+        if (isDummy)
+            return;
+        if (isSocketConnected) {
+            iBluetoothDevice.initialize(_bluetoothSocket);
+        } else {
+            throw new IOException("No socket connected.");
+        }
     }
 }

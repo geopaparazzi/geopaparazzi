@@ -36,8 +36,8 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
 import eu.geopaparazzi.library.R;
-import eu.geopaparazzi.library.bluetooth2.IBluetoothEnablementHandler;
-import eu.geopaparazzi.library.bluetooth2.IBluetoothDevice;
+import eu.geopaparazzi.library.bluetooth.IBluetoothEnablementHandler;
+import eu.geopaparazzi.library.bluetooth.IBluetoothIOHandler;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 
@@ -63,7 +63,7 @@ public class BluetoothManager implements IBluetoothEnablementHandler {
     private boolean enabled = false;
     private ScheduledExecutorService connectionAndReadingPool;
 
-    private IBluetoothDevice connectedBluetoothDevice;
+    private IBluetoothIOHandler connectedBluetoothDevice;
     private int disableReason = 0;
     private Notification connectionProblemNotification;
     private Notification serviceStoppedNotification;
@@ -112,7 +112,7 @@ public class BluetoothManager implements IBluetoothEnablementHandler {
      * 
      * @param connectedBluetoothDevice the device to connect.
      */
-    public void setBluetoothDevice( IBluetoothDevice connectedBluetoothDevice ) {
+    public void setBluetoothDevice( IBluetoothIOHandler connectedBluetoothDevice ) {
         if (this.connectedBluetoothDevice != null) {
             this.connectedBluetoothDevice.close();
             this.connectedBluetoothDevice = null;
@@ -313,7 +313,7 @@ public class BluetoothManager implements IBluetoothEnablementHandler {
                                             notificationManager.cancel(R.string.connection_problem_notification_title);
                                             if (Debug.D)
                                                 Logger.i(LOG_TAG, "starting socket reading task");
-                                            connectedBluetoothDevice.initialize(bluetoothSocket, BluetoothManager.this);
+                                            connectedBluetoothDevice.initialize(bluetoothSocket);
                                             connectedBluetoothDevice.setEnabled(true);
                                             connectionAndReadingPool.execute(connectedBluetoothDevice);
                                             if (Debug.D)
@@ -429,7 +429,7 @@ public class BluetoothManager implements IBluetoothEnablementHandler {
      * 
      * @return the device or <code>null</code>.
      */
-    public IBluetoothDevice getConnectedBluetoothDevice() {
+    public IBluetoothIOHandler getConnectedBluetoothDevice() {
         checkBluetoothDevice();
         return connectedBluetoothDevice;
     }
