@@ -41,6 +41,12 @@ public enum BluetoothManager {
     }
 
     public void makeDummy() {
+        try {
+            reset();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // needs to be set afterwards, since reset puts it to false
         isDummy = true;
     }
 
@@ -54,7 +60,7 @@ public enum BluetoothManager {
     public boolean isSupported() {
         if (isDummy)
             return true;
-        return _bluetooth == null;
+        return _bluetooth != null;
     }
 
     /**
@@ -65,7 +71,9 @@ public enum BluetoothManager {
     public boolean isEnabled() {
         if (isDummy)
             return true;
-        if (isSupported() && _bluetooth.isEnabled()) {
+        boolean supported = isSupported();
+        boolean enabled = _bluetooth.isEnabled();
+        if (supported && enabled) {
             return true;
         } else {
             return false;
@@ -288,6 +296,7 @@ public enum BluetoothManager {
             _bluetoothSocket = null;
         }
         _bluetoothDevice = null;
+        isDummy = false;
     }
 
     /**
