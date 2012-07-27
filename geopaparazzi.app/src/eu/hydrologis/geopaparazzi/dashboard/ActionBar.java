@@ -202,7 +202,7 @@ public class ActionBar implements GpsManagerListener {
                     }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
                         public void onClick( DialogInterface dialog, int whichButton ) {
                             Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setData(Uri.parse("market://search?q=Gps Status pub:EclipSim"));
+                            intent.setData(Uri.parse("market://search?q=com.eclipsim.gpsstatus2"));
                             context.startActivity(intent);
                         }
                     }).show();
