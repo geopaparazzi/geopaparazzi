@@ -1,4 +1,4 @@
-package eu.geopaparazzi.library.bluetooth_tmp;
+package eu.geopaparazzi.library.bluetooth;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,8 +11,6 @@ import java.util.List;
 
 import android.bluetooth.BluetoothSocket;
 import android.os.SystemClock;
-import eu.geopaparazzi.library.bluetooth.IBluetoothEnablementHandler;
-import eu.geopaparazzi.library.bluetooth.IBluetoothIOHandler;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 

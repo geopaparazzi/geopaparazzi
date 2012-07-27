@@ -17,7 +17,6 @@
  */
 package eu.geopaparazzi.library.bluetooth;
 
-import eu.geopaparazzi.library.bluetooth_tmp.IBluetoothListener;
 import android.bluetooth.BluetoothSocket;
 
 /**
