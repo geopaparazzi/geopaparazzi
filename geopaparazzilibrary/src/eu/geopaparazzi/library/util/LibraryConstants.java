@@ -111,6 +111,11 @@ public interface LibraryConstants {
     public static final String PREFS_KEY_MAP_ZOOM = "PREFS_KEY_MAP_ZOOM"; //$NON-NLS-1$
 
     /**
+     * Key used to pass a name or description temporarily through bundles. 
+     */
+    public static final String NAME = "NAME"; //$NON-NLS-1$
+
+    /**
      * Key used to pass a lat temporarily through bundles. 
      */
     public static final String LATITUDE = "LATITUDE"; //$NON-NLS-1$

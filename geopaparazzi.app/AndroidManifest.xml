@@ -16,7 +16,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.BATTERY_STATS" />
-	<!-- <uses-permission android:name="android.permission.READ_CONTACTS" /> -->
+    <!-- <uses-permission android:name="android.permission.READ_CONTACTS" /> -->
     <!--
     only for testing purposes 
 	<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"></uses-permission> 
@@ -186,6 +186,13 @@
         <activity android:name="eu.geopaparazzi.library.util.activities.InsertCoordActivity" >
             <intent-filter>
                 <action android:name="eu.geopaparazzi.library.util.activities.InsertCoordActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name="eu.geopaparazzi.library.util.activities.GeocodeActivity" >
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.util.activities.GeocodeActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

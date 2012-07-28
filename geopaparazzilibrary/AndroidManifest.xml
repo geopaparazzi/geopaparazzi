@@ -56,6 +56,13 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:name="eu.geopaparazzi.library.util.activities.GeocodeActivity" >
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.util.activities.GeocodeActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name="eu.geopaparazzi.library.forms.FormActivity" >
             <intent-filter>
                 <action android:name="eu.geopaparazzi.library.forms.FormActivity" />

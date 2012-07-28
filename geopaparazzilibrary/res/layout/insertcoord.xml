@@ -3,7 +3,7 @@
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
-	android:background="#FFFFFF">
+	android:background="@color/white">
 
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 		android:orientation="vertical" android:layout_width="fill_parent"
@@ -11,41 +11,41 @@
 
 		<TextView android:layout_height="wrap_content"
 			android:layout_width="fill_parent" android:id="@+id/askcoordlabel"
-			android:text="@string/askcoord" android:layout_margin="10px"
-			android:textColor="#000000">
+			android:text="@string/askcoord" android:layout_margin="10dp"
+			android:textColor="@color/black">
 		</TextView>
 		<LinearLayout android:orientation="horizontal"
 			android:layout_width="fill_parent" android:layout_height="wrap_content">
 			<TextView android:layout_height="wrap_content"
-				android:layout_width="70px" android:id="@+id/longitudelabel"
-				android:text="@string/longitude" android:layout_margin="10px"
-				android:textColor="#000000">
+				android:layout_width="70dp" android:id="@+id/longitudelabel"
+				android:text="@string/longitude" android:layout_margin="10dp"
+				android:textColor="@color/black">
 			</TextView>
 			<EditText android:layout_height="wrap_content"
 				android:layout_width="fill_parent" android:id="@+id/longitudetext"
 				android:layout_toRightOf="@+id/longitudelabel"
-				android:layout_margin="10px" android:text="11.330748">
+				android:layout_margin="10dp" android:text="11.330748">
 			</EditText>
 		</LinearLayout>
 
 		<LinearLayout android:orientation="horizontal"
 			android:layout_width="fill_parent" android:layout_height="wrap_content">
 			<TextView android:layout_height="wrap_content"
-				android:layout_width="70px" android:id="@+id/latitudelabel"
+				android:layout_width="70dp" android:id="@+id/latitudelabel"
 				android:layout_below="@+id/longitudelabel" android:text="@string/latitude"
-				android:layout_margin="10px" android:textColor="#000000">
+				android:layout_margin="10dp" android:textColor="@color/black">
 			</TextView>
 			<EditText android:layout_height="wrap_content"
 				android:layout_width="fill_parent" android:id="@+id/latitudetext"
-				android:layout_toRightOf="@+id/latitudelabel" android:layout_margin="10px"
+				android:layout_toRightOf="@+id/latitudelabel" android:layout_margin="10dp"
 				android:layout_below="@+id/longitudetext" android:text="46.482556">
 			</EditText>
 		</LinearLayout>
 		
 		<LinearLayout android:orientation="horizontal"
 			android:layout_height="fill_parent" android:layout_width="wrap_content" 
-			android:layout_margin="20px" android:layout_gravity="left">
-			<Button android:id="@+id/coordOkButton" android:layout_width="120px"
+			android:layout_margin="20dp" android:layout_gravity="left">
+			<Button android:id="@+id/coordOkButton" android:layout_width="120dp"
 				android:layout_height="wrap_content" android:text="@string/okcoord">
 			</Button>
 		</LinearLayout>
@@ -53,32 +53,32 @@
 <!--
 		<TextView android:layout_height="wrap_content"
 			android:layout_width="fill_parent" android:id="@+id/askaddresslabel"
-			android:text="@string/askaddress" android:layout_margin="10px"
+			android:text="@string/askaddress" android:layout_margin="10dp"
 			android:textColor="#000000">
 		</TextView>
 		<LinearLayout android:orientation="horizontal"
 			android:layout_width="fill_parent" android:layout_height="wrap_content">
 			<TextView android:layout_height="wrap_content"
-				android:layout_width="70px" android:id="@+id/addresslabel"
-				android:text="@string/address" android:layout_margin="10px"
+				android:layout_width="70dp" android:id="@+id/addresslabel"
+				android:text="@string/address" android:layout_margin="10dp"
 				android:textColor="#000000">
 			</TextView>
 			<EditText android:layout_height="wrap_content"
 				android:layout_width="fill_parent" android:id="@+id/addresstext"
-				android:layout_toRightOf="@+id/addresslabel" android:layout_margin="10px"
+				android:layout_toRightOf="@+id/addresslabel" android:layout_margin="10dp"
 				android:text="via siemens 19, 39100 bolzano">
 			</EditText>
 		</LinearLayout>
 
 		<LinearLayout android:orientation="horizontal"
 			android:layout_height="fill_parent" android:layout_gravity="left"
-			android:layout_width="wrap_content" android:layout_margin="20px">
+			android:layout_width="wrap_content" android:layout_margin="20dp">
 			<Button android:id="@+id/addressOkButton"
-				android:layout_width="120px" android:layout_height="wrap_content"
+				android:layout_width="120dp" android:layout_height="wrap_content"
 				android:text="@string/okaddress">
 			</Button>
 			<Button android:id="@+id/coordCancelButton"
-				android:layout_width="120px" android:layout_height="wrap_content"
+				android:layout_width="120dp" android:layout_height="wrap_content"
 				android:text="@string/cancel">
 			</Button>
 		</LinearLayout>

@@ -21,7 +21,9 @@
     <string name="lon">lon: </string>
     <string name="azimuth">azimuth: </string>
     
+	<string name="go_to">go to</string>
 	<string name="goto_coordinate">go to coordinate</string>
+	<string name="geocoding">geocoding</string>
 	<string name="prompt_gpsenable">Your gps is disabled! Would you like to enable it?</string>
 	<string name="width_label">width</string>
 	<string name="color_label">color</string>

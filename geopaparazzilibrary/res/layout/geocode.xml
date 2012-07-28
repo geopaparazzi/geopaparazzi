@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/enterLocationLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_margin="10dp"
+        android:text="@string/enterLocationLabel"
+        android:textColor="@color/black" />
+
+    <EditText
+        android:id="@+id/enterLocationValue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/enterLocationLabel"
+        android:layout_margin="10dp"
+        android:text=""
+        android:textColor="@color/black" />
+
+    <Button
+        android:id="@+id/lookupLocationButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/enterLocationValue"
+        android:layout_margin="10dp"
+        android:onClick="onLookupLocationClick"
+        android:text="@string/lookupLocationButton" />
+
+    <Button
+        android:id="@+id/okButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        android:onClick="onOkClick"
+        android:text="@android:string/ok" />
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/okButton"
+        android:layout_below="@id/lookupLocationButton"
+        android:layout_margin="10dp"
+        android:choiceMode="singleChoice"
+        android:drawSelectorOnTop="false"
+        android:textColor="@color/black" 
+        android:cacheColorHint="@color/white" 
+        />
+
+</RelativeLayout>

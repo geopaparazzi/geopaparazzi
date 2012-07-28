@@ -86,6 +86,7 @@ import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.activities.GeocodeActivity;
 import eu.geopaparazzi.library.util.activities.InsertCoordActivity;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
@@ -698,7 +699,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         menu.add(Menu.NONE, MENU_COMPASS_ID, 4, R.string.mapsactivity_menu_toggle_compass).setIcon(
                 android.R.drawable.ic_menu_compass);
         menu.add(Menu.NONE, CENTER_ON_MAP, 5, R.string.center_on_map).setIcon(android.R.drawable.ic_menu_mylocation);
-        menu.add(Menu.NONE, GO_TO, 6, R.string.goto_coordinate).setIcon(android.R.drawable.ic_menu_myplaces);
+        menu.add(Menu.NONE, GO_TO, 6, R.string.go_to).setIcon(android.R.drawable.ic_menu_myplaces);
         menu.add(Menu.NONE, MENU_MIXARE_ID, 7, R.string.view_in_mixare).setIcon(R.drawable.icon_datasource);
         return true;
     }
@@ -734,9 +735,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 return false;
             }
         case GO_TO: {
-            Intent intent = new Intent(this, InsertCoordActivity.class);
-            startActivityForResult(intent, INSERTCOORD_RETURN_CODE);
-            return true;
+            return goTo();
         }
         case CENTER_ON_MAP: {
             MapGenerator mapGenerator = mapView.getMapGenerator();
@@ -757,6 +756,30 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         default:
         }
         return super.onMenuItemSelected(featureId, item);
+    }
+
+    private boolean goTo() {
+        String[] items = new String[]{getString(R.string.goto_coordinate), getString(R.string.geocoding)};
+
+        new AlertDialog.Builder(this).setSingleChoiceItems(items, 0, null)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
+
+                    public void onClick( DialogInterface dialog, int whichButton ) {
+                        dialog.dismiss();
+
+                        int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                        if (selectedPosition == 0) {
+                            Intent intent = new Intent(MapsActivity.this, InsertCoordActivity.class);
+                            startActivityForResult(intent, INSERTCOORD_RETURN_CODE);
+                        } else {
+                            Intent intent = new Intent(MapsActivity.this, GeocodeActivity.class);
+                            startActivityForResult(intent, INSERTCOORD_RETURN_CODE);
+                        }
+
+                    }
+                }).show();
+
+        return true;
     }
 
     /**
