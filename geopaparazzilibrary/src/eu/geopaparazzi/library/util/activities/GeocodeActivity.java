@@ -33,9 +33,10 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import eu.geopaparazzi.library.R;
-import eu.geopaparazzi.library.routing.google.GRouter;
+import eu.geopaparazzi.library.routing.openrouteservice.OpenRouteServiceHandler;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
@@ -113,14 +114,29 @@ public class GeocodeActivity extends ListActivity {
 
             double[] lonLatZoom = PositionUtilities.getMapCenterFromPreferences(preferences, false, false);
 
-            GRouter router = new GRouter(lonLatZoom[1], lonLatZoom[0], latitude, longitude);
-            String routeString = router.getRouteString();
+            try {
+                OpenRouteServiceHandler router = new OpenRouteServiceHandler(lonLatZoom[1], lonLatZoom[0], latitude, longitude,
+                        OpenRouteServiceHandler.Preference.Fastest, OpenRouteServiceHandler.Language.en);
+                float[] routePoints = router.getRoutePoints();
 
-            Intent intent = getIntent();
-            intent.putExtra(LibraryConstants.ROUTE, routeString);
-            intent.putExtra(LibraryConstants.NAME, featureName);
+                Intent intent = getIntent();
+                intent.putExtra(LibraryConstants.ROUTE, routePoints);
 
-            this.setResult(RESULT_OK, intent);
+                String distance = router.getDistance();
+                if (distance != null && distance.length() > 0) {
+                    distance = "(" + distance + router.getUom() + ")";
+                } else {
+                    distance = "";
+                }
+                String routeName = "Route to: " + featureName + distance;
+                intent.putExtra(LibraryConstants.NAME, routeName);
+
+                this.setResult(RESULT_OK, intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+
+                Utilities.messageDialog(this, "An error occurred during the route extraction.", null);
+            }
 
             finish();
         }

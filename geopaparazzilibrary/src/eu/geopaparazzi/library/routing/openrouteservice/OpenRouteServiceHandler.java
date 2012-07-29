@@ -5,8 +5,6 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -19,7 +17,6 @@ import org.xml.sax.InputSource;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.PointF;
 import eu.geopaparazzi.library.gps.IGpsLogDbHelper;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
@@ -34,7 +31,7 @@ public class OpenRouteServiceHandler {
         en, it, de, fr, es
     }
 
-    private float[][] routePoints = null;
+    private float[] routePoints = null;
     private String distance = "";
     private String uom = "";
 
@@ -42,7 +39,7 @@ public class OpenRouteServiceHandler {
             throws Exception {
         StringBuilder urlString = new StringBuilder();
         urlString.append("http://openls.geog.uni-heidelberg.de/osm/eu/routing?");
-        urlString.append("&start=");// from
+        urlString.append("start=");// from
         urlString.append(fromLon);
         urlString.append(",");
         urlString.append(fromLat);
@@ -79,8 +76,9 @@ public class OpenRouteServiceHandler {
         for( int i = 0; i < routeSummaryList.getLength(); i++ ) {
             Node routeSummaryNode = routeSummaryList.item(i);
             NodeList totalDistance = ((Element) routeSummaryNode).getElementsByTagName("xls:TotalDistance"); //$NON-NLS-1$
-            distance = ((Element) totalDistance).getAttribute("value");
-            uom = ((Element) totalDistance).getAttribute("uom");
+            Node item = totalDistance.item(0);
+            distance = ((Element) item).getAttribute("value");
+            uom = ((Element) item).getAttribute("uom");
         }
         /*
          * extract route
@@ -90,22 +88,23 @@ public class OpenRouteServiceHandler {
             Node gmlLinestring = routeGeometryList.item(i);
             NodeList gmlPoslist = ((Element) gmlLinestring).getElementsByTagName("gml:pos"); //$NON-NLS-1$
             int length = gmlPoslist.getLength();
-            routePoints = new float[length][2];
+            routePoints = new float[length * 2];
+            int index = 0;
             for( int j = 0; j < length; j++ ) {
                 String text = gmlPoslist.item(j).getFirstChild().getNodeValue();
                 int s = text.indexOf(' ');
                 try {
                     double lon = Double.parseDouble(text.substring(0, s));
                     double lat = Double.parseDouble(text.substring(s + 1));
-                    routePoints[j][0] = (float) lon;
-                    routePoints[j][1] = (float) lat;
+                    routePoints[index++] = (float) lon;
+                    routePoints[index++] = (float) lat;
                 } catch (NumberFormatException nfe) {
                 }
             }
         }
     }
 
-    public float[][] getRoutePoints() {
+    public float[] getRoutePoints() {
         return routePoints;
     }
 

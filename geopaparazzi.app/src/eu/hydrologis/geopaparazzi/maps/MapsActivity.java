@@ -825,8 +825,9 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         case (INSERTCOORD_RETURN_CODE): {
             if (resultCode == Activity.RESULT_OK) {
 
-                String routeString = data.getStringExtra(LibraryConstants.ROUTE);
-                if (routeString != null) {
+                float[] routePoints = data.getFloatArrayExtra(LibraryConstants.ROUTE);
+                if (routePoints != null) {
+                    // it is a routing request
                     try {
                         String name = data.getStringExtra(LibraryConstants.NAME);
                         if (name == null) {
@@ -840,22 +841,14 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                         sqliteDatabase.beginTransaction();
                         try {
                             java.sql.Date nowPlus10Secs = now;
-                            if (routeString != null && routeString.trim().length() > 0) {
-                                String[] pairs = routeString.trim().split(" "); //$NON-NLS-1$
+                            for( int i = 0; i < routePoints.length; i = i + 2 ) {
+                                double lon = routePoints[i];
+                                double lat = routePoints[i + 1];
+                                double altim = -1;
 
-                                for( int i = 1; i < pairs.length; i++ ) {
-                                    String[] lngLat = pairs[i].split(","); //$NON-NLS-1$
-                                    double lon = Double.parseDouble(lngLat[0]);
-                                    double lat = Double.parseDouble(lngLat[1]);
-                                    double altim = 0;
-                                    if (lngLat.length > 2) {
-                                        altim = Double.parseDouble(lngLat[2]);
-                                    }
-
-                                    // dummy time increment
-                                    nowPlus10Secs = new java.sql.Date(nowPlus10Secs.getTime() + 10000);
-                                    logDumper.addGpsLogDataPoint(sqliteDatabase, newLogId, lon, lat, altim, nowPlus10Secs);
-                                }
+                                // dummy time increment
+                                nowPlus10Secs = new java.sql.Date(nowPlus10Secs.getTime() + 10000);
+                                logDumper.addGpsLogDataPoint(sqliteDatabase, newLogId, lon, lat, altim, nowPlus10Secs);
                             }
 
                             sqliteDatabase.setTransactionSuccessful();
@@ -869,6 +862,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                     }
 
                 } else {
+                    // it is a single point geocoding request
                     double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0f);
                     double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0f);
                     setCenterAndZoomForMapWindowFocus(lon, lat, null);
