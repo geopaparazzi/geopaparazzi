@@ -34,15 +34,12 @@ public class OpenRouteServiceHandler {
         en, it, de, fr, es
     }
 
-    private List<PointF> routePoints = new ArrayList<PointF>();
+    private float[][] routePoints = null;
     private String distance = "";
     private String uom = "";
 
-    public OpenRouteServiceHandler( double fromLat, double fromLon, double toLat, double toLon, Preference pref, Language lang,
-            Boolean noTollways, Boolean noMotorWays ) throws Exception {
-
-        // start=10.84959,45.88943&end=10.66265,45.68752&preference=Fastest
-
+    public OpenRouteServiceHandler( double fromLat, double fromLon, double toLat, double toLon, Preference pref, Language lang )
+            throws Exception {
         StringBuilder urlString = new StringBuilder();
         urlString.append("http://openls.geog.uni-heidelberg.de/osm/eu/routing?");
         urlString.append("&start=");// from
@@ -53,18 +50,21 @@ public class OpenRouteServiceHandler {
         urlString.append(toLon);
         urlString.append(",");
         urlString.append(toLat);
-        urlString.append("&pref=");
+        urlString.append("&preference=");
         urlString.append(pref.toString());
-        urlString.append("&lang=");
+        urlString.append("&language=");
         urlString.append(lang.toString());
-        if (noMotorWays != null) {
-            urlString.append("&noMotorways==");
-            urlString.append(noMotorWays.toString());
-        }
-        if (noTollways != null) {
-            urlString.append("&noTollways=");
-            urlString.append(noTollways.toString());
-        }
+        /*
+         * TODO check the openrouteservce docs, which seem to be wrong or outdated.
+         */
+        // if (noMotorWays != null) {
+        // urlString.append("&noMotorways==");
+        // urlString.append(noMotorWays.toString());
+        // }
+        // if (noTollways != null) {
+        // urlString.append("&noTollways=");
+        // urlString.append(noTollways.toString());
+        // }
 
         URL url = new URL(urlString.toString());
         URLConnection connection = url.openConnection();
@@ -89,21 +89,23 @@ public class OpenRouteServiceHandler {
         for( int i = 0; i < routeGeometryList.getLength(); i++ ) {
             Node gmlLinestring = routeGeometryList.item(i);
             NodeList gmlPoslist = ((Element) gmlLinestring).getElementsByTagName("gml:pos"); //$NON-NLS-1$
-            for( int j = 0; j < gmlPoslist.getLength(); j++ ) {
+            int length = gmlPoslist.getLength();
+            routePoints = new float[length][2];
+            for( int j = 0; j < length; j++ ) {
                 String text = gmlPoslist.item(j).getFirstChild().getNodeValue();
                 int s = text.indexOf(' ');
                 try {
                     double lon = Double.parseDouble(text.substring(0, s));
                     double lat = Double.parseDouble(text.substring(s + 1));
-                    PointF p = new PointF((float) lon, (float) lat);
-                    routePoints.add(p);
+                    routePoints[j][0] = (float) lon;
+                    routePoints[j][1] = (float) lat;
                 } catch (NumberFormatException nfe) {
                 }
             }
         }
     }
 
-    public List<PointF> getRoutePoints() {
+    public float[][] getRoutePoints() {
         return routePoints;
     }
 
