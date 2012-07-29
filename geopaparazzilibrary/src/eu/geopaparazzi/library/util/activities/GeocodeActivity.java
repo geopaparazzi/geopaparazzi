@@ -117,38 +117,43 @@ public class GeocodeActivity extends ListActivity {
             final double[] lonLatZoom = PositionUtilities.getMapCenterFromPreferences(preferences, false, false);
             final Intent intent = getIntent();
 
-            final ProgressDialog orsProgressDialog = ProgressDialog.show(this, "OpenRouteService", "Downloading route...", true,
-                    false);
-            new AsyncTask<String, Void, Boolean>(){
-                protected Boolean doInBackground( String... params ) {
+            final ProgressDialog orsProgressDialog = ProgressDialog.show(this, getString(R.string.openrouteservice),
+                    getString(R.string.downloading_route), true, false);
+            new AsyncTask<String, Void, String>(){
+                protected String doInBackground( String... params ) {
                     try {
                         OpenRouteServiceHandler router = new OpenRouteServiceHandler(lonLatZoom[1], lonLatZoom[0], latitude,
                                 longitude, OpenRouteServiceHandler.Preference.Fastest, OpenRouteServiceHandler.Language.en);
-                        float[] routePoints = router.getRoutePoints();
+                        String errorMessage = router.getErrorMessage();
+                        if (errorMessage == null) {
+                            float[] routePoints = router.getRoutePoints();
 
-                        intent.putExtra(LibraryConstants.ROUTE, routePoints);
+                            intent.putExtra(LibraryConstants.ROUTE, routePoints);
 
-                        String distance = router.getDistance();
-                        if (distance != null && distance.length() > 0) {
-                            distance = " (" + distance + router.getUom() + ")";
+                            String distance = router.getDistance();
+                            if (distance != null && distance.length() > 0) {
+                                distance = " (" + distance + router.getUom() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                            } else {
+                                distance = ""; //$NON-NLS-1$
+                            }
+                            String routeName = getString(R.string.route_to) + featureName + distance;
+                            intent.putExtra(LibraryConstants.NAME, routeName);
+                            return null;
                         } else {
-                            distance = "";
+                            return errorMessage;
                         }
-                        String routeName = "Route to: " + featureName + distance;
-                        intent.putExtra(LibraryConstants.NAME, routeName);
-                        return true;
                     } catch (Exception e) {
-                        return false;
+                        return getString(R.string.route_extraction_error);
                     }
                 }
 
-                protected void onPostExecute( Boolean response ) { // on UI thread!
+                protected void onPostExecute( String errorMessage ) { // on UI thread!
                     orsProgressDialog.dismiss();
-                    if (response) {
+                    if (errorMessage == null) {
                         GeocodeActivity.this.setResult(RESULT_OK, intent);
                         finish();
                     } else {
-                        Utilities.messageDialog(GeocodeActivity.this, "An error occurred during the route extraction.", null);
+                        Utilities.messageDialog(GeocodeActivity.this, errorMessage, null);
                     }
                 }
 

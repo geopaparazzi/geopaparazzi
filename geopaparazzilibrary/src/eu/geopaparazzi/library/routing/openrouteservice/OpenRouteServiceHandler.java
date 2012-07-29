@@ -35,6 +35,8 @@ public class OpenRouteServiceHandler {
     private String distance = "";
     private String uom = "";
 
+    private String errorMessage = null;
+
     public OpenRouteServiceHandler( double fromLat, double fromLon, double toLat, double toLon, Preference pref, Language lang )
             throws Exception {
         StringBuilder urlString = new StringBuilder();
@@ -84,7 +86,8 @@ public class OpenRouteServiceHandler {
          * extract route
          */
         NodeList routeGeometryList = doc.getElementsByTagName("xls:RouteGeometry"); //$NON-NLS-1$
-        for( int i = 0; i < routeGeometryList.getLength(); i++ ) {
+        int routeGeometryListLength = routeGeometryList.getLength();
+        for( int i = 0; i < routeGeometryListLength; i++ ) {
             Node gmlLinestring = routeGeometryList.item(i);
             NodeList gmlPoslist = ((Element) gmlLinestring).getElementsByTagName("gml:pos"); //$NON-NLS-1$
             int length = gmlPoslist.getLength();
@@ -102,6 +105,20 @@ public class OpenRouteServiceHandler {
                 }
             }
         }
+
+        if (routeGeometryListLength == 0) {
+            NodeList errorList = doc.getElementsByTagName("xls:ErrorList"); //$NON-NLS-1$
+            for( int i = 0; i < errorList.getLength(); i++ ) {
+                Node errorNode = errorList.item(i);
+                NodeList errors = ((Element) errorNode).getElementsByTagName("xls:Error"); //$NON-NLS-1$
+                Node error = errors.item(0);
+                errorMessage = ((Element) error).getAttribute("message");
+            }
+        }
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
     }
 
     public float[] getRoutePoints() {
