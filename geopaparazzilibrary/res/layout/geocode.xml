@@ -34,7 +34,7 @@
 
     <Button
         android:id="@+id/okButton"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_margin="10dp"
@@ -53,5 +53,14 @@
         android:textColor="@color/black" 
         android:cacheColorHint="@color/white" 
         />
+
+    <Button
+        android:id="@+id/navButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/okButton"
+        android:layout_alignRight="@android:id/list"
+        android:onClick="onNavClick"
+        android:text="Find route to" />
 
 </RelativeLayout>

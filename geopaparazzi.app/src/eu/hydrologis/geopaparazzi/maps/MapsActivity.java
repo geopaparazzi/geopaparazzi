@@ -51,6 +51,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -823,9 +824,55 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         switch( requestCode ) {
         case (INSERTCOORD_RETURN_CODE): {
             if (resultCode == Activity.RESULT_OK) {
-                double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0f);
-                double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0f);
-                setCenterAndZoomForMapWindowFocus(lon, lat, null);
+
+                String routeString = data.getStringExtra(LibraryConstants.ROUTE);
+                if (routeString != null) {
+                    try {
+                        String name = data.getStringExtra(LibraryConstants.NAME);
+                        if (name == null) {
+                            name = "ROUTE_" + LibraryConstants.TIME_FORMATTER_GPX.format(new Date()); //$NON-NLS-1$
+                        }
+                        DaoGpsLog logDumper = new DaoGpsLog();
+                        SQLiteDatabase sqliteDatabase = logDumper.getDatabase(this);
+                        java.sql.Date now = new java.sql.Date(new java.util.Date().getTime());
+                        long newLogId = logDumper.addGpsLog(this, now, now, name, 1, "blue", true); //$NON-NLS-1$
+
+                        sqliteDatabase.beginTransaction();
+                        try {
+                            java.sql.Date nowPlus10Secs = now;
+                            if (routeString != null && routeString.trim().length() > 0) {
+                                String[] pairs = routeString.trim().split(" "); //$NON-NLS-1$
+
+                                for( int i = 1; i < pairs.length; i++ ) {
+                                    String[] lngLat = pairs[i].split(","); //$NON-NLS-1$
+                                    double lon = Double.parseDouble(lngLat[0]);
+                                    double lat = Double.parseDouble(lngLat[1]);
+                                    double altim = 0;
+                                    if (lngLat.length > 2) {
+                                        altim = Double.parseDouble(lngLat[2]);
+                                    }
+
+                                    // dummy time increment
+                                    nowPlus10Secs = new java.sql.Date(nowPlus10Secs.getTime() + 10000);
+                                    logDumper.addGpsLogDataPoint(sqliteDatabase, newLogId, lon, lat, altim, nowPlus10Secs);
+                                }
+                            }
+
+                            sqliteDatabase.setTransactionSuccessful();
+                        } finally {
+                            sqliteDatabase.endTransaction();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        if (Debug.D)
+                            Logger.e(this, "Cannot draw route.", e); //$NON-NLS-1$
+                    }
+
+                } else {
+                    double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0f);
+                    double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0f);
+                    setCenterAndZoomForMapWindowFocus(lon, lat, null);
+                }
             }
             break;
         }

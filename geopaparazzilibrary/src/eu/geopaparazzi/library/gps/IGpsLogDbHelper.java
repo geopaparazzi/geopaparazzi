@@ -36,7 +36,7 @@ public interface IGpsLogDbHelper {
      * @param context the {@link Context} to use.
      * @return a writable database.
      */
-    public SQLiteDatabase getDatabase( Context context ) throws Exception ;
+    public SQLiteDatabase getDatabase( Context context ) throws Exception;
 
     /**
      * Creates a new gpslog entry and returns the log's new id.
@@ -44,8 +44,10 @@ public interface IGpsLogDbHelper {
      * @param context the {@link Context} to use.
      * @param startTs the start timestamp.
      * @param endTs the end timestamp.
-     * @return the id of the gpslog.
      * @param text a description or null.
+     * @param width the width of the rendered log. 
+     * @param color the color of the rendered log.
+     * @param visible if <code>true</code>, it will be visible.
      * @return the id of the new created log.
      * @throws IOException 
      */

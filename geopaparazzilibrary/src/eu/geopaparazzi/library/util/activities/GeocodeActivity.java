@@ -23,15 +23,19 @@ import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.routing.google.GRouter;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
@@ -91,6 +95,33 @@ public class GeocodeActivity extends ListActivity {
             intent.putExtra(LibraryConstants.LONGITUDE, addressWrapper.getAddress().getLongitude());
 
             this.setResult(RESULT_OK, intent);
+            finish();
+        }
+
+    }
+
+    public void onNavClick( View view ) {
+        ListView listView = getListView();
+
+        if (listView.getCheckedItemPosition() != ListView.INVALID_POSITION) {
+            AddressWrapper addressWrapper = (AddressWrapper) listView.getItemAtPosition(listView.getCheckedItemPosition());
+            String featureName = addressWrapper.getAddress().getFeatureName();
+            double latitude = addressWrapper.getAddress().getLatitude();
+            double longitude = addressWrapper.getAddress().getLongitude();
+
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+            double[] lonLatZoom = PositionUtilities.getMapCenterFromPreferences(preferences, false, false);
+
+            GRouter router = new GRouter(lonLatZoom[1], lonLatZoom[0], latitude, longitude);
+            String routeString = router.getRouteString();
+
+            Intent intent = getIntent();
+            intent.putExtra(LibraryConstants.ROUTE, routeString);
+            intent.putExtra(LibraryConstants.NAME, featureName);
+
+            this.setResult(RESULT_OK, intent);
+
             finish();
         }
 
