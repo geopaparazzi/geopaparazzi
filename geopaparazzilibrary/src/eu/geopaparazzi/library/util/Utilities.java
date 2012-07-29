@@ -184,7 +184,7 @@ public class Utilities {
             protected void onPostExecute( String response ) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setMessage(msg).setCancelable(false)
-                        .setPositiveButton(context.getString(R.string.ok), new DialogInterface.OnClickListener(){
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                             public void onClick( DialogInterface dialog, int id ) {
                                 if (okRunnable != null) {
                                     new Thread(okRunnable).start();

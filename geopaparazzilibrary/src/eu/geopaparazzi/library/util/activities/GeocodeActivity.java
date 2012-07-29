@@ -35,6 +35,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.routing.openrouteservice.OpenRouteServiceHandler;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
@@ -58,6 +59,9 @@ public class GeocodeActivity extends ListActivity {
     }
 
     public void onLookupLocationClick( View view ) {
+        if (!checkNetwork()) {
+            return;
+        }
         // TODO add it back when the version permits it
         // if (Geocoder.isPresent())
         // {
@@ -87,6 +91,9 @@ public class GeocodeActivity extends ListActivity {
     }
 
     public void onOkClick( View view ) {
+        if (!checkNetwork()) {
+            return;
+        }
         ListView listView = getListView();
 
         Intent intent = getIntent();
@@ -103,7 +110,19 @@ public class GeocodeActivity extends ListActivity {
 
     }
 
+    private boolean checkNetwork() {
+        if (NetworkUtilities.isNetworkAvailable(this)) {
+            return true;
+        }
+
+        Utilities.messageDialog(this, R.string.available_only_with_network, null);
+        return false;
+    }
+
     public void onNavClick( View view ) {
+        if (!checkNetwork()) {
+            return;
+        }
         ListView listView = getListView();
 
         if (listView.getCheckedItemPosition() != ListView.INVALID_POSITION) {
