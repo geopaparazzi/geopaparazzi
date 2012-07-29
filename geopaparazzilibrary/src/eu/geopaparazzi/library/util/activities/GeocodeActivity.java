@@ -21,11 +21,13 @@ import java.util.List;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -43,7 +45,7 @@ import eu.geopaparazzi.library.util.debug.Logger;
  * Activity that performs geocoding on a user entered location.
  * 
  * @author Adam Stroud &#60;<a href="mailto:adam.stroud@gmail.com">adam.stroud@gmail.com</a>&#62;
- * @author Andrea Antonello (www.hydrologis.com) - geopaparazzi adaptions
+ * @author Andrea Antonello (www.hydrologis.com) - geopaparazzi adaptions/additions.
  */
 public class GeocodeActivity extends ListActivity {
     private static final int MAX_ADDRESSES = 30;
@@ -106,39 +108,51 @@ public class GeocodeActivity extends ListActivity {
 
         if (listView.getCheckedItemPosition() != ListView.INVALID_POSITION) {
             AddressWrapper addressWrapper = (AddressWrapper) listView.getItemAtPosition(listView.getCheckedItemPosition());
-            String featureName = addressWrapper.getAddress().getFeatureName();
-            double latitude = addressWrapper.getAddress().getLatitude();
-            double longitude = addressWrapper.getAddress().getLongitude();
+            final String featureName = addressWrapper.getAddress().getFeatureName();
+            final double latitude = addressWrapper.getAddress().getLatitude();
+            final double longitude = addressWrapper.getAddress().getLongitude();
 
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-            double[] lonLatZoom = PositionUtilities.getMapCenterFromPreferences(preferences, false, false);
+            final double[] lonLatZoom = PositionUtilities.getMapCenterFromPreferences(preferences, false, false);
+            final Intent intent = getIntent();
 
-            try {
-                OpenRouteServiceHandler router = new OpenRouteServiceHandler(lonLatZoom[1], lonLatZoom[0], latitude, longitude,
-                        OpenRouteServiceHandler.Preference.Fastest, OpenRouteServiceHandler.Language.en);
-                float[] routePoints = router.getRoutePoints();
+            final ProgressDialog orsProgressDialog = ProgressDialog.show(this, "OpenRouteService", "Downloading route...", true,
+                    false);
+            new AsyncTask<String, Void, Boolean>(){
+                protected Boolean doInBackground( String... params ) {
+                    try {
+                        OpenRouteServiceHandler router = new OpenRouteServiceHandler(lonLatZoom[1], lonLatZoom[0], latitude,
+                                longitude, OpenRouteServiceHandler.Preference.Fastest, OpenRouteServiceHandler.Language.en);
+                        float[] routePoints = router.getRoutePoints();
 
-                Intent intent = getIntent();
-                intent.putExtra(LibraryConstants.ROUTE, routePoints);
+                        intent.putExtra(LibraryConstants.ROUTE, routePoints);
 
-                String distance = router.getDistance();
-                if (distance != null && distance.length() > 0) {
-                    distance = "(" + distance + router.getUom() + ")";
-                } else {
-                    distance = "";
+                        String distance = router.getDistance();
+                        if (distance != null && distance.length() > 0) {
+                            distance = " (" + distance + router.getUom() + ")";
+                        } else {
+                            distance = "";
+                        }
+                        String routeName = "Route to: " + featureName + distance;
+                        intent.putExtra(LibraryConstants.NAME, routeName);
+                        return true;
+                    } catch (Exception e) {
+                        return false;
+                    }
                 }
-                String routeName = "Route to: " + featureName + distance;
-                intent.putExtra(LibraryConstants.NAME, routeName);
 
-                this.setResult(RESULT_OK, intent);
-            } catch (Exception e) {
-                e.printStackTrace();
+                protected void onPostExecute( Boolean response ) { // on UI thread!
+                    orsProgressDialog.dismiss();
+                    if (response) {
+                        GeocodeActivity.this.setResult(RESULT_OK, intent);
+                        finish();
+                    } else {
+                        Utilities.messageDialog(GeocodeActivity.this, "An error occurred during the route extraction.", null);
+                    }
+                }
 
-                Utilities.messageDialog(this, "An error occurred during the route extraction.", null);
-            }
-
-            finish();
+            }.execute((String) null);
         }
 
     }
