@@ -1,14 +1,30 @@
 package eu.geopaparazzi.library.routing.openrouteservice;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.PointF;
 import eu.geopaparazzi.library.gps.IGpsLogDbHelper;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 
+@SuppressWarnings("nls")
 public class OpenRouteServiceHandler {
 
     public static enum Preference {
@@ -18,9 +34,12 @@ public class OpenRouteServiceHandler {
         en, it, de, fr, es
     }
 
-    @SuppressWarnings("nls")
+    private List<PointF> routePoints = new ArrayList<PointF>();
+    private String distance = "";
+    private String uom = "";
+
     public OpenRouteServiceHandler( double fromLat, double fromLon, double toLat, double toLon, Preference pref, Language lang,
-            Boolean noTollways, Boolean noMotorWays ) {
+            Boolean noTollways, Boolean noMotorWays ) throws Exception {
 
         // start=10.84959,45.88943&end=10.66265,45.68752&preference=Fastest
 
@@ -47,10 +66,53 @@ public class OpenRouteServiceHandler {
             urlString.append(noTollways.toString());
         }
 
+        URL url = new URL(urlString.toString());
+        URLConnection connection = url.openConnection();
+
+        DocumentBuilder dom = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Document doc = dom.parse(new InputSource(new InputStreamReader(connection.getInputStream())));
+
+        /*
+         * extract route length
+         */
+        NodeList routeSummaryList = doc.getElementsByTagName("xls:RouteSummary"); //$NON-NLS-1$
+        for( int i = 0; i < routeSummaryList.getLength(); i++ ) {
+            Node routeSummaryNode = routeSummaryList.item(i);
+            NodeList totalDistance = ((Element) routeSummaryNode).getElementsByTagName("xls:TotalDistance"); //$NON-NLS-1$
+            distance = ((Element) totalDistance).getAttribute("value");
+            uom = ((Element) totalDistance).getAttribute("uom");
+        }
+        /*
+         * extract route
+         */
+        NodeList routeGeometryList = doc.getElementsByTagName("xls:RouteGeometry"); //$NON-NLS-1$
+        for( int i = 0; i < routeGeometryList.getLength(); i++ ) {
+            Node gmlLinestring = routeGeometryList.item(i);
+            NodeList gmlPoslist = ((Element) gmlLinestring).getElementsByTagName("gml:pos"); //$NON-NLS-1$
+            for( int j = 0; j < gmlPoslist.getLength(); j++ ) {
+                String text = gmlPoslist.item(j).getFirstChild().getNodeValue();
+                int s = text.indexOf(' ');
+                try {
+                    double lon = Double.parseDouble(text.substring(0, s));
+                    double lat = Double.parseDouble(text.substring(s + 1));
+                    PointF p = new PointF((float) lon, (float) lat);
+                    routePoints.add(p);
+                } catch (NumberFormatException nfe) {
+                }
+            }
+        }
     }
 
-    public String getRouteString() {
-        return "";
+    public List<PointF> getRoutePoints() {
+        return routePoints;
+    }
+
+    public String getDistance() {
+        return distance;
+    }
+
+    public String getUom() {
+        return uom;
     }
 
     public void dumpInDatabase( String name, Context context, IGpsLogDbHelper logDumper ) throws Exception {
