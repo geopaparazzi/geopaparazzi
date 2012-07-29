@@ -32,35 +32,40 @@
         android:onClick="onLookupLocationClick"
         android:text="@string/lookupLocationButton" />
 
-    <Button
-        android:id="@+id/okButton"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/buttonsLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_margin="10dp"
-        android:onClick="onOkClick"
-        android:text="@android:string/ok" />
+        android:layout_margin="10dp" >
+
+        <Button
+            android:id="@+id/okButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onOkClick"
+            android:text="@string/go_to_button" />
+
+        <Button
+            android:id="@+id/navButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onNavClick"
+            android:text="@string/route_to_button" />
+    </LinearLayout>
 
     <ListView
         android:id="@android:id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/okButton"
+        android:layout_above="@id/buttonsLayout"
         android:layout_below="@id/lookupLocationButton"
         android:layout_margin="10dp"
+        android:cacheColorHint="@color/white"
         android:choiceMode="singleChoice"
         android:drawSelectorOnTop="false"
-        android:textColor="@color/black" 
-        android:cacheColorHint="@color/white" 
-        />
-
-    <Button
-        android:id="@+id/navButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/okButton"
-        android:layout_alignRight="@android:id/list"
-        android:onClick="onNavClick"
-        android:text="Find route to" />
+        android:textColor="@color/black" />
 
 </RelativeLayout>

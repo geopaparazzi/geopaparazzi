@@ -2,8 +2,6 @@
 <resources>
 
     <string name="app_name">GeopaparazziLibrary</string>
-    <string name="cancel">cancel</string>
-    <string name="ok">ok</string>
     <string name="yes">yes</string>
     <string name="no">no</string>
     <string name="up">up</string>
@@ -51,7 +49,9 @@
     <string name="geocodeErrorTitle">Geocoding Error</string>
     <string name="geocodeErrorMessage">Geocoding of location failed. Try re-submitting location.</string>
     <string name="openrouteservice">OpenRouteService</string>
-    <string name="downloading_route">Downloading route...</string>
+    <string name="downloading_route">Downloading route…</string>
+    <string name="go_to_button">"go to"</string>
+    <string name="route_to_button">"route to"</string>
     <string name="route_to">"Route to: "</string>
     <string name="route_extraction_error">An error occurred during the route extraction.</string>
    
