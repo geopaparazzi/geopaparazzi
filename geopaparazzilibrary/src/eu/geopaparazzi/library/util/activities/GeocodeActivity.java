@@ -37,6 +37,7 @@ import android.widget.ListView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.routing.openrouteservice.OpenRouteServiceHandler;
+import eu.geopaparazzi.library.routing.openrouteservice.OpenRouteServiceHandler.Preference;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.Utilities;
@@ -123,61 +124,96 @@ public class GeocodeActivity extends ListActivity {
         if (!checkNetwork()) {
             return;
         }
-        ListView listView = getListView();
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        if (listView.getCheckedItemPosition() != ListView.INVALID_POSITION) {
-            AddressWrapper addressWrapper = (AddressWrapper) listView.getItemAtPosition(listView.getCheckedItemPosition());
-            final String featureName = addressWrapper.getAddress().getFeatureName();
-            final double latitude = addressWrapper.getAddress().getLatitude();
-            final double longitude = addressWrapper.getAddress().getLongitude();
+        String[] items = new String[]{//
+        OpenRouteServiceHandler.Preference.Fastest.toString(), //
+                OpenRouteServiceHandler.Preference.Shortest.toString(), //
+                OpenRouteServiceHandler.Preference.Bicycle.toString() //
+        };
 
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        new AlertDialog.Builder(this).setSingleChoiceItems(items, 0, null)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
 
-            final double[] lonLatZoom = PositionUtilities.getMapCenterFromPreferences(preferences, false, false);
-            final Intent intent = getIntent();
+                    public void onClick( DialogInterface dialog, int whichButton ) {
+                        dialog.dismiss();
 
-            final ProgressDialog orsProgressDialog = ProgressDialog.show(this, getString(R.string.openrouteservice),
-                    getString(R.string.downloading_route), true, false);
-            new AsyncTask<String, Void, String>(){
-                protected String doInBackground( String... params ) {
-                    try {
-                        OpenRouteServiceHandler router = new OpenRouteServiceHandler(lonLatZoom[1], lonLatZoom[0], latitude,
-                                longitude, OpenRouteServiceHandler.Preference.Fastest, OpenRouteServiceHandler.Language.en);
-                        String errorMessage = router.getErrorMessage();
-                        if (errorMessage == null) {
-                            float[] routePoints = router.getRoutePoints();
-
-                            intent.putExtra(LibraryConstants.ROUTE, routePoints);
-
-                            String distance = router.getDistance();
-                            if (distance != null && distance.length() > 0) {
-                                distance = " (" + distance + router.getUom() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
-                            } else {
-                                distance = ""; //$NON-NLS-1$
-                            }
-                            String routeName = getString(R.string.route_to) + featureName + distance;
-                            intent.putExtra(LibraryConstants.NAME, routeName);
-                            return null;
-                        } else {
-                            return errorMessage;
+                        ListView preferenceChoiceListView = ((AlertDialog) dialog).getListView();
+                        int selectedPosition = preferenceChoiceListView.getCheckedItemPosition();
+                        Preference orsPreference = OpenRouteServiceHandler.Preference.Fastest;
+                        switch( selectedPosition ) {
+                        case 1:
+                            orsPreference = OpenRouteServiceHandler.Preference.Shortest;
+                            break;
+                        case 2:
+                            orsPreference = OpenRouteServiceHandler.Preference.Bicycle;
+                            break;
+                        case 0:
+                        default:
+                            orsPreference = OpenRouteServiceHandler.Preference.Fastest;
+                            break;
                         }
-                    } catch (Exception e) {
-                        return getString(R.string.route_extraction_error);
-                    }
-                }
+                        final Preference tmpOrsPreference = orsPreference;
 
-                protected void onPostExecute( String errorMessage ) { // on UI thread!
-                    orsProgressDialog.dismiss();
-                    if (errorMessage == null) {
-                        GeocodeActivity.this.setResult(RESULT_OK, intent);
-                        finish();
-                    } else {
-                        Utilities.messageDialog(GeocodeActivity.this, errorMessage, null);
-                    }
-                }
+                        ListView mainListView = getListView();
 
-            }.execute((String) null);
-        }
+                        if (mainListView.getCheckedItemPosition() != ListView.INVALID_POSITION) {
+                            AddressWrapper addressWrapper = (AddressWrapper) mainListView.getItemAtPosition(mainListView
+                                    .getCheckedItemPosition());
+                            final String featureName = addressWrapper.getAddress().getFeatureName();
+                            final double latitude = addressWrapper.getAddress().getLatitude();
+                            final double longitude = addressWrapper.getAddress().getLongitude();
+
+                            final double[] lonLatZoom = PositionUtilities.getMapCenterFromPreferences(preferences, false, false);
+                            final Intent intent = getIntent();
+
+                            final ProgressDialog orsProgressDialog = ProgressDialog.show(GeocodeActivity.this,
+                                    getString(R.string.openrouteservice), getString(R.string.downloading_route), true, false);
+                            new AsyncTask<String, Void, String>(){
+                                protected String doInBackground( String... params ) {
+                                    try {
+
+                                        OpenRouteServiceHandler router = new OpenRouteServiceHandler(lonLatZoom[1],
+                                                lonLatZoom[0], latitude, longitude, tmpOrsPreference,
+                                                OpenRouteServiceHandler.Language.en);
+                                        String errorMessage = router.getErrorMessage();
+                                        if (errorMessage == null) {
+                                            float[] routePoints = router.getRoutePoints();
+
+                                            intent.putExtra(LibraryConstants.ROUTE, routePoints);
+
+                                            String distance = router.getDistance();
+                                            if (distance != null && distance.length() > 0) {
+                                                distance = " (" + distance + router.getUom() + ")"; //$NON-NLS-1$ //$NON-NLS-2$
+                                            } else {
+                                                distance = ""; //$NON-NLS-1$
+                                            }
+                                            String routeName = getString(R.string.route_to) + featureName + distance;
+                                            intent.putExtra(LibraryConstants.NAME, routeName);
+                                            return null;
+                                        } else {
+                                            return errorMessage;
+                                        }
+                                    } catch (Exception e) {
+                                        return getString(R.string.route_extraction_error);
+                                    }
+                                }
+
+                                protected void onPostExecute( String errorMessage ) { // on UI
+                                                                                      // thread!
+                                    orsProgressDialog.dismiss();
+                                    if (errorMessage == null) {
+                                        GeocodeActivity.this.setResult(RESULT_OK, intent);
+                                        finish();
+                                    } else {
+                                        Utilities.messageDialog(GeocodeActivity.this, errorMessage, null);
+                                    }
+                                }
+
+                            }.execute((String) null);
+                        }
+                    }
+                }).show();
 
     }
 

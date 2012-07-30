@@ -25,7 +25,7 @@ import eu.geopaparazzi.library.util.debug.Logger;
 public class OpenRouteServiceHandler {
 
     public static enum Preference {
-        Fastest, Shortest, Pedestrain, Bicycle
+        Fastest, Shortest, Bicycle // shortest == pedestrian
     }
     public static enum Language {
         en, it, de, fr, es
