@@ -176,13 +176,13 @@ public class GeoPaparazziActivity extends Activity {
         if (resourcesManager == null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(eu.hydrologis.geopaparazzi.R.string.no_sdcard_use_internal_memory).setCancelable(false)
-                    .setPositiveButton(this.getString(R.string.yes), new DialogInterface.OnClickListener(){
+                    .setPositiveButton(this.getString(android.R.string.yes), new DialogInterface.OnClickListener(){
                         public void onClick( DialogInterface dialog, int id ) {
                             ResourcesManager.setUseInternalMemory(true);
                             resourcesManager = ResourcesManager.getInstance(GeoPaparazziActivity.this);
                             initIfOk();
                         }
-                    }).setNegativeButton(this.getString(R.string.no), new DialogInterface.OnClickListener(){
+                    }).setNegativeButton(this.getString(android.R.string.no), new DialogInterface.OnClickListener(){
                         public void onClick( DialogInterface dialog, int id ) {
                             finish();
                         }
@@ -338,10 +338,10 @@ public class GeoPaparazziActivity extends Activity {
         case R.id.dashboard_undonote_item_button: {
             new AlertDialog.Builder(this).setTitle(R.string.text_undo_a_gps_note).setMessage(R.string.remove_last_note_prompt)
                     .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
                         public void onClick( DialogInterface dialog, int whichButton ) {
                         }
-                    }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                    }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                         public void onClick( DialogInterface dialog, int whichButton ) {
                             try {
                                 DaoNotes.deleteLastInsertedNote(GeoPaparazziActivity.this);
@@ -396,10 +396,10 @@ public class GeoPaparazziActivity extends Activity {
             builder.setMessage(eu.hydrologis.geopaparazzi.R.string.insert_an_optional_text_to_send_with_the_geosms);
             builder.setView(input);
             builder.setIcon(android.R.drawable.ic_dialog_alert)
-                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
                         public void onClick( DialogInterface dialog, int whichButton ) {
                         }
-                    }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                    }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                         public void onClick( DialogInterface dialog, int whichButton ) {
                             Editable value = input.getText();
                             String newText = value.toString();
@@ -709,10 +709,10 @@ public class GeoPaparazziActivity extends Activity {
         builder.setMessage(enterNewProjectString);
         builder.setView(input);
         alertDialog = builder.setIcon(android.R.drawable.ic_dialog_alert)
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
                     }
-                }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
                         try {
                             Editable value = input.getText();

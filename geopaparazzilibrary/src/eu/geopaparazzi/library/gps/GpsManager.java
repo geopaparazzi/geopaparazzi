@@ -129,7 +129,7 @@ public class GpsManager implements LocationListener, Listener {
     public LocationManager getLocationManager() {
         return locationManager;
     }
-    
+
     public void addProximityAlert( Context context, double lat, double lon, float radius ) {
         String PROX_ALERT_INTENT = "com.javacodegeeks.android.lbs.ProximityAlert";
         Intent intent = new Intent(PROX_ALERT_INTENT);
@@ -240,8 +240,8 @@ public class GpsManager implements LocationListener, Listener {
     public void checkGps( final Context context ) {
         if (!isEnabled()) {
             String prompt = context.getResources().getString(R.string.prompt_gpsenable);
-            String ok = context.getResources().getString(R.string.yes);
-            String cancel = context.getResources().getString(R.string.no);
+            String ok = context.getResources().getString(android.R.string.yes);
+            String cancel = context.getResources().getString(android.R.string.no);
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setMessage(prompt).setCancelable(false).setPositiveButton(ok, new DialogInterface.OnClickListener(){
                 public void onClick( DialogInterface dialog, int id ) {

@@ -661,7 +661,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 builder.setTitle(title);
                 if (snippet != null && snippet.length() > 0)
                     builder.setMessage(snippet);
-                builder.setPositiveButton(R.string.ok, null);
+                builder.setPositiveButton(android.R.string.ok, null);
                 builder.show();
             }
             return true;

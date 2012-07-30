@@ -257,10 +257,10 @@ public class Utilities {
         builder.setMessage(message);
         builder.setView(input);
         builder.setIcon(android.R.drawable.ic_dialog_alert)
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
                     }
-                }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
                         Editable value = input.getText();
                         String newText = value.toString();

@@ -224,10 +224,10 @@ public class OsmUtilities {
         new AlertDialog.Builder(activity).setTitle("OSM tags")
                 .setMessage("Do you want to download the OSM tags of version " + onlineVersion[0] + "?")
                 .setIcon(android.R.drawable.ic_dialog_alert)
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
                     }
-                }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
                         final File parentFile = ResourcesManager.getInstance(activity).getApplicationDir().getParentFile();
                         final File osmZipFile = new File(parentFile, "osmtags.zip");

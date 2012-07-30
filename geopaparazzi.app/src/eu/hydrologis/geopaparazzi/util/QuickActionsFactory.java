@@ -220,7 +220,7 @@ public enum QuickActionsFactory {
                     final EditText input = new EditText(context);
                     input.setText(defaultLogName);
                     new AlertDialog.Builder(context).setTitle(R.string.gps_log).setMessage(R.string.gps_log_name).setView(input)
-                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                                 public void onClick( DialogInterface dialog, int whichButton ) {
                                     Editable value = input.getText();
                                     String newName = value.toString();

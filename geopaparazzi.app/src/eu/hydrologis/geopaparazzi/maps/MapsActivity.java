@@ -535,7 +535,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                     if (!NetworkUtilities.isNetworkAvailable(getApplicationContext())) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
                         builder.setMessage(R.string.available_only_with_network).setCancelable(false)
-                                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                                     public void onClick( DialogInterface dialog, int id ) {
                                     }
                                 });
@@ -551,11 +551,11 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                     builder.setMessage(R.string.osm_insert_a_changeset_description);
                     builder.setView(input);
                     builder.setIcon(android.R.drawable.ic_dialog_alert)
-                            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                            .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
                                 public void onClick( DialogInterface dialog, int whichButton ) {
                                     sync(""); //$NON-NLS-1$
                                 }
-                            }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                            }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                                 public void onClick( DialogInterface dialog, int whichButton ) {
                                     Editable value = input.getText();
                                     String newName = value.toString();
@@ -598,7 +598,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                                     } else {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
                                         builder.setMessage(msg).setCancelable(false)
-                                                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                                                     public void onClick( DialogInterface dialog, int id ) {
                                                         try {
                                                             DaoNotes.deleteNotesByType(MapsActivity.this, NoteType.OSM);
@@ -606,7 +606,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                                                             e.printStackTrace();
                                                         }
                                                     }
-                                                }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                                                }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
                                                     public void onClick( DialogInterface dialog, int id ) {
                                                     }
                                                 });
@@ -640,7 +640,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
      */
     private void openAlertDialog( String msg ) {
         AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
-        builder.setMessage(msg).setCancelable(false).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+        builder.setMessage(msg).setCancelable(false).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
             public void onClick( DialogInterface dialog, int id ) {
             }
         });
@@ -894,10 +894,10 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
         new AlertDialog.Builder(this).setTitle(R.string.delete_visible_bookmarks_title)
                 .setMessage(R.string.delete_visible_bookmarks_prompt).setIcon(android.R.drawable.ic_dialog_alert)
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
                     }
-                }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
                         try {
                             float[] nswe = getMapWorldBounds();
@@ -940,10 +940,10 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
         new AlertDialog.Builder(this).setTitle(R.string.delete_visible_notes_title)
                 .setMessage(R.string.delete_visible_notes_prompt).setIcon(android.R.drawable.ic_dialog_alert)
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
                     }
-                }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
                         try {
                             float[] nswe = getMapWorldBounds();
@@ -996,10 +996,10 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         builder.setMessage(R.string.mapsactivity_enter_bookmark_name);
         builder.setView(input);
         builder.setIcon(android.R.drawable.ic_dialog_info)
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
                     }
-                }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
                         try {
                             Editable value = input.getText();

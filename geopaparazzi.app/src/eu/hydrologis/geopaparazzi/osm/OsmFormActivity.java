@@ -142,7 +142,7 @@ public class OsmFormActivity extends Activity {
                         AlertDialog.Builder builder = new AlertDialog.Builder(OsmFormActivity.this);
                         String msg = MessageFormat.format(getString(R.string.check_valid_field), result);
                         builder.setMessage(msg).setCancelable(false)
-                                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                                     public void onClick( DialogInterface dialog, int id ) {
                                     }
                                 });
@@ -154,7 +154,7 @@ public class OsmFormActivity extends Activity {
                     e.printStackTrace();
                     AlertDialog.Builder builder = new AlertDialog.Builder(OsmFormActivity.this);
                     builder.setMessage("An error occurred while saving:\n" + endString).setCancelable(false)
-                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                                 public void onClick( DialogInterface dialog, int id ) {
                                 }
                             });

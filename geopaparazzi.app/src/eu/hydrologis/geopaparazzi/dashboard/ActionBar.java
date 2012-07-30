@@ -196,10 +196,10 @@ public class ActionBar implements GpsManagerListener {
         } else {
             new AlertDialog.Builder(context).setTitle(context.getString(R.string.installgpsstatus_title))
                     .setMessage(context.getString(R.string.installgpsstatus_message)).setIcon(android.R.drawable.ic_dialog_info)
-                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
                         public void onClick( DialogInterface dialog, int whichButton ) {
                         }
-                    }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                    }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                         public void onClick( DialogInterface dialog, int whichButton ) {
                             Intent intent = new Intent(Intent.ACTION_VIEW);
                             intent.setData(Uri.parse("market://search?q=com.eclipsim.gpsstatus2"));

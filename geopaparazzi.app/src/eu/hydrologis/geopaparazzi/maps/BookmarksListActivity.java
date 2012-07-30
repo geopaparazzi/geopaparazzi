@@ -157,10 +157,10 @@ public class BookmarksListActivity extends ListActivity {
                                 .setTitle(R.string.bookmarks_list_rename);
                         builder.setView(input);
                         builder.setIcon(android.R.drawable.ic_dialog_info)
-                                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener(){
+                                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
                                     public void onClick( DialogInterface dialog, int whichButton ) {
                                     }
-                                }).setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                                }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                                     public void onClick( DialogInterface dialog, int whichButton ) {
                                         try {
                                             Editable value = input.getText();

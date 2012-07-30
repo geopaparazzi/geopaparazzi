@@ -171,7 +171,7 @@ public class ExportActivity extends Activity {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(ExportActivity.this);
                 builder.setMessage(msg).setCancelable(false)
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                             public void onClick( DialogInterface dialog, int id ) {
                             }
                         });
@@ -237,7 +237,7 @@ public class ExportActivity extends Activity {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(ExportActivity.this);
                 builder.setMessage(msg).setCancelable(false)
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                             public void onClick( DialogInterface dialog, int id ) {
                             }
                         });
@@ -295,7 +295,7 @@ public class ExportActivity extends Activity {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(ExportActivity.this);
                 builder.setMessage(msg).setCancelable(false)
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                             public void onClick( DialogInterface dialog, int id ) {
                             }
                         });

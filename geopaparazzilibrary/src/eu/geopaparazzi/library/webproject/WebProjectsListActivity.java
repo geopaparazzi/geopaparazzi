@@ -224,7 +224,7 @@ public class WebProjectsListActivity extends ListActivity {
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(WebProjectsListActivity.this);
                     builder.setMessage(response).setCancelable(false)
-                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener(){
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                                 public void onClick( DialogInterface dialog, int id ) {
                                 }
                             });
