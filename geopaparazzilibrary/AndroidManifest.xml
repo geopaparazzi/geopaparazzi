@@ -100,6 +100,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        
+        
+        <activity android:name=".sensor.news.SensorListActivity" />
+        <activity android:name=".sensor.news.NorthFinder" />
 
         <receiver
             android:name=".sms.SmsReceiverPositionSender"
