@@ -55,4 +55,10 @@
     <string name="route_extraction_error">An error occurred during the route extraction.</string>
     <string name="available_only_with_network">This function is available only with an active network connection.</string>
 
+    <string name="xAxisLabel">X Axis:</string>
+    <string name="yAxisLabel">Y Axis:</string>
+    <string name="zAxisLabel">Z Axis:</string>
+    <string name="azimuthLabel">Azimuth (Z Axis):</string>
+    <string name="pitchLabel">Pitch (X Axis):</string>
+    <string name="rollLabel">Roll (Y Axis):</string>
 </resources>

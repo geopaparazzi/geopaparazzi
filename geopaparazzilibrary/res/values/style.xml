@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="line_separator">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">2dip</item>
+        <item name="android:color">@color/black</item>
+        <item name="android:background">@color/black</item>
+    </style>
+
+</resources>

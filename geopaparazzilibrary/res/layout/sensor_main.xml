@@ -13,5 +13,5 @@
         android:id="@+id/frag_sensor_view"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        class="root.gast.playground.sensor.SensorDisplayFragment" />
+        class="eu.geopaparazzi.library.sensors.news.SensorSelectorFragment" />
 </LinearLayout>
