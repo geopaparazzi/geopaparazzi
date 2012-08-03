@@ -214,7 +214,7 @@ public final class R {
         public static final int arrow_down=0x7f0c0088;
         public static final int arrow_up=0x7f0c0087;
         public static final int askcoordlabel=0x7f0c0055;
-        public static final int authortext=0x7f0c009c;
+        public static final int authortext=0x7f0c009e;
         public static final int battery=0x7f0c0070;
         public static final int bookmarkrowtext=0x7f0c000c;
         public static final int bookmarksExportButton=0x7f0c001c;
@@ -252,18 +252,20 @@ public final class R {
         public static final int dashboard_undoitem_text=0x7f0c002b;
         public static final int dashboard_undonote_item=0x7f0c0029;
         public static final int dashboard_undonote_item_button=0x7f0c002a;
-        public static final int datetext=0x7f0c009d;
-        public static final int descriptiontext=0x7f0c009b;
+        public static final int datetext=0x7f0c009f;
+        public static final int descriptiontext=0x7f0c009d;
         public static final int detailFragment=0x7f0c0018;
         public static final int do_phonenumber_picker=0x7f0c0084;
-        public static final int downloadproject_image=0x7f0c009a;
+        public static final int downloadproject_image=0x7f0c009c;
         public static final int enterLocationLabel=0x7f0c001e;
         public static final int enterLocationValue=0x7f0c001f;
         public static final int filename=0x7f0c004b;
         public static final int footer=0x7f0c008f;
         public static final int form_linear=0x7f0c0017;
         public static final int form_scroll=0x7f0c0016;
-        public static final int formnotestlabel=0x7f0c0096;
+        public static final int formnotestlabel=0x7f0c0098;
+        public static final int frag_sensor_select=0x7f0c0092;
+        public static final int frag_sensor_view=0x7f0c0093;
         public static final int gobutton=0x7f0c000b;
         public static final int gpsOnOff=0x7f0c0009;
         public static final int gpslog_cancel=0x7f0c0049;
@@ -279,14 +281,14 @@ public final class R {
         public static final int handle=0x7f0c003a;
         public static final int header2=0x7f0c008d;
         public static final int icon=0x7f0c0090;
-        public static final int imagefromtag=0x7f0c0094;
+        public static final int imagefromtag=0x7f0c0096;
         public static final int imagesvisible=0x7f0c004e;
         public static final int imagevisibletext=0x7f0c004f;
         public static final int innerlayout=0x7f0c0062;
         public static final int kmzExportButton=0x7f0c0019;
         public static final int latitudelabel=0x7f0c0058;
         public static final int latitudetext=0x7f0c0059;
-        public static final int linearLayout1=0x7f0c0093;
+        public static final int linearLayout1=0x7f0c0095;
         public static final int listFragment=0x7f0c001d;
         public static final int longitudelabel=0x7f0c0056;
         public static final int longitudetext=0x7f0c0057;
@@ -305,7 +307,7 @@ public final class R {
         public static final int maptoolslayout=0x7f0c006a;
         public static final int navButton=0x7f0c0023;
         public static final int noteentry=0x7f0c0077;
-        public static final int notefromtag=0x7f0c0095;
+        public static final int notefromtag=0x7f0c0097;
         public static final int notesrow_container=0x7f0c004d;
         public static final int notesvisible=0x7f0c0050;
         public static final int notesvisibletext=0x7f0c0051;
@@ -322,7 +324,7 @@ public final class R {
         public static final int osmform_linear=0x7f0c007e;
         public static final int osmform_ok=0x7f0c007f;
         public static final int osmform_textview=0x7f0c007d;
-        public static final int osmgridview=0x7f0c0097;
+        public static final int osmgridview=0x7f0c0099;
         public static final int osmslide=0x7f0c0072;
         public static final int osmslidecontent=0x7f0c0073;
         public static final int osmslidehandle=0x7f0c0074;
@@ -330,7 +332,7 @@ public final class R {
         public static final int panicbutton=0x7f0c003b;
         public static final int phonenumber_text=0x7f0c0083;
         public static final int profilechartview=0x7f0c0089;
-        public static final int quicknotesfromtag=0x7f0c0092;
+        public static final int quicknotesfromtag=0x7f0c0094;
         public static final int removebookmarkbutton=0x7f0c006e;
         public static final int removenotesbutton=0x7f0c006c;
         public static final int renamebutton=0x7f0c000e;
@@ -347,11 +349,11 @@ public final class R {
         public static final int statusupdatebutton=0x7f0c003c;
         public static final int syncosmbutton=0x7f0c0076;
         public static final int title=0x7f0c0091;
-        public static final int titletext=0x7f0c0099;
+        public static final int titletext=0x7f0c009b;
         public static final int tracks=0x7f0c0086;
         public static final int upbutton=0x7f0c0013;
         public static final int visible=0x7f0c004a;
-        public static final int webprojectlayout=0x7f0c0098;
+        public static final int webprojectlayout=0x7f0c009a;
         public static final int widthLabel=0x7f0c0040;
         public static final int widthText=0x7f0c0041;
         public static final int zoomin=0x7f0c0067;
@@ -393,9 +395,10 @@ public final class R {
         public static final int quickaction=0x7f03001e;
         public static final int quickaction_item=0x7f03001f;
         public static final int quickaction_item2=0x7f030020;
-        public static final int tags=0x7f030021;
-        public static final int webprojectlist=0x7f030022;
-        public static final int webprojectsrow=0x7f030023;
+        public static final int sensor_main=0x7f030021;
+        public static final int tags=0x7f030022;
+        public static final int webprojectlist=0x7f030023;
+        public static final int webprojectsrow=0x7f030024;
     }
     public static final class plurals {
         public static final int connection_problem_notification=0x7f070000;
