@@ -30,7 +30,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -649,6 +648,7 @@ public class GeoPaparazziActivity extends Activity {
             // }
             // return true;
             // case KeyEvent.KEYCODE_HOME:
+            // Intent mapIntent = new Intent(this, NorthFinder.class);
             Intent mapIntent = new Intent(this, SensorListActivity.class);
             startActivity(mapIntent);
             return true;
