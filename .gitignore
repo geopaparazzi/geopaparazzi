@@ -1,0 +1,8 @@
+geopaparazzi.app/bin
+geopaparazzi.app/gen
+geopaparazzilibrary/bin
+geopaparazzilibrary/gen
+geopaparazzilibrarytests/bin
+geopaparazzilibrarytests/gen
+
+*.swp
