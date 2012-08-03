@@ -7,11 +7,11 @@
         android:id="@+id/frag_sensor_select"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        class="root.gast.playground.sensor.SensorSelectorFragment" />
+        class="eu.geopaparazzi.library.sensors.news.SensorSelectorFragment" />
 
     <fragment
         android:id="@+id/frag_sensor_view"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        class="eu.geopaparazzi.library.sensors.news.SensorSelectorFragment" />
+        class="eu.geopaparazzi.library.sensors.news.SensorDisplayFragment" />
 </LinearLayout>

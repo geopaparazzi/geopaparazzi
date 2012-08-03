@@ -29,8 +29,8 @@
 
     <!-- compatibility -->
     <uses-sdk
-        android:minSdkVersion="5"
-        android:targetSdkVersion="8" >
+        android:minSdkVersion="10"
+        android:targetSdkVersion="10" >
     </uses-sdk>
 
     <supports-screens
@@ -38,7 +38,7 @@
         android:largeScreens="true"
         android:normalScreens="true"
         android:resizeable="true"
-        android:smallScreens="true" >
+        android:smallScreens="true" android:xlargeScreens="true">
     </supports-screens>
 
     <application
@@ -214,6 +214,20 @@
         <activity android:name="eu.geopaparazzi.library.webproject.WebProjectsListActivity" >
             <intent-filter>
                 <action android:name="eu.geopaparazzi.library.webproject.WebProjectsListActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name="eu.geopaparazzi.library.sensors.news.SensorListActivity" >
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.sensors.news.SensorListActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name="eu.geopaparazzi.library.sensors.news.NorthFinder" >
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.sensors.news.NorthFinder" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

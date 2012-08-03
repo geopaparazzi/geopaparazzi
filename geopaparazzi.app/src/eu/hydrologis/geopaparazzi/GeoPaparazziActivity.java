@@ -30,6 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -56,6 +57,7 @@ import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.gps.GpsLocation;
 import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.sensors.SensorsManager;
+import eu.geopaparazzi.library.sensors.news.SensorListActivity;
 import eu.geopaparazzi.library.sms.SmsUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
@@ -642,9 +644,13 @@ public class GeoPaparazziActivity extends Activity {
         // force to exit through the exit button
         switch( keyCode ) {
         case KeyEvent.KEYCODE_BACK:
-            if (sliderIsOpen) {
-                slidingDrawer.animateClose();
-            }
+            // if (sliderIsOpen) {
+            // slidingDrawer.animateClose();
+            // }
+            // return true;
+            // case KeyEvent.KEYCODE_HOME:
+            Intent mapIntent = new Intent(this, SensorListActivity.class);
+            startActivity(mapIntent);
             return true;
         }
         return super.onKeyDown(keyCode, event);

@@ -4,7 +4,7 @@
     android:versionCode="1"
     android:versionName="1.0.0" >
 
-    <uses-sdk android:minSdkVersion="8" />
+    <uses-sdk android:minSdkVersion="10" />
 
     <!--
         <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -18,7 +18,7 @@
         <uses-permission android:name="android.permission.SEND_SMS" />
         <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
         <uses-permission android:name="android.permission.RECORD_AUDIO" />
-        <uses-permission android:name="android.permission.READ_CONTACTS" />        <uses-permission android:name="android.permission.VIBRATE" />
+        <uses-permission android:name="android.permission.READ_CONTACTS" />        <uses-permission android:name="android.permission.VIBRATE" />        <uses-permission android:name="android.permission.CAMERA"/>
     -->
 
     <application
@@ -100,10 +100,20 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        
-        
-        <activity android:name=".sensor.news.SensorListActivity" />
-        <activity android:name=".sensor.news.NorthFinder" />
+        <activity android:name="eu.geopaparazzi.library.sensors.news.SensorListActivity" >
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.sensors.news.SensorListActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name="eu.geopaparazzi.library.sensors.news.NorthFinder" >
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.sensors.news.NorthFinder" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <receiver
             android:name=".sms.SmsReceiverPositionSender"
