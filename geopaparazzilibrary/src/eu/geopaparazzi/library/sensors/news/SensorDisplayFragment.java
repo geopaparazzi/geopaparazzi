@@ -235,10 +235,10 @@ public class SensorDisplayFragment extends Fragment implements SensorEventListen
             zAxisLabel.setText(R.string.rollLabel);
 
             break;
-        case Sensor.TYPE_RELATIVE_HUMIDITY:
+        case 12: // if on API 14 it considers: Sensor.TYPE_RELATIVE_HUMIDITY:
             showEventData("Relatice ambient air humidity", "%", event.values[0]);
             break;
-        case Sensor.TYPE_AMBIENT_TEMPERATURE:
+        case 13: // if on API 14 it considers: Sensor.TYPE_AMBIENT_TEMPERATURE:
             showEventData("Ambien temperature", "degree Celcius", event.values[0]);
             break;
         }

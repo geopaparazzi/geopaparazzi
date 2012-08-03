@@ -18,7 +18,6 @@ package eu.geopaparazzi.library.sensors.news;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import root.gast.playground.R;
 import android.app.Activity;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -27,27 +26,26 @@ import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.widget.TextView;
+import eu.geopaparazzi.library.R;
 
 /**
  * When the camera is taking a picture of north, it changes green
  * @author David Hutchinson &#60;<a href="mailto:david.n.hutch@gmail.com">david.n.hutch@gmail.com</a>&#62;
  */
-public class NorthFinder extends Activity implements SensorEventListener
-{
+public class NorthFinder extends Activity implements SensorEventListener {
     private static final int ANGLE = 20;
-    
+
     private TextView tv;
     private GLSurfaceView mGLSurfaceView;
     private MyRenderer mRenderer;
     private SensorManager mSensorManager;
     private Sensor mRotVectSensor;
     private float[] orientationVals = new float[3];
-    
+
     private final float[] mRotationMatrix = new float[16];
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.sensors_north_main);
@@ -59,38 +57,29 @@ public class NorthFinder extends Activity implements SensorEventListener
         tv = (TextView) findViewById(R.id.tv);
 
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        mRotVectSensor =
-                mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+        mRotVectSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
 
     }
 
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
         mSensorManager.registerListener(this, mRotVectSensor, 10000);
     }
 
     @Override
-    protected void onPause()
-    {
+    protected void onPause() {
         super.onPause();
         mSensorManager.unregisterListener(this);
     }
 
     @Override
-    public void onSensorChanged(SensorEvent event)
-    {
+    public void onSensorChanged( SensorEvent event ) {
         // It is good practice to check that we received the proper sensor event
-        if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR)
-        {
+        if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
             // Convert the rotation-vector to a 4x4 matrix.
-            SensorManager.getRotationMatrixFromVector(mRotationMatrix,
-                    event.values);
-            SensorManager
-                    .remapCoordinateSystem(mRotationMatrix,
-                            SensorManager.AXIS_X, SensorManager.AXIS_Z,
-                            mRotationMatrix);
+            SensorManager.getRotationMatrixFromVector(mRotationMatrix, event.values);
+            SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_X, SensorManager.AXIS_Z, mRotationMatrix);
             SensorManager.getOrientation(mRotationMatrix, orientationVals);
 
             // Optionally convert the result from radians to degrees
@@ -98,48 +87,37 @@ public class NorthFinder extends Activity implements SensorEventListener
             orientationVals[1] = (float) Math.toDegrees(orientationVals[1]);
             orientationVals[2] = (float) Math.toDegrees(orientationVals[2]);
 
-            tv.setText(" Yaw: " + orientationVals[0] + "\n Pitch: "
-                    + orientationVals[1] + "\n Roll (not used): "
+            tv.setText(" Yaw: " + orientationVals[0] + "\n Pitch: " + orientationVals[1] + "\n Roll (not used): "
                     + orientationVals[2]);
-
         }
     }
 
     @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy)
-    {
+    public void onAccuracyChanged( Sensor sensor, int accuracy ) {
         // no-op
     }
 
-    class MyRenderer implements GLSurfaceView.Renderer
-    {
-        public void onDrawFrame(GL10 gl)
-        {
+    class MyRenderer implements GLSurfaceView.Renderer {
+        public void onDrawFrame( GL10 gl ) {
             // Clear screen
             gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
             // Detect if the device is pointing within +/- ANGLE of north
-            if (orientationVals[0] < ANGLE && orientationVals[0] > -ANGLE
-                    && orientationVals[1] < ANGLE
-                    && orientationVals[1] > -ANGLE)
-            {
+            if (orientationVals[0] < ANGLE && orientationVals[0] > -ANGLE && orientationVals[1] < ANGLE
+                    && orientationVals[1] > -ANGLE) {
                 gl.glClearColor(0, 1, 0, 1); // Make background green
-            }
-            else
-            {
+            } else {
                 gl.glClearColor(1, 0, 0, 1); // Make background red
             }
         }
 
         @Override
-        public void onSurfaceChanged(GL10 gl, int width, int height)
-        {
+        public void onSurfaceChanged( GL10 gl, int width, int height ) {
             // no-op
         }
 
         @Override
-        public void onSurfaceCreated(GL10 gl, EGLConfig config)
-        {
+        public void onSurfaceCreated( GL10 gl, EGLConfig config ) {
             // no-op
         }
     }
