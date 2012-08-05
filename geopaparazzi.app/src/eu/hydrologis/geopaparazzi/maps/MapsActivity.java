@@ -188,6 +188,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 try {
                     File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
                     mapGenerator = CustomTileDownloader.file2TileDownloader(new File(filePath), mapsDir.getAbsolutePath());
+                    ((CustomTileDownloader)mapGenerator).setMapView(mapView);
                     minZoomLevel = mapGenerator.getStartZoomLevel();
                     maxZoomLevel = mapGenerator.getZoomLevelMax();
                 } catch (IOException e) {
