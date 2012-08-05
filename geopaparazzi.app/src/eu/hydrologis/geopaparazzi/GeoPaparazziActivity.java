@@ -124,9 +124,9 @@ public class GeoPaparazziActivity extends Activity {
         tileSourcesMap.put(1002, MapGeneratorInternal.MAPNIK.name());
         tileSourcesMap.put(1003, MapGeneratorInternal.OPENCYCLEMAP.name());
 
-        File sdcardDir = ResourcesManager.getInstance(this).getSdcardDir();
-        if (sdcardDir != null && sdcardDir.exists()) {
-            File[] mapFiles = sdcardDir.listFiles(new FilenameFilter(){
+        File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
+        if (mapsDir != null && mapsDir.exists()) {
+            File[] mapFiles = mapsDir.listFiles(new FilenameFilter(){
                 public boolean accept( File dir, String filename ) {
                     return filename.endsWith(".mapurl"); //$NON-NLS-1$
                 }
@@ -473,8 +473,8 @@ public class GeoPaparazziActivity extends Activity {
             if (mapGeneratorInternalNew != null) {
                 if (mapGeneratorInternalNew.equals(MapGeneratorInternal.DATABASE_RENDERER)) {
                     // check existing maps and ask for which to load
-                    File sdcardDir = ResourcesManager.getInstance(this).getSdcardDir();
-                    if (sdcardDir == null || !sdcardDir.exists()) {
+                    File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
+                    if (mapsDir == null || !mapsDir.exists()) {
                         Utilities.messageDialog(this, eu.hydrologis.geopaparazzi.R.string.no_external_sdcard_for_db_renderer,
                                 null);
                         return true;
@@ -483,7 +483,7 @@ public class GeoPaparazziActivity extends Activity {
                     final List<String> mapPaths = new ArrayList<String>();
                     final List<String> mapNames = new ArrayList<String>();
 
-                    File[] mapFiles = sdcardDir.listFiles(new FilenameFilter(){
+                    File[] mapFiles = mapsDir.listFiles(new FilenameFilter(){
                         public boolean accept( File dir, String filename ) {
                             return filename.endsWith(".map"); //$NON-NLS-1$
                         }
