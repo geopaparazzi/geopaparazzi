@@ -42,6 +42,8 @@ import eu.geopaparazzi.library.R;
 public class ResourcesManager implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    private static final String PATH_MAPS = "maps"; //$NON-NLS-1$
+
     private static final String PATH_MEDIA = "media"; //$NON-NLS-1$
 
     private static final String PATH_EXPORT = "export"; //$NON-NLS-1$
@@ -53,6 +55,7 @@ public class ResourcesManager implements Serializable {
     private File databaseFile;
 
     private File mediaDir;
+    private File mapsDir;
 
     private File exportDir;
 
@@ -120,12 +123,15 @@ public class ResourcesManager implements Serializable {
          * 
          * The default structure is:
          * 
-         * applicationname 
-         *    | 
-         *    |--- applicationname.db 
-         *    |--- media  (folder)
-         *    |--- export  (folder)
-         *    `--- debug.log 
+         * sdcard
+         *    |
+         *    |-- applicationname 
+         *    |          | 
+         *    |          |--- applicationname.db 
+         *    |          |--- media  (folder)
+         *    |          |--- export  (folder)
+         *    |          `--- debug.log 
+         *    `-- mapsdir
          */
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String baseFolder = preferences.getString(PREFS_KEY_BASEFOLDER, ""); //$NON-NLS-1$
@@ -188,6 +194,16 @@ public class ResourcesManager implements Serializable {
                         context,
                         MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
                                 exportDir.getAbsolutePath()), null);
+
+        mapsDir = new File(applicationDir, PATH_MAPS);
+        if (!mapsDir.exists())
+            if (!mapsDir.mkdir()) {
+                Utilities.messageDialog(
+                        context,
+                        MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
+                                mapsDir.getAbsolutePath()), null);
+                mapsDir = sdcardDir;
+            }
     }
 
     /**
@@ -270,6 +286,15 @@ public class ResourcesManager implements Serializable {
      */
     public File getExportDir() {
         return exportDir;
+    }
+
+    /**
+     * Get the default maps folder.
+     * 
+     * @return the default maps folder.
+     */
+    public File getMapsDir() {
+        return mapsDir;
     }
 
     /**
