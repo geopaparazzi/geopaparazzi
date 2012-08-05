@@ -186,8 +186,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
             if (tileSourceName.length() == 0 && filePath != null && new File(filePath).exists()) {
                 try {
-                    File sdcardDir = ResourcesManager.getInstance(this).getSdcardDir();
-                    mapGenerator = CustomTileDownloader.file2TileDownloader(new File(filePath), sdcardDir.getAbsolutePath());
+                    File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
+                    mapGenerator = CustomTileDownloader.file2TileDownloader(new File(filePath), mapsDir.getAbsolutePath());
                     minZoomLevel = mapGenerator.getStartZoomLevel();
                     maxZoomLevel = mapGenerator.getZoomLevelMax();
                 } catch (IOException e) {
@@ -597,7 +597,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                                         openAlertDialog(msg);
                                     } else {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
-                                        builder.setMessage(msg).setCancelable(false)
+                                        builder.setMessage(msg)
+                                                .setCancelable(false)
                                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                                                     public void onClick( DialogInterface dialog, int id ) {
                                                         try {
@@ -606,10 +607,12 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                                                             e.printStackTrace();
                                                         }
                                                     }
-                                                }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
-                                                    public void onClick( DialogInterface dialog, int id ) {
-                                                    }
-                                                });
+                                                })
+                                                .setNegativeButton(android.R.string.cancel,
+                                                        new DialogInterface.OnClickListener(){
+                                                            public void onClick( DialogInterface dialog, int id ) {
+                                                            }
+                                                        });
                                         AlertDialog alertDialog = builder.create();
                                         alertDialog.show();
                                     }
@@ -640,10 +643,11 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
      */
     private void openAlertDialog( String msg ) {
         AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
-        builder.setMessage(msg).setCancelable(false).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
-            public void onClick( DialogInterface dialog, int id ) {
-            }
-        });
+        builder.setMessage(msg).setCancelable(false)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
+                    public void onClick( DialogInterface dialog, int id ) {
+                    }
+                });
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }

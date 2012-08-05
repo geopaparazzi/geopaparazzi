@@ -195,7 +195,7 @@ public class ResourcesManager implements Serializable {
                         MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
                                 exportDir.getAbsolutePath()), null);
 
-        mapsDir = new File(applicationDir, PATH_MAPS);
+        mapsDir = new File(sdcardDir, PATH_MAPS);
         if (!mapsDir.exists())
             if (!mapsDir.mkdir()) {
                 Utilities.messageDialog(

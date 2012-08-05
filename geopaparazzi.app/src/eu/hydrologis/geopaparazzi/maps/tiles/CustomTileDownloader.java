@@ -58,7 +58,7 @@ public class CustomTileDownloader extends TileDownloader {
     private TILESCHEMA type = TILESCHEMA.google;
 
     @SuppressWarnings("nls")
-    public CustomTileDownloader( List<String> fileLines, String sdcardPath ) {
+    public CustomTileDownloader( List<String> fileLines, String parentPath ) {
         super();
 
         for( String line : fileLines ) {
@@ -80,7 +80,7 @@ public class CustomTileDownloader extends TileDownloader {
                         HOST_NAME = HOST_NAME.substring(7);
                     } else {
                         PROTOCOL = "file";
-                        HOST_NAME = sdcardPath + File.separator + HOST_NAME;
+                        HOST_NAME = parentPath + File.separator + HOST_NAME;
                         isFile = true;
                     }
                 }
@@ -205,9 +205,9 @@ public class CustomTileDownloader extends TileDownloader {
         return ZOOM_MAX;
     }
 
-    public static CustomTileDownloader file2TileDownloader( File file, String sdcardPath ) throws IOException {
+    public static CustomTileDownloader file2TileDownloader( File file, String parentPath ) throws IOException {
         List<String> fileLines = FileUtilities.readfileToList(file);
-        return new CustomTileDownloader(fileLines, sdcardPath);
+        return new CustomTileDownloader(fileLines, parentPath);
     }
 
 }
