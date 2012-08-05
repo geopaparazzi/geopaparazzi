@@ -175,7 +175,7 @@ public class CustomTileDownloader extends TileDownloader {
             } catch (Exception e) {
                 // ignore and set the image as empty
                 if (Debug.D)
-                    Logger.i(this, "Could not find image: " + sb.toString());
+                    Logger.i(this, "Could not find image: " + sb.toString()); //$NON-NLS-1$
             } finally {
                 inputStream.close();
             }
