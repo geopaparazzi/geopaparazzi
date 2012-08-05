@@ -30,6 +30,7 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -126,8 +127,15 @@ public abstract class GeopaparazziOverlay extends Overlay {
     private Paint gpsOutline;
     private Paint gpsFill;
 
+    private Path gpsStatusPath;
+    private Paint gpsRedFill;
+    private Paint gpsOrangeFill;
+    private Paint gpsGreenFill;
+    private Paint gpsBlueFill;
+
     private List<GeoPoint> currentGps = new ArrayList<GeoPoint>();
     private Context context;
+    private int triangle = 20;
 
     /**
      * Create a {@link OverlayWay} wrapped type.
@@ -170,10 +178,27 @@ public abstract class GeopaparazziOverlay extends Overlay {
         gpsTrackPaintYellow.setStyle(Paint.Style.STROKE);
         gpsTrackPaintYellow.setColor(Color.YELLOW);
         gpsTrackPaintYellow.setStrokeWidth(3);
+
         gpsTrackPaintBlack = new Paint(Paint.ANTI_ALIAS_FLAG);
         gpsTrackPaintBlack.setStyle(Paint.Style.STROKE);
         gpsTrackPaintBlack.setColor(Color.BLACK);
         gpsTrackPaintBlack.setStrokeWidth(5);
+
+        Resources resources = context.getResources();
+
+        gpsStatusPath = new Path();
+        gpsRedFill = new Paint(Paint.ANTI_ALIAS_FLAG);
+        gpsRedFill.setStyle(Paint.Style.FILL);
+        gpsRedFill.setColor(resources.getColor(R.color.gpsred_fill));
+        gpsOrangeFill = new Paint(Paint.ANTI_ALIAS_FLAG);
+        gpsOrangeFill.setStyle(Paint.Style.FILL);
+        gpsOrangeFill.setColor(resources.getColor(R.color.gpsorange_fill));
+        gpsGreenFill = new Paint(Paint.ANTI_ALIAS_FLAG);
+        gpsGreenFill.setStyle(Paint.Style.FILL);
+        gpsGreenFill.setColor(resources.getColor(R.color.gpsgreen_fill));
+        gpsBlueFill = new Paint(Paint.ANTI_ALIAS_FLAG);
+        gpsBlueFill.setStyle(Paint.Style.FILL);
+        gpsBlueFill.setColor(resources.getColor(R.color.gpsblue_fill));
 
         gpsMarker = ItemizedOverlay.boundCenter(gpsMarker);
         gpslogOverlay = new OverlayWay(null, gpsOutline);
@@ -500,6 +525,30 @@ public abstract class GeopaparazziOverlay extends Overlay {
         }
 
         /*
+         * show gps status
+         */
+        Paint gpsStatusFill = null;
+        if (gpsManager.isEnabled()) {
+            if (gpsManager.isLogging()) {
+                gpsStatusFill = gpsBlueFill;
+            } else {
+                if (gpsManager.hasValidData()) {
+                    gpsStatusFill = gpsGreenFill;
+                } else {
+                    gpsStatusFill = gpsOrangeFill;
+                }
+            }
+        } else {
+            gpsStatusFill = gpsRedFill;
+        }
+        gpsStatusPath.reset();
+        gpsStatusPath.moveTo(0, 0);
+        gpsStatusPath.lineTo(0, triangle);
+        gpsStatusPath.lineTo(triangle, 0);
+        gpsStatusPath.close();
+        canvas.drawPath(gpsStatusPath, gpsStatusFill);
+
+        /*
          * draw cross on top
          */
         Point center = new Point(canvas.getWidth() / 2, canvas.getHeight() / 2);
@@ -511,7 +560,6 @@ public abstract class GeopaparazziOverlay extends Overlay {
         canvas.drawPath(crossPath, crossPaint);
 
     }
-
     @Override
     protected String getThreadName() {
         return THREAD_NAME;
