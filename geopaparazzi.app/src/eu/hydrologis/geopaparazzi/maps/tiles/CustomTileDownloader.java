@@ -21,8 +21,6 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.List;
 
-import org.mapsforge.android.maps.MapView;
-import org.mapsforge.android.maps.Projection;
 import org.mapsforge.android.maps.mapgenerator.MapGeneratorJob;
 import org.mapsforge.android.maps.mapgenerator.tiledownloader.TileDownloader;
 import org.mapsforge.core.model.GeoPoint;
@@ -45,7 +43,7 @@ public class CustomTileDownloader extends TileDownloader {
      * Possible schemas
      */
     private enum TILESCHEMA {
-        tms, google, wms
+        tms, google
     }
 
     private static String HOST_NAME;
@@ -58,7 +56,6 @@ public class CustomTileDownloader extends TileDownloader {
     private String tilePart;
     private boolean isFile = false;
     private TILESCHEMA type = TILESCHEMA.google;
-    private MapView mapView;
 
     @SuppressWarnings("nls")
     public CustomTileDownloader( List<String> fileLines, String parentPath ) {
@@ -76,16 +73,11 @@ public class CustomTileDownloader extends TileDownloader {
                 if (line.startsWith("url")) {
 
                     int indexOfZ = value.indexOf("ZZZ");
-                    if (indexOfZ != -1) {
-                        HOST_NAME = value.substring(0, indexOfZ);
-                        tilePart = value.substring(indexOfZ);
-                    } else {
-                        HOST_NAME = "http://";
-                    }
+                    HOST_NAME = value.substring(0, indexOfZ);
+                    tilePart = value.substring(indexOfZ);
                     if (value.startsWith("http")) {
                         // remove http
                         HOST_NAME = HOST_NAME.substring(7);
-                        tilePart = value;
                     } else {
                         PROTOCOL = "file";
                         HOST_NAME = parentPath + File.separator + HOST_NAME;
@@ -119,9 +111,6 @@ public class CustomTileDownloader extends TileDownloader {
                 if (line.startsWith("type")) {
                     if (value.equals(TILESCHEMA.tms.toString())) {
                         type = TILESCHEMA.tms;
-                    }
-                    if (value.equals(TILESCHEMA.wms.toString())) {
-                        type = TILESCHEMA.wms;
                     }
                 }
             }
@@ -157,39 +146,26 @@ public class CustomTileDownloader extends TileDownloader {
             tileY = tmsTiles[1];
         }
 
-        if (type == TILESCHEMA.tms || type == TILESCHEMA.google) {
-            String tmpTilePart = tilePart.replaceFirst("ZZZ", String.valueOf(zoomLevel)); //$NON-NLS-1$
-            tmpTilePart = tmpTilePart.replaceFirst("XXX", String.valueOf(tileX)); //$NON-NLS-1$
-            tmpTilePart = tmpTilePart.replaceFirst("YYY", String.valueOf(tileY)); //$NON-NLS-1$
-            return tmpTilePart;
-        }
-        if (type == TILESCHEMA.wms) {
-            // minx, miny, maxx, maxy
-            double[] tileBounds = Utilities.TileLatLonBounds(tileX, tileY, zoomLevel, Tile.TILE_SIZE);
-            String tmpTilePart = tilePart.replaceFirst("XXX", String.valueOf(tileBounds[0])); //$NON-NLS-1$
-            tmpTilePart = tmpTilePart.replaceFirst("YYY", String.valueOf(tileBounds[1])); //$NON-NLS-1$
-            tmpTilePart = tmpTilePart.replaceFirst("XXX", String.valueOf(tileBounds[2])); //$NON-NLS-1$
-            tmpTilePart = tmpTilePart.replaceFirst("YYY", String.valueOf(tileBounds[3])); //$NON-NLS-1$
-            return tmpTilePart;
-        }
-        return ""; //$NON-NLS-1$
+        String tmpTilePart = tilePart.replaceFirst("ZZZ", String.valueOf(zoomLevel)); //$NON-NLS-1$
+        tmpTilePart = tmpTilePart.replaceFirst("XXX", String.valueOf(tileX)); //$NON-NLS-1$
+        tmpTilePart = tmpTilePart.replaceFirst("YYY", String.valueOf(tileY)); //$NON-NLS-1$
+
+        return tmpTilePart;
     }
 
     @Override
     public boolean executeJob( MapGeneratorJob mapGeneratorJob, Bitmap bitmap ) {
         try {
             Tile tile = mapGeneratorJob.tile;
-            String tilePath = getTilePath(tile);
 
             StringBuilder sb = new StringBuilder();
             if (isFile) {
                 sb.append("file:"); //$NON-NLS-1$
             } else {
-                if (!tilePath.startsWith("http")) //$NON-NLS-1$
-                    sb.append("http://"); //$NON-NLS-1$
+                sb.append("http://"); //$NON-NLS-1$
             }
             sb.append(HOST_NAME);
-            sb.append(tilePath);
+            sb.append(getTilePath(tile));
 
             URL url = new URL(sb.toString());
             InputStream inputStream = url.openStream();
@@ -232,9 +208,6 @@ public class CustomTileDownloader extends TileDownloader {
     public static CustomTileDownloader file2TileDownloader( File file, String parentPath ) throws IOException {
         List<String> fileLines = FileUtilities.readfileToList(file);
         return new CustomTileDownloader(fileLines, parentPath);
-    }
-    public void setMapView( MapView mapView ) {
-        this.mapView = mapView;
     }
 
 }
