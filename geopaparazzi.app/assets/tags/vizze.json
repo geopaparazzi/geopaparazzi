@@ -34,6 +34,64 @@
                 ]
             },
             {
+                "formname": "Informazioni di base",
+                "formitems": [
+                    {
+                        "key": "Data compilazione",
+                        "value": "",
+                        "type": "date",
+                        "mandatory": "yes"
+                    },
+                    {
+                        "key": "Nome compilatore",
+                        "value": "",
+                        "type": "string",
+                        "mandatory": "yes"
+                    },
+                    {
+                        "key": "Zona SBM",
+                        "value": "",
+                        "type": "string",
+                        "mandatory": "yes"
+                    },
+                    {
+                        "key": "Comune/i",
+                        "value": "",
+                        "type": "string",
+                        "mandatory": "yes"
+                    },
+                    {
+                        "key": "Frazione/localita'/maso",
+                        "value": "",
+                        "type": "string",
+                        "mandatory": "yes"
+                    },
+                    {
+                        "value": "Corso d'acqua",
+						"size": "20",
+                        "type": "labelwithline"
+                    },
+                    {
+                        "key": "Codice",
+                        "value": "",
+                        "type": "string",
+                        "mandatory": "yes"
+                    },
+                    {
+                        "key": "Nome ufficiale",
+                        "value": "",
+                        "type": "string",
+                        "mandatory": "yes"
+                    },
+                    {
+                        "key": "Nome locale",
+                        "value": "",
+                        "type": "string",
+                        "mandatory": "yes"
+                    }
+                ]
+            },
+            {
                 "formname": "image note",
                 "formitems": [
 					{
