@@ -366,7 +366,7 @@
                         "key": "Numero EP",
                         "value": "",
                         "type": "double"
-                    }
+                    },
                     {
                         "value": "Beni Culturali (BC)",
                         "size": "20",
@@ -421,10 +421,369 @@
                         "key": "Numero BC",
                         "value": "",
                         "type": "double"
+                    },
+                    {
+                        "value": "Strutture di servizio pubblico (SSP)",
+                        "size": "20",
+                        "type": "labelwithline"
+                    },
+                    {
+                        "key": "MAXO SSP",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Tipo SSP",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "edificio pubblico"},
+                                {"item": "sport"},
+                                {"item": "parco"},
+                                {"item": "bacino artificiale"},
+                                {"item": "rifiuti"},
+                                {"item": "ospedale"},
+                                {"item": "scuola"},
+                                {"item": "chiesa"},
+                                {"item": "altro"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Grado SSP",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "non valutabile"},
+                                {"item": "lieve"},
+                                {"item": "medio"},
+                                {"item": "grave"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Numero SSP",
+                        "value": "",
+                        "type": "double"
+                    },
+                    {
+                        "value": "Infrastrutture di rete (IR)",
+                        "size": "20",
+                        "type": "labelwithline"
+                    },
+                    {
+                        "key": "MAXO IR",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Tipo IR",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "acquedotto"},
+                                {"item": "gasdotto"},
+                                {"item": "linea elettrica"},
+                                {"item": "canalizzazione"},
+                                {"item": "impianto a fune"},
+                                {"item": "telecomunicazioni"},
+                                {"item": "altro"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Grado IR",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "non valutabile"},
+                                {"item": "lieve"},
+                                {"item": "medio"},
+                                {"item": "grave"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Metri lineari IR",
+                        "value": "",
+                        "type": "double"
+                    },
+                    {
+                        "value": "Terreno agricolo (TR)",
+                        "size": "20",
+                        "type": "labelwithline"
+                    },
+                    {
+                        "key": "MAXO TR",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Tipo TR",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "seminativo"},
+                                {"item": "frutteto"},
+                                {"item": "bosco"},
+                                {"item": "pascolo"},
+                                {"item": "pista da sci"},
+                                {"item": "rimboschimento"},
+                                {"item": "altro"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Grado TR",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "non valutabile"},
+                                {"item": "lieve"},
+                                {"item": "medio"},
+                                {"item": "grave"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Ettari TR",
+                        "value": "",
+                        "type": "double"
+                    },
+                    {
+                        "value": "Attivita' economiche (AE)",
+                        "size": "20",
+                        "type": "labelwithline"
+                    },
+                    {
+                        "key": "MAXO AE",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Tipo AE",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "struttura industriale"},
+                                {"item": "struttura artigianale"},
+                                {"item": "struttura turistica"},
+                                {"item": "struttura di commercio"},
+                                {"item": "impianto estrattivo"},
+                                {"item": "impianto chimico"},
+                                {"item": "altro"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Grado AE",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "non valutabile"},
+                                {"item": "lieve"},
+                                {"item": "medio"},
+                                {"item": "grave"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Numero AE",
+                        "value": "",
+                        "type": "double"
+                    },
+                    {
+                        "value": "Veicoli (VE)",
+                        "size": "20",
+                        "type": "labelwithline"
+                    },
+                    {
+                        "key": "MAXO VE",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Tipo VE",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "automobile"},
+                                {"item": "camion"},
+                                {"item": "trattore"},
+                                {"item": "autobus"},
+                                {"item": "aereo"},
+                                {"item": "elicottero"},
+                                {"item": "barca"},
+                                {"item": "treno"},
+                                {"item": "altro"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Grado VE",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "non valutabile"},
+                                {"item": "lieve"},
+                                {"item": "medio"},
+                                {"item": "grave"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Numero VR",
+                        "value": "",
+                        "type": "double"
                     }
                 ]
             },
-
+            {
+                "formname": "Viabilita'",
+                "formitems": [
+                    {
+                        "key": "MAXO Viabilita'",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Codice tipo viabilita'",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "Autostrada"},
+                                {"item": "Ferrovia"},
+                                {"item": "Strada statale"},
+                                {"item": "Strada provinciale"},
+                                {"item": "Strada comunale"},
+                                {"item": "Strada forestale"},
+                                {"item": "altro"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Nome viabilita'",
+                        "value": "",
+                        "type": "string"
+                    },
+                    {
+                        "key": "Progressiva",
+                        "value": "",
+                        "type": "double"
+                    },
+                    {
+                        "key": "Descrizione danno",
+                        "value": "",
+                        "type": "string"
+                    },
+                    {
+                        "key": "Traffico interrotto?",
+                        "value": "",
+                        "type": "boolean"
+                    },
+                    {
+                        "key": "Tempo interruzione [h]",
+                        "value": "",
+                        "type": "double"
+                    },
+                    {
+                        "key": "Grado viabilita'",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "non valutabile"},
+                                {"item": "lieve"},
+                                {"item": "medio"},
+                                {"item": "grave"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                ]
+            }
         ]
 	}
 ]
