@@ -192,6 +192,28 @@
                         "mandatory": "yes"
                     }
                 ]
+            },
+            {
+                "formname": "Metodologia di valutazione",
+                "formitems": [
+                    {
+                        "key": "Metodologia di valutazione",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "Rilevamento in campagna"},
+                                {"item": "Monitoraggio"},
+                                {"item": "Fotointerpretazione"},
+                                {"item": "Osservazione a distanza vers. opposto"},
+                                {"item": "Foto da elicottero"},
+                                {"item": "Dato storico"},
+                                {"item": "Altro (note)"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    }
+                ]
             }
         ]
     },{
