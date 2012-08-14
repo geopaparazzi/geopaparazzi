@@ -212,6 +212,11 @@
                         },
                         "value": "",
                         "type": "stringcombo"
+                    },
+                    {
+                        "key": "Note",
+                        "value": "",
+                        "type": "string"
                     }
                 ]
             }
