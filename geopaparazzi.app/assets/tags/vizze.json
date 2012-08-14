@@ -1,6 +1,6 @@
 [
     {
-        "sectionname": "generalita",
+        "sectionname": "Generalita' evento",
         "sectiondescription": "Scheda Generale di Documentazione Eventi",
         "forms": [
             {
@@ -222,7 +222,7 @@
             }
         ]
     },{
-        "sectionname": "scheda_danni",
+        "sectionname": "Scheda danni",
         "sectiondescription": "Rilevamento danni",
         "forms": [
             {
@@ -813,7 +813,188 @@
                         "type": "map"
                     }
                 ]
+            }
+        ]
+	},{
+        "sectionname": "Colata detritica",
+        "sectiondescription": "Colata detritica - descrizione tecnica dell'evento",
+        "forms": [
+            {
+                "formname": "Evento",
+                "formitems": [
+                    {
+                        "key": "ID Evento",
+                        "value": "",
+                        "type": "string",
+                        "mandatory": "yes"
+                    }
+                ]
             },
+            {
+                "formname": "Eventi secondari",
+                "formitems": [
+                    {
+                        "key": "MAXO eventi secondari",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Eventi secondari",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "Alluvione"},
+                                {"item": "Alluvione torrentizia"},
+                                {"item": "Alluvione urbana"},
+                                {"item": "Colata detritica"},
+                                {"item": "Frana"},
+                                {"item": "Crollo"},
+                                {"item": "Valanga"},
+                                {"item": "Altro"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    }
+                ]
+            },
+            {
+                "formname": "Meccanismi d'innesco (MI)",
+                "formitems": [
+                    {
+                        "key": "Qualita' dei dati MI",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Meccanismi d'innesco",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "Ostruzione da legname alluvionale"},
+                                {"item": "Ostruzione/impulso da detriti laterali"},
+                                {"item": "Ostruzione di attraversamento"},
+                                {"item": "Mobilizzazione di materiale dell'alveo"},
+                                {"item": "Rottura sbarramento/argine/lago (effimero)"},
+                                {"item": "Altro"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    }
+                ]
+            },
+            {
+                "formname": "Caratteristiche del sedimento",
+                "formitems": [
+                    {
+                        "value": "Granulometria della matrice (GDM)",
+						"size": "20",
+                        "type": "labelwithline"
+                    },
+                    {
+                        "key": "MAXO GDM",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Tipo GDM",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "scarso o assente"},
+                                {"item": "argilloso-limosa"},
+                                {"item": "sabbiosa"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "value": "Contenuto materiale grossolano (CMG)",
+						"size": "20",
+                        "type": "labelwithline"
+                    },
+                    {
+                        "key": "MAXO CMG",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Tipo CMG",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "scarso o assente"},
+                                {"item": "circa pari alla matrice"},
+                                {"item": "abbondante"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    }
+                ]
+            },
+            {
+                "formname": "Foto evento",
+                "formitems": [
+                    {
+                        "key": "Archivio foto",
+                        "value": "",
+                        "type": "pictures"
+                    }
+                ]
+            },
+            {
+                "formname": "Estratto mappa evento",
+                "formitems": [
+                    {
+                        "key": "Estratto mappa",
+                        "value": "",
+                        "type": "map"
+                    }
+                ]
+            }
         ]
 	}
 ]
