@@ -222,20 +222,14 @@
             }
         ]
     },{
-        "sectionname": "map note",
-        "sectiondescription": "note with map image",
+        "sectionname": "scheda_danni",
+        "sectiondescription": "Rilevamento danni",
         "forms": [
             {
-                "formname": "text note",
+                "formname": "Evento",
                 "formitems": [
                     {
-                        "key": "title",
-                        "value": "",
-                        "type": "string",
-                        "mandatory": "yes"
-                    },
-                    {
-                        "key": "description",
+                        "key": "ID Evento",
                         "value": "",
                         "type": "string",
                         "mandatory": "yes"
@@ -243,163 +237,194 @@
                 ]
             },
             {
-                "formname": "map image note",
-                "formitems": [
-					{
-                        "key": "description",
-                        "value": "",
-                        "type": "string",
-                        "mandatory": "yes"
-                    },
-                    {
-						"key": "map around note",
-                        "value": "",
-                        "type": "map"
-					}
-				]
-            }
-        ]
-	},{
-        "sectionname": "text note",
-        "sectiondescription": "a simple text note",
-        "forms": [
-            {
-                "formname": "text note",
+                "formname": "Persone e animali",
                 "formitems": [
                     {
-                        "key": "title",
-                        "value": "",
-                        "type": "string",
-                        "mandatory": "yes"
-                    },
-                    {
-                        "key": "description",
-                        "value": "",
-                        "type": "string",
-                        "mandatory": "yes"
-                    }
-                ]
-            }
-        ]
-	},{
-        "sectionname": "examples",
-        "sectiondescription": "examples of supported form widgets",
-        "forms": [
-            {
-                "formname": "text",
-                "formitems": [
-                    {
-                        "key": "some text",
-                        "value": "",
-                        "type": "string"
-                    }
-                ]
-            },{
-                "formname": "numeric text",
-                "formitems": [
-                    {
-                        "key": "a number",
-                        "value": "",
-                        "type": "double"
-                    }
-                ]
-            },{
-                "formname": "date",
-                "formitems": [
-                    {
-                        "key": "a date",
-                        "value": "",
-                        "type": "date"
-                    }
-                ]
-            },{
-                "formname": "time",
-                "formitems": [
-                    {
-                        "key": "a time",
-                        "value": "",
-                        "type": "time"
-                    }
-                ]
-            },{
-                "formname": "labels",
-                "formitems": [
-                    {
-                        "value": "a simple label of size 20",
-						"size": "20",
-                        "type": "label"
-                    },{
-                        "value": "a underlined label of size 24",
-                        "size": "24",
-						"type": "labelwithline"
-                    },{
-                        "value": "a label with link to the geopaparazzi homepage",
-                        "url": "http://www.geopaparazzi.eu",
+                        "value": "Persone",
                         "size": "20",
                         "type": "labelwithline"
-                    }
-                ]
-            },{
-                "formname": "boolean",
-                "formitems": [
+                    },
                     {
-                        "key": "a boolean choice",
-                        "value": "",
-                        "type": "boolean"
-                    }
-                ]
-            },{
-                "formname": "combos",
-                "formitems": [
-                    {
-                        "key": "a single choice combo",
+                        "key": "MAXO",
                         "values": {
                             "items": [
                                 {"item": ""},
-                                {"item": "choice 1"},
-                                {"item": "choice 2"},
-                                {"item": "choice 3"},
-                                {"item": "choice 4"},
-                                {"item": "choice 5"}
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
                             ]
                         },
                         "value": "",
                         "type": "stringcombo"
+                    },
+                    {
+                        "key": "nr. morti",
+                        "value": "0",
+                        "type": "double",
+                        "mandatory": "yes"
+                    },
+                    {
+                        "key": "nr. feriti",
+                        "value": "0",
+                        "type": "double",
+                        "mandatory": "yes"
+                    },
+                    {
+                        "key": "nr. evacuati",
+                        "value": "0",
+                        "type": "double",
+                        "mandatory": "yes"
+                    },
+                    {
+                        "value": "Animali",
+                        "size": "20",
+                        "type": "labelwithline"
                     },{
-                        "key": "a multiple choice combo",
+                        "key": "MAXO",
                         "values": {
                             "items": [
                                 {"item": ""},
-                                {"item": "choice 1"},
-                                {"item": "choice 2"},
-                                {"item": "choice 3"},
-                                {"item": "choice 4"},
-                                {"item": "choice 5"}
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
                             ]
                         },
                         "value": "",
-                        "type": "multistringcombo"
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "nr. morti",
+                        "value": "0",
+                        "type": "double",
+                        "mandatory": "yes"
+                    },
+                    {
+                        "key": "nr. coinvolti",
+                        "value": "0",
+                        "type": "double",
+                        "mandatory": "yes"
                     }
                 ]
-            },{
-                "formname": "pictures",
+            },
+            {
+                "formname": "Edifici e infrastrutture",
                 "formitems": [
                     {
-                        "key": "a picture archive",
-                        "value": "",
-                        "type": "pictures"
-                    }
-                ]
-            },{
-                "formname": "map",
-                "formitems": [
+                        "value": "Edifici privati (EP)",
+                        "size": "20",
+                        "type": "labelwithline"
+                    },
                     {
-                        "key": "an image of the last seen map",
+                        "key": "MAXO EP",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
                         "value": "",
-                        "type": "map"
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Tipo EP",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "case sparse"},
+                                {"item": "nucleo"},
+                                {"item": "paese"},
+                                {"item": "citta'"},
+                                {"item": "altro"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Grado EP",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "non valutabile"},
+                                {"item": "lieve"},
+                                {"item": "medio"},
+                                {"item": "grave"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Numero EP",
+                        "value": "",
+                        "type": "double"
+                    }
+                    {
+                        "value": "Beni Culturali (BC)",
+                        "size": "20",
+                        "type": "labelwithline"
+                    },
+                    {
+                        "key": "MAXO BC",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Tipo BC",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "Monumento"},
+                                {"item": "Museo"},
+                                {"item": "bio/geotopo"},
+                                {"item": "lago"},
+                                {"item": "bene architettonico"},
+                                {"item": "altro"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Grado BC",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "non valutabile"},
+                                {"item": "lieve"},
+                                {"item": "medio"},
+                                {"item": "grave"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Numero BC",
+                        "value": "",
+                        "type": "double"
                     }
                 ]
-            }
+            },
+
         ]
 	}
 ]
