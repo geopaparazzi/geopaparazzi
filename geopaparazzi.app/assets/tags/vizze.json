@@ -169,6 +169,29 @@
                         "type": "string"
                     }
                 ]
+            },
+            {
+                "formname": "Data Evento",
+                "formitems": [
+                    {
+                        "key": "Data evento",
+                        "value": "",
+                        "type": "date",
+                        "mandatory": "yes"
+                    },
+                    {
+                        "key": "Ora evento",
+                        "value": "",
+                        "type": "time",
+                        "mandatory": "yes"
+                    },
+                    {
+                        "key": "Durata [h]",
+                        "value": "",
+                        "type": "double",
+                        "mandatory": "yes"
+                    }
+                ]
             }
         ]
     },{
