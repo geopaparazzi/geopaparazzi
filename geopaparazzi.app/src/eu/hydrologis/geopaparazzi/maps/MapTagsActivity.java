@@ -51,7 +51,7 @@ import eu.hydrologis.geopaparazzi.database.NoteType;
 public class MapTagsActivity extends Activity {
     private static final int NOTE_RETURN_CODE = 666;
     private static final int CAMERA_RETURN_CODE = 667;
-    private static final int FORM_RETURN_CODE = 668;
+    private static final int FORM_RETURN_CODE = 669;
     private double latitude;
     private double longitude;
     private double elevation;
