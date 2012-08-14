@@ -43,6 +43,12 @@
                         "mandatory": "yes"
                     },
                     {
+                        "key": "Ora compilazione",
+                        "value": "",
+                        "type": "time",
+                        "mandatory": "yes"
+                    },
+                    {
                         "key": "Nome compilatore",
                         "value": "",
                         "type": "string",
@@ -80,32 +86,89 @@
                     {
                         "key": "Nome ufficiale",
                         "value": "",
-                        "type": "string",
-                        "mandatory": "yes"
+                        "type": "string"
                     },
                     {
                         "key": "Nome locale",
                         "value": "",
-                        "type": "string",
-                        "mandatory": "yes"
+                        "type": "string"
                     }
                 ]
             },
             {
-                "formname": "image note",
+                "formname": "Condizioni meteorologiche",
                 "formitems": [
-					{
-                        "key": "description",
+                    {
+                        "key": "Qualita' dei dati",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
                         "value": "",
-                        "type": "string",
-                        "mandatory": "yes"
+                        "type": "stringcombo"
                     },
                     {
-						"key": "pictures of the environment around the note",
+                        "key": "Tipo",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "Temporale"},
+                                {"item": "Piogge persistenti"},
+                                {"item": "Grandine"},
+                                {"item": "Scioglimento neve"},
+                                {"item": "Vento"}
+                            ]
+                        },
                         "value": "",
-                        "type": "pictures"
-					}
-				]
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Data",
+                        "value": "",
+                        "type": "date"
+                    },
+					{
+                        "key": "Quantita' [mm]",
+                        "value": "",
+                        "type": "double"
+                    },
+					{
+                        "key": "Limite 0C' [m s.l.m.]",
+                        "value": "",
+                        "type": "double"
+                    },
+					{
+                        "key": "Durata [h]",
+                        "value": "",
+                        "type": "double"
+                    },
+					{
+                        "key": "Intensita' max. [mm/h]",
+                        "value": "",
+                        "type": "double"
+                    },
+					{
+                        "key": "Direzione di provenienza",
+                        "value": "",
+                        "type": "string"
+                    },
+					{
+                        "key": "Velocita' vento [km/h]",
+                        "value": "",
+                        "type": "double"
+                    },
+					{
+                        "key": "Direzione di provenienza vento",
+                        "value": "",
+                        "type": "string"
+                    }
+                ]
             }
         ]
     },{
