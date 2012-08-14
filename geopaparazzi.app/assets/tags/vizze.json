@@ -245,7 +245,7 @@
                         "type": "labelwithline"
                     },
                     {
-                        "key": "MAXO",
+                        "key": "MAXO Persone",
                         "values": {
                             "items": [
                                 {"item": ""},
@@ -282,7 +282,7 @@
                         "size": "20",
                         "type": "labelwithline"
                     },{
-                        "key": "MAXO",
+                        "key": "MAXO Animali",
                         "values": {
                             "items": [
                                 {"item": ""},
