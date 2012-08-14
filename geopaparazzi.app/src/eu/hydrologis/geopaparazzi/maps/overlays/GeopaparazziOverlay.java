@@ -15,7 +15,6 @@
 package eu.hydrologis.geopaparazzi.maps.overlays;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,16 +39,11 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import eu.geopaparazzi.library.forms.FormActivity;
 import eu.geopaparazzi.library.gps.GpsManager;
-import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.database.DaoNotes;
-import eu.hydrologis.geopaparazzi.maps.MapsActivity;
-import eu.hydrologis.geopaparazzi.util.Note;
 
 /**
  * GeopaparazziOverlay is an abstract base class to display {@link OverlayWay OverlayWays}. The class defines some methods to
@@ -710,59 +704,19 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 intent.setDataAndType(Uri.fromFile(new File(mediaDir.getParentFile(), relativePath)), "image/*"); //$NON-NLS-1$
                 context.startActivity(intent);
             } else {
-
-                boolean doInfo = true;
-                if (context instanceof MapsActivity) {
-                    MapsActivity mapActivity = (MapsActivity) context;
-
-                    GeoPoint position = item.getPoint();
-                    int latE6 = position.latitudeE6;
-                    int lonE6 = position.longitudeE6;
-
-                    double lat = latE6 / LibraryConstants.E6;
-                    float n = (float) (lat + 0.00001f);
-                    float s = (float) (lat - 0.00001f);
-                    double lon = lonE6 / LibraryConstants.E6;
-                    float w = (float) (lon - 0.00001f);
-                    float e = (float) (lon + 0.00001f);
-
-                    try {
-                        List<Note> notesInWorldBounds = DaoNotes.getNotesInWorldBounds(context, n, s, w, e);
-                        if (notesInWorldBounds.size() > 0) {
-                            Note note = notesInWorldBounds.get(0);
-
-                            String form = note.getForm();
-                            if (form != null && form.length() > 0) {
-                                String name = note.getName();
-                                double altim = note.getAltim();
-                                Intent formIntent = new Intent(context, FormActivity.class);
-                                formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_JSON, form);
-                                formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_NAME, name);
-                                formIntent.putExtra(LibraryConstants.LATITUDE, lat);
-                                formIntent.putExtra(LibraryConstants.LONGITUDE, lon);
-                                formIntent.putExtra(LibraryConstants.ELEVATION, altim);
-                                mapActivity.startActivityForResult(formIntent, MapsActivity.FORMUPDATE_RETURN_CODE);
-                                doInfo = false;
-                            }
-                        }
-                    } catch (IOException e1) {
-                    }
-                }
-
-                if (doInfo) {
-                    Builder builder = new AlertDialog.Builder(context);
-                    builder.setIcon(android.R.drawable.ic_menu_info_details);
-                    builder.setTitle(title);
-                    if (snippet != null && snippet.length() > 0)
-                        builder.setMessage(snippet);
-                    builder.setPositiveButton(android.R.string.ok, null);
-                    builder.show();
-                }
+                Builder builder = new AlertDialog.Builder(context);
+                builder.setIcon(android.R.drawable.ic_menu_info_details);
+                builder.setTitle(title);
+                if (snippet != null && snippet.length() > 0)
+                    builder.setMessage(snippet);
+                builder.setPositiveButton(android.R.string.ok, null);
+                builder.show();
             }
             return true;
         }
         return false;
     }
+
     @Override
     public void dispose() {
         context = null;

@@ -87,7 +87,6 @@ import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
-import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.GeocodeActivity;
 import eu.geopaparazzi.library.util.activities.InsertCoordActivity;
 import eu.geopaparazzi.library.util.debug.Debug;
@@ -117,7 +116,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     private static final int INSERTCOORD_RETURN_CODE = 666;
     private static final int BOOKMARKS_RETURN_CODE = 667;
     private static final int GPSDATAPROPERTIES_RETURN_CODE = 668;
-    public static final int FORMUPDATE_RETURN_CODE = 669;
 
     private static final int MENU_GPSDATA = 1;
     private static final int MENU_SCALE_ID = 4;
@@ -890,35 +888,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0f);
                 double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0f);
                 setCenterAndZoomForMapWindowFocus(lon, lat, null);
-            }
-            break;
-        }
-        case (FORMUPDATE_RETURN_CODE): {
-            if (resultCode == Activity.RESULT_OK) {
-                String[] formArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_FORM);
-                if (formArray != null) {
-                    try {
-                        double lon = Double.parseDouble(formArray[0]);
-                        double lat = Double.parseDouble(formArray[1]);
-                        String jsonStr = formArray[6];
-
-                        float n = (float) (lat + 0.00001f);
-                        float s = (float) (lat - 0.00001f);
-                        float w = (float) (lon - 0.00001f);
-                        float e = (float) (lon + 0.00001f);
-
-                        List<Note> notesInWorldBounds = DaoNotes.getNotesInWorldBounds(this, n, s, w, e);
-                        if (notesInWorldBounds.size() > 0) {
-                            Note note = notesInWorldBounds.get(0);
-                            long id = note.getId();
-                            DaoNotes.updateForm(this, id, jsonStr);
-                        }
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
-                    }
-                }
             }
             break;
         }

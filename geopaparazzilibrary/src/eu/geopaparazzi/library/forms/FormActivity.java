@@ -70,7 +70,6 @@ public class FormActivity extends FragmentActivity {
     private String sectionName;
     private JSONObject sectionObject;
     private List<String> formNames4Section = new ArrayList<String>();
-    private String sectionObjectString;
 
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
@@ -86,18 +85,15 @@ public class FormActivity extends FragmentActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             sectionName = extras.getString(LibraryConstants.PREFS_KEY_FORM_NAME);
-            sectionObjectString = extras.getString(LibraryConstants.PREFS_KEY_FORM_JSON);
             latitude = extras.getDouble(LibraryConstants.LATITUDE);
             longitude = extras.getDouble(LibraryConstants.LONGITUDE);
             elevation = extras.getDouble(LibraryConstants.ELEVATION);
         }
 
         try {
-            if (sectionObjectString == null) {
-                sectionObject = TagsManager.getInstance(this).getSectionByName(sectionName);
-                // copy the section object, which will be kept around along the activity
-                sectionObjectString = sectionObject.toString();
-            }
+            sectionObject = TagsManager.getInstance(this).getSectionByName(sectionName);
+            // copy the section object, which will be kept around along te activity
+            String sectionObjectString = sectionObject.toString();
 
             sectionObject = new JSONObject(sectionObjectString);
             formNames4Section = TagsManager.getFormNames4Section(sectionObject);

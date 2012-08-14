@@ -109,6 +109,8 @@ public class TagsManager {
 
     private static TagsManager tagsManager;
 
+    private String[] sectionNames;
+
     /**
      * Gets the manager singleton. 
      * 
