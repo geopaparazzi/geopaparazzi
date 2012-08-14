@@ -50,5 +50,5 @@ public class Debug {
      * 
      * <p>For release = <code>false</code>.
      */
-    public final static boolean doOverwriteTags = true;
+    public final static boolean doOverwriteTags = false;
 }

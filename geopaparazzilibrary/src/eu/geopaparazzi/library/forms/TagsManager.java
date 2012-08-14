@@ -109,8 +109,6 @@ public class TagsManager {
 
     private static TagsManager tagsManager;
 
-    private String[] sectionNames;
-
     /**
      * Gets the manager singleton. 
      * 
@@ -139,7 +137,7 @@ public class TagsManager {
         File tagsFile = new File(applicationDir, TAGSFILENAME);
         if (!tagsFile.exists() || Debug.doOverwriteTags) {
             AssetManager assetManager = context.getAssets();
-            InputStream inputStream = assetManager.open("tags/vizze.json");
+            InputStream inputStream = assetManager.open("tags/tags.json");
 
             FileUtilities.copyFile(inputStream, new FileOutputStream(tagsFile));
         }
