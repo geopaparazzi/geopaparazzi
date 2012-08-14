@@ -781,9 +781,39 @@
                         },
                         "value": "",
                         "type": "stringcombo"
-                    },
+                    }
                 ]
-            }
+            },
+            {
+                "formname": "Note",
+                "formitems": [
+                    {
+                        "key": "Note",
+                        "value": "",
+                        "type": "string"
+                    }
+                ]
+            },
+            {
+                "formname": "Foto evento",
+                "formitems": [
+                    {
+                        "key": "Archivio foto",
+                        "value": "",
+                        "type": "pictures"
+                    }
+                ]
+            },
+            {
+                "formname": "Estratto mappa evento",
+                "formitems": [
+                    {
+                        "key": "Estratto mappa",
+                        "value": "",
+                        "type": "map"
+                    }
+                ]
+            },
         ]
 	}
 ]
