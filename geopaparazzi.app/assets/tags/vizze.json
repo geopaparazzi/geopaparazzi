@@ -214,7 +214,7 @@
                         "type": "stringcombo"
                     },
                     {
-                        "key": "Note",
+                        "key": "Note metodologia",
                         "value": "",
                         "type": "string"
                     }
@@ -785,30 +785,30 @@
                 ]
             },
             {
-                "formname": "Note",
+                "formname": "Note danni",
                 "formitems": [
                     {
-                        "key": "Note",
+                        "key": "Note danni",
                         "value": "",
                         "type": "string"
                     }
                 ]
             },
             {
-                "formname": "Foto evento",
+                "formname": "Foto danni",
                 "formitems": [
                     {
-                        "key": "Archivio foto",
+                        "key": "Archivio foto danni",
                         "value": "",
                         "type": "pictures"
                     }
                 ]
             },
             {
-                "formname": "Estratto mappa evento",
+                "formname": "Estratto mappa danni",
                 "formitems": [
                     {
-                        "key": "Estratto mappa",
+                        "key": "Estratto mappa danni",
                         "value": "",
                         "type": "map"
                     }
@@ -976,20 +976,637 @@
                 ]
             },
             {
-                "formname": "Foto evento",
+                "formname": "Zona di formazione",
                 "formitems": [
                     {
-                        "key": "Archivio foto",
+                        "key": "Quota max [m s.l.m.]",
+                        "value": "",
+                        "type": "double"
+                    },
+                    {
+                        "key": "MAXO Quota max",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Quota min [m s.l.m.]",
+                        "value": "",
+                        "type": "double"
+                    },
+                    {
+                        "key": "MAXO Quota min",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Tipo sorgenti di sedimento (TSS)",
+                        "values": {
+                            "items": [
+                                {"item": "Singola incisione lineare"},
+                                {"item": "Piu' incisioni lineari"},
+                                {"item": "Singola area sorgente"},
+                                {"item": "Piu' aree sorgenti"},
+                                {"item": "Incisioni lineari + aree sorgenti"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "MAXO TSS",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "value": "Asporti lineari (AL)",
+						"size": "20",
+                        "type": "labelwithline"
+                    },
+                    {
+                        "key": "MAXO AL",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Metri lineari AL",
+						"value": "",
+                        "type": "double"
+                    },
+                    {
+                        "key": "Metri cubi AL",
+						"value": "",
+                        "type": "double"
+                    },
+                    {
+                        "value": "Asporti areali + (AA)",
+						"size": "20",
+                        "type": "labelwithline"
+                    },
+                    {
+                        "key": "MAXO AA",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Metri quadri AA",
+						"value": "",
+                        "type": "double"
+                    },
+                    {
+                        "key": "Metri cubi AA",
+						"value": "",
+                        "type": "double"
+                    },
+                    {
+                        "value": "Riarrangiamento (RIA)",
+						"size": "20",
+                        "type": "labelwithline"
+                    },
+                    {
+                        "key": "MAXO RIA",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Metri lineari RIA",
+						"value": "",
+                        "type": "double"
+                    },
+                    {
+                        "value": "Depositi locali di detrito (DLD)",
+						"size": "20",
+                        "type": "labelwithline"
+                    },
+                    {
+                        "key": "MAXO DLD",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Metri lineari DLD",
+						"value": "",
+                        "type": "double"
+                    },
+                    {
+                        "key": "Metri cubi DLD",
+						"value": "",
+                        "type": "double"
+                    },
+                    {
+                        "value": "Depositi locali legname (DLL)",
+						"size": "20",
+                        "type": "labelwithline"
+                    },
+                    {
+                        "key": "MAXO DLL",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Metri cubi DLL",
+						"value": "",
+                        "type": "double"
+                    },
+                    {
+                        "value": "Leeves (LEE)",
+						"size": "20",
+                        "type": "labelwithline"
+                    },
+                    {
+                        "key": "MAXO LEE",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Metri lineari LEE",
+						"value": "",
+                        "type": "double"
+                    },
+                    {
+                        "key": "Metri cubi LEE",
+						"value": "",
+                        "type": "double"
+                    },
+                    {
+                        "value": "Sezioni d'alveo sufficienti zona formazione(SDASZF)",
+						"size": "20",
+                        "type": "labelwithline"
+                    },
+                    {
+                        "key": "MAXO SDASZF",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Sezioni d'alveo zona formazione sufficienti?",
+						"value": "",
+                        "type": "boolean"
+                    },
+                    {
+                        "value": "Sezioni d'alveo zona formazione ostruite (SDAOZF)",
+						"size": "20",
+                        "type": "labelwithline"
+                    },
+                    {
+                        "key": "MAXO SDAOZF",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Sezioni d'alveo zona formazione ostruite?",
+						"value": "",
+                        "type": "boolean"
+                    },
+                    {
+                        "value": "Potenziale residuo (PRES)",
+						"size": "20",
+                        "type": "labelwithline"
+                    },
+                    {
+                        "key": "MAXO PRES",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Potenziale residuo?",
+						"value": "",
+                        "type": "boolean"
+                    },
+                    {
+                        "key": "Quantita' potenziale residuo [m3]",
+						"value": "",
+                        "type": "double"
+                    },
+                    {
+                        "value": "Stime Qmax",
+						"size": "20",
+                        "type": "labelwithline"
+                    },
+                    {
+                        "key": "V min [m/s]",
+						"value": "",
+                        "type": "double"
+                    },
+                    {
+                        "key": "V max [m/s]",
+						"value": "",
+                        "type": "double"
+                    },
+                    {
+                        "key": "A min [m2]",
+						"value": "",
+                        "type": "double"
+                    },
+                    {
+                        "key": "A max [m2]",
+						"value": "",
+                        "type": "double"
+                    },
+                    {
+                        "key": "Qmax per valori min [m3/s]",
+						"value": "",
+                        "type": "double"
+                    },
+                    {
+                        "key": "Qmax per valori max [m3/s]",
+						"value": "",
+                        "type": "double"
+                    }
+                ]
+            },
+            {
+                "formname": "Zona di deposito",
+                "formitems": [
+                    {
+                        "key": "Quota min [m s.l.m.]",
+                        "value": "",
+                        "type": "double"
+                    },
+                    {
+                        "key": "MAXO Quota min",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Numero venute detritiche (NVD)",
+                        "value": "",
+                        "type": "double"
+                    },
+                    {
+                        "key": "MAXO NVD",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "value": "Volume del sedimento depositato (VSD)",
+						"size": "20",
+                        "type": "labelwithline"
+                    },
+                    {
+                        "key": "MAXO VSD",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Metri cubi VSD",
+						"value": "",
+                        "type": "double"
+                    },
+                    {
+                        "value": "Volume legname depositato (VSD)",
+						"size": "20",
+                        "type": "labelwithline"
+                    },
+                    {
+                        "key": "MAXO VSD",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Metri cubi VSD",
+						"value": "",
+                        "type": "double"
+                    },
+                    {
+                        "value": "Spessore medio/max del deposito (SMMD)",
+						"size": "20",
+                        "type": "labelwithline"
+                    },
+                    {
+                        "key": "MAXO SMMD",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Metri SMMD",
+						"value": "",
+                        "type": "double"
+                    },
+                    {
+                        "value": "Dimensioni del masso piu' grande (DMPG)",
+						"size": "20",
+                        "type": "labelwithline"
+                    },
+                    {
+                        "key": "MAXO Volume DMPG",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Volume DMPG [m3]",
+						"value": "",
+                        "type": "double"
+                    },
+                    {
+                        "key": "MAXO Diametro DMPG",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Diametro DMPG [m]",
+						"value": "",
+                        "type": "double"
+                    },
+                    {
+                        "value": "Effetto sull'emuntore (ESE)",
+						"size": "20",
+                        "type": "labelwithline"
+                    },
+                    {
+                        "key": "MAXO ESE",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Effetto ESE",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "Nessuno"},
+                                {"item": "Sbarramento"},
+                                {"item": "Deviazione"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "value": "Sezioni d'alveo sufficienti zona deposito (SDASZD)",
+						"size": "20",
+                        "type": "labelwithline"
+                    },
+                    {
+                        "key": "MAXO SDASZD",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Sezioni d'alveo zona deposito sufficienti?",
+						"value": "",
+                        "type": "boolean"
+                    },
+                    {
+                        "value": "Sezioni d'alveo zona deposito ostruite (SDAOZD)",
+						"size": "20",
+                        "type": "labelwithline"
+                    },
+                    {
+                        "key": "MAXO SDAOZD",
+                        "values": {
+                            "items": [
+                                {"item": ""},
+                                {"item": "misurato, accertato"},
+                                {"item": "ipotesi, stima"},
+                                {"item": "ancora da rilevare"},
+                                {"item": "non determinabile"},
+                                {"item": "dato non presente"}
+                            ]
+                        },
+                        "value": "",
+                        "type": "stringcombo"
+                    },
+                    {
+                        "key": "Sezioni d'alveo zona deposito ostruite?",
+						"value": "",
+                        "type": "boolean"
+                    }
+                ]
+            },
+            {
+                "formname": "Note colata",
+                "formitems": [
+                    {
+                        "key": "Note colata",
+                        "value": "",
+                        "type": "string"
+                    }
+                ]
+            },
+            {
+                "formname": "Foto colata",
+                "formitems": [
+                    {
+                        "key": "Archivio foto colata",
                         "value": "",
                         "type": "pictures"
                     }
                 ]
             },
             {
-                "formname": "Estratto mappa evento",
+                "formname": "Estratto mappa colata",
                 "formitems": [
                     {
-                        "key": "Estratto mappa",
+                        "key": "Estratto mappa colata",
                         "value": "",
                         "type": "map"
                     }
