@@ -139,7 +139,7 @@ public class TagsManager {
         File tagsFile = new File(applicationDir, TAGSFILENAME);
         if (!tagsFile.exists() || Debug.doOverwriteTags) {
             AssetManager assetManager = context.getAssets();
-            InputStream inputStream = assetManager.open("tags/tags.json");
+            InputStream inputStream = assetManager.open("tags/vizze.json");
 
             FileUtilities.copyFile(inputStream, new FileOutputStream(tagsFile));
         }
