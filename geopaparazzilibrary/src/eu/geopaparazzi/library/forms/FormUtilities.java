@@ -771,9 +771,11 @@ public class FormUtilities {
         int length = formItemsArray.length();
         for( int i = 0; i < length; i++ ) {
             JSONObject itemObject = formItemsArray.getJSONObject(i);
-            String objKey = itemObject.getString(TAG_KEY).trim();
-            if (objKey.equals(key)) {
-                itemObject.put(TAG_VALUE, value);
+            if (itemObject.has(TAG_KEY)) {
+                String objKey = itemObject.getString(TAG_KEY).trim();
+                if (objKey.equals(key)) {
+                    itemObject.put(TAG_VALUE, value);
+                }
             }
         }
     }
