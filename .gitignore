@@ -7,6 +7,6 @@ geopaparazzilibrarytests/gen
 
 *.swp
 R.java
-~
+*~
 .directory
 
