@@ -38,6 +38,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
@@ -68,6 +69,7 @@ import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.ActionItem;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction;
+import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
@@ -142,6 +144,51 @@ public class GeoPaparazziActivity extends Activity {
             }
         }
 
+        checkIncomingGeosms();
+
+    }
+
+    @SuppressWarnings("nls")
+    private void checkIncomingGeosms() {
+        /*
+         * check if it was opened for a link of the kind
+         * 
+         * http://maps.google.com/maps?q=46.068941,11.169849&GeoSMS
+         */
+        Uri data = getIntent().getData();
+        if (data != null) {
+            try {
+                String path = data.toString();
+                if (path.toLowerCase().contains("geosms") && path.toLowerCase().contains("q=")) {
+                    String scheme = data.getScheme(); // "http"
+                    if (scheme != null && scheme.equals("http")) {
+                        String host = data.getHost();
+                        if (host.equals("maps.google.com")) {
+                            String pParameter = data.getQueryParameter("q");
+                            String[] split = pParameter.split(",");
+                            double lat = Double.parseDouble(split[0]);
+                            double lon = Double.parseDouble(split[1]);
+                            DaoBookmarks.addBookmark(this, lon, lat, "GeoSMS position", 16, -1, -1, -1, -1);
+                            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                            PositionUtilities.putMapCenterInPreferences(preferences, lon, lat, 16);
+                            Intent mapIntent = new Intent(this, MapsActivity.class);
+                            startActivity(mapIntent);
+                        } else {
+                            // add support for other uris
+                            throw new IOException();
+                        }
+                    }
+                } else {
+                    throw new IOException();
+                }
+            } catch (IOException e) {
+                Utilities
+                        .messageDialog(
+                                this,
+                                "Could not open the passed URI. Geopaparazzi is able to open only GeoSMS URIs that contain a part like: ...&q=46.068941,11.169849&GeoSMS ",
+                                null);
+            }
+        }
     }
 
     protected void onResume() {
