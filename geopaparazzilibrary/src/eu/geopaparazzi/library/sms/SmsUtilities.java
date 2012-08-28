@@ -162,14 +162,19 @@ public class SmsUtilities {
                             String latStr = coordsSplit[0].trim();
                             String lonStr = coordsSplit[1].trim();
                             try {
-                                double lat = Double.parseDouble(latStr);
-                                double lon = Double.parseDouble(lonStr);
-                                StringBuilder sb = new StringBuilder();
-                                sb.append("geo:");
-                                sb.append(lat);
-                                sb.append(",");
-                                sb.append(lon);
-                                final String geoCoords = sb.toString();
+                                // double lat = Double.parseDouble(latStr);
+                                // double lon = Double.parseDouble(lonStr);
+                                StringBuilder sB = new StringBuilder();
+                                // sb.append("geo:");
+                                // sb.append(lat);
+                                // sb.append(",");
+                                // sb.append(lon);
+                                sB.append("http://maps.google.com/maps?q=");
+                                sB.append(latStr);
+                                sB.append(",");
+                                sB.append(lonStr);
+                                sB.append("&GeoSMS");
+                                final String geoCoords = sB.toString();
 
                                 NotificationManager notifier = (NotificationManager) context
                                         .getSystemService(Context.NOTIFICATION_SERVICE);
