@@ -21,9 +21,11 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -171,19 +173,44 @@ public class CameraActivity extends Activity {
             try {
                 ExifInterface exif = new ExifInterface(imageFilePath);
 
+                String latStringOld = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
+                String lonStringOld = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
+                String latRefStringOld = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF);
+                String lonRefStringOld = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF);
+                String dateOld = exif.getAttribute(ExifInterface.TAG_GPS_DATESTAMP);
+                String timeOld = exif.getAttribute(ExifInterface.TAG_GPS_TIMESTAMP);
+                String dateTimeOld = exif.getAttribute(ExifInterface.TAG_DATETIME);
+
+                Date date = LibraryConstants.TIMESTAMPFORMATTER.parse(currentDatestring);
+                SimpleDateFormat exifFormatter = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss"); //$NON-NLS-1$
+                exifFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+                String exifDate = exifFormatter.format(date);
+
+                String[] dateTimeSplit = exifDate.split("\\s+");
+                if (dateTimeOld == null || dateTimeOld.trim().length() <= 0) {
+                    exif.setAttribute(ExifInterface.TAG_DATETIME, exifDate);
+                }
+                if (dateOld == null || dateOld.trim().length() <= 0) {
+                    exif.setAttribute(ExifInterface.TAG_GPS_DATESTAMP, dateTimeSplit[0]);
+                }
+                if (timeOld == null || timeOld.trim().length() <= 0) {
+                    exif.setAttribute(ExifInterface.TAG_GPS_TIMESTAMP, dateTimeSplit[1]);
+                }
+                if (latStringOld == null || latRefStringOld == null || latStringOld.trim().length() <= 0) {
+                    exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, latString);
+                    exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, latRef);
+                }
+                if (lonStringOld == null || lonRefStringOld == null || lonStringOld.trim().length() <= 0) {
+                    exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, lonString);
+                    exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, lonRef);
+                }
                 String azz = (int) (azimuth * 100.0) + "/100";
                 String alt = (int) (elevation * 100.0) + "/100";
                 exif.setAttribute("GPSImgDirection", azz);
                 // exif.setAttribute("GPSImgDirectionRef", "M");
                 exif.setAttribute("GPSAltitude", alt);
                 // exif.setAttribute("GPSAltitudeRef", "0");
-
-                Date date = LibraryConstants.TIMESTAMPFORMATTER.parse(currentDatestring);
-                exif.setAttribute(ExifInterface.TAG_DATETIME, date.toString());
-                exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, latString);
-                exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, latRef);
-                exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, lonString);
-                exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, lonRef);
 
                 exif.saveAttributes();
 
