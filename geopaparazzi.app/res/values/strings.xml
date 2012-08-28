@@ -46,6 +46,8 @@
 	<string name="gps_preferences">Gps preferences</string>
 	<string name="gps_logging_distance">Min gps logging distance</string>
 	<string name="gps_logging_interval">Min gps logging interval</string>
+	<string name="gps_use_android_level">Use at android level (saves battery, needs restart)</string>
+	<string name="gps_use_android_level_summary">If checked, the gps preferences are applied at operating system level, which can save battery, but might have a less stable signal when choosing large intervals (if you have gps connection problems on check devices, leave this unchecked). Note that the gps os powered continuously for send intervals less than 100 seconds. For better battery life choose larger intervals.</string>
 	<string name="sms_preferences">Sms preferences</string>
 	<string name="sms_catcher">Enable sms catcher</string>
 

@@ -5,10 +5,16 @@
     <PreferenceScreen
         android:order="1"
         android:title="@string/gps_preferences" >
+        <CheckBoxPreference
+            android:key="PREFS_KEY_GPSDOATANDROIDLEVEL"
+            android:order="2"
+            android:title="@string/gps_use_android_level" android:summary="@string/gps_use_android_level_summary" android:enabled="true" android:defaultValue="true">
+        </CheckBoxPreference>
+
         <EditTextPreference
             android:defaultValue="0"
             android:inputType="number"
-            android:key="gps_logging_distance"
+            android:key="PREFS_KEY_GPS_LOGGING_DISTANCE"
             android:order="3"
             android:title="@string/gps_logging_distance" >
         </EditTextPreference>
@@ -17,7 +23,7 @@
             android:defaultValue="5"
             android:entries="@array/gps_time_name"
             android:entryValues="@array/gps_time_value"
-            android:key="gps_logging_interval"
+            android:key="PREFS_KEY_GPS_LOGGING_INTERVAL"
             android:order="4"
             android:title="@string/gps_logging_interval" >
         </ListPreference>
@@ -27,7 +33,6 @@
             android:order="5"
             android:title="@string/enable_automatic_center_on_gps" >
         </CheckBoxPreference>
-
         <CheckBoxPreference
             android:key="PREFS_KEY_GPS_USE_NETWORK_POSITION"
             android:order="6"
@@ -44,7 +49,7 @@
 			android:defaultValue=""></EditTextPreference> <ListPreference android:entryValues="@array/sms_time_value" 
 			android:entries="@array/sms_time_name" android:title="@string/sms_sending_interval" 
 			android:order="12" android:key="@string/sms_sending_interval" android:defaultValue="0"></ListPreference> 
-			</PreferenceCategory>
+			</PreferenceCategory>
         -->
 
         <CheckBoxPreference
@@ -54,7 +59,7 @@
         </CheckBoxPreference>
         <!--
              <eu.hydrologis.geopaparazzi.preferences.PhoneNumberPreference android:order="8" 
-			android:key="panic_number" android:title="@string/panic_number"> </eu.hydrologis.geopaparazzi.preferences.PhoneNumberPreference>
+			android:key="panic_number" android:title="@string/panic_number"> </eu.hydrologis.geopaparazzi.preferences.PhoneNumberPreference>
         -->
 
         <EditTextPreference
@@ -76,7 +81,7 @@
             android:order="21"
             android:title="@string/decimation_combo_label" >
         </ListPreference>
-    </PreferenceScreen>
+    </PreferenceScreen>
     -->
     <PreferenceScreen
         android:order="998"
@@ -119,7 +124,7 @@
             android:order="34"
             android:title="@string/labels_length_zoom2" >
         </EditTextPreference>
-    </PreferenceScreen>
+    </PreferenceScreen>
     -->
     <PreferenceScreen
         android:order="40"
@@ -129,6 +134,7 @@
             android:order="41"
             android:title="@string/osm_do_it" >
         </CheckBoxPreference>
+
         <EditTextPreference
             android:key="osm_user_key"
             android:order="42"

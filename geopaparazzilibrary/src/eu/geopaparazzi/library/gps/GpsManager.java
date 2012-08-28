@@ -17,6 +17,11 @@
  */
 package eu.geopaparazzi.library.gps;
 
+import static eu.geopaparazzi.library.util.LibraryConstants.*;
+import static eu.geopaparazzi.library.util.LibraryConstants.GPS_LOGGING_INTERVAL;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGINGDISTANCE;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGINGINTERVAL;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -171,10 +176,32 @@ public class GpsManager implements LocationListener, Listener {
         } else {
             if (Debug.D)
                 Logger.d(this, "Using GPS");
+
+            float minDistance = 0f;
+            long waitForSecs = 1;
+
+            boolean doAtAndroidLevel = preferences.getBoolean(PREFS_KEY_GPSDOATANDROIDLEVEL, true);
+            if (doAtAndroidLevel) {
+                String minDistanceStr = preferences.getString(PREFS_KEY_GPSLOGGINGDISTANCE, String.valueOf(GPS_LOGGING_DISTANCE));
+                try {
+                    minDistance = Float.parseFloat(minDistanceStr);
+                } catch (Exception e) {
+                    // ignore and use default
+                }
+                String intervalStr = preferences.getString(PREFS_KEY_GPSLOGGINGINTERVAL, String.valueOf(GPS_LOGGING_INTERVAL));
+                try {
+                    waitForSecs = Long.parseLong(intervalStr);
+                } catch (Exception e) {
+                    // ignore and use default
+                }
+            }
+
             if (useNetworkPositions) {
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000l, 0f, gpsManager);
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, waitForSecs * 1000l, minDistance,
+                        gpsManager);
             } else {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000l, 0f, gpsManager);
+                locationManager
+                        .requestLocationUpdates(LocationManager.GPS_PROVIDER, waitForSecs * 1000l, minDistance, gpsManager);
             }
             locationManager.addGpsStatusListener(gpsManager);
         }

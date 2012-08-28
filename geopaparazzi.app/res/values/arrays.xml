@@ -32,6 +32,10 @@
 		<item>10 seconds</item>
 		<item>20 seconds</item>
 		<item>30 seconds</item>
+		<item>1 minute</item>
+		<item>2 minutes</item>
+		<item>3 minutes</item>
+		<item>4 minutes</item>
 	</string-array>
 	<string-array name="gps_time_value">
 		<item>1</item>
@@ -40,6 +44,10 @@
 		<item>10</item>
 		<item>20</item>
 		<item>30</item>
+		<item>60</item>
+		<item>120</item>
+		<item>180</item>
+		<item>240</item>
 	</string-array>
 		<string-array name="sms_time_name">
 		<item>none</item>

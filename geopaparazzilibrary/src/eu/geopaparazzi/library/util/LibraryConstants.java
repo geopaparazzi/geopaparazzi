@@ -166,6 +166,11 @@ public interface LibraryConstants {
     public static final String PREFS_KEY_GPSLOGGINGDISTANCE = "PREFS_KEY_GPS_LOGGING_DISTANCE"; //$NON-NLS-1$
 
     /**
+     * Key used to store and retrieve the gps mode to use (apply on android listener or just on application base). 
+     */
+    public static final String PREFS_KEY_GPSDOATANDROIDLEVEL = "PREFS_KEY_GPSDOATANDROIDLEVEL"; //$NON-NLS-1$
+
+    /**
      * Key used to store for sms catching. 
      */
     public static final String PREFS_KEY_SMSCATCHER = "PREFS_KEY_SMSCATCHER"; //$NON-NLS-1$
