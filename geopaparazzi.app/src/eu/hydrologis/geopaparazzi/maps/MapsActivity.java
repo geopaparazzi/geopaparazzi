@@ -715,7 +715,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 android.R.drawable.ic_menu_compass);
         menu.add(Menu.NONE, CENTER_ON_MAP, 5, R.string.center_on_map).setIcon(android.R.drawable.ic_menu_mylocation);
         menu.add(Menu.NONE, GO_TO, 6, R.string.go_to).setIcon(android.R.drawable.ic_menu_myplaces);
-        menu.add(Menu.NONE, MENU_SENDDATA_ID, 7, "Send data").setIcon(android.R.drawable.ic_menu_send);
+        menu.add(Menu.NONE, MENU_SENDDATA_ID, 7, "send data").setIcon(android.R.drawable.ic_menu_send);
         menu.add(Menu.NONE, MENU_MIXARE_ID, 8, R.string.view_in_mixare).setIcon(R.drawable.icon_datasource);
         return true;
     }
