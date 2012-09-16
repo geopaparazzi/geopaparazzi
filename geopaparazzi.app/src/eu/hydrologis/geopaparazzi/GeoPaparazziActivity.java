@@ -176,9 +176,6 @@ public class GeoPaparazziActivity extends Activity {
                             PositionUtilities.putMapCenterInPreferences(preferences, lon, lat, 16);
                             Intent mapIntent = new Intent(this, MapsActivity.class);
                             startActivity(mapIntent);
-                        } else {
-                            // add support for other uris
-                            throw new IOException();
                         }
                     }
                 } else {
@@ -204,28 +201,32 @@ public class GeoPaparazziActivity extends Activity {
         if (data != null) {
             try {
                 String path = data.toString();
-                String scheme = data.getScheme(); // "gp"
-                if (scheme != null && scheme.equals("gp")) { //$NON-NLS-1$
-                    // String host = data.getHost();
+                String scheme = data.getScheme(); // "http"
+                if (scheme != null && scheme.equals("http")) { //$NON-NLS-1$
+                    String host = data.getHost();
+                    if (host.equals("gp.eu")) { //$NON-NLS-1$
 
-                    List<SmsData> sms2Data = SmsUtilities.sms2Data(path);
-                    int notesNum = 0;
-                    int bookmarksNum = 0;
-                    if (sms2Data.size() > 0) {
-                        for( SmsData smsData : sms2Data ) {
-                            if (smsData.TYPE == SmsData.NOTE) {
-                                DaoNotes.addNote(this, smsData.x, smsData.y, smsData.z, new java.sql.Date(new Date().getTime()),
-                                        smsData.text, NoteType.POI.getDef(), null, NoteType.POI.getTypeNum());
-                                notesNum++;
-                            } else if (smsData.TYPE == SmsData.BOOKMARK) {
-                                DaoBookmarks.addBookmark(this, smsData.x, smsData.y, smsData.text, smsData.z, -1, -1, -1, -1);
-                                bookmarksNum++;
+                        List<SmsData> sms2Data = SmsUtilities.sms2Data(path);
+                        int notesNum = 0;
+                        int bookmarksNum = 0;
+                        if (sms2Data.size() > 0) {
+                            for( SmsData smsData : sms2Data ) {
+                                String text = smsData.text.replaceAll("\\_", " ");  //$NON-NLS-1$//$NON-NLS-2$
+                                if (smsData.TYPE == SmsData.NOTE) {
+                                    DaoNotes.addNote(this, smsData.x, smsData.y, smsData.z,
+                                            new java.sql.Date(new Date().getTime()), text, NoteType.POI.getDef(), null,
+                                            NoteType.POI.getTypeNum());
+                                    notesNum++;
+                                } else if (smsData.TYPE == SmsData.BOOKMARK) {
+                                    DaoBookmarks.addBookmark(this, smsData.x, smsData.y, text, smsData.z, -1, -1, -1, -1);
+                                    bookmarksNum++;
+                                }
                             }
                         }
-                    }
 
-                    Utilities.messageDialog(this,
-                            MessageFormat.format("Imported {0} notes and {1} bookmarks.", notesNum, bookmarksNum), null);
+                        Utilities.messageDialog(this,
+                                MessageFormat.format("Imported {0} notes and {1} bookmarks.", notesNum, bookmarksNum), null);
+                    }
                 }
             } catch (Exception e) {
                 Utilities.messageDialog(this, "Could not open the passed sms data URI.", null);

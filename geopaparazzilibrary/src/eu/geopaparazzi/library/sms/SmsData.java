@@ -31,7 +31,22 @@ public class SmsData {
     public int TYPE = 0;
     public float x = 0f;
     public float y = 0f;
-    public float z = 0f;
+    public float z = Float.NaN;
     public String text = ""; //$NON-NLS-1$
 
+    @SuppressWarnings("nls")
+    public String toSmsDataString() {
+        StringBuilder sb = new StringBuilder();
+        if (TYPE == NOTE) {
+            sb.append("n:");
+        } else if (TYPE == BOOKMARK) {
+            sb.append("b:");
+        }
+        sb.append(x).append(",");
+        sb.append(y).append(",");
+        if (!Float.isNaN(z))
+            sb.append(z).append(",");
+        sb.append(text);
+        return sb.toString();
+    }
 }

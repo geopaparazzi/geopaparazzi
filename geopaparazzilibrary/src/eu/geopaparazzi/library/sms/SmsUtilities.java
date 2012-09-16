@@ -46,6 +46,8 @@ import eu.geopaparazzi.library.util.debug.Logger;
  */
 @SuppressWarnings("nls")
 public class SmsUtilities {
+    
+    public static String SMSHOST = "gp.eu";
 
     /**
      * Create a text containing the OSM link to the current position.
@@ -208,7 +210,7 @@ public class SmsUtilities {
      * Converts an sms data content to the data.
      * 
      * <p>
-     * The format is of the type <b>gp://n:x,y,desc;n:x,y,z,desc;b:x,y,desc;b:x,y,z,desc;...</b>
+     * The format is of the type <b>gp.eu/n:x,y,desc;n:x,y,z,desc;b:x,y,desc;b:x,y,z,desc;...</b>
      * </p>
      * <p>
      * Where n = note, in which case z can be added and is the altitude; and 
@@ -222,14 +224,15 @@ public class SmsUtilities {
     public static List<SmsData> sms2Data( String url ) throws IOException {
         List<SmsData> smsDataList = new ArrayList<SmsData>();
 
+        url= url.replaceFirst("http://", "");
         // remove gp://
-        url = url.substring(5);
+        url = url.substring(6);
 
         String[] dataSplit = url.split(";");
         for( String data : dataSplit ) {
             if (data.startsWith("n:") || data.startsWith("b:")) {
-                data = data.substring(2);
-                String[] values = data.split(",");
+                String dataTmp = data.substring(2);
+                String[] values = dataTmp.split(",");
                 if (values.length < 3) {
                     throw new IOException();
                 }

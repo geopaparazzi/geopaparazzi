@@ -19,7 +19,7 @@
     <!-- <uses-permission android:name="android.permission.READ_CONTACTS" /> -->
     <!--
     only for testing purposes 
-	<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"></uses-permission> 
+	<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"></uses-permission> 
     -->
 
     <uses-feature
@@ -66,7 +66,9 @@
             </intent-filter>
             <intent-filter>
                 <data
-                    android:scheme="gp" />
+                    android:host="gp.eu"
+                    android:scheme="http" />
+
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
