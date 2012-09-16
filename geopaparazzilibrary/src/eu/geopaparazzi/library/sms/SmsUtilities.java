@@ -46,7 +46,7 @@ import eu.geopaparazzi.library.util.debug.Logger;
  */
 @SuppressWarnings("nls")
 public class SmsUtilities {
-    
+
     public static String SMSHOST = "gp.eu";
 
     /**
@@ -224,7 +224,7 @@ public class SmsUtilities {
     public static List<SmsData> sms2Data( String url ) throws IOException {
         List<SmsData> smsDataList = new ArrayList<SmsData>();
 
-        url= url.replaceFirst("http://", "");
+        url = url.replaceFirst("http://", "");
         // remove gp://
         url = url.substring(6);
 
@@ -265,6 +265,21 @@ public class SmsUtilities {
         }
 
         return smsDataList;
+    }
+
+    /**
+     * Checks if the device supports phone. 
+     * 
+     * @param context
+     * @return
+     */
+    public static boolean hasPhone( Context context ) {
+        TelephonyManager telephonyManager1 = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        if (telephonyManager1.getPhoneType() == TelephonyManager.PHONE_TYPE_NONE) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
 }
