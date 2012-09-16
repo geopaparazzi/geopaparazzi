@@ -17,6 +17,10 @@
  */
 package eu.geopaparazzi.library.sms;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -198,6 +202,66 @@ public class SmsUtilities {
 
         }
 
+    }
+
+    /**
+     * Converts an sms data content to the data.
+     * 
+     * <p>
+     * The format is of the type <b>gp://n:x,y,desc;n:x,y,z,desc;b:x,y,desc;b:x,y,z,desc;...</b>
+     * </p>
+     * <p>
+     * Where n = note, in which case z can be added and is the altitude; and 
+     * b = bookmark, in which case z can be added and is the zoom.
+     * </p>
+     * 
+     * @param url the sms data url to convert.
+     * @return the list of {@link SmsData} containing notes and bookmarks data.
+     * @throws IOException 
+     */
+    public static List<SmsData> sms2Data( String url ) throws IOException {
+        List<SmsData> smsDataList = new ArrayList<SmsData>();
+
+        // remove gp://
+        url = url.substring(5);
+
+        String[] dataSplit = url.split(";");
+        for( String data : dataSplit ) {
+            if (data.startsWith("n:") || data.startsWith("b:")) {
+                data = data.substring(2);
+                String[] values = data.split(",");
+                if (values.length < 3) {
+                    throw new IOException();
+                }
+
+                float x = Float.parseFloat(values[0]);
+                float y = Float.parseFloat(values[1]);
+                float z = -1;
+                String descr = null;
+                if (values.length > 3) {
+                    z = Float.parseFloat(values[2]);
+                    descr = values[3];
+                } else {
+                    descr = values[2];
+                }
+
+                SmsData smsData = new SmsData();
+
+                if (data.startsWith("n:")) {
+                    smsData.TYPE = SmsData.NOTE;
+                } else if (data.startsWith("b:")) {
+                    smsData.TYPE = SmsData.BOOKMARK;
+                }
+
+                smsData.x = x;
+                smsData.y = y;
+                smsData.z = z;
+                smsData.text = descr;
+                smsDataList.add(smsData);
+            }
+        }
+
+        return smsDataList;
     }
 
 }
