@@ -162,7 +162,11 @@ public class GeoPaparazziActivity extends Activity {
         if (data != null) {
             try {
                 String path = data.toString();
-                if (path.toLowerCase().contains("geosms") && path.toLowerCase().contains("q=")) {
+                if (path.toLowerCase().contains(SmsUtilities.SMSHOST)) {
+                    return;
+                }
+                if (path.toLowerCase().contains("geosms") && path.toLowerCase().contains("q=")
+                        && !path.toLowerCase().contains(SmsUtilities.SMSHOST)) {
                     String scheme = data.getScheme(); // "http"
                     if (scheme != null && scheme.equals("http")) {
                         String host = data.getHost();
@@ -204,14 +208,14 @@ public class GeoPaparazziActivity extends Activity {
                 String scheme = data.getScheme(); // "http"
                 if (scheme != null && scheme.equals("http")) { //$NON-NLS-1$
                     String host = data.getHost();
-                    if (host.equals("gp.eu")) { //$NON-NLS-1$
+                    if (host.equals(SmsUtilities.SMSHOST)) {
 
                         List<SmsData> sms2Data = SmsUtilities.sms2Data(path);
                         int notesNum = 0;
                         int bookmarksNum = 0;
                         if (sms2Data.size() > 0) {
                             for( SmsData smsData : sms2Data ) {
-                                String text = smsData.text.replaceAll("\\_", " ");  //$NON-NLS-1$//$NON-NLS-2$
+                                String text = smsData.text.replaceAll("\\_", " "); //$NON-NLS-1$//$NON-NLS-2$
                                 if (smsData.TYPE == SmsData.NOTE) {
                                     DaoNotes.addNote(this, smsData.x, smsData.y, smsData.z,
                                             new java.sql.Date(new Date().getTime()), text, NoteType.POI.getDef(), null,
