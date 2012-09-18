@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.TreeSet;
 
 import android.app.Activity;
@@ -57,6 +58,7 @@ import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
+import eu.hydrologis.geopaparazzi.maps.MapItem;
 
 /**
  * Activity for export tasks.
@@ -192,9 +194,19 @@ public class ExportActivity extends Activity {
                     /*
                      * add gps logs
                      */
+                    List<MapItem> gpslogs = DaoGpsLog.getGpslogs(ExportActivity.this);
+                    HashMap<Long, MapItem> mapitemsMap = new HashMap<Long, MapItem>();
+                    for( MapItem log : gpslogs ) {
+                        mapitemsMap.put(log.getId(), log);
+                    }
+
                     HashMap<Long, Line> linesMap = DaoGpsLog.getLinesMap(ExportActivity.this);
-                    Collection<Line> linesCollection = linesMap.values();
-                    for( Line line : linesCollection ) {
+                    Collection<Entry<Long, Line>> linesSet = linesMap.entrySet();
+                    for( Entry<Long, Line> lineEntry : linesSet ) {
+                        Long id = lineEntry.getKey();
+                        Line line = lineEntry.getValue();
+                        MapItem mapItem = mapitemsMap.get(id);
+                        line.setStyle(mapItem.getWidth(), mapItem.getColor());
                         kmlRepresenterList.add(line);
                     }
                     /*
