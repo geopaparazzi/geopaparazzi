@@ -326,6 +326,13 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         });
 
         /*
+         * 
+         */
+        SliderDrawView sliderDrawView = (SliderDrawView) findViewById(R.id.sliderdrawview);
+        sliderDrawView.setMapView(mapView);
+        
+        
+        /*
         * tool buttons
         */
         ImageButton addnotebytagButton = (ImageButton) findViewById(R.id.addnotebytagbutton);
@@ -384,24 +391,22 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             }
         });
 
-        // final ImageButton toggleMeasuremodeButton = (ImageButton)
-        // findViewById(R.id.togglemeasuremodebutton);
-        // toggleMeasuremodeButton.setOnClickListener(new Button.OnClickListener(){
-        // public void onClick( View v ) {
-        // boolean isInMeasureMode = mMeasureOverlay.isInMeasureMode();
-        // mMeasureOverlay.setMeasureMode(!isInMeasureMode);
-        // if (!isInMeasureMode) {
-        // toggleMeasuremodeButton.setBackgroundResource(R.drawable.measuremode_on);
-        // } else {
-        // toggleMeasuremodeButton.setBackgroundResource(R.drawable.measuremode);
-        // }
-        // if (!isInMeasureMode) {
-        // disableDrawing();
-        // } else {
-        // enableDrawingWithDelay();
-        // }
-        // }
-        // });
+        final ImageButton toggleMeasuremodeButton = (ImageButton) findViewById(R.id.togglemeasuremodebutton);
+        toggleMeasuremodeButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                boolean isInMeasureMode = !mapView.isClickable();
+                if (!isInMeasureMode) {
+                    toggleMeasuremodeButton.setBackgroundResource(R.drawable.measuremode_on);
+                } else {
+                    toggleMeasuremodeButton.setBackgroundResource(R.drawable.measuremode);
+                }
+                if (isInMeasureMode) {
+                    mapView.setClickable(true);
+                } else {
+                    mapView.setClickable(false);
+                }
+            }
+        });
 
         try {
             handleOsmSliderView();
