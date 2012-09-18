@@ -128,7 +128,7 @@ public class Note implements KmlRepresenter, GpxRepresenter {
         sB.append("<name>").append(name).append("</name>\n");
         sB.append("<description>\n");
 
-        if (section != null) {
+        if (section != null && section.length() > 0) {
             sB.append("<![CDATA[\n");
             JSONObject sectionObject = new JSONObject(section);
             if (sectionObject.has(FormUtilities.ATTR_SECTIONNAME)) {
