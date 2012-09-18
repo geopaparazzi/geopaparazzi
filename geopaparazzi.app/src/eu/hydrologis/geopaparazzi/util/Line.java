@@ -24,6 +24,7 @@ import static java.lang.Math.sqrt;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.graphics.Color;
 import android.location.Location;
 import eu.geopaparazzi.library.gpx.GpxRepresenter;
 import eu.geopaparazzi.library.gpx.GpxUtilities;
@@ -37,7 +38,7 @@ import eu.geopaparazzi.library.util.DynamicDoubleArray;
  */
 public class Line implements KmlRepresenter, GpxRepresenter {
 
-    private final String name;
+    private String name;
     private final DynamicDoubleArray latList;
     private final DynamicDoubleArray lonList;
     private final DynamicDoubleArray altimList;
@@ -83,6 +84,10 @@ public class Line implements KmlRepresenter, GpxRepresenter {
     public void setStyle( float width, String color ) {
         this.width = width;
         this.color = color;
+    }
+
+    public void setName( String name ) {
+        this.name = name;
     }
 
     public String getfileName() {
@@ -148,7 +153,9 @@ public class Line implements KmlRepresenter, GpxRepresenter {
         sB.append("</LineString>\n");
         sB.append("<Style>\n");
         sB.append("<LineStyle>\n");
-        sB.append("<color>").append(color).append("</color>\n");
+        int parsedColor = Color.parseColor(color);
+        String hexColor = "#" + Integer.toHexString(parsedColor);
+        sB.append("<color>").append(hexColor).append("</color>\n");
         sB.append("<width>").append(width).append("</width>\n");
         sB.append("</LineStyle>\n");
         sB.append("</Style>\n");

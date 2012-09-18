@@ -125,11 +125,11 @@ public class Note implements KmlRepresenter, GpxRepresenter {
         StringBuilder sB = new StringBuilder();
         sB.append("<Placemark>\n");
         sB.append("<styleUrl>#red-pushpin</styleUrl>\n");
-        sB.append("<name></name>\n");// .append(name).append(" (").append(category).append(")").append("</name>\n");
+        sB.append("<name>").append(name).append("</name>\n");
         sB.append("<description>\n");
-        sB.append("<![CDATA[\n");
 
         if (section != null) {
+            sB.append("<![CDATA[\n");
             JSONObject sectionObject = new JSONObject(section);
             if (sectionObject.has(FormUtilities.ATTR_SECTIONNAME)) {
                 String sectionName = sectionObject.getString(FormUtilities.ATTR_SECTIONNAME);
@@ -198,9 +198,11 @@ public class Note implements KmlRepresenter, GpxRepresenter {
                 sB.append("</tbody>");
                 sB.append("</table>");
             }
+            sB.append("]]>\n");
+        } else if (description != null) {
+            sB.append(description);
         }
 
-        sB.append("]]>\n");
         sB.append("</description>\n");
         sB.append("<gx:balloonVisibility>1</gx:balloonVisibility>\n");
         sB.append("<Point>\n");
