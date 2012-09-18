@@ -48,6 +48,9 @@ public class Line implements KmlRepresenter, GpxRepresenter {
     private double maxLat = 0.0;
     private double maxLon = 0.0;
 
+    private float width = 1f;
+    private String color = "#ff0000ff";
+
     public Line( String name, DynamicDoubleArray lonList, DynamicDoubleArray latList, DynamicDoubleArray altimList,
             List<String> dateList ) {
         this.name = name;
@@ -75,6 +78,11 @@ public class Line implements KmlRepresenter, GpxRepresenter {
         this.latList.add(lat);
         this.altimList.add(altim);
         this.dateList.add(date);
+    }
+
+    public void setStyle( float width, String color ) {
+        this.width = width;
+        this.color = color;
     }
 
     public String getfileName() {
@@ -138,6 +146,12 @@ public class Line implements KmlRepresenter, GpxRepresenter {
         }
         sB.append("</coordinates>\n");
         sB.append("</LineString>\n");
+        sB.append("<Style>\n");
+        sB.append("<LineStyle>\n");
+        sB.append("<color>").append(color).append("</color>\n");
+        sB.append("<width>").append(width).append("</width>\n");
+        sB.append("</LineStyle>\n");
+        sB.append("</Style>\n");
         sB.append("</Placemark>\n");
 
         return sB.toString();
