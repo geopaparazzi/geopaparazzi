@@ -177,10 +177,11 @@ public class GpsManager implements LocationListener, Listener {
             if (Debug.D)
                 Logger.d(this, "Using GPS");
 
-            float minDistance = 0f;
+            float minDistance = 0.5f;
             long waitForSecs = 1;
 
-            boolean doAtAndroidLevel = preferences.getBoolean(PREFS_KEY_GPSDOATANDROIDLEVEL, true);
+            boolean doAtAndroidLevel = false;// preferences.getBoolean(PREFS_KEY_GPSDOATANDROIDLEVEL,
+                                             // true);
             if (doAtAndroidLevel) {
                 String minDistanceStr = preferences.getString(PREFS_KEY_GPSLOGGINGDISTANCE, String.valueOf(GPS_LOGGING_DISTANCE));
                 try {

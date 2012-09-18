@@ -5,12 +5,12 @@
     <PreferenceScreen
         android:order="1"
         android:title="@string/gps_preferences" >
-        <CheckBoxPreference
+      <!--   <CheckBoxPreference
             android:key="PREFS_KEY_GPSDOATANDROIDLEVEL"
             android:order="2"
             android:title="@string/gps_use_android_level" android:summary="@string/gps_use_android_level_summary" android:enabled="true" android:defaultValue="true">
         </CheckBoxPreference>
-
+ -->
         <EditTextPreference
             android:defaultValue="0"
             android:inputType="number"
