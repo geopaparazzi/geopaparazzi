@@ -166,6 +166,8 @@ public class SliderDrawView extends View {
 
     public void disableDraw() {
         this.mapView = null;
+        measuredDistance = 0;
+        measurePath.reset();
         invalidate();
     }
 

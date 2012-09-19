@@ -41,6 +41,12 @@
                 android:layout_height="fill_parent"
                 android:orientation="vertical" >
 
+                <eu.hydrologis.geopaparazzi.maps.SliderDrawView
+                    android:id="@+id/sliderdrawview"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent" >
+                </eu.hydrologis.geopaparazzi.maps.SliderDrawView>
+
                 <!-- the zoombar -->
 
                 <LinearLayout
@@ -113,7 +119,6 @@
                             android:background="@drawable/deletenote" >
                         </ImageButton>
 
-                        <!--
                         <ImageButton
                             android:id="@+id/togglemeasuremodebutton"
                             android:layout_width="wrap_content"
@@ -121,7 +126,6 @@
                             android:layout_margin="5dip"
                             android:background="@drawable/measuremode" >
                         </ImageButton>
-                        -->
 
                         <Button
                             android:id="@+id/battery"

@@ -138,18 +138,6 @@
                         android:background="@drawable/bookmarkslist" >
                     </ImageButton>
 
-                    <Button
-                        android:id="@+id/battery"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="5dip"
-                        android:background="@drawable/battery"
-                        android:text="-"
-                        android:textColor="@color/black"
-                        android:textStyle="bold" >
-                    </Button>
-
                     <ImageButton
                         android:id="@+id/togglemeasuremodebutton"
                         android:layout_width="wrap_content"
@@ -157,6 +145,18 @@
                         android:layout_margin="5dip"
                         android:background="@drawable/measuremode" >
                     </ImageButton>
+
+                    <Button
+                        android:id="@+id/battery"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_margin="5dip"
+                        android:background="@drawable/battery"
+                        android:text="-"
+                        android:textColor="@color/black"
+                        android:textStyle="bold" >
+                    </Button>
                 </LinearLayout>
                 <!-- the center on gps button -->
 

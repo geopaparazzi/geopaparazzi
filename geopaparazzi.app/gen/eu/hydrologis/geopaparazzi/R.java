@@ -215,7 +215,7 @@ public final class R {
         public static final int arrow_up=0x7f0c0089;
         public static final int askcoordlabel=0x7f0c0055;
         public static final int authortext=0x7f0c009e;
-        public static final int battery=0x7f0c0071;
+        public static final int battery=0x7f0c0072;
         public static final int bookmarkrowtext=0x7f0c000c;
         public static final int bookmarksExportButton=0x7f0c001c;
         public static final int bookmarksImportButton=0x7f0c0054;
@@ -349,7 +349,7 @@ public final class R {
         public static final int syncosmbutton=0x7f0c0078;
         public static final int title=0x7f0c0093;
         public static final int titletext=0x7f0c009b;
-        public static final int togglemeasuremodebutton=0x7f0c0072;
+        public static final int togglemeasuremodebutton=0x7f0c0071;
         public static final int tracks=0x7f0c0088;
         public static final int upbutton=0x7f0c0013;
         public static final int visible=0x7f0c004a;
