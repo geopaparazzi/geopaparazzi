@@ -325,13 +325,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             }
         });
 
-        /*
-         * 
-         */
-        SliderDrawView sliderDrawView = (SliderDrawView) findViewById(R.id.sliderdrawview);
-        sliderDrawView.setMapView(mapView);
-        
-        
+        sliderDrawView = (SliderDrawView) findViewById(R.id.sliderdrawview);
+
         /*
         * tool buttons
         */
@@ -402,8 +397,10 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 }
                 if (isInMeasureMode) {
                     mapView.setClickable(true);
+                    sliderDrawView.disableDraw();
                 } else {
                     mapView.setClickable(false);
+                    sliderDrawView.enableDraw(mapView);
                 }
             }
         });
@@ -1228,6 +1225,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         }
 
     };
+    private SliderDrawView sliderDrawView;
 
     private void updateBatteryCondition( int level ) {
         if (Debug.D)

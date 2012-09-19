@@ -13,11 +13,14 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
-import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 
@@ -25,14 +28,12 @@ public class SliderDrawView extends View {
     private MapView mapView;
     private final Paint measurePaint = new Paint();
     private final Paint measureTextPaint = new Paint();
-    private boolean doDraw = true;
-    private boolean isOn = false;
 
     private final Path measurePath = new Path();
-    private int currentX;
-    private int currentY;
-    private int lastX;
-    private int lastY;
+    private float currentX;
+    private float currentY;
+    private float lastX = -1;
+    private float lastY = -1;
 
     // private boolean imperial = false;
     // private boolean nautical = false;
@@ -52,8 +53,9 @@ public class SliderDrawView extends View {
         measurePaint.setStyle(Paint.Style.STROKE);
 
         measureTextPaint.setAntiAlias(true);
-        measureTextPaint.setTextSize(12);
-        // measureTextPaint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+        int pixel = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
+        measureTextPaint.setTextSize(pixel);
+        measureTextPaint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
         distanceString = "Distance: ";// context.getResources().getString(R.string.distance);
     }
@@ -65,36 +67,28 @@ public class SliderDrawView extends View {
             return;
         }
 
+        int cWidth = canvas.getWidth();
+
         canvas.drawPath(measurePath, measurePaint);
-        
-        // Projection pj = mapView.getProjection();
-        // GeoPoint mapCenter = mapView.getMapPosition().getMapCenter();
-        // Point center = pj.toPixels(mapCenter, null);
-        // BoundingBoxE6 boundingBox = mapView.getBoundingBox();
-        // int latNorthE6 = boundingBox.getLatNorthE6();
-        // int latText = latNorthE6 - (latNorthE6 - mapCenter.getLatitudeE6()) / 3;
-        //
-        // Point textPoint = pj.toMapPixels(new GeoPoint(latText, mapCenter.getLongitudeE6()),
-        // null);
-        //
-        // int upper = textPoint.y;
-        // int delta = 5;
-        // Rect rect = new Rect();
-        // measureTextPaint.getTextBounds(distanceString, 0, distanceString.length(), rect);
-        // int textWidth = rect.width();
-        // int textHeight = rect.height();
-        // int x = center.x - textWidth / 2;
-        // canvas.drawText(distanceString, x, upper, measureTextPaint);
-        //
-        // String distanceText = String.valueOf((int) measuredDistance);
-        // // String distanceText = distanceText((int) measuredDistance, imperial, nautical);
-        // measureTextPaint.getTextBounds(distanceText, 0, distanceText.length(), rect);
-        // textWidth = rect.width();
-        // x = center.x - textWidth / 2;
-        // canvas.drawText(distanceText, x, upper + delta + textHeight, measureTextPaint);
-        //
-        // if (Debug.D)
-        //            Logger.d(this, "Drawing measure path text: " + upper); //$NON-NLS-1$
+
+        int upper = 70;
+        int delta = 5;
+        Rect rect = new Rect();
+        measureTextPaint.getTextBounds(distanceString, 0, distanceString.length(), rect);
+        int textWidth = rect.width();
+        int textHeight = rect.height();
+        int x = cWidth / 2 - textWidth / 2;
+        canvas.drawText(distanceString, x, upper, measureTextPaint);
+
+        String distanceText = String.valueOf((int) measuredDistance);
+        // String distanceText = distanceText((int) measuredDistance, imperial, nautical);
+        measureTextPaint.getTextBounds(distanceText, 0, distanceText.length(), rect);
+        textWidth = rect.width();
+        x = cWidth / 2 - textWidth / 2;
+        canvas.drawText(distanceText, x, upper + delta + textHeight, measureTextPaint);
+
+        if (Debug.D)
+            Logger.d(this, "Drawing measure path text: " + upper); //$NON-NLS-1$
     }
 
     @Override
@@ -105,46 +99,49 @@ public class SliderDrawView extends View {
 
         Projection pj = mapView.getProjection();
         // handle drawing
-        currentX = (int) round(event.getX());
-        currentY = (int) round(event.getY());
+        currentX = event.getX();
+        currentY = event.getY();
 
-        tmpP.set(currentX, currentY);
+        tmpP.set(round(currentX), round(currentY));
 
-        if (lastX == -1 || lastY == -1) {
-            // lose the first drag and set the delta
-            lastX = currentX;
-            lastY = currentY;
-            return true;
-        }
+        // if (lastX == -1 || lastY == -1) {
+        // // lose the first drag and set the delta
+        // lastX = currentX;
+        // lastY = currentY;
+        // return true;
+        // }
 
         int action = event.getAction();
         switch( action ) {
         case MotionEvent.ACTION_DOWN:
-            // Logger.d(this, "First point....");
             measuredDistance = 0;
             measurePath.reset();
-            GeoPoint firstGeoPoint = pj.fromPixels(currentX, currentY);
+            GeoPoint firstGeoPoint = pj.fromPixels(round(currentX), round(currentY));
             pj.toPixels(firstGeoPoint, tmpP);
             measurePath.moveTo(tmpP.x, tmpP.y);
+
+            lastX = currentX;
+            lastY = currentY;
 
             if (Debug.D)
                 Logger.d(this, "TOUCH: " + tmpP.x + "/" + tmpP.y);
             break;
         case MotionEvent.ACTION_MOVE:
-            int dx = currentX - lastX;
-            int dy = currentY - lastY;
+            float dx = currentX - lastX;
+            float dy = currentY - lastY;
             if (abs(dx) < 1 && abs(dy) < 1) {
                 lastX = currentX;
                 lastY = currentY;
                 return true;
             }
-            GeoPoint currentGeoPoint = pj.fromPixels(currentX, currentY);
+
+            GeoPoint currentGeoPoint = pj.fromPixels(round(currentX), round(currentY));
             pj.toPixels(currentGeoPoint, tmpP);
             measurePath.lineTo(tmpP.x, tmpP.y);
             if (Debug.D)
                 Logger.d(this, "DRAG: " + tmpP.x + "/" + tmpP.y);
             // the measurement
-            GeoPoint previousGeoPoint = pj.fromPixels(lastX, lastY);
+            GeoPoint previousGeoPoint = pj.fromPixels(round(lastX), round(lastY));
 
             Location l1 = new Location("gps");
             l1.setLatitude(previousGeoPoint.getLatitude());
@@ -157,7 +154,6 @@ public class SliderDrawView extends View {
             lastX = currentX;
             lastY = currentY;
             measuredDistance = measuredDistance + distanceTo;
-            // Logger.d(this, "Recording points. Distance = " + measuredDistance);
             invalidate();
             break;
         case MotionEvent.ACTION_UP:
@@ -168,7 +164,12 @@ public class SliderDrawView extends View {
         return true;
     }
 
-    public void setMapView( MapView mapView ) {
+    public void disableDraw() {
+        this.mapView = null;
+        invalidate();
+    }
+
+    public void enableDraw( MapView mapView ) {
         this.mapView = mapView;
     }
 }
