@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -51,15 +52,18 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.provider.ContactsContract;
 import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -83,6 +87,8 @@ import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.gps.GpsManagerListener;
 import eu.geopaparazzi.library.mixare.MixareHandler;
 import eu.geopaparazzi.library.network.NetworkUtilities;
+import eu.geopaparazzi.library.sms.SmsData;
+import eu.geopaparazzi.library.sms.SmsUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
@@ -114,17 +120,19 @@ import eu.hydrologis.geopaparazzi.util.Note;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class MapsActivity extends MapActivity implements GpsManagerListener, OnTouchListener {
-    private static final int INSERTCOORD_RETURN_CODE = 666;
-    private static final int BOOKMARKS_RETURN_CODE = 667;
-    private static final int GPSDATAPROPERTIES_RETURN_CODE = 668;
+    private final int INSERTCOORD_RETURN_CODE = 666;
+    private final int BOOKMARKS_RETURN_CODE = 667;
+    private final int GPSDATAPROPERTIES_RETURN_CODE = 668;
     public static final int FORMUPDATE_RETURN_CODE = 669;
+    private final int CONTACT_RETURN_CODE = 670;
 
-    private static final int MENU_GPSDATA = 1;
-    private static final int MENU_SCALE_ID = 4;
-    private static final int MENU_MIXARE_ID = 5;
-    private static final int GO_TO = 6;
-    private static final int CENTER_ON_MAP = 7;
-    private static final int MENU_COMPASS_ID = 8;
+    private final int MENU_GPSDATA = 1;
+    private final int MENU_SCALE_ID = 4;
+    private final int MENU_MIXARE_ID = 5;
+    private final int GO_TO = 6;
+    private final int CENTER_ON_MAP = 7;
+    private final int MENU_COMPASS_ID = 8;
+    private final int MENU_SENDDATA_ID = 9;
 
     private DecimalFormat formatter = new DecimalFormat("00"); //$NON-NLS-1$
     private SlidingDrawer slidingDrawer;
@@ -139,6 +147,9 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     private Button zoomInButton;
     private Button zoomOutButton;
     private Button batteryButton;
+
+    private SliderDrawView sliderDrawView;
+    private List<String> smsString;
 
     public static MapGenerator createMapGenerator( MapGeneratorInternal mapGeneratorInternal ) {
         switch( mapGeneratorInternal ) {
@@ -709,7 +720,10 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 android.R.drawable.ic_menu_compass);
         menu.add(Menu.NONE, CENTER_ON_MAP, 5, R.string.center_on_map).setIcon(android.R.drawable.ic_menu_mylocation);
         menu.add(Menu.NONE, GO_TO, 6, R.string.go_to).setIcon(android.R.drawable.ic_menu_myplaces);
-        menu.add(Menu.NONE, MENU_MIXARE_ID, 7, R.string.view_in_mixare).setIcon(R.drawable.icon_datasource);
+        if (SmsUtilities.hasPhone(this)) {
+            menu.add(Menu.NONE, MENU_SENDDATA_ID, 7, "send data").setIcon(android.R.drawable.ic_menu_send);
+        }
+        menu.add(Menu.NONE, MENU_MIXARE_ID, 8, R.string.view_in_mixare).setIcon(R.drawable.icon_datasource);
         return true;
     }
 
@@ -743,6 +757,14 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 e1.printStackTrace();
                 return false;
             }
+        case MENU_SENDDATA_ID:
+            try {
+                sendData();
+                return true;
+            } catch (Exception e1) {
+                e1.printStackTrace();
+                return false;
+            }
         case GO_TO: {
             return goTo();
         }
@@ -767,6 +789,81 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         return super.onMenuItemSelected(featureId, item);
     }
 
+    private void sendData() throws IOException {
+        float[] nswe = getMapWorldBounds();
+        List<SmsData> smsData = new ArrayList<SmsData>();
+        List<Bookmark> bookmarksList = DaoBookmarks.getBookmarksInWorldBounds(this, nswe[0], nswe[1], nswe[2], nswe[3]);
+        for( Bookmark bookmark : bookmarksList ) {
+            double lat = bookmark.getLat();
+            double lon = bookmark.getLon();
+            String title = bookmark.getName();
+
+            SmsData data = new SmsData();
+            data.TYPE = SmsData.BOOKMARK;
+            data.x = (float) lon;
+            data.y = (float) lat;
+            data.z = 16f;
+            data.text = title;
+            smsData.add(data);
+        }
+
+        List<Note> notesList = DaoNotes.getNotesInWorldBounds(this, nswe[0], nswe[1], nswe[2], nswe[3]);
+        for( Note note : notesList ) {
+            double lat = note.getLat();
+            double lon = note.getLon();
+            double elevation = note.getAltim();
+            String title = note.getDescription();
+
+            SmsData data = new SmsData();
+            data.TYPE = SmsData.NOTE;
+            data.x = (float) lon;
+            data.y = (float) lat;
+            data.z = (float) elevation;
+            data.text = title;
+            smsData.add(data);
+        }
+
+        smsString = new ArrayList<String>();
+        String schemaHost = SmsUtilities.SMSHOST + "/"; //$NON-NLS-1$
+        StringBuilder sb = new StringBuilder(schemaHost);
+        int limit = 160;
+        for( SmsData data : smsData ) {
+            String smsDataString = data.toSmsDataString();
+            String tmp = sb.toString() + ";" + smsDataString; //$NON-NLS-1$
+            if (tmp.length() <= limit) {
+                if (sb.length() > schemaHost.length())
+                    sb.append(";"); //$NON-NLS-1$
+            } else {
+                smsString.add(sb.toString());
+                sb = new StringBuilder(schemaHost);
+            }
+            sb.append(smsDataString);
+        }
+
+        if (sb.length() > schemaHost.length()) {
+            smsString.add(sb.toString());
+        }
+
+        if (smsString.size() == 0) {
+            Utilities.messageDialog(this, "No notes or bookmarks to send in the current map.", null);
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(smsString.size() + " sms will be sent to transfer the selected data.").setCancelable(false)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
+                        public void onClick( DialogInterface dialog, int id ) {
+                            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                            intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
+                            startActivityForResult(intent, CONTACT_RETURN_CODE);
+                        }
+                    }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
+                        public void onClick( DialogInterface dialog, int id ) {
+                        }
+                    });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        }
+
+    }
     private boolean goTo() {
         String[] items = new String[]{getString(R.string.goto_coordinate), getString(R.string.geocoding)};
 
@@ -892,6 +989,39 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0f);
                 double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0f);
                 setCenterAndZoomForMapWindowFocus(lon, lat, null);
+            }
+            break;
+        }
+        case (CONTACT_RETURN_CODE): {
+            if (resultCode == Activity.RESULT_OK) {
+                Uri uri = data.getData();
+                String number = null;
+                if (smsString != null && uri != null) {
+                    Cursor c = null;
+                    try {
+                        c = getContentResolver().query(
+                                uri,
+                                new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER,
+                                        ContactsContract.CommonDataKinds.Phone.TYPE}, null, null, null);
+
+                        if (c != null && c.moveToFirst()) {
+                            number = c.getString(0);
+                            // int type = c.getInt(1);
+                            // showSelectedNumber(type, number);
+                        }
+                    } finally {
+                        if (c != null) {
+                            c.close();
+                        }
+                    }
+
+                    if (number != null) {
+                        for( String sms : smsString ) {
+                            sms = sms.replaceAll("\\s+", "_"); //$NON-NLS-1$//$NON-NLS-2$
+                            SmsUtilities.sendSMS(MapsActivity.this, number, sms);
+                        }
+                    }
+                }
             }
             break;
         }
@@ -1225,7 +1355,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         }
 
     };
-    private SliderDrawView sliderDrawView;
 
     private void updateBatteryCondition( int level ) {
         if (Debug.D)

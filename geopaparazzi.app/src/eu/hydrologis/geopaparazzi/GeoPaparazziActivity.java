@@ -22,6 +22,7 @@ import static eu.hydrologis.geopaparazzi.util.Constants.PANICKEY;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -57,6 +58,7 @@ import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.gps.GpsLocation;
 import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.sensors.SensorsManager;
+import eu.geopaparazzi.library.sms.SmsData;
 import eu.geopaparazzi.library.sms.SmsUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
@@ -145,21 +147,26 @@ public class GeoPaparazziActivity extends Activity {
         }
 
         checkIncomingGeosms();
+        checkIncomingSmsData();
 
     }
 
     @SuppressWarnings("nls")
+    /**
+     * Checks if it was opened for a link of the kind:<br>
+     * http://maps.google.com/maps?q=46.068941,11.169849&GeoSMS<br>
+     * in which case the point is imported as bookmark.
+     */
     private void checkIncomingGeosms() {
-        /*
-         * check if it was opened for a link of the kind
-         * 
-         * http://maps.google.com/maps?q=46.068941,11.169849&GeoSMS
-         */
         Uri data = getIntent().getData();
         if (data != null) {
             try {
                 String path = data.toString();
-                if (path.toLowerCase().contains("geosms") && path.toLowerCase().contains("q=")) {
+                if (path.toLowerCase().contains(SmsUtilities.SMSHOST)) {
+                    return;
+                }
+                if (path.toLowerCase().contains("geosms") && path.toLowerCase().contains("q=")
+                        && !path.toLowerCase().contains(SmsUtilities.SMSHOST)) {
                     String scheme = data.getScheme(); // "http"
                     if (scheme != null && scheme.equals("http")) {
                         String host = data.getHost();
@@ -173,9 +180,6 @@ public class GeoPaparazziActivity extends Activity {
                             PositionUtilities.putMapCenterInPreferences(preferences, lon, lat, 16);
                             Intent mapIntent = new Intent(this, MapsActivity.class);
                             startActivity(mapIntent);
-                        } else {
-                            // add support for other uris
-                            throw new IOException();
                         }
                     }
                 } else {
@@ -187,6 +191,49 @@ public class GeoPaparazziActivity extends Activity {
                                 this,
                                 "Could not open the passed URI. Geopaparazzi is able to open only GeoSMS URIs that contain a part like: ...&q=46.068941,11.169849&GeoSMS ",
                                 null);
+            }
+        }
+    }
+
+    private void checkIncomingSmsData() {
+        /*
+         * check if it was opened for a link of the kind
+         * 
+         * http://maps.google.com/maps?q=46.068941,11.169849&GeoSMS
+         */
+        Uri data = getIntent().getData();
+        if (data != null) {
+            try {
+                String path = data.toString();
+                String scheme = data.getScheme(); // "http"
+                if (scheme != null && scheme.equals("http")) { //$NON-NLS-1$
+                    String host = data.getHost();
+                    if (host.equals(SmsUtilities.SMSHOST)) {
+
+                        List<SmsData> sms2Data = SmsUtilities.sms2Data(path);
+                        int notesNum = 0;
+                        int bookmarksNum = 0;
+                        if (sms2Data.size() > 0) {
+                            for( SmsData smsData : sms2Data ) {
+                                String text = smsData.text.replaceAll("\\_", " "); //$NON-NLS-1$//$NON-NLS-2$
+                                if (smsData.TYPE == SmsData.NOTE) {
+                                    DaoNotes.addNote(this, smsData.x, smsData.y, smsData.z,
+                                            new java.sql.Date(new Date().getTime()), text, NoteType.POI.getDef(), null,
+                                            NoteType.POI.getTypeNum());
+                                    notesNum++;
+                                } else if (smsData.TYPE == SmsData.BOOKMARK) {
+                                    DaoBookmarks.addBookmark(this, smsData.x, smsData.y, text, smsData.z, -1, -1, -1, -1);
+                                    bookmarksNum++;
+                                }
+                            }
+                        }
+
+                        Utilities.messageDialog(this,
+                                MessageFormat.format("Imported {0} notes and {1} bookmarks.", notesNum, bookmarksNum), null);
+                    }
+                }
+            } catch (Exception e) {
+                Utilities.messageDialog(this, "Could not open the passed sms data URI.", null);
             }
         }
     }
