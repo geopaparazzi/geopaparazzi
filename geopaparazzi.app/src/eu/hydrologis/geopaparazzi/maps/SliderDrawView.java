@@ -18,6 +18,8 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.util.debug.Debug;
+import eu.geopaparazzi.library.util.debug.Logger;
 
 public class SliderDrawView extends View {
     private MapView mapView;
@@ -59,23 +61,12 @@ public class SliderDrawView extends View {
     protected void onDraw( Canvas canvas ) {
         super.onDraw(canvas);
 
-        try {
-            Paint paint = new Paint();
-            // paint.setStyle(Paint.Style.FILL);
-            // paint.setColor(Color.BLACK);
-            // canvas.drawPaint(paint);
-            paint.setColor(Color.WHITE);
-            canvas.drawCircle(100, 100, 30, paint);
-        } catch (Exception e) {
-
-        }
-
         if (mapView == null || mapView.isClickable()) {
             return;
         }
 
         canvas.drawPath(measurePath, measurePaint);
-
+        
         // Projection pj = mapView.getProjection();
         // GeoPoint mapCenter = mapView.getMapPosition().getMapCenter();
         // Point center = pj.toPixels(mapCenter, null);
@@ -108,8 +99,6 @@ public class SliderDrawView extends View {
 
     @Override
     public boolean onTouchEvent( MotionEvent event ) {
-        // TODO Auto-generated method stub
-
         if (mapView == null || mapView.isClickable()) {
             return true;
         }
@@ -118,7 +107,8 @@ public class SliderDrawView extends View {
         // handle drawing
         currentX = (int) round(event.getX());
         currentY = (int) round(event.getY());
-        // Logger.d(this, "point: " + currentX + "/" + currentY);
+
+        tmpP.set(currentX, currentY);
 
         if (lastX == -1 || lastY == -1) {
             // lose the first drag and set the delta
@@ -136,6 +126,9 @@ public class SliderDrawView extends View {
             GeoPoint firstGeoPoint = pj.fromPixels(currentX, currentY);
             pj.toPixels(firstGeoPoint, tmpP);
             measurePath.moveTo(tmpP.x, tmpP.y);
+
+            if (Debug.D)
+                Logger.d(this, "TOUCH: " + tmpP.x + "/" + tmpP.y);
             break;
         case MotionEvent.ACTION_MOVE:
             int dx = currentX - lastX;
@@ -148,6 +141,8 @@ public class SliderDrawView extends View {
             GeoPoint currentGeoPoint = pj.fromPixels(currentX, currentY);
             pj.toPixels(currentGeoPoint, tmpP);
             measurePath.lineTo(tmpP.x, tmpP.y);
+            if (Debug.D)
+                Logger.d(this, "DRAG: " + tmpP.x + "/" + tmpP.y);
             // the measurement
             GeoPoint previousGeoPoint = pj.fromPixels(lastX, lastY);
 
@@ -166,9 +161,11 @@ public class SliderDrawView extends View {
             invalidate();
             break;
         case MotionEvent.ACTION_UP:
+            if (Debug.D)
+                Logger.d(this, "UNTOUCH: " + tmpP.x + "/" + tmpP.y);
             break;
         }
-        return super.onTouchEvent(event);
+        return true;
     }
 
     public void setMapView( MapView mapView ) {
