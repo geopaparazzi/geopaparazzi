@@ -94,7 +94,7 @@ public class SliderDrawView extends View {
     @Override
     public boolean onTouchEvent( MotionEvent event ) {
         if (mapView == null || mapView.isClickable()) {
-            return true;
+            return false;
         }
 
         Projection pj = mapView.getProjection();
