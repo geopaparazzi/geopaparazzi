@@ -28,7 +28,7 @@ import eu.geopaparazzi.library.kml.KmlRepresenter;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class Image implements KmlRepresenter{
+public class Image implements KmlRepresenter {
     private final String name;
     private final long id;
     private final double lon;
@@ -116,7 +116,8 @@ public class Image implements KmlRepresenter{
         sB.append("</head><body>");
         sB.append("<img src=\"" + imgName + "\" width=\"300\">");
         sB.append("</body></html>]]></description>\n");
-        sB.append("<styleUrl>#yellow-pushpin</styleUrl>\n");
+        // sB.append("<styleUrl>#yellow-pushpin</styleUrl>\n");
+        sB.append("<styleUrl>#camera-icon</styleUrl>\n");
         sB.append("<Point>\n");
         sB.append("<coordinates>").append(lon).append(",").append(lat).append(",").append(altim);
         sB.append("</coordinates>\n");

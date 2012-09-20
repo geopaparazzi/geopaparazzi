@@ -17,12 +17,17 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
+import java.util.Collections;
+import java.util.List;
+
+import eu.geopaparazzi.library.kml.KmlRepresenter;
+
 /**
  * Represents a bookmark.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class Bookmark {
+public class Bookmark implements KmlRepresenter {
     private String name;
     private double lon;
     private double lat;
@@ -69,6 +74,25 @@ public class Bookmark {
         this.lat = lat;
     }
 
+    @SuppressWarnings("nls")
+    public String toKmlString() throws Exception {
+        StringBuilder sB = new StringBuilder();
+        sB.append("<Placemark>\n");
+        // sB.append("<styleUrl>#red-pushpin</styleUrl>\n");
+        sB.append("<styleUrl>#bookmark-icon</styleUrl>\n");
+        sB.append("<name>").append(name).append("</name>\n");
+        sB.append("<description>\n");
+        sB.append(name);
+        sB.append("</description>\n");
+        sB.append("<gx:balloonVisibility>1</gx:balloonVisibility>\n");
+        sB.append("<Point>\n");
+        sB.append("<coordinates>").append(lon).append(",").append(lat).append(",0</coordinates>\n");
+        sB.append("</Point>\n");
+        sB.append("</Placemark>\n");
+
+        return sB.toString();
+    }
+
     public long getId() {
         return id;
     }
@@ -109,5 +133,13 @@ public class Bookmark {
     public String toString() {
         return "Bookmark [name=" + name + ", lon=" + lon + ", lat=" + lat + ", id=" + id + ", zoom=" + zoom + ", north=" + north
                 + ", south=" + south + ", west=" + west + ", east=" + east + "]";
+    }
+
+    public boolean hasImages() {
+        return false;
+    }
+
+    public List<String> getImagePaths() {
+        return Collections.emptyList();
     }
 }

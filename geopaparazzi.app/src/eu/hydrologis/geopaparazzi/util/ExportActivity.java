@@ -225,6 +225,14 @@ public class ExportActivity extends Activity {
                         kmlRepresenterList.add(image);
                     }
 
+                    /*
+                     * add bookmarks
+                     */
+                    List<Bookmark> bookmarksList = DaoBookmarks.getAllBookmarks(ExportActivity.this);
+                    for( Bookmark bookmark : bookmarksList ) {
+                        kmlRepresenterList.add(bookmark);
+                    }
+
                     File kmlExportDir = ResourcesManager.getInstance(ExportActivity.this).getExportDir();
                     String filename = "geopaparazzi_" + LibraryConstants.TIMESTAMPFORMATTER.format(new Date()) + ".kmz"; //$NON-NLS-1$ //$NON-NLS-2$
                     File kmlOutputFile = new File(kmlExportDir, filename);

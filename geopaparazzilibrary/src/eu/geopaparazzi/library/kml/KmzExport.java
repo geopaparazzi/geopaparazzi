@@ -74,30 +74,11 @@ public class KmzExport {
             bW.write("<name>");
             bW.write(name);
             bW.write("</name>\n");
-            bW.write("<Style id=\"red-pushpin\">\n");
-            bW.write("<IconStyle>\n");
-            bW.write("<scale>1.1</scale>\n");
-            bW.write("<Icon>\n");
-            bW.write("<href>http://maps.google.com/mapfiles/kml/pushpin/red-pushpin.png\n");
-            bW.write("</href>\n");
-            bW.write("</Icon>\n");
-            bW.write("<hotSpot x=\"20\" y=\"2\" xunits=\"pixels\" yunits=\"pixels\" />\n");
-            bW.write("</IconStyle>\n");
-            bW.write("<ListStyle>\n");
-            bW.write("</ListStyle>\n");
-            bW.write("</Style>\n");
-            bW.write("<Style id=\"yellow-pushpin\">\n");
-            bW.write("<IconStyle>\n");
-            bW.write("<scale>1.1</scale>\n");
-            bW.write("<Icon>\n");
-            bW.write("<href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png\n");
-            bW.write("</href>\n");
-            bW.write("</Icon>\n");
-            bW.write("<hotSpot x=\"20\" y=\"2\" xunits=\"pixels\" yunits=\"pixels\" />\n");
-            bW.write("</IconStyle>\n");
-            bW.write("<ListStyle>\n");
-            bW.write("</ListStyle>\n");
-            bW.write("</Style>\n");
+            addMarker(bW, "red-pushpin", "http://maps.google.com/mapfiles/kml/pushpin/red-pushpin.png", 20, 2);
+            addMarker(bW, "yellow-pushpin", "http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png", 20, 2);
+            addMarker(bW, "bookmark-icon", "http://maps.google.com/mapfiles/kml/pal4/icon39.png", 16, 16);
+            addMarker(bW, "camera-icon", "http://maps.google.com/mapfiles/kml/pal4/icon38.png", 16, 16);
+            addMarker(bW, "info-icon", "http://maps.google.com/mapfiles/kml/pal3/icon35.png", 16, 16);
 
             for( KmlRepresenter kmlRepresenter : kmlRepresenters ) {
                 try {
@@ -139,5 +120,20 @@ public class KmzExport {
         CompressionUtilities.createZipFromFiles(outputFile, files);
 
         kmlFile.delete();
+    }
+
+    private void addMarker( BufferedWriter bW, String alias, String url, int x, int y ) throws IOException {
+        bW.write("<Style id=\"" + alias + "\">\n");
+        bW.write("<IconStyle>\n");
+        bW.write("<scale>1.1</scale>\n");
+        bW.write("<Icon>\n");
+        bW.write("<href>" + url + "\n");
+        bW.write("</href>\n");
+        bW.write("</Icon>\n");
+        bW.write("<hotSpot x=\"" + x + "\" y=\"" + y + "\" xunits=\"pixels\" yunits=\"pixels\" />\n");
+        bW.write("</IconStyle>\n");
+        bW.write("<ListStyle>\n");
+        bW.write("</ListStyle>\n");
+        bW.write("</Style>\n");
     }
 }

@@ -124,7 +124,8 @@ public class Note implements KmlRepresenter, GpxRepresenter {
     public String toKmlString() throws Exception {
         StringBuilder sB = new StringBuilder();
         sB.append("<Placemark>\n");
-        sB.append("<styleUrl>#red-pushpin</styleUrl>\n");
+//        sB.append("<styleUrl>#red-pushpin</styleUrl>\n");
+        sB.append("<styleUrl>#info-icon</styleUrl>\n");
         sB.append("<name>").append(name).append("</name>\n");
         sB.append("<description>\n");
 
