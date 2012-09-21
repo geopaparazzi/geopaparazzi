@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="eu.hydrologis.geopaparazzi"
-    android:versionCode="31"
-    android:versionName="3.2.0" >
+    android:installLocation="auto"
+    android:versionCode="32"
+    android:versionName="3.2.1" >
 
     <!-- permissions -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -16,10 +17,9 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.BATTERY_STATS" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <!--
     only for testing purposes 
-	<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"></uses-permission> 
+	<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"></uses-permission>
     -->
 
     <uses-feature
@@ -29,7 +29,7 @@
 
     <!-- compatibility -->
     <uses-sdk
-        android:minSdkVersion="5"
+        android:minSdkVersion="8"
         android:targetSdkVersion="8" >
     </uses-sdk>
 
