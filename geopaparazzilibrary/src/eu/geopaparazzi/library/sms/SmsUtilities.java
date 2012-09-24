@@ -109,9 +109,9 @@ public class SmsUtilities {
      * @param context the {@link Context} to use.
      * @param number the number to which to send the SMS.
      * @param msg the SMS body text.
-     * @param sentMessage if <code>true</code>, a {@link Toast} tells the user that the message was sent.
+     * @param sendMessage if <code>true</code>, a {@link Toast} tells the user that the message was sent.
      */
-    public static void sendSMS( Context context, String number, String msg, boolean sentMessage ) {
+    public static void sendSMS( Context context, String number, String msg, boolean sendMessage ) {
         Object systemService = context.getSystemService(Context.TELEPHONY_SERVICE);
         if (systemService instanceof TelephonyManager) {
             TelephonyManager telManager = (TelephonyManager) systemService;
@@ -131,7 +131,8 @@ public class SmsUtilities {
                     Logger.i("SMSUTILITIES", "Trimming msg to: " + msg);
             }
             mng.sendTextMessage(number, null, msg, dummyEvent, dummyEvent);
-            Utilities.toast(context, R.string.message_sent, Toast.LENGTH_LONG);
+            if (sendMessage)
+                Utilities.toast(context, R.string.message_sent, Toast.LENGTH_LONG);
         } catch (Exception e) {
             Logger.e(context, e.getLocalizedMessage(), e);
             Utilities.messageDialog(context, "An error occurred while sending the SMS.", null);
