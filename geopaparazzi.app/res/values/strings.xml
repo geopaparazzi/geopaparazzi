@@ -211,4 +211,5 @@
     <string name="center_on_map">center on map</string>
     <string name="proximity_radius">Proximity Radius</string>
     <string name="add_proximity_radius">Add proximity alert radius in meters.</string>
+    <string name="sent_sms">"Sent sms : "</string>
 </resources>

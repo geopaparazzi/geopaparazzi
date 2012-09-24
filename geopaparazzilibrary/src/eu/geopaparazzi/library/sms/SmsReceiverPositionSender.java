@@ -96,7 +96,7 @@ public class SmsReceiverPositionSender extends BroadcastReceiver {
                     if (Debug.D)
                         Logger.i(this, msg);
                     String addr = smsMessage.getOriginatingAddress();
-                    SmsUtilities.sendSMS(context, addr, msg);
+                    SmsUtilities.sendSMS(context, addr, msg, true);
                 }
                 if (isGeosms) {
                     SmsUtilities.openGeoSms(context, body);

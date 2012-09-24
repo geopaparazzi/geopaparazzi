@@ -17,8 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.PANICKEY;
-
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -86,6 +84,7 @@ import eu.hydrologis.geopaparazzi.preferences.PreferencesActivity;
 import eu.hydrologis.geopaparazzi.util.AboutActivity;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.ExportActivity;
+import eu.hydrologis.geopaparazzi.util.GpUtilities;
 import eu.hydrologis.geopaparazzi.util.ImportActivity;
 import eu.hydrologis.geopaparazzi.util.QuickActionsFactory;
 
@@ -856,16 +855,13 @@ public class GeoPaparazziActivity extends Activity {
      * 
      * @param theTextToRunOn make the panic message as opposed to just a status update.
      */
-    @SuppressWarnings("nls")
     private void sendPosition( String theTextToRunOn ) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        final String panicNumbersString = preferences.getString(PANICKEY, "");
+        String[] panicNumbers = GpUtilities.getPanicNumbers(this);
         // Make sure there's a valid return address.
-        if (panicNumbersString == null || panicNumbersString.length() == 0 || panicNumbersString.matches(".*[A-Za-z].*")) {
+        if (panicNumbers == null) {
             Utilities.messageDialog(this, R.string.panic_number_notset, null);
         } else {
-            String[] numbers = panicNumbersString.split(";");
-            for( String number : numbers ) {
+            for( String number : panicNumbers ) {
                 number = number.trim();
                 if (number.length() == 0) {
                     continue;
@@ -877,7 +873,7 @@ public class GeoPaparazziActivity extends Activity {
                     lastPosition = theTextToRunOn;
                 }
                 String positionText = SmsUtilities.createPositionText(this, lastPosition);
-                SmsUtilities.sendSMS(this, number, positionText);
+                SmsUtilities.sendSMS(this, number, positionText, true);
             }
         }
 

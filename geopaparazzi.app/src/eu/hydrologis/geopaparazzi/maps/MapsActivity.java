@@ -93,6 +93,7 @@ import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.GeocodeActivity;
 import eu.geopaparazzi.library.util.activities.InsertCoordActivity;
@@ -113,6 +114,7 @@ import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
+import eu.hydrologis.geopaparazzi.util.GpUtilities;
 import eu.hydrologis.geopaparazzi.util.MixareUtilities;
 import eu.hydrologis.geopaparazzi.util.Note;
 
@@ -847,20 +849,46 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         if (smsString.size() == 0) {
             Utilities.messageDialog(this, "No notes or bookmarks to send in the current map.", null);
         } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(smsString.size() + " sms will be sent to transfer the selected data.").setCancelable(false)
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
-                        public void onClick( DialogInterface dialog, int id ) {
-                            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                            intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
-                            startActivityForResult(intent, CONTACT_RETURN_CODE);
+            String readableAndroidVersion = android.os.Build.VERSION.RELEASE;
+            String message = smsString.size()
+                    + " sms will be sent to transfer the selected data.\nPlease insert a valid phone number to send the data to.";
+            if (readableAndroidVersion.compareTo("2.3") < 0) { //$NON-NLS-1$
+                String[] panicNumbers = GpUtilities.getPanicNumbers(this);
+                String defaultNUmber = "";
+                if (panicNumbers != null && panicNumbers.length > 0) {
+                    defaultNUmber = panicNumbers[0];
+                }
+                Utilities.inputMessageDialog(this, "", message, defaultNUmber, new TextRunnable(){
+                    public void run() {
+                        if (theTextToRunOn != null) {
+                            int count = 1;
+                            for( String sms : smsString ) {
+                                sms = sms.replaceAll("\\s+", "_"); //$NON-NLS-1$//$NON-NLS-2$
+                                SmsUtilities.sendSMS(MapsActivity.this, theTextToRunOn, sms, false);
+                                String msg = getString(R.string.sent_sms) + count++;
+                                Utilities.toast(MapsActivity.this, msg, Toast.LENGTH_SHORT);
+                            }
+                        } else {
+                            Utilities.toast(MapsActivity.this, "No message sent.", Toast.LENGTH_LONG);
                         }
-                    }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
-                        public void onClick( DialogInterface dialog, int id ) {
-                        }
-                    });
-            AlertDialog alertDialog = builder.create();
-            alertDialog.show();
+                    }
+                });
+            } else {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(message).setCancelable(false)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
+                            public void onClick( DialogInterface dialog, int id ) {
+                                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                                intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
+                                startActivityForResult(intent, CONTACT_RETURN_CODE);
+                            }
+                        }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
+                            public void onClick( DialogInterface dialog, int id ) {
+                            }
+                        });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            }
         }
 
     }
@@ -1016,9 +1044,12 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                     }
 
                     if (number != null) {
+                        int count = 1;
                         for( String sms : smsString ) {
                             sms = sms.replaceAll("\\s+", "_"); //$NON-NLS-1$//$NON-NLS-2$
-                            SmsUtilities.sendSMS(MapsActivity.this, number, sms);
+                            SmsUtilities.sendSMS(MapsActivity.this, number, sms, false);
+                            String msg = getString(R.string.sent_sms) + count++;
+                            Utilities.toast(this, msg, Toast.LENGTH_SHORT);
                         }
                     }
                 }

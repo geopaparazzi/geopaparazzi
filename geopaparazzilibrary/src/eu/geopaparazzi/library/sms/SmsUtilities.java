@@ -109,8 +109,9 @@ public class SmsUtilities {
      * @param context the {@link Context} to use.
      * @param number the number to which to send the SMS.
      * @param msg the SMS body text.
+     * @param sentMessage if <code>true</code>, a {@link Toast} tells the user that the message was sent.
      */
-    public static void sendSMS( Context context, String number, String msg ) {
+    public static void sendSMS( Context context, String number, String msg, boolean sentMessage ) {
         Object systemService = context.getSystemService(Context.TELEPHONY_SERVICE);
         if (systemService instanceof TelephonyManager) {
             TelephonyManager telManager = (TelephonyManager) systemService;
