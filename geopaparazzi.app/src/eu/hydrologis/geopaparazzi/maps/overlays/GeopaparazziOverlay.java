@@ -702,6 +702,12 @@ public abstract class GeopaparazziOverlay extends Overlay {
         if (item != null) {
             String title = item.getTitle();
             String snippet = item.getSnippet();
+
+            GeoPoint position = item.getPoint();
+            int latE6 = position.latitudeE6;
+            int lonE6 = position.longitudeE6;
+            float lat = latE6 / LibraryConstants.E6;
+            float lon = lonE6 / LibraryConstants.E6;
             if (title.toLowerCase().endsWith("jpg")) { //$NON-NLS-1$
                 Intent intent = new Intent();
                 intent.setAction(android.content.Intent.ACTION_VIEW);
@@ -715,14 +721,8 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 if (context instanceof MapsActivity) {
                     MapsActivity mapActivity = (MapsActivity) context;
 
-                    GeoPoint position = item.getPoint();
-                    int latE6 = position.latitudeE6;
-                    int lonE6 = position.longitudeE6;
-
-                    double lat = latE6 / LibraryConstants.E6;
                     float n = (float) (lat + 0.00001f);
                     float s = (float) (lat - 0.00001f);
-                    double lon = lonE6 / LibraryConstants.E6;
                     float w = (float) (lon - 0.00001f);
                     float e = (float) (lon + 0.00001f);
 
@@ -753,8 +753,18 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     Builder builder = new AlertDialog.Builder(context);
                     builder.setIcon(android.R.drawable.ic_menu_info_details);
                     builder.setTitle(title);
-                    if (snippet != null && snippet.length() > 0)
-                        builder.setMessage(snippet);
+                    StringBuilder sb = new StringBuilder();
+                    if (snippet != null && snippet.length() > 0) {
+                        sb.append(snippet);
+                        sb.append("\n\n"); //$NON-NLS-1$
+                    }
+
+                    String latStr = context.getString(R.string.lat);
+                    String lonStr = context.getString(R.string.lon);
+                    sb.append(latStr).append(" ").append(lat).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
+                    sb.append(lonStr).append(" ").append(lon); //$NON-NLS-1$
+
+                    builder.setMessage(sb.toString());
                     builder.setPositiveButton(android.R.string.ok, null);
                     builder.show();
                 }
