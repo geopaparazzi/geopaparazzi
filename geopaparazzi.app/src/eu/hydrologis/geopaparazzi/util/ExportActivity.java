@@ -17,7 +17,10 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.*;
+import static eu.hydrologis.geopaparazzi.util.Constants.PREF_KEY_PWD;
+import static eu.hydrologis.geopaparazzi.util.Constants.PREF_KEY_SERVER;
+import static eu.hydrologis.geopaparazzi.util.Constants.PREF_KEY_USER;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,7 +61,7 @@ import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
-import eu.hydrologis.geopaparazzi.maps.MapItem;
+import eu.hydrologis.geopaparazzi.maps.LogMapItem;
 
 /**
  * Activity for export tasks.
@@ -194,9 +197,9 @@ public class ExportActivity extends Activity {
                     /*
                      * add gps logs
                      */
-                    List<MapItem> gpslogs = DaoGpsLog.getGpslogs(ExportActivity.this);
-                    HashMap<Long, MapItem> mapitemsMap = new HashMap<Long, MapItem>();
-                    for( MapItem log : gpslogs ) {
+                    List<LogMapItem> gpslogs = DaoGpsLog.getGpslogs(ExportActivity.this);
+                    HashMap<Long, LogMapItem> mapitemsMap = new HashMap<Long, LogMapItem>();
+                    for( LogMapItem log : gpslogs ) {
                         mapitemsMap.put(log.getId(), log);
                     }
 
@@ -205,7 +208,7 @@ public class ExportActivity extends Activity {
                     for( Entry<Long, Line> lineEntry : linesSet ) {
                         Long id = lineEntry.getKey();
                         Line line = lineEntry.getValue();
-                        MapItem mapItem = mapitemsMap.get(id);
+                        LogMapItem mapItem = mapitemsMap.get(id);
                         float width = mapItem.getWidth();
                         String color = mapItem.getColor();
                         line.setStyle(width, color);

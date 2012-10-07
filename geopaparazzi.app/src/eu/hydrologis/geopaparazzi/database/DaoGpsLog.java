@@ -49,7 +49,7 @@ import eu.geopaparazzi.library.gpx.parser.WayPoint;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
-import eu.hydrologis.geopaparazzi.maps.MapItem;
+import eu.hydrologis.geopaparazzi.maps.LogMapItem;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.LineArray;
 
@@ -207,9 +207,9 @@ public class DaoGpsLog implements IGpsLogDbHelper {
      * @return the logs list
      * @throws IOException
      */
-    public static List<MapItem> getGpslogs( Context context ) throws IOException {
+    public static List<LogMapItem> getGpslogs( Context context ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
-        List<MapItem> logsList = new ArrayList<MapItem>();
+        List<LogMapItem> logsList = new ArrayList<LogMapItem>();
 
         StringBuilder sB = new StringBuilder();
         sB.append("select l.");
@@ -218,6 +218,10 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         sB.append(COLUMN_ID);
         sB.append(", l.");
         sB.append(COLUMN_LOG_TEXT);
+        sB.append(", l.");
+        sB.append(COLUMN_LOG_STARTTS);
+        sB.append(", l.");
+        sB.append(COLUMN_LOG_ENDTS);
         sB.append(", p.");
         sB.append(COLUMN_PROPERTIES_COLOR);
         sB.append(", p.");
@@ -243,13 +247,15 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             while( !c.isAfterLast() ) {
                 long logid = c.getLong(0);
                 String text = c.getString(1);
-                String color = c.getString(2);
-                double width = c.getDouble(3);
-                int visible = c.getInt(4);
+                String start = c.getString(2);
+                String end = c.getString(3);
+                String color = c.getString(4);
+                double width = c.getDouble(5);
+                int visible = c.getInt(6);
                 // Logger.d(DEBUG_TAG, "Res: " + logid + "/" + color + "/" + width + "/" + visible +
                 // "/" +
                 // text);
-                MapItem item = new MapItem(logid, text, color, (float) width, visible == 1 ? true : false);
+                LogMapItem item = new LogMapItem(logid, text, color, (float) width, visible == 1 ? true : false, start, end);
                 logsList.add(item);
                 c.moveToNext();
             }

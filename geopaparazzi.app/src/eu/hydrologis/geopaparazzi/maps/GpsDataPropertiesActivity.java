@@ -33,6 +33,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
@@ -48,7 +49,7 @@ import eu.hydrologis.geopaparazzi.util.Constants;
 public class GpsDataPropertiesActivity extends Activity {
     private static List<String> colorList;
     private static List<String> widthsList;
-    private MapItem item;
+    private LogMapItem item;
 
     // properties
     private String newText;
@@ -63,19 +64,28 @@ public class GpsDataPropertiesActivity extends Activity {
 
         Bundle extras = getIntent().getExtras();
         Object object = extras.get(Constants.PREFS_KEY_GPSLOG4PROPERTIES);
-        if (object instanceof MapItem) {
-            item = (MapItem) object;
+        if (object instanceof LogMapItem) {
+            item = (LogMapItem) object;
 
-            final EditText textView = (EditText) findViewById(R.id.gpslogname);
+            final TextView startTimeTextView = (TextView) findViewById(R.id.starttime_label);
+            String startTime = item.getStartTime();
+            String startText = startTimeTextView.getText().toString();
+            startTimeTextView.setText(startText + startTime);
+            final TextView endTimeTextView = (TextView) findViewById(R.id.endtime_label);
+            String endTime = item.getEndTime();
+            String endText = endTimeTextView.getText().toString();
+            endTimeTextView.setText(endText + endTime);
+
+            final EditText lognameTextView = (EditText) findViewById(R.id.gpslogname);
             final Spinner colorView = (Spinner) findViewById(R.id.color_spinner);
             final Spinner widthView = (Spinner) findViewById(R.id.widthText);
 
-            textView.setText(item.getName());
+            lognameTextView.setText(item.getName());
             newText = item.getName();
-            textView.addTextChangedListener(new TextWatcher(){
+            lognameTextView.addTextChangedListener(new TextWatcher(){
 
                 public void onTextChanged( CharSequence s, int start, int before, int count ) {
-                    newText = textView.getText().toString();
+                    newText = lognameTextView.getText().toString();
                 }
                 public void beforeTextChanged( CharSequence s, int start, int count, int after ) {
                 }
@@ -178,7 +188,7 @@ public class GpsDataPropertiesActivity extends Activity {
 
         }
     }
-    
+
     private void getResourcesAndColors() {
         if (colorList == null) {
             String[] colorArray = getResources().getStringArray(R.array.array_colornames);

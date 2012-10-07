@@ -76,7 +76,7 @@ import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.DatabaseManager;
 import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
-import eu.hydrologis.geopaparazzi.maps.MapItem;
+import eu.hydrologis.geopaparazzi.maps.LogMapItem;
 import eu.hydrologis.geopaparazzi.maps.MapsActivity;
 import eu.hydrologis.geopaparazzi.maps.tiles.MapGeneratorInternal;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
@@ -835,9 +835,9 @@ public class GeoPaparazziActivity extends Activity {
     private SlidingDrawer slidingDrawer;
 
     private void checkMapsAndLogsVisibility() throws IOException {
-        List<MapItem> maps = DaoGpsLog.getGpslogs(this);
+        List<LogMapItem> maps = DaoGpsLog.getGpslogs(this);
         boolean oneVisible = false;
-        for( MapItem item : maps ) {
+        for( LogMapItem item : maps ) {
             if (!oneVisible && item.isVisible()) {
                 oneVisible = true;
             }

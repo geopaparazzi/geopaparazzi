@@ -59,7 +59,7 @@ public class GpsDataListActivity extends ListActivity {
 
     private static final int GPSDATAPROPERTIES_RETURN_CODE = 668;
 
-    private MapItem[] gpslogItems;
+    private LogMapItem[] gpslogItems;
     private Comparator<MapItem> mapItemSorter = new ItemComparators.MapItemIdComparator(true);
 
     public void onCreate( Bundle icicle ) {
@@ -81,11 +81,11 @@ public class GpsDataListActivity extends ListActivity {
     private void refreshList() {
         if (Debug.D)
             Logger.d(this, "refreshing gps maps list"); //$NON-NLS-1$
-        gpslogItems = new MapItem[0];
+        gpslogItems = new LogMapItem[0];
         try {
-            List<MapItem> logsList = DaoGpsLog.getGpslogs(this);
+            List<LogMapItem> logsList = DaoGpsLog.getGpslogs(this);
             Collections.sort(logsList, mapItemSorter);
-            gpslogItems = (MapItem[]) logsList.toArray(new MapItem[logsList.size()]);
+            gpslogItems = logsList.toArray(new LogMapItem[0]);
         } catch (IOException e) {
             Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
@@ -185,9 +185,9 @@ public class GpsDataListActivity extends ListActivity {
     }
 
     private void mergeSelected() throws IOException {
-        List<MapItem> gpslogs = DaoGpsLog.getGpslogs(this);
-        List<MapItem> selected = new ArrayList<MapItem>();
-        for( MapItem mapItem : gpslogs ) {
+        List<LogMapItem> gpslogs = DaoGpsLog.getGpslogs(this);
+        List<LogMapItem> selected = new ArrayList<LogMapItem>();
+        for( LogMapItem mapItem : gpslogs ) {
             if (mapItem.isVisible()) {
                 selected.add(mapItem);
             }

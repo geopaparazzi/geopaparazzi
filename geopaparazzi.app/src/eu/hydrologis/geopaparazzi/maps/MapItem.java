@@ -20,7 +20,7 @@ package eu.hydrologis.geopaparazzi.maps;
 import java.io.Serializable;
 
 /**
- * Item representing a map entry (gps log or map).
+ * Item representing a map entry.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  *
@@ -29,13 +29,13 @@ public class MapItem implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private boolean isDirty = false;
-    private String name;
-    private long id;
-    private float width;
-    private String color;
-    private boolean isVisible;
-    private int type;
+    protected boolean isDirty = false;
+    protected String name;
+    protected long id;
+    protected float width;
+    protected String color;
+    protected boolean isVisible;
+    protected int type;
 
     public MapItem( long id, String text, String color, float width, boolean isVisible ) {
         this.id = id;

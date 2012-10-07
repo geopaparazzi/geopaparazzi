@@ -35,9 +35,9 @@
 	<string name="mainmenu_merge">merge selected logs</string>
 
 	<string name="gpslogproperty">Properties for: </string>
-	<string name="gpslog_chart">Chart the log</string>
-	<string name="gpslog_zoom">Zoom to the log</string>
-	<string name="gpslog_delete">Delete the log</string>
+	<string name="gpslog_chart">Chart</string>
+	<string name="gpslog_zoom">Zoom to</string>
+	<string name="gpslog_delete">Delete</string>
 
 	<string name="mapproperty">Properties for: </string>
 	<string name="map_zoom">Zoom to the map</string>
