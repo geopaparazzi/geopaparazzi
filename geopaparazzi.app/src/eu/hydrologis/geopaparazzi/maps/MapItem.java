@@ -37,12 +37,16 @@ public class MapItem implements Serializable {
     private boolean isVisible;
     private int type;
 
-    public long getId() {
-        return id;
+    public MapItem( long id, String text, String color, float width, boolean isVisible ) {
+        this.id = id;
+        name = text;
+        this.color = color;
+        this.width = width;
+        this.isVisible = isVisible;
     }
 
-    public void setId( long id ) {
-        this.id = id;
+    public long getId() {
+        return id;
     }
 
     public String getName() {

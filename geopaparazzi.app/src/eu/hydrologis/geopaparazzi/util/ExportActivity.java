@@ -206,7 +206,9 @@ public class ExportActivity extends Activity {
                         Long id = lineEntry.getKey();
                         Line line = lineEntry.getValue();
                         MapItem mapItem = mapitemsMap.get(id);
-                        line.setStyle(mapItem.getWidth(), mapItem.getColor());
+                        float width = mapItem.getWidth();
+                        String color = mapItem.getColor();
+                        line.setStyle(width, color);
                         line.setName(mapItem.getName());
                         kmlRepresenterList.add(line);
                     }

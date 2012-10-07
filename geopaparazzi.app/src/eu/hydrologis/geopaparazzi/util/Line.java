@@ -50,7 +50,7 @@ public class Line implements KmlRepresenter, GpxRepresenter {
     private double maxLon = 0.0;
 
     private float width = 1f;
-    private String color = "#ff0000ff";
+    private String color = "#ff0000ff"; //$NON-NLS-1$
 
     public Line( String name, DynamicDoubleArray lonList, DynamicDoubleArray latList, DynamicDoubleArray altimList,
             List<String> dateList ) {
@@ -82,8 +82,10 @@ public class Line implements KmlRepresenter, GpxRepresenter {
     }
 
     public void setStyle( float width, String color ) {
-        this.width = width;
-        this.color = color;
+        if (width > 0)
+            this.width = width;
+        if (color != null)
+            this.color = color;
     }
 
     public void setName( String name ) {

@@ -249,12 +249,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 // Logger.d(DEBUG_TAG, "Res: " + logid + "/" + color + "/" + width + "/" + visible +
                 // "/" +
                 // text);
-                MapItem item = new MapItem();
-                item.setId(logid);
-                item.setName(text);
-                item.setColor(color);
-                item.setWidth((float) width);
-                item.setVisible(visible == 1 ? true : false);
+                MapItem item = new MapItem(logid, text, color, (float) width, visible == 1 ? true : false);
                 logsList.add(item);
                 c.moveToNext();
             }
