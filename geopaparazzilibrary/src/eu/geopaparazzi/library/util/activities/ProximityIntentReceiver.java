@@ -33,7 +33,7 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
             NotificationManager notificationManager = (NotificationManager) context
                     .getSystemService(Context.NOTIFICATION_SERVICE);
 
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, null, 0);
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
             Notification notification = createNotification();
             notification.setLatestEventInfo(context, context.getString(R.string.proximity_alert), context.getString(R.string.approaching_poi), pendingIntent);

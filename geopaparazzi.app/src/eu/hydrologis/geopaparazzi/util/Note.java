@@ -60,8 +60,8 @@ public class Note implements KmlRepresenter, GpxRepresenter {
      * @param section the section .
      * @param type 
      */
-    public Note( long id, String name, String description, String timeStamp, double lon, double lat, double altim, String category, String section,
-            int type ) {
+    public Note( long id, String name, String description, String timeStamp, double lon, double lat, double altim,
+            String category, String section, int type ) {
         this.id = id;
         if (name != null) {
             this.name = name;
@@ -110,9 +110,9 @@ public class Note implements KmlRepresenter, GpxRepresenter {
         return name;
     }
 
-//    public String getDescription() {
-//        return description;
-//    }
+    public String getDescription() {
+        return description;
+    }
 
     public String getForm() {
         return section;
@@ -130,7 +130,7 @@ public class Note implements KmlRepresenter, GpxRepresenter {
     public String toKmlString() throws Exception {
         StringBuilder sB = new StringBuilder();
         sB.append("<Placemark>\n");
-//        sB.append("<styleUrl>#red-pushpin</styleUrl>\n");
+        // sB.append("<styleUrl>#red-pushpin</styleUrl>\n");
         sB.append("<styleUrl>#info-icon</styleUrl>\n");
         sB.append("<name>").append(name).append("</name>\n");
         sB.append("<description>\n");
@@ -208,6 +208,8 @@ public class Note implements KmlRepresenter, GpxRepresenter {
             sB.append("]]>\n");
         } else if (description != null) {
             sB.append(description);
+            sB.append("\n");
+            sB.append(timeStamp);
         }
 
         sB.append("</description>\n");
