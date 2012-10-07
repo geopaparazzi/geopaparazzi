@@ -77,7 +77,7 @@ public class MixareUtilities {
             double lat = note.getLat();
             double lon = note.getLon();
             double elevation = note.getAltim();
-            String title = note.getDescription(); // note.getName() + " (" + note.getDescription() +
+            String title = note.getName(); // note.getName() + " (" + note.getDescription() +
 
             PointF3D p = new PointF3D((float) lon, (float) lat, (float) elevation, title);
             points.add(p);

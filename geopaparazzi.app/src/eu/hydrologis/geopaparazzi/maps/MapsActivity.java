@@ -814,7 +814,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             double lat = note.getLat();
             double lon = note.getLon();
             double elevation = note.getAltim();
-            String title = note.getDescription();
+            String title = note.getName();
 
             SmsData data = new SmsData();
             data.TYPE = SmsData.NOTE;

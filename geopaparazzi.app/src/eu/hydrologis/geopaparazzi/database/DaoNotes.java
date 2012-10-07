@@ -225,15 +225,11 @@ public class DaoNotes {
             double altim = c.getDouble(3);
             String text = c.getString(4);
             String category = c.getString(5);
-            String date = c.getString(6);
+            String timestamp = c.getString(6);
             int type = c.getInt(7);
             String form = c.getString(8);
 
-            StringBuilder description = new StringBuilder();
-            description.append(text);
-            description.append("\n");
-            description.append(date);
-            Note note = new Note(id, text, description.toString(), lon, lat, altim, category, form, type);
+            Note note = new Note(id, text, "", timestamp, lon, lat, altim, category, form, type);
             notes.add(note);
             c.moveToNext();
         }
@@ -260,17 +256,13 @@ public class DaoNotes {
             double lon = c.getDouble(1);
             double lat = c.getDouble(2);
             double altim = c.getDouble(3);
-            String date = c.getString(4);
+            String timestamp = c.getString(4);
             String text = c.getString(5);
             String category = c.getString(6);
             String form = c.getString(7);
             int type = c.getInt(8);
 
-            StringBuilder description = new StringBuilder();
-            description.append(text);
-            description.append("\n");
-            description.append(date);
-            Note note = new Note(id, text, description.toString(), lon, lat, altim, category, form, type);
+            Note note = new Note(id, text, "", timestamp, lon, lat, altim, category, form, type);
             notesList.add(note);
             c.moveToNext();
         }

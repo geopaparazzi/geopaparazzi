@@ -38,6 +38,7 @@ import eu.geopaparazzi.library.kml.KmlRepresenter;
 public class Note implements KmlRepresenter, GpxRepresenter {
     private final String name;
     private final String description;
+    private final String timeStamp;
     private final long id;
     private final double lon;
     private final double lat;
@@ -59,7 +60,7 @@ public class Note implements KmlRepresenter, GpxRepresenter {
      * @param section the section .
      * @param type 
      */
-    public Note( long id, String name, String description, double lon, double lat, double altim, String category, String section,
+    public Note( long id, String name, String description, String timeStamp, double lon, double lat, double altim, String category, String section,
             int type ) {
         this.id = id;
         if (name != null) {
@@ -71,6 +72,11 @@ public class Note implements KmlRepresenter, GpxRepresenter {
             this.description = description;
         } else {
             this.description = ""; //$NON-NLS-1$
+        }
+        if (timeStamp != null) {
+            this.timeStamp = timeStamp;
+        } else {
+            this.timeStamp = ""; //$NON-NLS-1$
         }
         if (category != null) {
             this.category = category;
@@ -104,9 +110,9 @@ public class Note implements KmlRepresenter, GpxRepresenter {
         return name;
     }
 
-    public String getDescription() {
-        return description;
-    }
+//    public String getDescription() {
+//        return description;
+//    }
 
     public String getForm() {
         return section;
