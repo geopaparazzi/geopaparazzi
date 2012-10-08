@@ -24,8 +24,10 @@ import java.util.Comparator;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -69,23 +71,25 @@ public class GpsDataListActivity extends ListActivity {
 
         handleNotes();
 
-        refreshList();
+        refreshList(true);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        refreshList();
+        refreshList(true);
     }
 
-    private void refreshList() {
+    private void refreshList( boolean doReread ) {
         if (Debug.D)
             Logger.d(this, "refreshing gps maps list"); //$NON-NLS-1$
         gpslogItems = new LogMapItem[0];
         try {
-            List<LogMapItem> logsList = DaoGpsLog.getGpslogs(this);
-            Collections.sort(logsList, mapItemSorter);
-            gpslogItems = logsList.toArray(new LogMapItem[0]);
+            if (doReread) {
+                List<LogMapItem> logsList = DaoGpsLog.getGpslogs(this);
+                Collections.sort(logsList, mapItemSorter);
+                gpslogItems = logsList.toArray(new LogMapItem[0]);
+            }
         } catch (IOException e) {
             Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
@@ -167,7 +171,7 @@ public class GpsDataListActivity extends ListActivity {
         case SELECTALL:
             try {
                 DaoGpsLog.setLogsVisibility(this, true);
-                refreshList();
+                refreshList(true);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -175,7 +179,7 @@ public class GpsDataListActivity extends ListActivity {
         case UNSELECTALL:
             try {
                 DaoGpsLog.setLogsVisibility(this, false);
-                refreshList();
+                refreshList(true);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -185,9 +189,8 @@ public class GpsDataListActivity extends ListActivity {
     }
 
     private void mergeSelected() throws IOException {
-        List<LogMapItem> gpslogs = DaoGpsLog.getGpslogs(this);
-        List<LogMapItem> selected = new ArrayList<LogMapItem>();
-        for( LogMapItem mapItem : gpslogs ) {
+        final List<LogMapItem> selected = new ArrayList<LogMapItem>();
+        for( LogMapItem mapItem : gpslogItems ) {
             if (mapItem.isVisible()) {
                 selected.add(mapItem);
             }
@@ -197,16 +200,31 @@ public class GpsDataListActivity extends ListActivity {
             return;
         }
 
-        long mainId = selected.get(0).getId();
-        for( int i = 0; i < selected.size(); i++ ) {
-            if (i == 0) {
-                continue;
+        int logsNum = selected.size();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        String message = logsNum + " logs will be merged together in this operation. Continue?";
+        builder.setMessage(message).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
+            public void onClick( DialogInterface dialog, int ii ) {
+                long mainId = selected.get(0).getId();
+                for( int i = 1; i < selected.size(); i++ ) {
+                    MapItem mapItem = selected.get(i);
+                    long id = mapItem.getId();
+                    try {
+                        DaoGpsLog.mergeLogs(GpsDataListActivity.this, id, mainId);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                refreshList(true);
             }
-            MapItem mapItem = selected.get(i);
-            long id = mapItem.getId();
-            DaoGpsLog.mergeLogs(this, id, mainId);
-        }
-        refreshList();
+        }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
+            public void onClick( DialogInterface dialog, int id ) {
+
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
     }
 
     @Override
