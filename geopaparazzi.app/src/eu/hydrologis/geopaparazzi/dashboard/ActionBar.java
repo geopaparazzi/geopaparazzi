@@ -66,7 +66,6 @@ public class ActionBar implements GpsManagerListener {
     private static String gpsonString;
     private final GpsManager gpsManager;
     private final SensorsManager sensorsManager;
-    private boolean hasFix;
 
     public ActionBar( View actionBarView, GpsManager gpsManager, SensorsManager sensorsManager ) {
         this.actionBarView = actionBarView;
@@ -273,7 +272,7 @@ public class ActionBar implements GpsManagerListener {
                 GpsManager.getInstance(context).checkGps(context);
             }
         });
-        
+
         Resources resources = gpsOnOffView.getResources();
 
         if (gpsManager.isEnabled()) {
@@ -304,12 +303,15 @@ public class ActionBar implements GpsManagerListener {
     public void onLocationChanged( GpsLocation loc ) {
     }
 
-    public void onStatusChanged( boolean newHasFix ) {
-        if (hasFix != newHasFix) {
-            if (Debug.D)
-                Logger.d(this, "Check logging on gps fix update.");
-            checkLogging();
-            hasFix = newHasFix;
-        }
+    public void onStatusChanged( int status ) {
+        if (Debug.D)
+            Logger.d(this, "Check logging on gps status update.");
+        checkLogging();
+    }
+
+    public void onGpsStatusChanged( boolean newHasFix ) {
+        if (Debug.D)
+            Logger.d(this, "Check logging on gps fix update.");
+        checkLogging();
     }
 }

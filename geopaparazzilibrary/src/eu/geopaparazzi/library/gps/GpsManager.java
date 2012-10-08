@@ -395,7 +395,9 @@ public class GpsManager implements LocationListener, Listener {
         // statusString = "fix";
         // break;
         // }
-
+        for( GpsManagerListener listener : listeners ) {
+            listener.onStatusChanged(status);
+        }
     }
 
     public void onGpsStatusChanged( int event ) {
@@ -417,7 +419,7 @@ public class GpsManager implements LocationListener, Listener {
             break;
         }
         for( GpsManagerListener listener : listeners ) {
-            listener.onStatusChanged(hasGPSFix);
+            listener.onGpsStatusChanged(hasGPSFix);
         }
     }
 

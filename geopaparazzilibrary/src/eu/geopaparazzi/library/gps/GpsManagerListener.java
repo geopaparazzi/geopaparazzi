@@ -25,6 +25,8 @@ public interface GpsManagerListener {
 
     public void onLocationChanged( GpsLocation loc );
 
-    public void onStatusChanged( boolean hasFix);
+    public void onGpsStatusChanged( boolean hasFix );
+
+    public void onStatusChanged(int status);
 
 }

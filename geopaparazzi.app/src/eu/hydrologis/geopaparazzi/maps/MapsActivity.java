@@ -1323,7 +1323,10 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         return lonE6 > wE6 && lonE6 < eE6 && latE6 > sE6 && latE6 < nE6;
     }
 
-    public void onStatusChanged( boolean hasFix ) {
+    public void onStatusChanged( int status ) {
+    }
+
+    public void onGpsStatusChanged( boolean hasFix ) {
     }
 
     private synchronized void saveCenterPref() {
