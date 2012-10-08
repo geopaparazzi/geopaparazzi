@@ -17,7 +17,7 @@
  */
 package eu.geopaparazzi.library.gps;
 
-import static eu.geopaparazzi.library.util.LibraryConstants.*;
+import static eu.geopaparazzi.library.util.LibraryConstants.GPS_LOGGING_DISTANCE;
 import static eu.geopaparazzi.library.util.LibraryConstants.GPS_LOGGING_INTERVAL;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGINGDISTANCE;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGINGINTERVAL;
@@ -37,6 +37,7 @@ import android.location.GpsStatus.Listener;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
@@ -79,7 +80,7 @@ public class GpsManager implements LocationListener, Listener {
 
     private LocationManager locationManager;
     private long mLastLocationMillis;
-    private boolean hasGPSFix = false;
+    // private boolean hasGPSFix = false;
     private boolean isListening = false;
     private SharedPreferences preferences;
     private boolean useNetworkPositions;
@@ -241,7 +242,7 @@ public class GpsManager implements LocationListener, Listener {
             if (TestMock.isOn)
                 return true;
         }
-        return hasGPSFix && getLocation() != null;
+        return getLocation() != null;
     }
 
     /**
@@ -378,49 +379,42 @@ public class GpsManager implements LocationListener, Listener {
     }
 
     public void onStatusChanged( String provider, int status, Bundle extras ) {
-        // String statusString;
-        // switch( status ) {
-        // case LocationProvider.OUT_OF_SERVICE:
-        // if (gpsLoc == null || gpsLoc.getProvider().equals(provider)) {
-        // statusString = "No Service";
-        // gpsLoc = null;
-        // }
-        // break;
-        // case LocationProvider.TEMPORARILY_UNAVAILABLE:
-        // if (gpsLoc == null || gpsLoc.getProvider().equals(provider)) {
-        // statusString = "no fix";
-        // }
-        // break;
-        // case LocationProvider.AVAILABLE:
-        // statusString = "fix";
-        // break;
-        // }
+        switch( status ) {
+        case LocationProvider.OUT_OF_SERVICE:
+            if (gpsLoc.getProvider().equals(provider)) {
+                gpsLoc = null;
+            }
+            break;
+        case LocationProvider.TEMPORARILY_UNAVAILABLE:
+        case LocationProvider.AVAILABLE:
+            break;
+        }
         for( GpsManagerListener listener : listeners ) {
             listener.onStatusChanged(status);
         }
     }
 
     public void onGpsStatusChanged( int event ) {
-        switch( event ) {
-        case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
-            if (gpsLoc != null)
-                hasGPSFix = (SystemClock.elapsedRealtime() - mLastLocationMillis) < 3000;
-            // if (hasGPSFix) { // A fix has been acquired.
-            // if (Debug.D) Logger.i(this, "Fix acquired");
-            // } else { // The fix has been lost.
-            // if (Debug.D) Logger.i(this, "Fix lost");
-            // }
-
-            break;
-        case GpsStatus.GPS_EVENT_FIRST_FIX:
-            if (Debug.D)
-                Logger.i(this, "First fix");
-            hasGPSFix = true;
-            break;
-        }
-        for( GpsManagerListener listener : listeners ) {
-            listener.onGpsStatusChanged(hasGPSFix);
-        }
+        // switch( event ) {
+        // case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
+        // if (gpsLoc != null)
+        // hasGPSFix = (SystemClock.elapsedRealtime() - mLastLocationMillis) < 3000;
+        // // if (hasGPSFix) { // A fix has been acquired.
+        // // if (Debug.D) Logger.i(this, "Fix acquired");
+        // // } else { // The fix has been lost.
+        // // if (Debug.D) Logger.i(this, "Fix lost");
+        // // }
+        //
+        // break;
+        // case GpsStatus.GPS_EVENT_FIRST_FIX:
+        // if (Debug.D)
+        // Logger.i(this, "First fix");
+        // hasGPSFix = true;
+        // break;
+        // }
+        // for( GpsManagerListener listener : listeners ) {
+        // listener.onGpsStatusChanged(hasGPSFix);
+        // }
     }
 
 }
