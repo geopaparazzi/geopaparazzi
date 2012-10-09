@@ -723,7 +723,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         menu.add(Menu.NONE, CENTER_ON_MAP, 5, R.string.center_on_map).setIcon(android.R.drawable.ic_menu_mylocation);
         menu.add(Menu.NONE, GO_TO, 6, R.string.go_to).setIcon(android.R.drawable.ic_menu_myplaces);
         if (SmsUtilities.hasPhone(this)) {
-            menu.add(Menu.NONE, MENU_SENDDATA_ID, 7, "send data").setIcon(android.R.drawable.ic_menu_send);
+            menu.add(Menu.NONE, MENU_SENDDATA_ID, 7, R.string.send_data).setIcon(android.R.drawable.ic_menu_send);
         }
         menu.add(Menu.NONE, MENU_MIXARE_ID, 8, R.string.view_in_mixare).setIcon(R.drawable.icon_datasource);
         return true;
@@ -847,32 +847,31 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         }
 
         if (smsString.size() == 0) {
-            Utilities.messageDialog(this, "No notes or bookmarks to send in the current map.", null);
+            Utilities.messageDialog(this, R.string.found_no_data_to_send, null);
         } else {
             String readableAndroidVersion = android.os.Build.VERSION.RELEASE;
-            String message = smsString.size()
-                    + " sms will be sent to transfer the selected data.\nPlease insert a valid phone number to send the data to.";
+            String message = smsString.size() + getString(R.string.insert_phone_to_send);
             if (readableAndroidVersion.compareTo("2.3") < 0) { //$NON-NLS-1$
                 String[] panicNumbers = GpUtilities.getPanicNumbers(this);
-                String defaultNUmber = "";
+                String defaultNUmber = ""; //$NON-NLS-1$
                 if (panicNumbers != null && panicNumbers.length > 0) {
                     defaultNUmber = panicNumbers[0];
                 }
-                Utilities.inputMessageDialog(this, "", message, defaultNUmber, new TextRunnable(){
-                    public void run() {
-                        if (theTextToRunOn != null) {
-                            int count = 1;
-                            for( String sms : smsString ) {
-                                sms = sms.replaceAll("\\s+", "_"); //$NON-NLS-1$//$NON-NLS-2$
-                                SmsUtilities.sendSMS(MapsActivity.this, theTextToRunOn, sms, false);
-                                String msg = getString(R.string.sent_sms) + count++;
-                                Utilities.toast(MapsActivity.this, msg, Toast.LENGTH_SHORT);
+                Utilities.inputMessageDialog(this, "", message, defaultNUmber, new TextRunnable(){ //$NON-NLS-1$
+                            public void run() {
+                                if (theTextToRunOn != null) {
+                                    int count = 1;
+                                    for( String sms : smsString ) {
+                                        sms = sms.replaceAll("\\s+", "_"); //$NON-NLS-1$//$NON-NLS-2$
+                                        SmsUtilities.sendSMS(MapsActivity.this, theTextToRunOn, sms, false);
+                                        String msg = getString(R.string.sent_sms) + count++;
+                                        Utilities.toast(MapsActivity.this, msg, Toast.LENGTH_SHORT);
+                                    }
+                                } else {
+                                    Utilities.toast(MapsActivity.this, R.string.no_message_sent, Toast.LENGTH_LONG);
+                                }
                             }
-                        } else {
-                            Utilities.toast(MapsActivity.this, "No message sent.", Toast.LENGTH_LONG);
-                        }
-                    }
-                });
+                        });
             } else {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setMessage(message).setCancelable(false)

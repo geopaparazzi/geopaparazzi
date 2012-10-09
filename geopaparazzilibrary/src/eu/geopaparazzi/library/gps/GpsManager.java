@@ -39,7 +39,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.util.LibraryConstants;
@@ -79,8 +78,6 @@ public class GpsManager implements LocationListener, Listener {
     private Location previousLoc = null;
 
     private LocationManager locationManager;
-    private long mLastLocationMillis;
-    // private boolean hasGPSFix = false;
     private boolean isListening = false;
     private SharedPreferences preferences;
     private boolean useNetworkPositions;
@@ -346,8 +343,6 @@ public class GpsManager implements LocationListener, Listener {
     public void onLocationChanged( Location loc ) {
         if (loc == null)
             return;
-        mLastLocationMillis = SystemClock.elapsedRealtime();
-
         gpsLoc = new GpsLocation(loc);
         boolean first = true;
         if (previousLoc == null) {

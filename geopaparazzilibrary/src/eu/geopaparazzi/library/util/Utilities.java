@@ -29,7 +29,6 @@ import android.os.Looper;
 import android.text.Editable;
 import android.widget.EditText;
 import android.widget.Toast;
-import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 

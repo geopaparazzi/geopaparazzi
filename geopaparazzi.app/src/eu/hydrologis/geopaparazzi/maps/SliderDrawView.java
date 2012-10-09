@@ -20,9 +20,9 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
-import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
+import eu.hydrologis.geopaparazzi.R;
 
 public class SliderDrawView extends View {
     private MapView mapView;
@@ -57,7 +57,7 @@ public class SliderDrawView extends View {
         measureTextPaint.setTextSize(pixel);
         measureTextPaint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
-        distanceString = "Distance: ";// context.getResources().getString(R.string.distance);
+        distanceString = context.getString(R.string.distance);// context.getResources().getString(R.string.distance);
     }
 
     protected void onDraw( Canvas canvas ) {
@@ -124,7 +124,7 @@ public class SliderDrawView extends View {
             lastY = currentY;
 
             if (Debug.D)
-                Logger.d(this, "TOUCH: " + tmpP.x + "/" + tmpP.y);
+                Logger.d(this, "TOUCH: " + tmpP.x + "/" + tmpP.y); //$NON-NLS-1$//$NON-NLS-2$
             break;
         case MotionEvent.ACTION_MOVE:
             float dx = currentX - lastX;
@@ -139,14 +139,14 @@ public class SliderDrawView extends View {
             pj.toPixels(currentGeoPoint, tmpP);
             measurePath.lineTo(tmpP.x, tmpP.y);
             if (Debug.D)
-                Logger.d(this, "DRAG: " + tmpP.x + "/" + tmpP.y);
+                Logger.d(this, "DRAG: " + tmpP.x + "/" + tmpP.y); //$NON-NLS-1$ //$NON-NLS-2$
             // the measurement
             GeoPoint previousGeoPoint = pj.fromPixels(round(lastX), round(lastY));
 
-            Location l1 = new Location("gps");
+            Location l1 = new Location("gps"); //$NON-NLS-1$
             l1.setLatitude(previousGeoPoint.getLatitude());
             l1.setLongitude(previousGeoPoint.getLongitude());
-            Location l2 = new Location("gps");
+            Location l2 = new Location("gps"); //$NON-NLS-1$
             l2.setLatitude(currentGeoPoint.getLatitude());
             l2.setLongitude(currentGeoPoint.getLongitude());
 
@@ -158,7 +158,7 @@ public class SliderDrawView extends View {
             break;
         case MotionEvent.ACTION_UP:
             if (Debug.D)
-                Logger.d(this, "UNTOUCH: " + tmpP.x + "/" + tmpP.y);
+                Logger.d(this, "UNTOUCH: " + tmpP.x + "/" + tmpP.y); //$NON-NLS-1$//$NON-NLS-2$
             break;
         }
         return true;

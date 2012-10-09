@@ -227,12 +227,13 @@ public class GeoPaparazziActivity extends Activity {
                             }
                         }
 
-                        Utilities.messageDialog(this,
-                                MessageFormat.format("Imported {0} notes and {1} bookmarks.", notesNum, bookmarksNum), null);
+                        Utilities.messageDialog(this, MessageFormat.format(
+                                getString(eu.hydrologis.geopaparazzi.R.string.imported_notes_and_bookmarks), notesNum,
+                                bookmarksNum), null);
                     }
                 }
             } catch (Exception e) {
-                Utilities.messageDialog(this, "Could not open the passed sms data URI.", null);
+                Utilities.messageDialog(this, getString(eu.hydrologis.geopaparazzi.R.string.could_not_open_sms), null);
             }
         }
     }

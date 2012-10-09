@@ -92,11 +92,11 @@ public class FragmentDetail extends Fragment {
                 for( int i = 0; i < length; i++ ) {
                     JSONObject jsonObject = formItemsArray.getJSONObject(i);
 
-                    String key = "-";
+                    String key = "-"; //$NON-NLS-1$
                     if (jsonObject.has(TAG_KEY))
                         key = jsonObject.getString(TAG_KEY).trim();
 
-                    String value = "";
+                    String value = ""; //$NON-NLS-1$
                     if (jsonObject.has(TAG_VALUE)) {
                         value = jsonObject.getString(TAG_VALUE).trim();
                     }
@@ -156,14 +156,14 @@ public class FragmentDetail extends Fragment {
                             if (tmpImage.exists()) {
                                 Date currentDate = new Date();
                                 String currentDatestring = LibraryConstants.TIMESTAMPFORMATTER.format(currentDate);
-                                File newImageFile = new File(mediaDir, "IMG_" + currentDatestring + ".png");
+                                File newImageFile = new File(mediaDir, "IMG_" + currentDatestring + ".png"); //$NON-NLS-1$ //$NON-NLS-2$
                                 FileUtilities.copyFile(tmpImage, newImageFile);
                                 value = newImageFile.getParentFile().getName() + File.separator + newImageFile.getName();
                             }
                         }
                         addedView = FormUtilities.addMapView(activity, mainView, key, value, constraintDescription);
                     } else {
-                        System.out.println("Type non implemented yet: " + type);
+                        Logger.i(this, "Type non implemented yet: " + type); //$NON-NLS-1$
                     }
                     key2WidgetMap.put(key, addedView);
                     keyList.add(key);
@@ -194,6 +194,7 @@ public class FragmentDetail extends Fragment {
      *              that didn't pass the constraint check.
      * @throws Exception
      */
+    @SuppressWarnings("nls")
     public String storeFormItems( boolean doConstraintsCheck ) throws Exception {
         if (selectedFormName == null) {
             return null;

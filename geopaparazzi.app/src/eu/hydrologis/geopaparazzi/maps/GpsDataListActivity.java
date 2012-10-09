@@ -202,7 +202,7 @@ public class GpsDataListActivity extends ListActivity {
 
         int logsNum = selected.size();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        String message = logsNum + " logs will be merged together in this operation. Continue?";
+        String message = logsNum + getString(R.string.logs_will_be_merged);
         builder.setMessage(message).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
             public void onClick( DialogInterface dialog, int ii ) {
                 long mainId = selected.get(0).getId();

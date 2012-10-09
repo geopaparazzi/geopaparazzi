@@ -31,6 +31,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
@@ -107,7 +108,7 @@ public enum BluetoothManager {
      */
     public String getAddress() {
         if (isDummy)
-            return "dummyaddress";
+            return "dummyaddress"; //$NON-NLS-1$
         if (isEnabled()) {
             return _bluetooth.getAddress();
         } else {
@@ -120,7 +121,7 @@ public enum BluetoothManager {
      */
     public String getName() {
         if (isDummy)
-            return "dummy device";
+            return "dummy device"; //$NON-NLS-1$
         if (isEnabled()) {
             return _bluetooth.getName();
         } else {
@@ -206,24 +207,25 @@ public enum BluetoothManager {
                     listener.bluetoothStatusChanged(previousState, state);
                 }
 
-                String tt = "";
+                String tt = ""; //$NON-NLS-1$
                 switch( state ) {
                 case BluetoothAdapter.STATE_TURNING_ON:
-                    tt = "Bluetooth turning on...";
+                    tt = "Bluetooth turning on..."; //$NON-NLS-1$
                     break;
                 case BluetoothAdapter.STATE_ON:
-                    tt = "Bluetooth on...";
+                    tt = "Bluetooth on..."; //$NON-NLS-1$
                     break;
                 case BluetoothAdapter.STATE_TURNING_OFF:
-                    tt = "Bluetooth turning off...";
+                    tt = "Bluetooth turning off..."; //$NON-NLS-1$
                     break;
                 case BluetoothAdapter.STATE_OFF:
-                    tt = "Bluetooth off...";
+                    tt = "Bluetooth off..."; //$NON-NLS-1$
                     break;
                 default:
                     break;
                 }
-                Logger.d(this, tt);
+                if (Debug.D)
+                    Logger.d(this, tt);
             }
         };
 
@@ -381,7 +383,7 @@ public enum BluetoothManager {
         if (isSocketConnected) {
             iBluetoothDevice.initialize(_bluetoothSocket);
         } else {
-            throw new IOException("No socket connected.");
+            throw new IOException("No socket connected."); //$NON-NLS-1$
         }
     }
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/white"
@@ -38,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/gpslogname"
             android:padding="5dp"
-            android:text="Start: " />
+            android:text="@string/start" />
 
         <TextView
             android:id="@+id/endtime_label"
@@ -46,7 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/starttime_label"
             android:padding="5dp"
-            android:text="End: " />
+            android:text="@string/end_" />
 
         <TextView
             android:id="@+id/widthLabel"
@@ -62,8 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/widthLabel"
             android:padding="5dp"
-            android:paddingBottom="15dp"
-            android:text="1" />
+            android:paddingBottom="15dp" />
 
         <TextView
             android:id="@+id/colorLabel"

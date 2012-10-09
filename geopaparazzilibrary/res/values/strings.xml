@@ -54,5 +54,6 @@
     <string name="route_to">"Route to: "</string>
     <string name="route_extraction_error">An error occurred during the route extraction.</string>
     <string name="available_only_with_network">This function is available only with an active network connection.</string>
+    <string name="error_while_storing_form_data">An error occurred while storing the form data.</string>
 
 </resources>

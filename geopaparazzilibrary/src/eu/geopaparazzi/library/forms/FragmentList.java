@@ -11,7 +11,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.GradientDrawable.Orientation;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -74,7 +73,7 @@ public class FragmentList extends android.support.v4.app.ListFragment {
                 oldFragment.storeFormItems(false);
             } catch (Exception e) {
                 e.printStackTrace();
-                Utilities.messageDialog(activity, "An error occurred while storing the form data.", null);
+                Utilities.messageDialog(activity, R.string.error_while_storing_form_data, null);
             }
             // FragmentActivity activity2 = oldFragment.getActivity();
             // int id2 = oldFragment.getId();
