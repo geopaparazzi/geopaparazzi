@@ -349,8 +349,10 @@ public class GpsManager implements LocationListener, Listener {
         mLastLocationMillis = SystemClock.elapsedRealtime();
 
         gpsLoc = new GpsLocation(loc);
+        boolean first = true;
         if (previousLoc == null) {
             previousLoc = loc;
+            first = false;
         }
 
         // Logger.d(gpsManager,
@@ -358,6 +360,10 @@ public class GpsManager implements LocationListener, Listener {
         gpsLoc.setPreviousLoc(previousLoc);
         for( GpsManagerListener listener : listeners ) {
             listener.onLocationChanged(gpsLoc);
+            if (first) {
+                // trigger also a status changed in order to simulate first fix
+                listener.onStatusChanged(LocationProvider.AVAILABLE);
+            }
         }
         // save last known location
         double recLon = gpsLoc.getLongitude();
@@ -381,11 +387,11 @@ public class GpsManager implements LocationListener, Listener {
     public void onStatusChanged( String provider, int status, Bundle extras ) {
         switch( status ) {
         case LocationProvider.OUT_OF_SERVICE:
+        case LocationProvider.TEMPORARILY_UNAVAILABLE:
             if (gpsLoc.getProvider().equals(provider)) {
                 gpsLoc = null;
             }
             break;
-        case LocationProvider.TEMPORARILY_UNAVAILABLE:
         case LocationProvider.AVAILABLE:
             break;
         }
@@ -395,26 +401,17 @@ public class GpsManager implements LocationListener, Listener {
     }
 
     public void onGpsStatusChanged( int event ) {
-        // switch( event ) {
-        // case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
-        // if (gpsLoc != null)
-        // hasGPSFix = (SystemClock.elapsedRealtime() - mLastLocationMillis) < 3000;
-        // // if (hasGPSFix) { // A fix has been acquired.
-        // // if (Debug.D) Logger.i(this, "Fix acquired");
-        // // } else { // The fix has been lost.
-        // // if (Debug.D) Logger.i(this, "Fix lost");
-        // // }
-        //
-        // break;
-        // case GpsStatus.GPS_EVENT_FIRST_FIX:
-        // if (Debug.D)
-        // Logger.i(this, "First fix");
-        // hasGPSFix = true;
-        // break;
-        // }
-        // for( GpsManagerListener listener : listeners ) {
-        // listener.onGpsStatusChanged(hasGPSFix);
-        // }
+        switch( event ) {
+        case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
+            break;
+        case GpsStatus.GPS_EVENT_FIRST_FIX:
+            if (Debug.D)
+                Logger.i(this, "First fix");
+            for( GpsManagerListener listener : listeners ) {
+                listener.onGpsStatusChanged(true);
+            }
+            break;
+        }
     }
 
 }
