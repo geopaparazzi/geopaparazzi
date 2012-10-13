@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 import eu.geopaparazzi.library.kml.KmlRepresenter;
+import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * Represents a bookmark.
@@ -76,6 +77,7 @@ public class Bookmark implements KmlRepresenter {
 
     @SuppressWarnings("nls")
     public String toKmlString() throws Exception {
+        String name = Utilities.makeXmlSafe(this.name);
         StringBuilder sB = new StringBuilder();
         sB.append("<Placemark>\n");
         // sB.append("<styleUrl>#red-pushpin</styleUrl>\n");

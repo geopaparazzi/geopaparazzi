@@ -30,6 +30,7 @@ import eu.geopaparazzi.library.gpx.GpxRepresenter;
 import eu.geopaparazzi.library.gpx.GpxUtilities;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
 import eu.geopaparazzi.library.util.DynamicDoubleArray;
+import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * Represents a line (log or map).
@@ -139,6 +140,7 @@ public class Line implements KmlRepresenter, GpxRepresenter {
 
     @SuppressWarnings("nls")
     public String toKmlString() {
+        String name = Utilities.makeXmlSafe(this.name);
         StringBuilder sB = new StringBuilder();
         sB.append("<Placemark>\n");
         sB.append("<name>" + name + "</name>\n");
@@ -219,6 +221,7 @@ public class Line implements KmlRepresenter, GpxRepresenter {
 
     @SuppressWarnings("nls")
     public String toGpxString() throws Exception {
+        String name = Utilities.makeXmlSafe(this.name);
         StringBuilder sb = new StringBuilder();
         sb.append(GpxUtilities.GPX_TRACK_START).append("\n");
         sb.append(GpxUtilities.getTrackNameString(name)).append("\n");

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eu.geopaparazzi.library.kml.KmlRepresenter;
+import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * Represents an image.
@@ -103,6 +104,7 @@ public class Image implements KmlRepresenter {
         File img = new File(path);
         String imgName = img.getName();
 
+        String name = Utilities.makeXmlSafe(this.name);
         StringBuilder sB = new StringBuilder();
         sB.append("<Placemark>\n");
         if (name != null && name.length() > 0) {

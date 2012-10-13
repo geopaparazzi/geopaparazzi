@@ -332,4 +332,12 @@ public class Utilities {
         }
         return quadKey;
     }
+
+    @SuppressWarnings("nls")
+    public static String makeXmlSafe( String string ) {
+        if (string == null)
+            return "";
+        string = string.replaceAll("&", "&amp;");
+        return string;
+    }
 }

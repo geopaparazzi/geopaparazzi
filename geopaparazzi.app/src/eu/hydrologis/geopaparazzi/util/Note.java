@@ -29,6 +29,7 @@ import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geopaparazzi.library.gpx.GpxRepresenter;
 import eu.geopaparazzi.library.gpx.GpxUtilities;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
+import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * Represents a note (log or map).
@@ -128,6 +129,7 @@ public class Note implements KmlRepresenter, GpxRepresenter {
 
     @SuppressWarnings("nls")
     public String toKmlString() throws Exception {
+        String name = Utilities.makeXmlSafe(this.name);
         StringBuilder sB = new StringBuilder();
         sB.append("<Placemark>\n");
         // sB.append("<styleUrl>#red-pushpin</styleUrl>\n");
@@ -207,6 +209,7 @@ public class Note implements KmlRepresenter, GpxRepresenter {
             }
             sB.append("]]>\n");
         } else if (description != null) {
+            String description = Utilities.makeXmlSafe(this.description);
             sB.append(description);
             sB.append("\n");
             sB.append(timeStamp);
@@ -247,6 +250,7 @@ public class Note implements KmlRepresenter, GpxRepresenter {
     }
 
     public String toGpxString() throws Exception {
+        String description = Utilities.makeXmlSafe(this.description);
         String descr = description.replaceAll("\n", "; "); //$NON-NLS-1$//$NON-NLS-2$
         String wayPointString = GpxUtilities.getWayPointString(lat, lon, altim, name, descr);
         return wayPointString;
