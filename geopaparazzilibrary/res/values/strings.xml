@@ -57,5 +57,6 @@
     <string name="error_while_storing_form_data">An error occurred while storing the form data.</string>
     <string name="view_routing_url_in_browser">Do you want to open the used routing URL in a a browser?</string>
     <string name="enter_geocode_string">insert place or address</string>
+    <string name="no_valid_destination_selected">No valid destination selected.</string>
 
 </resources>

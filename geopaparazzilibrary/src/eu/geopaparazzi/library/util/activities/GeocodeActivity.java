@@ -53,13 +53,15 @@ import eu.geopaparazzi.library.util.debug.Logger;
 public class GeocodeActivity extends ListActivity {
     private static final int MAX_ADDRESSES = 30;
 
-    private String noValidItemSelectedMsg = "No valid destination selected.";
+    private String noValidItemSelectedMsg = null;
 
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.geocode);
+
+        noValidItemSelectedMsg = getString(R.string.no_valid_destination_selected);
     }
 
     public void onLookupLocationClick( View view ) {
