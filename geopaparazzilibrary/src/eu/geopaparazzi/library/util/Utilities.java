@@ -340,4 +340,27 @@ public class Utilities {
         string = string.replaceAll("&", "&amp;");
         return string;
     }
+
+    /**
+     * A string formatter. 
+     * 
+     * <p>This method exists, because the method to use is not definitive yet.</p>
+     * <p>
+     * Currently the format of the substitutes in the message are: 
+     * <ul>
+     *   <li>%1$d = for numeric</li>
+     *   <li>%1$s = for strings</li>
+     * </ul> 
+     * The %1, %2, etc refer to the number of the args.
+     * </p>
+     * 
+     * @param msg the message.
+     * @param args the args to substitute.
+     * @return the formatted string.
+     */
+    public static String format( String msg, String... args ) {
+        String msgFormat = String.format(msg, (Object[]) args);
+        return msgFormat;
+    }
+
 }

@@ -169,11 +169,11 @@ public class ResourcesManager implements Serializable {
             applicationDir = possibleApplicationDir;
         }
 
+        String cantCreateSdcardmsg = context.getResources().getString(R.string.cantcreate_sdcard);
         String applicationDirPath = applicationDir.getAbsolutePath();
         if (!applicationDir.exists())
             if (!applicationDir.mkdirs()) {
-                String msg = context.getResources().getString(R.string.cantcreate_sdcard);
-                String msgFormat = MessageFormat.format(msg, applicationDirPath);
+                String msgFormat = MessageFormat.format(cantCreateSdcardmsg, applicationDirPath);
                 Utilities.messageDialog(context, msgFormat, null);
             }
         databaseFile = new File(applicationDirPath, databaseName);
@@ -181,27 +181,24 @@ public class ResourcesManager implements Serializable {
 
         mediaDir = new File(applicationDir, PATH_MEDIA);
         if (!mediaDir.exists())
-            if (!mediaDir.mkdir())
-                Utilities.messageDialog(
-                        context,
-                        MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
-                                mediaDir.getAbsolutePath()), null);
+            if (!mediaDir.mkdir()) {
+                String msgFormat = MessageFormat.format(cantCreateSdcardmsg, mediaDir.getAbsolutePath());
+                Utilities.messageDialog(context, msgFormat, null);
+            }
 
         exportDir = new File(applicationDir, PATH_EXPORT);
         if (!exportDir.exists())
-            if (!exportDir.mkdir())
-                Utilities.messageDialog(
-                        context,
-                        MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
-                                exportDir.getAbsolutePath()), null);
+            if (!exportDir.mkdir()) {
+                String msgFormat = MessageFormat.format(cantCreateSdcardmsg, exportDir.getAbsolutePath());
+                Utilities.messageDialog(context, msgFormat, null);
+            }
 
         mapsDir = new File(sdcardDir, PATH_MAPS);
         if (!mapsDir.exists())
             if (!mapsDir.mkdir()) {
-                Utilities.messageDialog(
-                        context,
-                        MessageFormat.format(context.getResources().getString(R.string.cantcreate_sdcard),
-                                mapsDir.getAbsolutePath()), null);
+//                String msgFormat = MessageFormat.format(cantCreateSdcardmsg, mapsDir.getAbsolutePath());
+                String msgFormat = String.format(cantCreateSdcardmsg, mapsDir.getAbsolutePath());
+                Utilities.messageDialog(context, msgFormat, null);
                 mapsDir = sdcardDir;
             }
     }
