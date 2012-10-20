@@ -203,7 +203,7 @@ public class FormActivity extends FragmentActivity {
                 if (value == null || !constraints.isValid(value)) {
                     String constraintDescription = constraints.getDescription();
                     String validfieldMsg = getString(R.string.form_field_check);
-                    String msg = MessageFormat.format(validfieldMsg, key, formName, constraintDescription);
+                    String msg = Utilities.format(validfieldMsg, key, formName, constraintDescription);
                     Utilities.messageDialog(this, msg, null);
                     return;
                 }
