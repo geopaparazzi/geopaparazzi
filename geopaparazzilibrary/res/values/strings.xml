@@ -44,7 +44,7 @@
     <string name="approaching_poi">Approaching a point of interest.</string>
     <string name="form_field_check">Please check that the field \"%1$s\" in section \"%2$s\" is valid. Not validated constraints: %3$s.</string>
     <string name="enterLocationLabel">Enter Location:</string>
-    <string name="lookupLocationButton">Lookup Location</string>
+    <string name="lookupLocationButton">go</string>
     <string name="geocodeErrorTitle">Geocoding Error</string>
     <string name="geocodeErrorMessage">Geocoding of location failed. Try re-submitting location.</string>
     <string name="openrouteservice">OpenRouteService</string>
@@ -56,5 +56,6 @@
     <string name="available_only_with_network">This function is available only with an active network connection.</string>
     <string name="error_while_storing_form_data">An error occurred while storing the form data.</string>
     <string name="view_routing_url_in_browser">Do you want to open the used routing URL in a a browser?</string>
+    <string name="enter_geocode_string">insert place or address</string>
 
 </resources>

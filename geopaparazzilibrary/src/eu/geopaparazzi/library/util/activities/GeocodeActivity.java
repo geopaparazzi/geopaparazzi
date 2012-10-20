@@ -53,6 +53,8 @@ import eu.geopaparazzi.library.util.debug.Logger;
 public class GeocodeActivity extends ListActivity {
     private static final int MAX_ADDRESSES = 30;
 
+    private String noValidItemSelectedMsg = "No valid destination selected.";
+
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
@@ -108,8 +110,9 @@ public class GeocodeActivity extends ListActivity {
 
             this.setResult(RESULT_OK, intent);
             finish();
+        } else {
+            Utilities.messageDialog(this, noValidItemSelectedMsg, null);
         }
-
     }
 
     private boolean checkNetwork() {
@@ -125,6 +128,13 @@ public class GeocodeActivity extends ListActivity {
         if (!checkNetwork()) {
             return;
         }
+
+        ListView mainListView = getListView();
+        if (mainListView.getCheckedItemPosition() == ListView.INVALID_POSITION) {
+            Utilities.messageDialog(this, noValidItemSelectedMsg, null);
+            return;
+        }
+
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         String[] items = new String[]{//
