@@ -200,6 +200,43 @@ public class Utilities {
      * Execute a message dialog in an {@link AsyncTask}.
      * 
      * @param context the {@link Context} to use.
+     * @param msg the message to show.
+     * @param yesRunnable optional {@link Runnable} to trigger after yes was pressed. 
+     * @param noRunnable optional {@link Runnable} to trigger after no was pressed. 
+     */
+    public static void yesNoMessageDialog( final Context context, final String msg, final Runnable yesRunnable,
+            final Runnable noRunnable ) {
+        new AsyncTask<String, Void, String>(){
+            protected String doInBackground( String... params ) {
+                return ""; //$NON-NLS-1$
+            }
+
+            protected void onPostExecute( String response ) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage(msg).setCancelable(false)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener(){
+                            public void onClick( DialogInterface dialog, int id ) {
+                                if (yesRunnable != null) {
+                                    new Thread(yesRunnable).start();
+                                }
+                            }
+                        }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener(){
+                            public void onClick( DialogInterface dialog, int id ) {
+                                if (noRunnable != null) {
+                                    new Thread(noRunnable).start();
+                                }
+                            }
+                        });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            }
+        }.execute((String) null);
+    }
+
+    /**
+     * Execute a message dialog in an {@link AsyncTask}.
+     * 
+     * @param context the {@link Context} to use.
      * @param msgId the id of the message to show.
      * @param okRunnable optional {@link Runnable} to trigger after ok was pressed. 
      */

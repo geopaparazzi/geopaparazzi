@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -170,6 +171,8 @@ public class GeocodeActivity extends ListActivity {
                             final ProgressDialog orsProgressDialog = ProgressDialog.show(GeocodeActivity.this,
                                     getString(R.string.openrouteservice), getString(R.string.downloading_route), true, false);
                             new AsyncTask<String, Void, String>(){
+                                private String usedUrlString;
+
                                 protected String doInBackground( String... params ) {
                                     try {
 
@@ -177,6 +180,7 @@ public class GeocodeActivity extends ListActivity {
                                                 lonLatZoom[0], latitude, longitude, tmpOrsPreference,
                                                 OpenRouteServiceHandler.Language.en);
                                         String errorMessage = router.getErrorMessage();
+                                        usedUrlString = router.getUsedUrlString();
                                         if (errorMessage == null) {
                                             float[] routePoints = router.getRoutePoints();
 
@@ -206,7 +210,15 @@ public class GeocodeActivity extends ListActivity {
                                         GeocodeActivity.this.setResult(RESULT_OK, intent);
                                         finish();
                                     } else {
-                                        Utilities.messageDialog(GeocodeActivity.this, errorMessage, null);
+                                        String openString = errorMessage + "\n\n" //$NON-NLS-1$
+                                                + getString(R.string.view_routing_url_in_browser);
+                                        Utilities.yesNoMessageDialog(GeocodeActivity.this, openString, new Runnable(){
+                                            public void run() {
+                                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(usedUrlString));
+                                                startActivity(browserIntent);
+                                            }
+                                        }, null);
+
                                     }
                                 }
 

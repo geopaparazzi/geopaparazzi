@@ -21,7 +21,6 @@ import static eu.geopaparazzi.library.forms.FormUtilities.TAG_KEY;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_VALUE;
 
 import java.sql.Date;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 

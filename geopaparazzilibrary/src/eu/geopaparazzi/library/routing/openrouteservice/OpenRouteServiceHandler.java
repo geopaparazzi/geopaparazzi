@@ -36,23 +36,24 @@ public class OpenRouteServiceHandler {
     private String uom = "";
 
     private String errorMessage = null;
+    private String urlString;
 
     public OpenRouteServiceHandler( double fromLat, double fromLon, double toLat, double toLon, Preference pref, Language lang )
             throws Exception {
-        StringBuilder urlString = new StringBuilder();
-        urlString.append("http://openls.geog.uni-heidelberg.de/osm/eu/routing?");
-        urlString.append("start=");// from
-        urlString.append(fromLon);
-        urlString.append(",");
-        urlString.append(fromLat);
-        urlString.append("&end=");// to
-        urlString.append(toLon);
-        urlString.append(",");
-        urlString.append(toLat);
-        urlString.append("&preference=");
-        urlString.append(pref.toString());
-        urlString.append("&language=");
-        urlString.append(lang.toString());
+        StringBuilder urlSB = new StringBuilder();
+        urlSB.append("http://openls.geog.uni-heidelberg.de/osm/eu/routing?");
+        urlSB.append("start=");// from
+        urlSB.append(fromLon);
+        urlSB.append(",");
+        urlSB.append(fromLat);
+        urlSB.append("&end=");// to
+        urlSB.append(toLon);
+        urlSB.append(",");
+        urlSB.append(toLat);
+        urlSB.append("&preference=");
+        urlSB.append(pref.toString());
+        urlSB.append("&language=");
+        urlSB.append(lang.toString());
         /*
          * TODO check the openrouteservce docs, which seem to be wrong or outdated.
          */
@@ -65,7 +66,8 @@ public class OpenRouteServiceHandler {
         // urlString.append(noTollways.toString());
         // }
 
-        URL url = new URL(urlString.toString());
+        urlString = urlSB.toString();
+        URL url = new URL(urlString);
         URLConnection connection = url.openConnection();
 
         DocumentBuilder dom = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -119,6 +121,10 @@ public class OpenRouteServiceHandler {
 
     public String getErrorMessage() {
         return errorMessage;
+    }
+
+    public String getUsedUrlString() {
+        return urlString;
     }
 
     public float[] getRoutePoints() {
