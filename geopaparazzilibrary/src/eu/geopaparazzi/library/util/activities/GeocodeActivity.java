@@ -75,6 +75,10 @@ public class GeocodeActivity extends ListActivity {
 
         try {
             List<Address> addressList = new Geocoder(this).getFromLocationName(addressText.getText().toString(), MAX_ADDRESSES);
+            if (addressList.size() == 0) {
+                Utilities.messageDialog(this, R.string.couldnt_find_geocache_results, null);
+                return;
+            }
 
             List<AddressWrapper> addressWrapperList = new ArrayList<AddressWrapper>();
 
