@@ -29,7 +29,7 @@ public class Debug {
      * 
      * <p>For release = <code>false</code>.
      */
-    public final static boolean D = false;
+    public final static boolean D = true;
 
     /**
      * Flag to define the use of mock locations instead of the gps.

@@ -4,71 +4,53 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <com.almondmendoza.drawings.DrawingSurface
+    <eu.geopaparazzi.library.sketch.DrawingSurface
         android:id="@+id/drawingSurface"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+    <RelativeLayout
+        android:id="@+id/commandsBar"
+        android:layout_width="wrap_content"
+        android:layout_height="50dip"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:background="@color/hydrogreen" >
+
+        <Spinner
+            android:id="@+id/colorspinner"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true" />
+
+        <Spinner
+            android:id="@+id/widthspinner"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@id/colorspinner" />
 
         <Button
-            android:id="@+id/colorRedBtn"
+            android:id="@+id/redoButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onClick"
-            android:text="R" />
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:text="redo" />
 
         <Button
-            android:id="@+id/colorBlueBtn"
+            android:id="@+id/undoButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onClick"
-            android:text="G" />
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@id/redoButton"
+            android:text="undo" />
 
-        <Button
-            android:id="@+id/colorGreenBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onClick"
-            android:text="B" />
-
-        <Button
-            android:id="@+id/undoBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onClick"
-            android:text="U" />
-
-        <Button
-            android:id="@+id/redoBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onClick"
-            android:text="R" />
-
-        <Button
-            android:id="@+id/saveBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onClick"
-            android:text="S" />
-
-        <Button
-            android:id="@+id/pathBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onClick"
-            android:text="P" />
-
-        <Button
-            android:id="@+id/circleBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onClick"
-            android:text="C" />
-    </LinearLayout>
+    </RelativeLayout>
 
 </RelativeLayout>
