@@ -7,8 +7,7 @@
     <eu.geopaparazzi.library.sketch.DrawingSurface
         android:id="@+id/drawingSurface"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="match_parent" />
 
     <RelativeLayout
         android:id="@+id/commandsBar"
@@ -50,7 +49,6 @@
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@id/redoButton"
             android:text="undo" />
-
     </RelativeLayout>
 
 </RelativeLayout>

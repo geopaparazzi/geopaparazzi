@@ -1,18 +1,18 @@
 package eu.geopaparazzi.library.sketch;
 
-import eu.geopaparazzi.library.sketch.commands.CommandManager;
-import eu.geopaparazzi.library.sketch.commands.DrawingPath;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import eu.geopaparazzi.library.sketch.commands.CommandManager;
+import eu.geopaparazzi.library.sketch.commands.DrawingPath;
+import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
  * Created by IntelliJ IDEA.
@@ -66,26 +66,32 @@ public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callbac
                     try {
                         canvas = mSurfaceHolder.lockCanvas(null);
                         if (mBitmap == null) {
-                            mBitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+                            // mBitmap = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888);
+                            Logger.i(this, "Canvas not ready yet...");
+                            continue;
                         }
                         final Canvas c = new Canvas(mBitmap);
 
-                        c.drawColor(0, PorterDuff.Mode.CLEAR);
-                        canvas.drawColor(0, PorterDuff.Mode.CLEAR);
+                        c.drawColor(Color.WHITE);
+                        // c.drawColor(0, PorterDuff.Mode.CLEAR);
+                        canvas.drawColor(Color.WHITE);
+                        // canvas.drawColor(0, PorterDuff.Mode.CLEAR);
 
                         commandManager.executeAll(c, previewDoneHandler);
 
-                        if (Debug.D) {
-                            if (!previewPath.path.isEmpty()) {
-                                Logger.i(this,
-                                        "Style: " + previewPath.paint.getStrokeWidth() + "/" + previewPath.paint.getColor()); //$NON-NLS-1$//$NON-NLS-2$
-                            }
-                        }
+                        // if (Debug.D) {
+                        // if (!previewPath.path.isEmpty()) {
+                        // Logger.i(this,
+                        //                                        "Style: " + previewPath.paint.getStrokeWidth() + "/" + previewPath.paint.getColor()); //$NON-NLS-1$//$NON-NLS-2$
+                        // }
+                        // }
                         previewPath.draw(c);
 
                         canvas.drawBitmap(mBitmap, 0, 0, null);
                     } finally {
-                        mSurfaceHolder.unlockCanvasAndPost(canvas);
+                        if (canvas != null) {
+                            mSurfaceHolder.unlockCanvasAndPost(canvas);
+                        }
                     }
 
                 }
