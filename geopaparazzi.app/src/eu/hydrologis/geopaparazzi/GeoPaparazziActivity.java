@@ -108,6 +108,7 @@ public class GeoPaparazziActivity extends Activity {
     private final int RETURNCODE_BROWSE_FOR_NEW_PREOJECT = 665;
     private final int RETURNCODE_NOTES = 666;
     private final int RETURNCODE_PICS = 667;
+    private final int RETURNCODE_SKETCH = 668;
 
     private boolean sliderIsOpen = false;
     private GpsManager gpsManager;
@@ -425,6 +426,7 @@ public class GeoPaparazziActivity extends Activity {
             qa.addActionItem(QuickActionsFactory.INSTANCE.getNotesQuickAction(qa, this, RETURNCODE_NOTES));
             qa.addActionItem(QuickActionsFactory.INSTANCE.getPicturesQuickAction(qa, this, RETURNCODE_PICS));
             qa.addActionItem(QuickActionsFactory.INSTANCE.getAudioQuickAction(qa, this, resourcesManager.getMediaDir()));
+            qa.addActionItem(QuickActionsFactory.INSTANCE.getSketchQuickAction(qa, this, RETURNCODE_SKETCH));
             qa.setAnimStyle(QuickAction.ANIM_AUTO);
             qa.show();
             break;

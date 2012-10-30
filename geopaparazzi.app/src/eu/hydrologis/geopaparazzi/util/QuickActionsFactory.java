@@ -37,6 +37,7 @@ import android.view.View.OnClickListener;
 import android.widget.EditText;
 import eu.geopaparazzi.library.camera.CameraActivity;
 import eu.geopaparazzi.library.gps.GpsManager;
+import eu.geopaparazzi.library.sketch.DrawingActivity;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.Utilities;
@@ -258,5 +259,43 @@ public enum QuickActionsFactory {
             }
         });
         return stopLogQuickaction;
+    }
+
+    /**
+     * Create a {@link QuickAction} for sketches collection.
+     * 
+     * @param qa the {@link QuickAction} to attache the {@link ActionItem} to.
+     * @param activity the context to use.
+     * @return the {@link ActionItem} created.
+     */
+    public ActionItem getSketchQuickAction( final QuickAction qa, final Activity activity, final int requestCode ) {
+        ActionItem pictureQuickaction = new ActionItem();
+        pictureQuickaction.setTitle("Geosketch");
+        pictureQuickaction.setIcon(activity.getResources().getDrawable(R.drawable.quickaction_pictures));
+        pictureQuickaction.setOnClickListener(new OnClickListener(){
+            public void onClick( View v ) {
+                try {
+                    boolean isValid = false;
+                    // if (GpsManager.getInstance(activity).hasValidData()) {
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
+                    double[] gpsLocation = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
+                    if (gpsLocation != null) {
+                        Intent cameraIntent = new Intent(activity, DrawingActivity.class);
+                        cameraIntent.putExtra(LibraryConstants.LATITUDE, gpsLocation[1]);
+                        cameraIntent.putExtra(LibraryConstants.LONGITUDE, gpsLocation[0]);
+                        cameraIntent.putExtra(LibraryConstants.ELEVATION, gpsLocation[2]);
+                        activity.startActivityForResult(cameraIntent, requestCode);
+                        isValid = true;
+                    }
+                    // }
+                    if (!isValid)
+                        Utilities.messageDialog(activity, R.string.gpslogging_only, null);
+                    qa.dismiss();
+                } catch (Exception e) {
+                    Logger.e(this, e.getLocalizedMessage(), e);
+                }
+            }
+        });
+        return pictureQuickaction;
     }
 }
