@@ -108,8 +108,8 @@ public class FormActivity extends FragmentActivity {
 
     public boolean onCreateOptionsMenu( Menu menu ) {
         super.onCreateOptionsMenu(menu);
-        menu.add(Menu.NONE, MENU_SAVE, 1, "Save").setIcon(android.R.drawable.ic_menu_save);
-        menu.add(Menu.NONE, MENU_CANCEL, 2, "Cancel").setIcon(android.R.drawable.ic_menu_close_clear_cancel);
+        menu.add(Menu.NONE, MENU_SAVE, 1, R.string.save).setIcon(android.R.drawable.ic_menu_save);
+        menu.add(Menu.NONE, MENU_CANCEL, 2, R.string.cancel).setIcon(android.R.drawable.ic_menu_close_clear_cancel);
 
         return true;
     }
