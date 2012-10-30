@@ -39,6 +39,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
+            android:onClick="onClick"
             android:text="redo" />
 
         <Button
@@ -48,6 +49,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@id/redoButton"
+            android:onClick="onClick"
             android:text="undo" />
     </RelativeLayout>
 
