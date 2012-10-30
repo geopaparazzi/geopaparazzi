@@ -271,23 +271,25 @@ public enum QuickActionsFactory {
     public ActionItem getSketchQuickAction( final QuickAction qa, final Activity activity, final int requestCode ) {
         ActionItem pictureQuickaction = new ActionItem();
         pictureQuickaction.setTitle("Geosketch");
-        pictureQuickaction.setIcon(activity.getResources().getDrawable(R.drawable.quickaction_pictures));
+        pictureQuickaction.setIcon(activity.getResources().getDrawable(R.drawable.quickaction_sketch));
         pictureQuickaction.setOnClickListener(new OnClickListener(){
             public void onClick( View v ) {
                 try {
                     boolean isValid = false;
-                    // if (GpsManager.getInstance(activity).hasValidData()) {
-                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
-                    double[] gpsLocation = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
-                    if (gpsLocation != null) {
-                        Intent cameraIntent = new Intent(activity, DrawingActivity.class);
-                        cameraIntent.putExtra(LibraryConstants.LATITUDE, gpsLocation[1]);
-                        cameraIntent.putExtra(LibraryConstants.LONGITUDE, gpsLocation[0]);
-                        cameraIntent.putExtra(LibraryConstants.ELEVATION, gpsLocation[2]);
-                        activity.startActivityForResult(cameraIntent, requestCode);
-                        isValid = true;
+                    if (GpsManager.getInstance(activity).hasValidData()) {
+                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
+                        double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
+                        // double[] gpsLocation =
+                        // PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
+                        if (gpsLocation != null) {
+                            Intent cameraIntent = new Intent(activity, DrawingActivity.class);
+                            cameraIntent.putExtra(LibraryConstants.LATITUDE, gpsLocation[1]);
+                            cameraIntent.putExtra(LibraryConstants.LONGITUDE, gpsLocation[0]);
+                            cameraIntent.putExtra(LibraryConstants.ELEVATION, gpsLocation[2]);
+                            activity.startActivityForResult(cameraIntent, requestCode);
+                            isValid = true;
+                        }
                     }
-                    // }
                     if (!isValid)
                         Utilities.messageDialog(activity, R.string.gpslogging_only, null);
                     qa.dismiss();
