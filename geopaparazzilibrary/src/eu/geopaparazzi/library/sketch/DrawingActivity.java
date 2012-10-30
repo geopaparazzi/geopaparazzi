@@ -2,14 +2,11 @@ package eu.geopaparazzi.library.sketch;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Date;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -149,10 +146,10 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
         return super.onMenuItemSelected(featureId, item);
     }
 
-    private void saveImage() throws IOException {
+    private void saveImage() throws Exception {
         Date currentDate = new Date();
         String currentDatestring = LibraryConstants.TIMESTAMPFORMATTER.format(currentDate);
-        String imageName = "SKETCH_" + currentDatestring + ".jpg";
+        String imageName = "SKETCH_" + currentDatestring + ".png";
         String imagePropertiesName = "SKETCH_" + currentDatestring + ".properties";
         File imageSaveFolder = ResourcesManager.getInstance(this).getMediaDir();
 
@@ -180,15 +177,13 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
             }
         }
 
-        FileOutputStream out = null;
-        try {
-            out = new FileOutputStream(imageFile);
-            drawingSurface.getBitmap().compress(Bitmap.CompressFormat.PNG, 90, out);
-            out.flush();
-        } catch (Exception e) {
-            e.printStackTrace();
-            if (out != null)
-                out.close();
+        drawingSurface.dumpImage(imageFile);
+        int count = 0;
+        while( !imageFile.exists() ) {
+            Thread.sleep(300);
+            if (count++ > 50) {
+                throw new RuntimeException("An error occurred during the saving of the image.");
+            }
         }
 
         // create props file
@@ -214,7 +209,7 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
         intent.putExtra(LibraryConstants.LONGITUDE, lon);
         intent.putExtra(LibraryConstants.ELEVATION, elevation);
         setResult(Activity.RESULT_OK, intent);
-
+        
         finish();
     }
 

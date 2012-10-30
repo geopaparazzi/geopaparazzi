@@ -1,5 +1,9 @@
 package eu.geopaparazzi.library.sketch;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -11,6 +15,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import eu.geopaparazzi.library.sketch.commands.CommandManager;
 import eu.geopaparazzi.library.sketch.commands.DrawingPath;
+import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
@@ -45,6 +50,8 @@ public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callbac
             isDrawing = false;
         }
     };
+    private File imageFile;
+    private boolean dumpToImage;
 
     class DrawThread extends Thread {
         private SurfaceHolder mSurfaceHolder;
@@ -88,6 +95,24 @@ public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callbac
                         previewPath.draw(c);
 
                         canvas.drawBitmap(mBitmap, 0, 0, null);
+
+                        if (dumpToImage) {
+                            FileOutputStream out = null;
+                            try {
+                                out = new FileOutputStream(imageFile);
+                                mBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                                out.flush();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                if (out != null)
+                                    try {
+                                        out.close();
+                                    } catch (IOException e1) {
+                                        e1.printStackTrace();
+                                    }
+                            }
+                            dumpToImage = false;
+                        }
                     } finally {
                         if (canvas != null) {
                             mSurfaceHolder.unlockCanvasAndPost(canvas);
@@ -124,12 +149,10 @@ public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callbac
         return commandManager.hasMoreUndo();
     }
 
-    public Bitmap getBitmap() {
-        return mBitmap;
-    }
-
     public void surfaceChanged( SurfaceHolder holder, int format, int width, int height ) {
-        mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);;
+        mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        if (Debug.D)
+            Logger.i(this, "Recreating bitmap");
     }
 
     public void surfaceCreated( SurfaceHolder holder ) {
@@ -150,6 +173,11 @@ public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callbac
                 // we will try it again and again...
             }
         }
+    }
+
+    public void dumpImage( File imageFile ) throws IOException {
+        this.imageFile = imageFile;
+        dumpToImage = true;
     }
 
 }

@@ -708,12 +708,16 @@ public abstract class GeopaparazziOverlay extends Overlay {
             int lonE6 = position.longitudeE6;
             float lat = latE6 / LibraryConstants.E6;
             float lon = lonE6 / LibraryConstants.E6;
-            if (title.toLowerCase().endsWith("jpg")) { //$NON-NLS-1$
+            if (title.toLowerCase().endsWith("jpg") || title.toLowerCase().endsWith("png")) { //$NON-NLS-1$
                 Intent intent = new Intent();
                 intent.setAction(android.content.Intent.ACTION_VIEW);
-                String relativePath = title;
-                File mediaDir = ResourcesManager.getInstance(context).getMediaDir();
-                intent.setDataAndType(Uri.fromFile(new File(mediaDir.getParentFile(), relativePath)), "image/*"); //$NON-NLS-1$
+                File absolutePath = new File(title);
+                if (!absolutePath.exists()) {
+                    // try relative to media
+                    File mediaDir = ResourcesManager.getInstance(context).getMediaDir();
+                    absolutePath = new File(mediaDir.getParentFile(), title);
+                }
+                intent.setDataAndType(Uri.fromFile(absolutePath), "image/*"); //$NON-NLS-1$
                 context.startActivity(intent);
             } else {
 
