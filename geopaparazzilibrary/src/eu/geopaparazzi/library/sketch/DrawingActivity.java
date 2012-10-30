@@ -79,7 +79,7 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
         }
 
         currentBrush = new PenBrush();
-        currentWidth = 2f;
+        currentWidth = 3f;
 
         drawingSurface = (DrawingSurface) findViewById(R.id.drawingSurface);
         drawingSurface.setOnTouchListener(this);
@@ -108,7 +108,7 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
                 android.R.layout.simple_spinner_item);
         widthSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         widthSpinner.setAdapter(widthSpinnerAdapter);
-        widthSpinner.setSelection(1);
+        widthSpinner.setSelection(2);
         widthSpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
             public void onItemSelected( AdapterView< ? > arg0, View arg1, int arg2, long arg3 ) {
                 onClick(widthSpinner);
@@ -158,14 +158,14 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
 
         File imagePropertiesFile = null;
 
-        if (imageSavePath != null || imageSavePath.length() > 0) {
+        if (imageSavePath == null || imageSavePath.length() == 0) {
+            imageFile = new File(imageSaveFolder, imageName);
+            imagePropertiesFile = new File(imageSaveFolder, imagePropertiesName);
+        } else {
             imageFile = new File(imageSavePath);
             String propFileName = FileUtilities.getNameWithoutExtention(imageFile) + ".properties";
             imageSaveFolder = imageFile.getParentFile();
             imagePropertiesFile = new File(imageSaveFolder, propFileName);
-        } else {
-            imageFile = new File(imageSaveFolder, imageName);
-            imagePropertiesFile = new File(imageSaveFolder, imagePropertiesName);
         }
 
         if (!imageSaveFolder.exists()) {
@@ -249,7 +249,7 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
         //            Logger.i(this, "Drawing: " + x + "/" + y); //$NON-NLS-1$//$NON-NLS-2$
         // }
         if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-            drawingSurface.isDrawing = true;
+            DrawingSurface.isDrawing = true;
 
             currentDrawingPath = new DrawingPath();
             currentDrawingPath.paint = currentPaint;
@@ -258,7 +258,7 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
             currentBrush.mouseDown(drawingSurface.previewPath.path, x, y);
 
         } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
-            drawingSurface.isDrawing = true;
+            DrawingSurface.isDrawing = true;
             currentBrush.mouseMove(currentDrawingPath.path, x, y);
             currentBrush.mouseMove(drawingSurface.previewPath.path, x, y);
 

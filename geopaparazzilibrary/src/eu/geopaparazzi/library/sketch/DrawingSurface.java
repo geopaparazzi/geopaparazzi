@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -15,17 +14,18 @@ import eu.geopaparazzi.library.sketch.commands.DrawingPath;
 import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
- * Created by IntelliJ IDEA.
- * User: almondmendoza
- * Date: 07/11/2010
- * Time: 2:15 AM
- * Link: http://www.tutorialforandroid.com/
+ * The drawing surface..
+ * 
+ * <p>Adapted for geopaparazzi.</p>
+ * 
+ * @author almondmendoza (http://www.tutorialforandroid.com/)
+ * @author Andrea Antonello (www.hydrologis.com)
  */
 public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callback {
-    private Boolean _run;
+    private Boolean _run = false;
     protected DrawThread thread;
     private Bitmap mBitmap;
-    public boolean isDrawing = true;
+    public static boolean isDrawing = true;
     public DrawingPath previewPath;
 
     private CommandManager commandManager;
@@ -39,7 +39,7 @@ public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callbac
         thread = new DrawThread(getHolder());
     }
 
-    private Handler previewDoneHandler = new Handler(){
+    private static Handler previewDoneHandler = new Handler(){
         @Override
         public void handleMessage( Message msg ) {
             isDrawing = false;
@@ -129,18 +129,17 @@ public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callbac
     }
 
     public void surfaceChanged( SurfaceHolder holder, int format, int width, int height ) {
-        // TODO Auto-generated method stub
         mBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);;
     }
 
     public void surfaceCreated( SurfaceHolder holder ) {
-        // TODO Auto-generated method stub
-        thread.setRunning(true);
-        thread.start();
+        if (!_run) {
+            thread.setRunning(true);
+            thread.start();
+        }
     }
 
     public void surfaceDestroyed( SurfaceHolder holder ) {
-        // TODO Auto-generated method stub
         boolean retry = true;
         thread.setRunning(false);
         while( retry ) {
