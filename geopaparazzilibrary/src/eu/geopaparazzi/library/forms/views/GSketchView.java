@@ -61,6 +61,7 @@ public class GSketchView extends View {
     private List<String> addedImages = new ArrayList<String>();
 
     private LinearLayout imageLayout;
+    private File lastImageFile;
 
     public GSketchView( Context context, AttributeSet attrs, int defStyle ) {
         super(context, attrs, defStyle);
@@ -98,6 +99,7 @@ public class GSketchView extends View {
         textLayout.addView(button);
 
         button.setOnClickListener(new View.OnClickListener(){
+
             public void onClick( View v ) {
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
                 double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
@@ -105,10 +107,9 @@ public class GSketchView extends View {
                 Date currentDate = new Date();
                 String currentDatestring = LibraryConstants.TIMESTAMPFORMATTER.format(currentDate);
                 File mediaDir = ResourcesManager.getInstance(context).getMediaDir();
-                File imageFile = new File(mediaDir, "SKETCH_" + currentDatestring + ".png");
+                lastImageFile = new File(mediaDir, "SKETCH_" + currentDatestring + ".png");
                 Intent sketchIntent = new Intent(context, DrawingActivity.class);
-                String imagePath = imageFile.getAbsolutePath();
-                _value = _value + ";" + imagePath;
+                String imagePath = lastImageFile.getAbsolutePath();
                 sketchIntent.putExtra(LibraryConstants.PREFS_KEY_PATH, imagePath);
                 if (gpsLocation != null) {
                     sketchIntent.putExtra(LibraryConstants.LATITUDE, gpsLocation[1]);
@@ -135,7 +136,12 @@ public class GSketchView extends View {
         ViewTreeObserver observer = imageLayout.getViewTreeObserver();
         observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener(){
             public boolean onPreDraw() {
-                refresh(context);
+                if (lastImageFile != null && lastImageFile.exists()) {
+                    String imagePath = lastImageFile.getAbsolutePath();
+                    _value = _value + ";" + imagePath;
+                    refresh(context);
+                    lastImageFile = null;
+                }
                 return true;
             }
         });
@@ -183,8 +189,6 @@ public class GSketchView extends View {
                     sb.append(";").append(imagePath);
                 }
                 _value = sb.substring(1);
-            } else {
-                _value = "";
             }
         }
     }
