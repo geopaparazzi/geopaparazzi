@@ -19,19 +19,32 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
 
-        <Button
-            android:id="@+id/imagefromtag"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/imagefromgps" />
-
-        <Button
+        <ImageButton
             android:id="@+id/notefromtag"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/notefromgps" />
+            android:background="@drawable/action_bar_button_drawable"
+            android:contentDescription="add map center note"
+            android:src="@drawable/quickaction_notes" />
+
+        <ImageButton
+            android:id="@+id/imagefromtag"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/action_bar_button_drawable"
+            android:contentDescription="add map center image"
+            android:src="@drawable/quickaction_pictures" />
+
+        <ImageButton
+            android:id="@+id/sketchfromtag"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/action_bar_button_drawable"
+            android:contentDescription="add map center sketch"
+            android:src="@drawable/quickaction_sketch" />
     </LinearLayout>
 
     <TextView

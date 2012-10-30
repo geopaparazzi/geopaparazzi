@@ -29,10 +29,12 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import eu.geopaparazzi.library.camera.CameraActivity;
 import eu.geopaparazzi.library.forms.FormActivity;
 import eu.geopaparazzi.library.forms.TagsManager;
+import eu.geopaparazzi.library.sketch.DrawingActivity;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
@@ -52,6 +54,7 @@ public class MapTagsActivity extends Activity {
     private static final int NOTE_RETURN_CODE = 666;
     private static final int CAMERA_RETURN_CODE = 667;
     private static final int FORM_RETURN_CODE = 669;
+    private static final int SKETCH_RETURN_CODE = 670;
     private double latitude;
     private double longitude;
     private double elevation;
@@ -68,7 +71,7 @@ public class MapTagsActivity extends Activity {
             elevation = extras.getDouble(LibraryConstants.ELEVATION);
         }
 
-        Button imageButton = (Button) findViewById(R.id.imagefromtag);
+        ImageButton imageButton = (ImageButton) findViewById(R.id.imagefromtag);
         imageButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
                 Intent intent = new Intent(MapTagsActivity.this, CameraActivity.class);
@@ -79,7 +82,7 @@ public class MapTagsActivity extends Activity {
                 MapTagsActivity.this.startActivityForResult(intent, CAMERA_RETURN_CODE);
             }
         });
-        Button noteButton = (Button) findViewById(R.id.notefromtag);
+        ImageButton noteButton = (ImageButton) findViewById(R.id.notefromtag);
         noteButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
                 Intent intent = new Intent(MapTagsActivity.this, NoteActivity.class);
@@ -87,6 +90,16 @@ public class MapTagsActivity extends Activity {
                 intent.putExtra(LibraryConstants.LATITUDE, latitude);
                 intent.putExtra(LibraryConstants.ELEVATION, elevation);
                 MapTagsActivity.this.startActivityForResult(intent, NOTE_RETURN_CODE);
+            }
+        });
+        ImageButton sketchButton = (ImageButton) findViewById(R.id.sketchfromtag);
+        sketchButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                Intent intent = new Intent(MapTagsActivity.this, DrawingActivity.class);
+                intent.putExtra(LibraryConstants.LONGITUDE, longitude);
+                intent.putExtra(LibraryConstants.LATITUDE, latitude);
+                intent.putExtra(LibraryConstants.ELEVATION, elevation);
+                MapTagsActivity.this.startActivityForResult(intent, SKETCH_RETURN_CODE);
             }
         });
 
