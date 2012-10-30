@@ -138,8 +138,8 @@ public class GpsDataListActivity extends ListActivity {
         switch( requestCode ) {
         case (GPSDATAPROPERTIES_RETURN_CODE): {
             if (resultCode == Activity.RESULT_OK) {
-                double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0f);
-                double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0f);
+                double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0d);
+                double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0d);
                 Intent intent = getIntent();
                 intent.putExtra(LibraryConstants.LATITUDE, lat);
                 intent.putExtra(LibraryConstants.LONGITUDE, lon);

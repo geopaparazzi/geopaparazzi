@@ -995,8 +995,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
                 } else {
                     // it is a single point geocoding request
-                    double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0f);
-                    double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0f);
+                    double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0d);
+                    double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0d);
                     setCenterAndZoomForMapWindowFocus(lon, lat, null);
                 }
             }
@@ -1004,8 +1004,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         }
         case (BOOKMARKS_RETURN_CODE): {
             if (resultCode == Activity.RESULT_OK) {
-                double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0f);
-                double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0f);
+                double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0d);
+                double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0d);
                 int zoom = data.getIntExtra(LibraryConstants.ZOOMLEVEL, 1);
                 setCenterAndZoomForMapWindowFocus(lon, lat, zoom);
             }
@@ -1013,8 +1013,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         }
         case (GPSDATAPROPERTIES_RETURN_CODE): {
             if (resultCode == Activity.RESULT_OK) {
-                double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0f);
-                double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0f);
+                double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0d);
+                double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0d);
                 setCenterAndZoomForMapWindowFocus(lon, lat, null);
             }
             break;

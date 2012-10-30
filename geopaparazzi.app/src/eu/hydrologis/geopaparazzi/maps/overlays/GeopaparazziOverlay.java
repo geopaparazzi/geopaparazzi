@@ -742,9 +742,9 @@ public abstract class GeopaparazziOverlay extends Overlay {
                                 Intent formIntent = new Intent(context, FormActivity.class);
                                 formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_JSON, form);
                                 formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_NAME, name);
-                                formIntent.putExtra(LibraryConstants.LATITUDE, lat);
-                                formIntent.putExtra(LibraryConstants.LONGITUDE, lon);
-                                formIntent.putExtra(LibraryConstants.ELEVATION, altim);
+                                formIntent.putExtra(LibraryConstants.LATITUDE, (double) lat);
+                                formIntent.putExtra(LibraryConstants.LONGITUDE, (double) lon);
+                                formIntent.putExtra(LibraryConstants.ELEVATION, (double) altim);
                                 mapActivity.startActivityForResult(formIntent, MapsActivity.FORMUPDATE_RETURN_CODE);
                                 doInfo = false;
                             }

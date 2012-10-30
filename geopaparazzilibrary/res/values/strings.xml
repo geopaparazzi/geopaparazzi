@@ -61,5 +61,7 @@
     <string name="couldnt_find_geocache_results">Could not find any location based on the search. Try to change the search string.</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
+    <string name="take_picture">Take picture</string>
+    <string name="draw_sketch">Draw sketch</string>
 
 </resources>

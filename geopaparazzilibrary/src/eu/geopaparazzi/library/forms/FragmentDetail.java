@@ -148,6 +148,8 @@ public class FragmentDetail extends Fragment {
                                 constraintDescription);
                     } else if (type.equals(TYPE_PICTURES)) {
                         addedView = FormUtilities.addPictureView(activity, mainView, key, value, constraintDescription);
+                    } else if (type.equals(TYPE_SKETCH)) {
+                        addedView = FormUtilities.addSketchView(activity, mainView, key, value, constraintDescription);
                     } else if (type.equals(TYPE_MAP)) {
                         if (value == null || value.length() <= 0) {
                             File applicationDir = ResourcesManager.getInstance(activity).getApplicationDir();
