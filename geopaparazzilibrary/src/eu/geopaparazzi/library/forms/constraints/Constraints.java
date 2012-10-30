@@ -49,6 +49,9 @@ public class Constraints {
      * @return <code>true</code> if all the constraints are valid.
      */
     public boolean isValid( Object object ) {
+        if (object == null) {
+            return false;
+        }
         boolean isValid = true;
         for( IConstraint constraint : constraints ) {
             constraint.applyConstraint(object);

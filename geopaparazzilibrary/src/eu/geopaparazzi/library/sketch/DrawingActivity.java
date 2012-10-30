@@ -138,12 +138,18 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
             }
             return true;
         case MENU_CANCEL:
-            finish();
+            doFinish();
             return true;
         default: {
         }
         }
         return super.onMenuItemSelected(featureId, item);
+    }
+
+    private void doFinish() {
+        if (drawingSurface != null)
+            drawingSurface.dispose();
+        finish();
     }
 
     private void saveImage() throws Exception {
@@ -210,7 +216,7 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
         intent.putExtra(LibraryConstants.ELEVATION, elevation);
         setResult(Activity.RESULT_OK, intent);
 
-        finish();
+        doFinish();
     }
 
     private void setCurrentPaint() {

@@ -175,6 +175,13 @@ public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callbac
         }
     }
 
+    public void dispose() {
+        if (mBitmap != null) {
+            mBitmap.recycle();
+            mBitmap = null;
+        }
+    }
+
     public void dumpImage( File imageFile ) throws IOException {
         this.imageFile = imageFile;
         dumpToImage = true;
