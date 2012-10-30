@@ -209,7 +209,7 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
         intent.putExtra(LibraryConstants.LONGITUDE, lon);
         intent.putExtra(LibraryConstants.ELEVATION, elevation);
         setResult(Activity.RESULT_OK, intent);
-        
+
         finish();
     }
 
@@ -240,9 +240,6 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
     public boolean onTouch( View view, MotionEvent motionEvent ) {
         float x = motionEvent.getX();
         float y = motionEvent.getY();
-        // if (Debug.D) {
-        //            Logger.i(this, "Drawing: " + x + "/" + y); //$NON-NLS-1$//$NON-NLS-2$
-        // }
         if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
             DrawingSurface.isDrawing = true;
 
@@ -292,28 +289,6 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
 
             undoBtn.setEnabled(true);
         }
-        // else if (id == R.id.saveBtn) {
-        // final Activity currentActivity = this;
-        // Handler saveHandler = new Handler(){
-        // @Override
-        // public void handleMessage( Message msg ) {
-        // final AlertDialog alertDialog = new AlertDialog.Builder(currentActivity).create();
-        // alertDialog.setTitle("Saved 1");
-        // alertDialog.setMessage("Your drawing had been saved :)");
-        // alertDialog.setButton("OK", new DialogInterface.OnClickListener(){
-        // public void onClick( DialogInterface dialog, int which ) {
-        // return;
-        // }
-        // });
-        // alertDialog.show();
-        // }
-        // };
-        // new ExportBitmapToFile(this, saveHandler, drawingSurface.getBitmap()).execute();
-        // } else if (id == R.id.circleBtn) {
-        // currentBrush = new CircleBrush();
-        // } else if (id == R.id.pathBtn) {
-        // currentBrush = new PenBrush();
-        // }
     }
 
     private void checkWidth() {
@@ -325,12 +300,7 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
     private void checkColor() {
         Object selectedItem = colorSpinner.getSelectedItem();
         String newColorStr = selectedItem.toString();
-        // if (newColorStr.equals("red")) {
-        // currentColor = 0xFF0000FF;
-        // currentColor = 0xFFC1C1C1;
-        // } else {
         currentColor = Color.parseColor(newColorStr.trim());
-        // }
     }
 
 }
