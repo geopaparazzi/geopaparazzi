@@ -149,99 +149,91 @@ public class MapTagsActivity extends Activity {
 
     protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
         switch( requestCode ) {
         case (FORM_RETURN_CODE): {
-            if (resultCode == Activity.RESULT_OK) {
-                String[] formArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_FORM);
-                if (formArray != null) {
-                    try {
-                        double lon = Double.parseDouble(formArray[0]);
-                        double lat = Double.parseDouble(formArray[1]);
-                        double elev = Double.parseDouble(formArray[2]);
-                        String dateStr = formArray[3];
-                        String nameStr = formArray[4];
-                        String catStr = formArray[5];
-                        String jsonStr = formArray[6];
-                        java.util.Date date = LibraryConstants.TIME_FORMATTER_SQLITE.parse(dateStr);
-                        DaoNotes.addNote(this, lon, lat, elev, new Date(date.getTime()), nameStr, catStr, jsonStr,
-                                NoteType.POI.getTypeNum());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
-                    }
+            String[] formArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_FORM);
+            if (formArray != null) {
+                try {
+                    double lon = Double.parseDouble(formArray[0]);
+                    double lat = Double.parseDouble(formArray[1]);
+                    double elev = Double.parseDouble(formArray[2]);
+                    String dateStr = formArray[3];
+                    String nameStr = formArray[4];
+                    String catStr = formArray[5];
+                    String jsonStr = formArray[6];
+                    java.util.Date date = LibraryConstants.TIME_FORMATTER_SQLITE.parse(dateStr);
+                    DaoNotes.addNote(this, lon, lat, elev, new Date(date.getTime()), nameStr, catStr, jsonStr,
+                            NoteType.POI.getTypeNum());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
                 }
             }
             break;
         }
         case (NOTE_RETURN_CODE): {
-            if (resultCode == Activity.RESULT_OK) {
-                String[] noteArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_NOTE);
-                if (noteArray != null) {
-                    try {
-                        double lon = Double.parseDouble(noteArray[0]);
-                        double lat = Double.parseDouble(noteArray[1]);
-                        double elev = Double.parseDouble(noteArray[2]);
-                        java.util.Date date = LibraryConstants.TIME_FORMATTER.parse(noteArray[3]);
-                        DaoNotes.addNote(this, lon, lat, elev, new Date(date.getTime()), noteArray[4], noteArray[5],
-                                noteArray[6], NoteType.POI.getTypeNum());
-                    } catch (Exception e) {
-                        e.printStackTrace();
+            String[] noteArray = data.getStringArrayExtra(LibraryConstants.PREFS_KEY_NOTE);
+            if (noteArray != null) {
+                try {
+                    double lon = Double.parseDouble(noteArray[0]);
+                    double lat = Double.parseDouble(noteArray[1]);
+                    double elev = Double.parseDouble(noteArray[2]);
+                    java.util.Date date = LibraryConstants.TIME_FORMATTER.parse(noteArray[3]);
+                    DaoNotes.addNote(this, lon, lat, elev, new Date(date.getTime()), noteArray[4], noteArray[5], noteArray[6],
+                            NoteType.POI.getTypeNum());
+                } catch (Exception e) {
+                    e.printStackTrace();
 
-                        Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
-                    }
+                    Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
                 }
-
             }
             break;
         }
         case (CAMERA_RETURN_CODE): {
-            if (resultCode == Activity.RESULT_OK) {
-                String relativeImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
-                if (relativeImagePath != null) {
-                    File imgFile = new File(ResourcesManager.getInstance(this).getMediaDir().getParentFile(), relativeImagePath);
-                    if (!imgFile.exists()) {
-                        return;
-                    }
-                    try {
-                        double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
-                        double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
-                        double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
-                        double azim = data.getDoubleExtra(LibraryConstants.AZIMUTH, 0.0);
-
-                        DaoImages.addImage(this, lon, lat, elev, azim, new Date(new java.util.Date().getTime()), "", //$NON-NLS-1$
-                                relativeImagePath);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-
-                        Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
-                    }
+            String relativeImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
+            if (relativeImagePath != null) {
+                File imgFile = new File(ResourcesManager.getInstance(this).getMediaDir().getParentFile(), relativeImagePath);
+                if (!imgFile.exists()) {
+                    return;
                 }
+                try {
+                    double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
+                    double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
+                    double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
+                    double azim = data.getDoubleExtra(LibraryConstants.AZIMUTH, 0.0);
 
+                    DaoImages.addImage(this, lon, lat, elev, azim, new Date(new java.util.Date().getTime()), "", //$NON-NLS-1$
+                            relativeImagePath);
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                    Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
+                }
             }
             break;
         }
         case (SKETCH_RETURN_CODE): {
-            if (resultCode == Activity.RESULT_OK) {
-                String absoluteImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
-                if (absoluteImagePath != null) {
-                    File imgFile = new File(absoluteImagePath);
-                    if (!imgFile.exists()) {
-                        return;
-                    }
-                    try {
-                        double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
-                        double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
-                        double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
-
-                        DaoImages.addImage(this, lon, lat, elev, -9999.0, new Date(new java.util.Date().getTime()), "", //$NON-NLS-1$
-                                absoluteImagePath);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-
-                        Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
-                    }
+            String absoluteImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
+            if (absoluteImagePath != null) {
+                File imgFile = new File(absoluteImagePath);
+                if (!imgFile.exists()) {
+                    return;
                 }
+                try {
+                    double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
+                    double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
+                    double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
 
+                    DaoImages.addImage(this, lon, lat, elev, -9999.0, new Date(new java.util.Date().getTime()), "", //$NON-NLS-1$
+                            absoluteImagePath);
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                    Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
+                }
             }
             break;
         }
