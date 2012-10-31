@@ -56,6 +56,7 @@ import eu.geopaparazzi.library.forms.views.GBooleanView;
 import eu.geopaparazzi.library.forms.views.GComboView;
 import eu.geopaparazzi.library.forms.views.GEditTextView;
 import eu.geopaparazzi.library.forms.views.GMultiComboView;
+import eu.geopaparazzi.library.forms.views.GPictureView;
 import eu.geopaparazzi.library.forms.views.GSketchView;
 import eu.geopaparazzi.library.forms.views.GTextView;
 import eu.geopaparazzi.library.forms.views.GView;
@@ -276,106 +277,8 @@ public class FormUtilities {
 
     public static GView addPictureView( final Context context, LinearLayout mainView, String key, String value,
             String constraintDescription ) {
-        LinearLayout textLayout = new LinearLayout(context);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
-                LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(10, 10, 10, 10);
-        textLayout.setLayoutParams(layoutParams);
-        textLayout.setOrientation(LinearLayout.VERTICAL);
-        mainView.addView(textLayout);
-
-        TextView textView = new TextView(context);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        textView.setPadding(2, 2, 2, 2);
-        textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
-        textView.setTextColor(context.getResources().getColor(R.color.formcolor));
-        textLayout.addView(textView);
-
-        final Button button = new Button(context);
-        button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        button.setPadding(15, 5, 15, 5);
-        button.setText(R.string.take_picture);
-        textLayout.addView(button);
-
-        final EditText imagesText = new EditText(context);
-        imagesText.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        imagesText.setPadding(2, 2, 2, 2);
-        imagesText.setText(value);
-        imagesText.setTextColor(context.getResources().getColor(R.color.black));
-        imagesText.setKeyListener(null);
-        textLayout.addView(imagesText);
-
-        button.setOnClickListener(new View.OnClickListener(){
-            public void onClick( View v ) {
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-                double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
-
-                Date currentDate = new Date();
-                String currentDatestring = LibraryConstants.TIMESTAMPFORMATTER.format(currentDate);
-                File mediaDir = ResourcesManager.getInstance(context).getMediaDir();
-                File imageFile = new File(mediaDir, "IMG_" + currentDatestring + ".jpg");
-                String relativeImagePath = mediaDir.getName() + File.separator + imageFile.getName();
-                String text = imagesText.getText().toString();
-                StringBuilder sb = new StringBuilder();
-                sb.append(text);
-                if (text.length() != 0) {
-                    sb.append(";");
-                }
-                sb.append(relativeImagePath);
-                imagesText.setText(sb.toString());
-
-                Intent cameraIntent = new Intent(context, CameraActivity.class);
-                cameraIntent.putExtra(LibraryConstants.PREFS_KEY_CAMERA_IMAGENAME, imageFile.getName());
-                if (gpsLocation != null) {
-                    cameraIntent.putExtra(LibraryConstants.LATITUDE, gpsLocation[1]);
-                    cameraIntent.putExtra(LibraryConstants.LONGITUDE, gpsLocation[0]);
-                    cameraIntent.putExtra(LibraryConstants.ELEVATION, gpsLocation[2]);
-                }
-                context.startActivity(cameraIntent);
-            }
-        });
-
-        if (imagesText.getText().toString().length() > 0) {
-            ScrollView scrollView = new ScrollView(context);
-            ScrollView.LayoutParams scrollLayoutParams = new ScrollView.LayoutParams(LayoutParams.FILL_PARENT,
-                    LayoutParams.WRAP_CONTENT);
-            scrollView.setLayoutParams(scrollLayoutParams);
-            mainView.addView(scrollView);
-
-            LinearLayout imageLayout = new LinearLayout(context);
-            LinearLayout.LayoutParams imageLayoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
-                    LayoutParams.WRAP_CONTENT);
-            imageLayout.setLayoutParams(imageLayoutParams);
-            imageLayout.setOrientation(LinearLayout.HORIZONTAL);
-            scrollView.addView(imageLayout);
-
-            String text = imagesText.getText().toString();
-            String[] imageSplit = text.split(";");
-            File mediaDir = ResourcesManager.getInstance(context).getMediaDir();
-            File parentFolder = mediaDir.getParentFile();
-            for( String imageRelativePath : imageSplit ) {
-                final File image = new File(parentFolder, imageRelativePath);
-
-                Bitmap thumbnail = FileUtilities.readScaledBitmap(image, 100);
-
-                ImageView imageView = new ImageView(context);
-                imageView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-                imageView.setPadding(5, 5, 5, 5);
-                imageView.setImageBitmap(thumbnail);
-                imageView.setOnClickListener(new View.OnClickListener(){
-                    public void onClick( View v ) {
-                        Intent intent = new Intent();
-                        intent.setAction(android.content.Intent.ACTION_VIEW);
-                        intent.setDataAndType(Uri.fromFile(image), "image/*"); //$NON-NLS-1$
-                        context.startActivity(intent);
-                    }
-                });
-                imageLayout.addView(imageView);
-            }
-
-        }
-
-        return imagesText;
+        GPictureView pictureView = new GPictureView(context, null, mainView, key, value, constraintDescription);
+        return pictureView;
     }
 
     public static GView addSketchView( final Context context, LinearLayout mainView, String key, String value,
