@@ -34,7 +34,7 @@ import eu.geopaparazzi.library.R;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class GEditTextView extends View {
+public class GEditTextView extends View implements GView{
 
     private EditText editView;
 

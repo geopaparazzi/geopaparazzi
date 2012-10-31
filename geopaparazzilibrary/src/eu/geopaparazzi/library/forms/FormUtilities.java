@@ -55,8 +55,10 @@ import eu.geopaparazzi.library.forms.constraints.RangeConstraint;
 import eu.geopaparazzi.library.forms.views.GBooleanView;
 import eu.geopaparazzi.library.forms.views.GComboView;
 import eu.geopaparazzi.library.forms.views.GEditTextView;
+import eu.geopaparazzi.library.forms.views.GMultiComboView;
 import eu.geopaparazzi.library.forms.views.GSketchView;
 import eu.geopaparazzi.library.forms.views.GTextView;
+import eu.geopaparazzi.library.forms.views.GView;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.MultipleChoiceDialog;
@@ -210,13 +212,13 @@ public class FormUtilities {
      * @param constraintDescription 
      * @return the added view.
      */
-    public static View addEditText( Context context, LinearLayout mainView, String key, String value, int type,
+    public static GView addEditText( Context context, LinearLayout mainView, String key, String value, int type,
             String constraintDescription ) {
         GEditTextView editText = new GEditTextView(context, null, mainView, key, value, type, constraintDescription);
         return editText;
     }
 
-    public static View addTextView( final Context context, LinearLayout mainView, String value, String size, boolean withLine,
+    public static GView addTextView( final Context context, LinearLayout mainView, String value, String size, boolean withLine,
             final String url ) {
         GTextView textView = new GTextView(context, null, mainView, value, size, withLine, url);
         return textView;
@@ -232,7 +234,7 @@ public class FormUtilities {
      * @param constraintDescription 
      * @return the added view.
      */
-    public static View addBooleanView( Context context, LinearLayout mainView, String key, String value,
+    public static GView addBooleanView( Context context, LinearLayout mainView, String key, String value,
             String constraintDescription ) {
         GBooleanView booleanView = new GBooleanView(context, null, mainView, key, value, constraintDescription);
         return booleanView;
@@ -249,7 +251,7 @@ public class FormUtilities {
      * @param constraintDescription 
      * @return the added view.
      */
-    public static View addComboView( Context context, LinearLayout mainView, String key, String value, String[] itemsArray,
+    public static GView addComboView( Context context, LinearLayout mainView, String key, String value, String[] itemsArray,
             String constraintDescription ) {
         GComboView comboView = new GComboView(context, null, mainView, key, value, itemsArray, constraintDescription);
         return comboView;
@@ -266,44 +268,13 @@ public class FormUtilities {
      * @param constraintDescription 
      * @return the added view.
      */
-    public static View addMultiSelectionView( final Context context, LinearLayout mainView, String key, String value,
+    public static GView addMultiSelectionView( final Context context, LinearLayout mainView, String key, String value,
             final String[] itemsArray, String constraintDescription ) {
-        LinearLayout textLayout = new LinearLayout(context);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
-                LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(10, 10, 10, 10);
-        textLayout.setLayoutParams(layoutParams);
-        textLayout.setOrientation(LinearLayout.VERTICAL);
-        mainView.addView(textLayout);
-
-        TextView textView = new TextView(context);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        textView.setPadding(2, 2, 2, 2);
-        textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
-        textView.setTextColor(context.getResources().getColor(R.color.formcolor));
-        textLayout.addView(textView);
-
-        final Button button = new Button(context);
-        button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        button.setPadding(15, 5, 15, 5);
-
-        if (value == null || value.length() == 0) {
-            button.setText("...");
-        } else {
-            button.setText(value);
-        }
-        button.setOnClickListener(new View.OnClickListener(){
-            public void onClick( View v ) {
-                MultipleChoiceDialog dialog = new MultipleChoiceDialog();
-                dialog.open(context, button, itemsArray);
-            }
-        });
-
-        textLayout.addView(button);
-        return button;
+        GMultiComboView comboView = new GMultiComboView(context, null, mainView, key, value, itemsArray, constraintDescription);
+        return comboView;
     }
 
-    public static View addPictureView( final Context context, LinearLayout mainView, String key, String value,
+    public static GView addPictureView( final Context context, LinearLayout mainView, String key, String value,
             String constraintDescription ) {
         LinearLayout textLayout = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
@@ -407,7 +378,7 @@ public class FormUtilities {
         return imagesText;
     }
 
-    public static View addSketchView( final Context context, LinearLayout mainView, String key, String value,
+    public static GView addSketchView( final Context context, LinearLayout mainView, String key, String value,
             String constraintDescription ) {
         GSketchView sketch = new GSketchView(context, null, mainView, key, value, constraintDescription);
         return sketch;
@@ -421,7 +392,7 @@ public class FormUtilities {
      * @param constraintDescription
      * @return
      */
-    public static View addMapView( final Context context, LinearLayout mainView, String key, String value,
+    public static GView addMapView( final Context context, LinearLayout mainView, String key, String value,
             String constraintDescription ) {
         LinearLayout mainLayout = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
@@ -480,7 +451,7 @@ public class FormUtilities {
      * @param constraintDescription 
      * @return the added view.
      */
-    public static View addDateView( final Fragment fragment, LinearLayout mainView, String key, String value,
+    public static GView addDateView( final Fragment fragment, LinearLayout mainView, String key, String value,
             String constraintDescription ) {
         Context context = fragment.getActivity();
 
@@ -546,7 +517,7 @@ public class FormUtilities {
      * @param constraintDescription 
      * @return the added view.
      */
-    public static View addTimeView( final Fragment fragment, LinearLayout mainView, String key, String value,
+    public static GView addTimeView( final Fragment fragment, LinearLayout mainView, String key, String value,
             String constraintDescription ) {
         Context context = fragment.getActivity();
 

@@ -44,6 +44,7 @@ import eu.geopaparazzi.library.forms.views.GComboView;
 import eu.geopaparazzi.library.forms.views.GEditTextView;
 import eu.geopaparazzi.library.forms.views.GSketchView;
 import eu.geopaparazzi.library.forms.views.GTextView;
+import eu.geopaparazzi.library.forms.views.GView;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
@@ -51,7 +52,7 @@ import eu.geopaparazzi.library.util.debug.Logger;
 
 public class FragmentDetail extends Fragment {
 
-    private HashMap<String, View> key2WidgetMap = new HashMap<String, View>();
+    private HashMap<String, GView> key2WidgetMap = new HashMap<String, GView>();
     private HashMap<String, Constraints> key2ConstraintsMap = new HashMap<String, Constraints>();
     private List<String> keyList = new ArrayList<String>();
     private String selectedFormName;
@@ -119,7 +120,7 @@ public class FragmentDetail extends Fragment {
                     key2ConstraintsMap.put(key, constraints);
                     String constraintDescription = constraints.getDescription();
 
-                    View addedView = null;
+                    GView addedView = null;
                     if (type.equals(TYPE_STRING)) {
                         addedView = FormUtilities.addEditText(activity, mainView, key, value, 0, constraintDescription);
                     } else if (type.equals(TYPE_DOUBLE)) {
@@ -217,30 +218,30 @@ public class FragmentDetail extends Fragment {
         for( String key : keyList ) {
             Constraints constraints = key2ConstraintsMap.get(key);
 
-            View view = key2WidgetMap.get(key);
-            String text = null;
-            if (view instanceof GBooleanView) {
-                GBooleanView booleanView = (GBooleanView) view;
-                text = booleanView.getValue();
-            } else if (view instanceof Button) {
-                Button button = (Button) view;
-                text = button.getText().toString();
-                if (text.trim().equals("...")) {
-                    text = "";
-                }
-            } else if (view instanceof GEditTextView) {
-                GEditTextView geditTextView = (GEditTextView) view;
-                text = geditTextView.getValue();
-            } else if (view instanceof GSketchView) {
-                GSketchView gSketchView = (GSketchView) view;
-                text = gSketchView.getValue();
-            } else if (view instanceof GTextView) {
-                GTextView textView = (GTextView) view;
-                text = textView.getValue();
-            } else if (view instanceof GComboView) {
-                GComboView comboView = (GComboView) view;
-                text = comboView.getValue();
-            }
+            GView view = key2WidgetMap.get(key);
+            String text = view.getValue();
+            // if (view instanceof GBooleanView) {
+            // GBooleanView booleanView = (GBooleanView) view;
+            // text = booleanView.getValue();
+            // } else if (view instanceof Button) {
+            // Button button = (Button) view;
+            // text = button.getText().toString();
+            // if (text.trim().equals("...")) {
+            // text = "";
+            // }
+            // } else if (view instanceof GEditTextView) {
+            // GEditTextView geditTextView = (GEditTextView) view;
+            // text = geditTextView.getValue();
+            // } else if (view instanceof GSketchView) {
+            // GSketchView gSketchView = (GSketchView) view;
+            // text = gSketchView.getValue();
+            // } else if (view instanceof GTextView) {
+            // GTextView textView = (GTextView) view;
+            // text = textView.getValue();
+            // } else if (view instanceof GComboView) {
+            // GComboView comboView = (GComboView) view;
+            // text = comboView.getValue();
+            // }
 
             if (doConstraintsCheck && !constraints.isValid(text)) {
                 return key;

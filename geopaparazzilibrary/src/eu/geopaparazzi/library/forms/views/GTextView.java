@@ -33,7 +33,7 @@ import eu.geopaparazzi.library.R;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class GTextView extends View {
+public class GTextView extends View implements GView{
 
     private TextView textView;
 

@@ -54,7 +54,7 @@ import eu.geopaparazzi.library.util.debug.Logger;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class GSketchView extends View {
+public class GSketchView extends View implements GView{
 
     private String _value;
 

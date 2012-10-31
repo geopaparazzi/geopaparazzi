@@ -24,18 +24,17 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 
 /**
- * A custom {@link EditText} view.
+ * A custom {@link Spinner} view.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class GComboView extends View {
+public class GComboView extends View implements GView {
 
     private Spinner spinner;
 

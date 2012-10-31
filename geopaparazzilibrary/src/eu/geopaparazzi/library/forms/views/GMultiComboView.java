@@ -23,30 +23,32 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.CheckBox;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.util.MultipleChoiceDialog;
 
 /**
- * A custom boolean view.
+ * A custom {@link Spinner} view.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class GBooleanView extends View implements GView{
+public class GMultiComboView extends View implements GView {
 
-    private CheckBox checkbox;
+    private Button button;
 
-    public GBooleanView( Context context, AttributeSet attrs, int defStyle ) {
+    public GMultiComboView( Context context, AttributeSet attrs, int defStyle ) {
         super(context, attrs, defStyle);
     }
 
-    public GBooleanView( Context context, AttributeSet attrs ) {
+    public GMultiComboView( Context context, AttributeSet attrs ) {
         super(context, attrs);
     }
 
-    public GBooleanView( Context context, AttributeSet attrs, LinearLayout parentView, String key, String value,
-            String constraintDescription ) {
+    public GMultiComboView( final Context context, AttributeSet attrs, LinearLayout parentView, String key, String value,
+            final String[] itemsArray, String constraintDescription ) {
         super(context, attrs);
 
         LinearLayout textLayout = new LinearLayout(context);
@@ -62,26 +64,34 @@ public class GBooleanView extends View implements GView{
         textView.setPadding(2, 2, 2, 2);
         textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
         textView.setTextColor(context.getResources().getColor(R.color.formcolor));
-
         textLayout.addView(textView);
 
-        checkbox = new CheckBox(context);
-        checkbox.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        checkbox.setPadding(15, 5, 15, 5);
+        button = new Button(context);
+        button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        button.setPadding(15, 5, 15, 5);
 
-        if (value != null) {
-            if (value.trim().toLowerCase().equals("true")) { //$NON-NLS-1$
-                checkbox.setChecked(true);
-            } else {
-                checkbox.setChecked(false);
-            }
+        if (value == null || value.length() == 0) {
+            button.setText("...");
+        } else {
+            button.setText(value);
         }
-        textLayout.addView(checkbox);
+        button.setOnClickListener(new View.OnClickListener(){
+            public void onClick( View v ) {
+                MultipleChoiceDialog dialog = new MultipleChoiceDialog();
+                dialog.open(context, button, itemsArray);
+            }
+        });
+
+        textLayout.addView(button);
+
     }
 
     public String getValue() {
-        boolean checked = checkbox.isChecked();
-        return checked ? "true" : "false";
+        String text = button.getText().toString();
+        if (text.trim().equals("...")) {
+            text = "";
+        }
+        return text;
     }
 
 }
