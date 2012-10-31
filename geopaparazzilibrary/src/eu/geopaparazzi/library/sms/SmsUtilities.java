@@ -139,6 +139,14 @@ public class SmsUtilities {
         }
     }
 
+    /**
+     * Opens the system sms app to send the message.  
+     * 
+     * @param context the {@link Context} to use.
+     * @param number the number to which to send to or <code>null</code>, in which
+     *          case the number will be prompted in the sms app.
+     * @param msg the message to send or <code>null</code>.
+     */
     public static void sendSMSViaApp( Context context, String number, String msg ) {
         Object systemService = context.getSystemService(Context.TELEPHONY_SERVICE);
         if (systemService instanceof TelephonyManager) {
@@ -148,6 +156,13 @@ public class SmsUtilities {
                 Utilities.messageDialog(context, "This functionality works only when connected to a GSM network.", null);
                 return;
             }
+        }
+
+        if (number == null) {
+            number = "";
+        }
+        if (msg == null) {
+            msg = "";
         }
 
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + number));
