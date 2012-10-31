@@ -34,16 +34,9 @@ import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
-import eu.geopaparazzi.library.forms.views.GBooleanView;
-import eu.geopaparazzi.library.forms.views.GComboView;
-import eu.geopaparazzi.library.forms.views.GEditTextView;
-import eu.geopaparazzi.library.forms.views.GSketchView;
-import eu.geopaparazzi.library.forms.views.GTextView;
 import eu.geopaparazzi.library.forms.views.GView;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
@@ -220,28 +213,6 @@ public class FragmentDetail extends Fragment {
 
             GView view = key2WidgetMap.get(key);
             String text = view.getValue();
-            // if (view instanceof GBooleanView) {
-            // GBooleanView booleanView = (GBooleanView) view;
-            // text = booleanView.getValue();
-            // } else if (view instanceof Button) {
-            // Button button = (Button) view;
-            // text = button.getText().toString();
-            // if (text.trim().equals("...")) {
-            // text = "";
-            // }
-            // } else if (view instanceof GEditTextView) {
-            // GEditTextView geditTextView = (GEditTextView) view;
-            // text = geditTextView.getValue();
-            // } else if (view instanceof GSketchView) {
-            // GSketchView gSketchView = (GSketchView) view;
-            // text = gSketchView.getValue();
-            // } else if (view instanceof GTextView) {
-            // GTextView textView = (GTextView) view;
-            // text = textView.getValue();
-            // } else if (view instanceof GComboView) {
-            // GComboView comboView = (GComboView) view;
-            // text = comboView.getValue();
-            // }
 
             if (doConstraintsCheck && !constraints.isValid(text)) {
                 return key;

@@ -17,55 +17,35 @@
  */
 package eu.geopaparazzi.library.forms;
 
-import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.view.View;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import eu.geopaparazzi.library.R;
-import eu.geopaparazzi.library.camera.CameraActivity;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
 import eu.geopaparazzi.library.forms.constraints.MandatoryConstraint;
 import eu.geopaparazzi.library.forms.constraints.RangeConstraint;
 import eu.geopaparazzi.library.forms.views.GBooleanView;
 import eu.geopaparazzi.library.forms.views.GComboView;
+import eu.geopaparazzi.library.forms.views.GDateView;
 import eu.geopaparazzi.library.forms.views.GEditTextView;
 import eu.geopaparazzi.library.forms.views.GMapView;
 import eu.geopaparazzi.library.forms.views.GMultiComboView;
 import eu.geopaparazzi.library.forms.views.GPictureView;
 import eu.geopaparazzi.library.forms.views.GSketchView;
 import eu.geopaparazzi.library.forms.views.GTextView;
+import eu.geopaparazzi.library.forms.views.GTimeView;
 import eu.geopaparazzi.library.forms.views.GView;
-import eu.geopaparazzi.library.util.FileUtilities;
-import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.MultipleChoiceDialog;
-import eu.geopaparazzi.library.util.PositionUtilities;
-import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 
 /**
@@ -315,57 +295,8 @@ public class FormUtilities {
      */
     public static GView addDateView( final Fragment fragment, LinearLayout mainView, String key, String value,
             String constraintDescription ) {
-        Context context = fragment.getActivity();
-
-        LinearLayout textLayout = new LinearLayout(context);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
-                LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(10, 10, 10, 10);
-        textLayout.setLayoutParams(layoutParams);
-        textLayout.setOrientation(LinearLayout.VERTICAL);
-        mainView.addView(textLayout);
-
-        TextView textView = new TextView(context);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        textView.setPadding(2, 2, 2, 2);
-        textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
-        textView.setTextColor(context.getResources().getColor(R.color.formcolor));
-        textLayout.addView(textView);
-
-        final Button button = new Button(context);
-        button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        button.setPadding(15, 5, 15, 5);
-
-        final SimpleDateFormat dateFormatter = LibraryConstants.DATEONLY_FORMATTER;
-        if (value == null || value.length() == 0) {
-            String dateStr = dateFormatter.format(new Date());
-            button.setText(dateStr);
-        } else {
-            button.setText(value);
-        }
-        button.setOnClickListener(new View.OnClickListener(){
-            public void onClick( View v ) {
-                String dateStr = button.getText().toString();
-                Date date = null;
-                try {
-                    date = dateFormatter.parse(dateStr);
-                } catch (ParseException e) {
-                    // fallback on current date
-                    date = new Date();
-                }
-                final Calendar c = Calendar.getInstance();
-                c.setTime(date);
-                int year = c.get(Calendar.YEAR);
-                int month = c.get(Calendar.MONTH);
-                int day = c.get(Calendar.DAY_OF_MONTH);
-
-                FormDatePickerFragment newFragment = new FormDatePickerFragment(year, month, day, button);
-                newFragment.show(fragment.getFragmentManager(), "datePicker");
-            }
-        });
-
-        textLayout.addView(button);
-        return button;
+        GDateView dateView = new GDateView(fragment, null, mainView, key, value, constraintDescription);
+        return dateView;
     }
 
     /**
@@ -381,56 +312,8 @@ public class FormUtilities {
      */
     public static GView addTimeView( final Fragment fragment, LinearLayout mainView, String key, String value,
             String constraintDescription ) {
-        Context context = fragment.getActivity();
-
-        LinearLayout textLayout = new LinearLayout(context);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
-                LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(10, 10, 10, 10);
-        textLayout.setLayoutParams(layoutParams);
-        textLayout.setOrientation(LinearLayout.VERTICAL);
-        mainView.addView(textLayout);
-
-        TextView textView = new TextView(context);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        textView.setPadding(2, 2, 2, 2);
-        textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
-        textView.setTextColor(context.getResources().getColor(R.color.formcolor));
-        textLayout.addView(textView);
-
-        final Button button = new Button(context);
-        button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        button.setPadding(15, 5, 15, 5);
-
-        final SimpleDateFormat timeFormatter = LibraryConstants.TIMEONLY_FORMATTER;
-        if (value == null || value.length() == 0) {
-            String dateStr = timeFormatter.format(new Date());
-            button.setText(dateStr);
-        } else {
-            button.setText(value);
-        }
-        button.setOnClickListener(new View.OnClickListener(){
-            public void onClick( View v ) {
-                String dateStr = button.getText().toString();
-                Date date = null;
-                try {
-                    date = timeFormatter.parse(dateStr);
-                } catch (ParseException e) {
-                    // fallback on current date
-                    date = new Date();
-                }
-                final Calendar c = Calendar.getInstance();
-                c.setTime(date);
-                int hourOfDay = c.get(Calendar.HOUR_OF_DAY);
-                int minute = c.get(Calendar.MINUTE);
-
-                FormTimePickerFragment newFragment = new FormTimePickerFragment(hourOfDay, minute, true, button);
-                newFragment.show(fragment.getFragmentManager(), "timePicker");
-            }
-        });
-
-        textLayout.addView(button);
-        return button;
+        GTimeView timeView = new GTimeView(fragment, null, mainView, key, value, constraintDescription);
+        return timeView;
     }
 
     /**

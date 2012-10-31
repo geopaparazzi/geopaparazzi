@@ -72,26 +72,30 @@ public class GMapView extends View implements GView {
         textView.setTextColor(context.getResources().getColor(R.color.formcolor));
         mainLayout.addView(textView);
 
-        File mediaDir = ResourcesManager.getInstance(context).getMediaDir();
-        File parentFolder = mediaDir.getParentFile();
+        image = new File(value);
+        if (!image.exists()) {
+            // look also in media folder for relative path name
+            File mediaDir = ResourcesManager.getInstance(context).getMediaDir();
+            File parentFolder = mediaDir.getParentFile();
+            image = new File(parentFolder, value);
+        }
 
-        image = new File(parentFolder, value);
-
-        Bitmap thumbnail = FileUtilities.readScaledBitmap(image, 200);
-        ImageView imageView = new ImageView(context);
-        imageView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        imageView.setPadding(5, 5, 5, 5);
-        imageView.setImageBitmap(thumbnail);
-        imageView.setOnClickListener(new View.OnClickListener(){
-            public void onClick( View v ) {
-                Intent intent = new Intent();
-                intent.setAction(android.content.Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.fromFile(image), "image/*"); //$NON-NLS-1$
-                context.startActivity(intent);
-            }
-        });
-        mainLayout.addView(imageView);
-
+        if (image.exists()) {
+            Bitmap thumbnail = FileUtilities.readScaledBitmap(image, 200);
+            ImageView imageView = new ImageView(context);
+            imageView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+            imageView.setPadding(5, 5, 5, 5);
+            imageView.setImageBitmap(thumbnail);
+            imageView.setOnClickListener(new View.OnClickListener(){
+                public void onClick( View v ) {
+                    Intent intent = new Intent();
+                    intent.setAction(android.content.Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.fromFile(image), "image/*"); //$NON-NLS-1$
+                    context.startActivity(intent);
+                }
+            });
+            mainLayout.addView(imageView);
+        }
     }
 
     public String getValue() {
