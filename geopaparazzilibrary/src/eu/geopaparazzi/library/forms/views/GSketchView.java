@@ -47,6 +47,7 @@ import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
@@ -150,9 +151,18 @@ public class GSketchView extends View {
     }
 
     private void refresh( final Context context ) {
+        if (Debug.D)
+            Logger.d(this, "Entering refresh....");
+
         if (_value != null && _value.length() > 0) {
             String[] imageSplit = _value.split(";");
+            if (Debug.D)
+                Logger.d(this, "Handling images: " + _value);
+
             for( String imageAbsolutePath : imageSplit ) {
+                if (Debug.D)
+                    Logger.d(this, "img: " + imageAbsolutePath);
+
                 if (imageAbsolutePath.length() == 0) {
                     continue;
                 }
@@ -162,12 +172,12 @@ public class GSketchView extends View {
 
                 final File image = new File(imageAbsolutePath);
                 if (!image.exists()) {
+                    if (Debug.D)
+                        Logger.d(this, "Img doesn't exist on disk....");
                     continue;
                 }
-                addedImages.add(imageAbsolutePath);
 
                 Bitmap thumbnail = FileUtilities.readScaledBitmap(image, 100);
-
                 ImageView imageView = new ImageView(context);
                 imageView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
                 imageView.setPadding(5, 5, 5, 5);
@@ -180,7 +190,11 @@ public class GSketchView extends View {
                         context.startActivity(intent);
                     }
                 });
+                if (Debug.D)
+                    Logger.d(this, "Creating thumb and adding it: " + imageAbsolutePath);
                 imageLayout.addView(imageView);
+                imageLayout.invalidate();
+                addedImages.add(imageAbsolutePath);
             }
 
             if (addedImages.size() > 0) {
@@ -189,9 +203,17 @@ public class GSketchView extends View {
                     sb.append(";").append(imagePath);
                 }
                 _value = sb.substring(1);
+
+                if (Debug.D)
+                    Logger.d(this, "New img paths: " + _value);
+
             }
+            if (Debug.D)
+                Logger.d(this, "Exiting refresh....");
+
         }
     }
+
     public String getValue() {
         return _value;
     }
