@@ -35,7 +35,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
@@ -55,6 +54,7 @@ import eu.geopaparazzi.library.forms.constraints.MandatoryConstraint;
 import eu.geopaparazzi.library.forms.constraints.RangeConstraint;
 import eu.geopaparazzi.library.forms.views.GEditTextView;
 import eu.geopaparazzi.library.forms.views.GSketchView;
+import eu.geopaparazzi.library.forms.views.GTextView;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.MultipleChoiceDialog;
@@ -210,58 +210,13 @@ public class FormUtilities {
      */
     public static View addEditText( Context context, LinearLayout mainView, String key, String value, int type,
             String constraintDescription ) {
-
         GEditTextView editText = new GEditTextView(context, null, mainView, key, value, type, constraintDescription);
         return editText;
     }
 
     public static View addTextView( final Context context, LinearLayout mainView, String value, String size, boolean withLine,
             final String url ) {
-        LinearLayout textLayout = new LinearLayout(context);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
-                LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(10, 10, 10, 10);
-        textLayout.setLayoutParams(layoutParams);
-        textLayout.setOrientation(LinearLayout.VERTICAL);
-        // textLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.formitem_background));
-        mainView.addView(textLayout);
-
-        TextView textView = new TextView(context);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        textView.setPadding(2, 2, 2, 2);
-        textView.setText(value);
-
-        size = size.trim();
-        if (size.equals("large")) {
-            textView.setTextAppearance(context, android.R.attr.textAppearanceLarge);
-        } else if (size.equals("medium")) {
-            textView.setTextAppearance(context, android.R.attr.textAppearanceMedium);
-        } else if (size.equals("small")) {
-            textView.setTextAppearance(context, android.R.attr.textAppearanceSmall);
-        } else {
-            int sizeInt = Integer.parseInt(size);
-            textView.setTextSize(sizeInt);
-        }
-        textView.setTextColor(context.getResources().getColor(R.color.formcolor));
-        if (url != null && url.length() > 0) {
-            textView.setMovementMethod(LinkMovementMethod.getInstance());
-            textView.setOnClickListener(new View.OnClickListener(){
-                public void onClick( View v ) {
-                    Uri uri = Uri.parse(url);
-                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                    context.startActivity(intent);
-                }
-            });
-        }
-        textLayout.addView(textView);
-
-        if (withLine) {
-            View view = new View(context);
-            view.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, 2));
-            view.setBackgroundColor(context.getResources().getColor(R.color.formcolor));
-
-            textLayout.addView(view);
-        }
+        GTextView textView = new GTextView(context, null, mainView, value, size, withLine, url);
         return textView;
     }
 

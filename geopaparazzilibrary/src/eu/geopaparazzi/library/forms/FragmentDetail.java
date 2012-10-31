@@ -37,6 +37,7 @@ import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
 import eu.geopaparazzi.library.forms.views.GEditTextView;
 import eu.geopaparazzi.library.forms.views.GSketchView;
+import eu.geopaparazzi.library.forms.views.GTextView;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
@@ -228,9 +229,9 @@ public class FragmentDetail extends Fragment {
             } else if (view instanceof GSketchView) {
                 GSketchView gSketchView = (GSketchView) view;
                 text = gSketchView.getValue();
-            } else if (view instanceof TextView) {
-                TextView textView = (TextView) view;
-                text = textView.getText().toString();
+            } else if (view instanceof GTextView) {
+                GTextView textView = (GTextView) view;
+                text = textView.getValue();
             } else if (view instanceof Spinner) {
                 Spinner spinner = (Spinner) view;
                 text = spinner.getSelectedItem().toString();
