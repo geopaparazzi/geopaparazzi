@@ -52,6 +52,7 @@ import eu.geopaparazzi.library.camera.CameraActivity;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
 import eu.geopaparazzi.library.forms.constraints.MandatoryConstraint;
 import eu.geopaparazzi.library.forms.constraints.RangeConstraint;
+import eu.geopaparazzi.library.forms.views.GBooleanView;
 import eu.geopaparazzi.library.forms.views.GEditTextView;
 import eu.geopaparazzi.library.forms.views.GSketchView;
 import eu.geopaparazzi.library.forms.views.GTextView;
@@ -232,37 +233,8 @@ public class FormUtilities {
      */
     public static View addBooleanView( Context context, LinearLayout mainView, String key, String value,
             String constraintDescription ) {
-        LinearLayout textLayout = new LinearLayout(context);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
-                LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(10, 10, 10, 10);
-        textLayout.setLayoutParams(layoutParams);
-        textLayout.setOrientation(LinearLayout.VERTICAL);
-        mainView.addView(textLayout);
-
-        TextView textView = new TextView(context);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        textView.setPadding(2, 2, 2, 2);
-        textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
-        textView.setTextColor(context.getResources().getColor(R.color.formcolor));
-
-        textLayout.addView(textView);
-
-        CheckBox checkbox = new CheckBox(context);
-        checkbox.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        checkbox.setPadding(15, 5, 15, 5);
-
-        if (value != null) {
-            if (value.trim().toLowerCase().equals("true")) { //$NON-NLS-1$
-                checkbox.setChecked(true);
-            } else {
-                checkbox.setChecked(false);
-            }
-        }
-
-        textLayout.addView(checkbox);
-
-        return checkbox;
+        GBooleanView booleanView = new GBooleanView(context, null, mainView, key, value, constraintDescription);
+        return booleanView;
     }
 
     /**

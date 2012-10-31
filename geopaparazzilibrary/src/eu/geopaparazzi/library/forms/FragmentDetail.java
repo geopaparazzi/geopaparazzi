@@ -1,16 +1,22 @@
 package eu.geopaparazzi.library.forms;
 
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_KEY;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_SIZE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_TYPE;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_URL;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_VALUE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_BOOLEAN;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_DATE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_DOUBLE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_LABEL;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_LABELWITHLINE;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_MAP;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_PICTURES;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_SKETCH;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRING;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRINGCOMBO;
-import static eu.geopaparazzi.library.forms.FormUtilities.*;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRINGMULTIPLECHOICE;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_TIME;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,12 +35,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
+import eu.geopaparazzi.library.forms.views.GBooleanView;
 import eu.geopaparazzi.library.forms.views.GEditTextView;
 import eu.geopaparazzi.library.forms.views.GSketchView;
 import eu.geopaparazzi.library.forms.views.GTextView;
@@ -213,10 +218,9 @@ public class FragmentDetail extends Fragment {
 
             View view = key2WidgetMap.get(key);
             String text = null;
-            if (view instanceof CheckBox) {
-                CheckBox checkBox = (CheckBox) view;
-                boolean checked = checkBox.isChecked();
-                text = checked ? "true" : "false";
+            if (view instanceof GBooleanView) {
+                GBooleanView booleanView = (GBooleanView) view;
+                text = booleanView.getValue();
             } else if (view instanceof Button) {
                 Button button = (Button) view;
                 text = button.getText().toString();
