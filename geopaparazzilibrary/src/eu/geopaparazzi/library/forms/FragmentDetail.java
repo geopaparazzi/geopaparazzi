@@ -40,6 +40,7 @@ import android.widget.Spinner;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
 import eu.geopaparazzi.library.forms.views.GBooleanView;
+import eu.geopaparazzi.library.forms.views.GComboView;
 import eu.geopaparazzi.library.forms.views.GEditTextView;
 import eu.geopaparazzi.library.forms.views.GSketchView;
 import eu.geopaparazzi.library.forms.views.GTextView;
@@ -236,9 +237,9 @@ public class FragmentDetail extends Fragment {
             } else if (view instanceof GTextView) {
                 GTextView textView = (GTextView) view;
                 text = textView.getValue();
-            } else if (view instanceof Spinner) {
-                Spinner spinner = (Spinner) view;
-                text = spinner.getSelectedItem().toString();
+            } else if (view instanceof GComboView) {
+                GComboView comboView = (GComboView) view;
+                text = comboView.getValue();
             }
 
             if (doConstraintsCheck && !constraints.isValid(text)) {

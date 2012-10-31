@@ -53,6 +53,7 @@ import eu.geopaparazzi.library.forms.constraints.Constraints;
 import eu.geopaparazzi.library.forms.constraints.MandatoryConstraint;
 import eu.geopaparazzi.library.forms.constraints.RangeConstraint;
 import eu.geopaparazzi.library.forms.views.GBooleanView;
+import eu.geopaparazzi.library.forms.views.GComboView;
 import eu.geopaparazzi.library.forms.views.GEditTextView;
 import eu.geopaparazzi.library.forms.views.GSketchView;
 import eu.geopaparazzi.library.forms.views.GTextView;
@@ -250,39 +251,8 @@ public class FormUtilities {
      */
     public static View addComboView( Context context, LinearLayout mainView, String key, String value, String[] itemsArray,
             String constraintDescription ) {
-        LinearLayout textLayout = new LinearLayout(context);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
-                LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(10, 10, 10, 10);
-        textLayout.setLayoutParams(layoutParams);
-        textLayout.setOrientation(LinearLayout.VERTICAL);
-        mainView.addView(textLayout);
-
-        TextView textView = new TextView(context);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        textView.setPadding(2, 2, 2, 2);
-        textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
-        textView.setTextColor(context.getResources().getColor(R.color.formcolor));
-        textLayout.addView(textView);
-
-        Spinner spinner = new Spinner(context);
-        spinner.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        spinner.setPadding(15, 5, 15, 5);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, itemsArray);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        if (value != null) {
-            for( int i = 0; i < itemsArray.length; i++ ) {
-                if (itemsArray[i].equals(value.trim())) {
-                    spinner.setSelection(i);
-                    break;
-                }
-            }
-        }
-
-        textLayout.addView(spinner);
-        return spinner;
+        GComboView comboView = new GComboView(context, null, mainView, key, value, itemsArray, constraintDescription);
+        return comboView;
     }
 
     /**
