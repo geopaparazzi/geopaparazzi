@@ -55,6 +55,7 @@ import eu.geopaparazzi.library.forms.constraints.RangeConstraint;
 import eu.geopaparazzi.library.forms.views.GBooleanView;
 import eu.geopaparazzi.library.forms.views.GComboView;
 import eu.geopaparazzi.library.forms.views.GEditTextView;
+import eu.geopaparazzi.library.forms.views.GMapView;
 import eu.geopaparazzi.library.forms.views.GMultiComboView;
 import eu.geopaparazzi.library.forms.views.GPictureView;
 import eu.geopaparazzi.library.forms.views.GSketchView;
@@ -297,50 +298,8 @@ public class FormUtilities {
      */
     public static GView addMapView( final Context context, LinearLayout mainView, String key, String value,
             String constraintDescription ) {
-        LinearLayout mainLayout = new LinearLayout(context);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
-                LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(10, 10, 10, 10);
-        mainLayout.setLayoutParams(layoutParams);
-        mainLayout.setOrientation(LinearLayout.VERTICAL);
-        mainView.addView(mainLayout);
-
-        TextView textView = new TextView(context);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        textView.setPadding(2, 2, 2, 2);
-        textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
-        textView.setTextColor(context.getResources().getColor(R.color.formcolor));
-        mainLayout.addView(textView);
-
-        final EditText imagesText = new EditText(context);
-        imagesText.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        imagesText.setPadding(2, 2, 2, 2);
-        imagesText.setText(value);
-        imagesText.setTextColor(context.getResources().getColor(R.color.black));
-        imagesText.setKeyListener(null);
-        mainLayout.addView(imagesText);
-
-        File mediaDir = ResourcesManager.getInstance(context).getMediaDir();
-        File parentFolder = mediaDir.getParentFile();
-
-        final File image = new File(parentFolder, value);
-
-        Bitmap thumbnail = FileUtilities.readScaledBitmap(image, 200);
-        ImageView imageView = new ImageView(context);
-        imageView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        imageView.setPadding(5, 5, 5, 5);
-        imageView.setImageBitmap(thumbnail);
-        imageView.setOnClickListener(new View.OnClickListener(){
-            public void onClick( View v ) {
-                Intent intent = new Intent();
-                intent.setAction(android.content.Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.fromFile(image), "image/*"); //$NON-NLS-1$
-                context.startActivity(intent);
-            }
-        });
-        mainLayout.addView(imageView);
-
-        return imagesText;
+        GMapView mapView = new GMapView(context, null, mainView, key, value, constraintDescription);
+        return mapView;
     }
 
     /**
