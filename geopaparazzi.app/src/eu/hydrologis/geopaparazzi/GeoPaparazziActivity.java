@@ -481,30 +481,11 @@ public class GeoPaparazziActivity extends Activity {
             break;
         }
         case R.id.panicbutton: {
-            sendPosition(null);
+            sendPosition(true);
             break;
         }
         case R.id.statusupdatebutton: {
-            final String lastPositionStr = getString(R.string.last_position);
-            final EditText input = new EditText(this);
-            input.setText(lastPositionStr);
-            Builder builder = new AlertDialog.Builder(this).setTitle(eu.hydrologis.geopaparazzi.R.string.add_message);
-            builder.setMessage(eu.hydrologis.geopaparazzi.R.string.insert_an_optional_text_to_send_with_the_geosms);
-            builder.setView(input);
-            builder.setIcon(android.R.drawable.ic_dialog_alert)
-                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
-                        public void onClick( DialogInterface dialog, int whichButton ) {
-                        }
-                    }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
-                        public void onClick( DialogInterface dialog, int whichButton ) {
-                            Editable value = input.getText();
-                            String newText = value.toString();
-                            if (newText == null || newText.length() < 1) {
-                                newText = lastPositionStr;
-                            }
-                            sendPosition(newText);
-                        }
-                    }).setCancelable(false).show();
+            sendPosition(false);
             break;
         }
         default:
@@ -855,29 +836,29 @@ public class GeoPaparazziActivity extends Activity {
 
     /**
      * Send the panic or status update message.
-     * 
-     * @param theTextToRunOn make the panic message as opposed to just a status update.
      */
-    private void sendPosition( String theTextToRunOn ) {
-        String[] panicNumbers = GpUtilities.getPanicNumbers(this);
-        // Make sure there's a valid return address.
-        if (panicNumbers == null) {
-            Utilities.messageDialog(this, R.string.panic_number_notset, null);
-        } else {
-            for( String number : panicNumbers ) {
-                number = number.trim();
-                if (number.length() == 0) {
-                    continue;
-                }
-                String lastPosition;
-                if (theTextToRunOn == null) {
-                    lastPosition = getString(R.string.help_needed);
-                } else {
-                    lastPosition = theTextToRunOn;
-                }
+    private void sendPosition( boolean isPanic ) {
+        if (isPanic) {
+            String lastPosition = getString(R.string.help_needed);
+            String[] panicNumbers = GpUtilities.getPanicNumbers(this);
+            if (panicNumbers == null) {
                 String positionText = SmsUtilities.createPositionText(this, lastPosition);
-                SmsUtilities.sendSMS(this, number, positionText, true);
+                SmsUtilities.sendSMSViaApp(this, "", positionText);
+            } else {
+                for( String number : panicNumbers ) {
+                    number = number.trim();
+                    if (number.length() == 0) {
+                        continue;
+                    }
+
+                    String positionText = SmsUtilities.createPositionText(this, lastPosition);
+                    SmsUtilities.sendSMS(this, number, positionText, true);
+                }
             }
+        } else {
+            // just sending a single geosms
+            String positionText = SmsUtilities.createPositionText(this, "");
+            SmsUtilities.sendSMSViaApp(this, "", positionText);
         }
 
     }

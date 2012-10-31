@@ -139,6 +139,22 @@ public class SmsUtilities {
         }
     }
 
+    public static void sendSMSViaApp( Context context, String number, String msg ) {
+        Object systemService = context.getSystemService(Context.TELEPHONY_SERVICE);
+        if (systemService instanceof TelephonyManager) {
+            TelephonyManager telManager = (TelephonyManager) systemService;
+            String networkOperator = telManager.getNetworkOperator();
+            if (networkOperator.trim().length() == 0) {
+                Utilities.messageDialog(context, "This functionality works only when connected to a GSM network.", null);
+                return;
+            }
+        }
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + number));
+        intent.putExtra("sms_body", msg);
+        context.startActivity(intent);
+    }
+
     /**
      * Parses a GeoSMS body and tries to extract the coordinates to show them.
      * 

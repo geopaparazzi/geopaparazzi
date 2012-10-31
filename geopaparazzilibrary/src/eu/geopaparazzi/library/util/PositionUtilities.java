@@ -72,11 +72,14 @@ public class PositionUtilities {
     public static double[] getGpsLocationFromPreferences( SharedPreferences preferences ) {
         float lonFloat = preferences.getFloat(PREFS_KEY_LON, NOVALUE);
         float latFloat = preferences.getFloat(PREFS_KEY_LAT, NOVALUE);
-        double lon = (double) lonFloat / LibraryConstants.E6;
-        double lat = (double) latFloat / LibraryConstants.E6;
-        if (lon < NOVALUE_CHECKVALUE || lat < NOVALUE_CHECKVALUE) {
+        if (lonFloat < NOVALUE_CHECKVALUE || latFloat < NOVALUE_CHECKVALUE) {
             return null;
         }
+        double lon = (double) lonFloat / LibraryConstants.E6;
+        double lat = (double) latFloat / LibraryConstants.E6;
+        // if (lon < NOVALUE_CHECKVALUE || lat < NOVALUE_CHECKVALUE) {
+        // return null;
+        // }
         if (lon == 0f && lat == 0f) {
             // we also do not believe in 0,0
             return null;

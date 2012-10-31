@@ -849,45 +849,24 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         if (smsString.size() == 0) {
             Utilities.messageDialog(this, R.string.found_no_data_to_send, null);
         } else {
-            String readableAndroidVersion = android.os.Build.VERSION.RELEASE;
+
             String message = smsString.size() + getString(R.string.insert_phone_to_send);
-            if (readableAndroidVersion.compareTo("2.3") < 0) { //$NON-NLS-1$
-                String[] panicNumbers = GpUtilities.getPanicNumbers(this);
-                String defaultNUmber = ""; //$NON-NLS-1$
-                if (panicNumbers != null && panicNumbers.length > 0) {
-                    defaultNUmber = panicNumbers[0];
-                }
-                Utilities.inputMessageDialog(this, "", message, defaultNUmber, new TextRunnable(){ //$NON-NLS-1$
-                            public void run() {
-                                if (theTextToRunOn != null) {
-                                    int count = 1;
-                                    for( String sms : smsString ) {
-                                        sms = sms.replaceAll("\\s+", "_"); //$NON-NLS-1$//$NON-NLS-2$
-                                        SmsUtilities.sendSMS(MapsActivity.this, theTextToRunOn, sms, false);
-                                        String msg = getString(R.string.sent_sms) + count++;
-                                        Utilities.toast(MapsActivity.this, msg, Toast.LENGTH_SHORT);
-                                    }
-                                } else {
-                                    Utilities.toast(MapsActivity.this, R.string.no_message_sent, Toast.LENGTH_LONG);
-                                }
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(message).setCancelable(false)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
+                        public void onClick( DialogInterface dialog, int id ) {
+                            for( String smsMsg : smsString ) {
+                                SmsUtilities.sendSMSViaApp(MapsActivity.this, "", smsMsg);
                             }
-                        });
-            } else {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage(message).setCancelable(false)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
-                            public void onClick( DialogInterface dialog, int id ) {
-                                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                                intent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE);
-                                startActivityForResult(intent, CONTACT_RETURN_CODE);
-                            }
-                        }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
-                            public void onClick( DialogInterface dialog, int id ) {
-                            }
-                        });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
-            }
+                        }
+                    }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
+                        public void onClick( DialogInterface dialog, int id ) {
+                        }
+                    });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+
         }
 
     }
