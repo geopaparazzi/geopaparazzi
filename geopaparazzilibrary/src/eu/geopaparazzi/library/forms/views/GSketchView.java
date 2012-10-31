@@ -122,17 +122,18 @@ public class GSketchView extends View {
         });
 
         ScrollView scrollView = new ScrollView(context);
-        ScrollView.LayoutParams scrollLayoutParams = new ScrollView.LayoutParams(LayoutParams.FILL_PARENT,
-                LayoutParams.WRAP_CONTENT);
+        ScrollView.LayoutParams scrollLayoutParams = new ScrollView.LayoutParams(LayoutParams.FILL_PARENT, 150);
         scrollView.setLayoutParams(scrollLayoutParams);
         parentView.addView(scrollView);
 
         imageLayout = new LinearLayout(context);
         LinearLayout.LayoutParams imageLayoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
-                LayoutParams.WRAP_CONTENT);
+                LayoutParams.FILL_PARENT);
         imageLayout.setLayoutParams(imageLayoutParams);
+        // imageLayout.setMinimumHeight(200);
         imageLayout.setOrientation(LinearLayout.HORIZONTAL);
         scrollView.addView(imageLayout);
+        // scrollView.setFillViewport(true);
 
         ViewTreeObserver observer = imageLayout.getViewTreeObserver();
         observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener(){
@@ -140,6 +141,13 @@ public class GSketchView extends View {
                 if (lastImageFile != null && lastImageFile.exists()) {
                     String imagePath = lastImageFile.getAbsolutePath();
                     _value = _value + ";" + imagePath;
+
+                    try {
+                        // THIS IS PLAIN UGLY
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     refresh(context);
                     lastImageFile = null;
                 }
@@ -179,9 +187,10 @@ public class GSketchView extends View {
 
                 Bitmap thumbnail = FileUtilities.readScaledBitmap(image, 100);
                 ImageView imageView = new ImageView(context);
-                imageView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+                imageView.setLayoutParams(new LinearLayout.LayoutParams(102, 102));
                 imageView.setPadding(5, 5, 5, 5);
                 imageView.setImageBitmap(thumbnail);
+                imageView.setBackgroundDrawable(getResources().getDrawable(R.drawable.border_black_1px));
                 imageView.setOnClickListener(new View.OnClickListener(){
                     public void onClick( View v ) {
                         Intent intent = new Intent();
