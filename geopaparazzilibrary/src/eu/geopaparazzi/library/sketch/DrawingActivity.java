@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.sketch.brush.Brush;
@@ -46,8 +47,8 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
     private Paint currentPaint;
     private Paint previewPaint;
 
-    private Button redoBtn;
-    private Button undoBtn;
+    private ImageButton redoBtn;
+    private ImageButton undoBtn;
 
     private Brush currentBrush;
     private int currentColor;
@@ -83,8 +84,8 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
         drawingSurface.previewPath = new DrawingPath();
         drawingSurface.previewPath.path = new Path();
 
-        redoBtn = (Button) findViewById(R.id.redoButton);
-        undoBtn = (Button) findViewById(R.id.undoButton);
+        redoBtn = (ImageButton) findViewById(R.id.redoButton);
+        undoBtn = (ImageButton) findViewById(R.id.undoButton);
 
         colorSpinner = (Spinner) findViewById(R.id.colorspinner);
         ArrayAdapter< ? > colorSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.array_colornames,

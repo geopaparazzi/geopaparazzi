@@ -32,25 +32,32 @@
             android:layout_alignParentBottom="true"
             android:layout_toRightOf="@id/colorspinner" />
 
-        <Button
+        <ImageButton
             android:id="@+id/redoButton"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@layout/button_background_drawable"
+            android:contentDescription="@string/redo"
             android:onClick="onClick"
-            android:text="redo" />
+            android:src="@android:drawable/ic_media_ff" />
 
-        <Button
+        <ImageButton
             android:id="@+id/undoButton"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:layout_toLeftOf="@id/redoButton"
+            android:background="@layout/button_background_drawable"
+            android:contentDescription="@string/undo"
             android:onClick="onClick"
-            android:text="undo" />
+            android:src="@android:drawable/ic_media_rew" />
+
     </RelativeLayout>
 
 </RelativeLayout>
