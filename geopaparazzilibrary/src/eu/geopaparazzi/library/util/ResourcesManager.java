@@ -18,13 +18,11 @@
 package eu.geopaparazzi.library.util;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_BASEFOLDER;
-
-import static eu.geopaparazzi.library.util.Utilities.*;
+import static eu.geopaparazzi.library.util.Utilities.messageDialog;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.text.MessageFormat;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -47,8 +45,6 @@ public class ResourcesManager implements Serializable {
     private static final String PATH_MAPS = "maps"; //$NON-NLS-1$
 
     private static final String PATH_MEDIA = "media"; //$NON-NLS-1$
-
-    private static final String PATH_EXPORT = "export"; //$NON-NLS-1$
 
     private Context context;
 
@@ -188,12 +184,7 @@ public class ResourcesManager implements Serializable {
                 messageDialog(context, msgFormat, null);
             }
 
-        exportDir = new File(applicationDir, PATH_EXPORT);
-        if (!exportDir.exists())
-            if (!exportDir.mkdir()) {
-                String msgFormat = Utilities.format(cantCreateSdcardmsg, exportDir.getAbsolutePath());
-                messageDialog(context, msgFormat, null);
-            }
+        exportDir = applicationDir.getParentFile();
 
         mapsDir = new File(sdcardDir, PATH_MAPS);
         if (!mapsDir.exists())
