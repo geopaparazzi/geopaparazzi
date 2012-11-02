@@ -14,6 +14,7 @@ import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_MAP;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_PICTURES;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_SKETCH;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRING;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRINGAREA;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRINGCOMBO;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRINGMULTIPLECHOICE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_TIME;
@@ -115,9 +116,11 @@ public class FragmentDetail extends Fragment {
 
                     GView addedView = null;
                     if (type.equals(TYPE_STRING)) {
-                        addedView = FormUtilities.addEditText(activity, mainView, key, value, 0, constraintDescription);
+                        addedView = FormUtilities.addEditText(activity, mainView, key, value, 0, 0, constraintDescription);
+                    } else if (type.equals(TYPE_STRINGAREA)) {
+                        addedView = FormUtilities.addEditText(activity, mainView, key, value, 0, 7, constraintDescription);
                     } else if (type.equals(TYPE_DOUBLE)) {
-                        addedView = FormUtilities.addEditText(activity, mainView, key, value, 1, constraintDescription);
+                        addedView = FormUtilities.addEditText(activity, mainView, key, value, 1, 0, constraintDescription);
                     } else if (type.equals(TYPE_DATE)) {
                         addedView = FormUtilities.addDateView(FragmentDetail.this, mainView, key, value, constraintDescription);
                     } else if (type.equals(TYPE_TIME)) {
@@ -199,7 +202,6 @@ public class FragmentDetail extends Fragment {
      *              that didn't pass the constraint check.
      * @throws Exception
      */
-    @SuppressWarnings("nls")
     public String storeFormItems( boolean doConstraintsCheck ) throws Exception {
         if (selectedFormName == null) {
             return null;
@@ -212,19 +214,27 @@ public class FragmentDetail extends Fragment {
             Constraints constraints = key2ConstraintsMap.get(key);
 
             GView view = key2WidgetMap.get(key);
-            String text = view.getValue();
+            if (view != null) {
+                String text = view.getValue();
+                if (doConstraintsCheck && !constraints.isValid(text)) {
+                    return key;
+                }
 
-            if (doConstraintsCheck && !constraints.isValid(text)) {
-                return key;
+                try {
+                    if (text != null)
+                        FormUtilities.update(formItems, key, text);
+                } catch (JSONException e) {
+                    Logger.e(this, e.getLocalizedMessage(), e);
+                    e.printStackTrace();
+                }
             }
+        }
 
-            try {
-                if (text != null)
-                    FormUtilities.update(formItems, key, text);
-            } catch (JSONException e) {
-                Logger.e(this, e.getLocalizedMessage(), e);
-                e.printStackTrace();
-            }
+        FragmentList listFragment = (FragmentList) getFragmentManager().findFragmentById(R.id.listFragment);
+        if (listFragment != null) {
+            FormUtilities.updateExtras(formItems, listFragment.getLatitude(), listFragment.getLongitude());
+        } else {
+            throw new RuntimeException("Fragmentlist not available");
         }
 
         return null;

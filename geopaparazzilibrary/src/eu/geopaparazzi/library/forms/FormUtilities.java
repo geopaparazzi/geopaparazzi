@@ -76,6 +76,11 @@ public class FormUtilities {
     public static final String TYPE_STRING = "string";
 
     /**
+     * Type for a {@link EditText} area containing generic text.
+     */
+    public static final String TYPE_STRINGAREA = "stringarea";
+
+    /**
      * Type for a {@link EditText} containing generic numbers.
      */
     public static final String TYPE_DOUBLE = "double";
@@ -191,12 +196,13 @@ public class FormUtilities {
      *             <li>2: phone</li>
      *             <li>3: date</li>
      *          </ul>
+     * @param lines lines or 0 
      * @param constraintDescription 
      * @return the added view.
      */
-    public static GView addEditText( Context context, LinearLayout mainView, String key, String value, int type,
+    public static GView addEditText( Context context, LinearLayout mainView, String key, String value, int type, int lines,
             String constraintDescription ) {
-        GEditTextView editText = new GEditTextView(context, null, mainView, key, value, type, constraintDescription);
+        GEditTextView editText = new GEditTextView(context, null, mainView, key, value, type, lines, constraintDescription);
         return editText;
     }
 
@@ -376,24 +382,17 @@ public class FormUtilities {
      * @param formItemsArray the items array.
      * @param latitude the lat value.
      * @param longitude the long value.
-     * @param category the category of the tag.
-     * @param tagName the tag name.
      * @throws JSONException 
      */
-    public static void updateExtras( JSONArray formItemsArray, double latitude, double longitude, String category, String tagName )
-            throws JSONException {
+    public static void updateExtras( JSONArray formItemsArray, double latitude, double longitude ) throws JSONException {
         int length = formItemsArray.length();
         for( int i = 0; i < length; i++ ) {
             JSONObject itemObject = formItemsArray.getJSONObject(i);
             String objKey = itemObject.getString(TAG_KEY).trim();
-            String objType = itemObject.getString(TAG_TYPE).trim();
             if (objKey.equals(TYPE_LATITUDE)) {
                 itemObject.put(TAG_VALUE, latitude);
             } else if (objKey.equals(TYPE_LONGITUDE)) {
                 itemObject.put(TAG_VALUE, longitude);
-            }
-            if (objType.equals(TYPE_PRIMARYKEY)) {
-                itemObject.put(TAG_VALUE, tagName);
             }
         }
 

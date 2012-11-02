@@ -22,6 +22,7 @@ import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
 import android.content.Context;
 import android.text.InputType;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.EditText;
@@ -34,7 +35,7 @@ import eu.geopaparazzi.library.R;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class GEditTextView extends View implements GView{
+public class GEditTextView extends View implements GView {
 
     private EditText editView;
 
@@ -47,7 +48,7 @@ public class GEditTextView extends View implements GView{
     }
 
     public GEditTextView( Context context, AttributeSet attrs, LinearLayout parentView, String key, String value, int type,
-            String constraintDescription ) {
+            int lines, String constraintDescription ) {
         super(context, attrs);
 
         LinearLayout textLayout = new LinearLayout(context);
@@ -84,6 +85,11 @@ public class GEditTextView extends View implements GView{
             break;
         default:
             break;
+        }
+
+        if (lines > 0) {
+            editView.setLines(lines);
+            editView.setGravity(Gravity.TOP);
         }
 
         textLayout.addView(editView);

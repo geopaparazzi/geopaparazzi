@@ -103,6 +103,14 @@ public class FragmentList extends android.support.v4.app.ListFragment {
         return activity.getSectionObject();
     }
 
+    public double getLatitude() {
+        return activity.getLatitude();
+    }
+
+    public double getLongitude() {
+        return activity.getLongitude();
+    }
+
     public void onActivityResult( int requestCode, int resultCode, Intent data ) {
         super.onActivityResult(requestCode, resultCode, data);
         switch( requestCode ) {
