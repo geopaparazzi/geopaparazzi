@@ -179,6 +179,7 @@ public class FormUtilities {
     public static final String TAG_ITEMS = "items";
     public static final String TAG_ITEM = "item";
     public static final String TAG_TYPE = "type";
+    public static final String TAG_READONLY = "readonly";
     public static final String TAG_SIZE = "size";
     public static final String TAG_URL = "url";
 
@@ -198,11 +199,12 @@ public class FormUtilities {
      *          </ul>
      * @param lines lines or 0 
      * @param constraintDescription 
+     * @param readonly 
      * @return the added view.
      */
     public static GView addEditText( Context context, LinearLayout mainView, String key, String value, int type, int lines,
-            String constraintDescription ) {
-        GEditTextView editText = new GEditTextView(context, null, mainView, key, value, type, lines, constraintDescription);
+            String constraintDescription, boolean readonly ) {
+        GEditTextView editText = new GEditTextView(context, null, mainView, key, value, type, lines, constraintDescription, readonly);
         return editText;
     }
 
@@ -220,11 +222,12 @@ public class FormUtilities {
      * @param key the key identifying the widget.
      * @param value the value to put in the widget.
      * @param constraintDescription 
+     * @param readonly 
      * @return the added view.
      */
     public static GView addBooleanView( Context context, LinearLayout mainView, String key, String value,
-            String constraintDescription ) {
-        GBooleanView booleanView = new GBooleanView(context, null, mainView, key, value, constraintDescription);
+            String constraintDescription, boolean readonly ) {
+        GBooleanView booleanView = new GBooleanView(context, null, mainView, key, value, constraintDescription, readonly);
         return booleanView;
     }
 
@@ -297,11 +300,12 @@ public class FormUtilities {
      * @param value the value to put in the widget.
      * @param itemsArray the items to put in the spinner.
      * @param constraintDescription 
+     * @param readonly 
      * @return the added view.
      */
     public static GView addDateView( final Fragment fragment, LinearLayout mainView, String key, String value,
-            String constraintDescription ) {
-        GDateView dateView = new GDateView(fragment, null, mainView, key, value, constraintDescription);
+            String constraintDescription, boolean readonly ) {
+        GDateView dateView = new GDateView(fragment, null, mainView, key, value, constraintDescription, readonly);
         return dateView;
     }
 
@@ -314,11 +318,12 @@ public class FormUtilities {
      * @param value the value to put in the widget.
      * @param itemsArray the items to put in the spinner.
      * @param constraintDescription 
+     * @param readonly 
      * @return the added view.
      */
     public static GView addTimeView( final Fragment fragment, LinearLayout mainView, String key, String value,
-            String constraintDescription ) {
-        GTimeView timeView = new GTimeView(fragment, null, mainView, key, value, constraintDescription);
+            String constraintDescription, boolean readonly ) {
+        GTimeView timeView = new GTimeView(fragment, null, mainView, key, value, constraintDescription, readonly);
         return timeView;
     }
 

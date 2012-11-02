@@ -48,7 +48,7 @@ public class GEditTextView extends View implements GView {
     }
 
     public GEditTextView( Context context, AttributeSet attrs, LinearLayout parentView, String key, String value, int type,
-            int lines, String constraintDescription ) {
+            int lines, String constraintDescription, boolean readonly ) {
         super(context, attrs);
 
         LinearLayout textLayout = new LinearLayout(context);
@@ -72,6 +72,7 @@ public class GEditTextView extends View implements GView {
         editView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
         editView.setPadding(15, 5, 15, 5);
         editView.setText(value);
+        editView.setEnabled(!readonly);
 
         switch( type ) {
         case 1:

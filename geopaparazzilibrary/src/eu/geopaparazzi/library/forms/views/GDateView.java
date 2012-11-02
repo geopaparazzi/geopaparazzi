@@ -55,7 +55,7 @@ public class GDateView extends View implements GView {
     }
 
     public GDateView( final Fragment fragment, AttributeSet attrs, LinearLayout parentView, String key, String value,
-            String constraintDescription ) {
+            String constraintDescription, boolean readonly ) {
         super(fragment.getActivity(), attrs);
 
         Context context = fragment.getActivity();
@@ -106,6 +106,7 @@ public class GDateView extends View implements GView {
                 newFragment.show(fragment.getFragmentManager(), "datePicker");
             }
         });
+        button.setEnabled(!readonly);
 
         textLayout.addView(button);
     }

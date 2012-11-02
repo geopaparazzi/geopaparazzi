@@ -1,6 +1,6 @@
 package eu.geopaparazzi.library.forms;
 
-import static eu.geopaparazzi.library.forms.FormUtilities.TAG_KEY;
+import static eu.geopaparazzi.library.forms.FormUtilities.*;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_SIZE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_TYPE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_URL;
@@ -108,6 +108,12 @@ public class FragmentDetail extends Fragment {
                     if (jsonObject.has(TAG_TYPE)) {
                         type = jsonObject.getString(TAG_TYPE).trim();
                     }
+                    
+                    boolean readonly = false;
+                    if (jsonObject.has(TAG_READONLY)) {
+                        String readonlyStr = jsonObject.getString(TAG_READONLY).trim();
+                        readonly = Boolean.parseBoolean(readonlyStr);
+                    }
 
                     Constraints constraints = new Constraints();
                     FormUtilities.handleConstraints(jsonObject, constraints);
@@ -116,15 +122,15 @@ public class FragmentDetail extends Fragment {
 
                     GView addedView = null;
                     if (type.equals(TYPE_STRING)) {
-                        addedView = FormUtilities.addEditText(activity, mainView, key, value, 0, 0, constraintDescription);
+                        addedView = FormUtilities.addEditText(activity, mainView, key, value, 0, 0, constraintDescription, readonly);
                     } else if (type.equals(TYPE_STRINGAREA)) {
-                        addedView = FormUtilities.addEditText(activity, mainView, key, value, 0, 7, constraintDescription);
+                        addedView = FormUtilities.addEditText(activity, mainView, key, value, 0, 7, constraintDescription, readonly);
                     } else if (type.equals(TYPE_DOUBLE)) {
-                        addedView = FormUtilities.addEditText(activity, mainView, key, value, 1, 0, constraintDescription);
+                        addedView = FormUtilities.addEditText(activity, mainView, key, value, 1, 0, constraintDescription, readonly);
                     } else if (type.equals(TYPE_DATE)) {
-                        addedView = FormUtilities.addDateView(FragmentDetail.this, mainView, key, value, constraintDescription);
+                        addedView = FormUtilities.addDateView(FragmentDetail.this, mainView, key, value, constraintDescription, readonly);
                     } else if (type.equals(TYPE_TIME)) {
-                        addedView = FormUtilities.addTimeView(FragmentDetail.this, mainView, key, value, constraintDescription);
+                        addedView = FormUtilities.addTimeView(FragmentDetail.this, mainView, key, value, constraintDescription, readonly);
                     } else if (type.equals(TYPE_LABEL)) {
                         String size = "20"; //$NON-NLS-1$
                         if (jsonObject.has(TAG_SIZE))
@@ -142,7 +148,7 @@ public class FragmentDetail extends Fragment {
                             url = jsonObject.getString(TAG_URL);
                         addedView = FormUtilities.addTextView(activity, mainView, value, size, true, url);
                     } else if (type.equals(TYPE_BOOLEAN)) {
-                        addedView = FormUtilities.addBooleanView(activity, mainView, key, value, constraintDescription);
+                        addedView = FormUtilities.addBooleanView(activity, mainView, key, value, constraintDescription, readonly);
                     } else if (type.equals(TYPE_STRINGCOMBO)) {
                         JSONArray comboItems = TagsManager.getComboItems(jsonObject);
                         String[] itemsArray = TagsManager.comboItems2StringArray(comboItems);

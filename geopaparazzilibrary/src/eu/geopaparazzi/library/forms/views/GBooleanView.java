@@ -33,7 +33,7 @@ import eu.geopaparazzi.library.R;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class GBooleanView extends View implements GView{
+public class GBooleanView extends View implements GView {
 
     private CheckBox checkbox;
 
@@ -46,7 +46,7 @@ public class GBooleanView extends View implements GView{
     }
 
     public GBooleanView( Context context, AttributeSet attrs, LinearLayout parentView, String key, String value,
-            String constraintDescription ) {
+            String constraintDescription, boolean readonly ) {
         super(context, attrs);
 
         LinearLayout textLayout = new LinearLayout(context);
@@ -76,6 +76,7 @@ public class GBooleanView extends View implements GView{
                 checkbox.setChecked(false);
             }
         }
+        checkbox.setEnabled(!readonly);
         textLayout.addView(checkbox);
     }
 

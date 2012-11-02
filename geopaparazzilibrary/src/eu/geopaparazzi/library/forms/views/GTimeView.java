@@ -55,7 +55,7 @@ public class GTimeView extends View implements GView {
     }
 
     public GTimeView( final Fragment fragment, AttributeSet attrs, LinearLayout parentView, String key, String value,
-            String constraintDescription ) {
+            String constraintDescription, boolean readonly ) {
         super(fragment.getActivity(), attrs);
 
         Context context = fragment.getActivity();
@@ -105,6 +105,7 @@ public class GTimeView extends View implements GView {
                 newFragment.show(fragment.getFragmentManager(), "timePicker");
             }
         });
+        button.setEnabled(!readonly);
 
         textLayout.addView(button);
     }
