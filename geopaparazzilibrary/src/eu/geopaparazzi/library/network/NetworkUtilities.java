@@ -40,6 +40,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Base64;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 
@@ -262,8 +263,7 @@ public class NetworkUtilities {
 
     private static String getB64Auth( String login, String pass ) {
         String source = login + ":" + pass;
-        String ret = source; // "Basic " + Base64.encodeToString(source.getBytes(), Base64.URL_SAFE
-                             // | Base64.NO_WRAP);
+        String ret = "Basic " + Base64.encodeToString(source.getBytes(), Base64.URL_SAFE | Base64.NO_WRAP);
         return ret;
     }
 
@@ -319,7 +319,6 @@ public class NetworkUtilities {
         }
         return builder.toString();
     }
-
     // public static String uploadFile( Context context, String urlStr, File file, String user,
     // String password ) {
     // try {
