@@ -236,6 +236,11 @@ public interface LibraryConstants {
     public static final String PREFS_KEY_URL = "PREFS_KEY_URL"; //$NON-NLS-1$
 
     /**
+     * Key used to define a that text is passed through the workflow. Generic. 
+     */
+    public static final String PREFS_KEY_TEXT = "PREFS_KEY_TEXT"; //$NON-NLS-1$
+
+    /**
      * Default gps logging interval.
      */
     public static final int GPS_LOGGING_INTERVAL = 3;

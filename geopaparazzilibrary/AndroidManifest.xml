@@ -63,6 +63,12 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:name="eu.geopaparazzi.library.util.activities.AboutActivity" >
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.util.activities.AboutActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity android:name="eu.geopaparazzi.library.sketch.DrawingActivity" >
             <intent-filter>
                 <action android:name="eu.geopaparazzi.library.sketch.DrawingActivity" />
