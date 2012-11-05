@@ -25,18 +25,30 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
 import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.CoreProtocolPNames;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -283,6 +295,59 @@ public class NetworkUtilities {
             if (conn != null)
                 conn.disconnect();
         }
+    }
+
+    /**
+     * Sends a {@link MultipartEntity} post with text and image files.
+     * 
+     * @param url the url to which to POST to.
+     * @param user the user or <code>null</code>.
+     * @param pwd the password or <code>null</code>.
+     * @param stringsMap the {@link HashMap} containing the key and string pairs to send.
+     * @param filesMap the {@link HashMap} containing the key and image file paths 
+     *                  (jpg, png supported) pairs to send.
+     * @throws UnsupportedEncodingException
+     * @throws IOException
+     * @throws ClientProtocolException
+     */
+    public static void sentMultiPartPost( String url, String user, String pwd, HashMap<String, String> stringsMap,
+            HashMap<String, File> filesMap ) throws UnsupportedEncodingException, IOException, ClientProtocolException {
+        HttpClient httpclient = new DefaultHttpClient();
+        httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+        HttpPost httppost = new HttpPost(url);
+
+        if (user != null && pwd != null) {
+            String ret = getB64Auth(user, pwd);
+            httppost.setHeader("Authorization", ret);
+        }
+
+        MultipartEntity mpEntity = new MultipartEntity();
+        Set<Entry<String, String>> stringsEntrySet = stringsMap.entrySet();
+        for( Entry<String, String> stringEntry : stringsEntrySet ) {
+            ContentBody cbProperties = new StringBody(stringEntry.getValue());
+            mpEntity.addPart(stringEntry.getKey(), cbProperties);
+        }
+
+        Set<Entry<String, File>> filesEntrySet = filesMap.entrySet();
+        for( Entry<String, File> filesEntry : filesEntrySet ) {
+            String propName = filesEntry.getKey();
+            File file = filesEntry.getValue();
+            if (file.exists()) {
+                String ext = file.getName().toLowerCase().endsWith("jpg") ? "jpeg" : "png";
+                ContentBody cbFile = new FileBody(file, "image/" + ext);
+                mpEntity.addPart(propName, cbFile);
+            }
+        }
+
+        httppost.setEntity(mpEntity);
+        HttpResponse response = httpclient.execute(httppost);
+        HttpEntity resEntity = response.getEntity();
+
+        if (resEntity != null) {
+            resEntity.consumeContent();
+        }
+
+        httpclient.getConnectionManager().shutdown();
     }
 
     private static String getB64Auth( String login, String pass ) {
