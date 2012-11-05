@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -41,6 +42,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Base64;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 
@@ -85,16 +87,16 @@ public class NetworkUtilities {
      * Sends an HTTP GET request to a url
      *
      * @param urlStr - The URL of the server. (Example: " http://www.yahoo.com/search")
-     * @param file the output file.
+     * @param file the output file. If it is a folder, it tries to get the file name from the header.
      * @param requestParameters - all the request parameters (Example: "param1=val1&param2=val2"). 
      *           Note: This method will add the question mark (?) to the request - 
      *           DO NOT add it yourself
      * @param user
      * @param password
-     * @return - The response from the end point
+     * @return the file written. 
      * @throws Exception 
      */
-    public static void sendGetRequest4File( String urlStr, File file, String requestParameters, String user, String password )
+    public static File sendGetRequest4File( String urlStr, File file, String requestParameters, String user, String password )
             throws Exception {
         if (requestParameters != null && requestParameters.length() > 0) {
             urlStr += "?" + requestParameters;
@@ -110,6 +112,27 @@ public class NetworkUtilities {
             conn.setRequestProperty("Authorization", getB64Auth(user, password));
         }
         conn.connect();
+
+        if (file.isDirectory()) {
+            // try to get the header
+            String headerField = conn.getHeaderField("Content-Disposition");
+            String fileName = null;
+            if (headerField != null) {
+                String[] split = headerField.split(";");
+                for( String string : split ) {
+                    String pattern = "filename=";
+                    if (string.toLowerCase().startsWith(pattern)) {
+                        fileName = string.replaceFirst(pattern, "");
+                        break;
+                    }
+                }
+            }
+            if (fileName == null) {
+                // give a name
+                fileName = "FILE_" + LibraryConstants.TIMESTAMPFORMATTER.format(new Date());
+            }
+            file = new File(file, fileName);
+        }
 
         InputStream in = null;
         FileOutputStream out = null;
@@ -131,6 +154,7 @@ public class NetworkUtilities {
             if (out != null)
                 out.close();
         }
+        return file;
     }
 
     /**
