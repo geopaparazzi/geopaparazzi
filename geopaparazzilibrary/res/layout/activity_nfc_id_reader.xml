@@ -45,7 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:background="@layout/background_green"
+                android:background="@layout/background_red"
                 android:padding="10dp"
                 android:text="Bluetooth"
                 android:textAppearance="?android:attr/textAppearanceLarge"
