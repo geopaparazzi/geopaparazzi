@@ -63,6 +63,7 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.library.util.activities.AboutActivity;
 import eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
@@ -81,7 +82,6 @@ import eu.hydrologis.geopaparazzi.maps.MapsActivity;
 import eu.hydrologis.geopaparazzi.maps.tiles.MapGeneratorInternal;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
 import eu.hydrologis.geopaparazzi.preferences.PreferencesActivity;
-import eu.hydrologis.geopaparazzi.util.AboutActivity;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.ExportActivity;
 import eu.hydrologis.geopaparazzi.util.GpUtilities;
@@ -518,6 +518,7 @@ public class GeoPaparazziActivity extends Activity {
         switch( item.getItemId() ) {
         case MENU_ABOUT:
             Intent intent = new Intent(this, AboutActivity.class);
+            intent.putExtra(LibraryConstants.PREFS_KEY_TEXT, "eu.hydrologis.geopaparazzi"); //$NON-NLS-1$
             startActivity(intent);
             return true;
         case MENU_SETTINGS:
@@ -837,6 +838,7 @@ public class GeoPaparazziActivity extends Activity {
     /**
      * Send the panic or status update message.
      */
+    @SuppressWarnings("nls")
     private void sendPosition( boolean isPanic ) {
         if (isPanic) {
             String lastPosition = getString(R.string.help_needed);

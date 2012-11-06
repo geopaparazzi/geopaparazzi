@@ -64,27 +64,6 @@
     <string name="text_take_a_gps_note">take note</string>
     <string name="text_undo_a_gps_note">undo note</string>
 
-	<string name="abouttext">
-	    GeoPaparazzi VERSION\n
-	    is brought to you by HydroloGIS.\n
-	    \n
-	    GeoPaparazzi is the little brother of BeeGIS and as such is able to load collected data into it.\n
-	    \n
-	    The mapping engine is mapsforge.\n
-	    \n
-	    The maps are from © OpenStreetMap contributors, CC-BY-SA.\n
-	    \n
-	    The quickactions are adapted from Lorenz’s Londatiga tutorial.\n
-	    \n
-	    Links:\n
-	    http://www.geopaparazzi.eu\n
-	    http://www.beegis.org\n
-	    http://www.hydrologis.eu\n
-	    http://code.google.com/p/mapsforge/\n
-	    http://www.openstreetmap.org\n
-	    http://www.londatiga.net\n
-	</string>
-	
 	<string name="gps_log">gps log</string>
 	<string name="gps_log_name">Insert a gps log name or accept the default one</string>
 	
