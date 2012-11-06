@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+	<color name="main_background">#FFFFFF</color>
+	<color name="main_decorations">#5d9d76</color>
+	<color name="main_decorations_dark">#378756</color>
+	<color name="main_text_color">#5d9d76</color>
+	<color name="main_selection">#FF9933</color>
 	<color name="red">#FF0000</color>
 	<color name="green">#00FF00</color>
 	<color name="blue">#0000FF</color>
