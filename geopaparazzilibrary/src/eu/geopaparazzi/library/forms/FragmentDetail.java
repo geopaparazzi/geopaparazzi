@@ -267,7 +267,7 @@ public class FragmentDetail extends Fragment {
         if (listFragment != null) {
             FormUtilities.updateExtras(formItems, listFragment.getLatitude(), listFragment.getLongitude());
         } else {
-            throw new RuntimeException("Fragmentlist not available");
+            throw new RuntimeException("Fragmentlist not available"); //$NON-NLS-1$
         }
 
         return null;
