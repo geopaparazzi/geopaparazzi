@@ -1,3 +1,20 @@
+/*
+ * Geopaparazzi - Digital field mapping on Android based devices
+ * Copyright (C) 2010  HydroloGIS (www.hydrologis.com)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.geopaparazzi.library.forms;
 
 import static eu.geopaparazzi.library.forms.FormUtilities.*;
@@ -44,6 +61,11 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.debug.Logger;
 
+/**
+ * The fragment detail view.
+ * 
+ * @author Andrea Antonello (www.hydrologis.com)
+ */
 public class FragmentDetail extends Fragment {
 
     private HashMap<String, GView> key2WidgetMap = new HashMap<String, GView>();
@@ -108,7 +130,7 @@ public class FragmentDetail extends Fragment {
                     if (jsonObject.has(TAG_TYPE)) {
                         type = jsonObject.getString(TAG_TYPE).trim();
                     }
-                    
+
                     boolean readonly = false;
                     if (jsonObject.has(TAG_READONLY)) {
                         String readonlyStr = jsonObject.getString(TAG_READONLY).trim();
@@ -122,15 +144,20 @@ public class FragmentDetail extends Fragment {
 
                     GView addedView = null;
                     if (type.equals(TYPE_STRING)) {
-                        addedView = FormUtilities.addEditText(activity, mainView, key, value, 0, 0, constraintDescription, readonly);
+                        addedView = FormUtilities.addEditText(activity, mainView, key, value, 0, 0, constraintDescription,
+                                readonly);
                     } else if (type.equals(TYPE_STRINGAREA)) {
-                        addedView = FormUtilities.addEditText(activity, mainView, key, value, 0, 7, constraintDescription, readonly);
+                        addedView = FormUtilities.addEditText(activity, mainView, key, value, 0, 7, constraintDescription,
+                                readonly);
                     } else if (type.equals(TYPE_DOUBLE)) {
-                        addedView = FormUtilities.addEditText(activity, mainView, key, value, 1, 0, constraintDescription, readonly);
+                        addedView = FormUtilities.addEditText(activity, mainView, key, value, 1, 0, constraintDescription,
+                                readonly);
                     } else if (type.equals(TYPE_DATE)) {
-                        addedView = FormUtilities.addDateView(FragmentDetail.this, mainView, key, value, constraintDescription, readonly);
+                        addedView = FormUtilities.addDateView(FragmentDetail.this, mainView, key, value, constraintDescription,
+                                readonly);
                     } else if (type.equals(TYPE_TIME)) {
-                        addedView = FormUtilities.addTimeView(FragmentDetail.this, mainView, key, value, constraintDescription, readonly);
+                        addedView = FormUtilities.addTimeView(FragmentDetail.this, mainView, key, value, constraintDescription,
+                                readonly);
                     } else if (type.equals(TYPE_LABEL)) {
                         String size = "20"; //$NON-NLS-1$
                         if (jsonObject.has(TAG_SIZE))
