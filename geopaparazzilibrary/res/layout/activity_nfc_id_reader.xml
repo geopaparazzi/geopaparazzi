@@ -11,7 +11,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_margin="10dp"
+        android:layout_margin="5dp"
         android:gravity="center_horizontal"
         android:text="Scanning for data..."
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -24,7 +24,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/scanning_data_label"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="5dp"
+        android:indeterminateOnly="true" />
 
     <TableLayout
         android:id="@+id/tableLayout1"
@@ -32,36 +33,41 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/scanning_progressbar"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp" >
+        android:layout_marginTop="5dp" >
 
         <TableRow
             android:id="@+id/tableRow1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp" >
+            android:layout_height="wrap_content" >
 
             <TextView
                 android:id="@+id/bluetoothActiveLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bluetooth active"
+                android:layout_margin="5dp"
+                android:background="@layout/background_green"
+                android:padding="10dp"
+                android:text="Bluetooth"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="@color/main_text_color" />
+                android:textColor="@color/black" />
         </TableRow>
 
         <TableRow
             android:id="@+id/tableRow2"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp" >
+            android:layout_height="wrap_content" >
 
             <TextView
                 android:id="@+id/nfcActiveLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="NFC active"
+                android:layout_margin="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@layout/background_red"
+                android:padding="10dp"
+                android:text="    NFC    "
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="@color/main_text_color" />
+                android:textColor="@color/black" />
         </TableRow>
     </TableLayout>
 
@@ -73,7 +79,7 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/tableLayout1"
         android:layout_margin="10dp"
-        android:layout_marginTop="27dp"
+        android:layout_marginTop="10dp"
         android:text="Last read id:"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/main_text_color" />
@@ -85,8 +91,10 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/read_id_label"
-        android:layout_margin="10dp"
-        android:ems="10" >
+        android:layout_margin="5dp"
+        android:ems="10"
+        android:enabled="false"
+        android:textColor="@color/red" >
 
         <requestFocus />
     </EditText>
@@ -106,6 +114,7 @@
             android:layout_margin="10dp"
             android:layout_weight="1"
             android:background="@layout/geopap_button"
+            android:onClick="okPushed"
             android:padding="10dp"
             android:text="@android:string/ok"
             android:textAppearance="?android:attr/textAppearanceLarge"
@@ -118,6 +127,7 @@
             android:layout_margin="10dp"
             android:layout_weight="1"
             android:background="@layout/geopap_button"
+            android:onClick="cancelPushed"
             android:padding="10dp"
             android:text="@android:string/cancel"
             android:textAppearance="?android:attr/textAppearanceLarge"
