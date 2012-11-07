@@ -69,6 +69,18 @@ public class RawBinaryDevice implements IBluetoothIOHandler {
         in = tmpIn;
         out = tmpOut;
         out2 = tmpOut2;
+
+        ready = true;
+        enabled = true;
+        new Thread(new Runnable(){
+            public void run() {
+                startDevice();
+            }
+        }).start();
+    }
+
+    private void startDevice() {
+        run();
     }
 
     @Override
@@ -129,7 +141,6 @@ public class RawBinaryDevice implements IBluetoothIOHandler {
             }
         }
     }
-
 
     @Override
     public void close() {

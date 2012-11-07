@@ -15,10 +15,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.bluetooth.BluetoothManager;
+import eu.geopaparazzi.library.bluetooth.IBluetoothIOHandler;
+import eu.geopaparazzi.library.bluetooth.IBluetoothListener;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.library.util.debug.Logger;
 
-public class NfcIdReaderActivity extends Activity {
+public class NfcIdReaderActivity extends Activity implements IBluetoothListener {
 
     private NfcAdapter nfcAdapter;
     private String lastReadNfcMessage;
@@ -26,6 +29,7 @@ public class NfcIdReaderActivity extends Activity {
     private TextView btActivityLabel;
     private TextView nfcActivityLabel;
     private boolean inReadMode = false;
+    private IBluetoothIOHandler bluetoothDevice;
 
     @Override
     public void onCreate( Bundle savedInstanceState ) {
@@ -59,8 +63,7 @@ public class NfcIdReaderActivity extends Activity {
             nfcActivityLabel.setBackgroundResource(R.layout.background_green);
         }
 
-        Set<BluetoothDevice> bondedDevices = BluetoothManager.INSTANCE.getBondedDevices();
-        if (bondedDevices.size() == 0) {
+        if (bluetoothDevice == null) {
             btActivityLabel.setBackgroundResource(R.layout.background_red);
         } else {
             btActivityLabel.setBackgroundResource(R.layout.background_green);
@@ -71,6 +74,10 @@ public class NfcIdReaderActivity extends Activity {
     protected void onResume() {
         super.onResume();
 
+        bluetoothDevice = BluetoothManager.INSTANCE.getBluetoothDevice();
+        if (bluetoothDevice != null) {
+            bluetoothDevice.addListener(this);
+        }
         checkScanners();
 
         if (!inReadMode) {
@@ -91,6 +98,10 @@ public class NfcIdReaderActivity extends Activity {
 
     @Override
     protected void onPause() {
+        if (bluetoothDevice != null) {
+            bluetoothDevice.removeListener(this);
+        }
+
         if (isFinishing()) {
             if (nfcAdapter != null && nfcAdapter.isEnabled())
                 nfcAdapter.disableForegroundDispatch(this);
@@ -131,6 +142,18 @@ public class NfcIdReaderActivity extends Activity {
             readMessageEditText.setText(msg);
         }
 
+    }
+
+    @Override
+    public void onDataReceived( long time, final Object data ) {
+        if (data != null) {
+            runOnUiThread(new Runnable(){
+                public void run() {
+                    lastReadNfcMessage = data.toString();
+                    readMessageEditText.setText(lastReadNfcMessage);
+                }
+            });
+        }
     }
 
 }
