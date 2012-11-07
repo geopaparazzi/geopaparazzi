@@ -39,19 +39,21 @@ public class NfcIdReaderActivity extends Activity {
         nfcActivityLabel = (TextView) findViewById(R.id.nfcActiveLabel);
 
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
-        if (!nfcAdapter.isEnabled()) {
-            Utilities.messageDialog(this, R.string.activate_nfc, new Runnable(){
-                public void run() {
-                    startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
-                }
-            });
+        if (nfcAdapter != null) {
+            if (!nfcAdapter.isEnabled()) {
+                Utilities.messageDialog(this, R.string.activate_nfc, new Runnable(){
+                    public void run() {
+                        startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
+                    }
+                });
+            }
         }
 
         checkScanners();
     }
 
     private void checkScanners() {
-        if (!nfcAdapter.isEnabled()) {
+        if (nfcAdapter == null || !nfcAdapter.isEnabled()) {
             nfcActivityLabel.setBackgroundResource(R.layout.background_red);
         } else {
             nfcActivityLabel.setBackgroundResource(R.layout.background_green);
@@ -72,7 +74,7 @@ public class NfcIdReaderActivity extends Activity {
         checkScanners();
 
         if (!inReadMode) {
-            if (nfcAdapter.isEnabled()) {
+            if (nfcAdapter != null && nfcAdapter.isEnabled()) {
 
                 // Handle all of our received NFC intents in this activity.
                 Intent intent = new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP
@@ -90,7 +92,7 @@ public class NfcIdReaderActivity extends Activity {
     @Override
     protected void onPause() {
         if (isFinishing()) {
-            if (nfcAdapter.isEnabled())
+            if (nfcAdapter != null && nfcAdapter.isEnabled())
                 nfcAdapter.disableForegroundDispatch(this);
             inReadMode = false;
         }
