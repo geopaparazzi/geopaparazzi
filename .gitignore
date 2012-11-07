@@ -5,6 +5,8 @@ geopaparazzilibrary/gen
 geopaparazzilibrarytests/bin
 geopaparazzilibrarytests/gen
 
+geopaparazzi.app/gen/eu/hydrologis/geopaparazzi/R.java
+
 *.swp
 R.java
 *~

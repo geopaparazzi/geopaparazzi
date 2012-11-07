@@ -400,4 +400,19 @@ public class Utilities {
         return msgFormat;
     }
 
+    /**
+     * Convert bytes to hex string.
+     * 
+     * @param b the bytes array to convert.
+     * @return the hex string.
+     */
+    public static String getHexString( byte[] b ) {
+        StringBuffer sb = new StringBuffer();
+        for( int i = b.length - 1; i >= 0; i-- ) {
+            if (i >= 0)
+                sb.append(Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1));
+        }
+        return sb.toString();
+    }
+
 }

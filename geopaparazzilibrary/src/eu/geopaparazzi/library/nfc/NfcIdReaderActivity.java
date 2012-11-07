@@ -7,21 +7,16 @@ import android.app.PendingIntent;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.IntentFilter.MalformedMimeTypeException;
-import android.nfc.NdefMessage;
-import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.bluetooth.BluetoothManager;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
+import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.Utilities;
 
 public class NfcIdReaderActivity extends Activity {
 
@@ -45,9 +40,18 @@ public class NfcIdReaderActivity extends Activity {
 
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (!nfcAdapter.isEnabled()) {
-            Toast.makeText(getApplicationContext(), "Please activate NFC and press Back to return to the application!",
-                    Toast.LENGTH_LONG).show();
-            startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
+            Utilities.messageDialog(this, R.string.activate_nfc, new Runnable(){
+                public void run() {
+                    startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
+                }
+            });
+        }
+
+        checkScanners();
+    }
+
+    private void checkScanners() {
+        if (!nfcAdapter.isEnabled()) {
             nfcActivityLabel.setBackgroundResource(R.layout.background_red);
         } else {
             nfcActivityLabel.setBackgroundResource(R.layout.background_green);
@@ -59,12 +63,13 @@ public class NfcIdReaderActivity extends Activity {
         } else {
             btActivityLabel.setBackgroundResource(R.layout.background_green);
         }
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
+        checkScanners();
 
         if (!inReadMode) {
             if (nfcAdapter.isEnabled()) {
@@ -93,7 +98,10 @@ public class NfcIdReaderActivity extends Activity {
     }
 
     public void okPushed( View view ) {
-
+        Intent intent = getIntent();
+        intent.putExtra(LibraryConstants.PREFS_KEY_TEXT, lastReadNfcMessage);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 
     public void cancelPushed( View view ) {
@@ -111,48 +119,16 @@ public class NfcIdReaderActivity extends Activity {
             } else {
                 idBytes = intent.getByteArrayExtra(NfcAdapter.EXTRA_ID);
             }
-            lastReadNfcMessage = "Unable to read tag id";
+            String msg = getString(R.string.unable_to_read_tag_id);
             if (idBytes != null) {
-                lastReadNfcMessage = getHexString(idBytes);
+                lastReadNfcMessage = Utilities.getHexString(idBytes);
+                msg = lastReadNfcMessage;
+            } else {
+                lastReadNfcMessage = ""; //$NON-NLS-1$
             }
-            readMessageEditText.setText(lastReadNfcMessage);
+            readMessageEditText.setText(msg);
         }
 
     }
-
-    public String getHexString( byte[] b ) {
-        StringBuffer sb = new StringBuffer();
-        for( int i = b.length - 1; i >= 0; i-- ) {
-            if (i >= 0)
-                sb.append(Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1));
-        }
-        return sb.toString();
-    }
-
-    // public String convertbyteArrayToHexString( byte in[] ) {
-    //
-    // byte ch = 0x00;
-    // int i = in.length - 1;
-    //
-    // if (in == null)
-    // return null;
-    //
-    // String HEXSET[] = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E",
-    // "F"};
-    // // Double length, as you're converting an array of 8 bytes, to 16 characters for hexadecimal
-    // StringBuffer out = new StringBuffer(in.length * 2);
-    //
-    // // You need to iterate from msb to lsb, in the case of using iCode SLI rfid
-    // while( i >= 0 ) {
-    // ch = (byte) (in[i] & 0xF0); // Strip off high nibble
-    // ch = (byte) (ch >>> 4); // shift the bits down
-    // ch = (byte) (ch & 0x0F); // must do this is high order bit is on!
-    // out.append(HEXSET[(int) ch]); // convert the nibble to a String Character
-    // ch = (byte) (in[i] & 0x0F); // Strip off low nibble
-    // out.append(HEXSET[(int) ch]); // convert the nibble to a String Character
-    // i--;
-    // }
-    // return (new String(out));
-    // }
 
 }
