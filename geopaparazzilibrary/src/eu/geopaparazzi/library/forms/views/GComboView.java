@@ -20,6 +20,7 @@ package eu.geopaparazzi.library.forms.views;
 import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
 import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
 import android.content.Context;
+import android.content.Intent;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -86,6 +87,10 @@ public class GComboView extends View implements GView {
 
     public String getValue() {
         return spinner.getSelectedItem().toString();
+    }
+
+    @Override
+    public void setOnActivityResult( Intent data ) {
     }
 
 }

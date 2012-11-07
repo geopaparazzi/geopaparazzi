@@ -243,4 +243,8 @@ public class GPictureView extends View implements GView {
         return _value;
     }
 
+    @Override
+    public void setOnActivityResult( Intent data ) {
+    }
+
 }

@@ -62,6 +62,7 @@
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
     <string name="take_picture">Take picture</string>
+    <string name="read_nfc_uid">Read tag id</string>
     <string name="draw_sketch">Draw sketch</string>
     <string name="undo">undo</string>
     <string name="redo">redo</string>

@@ -17,6 +17,8 @@
  */
 package eu.geopaparazzi.library.forms.views;
 
+import android.content.Intent;
+
 /**
  * Interface for geopaparazzi custom views.
  * 
@@ -26,7 +28,14 @@ public interface GView {
     /**
      * Get a representative value of the view.
      * 
-     * @return a value teh view specialises on.
+     * @return a value the view specialises on.
      */
     public String getValue();
+
+    /**
+     * A callback in case the view was registered to react on an activity result.
+     * 
+     * @param data the data returned.
+     */
+    public void setOnActivityResult( Intent data );
 }

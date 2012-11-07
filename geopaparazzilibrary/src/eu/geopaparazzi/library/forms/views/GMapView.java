@@ -102,4 +102,8 @@ public class GMapView extends View implements GView {
         return image.getAbsolutePath();
     }
 
+    @Override
+    public void setOnActivityResult( Intent data ) {
+    }
+
 }

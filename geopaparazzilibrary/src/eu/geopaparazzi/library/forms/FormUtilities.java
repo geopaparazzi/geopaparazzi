@@ -21,6 +21,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.support.v4.app.Fragment;
@@ -40,6 +41,7 @@ import eu.geopaparazzi.library.forms.views.GDateView;
 import eu.geopaparazzi.library.forms.views.GEditTextView;
 import eu.geopaparazzi.library.forms.views.GMapView;
 import eu.geopaparazzi.library.forms.views.GMultiComboView;
+import eu.geopaparazzi.library.forms.views.GNfcUidView;
 import eu.geopaparazzi.library.forms.views.GPictureView;
 import eu.geopaparazzi.library.forms.views.GSketchView;
 import eu.geopaparazzi.library.forms.views.GTextView;
@@ -109,6 +111,11 @@ public class FormUtilities {
      * Type for a {@link MuSpinner}.
      */
     public static final String TYPE_STRINGMULTIPLECHOICE = "multistringcombo";
+
+    /**
+     * Type for a the NFC UID reader.
+     */
+    public static final String TYPE_NFCUID = "nfcuid";
 
     /**
      * Type for a hidden widget, which just needs to be kept as it is but not displayed.
@@ -204,7 +211,8 @@ public class FormUtilities {
      */
     public static GView addEditText( Context context, LinearLayout mainView, String key, String value, int type, int lines,
             String constraintDescription, boolean readonly ) {
-        GEditTextView editText = new GEditTextView(context, null, mainView, key, value, type, lines, constraintDescription, readonly);
+        GEditTextView editText = new GEditTextView(context, null, mainView, key, value, type, lines, constraintDescription,
+                readonly);
         return editText;
     }
 
@@ -325,6 +333,12 @@ public class FormUtilities {
             String constraintDescription, boolean readonly ) {
         GTimeView timeView = new GTimeView(fragment, null, mainView, key, value, constraintDescription, readonly);
         return timeView;
+    }
+
+    public static GView addNfcUIDView( Activity activity, int requestCode, LinearLayout mainView, String key, String value,
+            String constraintDescription ) {
+        GNfcUidView nfcuidView = new GNfcUidView(activity, null, requestCode, mainView, key, value, constraintDescription);
+        return nfcuidView;
     }
 
     /**

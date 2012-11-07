@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.util.LibraryConstants;
 
 /**
  * Fragment detail view activity.
@@ -37,6 +38,8 @@ public class FragmentDetailActivity extends FragmentActivity {
     private String formName;
     private String sectionObjectString;
     private JSONObject sectionObject;
+    private double longitude;
+    private double latitude;
 
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
@@ -62,6 +65,8 @@ public class FragmentDetailActivity extends FragmentActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            longitude = extras.getDouble(LibraryConstants.LONGITUDE);
+            latitude = extras.getDouble(LibraryConstants.LATITUDE);
         }
 
         setContentView(R.layout.details_activity_layout);
@@ -70,11 +75,21 @@ public class FragmentDetailActivity extends FragmentActivity {
     public String getFormName() {
         return formName;
     }
+
     public JSONObject getSectionObject() {
         return sectionObject;
     }
+
     public String getSectionName() {
         return sectionObjectString;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
     }
 
     public boolean onKeyDown( int keyCode, KeyEvent event ) {
