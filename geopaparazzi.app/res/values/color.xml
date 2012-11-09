@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="main_background">#FFFFFF</color>
+    <color name="main_decorations">#5d9d76</color>
+    <color name="main_decorations_dark">#378756</color>
+    <color name="main_text_color">#5d9d76</color>
+    <color name="main_text_color_neutral">#000000</color>
+    <color name="main_selection">#FF9933</color>
+    <color name="main_selection_border">#993300</color>
+
+    <!-- ok and non ok colors -->
+    <color name="main_ok_color">#38ec38</color>
+    <color name="main_ok_color_border">#31b831</color>
+    <color name="main_non_okcolor">#d40000</color>
+    <color name="main_non_okcolor_border">#b10000</color>
+
+    <!-- form related colors -->
+    <color name="formbgcolor">#FFFFFF</color>
+    <color name="formcolor">#5d9d76</color>
+    <color name="formcolorselected">#ff0000</color>
+
+    <!-- gps colors -->
+    <color name="gpsred_fill">#ff8484</color>
+    <color name="gpsred_stroke">#ff0000</color>
+    <color name="gpsorange_fill">#ffd293</color>
+    <color name="gpsorange_stroke">#ff9600</color>
+    <color name="gpsblue_fill">#84beff</color>
+    <color name="gpsblue_stroke">#009aff</color>
+    <color name="gpsgreen_fill">#00ff08</color>
+    <color name="gpsgreen_stroke">#278b2a</color>
+
+</resources>

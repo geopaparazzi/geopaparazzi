@@ -10,6 +10,6 @@
 		android:layout_width="wrap_content" android:paddingLeft="10dp"
 		android:layout_centerHorizontal="true" android:text=""
 		android:layout_toRightOf="@+id/visible" android:layout_alignBaseline="@+id/visible"
-		android:textColor="@color/black" android:id="@+id/filename"
+		android:textColor="@color/main_text_color_neutral" android:id="@+id/filename"
 		android:focusable="false" android:focusableInTouchMode="false" />
 </RelativeLayout>

@@ -49,7 +49,7 @@
                 android:padding="10dp"
                 android:text="Bluetooth"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="@color/black" />
+                android:textColor="@color/main_text_color_neutral" />
         </TableRow>
 
         <TableRow
@@ -67,7 +67,7 @@
                 android:padding="10dp"
                 android:text="    NFC    "
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="@color/black" />
+                android:textColor="@color/main_text_color_neutral" />
         </TableRow>
     </TableLayout>
 
@@ -94,7 +94,7 @@
         android:layout_margin="5dp"
         android:ems="10"
         android:enabled="false"
-        android:textColor="@color/red" >
+        android:textColor="@color/main_non_okcolor" >
 
         <requestFocus />
     </EditText>

@@ -97,7 +97,7 @@ public class GNfcUidView extends View implements GView {
         uidText.setPadding(2, 2, 2, 2);
         uidText.setEnabled(false);
         uidText.setText(value);
-        uidText.setTextColor(activity.getResources().getColor(R.color.black));
+        uidText.setTextColor(activity.getResources().getColor(R.color.main_text_color_neutral));
         uidText.setKeyListener(null);
         textLayout.addView(uidText);
 

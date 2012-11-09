@@ -9,7 +9,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_marginBottom="@dimen/panic_bar_height"
-        android:background="@color/white"
+        android:background="@color/main_background"
         android:gravity="center_vertical"
         android:orientation="vertical" >
 
@@ -23,7 +23,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:background="@color/white"
+            android:background="@color/main_background"
             android:baselineAligned="false"
             android:orientation="horizontal" >
 
@@ -80,7 +80,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:background="@color/white"
+            android:background="@color/main_background"
             android:baselineAligned="false"
             android:orientation="horizontal" >
 
@@ -137,7 +137,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:background="@color/white"
+            android:background="@color/main_background"
             android:baselineAligned="false"
             android:orientation="horizontal" >
 
@@ -211,7 +211,7 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/action_bar_padding"
                 android:text="@string/panic"
-                android:textColor="@color/white"
+                android:textColor="@color/main_background"
                 android:textSize="@dimen/action_bar_title_size"
                 android:textStyle="bold" >
             </TextView>
@@ -221,7 +221,7 @@
             android:id="@+id/content"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:background="@color/hydrogreen"
+            android:background="@color/main_decorations"
             android:baselineAligned="false"
             android:gravity="center_horizontal"
             android:orientation="vertical" >
@@ -238,7 +238,7 @@
                     android:layout_gravity="center_vertical|center_horizontal"
                     android:background="@drawable/panic_button_drawable"
                     android:text="@string/panic_upper"
-                    android:textColor="@color/white"
+                    android:textColor="@color/main_background"
                     android:textSize="@dimen/panic_button_text_size"
                     android:textStyle="bold" >
                 </Button>
@@ -256,7 +256,7 @@
                     android:layout_gravity="center_vertical|center_horizontal"
                     android:background="@drawable/warning_button_drawable"
                     android:text="@string/send_status_update"
-                    android:textColor="@color/white"
+                    android:textColor="@color/main_background"
                     android:textSize="@dimen/statusupdate_button_text_size"
                     android:textStyle="bold" >
                 </Button>

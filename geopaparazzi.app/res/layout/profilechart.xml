@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/white"
+    android:background="@color/main_background"
     android:orientation="vertical" >
 
     <eu.geopaparazzi.library.chart.XYChartView
@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="selection mode"
-            android:textColor="@color/black" />
+            android:textColor="@color/main_text_color_neutral" />
 
         <Button
             android:id="@+id/zoomtobutton"
