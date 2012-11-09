@@ -179,7 +179,7 @@ public class OsmUtilities {
     }
 
     private static final String osmTagsZipUrlPath = "http://geopaparazzi.googlecode.com/files/osmtags.zip";
-    private static final String osmTagsVersionUrlPath = "http://geopaparazzi.googlecode.com/hg/extras/osmtags/VERSION";
+    private static final String osmTagsVersionUrlPath = "http://geopaparazzi.googlecode.com/git/extras/osmtags/VERSION";
 
     /**
      * Download the osm tags archive if necessary and if network is available.
