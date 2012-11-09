@@ -48,6 +48,7 @@ import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
+import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.maps.MapsActivity;
 import eu.hydrologis.geopaparazzi.util.Note;
 
@@ -734,9 +735,9 @@ public abstract class GeopaparazziOverlay extends Overlay {
                         List<Note> notesInWorldBounds = DaoNotes.getNotesInWorldBounds(context, n, s, w, e);
                         if (notesInWorldBounds.size() > 0) {
                             Note note = notesInWorldBounds.get(0);
-
+                            int type = note.getType();
                             String form = note.getForm();
-                            if (form != null && form.length() > 0) {
+                            if (form != null && form.length() > 0 && type != NoteType.OSM.getTypeNum()) {
                                 String name = note.getName();
                                 double altim = note.getAltim();
                                 Intent formIntent = new Intent(context, FormActivity.class);
