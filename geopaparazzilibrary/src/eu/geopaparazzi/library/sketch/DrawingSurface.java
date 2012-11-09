@@ -35,9 +35,12 @@ public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callbac
 
     private CommandManager commandManager;
 
+    private volatile boolean isDisposed = false;
+
     public DrawingSurface( Context context, AttributeSet attrs ) {
         super(context, attrs);
 
+        isDisposed = false;
         getHolder().addCallback(this);
 
         commandManager = new CommandManager();
@@ -62,6 +65,7 @@ public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callbac
         }
 
         public void setRunning( boolean run ) {
+            isDisposed = false;
             _run = run;
         }
 
@@ -73,9 +77,11 @@ public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callbac
                     try {
                         canvas = mSurfaceHolder.lockCanvas(null);
                         if (mBitmap == null) {
-                            // mBitmap = Bitmap.createBitmap(200, 200, Bitmap.Config.ARGB_8888);
-                            Logger.i(this, "Canvas not ready yet...");
+                            // Logger.i(this, "Canvas not ready yet...");
                             continue;
+                        }
+                        if (isDisposed) {
+                            break;
                         }
                         final Canvas c = new Canvas(mBitmap);
 
@@ -89,7 +95,7 @@ public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callbac
                         // if (Debug.D) {
                         // if (!previewPath.path.isEmpty()) {
                         // Logger.i(this,
-                        //                                        "Style: " + previewPath.paint.getStrokeWidth() + "/" + previewPath.paint.getColor()); //$NON-NLS-1$//$NON-NLS-2$
+                        // "Style: " + previewPath.paint.getStrokeWidth() + "/" + previewPath.paint.getColor()); //$NON-NLS-1$//$NON-NLS-2$
                         // }
                         // }
                         previewPath.draw(c);
@@ -177,6 +183,7 @@ public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callbac
 
     public void dispose() {
         if (mBitmap != null) {
+            isDisposed = true;
             mBitmap.recycle();
             mBitmap = null;
         }

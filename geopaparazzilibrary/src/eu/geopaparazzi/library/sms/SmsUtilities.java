@@ -150,9 +150,11 @@ public class SmsUtilities {
     public static void sendSMSViaApp( Context context, String number, String msg ) {
         Object systemService = context.getSystemService(Context.TELEPHONY_SERVICE);
         if (systemService instanceof TelephonyManager) {
+
             TelephonyManager telManager = (TelephonyManager) systemService;
-            String networkOperator = telManager.getNetworkOperator();
-            if (networkOperator.trim().length() == 0) {
+            int phoneType = telManager.getPhoneType();
+            if (phoneType == TelephonyManager.PHONE_TYPE_NONE) {
+                // no phone
                 Utilities.messageDialog(context, "This functionality works only when connected to a GSM network.", null);
                 return;
             }

@@ -191,6 +191,21 @@ public class FormUtilities {
     public static final String TAG_URL = "url";
 
     /**
+     * Checks if the type is a special one.
+     * 
+     * @param typethe type string from the form.
+     * @return <code>true</code> if the type is special.
+     */
+    public static boolean isTypeSpecial( String type ) {
+        if (type.equals(TYPE_PRIMARYKEY)) {
+            return true;
+        } else if (type.equals(TYPE_HIDDEN)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Adds a {@link TextView} to the supplied mainView.
      * 
      * @param context the context.

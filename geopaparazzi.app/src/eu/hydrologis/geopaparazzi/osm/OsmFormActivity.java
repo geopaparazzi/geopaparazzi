@@ -189,6 +189,9 @@ public class OsmFormActivity extends Activity {
                 if (jsonObject.has(TAG_TYPE)) {
                     type = jsonObject.getString(TAG_TYPE).trim();
                 }
+                if (eu.geopaparazzi.library.forms.FormUtilities.isTypeSpecial(type)) {
+                    continue;
+                }
 
                 Constraints constraints = new Constraints();
                 if (jsonObject.has(CONSTRAINT_MANDATORY)) {

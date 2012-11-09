@@ -165,8 +165,17 @@ public class XYChartView extends View implements ChartChangeListener, ChartProgr
         XYSeries xyS = new XYSeries(seriesName, true, true);
 
         int size = xArray.size();
-        xMin = xArray.get(0);
-        xMax = xArray.get(size - 1);
+        xMin = 0;
+        xMax = 1.0;
+        if (size > 0) {
+            xMin = xArray.get(0);
+            if (size > 1) {
+                xMax = xArray.get(size - 1);
+            } else {
+                // fake it
+                xMax = xMin + 1.0;
+            }
+        }
         yMin = Double.POSITIVE_INFINITY;
         yMax = Double.NEGATIVE_INFINITY;
 
@@ -193,51 +202,52 @@ public class XYChartView extends View implements ChartChangeListener, ChartProgr
         return xySC;
     }
 
-//    /**
-//     * Create a dataset based on supplied XY data.
-//     * 
-//     * <p>
-//     * Note that this also sets the min and max values 
-//     * of the chart data, so the dataset created should
-//     * really be used through setDataset, so that the bounds 
-//     * are properly zoomed.
-//     * 
-//     * @param xArray the array of ordered X values.
-//     * @param yArray the array of ordered Y values.
-//     * @param seriesName the name to label the serie with.
-//     * @return the {@link XYSeriesCollection dataset}.
-//     */
-//    public XYSeriesCollection createDatasetFromXY( List<Float> xArray, List<Float> yArray, String seriesName ) {
-//        XYSeries xyS = new XYSeries(seriesName, true, true);
-//
-//        int size = xArray.size();
-//        xMin = xArray.get(0);
-//        xMax = xArray.get(size - 1);
-//        yMin = Double.POSITIVE_INFINITY;
-//        yMax = Double.NEGATIVE_INFINITY;
-//
-//        for( int i = 0; i < size; i++ ) {
-//            double y = yArray.get(i);
-//            yMin = Math.min(yMin, y);
-//            yMax = Math.max(yMax, y);
-//            xyS.add(xArray.get(i).doubleValue(), y);
-//        }
-//
-//        if (Math.abs(yMin - yMax) < 0.000001) {
-//            // wider range
-//            yMin = yMin - 1;
-//            yMax = yMax + 1;
-//        }
-//
-//        xMaxAll = xMax;
-//        xMinAll = xMin;
-//        yMaxAll = yMax;
-//        yMinAll = yMin;
-//
-//        XYSeriesCollection xySC = new XYSeriesCollection();
-//        xySC.addSeries(xyS);
-//        return xySC;
-//    }
+    // /**
+    // * Create a dataset based on supplied XY data.
+    // *
+    // * <p>
+    // * Note that this also sets the min and max values
+    // * of the chart data, so the dataset created should
+    // * really be used through setDataset, so that the bounds
+    // * are properly zoomed.
+    // *
+    // * @param xArray the array of ordered X values.
+    // * @param yArray the array of ordered Y values.
+    // * @param seriesName the name to label the serie with.
+    // * @return the {@link XYSeriesCollection dataset}.
+    // */
+    // public XYSeriesCollection createDatasetFromXY( List<Float> xArray, List<Float> yArray, String
+    // seriesName ) {
+    // XYSeries xyS = new XYSeries(seriesName, true, true);
+    //
+    // int size = xArray.size();
+    // xMin = xArray.get(0);
+    // xMax = xArray.get(size - 1);
+    // yMin = Double.POSITIVE_INFINITY;
+    // yMax = Double.NEGATIVE_INFINITY;
+    //
+    // for( int i = 0; i < size; i++ ) {
+    // double y = yArray.get(i);
+    // yMin = Math.min(yMin, y);
+    // yMax = Math.max(yMax, y);
+    // xyS.add(xArray.get(i).doubleValue(), y);
+    // }
+    //
+    // if (Math.abs(yMin - yMax) < 0.000001) {
+    // // wider range
+    // yMin = yMin - 1;
+    // yMax = yMax + 1;
+    // }
+    //
+    // xMaxAll = xMax;
+    // xMinAll = xMin;
+    // yMaxAll = yMax;
+    // yMinAll = yMin;
+    //
+    // XYSeriesCollection xySC = new XYSeriesCollection();
+    // xySC.addSeries(xyS);
+    // return xySC;
+    // }
 
     /**
      * Create a dataset based on supplied data that are supposed to be coordinates and elevations for a profile view.
@@ -260,7 +270,7 @@ public class XYChartView extends View implements ChartChangeListener, ChartProgr
         XYSeries xyS = new XYSeries(seriesName, true, true);
 
         xMin = 0;
-        xMax = 0;
+        xMax = 1; // just in case no points are in
         yMin = Double.POSITIVE_INFINITY;
         yMax = Double.NEGATIVE_INFINITY;
 
