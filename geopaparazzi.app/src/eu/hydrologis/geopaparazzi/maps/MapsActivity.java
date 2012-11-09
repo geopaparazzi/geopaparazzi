@@ -93,7 +93,6 @@ import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
-import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.GeocodeActivity;
 import eu.geopaparazzi.library.util.activities.InsertCoordActivity;
@@ -114,7 +113,6 @@ import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
-import eu.hydrologis.geopaparazzi.util.GpUtilities;
 import eu.hydrologis.geopaparazzi.util.MixareUtilities;
 import eu.hydrologis.geopaparazzi.util.Note;
 
@@ -857,7 +855,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                         public void onClick( DialogInterface dialog, int id ) {
                             for( String smsMsg : smsString ) {
-                                SmsUtilities.sendSMSViaApp(MapsActivity.this, "", smsMsg);
+                                SmsUtilities.sendSMSViaApp(MapsActivity.this, "", smsMsg); //$NON-NLS-1$
                             }
                         }
                     }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
@@ -1129,7 +1127,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
                             int notesNum = notesInBounds.size();
 
-                            notesRemoveDialog = new ProgressDialog(MapsActivity.this);
+                            final ProgressDialog notesRemoveDialog = new ProgressDialog(MapsActivity.this);
                             notesRemoveDialog.setCancelable(true);
                             notesRemoveDialog.setMessage(MessageFormat.format(getString(R.string.mapsactivity_delete_notes),
                                     notesNum));
@@ -1138,20 +1136,40 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                             notesRemoveDialog.setMax(notesNum);
                             notesRemoveDialog.show();
 
-                            new Thread(){
-                                public void run() {
-                                    for( Note note : notesInBounds ) {
-                                        notesRemoveHandler.sendEmptyMessage(0);
-                                        try {
-                                            DaoNotes.deleteNote(MapsActivity.this, note.getId());
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
+                            new AsyncTask<String, Void, String>(){
+
+                                protected String doInBackground( String... params ) {
+                                    try {
+                                        for( Note note : notesInBounds ) {
+                                            try {
+                                                DaoNotes.deleteNote(MapsActivity.this, note.getId());
+                                                onProgressUpdate(0);
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
                                         }
+                                        return ""; //$NON-NLS-1$
+                                    } catch (Exception e) {
+                                        return "ERROR: " + e.getLocalizedMessage(); //$NON-NLS-1$
                                     }
-                                    notesDeleted = true;
-                                    notesRemoveHandler.sendEmptyMessage(0);
+
                                 }
-                            }.start();
+
+                                protected void onProgressUpdate( Integer... progress ) { // on UI
+                                    notesRemoveDialog.incrementProgressBy(1);
+                                }
+
+                                protected void onPostExecute( String response ) { // on UI thread!
+                                    notesRemoveDialog.dismiss();
+                                    if (response.startsWith("ERROR")) { //$NON-NLS-1$
+                                        Utilities.messageDialog(MapsActivity.this, response, null);
+                                    } else {
+                                        mapView.invalidate();
+                                    }
+                                }
+
+                            }.execute((String) null);
+
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -1159,7 +1177,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 }).show();
 
     }
-
     private void addBookmark() {
         GeoPoint mapCenter = mapView.getMapPosition().getMapCenter();
         final float centerLat = mapCenter.latitudeE6 / LibraryConstants.E6;
@@ -1210,18 +1227,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         }
     };
 
-    private boolean notesDeleted = false;
-    private ProgressDialog notesRemoveDialog;
-    private Handler notesRemoveHandler = new Handler(){
-        public void handleMessage( Message msg ) {
-            if (!notesDeleted) {
-                notesRemoveDialog.incrementProgressBy(1);
-            } else {
-                notesRemoveDialog.dismiss();
-                mapView.invalidateOnUiThread();
-            }
-        }
-    };
     private TextView zoomLevelText;
 
     public void inalidateMap() {
