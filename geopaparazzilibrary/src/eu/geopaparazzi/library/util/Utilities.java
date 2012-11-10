@@ -404,11 +404,15 @@ public class Utilities {
      * Convert bytes to hex string.
      * 
      * @param b the bytes array to convert.
+     * @param size the size of the array to consider.
      * @return the hex string.
      */
-    public static String getHexString( byte[] b ) {
-        StringBuffer sb = new StringBuffer();
-        for( int i = b.length - 1; i >= 0; i-- ) {
+    public static String getHexString( byte[] b, int size ) {
+        if (size < 1) {
+            size = b.length;
+        }
+        StringBuilder sb = new StringBuilder();
+        for( int i = size - 1; i >= 0; i-- ) {
             if (i >= 0)
                 sb.append(Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1));
         }

@@ -1,10 +1,7 @@
 package eu.geopaparazzi.library.nfc;
 
-import java.util.Set;
-
 import android.app.Activity;
 import android.app.PendingIntent;
-import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.nfc.NfcAdapter;
@@ -19,7 +16,6 @@ import eu.geopaparazzi.library.bluetooth.IBluetoothIOHandler;
 import eu.geopaparazzi.library.bluetooth.IBluetoothListener;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.library.util.debug.Logger;
 
 public class NfcIdReaderActivity extends Activity implements IBluetoothListener {
 
@@ -134,7 +130,7 @@ public class NfcIdReaderActivity extends Activity implements IBluetoothListener 
             }
             String msg = getString(R.string.unable_to_read_tag_id);
             if (idBytes != null) {
-                lastReadNfcMessage = Utilities.getHexString(idBytes);
+                lastReadNfcMessage = Utilities.getHexString(idBytes, -1);
                 msg = lastReadNfcMessage;
             } else {
                 lastReadNfcMessage = ""; //$NON-NLS-1$
