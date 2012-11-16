@@ -99,24 +99,20 @@ public class BytesToStringReaderDevice implements IBluetoothIOHandler {
 
     public void run() {
         try {
-            final byte[] data = new byte[BUFFER];
+            final byte[] data = new byte[length];
             long now = SystemClock.uptimeMillis();
             long lastRead = now;
             while( (enabled) && (now < lastRead + 5000) ) {
-                int readBytes;
-                // Logger.i(this, "Enter");
-                while( enabled && (readBytes = in.read(data)) != -1 ) {
-                    String str = new String(data, 0, readBytes).trim();
-                    Logger.i(this, "data read: " + str);
-                    if (length != -1) {
-                        if (str.length() != length) {
-                            continue;
-                        }
+                int index = 0;
+                int value = 0;
+                while( enabled && (value = in.read()) != -1 ) {
+                    data[index++] = (byte) value;
+                    if (index == length) {
+                        String str = new String(data, 0, length).trim();
+                        Logger.i(this, "data read: " + str);
+                        notifyBytes(str);
+                        index = 0;
                     }
-                    // String hexString = Utilities.getHexString(data, readBytes);
-                    notifyBytes(str);
-                    // if (Debug.D)
-                    // Logger.i(this, "data read: " + hexString);
                 }
                 // Logger.i(this, "Exit");
 
