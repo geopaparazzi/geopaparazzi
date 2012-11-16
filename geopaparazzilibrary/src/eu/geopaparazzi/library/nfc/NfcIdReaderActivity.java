@@ -145,7 +145,7 @@ public class NfcIdReaderActivity extends Activity implements IBluetoothListener 
         if (data != null) {
             runOnUiThread(new Runnable(){
                 public void run() {
-                    lastReadNfcMessage = data.toString();
+                    lastReadNfcMessage = data.toString().toLowerCase();
                     readMessageEditText.setText(lastReadNfcMessage);
                 }
             });

@@ -24,7 +24,6 @@ import java.util.List;
 
 import android.bluetooth.BluetoothSocket;
 import android.os.SystemClock;
-import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 
@@ -34,12 +33,12 @@ import eu.geopaparazzi.library.util.debug.Logger;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public class BytesToHexReaderDevice implements IBluetoothIOHandler {
+public class BytesToStringReaderDevice implements IBluetoothIOHandler {
     /**
      * The max buffer supported for reading of bytes.
      */
     private static final int BUFFER = 2048;
-    
+
     private BluetoothSocket socket;
     private InputStream in;
     private OutputStream out;
@@ -49,7 +48,10 @@ public class BytesToHexReaderDevice implements IBluetoothIOHandler {
 
     private List<IBluetoothListener> bluetoothListeners = new ArrayList<IBluetoothListener>();
 
-    public BytesToHexReaderDevice() {
+    private final int length;
+
+    public BytesToStringReaderDevice( int length ) {
+        this.length = length;
     }
 
     @Override
@@ -102,12 +104,21 @@ public class BytesToHexReaderDevice implements IBluetoothIOHandler {
             long lastRead = now;
             while( (enabled) && (now < lastRead + 5000) ) {
                 int readBytes;
+                // Logger.i(this, "Enter");
                 while( enabled && (readBytes = in.read(data)) != -1 ) {
-                    String hexString = Utilities.getHexString(data, readBytes);
-                    notifyBytes(hexString);
-                    if (Debug.D)
-                        Logger.i(this, "data read: " + hexString);
+                    String str = new String(data, 0, readBytes).trim();
+                    Logger.i(this, "data read: " + str);
+                    if (length != -1) {
+                        if (str.length() != length) {
+                            continue;
+                        }
+                    }
+                    // String hexString = Utilities.getHexString(data, readBytes);
+                    notifyBytes(str);
+                    // if (Debug.D)
+                    // Logger.i(this, "data read: " + hexString);
                 }
+                // Logger.i(this, "Exit");
 
                 ready = true;
                 lastRead = SystemClock.uptimeMillis();
@@ -191,7 +202,7 @@ public class BytesToHexReaderDevice implements IBluetoothIOHandler {
 
     @Override
     public <T> T adapt( Class<T> adaptee ) {
-        if (adaptee.isAssignableFrom(BytesToHexReaderDevice.class)) {
+        if (adaptee.isAssignableFrom(BytesToStringReaderDevice.class)) {
             return adaptee.cast(this);
         }
         return null;
