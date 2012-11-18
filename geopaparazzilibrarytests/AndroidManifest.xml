@@ -8,7 +8,7 @@
 
     <instrumentation
         android:name="android.test.InstrumentationTestRunner"
-        android:targetPackage="eu.hydrologis.geopaparazzi" />
+        android:targetPackage="eu.geopaparazzi.library" />
 
     <application
         android:icon="@drawable/ic_launcher"
