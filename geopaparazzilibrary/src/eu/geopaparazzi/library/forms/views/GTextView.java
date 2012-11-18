@@ -101,4 +101,8 @@ public class GTextView extends View implements GView{
         return textView.getText().toString();
     }
 
+    @Override
+    public void setOnActivityResult( Intent data ) {
+    }
+
 }

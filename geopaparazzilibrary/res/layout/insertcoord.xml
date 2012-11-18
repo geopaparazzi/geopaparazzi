@@ -3,7 +3,7 @@
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
-	android:background="@color/white">
+	android:background="@color/main_background">
 
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 		android:orientation="vertical" android:layout_width="fill_parent"
@@ -12,14 +12,14 @@
 		<TextView android:layout_height="wrap_content"
 			android:layout_width="fill_parent" android:id="@+id/askcoordlabel"
 			android:text="@string/askcoord" android:layout_margin="10dp"
-			android:textColor="@color/black">
+			android:textColor="@color/main_text_color_neutral">
 		</TextView>
 		<LinearLayout android:orientation="horizontal"
 			android:layout_width="fill_parent" android:layout_height="wrap_content">
 			<TextView android:layout_height="wrap_content"
 				android:layout_width="70dp" android:id="@+id/longitudelabel"
 				android:text="@string/longitude" android:layout_margin="10dp"
-				android:textColor="@color/black">
+				android:textColor="@color/main_text_color_neutral">
 			</TextView>
 			<EditText android:layout_height="wrap_content"
 				android:layout_width="fill_parent" android:id="@+id/longitudetext"
@@ -33,7 +33,7 @@
 			<TextView android:layout_height="wrap_content"
 				android:layout_width="70dp" android:id="@+id/latitudelabel"
 				android:layout_below="@+id/longitudelabel" android:text="@string/latitude"
-				android:layout_margin="10dp" android:textColor="@color/black">
+				android:layout_margin="10dp" android:textColor="@color/main_text_color_neutral">
 			</TextView>
 			<EditText android:layout_height="wrap_content"
 				android:layout_width="fill_parent" android:id="@+id/latitudetext"

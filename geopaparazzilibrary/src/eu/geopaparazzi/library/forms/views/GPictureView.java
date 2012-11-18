@@ -103,7 +103,7 @@ public class GPictureView extends View implements GView {
         imagesText.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
         imagesText.setPadding(2, 2, 2, 2);
         imagesText.setText(value);
-        imagesText.setTextColor(context.getResources().getColor(R.color.black));
+        imagesText.setTextColor(context.getResources().getColor(R.color.main_text_color_neutral));
         imagesText.setKeyListener(null);
         textLayout.addView(imagesText);
 
@@ -241,6 +241,10 @@ public class GPictureView extends View implements GView {
 
     public String getValue() {
         return _value;
+    }
+
+    @Override
+    public void setOnActivityResult( Intent data ) {
     }
 
 }

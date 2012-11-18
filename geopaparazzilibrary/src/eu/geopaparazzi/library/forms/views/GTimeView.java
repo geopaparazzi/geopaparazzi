@@ -26,6 +26,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
 import android.view.View;
@@ -116,6 +117,10 @@ public class GTimeView extends View implements GView {
             text = "";
         }
         return text;
+    }
+
+    @Override
+    public void setOnActivityResult( Intent data ) {
     }
 
 }

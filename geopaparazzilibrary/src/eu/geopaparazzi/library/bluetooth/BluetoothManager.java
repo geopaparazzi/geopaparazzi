@@ -59,6 +59,8 @@ public enum BluetoothManager {
 
     private boolean isDummy = false;
 
+    private IBluetoothIOHandler iBluetoothDevice;
+
     private BluetoothManager() {
         _bluetooth = BluetoothAdapter.getDefaultAdapter();
     }
@@ -203,8 +205,10 @@ public enum BluetoothManager {
                 int state = intent.getIntExtra(stateExtra, -1);
                 int previousState = intent.getIntExtra(prevStateExtra, -1);
 
-                for( IBluetoothStatusChangeListener listener : _statusChangeListeners ) {
-                    listener.bluetoothStatusChanged(previousState, state);
+                if (state != previousState) {
+                    for( IBluetoothStatusChangeListener listener : _statusChangeListeners ) {
+                        listener.bluetoothStatusChanged(previousState, state);
+                    }
                 }
 
                 String tt = ""; //$NON-NLS-1$
@@ -303,6 +307,11 @@ public enum BluetoothManager {
     public synchronized void setBluetoothDevice( BluetoothDevice bluetoothDevice, boolean connect ) throws Exception {
         reset();
         _bluetoothDevice = bluetoothDevice;
+        // reset
+        if (iBluetoothDevice != null) {
+            iBluetoothDevice.close();
+            iBluetoothDevice = null;
+        }
         if (connect) {
             getSocket();
         }
@@ -378,6 +387,7 @@ public enum BluetoothManager {
      * @throws IOException
      */
     public void initializeIBluetoothDeviceInternal( IBluetoothIOHandler iBluetoothDevice ) throws IOException {
+        this.iBluetoothDevice = iBluetoothDevice;
         if (isDummy)
             return;
         if (isSocketConnected) {
@@ -385,5 +395,9 @@ public enum BluetoothManager {
         } else {
             throw new IOException("No socket connected."); //$NON-NLS-1$
         }
+    }
+
+    public IBluetoothIOHandler getBluetoothDevice() {
+        return iBluetoothDevice;
     }
 }

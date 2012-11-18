@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 
 public class FragmentList extends android.support.v4.app.ListFragment {
@@ -47,6 +48,14 @@ public class FragmentList extends android.support.v4.app.ListFragment {
         listView.setDividerHeight(2);
 
         setListAdapter(adapter);
+    }
+    
+    @Override
+    public void onAttach( Activity activity ) {
+        super.onAttach(activity);
+        
+        
+        
     }
 
     @Override
@@ -91,6 +100,8 @@ public class FragmentList extends android.support.v4.app.ListFragment {
             Intent intent = new Intent(getActivity().getApplicationContext(), FragmentDetailActivity.class);
             intent.putExtra(FormUtilities.ATTR_FORMNAME, selectedItemName);
             intent.putExtra(FormUtilities.ATTR_SECTIONOBJECTSTR, sectionObject.toString());
+            intent.putExtra(LibraryConstants.LONGITUDE, activity.getLongitude());
+            intent.putExtra(LibraryConstants.LATITUDE, activity.getLatitude());
             startActivityForResult(intent, RETURNCODE_DETAILACTIVITY);
         }
     }

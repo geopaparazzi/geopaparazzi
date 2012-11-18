@@ -12,7 +12,7 @@
 	<HorizontalScrollView android:id="@+id/scroll"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:fadingEdgeLength="0dp" android:layout_below="@id/header2"
-		android:background="@color/hydrogreen" android:scrollbars="none">
+		android:background="@color/main_decorations" android:scrollbars="none">
 
 		<LinearLayout android:id="@+id/tracks"
 			android:layout_width="wrap_content" android:layout_height="wrap_content"

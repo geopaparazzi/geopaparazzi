@@ -1,3 +1,20 @@
+/*
+ * Geopaparazzi - Digital field mapping on Android based devices
+ * Copyright (C) 2010  HydroloGIS (www.hydrologis.com)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.geopaparazzi.library.forms;
 
 import org.json.JSONException;
@@ -10,11 +27,19 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.util.LibraryConstants;
 
+/**
+ * Fragment detail view activity.
+ * 
+ * @author Andrea Antonello (www.hydrologis.com)
+ */
 public class FragmentDetailActivity extends FragmentActivity {
     private String formName;
     private String sectionObjectString;
     private JSONObject sectionObject;
+    private double longitude;
+    private double latitude;
 
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
@@ -40,6 +65,8 @@ public class FragmentDetailActivity extends FragmentActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            longitude = extras.getDouble(LibraryConstants.LONGITUDE);
+            latitude = extras.getDouble(LibraryConstants.LATITUDE);
         }
 
         setContentView(R.layout.details_activity_layout);
@@ -48,11 +75,21 @@ public class FragmentDetailActivity extends FragmentActivity {
     public String getFormName() {
         return formName;
     }
+
     public JSONObject getSectionObject() {
         return sectionObject;
     }
+
     public String getSectionName() {
         return sectionObjectString;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
     }
 
     public boolean onKeyDown( int keyCode, KeyEvent event ) {

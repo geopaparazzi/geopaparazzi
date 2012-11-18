@@ -16,12 +16,9 @@
  */
 package eu.geopaparazzi.library.bluetooth;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,23 +28,30 @@ import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
- * A generic binary device that reads the raw stream.   
+ * A generic binary device that reads the raw stream and converts it to hex strings.   
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public class RawBinaryDevice implements IBluetoothIOHandler {
+public class BytesToStringReaderDevice implements IBluetoothIOHandler {
+    /**
+     * The max buffer supported for reading of bytes.
+     */
+    private static final int BUFFER = 2048;
+
     private BluetoothSocket socket;
     private InputStream in;
     private OutputStream out;
-    private PrintStream out2;
 
     private boolean ready = false;
     private boolean enabled;
 
     private List<IBluetoothListener> bluetoothListeners = new ArrayList<IBluetoothListener>();
 
-    public RawBinaryDevice() {
+    private final int length;
+
+    public BytesToStringReaderDevice( int length ) {
+        this.length = length;
     }
 
     @Override
@@ -55,20 +59,27 @@ public class RawBinaryDevice implements IBluetoothIOHandler {
         this.socket = socket;
         InputStream tmpIn = null;
         OutputStream tmpOut = null;
-        PrintStream tmpOut2 = null;
         try {
             tmpIn = socket.getInputStream();
             tmpOut = socket.getOutputStream();
-            if (tmpOut != null) {
-                tmpOut2 = new PrintStream(tmpOut, false, "US-ASCII");
-            }
         } catch (IOException e) {
             if (Debug.D)
                 Logger.e(this, "error while getting socket streams", e);
         }
         in = tmpIn;
         out = tmpOut;
-        out2 = tmpOut2;
+
+        ready = true;
+        enabled = true;
+        new Thread(new Runnable(){
+            public void run() {
+                startDevice();
+            }
+        }).start();
+    }
+
+    private void startDevice() {
+        run();
     }
 
     @Override
@@ -88,21 +99,25 @@ public class RawBinaryDevice implements IBluetoothIOHandler {
 
     public void run() {
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            String s;
+            final byte[] data = new byte[length];
             long now = SystemClock.uptimeMillis();
             long lastRead = now;
             while( (enabled) && (now < lastRead + 5000) ) {
-                if (reader.ready()) {
-                    s = reader.readLine();
-                    notifySentence(s + "\r\n");
-                    ready = true;
-                    lastRead = SystemClock.uptimeMillis();
-                } else {
-                    // if (Debug.D)
-                    // Logger.d(LOG_TAG, "data: not ready " + System.currentTimeMillis());
-                    SystemClock.sleep(50);
+                int index = 0;
+                int value = 0;
+                while( enabled && (value = in.read()) != -1 ) {
+                    data[index++] = (byte) value;
+                    if (index == length) {
+                        String str = new String(data, 0, length).trim();
+                        Logger.i(this, "data read: " + str);
+                        notifyBytes(str);
+                        index = 0;
+                    }
                 }
+                // Logger.i(this, "Exit");
+
+                ready = true;
+                lastRead = SystemClock.uptimeMillis();
                 now = SystemClock.uptimeMillis();
             }
         } catch (IOException e) {
@@ -114,22 +129,16 @@ public class RawBinaryDevice implements IBluetoothIOHandler {
         }
     }
 
-    /**
-     * Notifies the reception of a string from the bluetooth device to registered {@link IBluetoothListener}s.
-     * 
-     * @param sentence  the complete NMEA sentence received from the bluetooth GPS (i.e. $....*XY where XY is the checksum)
-     */
-    private void notifySentence( final String sentence ) {
+    private void notifyBytes( final String hexString ) {
         if (enabled) {
             final long timestamp = System.currentTimeMillis();
-            if (sentence != null) {
+            if (hexString != null) {
                 for( final IBluetoothListener listener : bluetoothListeners ) {
-                    listener.onDataReceived(timestamp, sentence);
+                    listener.onDataReceived(timestamp, hexString);
                 }
             }
         }
     }
-
 
     @Override
     public void close() {
@@ -145,7 +154,6 @@ public class RawBinaryDevice implements IBluetoothIOHandler {
             try {
                 if (Debug.D)
                     Logger.d(this, "closing Bluetooth input streams");
-                out2.close();
                 out.close();
             } catch (IOException e) {
                 if (Debug.D)
@@ -190,7 +198,7 @@ public class RawBinaryDevice implements IBluetoothIOHandler {
 
     @Override
     public <T> T adapt( Class<T> adaptee ) {
-        if (adaptee.isAssignableFrom(RawBinaryDevice.class)) {
+        if (adaptee.isAssignableFrom(BytesToStringReaderDevice.class)) {
             return adaptee.cast(this);
         }
         return null;

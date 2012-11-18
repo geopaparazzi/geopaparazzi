@@ -18,7 +18,7 @@
         android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@color/white"
+        android:background="@color/main_background"
         android:orientation="vertical" >
 
         <!-- android:id="@+id/mapsList" -->

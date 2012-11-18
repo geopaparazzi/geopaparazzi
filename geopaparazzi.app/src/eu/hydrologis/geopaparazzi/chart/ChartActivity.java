@@ -193,7 +193,7 @@ public class ChartActivity extends Activity implements ChartTouchListener {
                     markerValues.remove(0);
                     xyPlot.removeDomainMarker(remove, Layer.BACKGROUND);
                 }
-                Marker marker = new ValueMarker(xValue, eu.hydrologis.geopaparazzi.R.color.green, 1.0f);
+                Marker marker = new ValueMarker(xValue, eu.hydrologis.geopaparazzi.R.color.main_decorations, 1.0f);
                 marker.setLabelOffset(new RectangleInsets(2, 5, 2, 5));
                 xyPlot.addDomainMarker(marker, Layer.BACKGROUND);
                 markers.add(marker);

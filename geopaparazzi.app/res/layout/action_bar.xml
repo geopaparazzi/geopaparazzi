@@ -1,37 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent" android:layout_height="@dimen/action_bar_height"
-	android:background="@drawable/action_bar_background" android:id="@+id/action_bar_layout">
-	<ImageView android:layout_height="@dimen/action_bar_logo_height"
-		android:layout_width="@dimen/action_bar_logo_width"
-		android:layout_alignParentLeft="true" android:id="@+id/action_bar_logo"
-		android:layout_centerVertical="true" android:src="@drawable/action_bar_logo"></ImageView>
-	<TextView android:layout_toRightOf="@+id/action_bar_logo"
-		android:layout_width="wrap_content" android:text="@string/app_name"
-		android:layout_centerInParent="true" android:id="@+id/action_bar_title"
-		android:textColor="@color/white" android:textStyle="bold"
-		android:layout_height="wrap_content" android:textSize="@dimen/action_bar_title_size"
-		android:padding="@dimen/action_bar_padding"></TextView>
-	<ImageButton android:layout_height="wrap_content"
-		android:layout_width="wrap_content" android:id="@+id/action_bar_info"
-		android:layout_alignParentRight="true" android:src="@drawable/action_bar_info"
-		android:background="@drawable/action_bar_button_drawable"
-		android:padding="2dp" android:layout_centerVertical="true"></ImageButton>
-	<ImageView android:layout_height="fill_parent"
-		android:layout_width="wrap_content" android:id="@+id/sep1"
-		android:layout_toLeftOf="@+id/action_bar_info" android:src="@drawable/separator"></ImageView>
-	<ImageButton android:layout_height="wrap_content"
-		android:layout_width="wrap_content" android:id="@+id/action_bar_compass"
-		android:src="@drawable/action_bar_compass" android:background="@drawable/action_bar_button_drawable"
-		android:layout_toLeftOf="@+id/sep1" android:padding="2dp"
-		android:layout_centerVertical="true"></ImageButton>
-	<ImageView android:layout_height="fill_parent"
-		android:layout_width="wrap_content" android:id="@+id/sep3"
-		android:layout_toLeftOf="@+id/action_bar_compass" android:src="@drawable/separator"></ImageView>
-	<Button android:layout_height="wrap_content" android:id="@+id/gpsOnOff"
-		android:layout_toLeftOf="@+id/sep3" android:layout_width="wrap_content"
-		android:text="GPS" android:textColor="@color/black"
-		android:layout_centerVertical="true"
-		android:background="@drawable/gps_background_off"
-		android:padding="4dp" android:layout_margin="6dp"></Button>
+    android:id="@+id/action_bar_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="@dimen/action_bar_height"
+    android:background="@drawable/action_bar_background" >
+
+    <ImageView
+        android:id="@+id/action_bar_logo"
+        android:layout_width="@dimen/action_bar_logo_width"
+        android:layout_height="@dimen/action_bar_logo_height"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/action_bar_logo" >
+    </ImageView>
+
+    <TextView
+        android:id="@+id/action_bar_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_toRightOf="@+id/action_bar_logo"
+        android:padding="@dimen/action_bar_padding"
+        android:text="@string/app_name"
+        android:textColor="@color/main_background"
+        android:textSize="@dimen/action_bar_title_size"
+        android:textStyle="bold" >
+    </TextView>
+
+    <ImageButton
+        android:id="@+id/action_bar_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/action_bar_button_drawable"
+        android:padding="2dp"
+        android:src="@drawable/action_bar_info" >
+    </ImageButton>
+
+    <LinearLayout
+        android:id="@+id/sep1"
+        android:layout_width="2dp"
+        android:layout_height="fill_parent"
+        android:layout_toLeftOf="@+id/action_bar_info"
+        android:background="@color/main_background" >
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/action_bar_compass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/sep1"
+        android:background="@drawable/action_bar_button_drawable"
+        android:padding="2dp"
+        android:src="@drawable/action_bar_compass" >
+    </ImageButton>
+
+    <LinearLayout
+        android:id="@+id/sep3"
+        android:layout_width="2dp"
+        android:layout_height="fill_parent"
+        android:layout_toLeftOf="@+id/action_bar_compass"
+        android:background="@color/main_background" >
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/gpsOnOff"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_margin="6dp"
+        android:layout_toLeftOf="@+id/sep3"
+        android:background="@drawable/gps_background_off"
+        android:padding="4dp"
+        android:text="GPS"
+        android:textColor="@color/main_text_color_neutral" >
+    </Button>
+
 </RelativeLayout>

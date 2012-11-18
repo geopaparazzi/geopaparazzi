@@ -9,5 +9,5 @@
     android:checkMark="?android:attr/listChoiceIndicatorSingle"
     android:paddingLeft="6dip"
     android:paddingRight="6dip"
-    android:textColor="@color/black"
+    android:textColor="@color/main_text_color_neutral"
 />

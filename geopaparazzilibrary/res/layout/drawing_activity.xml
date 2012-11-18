@@ -16,7 +16,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:background="@color/hydrogreen" >
+        android:background="@color/main_background" >
 
         <Spinner
             android:id="@+id/colorspinner"

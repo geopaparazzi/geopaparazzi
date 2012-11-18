@@ -20,6 +20,7 @@ package eu.geopaparazzi.library.forms.views;
 import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
 import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
 import android.content.Context;
+import android.content.Intent;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -102,6 +103,10 @@ public class GEditTextView extends View implements GView {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public void setOnActivityResult( Intent data ) {
     }
 
 }
