@@ -13,6 +13,7 @@ import jsqlite.Database;
 import jsqlite.Exception;
 import jsqlite.Stmt;
 
+import eu.geopaparazzi.library.database.spatial.SpatialTable;
 import eu.geopaparazzi.library.util.ResourcesManager;
 
 import android.content.Context;
@@ -88,6 +89,28 @@ public class DatabaseHandler {
 
         sb.append("Done...\n");
         return sb.toString();
+    }
+
+    /**
+     * Get the spatial tables from the database.
+     * 
+     * @return the list of {@link SpatialTable}s.
+     * @throws Exception
+     */
+    public List<SpatialTable> getTables() throws Exception {
+        List<SpatialTable> tableList = new ArrayList<SpatialTable>();
+        String query = "select f_table_name, f_geometry_column, type,srid from geometry_columns;";
+        Stmt stmt = db.prepare(query);
+        while( stmt.step() ) {
+            SpatialTable table = new SpatialTable();
+            table.name = stmt.column_string(0);
+            table.geomName = stmt.column_string(1);
+            table.geomType = stmt.column_string(2);
+            table.srid = String.valueOf(stmt.column_int(3));
+            tableList.add(table);
+        }
+        stmt.close();
+        return tableList;
     }
 
     public String queryComuni() {
@@ -320,7 +343,7 @@ public class DatabaseHandler {
 
         String query = "SELECT ST_AsBinary(ST_Transform(Geometry, 4326)) from " + tableName
         /*                                       w, s, e, n */
-                + " where MBRIntersects(BuildMBR(?, ?, ?, ?), Geometry);";
+        + " where MBRIntersects(BuildMBR(?, ?, ?, ?), Geometry);";
         try {
             Stmt stmt = db.prepare(query);
             stmt.bind(1, w);
