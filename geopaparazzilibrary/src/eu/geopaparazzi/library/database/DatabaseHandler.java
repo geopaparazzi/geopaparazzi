@@ -49,7 +49,7 @@ public class DatabaseHandler {
             this.sb = sb;
 
             File sdcardDir = ResourcesManager.getInstance(context).getSdcardDir();
-            File spatialDbFile = new File(sdcardDir, "shp/italy.sqlite");
+            File spatialDbFile = new File(sdcardDir, "shp/nearth.sqlite");
 
             if (!spatialDbFile.getParentFile().exists()) {
                 throw new RuntimeException();
@@ -304,7 +304,32 @@ public class DatabaseHandler {
         try {
             Stmt stmt = db.prepare(query);
             stmt.bind(1, bbox);
-            while (stmt.step()) {
+            while( stmt.step() ) {
+                list.add(stmt.column_bytes(0));
+            }
+            stmt.close();
+            return list;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<byte[]> getIntersectingTable( String tableName, double n, double s, double e, double w ) {
+        List<byte[]> list = new ArrayList<byte[]>();
+        Coordinate ll = new Coordinate(w, s);
+        Coordinate ul = new Coordinate(w, n);
+        Coordinate ur = new Coordinate(e, n);
+        Coordinate lr = new Coordinate(e, s);
+        Polygon bboxPolygon = gf.createPolygon(new Coordinate[]{ll, ul, ur, lr, ll});
+
+        byte[] bbox = wr.write(bboxPolygon);
+        String query = "SELECT ST_AsBinary(ST_Transform(Geometry, 4326)) from " + tableName
+                + " where ST_Intersects(ST_Transform(Geometry, 4326), ST_GeomFromWKB(?));";
+        try {
+            Stmt stmt = db.prepare(query);
+            stmt.bind(1, bbox);
+            while( stmt.step() ) {
                 list.add(stmt.column_bytes(0));
             }
             stmt.close();

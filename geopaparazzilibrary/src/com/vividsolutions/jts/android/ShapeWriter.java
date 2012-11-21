@@ -32,7 +32,6 @@
  */
 package com.vividsolutions.jts.android;
 
-
 import org.afree.graphics.geom.PathShape;
 import org.afree.graphics.geom.Shape;
 
@@ -46,7 +45,6 @@ import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
-
 
 /**
  * Writes {@link Geometry}s into Java2D {@link Shape} objects
@@ -73,152 +71,150 @@ import com.vividsolutions.jts.geom.Polygon;
  * <p>
  * 
  */
-public class ShapeWriter 
-{
-	/**
-	 * The point transformation used by default.
-	 */
-	public static final PointTransformation DEFAULT_POINT_TRANSFORMATION = new IdentityPointTransformation();
-	
-	/**
-	 * The point shape factory used by default.
-	 */
-	public static final PointShapeFactory DEFAULT_POINT_FACTORY = new PointShapeFactory.Square(3.0);
-	
-	private PointTransformation pointTransformer = DEFAULT_POINT_TRANSFORMATION;
-	private PointShapeFactory pointFactory = DEFAULT_POINT_FACTORY;
+public class ShapeWriter {
+    /**
+     * The point transformation used by default.
+     */
+    public static final PointTransformation DEFAULT_POINT_TRANSFORMATION = new IdentityPointTransformation();
 
-	/**
-	 * Cache a PointF object to use to transfer coordinates into shape
-	 */
-	private PointF transPoint = new PointF();
+    /**
+     * The point shape factory used by default.
+     */
+    public static final PointShapeFactory DEFAULT_POINT_FACTORY = new PointShapeFactory.Square(3.0);
 
-	/**
-	 * If true, decimation will be used to reduce the number of vertices
-	 * by removing consecutive duplicates.
-	 * 
-	 */
-	private boolean doRemoveDuplicatePoints = false;
-	
-	private double decimationDistance = 0;
-	
-	/**
-	 * Creates a new ShapeWriter with a specified point transformation
-	 * and point shape factory.
-	 * 
-	 * @param pointTransformer a transformation from model to view space to use 
-	 * @param pointFactory the PointShapeFactory to use
-	 */
-	public ShapeWriter(PointTransformation pointTransformer, PointShapeFactory pointFactory) 
-	{
-		if (pointTransformer != null)
-			this.pointTransformer = pointTransformer;
-		if (pointFactory != null)
-			this.pointFactory = pointFactory;
-	}
+    private PointTransformation pointTransformer = DEFAULT_POINT_TRANSFORMATION;
+    private PointShapeFactory pointFactory = DEFAULT_POINT_FACTORY;
 
-	/**
-	 * Creates a new ShapeWriter with a specified point transformation
-	 * and the default point shape factory.
-	 * 
-	 * @param pointTransformer a transformation from model to view space to use 
-	 */
-	public ShapeWriter(PointTransformation pointTransformer) 
-	{
-		this(pointTransformer, null);
-	}
+    /**
+     * Cache a PointF object to use to transfer coordinates into shape
+     */
+    private PointF transPoint = new PointF();
 
-	/**
-	 * Creates a new ShapeWriter with the default (identity) point transformation.
-	 *
-	 */
-	public ShapeWriter() {
-	}
+    /**
+     * If true, decimation will be used to reduce the number of vertices
+     * by removing consecutive duplicates.
+     * 
+     */
+    private boolean doRemoveDuplicatePoints = false;
 
-	/**
-	 * Sets whether duplicate consecutive points should be eliminated.
-	 * This can reduce the size of the generated Shapes
-	 * and improve rendering speed, especially in situations
-	 * where a transform reduces the extent of the geometry.
-	 * <p>
-	 * The default is <tt>false</tt>.
-	 * 
-	 * @param doDecimation whether decimation is to be used
-	 */
-  public void setRemoveDuplicatePoints(boolean doRemoveDuplicatePoints)
-  {
-    this.doRemoveDuplicatePoints = doRemoveDuplicatePoints;
-  }
-  
-  /**
-   * Sets the decimation distance used to determine
-   * whether vertices of the input geometry are 
-   * considered to be duplicate and thus removed.
-   * The distance is axis distance, not Euclidean distance.
-   * The distance is specified in the input geometry coordinate system
-   * (NOT the transformed output coordinate system).
-   * <p>
-   * When rendering to a screen image, a suitably small distance should be used
-   * to avoid obvious rendering defects.  
-   * A distance equivalent to the equivalent of 1.5 pixels or less is recommended
-   * (and perhaps even smaller to avoid any chance of visible artifacts).
-   * <p>
-   * The default distance is 0.0, which disables decimation.
-   * 
-   * @param decimationDistance the distance below which vertices are considered to be duplicates
-   */
-  public void setDecimation(double decimationDistance)
-  {
-    this.decimationDistance = decimationDistance;
-  }
-  
-	/**
-	 * Creates a {@link Shape} representing a {@link Geometry}, 
-	 * according to the specified PointTransformation
-	 * and PointShapeFactory (if relevant).
-	 * <p>
-	 * Note that Shapes do not
-	 * preserve information about which elements in heterogeneous collections
-	 * are 1D and which are 2D.
-	 * For example, a GeometryCollection containing a ring and a
-	 * disk will render as two disks if Graphics.fill is used, 
-	 * or as two rings if Graphics.draw is used.
-	 * To avoid this issue use separate shapes for the components.
-	 * 
-	 * @param geometry the geometry to convert
-	 * @return a Shape representing the geometry
-	 */
-	public Shape toShape(Geometry geometry)
-	{
-		if (geometry.isEmpty()) return new PathShape(new Path());
-		if (geometry instanceof Polygon) return toShape((Polygon) geometry);
-		if (geometry instanceof LineString) 			return toShape((LineString) geometry);
-		if (geometry instanceof MultiLineString) 	return toShape((MultiLineString) geometry);
-		if (geometry instanceof Point) 			return toShape((Point) geometry);
-		if (geometry instanceof GeometryCollection) return toShape((GeometryCollection) geometry);
+    private double decimationDistance = 0;
 
-		throw new IllegalArgumentException(
-			"Unrecognized Geometry class: " + geometry.getClass());
-	}
+    /**
+     * Creates a new ShapeWriter with a specified point transformation
+     * and point shape factory.
+     * 
+     * @param pointTransformer a transformation from model to view space to use 
+     * @param pointFactory the PointShapeFactory to use
+     */
+    public ShapeWriter( PointTransformation pointTransformer, PointShapeFactory pointFactory ) {
+        if (pointTransformer != null)
+            this.pointTransformer = pointTransformer;
+        if (pointFactory != null)
+            this.pointFactory = pointFactory;
+    }
 
-	private Shape toShape(Polygon p) 
-	{
-		PolygonShape poly = new PolygonShape();
-		
-		appendRing(poly, p.getExteriorRing().getCoordinates());
-		for (int j = 0; j < p.getNumInteriorRing(); j++) {
-		  appendRing(poly, p.getInteriorRingN(j).getCoordinates());
-		}
+    /**
+     * Creates a new ShapeWriter with a specified point transformation
+     * and the default point shape factory.
+     * 
+     * @param pointTransformer a transformation from model to view space to use 
+     */
+    public ShapeWriter( PointTransformation pointTransformer ) {
+        this(pointTransformer, null);
+    }
 
-		return poly;
-	}
+    /**
+     * Creates a new ShapeWriter with the default (identity) point transformation.
+     *
+     */
+    public ShapeWriter() {
+    }
 
-	private void appendRing(PolygonShape poly, Coordinate[] coords) 
- {
+    /**
+     * Sets whether duplicate consecutive points should be eliminated.
+     * This can reduce the size of the generated Shapes
+     * and improve rendering speed, especially in situations
+     * where a transform reduces the extent of the geometry.
+     * <p>
+     * The default is <tt>false</tt>.
+     * 
+     * @param doDecimation whether decimation is to be used
+     */
+    public void setRemoveDuplicatePoints( boolean doRemoveDuplicatePoints ) {
+        this.doRemoveDuplicatePoints = doRemoveDuplicatePoints;
+    }
+
+    /**
+     * Sets the decimation distance used to determine
+     * whether vertices of the input geometry are 
+     * considered to be duplicate and thus removed.
+     * The distance is axis distance, not Euclidean distance.
+     * The distance is specified in the input geometry coordinate system
+     * (NOT the transformed output coordinate system).
+     * <p>
+     * When rendering to a screen image, a suitably small distance should be used
+     * to avoid obvious rendering defects.  
+     * A distance equivalent to the equivalent of 1.5 pixels or less is recommended
+     * (and perhaps even smaller to avoid any chance of visible artifacts).
+     * <p>
+     * The default distance is 0.0, which disables decimation.
+     * 
+     * @param decimationDistance the distance below which vertices are considered to be duplicates
+     */
+    public void setDecimation( double decimationDistance ) {
+        this.decimationDistance = decimationDistance;
+    }
+
+    /**
+     * Creates a {@link Shape} representing a {@link Geometry}, 
+     * according to the specified PointTransformation
+     * and PointShapeFactory (if relevant).
+     * <p>
+     * Note that Shapes do not
+     * preserve information about which elements in heterogeneous collections
+     * are 1D and which are 2D.
+     * For example, a GeometryCollection containing a ring and a
+     * disk will render as two disks if Graphics.fill is used, 
+     * or as two rings if Graphics.draw is used.
+     * To avoid this issue use separate shapes for the components.
+     * 
+     * @param geometry the geometry to convert
+     * @return a Shape representing the geometry
+     */
+    public Shape toShape( Geometry geometry ) {
+        if (geometry.isEmpty())
+            return new PathShape(new Path());
+        if (geometry instanceof Polygon)
+            return toShape((Polygon) geometry);
+        if (geometry instanceof LineString)
+            return toShape((LineString) geometry);
+        if (geometry instanceof MultiLineString)
+            return toShape((MultiLineString) geometry);
+        if (geometry instanceof Point)
+            return toShape((Point) geometry);
+        if (geometry instanceof GeometryCollection)
+            return toShape((GeometryCollection) geometry);
+
+        throw new IllegalArgumentException("Unrecognized Geometry class: " + geometry.getClass());
+    }
+
+    private Shape toShape( Polygon p ) {
+        PolygonShape poly = new PolygonShape();
+
+        appendRing(poly, p.getExteriorRing().getCoordinates());
+        for( int j = 0; j < p.getNumInteriorRing(); j++ ) {
+            appendRing(poly, p.getInteriorRingN(j).getCoordinates());
+        }
+
+        return poly;
+    }
+
+    private void appendRing( PolygonShape poly, Coordinate[] coords ) {
         double prevx = Double.NaN;
         double prevy = Double.NaN;
         Coordinate prev = null;
 
+        Path tmpPath = null;
         int n = coords.length - 1;
         /**
          * Don't include closing point.
@@ -245,95 +241,96 @@ public class ShapeWriter
                 prevx = transPoint.x;
                 prevy = transPoint.y;
             }
-            Path path = poly.getPath();
-            if (path!=null) {
-                path.lineTo(transPoint.x, transPoint.y);
-            }else{
-                poly.initPath();
-                poly.getPath().moveTo(transPoint.x, transPoint.y);
+            if (tmpPath != null) {
+                tmpPath.lineTo(transPoint.x, transPoint.y);
+            } else {
+                tmpPath = new Path();
+                tmpPath.moveTo(transPoint.x, transPoint.y);
             }
         }
         // handle closing point
-        poly.getPath().close();
-    }
-	
-	private Shape toShape(GeometryCollection gc)
-	{
-		GeometryCollectionShape shape = new GeometryCollectionShape();
-		// add components to GC shape
-		for (int i = 0; i < gc.getNumGeometries(); i++) {
-			Geometry g = (Geometry) gc.getGeometryN(i);
-			shape.add(toShape(g));
-		}
-		return shape;
-	}
+        tmpPath.close();
 
-	private PathShape toShape(MultiLineString mls)
-	{
-		Path path = new Path();
-
-		for (int i = 0; i < mls.getNumGeometries(); i++) {
-			LineString lineString = (LineString) mls.getGeometryN(i);
-			PathShape shape = toShape(lineString);
-            path.addPath(shape.getPath());
-		}
-		return new PathShape(path);
-	}
-
-	private PathShape toShape(LineString lineString)
-	{
-		Path shape = new Path();
-		
-    Coordinate prev = lineString.getCoordinateN(0);
-    transformPoint(prev, transPoint);
-		shape.moveTo((float) transPoint.x, (float) transPoint.y);
-
-    double prevx = (double) transPoint.x;
-    double prevy = (double) transPoint.y;
-    
-    int n = lineString.getNumPoints() - 1;
-    //int count = 0;
-    for (int i = 1; i <= n; i++) {
-      Coordinate currentCoord = lineString.getCoordinateN(i);
-      if (decimationDistance > 0.0) {
-        boolean isDecimated = prev != null
-            && Math.abs(currentCoord.x - prev.x) < decimationDistance
-            && Math.abs(currentCoord.y - prev.y) < decimationDistance;
-        if (i < n && isDecimated) {
-          continue;
+        Path mainPath = poly.getPath();
+        if (mainPath == null) {
+            poly.initPath();
+            mainPath = poly.getPath();
         }
-        prev = currentCoord;
-      }
+        mainPath.addPath(tmpPath);
+    }
 
-      transformPoint(currentCoord, transPoint);
+    private Shape toShape( GeometryCollection gc ) {
+        GeometryCollectionShape shape = new GeometryCollectionShape();
+        // add components to GC shape
+        for( int i = 0; i < gc.getNumGeometries(); i++ ) {
+            Geometry g = (Geometry) gc.getGeometryN(i);
+            shape.add(toShape(g));
+        }
+        return shape;
+    }
 
-			if (doRemoveDuplicatePoints) {
-  			// skip duplicate points (except the last point)
-			  boolean isDup = transPoint.x == prevx && transPoint.y == prevy;
-  			if (i < n && isDup)
-  			  continue;
-  			prevx = transPoint.x;
-  			prevy = transPoint.y;
-  			//count++;
-			}
-			shape.lineTo((float) transPoint.x, (float) transPoint.y);
-		}
-		//System.out.println(count);
-		return new PathShape(shape);
-	}
+    private PathShape toShape( MultiLineString mls ) {
+        Path path = new Path();
 
-	private Shape toShape(Point point)
-  {
-		PointF viewPoint = transformPoint(point.getCoordinate());
-		return pointFactory.createPoint(viewPoint);
-	}
+        for( int i = 0; i < mls.getNumGeometries(); i++ ) {
+            LineString lineString = (LineString) mls.getGeometryN(i);
+            PathShape shape = toShape(lineString);
+            path.addPath(shape.getPath());
+        }
+        return new PathShape(path);
+    }
 
-  private PointF transformPoint(Coordinate model) {
-		return transformPoint(model, new PointF());
-	}
-  
-  private PointF transformPoint(Coordinate model, PointF view) {
-		pointTransformer.transform(model, view);
-		return view;
-	}
+    private PathShape toShape( LineString lineString ) {
+        Path shape = new Path();
+
+        Coordinate prev = lineString.getCoordinateN(0);
+        transformPoint(prev, transPoint);
+        shape.moveTo((float) transPoint.x, (float) transPoint.y);
+
+        double prevx = (double) transPoint.x;
+        double prevy = (double) transPoint.y;
+
+        int n = lineString.getNumPoints() - 1;
+        // int count = 0;
+        for( int i = 1; i <= n; i++ ) {
+            Coordinate currentCoord = lineString.getCoordinateN(i);
+            if (decimationDistance > 0.0) {
+                boolean isDecimated = prev != null && Math.abs(currentCoord.x - prev.x) < decimationDistance
+                        && Math.abs(currentCoord.y - prev.y) < decimationDistance;
+                if (i < n && isDecimated) {
+                    continue;
+                }
+                prev = currentCoord;
+            }
+
+            transformPoint(currentCoord, transPoint);
+
+            if (doRemoveDuplicatePoints) {
+                // skip duplicate points (except the last point)
+                boolean isDup = transPoint.x == prevx && transPoint.y == prevy;
+                if (i < n && isDup)
+                    continue;
+                prevx = transPoint.x;
+                prevy = transPoint.y;
+                // count++;
+            }
+            shape.lineTo((float) transPoint.x, (float) transPoint.y);
+        }
+        // System.out.println(count);
+        return new PathShape(shape);
+    }
+
+    private Shape toShape( Point point ) {
+        PointF viewPoint = transformPoint(point.getCoordinate());
+        return pointFactory.createPoint(viewPoint);
+    }
+
+    private PointF transformPoint( Coordinate model ) {
+        return transformPoint(model, new PointF());
+    }
+
+    private PointF transformPoint( Coordinate model, PointF view ) {
+        pointTransformer.transform(model, view);
+        return view;
+    }
 }

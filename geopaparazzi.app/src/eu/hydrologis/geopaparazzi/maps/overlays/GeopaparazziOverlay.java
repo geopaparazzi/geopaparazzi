@@ -591,19 +591,47 @@ public abstract class GeopaparazziOverlay extends Overlay {
         ShapeWriter wr = new ShapeWriter(new MapsforgePointTransformation(projection, drawPosition, drawZoomLevel));
         wr.setRemoveDuplicatePoints(true);
         wr.setDecimation(0.001);
-        List<byte[]> bolzanoWKB = db.getIntersectingWKB(n, s, e, w);
+
         WKBReader r = new WKBReader();
         try {
-            for( byte[] bs : bolzanoWKB ) {
+            List<byte[]> countriesWKB = db.getIntersectingTable("countries", n, s, e, w);
+            for( byte[] bs : countriesWKB ) {
                 Geometry readGeom = r.read(bs);
                 Shape shape = wr.toShape(readGeom);
                 shape.fill(canvas, gpsFill);
                 shape.draw(canvas, gpsOutline);
             }
+            List<byte[]> riversWKB = db.getIntersectingTable("rivers", n, s, e, w);
+            for( byte[] bs : riversWKB ) {
+                Geometry readGeom = r.read(bs);
+                Shape shape = wr.toShape(readGeom);
+                // shape.fill(canvas, gpsGreenFill);
+                shape.draw(canvas, gpsTrackPaintYellow);
+            }
+//            List<byte[]> placesWKB = db.getIntersectingTable("places", n, s, e, w);
+//            for( byte[] bs : placesWKB ) {
+//                Geometry readGeom = r.read(bs);
+//                Shape shape = wr.toShape(readGeom);
+//                shape.fill(canvas, gpsGreenFill);
+//                shape.draw(canvas, gpsOutline);
+//            }
 
-        } catch (ParseException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
+        // List<byte[]> bolzanoWKB = db.getIntersectingWKB(n, s, e, w);
+        // WKBReader r = new WKBReader();
+        // try {
+        // for( byte[] bs : bolzanoWKB ) {
+        // Geometry readGeom = r.read(bs);
+        // Shape shape = wr.toShape(readGeom);
+        // shape.fill(canvas, gpsFill);
+        // shape.draw(canvas, gpsOutline);
+        // }
+        //
+        // } catch (ParseException ex) {
+        // ex.printStackTrace();
+        // }
 
     }
     @Override
