@@ -77,7 +77,12 @@ public class PolygonShape implements Shape {
 
     public PolygonShape() {
     }
-
+    
+    public void initPath(){
+        polygonPath = new Path();
+    }
+    
+    
     void addToRing( PointF p ) {
         if (ringPath == null) {
             ringPath = new Path();
@@ -200,21 +205,18 @@ public class PolygonShape implements Shape {
     }
 
     @Override
-    public void draw( Canvas arg0, Paint arg1 ) {
-        throw new RuntimeException("not implemented yet");
-        
+    public void draw( Canvas canvas, Paint paint) {
+        canvas.drawPath(polygonPath, paint);
     }
 
     @Override
-    public void fill( Canvas arg0, Paint arg1 ) {
-        throw new RuntimeException("not implemented yet");
-        
+    public void fill( Canvas canvas, Paint paint) {
+        canvas.drawPath(polygonPath, paint);
     }
 
     @Override
-    public void fillAndStroke( Canvas arg0, Paint arg1 ) {
-        throw new RuntimeException("not implemented yet");
-        
+    public void fillAndStroke( Canvas canvas, Paint paint) {
+        canvas.drawPath(polygonPath, paint);
     }
 
     @Override
@@ -225,7 +227,7 @@ public class PolygonShape implements Shape {
 
     @Override
     public Path getPath() {
-        throw new RuntimeException("not implemented yet");
+        return polygonPath;
     }
 
     @Override

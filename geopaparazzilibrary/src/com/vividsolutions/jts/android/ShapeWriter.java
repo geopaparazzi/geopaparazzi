@@ -214,43 +214,48 @@ public class ShapeWriter
 	}
 
 	private void appendRing(PolygonShape poly, Coordinate[] coords) 
-	{
-    double prevx = Double.NaN;
-    double prevy = Double.NaN;
-    Coordinate prev = null;
-    
-    int n = coords.length - 1;
-    /**
-     * Don't include closing point.
-     * Ring path will be closed explicitly, which provides a 
-     * more accurate path representation.
-     */
-		for (int i = 0; i < n; i++) {
-		  
-		  if (decimationDistance > 0.0) {
-		    boolean isDecimated = prev != null 
-		      && Math.abs(coords[i].x - prev.x) < decimationDistance
-		      && Math.abs(coords[i].y - prev.y) < decimationDistance;
-		    if (i < n && isDecimated) 
-		      continue;
-		    prev = coords[i];
-		  }
-		  
-			transformPoint(coords[i], transPoint);
-			
-			if (doRemoveDuplicatePoints) {
-        // skip duplicate points (except the last point)
-			  boolean isDup = transPoint.x == prevx && transPoint.y == prevy;
-        if (i < n && isDup)
-          continue;
-        prevx = transPoint.x;
-        prevy = transPoint.y;
-			}
-			poly.getPath().lineTo(transPoint.x, transPoint.y);
-		}
-		// handle closing point
-		poly.getPath().close();
-	}
+ {
+        double prevx = Double.NaN;
+        double prevy = Double.NaN;
+        Coordinate prev = null;
+
+        int n = coords.length - 1;
+        /**
+         * Don't include closing point.
+         * Ring path will be closed explicitly, which provides a 
+         * more accurate path representation.
+         */
+        for( int i = 0; i < n; i++ ) {
+
+            if (decimationDistance > 0.0) {
+                boolean isDecimated = prev != null && Math.abs(coords[i].x - prev.x) < decimationDistance
+                        && Math.abs(coords[i].y - prev.y) < decimationDistance;
+                if (i < n && isDecimated)
+                    continue;
+                prev = coords[i];
+            }
+
+            transformPoint(coords[i], transPoint);
+
+            if (doRemoveDuplicatePoints) {
+                // skip duplicate points (except the last point)
+                boolean isDup = transPoint.x == prevx && transPoint.y == prevy;
+                if (i < n && isDup)
+                    continue;
+                prevx = transPoint.x;
+                prevy = transPoint.y;
+            }
+            Path path = poly.getPath();
+            if (path!=null) {
+                path.lineTo(transPoint.x, transPoint.y);
+            }else{
+                poly.initPath();
+                poly.getPath().moveTo(transPoint.x, transPoint.y);
+            }
+        }
+        // handle closing point
+        poly.getPath().close();
+    }
 	
 	private Shape toShape(GeometryCollection gc)
 	{

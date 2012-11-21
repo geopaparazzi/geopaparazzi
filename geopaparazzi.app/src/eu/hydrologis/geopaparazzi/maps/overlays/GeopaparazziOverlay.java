@@ -577,35 +577,32 @@ public abstract class GeopaparazziOverlay extends Overlay {
         /* 
          * try drawing a polygon from spatialite
          */
+        GeoPoint zeroPoint = projection.fromPixels(0, 0);
+        GeoPoint whPoint = projection.fromPixels(canvas.getWidth(), canvas.getHeight());
+
         DatabaseHandler db = new DatabaseHandler(context, new StringBuilder());
-        byte[] bolzanoWKB = db.getBolzanoWKB();
+        // byte[] bolzanoWKB = db.getBolzanoWKB();
+
+        double n = zeroPoint.getLatitude();
+        double w = zeroPoint.getLongitude();
+        double s = whPoint.getLatitude();
+        double e = whPoint.getLongitude();
+
+        ShapeWriter wr = new ShapeWriter(new MapsforgePointTransformation(projection, drawPosition, drawZoomLevel));
+        wr.setRemoveDuplicatePoints(true);
+        wr.setDecimation(0.001);
+        List<byte[]> bolzanoWKB = db.getIntersectingWKB(n, s, e, w);
         WKBReader r = new WKBReader();
         try {
-            Geometry readGeom = r.read(bolzanoWKB);
-            Coordinate[] coordinates = readGeom.getCoordinates();
-            Path testPath=null;
-            Point testP =new Point();
-            for( Coordinate c : coordinates ) {
-                projection.toPoint(new GeoPoint(c.y, c.x), testP, drawZoomLevel);
-                if (testPath==null) {
-                    testPath = new Path();
-                    testPath.moveTo(testP.x, testP.y);
-                }else{
-                    testPath.lineTo(testP.x, testP.y);
-                }
+            for( byte[] bs : bolzanoWKB ) {
+                Geometry readGeom = r.read(bs);
+                Shape shape = wr.toShape(readGeom);
+                shape.fill(canvas, gpsFill);
+                shape.draw(canvas, gpsOutline);
             }
-            testPath.close();
-            canvas.drawPath(testPath, gpsFill);
-            canvas.drawPath(testPath, gpsOutline);
-//            ShapeWriter w = new ShapeWriter();
-//            w.setRemoveDuplicatePoints(true);
-//            w.setDecimation(1.2);
-//            Shape shape = w.toShape(readGeom);
-//            shape.draw(canvas, gpsFill);
-//            shape.draw(canvas, gpsOutline);
 
-        } catch (ParseException e) {
-            e.printStackTrace();
+        } catch (ParseException ex) {
+            ex.printStackTrace();
         }
 
     }

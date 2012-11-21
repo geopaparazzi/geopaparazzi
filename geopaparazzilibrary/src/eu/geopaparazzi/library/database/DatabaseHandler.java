@@ -1,6 +1,13 @@
 package eu.geopaparazzi.library.database;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.io.WKBWriter;
 
 import jsqlite.Database;
 import jsqlite.Exception;
@@ -16,6 +23,9 @@ import android.content.Context;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class DatabaseHandler {
+    // 3857
+    private GeometryFactory gf = new GeometryFactory();
+    private WKBWriter wr = new WKBWriter();
 
     private static final double TEST_LAT = 46.0;
     private static final double TEST_LON = 11.0;
@@ -279,7 +289,32 @@ public class DatabaseHandler {
         }
         return null;
     }
-    
+
+    public List<byte[]> getIntersectingWKB( double n, double s, double e, double w ) {
+        List<byte[]> list = new ArrayList<byte[]>();
+        Coordinate ll = new Coordinate(w, s);
+        Coordinate ul = new Coordinate(w, n);
+        Coordinate ur = new Coordinate(e, n);
+        Coordinate lr = new Coordinate(e, s);
+        Polygon bboxPolygon = gf.createPolygon(new Coordinate[]{ll, ul, ur, lr, ll});
+
+        byte[] bbox = wr.write(bboxPolygon);
+        String query = "SELECT ST_AsBinary(ST_Transform(Geometry, 4326)) from " + COMUNITABLE + //
+                " where ST_Intersects(ST_Transform(Geometry, 4326), ST_GeomFromWKB(?));";
+        try {
+            Stmt stmt = db.prepare(query);
+            stmt.bind(1, bbox);
+            while (stmt.step()) {
+                list.add(stmt.column_bytes(0));
+            }
+            stmt.close();
+            return list;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
     public String doSimpleTransform() {
 
         sb.append(SEP);

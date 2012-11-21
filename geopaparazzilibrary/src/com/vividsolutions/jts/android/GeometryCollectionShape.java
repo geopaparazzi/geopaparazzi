@@ -55,7 +55,7 @@ import com.vividsolutions.jts.geom.Geometry;
  *
  */
 public class GeometryCollectionShape implements Shape {
-    private ArrayList shapes = new ArrayList();
+    private ArrayList<Shape> shapes = new ArrayList<Shape>();
 
     public GeometryCollectionShape() {
     }
@@ -139,21 +139,24 @@ public class GeometryCollectionShape implements Shape {
     }
 
     @Override
-    public void draw( Canvas arg0, Paint arg1 ) {
-        throw new RuntimeException("not implemented yet");
-        
+    public void draw( Canvas canvas, Paint paint) {
+        for( Shape shape : shapes ) {
+            canvas.drawPath(shape.getPath(), paint);
+        }
     }
 
     @Override
-    public void fill( Canvas arg0, Paint arg1 ) {
-        throw new RuntimeException("not implemented yet");
-        
+    public void fill( Canvas canvas, Paint paint) {
+        for( Shape shape : shapes ) {
+            canvas.drawPath(shape.getPath(), paint);
+        }
     }
 
     @Override
-    public void fillAndStroke( Canvas arg0, Paint arg1 ) {
-        throw new RuntimeException("not implemented yet");
-        
+    public void fillAndStroke( Canvas canvas, Paint paint) {
+        for( Shape shape : shapes ) {
+            canvas.drawPath(shape.getPath(), paint);
+        }
     }
 
     @Override
