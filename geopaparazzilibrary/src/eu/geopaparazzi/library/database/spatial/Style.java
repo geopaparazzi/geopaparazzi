@@ -2,13 +2,13 @@ package eu.geopaparazzi.library.database.spatial;
 
 public class Style {
     public String name;
-    public float size = 3;
+    public float size = 5;
     public String fillcolor = "red";
     public String strokecolor = "black";
-    public float fillalpha = 0.5f;
+    public float fillalpha = 0.3f;
     public float strokealpha = 1.0f;
     public String shape = "square";
-    public float width = 2f;
+    public float width = 3f;
     public float textsize = 5f;
     public String textfield = "";
     public int enabled = 0;
@@ -33,9 +33,9 @@ public class Style {
         sb.append(width);
         sb.append(", ");
         sb.append(textsize);
-        sb.append(", ");
+        sb.append(", '");
         sb.append(textfield);
-        sb.append(", ");
+        sb.append("', ");
         sb.append(enabled);
         return sb.toString();
     }

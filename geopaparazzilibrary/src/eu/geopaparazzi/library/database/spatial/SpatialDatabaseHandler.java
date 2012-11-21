@@ -18,8 +18,13 @@
 package eu.geopaparazzi.library.database.spatial;
 
 import java.io.File;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import android.graphics.Color;
+import android.graphics.Paint;
 
 import jsqlite.Database;
 import jsqlite.Exception;
@@ -52,6 +57,9 @@ public class SpatialDatabaseHandler {
 
     private Database db;
 
+    private HashMap<String, Paint> fillPaints = new HashMap<String, Paint>();
+    private HashMap<String, Paint> strokePaints = new HashMap<String, Paint>();
+
     private List<SpatialTable> tableList;
 
     public SpatialDatabaseHandler( String dbPath ) {
@@ -73,16 +81,21 @@ public class SpatialDatabaseHandler {
     }
 
     private void checkPropertiesTable() throws Exception {
-        String checkTableQuery = "SELECT name FROM sqlite_master WHERE type='table' AND name='?';";
+        String checkTableQuery = "SELECT name FROM sqlite_master WHERE type='table' AND name='" + PROPERTIESTABLE + "';";
         Stmt stmt = db.prepare(checkTableQuery);
-        stmt.bind(1, PROPERTIESTABLE);
         boolean tableExists = false;
         if (stmt.step()) {
             String name = stmt.column_string(0);
             if (name != null) {
                 tableExists = true;
             }
+            stmt.close();
         }
+        if (tableExists) {
+            db.exec("drop table " + PROPERTIESTABLE + ";", null);
+            tableExists = false;
+        }
+
         if (!tableExists) {
             StringBuilder sb = new StringBuilder();
             sb.append("CREATE TABLE ");
@@ -168,7 +181,33 @@ public class SpatialDatabaseHandler {
             style.textfield = stmt.column_string(8);
             style.enabled = stmt.column_int(9);
         }
+        stmt.close();
         return style;
+    }
+
+    public Paint getFillPaint4Style( Style style ) {
+        Paint paint = fillPaints.get(style.name);
+        if (paint == null) {
+            paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            paint.setStyle(Paint.Style.FILL);
+            fillPaints.put(style.name, paint);
+        }
+        paint.setColor(Color.parseColor(style.fillcolor));
+        paint.setAlpha((int) (style.fillalpha * 255f));
+        return paint;
+    }
+
+    public Paint getStrokePaint4Style( Style style ) {
+        Paint paint = strokePaints.get(style.name);
+        if (paint == null) {
+            paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            paint.setStyle(Paint.Style.STROKE);
+            strokePaints.put(style.name, paint);
+        }
+        paint.setColor(Color.parseColor(style.fillcolor));
+        paint.setAlpha((int) (style.fillalpha * 255f));
+        paint.setStrokeWidth(style.width);
+        return paint;
     }
 
     public void close() throws Exception {
@@ -180,7 +219,9 @@ public class SpatialDatabaseHandler {
     public String getSpatialiteVersion() throws Exception {
         Stmt stmt01 = db.prepare("SELECT spatialite_version();");
         if (stmt01.step()) {
-            return stmt01.column_string(0);
+            String value = stmt01.column_string(0);
+            stmt01.close();
+            return value;
         }
         return "-";
     }
@@ -188,7 +229,9 @@ public class SpatialDatabaseHandler {
     public String getProj4Version() throws Exception {
         Stmt stmt = db.prepare("SELECT proj4_version();");
         if (stmt.step()) {
-            return stmt.column_string(0);
+            String value = stmt.column_string(0);
+            stmt.close();
+            return value;
         }
         return "-";
     }
@@ -196,7 +239,9 @@ public class SpatialDatabaseHandler {
     public String getGeosVersion() throws Exception {
         Stmt stmt = db.prepare("SELECT geos_version();");
         if (stmt.step()) {
-            return stmt.column_string(0);
+            String value = stmt.column_string(0);
+            stmt.close();
+            return value;
         }
         return "-";
     }
