@@ -92,8 +92,8 @@ public class SpatialDatabaseHandler {
             sb.append(SIZE).append(" REAL, ");
             sb.append(FILLCOLOR).append(" TEXT, ");
             sb.append(STROKECOLOR).append(" TEXT, ");
-            sb.append(FILLALPHA).append(" INTEGER, ");
-            sb.append(STROKEALPHA).append(" INTEGER, ");
+            sb.append(FILLALPHA).append(" REAL, ");
+            sb.append(STROKEALPHA).append(" REAL, ");
             sb.append(SHAPE).append(" TEXT, ");
             sb.append(WIDTH).append(" REAL, ");
             sb.append(TEXTSIZE).append(" REAL, ");
@@ -117,28 +117,58 @@ public class SpatialDatabaseHandler {
                 sbIn.append(SHAPE).append(" , ");
                 sbIn.append(WIDTH).append(" , ");
                 sbIn.append(TEXTSIZE).append(" , ");
-                // sbIn.append(TEXTFIELD).append(" , ");
+                sbIn.append(TEXTFIELD).append(" , ");
                 sbIn.append(ENABLED);
                 sbIn.append(" ) ");
                 sbIn.append(" values ");
                 sbIn.append(" ( ");
-                sbIn.append(spatialTable.name).append(" , ");
-                sbIn.append(3).append(" , ");
-                sbIn.append("'red'").append(" , ");
-                sbIn.append("'black'").append(" , ");
-                sbIn.append(0.5).append(" , ");
-                sbIn.append(1).append(" , ");
-                sbIn.append("'square'").append(" , ");
-                sbIn.append(2).append(" , ");
-                sbIn.append(5).append(" , ");
-                // sbIn.append("''").append(" , ");
-                sbIn.append(0);
+                Style style = new Style();
+                style.name = spatialTable.name;
+                sbIn.append(style.insertValuesString());
                 sbIn.append(" );");
 
                 String insertQuery = sbIn.toString();
                 db.exec(insertQuery, null);
             }
         }
+    }
+
+    public Style getStyle4Table( String tableName ) throws Exception {
+        Style style = new Style();
+        style.name = tableName;
+
+        StringBuilder sbSel = new StringBuilder();
+        sbSel.append("select ");
+        sbSel.append(SIZE).append(" , ");
+        sbSel.append(FILLCOLOR).append(" , ");
+        sbSel.append(STROKECOLOR).append(" , ");
+        sbSel.append(FILLALPHA).append(" , ");
+        sbSel.append(STROKEALPHA).append(" , ");
+        sbSel.append(SHAPE).append(" , ");
+        sbSel.append(WIDTH).append(" , ");
+        sbSel.append(TEXTSIZE).append(" , ");
+        sbSel.append(TEXTFIELD).append(" , ");
+        sbSel.append(ENABLED);
+        sbSel.append(" from ");
+        sbSel.append(PROPERTIESTABLE);
+        sbSel.append(" where ");
+        sbSel.append(NAME).append(" ='").append(tableName).append("';");
+
+        String selectQuery = sbSel.toString();
+        Stmt stmt = db.prepare(selectQuery);
+        if (stmt.step()) {
+            style.size = (float) stmt.column_double(0);
+            style.fillcolor = stmt.column_string(1);
+            style.strokecolor = stmt.column_string(2);
+            style.fillalpha = (float) stmt.column_double(3);
+            style.strokealpha = (float) stmt.column_double(4);
+            style.shape = stmt.column_string(5);
+            style.width = (float) stmt.column_double(6);
+            style.textsize = (float) stmt.column_double(7);
+            style.textfield = stmt.column_string(8);
+            style.enabled = stmt.column_int(9);
+        }
+        return style;
     }
 
     public void close() throws Exception {
