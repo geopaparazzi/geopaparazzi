@@ -50,367 +50,357 @@ import android.graphics.PointF;
  * 
  */
 public interface PointShapeFactory {
-  /**
-   * Creates a shape representing a {@link Point}.
-   * 
-   * @param point
-   *          the location of the point
-   * @return a shape
-   */
-  Shape createPoint(PointF point);
-
-  public static abstract class BasePointShapeFactory implements
-      PointShapeFactory {
     /**
-     * The default size of the shape
-     */
-    public static double DEFAULT_SIZE = 3.0;
-
-    protected double size = DEFAULT_SIZE;
-
-    /**
-     * Creates a new factory for points with default size.
-     * 
-     */
-    public BasePointShapeFactory() {
-    }
-
-    /**
-     * Creates a factory for points of given size.
-     * 
-     * @param size
-     *          the size of the points
-     */
-    public BasePointShapeFactory(double size) {
-      this.size = size;
-    }
-
-    /**
-     * Creates a shape representing a point.
+     * Creates a shape representing a {@link Point}.
      * 
      * @param point
      *          the location of the point
      * @return a shape
      */
-    public abstract Shape createPoint(PointF point);
-  }
+    Shape createPoint( PointF point );
 
-  public static class Point extends BasePointShapeFactory {
-    /**
-     * Creates a new factory for points with default size.
-     * 
-     */
-    public Point() {
-      super();
+    public static abstract class BasePointShapeFactory implements PointShapeFactory {
+        /**
+         * The default size of the shape
+         */
+        public static double DEFAULT_SIZE = 0.0001;
+
+        protected double size = DEFAULT_SIZE;
+
+        /**
+         * Creates a new factory for points with default size.
+         * 
+         */
+        public BasePointShapeFactory() {
+        }
+
+        /**
+         * Creates a factory for points of given size.
+         * 
+         * @param size
+         *          the size of the points
+         */
+        public BasePointShapeFactory( double size ) {
+            this.size = size;
+        }
+
+        /**
+         * Creates a shape representing a point.
+         * 
+         * @param point
+         *          the location of the point
+         * @return a shape
+         */
+        public abstract Shape createPoint( PointF point );
     }
 
-    /**
-     * Creates a factory for points of given size.
-     * 
-     * @param size
-     *          the size of the points
-     */
-    public Point(double size) {
-      super(size);
+    public static class Point extends BasePointShapeFactory {
+        /**
+         * Creates a new factory for points with default size.
+         * 
+         */
+        public Point() {
+            super();
+        }
+
+        /**
+         * Creates a factory for points of given size.
+         * 
+         * @param size
+         *          the size of the points
+         */
+        public Point( double size ) {
+            super(size);
+        }
+
+        /**
+         * Creates a shape representing a point.
+         * 
+         * @param point
+         *          the location of the point
+         * @return a shape
+         */
+        public Shape createPoint( PointF point ) {
+            Path line = new Path();
+            line.moveTo(point.x, point.y);
+            line.lineTo(point.x, point.y);
+
+            PathShape pShape = new PathShape(line);
+
+            // Line2D.Double pointMarker =
+            // new Line2D.Double(
+            // point.getX(),
+            // point.getY(),
+            // point.getX(),
+            // point.getY());
+            return pShape;
+        }
     }
 
-    /**
-     * Creates a shape representing a point.
-     * 
-     * @param point
-     *          the location of the point
-     * @return a shape
-     */
-    public Shape createPoint(PointF point) {
-        Path line = new Path();
-        line.moveTo(point.x,
-            point.y);
-        line.lineTo(point.x,
-                point.y);
-        
-        PathShape pShape = new PathShape(line);
-        
-//        Line2D.Double pointMarker =
-//        new Line2D.Double(
-//        	point.getX(),
-//        	point.getY(),
-//          point.getX(),
-//          point.getY());
-      return pShape;
-    }
-  }
-  
-  public static class Square extends BasePointShapeFactory {
-    /**
-     * Creates a new factory for squares with default size.
-     * 
-     */
-    public Square() {
-      super();
-    }
+    public static class Square extends BasePointShapeFactory {
+        /**
+         * Creates a new factory for squares with default size.
+         * 
+         */
+        public Square() {
+            super();
+        }
 
-    /**
-     * Creates a factory for squares of given size.
-     * 
-     * @param size
-     *          the size of the points
-     */
-    public Square(double size) {
-      super(size);
+        /**
+         * Creates a factory for squares of given size.
+         * 
+         * @param size
+         *          the size of the points
+         */
+        public Square( double size ) {
+            super(size);
+        }
+
+        /**
+         * Creates a shape representing a point.
+         * 
+         * @param point
+         *          the location of the point
+         * @return a shape
+         */
+        public Shape createPoint( PointF point ) {
+            float x = (float) (point.x - (size / 2));
+            float y = (float) (point.y - (size / 2));
+            RectShape pointMarker = new RectShape(x, y, size, size);
+            // pointMarker.x = (double) (point.getX() - (size / 2));
+            // pointMarker.y = (double) (point.getY() - (size / 2));
+
+            // RectShape rShape = new RectShape(pointMarker);
+            return pointMarker;
+        }
     }
 
-    /**
-     * Creates a shape representing a point.
-     * 
-     * @param point
-     *          the location of the point
-     * @return a shape
-     */
-    public Shape createPoint(PointF point) {
-      RectShape pointMarker =
-        new RectShape(
-          0.0,
-          0.0,
-          size,
-          size);
-      float x = (float) (point.x - (size / 2));
-      float y = (float) (point.y - (size / 2));
-      pointMarker.setX(x);
-      pointMarker.setY(y);
-//      pointMarker.x = (double) (point.getX() - (size / 2));
-//      pointMarker.y = (double) (point.getY() - (size / 2));
+    public static class Star extends BasePointShapeFactory {
+        /**
+         * Creates a new factory for points with default size.
+         * 
+         */
+        public Star() {
+            super();
+        }
 
-      RectShape rShape = new RectShape(pointMarker);
-      return rShape;
-    }
-  }
-  
-  public static class Star extends BasePointShapeFactory {
-    /**
-     * Creates a new factory for points with default size.
-     * 
-     */
-    public Star() {
-      super();
-    }
+        /**
+         * Creates a factory for points of given size.
+         * 
+         * @param size
+         *          the size of the points
+         */
+        public Star( double size ) {
+            super(size);
+        }
 
-    /**
-     * Creates a factory for points of given size.
-     * 
-     * @param size
-     *          the size of the points
-     */
-    public Star(double size) {
-      super(size);
+        /**
+         * Creates a shape representing a point.
+         * 
+         * @param point
+         *          the location of the point
+         * @return a shape
+         */
+        public Shape createPoint( PointF point ) {
+            Path path = new Path();
+            path.moveTo((float) point.x, (float) (point.y - size / 2));
+            path.lineTo((float) (point.x + size * 1 / 8), (float) (point.y - size * 1 / 8));
+            path.lineTo((float) (point.x + size / 2), (float) (point.y - size * 1 / 8));
+            path.lineTo((float) (point.x + size * 2 / 8), (float) (point.y + size * 1 / 8));
+            path.lineTo((float) (point.x + size * 3 / 8), (float) (point.y + size / 2));
+            path.lineTo((float) (point.x), (float) (point.y + size * 2 / 8));
+            path.lineTo((float) (point.x - size * 3 / 8), (float) (point.y + size / 2));
+            path.lineTo((float) (point.x - size * 2 / 8), (float) (point.y + size * 1 / 8));
+            path.lineTo((float) (point.x - size / 2), (float) (point.y - size * 1 / 8));
+            path.lineTo((float) (point.x - size * 1 / 8), (float) (point.y - size * 1 / 8));
+            path.close();
+            return new PathShape(path);
+        }
     }
 
-    /**
-     * Creates a shape representing a point.
-     * 
-     * @param point
-     *          the location of the point
-     * @return a shape
-     */
-    public Shape createPoint(PointF point) {
-      Path path = new Path();
-      path.moveTo((float) point.x, (float) (point.y - size/2));
-      path.lineTo((float) (point.x + size * 1/8), (float) (point.y - size * 1/8));
-      path.lineTo((float) (point.x + size/2), (float) (point.y - size * 1/8));
-      path.lineTo((float) (point.x + size * 2/8), (float) (point.y + size * 1/8));
-      path.lineTo((float) (point.x + size * 3/8), (float) (point.y + size/2));
-      path.lineTo((float) (point.x), (float) (point.y + size * 2/8));
-      path.lineTo((float) (point.x - size * 3/8), (float) (point.y + size/2));
-      path.lineTo((float) (point.x - size * 2/8), (float) (point.y + size * 1/8));
-      path.lineTo((float) (point.x - size/2), (float) (point.y - size * 1/8));
-      path.lineTo((float) (point.x - size * 1/8), (float) (point.y - size * 1/8));
-      path.close();
-      return new PathShape(path);
+    public static class Triangle extends BasePointShapeFactory {
+        /**
+         * Creates a new factory for points with default size.
+         * 
+         */
+        public Triangle() {
+            super();
+        }
+
+        /**
+         * Creates a factory for points of given size.
+         * 
+         * @param size
+         *          the size of the points
+         */
+        public Triangle( double size ) {
+            super(size);
+        }
+
+        /**
+         * Creates a shape representing a point.
+         * 
+         * @param point
+         *          the location of the point
+         * @return a shape
+         */
+        public Shape createPoint( PointF point ) {
+
+            Path path = new Path();
+            path.moveTo((float) (point.x), (float) (point.y - size / 2));
+            path.lineTo((float) (point.x + size / 2), (float) (point.y + size / 2));
+            path.lineTo((float) (point.x - size / 2), (float) (point.y + size / 2));
+            path.lineTo((float) (point.x), (float) (point.y - size / 2));
+
+            return new PathShape(path);
+        }
+
     }
-  }
-  
-  public static class Triangle extends BasePointShapeFactory {
-    /**
-     * Creates a new factory for points with default size.
-     * 
-     */
-    public Triangle() {
-      super();
+    public static class Circle extends BasePointShapeFactory {
+        /**
+         * Creates a new factory for points with default size.
+         * 
+         */
+        public Circle() {
+            super();
+        }
+
+        /**
+         * Creates a factory for points of given size.
+         * 
+         * @param size
+         *          the size of the points
+         */
+        public Circle( double size ) {
+            super(size);
+        }
+
+        /**
+         * Creates a shape representing a point.
+         * 
+         * @param point
+         *          the location of the point
+         * @return a shape
+         */
+        public Shape createPoint( PointF point ) {
+            OvalShape shape = new OvalShape(point.x, point.y, size, size);
+            float x = (float) (point.x - (size / 2));
+            float y = (float) (point.y - (size / 2));
+            shape.translate(x, y);
+
+            // Ellipse2D.Double pointMarker =
+            // new Ellipse2D.Double(
+            // 0.0,
+            // 0.0,
+            // size,
+            // size);
+            // pointMarker.x = (double) (point.getX() - (size / 2));
+            // pointMarker.y = (double) (point.getY() - (size / 2));
+
+            return shape;
+        }
+
     }
+    public static class Cross extends BasePointShapeFactory {
+        /**
+         * Creates a new factory for points with default size.
+         * 
+         */
+        public Cross() {
+            super();
+        }
 
-    /**
-     * Creates a factory for points of given size.
-     * 
-     * @param size
-     *          the size of the points
-     */
-    public Triangle(double size) {
-      super(size);
+        /**
+         * Creates a factory for points of given size.
+         * 
+         * @param size
+         *          the size of the points
+         */
+        public Cross( double size ) {
+            super(size);
+        }
+
+        /**
+         * Creates a shape representing a point.
+         * 
+         * @param point
+         *          the location of the point
+         * @return a shape
+         */
+        public Shape createPoint( PointF point ) {
+
+            float x1 = (float) (point.x - size / 2f);
+            float x2 = (float) (point.x - size / 4f);
+            float x3 = (float) (point.x + size / 4f);
+            float x4 = (float) (point.x + size / 2f);
+
+            float y1 = (float) (point.y - size / 2f);
+            float y2 = (float) (point.y - size / 4f);
+            float y3 = (float) (point.y + size / 4f);
+            float y4 = (float) (point.y + size / 2f);
+
+            Path path = new Path();
+            path.moveTo(x2, y1);
+            path.lineTo(x3, y1);
+            path.lineTo(x3, y2);
+            path.lineTo(x4, y2);
+            path.lineTo(x4, y3);
+            path.lineTo(x3, y3);
+            path.lineTo(x3, y4);
+            path.lineTo(x2, y4);
+            path.lineTo(x2, y3);
+            path.lineTo(x1, y3);
+            path.lineTo(x1, y2);
+            path.lineTo(x2, y2);
+            path.lineTo(x2, y1);
+
+            return new PathShape(path);
+        }
+
     }
+    public static class X extends BasePointShapeFactory {
+        /**
+         * Creates a new factory for points with default size.
+         * 
+         */
+        public X() {
+            super();
+        }
 
-    /**
-     * Creates a shape representing a point.
-     * 
-     * @param point
-     *          the location of the point
-     * @return a shape
-     */
-    public Shape createPoint(PointF point) {
+        /**
+         * Creates a factory for points of given size.
+         * 
+         * @param size
+         *          the size of the points
+         */
+        public X( double size ) {
+            super(size);
+        }
 
-      Path path = new Path();
-      path.moveTo((float) (point.x), (float) (point.y - size / 2));
-      path.lineTo((float) (point.x + size / 2), (float) (point.y + size / 2));
-      path.lineTo((float) (point.x - size / 2), (float) (point.y + size / 2));
-      path.lineTo((float) (point.x), (float) (point.y - size / 2));
+        /**
+         * Creates a shape representing a point.
+         * 
+         * @param point
+         *          the location of the point
+         * @return a shape
+         */
+        public Shape createPoint( PointF point ) {
+            Path path = new Path();
+            path.moveTo((float) (point.x), (float) (point.y - size * 1 / 8));
+            path.lineTo((float) (point.x + size * 2 / 8), (float) (point.y - size / 2));
+            path.lineTo((float) (point.x + size / 2), (float) (point.y - size / 2));
+            path.lineTo((float) (point.x + size * 1 / 8), (float) (point.y));
+            path.lineTo((float) (point.x + size / 2), (float) (point.y + size / 2));
+            path.lineTo((float) (point.x + size * 2 / 8), (float) (point.y + size / 2));
+            path.lineTo((float) (point.x), (float) (point.y + size * 1 / 8));
+            path.lineTo((float) (point.x - size * 2 / 8), (float) (point.y + size / 2));
+            path.lineTo((float) (point.x - size / 2), (float) (point.y + size / 2));
+            path.lineTo((float) (point.x - size * 1 / 8), (float) (point.y));
+            path.lineTo((float) (point.x - size / 2), (float) (point.y - size / 2));
+            path.lineTo((float) (point.x - size * 2 / 8), (float) (point.y - size / 2));
+            path.close();
+            return new PathShape(path);
+        }
 
-      return new PathShape(path);
     }
-
-  }
-  public static class Circle extends BasePointShapeFactory {
-    /**
-     * Creates a new factory for points with default size.
-     * 
-     */
-    public Circle() {
-      super();
-    }
-
-    /**
-     * Creates a factory for points of given size.
-     * 
-     * @param size
-     *          the size of the points
-     */
-    public Circle(double size) {
-      super(size);
-    }
-
-    /**
-     * Creates a shape representing a point.
-     * 
-     * @param point
-     *          the location of the point
-     * @return a shape
-     */
-    public Shape createPoint(PointF point) {
-        OvalShape shape = new OvalShape(point.x, point.y, size, size);
-        float x = (float) (point.x - (size / 2));
-         float y = (float) (point.y - (size / 2));
-        shape.translate(x,y);
-        
-//      Ellipse2D.Double pointMarker =
-//        new Ellipse2D.Double(
-//          0.0,
-//          0.0,
-//          size,
-//          size);
-//      pointMarker.x = (double) (point.getX() - (size / 2));
-//      pointMarker.y = (double) (point.getY() - (size / 2));
-
-      return shape;
-    }
-
-  }
-  public static class Cross extends BasePointShapeFactory {
-    /**
-     * Creates a new factory for points with default size.
-     * 
-     */
-    public Cross() {
-      super();
-    }
-
-    /**
-     * Creates a factory for points of given size.
-     * 
-     * @param size
-     *          the size of the points
-     */
-    public Cross(double size) {
-      super(size);
-    }
-
-    /**
-     * Creates a shape representing a point.
-     * 
-     * @param point
-     *          the location of the point
-     * @return a shape
-     */
-    public Shape createPoint(PointF point) {
-
-      float x1 = (float) (point.x - size/2f);
-      float x2 = (float) (point.x - size/4f);
-      float x3 = (float) (point.x + size/4f);
-      float x4 = (float) (point.x + size/2f);
-
-      float y1 = (float) (point.y - size/2f);
-      float y2 = (float) (point.y - size/4f);
-      float y3 = (float) (point.y + size/4f);
-      float y4 = (float) (point.y + size/2f);
-
-      Path path = new Path();
-      path.moveTo(x2, y1);
-      path.lineTo(x3, y1);
-      path.lineTo(x3, y2);
-      path.lineTo(x4, y2);
-      path.lineTo(x4, y3);
-      path.lineTo(x3, y3);
-      path.lineTo(x3, y4);
-      path.lineTo(x2, y4);
-      path.lineTo(x2, y3);
-      path.lineTo(x1, y3);
-      path.lineTo(x1, y2);
-      path.lineTo(x2, y2);
-      path.lineTo(x2, y1);
-
-      return new PathShape(path);
-    }
-
-  }
-  public static class X extends BasePointShapeFactory {
-    /**
-     * Creates a new factory for points with default size.
-     * 
-     */
-    public X() {
-      super();
-    }
-
-    /**
-     * Creates a factory for points of given size.
-     * 
-     * @param size
-     *          the size of the points
-     */
-    public X(double size) {
-      super(size);
-    }
-
-    /**
-     * Creates a shape representing a point.
-     * 
-     * @param point
-     *          the location of the point
-     * @return a shape
-     */
-    public Shape createPoint(PointF point) {
-      Path path = new Path();
-      path.moveTo((float) (point.x), (float) (point.y - size * 1/8));
-      path.lineTo((float) (point.x + size * 2/8), (float) (point.y - size/2));
-      path.lineTo((float) (point.x + size/2), (float) (point.y - size/2));
-      path.lineTo((float) (point.x + size * 1/8), (float) (point.y));
-      path.lineTo((float) (point.x + size/2), (float) (point.y + size/2));
-      path.lineTo((float) (point.x + size * 2/8), (float) (point.y + size/2));
-      path.lineTo((float) (point.x), (float) (point.y + size * 1/8));
-      path.lineTo((float) (point.x - size * 2/8), (float) (point.y + size/2));
-      path.lineTo((float) (point.x - size/2), (float) (point.y + size/2));
-      path.lineTo((float) (point.x - size * 1/8), (float) (point.y));
-      path.lineTo((float) (point.x - size/2), (float) (point.y - size/2));
-      path.lineTo((float) (point.x - size * 2/8), (float) (point.y - size/2));
-      path.close();
-      return new PathShape(path);
-    }
-
-  }
 }

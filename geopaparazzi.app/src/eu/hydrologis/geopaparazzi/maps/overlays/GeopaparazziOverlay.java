@@ -28,6 +28,8 @@ import org.mapsforge.android.maps.overlay.OverlayItem;
 import org.mapsforge.android.maps.overlay.OverlayWay;
 import org.mapsforge.core.model.GeoPoint;
 
+import com.vividsolutions.jts.android.PointShapeFactory;
+import com.vividsolutions.jts.android.PointTransformation;
 import com.vividsolutions.jts.android.ShapeWriter;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -588,7 +590,9 @@ public abstract class GeopaparazziOverlay extends Overlay {
         double s = whPoint.getLatitude();
         double e = whPoint.getLongitude();
 
-        ShapeWriter wr = new ShapeWriter(new MapsforgePointTransformation(projection, drawPosition, drawZoomLevel));
+        PointTransformation pointTransformer = new MapsforgePointTransformation(projection, drawPosition, drawZoomLevel);
+//        PointShapeFactory pointShapeFactory = new PointShapeFactory.Circle(0.1);
+        ShapeWriter wr = new ShapeWriter(pointTransformer);
         wr.setRemoveDuplicatePoints(true);
         wr.setDecimation(0.001);
 
@@ -608,13 +612,13 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 // shape.fill(canvas, gpsGreenFill);
                 shape.draw(canvas, gpsTrackPaintYellow);
             }
-//            List<byte[]> placesWKB = db.getIntersectingTable("places", n, s, e, w);
-//            for( byte[] bs : placesWKB ) {
-//                Geometry readGeom = r.read(bs);
-//                Shape shape = wr.toShape(readGeom);
-//                shape.fill(canvas, gpsGreenFill);
-//                shape.draw(canvas, gpsOutline);
-//            }
+            List<byte[]> placesWKB = db.getIntersectingTable("places", n, s, e, w);
+            for( byte[] bs : placesWKB ) {
+                Geometry readGeom = r.read(bs);
+                Shape shape = wr.toShape(readGeom);
+                shape.fill(canvas, gpsGreenFill);
+                shape.draw(canvas, gpsOutline);
+            }
 
         } catch (Exception ex) {
             ex.printStackTrace();
