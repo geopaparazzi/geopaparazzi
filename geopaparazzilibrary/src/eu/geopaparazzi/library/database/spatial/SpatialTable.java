@@ -17,6 +17,7 @@
  */
 package eu.geopaparazzi.library.database.spatial;
 
+
 /**
  * A table from the spatial db.
  * 
@@ -30,4 +31,34 @@ public class SpatialTable {
     public String srid;
 
     public String[] columnNames = null;
+
+    private boolean checkDone = false;
+    private boolean isPolygon = false;
+    private boolean isLine = false;
+    private boolean isPoint = false;
+    public boolean isPolygon() {
+        checkType();
+        return isPolygon;
+    }
+    public boolean isLine() {
+        checkType();
+        return isLine;
+    }
+    public boolean isPoint() {
+        checkType();
+        return isPoint;
+    }
+
+    private void checkType() {
+        if (checkDone) {
+            return;
+        }
+        if (geomType.toUpperCase().endsWith("POLYGON")) {
+            isPolygon = true;
+        } else if (geomType.toUpperCase().endsWith("LINESTRING")) {
+            isLine = true;
+        } else if (geomType.toUpperCase().endsWith("POINT")) {
+            isPoint = true;
+        }
+    }
 }

@@ -47,7 +47,6 @@ import android.net.Uri;
 import com.vividsolutions.jts.android.PointTransformation;
 import com.vividsolutions.jts.android.ShapeWriter;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.WKBReader;
 
 import eu.geopaparazzi.library.database.spatial.GeometryIterator;
 import eu.geopaparazzi.library.database.spatial.SpatialDatabaseHandler;
@@ -333,6 +332,12 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
     @Override
     protected void drawOverlayBitmap( Canvas canvas, Point drawPosition, Projection projection, byte drawZoomLevel ) {
+
+        /*
+         * first spatialite layers, if any
+         */
+        drawFromSpatialite(canvas, drawPosition, projection, drawZoomLevel);
+
         /*
          * WAYS
          */
@@ -580,8 +585,11 @@ public abstract class GeopaparazziOverlay extends Overlay {
         crossPath.lineTo(center.x + 20, center.y);
         canvas.drawPath(crossPath, crossPaint);
 
+    }
+
+    private void drawFromSpatialite( Canvas canvas, Point drawPosition, Projection projection, byte drawZoomLevel ) {
         /* 
-         * try drawing a polygon from spatialite
+         * draw from spatialite
          */
         GeoPoint zeroPoint = projection.fromPixels(0, 0);
         GeoPoint whPoint = projection.fromPixels(canvas.getWidth(), canvas.getHeight());
@@ -605,7 +613,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     Style style4Table = spatialDatabaseHandler.getStyle4Table(spatialTable.name);
                     GeometryIterator geometryIterator = spatialDatabaseHandler.getGeometryIteratorInBounds("4326", spatialTable,
                             n, s, e, w);
-                    if (spatialTable.geomType.toUpperCase().endsWith("POLYGON")) {
+                    if (spatialTable.isPolygon()) {
                         Paint fill = spatialDatabaseHandler.getFillPaint4Style(style4Table);
                         Paint stroke = spatialDatabaseHandler.getStrokePaint4Style(style4Table);
                         while( geometryIterator.hasNext() ) {
@@ -614,14 +622,14 @@ public abstract class GeopaparazziOverlay extends Overlay {
                             shape.fill(canvas, fill);
                             shape.draw(canvas, stroke);
                         }
-                    } else if (spatialTable.geomType.toUpperCase().endsWith("LINESTRING")) {
+                    } else if (spatialTable.isLine()) {
                         Paint stroke = spatialDatabaseHandler.getStrokePaint4Style(style4Table);
                         while( geometryIterator.hasNext() ) {
                             Geometry geom = geometryIterator.next();
                             Shape shape = wr.toShape(geom);
                             shape.draw(canvas, stroke);
                         }
-                    } else if (spatialTable.geomType.toUpperCase().endsWith("POINT")) {
+                    } else if (spatialTable.isPoint()) {
                         Paint fill = spatialDatabaseHandler.getFillPaint4Style(style4Table);
                         Paint stroke = spatialDatabaseHandler.getStrokePaint4Style(style4Table);
                         while( geometryIterator.hasNext() ) {
@@ -631,54 +639,12 @@ public abstract class GeopaparazziOverlay extends Overlay {
                             shape.draw(canvas, stroke);
                         }
                     }
-
+                    geometryIterator.close();
                 }
             }
         } catch (Exception e1) {
             e1.printStackTrace();
         }
-
-        // WKBReader r = new WKBReader();
-        // try {
-        // List<byte[]> countriesWKB = db.getIntersectingTable("countries", n, s, e, w);
-        // for( byte[] bs : countriesWKB ) {
-        // Geometry readGeom = r.read(bs);
-        // Shape shape = wr.toShape(readGeom);
-        // shape.fill(canvas, gpsFill);
-        // shape.draw(canvas, gpsOutline);
-        // }
-        // List<byte[]> riversWKB = db.getIntersectingTable("rivers", n, s, e, w);
-        // for( byte[] bs : riversWKB ) {
-        // Geometry readGeom = r.read(bs);
-        // Shape shape = wr.toShape(readGeom);
-        // // shape.fill(canvas, gpsGreenFill);
-        // shape.draw(canvas, gpsTrackPaintYellow);
-        // }
-        // List<byte[]> placesWKB = db.getIntersectingTable("places", n, s, e, w);
-        // for( byte[] bs : placesWKB ) {
-        // Geometry readGeom = r.read(bs);
-        // Shape shape = wr.toShape(readGeom);
-        // shape.fill(canvas, gpsGreenFill);
-        // shape.draw(canvas, gpsOutline);
-        // }
-        //
-        // } catch (Exception ex) {
-        // ex.printStackTrace();
-        // }
-        // List<byte[]> bolzanoWKB = db.getIntersectingWKB(n, s, e, w);
-        // WKBReader r = new WKBReader();
-        // try {
-        // for( byte[] bs : bolzanoWKB ) {
-        // Geometry readGeom = r.read(bs);
-        // Shape shape = wr.toShape(readGeom);
-        // shape.fill(canvas, gpsFill);
-        // shape.draw(canvas, gpsOutline);
-        // }
-        //
-        // } catch (ParseException ex) {
-        // ex.printStackTrace();
-        // }
-
     }
     @Override
     protected String getThreadName() {
