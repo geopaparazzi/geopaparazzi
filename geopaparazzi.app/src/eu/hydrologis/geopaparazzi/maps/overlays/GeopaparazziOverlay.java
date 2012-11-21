@@ -28,14 +28,6 @@ import org.mapsforge.android.maps.overlay.OverlayItem;
 import org.mapsforge.android.maps.overlay.OverlayWay;
 import org.mapsforge.core.model.GeoPoint;
 
-import com.vividsolutions.jts.android.PointShapeFactory;
-import com.vividsolutions.jts.android.PointTransformation;
-import com.vividsolutions.jts.android.ShapeWriter;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.ParseException;
-import com.vividsolutions.jts.io.WKBReader;
-
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
@@ -49,7 +41,12 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import eu.geopaparazzi.library.database.DatabaseHandler;
+
+import com.vividsolutions.jts.android.PointTransformation;
+import com.vividsolutions.jts.android.ShapeWriter;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.WKBReader;
+
 import eu.geopaparazzi.library.forms.FormActivity;
 import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.util.LibraryConstants;

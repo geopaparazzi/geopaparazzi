@@ -25,10 +25,6 @@ import jsqlite.Database;
 import jsqlite.Exception;
 import jsqlite.Stmt;
 
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.io.WKBReader;
-import com.vividsolutions.jts.io.WKBWriter;
-
 /**
  * An utility class to handle the spatial database.
  * 
@@ -36,12 +32,27 @@ import com.vividsolutions.jts.io.WKBWriter;
  */
 public class SpatialDatabaseHandler {
     // 3857
-    private GeometryFactory gf = new GeometryFactory();
+    // private GeometryFactory gf = new GeometryFactory();
     // private WKBWriter wr = new WKBWriter();
+    // private WKBReader wkbReader = new WKBReader(gf);
 
-    private WKBReader wkbReader = new WKBReader(gf);
+    private static final String NAME = "name";
+    private static final String SIZE = "size";
+    private static final String FILLCOLOR = "fillcolor";
+    private static final String STROKECOLOR = "strokecolor";
+    private static final String FILLALPHA = "fillalpha";
+    private static final String STROKEALPHA = "strokealpha";
+    private static final String SHAPE = "shape";
+    private static final String WIDTH = "width";
+    private static final String TEXTSIZE = "textsize";
+    private static final String TEXTFIELD = "textfield";
+    private static final String ENABLED = "enabled";
+
+    private final String PROPERTIESTABLE = "dataproperties";
 
     private Database db;
+
+    private List<SpatialTable> tableList;
 
     public SpatialDatabaseHandler( String dbPath ) {
         try {
@@ -52,10 +63,82 @@ public class SpatialDatabaseHandler {
             db = new jsqlite.Database();
             db.open(spatialDbFile.getAbsolutePath(), jsqlite.Constants.SQLITE_OPEN_READWRITE
                     | jsqlite.Constants.SQLITE_OPEN_CREATE);
+
+            checkPropertiesTable();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+    private void checkPropertiesTable() throws Exception {
+        String checkTableQuery = "SELECT name FROM sqlite_master WHERE type='table' AND name='?';";
+        Stmt stmt = db.prepare(checkTableQuery);
+        stmt.bind(1, PROPERTIESTABLE);
+        boolean tableExists = false;
+        if (stmt.step()) {
+            String name = stmt.column_string(0);
+            if (name != null) {
+                tableExists = true;
+            }
+        }
+        if (!tableExists) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("CREATE TABLE ");
+            sb.append(PROPERTIESTABLE);
+            sb.append(" (");
+            sb.append(NAME).append(" TEXT, ");
+            sb.append(SIZE).append(" REAL, ");
+            sb.append(FILLCOLOR).append(" TEXT, ");
+            sb.append(STROKECOLOR).append(" TEXT, ");
+            sb.append(FILLALPHA).append(" INTEGER, ");
+            sb.append(STROKEALPHA).append(" INTEGER, ");
+            sb.append(SHAPE).append(" TEXT, ");
+            sb.append(WIDTH).append(" REAL, ");
+            sb.append(TEXTSIZE).append(" REAL, ");
+            sb.append(TEXTFIELD).append(" TEXT, ");
+            sb.append(ENABLED).append(" INTEGER");
+            sb.append(" );");
+            String query = sb.toString();
+            db.exec(query, null);
+
+            List<SpatialTable> spatialTables = getSpatialTables();
+            for( SpatialTable spatialTable : spatialTables ) {
+                StringBuilder sbIn = new StringBuilder();
+                sbIn.append("insert into ").append(PROPERTIESTABLE);
+                sbIn.append(" ( ");
+                sbIn.append(NAME).append(" , ");
+                sbIn.append(SIZE).append(" , ");
+                sbIn.append(FILLCOLOR).append(" , ");
+                sbIn.append(STROKECOLOR).append(" , ");
+                sbIn.append(FILLALPHA).append(" , ");
+                sbIn.append(STROKEALPHA).append(" , ");
+                sbIn.append(SHAPE).append(" , ");
+                sbIn.append(WIDTH).append(" , ");
+                sbIn.append(TEXTSIZE).append(" , ");
+                // sbIn.append(TEXTFIELD).append(" , ");
+                sbIn.append(ENABLED);
+                sbIn.append(" ) ");
+                sbIn.append(" values ");
+                sbIn.append(" ( ");
+                sbIn.append(spatialTable.name).append(" , ");
+                sbIn.append(3).append(" , ");
+                sbIn.append("'red'").append(" , ");
+                sbIn.append("'black'").append(" , ");
+                sbIn.append(0.5).append(" , ");
+                sbIn.append(1).append(" , ");
+                sbIn.append("'square'").append(" , ");
+                sbIn.append(2).append(" , ");
+                sbIn.append(5).append(" , ");
+                // sbIn.append("''").append(" , ");
+                sbIn.append(0);
+                sbIn.append(" );");
+
+                String insertQuery = sbIn.toString();
+                db.exec(insertQuery, null);
+            }
+        }
     }
 
     public void close() throws Exception {
@@ -95,18 +178,20 @@ public class SpatialDatabaseHandler {
      * @throws Exception
      */
     public List<SpatialTable> getSpatialTables() throws Exception {
-        List<SpatialTable> tableList = new ArrayList<SpatialTable>();
-        String query = "select f_table_name, f_geometry_column, type,srid from geometry_columns;";
-        Stmt stmt = db.prepare(query);
-        while( stmt.step() ) {
-            SpatialTable table = new SpatialTable();
-            table.name = stmt.column_string(0);
-            table.geomName = stmt.column_string(1);
-            table.geomType = stmt.column_string(2);
-            table.srid = String.valueOf(stmt.column_int(3));
-            tableList.add(table);
+        if (tableList == null) {
+            tableList = new ArrayList<SpatialTable>();
+            String query = "select f_table_name, f_geometry_column, type,srid from geometry_columns;";
+            Stmt stmt = db.prepare(query);
+            while( stmt.step() ) {
+                SpatialTable table = new SpatialTable();
+                table.name = stmt.column_string(0);
+                table.geomName = stmt.column_string(1);
+                table.geomType = stmt.column_string(2);
+                table.srid = String.valueOf(stmt.column_int(3));
+                tableList.add(table);
+            }
+            stmt.close();
         }
-        stmt.close();
         return tableList;
     }
 
