@@ -317,18 +317,16 @@ public class DatabaseHandler {
 
     public List<byte[]> getIntersectingTable( String tableName, double n, double s, double e, double w ) {
         List<byte[]> list = new ArrayList<byte[]>();
-        Coordinate ll = new Coordinate(w, s);
-        Coordinate ul = new Coordinate(w, n);
-        Coordinate ur = new Coordinate(e, n);
-        Coordinate lr = new Coordinate(e, s);
-        Polygon bboxPolygon = gf.createPolygon(new Coordinate[]{ll, ul, ur, lr, ll});
 
-        byte[] bbox = wr.write(bboxPolygon);
         String query = "SELECT ST_AsBinary(ST_Transform(Geometry, 4326)) from " + tableName
-                + " where ST_Intersects(ST_Transform(Geometry, 4326), ST_GeomFromWKB(?));";
+        /*                                       w, s, e, n */
+                + " where MBRIntersects(BuildMBR(?, ?, ?, ?), Geometry);";
         try {
             Stmt stmt = db.prepare(query);
-            stmt.bind(1, bbox);
+            stmt.bind(1, w);
+            stmt.bind(2, s);
+            stmt.bind(3, e);
+            stmt.bind(4, n);
             while( stmt.step() ) {
                 list.add(stmt.column_bytes(0));
             }
