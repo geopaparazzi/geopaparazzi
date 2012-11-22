@@ -412,10 +412,29 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 }
                 if (isInMeasureMode) {
                     mapView.setClickable(true);
-                    sliderDrawView.disableDraw();
+                    sliderDrawView.disableMeasureMode();
                 } else {
                     mapView.setClickable(false);
-                    sliderDrawView.enableDraw(mapView);
+                    sliderDrawView.enableMeasureMode(mapView);
+                }
+            }
+        });
+
+        final Button infoModeButton = (Button) findViewById(R.id.info);
+        infoModeButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                boolean isInInfoMode = !mapView.isClickable();
+                if (!isInInfoMode) {
+                    infoModeButton.setBackgroundResource(R.drawable.measuremode_on);
+                } else {
+                    infoModeButton.setBackgroundResource(R.drawable.measuremode);
+                }
+                if (isInInfoMode) {
+                    mapView.setClickable(true);
+                    sliderDrawView.disableInfo();
+                } else {
+                    mapView.setClickable(false);
+                    sliderDrawView.enableInfo(mapView);
                 }
             }
         });

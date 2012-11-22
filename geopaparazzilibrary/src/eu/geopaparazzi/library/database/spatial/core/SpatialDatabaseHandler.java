@@ -401,6 +401,46 @@ public class SpatialDatabaseHandler {
         }
     }
 
+    public void intersectionToString( String boundsSrid, SpatialTable spatialTable, double n, double s, double e, double w,
+            StringBuilder sb , String indentStr) throws Exception {
+        StringBuilder sbQ = new StringBuilder();
+        sbQ.append("SELECT ");
+        sbQ.append("*");
+        sbQ.append(" from ").append(spatialTable.name);
+        sbQ.append(" where ST_Intersects(BuildMBR(");
+        sbQ.append(w);
+        sbQ.append(", ");
+        sbQ.append(s);
+        sbQ.append(", ");
+        sbQ.append(e);
+        sbQ.append(", ");
+        sbQ.append(n);
+        sbQ.append(", ");
+        sbQ.append(boundsSrid);
+        sbQ.append("),");
+        sbQ.append(spatialTable.geomName);
+        sbQ.append(");");
+        String query = sbQ.toString();
+
+        Stmt stmt = db.prepare(query);
+        try {
+            while( stmt.step() ) {
+                int column_count = stmt.column_count();
+                for( int i = 0; i < column_count; i++ ) {
+                    String cName = stmt.column_name(i);
+                    if (cName.equals(spatialTable.geomName)) {
+                        continue;
+                    }
+
+                    String value = stmt.column_string(i);
+                    sb.append(indentStr).append(cName).append(": ").append(value).append("\n");
+                }
+            }
+        } finally {
+            stmt.close();
+        }
+    }
+
     // public String queryComuni() {
     // sb.append(SEP);
     // sb.append("Query Comuni...\n");
