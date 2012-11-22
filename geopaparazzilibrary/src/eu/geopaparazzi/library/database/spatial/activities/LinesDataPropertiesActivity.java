@@ -110,7 +110,7 @@ public class LinesDataPropertiesActivity extends Activity implements OnItemSelec
         } else if (callingView.equals(alphaSpinner)) {
             String alphaString = (String) alphaSpinner.getSelectedItem();
             float alpha100 = Float.parseFloat(alphaString);
-            spatialTable.style.width = alpha100 / 100f;
+            spatialTable.style.strokealpha = alpha100 / 100f;
         }
     }
 
