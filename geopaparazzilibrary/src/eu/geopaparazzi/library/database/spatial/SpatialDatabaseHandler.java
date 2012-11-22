@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import jsqlite.Callback;
 import jsqlite.Database;
 import jsqlite.Exception;
 import jsqlite.Stmt;
@@ -257,6 +258,32 @@ public class SpatialDatabaseHandler {
         }
         stmt.close();
         return style;
+    }
+
+    public void updateStyle( Style style ) throws Exception {
+        StringBuilder sbIn = new StringBuilder();
+        sbIn.append("update ").append(PROPERTIESTABLE);
+        sbIn.append(" set ");
+        // sbIn.append(NAME).append("='").append(style.name).append("' , ");
+        sbIn.append(SIZE).append("=").append(style.size).append(" , ");
+        sbIn.append(FILLCOLOR).append("='").append(style.fillcolor).append("' , ");
+        sbIn.append(STROKECOLOR).append("='").append(style.strokecolor).append("' , ");
+        sbIn.append(FILLALPHA).append("=").append(style.fillalpha).append(" , ");
+        sbIn.append(STROKEALPHA).append("=").append(style.strokealpha).append(" , ");
+        sbIn.append(SHAPE).append("='").append(style.shape).append("' , ");
+        sbIn.append(WIDTH).append("=").append(style.width).append(" , ");
+        sbIn.append(TEXTSIZE).append("=").append(style.textsize).append(" , ");
+        sbIn.append(TEXTFIELD).append("='").append(style.textfield).append("' , ");
+        sbIn.append(ENABLED).append("=").append(style.enabled).append(" , ");
+        sbIn.append(ORDER).append("=").append(style.order);
+        sbIn.append(" where ");
+        sbIn.append(NAME);
+        sbIn.append("='");
+        sbIn.append(style.name);
+        sbIn.append("';");
+
+        String insertQuery = sbIn.toString();
+        db.exec(insertQuery, null);
     }
 
     public Paint getFillPaint4Style( Style style ) {
