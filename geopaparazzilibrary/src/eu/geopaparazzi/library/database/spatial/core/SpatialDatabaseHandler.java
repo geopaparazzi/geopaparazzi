@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.library.database.spatial;
+package eu.geopaparazzi.library.database.spatial.core;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import jsqlite.Callback;
 import jsqlite.Database;
 import jsqlite.Exception;
 import jsqlite.Stmt;
@@ -282,8 +281,8 @@ public class SpatialDatabaseHandler {
         sbIn.append(style.name);
         sbIn.append("';");
 
-        String insertQuery = sbIn.toString();
-        db.exec(insertQuery, null);
+        String updateQuery = sbIn.toString();
+        db.exec(updateQuery, null);
     }
 
     public Paint getFillPaint4Style( Style style ) {

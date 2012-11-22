@@ -48,10 +48,11 @@ import com.vividsolutions.jts.android.PointTransformation;
 import com.vividsolutions.jts.android.ShapeWriter;
 import com.vividsolutions.jts.geom.Geometry;
 
-import eu.geopaparazzi.library.database.spatial.GeometryIterator;
-import eu.geopaparazzi.library.database.spatial.SpatialDatabaseHandler;
-import eu.geopaparazzi.library.database.spatial.SpatialTable;
-import eu.geopaparazzi.library.database.spatial.Style;
+import eu.geopaparazzi.library.database.spatial.SpatialDatabasesManager;
+import eu.geopaparazzi.library.database.spatial.core.GeometryIterator;
+import eu.geopaparazzi.library.database.spatial.core.SpatialDatabaseHandler;
+import eu.geopaparazzi.library.database.spatial.core.SpatialTable;
+import eu.geopaparazzi.library.database.spatial.core.Style;
 import eu.geopaparazzi.library.forms.FormActivity;
 import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.util.LibraryConstants;
@@ -61,7 +62,6 @@ import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
-import eu.hydrologis.geopaparazzi.database.SpatialDatabaseManager;
 import eu.hydrologis.geopaparazzi.maps.MapsActivity;
 import eu.hydrologis.geopaparazzi.util.Note;
 
@@ -605,7 +605,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
         wr.setDecimation(0.001);
 
         try {
-            List<SpatialDatabaseHandler> spatialDatabaseHandlers = SpatialDatabaseManager.getInstance()
+            List<SpatialDatabaseHandler> spatialDatabaseHandlers = SpatialDatabasesManager.getInstance()
                     .getSpatialDatabaseHandlers();
             for( SpatialDatabaseHandler spatialDatabaseHandler : spatialDatabaseHandlers ) {
                 List<SpatialTable> spatialTables = spatialDatabaseHandler.getSpatialTables(false);

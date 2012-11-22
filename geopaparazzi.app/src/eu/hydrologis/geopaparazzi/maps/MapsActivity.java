@@ -82,6 +82,8 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
+import eu.geopaparazzi.library.database.spatial.SpatialDatabasesManager;
+import eu.geopaparazzi.library.database.spatial.activities.DataListActivity;
 import eu.geopaparazzi.library.gps.GpsLocation;
 import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.gps.GpsManagerListener;
@@ -123,10 +125,12 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     private final int INSERTCOORD_RETURN_CODE = 666;
     private final int BOOKMARKS_RETURN_CODE = 667;
     private final int GPSDATAPROPERTIES_RETURN_CODE = 668;
+    private final int DATAPROPERTIES_RETURN_CODE = 671;
     public static final int FORMUPDATE_RETURN_CODE = 669;
     private final int CONTACT_RETURN_CODE = 670;
 
     private final int MENU_GPSDATA = 1;
+    private final int MENU_DATA = 2;
     private final int MENU_SCALE_ID = 4;
     private final int MENU_MIXARE_ID = 5;
     private final int GO_TO = 6;
@@ -715,6 +719,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     public boolean onCreateOptionsMenu( Menu menu ) {
         super.onCreateOptionsMenu(menu);
         menu.add(Menu.NONE, MENU_GPSDATA, 1, R.string.mainmenu_gpsdataselect).setIcon(android.R.drawable.ic_menu_compass);
+        menu.add(Menu.NONE, MENU_DATA, 2, "Data").setIcon(android.R.drawable.ic_menu_compass);
         menu.add(Menu.NONE, MENU_SCALE_ID, 3, R.string.mapsactivity_menu_toggle_scalebar).setIcon(R.drawable.ic_menu_scalebar);
         menu.add(Menu.NONE, MENU_COMPASS_ID, 4, R.string.mapsactivity_menu_toggle_compass).setIcon(
                 android.R.drawable.ic_menu_compass);
@@ -732,6 +737,10 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         case MENU_GPSDATA:
             Intent gpsDatalistIntent = new Intent(this, GpsDataListActivity.class);
             startActivityForResult(gpsDatalistIntent, GPSDATAPROPERTIES_RETURN_CODE);
+            return true;
+        case MENU_DATA:
+            Intent datalistIntent = new Intent(this, DataListActivity.class);
+            startActivityForResult(datalistIntent, DATAPROPERTIES_RETURN_CODE);
             return true;
 
         case MENU_SCALE_ID:
@@ -993,6 +1002,17 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0d);
                 double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0d);
                 setCenterAndZoomForMapWindowFocus(lon, lat, null);
+            }
+            break;
+        }
+        case (DATAPROPERTIES_RETURN_CODE): {
+            if (resultCode == Activity.RESULT_OK) {
+                try {
+                    // re-read
+                    SpatialDatabasesManager.getInstance().getSpatialTables(true);
+                } catch (jsqlite.Exception e) {
+                    e.printStackTrace();
+                }
             }
             break;
         }

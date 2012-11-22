@@ -96,9 +96,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".maps.MapDataListActivity" >
+        <activity android:name="eu.geopaparazzi.library.database.spatial.activities.DataListActivity" >
             <intent-filter>
-                <action android:name="eu.hydrologis.geopaparazzi.maps.MAPSDATALIST" />
+                <action android:name="eu.geopaparazzi.library.database.spatial.activities.DataListActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

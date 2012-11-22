@@ -15,16 +15,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi.database;
+package eu.geopaparazzi.library.database.spatial;
 
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import jsqlite.Exception;
 
-import eu.geopaparazzi.library.database.spatial.SpatialDatabaseHandler;
+import eu.geopaparazzi.library.database.spatial.core.OrderComparator;
+import eu.geopaparazzi.library.database.spatial.core.SpatialDatabaseHandler;
+import eu.geopaparazzi.library.database.spatial.core.SpatialTable;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import android.content.Context;
 
@@ -33,18 +39,18 @@ import android.content.Context;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class SpatialDatabaseManager {
+public class SpatialDatabasesManager {
 
     private List<SpatialDatabaseHandler> sdbHandlers = new ArrayList<SpatialDatabaseHandler>();
+    private HashMap<SpatialTable, SpatialDatabaseHandler> tablesMap = new HashMap<SpatialTable, SpatialDatabaseHandler>();
 
-    private static SpatialDatabaseManager spatialDbManager = null;
-
-    private SpatialDatabaseManager() {
+    private static SpatialDatabasesManager spatialDbManager = null;
+    private SpatialDatabasesManager() {
     }
 
-    public static SpatialDatabaseManager getInstance() {
+    public static SpatialDatabasesManager getInstance() {
         if (spatialDbManager == null) {
-            spatialDbManager = new SpatialDatabaseManager();
+            spatialDbManager = new SpatialDatabasesManager();
         }
         return spatialDbManager;
     }
@@ -65,6 +71,33 @@ public class SpatialDatabaseManager {
 
     public List<SpatialDatabaseHandler> getSpatialDatabaseHandlers() {
         return sdbHandlers;
+    }
+
+    public List<SpatialTable> getSpatialTables( boolean forceRead ) throws Exception {
+        List<SpatialTable> tables = new ArrayList<SpatialTable>();
+        for( SpatialDatabaseHandler sdbHandler : sdbHandlers ) {
+            List<SpatialTable> spatialTables = sdbHandler.getSpatialTables(forceRead);
+            for( SpatialTable spatialTable : spatialTables ) {
+                tables.add(spatialTable);
+                tablesMap.put(spatialTable, sdbHandler);
+            }
+        }
+
+        Collections.sort(tables, new OrderComparator());
+        // set proper order index across tables
+        for( int i = 0; i < tables.size(); i++ ) {
+            tables.get(i).style.order = i;
+        }
+        return tables;
+    }
+
+    public void updateStyles() throws Exception {
+        Set<Entry<SpatialTable, SpatialDatabaseHandler>> entrySet = tablesMap.entrySet();
+        for( Entry<SpatialTable, SpatialDatabaseHandler> entry : entrySet ) {
+            SpatialTable key = entry.getKey();
+            SpatialDatabaseHandler value = entry.getValue();
+            value.updateStyle(key.style);
+        }
     }
 
     public void closeDatabases() throws Exception {

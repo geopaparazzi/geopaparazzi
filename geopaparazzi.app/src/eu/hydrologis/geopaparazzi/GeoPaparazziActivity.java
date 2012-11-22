@@ -52,6 +52,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SlidingDrawer;
 import android.widget.Toast;
+import eu.geopaparazzi.library.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.library.gps.GpsLocation;
 import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.sensors.SensorsManager;
@@ -75,7 +76,6 @@ import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.DatabaseManager;
 import eu.hydrologis.geopaparazzi.database.NoteType;
-import eu.hydrologis.geopaparazzi.database.SpatialDatabaseManager;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
 import eu.hydrologis.geopaparazzi.maps.LogMapItem;
 import eu.hydrologis.geopaparazzi.maps.MapsActivity;
@@ -392,7 +392,7 @@ public class GeoPaparazziActivity extends Activity {
             DatabaseManager.getInstance().getDatabase(this);
             checkMapsAndLogsVisibility();
 
-            SpatialDatabaseManager.getInstance().init(this);
+            SpatialDatabasesManager.getInstance().init(this);
         } catch (IOException e) {
             Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
@@ -754,7 +754,7 @@ public class GeoPaparazziActivity extends Activity {
         resourcesManager = null;
         
         try {
-            SpatialDatabaseManager.getInstance().closeDatabases();
+            SpatialDatabasesManager.getInstance().closeDatabases();
         } catch (Exception e) {
             e.printStackTrace();
         }
