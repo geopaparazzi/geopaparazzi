@@ -616,30 +616,36 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     Style style4Table = spatialTable.style;
                     GeometryIterator geometryIterator = spatialDatabaseHandler.getGeometryIteratorInBounds("4326", spatialTable,
                             n, s, e, w);
+                    Paint fill = null;
+                    Paint stroke = null;
+                    if (style4Table.fillcolor != null && style4Table.fillcolor.trim().length() > 0)
+                        fill = spatialDatabaseHandler.getFillPaint4Style(style4Table);
+                    if (style4Table.strokecolor != null && style4Table.strokecolor.trim().length() > 0)
+                        stroke = spatialDatabaseHandler.getStrokePaint4Style(style4Table);
                     if (spatialTable.isPolygon()) {
-                        Paint fill = spatialDatabaseHandler.getFillPaint4Style(style4Table);
-                        Paint stroke = spatialDatabaseHandler.getStrokePaint4Style(style4Table);
                         while( geometryIterator.hasNext() ) {
                             Geometry geom = geometryIterator.next();
                             Shape shape = wr.toShape(geom);
-                            shape.fill(canvas, fill);
-                            shape.draw(canvas, stroke);
+                            if (fill != null)
+                                shape.fill(canvas, fill);
+                            if (stroke != null)
+                                shape.draw(canvas, stroke);
                         }
                     } else if (spatialTable.isLine()) {
-                        Paint stroke = spatialDatabaseHandler.getStrokePaint4Style(style4Table);
                         while( geometryIterator.hasNext() ) {
                             Geometry geom = geometryIterator.next();
                             Shape shape = wr.toShape(geom);
-                            shape.draw(canvas, stroke);
+                            if (stroke != null)
+                                shape.draw(canvas, stroke);
                         }
                     } else if (spatialTable.isPoint()) {
-                        Paint fill = spatialDatabaseHandler.getFillPaint4Style(style4Table);
-                        Paint stroke = spatialDatabaseHandler.getStrokePaint4Style(style4Table);
                         while( geometryIterator.hasNext() ) {
                             Geometry geom = geometryIterator.next();
                             Shape shape = wr.toShape(geom);
-                            shape.fill(canvas, fill);
-                            shape.draw(canvas, stroke);
+                            if (fill != null)
+                                shape.fill(canvas, fill);
+                            if (stroke != null)
+                                shape.draw(canvas, stroke);
                         }
                     }
                     geometryIterator.close();
