@@ -62,8 +62,6 @@ public class DataListActivity extends ListActivity {
         super.onCreate(icicle);
 
         setContentView(R.layout.data_list);
-
-        refreshList(true);
     }
 
     @Override
@@ -195,7 +193,11 @@ public class DataListActivity extends ListActivity {
     @Override
     protected void onPause() {
         try {
-            SpatialDatabasesManager.getInstance().updateStyles();
+            for( int i = 0; i < spatialTables.size(); i++ ) {
+                SpatialTable spatialTable = spatialTables.get(i);
+                SpatialDatabasesManager.getInstance().updateStyle(spatialTable);
+            }
+            SpatialDatabasesManager.getInstance().getSpatialTables(true);
         } catch (Exception e) {
             Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();

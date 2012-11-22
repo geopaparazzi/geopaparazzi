@@ -81,31 +81,40 @@ public class SpatialDatabaseHandler {
     }
 
     public String getSpatialiteVersion() throws Exception {
-        Stmt stmt01 = db.prepare("SELECT spatialite_version();");
-        if (stmt01.step()) {
-            String value = stmt01.column_string(0);
-            stmt01.close();
-            return value;
+        Stmt stmt = db.prepare("SELECT spatialite_version();");
+        try {
+            if (stmt.step()) {
+                String value = stmt.column_string(0);
+                return value;
+            }
+        } finally {
+            stmt.close();
         }
         return "-";
     }
 
     public String getProj4Version() throws Exception {
         Stmt stmt = db.prepare("SELECT proj4_version();");
-        if (stmt.step()) {
-            String value = stmt.column_string(0);
+        try {
+            if (stmt.step()) {
+                String value = stmt.column_string(0);
+                return value;
+            }
+        } finally {
             stmt.close();
-            return value;
         }
         return "-";
     }
 
     public String getGeosVersion() throws Exception {
         Stmt stmt = db.prepare("SELECT geos_version();");
-        if (stmt.step()) {
-            String value = stmt.column_string(0);
+        try {
+            if (stmt.step()) {
+                String value = stmt.column_string(0);
+                return value;
+            }
+        } finally {
             stmt.close();
-            return value;
         }
         return "-";
     }
@@ -121,15 +130,18 @@ public class SpatialDatabaseHandler {
             tableList = new ArrayList<SpatialTable>();
             String query = "select f_table_name, f_geometry_column, type,srid from geometry_columns;";
             Stmt stmt = db.prepare(query);
-            while( stmt.step() ) {
-                SpatialTable table = new SpatialTable();
-                table.name = stmt.column_string(0);
-                table.geomName = stmt.column_string(1);
-                table.geomType = stmt.column_string(2);
-                table.srid = String.valueOf(stmt.column_int(3));
-                tableList.add(table);
+            try {
+                while( stmt.step() ) {
+                    SpatialTable table = new SpatialTable();
+                    table.name = stmt.column_string(0);
+                    table.geomName = stmt.column_string(1);
+                    table.geomType = stmt.column_string(2);
+                    table.srid = String.valueOf(stmt.column_int(3));
+                    tableList.add(table);
+                }
+            } finally {
+                stmt.close();
             }
-            stmt.close();
 
             // now read styles
             checkPropertiesTable();
@@ -154,18 +166,21 @@ public class SpatialDatabaseHandler {
         String checkTableQuery = "SELECT name FROM sqlite_master WHERE type='table' AND name='" + PROPERTIESTABLE + "';";
         Stmt stmt = db.prepare(checkTableQuery);
         boolean tableExists = false;
-        if (stmt.step()) {
-            String name = stmt.column_string(0);
-            if (name != null) {
-                tableExists = true;
+        try {
+            if (stmt.step()) {
+                String name = stmt.column_string(0);
+                if (name != null) {
+                    tableExists = true;
+                }
             }
+        } finally {
             stmt.close();
         }
         // FIXME to be removed
-        if (tableExists) {
-            db.exec("drop table " + PROPERTIESTABLE + ";", null);
-            tableExists = false;
-        }
+        // if (tableExists) {
+        // db.exec("drop table " + PROPERTIESTABLE + ";", null);
+        // tableExists = false;
+        // }
 
         if (!tableExists) {
             StringBuilder sb = new StringBuilder();
@@ -242,20 +257,23 @@ public class SpatialDatabaseHandler {
 
         String selectQuery = sbSel.toString();
         Stmt stmt = db.prepare(selectQuery);
-        if (stmt.step()) {
-            style.size = (float) stmt.column_double(0);
-            style.fillcolor = stmt.column_string(1);
-            style.strokecolor = stmt.column_string(2);
-            style.fillalpha = (float) stmt.column_double(3);
-            style.strokealpha = (float) stmt.column_double(4);
-            style.shape = stmt.column_string(5);
-            style.width = (float) stmt.column_double(6);
-            style.textsize = (float) stmt.column_double(7);
-            style.textfield = stmt.column_string(8);
-            style.enabled = stmt.column_int(9);
-            style.order = stmt.column_int(10);
+        try {
+            if (stmt.step()) {
+                style.size = (float) stmt.column_double(0);
+                style.fillcolor = stmt.column_string(1);
+                style.strokecolor = stmt.column_string(2);
+                style.fillalpha = (float) stmt.column_double(3);
+                style.strokealpha = (float) stmt.column_double(4);
+                style.shape = stmt.column_string(5);
+                style.width = (float) stmt.column_double(6);
+                style.textsize = (float) stmt.column_double(7);
+                style.textfield = stmt.column_string(8);
+                style.enabled = stmt.column_int(9);
+                style.order = stmt.column_int(10);
+            }
+        } finally {
+            stmt.close();
         }
-        stmt.close();
         return style;
     }
 
@@ -320,10 +338,13 @@ public class SpatialDatabaseHandler {
         String query = makeBoundaryQuery(destSrid, table, n, s, e, w);
         try {
             Stmt stmt = db.prepare(query);
-            while( stmt.step() ) {
-                list.add(stmt.column_bytes(0));
+            try {
+                while( stmt.step() ) {
+                    list.add(stmt.column_bytes(0));
+                }
+            } finally {
+                stmt.close();
             }
-            stmt.close();
             return list;
         } catch (Exception ex) {
             ex.printStackTrace();

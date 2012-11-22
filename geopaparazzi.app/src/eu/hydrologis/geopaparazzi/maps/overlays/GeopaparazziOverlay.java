@@ -610,6 +610,9 @@ public abstract class GeopaparazziOverlay extends Overlay {
             for( SpatialDatabaseHandler spatialDatabaseHandler : spatialDatabaseHandlers ) {
                 List<SpatialTable> spatialTables = spatialDatabaseHandler.getSpatialTables(false);
                 for( SpatialTable spatialTable : spatialTables ) {
+                    if (spatialTable.style.enabled == 0) {
+                        continue;
+                    }
                     Style style4Table = spatialTable.style;
                     GeometryIterator geometryIterator = spatialDatabaseHandler.getGeometryIteratorInBounds("4326", spatialTable,
                             n, s, e, w);

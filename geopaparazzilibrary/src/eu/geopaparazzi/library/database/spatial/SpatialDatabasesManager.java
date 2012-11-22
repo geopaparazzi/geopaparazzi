@@ -100,6 +100,13 @@ public class SpatialDatabasesManager {
         }
     }
 
+    public void updateStyle( SpatialTable spatialTable ) throws Exception {
+        SpatialDatabaseHandler spatialDatabaseHandler = tablesMap.get(spatialTable);
+        if (spatialDatabaseHandler != null) {
+            spatialDatabaseHandler.updateStyle(spatialTable.style);
+        }
+    }
+
     public void closeDatabases() throws Exception {
         for( SpatialDatabaseHandler sdbHandler : sdbHandlers ) {
             sdbHandler.close();
