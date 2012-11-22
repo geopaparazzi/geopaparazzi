@@ -11,6 +11,7 @@ import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.Projection;
 import org.mapsforge.core.model.GeoPoint;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -20,6 +21,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
@@ -112,7 +114,7 @@ public class SliderDrawView extends View {
                 Projection pj = mapView.getProjection();
                 float x = event.getX();
                 float y = event.getY();
-                int delta = 5;
+                int delta = 10;
                 GeoPoint ul = pj.fromPixels(round(x - delta), round(y - delta));
                 GeoPoint lr = pj.fromPixels(round(x + delta), round(y + delta));
                 double n = ul.getLatitude();
@@ -196,33 +198,65 @@ public class SliderDrawView extends View {
         return true;
     }
 
-    private void infoDialog( double n, double w, double s, double e ) {
+    private void infoDialog( final double n, final double w, final double s, final double e ) {
         try {
-            SpatialDatabasesManager sdbManager = SpatialDatabasesManager.getInstance();
-            List<SpatialTable> spatialTables = sdbManager.getSpatialTables(false);
-            StringBuilder sb = new StringBuilder();
-            for( SpatialTable spatialTable : spatialTables ) {
-                if (spatialTable.style.enabled == 0) {
-                    continue;
-                }
-                StringBuilder sbTmp = new StringBuilder();
-                sdbManager.intersectionToString("4326", spatialTable, n, s, e, w, sbTmp, "\t");
-                sb.append(spatialTable.name).append("\n");
-                sb.append(sbTmp);
-                sb.append("\n----------------------\n");
-            }
+            final SpatialDatabasesManager sdbManager = SpatialDatabasesManager.getInstance();
+            final List<SpatialTable> spatialTables = sdbManager.getSpatialTables(false);
 
-            Utilities.messageDialog(getContext(), sb.toString(), null);
+            final Context context = getContext();
+            final ProgressDialog importDialog = new ProgressDialog(context);
+            importDialog.setCancelable(true);
+            importDialog.setTitle("INFO");
+            importDialog.setMessage("Extracting information...");
+            importDialog.setCancelable(true);
+            importDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            importDialog.setProgress(0);
+            importDialog.setMax(spatialTables.size());
+            importDialog.show();
+
+            new AsyncTask<String, Void, String>(){
+
+                protected String doInBackground( String... params ) {
+                    try {
+                        StringBuilder sb = new StringBuilder();
+                        for( SpatialTable spatialTable : spatialTables ) {
+                            if (spatialTable.style.enabled == 0) {
+                                continue;
+                            }
+                            StringBuilder sbTmp = new StringBuilder();
+                            sdbManager.intersectionToString("4326", spatialTable, n, s, e, w, sbTmp, "\t");
+                            sb.append(spatialTable.name).append("\n");
+                            sb.append(sbTmp);
+                            sb.append("\n----------------------\n");
+
+                            onProgressUpdate(0);
+                        }
+                        return sb.toString();
+                    } catch (Exception e) {
+                        return "ERROR: " + e.getLocalizedMessage();
+                    }
+
+                }
+
+                protected void onProgressUpdate( Integer... progress ) { // on UI thread!
+                    importDialog.incrementProgressBy(1);
+                }
+
+                protected void onPostExecute( String response ) { // on UI thread!
+                    importDialog.dismiss();
+                    if (response.startsWith("ERROR")) {
+                        Utilities.messageDialog(context, response, null);
+                    } else {
+                        Utilities.messageDialog(context, response, null);
+                    }
+                }
+
+            }.execute((String) null);
 
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        
-        
-    
-    
     }
-
     public void disableMeasureMode() {
         doMeasureMode = false;
         this.mapView = null;

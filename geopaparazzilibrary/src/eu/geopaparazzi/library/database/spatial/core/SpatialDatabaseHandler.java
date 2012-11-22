@@ -402,12 +402,20 @@ public class SpatialDatabaseHandler {
     }
 
     public void intersectionToString( String boundsSrid, SpatialTable spatialTable, double n, double s, double e, double w,
-            StringBuilder sb , String indentStr) throws Exception {
+            StringBuilder sb, String indentStr ) throws Exception {
+        boolean doTransform = false;
+        if (!spatialTable.srid.equals(boundsSrid)) {
+            doTransform = true;
+        }
+
         StringBuilder sbQ = new StringBuilder();
         sbQ.append("SELECT ");
         sbQ.append("*");
         sbQ.append(" from ").append(spatialTable.name);
-        sbQ.append(" where ST_Intersects(BuildMBR(");
+        sbQ.append(" where ST_Intersects(");
+        if (doTransform)
+            sbQ.append("ST_Transform(");
+        sbQ.append("BuildMBR(");
         sbQ.append(w);
         sbQ.append(", ");
         sbQ.append(s);
@@ -415,9 +423,15 @@ public class SpatialDatabaseHandler {
         sbQ.append(e);
         sbQ.append(", ");
         sbQ.append(n);
-        sbQ.append(", ");
-        sbQ.append(boundsSrid);
+        if (doTransform) {
+            sbQ.append(", ");
+            sbQ.append(boundsSrid);
+        }
         sbQ.append("),");
+        if (doTransform) {
+            sbQ.append(spatialTable.srid);
+            sbQ.append("),");
+        }
         sbQ.append(spatialTable.geomName);
         sbQ.append(");");
         String query = sbQ.toString();
