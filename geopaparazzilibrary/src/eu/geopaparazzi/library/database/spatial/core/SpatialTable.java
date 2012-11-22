@@ -24,10 +24,10 @@ package eu.geopaparazzi.library.database.spatial.core;
  */
 public class SpatialTable {
 
-    public String name;
-    public String geomName;
-    public String geomType;
-    public String srid;
+    public final String name;
+    public final String geomName;
+    public final String geomType;
+    public final String srid;
     public Style style;
 
     private boolean checkDone = false;
@@ -35,16 +35,21 @@ public class SpatialTable {
     private boolean isLine = false;
     private boolean isPoint = false;
 
-    public boolean isPolygon() {
+    public SpatialTable( String name, String geomName, String geomType, String srid ) {
+        this.name = name;
+        this.geomName = geomName;
+        this.geomType = geomType;
+        this.srid = srid;
         checkType();
+    }
+
+    public boolean isPolygon() {
         return isPolygon;
     }
     public boolean isLine() {
-        checkType();
         return isLine;
     }
     public boolean isPoint() {
-        checkType();
         return isPoint;
     }
 
@@ -52,14 +57,16 @@ public class SpatialTable {
         if (checkDone) {
             return;
         }
-        if (geomType.toUpperCase().endsWith("POLYGON")) {
+        if (geomType.toUpperCase().contains("POLYGON")) {
             isPolygon = true;
-        } else if (geomType.toUpperCase().endsWith("LINESTRING")) {
+        } else if (geomType.toUpperCase().contains("LINESTRING")) {
             isLine = true;
-        } else if (geomType.toUpperCase().endsWith("POINT")) {
+        } else if (geomType.toUpperCase().contains("POINT")) {
             isPoint = true;
         }
+        checkDone = true;
     }
+    
     public void makeDefaultStyle() {
         style = new Style();
         style.name = name;

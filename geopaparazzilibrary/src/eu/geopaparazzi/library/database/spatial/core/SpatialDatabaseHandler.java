@@ -132,11 +132,11 @@ public class SpatialDatabaseHandler {
             Stmt stmt = db.prepare(query);
             try {
                 while( stmt.step() ) {
-                    SpatialTable table = new SpatialTable();
-                    table.name = stmt.column_string(0);
-                    table.geomName = stmt.column_string(1);
-                    table.geomType = stmt.column_string(2);
-                    table.srid = String.valueOf(stmt.column_int(3));
+                    String name = stmt.column_string(0);
+                    String geomName = stmt.column_string(1);
+                    String geomType = stmt.column_string(2);
+                    String srid = String.valueOf(stmt.column_int(3));
+                    SpatialTable table = new SpatialTable(name, geomName, geomType, srid);
                     tableList.add(table);
                 }
             } finally {

@@ -19,7 +19,7 @@
     <uses-permission android:name="android.permission.BATTERY_STATS" />
     <!--
     only for testing purposes 
-	<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"></uses-permission>
+	<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"></uses-permission>
     -->
 
     <uses-feature
@@ -89,9 +89,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".maps.MapDataPropertiesActivity" >
+        <activity android:name="eu.geopaparazzi.library.database.spatial.activities.LinesDataPropertiesActivity" >
             <intent-filter>
-                <action android:name="eu.hydrologis.geopaparazzi.maps.MAPDATAPROPERTIES" />
+                <action android:name="eu.geopaparazzi.library.database.spatial.activities.LinesDataPropertiesActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

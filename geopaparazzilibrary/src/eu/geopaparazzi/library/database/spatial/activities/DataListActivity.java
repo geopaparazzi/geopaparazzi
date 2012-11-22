@@ -110,9 +110,13 @@ public class DataListActivity extends ListActivity {
 
     @Override
     protected void onListItemClick( ListView parent, View v, int position, long id ) {
-        // Intent intent = new Intent(this, DataPropertiesActivity.class);
-        // intent.putExtra(Constants.PREFS_KEY_GPSLOG4PROPERTIES, gpslogItems[position]);
-        // startActivityForResult(intent, GPSDATAPROPERTIES_RETURN_CODE);
+        final SpatialTable spTable = spatialTables.get(position);
+
+        if (spTable.isLine()) {
+            Intent intent = new Intent(this, LinesDataPropertiesActivity.class);
+            intent.putExtra(LibraryConstants.PREFS_KEY_TEXT, spTable.name);
+            startActivityForResult(intent, DATAPROPERTIES_RETURN_CODE);
+        }
     }
 
     protected void onActivityResult( int requestCode, int resultCode, Intent data ) {

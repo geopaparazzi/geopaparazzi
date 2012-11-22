@@ -107,6 +107,16 @@ public class SpatialDatabasesManager {
         }
     }
 
+    public SpatialTable getTableByName( String table ) throws Exception {
+        List<SpatialTable> spatialTables = getSpatialTables(false);
+        for( SpatialTable spatialTable : spatialTables ) {
+            if (spatialTable.name.equals(table)) {
+                return spatialTable;
+            }
+        }
+        return null;
+    }
+
     public void closeDatabases() throws Exception {
         for( SpatialDatabaseHandler sdbHandler : sdbHandlers ) {
             sdbHandler.close();
