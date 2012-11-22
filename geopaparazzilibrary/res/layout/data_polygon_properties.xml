@@ -94,9 +94,56 @@
         android:id="@+id/alpha_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/width_spinner"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/width_spinner"
-        android:layout_toRightOf="@+id/textView3"
+        android:entries="@array/array_percentage"
+        android:padding="5dp" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView3"
+        android:gravity="center_vertical"
+        android:padding="5dp"
+        android:text="Fill color"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/main_text_color_neutral" />
+
+    <Spinner
+        android:id="@+id/fill_color_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/textView4"
+        android:layout_alignLeft="@+id/alpha_spinner"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/textView3"
+        android:entries="@array/array_colornames"
+        android:padding="5dp" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/fill_alpha_spinner"
+        android:layout_alignParentLeft="true"
+        android:layout_alignRight="@+id/textView4"
+        android:layout_below="@+id/textView4"
+        android:gravity="center_vertical"
+        android:padding="5dp"
+        android:text="Fill alpha"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/main_text_color_neutral" />
+
+    <Spinner
+        android:id="@+id/fill_alpha_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/fill_color_spinner"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/fill_color_spinner"
         android:entries="@array/array_percentage"
         android:padding="5dp" />
 

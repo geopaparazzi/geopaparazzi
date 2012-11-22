@@ -112,11 +112,14 @@ public class DataListActivity extends ListActivity {
     protected void onListItemClick( ListView parent, View v, int position, long id ) {
         final SpatialTable spTable = spatialTables.get(position);
 
+        Intent intent = null;
         if (spTable.isLine()) {
-            Intent intent = new Intent(this, LinesDataPropertiesActivity.class);
-            intent.putExtra(LibraryConstants.PREFS_KEY_TEXT, spTable.name);
-            startActivityForResult(intent, DATAPROPERTIES_RETURN_CODE);
+            intent = new Intent(this, LinesDataPropertiesActivity.class);
+        } else if (spTable.isPolygon()) {
+            intent = new Intent(this, PolygonsDataPropertiesActivity.class);
         }
+        intent.putExtra(LibraryConstants.PREFS_KEY_TEXT, spTable.name);
+        startActivityForResult(intent, DATAPROPERTIES_RETURN_CODE);
     }
 
     protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
