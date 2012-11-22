@@ -608,9 +608,9 @@ public abstract class GeopaparazziOverlay extends Overlay {
             List<SpatialDatabaseHandler> spatialDatabaseHandlers = SpatialDatabaseManager.getInstance()
                     .getSpatialDatabaseHandlers();
             for( SpatialDatabaseHandler spatialDatabaseHandler : spatialDatabaseHandlers ) {
-                List<SpatialTable> spatialTables = spatialDatabaseHandler.getSpatialTables();
+                List<SpatialTable> spatialTables = spatialDatabaseHandler.getSpatialTables(false);
                 for( SpatialTable spatialTable : spatialTables ) {
-                    Style style4Table = spatialDatabaseHandler.getStyle4Table(spatialTable.name);
+                    Style style4Table = spatialTable.style;
                     GeometryIterator geometryIterator = spatialDatabaseHandler.getGeometryIteratorInBounds("4326", spatialTable,
                             n, s, e, w);
                     if (spatialTable.isPolygon()) {

@@ -12,6 +12,7 @@ public class Style {
     public float textsize = 5f;
     public String textfield = "";
     public int enabled = 0;
+    public int order = 0;
 
     public String insertValuesString() {
         StringBuilder sb = new StringBuilder();
@@ -37,6 +38,8 @@ public class Style {
         sb.append(textfield);
         sb.append("', ");
         sb.append(enabled);
+        sb.append(", ");
+        sb.append(order);
         return sb.toString();
     }
 

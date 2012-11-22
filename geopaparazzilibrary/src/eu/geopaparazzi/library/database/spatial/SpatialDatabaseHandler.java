@@ -18,17 +18,18 @@
 package eu.geopaparazzi.library.database.spatial;
 
 import java.io.File;
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-
-import android.graphics.Color;
-import android.graphics.Paint;
 
 import jsqlite.Database;
 import jsqlite.Exception;
 import jsqlite.Stmt;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Paint.Cap;
+import android.graphics.Paint.Join;
 
 /**
  * An utility class to handle the spatial database.
@@ -52,6 +53,7 @@ public class SpatialDatabaseHandler {
     private static final String TEXTSIZE = "textsize";
     private static final String TEXTFIELD = "textfield";
     private static final String ENABLED = "enabled";
+    private static final String ORDER = "layerorder";
 
     private final String PROPERTIESTABLE = "dataproperties";
 
@@ -72,148 +74,10 @@ public class SpatialDatabaseHandler {
             db.open(spatialDbFile.getAbsolutePath(), jsqlite.Constants.SQLITE_OPEN_READWRITE
                     | jsqlite.Constants.SQLITE_OPEN_CREATE);
 
-            checkPropertiesTable();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-    }
-
-    private void checkPropertiesTable() throws Exception {
-        String checkTableQuery = "SELECT name FROM sqlite_master WHERE type='table' AND name='" + PROPERTIESTABLE + "';";
-        Stmt stmt = db.prepare(checkTableQuery);
-        boolean tableExists = false;
-        if (stmt.step()) {
-            String name = stmt.column_string(0);
-            if (name != null) {
-                tableExists = true;
-            }
-            stmt.close();
-        }
-        if (tableExists) {
-            db.exec("drop table " + PROPERTIESTABLE + ";", null);
-            tableExists = false;
-        }
-
-        if (!tableExists) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("CREATE TABLE ");
-            sb.append(PROPERTIESTABLE);
-            sb.append(" (");
-            sb.append(NAME).append(" TEXT, ");
-            sb.append(SIZE).append(" REAL, ");
-            sb.append(FILLCOLOR).append(" TEXT, ");
-            sb.append(STROKECOLOR).append(" TEXT, ");
-            sb.append(FILLALPHA).append(" REAL, ");
-            sb.append(STROKEALPHA).append(" REAL, ");
-            sb.append(SHAPE).append(" TEXT, ");
-            sb.append(WIDTH).append(" REAL, ");
-            sb.append(TEXTSIZE).append(" REAL, ");
-            sb.append(TEXTFIELD).append(" TEXT, ");
-            sb.append(ENABLED).append(" INTEGER");
-            sb.append(" );");
-            String query = sb.toString();
-            db.exec(query, null);
-
-            List<SpatialTable> spatialTables = getSpatialTables();
-            for( SpatialTable spatialTable : spatialTables ) {
-                StringBuilder sbIn = new StringBuilder();
-                sbIn.append("insert into ").append(PROPERTIESTABLE);
-                sbIn.append(" ( ");
-                sbIn.append(NAME).append(" , ");
-                sbIn.append(SIZE).append(" , ");
-                sbIn.append(FILLCOLOR).append(" , ");
-                sbIn.append(STROKECOLOR).append(" , ");
-                sbIn.append(FILLALPHA).append(" , ");
-                sbIn.append(STROKEALPHA).append(" , ");
-                sbIn.append(SHAPE).append(" , ");
-                sbIn.append(WIDTH).append(" , ");
-                sbIn.append(TEXTSIZE).append(" , ");
-                sbIn.append(TEXTFIELD).append(" , ");
-                sbIn.append(ENABLED);
-                sbIn.append(" ) ");
-                sbIn.append(" values ");
-                sbIn.append(" ( ");
-                Style style = new Style();
-                style.name = spatialTable.name;
-                sbIn.append(style.insertValuesString());
-                sbIn.append(" );");
-
-                String insertQuery = sbIn.toString();
-                db.exec(insertQuery, null);
-            }
-        }
-    }
-
-    public Style getStyle4Table( String tableName ) throws Exception {
-        Style style = new Style();
-        style.name = tableName;
-
-        StringBuilder sbSel = new StringBuilder();
-        sbSel.append("select ");
-        sbSel.append(SIZE).append(" , ");
-        sbSel.append(FILLCOLOR).append(" , ");
-        sbSel.append(STROKECOLOR).append(" , ");
-        sbSel.append(FILLALPHA).append(" , ");
-        sbSel.append(STROKEALPHA).append(" , ");
-        sbSel.append(SHAPE).append(" , ");
-        sbSel.append(WIDTH).append(" , ");
-        sbSel.append(TEXTSIZE).append(" , ");
-        sbSel.append(TEXTFIELD).append(" , ");
-        sbSel.append(ENABLED);
-        sbSel.append(" from ");
-        sbSel.append(PROPERTIESTABLE);
-        sbSel.append(" where ");
-        sbSel.append(NAME).append(" ='").append(tableName).append("';");
-
-        String selectQuery = sbSel.toString();
-        Stmt stmt = db.prepare(selectQuery);
-        if (stmt.step()) {
-            style.size = (float) stmt.column_double(0);
-            style.fillcolor = stmt.column_string(1);
-            style.strokecolor = stmt.column_string(2);
-            style.fillalpha = (float) stmt.column_double(3);
-            style.strokealpha = (float) stmt.column_double(4);
-            style.shape = stmt.column_string(5);
-            style.width = (float) stmt.column_double(6);
-            style.textsize = (float) stmt.column_double(7);
-            style.textfield = stmt.column_string(8);
-            style.enabled = stmt.column_int(9);
-        }
-        stmt.close();
-        return style;
-    }
-
-    public Paint getFillPaint4Style( Style style ) {
-        Paint paint = fillPaints.get(style.name);
-        if (paint == null) {
-            paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            paint.setStyle(Paint.Style.FILL);
-            fillPaints.put(style.name, paint);
-        }
-        paint.setColor(Color.parseColor(style.fillcolor));
-        paint.setAlpha((int) (style.fillalpha * 255f));
-        return paint;
-    }
-
-    public Paint getStrokePaint4Style( Style style ) {
-        Paint paint = strokePaints.get(style.name);
-        if (paint == null) {
-            paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            paint.setStyle(Paint.Style.STROKE);
-            strokePaints.put(style.name, paint);
-        }
-        paint.setColor(Color.parseColor(style.fillcolor));
-        paint.setAlpha((int) (style.fillalpha * 255f));
-        paint.setStrokeWidth(style.width);
-        return paint;
-    }
-
-    public void close() throws Exception {
-        if (db != null) {
-            db.close();
-        }
     }
 
     public String getSpatialiteVersion() throws Exception {
@@ -252,8 +116,8 @@ public class SpatialDatabaseHandler {
      * @return the list of {@link SpatialTable}s.
      * @throws Exception
      */
-    public List<SpatialTable> getSpatialTables() throws Exception {
-        if (tableList == null) {
+    public List<SpatialTable> getSpatialTables( boolean forceRead ) throws Exception {
+        if (tableList == null || forceRead) {
             tableList = new ArrayList<SpatialTable>();
             String query = "select f_table_name, f_geometry_column, type,srid from geometry_columns;";
             Stmt stmt = db.prepare(query);
@@ -266,8 +130,163 @@ public class SpatialDatabaseHandler {
                 tableList.add(table);
             }
             stmt.close();
+
+            // now read styles
+            checkPropertiesTable();
+
+            // assign the styles
+            for( SpatialTable spatialTable : tableList ) {
+                Style style4Table = getStyle4Table(spatialTable.name);
+                if (style4Table == null) {
+                    spatialTable.makeDefaultStyle();
+                } else {
+                    spatialTable.style = style4Table;
+                }
+            }
         }
+        OrderComparator orderComparator = new OrderComparator();
+        Collections.sort(tableList, orderComparator);
+
         return tableList;
+    }
+
+    private void checkPropertiesTable() throws Exception {
+        String checkTableQuery = "SELECT name FROM sqlite_master WHERE type='table' AND name='" + PROPERTIESTABLE + "';";
+        Stmt stmt = db.prepare(checkTableQuery);
+        boolean tableExists = false;
+        if (stmt.step()) {
+            String name = stmt.column_string(0);
+            if (name != null) {
+                tableExists = true;
+            }
+            stmt.close();
+        }
+        // FIXME to be removed
+        if (tableExists) {
+            db.exec("drop table " + PROPERTIESTABLE + ";", null);
+            tableExists = false;
+        }
+
+        if (!tableExists) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("CREATE TABLE ");
+            sb.append(PROPERTIESTABLE);
+            sb.append(" (");
+            sb.append(NAME).append(" TEXT, ");
+            sb.append(SIZE).append(" REAL, ");
+            sb.append(FILLCOLOR).append(" TEXT, ");
+            sb.append(STROKECOLOR).append(" TEXT, ");
+            sb.append(FILLALPHA).append(" REAL, ");
+            sb.append(STROKEALPHA).append(" REAL, ");
+            sb.append(SHAPE).append(" TEXT, ");
+            sb.append(WIDTH).append(" REAL, ");
+            sb.append(TEXTSIZE).append(" REAL, ");
+            sb.append(TEXTFIELD).append(" TEXT, ");
+            sb.append(ENABLED).append(" INTEGER, ");
+            sb.append(ORDER).append(" INTEGER");
+            sb.append(" );");
+            String query = sb.toString();
+            db.exec(query, null);
+
+            for( SpatialTable spatialTable : tableList ) {
+                StringBuilder sbIn = new StringBuilder();
+                sbIn.append("insert into ").append(PROPERTIESTABLE);
+                sbIn.append(" ( ");
+                sbIn.append(NAME).append(" , ");
+                sbIn.append(SIZE).append(" , ");
+                sbIn.append(FILLCOLOR).append(" , ");
+                sbIn.append(STROKECOLOR).append(" , ");
+                sbIn.append(FILLALPHA).append(" , ");
+                sbIn.append(STROKEALPHA).append(" , ");
+                sbIn.append(SHAPE).append(" , ");
+                sbIn.append(WIDTH).append(" , ");
+                sbIn.append(TEXTSIZE).append(" , ");
+                sbIn.append(TEXTFIELD).append(" , ");
+                sbIn.append(ENABLED).append(" , ");
+                sbIn.append(ORDER);
+                sbIn.append(" ) ");
+                sbIn.append(" values ");
+                sbIn.append(" ( ");
+                Style style = new Style();
+                style.name = spatialTable.name;
+                sbIn.append(style.insertValuesString());
+                sbIn.append(" );");
+
+                String insertQuery = sbIn.toString();
+                db.exec(insertQuery, null);
+            }
+        }
+    }
+
+    public Style getStyle4Table( String tableName ) throws Exception {
+        Style style = new Style();
+        style.name = tableName;
+
+        StringBuilder sbSel = new StringBuilder();
+        sbSel.append("select ");
+        sbSel.append(SIZE).append(" , ");
+        sbSel.append(FILLCOLOR).append(" , ");
+        sbSel.append(STROKECOLOR).append(" , ");
+        sbSel.append(FILLALPHA).append(" , ");
+        sbSel.append(STROKEALPHA).append(" , ");
+        sbSel.append(SHAPE).append(" , ");
+        sbSel.append(WIDTH).append(" , ");
+        sbSel.append(TEXTSIZE).append(" , ");
+        sbSel.append(TEXTFIELD).append(" , ");
+        sbSel.append(ENABLED).append(" , ");
+        sbSel.append(ORDER);
+        sbSel.append(" from ");
+        sbSel.append(PROPERTIESTABLE);
+        sbSel.append(" where ");
+        sbSel.append(NAME).append(" ='").append(tableName).append("';");
+
+        String selectQuery = sbSel.toString();
+        Stmt stmt = db.prepare(selectQuery);
+        if (stmt.step()) {
+            style.size = (float) stmt.column_double(0);
+            style.fillcolor = stmt.column_string(1);
+            style.strokecolor = stmt.column_string(2);
+            style.fillalpha = (float) stmt.column_double(3);
+            style.strokealpha = (float) stmt.column_double(4);
+            style.shape = stmt.column_string(5);
+            style.width = (float) stmt.column_double(6);
+            style.textsize = (float) stmt.column_double(7);
+            style.textfield = stmt.column_string(8);
+            style.enabled = stmt.column_int(9);
+            style.order = stmt.column_int(10);
+        }
+        stmt.close();
+        return style;
+    }
+
+    public Paint getFillPaint4Style( Style style ) {
+        Paint paint = fillPaints.get(style.name);
+        if (paint == null) {
+            paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            paint.setStyle(Paint.Style.FILL);
+            fillPaints.put(style.name, paint);
+        }
+        paint.setColor(Color.parseColor(style.fillcolor));
+        float alpha = style.fillalpha * 255f;
+        paint.setAlpha((int) alpha);
+        return paint;
+    }
+
+    public Paint getStrokePaint4Style( Style style ) {
+        Paint paint = strokePaints.get(style.name);
+        if (paint == null) {
+            paint = new Paint();
+            paint.setStyle(Paint.Style.STROKE);
+            strokePaints.put(style.name, paint);
+        }
+        paint.setAntiAlias(true);
+        paint.setStrokeCap(Cap.ROUND);
+        paint.setStrokeJoin(Join.ROUND);
+        paint.setColor(Color.parseColor(style.fillcolor));
+        float alpha = style.fillalpha * 255f;
+        paint.setAlpha((int) alpha);
+        paint.setStrokeWidth(style.width);
+        return paint;
     }
 
     public List<byte[]> getWKBFromTableInBounds( String destSrid, SpatialTable table, double n, double s, double e, double w ) {
@@ -327,6 +346,12 @@ public class SpatialDatabaseHandler {
         sb.append(");");
         String query = sb.toString();
         return query;
+    }
+
+    public void close() throws Exception {
+        if (db != null) {
+            db.close();
+        }
     }
 
     // public String queryComuni() {
