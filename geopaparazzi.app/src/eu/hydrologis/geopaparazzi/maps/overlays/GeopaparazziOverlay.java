@@ -599,11 +599,6 @@ public abstract class GeopaparazziOverlay extends Overlay {
         double s = whPoint.getLatitude();
         double e = whPoint.getLongitude();
 
-        PointTransformation pointTransformer = new MapsforgePointTransformation(projection, drawPosition, drawZoomLevel);
-        ShapeWriter wr = new ShapeWriter(pointTransformer);
-        wr.setRemoveDuplicatePoints(true);
-        wr.setDecimation(0.001);
-
         try {
             List<SpatialDatabaseHandler> spatialDatabaseHandlers = SpatialDatabasesManager.getInstance()
                     .getSpatialDatabaseHandlers();
@@ -613,6 +608,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     if (spatialTable.style.enabled == 0) {
                         continue;
                     }
+
                     Style style4Table = spatialTable.style;
                     GeometryIterator geometryIterator = spatialDatabaseHandler.getGeometryIteratorInBounds("4326", spatialTable,
                             n, s, e, w);
@@ -623,6 +619,10 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     if (style4Table.strokecolor != null && style4Table.strokecolor.trim().length() > 0)
                         stroke = spatialDatabaseHandler.getStrokePaint4Style(style4Table);
                     if (spatialTable.isPolygon()) {
+                        PointTransformation pointTransformer = new MapsforgePointTransformation(projection, drawPosition, drawZoomLevel);
+                        ShapeWriter wr = new ShapeWriter(pointTransformer);
+                        wr.setRemoveDuplicatePoints(true);
+                        wr.setDecimation(0.001);
                         while( geometryIterator.hasNext() ) {
                             Geometry geom = geometryIterator.next();
                             Shape shape = wr.toShape(geom);
@@ -632,6 +632,10 @@ public abstract class GeopaparazziOverlay extends Overlay {
                                 shape.draw(canvas, stroke);
                         }
                     } else if (spatialTable.isLine()) {
+                        PointTransformation pointTransformer = new MapsforgePointTransformation(projection, drawPosition, drawZoomLevel);
+                        ShapeWriter wr = new ShapeWriter(pointTransformer);
+                        wr.setRemoveDuplicatePoints(true);
+                        wr.setDecimation(0.001);
                         while( geometryIterator.hasNext() ) {
                             Geometry geom = geometryIterator.next();
                             Shape shape = wr.toShape(geom);
@@ -639,6 +643,10 @@ public abstract class GeopaparazziOverlay extends Overlay {
                                 shape.draw(canvas, stroke);
                         }
                     } else if (spatialTable.isPoint()) {
+                        PointTransformation pointTransformer = new MapsforgePointTransformation(projection, drawPosition, drawZoomLevel);
+                        ShapeWriter wr = new ShapeWriter(pointTransformer, spatialTable.style.shape, spatialTable.style.size);
+                        wr.setRemoveDuplicatePoints(true);
+                        wr.setDecimation(0.001);
                         while( geometryIterator.hasNext() ) {
                             Geometry geom = geometryIterator.next();
                             Shape shape = wr.toShape(geom);

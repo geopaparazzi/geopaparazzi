@@ -30,6 +30,19 @@
         <item>25</item>
         <item>30</item>
     </string-array>
+    <string-array name="array_sizes">
+        <item>1</item>
+        <item>3</item>
+        <item>5</item>
+        <item>7</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>25</item>
+        <item>30</item>
+        <item>40</item>
+        <item>50</item>
+    </string-array>
     <string-array name="array_percentage">
         <item>10</item>
         <item>20</item>
@@ -41,6 +54,14 @@
         <item>80</item>
         <item>90</item>
         <item>100</item>
+    </string-array>
+    <string-array name="array_shapes">
+        <item>circle</item>
+        <item>cross</item>
+        <item>square</item>
+        <item>star</item>
+        <item>triangle</item>
+        <item>X</item>
     </string-array>
 
 </resources>

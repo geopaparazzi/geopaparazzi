@@ -123,6 +123,30 @@ public class ShapeWriter {
         this(pointTransformer, null);
     }
 
+    public ShapeWriter( PointTransformation pointTransformer, String shapeName, float size ) {
+        this(pointTransformer, getShape(shapeName, size));
+    }
+
+    private static PointShapeFactory getShape( String shapeName, float size ) {
+        if (shapeName.equals("circle")) {
+            return new PointShapeFactory.Circle(size);
+        } else if (shapeName.equals("cross")) {
+            return new PointShapeFactory.Cross(size);
+        } else if (shapeName.equals("point")) {
+            return new PointShapeFactory.Point(size);
+        } else if (shapeName.equals("square")) {
+            return new PointShapeFactory.Square(size);
+        } else if (shapeName.equals("star")) {
+            return new PointShapeFactory.Star(size);
+        } else if (shapeName.equals("triangle")) {
+            return new PointShapeFactory.Triangle(size);
+        } else if (shapeName.equals("X")) {
+            return new PointShapeFactory.X(size);
+        } else {
+            return DEFAULT_POINT_FACTORY;
+        }
+    }
+
     /**
      * Creates a new ShapeWriter with the default (identity) point transformation.
      *

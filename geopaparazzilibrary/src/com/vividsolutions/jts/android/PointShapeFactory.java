@@ -283,10 +283,9 @@ public interface PointShapeFactory {
          * @return a shape
          */
         public Shape createPoint( PointF point ) {
-            OvalShape shape = new OvalShape(point.x, point.y, size, size);
             float x = (float) (point.x - (size / 2));
             float y = (float) (point.y - (size / 2));
-            shape.translate(x, y);
+            OvalShape shape = new OvalShape(x, y, size, size);
 
             // Ellipse2D.Double pointMarker =
             // new Ellipse2D.Double(

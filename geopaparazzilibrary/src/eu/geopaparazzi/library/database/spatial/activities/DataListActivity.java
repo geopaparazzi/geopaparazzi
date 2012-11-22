@@ -117,6 +117,8 @@ public class DataListActivity extends ListActivity {
             intent = new Intent(this, LinesDataPropertiesActivity.class);
         } else if (spTable.isPolygon()) {
             intent = new Intent(this, PolygonsDataPropertiesActivity.class);
+        } else if (spTable.isPoint()) {
+            intent = new Intent(this, PointsDataPropertiesActivity.class);
         }
         intent.putExtra(LibraryConstants.PREFS_KEY_TEXT, spTable.name);
         startActivityForResult(intent, DATAPROPERTIES_RETURN_CODE);

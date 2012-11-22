@@ -31,12 +31,60 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/textView0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/shape_spinner"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center_vertical"
+        android:padding="5dp"
+        android:text="@string/point_shape_"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/main_text_color_neutral" />
+
+    <Spinner
+        android:id="@+id/shape_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/textView0"
+        android:entries="@array/array_shapes"
+        android:padding="5dp" />
+
+    <TextView
+        android:id="@+id/textView01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/size_spinner"
+        android:layout_alignParentLeft="true"
+        android:layout_alignRight="@+id/textView0"
+        android:layout_below="@+id/textView0"
+        android:gravity="center_vertical"
+        android:padding="5dp"
+        android:text="@string/point_size"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/main_text_color_neutral" />
+
+    <Spinner
+        android:id="@+id/size_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/shape_spinner"
+        android:layout_toRightOf="@+id/textView01"
+        android:entries="@array/array_sizes"
+        android:padding="5dp" />
+
+    <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/color_spinner"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/textView01"
+        android:layout_below="@+id/textView01"
         android:gravity="center_vertical"
         android:padding="5dp"
         android:text="@string/stroke_color"
@@ -48,7 +96,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/size_spinner"
         android:layout_toRightOf="@+id/textView1"
         android:entries="@array/array_colornames"
         android:padding="5dp" />
