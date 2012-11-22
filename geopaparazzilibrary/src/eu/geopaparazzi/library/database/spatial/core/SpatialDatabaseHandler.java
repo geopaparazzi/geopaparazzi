@@ -307,9 +307,9 @@ public class SpatialDatabaseHandler {
         Paint paint = fillPaints.get(style.name);
         if (paint == null) {
             paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            paint.setStyle(Paint.Style.FILL);
             fillPaints.put(style.name, paint);
         }
+        paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.parseColor(style.fillcolor));
         float alpha = style.fillalpha * 255f;
         paint.setAlpha((int) alpha);
@@ -320,14 +320,14 @@ public class SpatialDatabaseHandler {
         Paint paint = strokePaints.get(style.name);
         if (paint == null) {
             paint = new Paint();
-            paint.setStyle(Paint.Style.STROKE);
             strokePaints.put(style.name, paint);
         }
+        paint.setStyle(Paint.Style.STROKE);
         paint.setAntiAlias(true);
         paint.setStrokeCap(Cap.ROUND);
         paint.setStrokeJoin(Join.ROUND);
-        paint.setColor(Color.parseColor(style.fillcolor));
-        float alpha = style.fillalpha * 255f;
+        paint.setColor(Color.parseColor(style.strokecolor));
+        float alpha = style.strokealpha * 255f;
         paint.setAlpha((int) alpha);
         paint.setStrokeWidth(style.width);
         return paint;

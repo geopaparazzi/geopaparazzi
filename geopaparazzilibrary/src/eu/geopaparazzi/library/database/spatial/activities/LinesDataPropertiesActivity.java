@@ -99,7 +99,7 @@ public class LinesDataPropertiesActivity extends Activity implements OnItemSelec
     }
 
     @Override
-    public void onItemSelected( AdapterView< ? > arg0, View callingView, int arg2, long arg3 ) {
+    public void onItemSelected( AdapterView< ? > callingView, View view, int arg2, long arg3 ) {
         if (callingView.equals(colorSpinner)) {
             String color = (String) colorSpinner.getSelectedItem();
             spatialTable.style.strokecolor = color;
