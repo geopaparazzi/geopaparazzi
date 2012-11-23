@@ -425,9 +425,9 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             public void onClick( View v ) {
                 boolean isInInfoMode = !mapView.isClickable();
                 if (!isInInfoMode) {
-                    infoModeButton.setBackgroundResource(R.drawable.measuremode_on);
+                    infoModeButton.setBackgroundResource(R.drawable.infomode_on);
                 } else {
-                    infoModeButton.setBackgroundResource(R.drawable.measuremode);
+                    infoModeButton.setBackgroundResource(R.drawable.infomode);
                 }
                 if (isInInfoMode) {
                     mapView.setClickable(true);

@@ -95,7 +95,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:layout_marginBottom="5dip"
-                        android:background="@drawable/measuremode" >
+                        android:background="@drawable/infomode" >
                     </Button>
                 </LinearLayout>
                 <!-- the tools buttons -->
