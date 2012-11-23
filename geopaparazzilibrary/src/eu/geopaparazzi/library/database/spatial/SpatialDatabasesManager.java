@@ -125,13 +125,13 @@ public class SpatialDatabasesManager {
     public void intersectionToString( String boundsSrid, SpatialTable spatialTable, double n, double s, double e, double w,
             StringBuilder sb, String indentStr ) throws Exception {
         SpatialDatabaseHandler spatialDatabaseHandler = tablesMap.get(spatialTable);
-        spatialDatabaseHandler.intersectionToString(boundsSrid, spatialTable, n, s, e, w, sb, indentStr);
+        spatialDatabaseHandler.intersectionToStringBBOX(boundsSrid, spatialTable, n, s, e, w, sb, indentStr);
     }
 
     public void intersectionToString( String boundsSrid, SpatialTable spatialTable, double n, double e, StringBuilder sb,
             String indentStr ) throws Exception {
         SpatialDatabaseHandler spatialDatabaseHandler = tablesMap.get(spatialTable);
-        spatialDatabaseHandler.intersectionToString(boundsSrid, spatialTable, n, e, sb, indentStr);
+        spatialDatabaseHandler.intersectionToString4Polygon(boundsSrid, spatialTable, n, e, sb, indentStr);
     }
 
     public void closeDatabases() throws Exception {

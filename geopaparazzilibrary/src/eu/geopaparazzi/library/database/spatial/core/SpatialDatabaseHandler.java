@@ -80,6 +80,12 @@ public class SpatialDatabaseHandler {
 
     }
 
+    /**
+     * Get the version of Spatialite.
+     * 
+     * @return the version of Spatialite.
+     * @throws Exception
+     */
     public String getSpatialiteVersion() throws Exception {
         Stmt stmt = db.prepare("SELECT spatialite_version();");
         try {
@@ -93,6 +99,12 @@ public class SpatialDatabaseHandler {
         return "-";
     }
 
+    /**
+     * Get the version of proj.
+     * 
+     * @return the version of proj.
+     * @throws Exception
+     */
     public String getProj4Version() throws Exception {
         Stmt stmt = db.prepare("SELECT proj4_version();");
         try {
@@ -106,6 +118,12 @@ public class SpatialDatabaseHandler {
         return "-";
     }
 
+    /**
+     * Get the version of geos.
+     * 
+     * @return the version of geos.
+     * @throws Exception
+     */
     public String getGeosVersion() throws Exception {
         Stmt stmt = db.prepare("SELECT geos_version();");
         try {
@@ -122,6 +140,7 @@ public class SpatialDatabaseHandler {
     /**
      * Get the spatial tables from the database.
      * 
+     * @param forceRead force a clean read from the db instead of using cached.
      * @return the list of {@link SpatialTable}s.
      * @throws Exception
      */
@@ -162,6 +181,11 @@ public class SpatialDatabaseHandler {
         return tableList;
     }
 
+    /**
+     * Check availability of style for the tables.
+     * 
+     * @throws Exception
+     */
     private void checkPropertiesTable() throws Exception {
         String checkTableQuery = "SELECT name FROM sqlite_master WHERE type='table' AND name='" + PROPERTIESTABLE + "';";
         Stmt stmt = db.prepare(checkTableQuery);
@@ -176,12 +200,6 @@ public class SpatialDatabaseHandler {
         } finally {
             stmt.close();
         }
-        // FIXME to be removed
-        // if (tableExists) {
-        // db.exec("drop table " + PROPERTIESTABLE + ";", null);
-        // tableExists = false;
-        // }
-
         if (!tableExists) {
             StringBuilder sb = new StringBuilder();
             sb.append("CREATE TABLE ");
@@ -233,6 +251,13 @@ public class SpatialDatabaseHandler {
         }
     }
 
+    /**
+     * Retrieve the {@link Style} for a given table.
+     * 
+     * @param tableName
+     * @return
+     * @throws Exception
+     */
     public Style getStyle4Table( String tableName ) throws Exception {
         Style style = new Style();
         style.name = tableName;
@@ -277,6 +302,12 @@ public class SpatialDatabaseHandler {
         return style;
     }
 
+    /**
+     * Update a style definition.
+     * 
+     * @param style the {@link Style} to set.
+     * @throws Exception
+     */
     public void updateStyle( Style style ) throws Exception {
         StringBuilder sbIn = new StringBuilder();
         sbIn.append("update ").append(PROPERTIESTABLE);
@@ -303,6 +334,14 @@ public class SpatialDatabaseHandler {
         db.exec(updateQuery, null);
     }
 
+    /**
+     * Get the fill {@link Paint} for a given style.
+     * 
+     * <p>Paints are cached and reused.</p>
+     * 
+     * @param style the {@link Style} to use.
+     * @return the paint.
+     */
     public Paint getFillPaint4Style( Style style ) {
         Paint paint = fillPaints.get(style.name);
         if (paint == null) {
@@ -316,6 +355,14 @@ public class SpatialDatabaseHandler {
         return paint;
     }
 
+    /**
+     * Get the stroke {@link Paint} for a given style.
+     * 
+     * <p>Paints are cached and reused.</p>
+     * 
+     * @param style the {@link Style} to use.
+     * @return the paint.
+     */
     public Paint getStrokePaint4Style( Style style ) {
         Paint paint = strokePaints.get(style.name);
         if (paint == null) {
@@ -335,7 +382,7 @@ public class SpatialDatabaseHandler {
 
     public List<byte[]> getWKBFromTableInBounds( String destSrid, SpatialTable table, double n, double s, double e, double w ) {
         List<byte[]> list = new ArrayList<byte[]>();
-        String query = makeBoundaryQuery(destSrid, table, n, s, e, w);
+        String query = buildGeometriesInBoundsQuery(destSrid, table, n, s, e, w);
         try {
             Stmt stmt = db.prepare(query);
             try {
@@ -352,47 +399,76 @@ public class SpatialDatabaseHandler {
         return null;
     }
 
+    /**
+     * Get the {@link GeometryIterator} of a table in a given bound.
+     * 
+     * @param destSrid the srid to which to transform to.
+     * @param table the table to use.
+     * @param n north bound.
+     * @param s south bound.
+     * @param e east bound.
+     * @param w west bound.
+     * @return the geometries iterator.
+     */
     public GeometryIterator getGeometryIteratorInBounds( String destSrid, SpatialTable table, double n, double s, double e,
             double w ) {
-        String query = makeBoundaryQuery(destSrid, table, n, s, e, w);
+        String query = buildGeometriesInBoundsQuery(destSrid, table, n, s, e, w);
         return new GeometryIterator(db, query);
     }
 
-    private String makeBoundaryQuery( String destSrid, SpatialTable table, double n, double s, double e, double w ) {
+    private String buildGeometriesInBoundsQuery( String destSrid, SpatialTable table, double n, double s, double e, double w ) {
         boolean doTransform = false;
         if (!table.srid.equals(destSrid)) {
             doTransform = true;
         }
 
-        StringBuilder sb1 = new StringBuilder();
+        StringBuilder mbrSb = new StringBuilder();
         if (doTransform)
-            sb1.append("ST_Transform(");
-        sb1.append(table.geomName);
-        if (doTransform)
-            sb1.append(",").append(destSrid).append(")");
-        String geom = sb1.toString();
+            mbrSb.append("ST_Transform(");
+        mbrSb.append("BuildMBR(");
+        mbrSb.append(w);
+        mbrSb.append(", ");
+        mbrSb.append(n);
+        mbrSb.append(", ");
+        mbrSb.append(e);
+        mbrSb.append(", ");
+        mbrSb.append(s);
+        if (doTransform) {
+            mbrSb.append(", ");
+            mbrSb.append(destSrid);
+            mbrSb.append("), ");
+            mbrSb.append(table.srid);
+        }
+        mbrSb.append(")");
+        String mbr = mbrSb.toString();
 
-        // String query = "SELECT ST_AsBinary(ST_Transform(Geometry, 4326)) from ?"
-        // /* w, s, e, n */
-        // + " where MBRIntersects(BuildMBR(?, ?, ?, ?), Geometry);";
-        StringBuilder sb = new StringBuilder();
-        sb.append("SELECT ");
-        sb.append("ST_AsBinary(");
-        sb.append(geom);
-        sb.append(") from ").append(table.name);
-        sb.append(" where MBRIntersects(BuildMBR(");
-        sb.append(w);
-        sb.append(", ");
-        sb.append(s);
-        sb.append(", ");
-        sb.append(e);
-        sb.append(", ");
-        sb.append(n);
-        sb.append("),");
-        sb.append(geom);
-        sb.append(");");
-        String query = sb.toString();
-        return query;
+        StringBuilder qSb = new StringBuilder();
+        qSb.append("SELECT ST_AsBinary(");
+        if (doTransform)
+            qSb.append("ST_Transform(");
+        qSb.append(table.geomName);
+        if (doTransform) {
+            qSb.append(", ");
+            qSb.append(destSrid);
+            qSb.append(")");
+        }
+        qSb.append(") FROM ");
+        qSb.append(table.name);
+        qSb.append(" WHERE ST_Intersects(");
+        qSb.append(table.geomName);
+        qSb.append(", ");
+        qSb.append(mbr);
+        qSb.append(") = 1");
+        qSb.append("   AND ROWID IN (");
+        qSb.append("     SELECT ROWID FROM Spatialindex WHERE f_table_name ='");
+        qSb.append(table.name);
+        qSb.append("'");
+        qSb.append("     AND search_frame = ");
+        qSb.append(mbr);
+        qSb.append(" );");
+        String q = qSb.toString();
+
+        return q;
     }
 
     public void close() throws Exception {
@@ -401,7 +477,7 @@ public class SpatialDatabaseHandler {
         }
     }
 
-    public void intersectionToString( String boundsSrid, SpatialTable spatialTable, double n, double s, double e, double w,
+    public void intersectionToStringBBOX( String boundsSrid, SpatialTable spatialTable, double n, double s, double e, double w,
             StringBuilder sb, String indentStr ) throws Exception {
         boolean doTransform = false;
         if (!spatialTable.srid.equals(boundsSrid)) {
@@ -501,8 +577,8 @@ public class SpatialDatabaseHandler {
         }
     }
 
-    public void intersectionToString( String queryPointSrid, SpatialTable spatialTable, double n, double e, StringBuilder sb,
-            String indentStr ) throws Exception {
+    public void intersectionToString4Polygon( String queryPointSrid, SpatialTable spatialTable, double n, double e,
+            StringBuilder sb, String indentStr ) throws Exception {
         boolean doTransform = false;
         if (!spatialTable.srid.equals(queryPointSrid)) {
             doTransform = true;
