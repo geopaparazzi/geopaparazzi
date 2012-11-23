@@ -303,6 +303,63 @@ public class SpatialDatabaseHandler {
     }
 
     /**
+     * Get the table's bounds.
+     * 
+     * @param spatialTable the table to use.
+     * @param destSrid the srid to which to project to.
+     * @return the bounds as [n,s,e,w].
+     * @throws Exception 
+     */
+    public float[] getTableBounds( SpatialTable spatialTable, String destSrid ) throws Exception {
+        boolean doTransform = false;
+        if (!spatialTable.srid.equals(destSrid)) {
+            doTransform = true;
+        }
+
+        StringBuilder geomSb = new StringBuilder();
+        if (doTransform)
+            geomSb.append("ST_Transform(");
+        geomSb.append(spatialTable.geomName);
+        if (doTransform) {
+            geomSb.append(", ");
+            geomSb.append(destSrid);
+            geomSb.append(")");
+        }
+        String geom = geomSb.toString();
+
+        StringBuilder qSb = new StringBuilder();
+        qSb.append("SELECT Min(MbrMinX(");
+        qSb.append(geom);
+        qSb.append(")) AS min_x, Min(MbrMinY(");
+        qSb.append(geom);
+        qSb.append(")) AS min_y,");
+        qSb.append("Max(MbrMaxX(");
+        qSb.append(geom);
+        qSb.append(")) AS max_x, Max(MbrMaxY(");
+        qSb.append(geom);
+        qSb.append(")) AS max_y");
+        qSb.append("FROM ");
+        qSb.append(spatialTable.name);
+        qSb.append(";");
+
+        String selectQuery = qSb.toString();
+        Stmt stmt = db.prepare(selectQuery);
+        try {
+            if (stmt.step()) {
+                float w = (float) stmt.column_double(0);
+                float s = (float) stmt.column_double(1);
+                float e = (float) stmt.column_double(2);
+                float n = (float) stmt.column_double(3);
+
+                return new float[]{n, s, e, w};
+            }
+        } finally {
+            stmt.close();
+        }
+        return null;
+    }
+
+    /**
      * Update a style definition.
      * 
      * @param style the {@link Style} to set.
