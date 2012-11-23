@@ -123,6 +123,12 @@ public class SpatialDatabasesManager {
         spatialDatabaseHandler.intersectionToString(boundsSrid, spatialTable, n, s, e, w, sb, indentStr);
     }
 
+    public void intersectionToString( String boundsSrid, SpatialTable spatialTable, double n, double e, StringBuilder sb,
+            String indentStr ) throws Exception {
+        SpatialDatabaseHandler spatialDatabaseHandler = tablesMap.get(spatialTable);
+        spatialDatabaseHandler.intersectionToString(boundsSrid, spatialTable, n, e, sb, indentStr);
+    }
+
     public void closeDatabases() throws Exception {
         for( SpatialDatabaseHandler sdbHandler : sdbHandlers ) {
             sdbHandler.close();

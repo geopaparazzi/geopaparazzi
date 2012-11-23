@@ -408,32 +408,142 @@ public class SpatialDatabaseHandler {
             doTransform = true;
         }
 
+        String query = null;
+
+        // SELECT che-cazzo-ti-pare-a-te
+        // FROM qualche-tavola
+        // WHERE ROWID IN (
+        // SELECT ROWID
+        // FROM SpatialIndex
+        // WHERE f_table_name = 'qualche-tavola'
+        // AND search_frame = il-tuo-bbox
+        // );
+
+        // {
+        // StringBuilder sbQ = new StringBuilder();
+        // sbQ.append("SELECT ");
+        // sbQ.append("*");
+        // sbQ.append(" from ").append(spatialTable.name);
+        // sbQ.append(" where ROWID IN (");
+        // sbQ.append(" SELECT ROWID FROM Spatialindex WHERE f_table_name ='");
+        // sbQ.append(spatialTable.name);
+        // sbQ.append("' AND search_frame = ");
+        // if (doTransform)
+        // sbQ.append("ST_Transform(");
+        // sbQ.append("BuildMBR(");
+        // sbQ.append(w);
+        // sbQ.append(", ");
+        // sbQ.append(s);
+        // sbQ.append(", ");
+        // sbQ.append(e);
+        // sbQ.append(", ");
+        // sbQ.append(n);
+        // if (doTransform) {
+        // sbQ.append(", ");
+        // sbQ.append(boundsSrid);
+        // }
+        // sbQ.append(")");
+        // if (doTransform) {
+        // sbQ.append(",");
+        // sbQ.append(spatialTable.srid);
+        // sbQ.append(")");
+        // }
+        // sbQ.append(");");
+        //
+        // query = sbQ.toString();
+        // Logger.i(this, query);
+        // }
+        {
+            StringBuilder sbQ = new StringBuilder();
+            sbQ.append("SELECT ");
+            sbQ.append("*");
+            sbQ.append(" from ").append(spatialTable.name);
+            sbQ.append(" where ST_Intersects(");
+            if (doTransform)
+                sbQ.append("ST_Transform(");
+            sbQ.append("BuildMBR(");
+            sbQ.append(w);
+            sbQ.append(", ");
+            sbQ.append(s);
+            sbQ.append(", ");
+            sbQ.append(e);
+            sbQ.append(", ");
+            sbQ.append(n);
+            if (doTransform) {
+                sbQ.append(", ");
+                sbQ.append(boundsSrid);
+                sbQ.append("),");
+                sbQ.append(spatialTable.srid);
+            }
+            sbQ.append("),");
+            sbQ.append(spatialTable.geomName);
+            sbQ.append(");");
+
+            query = sbQ.toString();
+        }
+
+        Stmt stmt = db.prepare(query);
+        try {
+            while( stmt.step() ) {
+                int column_count = stmt.column_count();
+                for( int i = 0; i < column_count; i++ ) {
+                    String cName = stmt.column_name(i);
+                    if (cName.equals(spatialTable.geomName)) {
+                        continue;
+                    }
+
+                    String value = stmt.column_string(i);
+                    sb.append(indentStr).append(cName).append(": ").append(value).append("\n");
+                }
+            }
+        } finally {
+            stmt.close();
+        }
+    }
+
+    public void intersectionToString( String queryPointSrid, SpatialTable spatialTable, double n, double e, StringBuilder sb,
+            String indentStr ) throws Exception {
+        boolean doTransform = false;
+        if (!spatialTable.srid.equals(queryPointSrid)) {
+            doTransform = true;
+        }
+
         StringBuilder sbQ = new StringBuilder();
-        sbQ.append("SELECT ");
-        sbQ.append("*");
-        sbQ.append(" from ").append(spatialTable.name);
-        sbQ.append(" where ST_Intersects(");
+        sbQ.append("SELECT * FROM ");
+        sbQ.append(spatialTable.name);
+        sbQ.append(" WHERE ST_Intersects(");
+        sbQ.append(spatialTable.geomName);
+        sbQ.append(", ");
         if (doTransform)
             sbQ.append("ST_Transform(");
-        sbQ.append("BuildMBR(");
-        sbQ.append(w);
-        sbQ.append(", ");
-        sbQ.append(s);
-        sbQ.append(", ");
+        sbQ.append("MakePoint(");
         sbQ.append(e);
-        sbQ.append(", ");
+        sbQ.append(",");
         sbQ.append(n);
         if (doTransform) {
             sbQ.append(", ");
-            sbQ.append(boundsSrid);
-        }
-        sbQ.append("),");
-        if (doTransform) {
+            sbQ.append(queryPointSrid);
+            sbQ.append("), ");
             sbQ.append(spatialTable.srid);
-            sbQ.append("),");
         }
-        sbQ.append(spatialTable.geomName);
-        sbQ.append(");");
+        sbQ.append(")) = 1 ");
+        sbQ.append("AND ROWID IN (");
+        sbQ.append("SELECT ROWID FROM Spatialindex WHERE f_table_name ='");
+        sbQ.append(spatialTable.name);
+        sbQ.append("' AND search_frame = ");
+        if (doTransform)
+            sbQ.append("ST_Transform(");
+        sbQ.append("MakePoint(");
+        sbQ.append(e);
+        sbQ.append(",");
+        sbQ.append(n);
+        if (doTransform) {
+            sbQ.append(", ");
+            sbQ.append(queryPointSrid);
+            sbQ.append("), ");
+            sbQ.append(spatialTable.srid);
+        }
+        sbQ.append("));");
         String query = sbQ.toString();
 
         Stmt stmt = db.prepare(query);

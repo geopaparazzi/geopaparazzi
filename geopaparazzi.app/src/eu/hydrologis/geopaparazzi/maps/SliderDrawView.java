@@ -115,13 +115,16 @@ public class SliderDrawView extends View {
                 float x = event.getX();
                 float y = event.getY();
                 int delta = 10;
+                GeoPoint p = pj.fromPixels(round(x), round(y));
                 GeoPoint ul = pj.fromPixels(round(x - delta), round(y - delta));
                 GeoPoint lr = pj.fromPixels(round(x + delta), round(y + delta));
+                double yW = p.getLatitude();
+                double xW = p.getLongitude();
                 double n = ul.getLatitude();
                 double w = ul.getLongitude();
                 double s = lr.getLatitude();
                 double e = lr.getLongitude();
-                infoDialog(n, w, s, e);
+                infoDialog(xW, yW, n, w, s, e);
 
                 if (Debug.D)
                     Logger.d(this, "UNTOUCH: " + tmpP.x + "/" + tmpP.y); //$NON-NLS-1$//$NON-NLS-2$
@@ -198,7 +201,7 @@ public class SliderDrawView extends View {
         return true;
     }
 
-    private void infoDialog( final double n, final double w, final double s, final double e ) {
+    private void infoDialog( final double xW, final double yW, final double n, final double w, final double s, final double e ) {
         try {
             final SpatialDatabasesManager sdbManager = SpatialDatabasesManager.getInstance();
             final List<SpatialTable> spatialTables = sdbManager.getSpatialTables(false);
@@ -224,7 +227,12 @@ public class SliderDrawView extends View {
                                 continue;
                             }
                             StringBuilder sbTmp = new StringBuilder();
-                            sdbManager.intersectionToString("4326", spatialTable, n, s, e, w, sbTmp, "\t");
+                            if (spatialTable.isPolygon()) {
+                                // query just the point
+                                sdbManager.intersectionToString("4326", spatialTable, yW, xW, sbTmp, "\t");
+                            } else {
+                                sdbManager.intersectionToString("4326", spatialTable, n, s, e, w, sbTmp, "\t");
+                            }
                             sb.append(spatialTable.name).append("\n");
                             sb.append(sbTmp);
                             sb.append("\n----------------------\n");
