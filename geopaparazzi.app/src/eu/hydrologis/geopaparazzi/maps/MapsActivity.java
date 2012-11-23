@@ -1027,8 +1027,15 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         case (DATAPROPERTIES_RETURN_CODE): {
             if (resultCode == Activity.RESULT_OK) {
                 try {
-                    // re-read
-                    SpatialDatabasesManager.getInstance().getSpatialTables(true);
+                    double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, -9999d);
+                    double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, -9999d);
+                    if (lon < -9000d) {
+                        // no coordinate passed
+                        // re-read
+                        SpatialDatabasesManager.getInstance().getSpatialTables(true);
+                    } else {
+                        setCenterAndZoomForMapWindowFocus(lon, lat, null);
+                    }
                 } catch (jsqlite.Exception e) {
                     e.printStackTrace();
                 }

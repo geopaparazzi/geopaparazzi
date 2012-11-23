@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -30,6 +31,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -41,6 +43,7 @@ import eu.geopaparazzi.library.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.library.database.spatial.core.OrderComparator;
 import eu.geopaparazzi.library.database.spatial.core.SpatialTable;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 
@@ -54,8 +57,6 @@ public class DataListActivity extends ListActivity {
     private static final int MOVE_UP = 2;
     private static final int MOVE_DOWN = 3;
     private static final int MOVE_BOTTOM = 4;
-
-    private static final int DATAPROPERTIES_RETURN_CODE = 668;
 
     private List<SpatialTable> spatialTables = new ArrayList<SpatialTable>();;
 
@@ -107,6 +108,37 @@ public class DataListActivity extends ListActivity {
 
         };
         setListAdapter(arrayAdapter);
+
+        ListView listView = getListView();
+        // Then you can create a listener like so:
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+            public boolean onItemLongClick( AdapterView< ? > arg0, View arg1, int pos, long arg3 ) {
+                final SpatialTable item = spatialTables.get(pos);
+
+                Utilities.yesNoMessageDialog(DataListActivity.this, "Zoom to the selected layer?", new Runnable(){
+                    public void run() {
+                        try {
+                            float[] tableBounds = SpatialDatabasesManager.getInstance().getHandler(item)
+                                    .getTableBounds(item, "4326");
+                            double lat = tableBounds[1] + (tableBounds[0] - tableBounds[1]) / 2.0;
+                            double lon = tableBounds[3] + (tableBounds[2] - tableBounds[3]) / 2.0;
+
+                            Intent intent = getIntent();
+                            intent.putExtra(LibraryConstants.LATITUDE, lat);
+                            intent.putExtra(LibraryConstants.LONGITUDE, lon);
+                            setResult(Activity.RESULT_OK, intent);
+                            finish();
+
+                        } catch (jsqlite.Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }, null);
+
+                return true;
+            }
+        });
     }
 
     @Override

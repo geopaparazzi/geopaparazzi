@@ -338,7 +338,7 @@ public class SpatialDatabaseHandler {
         qSb.append(")) AS max_x, Max(MbrMaxY(");
         qSb.append(geom);
         qSb.append(")) AS max_y");
-        qSb.append("FROM ");
+        qSb.append(" FROM ");
         qSb.append(spatialTable.name);
         qSb.append(";");
 
