@@ -54,6 +54,10 @@ public class SpatialDatabasesManager {
         }
         return spatialDbManager;
     }
+    
+    public static void reset(){
+        spatialDbManager = null;
+    }
 
     public void init( Context context ) {
         File mapsDir = ResourcesManager.getInstance(context).getMapsDir();

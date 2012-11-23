@@ -392,6 +392,7 @@ public class GeoPaparazziActivity extends Activity {
             DatabaseManager.getInstance().getDatabase(this);
             checkMapsAndLogsVisibility();
 
+            SpatialDatabasesManager.reset();
             SpatialDatabasesManager.getInstance().init(this);
         } catch (IOException e) {
             Logger.e(this, e.getLocalizedMessage(), e);
