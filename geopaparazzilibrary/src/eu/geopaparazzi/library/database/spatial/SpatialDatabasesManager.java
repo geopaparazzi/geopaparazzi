@@ -107,6 +107,11 @@ public class SpatialDatabasesManager {
         }
     }
 
+    public SpatialDatabaseHandler getHandler( SpatialTable spatialTable ) throws Exception {
+        SpatialDatabaseHandler spatialDatabaseHandler = tablesMap.get(spatialTable);
+        return spatialDatabaseHandler;
+    }
+
     public SpatialTable getTableByName( String table ) throws Exception {
         List<SpatialTable> spatialTables = getSpatialTables(false);
         for( SpatialTable spatialTable : spatialTables ) {

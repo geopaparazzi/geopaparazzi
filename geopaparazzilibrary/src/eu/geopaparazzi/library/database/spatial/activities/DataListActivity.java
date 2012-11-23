@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -51,8 +50,10 @@ import eu.geopaparazzi.library.util.debug.Logger;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class DataListActivity extends ListActivity {
-    private static final int MOVE_UP = 1;
-    private static final int MOVE_DOWN = 2;
+    private static final int MOVE_TOP = 1;
+    private static final int MOVE_UP = 2;
+    private static final int MOVE_DOWN = 3;
+    private static final int MOVE_BOTTOM = 4;
 
     private static final int DATAPROPERTIES_RETURN_CODE = 668;
 
@@ -121,33 +122,15 @@ public class DataListActivity extends ListActivity {
             intent = new Intent(this, PointsDataPropertiesActivity.class);
         }
         intent.putExtra(LibraryConstants.PREFS_KEY_TEXT, spTable.name);
-        startActivityForResult(intent, DATAPROPERTIES_RETURN_CODE);
-    }
-
-    protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
-        if (Debug.D) {
-            Logger.d(this, "Activity returned"); //$NON-NLS-1$
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-        switch( requestCode ) {
-        case (DATAPROPERTIES_RETURN_CODE): {
-            if (resultCode == Activity.RESULT_OK) {
-                double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0d);
-                double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0d);
-                Intent intent = getIntent();
-                intent.putExtra(LibraryConstants.LATITUDE, lat);
-                intent.putExtra(LibraryConstants.LONGITUDE, lon);
-                setResult(Activity.RESULT_OK, intent);
-            }
-            break;
-        }
-        }
+        startActivity(intent);
     }
 
     public boolean onCreateOptionsMenu( Menu menu ) {
         super.onCreateOptionsMenu(menu);
-        menu.add(Menu.FIRST, MOVE_UP, 1, "Move UP").setIcon(android.R.drawable.ic_menu_add);
-        menu.add(Menu.FIRST, MOVE_DOWN, 2, "Move DOWN").setIcon(android.R.drawable.ic_menu_delete);
+        menu.add(Menu.FIRST, MOVE_BOTTOM, 1, "Move to BOTTOM");
+        menu.add(Menu.FIRST, MOVE_DOWN, 2, "Move DOWN");
+        menu.add(Menu.FIRST, MOVE_UP, 3, "Move UP");
+        menu.add(Menu.FIRST, MOVE_TOP, 4, "Move to TOP");
         return true;
     }
 
@@ -171,6 +154,17 @@ public class DataListActivity extends ListActivity {
         }
 
         switch( item.getItemId() ) {
+        case MOVE_TOP:
+            if (selectedTable != null) {
+                SpatialTable first = spatialTables.get(0);
+                int tmp1 = first.style.order;
+                int tmp2 = selectedTable.style.order;
+                selectedTable.style.order = tmp1;
+                first.style.order = tmp2;
+                Collections.sort(spatialTables, new OrderComparator());
+                refreshList(false);
+            }
+            return true;
         case MOVE_UP:
             if (selectedTable != null) {
                 if (beforeSelectedTable != null) {
@@ -190,6 +184,19 @@ public class DataListActivity extends ListActivity {
                     int tmp2 = selectedTable.style.order;
                     selectedTable.style.order = tmp1;
                     afterSelectedTable.style.order = tmp2;
+                    Collections.sort(spatialTables, new OrderComparator());
+                    refreshList(false);
+                }
+            }
+            return true;
+        case MOVE_BOTTOM:
+            if (selectedTable != null) {
+                if (selectedTable != null) {
+                    SpatialTable last = spatialTables.get(spatialTables.size() - 1);
+                    int tmp1 = last.style.order;
+                    int tmp2 = selectedTable.style.order;
+                    selectedTable.style.order = tmp1;
+                    last.style.order = tmp2;
                     Collections.sort(spatialTables, new OrderComparator());
                     refreshList(false);
                 }
