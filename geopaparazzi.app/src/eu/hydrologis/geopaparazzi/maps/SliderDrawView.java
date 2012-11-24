@@ -165,23 +165,9 @@ public class SliderDrawView extends View {
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
-                // left = tmpP.x < startP.x ? tmpP.x : startP.x;
-                // right = tmpP.x > startP.x ? tmpP.x : startP.x;
-                // bottom = tmpP.y < startP.y ? tmpP.y : startP.y;
-                // top = tmpP.y > startP.y ? tmpP.y : startP.y;
-                // rect.set((int) left, (int) top, (int) right, (int) bottom);
 
                 GeoPoint ul = pj.fromPixels((int) left, (int) top);
                 GeoPoint lr = pj.fromPixels((int) right, (int) bottom);
-
-                // float w = cGP.longitudeE6 < startGeoPoint.longitudeE6 ? cGP.longitudeE6 :
-                // startGeoPoint.longitudeE6;
-                // float e = cGP.longitudeE6 > startGeoPoint.longitudeE6 ? cGP.longitudeE6 :
-                // startGeoPoint.longitudeE6;
-                // float s = cGP.latitudeE6 < startGeoPoint.latitudeE6 ? cGP.latitudeE6 :
-                // startGeoPoint.latitudeE6;
-                // float n = cGP.latitudeE6 > startGeoPoint.latitudeE6 ? cGP.latitudeE6 :
-                // startGeoPoint.latitudeE6;
 
                 infoDialog(ul.getLatitude(), ul.getLongitude(), lr.getLatitude(), lr.getLongitude());
 
@@ -198,13 +184,6 @@ public class SliderDrawView extends View {
             currentY = event.getY();
 
             tmpP.set(round(currentX), round(currentY));
-
-            // if (lastX == -1 || lastY == -1) {
-            // // lose the first drag and set the delta
-            // lastX = currentX;
-            // lastY = currentY;
-            // return true;
-            // }
 
             int action = event.getAction();
             switch( action ) {
