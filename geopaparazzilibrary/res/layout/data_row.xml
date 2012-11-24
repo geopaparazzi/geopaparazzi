@@ -28,4 +28,20 @@
         android:text=""
         android:textColor="@color/main_text_color_neutral" />
 
+    <ImageButton
+        android:id="@+id/downButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/list_down" />
+
+    <ImageButton
+        android:id="@+id/upButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/downButton"
+        android:layout_toLeftOf="@+id/downButton"
+        android:src="@drawable/list_up" />
+
 </RelativeLayout>

@@ -35,6 +35,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -86,14 +87,43 @@ public class DataListActivity extends ListActivity {
 
         ArrayAdapter<SpatialTable> arrayAdapter = new ArrayAdapter<SpatialTable>(this, R.layout.data_row, spatialTables){
             @Override
-            public View getView( int position, View cView, ViewGroup parent ) {
+            public View getView( final int position, View cView, ViewGroup parent ) {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View rowView = inflater.inflate(R.layout.data_row, null);
+                final SpatialTable item = spatialTables.get(position);
 
                 TextView nameView = (TextView) rowView.findViewById(R.id.name);
                 CheckBox visibleView = (CheckBox) rowView.findViewById(R.id.visible);
+                ImageButton listUpButton = (ImageButton) rowView.findViewById(R.id.upButton);
+                listUpButton.setOnClickListener(new View.OnClickListener(){
+                    public void onClick( View v ) {
+                        if (position > 0) {
+                            SpatialTable before = spatialTables.get(position - 1);
+                            int tmp1 = before.style.order;
+                            int tmp2 = item.style.order;
+                            item.style.order = tmp1;
+                            before.style.order = tmp2;
+                            Collections.sort(spatialTables, new OrderComparator());
+                            refreshList(false);
+                        }
+                    }
+                });
 
-                final SpatialTable item = spatialTables.get(position);
+                ImageButton listDownButton = (ImageButton) rowView.findViewById(R.id.downButton);
+                listDownButton.setOnClickListener(new View.OnClickListener(){
+                    public void onClick( View v ) {
+                        if (position < spatialTables.size() - 1) {
+                            SpatialTable after = spatialTables.get(position + 1);
+                            int tmp1 = after.style.order;
+                            int tmp2 = item.style.order;
+                            item.style.order = tmp1;
+                            after.style.order = tmp2;
+                            Collections.sort(spatialTables, new OrderComparator());
+                            refreshList(false);
+                        }
+                    }
+                });
+
                 // rowView.setBackgroundColor(Color.parseColor(item.getColor()));
                 nameView.setText(item.name);
 
