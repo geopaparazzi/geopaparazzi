@@ -47,8 +47,6 @@ public class SliderDrawView extends View {
     private float currentY;
     private float lastX = -1;
     private float lastY = -1;
-    private float firstX = -1;
-    private float firstY = -1;
 
     // private boolean imperial = false;
     // private boolean nautical = false;
@@ -58,16 +56,18 @@ public class SliderDrawView extends View {
     // private final ResourceProxy resourceProxy;
 
     private final Point tmpP = new Point();
+    private final Point startP = new Point();
 
     private boolean doMeasureMode = false;
     private boolean doInfoMode = false;
+    private GeoPoint startGeoPoint;
 
     public SliderDrawView( Context context, AttributeSet attrs ) {
         super(context, attrs);
 
         measurePaint.setAntiAlias(true);
         measurePaint.setColor(Color.DKGRAY);
-        measurePaint.setStrokeWidth(3f);
+        measurePaint.setStrokeWidth(1.5f);
         measurePaint.setStyle(Paint.Style.STROKE);
 
         infoRectPaintFill.setAntiAlias(true);
@@ -127,6 +127,7 @@ public class SliderDrawView extends View {
         if (doInfoMode) {
 
             Projection pj = mapView.getProjection();
+
             // handle drawing
             currentX = event.getX();
             currentY = event.getY();
@@ -136,8 +137,8 @@ public class SliderDrawView extends View {
             int action = event.getAction();
             switch( action ) {
             case MotionEvent.ACTION_DOWN:
-                firstX = currentX;
-                firstY = currentY;
+                startGeoPoint = pj.fromPixels(round(currentX), round(currentY));
+                pj.toPixels(startGeoPoint, startP);
                 break;
             case MotionEvent.ACTION_MOVE:
                 float dx = currentX - lastX;
@@ -151,27 +152,24 @@ public class SliderDrawView extends View {
                 GeoPoint currentGeoPoint = pj.fromPixels(round(currentX), round(currentY));
                 pj.toPixels(currentGeoPoint, tmpP);
 
-                float left = currentX < firstX ? currentX : firstX;
-                float right = currentX > firstX ? currentX : firstX;
-                float bottom = currentY < firstY ? currentY : firstY;
-                float top = currentY > firstY ? currentY : firstY;
+                float left = tmpP.x < startP.x ? tmpP.x : startP.x;
+                float right = tmpP.x > startP.x ? tmpP.x : startP.x;
+                float bottom = tmpP.y < startP.y ? tmpP.y : startP.y;
+                float top = tmpP.y > startP.y ? tmpP.y : startP.y;
                 rect.set((int) left, (int) top, (int) right, (int) bottom);
 
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
-                float l = currentX < firstX ? currentX : firstX;
-                float r = currentX > firstX ? currentX : firstX;
-                float b = currentY < firstY ? currentY : firstY;
-                float t = currentY > firstY ? currentY : firstY;
+                GeoPoint cGP = pj.fromPixels(round(currentX), round(currentY));
+                pj.toPixels(cGP, tmpP);
 
-                GeoPoint ul = pj.fromPixels(round(l), round(t));
-                GeoPoint lr = pj.fromPixels(round(r), round(b));
-                double n = ul.getLatitude();
-                double w = ul.getLongitude();
-                double s = lr.getLatitude();
-                double e = lr.getLongitude();
-                infoDialog(n, w, s, e);
+                float w = cGP.longitudeE6 < startGeoPoint.longitudeE6 ? cGP.longitudeE6 : startGeoPoint.longitudeE6;
+                float e = cGP.longitudeE6 > startGeoPoint.longitudeE6 ? cGP.longitudeE6 : startGeoPoint.longitudeE6;
+                float s = cGP.latitudeE6 < startGeoPoint.latitudeE6 ? cGP.latitudeE6 : startGeoPoint.latitudeE6;
+                float n = cGP.latitudeE6 > startGeoPoint.latitudeE6 ? cGP.latitudeE6 : startGeoPoint.latitudeE6;
+
+                infoDialog(n / 1E6, w / 1E6, s / 1E6, e / 1E6);
 
                 if (Debug.D)
                     Logger.d(this, "UNTOUCH: " + tmpP.x + "/" + tmpP.y); //$NON-NLS-1$//$NON-NLS-2$
