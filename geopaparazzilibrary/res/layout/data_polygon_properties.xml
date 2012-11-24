@@ -149,4 +149,29 @@
         android:entries="@array/array_percentage"
         android:padding="5dp" />
 
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/decimation_text"
+        android:layout_alignParentLeft="true"
+        android:layout_alignRight="@+id/textView5"
+        android:layout_below="@+id/textView5"
+        android:gravity="center_vertical"
+        android:padding="5dp"
+        android:text="@string/decimation"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/main_text_color_neutral" />
+
+    <EditText
+        android:id="@+id/decimation_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/fill_alpha_spinner"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/fill_alpha_spinner"
+        android:inputType="numberDecimal"
+        android:padding="5dp"
+        android:text="0.00001" />
+
 </RelativeLayout>

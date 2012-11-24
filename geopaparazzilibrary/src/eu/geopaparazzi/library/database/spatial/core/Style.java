@@ -32,6 +32,7 @@ public class Style {
     public String shape = "square";
     public float width = 3f;
     public float textsize = 5f;
+    public float decimationFactor = 0.00001f;
     public String textfield = "";
     public int enabled = 0;
     public int order = 0;
@@ -62,6 +63,8 @@ public class Style {
         sb.append(enabled);
         sb.append(", ");
         sb.append(order);
+        sb.append(", ");
+        sb.append(decimationFactor);
         return sb.toString();
     }
 

@@ -78,5 +78,6 @@
     <string name="fill_alpha">Fill alpha</string>
     <string name="point_shape_">"Point shape     "</string>
     <string name="point_size">Point size</string>
+    <string name="decimation">Decimation</string>
 
 </resources>

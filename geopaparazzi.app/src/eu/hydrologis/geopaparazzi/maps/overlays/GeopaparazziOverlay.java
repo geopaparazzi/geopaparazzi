@@ -623,7 +623,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                             drawZoomLevel);
                     ShapeWriter wr = new ShapeWriter(pointTransformer);
                     wr.setRemoveDuplicatePoints(true);
-                    wr.setDecimation(0.00001);
+                    wr.setDecimation(spatialTable.style.decimationFactor);
                     while( geometryIterator.hasNext() ) {
                         Geometry geom = geometryIterator.next();
                         Shape shape = wr.toShape(geom);

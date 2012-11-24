@@ -54,6 +54,7 @@ public class SpatialDatabaseHandler {
     private static final String TEXTFIELD = "textfield";
     private static final String ENABLED = "enabled";
     private static final String ORDER = "layerorder";
+    private static final String DECIMATION = "decimationfactor";
 
     private final String PROPERTIESTABLE = "dataproperties";
 
@@ -216,7 +217,8 @@ public class SpatialDatabaseHandler {
             sb.append(TEXTSIZE).append(" REAL, ");
             sb.append(TEXTFIELD).append(" TEXT, ");
             sb.append(ENABLED).append(" INTEGER, ");
-            sb.append(ORDER).append(" INTEGER");
+            sb.append(ORDER).append(" INTEGER,");
+            sb.append(DECIMATION).append(" REAL");
             sb.append(" );");
             String query = sb.toString();
             db.exec(query, null);
@@ -236,7 +238,8 @@ public class SpatialDatabaseHandler {
                 sbIn.append(TEXTSIZE).append(" , ");
                 sbIn.append(TEXTFIELD).append(" , ");
                 sbIn.append(ENABLED).append(" , ");
-                sbIn.append(ORDER);
+                sbIn.append(ORDER).append(" , ");
+                sbIn.append(DECIMATION);
                 sbIn.append(" ) ");
                 sbIn.append(" values ");
                 sbIn.append(" ( ");
@@ -274,7 +277,8 @@ public class SpatialDatabaseHandler {
         sbSel.append(TEXTSIZE).append(" , ");
         sbSel.append(TEXTFIELD).append(" , ");
         sbSel.append(ENABLED).append(" , ");
-        sbSel.append(ORDER);
+        sbSel.append(ORDER).append(" , ");
+        sbSel.append(DECIMATION);
         sbSel.append(" from ");
         sbSel.append(PROPERTIESTABLE);
         sbSel.append(" where ");
@@ -295,6 +299,7 @@ public class SpatialDatabaseHandler {
                 style.textfield = stmt.column_string(8);
                 style.enabled = stmt.column_int(9);
                 style.order = stmt.column_int(10);
+                style.decimationFactor = (float) stmt.column_double(11);
             }
         } finally {
             stmt.close();
@@ -380,7 +385,8 @@ public class SpatialDatabaseHandler {
         sbIn.append(TEXTSIZE).append("=").append(style.textsize).append(" , ");
         sbIn.append(TEXTFIELD).append("='").append(style.textfield).append("' , ");
         sbIn.append(ENABLED).append("=").append(style.enabled).append(" , ");
-        sbIn.append(ORDER).append("=").append(style.order);
+        sbIn.append(ORDER).append("=").append(style.order).append(" , ");
+        sbIn.append(DECIMATION).append("=").append(style.decimationFactor);
         sbIn.append(" where ");
         sbIn.append(NAME);
         sbIn.append("='");

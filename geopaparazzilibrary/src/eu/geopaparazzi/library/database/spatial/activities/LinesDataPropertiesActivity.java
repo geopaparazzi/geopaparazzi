@@ -21,8 +21,7 @@ import jsqlite.Exception;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.EditText;
 import android.widget.Spinner;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.spatial.SpatialDatabasesManager;
@@ -34,11 +33,12 @@ import eu.geopaparazzi.library.util.LibraryConstants;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class LinesDataPropertiesActivity extends Activity implements OnItemSelectedListener {
+public class LinesDataPropertiesActivity extends Activity {
     private SpatialTable spatialTable;
     private Spinner colorSpinner;
     private Spinner widthSpinner;
     private Spinner alphaSpinner;
+    private EditText decimationText;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -54,7 +54,6 @@ public class LinesDataPropertiesActivity extends Activity implements OnItemSelec
         }
 
         colorSpinner = (Spinner) findViewById(R.id.color_spinner);
-        colorSpinner.setOnItemSelectedListener(this);
         String strokecolor = spatialTable.style.strokecolor;
         int count = colorSpinner.getCount();
         for( int i = 0; i < count; i++ ) {
@@ -65,7 +64,6 @@ public class LinesDataPropertiesActivity extends Activity implements OnItemSelec
         }
         String width = String.valueOf((int) spatialTable.style.width);
         widthSpinner = (Spinner) findViewById(R.id.width_spinner);
-        widthSpinner.setOnItemSelectedListener(this);
         count = widthSpinner.getCount();
         for( int i = 0; i < count; i++ ) {
             if (widthSpinner.getItemAtPosition(i).equals(width)) {
@@ -75,7 +73,6 @@ public class LinesDataPropertiesActivity extends Activity implements OnItemSelec
         }
         String alpha = String.valueOf((int) (spatialTable.style.strokealpha * 100f));
         alphaSpinner = (Spinner) findViewById(R.id.alpha_spinner);
-        alphaSpinner.setOnItemSelectedListener(this);
         count = alphaSpinner.getCount();
         for( int i = 0; i < count; i++ ) {
             if (alphaSpinner.getItemAtPosition(i).equals(alpha)) {
@@ -83,9 +80,36 @@ public class LinesDataPropertiesActivity extends Activity implements OnItemSelec
                 break;
             }
         }
+
+        String decimation = String.valueOf(spatialTable.style.decimationFactor);
+        decimationText = (EditText) findViewById(R.id.decimation_text);
+        decimationText.setText(decimation);
     }
 
     public void onOkClick( View view ) {
+        String color = (String) colorSpinner.getSelectedItem();
+        spatialTable.style.strokecolor = color;
+
+        String widthString = (String) widthSpinner.getSelectedItem();
+        float width = 1f;
+        try {
+            width = Float.parseFloat(widthString);
+        } catch (java.lang.Exception e) {
+        }
+        spatialTable.style.width = width;
+
+        String alphaString = (String) alphaSpinner.getSelectedItem();
+        float alpha100 = Float.parseFloat(alphaString);
+        spatialTable.style.strokealpha = alpha100 / 100f;
+
+        String decimationString = decimationText.getText().toString();
+        float decimation = 0.0f;
+        try {
+            decimation = Float.parseFloat(decimationString);
+        } catch (java.lang.Exception e) {
+        }
+        spatialTable.style.decimationFactor = decimation;
+
         try {
             SpatialDatabasesManager.getInstance().updateStyle(spatialTable);
             finish();
@@ -96,26 +120,6 @@ public class LinesDataPropertiesActivity extends Activity implements OnItemSelec
 
     public void onCancelClick( View view ) {
         finish();
-    }
-
-    @Override
-    public void onItemSelected( AdapterView< ? > callingView, View view, int arg2, long arg3 ) {
-        if (callingView.equals(colorSpinner)) {
-            String color = (String) colorSpinner.getSelectedItem();
-            spatialTable.style.strokecolor = color;
-        } else if (callingView.equals(widthSpinner)) {
-            String widthString = (String) widthSpinner.getSelectedItem();
-            float width = Float.parseFloat(widthString);
-            spatialTable.style.width = width;
-        } else if (callingView.equals(alphaSpinner)) {
-            String alphaString = (String) alphaSpinner.getSelectedItem();
-            float alpha100 = Float.parseFloat(alphaString);
-            spatialTable.style.strokealpha = alpha100 / 100f;
-        }
-    }
-
-    @Override
-    public void onNothingSelected( AdapterView< ? > arg0 ) {
     }
 
 }

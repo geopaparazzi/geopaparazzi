@@ -21,8 +21,7 @@ import jsqlite.Exception;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.EditText;
 import android.widget.Spinner;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.spatial.SpatialDatabasesManager;
@@ -34,13 +33,14 @@ import eu.geopaparazzi.library.util.LibraryConstants;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class PolygonsDataPropertiesActivity extends Activity implements OnItemSelectedListener {
+public class PolygonsDataPropertiesActivity extends Activity {
     private SpatialTable spatialTable;
     private Spinner colorSpinner;
     private Spinner widthSpinner;
     private Spinner alphaSpinner;
     private Spinner fillColorSpinner;
     private Spinner fillAlphaSpinner;
+    private EditText decimationText;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -56,7 +56,6 @@ public class PolygonsDataPropertiesActivity extends Activity implements OnItemSe
         }
 
         colorSpinner = (Spinner) findViewById(R.id.color_spinner);
-        colorSpinner.setOnItemSelectedListener(this);
         String strokecolor = spatialTable.style.strokecolor;
         int count = colorSpinner.getCount();
         for( int i = 0; i < count; i++ ) {
@@ -67,7 +66,6 @@ public class PolygonsDataPropertiesActivity extends Activity implements OnItemSe
         }
         String width = String.valueOf((int) spatialTable.style.width);
         widthSpinner = (Spinner) findViewById(R.id.width_spinner);
-        widthSpinner.setOnItemSelectedListener(this);
         count = widthSpinner.getCount();
         for( int i = 0; i < count; i++ ) {
             if (widthSpinner.getItemAtPosition(i).equals(width)) {
@@ -77,7 +75,6 @@ public class PolygonsDataPropertiesActivity extends Activity implements OnItemSe
         }
         String alpha = String.valueOf((int) (spatialTable.style.strokealpha * 100f));
         alphaSpinner = (Spinner) findViewById(R.id.alpha_spinner);
-        alphaSpinner.setOnItemSelectedListener(this);
         count = alphaSpinner.getCount();
         for( int i = 0; i < count; i++ ) {
             if (alphaSpinner.getItemAtPosition(i).equals(alpha)) {
@@ -87,7 +84,6 @@ public class PolygonsDataPropertiesActivity extends Activity implements OnItemSe
         }
 
         fillColorSpinner = (Spinner) findViewById(R.id.fill_color_spinner);
-        fillColorSpinner.setOnItemSelectedListener(this);
         String fillcolor = spatialTable.style.fillcolor;
         count = fillColorSpinner.getCount();
         for( int i = 0; i < count; i++ ) {
@@ -99,7 +95,6 @@ public class PolygonsDataPropertiesActivity extends Activity implements OnItemSe
 
         String fillAlpha = String.valueOf((int) (spatialTable.style.fillalpha * 100f));
         fillAlphaSpinner = (Spinner) findViewById(R.id.fill_alpha_spinner);
-        fillAlphaSpinner.setOnItemSelectedListener(this);
         count = fillAlphaSpinner.getCount();
         for( int i = 0; i < count; i++ ) {
             if (fillAlphaSpinner.getItemAtPosition(i).equals(fillAlpha)) {
@@ -108,9 +103,39 @@ public class PolygonsDataPropertiesActivity extends Activity implements OnItemSe
             }
         }
 
+        String decimation = String.valueOf(spatialTable.style.decimationFactor);
+        decimationText = (EditText) findViewById(R.id.decimation_text);
+        decimationText.setText(decimation);
     }
 
     public void onOkClick( View view ) {
+
+        String color = (String) colorSpinner.getSelectedItem();
+        spatialTable.style.strokecolor = color;
+
+        String widthString = (String) widthSpinner.getSelectedItem();
+        float width = Float.parseFloat(widthString);
+        spatialTable.style.width = width;
+
+        String alphaString = (String) alphaSpinner.getSelectedItem();
+        float alpha100 = Float.parseFloat(alphaString);
+        spatialTable.style.strokealpha = alpha100 / 100f;
+
+        String fillcolor = (String) fillColorSpinner.getSelectedItem();
+        spatialTable.style.fillcolor = fillcolor;
+
+        String fillAlphaString = (String) fillAlphaSpinner.getSelectedItem();
+        float fillAlpha100 = Float.parseFloat(fillAlphaString);
+        spatialTable.style.fillalpha = fillAlpha100 / 100f;
+
+        String decimationString = decimationText.getText().toString();
+        float decimation = 0.0f;
+        try {
+            decimation = Float.parseFloat(decimationString);
+        } catch (java.lang.Exception e) {
+        }
+        spatialTable.style.decimationFactor = decimation;
+
         try {
             SpatialDatabasesManager.getInstance().updateStyle(spatialTable);
             finish();
@@ -121,33 +146,6 @@ public class PolygonsDataPropertiesActivity extends Activity implements OnItemSe
 
     public void onCancelClick( View view ) {
         finish();
-    }
-
-    @Override
-    public void onItemSelected( AdapterView< ? > callingView, View view, int arg2, long arg3 ) {
-        if (callingView.equals(colorSpinner)) {
-            String color = (String) colorSpinner.getSelectedItem();
-            spatialTable.style.strokecolor = color;
-        } else if (callingView.equals(widthSpinner)) {
-            String widthString = (String) widthSpinner.getSelectedItem();
-            float width = Float.parseFloat(widthString);
-            spatialTable.style.width = width;
-        } else if (callingView.equals(alphaSpinner)) {
-            String alphaString = (String) alphaSpinner.getSelectedItem();
-            float alpha100 = Float.parseFloat(alphaString);
-            spatialTable.style.strokealpha = alpha100 / 100f;
-        } else if (callingView.equals(fillColorSpinner)) {
-            String color = (String) fillColorSpinner.getSelectedItem();
-            spatialTable.style.fillcolor = color;
-        } else if (callingView.equals(fillAlphaSpinner)) {
-            String alphaString = (String) fillAlphaSpinner.getSelectedItem();
-            float alpha100 = Float.parseFloat(alphaString);
-            spatialTable.style.fillalpha = alpha100 / 100f;
-        }
-    }
-
-    @Override
-    public void onNothingSelected( AdapterView< ? > arg0 ) {
     }
 
 }
