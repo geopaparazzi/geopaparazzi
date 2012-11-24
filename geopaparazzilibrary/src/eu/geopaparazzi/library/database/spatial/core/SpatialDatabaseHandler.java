@@ -634,6 +634,7 @@ public class SpatialDatabaseHandler {
                     String value = stmt.column_string(i);
                     sb.append(indentStr).append(cName).append(": ").append(value).append("\n");
                 }
+                sb.append("\n");
             }
         } finally {
             stmt.close();
@@ -698,6 +699,7 @@ public class SpatialDatabaseHandler {
                     String value = stmt.column_string(i);
                     sb.append(indentStr).append(cName).append(": ").append(value).append("\n");
                 }
+                sb.append("\n");
             }
         } finally {
             stmt.close();

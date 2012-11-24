@@ -37,12 +37,18 @@ public class SliderDrawView extends View {
     private MapView mapView;
     private final Paint measurePaint = new Paint();
     private final Paint measureTextPaint = new Paint();
-
     private final Path measurePath = new Path();
+
+    private final Paint infoRectPaintStroke = new Paint();
+    private final Paint infoRectPaintFill = new Paint();
+    private final Rect rect = new Rect();
+
     private float currentX;
     private float currentY;
     private float lastX = -1;
     private float lastY = -1;
+    private float firstX = -1;
+    private float firstY = -1;
 
     // private boolean imperial = false;
     // private boolean nautical = false;
@@ -52,7 +58,6 @@ public class SliderDrawView extends View {
     // private final ResourceProxy resourceProxy;
 
     private final Point tmpP = new Point();
-    private final Rect rect = new Rect();
 
     private boolean doMeasureMode = false;
     private boolean doInfoMode = false;
@@ -64,6 +69,15 @@ public class SliderDrawView extends View {
         measurePaint.setColor(Color.DKGRAY);
         measurePaint.setStrokeWidth(3f);
         measurePaint.setStyle(Paint.Style.STROKE);
+
+        infoRectPaintFill.setAntiAlias(true);
+        infoRectPaintFill.setColor(Color.BLUE);
+        infoRectPaintFill.setAlpha(80);
+        infoRectPaintFill.setStyle(Paint.Style.FILL);
+        infoRectPaintStroke.setAntiAlias(true);
+        infoRectPaintStroke.setStrokeWidth(3f);
+        infoRectPaintStroke.setColor(Color.BLUE);
+        infoRectPaintStroke.setStyle(Paint.Style.STROKE);
 
         measureTextPaint.setAntiAlias(true);
         int pixel = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics());
@@ -98,6 +112,9 @@ public class SliderDrawView extends View {
             canvas.drawText(distanceText, x, upper + delta + textHeight, measureTextPaint);
             if (Debug.D)
                 Logger.d(this, "Drawing measure path text: " + upper); //$NON-NLS-1$
+        } else if (doInfoMode) {
+            canvas.drawRect(rect, infoRectPaintFill);
+            canvas.drawRect(rect, infoRectPaintStroke);
         }
     }
 
@@ -108,23 +125,53 @@ public class SliderDrawView extends View {
         }
 
         if (doInfoMode) {
+
+            Projection pj = mapView.getProjection();
+            // handle drawing
+            currentX = event.getX();
+            currentY = event.getY();
+
+            tmpP.set(round(currentX), round(currentY));
+
             int action = event.getAction();
             switch( action ) {
+            case MotionEvent.ACTION_DOWN:
+                firstX = currentX;
+                firstY = currentY;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                float dx = currentX - lastX;
+                float dy = currentY - lastY;
+                if (abs(dx) < 1 && abs(dy) < 1) {
+                    lastX = currentX;
+                    lastY = currentY;
+                    return true;
+                }
+
+                GeoPoint currentGeoPoint = pj.fromPixels(round(currentX), round(currentY));
+                pj.toPixels(currentGeoPoint, tmpP);
+
+                float left = currentX < firstX ? currentX : firstX;
+                float right = currentX > firstX ? currentX : firstX;
+                float bottom = currentY < firstY ? currentY : firstY;
+                float top = currentY > firstY ? currentY : firstY;
+                rect.set((int) left, (int) top, (int) right, (int) bottom);
+
+                invalidate();
+                break;
             case MotionEvent.ACTION_UP:
-                Projection pj = mapView.getProjection();
-                float x = event.getX();
-                float y = event.getY();
-                int delta = 10;
-                GeoPoint p = pj.fromPixels(round(x), round(y));
-                GeoPoint ul = pj.fromPixels(round(x - delta), round(y - delta));
-                GeoPoint lr = pj.fromPixels(round(x + delta), round(y + delta));
-                double yW = p.getLatitude();
-                double xW = p.getLongitude();
+                float l = currentX < firstX ? currentX : firstX;
+                float r = currentX > firstX ? currentX : firstX;
+                float b = currentY < firstY ? currentY : firstY;
+                float t = currentY > firstY ? currentY : firstY;
+
+                GeoPoint ul = pj.fromPixels(round(l), round(t));
+                GeoPoint lr = pj.fromPixels(round(r), round(b));
                 double n = ul.getLatitude();
                 double w = ul.getLongitude();
                 double s = lr.getLatitude();
                 double e = lr.getLongitude();
-                infoDialog(xW, yW, n, w, s, e);
+                infoDialog(n, w, s, e);
 
                 if (Debug.D)
                     Logger.d(this, "UNTOUCH: " + tmpP.x + "/" + tmpP.y); //$NON-NLS-1$//$NON-NLS-2$
@@ -201,7 +248,7 @@ public class SliderDrawView extends View {
         return true;
     }
 
-    private void infoDialog( final double xW, final double yW, final double n, final double w, final double s, final double e ) {
+    private void infoDialog( final double n, final double w, final double s, final double e ) {
         try {
             final SpatialDatabasesManager sdbManager = SpatialDatabasesManager.getInstance();
             final List<SpatialTable> spatialTables = sdbManager.getSpatialTables(false);
@@ -221,23 +268,28 @@ public class SliderDrawView extends View {
 
                 protected String doInBackground( String... params ) {
                     try {
-                        StringBuilder sb = new StringBuilder();
+                        boolean oneEnabled = false;
                         for( SpatialTable spatialTable : spatialTables ) {
                             if (spatialTable.style.enabled == 0) {
                                 continue;
                             }
-                            StringBuilder sbTmp = new StringBuilder();
-                            if (spatialTable.isPolygon()) {
-                                // query just the point
-                                sdbManager.intersectionToString("4326", spatialTable, yW, xW, sbTmp, "\t");
-                            } else {
+                            oneEnabled = true;
+                            break;
+                        }
+                        StringBuilder sb = new StringBuilder();
+                        if (oneEnabled) {
+                            for( SpatialTable spatialTable : spatialTables ) {
+                                if (spatialTable.style.enabled == 0) {
+                                    continue;
+                                }
+                                StringBuilder sbTmp = new StringBuilder();
                                 sdbManager.intersectionToString("4326", spatialTable, n, s, e, w, sbTmp, "\t");
-                            }
-                            sb.append(spatialTable.name).append("\n");
-                            sb.append(sbTmp);
-                            sb.append("\n----------------------\n");
+                                sb.append(spatialTable.name).append("\n");
+                                sb.append(sbTmp);
+                                sb.append("\n----------------------\n");
 
-                            onProgressUpdate(0);
+                                onProgressUpdate(0);
+                            }
                         }
                         return sb.toString();
                     } catch (Exception e) {
@@ -252,7 +304,9 @@ public class SliderDrawView extends View {
 
                 protected void onPostExecute( String response ) { // on UI thread!
                     importDialog.dismiss();
-                    if (response.startsWith("ERROR")) {
+                    if (response.length() == 0) {
+                        Utilities.messageDialog(context, "No queriable layer is visible.", null);
+                    } else if (response.startsWith("ERROR")) {
                         Utilities.messageDialog(context, response, null);
                     } else {
                         Utilities.messageDialog(context, response, null);
