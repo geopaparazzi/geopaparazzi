@@ -561,40 +561,40 @@ public class SpatialDatabaseHandler {
         // AND search_frame = il-tuo-bbox
         // );
 
-        {
-            StringBuilder sbQ = new StringBuilder();
-            sbQ.append("SELECT ");
-            sbQ.append("*");
-            sbQ.append(" from ").append(spatialTable.name);
-            sbQ.append(" where ROWID IN (");
-            sbQ.append(" SELECT ROWID FROM Spatialindex WHERE f_table_name ='");
-            sbQ.append(spatialTable.name);
-            sbQ.append("' AND search_frame = ");
-            if (doTransform)
-                sbQ.append("ST_Transform(");
-            sbQ.append("BuildMBR(");
-            sbQ.append(w);
-            sbQ.append(", ");
-            sbQ.append(s);
-            sbQ.append(", ");
-            sbQ.append(e);
-            sbQ.append(", ");
-            sbQ.append(n);
-            if (doTransform) {
-                sbQ.append(", ");
-                sbQ.append(boundsSrid);
-            }
-            sbQ.append(")");
-            if (doTransform) {
-                sbQ.append(",");
-                sbQ.append(spatialTable.srid);
-                sbQ.append(")");
-            }
-            sbQ.append(");");
-
-            query = sbQ.toString();
-            Logger.i(this, query);
-        }
+        // {
+        // StringBuilder sbQ = new StringBuilder();
+        // sbQ.append("SELECT ");
+        // sbQ.append("*");
+        // sbQ.append(" from ").append(spatialTable.name);
+        // sbQ.append(" where ROWID IN (");
+        // sbQ.append(" SELECT ROWID FROM Spatialindex WHERE f_table_name ='");
+        // sbQ.append(spatialTable.name);
+        // sbQ.append("' AND search_frame = ");
+        // if (doTransform)
+        // sbQ.append("ST_Transform(");
+        // sbQ.append("BuildMBR(");
+        // sbQ.append(w);
+        // sbQ.append(", ");
+        // sbQ.append(s);
+        // sbQ.append(", ");
+        // sbQ.append(e);
+        // sbQ.append(", ");
+        // sbQ.append(n);
+        // if (doTransform) {
+        // sbQ.append(", ");
+        // sbQ.append(boundsSrid);
+        // }
+        // sbQ.append(")");
+        // if (doTransform) {
+        // sbQ.append(",");
+        // sbQ.append(spatialTable.srid);
+        // sbQ.append(")");
+        // }
+        // sbQ.append(");");
+        //
+        // query = sbQ.toString();
+        // Logger.i(this, query);
+        // }
         {
             StringBuilder sbQ = new StringBuilder();
             sbQ.append("SELECT ");
@@ -623,7 +623,7 @@ public class SpatialDatabaseHandler {
 
             query = sbQ.toString();
 
-            Logger.i(this, query);
+            // Logger.i(this, query);
         }
 
         Stmt stmt = db.prepare(query);

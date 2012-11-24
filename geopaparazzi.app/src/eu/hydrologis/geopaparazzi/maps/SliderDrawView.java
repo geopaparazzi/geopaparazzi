@@ -269,12 +269,23 @@ public class SliderDrawView extends View {
                         }
                         StringBuilder sb = new StringBuilder();
                         if (oneEnabled) {
+                            double north = n;
+                            double south = s;
+                            if (n - s == 0) {
+                                south = n - 1;
+                            }
+                            double west = w;
+                            double east = e;
+                            if (e - w == 0) {
+                                west = e - 1;
+                            }
+
                             for( SpatialTable spatialTable : spatialTables ) {
                                 if (spatialTable.style.enabled == 0) {
                                     continue;
                                 }
                                 StringBuilder sbTmp = new StringBuilder();
-                                sdbManager.intersectionToString("4326", spatialTable, n, s, e, w, sbTmp, "\t");
+                                sdbManager.intersectionToString("4326", spatialTable, north, south, east, west, sbTmp, "\t");
                                 sb.append(spatialTable.name).append("\n");
                                 sb.append(sbTmp);
                                 sb.append("\n----------------------\n");
