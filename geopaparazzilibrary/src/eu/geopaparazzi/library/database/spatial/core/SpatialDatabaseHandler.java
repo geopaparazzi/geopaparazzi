@@ -410,9 +410,10 @@ public class SpatialDatabaseHandler {
     public Paint getFillPaint4Style( Style style ) {
         Paint paint = fillPaints.get(style.name);
         if (paint == null) {
-            paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            paint = new Paint();
             fillPaints.put(style.name, paint);
         }
+        paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.parseColor(style.fillcolor));
         float alpha = style.fillalpha * 255f;

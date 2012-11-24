@@ -54,10 +54,6 @@ import eu.geopaparazzi.library.util.debug.Logger;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class DataListActivity extends ListActivity {
-    private static final int MOVE_TOP = 1;
-    private static final int MOVE_UP = 2;
-    private static final int MOVE_DOWN = 3;
-    private static final int MOVE_BOTTOM = 4;
 
     private List<SpatialTable> spatialTables = new ArrayList<SpatialTable>();;
 
@@ -124,6 +120,43 @@ public class DataListActivity extends ListActivity {
                     }
                 });
 
+                ImageButton propertiesButton = (ImageButton) rowView.findViewById(R.id.propertiesButton);
+                propertiesButton.setOnClickListener(new View.OnClickListener(){
+                    public void onClick( View v ) {
+                        Intent intent = null;
+                        if (item.isLine()) {
+                            intent = new Intent(DataListActivity.this, LinesDataPropertiesActivity.class);
+                        } else if (item.isPolygon()) {
+                            intent = new Intent(DataListActivity.this, PolygonsDataPropertiesActivity.class);
+                        } else if (item.isPoint()) {
+                            intent = new Intent(DataListActivity.this, PointsDataPropertiesActivity.class);
+                        }
+                        intent.putExtra(LibraryConstants.PREFS_KEY_TEXT, item.name);
+                        startActivity(intent);
+
+                    }
+                });
+
+                ImageButton zoomtoButton = (ImageButton) rowView.findViewById(R.id.zoomtoButton);
+                zoomtoButton.setOnClickListener(new View.OnClickListener(){
+                    public void onClick( View v ) {
+                        try {
+                            float[] tableBounds = SpatialDatabasesManager.getInstance().getHandler(item)
+                                    .getTableBounds(item, "4326");
+                            double lat = tableBounds[1] + (tableBounds[0] - tableBounds[1]) / 2.0;
+                            double lon = tableBounds[3] + (tableBounds[2] - tableBounds[3]) / 2.0;
+
+                            Intent intent = getIntent();
+                            intent.putExtra(LibraryConstants.LATITUDE, lat);
+                            intent.putExtra(LibraryConstants.LONGITUDE, lon);
+                            setResult(Activity.RESULT_OK, intent);
+                            finish();
+                        } catch (jsqlite.Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
                 // rowView.setBackgroundColor(Color.parseColor(item.getColor()));
                 nameView.setText(item.name);
 
@@ -139,134 +172,79 @@ public class DataListActivity extends ListActivity {
         };
         setListAdapter(arrayAdapter);
 
-        ListView listView = getListView();
-        // Then you can create a listener like so:
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
-            public boolean onItemLongClick( AdapterView< ? > arg0, View arg1, int pos, long arg3 ) {
-                final SpatialTable item = spatialTables.get(pos);
-
-                Utilities.yesNoMessageDialog(DataListActivity.this, "Zoom to the selected layer?", new Runnable(){
-                    public void run() {
-                        try {
-                            float[] tableBounds = SpatialDatabasesManager.getInstance().getHandler(item)
-                                    .getTableBounds(item, "4326");
-                            double lat = tableBounds[1] + (tableBounds[0] - tableBounds[1]) / 2.0;
-                            double lon = tableBounds[3] + (tableBounds[2] - tableBounds[3]) / 2.0;
-
-                            Intent intent = getIntent();
-                            intent.putExtra(LibraryConstants.LATITUDE, lat);
-                            intent.putExtra(LibraryConstants.LONGITUDE, lon);
-                            setResult(Activity.RESULT_OK, intent);
-                            finish();
-
-                        } catch (jsqlite.Exception e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                }, null);
-
-                return true;
-            }
-        });
     }
 
-    @Override
-    protected void onListItemClick( ListView parent, View v, int position, long id ) {
-        final SpatialTable spTable = spatialTables.get(position);
-
-        Intent intent = null;
-        if (spTable.isLine()) {
-            intent = new Intent(this, LinesDataPropertiesActivity.class);
-        } else if (spTable.isPolygon()) {
-            intent = new Intent(this, PolygonsDataPropertiesActivity.class);
-        } else if (spTable.isPoint()) {
-            intent = new Intent(this, PointsDataPropertiesActivity.class);
-        }
-        intent.putExtra(LibraryConstants.PREFS_KEY_TEXT, spTable.name);
-        startActivity(intent);
-    }
-
-    public boolean onCreateOptionsMenu( Menu menu ) {
-        super.onCreateOptionsMenu(menu);
-        menu.add(Menu.FIRST, MOVE_BOTTOM, 1, "Move to BOTTOM");
-        menu.add(Menu.FIRST, MOVE_DOWN, 2, "Move DOWN");
-        menu.add(Menu.FIRST, MOVE_UP, 3, "Move UP");
-        menu.add(Menu.FIRST, MOVE_TOP, 4, "Move to TOP");
-        return true;
-    }
-
-    public boolean onMenuItemSelected( int featureId, MenuItem item ) {
-        SpatialTable selectedTable = null;
-        SpatialTable beforeSelectedTable = null;
-        SpatialTable afterSelectedTable = null;
-        for( int i = 0; i < spatialTables.size(); i++ ) {
-            SpatialTable spatialTable = spatialTables.get(i);
-            if (spatialTable.style.enabled != 0) {
-                // pick the first enabled
-                selectedTable = spatialTable;
-                if (i > 0) {
-                    beforeSelectedTable = spatialTables.get(i - 1);
-                }
-                if (i < spatialTables.size() - 1) {
-                    afterSelectedTable = spatialTables.get(i + 1);
-                }
-                break;
-            }
-        }
-
-        switch( item.getItemId() ) {
-        case MOVE_TOP:
-            if (selectedTable != null) {
-                SpatialTable first = spatialTables.get(0);
-                int tmp1 = first.style.order;
-                int tmp2 = selectedTable.style.order;
-                selectedTable.style.order = tmp1;
-                first.style.order = tmp2;
-                Collections.sort(spatialTables, new OrderComparator());
-                refreshList(false);
-            }
-            return true;
-        case MOVE_UP:
-            if (selectedTable != null) {
-                if (beforeSelectedTable != null) {
-                    int tmp1 = beforeSelectedTable.style.order;
-                    int tmp2 = selectedTable.style.order;
-                    selectedTable.style.order = tmp1;
-                    beforeSelectedTable.style.order = tmp2;
-                    Collections.sort(spatialTables, new OrderComparator());
-                    refreshList(false);
-                }
-            }
-            return true;
-        case MOVE_DOWN:
-            if (selectedTable != null) {
-                if (afterSelectedTable != null) {
-                    int tmp1 = afterSelectedTable.style.order;
-                    int tmp2 = selectedTable.style.order;
-                    selectedTable.style.order = tmp1;
-                    afterSelectedTable.style.order = tmp2;
-                    Collections.sort(spatialTables, new OrderComparator());
-                    refreshList(false);
-                }
-            }
-            return true;
-        case MOVE_BOTTOM:
-            if (selectedTable != null) {
-                if (selectedTable != null) {
-                    SpatialTable last = spatialTables.get(spatialTables.size() - 1);
-                    int tmp1 = last.style.order;
-                    int tmp2 = selectedTable.style.order;
-                    selectedTable.style.order = tmp1;
-                    last.style.order = tmp2;
-                    Collections.sort(spatialTables, new OrderComparator());
-                    refreshList(false);
-                }
-            }
-            return true;
-        }
-        return super.onMenuItemSelected(featureId, item);
-    }
+    // public boolean onMenuItemSelected( int featureId, MenuItem item ) {
+    // SpatialTable selectedTable = null;
+    // SpatialTable beforeSelectedTable = null;
+    // SpatialTable afterSelectedTable = null;
+    // for( int i = 0; i < spatialTables.size(); i++ ) {
+    // SpatialTable spatialTable = spatialTables.get(i);
+    // if (spatialTable.style.enabled != 0) {
+    // // pick the first enabled
+    // selectedTable = spatialTable;
+    // if (i > 0) {
+    // beforeSelectedTable = spatialTables.get(i - 1);
+    // }
+    // if (i < spatialTables.size() - 1) {
+    // afterSelectedTable = spatialTables.get(i + 1);
+    // }
+    // break;
+    // }
+    // }
+    //
+    // switch( item.getItemId() ) {
+    // case MOVE_TOP:
+    // if (selectedTable != null) {
+    // SpatialTable first = spatialTables.get(0);
+    // int tmp1 = first.style.order;
+    // int tmp2 = selectedTable.style.order;
+    // selectedTable.style.order = tmp1;
+    // first.style.order = tmp2;
+    // Collections.sort(spatialTables, new OrderComparator());
+    // refreshList(false);
+    // }
+    // return true;
+    // case MOVE_UP:
+    // if (selectedTable != null) {
+    // if (beforeSelectedTable != null) {
+    // int tmp1 = beforeSelectedTable.style.order;
+    // int tmp2 = selectedTable.style.order;
+    // selectedTable.style.order = tmp1;
+    // beforeSelectedTable.style.order = tmp2;
+    // Collections.sort(spatialTables, new OrderComparator());
+    // refreshList(false);
+    // }
+    // }
+    // return true;
+    // case MOVE_DOWN:
+    // if (selectedTable != null) {
+    // if (afterSelectedTable != null) {
+    // int tmp1 = afterSelectedTable.style.order;
+    // int tmp2 = selectedTable.style.order;
+    // selectedTable.style.order = tmp1;
+    // afterSelectedTable.style.order = tmp2;
+    // Collections.sort(spatialTables, new OrderComparator());
+    // refreshList(false);
+    // }
+    // }
+    // return true;
+    // case MOVE_BOTTOM:
+    // if (selectedTable != null) {
+    // if (selectedTable != null) {
+    // SpatialTable last = spatialTables.get(spatialTables.size() - 1);
+    // int tmp1 = last.style.order;
+    // int tmp2 = selectedTable.style.order;
+    // selectedTable.style.order = tmp1;
+    // last.style.order = tmp2;
+    // Collections.sort(spatialTables, new OrderComparator());
+    // refreshList(false);
+    // }
+    // }
+    // return true;
+    // }
+    // return super.onMenuItemSelected(featureId, item);
+    // }
 
     @Override
     protected void onPause() {

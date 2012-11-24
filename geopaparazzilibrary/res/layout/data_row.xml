@@ -29,19 +29,35 @@
         android:textColor="@color/main_text_color_neutral" />
 
     <ImageButton
-        android:id="@+id/downButton"
+        android:id="@+id/propertiesButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:src="@drawable/list_down" />
+        android:layout_toRightOf="@+id/visible"
+        android:layout_below="@+id/visible"
+        android:src="@drawable/properties" />
+
+    <ImageButton
+        android:id="@+id/zoomtoButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/propertiesButton"
+        android:layout_toRightOf="@+id/propertiesButton"
+        android:src="@drawable/list_zoomto" />
 
     <ImageButton
         android:id="@+id/upButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/downButton"
-        android:layout_toLeftOf="@+id/downButton"
+        android:layout_alignTop="@+id/propertiesButton"
+        android:layout_toRightOf="@+id/zoomtoButton"
         android:src="@drawable/list_up" />
+
+    <ImageButton
+        android:id="@+id/downButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/propertiesButton"
+        android:layout_toRightOf="@+id/upButton"
+        android:src="@drawable/list_down" />
 
 </RelativeLayout>
