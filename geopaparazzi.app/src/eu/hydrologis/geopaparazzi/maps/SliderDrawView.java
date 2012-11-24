@@ -32,6 +32,7 @@ import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi.maps.overlays.SliderDrawProjection;
 
 public class SliderDrawView extends View {
     private MapView mapView;
@@ -61,13 +62,18 @@ public class SliderDrawView extends View {
     private boolean doMeasureMode = false;
     private boolean doInfoMode = false;
     private GeoPoint startGeoPoint;
+    private float left;
+    private float right;
+    private float bottom;
+    private float top;
+    private SliderDrawProjection sliderDrawProjection;
 
     public SliderDrawView( Context context, AttributeSet attrs ) {
         super(context, attrs);
 
         measurePaint.setAntiAlias(true);
         measurePaint.setColor(Color.DKGRAY);
-        measurePaint.setStrokeWidth(1.5f);
+        measurePaint.setStrokeWidth(3f);
         measurePaint.setStyle(Paint.Style.STROKE);
 
         infoRectPaintFill.setAntiAlias(true);
@@ -75,7 +81,7 @@ public class SliderDrawView extends View {
         infoRectPaintFill.setAlpha(80);
         infoRectPaintFill.setStyle(Paint.Style.FILL);
         infoRectPaintStroke.setAntiAlias(true);
-        infoRectPaintStroke.setStrokeWidth(3f);
+        infoRectPaintStroke.setStrokeWidth(1.5f);
         infoRectPaintStroke.setColor(Color.BLUE);
         infoRectPaintStroke.setStyle(Paint.Style.STROKE);
 
@@ -126,13 +132,11 @@ public class SliderDrawView extends View {
 
         if (doInfoMode) {
 
-            Projection pj = mapView.getProjection();
+            Projection pj = sliderDrawProjection;
 
             // handle drawing
             currentX = event.getX();
             currentY = event.getY();
-
-            tmpP.set(round(currentX), round(currentY));
 
             int action = event.getAction();
             switch( action ) {
@@ -152,24 +156,34 @@ public class SliderDrawView extends View {
                 GeoPoint currentGeoPoint = pj.fromPixels(round(currentX), round(currentY));
                 pj.toPixels(currentGeoPoint, tmpP);
 
-                float left = tmpP.x < startP.x ? tmpP.x : startP.x;
-                float right = tmpP.x > startP.x ? tmpP.x : startP.x;
-                float bottom = tmpP.y < startP.y ? tmpP.y : startP.y;
-                float top = tmpP.y > startP.y ? tmpP.y : startP.y;
+                left = tmpP.x < startP.x ? tmpP.x : startP.x;
+                right = tmpP.x > startP.x ? tmpP.x : startP.x;
+                bottom = tmpP.y < startP.y ? tmpP.y : startP.y;
+                top = tmpP.y > startP.y ? tmpP.y : startP.y;
                 rect.set((int) left, (int) top, (int) right, (int) bottom);
 
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
-                GeoPoint cGP = pj.fromPixels(round(currentX), round(currentY));
-                pj.toPixels(cGP, tmpP);
+                // left = tmpP.x < startP.x ? tmpP.x : startP.x;
+                // right = tmpP.x > startP.x ? tmpP.x : startP.x;
+                // bottom = tmpP.y < startP.y ? tmpP.y : startP.y;
+                // top = tmpP.y > startP.y ? tmpP.y : startP.y;
+                // rect.set((int) left, (int) top, (int) right, (int) bottom);
 
-                float w = cGP.longitudeE6 < startGeoPoint.longitudeE6 ? cGP.longitudeE6 : startGeoPoint.longitudeE6;
-                float e = cGP.longitudeE6 > startGeoPoint.longitudeE6 ? cGP.longitudeE6 : startGeoPoint.longitudeE6;
-                float s = cGP.latitudeE6 < startGeoPoint.latitudeE6 ? cGP.latitudeE6 : startGeoPoint.latitudeE6;
-                float n = cGP.latitudeE6 > startGeoPoint.latitudeE6 ? cGP.latitudeE6 : startGeoPoint.latitudeE6;
+                GeoPoint ul = pj.fromPixels((int) left, (int) top);
+                GeoPoint lr = pj.fromPixels((int) right, (int) bottom);
 
-                infoDialog(n / 1E6, w / 1E6, s / 1E6, e / 1E6);
+                // float w = cGP.longitudeE6 < startGeoPoint.longitudeE6 ? cGP.longitudeE6 :
+                // startGeoPoint.longitudeE6;
+                // float e = cGP.longitudeE6 > startGeoPoint.longitudeE6 ? cGP.longitudeE6 :
+                // startGeoPoint.longitudeE6;
+                // float s = cGP.latitudeE6 < startGeoPoint.latitudeE6 ? cGP.latitudeE6 :
+                // startGeoPoint.latitudeE6;
+                // float n = cGP.latitudeE6 > startGeoPoint.latitudeE6 ? cGP.latitudeE6 :
+                // startGeoPoint.latitudeE6;
+
+                infoDialog(ul.getLatitude(), ul.getLongitude(), lr.getLatitude(), lr.getLongitude());
 
                 if (Debug.D)
                     Logger.d(this, "UNTOUCH: " + tmpP.x + "/" + tmpP.y); //$NON-NLS-1$//$NON-NLS-2$
@@ -338,5 +352,7 @@ public class SliderDrawView extends View {
     public void enableInfo( MapView mapView ) {
         this.mapView = mapView;
         doInfoMode = true;
+
+        sliderDrawProjection = new SliderDrawProjection(mapView, this);
     }
 }

@@ -132,8 +132,6 @@ public class ShapeWriter {
             return new PointShapeFactory.Circle(size);
         } else if (shapeName.equals("cross")) {
             return new PointShapeFactory.Cross(size);
-        } else if (shapeName.equals("point")) {
-            return new PointShapeFactory.Point(size);
         } else if (shapeName.equals("square")) {
             return new PointShapeFactory.Square(size);
         } else if (shapeName.equals("star")) {

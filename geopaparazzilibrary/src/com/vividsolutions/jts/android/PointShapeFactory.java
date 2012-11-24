@@ -94,49 +94,6 @@ public interface PointShapeFactory {
         public abstract Shape createPoint( PointF point );
     }
 
-    public static class Point extends BasePointShapeFactory {
-        /**
-         * Creates a new factory for points with default size.
-         * 
-         */
-        public Point() {
-            super();
-        }
-
-        /**
-         * Creates a factory for points of given size.
-         * 
-         * @param size
-         *          the size of the points
-         */
-        public Point( double size ) {
-            super(size);
-        }
-
-        /**
-         * Creates a shape representing a point.
-         * 
-         * @param point
-         *          the location of the point
-         * @return a shape
-         */
-        public Shape createPoint( PointF point ) {
-            Path line = new Path();
-            line.moveTo(point.x, point.y);
-            line.lineTo(point.x, point.y);
-
-            PathShape pShape = new PathShape(line);
-
-            // Line2D.Double pointMarker =
-            // new Line2D.Double(
-            // point.getX(),
-            // point.getY(),
-            // point.getX(),
-            // point.getY());
-            return pShape;
-        }
-    }
-
     public static class Square extends BasePointShapeFactory {
         /**
          * Creates a new factory for squares with default size.
@@ -165,12 +122,8 @@ public interface PointShapeFactory {
          */
         public Shape createPoint( PointF point ) {
             float x = (float) (point.x - (size / 2));
-            float y = (float) (point.y - (size / 2));
+            float y = (float) (point.y + (size / 2));
             RectShape pointMarker = new RectShape(x, y, size, size);
-            // pointMarker.x = (double) (point.getX() - (size / 2));
-            // pointMarker.y = (double) (point.getY() - (size / 2));
-
-            // RectShape rShape = new RectShape(pointMarker);
             return pointMarker;
         }
     }
@@ -284,18 +237,8 @@ public interface PointShapeFactory {
          */
         public Shape createPoint( PointF point ) {
             float x = (float) (point.x - (size / 2));
-            float y = (float) (point.y - (size / 2));
+            float y = (float) (point.y + (size / 2));
             OvalShape shape = new OvalShape(x, y, size, size);
-
-            // Ellipse2D.Double pointMarker =
-            // new Ellipse2D.Double(
-            // 0.0,
-            // 0.0,
-            // size,
-            // size);
-            // pointMarker.x = (double) (point.getX() - (size / 2));
-            // pointMarker.y = (double) (point.getY() - (size / 2));
-
             return shape;
         }
 
