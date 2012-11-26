@@ -24,7 +24,11 @@ import jsqlite.Exception;
 import jsqlite.Stmt;
 
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKBReader;
+import com.vividsolutions.jts.io.WKTReader;
+
+import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
  * Class that iterates over Database geometries and doesn't keep everything in memory.
@@ -33,6 +37,7 @@ import com.vividsolutions.jts.io.WKBReader;
  */
 public class GeometryIterator implements Iterator<Geometry> {
     private WKBReader wkbReader = new WKBReader();
+    private WKTReader wktReader = new WKTReader();
     private Stmt stmt;
 
     public GeometryIterator( Database database, String query ) {
@@ -65,6 +70,15 @@ public class GeometryIterator implements Iterator<Geometry> {
             return geometry;
         } catch (java.lang.Exception e) {
             e.printStackTrace();
+            // String geomWKT = "";
+            // try {
+            // geomWKT = stmt.column_string(1);
+            // Geometry geometry = wktReader.read(geomWKT);
+            // return geometry;
+            // } catch (java.lang.Exception e1) {
+            // e1.printStackTrace();
+            // Logger.i(this, "GEOM: " + geomWKT);
+            // }
         }
         return null;
     }

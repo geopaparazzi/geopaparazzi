@@ -23,8 +23,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import eu.geopaparazzi.library.util.debug.Logger;
-
 import jsqlite.Database;
 import jsqlite.Exception;
 import jsqlite.Stmt;
@@ -509,7 +507,7 @@ public class SpatialDatabaseHandler {
         String mbr = mbrSb.toString();
 
         StringBuilder qSb = new StringBuilder();
-        qSb.append("SELECT ST_AsBinary(");
+        qSb.append("SELECT ST_AsBinary(CastToXY(");
         if (doTransform)
             qSb.append("ST_Transform(");
         qSb.append(table.geomName);
@@ -518,7 +516,18 @@ public class SpatialDatabaseHandler {
             qSb.append(destSrid);
             qSb.append(")");
         }
-        qSb.append(") FROM ");
+        qSb.append("))");
+        // qSb.append(", AsText(");
+        // if (doTransform)
+        // qSb.append("ST_Transform(");
+        // qSb.append(table.geomName);
+        // if (doTransform) {
+        // qSb.append(", ");
+        // qSb.append(destSrid);
+        // qSb.append(")");
+        // }
+        // qSb.append(")");
+        qSb.append(" FROM ");
         qSb.append(table.name);
         qSb.append(" WHERE ST_Intersects(");
         qSb.append(table.geomName);
