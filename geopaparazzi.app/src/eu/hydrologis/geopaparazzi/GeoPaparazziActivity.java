@@ -393,7 +393,8 @@ public class GeoPaparazziActivity extends Activity {
             checkMapsAndLogsVisibility();
 
             SpatialDatabasesManager.reset();
-            SpatialDatabasesManager.getInstance().init(this);
+            File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
+            SpatialDatabasesManager.getInstance().init(this, mapsDir);
         } catch (IOException e) {
             Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
