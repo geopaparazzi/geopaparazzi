@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/webprojectlayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/main_background"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/titletext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="10dip"
+        android:gravity="center_horizontal"
+        android:text="@string/webprojects_list_title"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/main_text_color"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/search_box"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/titletext"
+        android:layout_margin="10dip"
+        android:hint="@string/type_to_filter"
+        android:inputType="text"
+        android:maxLines="1" >
+
+        <requestFocus />
+    </EditText>
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/search_box"
+        android:layout_margin="10dip"
+        android:background="@color/main_background"
+        android:dividerHeight="1dip"
+        android:orientation="vertical" >
+
+        <!-- android:id="@+id/mapsList" -->
+
+    </ListView>
+
+</RelativeLayout>

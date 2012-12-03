@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/webprojectlayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/main_background"
+    android:padding="10dip" >
+
+    <ImageView
+        android:id="@+id/downloadproject_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/package_download" />
+
+    <TextView
+        android:id="@+id/titletext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/downloadproject_image"
+        android:layout_toRightOf="@+id/downloadproject_image"
+        android:text="Title"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/main_text_color" />
+
+    <TextView
+        android:id="@+id/descriptiontext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/titletext"
+        android:layout_alignLeft="@+id/titletext"
+        android:text="Description"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/main_text_color" />
+
+    <TextView
+        android:id="@+id/authortext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/titletext"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/descriptiontext"
+        android:text="Author"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/main_text_color" />
+
+    <TextView
+        android:id="@+id/datetext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/titletext"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/authortext"
+        android:text="Date"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/main_text_color" />
+
+</RelativeLayout>

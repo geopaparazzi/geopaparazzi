@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="eu.geopaparazzi.library"
+    android:versionCode="2"
+    android:versionName="1.0.1" >
+
+    <uses-sdk android:minSdkVersion="10" />
+
+    <!--
+        <uses-permission android:name="android.permission.NFC" />
+        <uses-permission android:name="android.permission.BLUETOOTH" />
+        <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+        <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+        <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+        <uses-permission android:name="android.permission.INTERNET" />
+        <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+        <uses-permission android:name="android.permission.RECEIVE_SMS" />
+        <uses-permission android:name="android.permission.SEND_SMS" />
+        <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+        <uses-permission android:name="android.permission.RECORD_AUDIO" />        <uses-permission android:name="android.permission.READ_CONTACTS" />        <uses-permission android:name="android.permission.VIBRATE" />
+    -->
+
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" >
+    </uses-feature>
+    <uses-feature
+        android:name="android.hardware.nfc"
+        android:required="false" >
+    </uses-feature>
+
+    <application android:label="@string/app_name" >
+        <activity
+            android:name="eu.geopaparazzi.library.nfc.NfcIdReaderActivity"
+            android:launchMode="singleTask" >
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.nfc.NfcIdReaderActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="eu.geopaparazzi.library.camera.CameraActivity"
+            android:configChanges="orientation" >
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.camera.CameraActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name="eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity" >
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="eu.geopaparazzi.library.util.activities.NoteActivity"
+            android:configChanges="keyboardHidden|orientation" >
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.util.activities.NoteActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name="eu.geopaparazzi.library.util.activities.InsertCoordActivity" >
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.util.activities.InsertCoordActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name="eu.geopaparazzi.library.util.activities.GeocodeActivity" >
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.util.activities.GeocodeActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name="eu.geopaparazzi.library.util.activities.AboutActivity" >
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.util.activities.AboutActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name="eu.geopaparazzi.library.sketch.DrawingActivity" >
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.sketch.DrawingActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name="eu.geopaparazzi.library.forms.FormActivity" >
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.forms.FormActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name="eu.geopaparazzi.library.forms.FragmentDetailActivity" >
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.forms.FragmentDetailActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".bluetooth.BluetoothPreferencesActivity" >
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.bluetooth.BluetoothPreferencesActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".webproject.WebProjectsListActivity" >
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.webproject.WebProjectsListActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".util.activities.PlaySoundActivity"
+            android:theme="@android:style/Theme.NoDisplay" >
+            <intent-filter>
+                <action android:name="eu.geopaparazzi.library.util.activities.PlaySoundActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name=".sms.SmsReceiverPositionSender"
+            android:enabled="true" >
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name=".nfc.NfcIdReaderActivity"
+            android:label="@string/title_activity_nfc_id_reader" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/row_container"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/main_background"
+    android:padding="5dp" >
+
+    <CheckBox
+        android:id="@+id/visible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/visible"
+        android:layout_centerHorizontal="true"
+        android:layout_toRightOf="@+id/visible"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:paddingLeft="10dp"
+        android:text=""
+        android:textColor="@color/main_text_color_neutral" />
+
+    <ImageButton
+        android:id="@+id/propertiesButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/visible"
+        android:layout_below="@+id/visible"
+        android:src="@drawable/properties" />
+
+    <ImageButton
+        android:id="@+id/zoomtoButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/propertiesButton"
+        android:layout_toRightOf="@+id/propertiesButton"
+        android:src="@drawable/list_zoomto" />
+
+    <ImageButton
+        android:id="@+id/upButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/propertiesButton"
+        android:layout_toRightOf="@+id/zoomtoButton"
+        android:src="@drawable/list_up" />
+
+    <ImageButton
+        android:id="@+id/downButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/propertiesButton"
+        android:layout_toRightOf="@+id/upButton"
+        android:src="@drawable/list_down" />
+
+</RelativeLayout>
