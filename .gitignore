@@ -1,9 +1,14 @@
 geopaparazzi.app/bin
 geopaparazzi.app/gen
+
 geopaparazzilibrary/bin
 geopaparazzilibrary/gen
+
 geopaparazzilibrarytests/bin
 geopaparazzilibrarytests/gen
+
+geopaparazzispatialitelibrary/bin
+geopaparazzispatialitelibrary/gen
 
 geopaparazzi.app/gen/eu/hydrologis/geopaparazzi/R.java
 
