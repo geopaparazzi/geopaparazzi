@@ -71,36 +71,42 @@ public class TestMock {
         // if (provider == null) {
         locationManager.addTestProvider(MOCK_PROVIDER_NAME, true, false, true, false, false, false, false, Criteria.POWER_LOW,
                 Criteria.ACCURACY_FINE);
-        locationManager.setTestProviderEnabled(MOCK_PROVIDER_NAME, true);
-        locationManager.requestLocationUpdates(TestMock.MOCK_PROVIDER_NAME, 3000, 0f, gpsManager);
+        // locationManager.setTestProviderEnabled(MOCK_PROVIDER_NAME, true);
         // }
         locationManager.setTestProviderEnabled(MOCK_PROVIDER_NAME, true);
         locationManager
                 .setTestProviderStatus(MOCK_PROVIDER_NAME, LocationProvider.AVAILABLE, null, SystemClock.elapsedRealtime());
+        locationManager.requestLocationUpdates(TestMock.MOCK_PROVIDER_NAME, 3000, 0f, gpsManager);
 
         Runnable r = new Runnable(){
             public void run() {
                 isOn = true;
 
                 while( isOn ) {
-                    Location location = new Location(MOCK_PROVIDER_NAME);
-                    location.setLatitude(lat);
-                    location.setLongitude(lon);
-                    location.setTime(date);
-                    location.setAltitude(alt);
-                    locationManager.setTestProviderLocation(MOCK_PROVIDER_NAME, location);
-
-                    lon = lon + a * radius * Math.cos(t);
-                    lat = lat + a * radius * Math.sin(t);
-                    t = t + 1;
-                    alt = alt + 1.0;
-                    date = date + 5000l;
-
                     try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        Logger.e(this, e.getLocalizedMessage(), e);
-                        e.printStackTrace();
+                        Location location = new Location(MOCK_PROVIDER_NAME);
+                        location.setLatitude(lat);
+                        location.setLongitude(lon);
+                        location.setTime(date);
+                        location.setAltitude(alt);
+                        location.setAccuracy(1f);
+                        location.setSpeed(1f);
+                        locationManager.setTestProviderLocation(MOCK_PROVIDER_NAME, location);
+
+                        lon = lon + a * radius * Math.cos(t);
+                        lat = lat + a * radius * Math.sin(t);
+                        t = t + 1;
+                        alt = alt + 1.0;
+                        date = date + 5000l;
+                    } catch (Exception e) {
+                        // ignore it
+                    } finally {
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            Logger.e(this, e.getLocalizedMessage(), e);
+                            e.printStackTrace();
+                        }
                     }
                 }
 
