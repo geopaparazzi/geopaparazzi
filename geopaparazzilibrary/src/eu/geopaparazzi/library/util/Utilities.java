@@ -26,6 +26,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Looper;
+import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -38,6 +39,19 @@ import eu.geopaparazzi.library.util.debug.Logger;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class Utilities {
+
+    public static String getUniqueDeviceId( Context context ) {
+        // try to go for the imei
+        TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        String id = tm.getDeviceId();
+        if (id == null) {
+            // try the android id
+            id = android.provider.Settings.Secure.getString(context.getContentResolver(),
+                    android.provider.Settings.Secure.ANDROID_ID);
+        }
+        return id;
+    }
+
     /**
      * Checks if we are on the UI thread.
      * 
