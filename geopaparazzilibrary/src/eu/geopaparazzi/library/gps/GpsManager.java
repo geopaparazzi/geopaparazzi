@@ -45,6 +45,7 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.activities.ProximityIntentReceiver;
 import eu.geopaparazzi.library.util.debug.Debug;
+import eu.geopaparazzi.library.util.debug.FakeGpsLog;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.geopaparazzi.library.util.debug.TestMock;
 
@@ -81,6 +82,7 @@ public class GpsManager implements LocationListener, Listener {
     private boolean isListening = false;
     private SharedPreferences preferences;
     private boolean useNetworkPositions;
+
 
     private GpsManager( Context context ) {
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);

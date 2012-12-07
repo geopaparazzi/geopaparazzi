@@ -17,8 +17,6 @@
  */
 package eu.geopaparazzi.library.util.debug;
 
-import java.util.Date;
-
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -32,40 +30,22 @@ import eu.geopaparazzi.library.gps.GpsManager;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class TestMock {
-    private static double lat = 46.681034;
-    private static double lon = 11.13507645;
-
-    static {
-        // set office
-        lat = 46.48193;
-        lon = 11.330099;
-        // set home
-        // lat = 46.681034;
-        // lon = 11.13507645;
-
-    }
-
-    private static double alt = 100;
-    private static long date = new Date().getTime();
     public static String MOCK_PROVIDER_NAME = LocationManager.GPS_PROVIDER;
     public static boolean isOn = false;
-
-    public static double a = 0.001;
-    public static double radius = 0.1;
-
-    private static double t = 1.0;
 
     /**
      * Starts to trigger mock locations.
      * 
      * @param locationManager the location manager.
      * @param gpsManager 
+     * @param fakeGpsLog 
      */
     public static void startMocking( final LocationManager locationManager, GpsManager gpsManager ) {
         if (isOn) {
             return;
         }
 
+        final FakeGpsLog fakeGpsLog = new FakeGpsLog();
         // Get some mock location data in the game
         // LocationProvider provider = locationManager.getProvider(MOCK_PROVIDER_NAME);
         // if (provider == null) {
@@ -84,20 +64,29 @@ public class TestMock {
 
                 while( isOn ) {
                     try {
-                        Location location = new Location(MOCK_PROVIDER_NAME);
-                        location.setLatitude(lat);
-                        location.setLongitude(lon);
-                        location.setTime(date);
-                        location.setAltitude(alt);
-                        location.setAccuracy(1f);
-                        location.setSpeed(1f);
-                        locationManager.setTestProviderLocation(MOCK_PROVIDER_NAME, location);
+                        if (fakeGpsLog.hasNext()) {
+                            String nextLine = fakeGpsLog.next();
 
-                        lon = lon + a * radius * Math.cos(t);
-                        lat = lat + a * radius * Math.sin(t);
-                        t = t + 1;
-                        alt = alt + 1.0;
-                        date = date + 5000l;
+                            String[] lineSplit = nextLine.split(",");
+                            double lon = Double.parseDouble(lineSplit[0]);
+                            double lat = Double.parseDouble(lineSplit[1]);
+                            long t = Long.parseLong(lineSplit[2]);
+                            double alt = Double.parseDouble(lineSplit[3]);
+                            float v = Float.parseFloat(lineSplit[4]);
+                            float accuracy = Float.parseFloat(lineSplit[5]);
+
+                            Location location = new Location(MOCK_PROVIDER_NAME);
+                            location.setLatitude(lat);
+                            location.setLongitude(lon);
+                            location.setTime(t);
+                            location.setAltitude(alt);
+                            location.setAccuracy(accuracy);
+                            location.setSpeed(v);
+                            locationManager.setTestProviderLocation(MOCK_PROVIDER_NAME, location);
+                        } else {
+                            fakeGpsLog.reset();
+                        }
+
                     } catch (Exception e) {
                         // ignore it
                     } finally {
