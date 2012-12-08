@@ -17,6 +17,8 @@
  */
 package eu.geopaparazzi.library.util.debug;
 
+import java.lang.reflect.Method;
+
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -32,7 +34,7 @@ import eu.geopaparazzi.library.gps.GpsManager;
 public class TestMock {
     public static String MOCK_PROVIDER_NAME = LocationManager.GPS_PROVIDER;
     public static boolean isOn = false;
-
+    private static Method locationJellyBeanFixMethod = null;
     /**
      * Starts to trigger mock locations.
      * 
@@ -49,14 +51,29 @@ public class TestMock {
         // Get some mock location data in the game
         // LocationProvider provider = locationManager.getProvider(MOCK_PROVIDER_NAME);
         // if (provider == null) {
-        locationManager.addTestProvider(MOCK_PROVIDER_NAME, true, false, true, false, false, false, false, Criteria.POWER_LOW,
-                Criteria.ACCURACY_FINE);
-        // locationManager.setTestProviderEnabled(MOCK_PROVIDER_NAME, true);
-        // }
+        locationManager.addTestProvider(//
+                MOCK_PROVIDER_NAME, //
+                false, //
+                false, //
+                false, //
+                false, //
+                true, //
+                true, //
+                false, //
+                Criteria.POWER_LOW,//
+                Criteria.ACCURACY_FINE//
+                );
         locationManager.setTestProviderEnabled(MOCK_PROVIDER_NAME, true);
-        locationManager
-                .setTestProviderStatus(MOCK_PROVIDER_NAME, LocationProvider.AVAILABLE, null, SystemClock.elapsedRealtime());
-        locationManager.requestLocationUpdates(TestMock.MOCK_PROVIDER_NAME, 3000, 0f, gpsManager);
+
+        locationManager.requestLocationUpdates(TestMock.MOCK_PROVIDER_NAME, 2000, 0f, gpsManager);
+
+        try {
+            locationJellyBeanFixMethod = Location.class.getMethod("makeComplete");
+        } catch (SecurityException e1) {
+            e1.printStackTrace();
+        } catch (NoSuchMethodException e1) {
+            e1.printStackTrace();
+        }
 
         Runnable r = new Runnable(){
             public void run() {
@@ -82,6 +99,17 @@ public class TestMock {
                             location.setAltitude(alt);
                             location.setAccuracy(accuracy);
                             location.setSpeed(v);
+                            if (locationJellyBeanFixMethod != null) {
+                                locationJellyBeanFixMethod.invoke(location);
+                            }
+                            location.setSpeed(v);
+
+                            locationManager.setTestProviderStatus(//
+                                    MOCK_PROVIDER_NAME, //
+                                    LocationProvider.AVAILABLE, //
+                                    null, //
+                                    SystemClock.elapsedRealtime()//
+                                    );
                             locationManager.setTestProviderLocation(MOCK_PROVIDER_NAME, location);
                         } else {
                             fakeGpsLog.reset();
