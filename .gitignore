@@ -14,5 +14,6 @@ geopaparazzi.app/gen/eu/hydrologis/geopaparazzi/R.java
 
 *.swp
 *~
+*.class
 .directory
 

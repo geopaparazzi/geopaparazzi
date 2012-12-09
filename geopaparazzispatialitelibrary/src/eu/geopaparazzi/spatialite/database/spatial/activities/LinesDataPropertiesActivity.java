@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.library.database.spatial.activities;
+package eu.geopaparazzi.spatialite.database.spatial.activities;
 
 import jsqlite.Exception;
 import android.app.Activity;
@@ -23,29 +23,27 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
-import eu.geopaparazzi.library.R;
-import eu.geopaparazzi.library.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.library.database.spatial.core.SpatialTable;
-import eu.geopaparazzi.library.util.SpatialiteLibraryConstants;
+import eu.geopaparazzi.spatialite.R;
+import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialTable;
+import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
 
 /**
- * Polygon Data properties activity.
+ * Line Data properties activity.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class PolygonsDataPropertiesActivity extends Activity {
+public class LinesDataPropertiesActivity extends Activity {
     private SpatialTable spatialTable;
     private Spinner colorSpinner;
     private Spinner widthSpinner;
     private Spinner alphaSpinner;
-    private Spinner fillColorSpinner;
-    private Spinner fillAlphaSpinner;
     private EditText decimationText;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
 
-        setContentView(R.layout.data_polygon_properties);
+        setContentView(R.layout.data_line_properties);
 
         Bundle extras = getIntent().getExtras();
         String tableName = extras.getString(SpatialiteLibraryConstants.PREFS_KEY_TEXT);
@@ -83,50 +81,26 @@ public class PolygonsDataPropertiesActivity extends Activity {
             }
         }
 
-        fillColorSpinner = (Spinner) findViewById(R.id.fill_color_spinner);
-        String fillcolor = spatialTable.style.fillcolor;
-        count = fillColorSpinner.getCount();
-        for( int i = 0; i < count; i++ ) {
-            if (fillColorSpinner.getItemAtPosition(i).equals(fillcolor)) {
-                fillColorSpinner.setSelection(i);
-                break;
-            }
-        }
-
-        String fillAlpha = String.valueOf((int) (spatialTable.style.fillalpha * 100f));
-        fillAlphaSpinner = (Spinner) findViewById(R.id.fill_alpha_spinner);
-        count = fillAlphaSpinner.getCount();
-        for( int i = 0; i < count; i++ ) {
-            if (fillAlphaSpinner.getItemAtPosition(i).equals(fillAlpha)) {
-                fillAlphaSpinner.setSelection(i);
-                break;
-            }
-        }
-
         String decimation = String.valueOf(spatialTable.style.decimationFactor);
         decimationText = (EditText) findViewById(R.id.decimation_text);
         decimationText.setText(decimation);
     }
 
     public void onOkClick( View view ) {
-
         String color = (String) colorSpinner.getSelectedItem();
         spatialTable.style.strokecolor = color;
 
         String widthString = (String) widthSpinner.getSelectedItem();
-        float width = Float.parseFloat(widthString);
+        float width = 1f;
+        try {
+            width = Float.parseFloat(widthString);
+        } catch (java.lang.Exception e) {
+        }
         spatialTable.style.width = width;
 
         String alphaString = (String) alphaSpinner.getSelectedItem();
         float alpha100 = Float.parseFloat(alphaString);
         spatialTable.style.strokealpha = alpha100 / 100f;
-
-        String fillcolor = (String) fillColorSpinner.getSelectedItem();
-        spatialTable.style.fillcolor = fillcolor;
-
-        String fillAlphaString = (String) fillAlphaSpinner.getSelectedItem();
-        float fillAlpha100 = Float.parseFloat(fillAlphaString);
-        spatialTable.style.fillalpha = fillAlpha100 / 100f;
 
         String decimationString = decimationText.getText().toString();
         float decimation = 0.0f;

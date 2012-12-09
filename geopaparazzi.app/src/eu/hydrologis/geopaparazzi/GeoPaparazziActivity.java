@@ -52,7 +52,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SlidingDrawer;
 import android.widget.Toast;
-import eu.geopaparazzi.library.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.library.gps.GpsLocation;
 import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.sensors.SensorsManager;
@@ -67,6 +66,7 @@ import eu.geopaparazzi.library.util.activities.AboutActivity;
 import eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
+import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.ActionItem;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction;
@@ -754,13 +754,13 @@ public class GeoPaparazziActivity extends Activity {
 
         ResourcesManager.resetManager();
         resourcesManager = null;
-        
+
         try {
             SpatialDatabasesManager.getInstance().closeDatabases();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
         super.finish();
     }
 

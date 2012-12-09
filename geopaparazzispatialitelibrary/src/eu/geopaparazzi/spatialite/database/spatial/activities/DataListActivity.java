@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.library.database.spatial.activities;
+package eu.geopaparazzi.spatialite.database.spatial.activities;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,11 +35,11 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import eu.geopaparazzi.library.R;
-import eu.geopaparazzi.library.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.library.database.spatial.core.OrderComparator;
-import eu.geopaparazzi.library.database.spatial.core.SpatialTable;
-import eu.geopaparazzi.library.util.SpatialiteLibraryConstants;
+import eu.geopaparazzi.spatialite.R;
+import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
+import eu.geopaparazzi.spatialite.database.spatial.core.OrderComparator;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialTable;
+import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
 
 /**
  * Data listing activity.

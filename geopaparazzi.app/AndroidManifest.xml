@@ -89,33 +89,13 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name="eu.geopaparazzi.library.database.spatial.activities.LinesDataPropertiesActivity" >
-            <intent-filter>
-                <action android:name="eu.geopaparazzi.library.database.spatial.activities.LinesDataPropertiesActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
+        <activity android:name="eu.geopaparazzi.spatialite.database.spatial.activities.LinesDataPropertiesActivity" >
         </activity>
-        <activity android:name="eu.geopaparazzi.library.database.spatial.activities.PolygonsDataPropertiesActivity" >
-            <intent-filter>
-                <action android:name="eu.geopaparazzi.library.database.spatial.activities.PolygonsDataPropertiesActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
+        <activity android:name="eu.geopaparazzi.spatialite.database.spatial.activities.PolygonsDataPropertiesActivity" >
         </activity>
-        <activity android:name="eu.geopaparazzi.library.database.spatial.activities.PointsDataPropertiesActivity" >
-            <intent-filter>
-                <action android:name="eu.geopaparazzi.library.database.spatial.activities.PointsDataPropertiesActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
+        <activity android:name="eu.geopaparazzi.spatialite.database.spatial.activities.PointsDataPropertiesActivity" >
         </activity>
-        <activity android:name="eu.geopaparazzi.library.database.spatial.activities.DataListActivity" >
-            <intent-filter>
-                <action android:name="eu.geopaparazzi.library.database.spatial.activities.DataListActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
+        <activity android:name="eu.geopaparazzi.spatialite.database.spatial.activities.DataListActivity" >
         </activity>
         <activity android:name=".maps.MapsActivity" >
             <intent-filter>
