@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="libs/afreegraphics.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/afreechart-0.0.3.jar"/>
 	<classpathentry kind="lib" path="libs/httpclient-4.2.2.jar"/>
 	<classpathentry kind="lib" path="libs/httpcore-4.2.2.jar"/>
 	<classpathentry kind="lib" path="libs/httpmime-4.2.2.jar"/>
@@ -9,6 +7,8 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
-	<classpathentry kind="lib" path="libs/android-support-v4.jar"/>
+	<classpathentry kind="lib" path="/GeoPaparazzi/libs/afreechart-0.0.3.jar"/>
+	<classpathentry kind="lib" path="/GeoPaparazzi/libs/afreegraphics.jar"/>
+	<classpathentry kind="lib" path="/GeoPaparazzi/libs/android-support-v4.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
