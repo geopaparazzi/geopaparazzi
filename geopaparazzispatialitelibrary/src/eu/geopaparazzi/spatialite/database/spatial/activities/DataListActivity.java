@@ -68,7 +68,7 @@ public class DataListActivity extends ListActivity {
 
         try {
             if (doReread)
-                spatialTables = SpatialDatabasesManager.getInstance().getSpatialTables(doReread);
+                spatialTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(doReread);
         } catch (Exception e) {
             // Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
@@ -134,7 +134,7 @@ public class DataListActivity extends ListActivity {
                 zoomtoButton.setOnClickListener(new View.OnClickListener(){
                     public void onClick( View v ) {
                         try {
-                            float[] tableBounds = SpatialDatabasesManager.getInstance().getHandler(item)
+                            float[] tableBounds = SpatialDatabasesManager.getInstance().getVectorHandler(item)
                                     .getTableBounds(item, "4326");
                             double lat = tableBounds[1] + (tableBounds[0] - tableBounds[1]) / 2.0;
                             double lon = tableBounds[3] + (tableBounds[2] - tableBounds[3]) / 2.0;
@@ -246,7 +246,7 @@ public class DataListActivity extends ListActivity {
                 SpatialVectorTable spatialTable = spatialTables.get(i);
                 SpatialDatabasesManager.getInstance().updateStyle(spatialTable);
             }
-            SpatialDatabasesManager.getInstance().getSpatialTables(true);
+            SpatialDatabasesManager.getInstance().getSpatialVectorTables(true);
         } catch (Exception e) {
             // Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();

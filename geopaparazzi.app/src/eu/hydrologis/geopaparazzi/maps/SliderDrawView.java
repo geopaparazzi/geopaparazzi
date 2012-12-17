@@ -242,7 +242,7 @@ public class SliderDrawView extends View {
     private void infoDialog( final double n, final double w, final double s, final double e ) {
         try {
             final SpatialDatabasesManager sdbManager = SpatialDatabasesManager.getInstance();
-            final List<SpatialVectorTable> spatialTables = sdbManager.getSpatialTables(false);
+            final List<SpatialVectorTable> spatialTables = sdbManager.getSpatialVectorTables(false);
 
             final Context context = getContext();
             final ProgressDialog importDialog = new ProgressDialog(context);

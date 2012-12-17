@@ -488,6 +488,23 @@ public class SpatialDatabaseHandler {
         return null;
     }
 
+    public byte[] getRasterTile(String query ) {
+        try {
+            Stmt stmt = db.prepare(query);
+            try {
+                if( stmt.step() ) {
+                    byte[] bytes = stmt.column_bytes(0);
+                    return bytes;
+                }
+            } finally {
+                stmt.close();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
     /**
      * Get the {@link GeometryIterator} of a table in a given bound.
      * 

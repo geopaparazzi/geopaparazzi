@@ -52,7 +52,7 @@ public class PointsDataPropertiesActivity extends Activity implements OnItemSele
         Bundle extras = getIntent().getExtras();
         String tableName = extras.getString(SpatialiteLibraryConstants.PREFS_KEY_TEXT);
         try {
-            spatialTable = SpatialDatabasesManager.getInstance().getTableByName(tableName);
+            spatialTable = SpatialDatabasesManager.getInstance().getVectorTableByName(tableName);
         } catch (Exception e) {
             e.printStackTrace();
         }

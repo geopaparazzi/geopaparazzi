@@ -67,6 +67,7 @@ import eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.ActionItem;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction;
@@ -115,6 +116,7 @@ public class GeoPaparazziActivity extends Activity {
     private SensorsManager sensorManager;
     private HashMap<Integer, String> tileSourcesMap = null;
     private HashMap<String, String> fileSourcesMap = null;
+    private HashMap<String, SpatialRasterTable> rasterSourcesMap = null;
     private AlertDialog mapChoiceDialog;
 
     public void onCreate( Bundle savedInstanceState ) {
@@ -129,6 +131,7 @@ public class GeoPaparazziActivity extends Activity {
         tileSourcesMap.put(1003, MapGeneratorInternal.OPENCYCLEMAP.name());
 
         File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
+        int i = 1004;
         if (mapsDir != null && mapsDir.exists()) {
             File[] mapFiles = mapsDir.listFiles(new FilenameFilter(){
                 public boolean accept( File dir, String filename ) {
@@ -138,12 +141,24 @@ public class GeoPaparazziActivity extends Activity {
 
             Arrays.sort(mapFiles);
 
-            int i = 1004;
             for( File file : mapFiles ) {
                 String name = FileUtilities.getNameWithoutExtention(file);
                 tileSourcesMap.put(i++, name);
                 fileSourcesMap.put(name, file.getAbsolutePath());
             }
+        }
+
+        /*
+         * add also geopackage tables
+         */
+        try {
+            List<SpatialRasterTable> spatialRasterTables = SpatialDatabasesManager.getInstance().getSpatialRasterTables(false);
+            for( SpatialRasterTable table : spatialRasterTables ) {
+                tileSourcesMap.put(i++, table.tableName);
+                rasterSourcesMap.put(table.tableName, table);
+            }
+        } catch (jsqlite.Exception e) {
+            e.printStackTrace();
         }
 
         checkIncomingGeosms();
@@ -604,6 +619,12 @@ public class GeoPaparazziActivity extends Activity {
                 String fileSource = fileSourcesMap.get(name);
                 if (fileSource != null) {
                     setTileSource(null, new File(fileSource));
+                } else {
+                    // try raster
+                    SpatialRasterTable spatialRasterTable = rasterSourcesMap.get(name);
+                    if (spatialRasterTable != null) {
+                        setTileSource(spatialRasterTable);
+                    }
                 }
 
             }
@@ -616,7 +637,7 @@ public class GeoPaparazziActivity extends Activity {
      * Sets the tilesource.
      * 
      * <p>
-     * If both arguments are set null, it wil try to get info from the preferences,
+     * If both arguments are set null, it will try to get info from the preferences,
      * and used sources are saved into preferences.
      * </p>
      * 
@@ -650,6 +671,13 @@ public class GeoPaparazziActivity extends Activity {
             editor.putString(Constants.PREFS_KEY_TILESOURCE_FILE, mapfile.getAbsolutePath());
         editor.commit();
 
+    }
+
+    private void setTileSource( SpatialRasterTable table ) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        Editor editor = preferences.edit();
+        editor.putString(Constants.PREFS_KEY_TILESOURCE, table.tableName);
+        editor.commit();
     }
 
     protected void onActivityResult( int requestCode, int resultCode, Intent data ) {

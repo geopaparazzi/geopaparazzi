@@ -601,7 +601,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
         try {
             SpatialDatabasesManager sdManager = SpatialDatabasesManager.getInstance();
-            List<SpatialVectorTable> spatialTables = sdManager.getSpatialTables(false);
+            List<SpatialVectorTable> spatialTables = sdManager.getSpatialVectorTables(false);
             for( int i = 0; i < spatialTables.size(); i++ ) {
                 SpatialVectorTable spatialTable = spatialTables.get(i);
                 if (spatialTable.style.enabled == 0) {
@@ -611,7 +611,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     // stop working
                     return;
                 }
-                SpatialDatabaseHandler spatialDatabaseHandler = sdManager.getHandler(spatialTable);
+                SpatialDatabaseHandler spatialDatabaseHandler = sdManager.getVectorHandler(spatialTable);
 
                 Style style4Table = spatialTable.style;
                 GeometryIterator geometryIterator = null;

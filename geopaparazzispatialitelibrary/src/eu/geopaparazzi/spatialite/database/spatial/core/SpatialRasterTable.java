@@ -28,6 +28,8 @@ public class SpatialRasterTable {
     public final String tableName;
     public final String columnName;
     private String tileQuery;
+    public final int minZoom = 0;
+    public final int maxZoom = 4;
 
     public SpatialRasterTable( String tableName, String columnName, String srid ) {
         this.tableName = tableName;
