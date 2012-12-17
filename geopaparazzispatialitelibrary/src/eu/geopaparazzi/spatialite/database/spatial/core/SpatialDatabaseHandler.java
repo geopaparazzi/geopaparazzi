@@ -149,7 +149,7 @@ public class SpatialDatabaseHandler {
     public List<SpatialVectorTable> getSpatialVectorTables( boolean forceRead ) throws Exception {
         if (vectorTableList == null || forceRead) {
             vectorTableList = new ArrayList<SpatialVectorTable>();
-            String query = "select f_table_name, f_geometry_column, type,srid from geometry_columns;";
+            String query = "select f_table_name, f_geometry_column, geometry_type,srid from geometry_columns;";
             Stmt stmt = db.prepare(query);
             try {
                 while( stmt.step() ) {
