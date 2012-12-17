@@ -57,7 +57,7 @@ import eu.geopaparazzi.library.util.debug.Logger;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.GeometryIterator;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.Style;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
@@ -601,9 +601,9 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
         try {
             SpatialDatabasesManager sdManager = SpatialDatabasesManager.getInstance();
-            List<SpatialTable> spatialTables = sdManager.getSpatialTables(false);
+            List<SpatialVectorTable> spatialTables = sdManager.getSpatialTables(false);
             for( int i = 0; i < spatialTables.size(); i++ ) {
-                SpatialTable spatialTable = spatialTables.get(i);
+                SpatialVectorTable spatialTable = spatialTables.get(i);
                 if (spatialTable.style.enabled == 0) {
                     continue;
                 }

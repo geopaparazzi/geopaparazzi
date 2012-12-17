@@ -63,7 +63,7 @@ public class SpatialDatabaseHandler {
     private HashMap<String, Paint> fillPaints = new HashMap<String, Paint>();
     private HashMap<String, Paint> strokePaints = new HashMap<String, Paint>();
 
-    private List<SpatialTable> tableList;
+    private List<SpatialVectorTable> tableList;
 
     public SpatialDatabaseHandler( String dbPath ) {
         try {
@@ -142,12 +142,12 @@ public class SpatialDatabaseHandler {
      * Get the spatial tables from the database.
      * 
      * @param forceRead force a clean read from the db instead of using cached.
-     * @return the list of {@link SpatialTable}s.
+     * @return the list of {@link SpatialVectorTable}s.
      * @throws Exception
      */
-    public List<SpatialTable> getSpatialTables( boolean forceRead ) throws Exception {
+    public List<SpatialVectorTable> getSpatialVectorTables( boolean forceRead ) throws Exception {
         if (tableList == null || forceRead) {
-            tableList = new ArrayList<SpatialTable>();
+            tableList = new ArrayList<SpatialVectorTable>();
             String query = "select f_table_name, f_geometry_column, type,srid from geometry_columns;";
             Stmt stmt = db.prepare(query);
             try {
@@ -156,7 +156,7 @@ public class SpatialDatabaseHandler {
                     String geomName = stmt.column_string(1);
                     String geomType = stmt.column_string(2);
                     String srid = String.valueOf(stmt.column_int(3));
-                    SpatialTable table = new SpatialTable(name, geomName, geomType, srid);
+                    SpatialVectorTable table = new SpatialVectorTable(name, geomName, geomType, srid);
                     tableList.add(table);
                 }
             } finally {
@@ -167,7 +167,7 @@ public class SpatialDatabaseHandler {
             checkPropertiesTable();
 
             // assign the styles
-            for( SpatialTable spatialTable : tableList ) {
+            for( SpatialVectorTable spatialTable : tableList ) {
                 Style style4Table = getStyle4Table(spatialTable.name);
                 if (style4Table == null) {
                     spatialTable.makeDefaultStyle();
@@ -223,7 +223,7 @@ public class SpatialDatabaseHandler {
             String query = sb.toString();
             db.exec(query, null);
 
-            for( SpatialTable spatialTable : tableList ) {
+            for( SpatialVectorTable spatialTable : tableList ) {
                 StringBuilder sbIn = new StringBuilder();
                 sbIn.append("insert into ").append(PROPERTIESTABLE);
                 sbIn.append(" ( ");
@@ -315,7 +315,7 @@ public class SpatialDatabaseHandler {
      * @return the bounds as [n,s,e,w].
      * @throws Exception 
      */
-    public float[] getTableBounds( SpatialTable spatialTable, String destSrid ) throws Exception {
+    public float[] getTableBounds( SpatialVectorTable spatialTable, String destSrid ) throws Exception {
         boolean doTransform = false;
         if (!spatialTable.srid.equals(destSrid)) {
             doTransform = true;
@@ -444,7 +444,7 @@ public class SpatialDatabaseHandler {
         return paint;
     }
 
-    public List<byte[]> getWKBFromTableInBounds( String destSrid, SpatialTable table, double n, double s, double e, double w ) {
+    public List<byte[]> getWKBFromTableInBounds( String destSrid, SpatialVectorTable table, double n, double s, double e, double w ) {
         List<byte[]> list = new ArrayList<byte[]>();
         String query = buildGeometriesInBoundsQuery(destSrid, table, n, s, e, w);
         try {
@@ -474,13 +474,13 @@ public class SpatialDatabaseHandler {
      * @param w west bound.
      * @return the geometries iterator.
      */
-    public GeometryIterator getGeometryIteratorInBounds( String destSrid, SpatialTable table, double n, double s, double e,
+    public GeometryIterator getGeometryIteratorInBounds( String destSrid, SpatialVectorTable table, double n, double s, double e,
             double w ) {
         String query = buildGeometriesInBoundsQuery(destSrid, table, n, s, e, w);
         return new GeometryIterator(db, query);
     }
 
-    private String buildGeometriesInBoundsQuery( String destSrid, SpatialTable table, double n, double s, double e, double w ) {
+    private String buildGeometriesInBoundsQuery( String destSrid, SpatialVectorTable table, double n, double s, double e, double w ) {
         boolean doTransform = false;
         if (!table.srid.equals(destSrid)) {
             doTransform = true;
@@ -552,7 +552,7 @@ public class SpatialDatabaseHandler {
         }
     }
 
-    public void intersectionToStringBBOX( String boundsSrid, SpatialTable spatialTable, double n, double s, double e, double w,
+    public void intersectionToStringBBOX( String boundsSrid, SpatialVectorTable spatialTable, double n, double s, double e, double w,
             StringBuilder sb, String indentStr ) throws Exception {
         boolean doTransform = false;
         if (!spatialTable.srid.equals(boundsSrid)) {
@@ -655,7 +655,7 @@ public class SpatialDatabaseHandler {
         }
     }
 
-    public void intersectionToString4Polygon( String queryPointSrid, SpatialTable spatialTable, double n, double e,
+    public void intersectionToString4Polygon( String queryPointSrid, SpatialVectorTable spatialTable, double n, double e,
             StringBuilder sb, String indentStr ) throws Exception {
         boolean doTransform = false;
         if (!spatialTable.srid.equals(queryPointSrid)) {

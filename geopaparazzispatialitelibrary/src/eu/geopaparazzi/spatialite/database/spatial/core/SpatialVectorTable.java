@@ -22,7 +22,7 @@ package eu.geopaparazzi.spatialite.database.spatial.core;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class SpatialTable {
+public class SpatialVectorTable {
 
     public final String name;
     public final String geomName;
@@ -35,7 +35,7 @@ public class SpatialTable {
     private boolean isLine = false;
     private boolean isPoint = false;
 
-    public SpatialTable( String name, String geomName, String geomType, String srid ) {
+    public SpatialVectorTable( String name, String geomName, String geomType, String srid ) {
         this.name = name;
         this.geomName = geomName;
         this.geomType = geomType;

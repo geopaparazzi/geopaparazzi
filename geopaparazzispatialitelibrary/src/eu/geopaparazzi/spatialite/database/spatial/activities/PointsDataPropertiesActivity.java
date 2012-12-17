@@ -26,7 +26,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Spinner;
 import eu.geopaparazzi.spatialite.R;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
 
 /**
@@ -35,7 +35,7 @@ import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class PointsDataPropertiesActivity extends Activity implements OnItemSelectedListener {
-    private SpatialTable spatialTable;
+    private SpatialVectorTable spatialTable;
     private Spinner shapesSpinner;
     private Spinner sizeSpinner;
     private Spinner colorSpinner;

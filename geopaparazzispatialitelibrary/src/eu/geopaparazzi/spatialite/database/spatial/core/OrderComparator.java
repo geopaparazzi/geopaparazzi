@@ -24,10 +24,10 @@ import java.util.Comparator;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class OrderComparator implements Comparator<SpatialTable> {
+public class OrderComparator implements Comparator<SpatialVectorTable> {
 
     @Override
-    public int compare( SpatialTable t1, SpatialTable t2 ) {
+    public int compare( SpatialVectorTable t1, SpatialVectorTable t2 ) {
         if (t1.style == null) {
             t1.makeDefaultStyle();
         }

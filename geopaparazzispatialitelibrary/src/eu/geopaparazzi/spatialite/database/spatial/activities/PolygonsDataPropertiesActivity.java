@@ -25,7 +25,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import eu.geopaparazzi.spatialite.R;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
 
 /**
@@ -34,7 +34,7 @@ import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class PolygonsDataPropertiesActivity extends Activity {
-    private SpatialTable spatialTable;
+    private SpatialVectorTable spatialTable;
     private Spinner colorSpinner;
     private Spinner widthSpinner;
     private Spinner alphaSpinner;

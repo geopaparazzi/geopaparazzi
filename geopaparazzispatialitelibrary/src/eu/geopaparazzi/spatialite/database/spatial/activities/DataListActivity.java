@@ -38,7 +38,7 @@ import android.widget.TextView;
 import eu.geopaparazzi.spatialite.R;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.OrderComparator;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
 
 /**
@@ -48,7 +48,7 @@ import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
  */
 public class DataListActivity extends ListActivity {
 
-    private List<SpatialTable> spatialTables = new ArrayList<SpatialTable>();;
+    private List<SpatialVectorTable> spatialTables = new ArrayList<SpatialVectorTable>();;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -74,12 +74,12 @@ public class DataListActivity extends ListActivity {
             e.printStackTrace();
         }
 
-        ArrayAdapter<SpatialTable> arrayAdapter = new ArrayAdapter<SpatialTable>(this, R.layout.data_row, spatialTables){
+        ArrayAdapter<SpatialVectorTable> arrayAdapter = new ArrayAdapter<SpatialVectorTable>(this, R.layout.data_row, spatialTables){
             @Override
             public View getView( final int position, View cView, ViewGroup parent ) {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View rowView = inflater.inflate(R.layout.data_row, null);
-                final SpatialTable item = spatialTables.get(position);
+                final SpatialVectorTable item = spatialTables.get(position);
 
                 TextView nameView = (TextView) rowView.findViewById(R.id.name);
                 CheckBox visibleView = (CheckBox) rowView.findViewById(R.id.visible);
@@ -87,7 +87,7 @@ public class DataListActivity extends ListActivity {
                 listUpButton.setOnClickListener(new View.OnClickListener(){
                     public void onClick( View v ) {
                         if (position > 0) {
-                            SpatialTable before = spatialTables.get(position - 1);
+                            SpatialVectorTable before = spatialTables.get(position - 1);
                             int tmp1 = before.style.order;
                             int tmp2 = item.style.order;
                             item.style.order = tmp1;
@@ -102,7 +102,7 @@ public class DataListActivity extends ListActivity {
                 listDownButton.setOnClickListener(new View.OnClickListener(){
                     public void onClick( View v ) {
                         if (position < spatialTables.size() - 1) {
-                            SpatialTable after = spatialTables.get(position + 1);
+                            SpatialVectorTable after = spatialTables.get(position + 1);
                             int tmp1 = after.style.order;
                             int tmp2 = item.style.order;
                             item.style.order = tmp1;
@@ -243,7 +243,7 @@ public class DataListActivity extends ListActivity {
     protected void onPause() {
         try {
             for( int i = 0; i < spatialTables.size(); i++ ) {
-                SpatialTable spatialTable = spatialTables.get(i);
+                SpatialVectorTable spatialTable = spatialTables.get(i);
                 SpatialDatabasesManager.getInstance().updateStyle(spatialTable);
             }
             SpatialDatabasesManager.getInstance().getSpatialTables(true);
