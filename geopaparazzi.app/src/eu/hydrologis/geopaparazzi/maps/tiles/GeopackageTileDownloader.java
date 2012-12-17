@@ -76,9 +76,9 @@ public class GeopackageTileDownloader extends TileDownloader {
         int tileX = (int) tile.tileX;
         int tileY = (int) tile.tileY;
 
-        String tmpTilePart = tilePart.replaceFirst("?", String.valueOf(zoomLevel)); //$NON-NLS-1$
-        tmpTilePart = tmpTilePart.replaceFirst("?", String.valueOf(tileX)); //$NON-NLS-1$
-        tmpTilePart = tmpTilePart.replaceFirst("?", String.valueOf(tileY)); //$NON-NLS-1$
+        String tmpTilePart = tilePart.replaceFirst("\\?", String.valueOf(zoomLevel)); //$NON-NLS-1$
+        tmpTilePart = tmpTilePart.replaceFirst("\\?", String.valueOf(tileX)); //$NON-NLS-1$
+        tmpTilePart = tmpTilePart.replaceFirst("\\?", String.valueOf(tileY)); //$NON-NLS-1$
 
         return tmpTilePart;
     }

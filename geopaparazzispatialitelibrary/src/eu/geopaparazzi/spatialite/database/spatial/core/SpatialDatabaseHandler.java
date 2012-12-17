@@ -186,7 +186,7 @@ public class SpatialDatabaseHandler {
     public List<SpatialRasterTable> getSpatialRasterTables( boolean forceRead ) throws Exception {
         if (rasterTableList == null || forceRead) {
             rasterTableList = new ArrayList<SpatialRasterTable>();
-            String query = "select r_table_name, r_raster_column, srid from geometry_columns;";
+            String query = "select r_table_name, r_raster_column, srid from raster_columns;";
             Stmt stmt = db.prepare(query);
             try {
                 while( stmt.step() ) {

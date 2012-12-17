@@ -124,6 +124,7 @@ public class GeoPaparazziActivity extends Activity {
         init();
 
         fileSourcesMap = new HashMap<String, String>();
+        rasterSourcesMap = new HashMap<String, SpatialRasterTable>();
 
         tileSourcesMap = new LinkedHashMap<Integer, String>();
         tileSourcesMap.put(1001, MapGeneratorInternal.DATABASE_RENDERER.name());
