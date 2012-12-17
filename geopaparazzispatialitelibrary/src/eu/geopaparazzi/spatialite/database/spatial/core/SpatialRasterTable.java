@@ -27,11 +27,23 @@ public class SpatialRasterTable {
     public final String srid;
     public final String tableName;
     public final String columnName;
+    private String tileQuery;
 
     public SpatialRasterTable( String tableName, String columnName, String srid ) {
         this.tableName = tableName;
         this.columnName = columnName;
         this.srid = srid;
+
+        tileQuery = "select " + columnName + " from " + tableName + " where zoom_level = ? AND tile_column = ? AND tile_row = ?";
+    }
+
+    /**
+     * Get the tile retrieve query with place holders for zoom, column and row.
+     * 
+     * @return the query to use for this raster set.
+     */
+    public String getTileQuery() {
+        return tileQuery;
     }
 
 }
