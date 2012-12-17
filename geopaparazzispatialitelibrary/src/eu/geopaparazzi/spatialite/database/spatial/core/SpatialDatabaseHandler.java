@@ -63,7 +63,8 @@ public class SpatialDatabaseHandler {
     private HashMap<String, Paint> fillPaints = new HashMap<String, Paint>();
     private HashMap<String, Paint> strokePaints = new HashMap<String, Paint>();
 
-    private List<SpatialVectorTable> tableList;
+    private List<SpatialVectorTable> vectorTableList;
+    private List<SpatialRasterTable> rasterTableList;
 
     public SpatialDatabaseHandler( String dbPath ) {
         try {
@@ -146,8 +147,8 @@ public class SpatialDatabaseHandler {
      * @throws Exception
      */
     public List<SpatialVectorTable> getSpatialVectorTables( boolean forceRead ) throws Exception {
-        if (tableList == null || forceRead) {
-            tableList = new ArrayList<SpatialVectorTable>();
+        if (vectorTableList == null || forceRead) {
+            vectorTableList = new ArrayList<SpatialVectorTable>();
             String query = "select f_table_name, f_geometry_column, type,srid from geometry_columns;";
             Stmt stmt = db.prepare(query);
             try {
@@ -157,7 +158,7 @@ public class SpatialDatabaseHandler {
                     String geomType = stmt.column_string(2);
                     String srid = String.valueOf(stmt.column_int(3));
                     SpatialVectorTable table = new SpatialVectorTable(name, geomName, geomType, srid);
-                    tableList.add(table);
+                    vectorTableList.add(table);
                 }
             } finally {
                 stmt.close();
@@ -167,7 +168,7 @@ public class SpatialDatabaseHandler {
             checkPropertiesTable();
 
             // assign the styles
-            for( SpatialVectorTable spatialTable : tableList ) {
+            for( SpatialVectorTable spatialTable : vectorTableList ) {
                 Style style4Table = getStyle4Table(spatialTable.name);
                 if (style4Table == null) {
                     spatialTable.makeDefaultStyle();
@@ -177,9 +178,33 @@ public class SpatialDatabaseHandler {
             }
         }
         OrderComparator orderComparator = new OrderComparator();
-        Collections.sort(tableList, orderComparator);
+        Collections.sort(vectorTableList, orderComparator);
 
-        return tableList;
+        return vectorTableList;
+    }
+
+    public List<SpatialRasterTable> getSpatialRasterTables( boolean forceRead ) throws Exception {
+        if (rasterTableList == null || forceRead) {
+            rasterTableList = new ArrayList<SpatialRasterTable>();
+            String query = "select r_table_name, r_raster_column, srid from geometry_columns;";
+            Stmt stmt = db.prepare(query);
+            try {
+                while( stmt.step() ) {
+                    String tableName = stmt.column_string(0);
+                    String columnName = stmt.column_string(1);
+                    String srid = String.valueOf(stmt.column_int(2));
+
+                    SpatialRasterTable table = new SpatialRasterTable(tableName, columnName, srid);
+                    rasterTableList.add(table);
+                }
+            } finally {
+                stmt.close();
+            }
+        }
+        // OrderComparator orderComparator = new OrderComparator();
+        // Collections.sort(rasterTableList, orderComparator);
+
+        return rasterTableList;
     }
 
     /**
@@ -223,7 +248,7 @@ public class SpatialDatabaseHandler {
             String query = sb.toString();
             db.exec(query, null);
 
-            for( SpatialVectorTable spatialTable : tableList ) {
+            for( SpatialVectorTable spatialTable : vectorTableList ) {
                 StringBuilder sbIn = new StringBuilder();
                 sbIn.append("insert into ").append(PROPERTIESTABLE);
                 sbIn.append(" ( ");
@@ -552,8 +577,8 @@ public class SpatialDatabaseHandler {
         }
     }
 
-    public void intersectionToStringBBOX( String boundsSrid, SpatialVectorTable spatialTable, double n, double s, double e, double w,
-            StringBuilder sb, String indentStr ) throws Exception {
+    public void intersectionToStringBBOX( String boundsSrid, SpatialVectorTable spatialTable, double n, double s, double e,
+            double w, StringBuilder sb, String indentStr ) throws Exception {
         boolean doTransform = false;
         if (!spatialTable.srid.equals(boundsSrid)) {
             doTransform = true;

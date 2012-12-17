@@ -18,7 +18,7 @@
 package eu.geopaparazzi.spatialite.database.spatial.core;
 
 /**
- * A table from the spatial db.
+ * A vector table from the spatial db.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
