@@ -167,8 +167,8 @@ public class ChartActivity extends Activity implements ChartTouchListener {
             MotionEvent motionEvent = event.getTrigger();
             ChartRenderingInfo info = chartView.getChartRenderingInfo();
 
-            int x = (int) (motionEvent.getX() / chartView.getScaleX());
-            int y = (int) (motionEvent.getY() / chartView.getScaleY());
+            int x = (int) (motionEvent.getX() / chartView.getChartScaleX());
+            int y = (int) (motionEvent.getY() / chartView.getChartScaleY());
 
             Plot plot = chart.getPlot();
             if (plot instanceof XYPlot) {

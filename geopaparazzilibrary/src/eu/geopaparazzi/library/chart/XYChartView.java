@@ -782,7 +782,7 @@ public class XYChartView extends View implements ChartChangeListener, ChartProgr
      *
      * @return The scale factor.
      */
-    public double getScaleX() {
+    public double getChartScaleX() {
         return this.scaleX;
     }
 
@@ -792,7 +792,7 @@ public class XYChartView extends View implements ChartChangeListener, ChartProgr
      *
      * @return The scale factor.
      */
-    public double getScaleY() {
+    public double getChartScaleY() {
         return this.scaleY;
     }
 
