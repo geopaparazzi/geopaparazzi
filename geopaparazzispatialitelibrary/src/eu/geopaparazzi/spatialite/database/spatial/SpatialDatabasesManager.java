@@ -30,7 +30,8 @@ import jsqlite.Exception;
 
 import eu.geopaparazzi.spatialite.database.spatial.core.OrderComparator;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import android.content.Context;
 
 /**
@@ -41,7 +42,8 @@ import android.content.Context;
 public class SpatialDatabasesManager {
 
     private List<SpatialDatabaseHandler> sdbHandlers = new ArrayList<SpatialDatabaseHandler>();
-    private HashMap<SpatialTable, SpatialDatabaseHandler> tablesMap = new HashMap<SpatialTable, SpatialDatabaseHandler>();
+    private HashMap<SpatialVectorTable, SpatialDatabaseHandler> vectorTablesMap = new HashMap<SpatialVectorTable, SpatialDatabaseHandler>();
+    private HashMap<SpatialRasterTable, SpatialDatabaseHandler> rasterTablesMap = new HashMap<SpatialRasterTable, SpatialDatabaseHandler>();
 
     private static SpatialDatabasesManager spatialDbManager = null;
     private SpatialDatabasesManager() {
@@ -75,64 +77,92 @@ public class SpatialDatabasesManager {
         return sdbHandlers;
     }
 
-    public List<SpatialTable> getSpatialTables( boolean forceRead ) throws Exception {
-        List<SpatialTable> tables = new ArrayList<SpatialTable>();
+    public List<SpatialVectorTable> getSpatialVectorTables( boolean forceRead ) throws Exception {
+        List<SpatialVectorTable> tables = new ArrayList<SpatialVectorTable>();
         for( SpatialDatabaseHandler sdbHandler : sdbHandlers ) {
-            List<SpatialTable> spatialTables = sdbHandler.getSpatialTables(forceRead);
-            for( SpatialTable spatialTable : spatialTables ) {
+            List<SpatialVectorTable> spatialTables = sdbHandler.getSpatialVectorTables(forceRead);
+            for( SpatialVectorTable spatialTable : spatialTables ) {
                 tables.add(spatialTable);
-                tablesMap.put(spatialTable, sdbHandler);
+                vectorTablesMap.put(spatialTable, sdbHandler);
             }
         }
 
         Collections.sort(tables, new OrderComparator());
         // set proper order index across tables
         for( int i = 0; i < tables.size(); i++ ) {
-            tables.get(i).style.order = i;
+            tables.get(i).getStyle().order = i;
         }
         return tables;
     }
 
+    public List<SpatialRasterTable> getSpatialRasterTables( boolean forceRead ) throws Exception {
+        List<SpatialRasterTable> tables = new ArrayList<SpatialRasterTable>();
+        for( SpatialDatabaseHandler sdbHandler : sdbHandlers ) {
+            List<SpatialRasterTable> spatialTables = sdbHandler.getSpatialRasterTables(forceRead);
+            for( SpatialRasterTable spatialTable : spatialTables ) {
+                tables.add(spatialTable);
+                rasterTablesMap.put(spatialTable, sdbHandler);
+            }
+        }
+        // Collections.sort(tables, new OrderComparator());
+        return tables;
+    }
+
     public void updateStyles() throws Exception {
-        Set<Entry<SpatialTable, SpatialDatabaseHandler>> entrySet = tablesMap.entrySet();
-        for( Entry<SpatialTable, SpatialDatabaseHandler> entry : entrySet ) {
-            SpatialTable key = entry.getKey();
+        Set<Entry<SpatialVectorTable, SpatialDatabaseHandler>> entrySet = vectorTablesMap.entrySet();
+        for( Entry<SpatialVectorTable, SpatialDatabaseHandler> entry : entrySet ) {
+            SpatialVectorTable key = entry.getKey();
             SpatialDatabaseHandler value = entry.getValue();
-            value.updateStyle(key.style);
+            value.updateStyle(key.getStyle());
         }
     }
 
-    public void updateStyle( SpatialTable spatialTable ) throws Exception {
-        SpatialDatabaseHandler spatialDatabaseHandler = tablesMap.get(spatialTable);
+    public void updateStyle( SpatialVectorTable spatialTable ) throws Exception {
+        SpatialDatabaseHandler spatialDatabaseHandler = vectorTablesMap.get(spatialTable);
         if (spatialDatabaseHandler != null) {
-            spatialDatabaseHandler.updateStyle(spatialTable.style);
+            spatialDatabaseHandler.updateStyle(spatialTable.getStyle());
         }
     }
 
-    public SpatialDatabaseHandler getHandler( SpatialTable spatialTable ) throws Exception {
-        SpatialDatabaseHandler spatialDatabaseHandler = tablesMap.get(spatialTable);
+    public SpatialDatabaseHandler getVectorHandler( SpatialVectorTable spatialTable ) throws Exception {
+        SpatialDatabaseHandler spatialDatabaseHandler = vectorTablesMap.get(spatialTable);
         return spatialDatabaseHandler;
     }
 
-    public SpatialTable getTableByName( String table ) throws Exception {
-        List<SpatialTable> spatialTables = getSpatialTables(false);
-        for( SpatialTable spatialTable : spatialTables ) {
-            if (spatialTable.name.equals(table)) {
+    public SpatialDatabaseHandler getRasterHandler( SpatialRasterTable spatialTable ) throws Exception {
+        SpatialDatabaseHandler spatialDatabaseHandler = rasterTablesMap.get(spatialTable);
+        return spatialDatabaseHandler;
+    }
+
+    public SpatialVectorTable getVectorTableByName( String table ) throws Exception {
+        List<SpatialVectorTable> spatialTables = getSpatialVectorTables(false);
+        for( SpatialVectorTable spatialTable : spatialTables ) {
+            if (spatialTable.getName().equals(table)) {
                 return spatialTable;
             }
         }
         return null;
     }
 
-    public void intersectionToString( String boundsSrid, SpatialTable spatialTable, double n, double s, double e, double w,
+    public SpatialRasterTable getRasterTableByName( String table ) throws Exception {
+        List<SpatialRasterTable> spatialTables = getSpatialRasterTables(false);
+        for( SpatialRasterTable spatialTable : spatialTables ) {
+            if (spatialTable.getTableName().equals(table)) {
+                return spatialTable;
+            }
+        }
+        return null;
+    }
+
+    public void intersectionToString( String boundsSrid, SpatialVectorTable spatialTable, double n, double s, double e, double w,
             StringBuilder sb, String indentStr ) throws Exception {
-        SpatialDatabaseHandler spatialDatabaseHandler = tablesMap.get(spatialTable);
+        SpatialDatabaseHandler spatialDatabaseHandler = vectorTablesMap.get(spatialTable);
         spatialDatabaseHandler.intersectionToStringBBOX(boundsSrid, spatialTable, n, s, e, w, sb, indentStr);
     }
 
-    public void intersectionToString( String boundsSrid, SpatialTable spatialTable, double n, double e, StringBuilder sb,
+    public void intersectionToString( String boundsSrid, SpatialVectorTable spatialTable, double n, double e, StringBuilder sb,
             String indentStr ) throws Exception {
-        SpatialDatabaseHandler spatialDatabaseHandler = tablesMap.get(spatialTable);
+        SpatialDatabaseHandler spatialDatabaseHandler = vectorTablesMap.get(spatialTable);
         spatialDatabaseHandler.intersectionToString4Polygon(boundsSrid, spatialTable, n, e, sb, indentStr);
     }
 

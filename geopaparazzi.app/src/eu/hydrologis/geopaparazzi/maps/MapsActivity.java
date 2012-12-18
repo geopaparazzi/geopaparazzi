@@ -100,6 +100,7 @@ import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.activities.DataListActivity;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
@@ -109,6 +110,7 @@ import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.maps.overlays.ArrayGeopaparazziOverlay;
 import eu.hydrologis.geopaparazzi.maps.tiles.CustomTileDownloader;
+import eu.hydrologis.geopaparazzi.maps.tiles.GeopackageTileDownloader;
 import eu.hydrologis.geopaparazzi.maps.tiles.MapGeneratorInternal;
 import eu.hydrologis.geopaparazzi.osm.OsmCategoryActivity;
 import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
@@ -201,7 +203,22 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 // ignore, is custom
             }
 
-            if (tileSourceName.length() == 0 && filePath != null && new File(filePath).exists()) {
+            SpatialRasterTable rasterTable = null;
+            try {
+                rasterTable = SpatialDatabasesManager.getInstance().getRasterTableByName(tileSourceName);
+            } catch (jsqlite.Exception e1) {
+                e1.printStackTrace();
+            }
+            if (rasterTable != null) {
+                try {
+                    mapGenerator = new GeopackageTileDownloader(rasterTable);
+                    minZoomLevel = rasterTable.getMinZoom();
+                    maxZoomLevel = rasterTable.getMaxZoom();
+                } catch (jsqlite.Exception e) {
+                    e.printStackTrace();
+                    mapGenerator = createMapGenerator(MapGeneratorInternal.MAPNIK);
+                }
+            } else if (tileSourceName.length() == 0 && filePath != null && new File(filePath).exists()) {
                 try {
                     File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
                     mapGenerator = CustomTileDownloader.file2TileDownloader(new File(filePath), mapsDir.getAbsolutePath());
@@ -1032,7 +1049,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                     if (lon < -9000d) {
                         // no coordinate passed
                         // re-read
-                        SpatialDatabasesManager.getInstance().getSpatialTables(true);
+                        SpatialDatabasesManager.getInstance().getSpatialVectorTables(true);
                     } else {
                         setCenterAndZoomForMapWindowFocus(lon, lat, null);
                     }

@@ -38,7 +38,7 @@ import android.widget.TextView;
 import eu.geopaparazzi.spatialite.R;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.OrderComparator;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
 
 /**
@@ -48,7 +48,7 @@ import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
  */
 public class DataListActivity extends ListActivity {
 
-    private List<SpatialTable> spatialTables = new ArrayList<SpatialTable>();;
+    private List<SpatialVectorTable> spatialTables = new ArrayList<SpatialVectorTable>();;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -68,18 +68,18 @@ public class DataListActivity extends ListActivity {
 
         try {
             if (doReread)
-                spatialTables = SpatialDatabasesManager.getInstance().getSpatialTables(doReread);
+                spatialTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(doReread);
         } catch (Exception e) {
             // Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
         }
 
-        ArrayAdapter<SpatialTable> arrayAdapter = new ArrayAdapter<SpatialTable>(this, R.layout.data_row, spatialTables){
+        ArrayAdapter<SpatialVectorTable> arrayAdapter = new ArrayAdapter<SpatialVectorTable>(this, R.layout.data_row, spatialTables){
             @Override
             public View getView( final int position, View cView, ViewGroup parent ) {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View rowView = inflater.inflate(R.layout.data_row, null);
-                final SpatialTable item = spatialTables.get(position);
+                final SpatialVectorTable item = spatialTables.get(position);
 
                 TextView nameView = (TextView) rowView.findViewById(R.id.name);
                 CheckBox visibleView = (CheckBox) rowView.findViewById(R.id.visible);
@@ -87,11 +87,11 @@ public class DataListActivity extends ListActivity {
                 listUpButton.setOnClickListener(new View.OnClickListener(){
                     public void onClick( View v ) {
                         if (position > 0) {
-                            SpatialTable before = spatialTables.get(position - 1);
-                            int tmp1 = before.style.order;
-                            int tmp2 = item.style.order;
-                            item.style.order = tmp1;
-                            before.style.order = tmp2;
+                            SpatialVectorTable before = spatialTables.get(position - 1);
+                            int tmp1 = before.getStyle().order;
+                            int tmp2 = item.getStyle().order;
+                            item.getStyle().order = tmp1;
+                            before.getStyle().order = tmp2;
                             Collections.sort(spatialTables, new OrderComparator());
                             refreshList(false);
                         }
@@ -102,11 +102,11 @@ public class DataListActivity extends ListActivity {
                 listDownButton.setOnClickListener(new View.OnClickListener(){
                     public void onClick( View v ) {
                         if (position < spatialTables.size() - 1) {
-                            SpatialTable after = spatialTables.get(position + 1);
-                            int tmp1 = after.style.order;
-                            int tmp2 = item.style.order;
-                            item.style.order = tmp1;
-                            after.style.order = tmp2;
+                            SpatialVectorTable after = spatialTables.get(position + 1);
+                            int tmp1 = after.getStyle().order;
+                            int tmp2 = item.getStyle().order;
+                            item.getStyle().order = tmp1;
+                            after.getStyle().order = tmp2;
                             Collections.sort(spatialTables, new OrderComparator());
                             refreshList(false);
                         }
@@ -124,7 +124,7 @@ public class DataListActivity extends ListActivity {
                         } else if (item.isPoint()) {
                             intent = new Intent(DataListActivity.this, PointsDataPropertiesActivity.class);
                         }
-                        intent.putExtra(SpatialiteLibraryConstants.PREFS_KEY_TEXT, item.name);
+                        intent.putExtra(SpatialiteLibraryConstants.PREFS_KEY_TEXT, item.getName());
                         startActivity(intent);
 
                     }
@@ -134,7 +134,7 @@ public class DataListActivity extends ListActivity {
                 zoomtoButton.setOnClickListener(new View.OnClickListener(){
                     public void onClick( View v ) {
                         try {
-                            float[] tableBounds = SpatialDatabasesManager.getInstance().getHandler(item)
+                            float[] tableBounds = SpatialDatabasesManager.getInstance().getVectorHandler(item)
                                     .getTableBounds(item, "4326");
                             double lat = tableBounds[1] + (tableBounds[0] - tableBounds[1]) / 2.0;
                             double lon = tableBounds[3] + (tableBounds[2] - tableBounds[3]) / 2.0;
@@ -151,12 +151,12 @@ public class DataListActivity extends ListActivity {
                 });
 
                 // rowView.setBackgroundColor(Color.parseColor(item.getColor()));
-                nameView.setText(item.name);
+                nameView.setText(item.getName());
 
-                visibleView.setChecked(item.style.enabled != 0);
+                visibleView.setChecked(item.getStyle().enabled != 0);
                 visibleView.setOnCheckedChangeListener(new OnCheckedChangeListener(){
                     public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
-                        item.style.enabled = isChecked ? 1 : 0;
+                        item.getStyle().enabled = isChecked ? 1 : 0;
                     }
                 });
                 return rowView;
@@ -173,7 +173,7 @@ public class DataListActivity extends ListActivity {
     // SpatialTable afterSelectedTable = null;
     // for( int i = 0; i < spatialTables.size(); i++ ) {
     // SpatialTable spatialTable = spatialTables.get(i);
-    // if (spatialTable.style.enabled != 0) {
+    // if (spatialTable.getStyle().enabled != 0) {
     // // pick the first enabled
     // selectedTable = spatialTable;
     // if (i > 0) {
@@ -190,10 +190,10 @@ public class DataListActivity extends ListActivity {
     // case MOVE_TOP:
     // if (selectedTable != null) {
     // SpatialTable first = spatialTables.get(0);
-    // int tmp1 = first.style.order;
-    // int tmp2 = selectedTable.style.order;
-    // selectedTable.style.order = tmp1;
-    // first.style.order = tmp2;
+    // int tmp1 = first.getStyle().order;
+    // int tmp2 = selectedTable.getStyle().order;
+    // selectedTable.getStyle().order = tmp1;
+    // first.getStyle().order = tmp2;
     // Collections.sort(spatialTables, new OrderComparator());
     // refreshList(false);
     // }
@@ -201,10 +201,10 @@ public class DataListActivity extends ListActivity {
     // case MOVE_UP:
     // if (selectedTable != null) {
     // if (beforeSelectedTable != null) {
-    // int tmp1 = beforeSelectedTable.style.order;
-    // int tmp2 = selectedTable.style.order;
-    // selectedTable.style.order = tmp1;
-    // beforeSelectedTable.style.order = tmp2;
+    // int tmp1 = beforeSelectedTable.getStyle().order;
+    // int tmp2 = selectedTable.getStyle().order;
+    // selectedTable.getStyle().order = tmp1;
+    // beforeSelectedTable.getStyle().order = tmp2;
     // Collections.sort(spatialTables, new OrderComparator());
     // refreshList(false);
     // }
@@ -213,10 +213,10 @@ public class DataListActivity extends ListActivity {
     // case MOVE_DOWN:
     // if (selectedTable != null) {
     // if (afterSelectedTable != null) {
-    // int tmp1 = afterSelectedTable.style.order;
-    // int tmp2 = selectedTable.style.order;
-    // selectedTable.style.order = tmp1;
-    // afterSelectedTable.style.order = tmp2;
+    // int tmp1 = afterSelectedTable.getStyle().order;
+    // int tmp2 = selectedTable.getStyle().order;
+    // selectedTable.getStyle().order = tmp1;
+    // afterSelectedTable.getStyle().order = tmp2;
     // Collections.sort(spatialTables, new OrderComparator());
     // refreshList(false);
     // }
@@ -226,10 +226,10 @@ public class DataListActivity extends ListActivity {
     // if (selectedTable != null) {
     // if (selectedTable != null) {
     // SpatialTable last = spatialTables.get(spatialTables.size() - 1);
-    // int tmp1 = last.style.order;
-    // int tmp2 = selectedTable.style.order;
-    // selectedTable.style.order = tmp1;
-    // last.style.order = tmp2;
+    // int tmp1 = last.getStyle().order;
+    // int tmp2 = selectedTable.getStyle().order;
+    // selectedTable.getStyle().order = tmp1;
+    // last.getStyle().order = tmp2;
     // Collections.sort(spatialTables, new OrderComparator());
     // refreshList(false);
     // }
@@ -243,10 +243,10 @@ public class DataListActivity extends ListActivity {
     protected void onPause() {
         try {
             for( int i = 0; i < spatialTables.size(); i++ ) {
-                SpatialTable spatialTable = spatialTables.get(i);
+                SpatialVectorTable spatialTable = spatialTables.get(i);
                 SpatialDatabasesManager.getInstance().updateStyle(spatialTable);
             }
-            SpatialDatabasesManager.getInstance().getSpatialTables(true);
+            SpatialDatabasesManager.getInstance().getSpatialVectorTables(true);
         } catch (Exception e) {
             // Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();

@@ -30,7 +30,7 @@ import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.maps.overlays.SliderDrawProjection;
 
@@ -242,7 +242,7 @@ public class SliderDrawView extends View {
     private void infoDialog( final double n, final double w, final double s, final double e ) {
         try {
             final SpatialDatabasesManager sdbManager = SpatialDatabasesManager.getInstance();
-            final List<SpatialTable> spatialTables = sdbManager.getSpatialTables(false);
+            final List<SpatialVectorTable> spatialTables = sdbManager.getSpatialVectorTables(false);
 
             final Context context = getContext();
             final ProgressDialog importDialog = new ProgressDialog(context);
@@ -260,8 +260,8 @@ public class SliderDrawView extends View {
                 protected String doInBackground( String... params ) {
                     try {
                         boolean oneEnabled = false;
-                        for( SpatialTable spatialTable : spatialTables ) {
-                            if (spatialTable.style.enabled == 0) {
+                        for( SpatialVectorTable spatialTable : spatialTables ) {
+                            if (spatialTable.getStyle().enabled == 0) {
                                 continue;
                             }
                             oneEnabled = true;
@@ -280,13 +280,13 @@ public class SliderDrawView extends View {
                                 west = e - 1;
                             }
 
-                            for( SpatialTable spatialTable : spatialTables ) {
-                                if (spatialTable.style.enabled == 0) {
+                            for( SpatialVectorTable spatialTable : spatialTables ) {
+                                if (spatialTable.getStyle().enabled == 0) {
                                     continue;
                                 }
                                 StringBuilder sbTmp = new StringBuilder();
                                 sdbManager.intersectionToString("4326", spatialTable, north, south, east, west, sbTmp, "\t");
-                                sb.append(spatialTable.name).append("\n");
+                                sb.append(spatialTable.getName()).append("\n");
                                 sb.append(sbTmp);
                                 sb.append("\n----------------------\n");
 

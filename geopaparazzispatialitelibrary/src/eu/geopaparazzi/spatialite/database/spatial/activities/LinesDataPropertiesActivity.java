@@ -25,7 +25,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import eu.geopaparazzi.spatialite.R;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
 
 /**
@@ -34,7 +34,7 @@ import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class LinesDataPropertiesActivity extends Activity {
-    private SpatialTable spatialTable;
+    private SpatialVectorTable spatialTable;
     private Spinner colorSpinner;
     private Spinner widthSpinner;
     private Spinner alphaSpinner;
@@ -48,13 +48,13 @@ public class LinesDataPropertiesActivity extends Activity {
         Bundle extras = getIntent().getExtras();
         String tableName = extras.getString(SpatialiteLibraryConstants.PREFS_KEY_TEXT);
         try {
-            spatialTable = SpatialDatabasesManager.getInstance().getTableByName(tableName);
+            spatialTable = SpatialDatabasesManager.getInstance().getVectorTableByName(tableName);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         colorSpinner = (Spinner) findViewById(R.id.color_spinner);
-        String strokecolor = spatialTable.style.strokecolor;
+        String strokecolor = spatialTable.getStyle().strokecolor;
         int count = colorSpinner.getCount();
         for( int i = 0; i < count; i++ ) {
             if (colorSpinner.getItemAtPosition(i).equals(strokecolor)) {
@@ -62,7 +62,7 @@ public class LinesDataPropertiesActivity extends Activity {
                 break;
             }
         }
-        String width = String.valueOf((int) spatialTable.style.width);
+        String width = String.valueOf((int) spatialTable.getStyle().width);
         widthSpinner = (Spinner) findViewById(R.id.width_spinner);
         count = widthSpinner.getCount();
         for( int i = 0; i < count; i++ ) {
@@ -71,7 +71,7 @@ public class LinesDataPropertiesActivity extends Activity {
                 break;
             }
         }
-        String alpha = String.valueOf((int) (spatialTable.style.strokealpha * 100f));
+        String alpha = String.valueOf((int) (spatialTable.getStyle().strokealpha * 100f));
         alphaSpinner = (Spinner) findViewById(R.id.alpha_spinner);
         count = alphaSpinner.getCount();
         for( int i = 0; i < count; i++ ) {
@@ -81,14 +81,14 @@ public class LinesDataPropertiesActivity extends Activity {
             }
         }
 
-        String decimation = String.valueOf(spatialTable.style.decimationFactor);
+        String decimation = String.valueOf(spatialTable.getStyle().decimationFactor);
         decimationText = (EditText) findViewById(R.id.decimation_text);
         decimationText.setText(decimation);
     }
 
     public void onOkClick( View view ) {
         String color = (String) colorSpinner.getSelectedItem();
-        spatialTable.style.strokecolor = color;
+        spatialTable.getStyle().strokecolor = color;
 
         String widthString = (String) widthSpinner.getSelectedItem();
         float width = 1f;
@@ -96,11 +96,11 @@ public class LinesDataPropertiesActivity extends Activity {
             width = Float.parseFloat(widthString);
         } catch (java.lang.Exception e) {
         }
-        spatialTable.style.width = width;
+        spatialTable.getStyle().width = width;
 
         String alphaString = (String) alphaSpinner.getSelectedItem();
         float alpha100 = Float.parseFloat(alphaString);
-        spatialTable.style.strokealpha = alpha100 / 100f;
+        spatialTable.getStyle().strokealpha = alpha100 / 100f;
 
         String decimationString = decimationText.getText().toString();
         float decimation = 0.0f;
@@ -108,7 +108,7 @@ public class LinesDataPropertiesActivity extends Activity {
             decimation = Float.parseFloat(decimationString);
         } catch (java.lang.Exception e) {
         }
-        spatialTable.style.decimationFactor = decimation;
+        spatialTable.getStyle().decimationFactor = decimation;
 
         try {
             SpatialDatabasesManager.getInstance().updateStyle(spatialTable);

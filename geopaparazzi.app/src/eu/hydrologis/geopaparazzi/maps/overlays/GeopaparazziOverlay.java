@@ -57,7 +57,7 @@ import eu.geopaparazzi.library.util.debug.Logger;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.GeometryIterator;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.Style;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
@@ -601,19 +601,19 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
         try {
             SpatialDatabasesManager sdManager = SpatialDatabasesManager.getInstance();
-            List<SpatialTable> spatialTables = sdManager.getSpatialTables(false);
+            List<SpatialVectorTable> spatialTables = sdManager.getSpatialVectorTables(false);
             for( int i = 0; i < spatialTables.size(); i++ ) {
-                SpatialTable spatialTable = spatialTables.get(i);
-                if (spatialTable.style.enabled == 0) {
+                SpatialVectorTable spatialTable = spatialTables.get(i);
+                if (spatialTable.getStyle().enabled == 0) {
                     continue;
                 }
                 if (isInterrupted() || sizeHasChanged()) {
                     // stop working
                     return;
                 }
-                SpatialDatabaseHandler spatialDatabaseHandler = sdManager.getHandler(spatialTable);
+                SpatialDatabaseHandler spatialDatabaseHandler = sdManager.getVectorHandler(spatialTable);
 
-                Style style4Table = spatialTable.style;
+                Style style4Table = spatialTable.getStyle();
                 GeometryIterator geometryIterator = null;
                 try {
                     geometryIterator = spatialDatabaseHandler.getGeometryIteratorInBounds("4326", spatialTable, n, s, e, w);
@@ -628,7 +628,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                                 drawZoomLevel);
                         ShapeWriter wr = new ShapeWriter(pointTransformer);
                         wr.setRemoveDuplicatePoints(true);
-                        wr.setDecimation(spatialTable.style.decimationFactor);
+                        wr.setDecimation(spatialTable.getStyle().decimationFactor);
                         while( geometryIterator.hasNext() ) {
                             Geometry geom = geometryIterator.next();
                             if (geom != null) {
@@ -648,7 +648,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                                 drawZoomLevel);
                         ShapeWriter wr = new ShapeWriter(pointTransformer);
                         wr.setRemoveDuplicatePoints(true);
-                        wr.setDecimation(spatialTable.style.decimationFactor);
+                        wr.setDecimation(spatialTable.getStyle().decimationFactor);
                         while( geometryIterator.hasNext() ) {
                             Geometry geom = geometryIterator.next();
                             Shape shape = wr.toShape(geom);
@@ -662,9 +662,9 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     } else if (spatialTable.isPoint()) {
                         PointTransformation pointTransformer = new MapsforgePointTransformation(projection, drawPosition,
                                 drawZoomLevel);
-                        ShapeWriter wr = new ShapeWriter(pointTransformer, spatialTable.style.shape, spatialTable.style.size);
+                        ShapeWriter wr = new ShapeWriter(pointTransformer, spatialTable.getStyle().shape, spatialTable.getStyle().size);
                         wr.setRemoveDuplicatePoints(true);
-                        wr.setDecimation(spatialTable.style.decimationFactor);
+                        wr.setDecimation(spatialTable.getStyle().decimationFactor);
                         while( geometryIterator.hasNext() ) {
                             Geometry geom = geometryIterator.next();
                             Shape shape = wr.toShape(geom);
