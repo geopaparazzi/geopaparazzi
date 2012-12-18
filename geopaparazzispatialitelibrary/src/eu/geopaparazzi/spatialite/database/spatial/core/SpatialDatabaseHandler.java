@@ -42,6 +42,15 @@ public class SpatialDatabaseHandler {
     // private WKBWriter wr = new WKBWriter();
     // private WKBReader wkbReader = new WKBReader(gf);
 
+    private static final String METADATA_RASTER_COLUMNS = "raster_columns";
+    private static final String METADATA_RASTER_COLUMN = "r_raster_column";
+    private static final String METADATA_RASTER_TABLE_NAME = "r_table_name";
+    private static final String METADATA_GEOMETRY_COLUMNS = "geometry_columns";
+    private static final String METADATA_SRID = "srid";
+    private static final String METADATA_GEOMETRY_TYPE = "geometry_type";
+    private static final String METADATA_GEOMETRY_COLUMN = "f_geometry_column";
+    private static final String METADATA_TABLE_NAME = "f_table_name";
+
     private static final String NAME = "name";
     private static final String SIZE = "size";
     private static final String FILLCOLOR = "fillcolor";
@@ -149,7 +158,19 @@ public class SpatialDatabaseHandler {
     public List<SpatialVectorTable> getSpatialVectorTables( boolean forceRead ) throws Exception {
         if (vectorTableList == null || forceRead) {
             vectorTableList = new ArrayList<SpatialVectorTable>();
-            String query = "select f_table_name, f_geometry_column, geometry_type,srid from geometry_columns;";
+            StringBuilder sb = new StringBuilder();
+            sb.append("select ");
+            sb.append(METADATA_TABLE_NAME);
+            sb.append(", ");
+            sb.append(METADATA_GEOMETRY_COLUMN);
+            sb.append(", ");
+            sb.append(METADATA_GEOMETRY_TYPE);
+            sb.append(",");
+            sb.append(METADATA_SRID);
+            sb.append(" from ");
+            sb.append(METADATA_GEOMETRY_COLUMNS);
+            sb.append(";");
+            String query = sb.toString();
             Stmt stmt = db.prepare(query);
             try {
                 while( stmt.step() ) {
@@ -169,11 +190,11 @@ public class SpatialDatabaseHandler {
 
             // assign the styles
             for( SpatialVectorTable spatialTable : vectorTableList ) {
-                Style style4Table = getStyle4Table(spatialTable.name);
+                Style style4Table = getStyle4Table(spatialTable.getName());
                 if (style4Table == null) {
                     spatialTable.makeDefaultStyle();
                 } else {
-                    spatialTable.style = style4Table;
+                    spatialTable.setStyle(style4Table);
                 }
             }
         }
@@ -186,7 +207,15 @@ public class SpatialDatabaseHandler {
     public List<SpatialRasterTable> getSpatialRasterTables( boolean forceRead ) throws Exception {
         if (rasterTableList == null || forceRead) {
             rasterTableList = new ArrayList<SpatialRasterTable>();
-            String query = "select r_table_name, r_raster_column, srid from raster_columns;";
+            StringBuilder sb = new StringBuilder();
+            sb.append("select ");
+            sb.append(METADATA_RASTER_TABLE_NAME);
+            sb.append(", ");
+            sb.append(METADATA_RASTER_COLUMN);
+            sb.append(", srid from ");
+            sb.append(METADATA_RASTER_COLUMNS);
+            sb.append(";");
+            String query = sb.toString();
             Stmt stmt = db.prepare(query);
             try {
                 while( stmt.step() ) {
@@ -194,8 +223,14 @@ public class SpatialDatabaseHandler {
                     String columnName = stmt.column_string(1);
                     String srid = String.valueOf(stmt.column_int(2));
 
-                    SpatialRasterTable table = new SpatialRasterTable(tableName, columnName, srid);
-                    rasterTableList.add(table);
+                    if (tableName != null) {
+                        // SELECT min(zoom_level),max(zoom_level) FROM tile_matrix_metadata WHERE
+                        // t_table_name="fromosm_tiles";
+
+                        SpatialRasterTable table = new SpatialRasterTable(tableName, columnName, srid);
+                        rasterTableList.add(table);
+                    }
+
                 }
             } finally {
                 stmt.close();
@@ -269,7 +304,7 @@ public class SpatialDatabaseHandler {
                 sbIn.append(" values ");
                 sbIn.append(" ( ");
                 Style style = new Style();
-                style.name = spatialTable.name;
+                style.name = spatialTable.getName();
                 sbIn.append(style.insertValuesString());
                 sbIn.append(" );");
 
@@ -342,14 +377,14 @@ public class SpatialDatabaseHandler {
      */
     public float[] getTableBounds( SpatialVectorTable spatialTable, String destSrid ) throws Exception {
         boolean doTransform = false;
-        if (!spatialTable.srid.equals(destSrid)) {
+        if (!spatialTable.getSrid().equals(destSrid)) {
             doTransform = true;
         }
 
         StringBuilder geomSb = new StringBuilder();
         if (doTransform)
             geomSb.append("ST_Transform(");
-        geomSb.append(spatialTable.geomName);
+        geomSb.append(spatialTable.getGeomName());
         if (doTransform) {
             geomSb.append(", ");
             geomSb.append(destSrid);
@@ -369,7 +404,7 @@ public class SpatialDatabaseHandler {
         qSb.append(geom);
         qSb.append(")) AS max_y");
         qSb.append(" FROM ");
-        qSb.append(spatialTable.name);
+        qSb.append(spatialTable.getName());
         qSb.append(";");
 
         String selectQuery = qSb.toString();
@@ -488,11 +523,11 @@ public class SpatialDatabaseHandler {
         return null;
     }
 
-    public byte[] getRasterTile(String query ) {
+    public byte[] getRasterTile( String query ) {
         try {
             Stmt stmt = db.prepare(query);
             try {
-                if( stmt.step() ) {
+                if (stmt.step()) {
                     byte[] bytes = stmt.column_bytes(0);
                     return bytes;
                 }
@@ -524,7 +559,7 @@ public class SpatialDatabaseHandler {
 
     private String buildGeometriesInBoundsQuery( String destSrid, SpatialVectorTable table, double n, double s, double e, double w ) {
         boolean doTransform = false;
-        if (!table.srid.equals(destSrid)) {
+        if (!table.getSrid().equals(destSrid)) {
             doTransform = true;
         }
 
@@ -543,7 +578,7 @@ public class SpatialDatabaseHandler {
             mbrSb.append(", ");
             mbrSb.append(destSrid);
             mbrSb.append("), ");
-            mbrSb.append(table.srid);
+            mbrSb.append(table.getSrid());
         }
         mbrSb.append(")");
         String mbr = mbrSb.toString();
@@ -552,7 +587,7 @@ public class SpatialDatabaseHandler {
         qSb.append("SELECT ST_AsBinary(CastToXY(");
         if (doTransform)
             qSb.append("ST_Transform(");
-        qSb.append(table.geomName);
+        qSb.append(table.getGeomName());
         if (doTransform) {
             qSb.append(", ");
             qSb.append(destSrid);
@@ -570,15 +605,15 @@ public class SpatialDatabaseHandler {
         // }
         // qSb.append(")");
         qSb.append(" FROM ");
-        qSb.append(table.name);
+        qSb.append(table.getName());
         qSb.append(" WHERE ST_Intersects(");
-        qSb.append(table.geomName);
+        qSb.append(table.getGeomName());
         qSb.append(", ");
         qSb.append(mbr);
         qSb.append(") = 1");
         qSb.append("   AND ROWID IN (");
         qSb.append("     SELECT ROWID FROM Spatialindex WHERE f_table_name ='");
-        qSb.append(table.name);
+        qSb.append(table.getName());
         qSb.append("'");
         qSb.append("     AND search_frame = ");
         qSb.append(mbr);
@@ -597,7 +632,7 @@ public class SpatialDatabaseHandler {
     public void intersectionToStringBBOX( String boundsSrid, SpatialVectorTable spatialTable, double n, double s, double e,
             double w, StringBuilder sb, String indentStr ) throws Exception {
         boolean doTransform = false;
-        if (!spatialTable.srid.equals(boundsSrid)) {
+        if (!spatialTable.getSrid().equals(boundsSrid)) {
             doTransform = true;
         }
 
@@ -650,7 +685,7 @@ public class SpatialDatabaseHandler {
             StringBuilder sbQ = new StringBuilder();
             sbQ.append("SELECT ");
             sbQ.append("*");
-            sbQ.append(" from ").append(spatialTable.name);
+            sbQ.append(" from ").append(spatialTable.getName());
             sbQ.append(" where ST_Intersects(");
             if (doTransform)
                 sbQ.append("ST_Transform(");
@@ -666,10 +701,10 @@ public class SpatialDatabaseHandler {
                 sbQ.append(", ");
                 sbQ.append(boundsSrid);
                 sbQ.append("),");
-                sbQ.append(spatialTable.srid);
+                sbQ.append(spatialTable.getSrid());
             }
             sbQ.append("),");
-            sbQ.append(spatialTable.geomName);
+            sbQ.append(spatialTable.getGeomName());
             sbQ.append(");");
 
             query = sbQ.toString();
@@ -683,7 +718,7 @@ public class SpatialDatabaseHandler {
                 int column_count = stmt.column_count();
                 for( int i = 0; i < column_count; i++ ) {
                     String cName = stmt.column_name(i);
-                    if (cName.equals(spatialTable.geomName)) {
+                    if (cName.equals(spatialTable.getGeomName())) {
                         continue;
                     }
 
@@ -700,15 +735,15 @@ public class SpatialDatabaseHandler {
     public void intersectionToString4Polygon( String queryPointSrid, SpatialVectorTable spatialTable, double n, double e,
             StringBuilder sb, String indentStr ) throws Exception {
         boolean doTransform = false;
-        if (!spatialTable.srid.equals(queryPointSrid)) {
+        if (!spatialTable.getSrid().equals(queryPointSrid)) {
             doTransform = true;
         }
 
         StringBuilder sbQ = new StringBuilder();
         sbQ.append("SELECT * FROM ");
-        sbQ.append(spatialTable.name);
+        sbQ.append(spatialTable.getName());
         sbQ.append(" WHERE ST_Intersects(");
-        sbQ.append(spatialTable.geomName);
+        sbQ.append(spatialTable.getGeomName());
         sbQ.append(", ");
         if (doTransform)
             sbQ.append("ST_Transform(");
@@ -720,12 +755,12 @@ public class SpatialDatabaseHandler {
             sbQ.append(", ");
             sbQ.append(queryPointSrid);
             sbQ.append("), ");
-            sbQ.append(spatialTable.srid);
+            sbQ.append(spatialTable.getSrid());
         }
         sbQ.append(")) = 1 ");
         sbQ.append("AND ROWID IN (");
         sbQ.append("SELECT ROWID FROM Spatialindex WHERE f_table_name ='");
-        sbQ.append(spatialTable.name);
+        sbQ.append(spatialTable.getName());
         sbQ.append("' AND search_frame = ");
         if (doTransform)
             sbQ.append("ST_Transform(");
@@ -737,7 +772,7 @@ public class SpatialDatabaseHandler {
             sbQ.append(", ");
             sbQ.append(queryPointSrid);
             sbQ.append("), ");
-            sbQ.append(spatialTable.srid);
+            sbQ.append(spatialTable.getSrid());
         }
         sbQ.append("));");
         String query = sbQ.toString();
@@ -748,7 +783,7 @@ public class SpatialDatabaseHandler {
                 int column_count = stmt.column_count();
                 for( int i = 0; i < column_count; i++ ) {
                     String cName = stmt.column_name(i);
-                    if (cName.equals(spatialTable.geomName)) {
+                    if (cName.equals(spatialTable.getGeomName())) {
                         continue;
                     }
 

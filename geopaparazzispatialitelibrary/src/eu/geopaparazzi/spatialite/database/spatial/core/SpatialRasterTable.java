@@ -24,19 +24,54 @@ package eu.geopaparazzi.spatialite.database.spatial.core;
  */
 public class SpatialRasterTable {
 
-    public final String srid;
-    public final String tableName;
-    public final String columnName;
+    private final String srid;
+    private final String tableName;
+    private final String columnName;
     private String tileQuery;
-    public final int minZoom = 0;
-    public final int maxZoom = 4;
+    private final int minZoom;
+    private final int maxZoom;
+    private final double centerX;
+    private final double centerY;
 
-    public SpatialRasterTable( String tableName, String columnName, String srid ) {
+    public SpatialRasterTable( String tableName, String columnName, String srid, int minZoom, int maxZoom, double centerX,
+            double centerY ) {
         this.tableName = tableName;
         this.columnName = columnName;
         this.srid = srid;
+        this.minZoom = minZoom;
+        this.maxZoom = maxZoom;
+        this.centerX = centerX;
+        this.centerY = centerY;
 
         tileQuery = "select " + columnName + " from " + tableName + " where zoom_level = ? AND tile_column = ? AND tile_row = ?";
+    }
+
+    public String getSrid() {
+        return srid;
+    }
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public String getColumnName() {
+        return columnName;
+    }
+
+    public int getMinZoom() {
+        return minZoom;
+    }
+
+    public int getMaxZoom() {
+        return maxZoom;
+    }
+
+    public double getCenterX() {
+        return centerX;
+    }
+
+    public double getCenterY() {
+        return centerY;
     }
 
     /**

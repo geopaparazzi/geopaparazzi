@@ -90,7 +90,7 @@ public class SpatialDatabasesManager {
         Collections.sort(tables, new OrderComparator());
         // set proper order index across tables
         for( int i = 0; i < tables.size(); i++ ) {
-            tables.get(i).style.order = i;
+            tables.get(i).getStyle().order = i;
         }
         return tables;
     }
@@ -113,14 +113,14 @@ public class SpatialDatabasesManager {
         for( Entry<SpatialVectorTable, SpatialDatabaseHandler> entry : entrySet ) {
             SpatialVectorTable key = entry.getKey();
             SpatialDatabaseHandler value = entry.getValue();
-            value.updateStyle(key.style);
+            value.updateStyle(key.getStyle());
         }
     }
 
     public void updateStyle( SpatialVectorTable spatialTable ) throws Exception {
         SpatialDatabaseHandler spatialDatabaseHandler = vectorTablesMap.get(spatialTable);
         if (spatialDatabaseHandler != null) {
-            spatialDatabaseHandler.updateStyle(spatialTable.style);
+            spatialDatabaseHandler.updateStyle(spatialTable.getStyle());
         }
     }
 
@@ -137,7 +137,7 @@ public class SpatialDatabasesManager {
     public SpatialVectorTable getVectorTableByName( String table ) throws Exception {
         List<SpatialVectorTable> spatialTables = getSpatialVectorTables(false);
         for( SpatialVectorTable spatialTable : spatialTables ) {
-            if (spatialTable.name.equals(table)) {
+            if (spatialTable.getName().equals(table)) {
                 return spatialTable;
             }
         }
@@ -147,7 +147,7 @@ public class SpatialDatabasesManager {
     public SpatialRasterTable getRasterTableByName( String table ) throws Exception {
         List<SpatialRasterTable> spatialTables = getSpatialRasterTables(false);
         for( SpatialRasterTable spatialTable : spatialTables ) {
-            if (spatialTable.tableName.equals(table)) {
+            if (spatialTable.getTableName().equals(table)) {
                 return spatialTable;
             }
         }

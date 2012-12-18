@@ -24,11 +24,11 @@ package eu.geopaparazzi.spatialite.database.spatial.core;
  */
 public class SpatialVectorTable {
 
-    public final String name;
-    public final String geomName;
-    public final String geomType;
-    public final String srid;
-    public Style style;
+    private final String name;
+    private final String geomName;
+    private final String geomType;
+    private final String srid;
+    private Style style;
 
     private boolean checkDone = false;
     private boolean isPolygon = false;
@@ -41,6 +41,30 @@ public class SpatialVectorTable {
         this.geomType = geomType;
         this.srid = srid;
         checkType();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getGeomName() {
+        return geomName;
+    }
+
+    public String getGeomType() {
+        return geomType;
+    }
+
+    public String getSrid() {
+        return srid;
+    }
+    
+    public Style getStyle() {
+        return style;
+    }
+    
+    public void setStyle( Style style ) {
+        this.style = style;
     }
 
     public boolean isPolygon() {
@@ -66,7 +90,7 @@ public class SpatialVectorTable {
         }
         checkDone = true;
     }
-    
+
     public void makeDefaultStyle() {
         style = new Style();
         style.name = name;
