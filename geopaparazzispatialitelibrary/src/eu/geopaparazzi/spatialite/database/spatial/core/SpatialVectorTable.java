@@ -26,7 +26,7 @@ public class SpatialVectorTable {
 
     private final String name;
     private final String geomName;
-    private final String geomType;
+    private final int geomType;
     private final String srid;
     private Style style;
 
@@ -35,7 +35,7 @@ public class SpatialVectorTable {
     private boolean isLine = false;
     private boolean isPoint = false;
 
-    public SpatialVectorTable( String name, String geomName, String geomType, String srid ) {
+    public SpatialVectorTable( String name, String geomName, int geomType, String srid ) {
         this.name = name;
         this.geomName = geomName;
         this.geomType = geomType;
@@ -51,18 +51,18 @@ public class SpatialVectorTable {
         return geomName;
     }
 
-    public String getGeomType() {
+    public int getGeomType() {
         return geomType;
     }
 
     public String getSrid() {
         return srid;
     }
-    
+
     public Style getStyle() {
         return style;
     }
-    
+
     public void setStyle( Style style ) {
         this.style = style;
     }
@@ -81,12 +81,40 @@ public class SpatialVectorTable {
         if (checkDone) {
             return;
         }
-        if (geomType.toUpperCase().contains("POLYGON")) {
+        GeometryType TYPE = GeometryType.forValue(geomType);
+        switch( TYPE ) {
+        case POLYGON_XY:
+        case POLYGON_XYM:
+        case POLYGON_XYZ:
+        case POLYGON_XYZM:
+        case MULTIPOLYGON_XY:
+        case MULTIPOLYGON_XYM:
+        case MULTIPOLYGON_XYZ:
+        case MULTIPOLYGON_XYZM:
             isPolygon = true;
-        } else if (geomType.toUpperCase().contains("LINESTRING")) {
-            isLine = true;
-        } else if (geomType.toUpperCase().contains("POINT")) {
+            break;
+        case POINT_XY:
+        case POINT_XYM:
+        case POINT_XYZ:
+        case POINT_XYZM:
+        case MULTIPOINT_XY:
+        case MULTIPOINT_XYM:
+        case MULTIPOINT_XYZ:
+        case MULTIPOINT_XYZM:
             isPoint = true;
+            break;
+        case LINESTRING_XY:
+        case LINESTRING_XYM:
+        case LINESTRING_XYZ:
+        case LINESTRING_XYZM:
+        case MULTILINESTRING_XY:
+        case MULTILINESTRING_XYM:
+        case MULTILINESTRING_XYZ:
+        case MULTILINESTRING_XYZM:
+            isLine = true;
+            break;
+        default:
+            throw new IllegalArgumentException("No geom type for: " + TYPE);
         }
         checkDone = true;
     }

@@ -34,6 +34,7 @@ import android.graphics.Paint.Join;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKBReader;
+import com.vividsolutions.jts.io.WKTReader;
 
 /**
  * An utility class to handle the spatial database.
@@ -58,7 +59,8 @@ public class SpatialDatabaseHandler {
     private static final String METADATA_RASTER_COLUMN = "r_raster_column";
     private static final String METADATA_RASTER_TABLE_NAME = "r_table_name";
     private static final String METADATA_SRID = "srid";
-    private static final String METADATA_GEOMETRY_TYPE = "geometry_type";
+    private static final String METADATA_GEOMETRY_TYPE4 = "geometry_type";
+    private static final String METADATA_GEOMETRY_TYPE3 = "type";
     private static final String METADATA_GEOMETRY_COLUMN = "f_geometry_column";
     private static final String METADATA_TABLE_NAME = "f_table_name";
 
@@ -169,25 +171,56 @@ public class SpatialDatabaseHandler {
     public List<SpatialVectorTable> getSpatialVectorTables( boolean forceRead ) throws Exception {
         if (vectorTableList == null || forceRead) {
             vectorTableList = new ArrayList<SpatialVectorTable>();
-            StringBuilder sb = new StringBuilder();
-            sb.append("select ");
-            sb.append(METADATA_TABLE_NAME);
-            sb.append(", ");
-            sb.append(METADATA_GEOMETRY_COLUMN);
-            sb.append(", ");
-            sb.append(METADATA_GEOMETRY_TYPE);
-            sb.append(",");
-            sb.append(METADATA_SRID);
-            sb.append(" from ");
-            sb.append(METADATA_TABLE_GEOMETRY_COLUMNS);
-            sb.append(";");
-            String query = sb.toString();
-            Stmt stmt = db.prepare(query);
+
+            StringBuilder sb3 = new StringBuilder();
+            sb3.append("select ");
+            sb3.append(METADATA_TABLE_NAME);
+            sb3.append(", ");
+            sb3.append(METADATA_GEOMETRY_COLUMN);
+            sb3.append(", ");
+            sb3.append(METADATA_GEOMETRY_TYPE3);
+            sb3.append(",");
+            sb3.append(METADATA_SRID);
+            sb3.append(" from ");
+            sb3.append(METADATA_TABLE_GEOMETRY_COLUMNS);
+            sb3.append(";");
+            String query3 = sb3.toString();
+
+            boolean is3 = true;
+            Stmt stmt = null;
+            try {
+                stmt = db.prepare(query3);
+            } catch (java.lang.Exception e) {
+                // try with spatialite 4 syntax
+                StringBuilder sb4 = new StringBuilder();
+                sb4.append("select ");
+                sb4.append(METADATA_TABLE_NAME);
+                sb4.append(", ");
+                sb4.append(METADATA_GEOMETRY_COLUMN);
+                sb4.append(", ");
+                sb4.append(METADATA_GEOMETRY_TYPE4);
+                sb4.append(",");
+                sb4.append(METADATA_SRID);
+                sb4.append(" from ");
+                sb4.append(METADATA_TABLE_GEOMETRY_COLUMNS);
+                sb4.append(";");
+                String query4 = sb4.toString();
+                stmt = db.prepare(query4);
+                is3 = false;
+            }
             try {
                 while( stmt.step() ) {
                     String name = stmt.column_string(0);
                     String geomName = stmt.column_string(1);
-                    String geomType = stmt.column_string(2);
+
+                    int geomType = 0;
+                    if (is3) {
+                        String type = stmt.column_string(2);
+                        geomType = GeometryType.forValue(type);
+                    } else {
+                        geomType = stmt.column_int(2);
+                    }
+
                     String srid = String.valueOf(stmt.column_int(3));
                     SpatialVectorTable table = new SpatialVectorTable(name, geomName, geomType, srid);
                     vectorTableList.add(table);
@@ -271,11 +304,12 @@ public class SpatialDatabaseHandler {
                 WKBReader wkbReader = new WKBReader();
 
                 StringBuilder centerBuilder = new StringBuilder();
-                centerBuilder.append("select CastToXY(ST_Transform(MakePoint(");
+                centerBuilder.append("select ST_AsBinary(CastToXY(ST_Transform(MakePoint(");
+                // centerBuilder.append("select AsText(ST_Transform(MakePoint(");
                 centerBuilder.append("(min_x + (max_x-min_x)/2), ");
                 centerBuilder.append("(min_y + (max_y-min_y)/2), ");
                 centerBuilder.append(METADATA_SRID);
-                centerBuilder.append("), 4326)) from ");
+                centerBuilder.append("), 4326))) from ");
                 centerBuilder.append(METADATA_TABLE_GEOPACKAGE_CONTENTS);
                 centerBuilder.append(" where ");
                 centerBuilder.append(METADATA_GEOPACKAGECONTENT_TABLE_NAME);
@@ -286,6 +320,8 @@ public class SpatialDatabaseHandler {
 
                 centerStmt = db.prepare(centerQuery);
                 if (centerStmt.step()) {
+                    // String geomBytes = centerStmt.column_string(0);
+                    // System.out.println();
                     byte[] geomBytes = centerStmt.column_bytes(0);
                     Geometry geometry = wkbReader.read(geomBytes);
                     Coordinate coordinate = geometry.getCoordinate();
