@@ -846,7 +846,7 @@ public class SpatialDatabaseHandler {
                 int column_count = stmt.column_count();
                 for( int i = 0; i < column_count; i++ ) {
                     String cName = stmt.column_name(i);
-                    if (cName.equals(spatialTable.getGeomName())) {
+                    if (cName.equalsIgnoreCase(spatialTable.getGeomName())) {
                         continue;
                     }
 
@@ -911,7 +911,7 @@ public class SpatialDatabaseHandler {
                 int column_count = stmt.column_count();
                 for( int i = 0; i < column_count; i++ ) {
                     String cName = stmt.column_name(i);
-                    if (cName.equals(spatialTable.getGeomName())) {
+                    if (cName.equalsIgnoreCase(spatialTable.getGeomName())) {
                         continue;
                     }
 
