@@ -155,8 +155,8 @@ public class GeoPaparazziActivity extends Activity {
         try {
             List<SpatialRasterTable> spatialRasterTables = SpatialDatabasesManager.getInstance().getSpatialRasterTables(false);
             for( SpatialRasterTable table : spatialRasterTables ) {
-                tileSourcesMap.put(i++, table.tableName);
-                rasterSourcesMap.put(table.tableName, table);
+                tileSourcesMap.put(i++, table.getTableName());
+                rasterSourcesMap.put(table.getTableName(), table);
             }
         } catch (jsqlite.Exception e) {
             e.printStackTrace();
@@ -677,7 +677,7 @@ public class GeoPaparazziActivity extends Activity {
     private void setTileSource( SpatialRasterTable table ) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         Editor editor = preferences.edit();
-        editor.putString(Constants.PREFS_KEY_TILESOURCE, table.tableName);
+        editor.putString(Constants.PREFS_KEY_TILESOURCE, table.getTableName());
         editor.commit();
     }
 

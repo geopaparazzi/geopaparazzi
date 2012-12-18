@@ -604,7 +604,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
             List<SpatialVectorTable> spatialTables = sdManager.getSpatialVectorTables(false);
             for( int i = 0; i < spatialTables.size(); i++ ) {
                 SpatialVectorTable spatialTable = spatialTables.get(i);
-                if (spatialTable.style.enabled == 0) {
+                if (spatialTable.getStyle().enabled == 0) {
                     continue;
                 }
                 if (isInterrupted() || sizeHasChanged()) {
@@ -613,7 +613,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 }
                 SpatialDatabaseHandler spatialDatabaseHandler = sdManager.getVectorHandler(spatialTable);
 
-                Style style4Table = spatialTable.style;
+                Style style4Table = spatialTable.getStyle();
                 GeometryIterator geometryIterator = null;
                 try {
                     geometryIterator = spatialDatabaseHandler.getGeometryIteratorInBounds("4326", spatialTable, n, s, e, w);
@@ -628,7 +628,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                                 drawZoomLevel);
                         ShapeWriter wr = new ShapeWriter(pointTransformer);
                         wr.setRemoveDuplicatePoints(true);
-                        wr.setDecimation(spatialTable.style.decimationFactor);
+                        wr.setDecimation(spatialTable.getStyle().decimationFactor);
                         while( geometryIterator.hasNext() ) {
                             Geometry geom = geometryIterator.next();
                             if (geom != null) {
@@ -648,7 +648,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                                 drawZoomLevel);
                         ShapeWriter wr = new ShapeWriter(pointTransformer);
                         wr.setRemoveDuplicatePoints(true);
-                        wr.setDecimation(spatialTable.style.decimationFactor);
+                        wr.setDecimation(spatialTable.getStyle().decimationFactor);
                         while( geometryIterator.hasNext() ) {
                             Geometry geom = geometryIterator.next();
                             Shape shape = wr.toShape(geom);
@@ -662,9 +662,9 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     } else if (spatialTable.isPoint()) {
                         PointTransformation pointTransformer = new MapsforgePointTransformation(projection, drawPosition,
                                 drawZoomLevel);
-                        ShapeWriter wr = new ShapeWriter(pointTransformer, spatialTable.style.shape, spatialTable.style.size);
+                        ShapeWriter wr = new ShapeWriter(pointTransformer, spatialTable.getStyle().shape, spatialTable.getStyle().size);
                         wr.setRemoveDuplicatePoints(true);
-                        wr.setDecimation(spatialTable.style.decimationFactor);
+                        wr.setDecimation(spatialTable.getStyle().decimationFactor);
                         while( geometryIterator.hasNext() ) {
                             Geometry geom = geometryIterator.next();
                             Shape shape = wr.toShape(geom);

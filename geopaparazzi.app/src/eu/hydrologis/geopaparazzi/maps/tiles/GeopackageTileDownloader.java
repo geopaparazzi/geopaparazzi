@@ -47,8 +47,8 @@ public class GeopackageTileDownloader extends TileDownloader {
         SpatialDatabasesManager sdManager = SpatialDatabasesManager.getInstance();
         spatialDatabaseHandler = sdManager.getRasterHandler(table);
 
-        ZOOM_MAX = (byte) table.maxZoom;
-        ZOOM_MIN = (byte) table.minZoom;
+        ZOOM_MAX = (byte) table.getMaxZoom();
+        ZOOM_MIN = (byte) table.getMinZoom();
         
         tilePart = table.getTileQuery();
     }

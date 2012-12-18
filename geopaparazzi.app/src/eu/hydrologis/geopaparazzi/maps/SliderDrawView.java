@@ -261,7 +261,7 @@ public class SliderDrawView extends View {
                     try {
                         boolean oneEnabled = false;
                         for( SpatialVectorTable spatialTable : spatialTables ) {
-                            if (spatialTable.style.enabled == 0) {
+                            if (spatialTable.getStyle().enabled == 0) {
                                 continue;
                             }
                             oneEnabled = true;
@@ -281,12 +281,12 @@ public class SliderDrawView extends View {
                             }
 
                             for( SpatialVectorTable spatialTable : spatialTables ) {
-                                if (spatialTable.style.enabled == 0) {
+                                if (spatialTable.getStyle().enabled == 0) {
                                     continue;
                                 }
                                 StringBuilder sbTmp = new StringBuilder();
                                 sdbManager.intersectionToString("4326", spatialTable, north, south, east, west, sbTmp, "\t");
-                                sb.append(spatialTable.name).append("\n");
+                                sb.append(spatialTable.getName()).append("\n");
                                 sb.append(sbTmp);
                                 sb.append("\n----------------------\n");
 
