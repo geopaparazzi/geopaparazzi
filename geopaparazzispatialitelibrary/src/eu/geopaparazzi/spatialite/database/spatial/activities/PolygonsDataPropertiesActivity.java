@@ -56,7 +56,7 @@ public class PolygonsDataPropertiesActivity extends Activity {
         }
 
         colorSpinner = (Spinner) findViewById(R.id.color_spinner);
-        String strokecolor = spatialTable.style.strokecolor;
+        String strokecolor = spatialTable.getStyle().strokecolor;
         int count = colorSpinner.getCount();
         for( int i = 0; i < count; i++ ) {
             if (colorSpinner.getItemAtPosition(i).equals(strokecolor)) {
@@ -64,7 +64,7 @@ public class PolygonsDataPropertiesActivity extends Activity {
                 break;
             }
         }
-        String width = String.valueOf((int) spatialTable.style.width);
+        String width = String.valueOf((int) spatialTable.getStyle().width);
         widthSpinner = (Spinner) findViewById(R.id.width_spinner);
         count = widthSpinner.getCount();
         for( int i = 0; i < count; i++ ) {
@@ -73,7 +73,7 @@ public class PolygonsDataPropertiesActivity extends Activity {
                 break;
             }
         }
-        String alpha = String.valueOf((int) (spatialTable.style.strokealpha * 100f));
+        String alpha = String.valueOf((int) (spatialTable.getStyle().strokealpha * 100f));
         alphaSpinner = (Spinner) findViewById(R.id.alpha_spinner);
         count = alphaSpinner.getCount();
         for( int i = 0; i < count; i++ ) {
@@ -84,7 +84,7 @@ public class PolygonsDataPropertiesActivity extends Activity {
         }
 
         fillColorSpinner = (Spinner) findViewById(R.id.fill_color_spinner);
-        String fillcolor = spatialTable.style.fillcolor;
+        String fillcolor = spatialTable.getStyle().fillcolor;
         count = fillColorSpinner.getCount();
         for( int i = 0; i < count; i++ ) {
             if (fillColorSpinner.getItemAtPosition(i).equals(fillcolor)) {
@@ -93,7 +93,7 @@ public class PolygonsDataPropertiesActivity extends Activity {
             }
         }
 
-        String fillAlpha = String.valueOf((int) (spatialTable.style.fillalpha * 100f));
+        String fillAlpha = String.valueOf((int) (spatialTable.getStyle().fillalpha * 100f));
         fillAlphaSpinner = (Spinner) findViewById(R.id.fill_alpha_spinner);
         count = fillAlphaSpinner.getCount();
         for( int i = 0; i < count; i++ ) {
@@ -103,7 +103,7 @@ public class PolygonsDataPropertiesActivity extends Activity {
             }
         }
 
-        String decimation = String.valueOf(spatialTable.style.decimationFactor);
+        String decimation = String.valueOf(spatialTable.getStyle().decimationFactor);
         decimationText = (EditText) findViewById(R.id.decimation_text);
         decimationText.setText(decimation);
     }
@@ -111,22 +111,22 @@ public class PolygonsDataPropertiesActivity extends Activity {
     public void onOkClick( View view ) {
 
         String color = (String) colorSpinner.getSelectedItem();
-        spatialTable.style.strokecolor = color;
+        spatialTable.getStyle().strokecolor = color;
 
         String widthString = (String) widthSpinner.getSelectedItem();
         float width = Float.parseFloat(widthString);
-        spatialTable.style.width = width;
+        spatialTable.getStyle().width = width;
 
         String alphaString = (String) alphaSpinner.getSelectedItem();
         float alpha100 = Float.parseFloat(alphaString);
-        spatialTable.style.strokealpha = alpha100 / 100f;
+        spatialTable.getStyle().strokealpha = alpha100 / 100f;
 
         String fillcolor = (String) fillColorSpinner.getSelectedItem();
-        spatialTable.style.fillcolor = fillcolor;
+        spatialTable.getStyle().fillcolor = fillcolor;
 
         String fillAlphaString = (String) fillAlphaSpinner.getSelectedItem();
         float fillAlpha100 = Float.parseFloat(fillAlphaString);
-        spatialTable.style.fillalpha = fillAlpha100 / 100f;
+        spatialTable.getStyle().fillalpha = fillAlpha100 / 100f;
 
         String decimationString = decimationText.getText().toString();
         float decimation = 0.0f;
@@ -134,7 +134,7 @@ public class PolygonsDataPropertiesActivity extends Activity {
             decimation = Float.parseFloat(decimationString);
         } catch (java.lang.Exception e) {
         }
-        spatialTable.style.decimationFactor = decimation;
+        spatialTable.getStyle().decimationFactor = decimation;
 
         try {
             SpatialDatabasesManager.getInstance().updateStyle(spatialTable);
