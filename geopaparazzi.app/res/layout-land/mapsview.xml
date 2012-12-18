@@ -97,6 +97,18 @@
                         android:layout_marginBottom="5dip"
                         android:background="@drawable/infomode" >
                     </Button>
+
+                    <Button
+                        android:id="@+id/battery"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_margin="5dip"
+                        android:background="@drawable/battery"
+                        android:text="-"
+                        android:textColor="@color/main_text_color_neutral"
+                        android:textStyle="bold" >
+                    </Button>
                 </LinearLayout>
                 <!-- the tools buttons -->
 
@@ -135,18 +147,6 @@
                             android:layout_margin="5dip"
                             android:background="@drawable/measuremode" >
                         </ImageButton>
-
-                        <Button
-                            android:id="@+id/battery"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_margin="5dip"
-                            android:background="@drawable/battery"
-                            android:text="-"
-                            android:textColor="@color/main_text_color_neutral"
-                            android:textStyle="bold" >
-                        </Button>
                     </LinearLayout>
 
                     <LinearLayout

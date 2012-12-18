@@ -34,7 +34,6 @@ import android.graphics.Paint.Join;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKBReader;
-import com.vividsolutions.jts.io.WKTReader;
 
 /**
  * An utility class to handle the spatial database.
