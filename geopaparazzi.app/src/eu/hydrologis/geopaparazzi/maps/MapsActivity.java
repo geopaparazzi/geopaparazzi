@@ -212,8 +212,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             if (rasterTable != null) {
                 try {
                     mapGenerator = new GeopackageTileDownloader(rasterTable);
-                    minZoomLevel = 0;
-                    maxZoomLevel = 4;
+                    minZoomLevel = rasterTable.getMinZoom();
+                    maxZoomLevel = rasterTable.getMaxZoom();
                 } catch (jsqlite.Exception e) {
                     e.printStackTrace();
                     mapGenerator = createMapGenerator(MapGeneratorInternal.MAPNIK);

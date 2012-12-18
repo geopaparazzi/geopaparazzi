@@ -271,19 +271,20 @@ public class SpatialDatabaseHandler {
                 WKBReader wkbReader = new WKBReader();
 
                 StringBuilder centerBuilder = new StringBuilder();
-                centerBuilder.append("select ST_Transform(MakePoint(");
+                centerBuilder.append("select CastToXY(ST_Transform(MakePoint(");
                 centerBuilder.append("(min_x + (max_x-min_x)/2), ");
                 centerBuilder.append("(min_y + (max_y-min_y)/2), ");
                 centerBuilder.append(METADATA_SRID);
-                centerBuilder.append("), 4326) from ");
+                centerBuilder.append("), 4326)) from ");
                 centerBuilder.append(METADATA_TABLE_GEOPACKAGE_CONTENTS);
                 centerBuilder.append(" where ");
                 centerBuilder.append(METADATA_GEOPACKAGECONTENT_TABLE_NAME);
-                centerBuilder.append(" = '?'");
+                centerBuilder.append("='");
+                centerBuilder.append(tableName);
+                centerBuilder.append("';");
                 String centerQuery = centerBuilder.toString();
 
                 centerStmt = db.prepare(centerQuery);
-                centerStmt.bind(1, tableName);
                 if (centerStmt.step()) {
                     byte[] geomBytes = centerStmt.column_bytes(0);
                     Geometry geometry = wkbReader.read(geomBytes);
@@ -319,10 +320,11 @@ public class SpatialDatabaseHandler {
             zoomBuilder.append(METADATA_TABLE_TILE_MATRIX);
             zoomBuilder.append(" WHERE ");
             zoomBuilder.append(METADATA_TILE_TABLE_NAME);
-            zoomBuilder.append("='?';");
+            zoomBuilder.append("='");
+            zoomBuilder.append(tableName);
+            zoomBuilder.append("';");
             String zoomQuery = zoomBuilder.toString();
             zoomStmt = db.prepare(zoomQuery);
-            zoomStmt.bind(1, tableName);
             if (zoomStmt.step()) {
                 zoomLevels[0] = zoomStmt.column_int(0);
                 zoomLevels[1] = zoomStmt.column_int(1);
