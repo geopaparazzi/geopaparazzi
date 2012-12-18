@@ -88,27 +88,6 @@
                         android:layout_marginBottom="10dip"
                         android:background="@drawable/buttoncirclezoomout" >
                     </Button>
-
-                    <Button
-                        android:id="@+id/info"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="5dip"
-                        android:background="@drawable/infomode" >
-                    </Button>
-
-                    <Button
-                        android:id="@+id/battery"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_margin="5dip"
-                        android:background="@drawable/battery"
-                        android:text="-"
-                        android:textColor="@color/main_text_color_neutral"
-                        android:textStyle="bold" >
-                    </Button>
                 </LinearLayout>
                 <!-- the tools buttons -->
 
@@ -169,15 +148,42 @@
                 </LinearLayout>
                 <!-- the center on gps button -->
 
-                <ImageButton
-                    android:id="@+id/center_on_gps_btn"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center"
-                    android:background="@drawable/action_bar_button_drawable"
-                    android:padding="5dp"
-                    android:src="@android:drawable/ic_menu_mylocation" >
-                </ImageButton>
+                    android:orientation="horizontal" >
+
+                    <Button
+                        android:id="@+id/battery"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="3dip"
+                        android:layout_marginRight="15dip"
+                        android:background="@drawable/battery"
+                        android:text="-"
+                        android:textColor="@color/main_text_color_neutral"
+                        android:textStyle="bold" >
+                    </Button>
+
+                    <ImageButton
+                        android:id="@+id/center_on_gps_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/action_bar_button_drawable"
+                        android:padding="5dp"
+                        android:src="@android:drawable/ic_menu_mylocation" >
+                    </ImageButton>
+
+                    <Button
+                        android:id="@+id/info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="3dip"
+                        android:layout_marginLeft="15dip"
+                        android:background="@drawable/infomode" >
+                    </Button>
+                </LinearLayout>
             </FrameLayout>
         </SlidingDrawer>
     </FrameLayout>
