@@ -155,7 +155,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
     private List<GeoPoint> currentGps = new ArrayList<GeoPoint>();
     private Context context;
-    private int triangle = 20;
+    private int inset = 5;
 
     /**
      * Create a {@link OverlayWay} wrapped type.
@@ -383,6 +383,9 @@ public abstract class GeopaparazziOverlay extends Overlay {
         // erase the list of visible items
         this.visibleItemsRedraw.clear();
 
+        int canvasHeight = canvas.getHeight();
+        int canvasWidth = canvas.getWidth();
+
         int numberOfItems = itemSize();
         for( int itemIndex = 0; itemIndex < numberOfItems; ++itemIndex ) {
             if (isInterrupted() || sizeHasChanged()) {
@@ -434,7 +437,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 this.itemBottom = this.itemPosition.y + markerBounds.bottom;
 
                 // check if the bounding box of the marker intersects with the canvas
-                if (this.right >= 0 && this.left <= canvas.getWidth() && this.itemBottom >= 0 && this.top <= canvas.getHeight()) {
+                if (this.right >= 0 && this.left <= canvasWidth && this.itemBottom >= 0 && this.top <= canvasHeight) {
                     // set the position of the marker
                     this.itemMarker.setBounds(this.left, this.top, this.right, this.itemBottom);
 
@@ -516,10 +519,9 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     float circleRadius = overlayGps.cachedRadius;
 
                     // check if the bounding box of the circle intersects with the canvas
-                    if ((this.circlePosition.x + circleRadius) >= 0
-                            && (this.circlePosition.x - circleRadius) <= canvas.getWidth()
+                    if ((this.circlePosition.x + circleRadius) >= 0 && (this.circlePosition.x - circleRadius) <= canvasWidth
                             && (this.circlePosition.y + circleRadius) >= 0
-                            && (this.circlePosition.y - circleRadius) <= canvas.getHeight()) {
+                            && (this.circlePosition.y - circleRadius) <= canvasHeight) {
                         // assemble the path
                         this.path.reset();
                         this.path.addCircle(this.circlePosition.x, this.circlePosition.y, circleRadius, Path.Direction.CCW);
@@ -536,7 +538,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                         int top = this.circlePosition.y + markerBounds.top;
                         int bottom = this.circlePosition.y + markerBounds.bottom;
                         // check if the bounding box of the marker intersects with the canvas
-                        if (right >= 0 && left <= canvas.getWidth() && bottom >= 0 && top <= canvas.getHeight()) {
+                        if (right >= 0 && left <= canvasWidth && bottom >= 0 && top <= canvasHeight) {
                             // set the position of the marker
                             gpsMarker.setBounds(left, top, right, bottom);
                             // draw the item marker on the canvas
@@ -568,16 +570,17 @@ public abstract class GeopaparazziOverlay extends Overlay {
             gpsStatusFill = gpsRedFill;
         }
         gpsStatusPath.reset();
-        gpsStatusPath.moveTo(0, 0);
-        gpsStatusPath.lineTo(0, triangle);
-        gpsStatusPath.lineTo(triangle, 0);
+        gpsStatusPath.moveTo(0, canvasHeight);
+        gpsStatusPath.lineTo(0, canvasHeight - inset);
+        gpsStatusPath.lineTo(canvasWidth, canvasHeight - inset);
+        gpsStatusPath.lineTo(canvasWidth, canvasHeight);
         gpsStatusPath.close();
         canvas.drawPath(gpsStatusPath, gpsStatusFill);
 
         /*
          * draw cross on top
          */
-        Point center = new Point(canvas.getWidth() / 2, canvas.getHeight() / 2);
+        Point center = new Point(canvasWidth / 2, canvasHeight / 2);
         crossPath.reset();
         crossPath.moveTo(center.x, center.y - 20);
         crossPath.lineTo(center.x, center.y + 20);
@@ -662,7 +665,8 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     } else if (spatialTable.isPoint()) {
                         PointTransformation pointTransformer = new MapsforgePointTransformation(projection, drawPosition,
                                 drawZoomLevel);
-                        ShapeWriter wr = new ShapeWriter(pointTransformer, spatialTable.getStyle().shape, spatialTable.getStyle().size);
+                        ShapeWriter wr = new ShapeWriter(pointTransformer, spatialTable.getStyle().shape,
+                                spatialTable.getStyle().size);
                         wr.setRemoveDuplicatePoints(true);
                         wr.setDecimation(spatialTable.getStyle().decimationFactor);
                         while( geometryIterator.hasNext() ) {
