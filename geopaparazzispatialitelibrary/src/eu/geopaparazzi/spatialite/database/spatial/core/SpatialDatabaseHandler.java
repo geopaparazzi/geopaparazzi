@@ -31,21 +31,32 @@ import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.WKBReader;
+
 /**
  * An utility class to handle the spatial database.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class SpatialDatabaseHandler {
+
     // 3857
     // private GeometryFactory gf = new GeometryFactory();
     // private WKBWriter wr = new WKBWriter();
     // private WKBReader wkbReader = new WKBReader(gf);
 
-    private static final String METADATA_RASTER_COLUMNS = "raster_columns";
+    private static final String METADATA_TABLE_GEOPACKAGE_CONTENTS = "geopackage_contents";
+    private static final String METADATA_TABLE_TILE_MATRIX = "tile_matrix_metadata";
+    private static final String METADATA_TABLE_RASTER_COLUMNS = "raster_columns";
+    private static final String METADATA_TABLE_GEOMETRY_COLUMNS = "geometry_columns";
+
+    private static final String METADATA_GEOPACKAGECONTENT_TABLE_NAME = "table_name";
+    private static final String METADATA_TILE_TABLE_NAME = "t_table_name";
+    private static final String METADATA_ZOOM_LEVEL = "zoom_level";
     private static final String METADATA_RASTER_COLUMN = "r_raster_column";
     private static final String METADATA_RASTER_TABLE_NAME = "r_table_name";
-    private static final String METADATA_GEOMETRY_COLUMNS = "geometry_columns";
     private static final String METADATA_SRID = "srid";
     private static final String METADATA_GEOMETRY_TYPE = "geometry_type";
     private static final String METADATA_GEOMETRY_COLUMN = "f_geometry_column";
@@ -168,7 +179,7 @@ public class SpatialDatabaseHandler {
             sb.append(",");
             sb.append(METADATA_SRID);
             sb.append(" from ");
-            sb.append(METADATA_GEOMETRY_COLUMNS);
+            sb.append(METADATA_TABLE_GEOMETRY_COLUMNS);
             sb.append(";");
             String query = sb.toString();
             Stmt stmt = db.prepare(query);
@@ -207,13 +218,14 @@ public class SpatialDatabaseHandler {
     public List<SpatialRasterTable> getSpatialRasterTables( boolean forceRead ) throws Exception {
         if (rasterTableList == null || forceRead) {
             rasterTableList = new ArrayList<SpatialRasterTable>();
+
             StringBuilder sb = new StringBuilder();
             sb.append("select ");
             sb.append(METADATA_RASTER_TABLE_NAME);
             sb.append(", ");
             sb.append(METADATA_RASTER_COLUMN);
             sb.append(", srid from ");
-            sb.append(METADATA_RASTER_COLUMNS);
+            sb.append(METADATA_TABLE_RASTER_COLUMNS);
             sb.append(";");
             String query = sb.toString();
             Stmt stmt = db.prepare(query);
@@ -224,10 +236,14 @@ public class SpatialDatabaseHandler {
                     String srid = String.valueOf(stmt.column_int(2));
 
                     if (tableName != null) {
-                        // SELECT min(zoom_level),max(zoom_level) FROM tile_matrix_metadata WHERE
-                        // t_table_name="fromosm_tiles";
+                        int[] zoomLevels = {0, 18};
+                        getZoomLevels(tableName, zoomLevels);
 
-                        SpatialRasterTable table = new SpatialRasterTable(tableName, columnName, srid);
+                        double[] centerCoordinate = {0.0, 0.0};
+                        getCenterCoordinate4326(tableName, centerCoordinate);
+
+                        SpatialRasterTable table = new SpatialRasterTable(tableName, columnName, srid, zoomLevels[0],
+                                zoomLevels[1], centerCoordinate[0], centerCoordinate[1]);
                         rasterTableList.add(table);
                     }
 
@@ -240,6 +256,81 @@ public class SpatialDatabaseHandler {
         // Collections.sort(rasterTableList, orderComparator);
 
         return rasterTableList;
+    }
+
+    /**
+     * Extract the center coordinate of a raster tileset.
+     * 
+     * @param tableName the raster table name.
+     * @param centerCoordinate teh coordinate array to update with the extracted values.
+     */
+    private void getCenterCoordinate4326( String tableName, double[] centerCoordinate ) {
+        try {
+            Stmt centerStmt = null;
+            try {
+                WKBReader wkbReader = new WKBReader();
+
+                StringBuilder centerBuilder = new StringBuilder();
+                centerBuilder.append("select ST_Transform(MakePoint(");
+                centerBuilder.append("(min_x + (max_x-min_x)/2), ");
+                centerBuilder.append("(min_y + (max_y-min_y)/2), ");
+                centerBuilder.append(METADATA_SRID);
+                centerBuilder.append("), 4326) from ");
+                centerBuilder.append(METADATA_TABLE_GEOPACKAGE_CONTENTS);
+                centerBuilder.append(" where ");
+                centerBuilder.append(METADATA_GEOPACKAGECONTENT_TABLE_NAME);
+                centerBuilder.append(" = '?'");
+                String centerQuery = centerBuilder.toString();
+
+                centerStmt = db.prepare(centerQuery);
+                centerStmt.bind(1, tableName);
+                if (centerStmt.step()) {
+                    byte[] geomBytes = centerStmt.column_bytes(0);
+                    Geometry geometry = wkbReader.read(geomBytes);
+                    Coordinate coordinate = geometry.getCoordinate();
+                    centerCoordinate[0] = coordinate.x;
+                    centerCoordinate[1] = coordinate.y;
+                }
+            } finally {
+                if (centerStmt != null)
+                    centerStmt.close();
+            }
+        } catch (java.lang.Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Get the available zoomlevels for a raster table.
+     * 
+     * @param tableName the raster table name.
+     * @param zoomLevels the zoomlevels array to update with the min and max levels available.
+     * @throws Exception
+     */
+    private void getZoomLevels( String tableName, int[] zoomLevels ) throws Exception {
+        Stmt zoomStmt = null;
+        try {
+            StringBuilder zoomBuilder = new StringBuilder();
+            zoomBuilder.append("SELECT min(");
+            zoomBuilder.append(METADATA_ZOOM_LEVEL);
+            zoomBuilder.append("),max(");
+            zoomBuilder.append(METADATA_ZOOM_LEVEL);
+            zoomBuilder.append(") FROM ");
+            zoomBuilder.append(METADATA_TABLE_TILE_MATRIX);
+            zoomBuilder.append(" WHERE ");
+            zoomBuilder.append(METADATA_TILE_TABLE_NAME);
+            zoomBuilder.append("='?';");
+            String zoomQuery = zoomBuilder.toString();
+            zoomStmt = db.prepare(zoomQuery);
+            zoomStmt.bind(1, tableName);
+            if (zoomStmt.step()) {
+                zoomLevels[0] = zoomStmt.column_int(0);
+                zoomLevels[1] = zoomStmt.column_int(1);
+            }
+        } finally {
+            if (zoomStmt != null)
+                zoomStmt.close();
+        }
     }
 
     /**

@@ -88,10 +88,10 @@ public class DataListActivity extends ListActivity {
                     public void onClick( View v ) {
                         if (position > 0) {
                             SpatialVectorTable before = spatialTables.get(position - 1);
-                            int tmp1 = before.style.order;
-                            int tmp2 = item.style.order;
-                            item.style.order = tmp1;
-                            before.style.order = tmp2;
+                            int tmp1 = before.getStyle().order;
+                            int tmp2 = item.getStyle().order;
+                            item.getStyle().order = tmp1;
+                            before.getStyle().order = tmp2;
                             Collections.sort(spatialTables, new OrderComparator());
                             refreshList(false);
                         }
@@ -103,10 +103,10 @@ public class DataListActivity extends ListActivity {
                     public void onClick( View v ) {
                         if (position < spatialTables.size() - 1) {
                             SpatialVectorTable after = spatialTables.get(position + 1);
-                            int tmp1 = after.style.order;
-                            int tmp2 = item.style.order;
-                            item.style.order = tmp1;
-                            after.style.order = tmp2;
+                            int tmp1 = after.getStyle().order;
+                            int tmp2 = item.getStyle().order;
+                            item.getStyle().order = tmp1;
+                            after.getStyle().order = tmp2;
                             Collections.sort(spatialTables, new OrderComparator());
                             refreshList(false);
                         }
@@ -124,7 +124,7 @@ public class DataListActivity extends ListActivity {
                         } else if (item.isPoint()) {
                             intent = new Intent(DataListActivity.this, PointsDataPropertiesActivity.class);
                         }
-                        intent.putExtra(SpatialiteLibraryConstants.PREFS_KEY_TEXT, item.name);
+                        intent.putExtra(SpatialiteLibraryConstants.PREFS_KEY_TEXT, item.getName());
                         startActivity(intent);
 
                     }
@@ -151,12 +151,12 @@ public class DataListActivity extends ListActivity {
                 });
 
                 // rowView.setBackgroundColor(Color.parseColor(item.getColor()));
-                nameView.setText(item.name);
+                nameView.setText(item.getName());
 
-                visibleView.setChecked(item.style.enabled != 0);
+                visibleView.setChecked(item.getStyle().enabled != 0);
                 visibleView.setOnCheckedChangeListener(new OnCheckedChangeListener(){
                     public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
-                        item.style.enabled = isChecked ? 1 : 0;
+                        item.getStyle().enabled = isChecked ? 1 : 0;
                     }
                 });
                 return rowView;
@@ -173,7 +173,7 @@ public class DataListActivity extends ListActivity {
     // SpatialTable afterSelectedTable = null;
     // for( int i = 0; i < spatialTables.size(); i++ ) {
     // SpatialTable spatialTable = spatialTables.get(i);
-    // if (spatialTable.style.enabled != 0) {
+    // if (spatialTable.getStyle().enabled != 0) {
     // // pick the first enabled
     // selectedTable = spatialTable;
     // if (i > 0) {
@@ -190,10 +190,10 @@ public class DataListActivity extends ListActivity {
     // case MOVE_TOP:
     // if (selectedTable != null) {
     // SpatialTable first = spatialTables.get(0);
-    // int tmp1 = first.style.order;
-    // int tmp2 = selectedTable.style.order;
-    // selectedTable.style.order = tmp1;
-    // first.style.order = tmp2;
+    // int tmp1 = first.getStyle().order;
+    // int tmp2 = selectedTable.getStyle().order;
+    // selectedTable.getStyle().order = tmp1;
+    // first.getStyle().order = tmp2;
     // Collections.sort(spatialTables, new OrderComparator());
     // refreshList(false);
     // }
@@ -201,10 +201,10 @@ public class DataListActivity extends ListActivity {
     // case MOVE_UP:
     // if (selectedTable != null) {
     // if (beforeSelectedTable != null) {
-    // int tmp1 = beforeSelectedTable.style.order;
-    // int tmp2 = selectedTable.style.order;
-    // selectedTable.style.order = tmp1;
-    // beforeSelectedTable.style.order = tmp2;
+    // int tmp1 = beforeSelectedTable.getStyle().order;
+    // int tmp2 = selectedTable.getStyle().order;
+    // selectedTable.getStyle().order = tmp1;
+    // beforeSelectedTable.getStyle().order = tmp2;
     // Collections.sort(spatialTables, new OrderComparator());
     // refreshList(false);
     // }
@@ -213,10 +213,10 @@ public class DataListActivity extends ListActivity {
     // case MOVE_DOWN:
     // if (selectedTable != null) {
     // if (afterSelectedTable != null) {
-    // int tmp1 = afterSelectedTable.style.order;
-    // int tmp2 = selectedTable.style.order;
-    // selectedTable.style.order = tmp1;
-    // afterSelectedTable.style.order = tmp2;
+    // int tmp1 = afterSelectedTable.getStyle().order;
+    // int tmp2 = selectedTable.getStyle().order;
+    // selectedTable.getStyle().order = tmp1;
+    // afterSelectedTable.getStyle().order = tmp2;
     // Collections.sort(spatialTables, new OrderComparator());
     // refreshList(false);
     // }
@@ -226,10 +226,10 @@ public class DataListActivity extends ListActivity {
     // if (selectedTable != null) {
     // if (selectedTable != null) {
     // SpatialTable last = spatialTables.get(spatialTables.size() - 1);
-    // int tmp1 = last.style.order;
-    // int tmp2 = selectedTable.style.order;
-    // selectedTable.style.order = tmp1;
-    // last.style.order = tmp2;
+    // int tmp1 = last.getStyle().order;
+    // int tmp2 = selectedTable.getStyle().order;
+    // selectedTable.getStyle().order = tmp1;
+    // last.getStyle().order = tmp2;
     // Collections.sort(spatialTables, new OrderComparator());
     // refreshList(false);
     // }
