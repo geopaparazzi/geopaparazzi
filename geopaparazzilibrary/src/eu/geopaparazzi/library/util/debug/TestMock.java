@@ -69,10 +69,8 @@ public class TestMock {
 
         try {
             locationJellyBeanFixMethod = Location.class.getMethod("makeComplete");
-        } catch (SecurityException e1) {
-            e1.printStackTrace();
-        } catch (NoSuchMethodException e1) {
-            e1.printStackTrace();
+        } catch (Exception e1) {
+            // ignore
         }
 
         Runnable r = new Runnable(){
