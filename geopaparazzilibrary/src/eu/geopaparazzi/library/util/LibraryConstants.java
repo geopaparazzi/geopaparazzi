@@ -237,9 +237,17 @@ public interface LibraryConstants {
     public static final String PREFS_KEY_URL = "PREFS_KEY_URL"; //$NON-NLS-1$
 
     /**
-     * Key used to define a that text is passed through the workflow. Generic. 
+     * Key used to define a text that is passed through the workflow. Generic. 
      */
     public static final String PREFS_KEY_TEXT = "PREFS_KEY_TEXT"; //$NON-NLS-1$
+    /**
+     * Key used to define a query that is passed through the workflow. 
+     */
+    public static final String PREFS_KEY_QUERY = "PREFS_KEY_QUERY"; //$NON-NLS-1$
+    /**
+     * Key used to define query fields passed through the workflow. 
+     */
+    public static final String PREFS_KEY_QUERYFIELDS = "PREFS_KEY_QUERYFIELDS"; //$NON-NLS-1$
 
     /**
      * Default gps logging interval.

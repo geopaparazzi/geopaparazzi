@@ -78,5 +78,6 @@
     <string name="point_shape_">"Point shape     "</string>
     <string name="point_size">Point size</string>
     <string name="decimation">Decimation</string>
+    <string name="no_data">No data available</string>
 
 </resources>
