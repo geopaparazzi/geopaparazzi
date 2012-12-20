@@ -63,7 +63,7 @@ public class SpatialDatabasesManager {
     public void init( Context context, File mapsDir ) {
         File[] sqliteFiles = mapsDir.listFiles(new FilenameFilter(){
             public boolean accept( File dir, String filename ) {
-                return filename.endsWith(".sqlite");
+                return filename.endsWith(".sqlite") || filename.endsWith(".geopackage");
             }
         });
 
@@ -72,7 +72,6 @@ public class SpatialDatabasesManager {
             sdbHandlers.add(sdb);
         }
     }
-
     public List<SpatialDatabaseHandler> getSpatialDatabaseHandlers() {
         return sdbHandlers;
     }
