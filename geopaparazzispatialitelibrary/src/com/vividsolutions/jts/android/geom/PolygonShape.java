@@ -30,21 +30,16 @@
  *     (250)385-6040
  *     www.vividsolutions.com
  */
-package com.vividsolutions.jts.android;
+package com.vividsolutions.jts.android.geom;
 
 import java.util.Collection;
 import java.util.Iterator;
-
-import org.afree.graphics.geom.PathShape;
-import org.afree.graphics.geom.RectShape;
-import org.afree.graphics.geom.Shape;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
-import android.graphics.Rect;
-import android.graphics.RectF;
+import android.graphics.drawable.shapes.Shape;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
@@ -52,10 +47,12 @@ import com.vividsolutions.jts.geom.Coordinate;
  * A {@link Shape} which represents a polygon which may contain holes.
  * Provided because the standard AWT Polygon class does not support holes.
  * 
+ * <p>Adapted for android.</p>
+ * 
  * @author Martin Davis
- *
+ * @author Andrea Antonello (www.hydrologis.com)
  */
-public class PolygonShape implements Shape {
+public class PolygonShape implements DrawableShape {
     // use a GeneralPath with a winding rule, since it supports floating point coordinates
     private Path polygonPath;
     private Path ringPath;
@@ -66,6 +63,7 @@ public class PolygonShape implements Shape {
      * @param shellVertices the vertices of the shell 
      * @param holeVerticesCollection a collection of Coordinate[] for each hole
      */
+    @SuppressWarnings("rawtypes")
     public PolygonShape( Coordinate[] shellVertices, Collection holeVerticesCollection ) {
         polygonPath = toPath(shellVertices);
 
@@ -77,12 +75,11 @@ public class PolygonShape implements Shape {
 
     public PolygonShape() {
     }
-    
-    public void initPath(){
+
+    public void initPath() {
         polygonPath = new Path();
     }
-    
-    
+
     void addToRing( PointF p ) {
         if (ringPath == null) {
             ringPath = new Path();
@@ -124,126 +121,26 @@ public class PolygonShape implements Shape {
         return path;
     }
 
-    public RectShape getBounds() {
-        RectF bounds = new RectF();
-        polygonPath.computeBounds(bounds, false);
-        RectShape r = new RectShape(bounds);
-        return r;
-    }
-
-    // public Rectangle2D getBounds2D() {
-    // RectF bounds = new RectF();
-    // polygonPath.computeBounds(bounds, false);
-    // RectShape r = new RectShape(bounds);
-    // return r;
-    // }
-
-    public boolean contains( double x, double y ) {
-        PathShape pShape = new PathShape(polygonPath);
-        return pShape.contains((float) x, (float) y);
-    }
-
-    public boolean contains( PointF p ) {
-        PathShape pShape = new PathShape(polygonPath);
-        return pShape.contains(p);
-    }
-
-    public boolean intersects( float x, float y, float w, float h ) {
-        PathShape pShape = new PathShape(polygonPath);
-        return pShape.intersects(x, y, w, h);
-    }
-
-    public boolean intersects( RectF r ) {
-        PathShape pShape = new PathShape(polygonPath);
-        RectShape rect = new RectShape(r);
-        return pShape.intersects(rect);
-    }
-
-    public boolean contains( float x, float y, float w, float h ) {
-        PathShape pShape = new PathShape(polygonPath);
-        return pShape.contains(x, y, w, h);
-    }
-
-    public boolean contains( RectF r ) {
-        PathShape pShape = new PathShape(polygonPath);
-        RectShape rect = new RectShape(r);
-        return pShape.contains(rect);
-    }
-
-//    public PathIterator getPathIterator( AffineTransform at ) {
-//        return polygonPath.getPathIterator(at);
-//    }
-//
-//    public PathIterator getPathIterator( AffineTransform at, double flatness ) {
-//        return getPathIterator(at, flatness);
-//    }
-
-    @Override
-    public Shape clone()  {
-        try {
-            return (Shape) super.clone();
-        } catch (CloneNotSupportedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    @Override
-    public void clip( Canvas arg0 ) {
-        throw new RuntimeException("not implemented yet");
-    }
-
-    @Override
-    public boolean contains( RectShape arg0 ) {
-        throw new RuntimeException("not implemented yet");
-    }
-
-    @Override
-    public boolean contains( float arg0, float arg1 ) {
-        throw new RuntimeException("not implemented yet");
-    }
-
-    @Override
-    public void draw( Canvas canvas, Paint paint) {
-        canvas.drawPath(polygonPath, paint);
-    }
-
-    @Override
-    public void fill( Canvas canvas, Paint paint) {
-        canvas.drawPath(polygonPath, paint);
-    }
-
-    @Override
-    public void fillAndStroke( Canvas canvas, Paint paint) {
-        canvas.drawPath(polygonPath, paint);
-    }
-
-    @Override
-    public void getBounds( RectShape arg0 ) {
-        throw new RuntimeException("not implemented yet");
-        
-    }
-
-    @Override
     public Path getPath() {
         return polygonPath;
     }
 
     @Override
-    public boolean intersects( Rect arg0 ) {
-        throw new RuntimeException("not implemented yet");
+    public void draw( Canvas canvas, Paint paint ) {
+        paint.setStyle(Paint.Style.STROKE);
+        canvas.drawPath(polygonPath, paint);
     }
 
     @Override
-    public boolean intersects( RectShape arg0 ) {
-        throw new RuntimeException("not implemented yet");
+    public void fill( Canvas canvas, Paint paint ) {
+        paint.setStyle(Paint.Style.FILL);
+        canvas.drawPath(polygonPath, paint);
     }
 
     @Override
-    public void translate( float arg0, float arg1 ) {
-        throw new RuntimeException("not implemented yet");
-        
+    public void fillAndStroke( Canvas canvas, Paint paint ) {
+        paint.setStyle(Paint.Style.FILL_AND_STROKE);
+        canvas.drawPath(polygonPath, paint);
     }
 
 }

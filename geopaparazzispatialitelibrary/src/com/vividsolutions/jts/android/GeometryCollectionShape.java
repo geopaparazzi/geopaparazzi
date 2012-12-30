@@ -35,159 +35,143 @@ package com.vividsolutions.jts.android;
 
 import java.util.ArrayList;
 
-import org.afree.graphics.geom.RectShape;
-import org.afree.graphics.geom.Shape;
-
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.shapes.Shape;
 
+import com.vividsolutions.jts.android.geom.DrawableShape;
+import com.vividsolutions.jts.android.geom.RectShape;
 import com.vividsolutions.jts.geom.Geometry;
 
 /**
  * A {@link Shape} which contains a heterogeneous collection of other shapes
  * representing JTS {@link Geometry}s.
  * 
+ * <p>Modified for Android use.</p>
+ * 
  * @author Martin Davis
+ * @author Andrea Antonello (www.hydrologis.com)
  *
  */
-public class GeometryCollectionShape implements Shape {
-    private ArrayList<Shape> shapes = new ArrayList<Shape>();
+public class GeometryCollectionShape implements DrawableShape {
+    private ArrayList<DrawableShape> shapes = new ArrayList<DrawableShape>();
 
     public GeometryCollectionShape() {
     }
 
-    public void add(Shape shape) {
+    public void add( DrawableShape shape ) {
         shapes.add(shape);
     }
 
     public RectShape getBounds() {
         /**@todo Implement this java.awt.Shape method*/
-        throw new java.lang.UnsupportedOperationException(
-            "Method getBounds() not yet implemented.");
+        throw new java.lang.UnsupportedOperationException("Method getBounds() not yet implemented.");
     }
 
-//    public Rectangle2D getBounds2D() {
-//        Rectangle2D rectangle = null;
-//
-//        for (Iterator i = shapes.iterator(); i.hasNext();) {
-//            Shape shape = (Shape) i.next();
-//
-//            if (rectangle == null) {
-//                rectangle = shape.getBounds2D();
-//            } else {
-//                rectangle.add(shape.getBounds2D());
-//            }
-//        }
-//
-//        return rectangle;
-//    }
+    // public Rectangle2D getBounds2D() {
+    // Rectangle2D rectangle = null;
+    //
+    // for (Iterator i = shapes.iterator(); i.hasNext();) {
+    // Shape shape = (Shape) i.next();
+    //
+    // if (rectangle == null) {
+    // rectangle = shape.getBounds2D();
+    // } else {
+    // rectangle.add(shape.getBounds2D());
+    // }
+    // }
+    //
+    // return rectangle;
+    // }
 
-    public boolean contains(double x, double y) {
+    public boolean contains( double x, double y ) {
         /**@todo Implement this java.awt.Shape method*/
-        throw new java.lang.UnsupportedOperationException(
-            "Method contains() not yet implemented.");
+        throw new java.lang.UnsupportedOperationException("Method contains() not yet implemented.");
     }
 
-    public boolean contains(PointF p) {
+    public boolean contains( PointF p ) {
         /**@todo Implement this java.awt.Shape method*/
-        throw new java.lang.UnsupportedOperationException(
-            "Method contains() not yet implemented.");
+        throw new java.lang.UnsupportedOperationException("Method contains() not yet implemented.");
     }
 
-    public boolean intersects(float x, float y, float w, float h) {
+    public boolean intersects( float x, float y, float w, float h ) {
         /**@todo Implement this java.awt.Shape method*/
-        throw new java.lang.UnsupportedOperationException(
-            "Method intersects() not yet implemented.");
+        throw new java.lang.UnsupportedOperationException("Method intersects() not yet implemented.");
     }
 
-    public boolean intersects(RectF r) {
+    public boolean intersects( RectF r ) {
         /**@todo Implement this java.awt.Shape method*/
-        throw new java.lang.UnsupportedOperationException(
-            "Method intersects() not yet implemented.");
+        throw new java.lang.UnsupportedOperationException("Method intersects() not yet implemented.");
     }
 
-    public boolean contains(float x, float y, float w, float h) {
+    public boolean contains( float x, float y, float w, float h ) {
         /**@todo Implement this java.awt.Shape method*/
-        throw new java.lang.UnsupportedOperationException(
-            "Method contains() not yet implemented.");
+        throw new java.lang.UnsupportedOperationException("Method contains() not yet implemented.");
     }
 
-    public boolean contains(RectF r) {
+    public boolean contains( RectF r ) {
         /**@todo Implement this java.awt.Shape method*/
-        throw new java.lang.UnsupportedOperationException(
-            "Method contains() not yet implemented.");
+        throw new java.lang.UnsupportedOperationException("Method contains() not yet implemented.");
     }
 
-    @Override
     public void clip( Canvas arg0 ) {
         throw new RuntimeException("not implemented yet");
-        
+
     }
 
-    @Override
     public boolean contains( RectShape arg0 ) {
         throw new RuntimeException("not implemented yet");
     }
 
-    @Override
     public boolean contains( float arg0, float arg1 ) {
         throw new RuntimeException("not implemented yet");
     }
 
-    @Override
-    public void draw( Canvas canvas, Paint paint) {
-        for( Shape shape : shapes ) {
-            canvas.drawPath(shape.getPath(), paint);
+    public void draw( Canvas canvas, Paint paint ) {
+        for( DrawableShape shape : shapes ) {
+            shape.draw(canvas, paint);
         }
     }
 
-    @Override
-    public void fill( Canvas canvas, Paint paint) {
-        for( Shape shape : shapes ) {
-            canvas.drawPath(shape.getPath(), paint);
+    public void fill( Canvas canvas, Paint paint ) {
+        for( DrawableShape shape : shapes ) {
+            shape.fill(canvas, paint);
         }
     }
 
-    @Override
-    public void fillAndStroke( Canvas canvas, Paint paint) {
-        for( Shape shape : shapes ) {
-            canvas.drawPath(shape.getPath(), paint);
+    public void fillAndStroke( Canvas canvas, Paint paint ) {
+        for( DrawableShape shape : shapes ) {
+            shape.fillAndStroke(canvas, paint);
         }
     }
 
-    @Override
     public void getBounds( RectShape arg0 ) {
         throw new RuntimeException("not implemented yet");
-        
+
     }
 
-    @Override
     public Path getPath() {
         throw new RuntimeException("not implemented yet");
     }
 
-    @Override
     public boolean intersects( Rect arg0 ) {
         throw new RuntimeException("not implemented yet");
     }
 
-    @Override
     public boolean intersects( RectShape arg0 ) {
         throw new RuntimeException("not implemented yet");
     }
 
-    @Override
     public void translate( float arg0, float arg1 ) {
         throw new RuntimeException("not implemented yet");
-        
+
     }
-    
-    @Override
-    public Shape clone()  {
+
+    public Shape clone() {
         try {
             return (Shape) super.clone();
         } catch (CloneNotSupportedException e) {
@@ -197,12 +181,12 @@ public class GeometryCollectionShape implements Shape {
         return null;
     }
 
-//    public PathIterator getPathIterator(AffineTransform at) {
-//        return new ShapeCollectionPathIterator(shapes, at);
-//    }
-//
-//    public PathIterator getPathIterator(AffineTransform at, double flatness) {
-//        // since Geometry is linear, can simply delegate to the simple method
-//        return getPathIterator(at);
-//    }
+    // public PathIterator getPathIterator(AffineTransform at) {
+    // return new ShapeCollectionPathIterator(shapes, at);
+    // }
+    //
+    // public PathIterator getPathIterator(AffineTransform at, double flatness) {
+    // // since Geometry is linear, can simply delegate to the simple method
+    // return getPathIterator(at);
+    // }
 }

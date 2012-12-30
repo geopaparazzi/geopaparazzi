@@ -32,10 +32,10 @@
  */
 package com.vividsolutions.jts.android;
 
-import org.afree.graphics.geom.OvalShape;
-import org.afree.graphics.geom.PathShape;
-import org.afree.graphics.geom.RectShape;
-import org.afree.graphics.geom.Shape;
+import com.vividsolutions.jts.android.geom.DrawableShape;
+import com.vividsolutions.jts.android.geom.OvalShape;
+import com.vividsolutions.jts.android.geom.PathShape;
+import com.vividsolutions.jts.android.geom.RectShape;
 
 import android.graphics.Path;
 import android.graphics.PointF;
@@ -46,8 +46,10 @@ import android.graphics.PointF;
  * geometries. Java2D does not provide an actual point shape, so some other
  * shape must be used to render points (e.g. such as a Rectangle or Ellipse).
  * 
- * @author Martin Davis
+ * <p>Modified for Android use.</p>
  * 
+ * @author Martin Davis
+ * @author Andrea Antonello (www.hydrologis.com)
  */
 public interface PointShapeFactory {
     /**
@@ -57,7 +59,7 @@ public interface PointShapeFactory {
      *          the location of the point
      * @return a shape
      */
-    Shape createPoint( PointF point );
+    DrawableShape createPoint( PointF point );
 
     public static abstract class BasePointShapeFactory implements PointShapeFactory {
         /**
@@ -91,7 +93,7 @@ public interface PointShapeFactory {
          *          the location of the point
          * @return a shape
          */
-        public abstract Shape createPoint( PointF point );
+        public abstract DrawableShape createPoint( PointF point );
     }
 
     public static class Square extends BasePointShapeFactory {
@@ -120,10 +122,10 @@ public interface PointShapeFactory {
          *          the location of the point
          * @return a shape
          */
-        public Shape createPoint( PointF point ) {
+        public DrawableShape createPoint( PointF point ) {
             float x = (float) (point.x - (size / 2));
             float y = (float) (point.y + (size / 2));
-            RectShape pointMarker = new RectShape(x, y, size, size);
+            RectShape pointMarker = new RectShape(x, y, (float) size, (float) size);
             return pointMarker;
         }
     }
@@ -154,7 +156,7 @@ public interface PointShapeFactory {
          *          the location of the point
          * @return a shape
          */
-        public Shape createPoint( PointF point ) {
+        public DrawableShape createPoint( PointF point ) {
             Path path = new Path();
             path.moveTo((float) point.x, (float) (point.y - size / 2));
             path.lineTo((float) (point.x + size * 1 / 8), (float) (point.y - size * 1 / 8));
@@ -197,7 +199,7 @@ public interface PointShapeFactory {
          *          the location of the point
          * @return a shape
          */
-        public Shape createPoint( PointF point ) {
+        public DrawableShape createPoint( PointF point ) {
 
             Path path = new Path();
             path.moveTo((float) (point.x), (float) (point.y - size / 2));
@@ -235,10 +237,10 @@ public interface PointShapeFactory {
          *          the location of the point
          * @return a shape
          */
-        public Shape createPoint( PointF point ) {
+        public DrawableShape createPoint( PointF point ) {
             float x = (float) (point.x - (size / 2));
             float y = (float) (point.y + (size / 2));
-            OvalShape shape = new OvalShape(x, y, size, size);
+            OvalShape shape = new OvalShape(x, y, (float) size, (float) size);
             return shape;
         }
 
@@ -269,7 +271,7 @@ public interface PointShapeFactory {
          *          the location of the point
          * @return a shape
          */
-        public Shape createPoint( PointF point ) {
+        public DrawableShape createPoint( PointF point ) {
 
             float x1 = (float) (point.x - size / 2f);
             float x2 = (float) (point.x - size / 4f);
@@ -326,7 +328,7 @@ public interface PointShapeFactory {
          *          the location of the point
          * @return a shape
          */
-        public Shape createPoint( PointF point ) {
+        public DrawableShape createPoint( PointF point ) {
             Path path = new Path();
             path.moveTo((float) (point.x), (float) (point.y - size * 1 / 8));
             path.lineTo((float) (point.x + size * 2 / 8), (float) (point.y - size / 2));

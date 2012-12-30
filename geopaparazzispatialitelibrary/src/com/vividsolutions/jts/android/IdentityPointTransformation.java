@@ -42,12 +42,8 @@ import com.vividsolutions.jts.geom.Coordinate;
  * @author Martin Davis
  *
  */
-public class IdentityPointTransformation
-implements PointTransformation
-{
-	public void transform(Coordinate model, PointF view)
-	{
-	    // Pippo: added float cast
-		view.set((float)model.x, (float)model.y);
-	}
+public class IdentityPointTransformation implements PointTransformation {
+    public void transform( Coordinate model, PointF view ) {
+        view.set((float) model.x, (float) model.y);
+    }
 }

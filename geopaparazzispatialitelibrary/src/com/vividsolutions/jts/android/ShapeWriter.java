@@ -32,12 +32,13 @@
  */
 package com.vividsolutions.jts.android;
 
-import org.afree.graphics.geom.PathShape;
-import org.afree.graphics.geom.Shape;
-
 import android.graphics.Path;
 import android.graphics.PointF;
+import android.graphics.drawable.shapes.Shape;
 
+import com.vividsolutions.jts.android.geom.DrawableShape;
+import com.vividsolutions.jts.android.geom.PathShape;
+import com.vividsolutions.jts.android.geom.PolygonShape;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
@@ -69,6 +70,8 @@ import com.vividsolutions.jts.geom.Polygon;
  * of the input <tt>Geometry</tt>
  * will be represented in the output <tt>Shape</tt>.
  * <p>
+ * 
+ * <p>Modified for Android use.</p>
  * 
  */
 public class ShapeWriter {
@@ -203,7 +206,7 @@ public class ShapeWriter {
      * @param geometry the geometry to convert
      * @return a Shape representing the geometry
      */
-    public Shape toShape( Geometry geometry ) {
+    public DrawableShape toShape( Geometry geometry ) {
         if (geometry.isEmpty())
             return new PathShape(new Path());
         if (geometry instanceof Polygon)
@@ -220,7 +223,7 @@ public class ShapeWriter {
         throw new IllegalArgumentException("Unrecognized Geometry class: " + geometry.getClass());
     }
 
-    private Shape toShape( Polygon p ) {
+    private DrawableShape toShape( Polygon p ) {
         PolygonShape poly = new PolygonShape();
 
         appendRing(poly, p.getExteriorRing().getCoordinates());
@@ -281,7 +284,7 @@ public class ShapeWriter {
         mainPath.addPath(tmpPath);
     }
 
-    private Shape toShape( GeometryCollection gc ) {
+    private DrawableShape toShape( GeometryCollection gc ) {
         GeometryCollectionShape shape = new GeometryCollectionShape();
         // add components to GC shape
         for( int i = 0; i < gc.getNumGeometries(); i++ ) {
@@ -342,7 +345,7 @@ public class ShapeWriter {
         return new PathShape(shape);
     }
 
-    private Shape toShape( Point point ) {
+    private DrawableShape toShape( Point point ) {
         PointF viewPoint = transformPoint(point.getCoordinate());
         return pointFactory.createPoint(viewPoint);
     }

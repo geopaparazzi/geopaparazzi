@@ -15,32 +15,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.library.database;
+package com.vividsolutions.jts.android.geom;
 
-import java.io.IOException;
+import android.graphics.RectF;
 
-import android.database.sqlite.SQLiteDatabase;
+/**
+ * An oval {@link DrawableShape shape}.
+ * 
+ * @author Andrea Antonello (www.hydrologis.com)
+ *
+ */
+public class OvalShape extends RectShape {
 
-public class ADbHelper {
-    private static ADbHelper dbHelper = null;
-    private SQLiteDatabase db = null;
-
-    private ADbHelper() {
+    public OvalShape() {
+        super();
     }
 
-    public static ADbHelper getInstance() {
-        if (dbHelper == null) {
-            dbHelper = new ADbHelper();
-        }
-        return dbHelper;
+    public OvalShape( RectF rectF ) {
+        super(rectF);
     }
 
-    public SQLiteDatabase getDatabase() throws IOException {
-        return db;
+    public OvalShape( float x, float y, float width, float height ) {
+        super(x, y, width, height);
     }
-
-    public void setDatabase( SQLiteDatabase db ) {
-        this.db = db;
-    }
-
 }
