@@ -25,17 +25,13 @@ import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
-import org.achartengine.tools.PanListener;
-import org.achartengine.tools.ZoomEvent;
-import org.achartengine.tools.ZoomListener;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.graphics.Paint.Align;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
@@ -48,7 +44,7 @@ import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Line;
 
-public class XYChartBuilder extends Activity {
+public class ProfileChartActivity extends Activity {
     public static final String TYPE = "type";
 
     private XYMultipleSeriesDataset mDataset = new XYMultipleSeriesDataset();
@@ -125,7 +121,7 @@ public class XYChartBuilder extends Activity {
             Toast.makeText(this, R.string.an_error_occurred_while_creating_the_chart_, Toast.LENGTH_LONG).show();
         }
 
-        mRenderer.setApplyBackgroundColor(false);
+        mRenderer.setApplyBackgroundColor(true);
         int backColor = getResources().getColor(R.color.main_background);
         mRenderer.setBackgroundColor(backColor);
         mRenderer.setMarginsColor(backColor);
@@ -135,12 +131,20 @@ public class XYChartBuilder extends Activity {
         mRenderer.setYLabelsColor(0, forColor);
         mRenderer.setAxesColor(forColor);
 
+        int forColorLight = getResources().getColor(R.color.main_decorations);
+        mRenderer.setGridColor(forColorLight);
+
         mRenderer.setAxisTitleTextSize(16);
         mRenderer.setChartTitleTextSize(20);
         mRenderer.setLabelsTextSize(15);
         mRenderer.setLegendTextSize(15);
+
         // top, left, bottom, right
-        mRenderer.setMargins(new int[]{5, 20, 10, 5});
+        mRenderer.setMargins(new int[]{25, 50, 10, 5});
+        // mRenderer.setYLabelsAngle(270f);
+        mRenderer.setYLabelsAlign(Align.RIGHT);
+        mRenderer.setShowGrid(true);
+
         mRenderer.setZoomButtonsVisible(false);
         mRenderer.setPointSize(2);
 
@@ -164,7 +168,7 @@ public class XYChartBuilder extends Activity {
                 public boolean onLongClick( View v ) {
                     SeriesSelection seriesSelection = mChartView.getCurrentSeriesAndPoint();
                     if (seriesSelection != null) {
-                        Toast.makeText(XYChartBuilder.this,
+                        Toast.makeText(ProfileChartActivity.this,
                                 "X = " + seriesSelection.getXValue() + "\nY = " + seriesSelection.getValue(), Toast.LENGTH_LONG)
                                 .show();
                     }

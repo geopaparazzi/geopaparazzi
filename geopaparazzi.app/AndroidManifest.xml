@@ -118,7 +118,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".chart.XYChartBuilder" >
+        <activity android:name="eu.hydrologis.geopaparazzi.chart.ProfileChartActivity" >
             <intent-filter>
                 <action android:name="eu.hydrologis.geopaparazzi.chart.VIEW_IN_CHART" />
 

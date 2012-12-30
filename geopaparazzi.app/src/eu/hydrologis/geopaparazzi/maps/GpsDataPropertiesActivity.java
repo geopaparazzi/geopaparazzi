@@ -37,7 +37,7 @@ import android.widget.TextView;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.chart.XYChartBuilder;
+import eu.hydrologis.geopaparazzi.chart.ProfileChartActivity;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.util.Constants;
 
@@ -130,7 +130,7 @@ public class GpsDataPropertiesActivity extends Activity {
             final Button chartButton = (Button) findViewById(R.id.gpslog_chart);
             chartButton.setOnClickListener(new Button.OnClickListener(){
                 public void onClick( View v ) {
-                    Intent intent = new Intent(GpsDataPropertiesActivity.this, XYChartBuilder.class);
+                    Intent intent = new Intent(GpsDataPropertiesActivity.this, ProfileChartActivity.class);
                     intent.putExtra(Constants.ID, item.getId());
                     startActivity(intent);
                 }
