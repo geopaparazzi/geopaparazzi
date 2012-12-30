@@ -21,7 +21,6 @@ import java.util.List;
 
 import jsqlite.Exception;
 
-import org.afree.graphics.geom.Shape;
 import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.Projection;
 import org.mapsforge.android.maps.overlay.ItemizedOverlay;
@@ -42,6 +41,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.shapes.Shape;
 import android.net.Uri;
 
 import com.vividsolutions.jts.android.PointTransformation;
@@ -635,11 +635,12 @@ public abstract class GeopaparazziOverlay extends Overlay {
                         while( geometryIterator.hasNext() ) {
                             Geometry geom = geometryIterator.next();
                             if (geom != null) {
-                                Shape shape = wr.toShape(geom);
-                                if (fill != null)
-                                    shape.fill(canvas, fill);
-                                if (stroke != null)
-                                    shape.draw(canvas, stroke);
+                                // FIXME
+//                                Shape shape = wr.toShape(geom);
+//                                if (fill != null)
+//                                    shape.fill(canvas, fill);
+//                                if (stroke != null)
+//                                    shape.draw(canvas, stroke);
                             }
                             if (isInterrupted() || sizeHasChanged()) {
                                 // stop working
@@ -654,9 +655,10 @@ public abstract class GeopaparazziOverlay extends Overlay {
                         wr.setDecimation(spatialTable.getStyle().decimationFactor);
                         while( geometryIterator.hasNext() ) {
                             Geometry geom = geometryIterator.next();
-                            Shape shape = wr.toShape(geom);
-                            if (stroke != null)
-                                shape.draw(canvas, stroke);
+                            // FIXME
+//                            Shape shape = wr.toShape(geom);
+//                            if (stroke != null)
+//                                shape.draw(canvas, stroke);
                             if (isInterrupted() || sizeHasChanged()) {
                                 // stop working
                                 return;
@@ -671,11 +673,12 @@ public abstract class GeopaparazziOverlay extends Overlay {
                         wr.setDecimation(spatialTable.getStyle().decimationFactor);
                         while( geometryIterator.hasNext() ) {
                             Geometry geom = geometryIterator.next();
-                            Shape shape = wr.toShape(geom);
-                            if (fill != null)
-                                shape.fill(canvas, fill);
-                            if (stroke != null)
-                                shape.draw(canvas, stroke);
+                            // FIXME
+//                            Shape shape = wr.toShape(geom);
+//                            if (fill != null)
+//                                shape.fill(canvas, fill);
+//                            if (stroke != null)
+//                                shape.draw(canvas, stroke);
                             if (isInterrupted() || sizeHasChanged()) {
                                 // stop working
                                 return;

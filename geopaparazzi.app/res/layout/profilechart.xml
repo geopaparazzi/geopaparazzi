@@ -1,38 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/main_background"
-    android:orientation="vertical" >
+    android:padding="10dip" >
 
-    <eu.geopaparazzi.library.chart.XYChartView
-        android:id="@+id/profilechartview"
+    <LinearLayout
+        android:id="@+id/chart"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="1" >
-    </eu.geopaparazzi.library.chart.XYChartView>
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal" />
 
-    <RelativeLayout
-        android:id="@+id/operationslayout"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="5"
-        android:padding="10dip" >
-
-        <CheckBox
-            android:id="@+id/selectionmodecheck"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="selection mode"
-            android:textColor="@color/main_text_color_neutral" />
-
-        <Button
-            android:id="@+id/zoomtobutton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:text="zoom to" />
-    </RelativeLayout>
-
-</LinearLayout>
+</RelativeLayout>
