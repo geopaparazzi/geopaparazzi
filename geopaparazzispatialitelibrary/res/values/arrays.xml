@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-    <string-array name="array_colornames">
+    <string-array name="array_colornames" tools:ignore="MissingTranslation">
         <item>red</item>
         <item>blue</item>
         <item>green</item>
@@ -14,7 +14,7 @@
         <item>lightgray</item>
         <item>darkgray</item>
     </string-array>
-    <string-array name="array_widths">
+    <string-array name="array_widths" tools:ignore="MissingTranslation">
         <item>1</item>
         <item>2</item>
         <item>3</item>
@@ -30,7 +30,7 @@
         <item>25</item>
         <item>30</item>
     </string-array>
-    <string-array name="array_sizes">
+    <string-array name="array_sizes" tools:ignore="MissingTranslation">
         <item>1</item>
         <item>3</item>
         <item>5</item>
@@ -43,7 +43,7 @@
         <item>40</item>
         <item>50</item>
     </string-array>
-    <string-array name="array_percentage">
+    <string-array name="array_percentage" tools:ignore="MissingTranslation">
         <item>0</item>
         <item>10</item>
         <item>20</item>
@@ -56,7 +56,7 @@
         <item>90</item>
         <item>100</item>
     </string-array>
-    <string-array name="array_shapes">
+    <string-array name="array_shapes" tools:ignore="MissingTranslation">
         <item>circle</item>
         <item>cross</item>
         <item>square</item>
