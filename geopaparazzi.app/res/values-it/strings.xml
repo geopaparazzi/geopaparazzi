@@ -37,7 +37,8 @@
   <string name="gps_preferences">Impostazioni gps</string>
   <string name="gps_logging_distance">Distanza minima di registrazione gps</string>
   <string name="gps_logging_interval">Intervallo minimo di registrazione gps</string>
-  <string name="gps_use_android_level">Utilizzare a livello di android (Salva batteria, necessita riavvio)</string>
+  <string name="gps_use_android_level">Utilizzo a livello di sistema operativo (risparmia la batteria, è necessario riavviare il dispositivo).</string>
+  <string name="gps_use_android_level_summary">Se selezionato, le impostazioni del GPS vengono applicate a livello di sistema operativo. Questo può comportare un risparmio della batteria, ma  può portare a un segnale meno stabile quando si scelgono dei grandi intervalli(se avete problemi di connessione GPS sui dispositivi non selezionate questa opzione). Il GPS è sempre attivo attivo per registrare intervalli inferiori ai 100 secondi. Per aumentare la durata della batteria scegliere intervalli di registrazione più grandi.</string>
   <string name="sms_preferences">Settaggi Sms</string>
   <string name="sms_catcher">Attiva accettazione sms</string>
   <string name="databaseError">è avvenuto un error durante la connessione al database!</string>
@@ -133,9 +134,10 @@
   <string name="add_message">AGGIUNGI MESSAGGIO</string>
   <string name="insert_an_optional_text_to_send_with_the_geosms">Inserire un eventuale testo da inviare con il GeoSMS</string>
   <string name="enter_a_name_for_the_new_project">Immettere un nome per il nuovo progetto</string>
-  <string name="chosen_project_exists">Il nome di progetto scelto esiste già, per favore scegliere un altro nome</string>
+  <string name="chosen_project_exists">Il nome di progetto scelto esiste già, per favore scegli un altro nome</string>
   <string name="no_external_sdcard_for_db_renderer">Mappe da database sono supportate solo con supporto di scheda di memoria. E\' disponibile?</string>
-  <string name="no_map_files_found_go_online">Non sono stati trovati alcuni file di mappa nella scheda di memoria. Utilizzo di mappe online. \nLe mappe possono eventualmente essere scaricate da: http://download.mapsforge.org</string>
+  <string name="no_map_files_found_go_online">Non sono state trovate mappe nella cartella /sdcard/maps. Uso le mappe online.
+\nLe mappe possono essere scaricate da: http://download.mapsforge.org</string>
   <string name="select_map_to_use">Seleziona mappa da utilizzare</string>
   <string name="no_map_file_found_going_to_mapnik">Impossibile trovare il file di mappa, passo a MAPNIK tile.</string>
   <string name="enter_project_description">Immettere una descrizione del progetto</string>
