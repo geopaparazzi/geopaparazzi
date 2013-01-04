@@ -402,7 +402,7 @@ public class NetworkUtilities {
                 builder.append(line);
             }
         } else {
-            String message = "Failed to download file";
+            String message = "Failed the http GET request.";
             Logger.d(TAG, message);
             throw new IOException(message);
         }
