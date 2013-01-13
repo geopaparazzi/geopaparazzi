@@ -86,6 +86,7 @@ public class SpatialDatabaseHandler {
 
     private List<SpatialVectorTable> vectorTableList;
     private List<SpatialRasterTable> rasterTableList;
+    private String fileName;
 
     public SpatialDatabaseHandler( String dbPath ) {
         try {
@@ -96,11 +97,14 @@ public class SpatialDatabaseHandler {
             db = new jsqlite.Database();
             db.open(spatialDbFile.getAbsolutePath(), jsqlite.Constants.SQLITE_OPEN_READWRITE
                     | jsqlite.Constants.SQLITE_OPEN_CREATE);
-
+            fileName = spatialDbFile.getName();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
+    public String getFileName() {
+        return fileName;
     }
 
     /**
