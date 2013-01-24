@@ -1,87 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/main_background" >
 
+    <TextView
+        android:id="@+id/askcoordlabel"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="@string/askcoord"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:textColor="@color/main_text_color" >
+    </TextView>
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent" android:layout_height="fill_parent"
-	android:background="@color/main_background">
+    <EditText
+        android:id="@+id/longitudetext"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/askcoordlabel"
+        android:layout_margin="5dp"
+        android:layout_toRightOf="@+id/longitudelabel"
+        android:text="11.330748" >
+    </EditText>
 
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		android:orientation="vertical" android:layout_width="fill_parent"
-		android:layout_height="fill_parent" android:background="#FFFFFF">
+    <TextView
+        android:id="@+id/longitudelabel"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/longitudetext"
+        android:layout_alignBottom="@+id/longitudetext"
+        android:layout_alignLeft="@+id/askcoordlabel"
+        android:layout_margin="10dp"
+        android:text="@string/longitude"
+        android:textColor="@color/main_text_color" />
 
-		<TextView android:layout_height="wrap_content"
-			android:layout_width="fill_parent" android:id="@+id/askcoordlabel"
-			android:text="@string/askcoord" android:layout_margin="10dp"
-			android:textColor="@color/main_text_color_neutral">
-		</TextView>
-		<LinearLayout android:orientation="horizontal"
-			android:layout_width="fill_parent" android:layout_height="wrap_content">
-			<TextView android:layout_height="wrap_content"
-				android:layout_width="70dp" android:id="@+id/longitudelabel"
-				android:text="@string/longitude" android:layout_margin="10dp"
-				android:textColor="@color/main_text_color_neutral">
-			</TextView>
-			<EditText android:layout_height="wrap_content"
-				android:layout_width="fill_parent" android:id="@+id/longitudetext"
-				android:layout_toRightOf="@+id/longitudelabel"
-				android:layout_margin="10dp" android:text="11.330748">
-			</EditText>
-		</LinearLayout>
+    <TextView
+        android:id="@+id/latitudelabel"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/askcoordlabel"
+        android:layout_below="@+id/longitudetext"
+        android:layout_margin="10dp"
+        android:layout_marginTop="14dp"
+        android:text="@string/latitude"
+        android:textColor="@color/main_text_color" />
 
-		<LinearLayout android:orientation="horizontal"
-			android:layout_width="fill_parent" android:layout_height="wrap_content">
-			<TextView android:layout_height="wrap_content"
-				android:layout_width="70dp" android:id="@+id/latitudelabel"
-				android:layout_below="@+id/longitudelabel" android:text="@string/latitude"
-				android:layout_margin="10dp" android:textColor="@color/main_text_color_neutral">
-			</TextView>
-			<EditText android:layout_height="wrap_content"
-				android:layout_width="fill_parent" android:id="@+id/latitudetext"
-				android:layout_toRightOf="@+id/latitudelabel" android:layout_margin="10dp"
-				android:layout_below="@+id/longitudetext" android:text="46.482556">
-			</EditText>
-		</LinearLayout>
-		
-		<LinearLayout android:orientation="horizontal"
-			android:layout_height="fill_parent" android:layout_width="wrap_content" 
-			android:layout_margin="20dp" android:layout_gravity="left">
-			<Button android:id="@+id/coordOkButton" android:layout_width="120dp"
-				android:layout_height="wrap_content" android:text="@string/okcoord">
-			</Button>
-		</LinearLayout>
+    <EditText
+        android:id="@+id/latitudetext"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/latitudelabel"
+        android:layout_alignBottom="@+id/latitudelabel"
+        android:layout_alignLeft="@+id/longitudetext"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:text="46.482556" />
 
-<!--
-		<TextView android:layout_height="wrap_content"
-			android:layout_width="fill_parent" android:id="@+id/askaddresslabel"
-			android:text="@string/askaddress" android:layout_margin="10dp"
-			android:textColor="#000000">
-		</TextView>
-		<LinearLayout android:orientation="horizontal"
-			android:layout_width="fill_parent" android:layout_height="wrap_content">
-			<TextView android:layout_height="wrap_content"
-				android:layout_width="70dp" android:id="@+id/addresslabel"
-				android:text="@string/address" android:layout_margin="10dp"
-				android:textColor="#000000">
-			</TextView>
-			<EditText android:layout_height="wrap_content"
-				android:layout_width="fill_parent" android:id="@+id/addresstext"
-				android:layout_toRightOf="@+id/addresslabel" android:layout_margin="10dp"
-				android:text="via siemens 19, 39100 bolzano">
-			</EditText>
-		</LinearLayout>
+    <Button
+        android:id="@+id/coordOkButton"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/latitudetext"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="false"
+        android:layout_marginTop="30dp"
+        android:text="@string/okcoord" />
 
-		<LinearLayout android:orientation="horizontal"
-			android:layout_height="fill_parent" android:layout_gravity="left"
-			android:layout_width="wrap_content" android:layout_margin="20dp">
-			<Button android:id="@+id/addressOkButton"
-				android:layout_width="120dp" android:layout_height="wrap_content"
-				android:text="@string/okaddress">
-			</Button>
-			<Button android:id="@+id/coordCancelButton"
-				android:layout_width="120dp" android:layout_height="wrap_content"
-				android:text="@string/cancel">
-			</Button>
-		</LinearLayout>
--->
-	</LinearLayout>
-</ScrollView>
+</RelativeLayout>
