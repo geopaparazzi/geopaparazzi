@@ -48,9 +48,9 @@
   <string name="geocodeErrorMessage">Geocodifica della posizione impossibile. Provare inviando una nuova posizione.</string>
   <string name="openrouteservice">OpenRouteService</string>
   <string name="downloading_route">Download itinerario...</string>
-  <string name="go_to_button">"Vai a"</string>
-  <string name="route_to_button">"percorso verso"</string>
-  <string name="route_to">"Percorso verso"</string>
+  <string name="go_to_button">Vai a</string>
+  <string name="route_to_button">Percorso verso</string>
+  <string name="route_to">Percorso verso</string>
   <string name="route_extraction_error">E\' avvenuto un errore durante l\'estrazione del percorso.</string>
   <string name="available_only_with_network">Questa funzione è disponibile solo con una connessione di rete attiva.</string>
   <string name="error_while_storing_form_data">E\' avvenuto un errore durante il salvataggio dei dati della scheda.</string>
