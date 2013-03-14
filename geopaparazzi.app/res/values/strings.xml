@@ -201,4 +201,5 @@
     <string name="could_not_open_sms">Could not open the passed sms data URI.</string>
     <string name="start">"Start: "</string>
     <string name="end_">"End: "</string>
+    <string name="map_textsize_factor">Map textsize factor</string>
 </resources>

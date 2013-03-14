@@ -274,6 +274,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             this.mapView.setDebugSettings(debugSettings);
         }
 
+        setTextScale();
+
         final RelativeLayout rl = (RelativeLayout) findViewById(R.id.innerlayout);
         rl.addView(mapView, new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
 
@@ -464,6 +466,20 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
         saveCenterPref();
 
+    }
+
+    private void setTextScale() {
+        String textSizeFactorStr = preferences.getString(Constants.PREFS_KEY_MAPSVIEW_TEXTSIZE_FACTOR, "1.0");
+        float textSizeFactor = 1f;
+        try {
+            textSizeFactor = Float.parseFloat(textSizeFactorStr);
+        } catch (NumberFormatException e) {
+            // ignore
+        }
+        if (textSizeFactor < 0.5f) {
+            textSizeFactor = 1f;
+        }
+        mapView.setTextScale(textSizeFactor);
     }
 
     @Override

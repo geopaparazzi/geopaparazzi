@@ -113,5 +113,6 @@ public interface Constants {
      */
     public static final String PREFS_KEY_TILESOURCE = "PREFS_KEY_TILESOURCE";
     public static final String PREFS_KEY_TILESOURCE_FILE = "PREFS_KEY_TILESOURCE_FILE";
+    public static final String PREFS_KEY_MAPSVIEW_TEXTSIZE_FACTOR = "mapsview_textsize_factor";
     
 }

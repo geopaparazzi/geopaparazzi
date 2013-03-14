@@ -5,12 +5,14 @@
     <PreferenceScreen
         android:order="1"
         android:title="@string/gps_preferences" >
-      <!--   <CheckBoxPreference
+
+        <!--
+        <CheckBoxPreference
             android:key="PREFS_KEY_GPSDOATANDROIDLEVEL"
             android:order="2"
             android:title="@string/gps_use_android_level" android:summary="@string/gps_use_android_level_summary" android:enabled="true" android:defaultValue="true">
-        </CheckBoxPreference>
- -->
+        </CheckBoxPreference>
+        -->
         <EditTextPreference
             android:defaultValue="0"
             android:inputType="number"
@@ -49,7 +51,7 @@
 			android:defaultValue=""></EditTextPreference> <ListPreference android:entryValues="@array/sms_time_value" 
 			android:entries="@array/sms_time_name" android:title="@string/sms_sending_interval" 
 			android:order="12" android:key="@string/sms_sending_interval" android:defaultValue="0"></ListPreference> 
-			</PreferenceCategory>
+			</PreferenceCategory>
         -->
 
         <CheckBoxPreference
@@ -59,7 +61,7 @@
         </CheckBoxPreference>
         <!--
              <eu.hydrologis.geopaparazzi.preferences.PhoneNumberPreference android:order="8" 
-			android:key="panic_number" android:title="@string/panic_number"> </eu.hydrologis.geopaparazzi.preferences.PhoneNumberPreference>
+			android:key="panic_number" android:title="@string/panic_number"> </eu.hydrologis.geopaparazzi.preferences.PhoneNumberPreference>
         -->
 
         <EditTextPreference
@@ -81,7 +83,7 @@
             android:order="21"
             android:title="@string/decimation_combo_label" >
         </ListPreference>
-    </PreferenceScreen>
+    </PreferenceScreen>
     -->
     <PreferenceScreen
         android:order="998"
@@ -124,7 +126,7 @@
             android:order="34"
             android:title="@string/labels_length_zoom2" >
         </EditTextPreference>
-    </PreferenceScreen>
+    </PreferenceScreen>
     -->
     <PreferenceScreen
         android:order="40"
@@ -174,5 +176,12 @@
             android:title="@string/geopapcloud_server_label" >
         </EditTextPreference>
     </PreferenceScreen>
+
+    <EditTextPreference
+        android:defaultValue="1.0"
+        android:key="mapsview_textsize_factor"
+        android:inputType="numberDecimal"
+        android:order="60"
+        android:title="@string/map_textsize_factor" />
 
 </PreferenceScreen>
