@@ -193,6 +193,22 @@ public class Note implements KmlRepresenter, GpxRepresenter {
                         sB.append("</td>");
                         sB.append("</tr>");
                         images.add(image);
+                    } else if (type.equals(FormUtilities.TYPE_SKETCH)) {
+                        if (value.trim().length() == 0) {
+                            continue;
+                        }
+                        String[] imageSplit = value.split(";");
+                        for( String image : imageSplit ) {
+                            File imgFile = new File(image);
+                            String imgName = imgFile.getName();
+                            sB.append("<tr>");
+                            sB.append("<td colspan=\"2\" style=\"text-align: left; vertical-align: top; width: 100%;\">");
+                            sB.append("<img src=\"" + imgName + "\" width=\"300\">");
+                            sB.append("</td>");
+                            sB.append("</tr>");
+
+                            images.add(image);
+                        }
                     } else {
                         sB.append("<tr>");
                         sB.append("<td style=\"text-align: left; vertical-align: top; width: 50%;\">");

@@ -87,7 +87,11 @@ public class KmzExport {
                     if (kmlRepresenter.hasImages()) {
                         List<String> imagePaths = kmlRepresenter.getImagePaths();
                         for( String imagePath : imagePaths ) {
-                            File imageFile = new File(applicationDir, imagePath);
+                            File imageFile = new File(imagePath);
+                            if (!imageFile.exists()) {
+                                // try the relative path
+                                imageFile = new File(applicationDir, imagePath);
+                            }
                             if (imageFile.exists()) {
                                 existingImages.add(imageFile);
                             } else {
