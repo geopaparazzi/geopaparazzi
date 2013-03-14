@@ -87,6 +87,9 @@ public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callbac
 
                         c.drawColor(Color.WHITE);
                         // c.drawColor(0, PorterDuff.Mode.CLEAR);
+                        if (canvas == null) {
+                            break;
+                        }
                         canvas.drawColor(Color.WHITE);
                         // canvas.drawColor(0, PorterDuff.Mode.CLEAR);
 
