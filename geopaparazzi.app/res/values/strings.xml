@@ -202,4 +202,6 @@
     <string name="start">"Start: "</string>
     <string name="end_">"End: "</string>
     <string name="map_textsize_factor">Map textsize factor</string>
+    <string name="keep_screen_on">Keep the screen on</string>
+    <string name="keep_screen_on_summary">Keeps the screen on when on dashboard and map view</string>
 </resources>

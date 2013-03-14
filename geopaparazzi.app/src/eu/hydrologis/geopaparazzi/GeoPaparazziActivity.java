@@ -47,6 +47,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -424,6 +425,12 @@ public class GeoPaparazziActivity extends Activity {
 
         Utilities.toast(this, getString(eu.hydrologis.geopaparazzi.R.string.loaded_project_in)
                 + resourcesManager.getApplicationDir().getAbsolutePath(), Toast.LENGTH_LONG);
+        
+        // check for screen on
+        boolean keepScreenOn = preferences.getBoolean(Constants.PREFS_KEY_SCREEN_ON, false);
+        if (keepScreenOn) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
     }
 
     private void checkDebugLogger() {

@@ -67,6 +67,8 @@ public interface Constants {
     public final String PATH_MEDIA = File.separator + "media";
     public final String PATH_KMLEXPORT = File.separator + "export";
 
+    public static final String PREFS_KEY_SCREEN_ON = "PREFS_KEY_SCREEN_ON";
+
     public static final String PREFS_KEY_NOTES_COLOR = "PREFS_KEY_NOTES_COLOR";
     public static final String PREFS_KEY_NOTES_WIDTH = "PREFS_KEY_NOTES_WIDTH";
     public static final String PREFS_KEY_GPSLOG4PROPERTIES = "PREFS_KEY_GPSLOG4PROPERTIES";
