@@ -45,7 +45,6 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.activities.ProximityIntentReceiver;
 import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.FakeGpsLog;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.geopaparazzi.library.util.debug.TestMock;
 
@@ -83,7 +82,6 @@ public class GpsManager implements LocationListener, Listener {
     private SharedPreferences preferences;
     private boolean useNetworkPositions;
 
-
     private GpsManager( Context context ) {
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -117,8 +115,10 @@ public class GpsManager implements LocationListener, Listener {
      * @param listener the listener to add.
      */
     public void addListener( GpsManagerListener listener ) {
-        if (!listeners.contains(listener)) {
-            listeners.add(listener);
+        synchronized (listeners) {
+            if (!listeners.contains(listener)) {
+                listeners.add(listener);
+            }
         }
     }
 
@@ -128,7 +128,9 @@ public class GpsManager implements LocationListener, Listener {
      * @param listener the listener to remove.
      */
     public void removeListener( GpsManagerListener listener ) {
-        listeners.remove(listener);
+        synchronized (listeners) {
+            listeners.remove(listener);
+        }
     }
 
     public LocationManager getLocationManager() {
@@ -355,11 +357,13 @@ public class GpsManager implements LocationListener, Listener {
         // Logger.d(gpsManager,
         //                "Position update: " + gpsLoc.getLongitude() + "/" + gpsLoc.getLatitude() + "/" + gpsLoc.getAltitude()); //$NON-NLS-1$ //$NON-NLS-2$
         gpsLoc.setPreviousLoc(previousLoc);
-        for( GpsManagerListener listener : listeners ) {
-            listener.onLocationChanged(gpsLoc);
-            if (first) {
-                // trigger also a status changed in order to simulate first fix
-                listener.onStatusChanged(LocationProvider.AVAILABLE);
+        synchronized (listeners) {
+            for( GpsManagerListener listener : listeners ) {
+                listener.onLocationChanged(gpsLoc);
+                if (first) {
+                    // trigger also a status changed in order to simulate first fix
+                    listener.onStatusChanged(LocationProvider.AVAILABLE);
+                }
             }
         }
         // save last known location
@@ -392,8 +396,10 @@ public class GpsManager implements LocationListener, Listener {
         case LocationProvider.AVAILABLE:
             break;
         }
-        for( GpsManagerListener listener : listeners ) {
-            listener.onStatusChanged(status);
+        synchronized (listeners) {
+            for( GpsManagerListener listener : listeners ) {
+                listener.onStatusChanged(status);
+            }
         }
     }
 
@@ -404,8 +410,10 @@ public class GpsManager implements LocationListener, Listener {
         case GpsStatus.GPS_EVENT_FIRST_FIX:
             if (Debug.D)
                 Logger.i(this, "First fix");
-            for( GpsManagerListener listener : listeners ) {
-                listener.onGpsStatusChanged(true);
+            synchronized (listeners) {
+                for( GpsManagerListener listener : listeners ) {
+                    listener.onGpsStatusChanged(true);
+                }
             }
             break;
         }
