@@ -18,6 +18,7 @@
 package eu.geopaparazzi.library.util.debug;
 
 import java.lang.reflect.Method;
+import java.util.Date;
 
 import android.location.Criteria;
 import android.location.Location;
@@ -85,10 +86,10 @@ public class TestMock {
                             String[] lineSplit = nextLine.split(",");
                             double lon = Double.parseDouble(lineSplit[0]);
                             double lat = Double.parseDouble(lineSplit[1]);
-                            long t = Long.parseLong(lineSplit[2]);
-                            double alt = Double.parseDouble(lineSplit[3]);
-                            float v = Float.parseFloat(lineSplit[4]);
-                            float accuracy = Float.parseFloat(lineSplit[5]);
+                            long t = new Date().getTime();// Long.parseLong(lineSplit[2]);
+                            double alt = Double.parseDouble(lineSplit[2]);
+                            float v = Float.parseFloat(lineSplit[3]);
+                            float accuracy = Float.parseFloat(lineSplit[4]);
 
                             Location location = new Location(MOCK_PROVIDER_NAME);
                             location.setLatitude(lat);
