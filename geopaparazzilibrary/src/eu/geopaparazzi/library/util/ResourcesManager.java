@@ -64,6 +64,9 @@ public class ResourcesManager implements Serializable {
     private static boolean useInternalMemory = true;
 
     private File sdcardDir;
+
+    private boolean createdApplicationDirOnInit = false;
+
     public static void setUseInternalMemory( boolean useInternalMemory ) {
         ResourcesManager.useInternalMemory = useInternalMemory;
     }
@@ -169,11 +172,13 @@ public class ResourcesManager implements Serializable {
 
         String cantCreateSdcardmsg = context.getResources().getString(R.string.cantcreate_sdcard);
         String applicationDirPath = applicationDir.getAbsolutePath();
-        if (!applicationDir.exists())
+        if (!applicationDir.exists()) {
+            createdApplicationDirOnInit = true;
             if (!applicationDir.mkdirs()) {
                 String msgFormat = Utilities.format(cantCreateSdcardmsg, applicationDirPath);
                 messageDialog(context, msgFormat, null);
             }
+        }
         databaseFile = new File(applicationDirPath, databaseName);
         debugLogFile = new File(applicationDirPath, "debug.log"); //$NON-NLS-1$
 
@@ -202,6 +207,17 @@ public class ResourcesManager implements Serializable {
      */
     public File getApplicationDir() {
         return applicationDir;
+    }
+
+    /**
+     * Get info about the application folder's pre-existence.
+     * 
+     * @return <code>true</code> if on initialisation an 
+     *      application folder had to be created, <code>false</code>
+     *      if the application folder already existed.
+     */
+    public boolean hadToCreateApplicationDirOnInit() {
+        return createdApplicationDirOnInit;
     }
 
     /**

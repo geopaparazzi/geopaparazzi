@@ -17,6 +17,8 @@
  */
 package eu.geopaparazzi.library.util;
 
+import java.io.File;
+
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
@@ -26,6 +28,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Looper;
+import android.os.StatFs;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.widget.EditText;
@@ -431,6 +434,30 @@ public class Utilities {
                 sb.append(Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1));
         }
         return sb.toString();
+    }
+
+    /**
+     * Get the megabytes available in the filesystem at 'file'.
+     * 
+     * @param file the filesystem's path.
+     * @return the available space in mb.
+     */
+    public static float getAvailableMegabytes( File file ) {
+        StatFs stat = new StatFs(file.getPath());
+        long bytesAvailable = (long) stat.getBlockSize() * (long) stat.getAvailableBlocks();
+        return bytesAvailable / (1024.f * 1024.f);
+    }
+
+    /**
+     * Get the size in megabytes of the filesystem at 'file'.
+     * 
+     * @param file the filesystem's path.
+     * @return the size in mb.
+     */
+    public static float getFilesystemMegabytes( File file ) {
+        StatFs stat = new StatFs(file.getPath());
+        long bytes = (long) stat.getBlockSize() * (long) stat.getBlockCount();
+        return bytes / (1024.f * 1024.f);
     }
 
 }
