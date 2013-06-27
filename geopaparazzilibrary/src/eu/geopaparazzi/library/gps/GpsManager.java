@@ -82,10 +82,13 @@ public class GpsManager implements LocationListener, Listener {
     private SharedPreferences preferences;
     private boolean useNetworkPositions;
 
+    private boolean isMockMode;
+
     private GpsManager( Context context ) {
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
         useNetworkPositions = preferences.getBoolean(LibraryConstants.PREFS_KEY_GPS_USE_NETWORK_POSITION, false);
+        isMockMode = preferences.getBoolean(LibraryConstants.PREFS_KEY_MOCKMODE, false);
     }
 
     public synchronized static GpsManager getInstance( Context context ) {
@@ -171,7 +174,7 @@ public class GpsManager implements LocationListener, Listener {
      * Starts listening to the gps provider.
      */
     private void startListening() {
-        if (Debug.doMock) {
+        if (Debug.doMock || isMockMode) {
             if (Debug.D)
                 Logger.d(this, "Using Mock locations");
             TestMock.startMocking(locationManager, gpsManager);
@@ -239,7 +242,7 @@ public class GpsManager implements LocationListener, Listener {
      * @return <code>true</code> if the GPS is in a usable logging state.
      */
     public boolean hasValidData() {
-        if (Debug.doMock) {
+        if (Debug.doMock || isMockMode) {
             if (TestMock.isOn)
                 return true;
         }
