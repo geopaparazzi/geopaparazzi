@@ -44,6 +44,8 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryCollection;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.MultiLineString;
+import com.vividsolutions.jts.geom.MultiPoint;
+import com.vividsolutions.jts.geom.MultiPolygon;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;
 
@@ -209,15 +211,19 @@ public class ShapeWriter {
     public DrawableShape toShape( Geometry geometry ) {
         if (geometry.isEmpty())
             return new PathShape(new Path());
-        if (geometry instanceof Polygon)
+        else if (geometry instanceof Polygon)
             return toShape((Polygon) geometry);
-        if (geometry instanceof LineString)
+        else if (geometry instanceof MultiPolygon)
+            return toShape((MultiPolygon) geometry);
+        else if (geometry instanceof LineString)
             return toShape((LineString) geometry);
-        if (geometry instanceof MultiLineString)
+        else if (geometry instanceof MultiLineString)
             return toShape((MultiLineString) geometry);
-        if (geometry instanceof Point)
+        else if (geometry instanceof Point)
             return toShape((Point) geometry);
-        if (geometry instanceof GeometryCollection)
+        else if (geometry instanceof MultiPoint)
+            return toShape((MultiPoint) geometry);
+        else if (geometry instanceof GeometryCollection)
             return toShape((GeometryCollection) geometry);
 
         throw new IllegalArgumentException("Unrecognized Geometry class: " + geometry.getClass());
@@ -284,6 +290,16 @@ public class ShapeWriter {
         mainPath.addPath(tmpPath);
     }
 
+    private DrawableShape toShape( MultiPolygon mp ) {
+        GeometryCollectionShape shapes = new GeometryCollectionShape();
+        for( int i = 0; i < mp.getNumGeometries(); i++ ) {
+            Polygon polygon = (Polygon) mp.getGeometryN(i);
+            DrawableShape shape = toShape(polygon);
+            shapes.add(shape);
+        }
+        return shapes;
+    }
+
     private DrawableShape toShape( GeometryCollection gc ) {
         GeometryCollectionShape shape = new GeometryCollectionShape();
         // add components to GC shape
@@ -348,6 +364,18 @@ public class ShapeWriter {
     private DrawableShape toShape( Point point ) {
         PointF viewPoint = transformPoint(point.getCoordinate());
         return pointFactory.createPoint(viewPoint);
+    }
+
+    private DrawableShape toShape( MultiPoint points ) {
+        GeometryCollectionShape shapes = new GeometryCollectionShape();
+        int numGeometries = points.getNumGeometries();
+        for( int i = 0; i < numGeometries; i++ ) {
+            Point point = (Point) points.getGeometryN(i);
+            PointF viewPoint = transformPoint(point.getCoordinate());
+            DrawableShape drawableShape = pointFactory.createPoint(viewPoint);
+            shapes.add(drawableShape);
+        }
+        return shapes;
     }
 
     private PointF transformPoint( Coordinate model ) {
