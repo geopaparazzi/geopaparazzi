@@ -18,13 +18,13 @@
 package eu.geopaparazzi.library.util.debug;
 
 import java.lang.reflect.Method;
-import java.util.Date;
 
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.SystemClock;
+import android.util.Log;
 import eu.geopaparazzi.library.gps.GpsManager;
 
 /**
@@ -36,19 +36,27 @@ public class TestMock {
     public static String MOCK_PROVIDER_NAME = LocationManager.GPS_PROVIDER;
     public static boolean isOn = false;
     private static Method locationJellyBeanFixMethod = null;
+    private static IFakeGpsLog fakeGpsLog = null;
+
+    public static void setFakeGpsLog( IFakeGpsLog fakeGpsLog ) {
+        TestMock.fakeGpsLog = fakeGpsLog;
+    }
+
     /**
      * Starts to trigger mock locations.
      * 
      * @param locationManager the location manager.
      * @param gpsManager 
-     * @param fakeGpsLog 
      */
     public static void startMocking( final LocationManager locationManager, GpsManager gpsManager ) {
         if (isOn) {
             return;
         }
 
-        final FakeGpsLog fakeGpsLog = new FakeGpsLog();
+        if (fakeGpsLog == null) {
+            fakeGpsLog = new DefaultFakeGpsLog();
+        }
+
         // Get some mock location data in the game
         // LocationProvider provider = locationManager.getProvider(MOCK_PROVIDER_NAME);
         // if (provider == null) {
@@ -78,51 +86,60 @@ public class TestMock {
             public void run() {
                 isOn = true;
 
+                long previousT = -1;
+                long t = 0;
                 while( isOn ) {
-                    try {
-                        if (fakeGpsLog.hasNext()) {
-                            String nextLine = fakeGpsLog.next();
+                    String nextLine = null;
+                    if (fakeGpsLog.hasNext()) {
+                        nextLine = fakeGpsLog.next();
 
-                            String[] lineSplit = nextLine.split(",");
-                            double lon = Double.parseDouble(lineSplit[0]);
-                            double lat = Double.parseDouble(lineSplit[1]);
-                            long t = new Date().getTime();// Long.parseLong(lineSplit[2]);
-                            double alt = Double.parseDouble(lineSplit[2]);
-                            float v = Float.parseFloat(lineSplit[3]);
-                            float accuracy = Float.parseFloat(lineSplit[4]);
+                        String[] lineSplit = nextLine.split(",");
+                        t = Long.parseLong(lineSplit[0]);
+                        double lon = Double.parseDouble(lineSplit[1]);
+                        double lat = Double.parseDouble(lineSplit[2]);
+                        double alt = Double.parseDouble(lineSplit[3]);
+                        float v = Float.parseFloat(lineSplit[4]);
+                        float accuracy = Float.parseFloat(lineSplit[5]);
 
-                            Location location = new Location(MOCK_PROVIDER_NAME);
-                            location.setLatitude(lat);
-                            location.setLongitude(lon);
-                            location.setTime(t);
-                            location.setAltitude(alt);
-                            location.setAccuracy(accuracy);
-                            location.setSpeed(v);
-                            if (locationJellyBeanFixMethod != null) {
+                        Location location = new Location(MOCK_PROVIDER_NAME);
+                        location.setLatitude(lat);
+                        location.setLongitude(lon);
+                        location.setTime(t);
+                        location.setAltitude(alt);
+                        location.setAccuracy(accuracy);
+                        location.setSpeed(v);
+                        if (locationJellyBeanFixMethod != null) {
+                            try {
                                 locationJellyBeanFixMethod.invoke(location);
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                            location.setSpeed(v);
-
-                            locationManager.setTestProviderStatus(//
-                                    MOCK_PROVIDER_NAME, //
-                                    LocationProvider.AVAILABLE, //
-                                    null, //
-                                    SystemClock.elapsedRealtime()//
-                                    );
-                            locationManager.setTestProviderLocation(MOCK_PROVIDER_NAME, location);
-                        } else {
-                            fakeGpsLog.reset();
                         }
+                        location.setSpeed(v);
 
-                    } catch (Exception e) {
-                        // ignore it
-                    } finally {
-                        try {
+                        locationManager.setTestProviderStatus(//
+                                MOCK_PROVIDER_NAME, //
+                                LocationProvider.AVAILABLE, //
+                                null, //
+                                SystemClock.elapsedRealtime()//
+                                );
+                        locationManager.setTestProviderLocation(MOCK_PROVIDER_NAME, location);
+                    } else {
+                        fakeGpsLog.reset();
+                    }
+
+                    try {
+                        if (previousT < 0) {
                             Thread.sleep(2000);
-                        } catch (InterruptedException e) {
-                            Logger.e(this, e.getLocalizedMessage(), e);
-                            e.printStackTrace();
+                        } else {
+                            long millis = t - previousT;
+                            Log.i("MOCK_PROVIDER_NAME", nextLine + "///" + millis);
+                            Thread.sleep(millis);
                         }
+                        previousT = t;
+                    } catch (InterruptedException e) {
+                        Logger.e(this, e.getLocalizedMessage(), e);
+                        e.printStackTrace();
                     }
                 }
 
