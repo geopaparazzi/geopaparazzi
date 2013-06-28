@@ -172,6 +172,6 @@
         android:layout_below="@+id/fill_alpha_spinner"
         android:inputType="numberDecimal"
         android:padding="5dp"
-        android:text="@dimensions/decimation_factor_default" />
+        android:text="@string/decimation_factor_default" />
 
 </RelativeLayout>
