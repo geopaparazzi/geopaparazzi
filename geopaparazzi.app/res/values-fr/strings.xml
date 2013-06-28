@@ -16,7 +16,9 @@
   <string name="lat">lat: </string>
   <string name="lon">lon: </string>
   <string name="azimuth">azimuth: </string>
+  <string name="go_to">Aller à</string>
   <string name="goto_coordinate">aller aux coordonnées</string>
+  <string name="geocoding">Géocodé</string>
   <string name="prompt_gpsenable">Votre GPS est désactivé! Souhaitez vous l\'activer?</string>
   <string name="width_label">Largeur</string>
   <string name="color_label">Couleur</string>
@@ -26,39 +28,27 @@
   <string name="mainmenu_preferences">préférences</string>
   <string name="mainmenu_merge">fusionner les logs sélectionnés</string>
   <string name="gpslogproperty">propriétés pour:</string>
+  <string name="gpslog_chart">Graphique</string>
+  <string name="gpslog_zoom">Zoomer sur</string>
+  <string name="gpslog_delete">Supprimer</string>
   <string name="mapproperty">propriétés pour: </string>
   <string name="map_zoom">Zoomer sur la carte</string>
   <string name="map_delete">Supprimer la carte</string>
   <string name="gps_preferences">Préférences GPS</string>
+  <string name="gps_logging_distance">Distance minimum de connexion du gps</string>
+  <string name="gps_logging_interval">Intervalle minimum de connexion du gps</string>
+  <string name="gps_use_android_level">Utiliser au niveau d\'android (sauvegarde batterie, besoins redémarrage)</string>
+  <string name="gps_use_android_level_summary">Si coché, les préférences de gps sont appliquées au niveau du système d\'exploitation, cela peut économiser la batterie, mais le signal peut être moins stable lors du choix de grands intervalles (si vous avez des problèmes de connexion gps sur cocher périphériques, gardé décochée). Notez que l\'os gps fonctionne en permanence pour envoyer le signal tous les moins de 100 secondes. Pour une meilleure autonomie de batterie choisir des intervalles plus grands.</string>
   <string name="sms_preferences">Sms preferences</string>
   <string name="sms_catcher">Activer sms catcher</string>
   <string name="databaseError">Une erreur s\'est produite lors de la connexion à la base de données</string>
+  <string name="chart_profile_view">Vue du profil</string>
   <string name="gpx_import_processing">Importé gpx...</string>
   <string name="osm_additionalinfo">Ajouter des informarion au tag</string>
   <string name="osm_tagsgrid">choisir un tag à insérer</string>
   <string name="text_show_position_on_map">vue de la carte</string>
   <string name="text_take_a_gps_note">prendre note</string>
   <string name="text_undo_a_gps_note">annuler note</string>
-  <string name="abouttext">
-	    GeoPaparazzi VERSION\n
-	    est conçu pour vous parHydroloGIS.\n
-	    \n
-	    GeoPaparazzi est le petit frère de BeeGIS qui est capable de charger les données collectés.\n
-	    \n
-	    Le moteur carographique est mapsforge.\n
-	    \n
-	    Les cartes proviennent de © OpenStreetMap contributors, CC-BY-SA.\n
-	    \n
-	    les actions rapides sont adaptées de Lorenz’s Londatiga tutorial.\n
-	    \n
-	    Liens:\n
-	    http://www.geopaparazzi.eu\n
-	    http://www.beegis.org\n
-	    http://www.hydrologis.eu\n
-	    http://code.google.com/p/mapsforge/\n
-	    http://www.openstreetmap.org\n
-	    http://www.londatiga.net\n
-	</string>
   <string name="gps_log">gps log</string>
   <string name="gps_log_name">Insérez un nom au log gps ou acceptez celui par défaut</string>
   <string name="audio_recording">Enregistrement audio... Appuyez ici pour arrêter</string>
@@ -78,6 +68,8 @@
   <string name="enable_debug">Activer le journal de débogage</string>
   <string name="gpslogging_only">Cette fonction est disponible uniquement lorsque le GPS est actif et qu\'un signal est disponible.</string>
   <string name="remove_last_note_prompt">Voulez-vous vraiment supprimer la dernière note de texte ? Cette action est définitive.</string>
+  <string name="installgpsstatus_title">Installer GPS Status</string>
+  <string name="installgpsstatus_message">Geopaparazzi utilise l\'Application GPS Status comme boussole et visualisateur d\'information sur le GPS. Voulez-vous l\'installer ?</string>
   <string name="reset">nouveau projet</string>
   <string name="load">charger un projet existant</string>
   <string name="phonenumber_hint">Entrez les numéros de téléphone séparés par des virgules...</string>
@@ -99,6 +91,10 @@
   <string name="maptagsactivity_error_reading_tags">Erreur de lecture des tags</string>
   <string name="mapsactivity_menu_toggle_compass">Ouvrir la boussole</string>
   <string name="imagesvisibilityToggle">Activer/désactiver la visibilité des images</string>
+  <string name="imagefromgps">Cadrer la carte sur l\'image</string>
+  <string name="notefromgps">Cadrer la carte sur la note</string>
+  <string name="quicknotes">CARTE CADRE SUR LES NOTES</string>
+  <string name="formnotes">FORMULAIRE DE BASE POUR LES NOTES</string>
   <string name="an_error_occurred_while_creating_the_chart_">Une erreur s\'est produite lors de la création du graphique.</string>
   <string name="osm_preferences">Préférences d\'OpenStreetMap</string>
   <string name="osm_do_it">Activer les outils OSM</string>
@@ -116,6 +112,7 @@
   <string name="available_only_with_network">Cette fonction est disponible uniquement avec une connexion réseau active.</string>
   <string name="error_osm_server">Une erreur s\'est produite lors de la connexion au serveur OSM. Veuillez vérifier votre nom d\'utilisateur et mot de passe. Il est également possible que le serveur OSM n\'est pas disponible.</string>
   <string name="check_valid_field">Veuillez vérifier que le champ \"{0}\ » est valide.</string>
+  <string name="view_in_mixare">vue dans mixare</string>
   <string name="gps_use_coarse">Utiliser la position réseau au lieu de gps (besoin de redémarrer)</string>
   <string name="type_to_filter">type de filtre</string>
   <string name="geopapcloud_preferences">Préférences Geopap-Cloud</string>
@@ -137,9 +134,10 @@
   <string name="add_message">AJOUTER MESSAGE</string>
   <string name="insert_an_optional_text_to_send_with_the_geosms">Insérer un texte optionnel à envoyer avec le GeoSMS</string>
   <string name="enter_a_name_for_the_new_project">Entrer un nom pour le nouveau projet</string>
-  <string name="chosen_project_exists">Ce nom de projet existe déjà, veuillez en choisir un autre</string>
+  <string name="chosen_project_exists">Le nom du projet choisi existe déjà, veuillez choisir un autre nom</string>
   <string name="no_external_sdcard_for_db_renderer">Le rendu de cette base de données est suporté seuleument à partir d\'un sockage externe. Aucun stockage externe a été trouvé, est ce qu\'il y en a un disponible?</string>
-  <string name="no_map_files_found_go_online">Aucune carte a été trouvée à la racine du stockage externe. Changé pour une carte enigne.\nLes cartes peuvent être téléchargés sur: http://download.mapsforge.org</string>
+  <string name="no_map_files_found_go_online">Aucun fichier de carte n\'a été trouvé dans le dossier /sdcard/maps. Passage aux cartes en lignes. \n
+Les cartes peuvent être téléchargées sur : http://download.mapsforge.org</string>
   <string name="select_map_to_use">Sélectionnez la carte à utiliser</string>
   <string name="no_map_file_found_going_to_mapnik">Impossible de trouver le fichier de la carte, basculé sur le tuilage MAPNIK.</string>
   <string name="enter_project_description">Entrer une description pour le projet</string>
@@ -149,4 +147,20 @@
   <string name="error_bookmarks_import">Une erreur s\'est produite lors de l\'importation des signets.</string>
   <string name="no_bookmarks_csv">Aucun fichier bookmarks.csv a été trouvé à la racine de la sdcard. Veuillez mettre vos fichiers à cet emplacement pour les importer.</string>
   <string name="center_on_map">centrer sur la carte</string>
+  <string name="proximity_radius">Rayon de proximité</string>
+  <string name="add_proximity_radius">Ajouter un rayon d\'alerte de proximité en mètres.</string>
+  <string name="sent_sms">"Message envoyé :"</string>
+  <string name="send_data">envoyer des données</string>
+  <string name="found_no_data_to_send">Aucune donnée n\'a été trouvée à envoyer dans la carte courante</string>
+  <string name="insert_phone_to_send">"un sms sera envoyé pour transférer les données sélectionnées.
+\nVeuillez insérer un numéro de téléphone valide pour envoyer les données à. »</string>
+  <string name="no_message_sent">Aucun message envoyé.</string>
+  <string name="logs_will_be_merged">"les logs seront fusionnés ensemble dans cette opération. Continuer?"</string>
+  <string name="distance">"Distance: "</string>
+  <string name="imported_notes_and_bookmarks">Notes importé {0} et {1} signets.</string>
+  <string name="could_not_open_sms">Ne peux pas ouvrir l\'URL des données sms passés</string>
+  <string name="start">"Départ: "</string>
+  <string name="end_">« Fin: »</string>
+  <string name="keep_screen_on">Garder l\'écran allumé</string>
+  <string name="keep_screen_on_summary">Garder l\'écran allumé pour le tableau de bord et la carte</string>
 </resources>

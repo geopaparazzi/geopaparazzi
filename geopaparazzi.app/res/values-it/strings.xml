@@ -160,4 +160,7 @@
   <string name="could_not_open_sms">Impossibile aprire i dati contenuti nell\'sms.</string>
   <string name="start">"Inizio:"</string>
   <string name="end_">"Fine:"</string>
+  <string name="map_textsize_factor">Fattore dimensione testo mappa</string>
+  <string name="keep_screen_on">Mantieni schermo acceso</string>
+  <string name="keep_screen_on_summary">Mantiene lo schermo acceso per dashboard e vista mappa</string>
 </resources>

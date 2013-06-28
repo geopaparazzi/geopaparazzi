@@ -16,7 +16,9 @@
   <string name="lat">Lat: </string>
   <string name="lon">Lon: </string>
   <string name="azimuth">Suunta: </string>
+  <string name="go_to">Mene</string>
   <string name="goto_coordinate">Mene sijaintiin</string>
+  <string name="geocoding">Geokoodaus</string>
   <string name="prompt_gpsenable">GPS ei ole aktiivinen! Aktivoi se puhelimen asetuksista.</string>
   <string name="width_label">Leveys</string>
   <string name="color_label">Väri</string>
@@ -26,12 +28,16 @@
   <string name="mainmenu_preferences">Asetukset</string>
   <string name="mainmenu_merge">Yhdistä valitut jäljet</string>
   <string name="gpslogproperty">Ominaisuudet: </string>
+  <string name="gpslog_chart">Kaavio</string>
+  <string name="gpslog_zoom">Lähennä</string>
+  <string name="gpslog_delete">Poista</string>
   <string name="mapproperty">Gpx-ominaisuudet: </string>
   <string name="map_zoom">Kohdista gpx-tiedostoon</string>
   <string name="map_delete">Poista gpx-tiedosto</string>
   <string name="gps_preferences">Jäljen tallennusasetukset</string>
   <string name="gps_logging_distance">Tallennusväli matkassa</string>
   <string name="gps_logging_interval">Tallennusväli ajassa</string>
+  <string name="gps_use_android_level">Käytä käyttöjärjestelmätasolla (säästää akkua, tarvitsee uudelleenkäynnistyksen)</string>
   <string name="sms_preferences">Tekstiviestiasetukset</string>
   <string name="sms_catcher">Salli paikannus</string>
   <string name="databaseError">Tietokantaan yhdistäminen epäonnistui</string>
@@ -126,7 +132,6 @@
   <string name="add_message">Lisää viesti</string>
   <string name="insert_an_optional_text_to_send_with_the_geosms">Kirjoita halutessasi viesti GeoSMS yhteyteen</string>
   <string name="enter_a_name_for_the_new_project">Anna nimi uudelle projektille</string>
-  <string name="chosen_project_exists">Projekti on jo olemassa, nimeä uudelleen</string>
   <string name="no_external_sdcard_for_db_renderer">Tietokannan mallinnus on tuettu vain ulkoisesta tietolähteestä. Ulkoista tietolähdettä ei löytynyt.</string>
   <string name="select_map_to_use">Valitse kartta</string>
   <string name="no_map_file_found_going_to_mapnik">Karttatiedostoa ei löytynyt, käytetään MAPNIK-karttaa</string>
@@ -139,4 +144,14 @@
   <string name="center_on_map">Keskitä kartta</string>
   <string name="proximity_radius">Säde lähestymistä varten</string>
   <string name="add_proximity_radius">Aseta lähestymishälytys metreissä</string>
+  <string name="sent_sms">"Lähetetyt tekstiviestit:"</string>
+  <string name="send_data">Lähetä tiedot</string>
+  <string name="found_no_data_to_send">Nykyisessä näkymässä ei dataa lähetettäväksi.</string>
+  <string name="insert_phone_to_send">"Valitut tiedot lähetetään tekstiviestillä. \nLisää puhelinnumero lähettääksesi tiedot."</string>
+  <string name="no_message_sent">Viestiä ei lähetetty.</string>
+  <string name="logs_will_be_merged">" lokit yhdistetään. Jatketaanko?</string>
+  <string name="distance">"Etäisyys:"</string>
+  <string name="imported_notes_and_bookmarks">Tuotiin {0} muistiinpanoa ja {1} kirjanmerkkiä.</string>
+  <string name="start">"Alku:"</string>
+  <string name="end_">"Loppu:"</string>
 </resources>

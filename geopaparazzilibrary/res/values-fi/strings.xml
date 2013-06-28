@@ -4,7 +4,6 @@
   <string name="yes">Kyllä</string>
   <string name="no">Ei</string>
   <string name="up">Ylös</string>
-  <string name="cantcreate_sdcard">Ei voitu luoda kansiota muistikortille ({0}]. Poistutaan...</string>
   <string name="sdcard_notexist">Kansiota muistikortilla ei ole tai se on varattu. Poistutaan...</string>
   <string name="error_disk_full">Muistikortti täynnä. Vapauta tilaa ja aloita uudelleen.</string>
   <string name="cantwrite_gpslog">Virhe: Jälkeä ei pysty tallentamaan!</string>
@@ -41,4 +40,12 @@
   <string name="project_successfully_downloaded">Projekti on ladattu</string>
   <string name="proximity_alert">Lähestytään kohdetta</string>
   <string name="approaching_poi">Lähestytään POI-pistettä</string>
+  <string name="enterLocationLabel">Lisää sijainti:</string>
+  <string name="geocodeErrorTitle">Virhe geokoodauksessa</string>
+  <string name="geocodeErrorMessage">Paikan geokoodaus epäonnistui. Yritä uudelleen.</string>
+  <string name="openrouteservice">OpenRouteService</string>
+  <string name="downloading_route">Ladataan reittiä...</string>
+  <string name="route_extraction_error">Tapahtui virhe reitin purussa.</string>
+  <string name="available_only_with_network">Tämä toimintoa voidaan käyttää vain verkkoyhteyden aikana.</string>
+  <string name="error_while_storing_form_data">Lomaketietojen tallentamisessa tapahtui virhe.</string>
 </resources>
