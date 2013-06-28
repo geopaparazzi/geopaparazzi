@@ -23,7 +23,6 @@ import android.app.ListActivity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.widget.SimpleCursorAdapter;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.util.LibraryConstants;
 
@@ -33,6 +32,8 @@ import eu.geopaparazzi.library.util.LibraryConstants;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class DatabaseListActivity extends ListActivity {
+    private Cursor cursor;
+
     @SuppressWarnings("nls")
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -50,17 +51,19 @@ public class DatabaseListActivity extends ListActivity {
         }
 
         if (database != null && query != null && queryFields != null) {
-            Cursor cursor = database.rawQuery(query, null);
+            cursor = database.rawQuery(query, null);
             startManagingCursor(cursor);
 
-            int[] viewsArray = new int[queryFields.length];
-            for( int i = 0; i < viewsArray.length; i++ ) {
-                viewsArray[i] = R.id.database_row_text;
-            }
-
-            SimpleCursorAdapter data = new SimpleCursorAdapter(this, R.layout.database_list_row, cursor, queryFields, viewsArray);
+            DbCursorAdapter data = new DbCursorAdapter(this, cursor, queryFields);
             setListAdapter(data);
         }
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        stopManagingCursor(cursor);
+        cursor.close();
+        super.onDestroy();
     }
 }
