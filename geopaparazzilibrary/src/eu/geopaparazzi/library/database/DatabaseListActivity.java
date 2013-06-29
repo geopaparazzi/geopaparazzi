@@ -41,7 +41,6 @@ public class DatabaseListActivity extends ListActivity {
 
         Bundle extras = getIntent().getExtras();
         String query = extras.getString(LibraryConstants.PREFS_KEY_QUERY);
-        String[] queryFields = extras.getStringArray(LibraryConstants.PREFS_KEY_QUERYFIELDS);
 
         SQLiteDatabase database = null;
         try {
@@ -50,11 +49,11 @@ public class DatabaseListActivity extends ListActivity {
             e.printStackTrace();
         }
 
-        if (database != null && query != null && queryFields != null) {
+        if (database != null && query != null) {
             cursor = database.rawQuery(query, null);
             startManagingCursor(cursor);
 
-            DbCursorAdapter data = new DbCursorAdapter(this, cursor, queryFields);
+            DbCursorAdapter data = new DbCursorAdapter(this, cursor);
             setListAdapter(data);
         }
 

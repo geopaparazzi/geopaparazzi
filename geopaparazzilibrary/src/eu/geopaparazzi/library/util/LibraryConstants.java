@@ -245,10 +245,6 @@ public interface LibraryConstants {
      * Key used to define a query that is passed through the workflow. 
      */
     public static final String PREFS_KEY_QUERY = "PREFS_KEY_QUERY"; //$NON-NLS-1$
-    /**
-     * Key used to define query fields passed through the workflow. 
-     */
-    public static final String PREFS_KEY_QUERYFIELDS = "PREFS_KEY_QUERYFIELDS"; //$NON-NLS-1$
 
     /**
      * Key used to define the mock mode in the prefs. 

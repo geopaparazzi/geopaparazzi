@@ -17,13 +17,13 @@
  */
 package eu.geopaparazzi.library.database;
 
-import eu.geopaparazzi.library.R;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import eu.geopaparazzi.library.R;
 
 /**
  * A cursor adapter generic to given field names.
@@ -33,18 +33,16 @@ import android.widget.TextView;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 class DbCursorAdapter extends CursorAdapter {
-    private String[] fields;
 
-    public DbCursorAdapter( Context context, Cursor c, String[] fields ) {
+    public DbCursorAdapter( Context context, Cursor c ) {
         super(context, c, false);
-        this.fields = fields;
     }
 
     public void bindView( View view, Context context, Cursor cursor ) {
         StringBuilder sb = new StringBuilder();
         TextView textView = (TextView) view;
-        for( int i = 0; i < fields.length; i++ ) {
-            String field = fields[i];
+        for( int i = 0; i < cursor.getColumnCount(); i++ ) {
+            String field = cursor.getColumnName(i);
             if (field.equals("_id")) {
                 continue;
             }
