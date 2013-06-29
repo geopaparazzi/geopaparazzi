@@ -204,4 +204,9 @@
     <string name="map_textsize_factor">Map textsize factor</string>
     <string name="keep_screen_on">Keep the screen on</string>
     <string name="keep_screen_on_summary">Keeps the screen on when on dashboard and map view</string>
+    <string name="the_secret_view">The Secret View</string>
+    <string name="database_queries">Database Queries</string>
+    <string name="demo_mode">Demo mode</string>
+    <string name="select_database_query">Select database query</string>
+    <string name="launch_query">Launch query</string>
 </resources>

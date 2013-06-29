@@ -37,6 +37,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -53,6 +54,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SlidingDrawer;
 import android.widget.Toast;
+import eu.geopaparazzi.library.database.ADbHelper;
 import eu.geopaparazzi.library.gps.GpsLocation;
 import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.sensors.SensorsManager;
@@ -89,6 +91,7 @@ import eu.hydrologis.geopaparazzi.util.ExportActivity;
 import eu.hydrologis.geopaparazzi.util.GpUtilities;
 import eu.hydrologis.geopaparazzi.util.ImportActivity;
 import eu.hydrologis.geopaparazzi.util.QuickActionsFactory;
+import eu.hydrologis.geopaparazzi.util.SecretActivity;
 
 /**
  * The main {@link Activity activity} of GeoPaparazzi.
@@ -318,6 +321,8 @@ public class GeoPaparazziActivity extends Activity {
         }
         setContentView(R.layout.geopap_main);
 
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         gpsManager = GpsManager.getInstance(this);
         sensorManager = SensorsManager.getInstance(this);
 
@@ -406,7 +411,8 @@ public class GeoPaparazziActivity extends Activity {
         });
 
         try {
-            DatabaseManager.getInstance().getDatabase(this);
+            SQLiteDatabase database = DatabaseManager.getInstance().getDatabase(this);
+            ADbHelper.getInstance().setDatabase(database);
             checkMapsAndLogsVisibility();
 
             SpatialDatabasesManager.reset();
@@ -418,14 +424,13 @@ public class GeoPaparazziActivity extends Activity {
             Utilities.toast(this, R.string.databaseError, Toast.LENGTH_LONG);
         }
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean doOsmPref = preferences.getBoolean(Constants.PREFS_KEY_DOOSM, false);
         if (doOsmPref)
             OsmUtilities.handleOsmTagsDownload(this);
 
         Utilities.toast(this, getString(eu.hydrologis.geopaparazzi.R.string.loaded_project_in)
                 + resourcesManager.getApplicationDir().getAbsolutePath(), Toast.LENGTH_LONG);
-        
+
         // check for screen on
         boolean keepScreenOn = preferences.getBoolean(Constants.PREFS_KEY_SCREEN_ON, false);
         if (keepScreenOn) {
@@ -756,17 +761,31 @@ public class GeoPaparazziActivity extends Activity {
         }
     }
 
+    private int backCount = 0;
+    private long previousBackTime = System.currentTimeMillis();
     public boolean onKeyDown( int keyCode, KeyEvent event ) {
         // force to exit through the exit button
+        // System.out.println(keyCode + "/" + KeyEvent.KEYCODE_BACK);
         switch( keyCode ) {
         case KeyEvent.KEYCODE_BACK:
             if (sliderIsOpen) {
                 slidingDrawer.animateClose();
             }
+            backCount++;
+            long backTime = System.currentTimeMillis();
+
+            if (backTime - previousBackTime < 1000) {
+                if (backCount > 10) {
+                    Intent hiddenIntent = new Intent(this, SecretActivity.class);
+                    startActivity(hiddenIntent);
+                }
+            } else {
+                backCount = 0;
+            }
+            previousBackTime = backTime;
             return true;
         }
         return super.onKeyDown(keyCode, event);
-
     }
 
     public void finish() {

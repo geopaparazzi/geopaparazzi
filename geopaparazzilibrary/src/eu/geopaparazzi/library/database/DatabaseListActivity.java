@@ -21,10 +21,12 @@ import java.io.IOException;
 
 import android.app.ListActivity;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * A database list activity.
@@ -49,20 +51,31 @@ public class DatabaseListActivity extends ListActivity {
             e.printStackTrace();
         }
 
-        if (database != null && query != null) {
-            cursor = database.rawQuery(query, null);
-            startManagingCursor(cursor);
+        try {
+            if (database != null && query != null) {
+                cursor = database.rawQuery(query, null);
+                startManagingCursor(cursor);
 
-            DbCursorAdapter data = new DbCursorAdapter(this, cursor);
-            setListAdapter(data);
+                DbCursorAdapter data = new DbCursorAdapter(this, cursor);
+                setListAdapter(data);
+            }
+        } catch (SQLException e) {
+            Utilities.messageDialog(this, "An error occurred while launching the query: " + e.getLocalizedMessage(),
+                    new Runnable(){
+                        public void run() {
+                            finish();
+                        }
+                    });
         }
 
     }
 
     @Override
     protected void onDestroy() {
-        stopManagingCursor(cursor);
-        cursor.close();
+        if (cursor != null) {
+            stopManagingCursor(cursor);
+            cursor.close();
+        }
         super.onDestroy();
     }
 }

@@ -1,0 +1,4 @@
+NOTES;select * from notes order by _id desc
+IMAGES;select * from images order by _id desc
+BOOKMARKS;select * from bookmarks order by _id desc
+GPSLOGS;select * from gpslogs order by _id desc

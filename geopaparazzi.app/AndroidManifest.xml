@@ -17,10 +17,8 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.BATTERY_STATS" />
-    <!--
-    only for testing purposes 
-	<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"></uses-permission>
-    -->
+    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" >
+    </uses-permission>
 
     <uses-feature
         android:name="android.hardware.telephony"
@@ -88,6 +86,12 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+        </activity>
+        <activity android:name="eu.hydrologis.geopaparazzi.util.SecretActivity" >
+        </activity>
+        <activity android:name="eu.hydrologis.geopaparazzi.database.SqlViewActivity" >
+        </activity>
+        <activity android:name="eu.geopaparazzi.library.database.DatabaseListActivity" >
         </activity>
         <activity android:name="eu.geopaparazzi.spatialite.database.spatial.activities.LinesDataPropertiesActivity" >
         </activity>
