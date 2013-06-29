@@ -42,6 +42,9 @@ import eu.geopaparazzi.library.util.debug.Logger;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class Utilities {
+    
+    private static double originShift = 2 * Math.PI * 6378137 / 2.0;
+
 
     public static String getUniqueDeviceId( Context context ) {
         // try to go for the imei
@@ -370,7 +373,7 @@ public class Utilities {
      * 
      * @return the quadtree key.
      */
-    public static String QuadTree( int tx, int ty, int zoom ) {
+    public static String quadTree( int tx, int ty, int zoom ) {
         String quadKey = ""; //$NON-NLS-1$
         ty = (int) ((Math.pow(2, zoom) - 1) - ty);
         for( int i = zoom; i < 0; i-- ) {
@@ -386,6 +389,88 @@ public class Utilities {
         }
         return quadKey;
     }
+    
+
+    /**
+     * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
+     *
+     * @param tx
+     * @param ty
+     * @param zoom
+     * @param tileSize
+     * @return [minx, miny, maxx, maxy]
+     */
+    public static double[] tileLatLonBounds( int tx, int ty, int zoom, int tileSize ) {
+        double[] bounds = tileBounds(tx, ty, zoom, tileSize);
+        double[] mins = metersToLatLon(bounds[0], bounds[1]);
+        double[] maxs = metersToLatLon(bounds[2], bounds[3]);
+        return new double[]{mins[1], maxs[0], maxs[1], mins[0]};
+    }
+    
+    /**
+     * Returns bounds of the given tile in EPSG:900913 coordinates
+     *
+     * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
+     *
+     * @param tx
+     * @param ty
+     * @param zoom
+     * @return [minx, miny, maxx, maxy]
+     */
+    public static double[] tileBounds( int tx, int ty, int zoom, int tileSize ) {
+        double[] min = pixelsToMeters(tx * tileSize, ty * tileSize, zoom, tileSize);
+        double minx = min[0], miny = min[1];
+        double[] max = pixelsToMeters((tx + 1) * tileSize, (ty + 1) * tileSize, zoom, tileSize);
+        double maxx = max[0], maxy = max[1];
+        return new double[]{minx, miny, maxx, maxy};
+    }
+
+    /**
+     * Converts XY point from Spherical Mercator EPSG:900913 to lat/lon in WGS84
+     * Datum
+     *
+     * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
+     *
+     * @return
+     */
+    public static double[] metersToLatLon( double mx, double my ) {
+
+        double lon = (mx / originShift) * 180.0;
+        double lat = (my / originShift) * 180.0;
+
+        lat = 180 / Math.PI * (2 * Math.atan(Math.exp(lat * Math.PI / 180.0)) - Math.PI / 2.0);
+        return new double[]{-lat, lon};
+    }
+
+    /**
+     * Converts pixel coordinates in given zoom level of pyramid to EPSG:900913
+     *
+     * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
+     *
+     * @return
+     */
+    public static double[] pixelsToMeters( double px, double py, int zoom, int tileSize ) {
+        double res = getResolution(zoom, tileSize);
+        double mx = px * res - originShift;
+        double my = py * res - originShift;
+        return new double[]{mx, my};
+    }
+
+
+    /**
+     * Resolution (meters/pixel) for given zoom level (measured at Equator)
+     *
+     * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
+     *
+     * @return
+     */
+    public static double getResolution( int zoom, int tileSize ) {
+        // return (2 * Math.PI * 6378137) / (this.tileSize * 2**zoom)
+        double initialResolution = 2 * Math.PI * 6378137 / tileSize;
+        return initialResolution / Math.pow(2, zoom);
+    }
+
+
 
     @SuppressWarnings("nls")
     public static String makeXmlSafe( String string ) {
