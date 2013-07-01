@@ -422,11 +422,13 @@ public class FormUtilities {
         int length = formItemsArray.length();
         for( int i = 0; i < length; i++ ) {
             JSONObject itemObject = formItemsArray.getJSONObject(i);
-            String objKey = itemObject.getString(TAG_KEY).trim();
-            if (objKey.equals(TYPE_LATITUDE)) {
-                itemObject.put(TAG_VALUE, latitude);
-            } else if (objKey.equals(TYPE_LONGITUDE)) {
-                itemObject.put(TAG_VALUE, longitude);
+            if (itemObject.has(TAG_KEY)) {
+                String objKey = itemObject.getString(TAG_KEY).trim();
+                if (objKey.equals(TYPE_LATITUDE)) {
+                    itemObject.put(TAG_VALUE, latitude);
+                } else if (objKey.equals(TYPE_LONGITUDE)) {
+                    itemObject.put(TAG_VALUE, longitude);
+                }
             }
         }
 
