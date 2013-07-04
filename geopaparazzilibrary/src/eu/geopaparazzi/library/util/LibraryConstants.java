@@ -153,6 +153,11 @@ public interface LibraryConstants {
     public static final String TMPPNGIMAGENAME = "tmp.png"; //$NON-NLS-1$
 
     /**
+     * Key used to store and retrieve a custom path to the external storage. 
+     */
+    public static final String PREFS_KEY_CUSTOM_EXTERNALSTORAGE = "PREFS_KEY_CUSTOM_EXTERNALSTORAGE"; //$NON-NLS-1$
+
+    /**
      * Key used to store and retrieve the base folder of the application. 
      */
     public static final String PREFS_KEY_BASEFOLDER = "PREFS_KEY_BASEFOLDER"; //$NON-NLS-1$

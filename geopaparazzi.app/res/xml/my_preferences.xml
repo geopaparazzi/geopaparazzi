@@ -11,7 +11,7 @@
             android:key="PREFS_KEY_GPSDOATANDROIDLEVEL"
             android:order="2"
             android:title="@string/gps_use_android_level" android:summary="@string/gps_use_android_level_summary" android:enabled="true" android:defaultValue="true">
-        </CheckBoxPreference>
+        </CheckBoxPreference>
         -->
         <EditTextPreference
             android:defaultValue="0"
@@ -51,7 +51,7 @@
 			android:defaultValue=""></EditTextPreference> <ListPreference android:entryValues="@array/sms_time_value" 
 			android:entries="@array/sms_time_name" android:title="@string/sms_sending_interval" 
 			android:order="12" android:key="@string/sms_sending_interval" android:defaultValue="0"></ListPreference> 
-			</PreferenceCategory>
+			</PreferenceCategory>
         -->
 
         <CheckBoxPreference
@@ -61,7 +61,7 @@
         </CheckBoxPreference>
         <!--
              <eu.hydrologis.geopaparazzi.preferences.PhoneNumberPreference android:order="8" 
-			android:key="panic_number" android:title="@string/panic_number"> </eu.hydrologis.geopaparazzi.preferences.PhoneNumberPreference>
+			android:key="panic_number" android:title="@string/panic_number"> </eu.hydrologis.geopaparazzi.preferences.PhoneNumberPreference>
         -->
 
         <EditTextPreference
@@ -83,7 +83,7 @@
             android:order="21"
             android:title="@string/decimation_combo_label" >
         </ListPreference>
-    </PreferenceScreen>
+    </PreferenceScreen>
     -->
     <PreferenceScreen
         android:order="998"
@@ -126,7 +126,7 @@
             android:order="34"
             android:title="@string/labels_length_zoom2" >
         </EditTextPreference>
-    </PreferenceScreen>
+    </PreferenceScreen>
     -->
     <PreferenceScreen
         android:order="40"
@@ -187,7 +187,16 @@
     <CheckBoxPreference
         android:key="PREFS_KEY_SCREEN_ON"
         android:order="61"
-        android:title="@string/keep_screen_on" android:summary="@string/keep_screen_on_summary">
+        android:summary="@string/keep_screen_on_summary"
+        android:title="@string/keep_screen_on" >
     </CheckBoxPreference>
+
+    <EditTextPreference
+        android:defaultValue=""
+        android:key="PREFS_KEY_CUSTOM_EXTERNALSTORAGE"
+        android:order="62"
+        android:summary="@string/use_custom_sdcard_summary"
+        android:title="@string/custom_sdcard_path" >
+    </EditTextPreference>
 
 </PreferenceScreen>

@@ -18,6 +18,7 @@
 package eu.geopaparazzi.library.util;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_BASEFOLDER;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_CUSTOM_EXTERNALSTORAGE;
 import static eu.geopaparazzi.library.util.Utilities.messageDialog;
 
 import java.io.File;
@@ -159,7 +160,13 @@ public class ResourcesManager implements Serializable {
 
         File possibleApplicationDir;
         if (mExternalStorageAvailable && mExternalStorageWriteable) {
-            sdcardDir = Environment.getExternalStorageDirectory();
+            String customFolderPath = preferences.getString(PREFS_KEY_CUSTOM_EXTERNALSTORAGE, "asdasdpoipoi");
+            File customFolderFile = new File(customFolderPath);
+            if (customFolderFile.exists() && customFolderFile.isDirectory() && customFolderFile.canWrite()) {
+                sdcardDir = customFolderFile;
+            } else {
+                sdcardDir = Environment.getExternalStorageDirectory();
+            }
             possibleApplicationDir = new File(sdcardDir, applicationLabel);
         } else if (useInternalMemory) {
             possibleApplicationDir = context.getDir(applicationLabel, Context.MODE_PRIVATE);

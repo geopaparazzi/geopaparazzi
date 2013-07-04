@@ -209,4 +209,6 @@
     <string name="demo_mode">Demo mode</string>
     <string name="select_database_query">Select database query</string>
     <string name="launch_query">Launch query</string>
+    <string name="use_custom_sdcard_summary">Use a custom sdcard path (usefull in case of multiple storages)</string>
+    <string name="custom_sdcard_path">Custom sdcard path</string>
 </resources>
