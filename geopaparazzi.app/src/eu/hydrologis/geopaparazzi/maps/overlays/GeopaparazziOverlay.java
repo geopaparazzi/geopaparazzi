@@ -33,6 +33,7 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -42,6 +43,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 
 import com.vividsolutions.jts.android.PointTransformation;
 import com.vividsolutions.jts.android.ShapeWriter;
@@ -63,6 +65,7 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.maps.MapsActivity;
+import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Note;
 
 /**
@@ -77,6 +80,7 @@ import eu.hydrologis.geopaparazzi.util.Note;
  *            the type of ways handled by this overlay.
  */
 public abstract class GeopaparazziOverlay extends Overlay {
+    private int crossSize = 20;
     private static final String THREAD_NAME = "GeopaparazziOverlay"; //$NON-NLS-1$
     private static final int ITEM_INITIAL_CAPACITY = 8;
 
@@ -170,10 +174,28 @@ public abstract class GeopaparazziOverlay extends Overlay {
         this.visibleItems = new ArrayList<Integer>(ITEM_INITIAL_CAPACITY);
         this.visibleItemsRedraw = new ArrayList<Integer>(ITEM_INITIAL_CAPACITY);
 
+        // cross
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String crossColorStr = preferences.getString(Constants.PREFS_KEY_CROSS_COLOR, "red");
+        int crossColor = Color.parseColor(crossColorStr);
+        String crossWidthStr = preferences.getString(Constants.PREFS_KEY_CROSS_WIDTH, "3");
+        float crossWidth = 3f;
+        try {
+            crossWidth = (float) Double.parseDouble(crossWidthStr);
+        } catch (NumberFormatException e) {
+            // ignore and use default
+        }
+        String crossSizeStr = preferences.getString(Constants.PREFS_KEY_CROSS_SIZE, "20");
+        try {
+            crossSize = (int) Double.parseDouble(crossSizeStr);
+        } catch (NumberFormatException e) {
+            // ignore and use default
+        }
+
         crossPath = new Path();
         crossPaint.setAntiAlias(true);
-        crossPaint.setColor(Color.GRAY);
-        crossPaint.setStrokeWidth(1f);
+        crossPaint.setColor(crossColor);
+        crossPaint.setStrokeWidth(crossWidth);
         crossPaint.setStyle(Paint.Style.STROKE);
 
         // gps
@@ -582,10 +604,10 @@ public abstract class GeopaparazziOverlay extends Overlay {
          */
         Point center = new Point(canvasWidth / 2, canvasHeight / 2);
         crossPath.reset();
-        crossPath.moveTo(center.x, center.y - 20);
-        crossPath.lineTo(center.x, center.y + 20);
-        crossPath.moveTo(center.x - 20, center.y);
-        crossPath.lineTo(center.x + 20, center.y);
+        crossPath.moveTo(center.x, center.y - crossSize);
+        crossPath.lineTo(center.x, center.y + crossSize);
+        crossPath.moveTo(center.x - crossSize, center.y);
+        crossPath.lineTo(center.x + crossSize, center.y);
         canvas.drawPath(crossPath, crossPaint);
 
     }

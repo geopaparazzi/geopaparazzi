@@ -5,14 +5,6 @@
     <PreferenceScreen
         android:order="1"
         android:title="@string/gps_preferences" >
-
-        <!--
-        <CheckBoxPreference
-            android:key="PREFS_KEY_GPSDOATANDROIDLEVEL"
-            android:order="2"
-            android:title="@string/gps_use_android_level" android:summary="@string/gps_use_android_level_summary" android:enabled="true" android:defaultValue="true">
-        </CheckBoxPreference>
-        -->
         <EditTextPreference
             android:defaultValue="0"
             android:inputType="number"
@@ -44,25 +36,11 @@
     <PreferenceScreen
         android:order="7"
         android:title="@string/sms_preferences" >
-
-        <!--
-             <PreferenceCategory android:title="@string/sms_sending" android:order="10"> 
-			<EditTextPreference android:order="11" android:key="@string/sms_number" android:title="@string/sms_number" 
-			android:defaultValue=""></EditTextPreference> <ListPreference android:entryValues="@array/sms_time_value" 
-			android:entries="@array/sms_time_name" android:title="@string/sms_sending_interval" 
-			android:order="12" android:key="@string/sms_sending_interval" android:defaultValue="0"></ListPreference> 
-			</PreferenceCategory>
-        -->
-
         <CheckBoxPreference
             android:key="PREFS_KEY_SMSCATCHER"
             android:order="8"
             android:title="@string/sms_catcher" >
         </CheckBoxPreference>
-        <!--
-             <eu.hydrologis.geopaparazzi.preferences.PhoneNumberPreference android:order="8" 
-			android:key="panic_number" android:title="@string/panic_number"> </eu.hydrologis.geopaparazzi.preferences.PhoneNumberPreference>
-        -->
 
         <EditTextPreference
             android:defaultValue=""
@@ -71,63 +49,6 @@
             android:title="@string/panic_number" >
         </EditTextPreference>
     </PreferenceScreen>
-    <!--
-    <PreferenceScreen
-        android:order="20"
-        android:title="@string/rendering_preferences" >
-        <ListPreference
-            android:defaultValue="5"
-            android:entries="@array/decimation_factor"
-            android:entryValues="@array/decimation_factor"
-            android:key="decimation_list"
-            android:order="21"
-            android:title="@string/decimation_combo_label" >
-        </ListPreference>
-    </PreferenceScreen>
-    -->
-    <PreferenceScreen
-        android:order="998"
-        android:title="@string/debug" >
-        <CheckBoxPreference
-            android:key="enable_debug"
-            android:order="999"
-            android:title="@string/enable_debug" >
-        </CheckBoxPreference>
-    </PreferenceScreen>
-    <!--
-    <PreferenceScreen
-        android:order="30"
-        android:title="@string/labels_preferences" >
-        <EditTextPreference
-            android:defaultValue="14"
-            android:inputType="number"
-            android:key="labels_zoom1"
-            android:order="31"
-            android:title="@string/labels_zoom1" >
-        </EditTextPreference>
-        <EditTextPreference
-            android:defaultValue="4"
-            android:inputType="number"
-            android:key="labels_length_zoom1"
-            android:order="32"
-            android:title="@string/labels_length_zoom1" >
-        </EditTextPreference>
-        <EditTextPreference
-            android:defaultValue="17"
-            android:inputType="number"
-            android:key="labels_zoom2"
-            android:order="33"
-            android:title="@string/labels_zoom2" >
-        </EditTextPreference>
-        <EditTextPreference
-            android:defaultValue="-1"
-            android:inputType="number"
-            android:key="labels_length_zoom2"
-            android:order="34"
-            android:title="@string/labels_length_zoom2" >
-        </EditTextPreference>
-    </PreferenceScreen>
-    -->
     <PreferenceScreen
         android:order="40"
         android:title="@string/osm_preferences" >
@@ -176,17 +97,40 @@
             android:title="@string/geopapcloud_server_label" >
         </EditTextPreference>
     </PreferenceScreen>
+    <PreferenceScreen
+        android:order="60"
+        android:summary="Properties of the cross used to place notes."
+        android:title="Screen Center Cross" >
+        <ListPreference
+            android:entries="@array/array_colornames"
+            android:entryValues="@array/array_colornames"
+            android:key="PREFS_KEY_CROSS_COLOR"
+            android:order="61"
+            android:title="Color" />
+        <ListPreference
+            android:entries="@array/decimation_factor"
+            android:entryValues="@array/decimation_factor"
+            android:key="PREFS_KEY_CROSS_WIDTH"
+            android:order="62"
+            android:title="Width" />
+        <ListPreference
+            android:entries="@array/cross_size"
+            android:entryValues="@array/cross_size"
+            android:key="PREFS_KEY_CROSS_SIZE"
+            android:order="63"
+            android:title="Size" />
+    </PreferenceScreen>
 
     <EditTextPreference
         android:defaultValue="1.0"
         android:inputType="numberDecimal"
         android:key="mapsview_textsize_factor"
-        android:order="60"
+        android:order="70"
         android:title="@string/map_textsize_factor" />
 
     <CheckBoxPreference
         android:key="PREFS_KEY_SCREEN_ON"
-        android:order="61"
+        android:order="80"
         android:summary="@string/keep_screen_on_summary"
         android:title="@string/keep_screen_on" >
     </CheckBoxPreference>
@@ -194,7 +138,7 @@
     <EditTextPreference
         android:defaultValue=""
         android:key="PREFS_KEY_CUSTOM_EXTERNALSTORAGE"
-        android:order="62"
+        android:order="90"
         android:summary="@string/use_custom_sdcard_summary"
         android:title="@string/custom_sdcard_path" >
     </EditTextPreference>

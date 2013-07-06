@@ -1,18 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="yes">yes</string>
     <string name="no">no</string>
-    
     <string name="app_name">GeoPaparazzi</string>
-
     <string name="notesvisibilityToggle">Toggle notes visibility.</string>
-
     <string name="kmlsaved">Data successfully exported to: </string>
     <string name="kmlnonsaved">An error occurred during the data export!</string>
     <string name="loggingoff">Stopped all sensors.</string>
-    
     <string name="nogps_data">No gps data available yet!</string>
-    
     <string name="about">about</string>
     <string name="exit">exit</string>
     <string name="utctime">time: </string>
@@ -20,121 +16,95 @@
     <string name="lat">lat: </string>
     <string name="lon">lon: </string>
     <string name="azimuth">azimuth: </string>
-    
-	<string name="go_to">go to</string>
-	<string name="goto_coordinate">go to coordinate</string>
-	<string name="geocoding">geocoding</string>
-	<string name="prompt_gpsenable">Your gps is disabled! Would you like to enable it?</string>
-	<string name="width_label">width</string>
-	<string name="color_label">color</string>
-
-	<string name="mainmenu_kmlexport">export</string>
-	<string name="mainmenu_import">import</string>
-	<string name="mainmenu_gpsdataselect">gps data list</string>
-	<string name="mainmenu_preferences">preferences</string>
-	<string name="mainmenu_merge">merge selected logs</string>
-
-	<string name="gpslogproperty">Properties for: </string>
-	<string name="gpslog_chart">Chart</string>
-	<string name="gpslog_zoom">Zoom to</string>
-	<string name="gpslog_delete">Delete</string>
-
-	<string name="mapproperty">Properties for: </string>
-	<string name="map_zoom">Zoom to the map</string>
-	<string name="map_delete">Delete the map</string>
-	
-	<string name="gps_preferences">Gps preferences</string>
-	<string name="gps_logging_distance">Min gps logging distance</string>
-	<string name="gps_logging_interval">Min gps logging interval</string>
-	<string name="gps_use_android_level">Use at android level (saves battery, needs restart)</string>
-	<string name="gps_use_android_level_summary">If checked, the gps preferences are applied at operating system level, which can save battery, but might have a less stable signal when choosing large intervals (if you have gps connection problems on check devices, leave this unchecked). Note that the gps os powered continuously for send intervals less than 100 seconds. For better battery life choose larger intervals.</string>
-	<string name="sms_preferences">Sms preferences</string>
-	<string name="sms_catcher">Enable sms catcher</string>
-
-	<string name="databaseError">An error occurred while connecting to the database</string>
-
-	<string name="chart_profile_view">Profile View</string>
-
-	<string name="gpx_import_processing">Importing gpx…</string>
-
-	<string name="osm_additionalinfo">Add info to tag</string>
-	<string name="osm_tagsgrid">Choose a tag to insert</string>
-	
-	<string name="text_show_position_on_map">map view</string>
+    <string name="go_to">go to</string>
+    <string name="goto_coordinate">go to coordinate</string>
+    <string name="geocoding">geocoding</string>
+    <string name="prompt_gpsenable">Your gps is disabled! Would you like to enable it?</string>
+    <string name="width_label">width</string>
+    <string name="color_label">color</string>
+    <string name="mainmenu_kmlexport">export</string>
+    <string name="mainmenu_import">import</string>
+    <string name="mainmenu_gpsdataselect">gps data list</string>
+    <string name="mainmenu_preferences">preferences</string>
+    <string name="mainmenu_merge">merge selected logs</string>
+    <string name="gpslogproperty">Properties for: </string>
+    <string name="gpslog_chart">Chart</string>
+    <string name="gpslog_zoom">Zoom to</string>
+    <string name="gpslog_delete">Delete</string>
+    <string name="mapproperty">Properties for: </string>
+    <string name="map_zoom">Zoom to the map</string>
+    <string name="map_delete">Delete the map</string>
+    <string name="gps_preferences">Gps preferences</string>
+    <string name="gps_logging_distance">Min gps logging distance</string>
+    <string name="gps_logging_interval">Min gps logging interval</string>
+    <string name="gps_use_android_level">Use at android level (saves battery, needs restart)</string>
+    <string name="gps_use_android_level_summary">If checked, the gps preferences are applied at operating system level, which can save battery, but might have a less stable signal when choosing large intervals (if you have gps connection problems on check devices, leave this unchecked). Note that the gps os powered continuously for send intervals less than 100 seconds. For better battery life choose larger intervals.</string>
+    <string name="sms_preferences">Sms preferences</string>
+    <string name="sms_catcher">Enable sms catcher</string>
+    <string name="databaseError">An error occurred while connecting to the database</string>
+    <string name="chart_profile_view">Profile View</string>
+    <string name="gpx_import_processing">Importing gpx…</string>
+    <string name="osm_additionalinfo">Add info to tag</string>
+    <string name="osm_tagsgrid">Choose a tag to insert</string>
+    <string name="text_show_position_on_map">map view</string>
     <string name="text_take_a_gps_note">take note</string>
     <string name="text_undo_a_gps_note">undo note</string>
-
-	<string name="gps_log">gps log</string>
-	<string name="gps_log_name">Insert a gps log name or accept the default one</string>
-	
-	<string name="audio_recording">Recording audio… push here to stop</string>
-	<string name="audio_recording_stop">stop</string>
-
-	<string name="panic">panic!</string>
-	<string name="panic_number">Panic number</string>
-	<string name="panic_number_notset">No valid panic number seems to be available. Did you set it in the preferences?</string>
-
-	<string name="panic_upper">  PANIC!  </string>
-	<string name="send_status_update">send position</string>
-	<string name="help_needed">Help needed!</string>
-	<string name="message_sent">Message sent</string>
-
-	<string name="last_note_deleted">Deleted last note</string>
-	<string name="last_note_not_deleted">Couldn\'t delete last note</string>
-	
+    <string name="gps_log">gps log</string>
+    <string name="gps_log_name">Insert a gps log name or accept the default one</string>
+    <string name="audio_recording">Recording audio… push here to stop</string>
+    <string name="audio_recording_stop">stop</string>
+    <string name="panic">panic!</string>
+    <string name="panic_number">Panic number</string>
+    <string name="panic_number_notset">No valid panic number seems to be available. Did you set it in the preferences?</string>
+    <string name="panic_upper">  PANIC!  </string>
+    <string name="send_status_update">send position</string>
+    <string name="help_needed">Help needed!</string>
+    <string name="message_sent">Message sent</string>
+    <string name="last_note_deleted">Deleted last note</string>
+    <string name="last_note_not_deleted">Couldn\'t delete last note</string>
     <string name="text_logging">logging</string>
     <string name="text_gpson">gps on</string>
-
     <string name="debug">Debug preferences</string>
     <string name="enable_debug">Enable debug log</string>
-    
     <string name="gpslogging_only">This function is available only when the gps is active and a signal is avaliable.</string>
     <string name="remove_last_note_prompt">Do you really want to remove the last text note? This can\'t be undone.</string>
-    
     <string name="installgpsstatus_title">Install GPS Status</string>
     <string name="installgpsstatus_message">Geopaparazzi uses the Gps Status Application as compass and gps info view. Do you want to install it?</string>
-	
 
-	<!-- added after 2.1.2 -->
+    <!-- added after 2.1.2 -->
     <string name="reset">new project</string>
     <string name="load">load an existing project</string>
     <string name="phonenumber_hint">Enter comma separated phone numbers…</string>
     <string name="pick_phonenumber_label">…</string>
 
-	<!-- added after 2.1.4 -->
+    <!-- added after 2.1.4 -->
     <string name="select_all">Select all</string>
     <string name="unselect_all">Unselect all</string>
-
     <string name="delete_visible_notes_title">DELETE NOTES</string>
     <string name="delete_visible_notes_prompt">Do you really want to remove all visible notes? This can\'t be undone.</string>
     <string name="delete_visible_bookmarks_title">DELETE BOOKMARKS</string>
     <string name="delete_visible_bookmarks_prompt">Do you really want to remove all visible bookmarks? This can\'t be undone.</string>
-
     <string name="gps_searching_fix">Gps is trying to acquire fix.</string>
-
     <string name="bookmarks_list_rename">Rename the bookmark</string>
-
     <string name="mapsactivity_menu_toggle_scalebar">toggle scalebar</string>
     <string name="mapsactivity_menu_tilesource">tile source</string>
-    
     <string name="mapsactivity_delete_bookmarks">Deleting {0} bookmarks…</string>
     <string name="mapsactivity_delete_notes">Deleting {0} notes…</string>
     <string name="mapsactivity_new_bookmark">New bookmark</string>
     <string name="mapsactivity_enter_bookmark_name">Enter a name for the new bookmark (optional)</string>
-
     <string name="maptagsactivity_error_reading_tags">Error in reading tags</string>
 
-	<!-- added after 2.3.1 -->
+    <!-- added after 2.3.1 -->
     <string name="mapsactivity_menu_toggle_compass">open compass</string>
-    
-	<!-- added after 2.4.3 -->
+
+    <!-- added after 2.4.3 -->
     <string name="imagesvisibilityToggle">Toggle images visibility</string>
     <string name="imagefromgps">map center image</string>
     <string name="notefromgps">map center note</string>
     <string name="quicknotes">MAP CENTER NOTES</string>
     <string name="formnotes">FORM BASED NOTES</string>
-    
-	<!-- added after 2.5.0 -->
+
+    <!-- added after 2.5.0 -->
     <string name="an_error_occurred_while_creating_the_chart_">An error occurred while creating the chart.</string>
     <string name="osm_preferences">OpenStreetMap Preferences</string>
     <string name="osm_do_it">Enable OSM tools</string>
@@ -159,7 +129,6 @@
     <string name="geopapcloud_user_label">Username</string>
     <string name="geopapcloud_password_label">Password</string>
     <string name="geopapcloud_server_label">Server to connect to</string>
-
     <string name="exporting_data">Exporting data</string>
     <string name="error_set_cloud_settings">The geopap-cloud preferences are not set properly. Please check your settings.</string>
     <string name="exporting_data_to_the_cloud">Exporting data to the cloud.</string>
@@ -172,7 +141,6 @@
     <string name="set_description">Set description</string>
     <string name="loaded_project_in">Loaded project in:</string>
     <string name="no_sdcard_use_internal_memory">No sdcard seems to be available (check if it is not mounted on a PC). Do you want to use the device\'s internal memory instead? Please note that in this case the map view will not show any map for space reasons.</string>
-    
     <string name="add_message">ADD MESSAGE</string>
     <string name="insert_an_optional_text_to_send_with_the_geosms">Insert an optional text to send with the GeoSMS</string>
     <string name="enter_a_name_for_the_new_project">Enter a name for the new project</string>
@@ -209,6 +177,7 @@
     <string name="demo_mode">Demo mode</string>
     <string name="select_database_query">Select database query</string>
     <string name="launch_query">Launch query</string>
-    <string name="use_custom_sdcard_summary">Use a custom sdcard path (usefull in case of multiple storages)</string>
+    <string name="use_custom_sdcard_summary">Use a custom sdcard path (usefull in case of multiple storages). WARNING: USE AT OWN RISK</string>
     <string name="custom_sdcard_path">Custom sdcard path</string>
+
 </resources>
