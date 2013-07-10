@@ -34,8 +34,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
 import eu.geopaparazzi.library.util.LibraryConstants;
@@ -59,9 +58,6 @@ import eu.geopaparazzi.library.util.Utilities;
  */
 @SuppressWarnings("nls")
 public class FormActivity extends FragmentActivity {
-
-    private static final int MENU_SAVE = Menu.FIRST;
-    private static final int MENU_CANCEL = 2;
 
     private double latitude = -9999.0;
     private double longitude = -9999.0;
@@ -104,32 +100,7 @@ public class FormActivity extends FragmentActivity {
             e.printStackTrace();
         }
         setContentView(R.layout.form);
-    }
 
-    public boolean onCreateOptionsMenu( Menu menu ) {
-        super.onCreateOptionsMenu(menu);
-        menu.add(Menu.NONE, MENU_SAVE, 1, R.string.save).setIcon(android.R.drawable.ic_menu_save);
-        menu.add(Menu.NONE, MENU_CANCEL, 2, R.string.cancel).setIcon(android.R.drawable.ic_menu_close_clear_cancel);
-
-        return true;
-    }
-
-    public boolean onMenuItemSelected( int featureId, MenuItem item ) {
-        switch( item.getItemId() ) {
-        case MENU_SAVE:
-            try {
-                saveAction();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return true;
-        case MENU_CANCEL:
-            finish();
-            return true;
-        default: {
-        }
-        }
-        return super.onMenuItemSelected(featureId, item);
     }
 
     public List<String> getFragmentTitles() {
@@ -154,6 +125,18 @@ public class FormActivity extends FragmentActivity {
 
     public double getLongitude() {
         return longitude;
+    }
+
+    public void saveClicked( View view ) {
+        try {
+            saveAction();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Utilities.messageDialog(this, e.getLocalizedMessage(), null);
+        }
+    }
+    public void cancelClicked( View view ) {
+        finish();
     }
 
     private void saveAction() throws Exception {
