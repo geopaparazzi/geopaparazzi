@@ -50,54 +50,6 @@
         </EditTextPreference>
     </PreferenceScreen>
     <PreferenceScreen
-        android:order="40"
-        android:title="@string/osm_preferences" >
-        <CheckBoxPreference
-            android:key="PREFS_KEY_DOOSM"
-            android:order="41"
-            android:title="@string/osm_do_it" >
-        </CheckBoxPreference>
-
-        <EditTextPreference
-            android:key="osm_user_key"
-            android:order="42"
-            android:title="@string/osm_user_label" >
-        </EditTextPreference>
-        <EditTextPreference
-            android:inputType="textPassword"
-            android:key="osm_pwd_key"
-            android:order="43"
-            android:title="@string/osm_password_label" >
-        </EditTextPreference>
-        <EditTextPreference
-            android:defaultValue="http://lucadelu.org/cgi-bin/zoo_loader.cgi"
-            android:key="osm_server_key"
-            android:order="44"
-            android:title="@string/osm_server_label" >
-        </EditTextPreference>
-    </PreferenceScreen>
-    <PreferenceScreen
-        android:order="50"
-        android:title="@string/geopapcloud_preferences" >
-        <EditTextPreference
-            android:key="geopapcloud_user_key"
-            android:order="52"
-            android:title="@string/geopapcloud_user_label" >
-        </EditTextPreference>
-        <EditTextPreference
-            android:inputType="textPassword"
-            android:key="geopapcloud_pwd_key"
-            android:order="53"
-            android:title="@string/geopapcloud_password_label" >
-        </EditTextPreference>
-        <EditTextPreference
-            android:defaultValue=""
-            android:key="geopapcloud_server_key"
-            android:order="54"
-            android:title="@string/geopapcloud_server_label" >
-        </EditTextPreference>
-    </PreferenceScreen>
-    <PreferenceScreen
         android:order="60"
         android:summary="Properties of the cross used to place notes."
         android:title="Screen Center Cross" >
@@ -112,7 +64,7 @@
             android:entryValues="@array/decimation_factor"
             android:key="PREFS_KEY_CROSS_WIDTH"
             android:order="62"
-            android:title="Width" />
+            android:title="@string/width" />
         <ListPreference
             android:entries="@array/cross_size"
             android:entryValues="@array/cross_size"
@@ -120,17 +72,46 @@
             android:order="63"
             android:title="Size" />
     </PreferenceScreen>
+    <PreferenceScreen
+        android:order="70"
+        android:summary="Properties of the notes icon."
+        android:title="Notes icon" >
+        <CheckBoxPreference
+            android:key="PREFS_KEY_NOTES_CHECK"
+            android:order="71"
+            android:summary="Use a circle of custom color and size for notes."
+            android:title="Use custom icon" />
+
+        <ListPreference
+            android:entries="@array/array_colornames"
+            android:entryValues="@array/array_colornames"
+            android:key="PREFS_KEY_NOTES_CUSTOMCOLOR"
+            android:order="72"
+            android:title="@string/color_label" />
+        <ListPreference
+            android:entries="@array/decimation_factor"
+            android:entryValues="@array/decimation_factor"
+            android:key="PREFS_KEY_NOTES_SIZE"
+            android:order="73"
+            android:title="@string/size" />
+        <ListPreference
+            android:entries="@array/array_alpha"
+            android:entryValues="@array/array_alpha"
+            android:key="PREFS_KEY_NOTES_OPACITY"
+            android:order="73"
+            android:title="@string/opacity" />
+    </PreferenceScreen>
 
     <EditTextPreference
         android:defaultValue="1.0"
         android:inputType="numberDecimal"
         android:key="mapsview_textsize_factor"
-        android:order="70"
+        android:order="80"
         android:title="@string/map_textsize_factor" />
 
     <CheckBoxPreference
         android:key="PREFS_KEY_SCREEN_ON"
-        android:order="80"
+        android:order="90"
         android:summary="@string/keep_screen_on_summary"
         android:title="@string/keep_screen_on" >
     </CheckBoxPreference>
@@ -138,9 +119,58 @@
     <EditTextPreference
         android:defaultValue=""
         android:key="PREFS_KEY_CUSTOM_EXTERNALSTORAGE"
-        android:order="90"
+        android:order="100"
         android:summary="@string/use_custom_sdcard_summary"
         android:title="@string/custom_sdcard_path" >
     </EditTextPreference>
+
+    <PreferenceScreen
+        android:order="200"
+        android:title="@string/osm_preferences" >
+        <CheckBoxPreference
+            android:key="PREFS_KEY_DOOSM"
+            android:order="201"
+            android:title="@string/osm_do_it" >
+        </CheckBoxPreference>
+
+        <EditTextPreference
+            android:key="osm_user_key"
+            android:order="202"
+            android:title="@string/osm_user_label" >
+        </EditTextPreference>
+        <EditTextPreference
+            android:inputType="textPassword"
+            android:key="osm_pwd_key"
+            android:order="203"
+            android:title="@string/osm_password_label" >
+        </EditTextPreference>
+        <EditTextPreference
+            android:defaultValue="http://lucadelu.org/cgi-bin/zoo_loader.cgi"
+            android:key="osm_server_key"
+            android:order="204"
+            android:title="@string/osm_server_label" >
+        </EditTextPreference>
+    </PreferenceScreen>
+    <PreferenceScreen
+        android:order="210"
+        android:title="@string/geopapcloud_preferences" >
+        <EditTextPreference
+            android:key="geopapcloud_user_key"
+            android:order="212"
+            android:title="@string/geopapcloud_user_label" >
+        </EditTextPreference>
+        <EditTextPreference
+            android:inputType="textPassword"
+            android:key="geopapcloud_pwd_key"
+            android:order="213"
+            android:title="@string/geopapcloud_password_label" >
+        </EditTextPreference>
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="geopapcloud_server_key"
+            android:order="214"
+            android:title="@string/geopapcloud_server_label" >
+        </EditTextPreference>
+    </PreferenceScreen>
 
 </PreferenceScreen>

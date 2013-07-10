@@ -55,7 +55,12 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.BatteryManager;
@@ -157,6 +162,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
     private SliderDrawView sliderDrawView;
     private List<String> smsString;
+    private Drawable notesDrawable;
 
     public static MapGenerator createMapGenerator( MapGeneratorInternal mapGeneratorInternal ) {
         switch( mapGeneratorInternal ) {
@@ -184,6 +190,34 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
 
+        // notes type
+        boolean doCustom = preferences.getBoolean(Constants.PREFS_KEY_NOTES_CHECK, false);
+        if (doCustom) {
+            String opacityStr = preferences.getString(Constants.PREFS_KEY_NOTES_OPACITY, "100");
+            String sizeStr = preferences.getString(Constants.PREFS_KEY_NOTES_SIZE, "15");
+            String colorStr = preferences.getString(Constants.PREFS_KEY_NOTES_CUSTOMCOLOR, "blue");
+            int noteSize = Integer.parseInt(sizeStr);
+            float opacity = Float.parseFloat(opacityStr) * 255 / 100;
+
+            OvalShape notesShape = new OvalShape();
+            Paint notesPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            notesPaint.setStyle(Paint.Style.FILL);
+            notesPaint.setColor(Color.parseColor(colorStr));
+            notesPaint.setAlpha((int) opacity);
+
+            ShapeDrawable notesShapeDrawable = new ShapeDrawable(notesShape);
+            Paint paint = notesShapeDrawable.getPaint();
+            paint.set(notesPaint);
+            notesShapeDrawable.setIntrinsicHeight(noteSize);
+            notesShapeDrawable.setIntrinsicWidth(noteSize);
+            notesDrawable = notesShapeDrawable;
+        } else {
+            notesDrawable = getResources().getDrawable(R.drawable.information);
+        }
+
+        /*
+         * create main mapview
+         */
         mapView = new MapView(this);
         mapView.setClickable(true);
         mapView.setBuiltInZoomControls(false);
@@ -514,8 +548,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
             /* gps notes */
             if (DataManager.getInstance().areNotesVisible()) {
-                Drawable notesMarker = getResources().getDrawable(R.drawable.information);
-                Drawable newNotesMarker = ArrayGeopaparazziOverlay.boundCenter(notesMarker);
+                Drawable newNotesMarker = ArrayGeopaparazziOverlay.boundCenter(notesDrawable);
                 List<OverlayItem> noteOverlaysList = DaoNotes.getNoteOverlaysList(this, newNotesMarker);
                 dataOverlay.addItems(noteOverlaysList);
             }

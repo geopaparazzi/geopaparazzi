@@ -367,16 +367,9 @@ public class NetworkUtilities {
         if (connectivity == null) {
             return false;
         } else {
-            NetworkInfo[] info = connectivity.getAllNetworkInfo();
-            if (info != null) {
-                for( int i = 0; i < info.length; i++ ) {
-                    if (info[i].getState() == NetworkInfo.State.CONNECTED) {
-                        return true;
-                    }
-                }
-            }
+            NetworkInfo networkInfo = connectivity.getActiveNetworkInfo();
+            return (networkInfo != null && networkInfo.isConnected());
         }
-        return false;
     }
 
     public static String sendGetRequest( String urlStr, String requestParameters, String user, String password ) throws Exception {

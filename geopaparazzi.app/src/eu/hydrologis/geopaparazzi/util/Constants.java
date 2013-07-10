@@ -122,5 +122,12 @@ public interface Constants {
     public static final String PREFS_KEY_CROSS_WIDTH = "PREFS_KEY_CROSS_WIDTH";
     public static final String PREFS_KEY_CROSS_COLOR = "PREFS_KEY_CROSS_COLOR";
     public static final String PREFS_KEY_CROSS_SIZE = "PREFS_KEY_CROSS_SIZE";
+    /*
+     * custom notes icon properties
+     */
+    public static final String PREFS_KEY_NOTES_CHECK = "PREFS_KEY_NOTES_CHECK";
+    public static final String PREFS_KEY_NOTES_CUSTOMCOLOR = "PREFS_KEY_NOTES_CUSTOMCOLOR";
+    public static final String PREFS_KEY_NOTES_SIZE = "PREFS_KEY_NOTES_SIZE";
+    public static final String PREFS_KEY_NOTES_OPACITY = "PREFS_KEY_NOTES_OPACITY";
     
 }

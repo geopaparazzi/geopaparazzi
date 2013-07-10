@@ -66,7 +66,7 @@
     <string name="text_gpson">gps on</string>
     <string name="debug">Debug preferences</string>
     <string name="enable_debug">Enable debug log</string>
-    <string name="gpslogging_only">This function is available only when the gps is active and a signal is avaliable.</string>
+    <string name="gpslogging_only">This function is available only when the gps is active and a signal is available.</string>
     <string name="remove_last_note_prompt">Do you really want to remove the last text note? This can\'t be undone.</string>
     <string name="installgpsstatus_title">Install GPS Status</string>
     <string name="installgpsstatus_message">Geopaparazzi uses the Gps Status Application as compass and gps info view. Do you want to install it?</string>
@@ -133,7 +133,7 @@
     <string name="error_set_cloud_settings">The geopap-cloud preferences are not set properly. Please check your settings.</string>
     <string name="exporting_data_to_the_cloud">Exporting data to the cloud.</string>
     <string name="error_uploadig_project_to_cloud">An error occurred while uploading the project to the Geopap-cloud</string>
-    <string name="project_succesfully_uploaded_to_cloud">The project has been succesfully uploaded to the Geopap-cloud</string>
+    <string name="project_succesfully_uploaded_to_cloud">The project has been successfully uploaded to the Geopap-cloud</string>
     <string name="exporting_data_to_kmz">Exporting data to KMZ.</string>
     <string name="exporting_data_to_gpx">Exporting data to GPX</string>
     <string name="media_upload">MEDIA UPLOAD</string>
@@ -177,7 +177,9 @@
     <string name="demo_mode">Demo mode</string>
     <string name="select_database_query">Select database query</string>
     <string name="launch_query">Launch query</string>
-    <string name="use_custom_sdcard_summary">Use a custom sdcard path (usefull in case of multiple storages). WARNING: USE AT OWN RISK</string>
+    <string name="use_custom_sdcard_summary">Use a custom sdcard path (useful in case of multiple storages). WARNING: USE AT OWN RISK</string>
     <string name="custom_sdcard_path">Custom sdcard path</string>
+    <string name="opacity">opacity</string>
+    <string name="size">size</string>
 
 </resources>
