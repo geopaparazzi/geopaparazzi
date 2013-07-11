@@ -130,4 +130,10 @@ public interface Constants {
     public static final String PREFS_KEY_NOTES_SIZE = "PREFS_KEY_NOTES_SIZE";
     public static final String PREFS_KEY_NOTES_OPACITY = "PREFS_KEY_NOTES_OPACITY";
     
+    /*
+     * notes text properties
+     */
+    public static final String PREFS_KEY_NOTES_TEXT_VISIBLE = "PREFS_KEY_NOTES_TEXT_VISIBLE";
+    public static final String PREFS_KEY_NOTES_TEXT_DOHALO = "PREFS_KEY_NOTES_TEXT_DOHALO";
+    public static final String PREFS_KEY_NOTES_TEXT_SIZE = "PREFS_KEY_NOTES_TEXT_SIZE";
 }

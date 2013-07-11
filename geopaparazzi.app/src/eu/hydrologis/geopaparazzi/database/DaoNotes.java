@@ -35,6 +35,7 @@ import android.graphics.drawable.Drawable;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
+import eu.hydrologis.geopaparazzi.maps.overlays.NoteOverlayItem;
 import eu.hydrologis.geopaparazzi.util.Note;
 
 /**
@@ -297,7 +298,7 @@ public class DaoNotes {
             description.append("\n");
             description.append(date);
 
-            OverlayItem item1 = new OverlayItem(new GeoPoint(lat, lon), text, description.toString(), marker);
+            NoteOverlayItem item1 = new NoteOverlayItem(new GeoPoint(lat, lon), text, description.toString(), marker);
             notesList.add(item1);
 
             c.moveToNext();

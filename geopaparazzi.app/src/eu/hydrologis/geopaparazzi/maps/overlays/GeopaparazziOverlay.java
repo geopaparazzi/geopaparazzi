@@ -160,6 +160,10 @@ public abstract class GeopaparazziOverlay extends Overlay {
     private List<GeoPoint> currentGps = new ArrayList<GeoPoint>();
     private Context context;
     private int inset = 5;
+    private Paint textPaint;
+    private Paint textHaloPaint;
+    private boolean isNotesTextVisible;
+    private boolean doNotesTextHalo;
 
     /**
      * Create a {@link OverlayWay} wrapped type.
@@ -241,6 +245,29 @@ public abstract class GeopaparazziOverlay extends Overlay {
         gpsBlueFill = new Paint(Paint.ANTI_ALIAS_FLAG);
         gpsBlueFill.setStyle(Paint.Style.FILL);
         gpsBlueFill.setColor(resources.getColor(R.color.gpsblue_fill));
+
+        isNotesTextVisible = preferences.getBoolean(Constants.PREFS_KEY_NOTES_TEXT_VISIBLE, false);
+        if (isNotesTextVisible) {
+            String notesTextSizeStr = preferences.getString(Constants.PREFS_KEY_NOTES_TEXT_SIZE, "30");
+            float notesTextSize = 30f;
+            try {
+                notesTextSize = (float) Double.parseDouble(notesTextSizeStr);
+            } catch (NumberFormatException e) {
+                // ignore and use default
+            }
+            textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            textPaint.setStyle(Paint.Style.FILL);
+            textPaint.setColor(Color.BLACK);
+            textPaint.setTextSize(notesTextSize);
+            doNotesTextHalo = preferences.getBoolean(Constants.PREFS_KEY_NOTES_TEXT_DOHALO, false);
+            if (doNotesTextHalo) {
+                textHaloPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+                textHaloPaint.setStyle(Paint.Style.STROKE);
+                textHaloPaint.setStrokeWidth(3);
+                textHaloPaint.setColor(Color.WHITE);
+                textHaloPaint.setTextSize(notesTextSize);
+            }
+        }
 
         gpsMarker = ItemizedOverlay.boundCenter(gpsMarker);
         gpslogOverlay = new OverlayWay(null, gpsOutline);
@@ -471,6 +498,15 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
                     // add the current item index to the list of visible items
                     this.visibleItemsRedraw.add(Integer.valueOf(itemIndex));
+
+                    if (isNotesTextVisible && overlayItem instanceof NoteOverlayItem) {
+                        String title = overlayItem.getTitle();
+                        float delta = markerBounds.width() / 4f;
+                        float x = right - delta;
+                        float y = top + delta;
+                        canvas.drawText(title, x, y, textHaloPaint);
+                        canvas.drawText(title, x, y, textPaint);
+                    }
                 }
             }
         }
