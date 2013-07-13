@@ -72,35 +72,6 @@
             android:order="63"
             android:title="Size" />
     </PreferenceScreen>
-    <PreferenceScreen
-        android:order="70"
-        android:summary="Properties of the notes icon."
-        android:title="Notes icon" >
-        <CheckBoxPreference
-            android:key="PREFS_KEY_NOTES_CHECK"
-            android:order="71"
-            android:summary="Use a circle of custom color and size for notes."
-            android:title="Use custom icon" />
-
-        <ListPreference
-            android:entries="@array/array_colornames"
-            android:entryValues="@array/array_colornames"
-            android:key="PREFS_KEY_NOTES_CUSTOMCOLOR"
-            android:order="72"
-            android:title="@string/color_label" />
-        <ListPreference
-            android:entries="@array/decimation_factor"
-            android:entryValues="@array/decimation_factor"
-            android:key="PREFS_KEY_NOTES_SIZE"
-            android:order="73"
-            android:title="@string/size" />
-        <ListPreference
-            android:entries="@array/array_alpha"
-            android:entryValues="@array/array_alpha"
-            android:key="PREFS_KEY_NOTES_OPACITY"
-            android:order="73"
-            android:title="@string/opacity" />
-    </PreferenceScreen>
 
     <EditTextPreference
         android:defaultValue="1.0"
