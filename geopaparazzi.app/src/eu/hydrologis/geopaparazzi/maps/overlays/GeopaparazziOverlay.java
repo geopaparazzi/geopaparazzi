@@ -58,7 +58,7 @@ import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.GeometryIterator;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.ISpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.Style;
 import eu.hydrologis.geopaparazzi.R;
@@ -670,7 +670,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     // stop working
                     return;
                 }
-                SpatialDatabaseHandler spatialDatabaseHandler = sdManager.getVectorHandler(spatialTable);
+                ISpatialDatabaseHandler spatialDatabaseHandler = sdManager.getVectorHandler(spatialTable);
 
                 Style style4Table = spatialTable.getStyle();
                 GeometryIterator geometryIterator = null;

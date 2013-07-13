@@ -34,7 +34,7 @@ public class SpatialRasterTable {
     private final double centerY;
 
     public SpatialRasterTable( String tableName, String columnName, String srid, int minZoom, int maxZoom, double centerX,
-            double centerY ) {
+            double centerY, String tileQuery ) {
         this.tableName = tableName;
         this.columnName = columnName;
         this.srid = srid;
@@ -43,7 +43,12 @@ public class SpatialRasterTable {
         this.centerX = centerX;
         this.centerY = centerY;
 
-        tileQuery = "select " + columnName + " from " + tableName + " where zoom_level = ? AND tile_column = ? AND tile_row = ?";
+        if (tileQuery != null) {
+            this.tileQuery = tileQuery;
+        } else {
+            tileQuery = "select " + columnName + " from " + tableName
+                    + " where zoom_level = ? AND tile_column = ? AND tile_row = ?";
+        }
     }
 
     public String getSrid() {

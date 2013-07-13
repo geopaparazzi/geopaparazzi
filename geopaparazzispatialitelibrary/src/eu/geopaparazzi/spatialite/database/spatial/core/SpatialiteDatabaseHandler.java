@@ -40,7 +40,7 @@ import com.vividsolutions.jts.io.WKBReader;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class SpatialDatabaseHandler {
+public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
 
     // 3857
     // private GeometryFactory gf = new GeometryFactory();
@@ -88,7 +88,7 @@ public class SpatialDatabaseHandler {
     private List<SpatialRasterTable> rasterTableList;
     private String fileName;
 
-    public SpatialDatabaseHandler( String dbPath ) {
+    public SpatialiteDatabaseHandler( String dbPath ) {
         try {
             File spatialDbFile = new File(dbPath);
             if (!spatialDbFile.getParentFile().exists()) {
@@ -164,13 +164,7 @@ public class SpatialDatabaseHandler {
         return "-";
     }
 
-    /**
-     * Get the spatial tables from the database.
-     * 
-     * @param forceRead force a clean read from the db instead of using cached.
-     * @return the list of {@link SpatialVectorTable}s.
-     * @throws Exception
-     */
+    @Override
     public List<SpatialVectorTable> getSpatialVectorTables( boolean forceRead ) throws Exception {
         if (vectorTableList == null || forceRead) {
             vectorTableList = new ArrayList<SpatialVectorTable>();
@@ -251,6 +245,7 @@ public class SpatialDatabaseHandler {
         return vectorTableList;
     }
 
+    @Override
     public List<SpatialRasterTable> getSpatialRasterTables( boolean forceRead ) throws Exception {
         if (rasterTableList == null || forceRead) {
             rasterTableList = new ArrayList<SpatialRasterTable>();
@@ -279,7 +274,7 @@ public class SpatialDatabaseHandler {
                         getCenterCoordinate4326(tableName, centerCoordinate);
 
                         SpatialRasterTable table = new SpatialRasterTable(tableName, columnName, srid, zoomLevels[0],
-                                zoomLevels[1], centerCoordinate[0], centerCoordinate[1]);
+                                zoomLevels[1], centerCoordinate[0], centerCoordinate[1], null);
                         rasterTableList.add(table);
                     }
 
@@ -499,14 +494,6 @@ public class SpatialDatabaseHandler {
         return style;
     }
 
-    /**
-     * Get the table's bounds.
-     * 
-     * @param spatialTable the table to use.
-     * @param destSrid the srid to which to project to.
-     * @return the bounds as [n,s,e,w].
-     * @throws Exception 
-     */
     public float[] getTableBounds( SpatialVectorTable spatialTable, String destSrid ) throws Exception {
         boolean doTransform = false;
         if (!spatialTable.getSrid().equals(destSrid)) {
@@ -589,14 +576,7 @@ public class SpatialDatabaseHandler {
         db.exec(updateQuery, null);
     }
 
-    /**
-     * Get the fill {@link Paint} for a given style.
-     * 
-     * <p>Paints are cached and reused.</p>
-     * 
-     * @param style the {@link Style} to use.
-     * @return the paint.
-     */
+    @Override
     public Paint getFillPaint4Style( Style style ) {
         Paint paint = fillPaints.get(style.name);
         if (paint == null) {
@@ -611,14 +591,7 @@ public class SpatialDatabaseHandler {
         return paint;
     }
 
-    /**
-     * Get the stroke {@link Paint} for a given style.
-     * 
-     * <p>Paints are cached and reused.</p>
-     * 
-     * @param style the {@link Style} to use.
-     * @return the paint.
-     */
+    @Override
     public Paint getStrokePaint4Style( Style style ) {
         Paint paint = strokePaints.get(style.name);
         if (paint == null) {
@@ -655,6 +628,7 @@ public class SpatialDatabaseHandler {
         return null;
     }
 
+    @Override
     public byte[] getRasterTile( String query ) {
         try {
             Stmt stmt = db.prepare(query);
@@ -672,17 +646,7 @@ public class SpatialDatabaseHandler {
         return null;
     }
 
-    /**
-     * Get the {@link GeometryIterator} of a table in a given bound.
-     * 
-     * @param destSrid the srid to which to transform to.
-     * @param table the table to use.
-     * @param n north bound.
-     * @param s south bound.
-     * @param e east bound.
-     * @param w west bound.
-     * @return the geometries iterator.
-     */
+    @Override
     public GeometryIterator getGeometryIteratorInBounds( String destSrid, SpatialVectorTable table, double n, double s, double e,
             double w ) {
         String query = buildGeometriesInBoundsQuery(destSrid, table, n, s, e, w);

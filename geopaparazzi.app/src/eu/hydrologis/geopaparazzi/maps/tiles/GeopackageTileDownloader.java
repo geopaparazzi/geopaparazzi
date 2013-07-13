@@ -28,7 +28,7 @@ import android.graphics.Color;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.ISpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
 
 /**
@@ -42,7 +42,7 @@ public class GeopackageTileDownloader extends TileDownloader {
     private GeoPoint centerPoint = new GeoPoint(0, 0);
 
     private String tilePart;
-    private SpatialDatabaseHandler spatialDatabaseHandler;
+    private ISpatialDatabaseHandler spatialDatabaseHandler;
 
     @SuppressWarnings("nls")
     public GeopackageTileDownloader( SpatialRasterTable table ) throws jsqlite.Exception {
