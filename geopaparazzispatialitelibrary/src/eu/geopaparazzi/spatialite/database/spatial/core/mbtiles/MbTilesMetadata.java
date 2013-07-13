@@ -16,19 +16,24 @@ public class MbTilesMetadata {
     // * format: The image file format of the tile data: png or jpg
     public final String name, description, type, version, format;
     public final float[] bounds;
+    public final int minZoom;
+    public final int maxZoom;
+
     public final HashMap<String, String> extra;
 
     // MBTiles Specification
     public static final MetadataValidatorFactory metadataValidatorFactory = new MetadataValidatorFactory();
 
     public MbTilesMetadata( String name, String description, String type, String version, String format, float[] bounds,
-            HashMap<String, String> extra ) {
+            int minZoom, int maxZoom, HashMap<String, String> extra ) {
         this.name = name;
         this.type = type;
         this.version = version;
         this.description = description;
         this.format = format;
         this.bounds = bounds;
+        this.minZoom = minZoom;
+        this.maxZoom = maxZoom;
         this.extra = extra;
     }
 
@@ -131,7 +136,18 @@ public class MbTilesMetadata {
                             + "Example of the full earth: -180.0,-85,180,85");
             }
 
-            return new MbTilesMetadata(name, description, type, version, format, bounds, hm);
+            String minZoomStr = hm.remove("minzoom");
+            int minZoom = 0;
+            if (minZoomStr != null) {
+                minZoom = Integer.parseInt(minZoomStr);
+            }
+            String maxZoomStr = hm.remove("maxzoom");
+            int maxZoom = 22;
+            if (maxZoomStr != null) {
+                maxZoom = Integer.parseInt(maxZoomStr);
+            }
+
+            return new MbTilesMetadata(name, description, type, version, format, bounds, minZoom, maxZoom, hm);
         }
     }
 
@@ -165,7 +181,17 @@ public class MbTilesMetadata {
                 throw new MetadataParseException("Invalid syntax for mandatory field 'version'. Must be a plain number.");
             }
 
-            return new MbTilesMetadata(name, description, type, version, null, null, hm);
+            String minZoomStr = hm.remove("minzoom");
+            int minZoom = 0;
+            if (minZoomStr != null) {
+                minZoom = Integer.parseInt(minZoomStr);
+            }
+            String maxZoomStr = hm.remove("maxzoom");
+            int maxZoom = 22;
+            if (maxZoomStr != null) {
+                maxZoom = Integer.parseInt(maxZoomStr);
+            }
+            return new MbTilesMetadata(name, description, type, version, null, null, minZoom, maxZoom, hm);
         }
     }
 

@@ -79,7 +79,9 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
                 centerX = bounds[0] + (bounds[2] - bounds[0]) / 2f;
                 centerY = bounds[1] + (bounds[3] - bounds[1]) / 2f;
             }
-            SpatialRasterTable table = new SpatialRasterTable(fileName, columnName, "3857", 0, 22, centerX, centerY, "?,?,?");
+
+            SpatialRasterTable table = new SpatialRasterTable(fileName, columnName, "3857", metadata.minZoom, metadata.maxZoom,
+                    centerX, centerY, "?,?,?");
             rasterTableList.add(table);
 
         }
