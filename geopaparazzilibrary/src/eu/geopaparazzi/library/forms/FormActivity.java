@@ -18,6 +18,7 @@
 package eu.geopaparazzi.library.forms;
 
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_KEY;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_ISLABEL;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_VALUE;
 
 import java.sql.Date;
@@ -150,6 +151,7 @@ public class FormActivity extends FragmentActivity {
 
         // extract and check constraints
         List<String> availableFormNames = TagsManager.getFormNames4Section(sectionObject);
+        String label = null;
         for( String formName : availableFormNames ) {
             JSONObject formObject = TagsManager.getForm4Name(formName, sectionObject);
 
@@ -166,6 +168,12 @@ public class FormActivity extends FragmentActivity {
 
                 if (jsonObject.has(TAG_VALUE)) {
                     value = jsonObject.getString(TAG_VALUE).trim();
+                }
+                if (jsonObject.has(TAG_ISLABEL)) {
+                    String isLabelStr = jsonObject.getString(TAG_ISLABEL).trim();
+                    boolean isLabel = Boolean.parseBoolean(isLabelStr);
+                    if (isLabel)
+                        label = value;
                 }
 
                 // inject latitude
@@ -197,12 +205,15 @@ public class FormActivity extends FragmentActivity {
         Date sqlDate = new Date(System.currentTimeMillis());
         String timestamp = LibraryConstants.TIME_FORMATTER_SQLITE.format(sqlDate);
 
+        if (label == null) {
+            label = sectionName;
+        }
         String[] formDataArray = {//
         String.valueOf(longitude), //
                 String.valueOf(latitude), //
                 String.valueOf(elevation), //
                 timestamp, //
-                sectionName, //
+                label, //
                 "POI", //
                 sectionObjectString};
         Intent intent = getIntent();

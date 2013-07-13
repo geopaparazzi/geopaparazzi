@@ -182,6 +182,7 @@ public class FormUtilities {
     public static final String TAG_FORMITEMS = "formitems";
     public static final String TAG_KEY = "key";
     public static final String TAG_VALUE = "value";
+    public static final String TAG_ISLABEL = "islabel";
     public static final String TAG_VALUES = "values";
     public static final String TAG_ITEMS = "items";
     public static final String TAG_ITEM = "item";
