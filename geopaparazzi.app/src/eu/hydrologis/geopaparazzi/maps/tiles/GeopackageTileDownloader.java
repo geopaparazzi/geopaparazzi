@@ -29,6 +29,7 @@ import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.ISpatialDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.MbtilesDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
 
 /**

@@ -49,6 +49,9 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
         }
         db = new MBTilesDroidSpitter(spatialDbFile);
         fileName = spatialDbFile.getName();
+
+        int lastDot = fileName.lastIndexOf("."); //$NON-NLS-1$
+        fileName = fileName.substring(0, lastDot);
     }
 
     public String getFileName() {
@@ -99,8 +102,28 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
         if (split.length != 3) {
             return null;
         }
-        byte[] tileAsBytes = db.getTileAsBytes(split[2], split[0], split[1]);
+        int z = Integer.parseInt(split[0]);
+        int x = Integer.parseInt(split[1]);
+        int y = Integer.parseInt(split[2]);
+
+        int[] tmsTileXY = googleTile2TmsTile(x, y, z);
+
+        byte[] tileAsBytes = db.getTileAsBytes(String.valueOf(tmsTileXY[0]), String.valueOf(tmsTileXY[1]), split[0]);
         return tileAsBytes;
+    }
+
+    /**
+     * Converts Google tile coordinates to TMS Tile coordinates.
+     * 
+     * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
+     * 
+     * @param tx the x tile number.
+     * @param ty the y tile number.
+     * @param zoom the current zoom level.
+     * @return the converted values.
+     */
+    public static int[] googleTile2TmsTile( int tx, int ty, int zoom ) {
+        return new int[]{tx, (int) ((Math.pow(2, zoom) - 1) - ty)};
     }
 
     public void close() throws Exception {
@@ -123,6 +146,20 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
 
     public Paint getStrokePaint4Style( Style style ) {
         return null;
+    }
+
+    @Override
+    public void updateStyle( Style style ) throws Exception {
+    }
+
+    @Override
+    public void intersectionToStringBBOX( String boundsSrid, SpatialVectorTable spatialTable, double n, double s, double e,
+            double w, StringBuilder sb, String indentStr ) throws Exception {
+    }
+
+    @Override
+    public void intersectionToString4Polygon( String boundsSrid, SpatialVectorTable spatialTable, double n, double e,
+            StringBuilder sb, String indentStr ) throws Exception {
     }
 
 }

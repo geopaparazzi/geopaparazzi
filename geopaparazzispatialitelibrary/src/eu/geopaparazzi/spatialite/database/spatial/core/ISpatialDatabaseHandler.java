@@ -64,4 +64,14 @@ public interface ISpatialDatabaseHandler {
      */
     public abstract Paint getFillPaint4Style( Style style );
 
+    public void close() throws Exception;
+
+    public void updateStyle( Style style ) throws Exception;
+
+    public void intersectionToStringBBOX( String boundsSrid, SpatialVectorTable spatialTable, double n, double s, double e,
+            double w, StringBuilder sb, String indentStr ) throws Exception;
+
+    public void intersectionToString4Polygon( String boundsSrid, SpatialVectorTable spatialTable, double n, double e,
+            StringBuilder sb, String indentStr ) throws Exception;
+
 }
