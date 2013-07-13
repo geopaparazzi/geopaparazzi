@@ -38,6 +38,7 @@ import org.mapsforge.android.maps.mapgenerator.MapGenerator;
 import org.mapsforge.android.maps.mapgenerator.databaserenderer.DatabaseRenderer;
 import org.mapsforge.android.maps.mapgenerator.tiledownloader.MapnikTileDownloader;
 import org.mapsforge.android.maps.mapgenerator.tiledownloader.OpenCycleMapTileDownloader;
+import org.mapsforge.android.maps.overlay.Overlay;
 import org.mapsforge.android.maps.overlay.OverlayItem;
 import org.mapsforge.android.maps.overlay.OverlayWay;
 import org.mapsforge.core.model.GeoPoint;
@@ -190,31 +191,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
 
-        // notes type
-        boolean doCustom = preferences.getBoolean(Constants.PREFS_KEY_NOTES_CHECK, false);
-        if (doCustom) {
-            String opacityStr = preferences.getString(Constants.PREFS_KEY_NOTES_OPACITY, "100");
-            String sizeStr = preferences.getString(Constants.PREFS_KEY_NOTES_SIZE, "15");
-            String colorStr = preferences.getString(Constants.PREFS_KEY_NOTES_CUSTOMCOLOR, "blue");
-            int noteSize = Integer.parseInt(sizeStr);
-            float opacity = Float.parseFloat(opacityStr) * 255 / 100;
-
-            OvalShape notesShape = new OvalShape();
-            Paint notesPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            notesPaint.setStyle(Paint.Style.FILL);
-            notesPaint.setColor(Color.parseColor(colorStr));
-            notesPaint.setAlpha((int) opacity);
-
-            ShapeDrawable notesShapeDrawable = new ShapeDrawable(notesShape);
-            Paint paint = notesShapeDrawable.getPaint();
-            paint.set(notesPaint);
-            notesShapeDrawable.setIntrinsicHeight(noteSize);
-            notesShapeDrawable.setIntrinsicWidth(noteSize);
-            notesDrawable = notesShapeDrawable;
-        } else {
-            notesDrawable = getResources().getDrawable(R.drawable.information);
-        }
-
         /*
          * create main mapview
          */
@@ -320,10 +296,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         rl.addView(mapView, new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
 
         GpsManager.getInstance(this).addListener(this);
-
-        dataOverlay = new ArrayGeopaparazziOverlay(this);
-        mapView.getOverlays().add(dataOverlay);
-        readData();
 
         // /* measure tool */
         // {
@@ -506,6 +478,43 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
         saveCenterPref();
 
+    }
+
+    @Override
+    protected void onResume() {
+
+        // notes type
+        boolean doCustom = preferences.getBoolean(Constants.PREFS_KEY_NOTES_CHECK, false);
+        if (doCustom) {
+            String opacityStr = preferences.getString(Constants.PREFS_KEY_NOTES_OPACITY, "100");
+            String sizeStr = preferences.getString(Constants.PREFS_KEY_NOTES_SIZE, "15");
+            String colorStr = preferences.getString(Constants.PREFS_KEY_NOTES_CUSTOMCOLOR, "blue");
+            int noteSize = Integer.parseInt(sizeStr);
+            float opacity = Float.parseFloat(opacityStr) * 255 / 100;
+
+            OvalShape notesShape = new OvalShape();
+            Paint notesPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            notesPaint.setStyle(Paint.Style.FILL);
+            notesPaint.setColor(Color.parseColor(colorStr));
+            notesPaint.setAlpha((int) opacity);
+
+            ShapeDrawable notesShapeDrawable = new ShapeDrawable(notesShape);
+            Paint paint = notesShapeDrawable.getPaint();
+            paint.set(notesPaint);
+            notesShapeDrawable.setIntrinsicHeight(noteSize);
+            notesShapeDrawable.setIntrinsicWidth(noteSize);
+            notesDrawable = notesShapeDrawable;
+        } else {
+            notesDrawable = getResources().getDrawable(R.drawable.information);
+        }
+
+        dataOverlay = new ArrayGeopaparazziOverlay(this);
+        List<Overlay> overlays = mapView.getOverlays();
+        overlays.clear();
+        overlays.add(dataOverlay);
+        readData();
+        
+        super.onResume();
     }
 
     private void setTextScale() {

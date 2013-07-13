@@ -260,13 +260,11 @@ public abstract class GeopaparazziOverlay extends Overlay {
             textPaint.setColor(Color.BLACK);
             textPaint.setTextSize(notesTextSize);
             doNotesTextHalo = preferences.getBoolean(Constants.PREFS_KEY_NOTES_TEXT_DOHALO, false);
-            if (doNotesTextHalo) {
-                textHaloPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-                textHaloPaint.setStyle(Paint.Style.STROKE);
-                textHaloPaint.setStrokeWidth(3);
-                textHaloPaint.setColor(Color.WHITE);
-                textHaloPaint.setTextSize(notesTextSize);
-            }
+            textHaloPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            textHaloPaint.setStyle(Paint.Style.STROKE);
+            textHaloPaint.setStrokeWidth(3);
+            textHaloPaint.setColor(Color.WHITE);
+            textHaloPaint.setTextSize(notesTextSize);
         }
 
         gpsMarker = ItemizedOverlay.boundCenter(gpsMarker);

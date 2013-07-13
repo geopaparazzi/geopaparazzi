@@ -60,6 +60,19 @@
         <item>70</item>
         <item>100</item>
     </string-array>
+    <string-array name="array_size">
+        <item>1</item>
+        <item>3</item>
+        <item>5</item>
+        <item>8</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>30</item>
+        <item>50</item>
+        <item>70</item>
+        <item>100</item>
+    </string-array>
     <string-array name="cross_size">
         <item>20</item>
         <item>30</item>

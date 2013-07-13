@@ -37,6 +37,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -258,12 +259,12 @@ public class GpsDataListActivity extends ListActivity {
                 DataManager.getInstance().setImagesVisible(isChecked);
             }
         });
-        // notes selection
-        CheckBox notesView = (CheckBox) findViewById(R.id.notesvisible);
-        notesView.setChecked(DataManager.getInstance().areNotesVisible());
-        notesView.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-            public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
-                DataManager.getInstance().setNotesVisible(isChecked);
+
+        final Button notesPropertiesButton = (Button) findViewById(R.id.notesPropertiesButton);
+        notesPropertiesButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                Intent intent = new Intent(GpsDataListActivity.this, NotesPropertiesActivity.class);
+                startActivity(intent);
             }
         });
 
