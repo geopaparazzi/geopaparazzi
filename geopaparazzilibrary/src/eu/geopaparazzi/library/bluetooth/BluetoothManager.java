@@ -31,6 +31,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.Logger;
 
@@ -228,7 +229,7 @@ public enum BluetoothManager {
                 default:
                     break;
                 }
-                if (Debug.D)
+                if (GPLog.LOG)
                     Logger.d(this, tt);
             }
         };

@@ -24,12 +24,28 @@ import java.util.Set;
 
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public class DaoLog {
+public class GPLog {
+
+    /**
+     * If <code>true</code>, android logging is activated.
+     */
+    public final static boolean LOG_ANDROID = true;
+    /**
+     * If <code>true</code>, normal logging is activated.
+     */
+    public static boolean LOG = true;
+    /**
+     * If <code>true</code> heavy logging is activated.
+     */
+    public static boolean LOG_HEAVY = true;
+
+    public static final String ERROR_TAG = "ERROR";
 
     public static final String TABLE_LOG = "log";
     public static final String COLUMN_ID = "_id";
@@ -88,22 +104,30 @@ public class DaoLog {
     /**
      * Add a new log entry.
      * 
-     * @param sqliteDatabase the db to use.
      * @param logMessage the message to insert in the log.
      * @throws IOException
      */
-    public static void addLogEntry( SQLiteDatabase sqliteDatabase, String logMessage ) throws IOException {
+    public static void addLogEntry( String logMessage ) throws IOException {
+        SQLiteDatabase sqliteDatabase = ADbHelper.getInstance().getDatabase();
         ContentValues values = new ContentValues();
         long time = new Date().getTime();
         values.put(COLUMN_DATAORA, time);
         values.put(COLUMN_LOGMSG, logMessage);
         insertOrThrow(sqliteDatabase, TABLE_LOG, values);
+
+        if (LOG_ANDROID) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(time);
+            sb.append(": ");
+            sb.append(logMessage);
+            Log.i("GPLOG", sb.toString());
+        }
     }
 
     /**
      * Add a log entry by concatenating (;) some more info in the message.
      * 
-     * @param sqliteDatabase
+     * @param caller the calling class or tage name.
      * @param user a user name or id. If
      *              <code>null</code>, defaults to UNKNOWN_USER
      * @param tag a tag for the log message. If <code>null</code>, 
@@ -111,7 +135,7 @@ public class DaoLog {
      * @param logMessage the message itself.
      * @throws IOException
      */
-    public static void addLogEntry( SQLiteDatabase sqliteDatabase,//
+    public static void addLogEntry( Object caller, //
             String user, //
             String tag,//
             String logMessage ) throws IOException {
@@ -125,13 +149,30 @@ public class DaoLog {
             tag = "INFO";
         }
         sb.append(tag).append(";");
+
+        if (caller != null) {
+            String name = toName(caller);
+            if (name.length() > 0)
+                sb.append(name).append(": ");
+        }
         sb.append(logMessage);
-        addLogEntry(sqliteDatabase, sb.toString());
+        addLogEntry(sb.toString());
+    }
+
+    public static void error( Object caller, Throwable t ) throws IOException {
+        addLogEntry(caller, null, ERROR_TAG, t.getLocalizedMessage());
+        if (LOG_ANDROID) {
+            Log.i("GPLOG_ERROR", t.getLocalizedMessage());
+        }
+        String stackTrace = Log.getStackTraceString(t);
+        addLogEntry(caller, null, ERROR_TAG, stackTrace);
+        if (LOG_ANDROID) {
+            Log.i("GPLOG_ERROR", stackTrace);
+        }
     }
 
     /**
      * Do an insert or throw with the proper error handling.
-     * @param sqliteDatabase
      * @param table
      * @param values
      * 
@@ -171,10 +212,22 @@ public class DaoLog {
         }
     }
 
+    /**
+     * @return the query to get id,datetimestring,logmsg.
+     */
     public static String getLogQuery() {
         StringBuilder sb = new StringBuilder();
         sb.append("select _id, datetime(dataora/1000, 'unixepoch', 'localtime') as timestamp, logmsg from log order by dataora desc");
         String query = sb.toString();
         return query;
+    }
+
+    private static String toName( Object obj ) {
+        if (obj instanceof String) {
+            String name = (String) obj;
+            return name;
+        }
+        String simpleName = obj.getClass().getSimpleName();
+        return simpleName.toUpperCase();
     }
 }
