@@ -392,9 +392,10 @@ public class GpsManager implements LocationListener, Listener {
         switch( status ) {
         case LocationProvider.OUT_OF_SERVICE:
         case LocationProvider.TEMPORARILY_UNAVAILABLE:
-            if (gpsLoc != null && gpsLoc.getProvider() != null && gpsLoc.getProvider().equals(provider)) {
-                gpsLoc = null;
-            }
+            // if (gpsLoc != null && gpsLoc.getProvider() != null &&
+            // gpsLoc.getProvider().equals(provider)) {
+            // gpsLoc = null;
+            // }
             break;
         case LocationProvider.AVAILABLE:
             break;

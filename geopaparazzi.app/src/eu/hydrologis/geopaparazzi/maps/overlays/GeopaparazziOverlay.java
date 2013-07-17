@@ -157,7 +157,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
     private Paint gpsGreenFill;
     private Paint gpsBlueFill;
 
-    private List<GeoPoint> currentGps = new ArrayList<GeoPoint>();
+    private List<GeoPoint> currentGpsLog = new ArrayList<GeoPoint>();
     private Context context;
     private int inset = 5;
     private Paint textPaint;
@@ -270,7 +270,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
         gpsMarker = ItemizedOverlay.boundCenter(gpsMarker);
         gpslogOverlay = new OverlayWay(null, gpsOutline);
 
-        currentGps.clear();
+        currentGpsLog.clear();
     }
 
     /**
@@ -359,9 +359,9 @@ public abstract class GeopaparazziOverlay extends Overlay {
     public void setGpsPosition( GeoPoint position, float accuracy ) {
         GpsManager gpsManager = GpsManager.getInstance(context);
         if (gpsManager.isLogging()) {
-            currentGps.add(position);
+            currentGpsLog.add(position);
         } else {
-            currentGps.clear();
+            currentGpsLog.clear();
         }
         if (Debug.D)
             Logger.d(this, "Set gps data: " + position.getLongitude() + "/" + position.getLatitude() + "/" + accuracy);
@@ -523,9 +523,9 @@ public abstract class GeopaparazziOverlay extends Overlay {
         if (gpsManager.isLogging()) {
             // if a track is recorded, show it
             synchronized (gpslogOverlay) {
-                int size = currentGps.size();
+                int size = currentGpsLog.size();
                 if (size > 1) {
-                    GeoPoint[] geoPoints = currentGps.toArray(new GeoPoint[0]);
+                    GeoPoint[] geoPoints = currentGpsLog.toArray(new GeoPoint[0]);
                     gpslogOverlay.setWayNodes(new GeoPoint[][]{geoPoints});
                     // make sure that the current way has way nodes
                     if (gpslogOverlay.wayNodes != null && gpslogOverlay.wayNodes.length != 0) {
