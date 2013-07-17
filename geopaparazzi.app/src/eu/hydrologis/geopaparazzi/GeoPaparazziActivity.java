@@ -43,6 +43,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -774,7 +775,7 @@ public class GeoPaparazziActivity extends Activity {
 
     public void finish() {
         if (GPLog.LOG)
-            GPLog.addLogEntry(this, "Finish called!"); //$NON-NLS-1$
+            Log.i("GEOPAPARAZZIACTIVITY", "Finish called!"); //$NON-NLS-1$
         // save last location just in case
         if (resourcesManager == null) {
             super.finish();
