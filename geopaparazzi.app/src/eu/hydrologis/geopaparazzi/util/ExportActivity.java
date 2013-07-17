@@ -44,6 +44,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gpx.GpxExport;
 import eu.geopaparazzi.library.gpx.GpxRepresenter;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
@@ -53,7 +54,6 @@ import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.library.util.debug.Logger;
 import eu.geopaparazzi.library.webproject.ReturnCodes;
 import eu.geopaparazzi.library.webproject.WebProjectManager;
 import eu.hydrologis.geopaparazzi.R;
@@ -158,7 +158,7 @@ public class ExportActivity extends Activity {
                     ReturnCodes returnCode = WebProjectManager.INSTANCE.uploadProject(context, addMedia, serverUrl, user, pwd);
                     return returnCode.getMsgCode();
                 } catch (Exception e) {
-                    Logger.e(this, e.getLocalizedMessage(), e);
+                    GPLog.error(this, e.getLocalizedMessage(), e);
                     e.printStackTrace();
                     return ReturnCodes.ERROR.getMsgCode();
                 }
@@ -246,7 +246,7 @@ public class ExportActivity extends Activity {
 
                     return kmlOutputFile.getAbsolutePath();
                 } catch (IOException e) {
-                    Logger.e(this, e.getLocalizedMessage(), e);
+                    GPLog.error(this, e.getLocalizedMessage(), e);
                     e.printStackTrace();
                     return null;
                 }
@@ -304,7 +304,7 @@ public class ExportActivity extends Activity {
 
                     return gpxOutputFile.getAbsolutePath();
                 } catch (IOException e) {
-                    Logger.e(this, e.getLocalizedMessage(), e);
+                    GPLog.error(this, e.getLocalizedMessage(), e);
                     e.printStackTrace();
                     return null;
                 }

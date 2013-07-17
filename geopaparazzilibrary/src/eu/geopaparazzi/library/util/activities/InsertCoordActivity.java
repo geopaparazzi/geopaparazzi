@@ -25,9 +25,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
  * Activity to get to a location by coordinate.
@@ -61,7 +61,7 @@ public class InsertCoordActivity extends Activity {
                         throw new Exception();
                     }
                 } catch (Exception e1) {
-                    Logger.e(this, e1.getLocalizedMessage(), e1);
+                    GPLog.error(this, e1.getLocalizedMessage(), e1);
                     Utilities.toast(InsertCoordActivity.this, R.string.wrongLongitude, Toast.LENGTH_LONG);
                     return;
                 }
@@ -72,7 +72,7 @@ public class InsertCoordActivity extends Activity {
                         throw new Exception();
                     }
                 } catch (Exception e1) {
-                    Logger.e(this, e1.getLocalizedMessage(), e1);
+                    GPLog.error(this, e1.getLocalizedMessage(), e1);
                     Utilities.toast(InsertCoordActivity.this, R.string.wrongLatitude, Toast.LENGTH_LONG);
                     return;
                 }

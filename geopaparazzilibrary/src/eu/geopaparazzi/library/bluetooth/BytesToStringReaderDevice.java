@@ -24,8 +24,7 @@ import java.util.List;
 
 import android.bluetooth.BluetoothSocket;
 import android.os.SystemClock;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
+import eu.geopaparazzi.library.database.GPLog;
 
 /**
  * A generic binary device that reads the raw stream and converts it to hex strings.   
@@ -63,8 +62,8 @@ public class BytesToStringReaderDevice implements IBluetoothIOHandler {
             tmpIn = socket.getInputStream();
             tmpOut = socket.getOutputStream();
         } catch (IOException e) {
-            if (Debug.D)
-                Logger.e(this, "error while getting socket streams", e);
+            if (GPLog.LOG)
+                GPLog.addLogEntry(this, null, null, "error while getting socket streams");
         }
         in = tmpIn;
         out = tmpOut;
@@ -109,7 +108,8 @@ public class BytesToStringReaderDevice implements IBluetoothIOHandler {
                     data[index++] = (byte) value;
                     if (index == length) {
                         String str = new String(data, 0, length).trim();
-                        Logger.i(this, "data read: " + str);
+                        if (GPLog.LOG_HEAVY)
+                            GPLog.addLogEntry(this, null, null, "data read: " + str);
                         notifyBytes(str);
                         index = 0;
                     }
@@ -121,8 +121,7 @@ public class BytesToStringReaderDevice implements IBluetoothIOHandler {
                 now = SystemClock.uptimeMillis();
             }
         } catch (IOException e) {
-            if (Debug.D)
-                Logger.e(this, "error while getting data", e);
+            GPLog.error(this, null, e);
         } finally {
             // cleanly closing everything...
             this.close();
@@ -144,28 +143,25 @@ public class BytesToStringReaderDevice implements IBluetoothIOHandler {
     public void close() {
         ready = false;
         try {
-            if (Debug.D)
-                Logger.d(this, "closing output sream");
+            if (GPLog.LOG)
+                GPLog.addLogEntry(this, null, null, "closing output sream");
             in.close();
         } catch (IOException e) {
-            if (Debug.D)
-                Logger.e(this, "error while closing output stream", e);
+            GPLog.error(this, null, e);
         } finally {
             try {
-                if (Debug.D)
-                    Logger.d(this, "closing Bluetooth input streams");
+                if (GPLog.LOG)
+                    GPLog.addLogEntry(this, null, null, "closing Bluetooth input streams");
                 out.close();
             } catch (IOException e) {
-                if (Debug.D)
-                    Logger.e(this, "error while closing input streams", e);
+                GPLog.error(this, null, e);
             } finally {
                 try {
-                    if (Debug.D)
-                        Logger.d(this, "closing Bluetooth socket");
+                    if (GPLog.LOG)
+                        GPLog.addLogEntry(this, null, null, "closing Bluetooth socket");
                     socket.close();
                 } catch (IOException e) {
-                    if (Debug.D)
-                        Logger.e(this, "error while closing socket", e);
+                    GPLog.error(this, null, e);
                 }
             }
             bluetoothListeners.clear();

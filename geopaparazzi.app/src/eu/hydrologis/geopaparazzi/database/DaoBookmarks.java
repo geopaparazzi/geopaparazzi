@@ -30,8 +30,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.graphics.drawable.Drawable;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
+import android.util.Log;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 
 /**
@@ -70,7 +70,7 @@ public class DaoBookmarks {
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
-            Logger.e("DAOBOOKMARKS", e.getLocalizedMessage(), e);
+            GPLog.error("DAOBOOKMARKS", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();
@@ -88,7 +88,7 @@ public class DaoBookmarks {
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
-            Logger.e("DAOBOOKMARKS", e.getLocalizedMessage(), e);
+            GPLog.error("DAOBOOKMARKS", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();
@@ -107,15 +107,15 @@ public class DaoBookmarks {
             sb.append("WHERE ").append(COLUMN_ID).append("=").append(id);
 
             String query = sb.toString();
-            if (Debug.D)
-                Logger.i("DAOBOOKMARKS", query);
+            if (GPLog.LOG_HEAVY)
+                GPLog.addLogEntry("DAOBOOKMARKS", query);
             SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
             sqlUpdate.execute();
             sqlUpdate.close();
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
-            Logger.e("DAOBOOKMARKS", e.getLocalizedMessage(), e);
+            GPLog.error("DAOBOOKMARKS", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();
@@ -244,8 +244,8 @@ public class DaoBookmarks {
         String CREATE_INDEX_BOOKMARKS_X_BY_Y = sB.toString();
 
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
-        if (Debug.D)
-            Logger.i("DAOBOOKMARKS", "Create the bookmarks table.");
+        if (GPLog.LOG_ANDROID)
+            Log.i("DAOBOOKMARKS", "Create the bookmarks table.");
 
         sqliteDatabase.beginTransaction();
         try {
@@ -254,7 +254,7 @@ public class DaoBookmarks {
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
-            Logger.e("DAOBOOKMARKS", e.getLocalizedMessage(), e);
+            Log.e("DAOBOOKMARKS", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();

@@ -25,6 +25,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gpx.GpxItem;
 import eu.geopaparazzi.library.gpx.parser.GpxParser;
 import eu.geopaparazzi.library.gpx.parser.GpxParser.Route;
@@ -32,8 +33,6 @@ import eu.geopaparazzi.library.gpx.parser.GpxParser.TrackSegment;
 import eu.geopaparazzi.library.gpx.parser.WayPoint;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 
@@ -112,12 +111,12 @@ public class GpxImportActivity extends Activity {
                                 }
                             }
                         } else {
-                            if (Debug.D)
-                                Logger.d(this, "ERROR"); //$NON-NLS-1$
+                            if (GPLog.LOG)
+                                GPLog.addLogEntry(this, "ERROR"); //$NON-NLS-1$
                         }
 
                     } catch (IOException e) {
-                        Logger.e(this, e.getLocalizedMessage(), e);
+                        GPLog.error(this, e.getLocalizedMessage(), e);
                         e.printStackTrace();
                     } finally {
                         gpsImportHandler.sendEmptyMessage(0);

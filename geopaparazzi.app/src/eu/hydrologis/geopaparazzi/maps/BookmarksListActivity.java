@@ -43,12 +43,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
@@ -86,8 +85,8 @@ public class BookmarksListActivity extends ListActivity {
     }
 
     private void refreshList() {
-        if (Debug.D)
-            Logger.d(this, "refreshing bookmarks list"); //$NON-NLS-1$
+        if (GPLog.LOG_HEAVY)
+            GPLog.addLogEntry(this, "refreshing bookmarks list"); //$NON-NLS-1$
         try {
             List<Bookmark> bookmarksList = DaoBookmarks.getAllBookmarks(this);
 
@@ -102,7 +101,7 @@ public class BookmarksListActivity extends ListActivity {
                 index++;
             }
         } catch (IOException e) {
-            Logger.e(this, e.getLocalizedMessage(), e);
+            GPLog.error(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
         }
 
@@ -110,8 +109,8 @@ public class BookmarksListActivity extends ListActivity {
     }
 
     private void filterList( String filterText ) {
-        if (Debug.D)
-            Logger.d(this, "filter bookmarks list"); //$NON-NLS-1$
+        if (GPLog.LOG_HEAVY)
+            GPLog.addLogEntry(this, "filter bookmarks list"); //$NON-NLS-1$
         try {
             List<Bookmark> bookmarksList = DaoBookmarks.getAllBookmarks(this);
             Collections.sort(bookmarksList, bookmarksSorter);
@@ -130,7 +129,7 @@ public class BookmarksListActivity extends ListActivity {
 
             bookmarksNames = namesList.toArray(new String[0]);
         } catch (IOException e) {
-            Logger.e(this, e.getLocalizedMessage(), e);
+            GPLog.error(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
         }
 
@@ -172,7 +171,7 @@ public class BookmarksListActivity extends ListActivity {
                                             DaoBookmarks.updateBookmarkName(BookmarksListActivity.this, bookmark.getId(), newName);
                                             refreshList();
                                         } catch (IOException e) {
-                                            Logger.e(this, e.getLocalizedMessage(), e);
+                                            GPLog.error(this, e.getLocalizedMessage(), e);
                                             e.printStackTrace();
                                             Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG)
                                                     .show();

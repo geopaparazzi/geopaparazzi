@@ -25,6 +25,7 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.SystemClock;
 import android.util.Log;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gps.GpsManager;
 
 /**
@@ -138,7 +139,7 @@ public class TestMock {
                         }
                         previousT = t;
                     } catch (InterruptedException e) {
-                        Logger.e(this, e.getLocalizedMessage(), e);
+                        GPLog.error(this, e.getLocalizedMessage(), e);
                         e.printStackTrace();
                     }
                 }

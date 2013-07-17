@@ -43,9 +43,8 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.TextView;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.util.Constants;
@@ -82,8 +81,8 @@ public class GpsDataListActivity extends ListActivity {
     }
 
     private void refreshList( boolean doReread ) {
-        if (Debug.D)
-            Logger.d(this, "refreshing gps maps list"); //$NON-NLS-1$
+        if (GPLog.LOG_HEAVY)
+            GPLog.addLogEntry(this, "refreshing gps maps list"); //$NON-NLS-1$
         gpslogItems = new LogMapItem[0];
         try {
             if (doReread) {
@@ -92,7 +91,7 @@ public class GpsDataListActivity extends ListActivity {
                 gpslogItems = logsList.toArray(new LogMapItem[0]);
             }
         } catch (IOException e) {
-            Logger.e(this, e.getLocalizedMessage(), e);
+            GPLog.error(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
         }
 
@@ -132,9 +131,8 @@ public class GpsDataListActivity extends ListActivity {
     }
 
     protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
-        if (Debug.D) {
-            Logger.d(this, "Activity returned"); //$NON-NLS-1$
-        }
+        if (GPLog.LOG_HEAVY)
+            GPLog.addLogEntry(this, "Activity returned"); //$NON-NLS-1$
         super.onActivityResult(requestCode, resultCode, data);
         switch( requestCode ) {
         case (GPSDATAPROPERTIES_RETURN_CODE): {
@@ -165,7 +163,7 @@ public class GpsDataListActivity extends ListActivity {
             try {
                 mergeSelected();
             } catch (IOException e) {
-                Logger.e(this, e.getLocalizedMessage(), e);
+                GPLog.error(this, e.getLocalizedMessage(), e);
                 e.printStackTrace();
             }
             return true;
@@ -243,7 +241,7 @@ public class GpsDataListActivity extends ListActivity {
             }
             DataManager.getInstance().setLogsVisible(oneVisible);
         } catch (IOException e) {
-            Logger.e(this, e.getLocalizedMessage(), e);
+            GPLog.error(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
         }
 

@@ -25,8 +25,8 @@ import java.util.Date;
 import java.util.List;
 
 import android.content.Context;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
  * A kmz exporter for notes, logs and pics.
@@ -86,7 +86,7 @@ public class GpxExport {
                 try {
                     bW.write(gpxRepresenter.toGpxString());
                 } catch (Exception e) {
-                    Logger.e(this, e.getLocalizedMessage(), e);
+                    GPLog.error(this, e.getLocalizedMessage(), e);
                     e.printStackTrace();
                 }
             }

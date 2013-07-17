@@ -41,11 +41,11 @@ import android.location.LocationProvider;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.activities.ProximityIntentReceiver;
 import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
 import eu.geopaparazzi.library.util.debug.TestMock;
 
 /**
@@ -97,8 +97,7 @@ public class GpsManager implements LocationListener, Listener {
             gpsManager.checkLoggerExists(context);
             gpsManager.checkGps(context);
             gpsManager.startListening();
-            if (Debug.D)
-                Logger.d(gpsManager, "STARTED LISTENING");
+            log("STARTED LISTENING");
         }
         // woke up from death and has the manager already but isn't listening any more
         if (!gpsManager.isGpsListening()) {
@@ -106,8 +105,7 @@ public class GpsManager implements LocationListener, Listener {
             gpsManager.checkLoggerExists(context);
             gpsManager.checkGps(context);
             gpsManager.startListening();
-            if (Debug.D)
-                Logger.d(gpsManager, "STARTED LISTENING AFTER REVIEW");
+            log("STARTED LISTENING AFTER REVIEW");
         }
         return gpsManager;
     }
@@ -175,12 +173,10 @@ public class GpsManager implements LocationListener, Listener {
      */
     private void startListening() {
         if (Debug.doMock || isMockMode) {
-            if (Debug.D)
-                Logger.d(this, "Using Mock locations");
+            log("Using Mock locations");
             TestMock.startMocking(locationManager, gpsManager);
         } else {
-            if (Debug.D)
-                Logger.d(this, "Using GPS");
+            log("Using GPS");
 
             float minDistance = 0.5f;
             long waitForSecs = 1;
@@ -231,8 +227,7 @@ public class GpsManager implements LocationListener, Listener {
         } else {
             gpsIsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         }
-        if (Debug.D)
-            Logger.i(this, "Gps is on: " + gpsIsEnabled);
+        log("Gps is on: " + gpsIsEnabled);
         return gpsIsEnabled;
     }
 
@@ -412,8 +407,7 @@ public class GpsManager implements LocationListener, Listener {
         case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
             break;
         case GpsStatus.GPS_EVENT_FIRST_FIX:
-            if (Debug.D)
-                Logger.i(this, "First fix");
+            log("First fix");
             synchronized (listeners) {
                 for( GpsManagerListener listener : listeners ) {
                     listener.onGpsStatusChanged(true);
@@ -423,4 +417,8 @@ public class GpsManager implements LocationListener, Listener {
         }
     }
 
+    private static void log( String msg ) {
+        if (GPLog.LOG_HEAVY)
+            GPLog.addLogEntry("GPSMANAGER", null, null, msg);
+    }
 }

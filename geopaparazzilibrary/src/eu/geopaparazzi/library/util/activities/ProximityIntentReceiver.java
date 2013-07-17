@@ -9,9 +9,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.location.LocationManager;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gps.GpsManager;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
  * @author javacodegeeks
@@ -28,22 +27,23 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
         Boolean entering = intent.getBooleanExtra(key, false);
 
         if (entering) {
-            if (Debug.D)
-                Logger.d(getClass().getSimpleName(), "entering proximity radius"); //$NON-NLS-1$
+            if (GPLog.LOG)
+                GPLog.addLogEntry(getClass().getSimpleName(), "entering proximity radius"); //$NON-NLS-1$
             NotificationManager notificationManager = (NotificationManager) context
                     .getSystemService(Context.NOTIFICATION_SERVICE);
 
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
             Notification notification = createNotification();
-            notification.setLatestEventInfo(context, context.getString(R.string.proximity_alert), context.getString(R.string.approaching_poi), pendingIntent);
+            notification.setLatestEventInfo(context, context.getString(R.string.proximity_alert),
+                    context.getString(R.string.approaching_poi), pendingIntent);
             notificationManager.notify(NOTIFICATION_ID, notification);
 
             GpsManager.getInstance(context).getLocationManager().removeProximityAlert(pendingIntent);
             context.unregisterReceiver(this);
         } else {
-            if (Debug.D)
-                Logger.d(getClass().getSimpleName(), "exiting proximity radius"); //$NON-NLS-1$
+            if (GPLog.LOG)
+                GPLog.addLogEntry(getClass().getSimpleName(), "exiting proximity radius"); //$NON-NLS-1$
         }
 
     }

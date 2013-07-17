@@ -36,13 +36,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import eu.geopaparazzi.library.camera.CameraActivity;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.sketch.DrawingActivity;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.NoteActivity;
-import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.ActionItem;
@@ -124,7 +124,7 @@ public enum QuickActionsFactory {
                         Utilities.messageDialog(activity, R.string.gpslogging_only, null);
                     qa.dismiss();
                 } catch (Exception e) {
-                    Logger.e(this, e.getLocalizedMessage(), e);
+                    GPLog.error(this, e.getLocalizedMessage(), e);
                 }
             }
         });
@@ -177,7 +177,7 @@ public enum QuickActionsFactory {
                                 bW.write("\nutctimestamp=");
                                 bW.write(currentDatestring);
                             } catch (IOException e1) {
-                                Logger.e(this, e1.getLocalizedMessage(), e1);
+                                GPLog.error(this, e1.getLocalizedMessage(), e1);
                                 throw new IOException(e1.getLocalizedMessage());
                             } finally {
                                 bW.close();
@@ -200,7 +200,7 @@ public enum QuickActionsFactory {
                     if (!isValid)
                         Utilities.messageDialog(context, R.string.gpslogging_only, null);
                 } catch (Exception e) {
-                    Logger.e(this, e.getLocalizedMessage(), e);
+                    GPLog.error(this, e.getLocalizedMessage(), e);
                     e.printStackTrace();
                 }
                 qa.dismiss();
@@ -294,7 +294,7 @@ public enum QuickActionsFactory {
                         Utilities.messageDialog(activity, R.string.gpslogging_only, null);
                     qa.dismiss();
                 } catch (Exception e) {
-                    Logger.e(this, e.getLocalizedMessage(), e);
+                    GPLog.error(this, e.getLocalizedMessage(), e);
                 }
             }
         });

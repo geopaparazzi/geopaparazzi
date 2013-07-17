@@ -43,7 +43,7 @@ public class GPLog {
     /**
      * If <code>true</code> heavy logging is activated.
      */
-    public static boolean LOG_HEAVY = true;
+    public static boolean LOG_HEAVY = false;
 
     public static final String ERROR_TAG = "ERROR";
 
@@ -133,12 +133,11 @@ public class GPLog {
      * @param tag a tag for the log message. If <code>null</code>, 
      *              defaults to INFO. 
      * @param logMessage the message itself.
-     * @throws IOException
      */
     public static void addLogEntry( Object caller, //
             String user, //
             String tag,//
-            String logMessage ) throws IOException {
+            String logMessage ) {
 
         StringBuilder sb = new StringBuilder();
         if (user == null || user.length() == 0) {
@@ -156,13 +155,37 @@ public class GPLog {
                 sb.append(name).append(": ");
         }
         sb.append(logMessage);
-        addLogEntry(sb.toString());
+        try {
+            addLogEntry(sb.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e(ERROR_TAG, "Error inserting in log.", e);
+        }
     }
 
-    public static void error( Object caller, Throwable t ) throws IOException {
-        addLogEntry(caller, null, ERROR_TAG, t.getLocalizedMessage());
+    /**
+     * Add a log entry by concatenating (;) some more info in the message.
+     * 
+     * @param caller the calling class or tage name.
+     * @param logMessage the message itself.
+     */
+    public static void addLogEntry( Object caller, //
+            String logMessage ) {
+        addLogEntry(caller, null, null, logMessage);
+    }
+
+    public static void error( Object caller, String msg, Throwable t ) {
+        String localizedMessage = t.getLocalizedMessage();
+        if (msg != null) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(msg);
+            sb.append(": ");
+            sb.append(localizedMessage);
+            localizedMessage = sb.toString();
+        }
+        addLogEntry(caller, null, ERROR_TAG, localizedMessage);
         if (LOG_ANDROID) {
-            Log.i("GPLOG_ERROR", t.getLocalizedMessage());
+            Log.i("GPLOG_ERROR", localizedMessage);
         }
         String stackTrace = Log.getStackTraceString(t);
         addLogEntry(caller, null, ERROR_TAG, stackTrace);
@@ -170,7 +193,6 @@ public class GPLog {
             Log.i("GPLOG_ERROR", stackTrace);
         }
     }
-
     /**
      * Do an insert or throw with the proper error handling.
      * @param table

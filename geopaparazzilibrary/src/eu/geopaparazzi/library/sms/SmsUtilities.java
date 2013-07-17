@@ -33,11 +33,10 @@ import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
  * Utilities for sms handling.
@@ -127,14 +126,14 @@ public class SmsUtilities {
         try {
             if (msg.length() > 160) {
                 msg = msg.substring(0, 160);
-                if (Debug.D)
-                    Logger.i("SMSUTILITIES", "Trimming msg to: " + msg);
+                if (GPLog.LOG)
+                    GPLog.addLogEntry("SMSUTILITIES", "Trimming msg to: " + msg);
             }
             mng.sendTextMessage(number, null, msg, dummyEvent, dummyEvent);
             if (sendMessage)
                 Utilities.toast(context, R.string.message_sent, Toast.LENGTH_LONG);
         } catch (Exception e) {
-            Logger.e(context, e.getLocalizedMessage(), e);
+            GPLog.error(context, e.getLocalizedMessage(), e);
             Utilities.messageDialog(context, "An error occurred while sending the SMS.", null);
         }
     }

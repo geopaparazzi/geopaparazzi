@@ -34,8 +34,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.chart.ProfileChartActivity;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
@@ -147,7 +147,7 @@ public class GpsDataPropertiesActivity extends Activity {
                             setResult(Activity.RESULT_OK, intent);
                         }
                     } catch (IOException e) {
-                        Logger.e(this, e.getLocalizedMessage(), e);
+                        GPLog.error(this, e.getLocalizedMessage(), e);
                         e.printStackTrace();
                     }
                 }
@@ -172,7 +172,7 @@ public class GpsDataPropertiesActivity extends Activity {
                         DaoGpsLog.updateLogProperties(GpsDataPropertiesActivity.this, item.getId(), newColor, newWidth,
                                 item.isVisible(), newText);
                     } catch (IOException e) {
-                        Logger.e(this, e.getLocalizedMessage(), e);
+                        GPLog.error(this, e.getLocalizedMessage(), e);
                         e.printStackTrace();
                     }
                     finish();

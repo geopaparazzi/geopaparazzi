@@ -50,12 +50,11 @@ import com.vividsolutions.jts.android.ShapeWriter;
 import com.vividsolutions.jts.android.geom.DrawableShape;
 import com.vividsolutions.jts.geom.Geometry;
 
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.FormActivity;
 import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.GeometryIterator;
 import eu.geopaparazzi.spatialite.database.spatial.core.ISpatialDatabaseHandler;
@@ -363,8 +362,8 @@ public abstract class GeopaparazziOverlay extends Overlay {
         } else {
             currentGpsLog.clear();
         }
-        if (Debug.D)
-            Logger.d(this, "Set gps data: " + position.getLongitude() + "/" + position.getLatitude() + "/" + accuracy);
+        if (GPLog.LOG_HEAVY)
+            GPLog.addLogEntry(this, "Set gps data: " + position.getLongitude() + "/" + position.getLatitude() + "/" + accuracy);
         overlayGps.setCircleData(position, accuracy);
     }
 

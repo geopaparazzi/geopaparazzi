@@ -29,10 +29,9 @@ import org.mapsforge.core.model.Tile;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
  * A MapGenerator that downloads tiles from the Mapnik server at OpenStreetMap.
@@ -195,8 +194,8 @@ public class CustomTileDownloader extends TileDownloader {
                 decodedBitmap = BitmapFactory.decodeStream(inputStream);
             } catch (Exception e) {
                 // ignore and set the image as empty
-                if (Debug.D)
-                    Logger.i(this, "Could not find image: " + sb.toString()); //$NON-NLS-1$
+                if (GPLog.LOG_HEAVY)
+                    GPLog.addLogEntry(this, "Could not find image: " + sb.toString()); //$NON-NLS-1$
             } finally {
                 inputStream.close();
             }

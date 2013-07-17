@@ -32,8 +32,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
  * A singleton to manage bluetooth.
@@ -230,7 +228,7 @@ public enum BluetoothManager {
                     break;
                 }
                 if (GPLog.LOG)
-                    Logger.d(this, tt);
+                    GPLog.addLogEntry(this, null, null, tt);
             }
         };
 

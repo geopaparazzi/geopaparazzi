@@ -39,6 +39,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.util.Log;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gps.IGpsLogDbHelper;
 import eu.geopaparazzi.library.gpx.GpxItem;
 import eu.geopaparazzi.library.gpx.parser.GpxParser.Route;
@@ -47,8 +49,6 @@ import eu.geopaparazzi.library.gpx.parser.RoutePoint;
 import eu.geopaparazzi.library.gpx.parser.TrackPoint;
 import eu.geopaparazzi.library.gpx.parser.WayPoint;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.maps.LogMapItem;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.LineArray;
@@ -122,7 +122,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
-            Logger.e("DAOGPSLOG", e.getLocalizedMessage(), e);
+            GPLog.error("DAOGPSLOG", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();
@@ -165,7 +165,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
-            Logger.e("DOAGPSLOG", e.getLocalizedMessage(), e);
+            GPLog.error("DOAGPSLOG", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();
@@ -186,15 +186,15 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             sb.append("WHERE ").append(COLUMN_ID).append("=").append(logid);
 
             String query = sb.toString();
-            if (Debug.D)
-                Logger.i("DAOGPSLOG", query);
+            if (GPLog.LOG_HEAVY)
+                GPLog.addLogEntry("DAOGPSLOG", query);
             SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
             sqlUpdate.execute();
             sqlUpdate.close();
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
-            Logger.e("DAOGPSLOG", e.getLocalizedMessage(), e);
+            GPLog.error("DAOGPSLOG", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();
@@ -421,8 +421,8 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             sb.append("WHERE ").append(COLUMN_LOGID).append("=").append(logid);
 
             String query = sb.toString();
-            if (Debug.D)
-                Logger.i("DAOGPSLOG", query);
+            if (GPLog.LOG_HEAVY)
+                GPLog.addLogEntry("DAOGPSLOG", query);
             // sqliteDatabase.execSQL(query);
             SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
             sqlUpdate.execute();
@@ -437,8 +437,8 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 sb.append("WHERE ").append(COLUMN_ID).append("=").append(logid);
 
                 query = sb.toString();
-                if (Debug.D)
-                    Logger.i("DAOGPSLOG", query);
+                if (GPLog.LOG_HEAVY)
+                    GPLog.addLogEntry("DAOGPSLOG", query);
                 sqlUpdate = sqliteDatabase.compileStatement(query);
                 sqlUpdate.execute();
                 sqlUpdate.close();
@@ -446,7 +446,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
-            Logger.e("DAOGPSLOG", e.getLocalizedMessage(), e);
+            GPLog.error("DAOGPSLOG", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();
@@ -465,8 +465,8 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             sb.append(COLUMN_PROPERTIES_VISIBLE).append("=").append(visible ? 1 : 0).append(" ");
 
             String query = sb.toString();
-            if (Debug.D)
-                Logger.i("DAOGPSLOG", query);
+            if (GPLog.LOG_HEAVY)
+                GPLog.addLogEntry("DAOGPSLOG", query);
             // sqliteDatabase.execSQL(query);
             SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
             sqlUpdate.execute();
@@ -474,7 +474,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
-            Logger.e("DAOGPSLOG", e.getLocalizedMessage(), e);
+            GPLog.error("DAOGPSLOG", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();
@@ -518,8 +518,8 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             sb.append("WHERE ").append(COLUMN_LOGID).append("=").append(logidToRemove);
 
             query = sb.toString();
-            if (Debug.D)
-                Logger.i("DAOGPSLOG", query);
+            if (GPLog.LOG_HEAVY)
+                GPLog.addLogEntry("DAOGPSLOG", query);
             // sqliteDatabase.execSQL(query);
             sqlUpdate = sqliteDatabase.compileStatement(query);
             sqlUpdate.execute();
@@ -527,7 +527,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
-            Logger.e("DAOGPSLOG", e.getLocalizedMessage(), e);
+            GPLog.error("DAOGPSLOG", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();
@@ -882,7 +882,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 }
                 sqliteDatabase.setTransactionSuccessful();
             } catch (Exception e) {
-                Logger.e("DAOGPSLOG", e.getLocalizedMessage(), e);
+                GPLog.error("DAOGPSLOG", e.getLocalizedMessage(), e);
                 throw new IOException(e.getLocalizedMessage());
             } finally {
                 sqliteDatabase.endTransaction();
@@ -917,7 +917,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                     }
                     sqliteDatabase.setTransactionSuccessful();
                 } catch (Exception e) {
-                    Logger.e("DAOMAPS", e.getLocalizedMessage(), e);
+                    GPLog.error("DAOMAPS", e.getLocalizedMessage(), e);
                     throw new IOException(e.getLocalizedMessage());
                 } finally {
                     sqliteDatabase.endTransaction();
@@ -945,7 +945,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                     }
                     sqliteDatabase.setTransactionSuccessful();
                 } catch (Exception e) {
-                    Logger.e("DAOMAPS", e.getLocalizedMessage(), e);
+                    GPLog.error("DAOMAPS", e.getLocalizedMessage(), e);
                     throw new IOException(e.getLocalizedMessage());
                 } finally {
                     sqliteDatabase.endTransaction();
@@ -976,7 +976,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     //
     // sqliteDatabase.setTransactionSuccessful();
     // } catch (Exception e) {
-    // Logger.e("DAOGPSLOG", e.getLocalizedMessage(), e);
+    // GPLog.error("DAOGPSLOG", e.getLocalizedMessage(), e);
     // throw new IOException(e.getLocalizedMessage());
     // } finally {
     // sqliteDatabase.endTransaction();
@@ -1045,8 +1045,8 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         String CREATE_INDEX_GPSLOG_LOGID_X_Y = sB.toString();
 
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
-        if (Debug.D)
-            Logger.i("DAOGPSLOG", "Create the gpslog_data table.");
+        if (GPLog.LOG_ANDROID)
+            Log.i("DAOGPSLOG", "Create the gpslog_data table.");
         sqliteDatabase.execSQL(CREATE_TABLE_GPSLOG_DATA);
         sqliteDatabase.execSQL(CREATE_INDEX_GPSLOG_ID);
         sqliteDatabase.execSQL(CREATE_INDEX_GPSLOG_TS);
@@ -1067,8 +1067,8 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         sB.append(");");
         String CREATE_TABLE_GPSLOGS = sB.toString();
 
-        if (Debug.D)
-            Logger.i("DAOGPSLOG", "Create the gpslogs table.");
+        if (GPLog.LOG_ANDROID)
+            Log.i("DAOGPSLOG", "Create the gpslogs table.");
         sqliteDatabase.execSQL(CREATE_TABLE_GPSLOGS);
 
         /*
@@ -1093,8 +1093,8 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         sB.append(");");
         String CREATE_TABLE_GPSLOGS_PROPERTIES = sB.toString();
 
-        if (Debug.D)
-            Logger.i("DAOGPSLOG", "Create the gpslogs properties table.");
+        if (GPLog.LOG_ANDROID)
+            Log.i("DAOGPSLOG", "Create the gpslogs properties table.");
         sqliteDatabase.execSQL(CREATE_TABLE_GPSLOGS_PROPERTIES);
 
     }

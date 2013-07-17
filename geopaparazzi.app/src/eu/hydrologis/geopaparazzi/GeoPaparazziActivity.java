@@ -55,6 +55,7 @@ import android.widget.ImageButton;
 import android.widget.SlidingDrawer;
 import android.widget.Toast;
 import eu.geopaparazzi.library.database.ADbHelper;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gps.GpsLocation;
 import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.sensors.SensorsManager;
@@ -67,8 +68,6 @@ import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.AboutActivity;
 import eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
@@ -270,8 +269,6 @@ public class GeoPaparazziActivity extends Activity {
     }
 
     private void checkActionBar() {
-        checkDebugLogger();
-
         if (actionBar == null) {
             actionBar = ActionBar.getActionBar(this, R.id.action_bar, gpsManager, sensorManager);
             actionBar.setTitle(R.string.app_name, R.id.action_bar_title);
@@ -419,7 +416,7 @@ public class GeoPaparazziActivity extends Activity {
             File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
             SpatialDatabasesManager.getInstance().init(this, mapsDir);
         } catch (IOException e) {
-            Logger.e(this, e.getLocalizedMessage(), e);
+            GPLog.error(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
             Utilities.toast(this, R.string.databaseError, Toast.LENGTH_LONG);
         }
@@ -436,19 +433,6 @@ public class GeoPaparazziActivity extends Activity {
         if (keepScreenOn) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
-    }
-
-    private void checkDebugLogger() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String key = getString(R.string.enable_debug);
-        boolean logToFile = preferences.getBoolean(key, false);
-        if (logToFile) {
-            File debugLogFile = resourcesManager.getDebugLogFile();
-            new Logger(debugLogFile);
-        } else {
-            new Logger(null);
-        }
-
     }
 
     public void push( int id, View v ) {
@@ -475,7 +459,7 @@ public class GeoPaparazziActivity extends Activity {
                                 DaoNotes.deleteLastInsertedNote(GeoPaparazziActivity.this);
                                 Utilities.toast(GeoPaparazziActivity.this, R.string.last_note_deleted, Toast.LENGTH_LONG);
                             } catch (IOException e) {
-                                Logger.e(this, e.getLocalizedMessage(), e);
+                                GPLog.error(this, e.getLocalizedMessage(), e);
                                 e.printStackTrace();
                                 Utilities.toast(GeoPaparazziActivity.this, R.string.last_note_not_deleted, Toast.LENGTH_LONG);
                             }
@@ -789,8 +773,8 @@ public class GeoPaparazziActivity extends Activity {
     }
 
     public void finish() {
-        if (Debug.D)
-            Logger.d(this, "Finish called!"); //$NON-NLS-1$
+        if (GPLog.LOG)
+            GPLog.addLogEntry(this, "Finish called!"); //$NON-NLS-1$
         // save last location just in case
         if (resourcesManager == null) {
             super.finish();
@@ -873,7 +857,7 @@ public class GeoPaparazziActivity extends Activity {
                             finish();
                             startActivity(intent);
                         } catch (IOException e) {
-                            Logger.e(this, e.getLocalizedMessage(), e);
+                            GPLog.error(this, e.getLocalizedMessage(), e);
                             e.printStackTrace();
                             Toast.makeText(GeoPaparazziActivity.this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                         }

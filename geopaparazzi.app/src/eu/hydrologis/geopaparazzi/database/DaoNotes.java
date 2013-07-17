@@ -32,9 +32,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.maps.overlays.NoteOverlayItem;
 import eu.hydrologis.geopaparazzi.util.Note;
 
@@ -85,7 +85,7 @@ public class DaoNotes {
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
-            Logger.e("DAONOTES", e.getLocalizedMessage(), e);
+            GPLog.error("DAONOTES", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();
@@ -121,7 +121,7 @@ public class DaoNotes {
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
-            Logger.e("DAONOTES", e.getLocalizedMessage(), e);
+            GPLog.error("DAONOTES", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();
@@ -151,7 +151,7 @@ public class DaoNotes {
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
-            Logger.e("DAONOTES", e.getLocalizedMessage(), e);
+            GPLog.error("DAONOTES", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();
@@ -322,8 +322,8 @@ public class DaoNotes {
             db.rawQuery(checkColumnQuery, null);
             // if it comes to this point, the form column
             // exists already. Nothing to do.
-            if (Debug.D)
-                Logger.i("DAONOTES", "Database already contains form column. Skipping upgrade.");
+            if (GPLog.LOG_ANDROID)
+                Log.i("DAONOTES", "Database already contains form column. Skipping upgrade.");
             return;
         } catch (Exception e) {
             // ignore and add column
@@ -336,8 +336,8 @@ public class DaoNotes {
         sB.append(COLUMN_FORM).append(" CLOB;");
         String addColumnQuery = sB.toString();
 
-        if (Debug.D)
-            Logger.i("DAONOTES", "Upgrading database from version 1 to version 2.");
+        if (GPLog.LOG_ANDROID)
+            Log.i("DAONOTES", "Upgrading database from version 1 to version 2.");
 
         db.beginTransaction();
         try {
@@ -345,7 +345,7 @@ public class DaoNotes {
             db.setVersion(2);
             db.setTransactionSuccessful();
         } catch (Exception e) {
-            Logger.e("DAONOTES", e.getLocalizedMessage(), e);
+            Log.e("DAONOTES", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             db.endTransaction();
@@ -366,8 +366,8 @@ public class DaoNotes {
             db.rawQuery(checkColumnQuery, null);
             // if it comes to this point, the type column
             // exists already. Nothing to do.
-            if (Debug.D)
-                Logger.i("DAONOTES", "Database already contains the type column. Skipping upgrade.");
+            if (GPLog.LOG_ANDROID)
+                Log.i("DAONOTES", "Database already contains the type column. Skipping upgrade.");
             return;
         } catch (Exception e) {
             // ignore and add column
@@ -380,8 +380,8 @@ public class DaoNotes {
         sB.append(COLUMN_TYPE).append(" INTEGER;");
         String addColumnQuery = sB.toString();
 
-        if (Debug.D)
-            Logger.i("DAONOTES", "Upgrading database from version 4 to version 5.");
+        if (GPLog.LOG_ANDROID)
+            Log.i("DAONOTES", "Upgrading database from version 4 to version 5.");
 
         db.beginTransaction();
         try {
@@ -389,7 +389,7 @@ public class DaoNotes {
             db.setVersion(5);
             db.setTransactionSuccessful();
         } catch (Exception e) {
-            Logger.e("DAONOTES", e.getLocalizedMessage(), e);
+            Log.e("DAONOTES", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             db.endTransaction();
@@ -410,8 +410,8 @@ public class DaoNotes {
             db.rawQuery(checkColumnQuery, null);
             // if it comes to this point, the type column
             // exists already. Nothing to do.
-            if (Debug.D)
-                Logger.i("DAONOTES", "Database already contains the category column. Skipping upgrade.");
+            if (GPLog.LOG_ANDROID)
+                Log.i("DAONOTES", "Database already contains the category column. Skipping upgrade.");
             return;
         } catch (Exception e) {
             // ignore and add column
@@ -424,8 +424,8 @@ public class DaoNotes {
         sB.append(COLUMN_CATEGORY).append(" TEXT;");
         String addColumnQuery = sB.toString();
 
-        if (Debug.D)
-            Logger.i("DAONOTES", "Upgrading database from version 5 to version 6.");
+        if (GPLog.LOG_ANDROID)
+            Log.i("DAONOTES", "Upgrading database from version 5 to version 6.");
 
         db.beginTransaction();
         try {
@@ -433,7 +433,7 @@ public class DaoNotes {
             db.setVersion(6);
             db.setTransactionSuccessful();
         } catch (Exception e) {
-            Logger.e("DAONOTES", e.getLocalizedMessage(), e);
+            Log.e("DAONOTES", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             db.endTransaction();
@@ -479,8 +479,8 @@ public class DaoNotes {
         String CREATE_INDEX_NOTES_X_BY_Y = sB.toString();
 
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
-        if (Debug.D)
-            Logger.i("DAONOTES", "Create the notes table.");
+        if (GPLog.LOG_HEAVY)
+            Log.i("DAONOTES", "Create the notes table.");
 
         sqliteDatabase.beginTransaction();
         try {
@@ -490,7 +490,7 @@ public class DaoNotes {
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
-            Logger.e("DAONOTES", e.getLocalizedMessage(), e);
+            Log.e("DAONOTES", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();

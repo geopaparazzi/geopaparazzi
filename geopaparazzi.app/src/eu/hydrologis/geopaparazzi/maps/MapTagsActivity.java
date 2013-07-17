@@ -32,6 +32,7 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import eu.geopaparazzi.library.camera.CameraActivity;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.FormActivity;
 import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geopaparazzi.library.sketch.DrawingActivity;
@@ -39,7 +40,6 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.NoteActivity;
-import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
@@ -109,7 +109,7 @@ public class MapTagsActivity extends Activity {
             tagNamesArray = sectionNames.toArray(new String[0]);
         } catch (Exception e1) {
             tagNamesArray = new String[]{getString(R.string.maptagsactivity_error_reading_tags)};
-            Logger.e(this, e1.getLocalizedMessage(), e1);
+            GPLog.error(this, e1.getLocalizedMessage(), e1);
             e1.printStackTrace();
         }
 
@@ -132,7 +132,7 @@ public class MapTagsActivity extends Activity {
                             formIntent.putExtra(LibraryConstants.ELEVATION, elevation);
                             startActivityForResult(formIntent, FORM_RETURN_CODE);
                         } catch (Exception e) {
-                            Logger.e(this, e.getLocalizedMessage(), e);
+                            GPLog.error(this, e.getLocalizedMessage(), e);
                             e.printStackTrace();
                             Toast.makeText(MapTagsActivity.this, R.string.notenonsaved, Toast.LENGTH_LONG).show();
                         }

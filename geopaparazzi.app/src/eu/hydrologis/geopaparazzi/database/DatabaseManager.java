@@ -23,9 +23,10 @@ import java.util.Locale;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
  * The database manager.
@@ -35,7 +36,7 @@ import eu.geopaparazzi.library.util.debug.Logger;
 @SuppressWarnings("nls")
 public class DatabaseManager {
 
-    public static final int DATABASE_VERSION = 6;
+    public static final int DATABASE_VERSION = 7;
 
     public static final String DEBUG_TAG = "DATABASEMANAGER";
 
@@ -80,14 +81,14 @@ public class DatabaseManager {
             databaseHelper = new DatabaseOpenHelper(databaseFile);
 
             SQLiteDatabase db = databaseHelper.getWritableDatabase(context);
-            if (Debug.D) {
-                Logger.i(DEBUG_TAG, "Database: " + db.getPath());
-                Logger.i(DEBUG_TAG, "Database Version: " + db.getVersion());
-                Logger.i(DEBUG_TAG, "Database Page Size: " + db.getPageSize());
-                Logger.i(DEBUG_TAG, "Database Max Size: " + db.getMaximumSize());
-                Logger.i(DEBUG_TAG, "Database Open?  " + db.isOpen());
-                Logger.i(DEBUG_TAG, "Database readonly?  " + db.isReadOnly());
-                Logger.i(DEBUG_TAG, "Database Locked by current thread?  " + db.isDbLockedByCurrentThread());
+            if (GPLog.LOG_ANDROID) {
+                Log.i(DEBUG_TAG, "Database: " + db.getPath());
+                Log.i(DEBUG_TAG, "Database Version: " + db.getVersion());
+                Log.i(DEBUG_TAG, "Database Page Size: " + db.getPageSize());
+                Log.i(DEBUG_TAG, "Database Max Size: " + db.getMaximumSize());
+                Log.i(DEBUG_TAG, "Database Open?  " + db.isOpen());
+                Log.i(DEBUG_TAG, "Database readonly?  " + db.isReadOnly());
+                Log.i(DEBUG_TAG, "Database Locked by current thread?  " + db.isDbLockedByCurrentThread());
             }
         }
 
@@ -97,10 +98,10 @@ public class DatabaseManager {
     public void closeDatabase() {
         if (databaseHelper != null) {
             if (Debug.D)
-                Logger.i(DEBUG_TAG, "Closing database");
+                Log.i(DEBUG_TAG, "Closing database");
             databaseHelper.close();
             if (Debug.D)
-                Logger.i(DEBUG_TAG, "Database closed");
+                Log.i(DEBUG_TAG, "Database closed");
             databaseHelper = null;
             dbManager = null;
         }
@@ -118,16 +119,16 @@ public class DatabaseManager {
         public void open( Context context ) throws IOException {
             if (databaseFile.exists()) {
                 if (Debug.D)
-                    Logger.i("SQLiteHelper", "Opening database at " + databaseFile);
+                    Log.i("SQLiteHelper", "Opening database at " + databaseFile);
                 db = SQLiteDatabase.openOrCreateDatabase(databaseFile, null);
                 int dbVersion = db.getVersion();
                 if (DATABASE_VERSION > dbVersion)
                     upgrade(DATABASE_VERSION, dbVersion, context);
             } else {
                 if (Debug.D) {
-                    Logger.i("SQLiteHelper", "Creating database at " + databaseFile);
-                    Logger.d(dbManager, "db folder exists: " + databaseFile.getParentFile().exists());
-                    Logger.d(dbManager, "db folder is writable: " + databaseFile.getParentFile().canWrite());
+                    Log.i("SQLiteHelper", "Creating database at " + databaseFile);
+                    Log.i("SQLiteHelper", "db folder exists: " + databaseFile.getParentFile().exists());
+                    Log.i("SQLiteHelper", "db folder is writable: " + databaseFile.getParentFile().canWrite());
                 }
                 db = SQLiteDatabase.openOrCreateDatabase(databaseFile, null);
                 create(context);
@@ -154,6 +155,7 @@ public class DatabaseManager {
             db.setVersion(DATABASE_VERSION);
 
             // CREATE TABLES
+            GPLog.createTables(db);
             DaoNotes.createTables(context);
             DaoGpsLog.createTables(context);
             DaoBookmarks.createTables(context);
@@ -184,12 +186,15 @@ public class DatabaseManager {
             if (oldDbVersion <= 5) {
                 DaoNotes.upgradeNotesFromDB5ToDB6(db);
             }
+            if (oldDbVersion <= 6) {
+                GPLog.createTables(db);
+            }
             db.beginTransaction();
             try {
                 db.setTransactionSuccessful();
                 db.setVersion(newDbVersion);
             } catch (Exception e) {
-                Logger.e(this, e.getLocalizedMessage(), e);
+                Log.e("DATABASEMANAGER", e.getLocalizedMessage(), e);
                 throw new IOException(e.getLocalizedMessage());
             } finally {
                 db.endTransaction();

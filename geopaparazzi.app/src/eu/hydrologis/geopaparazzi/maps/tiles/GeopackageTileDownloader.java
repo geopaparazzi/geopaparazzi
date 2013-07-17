@@ -25,11 +25,9 @@ import org.mapsforge.core.model.Tile;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.ISpatialDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.MbtilesDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
 
 /**
@@ -100,8 +98,8 @@ public class GeopackageTileDownloader extends TileDownloader {
                 decodedBitmap = BitmapFactory.decodeByteArray(rasterBytes, 0, rasterBytes.length);
             } catch (Exception e) {
                 // ignore and set the image as empty
-                if (Debug.D)
-                    Logger.i(this, "Could not find image: " + tileQuery); //$NON-NLS-1$
+                if (GPLog.LOG_HEAVY)
+                    GPLog.addLogEntry(this, "Could not find image: " + tileQuery); //$NON-NLS-1$
             }
             // check if the input stream could be decoded into a bitmap
             if (decodedBitmap != null) {

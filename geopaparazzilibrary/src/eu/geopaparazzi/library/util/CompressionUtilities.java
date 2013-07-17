@@ -31,8 +31,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.webproject.ReturnCodes;
 
 /**
@@ -208,8 +207,8 @@ public class CompressionUtilities {
             String name = files[i].getName();
             File file = files[i];
             if (!file.exists()) {
-                if (Debug.D)
-                    Logger.d("COMPRESSIONUTILITIES", "Skipping: " + name);
+                if (GPLog.LOG)
+                    GPLog.addLogEntry("COMPRESSIONUTILITIES", "Skipping: " + name);
                 continue;
             }
             BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));

@@ -25,6 +25,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.mapsforge.android.maps.DebugSettings;
 import org.mapsforge.android.maps.MapActivity;
@@ -58,7 +59,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Paint.Style;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
@@ -75,9 +75,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -89,6 +89,7 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gps.GpsLocation;
 import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.gps.GpsManagerListener;
@@ -104,7 +105,6 @@ import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.GeocodeActivity;
 import eu.geopaparazzi.library.util.activities.InsertCoordActivity;
 import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.activities.DataListActivity;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
@@ -513,7 +513,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         overlays.clear();
         overlays.add(dataOverlay);
         readData();
-        
+
         super.onResume();
     }
 
@@ -574,9 +574,9 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
     public boolean onTouch( View v, MotionEvent event ) {
         int action = event.getAction();
-        if (Debug.D) {
-            Logger.d(this, "onTouch issued with motionevent: " + action); //$NON-NLS-1$
-        }
+        if (GPLog.LOG_HEAVY)
+            GPLog.addLogEntry(this, "onTouch issued with motionevent: " + action); //$NON-NLS-1$
+
         if (action == MotionEvent.ACTION_UP) {
             saveCenterPref();
 
@@ -1035,9 +1035,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     }
 
     protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
-        if (Debug.D) {
-            Logger.d(this, "Activity returned"); //$NON-NLS-1$
-        }
+        if (GPLog.LOG_HEAVY)
+            GPLog.addLogEntry(this, "Activity returned"); //$NON-NLS-1$
         super.onActivityResult(requestCode, resultCode, data);
         switch( requestCode ) {
         case (INSERTCOORD_RETURN_CODE): {
@@ -1075,8 +1074,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-                        if (Debug.D)
-                            Logger.e(this, "Cannot draw route.", e); //$NON-NLS-1$
+                        GPLog.error(this, "Cannot draw route.", e); //$NON-NLS-1$
                     }
 
                 } else {
@@ -1334,7 +1332,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                                     nswe[1], nswe[2], nswe[3]);
                             mapView.invalidateOnUiThread();
                         } catch (IOException e) {
-                            Logger.e(this, e.getLocalizedMessage(), e);
+                            GPLog.error(this, e.getLocalizedMessage(), e);
                             e.printStackTrace();
                             Toast.makeText(getApplicationContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
                         }
@@ -1417,13 +1415,11 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             }
             if (doCenter) {
                 setNewCenter(lon, lat, false);
-                if (Debug.D)
-                    Logger.i(this, "recentering triggered"); //$NON-NLS-1$                
+                if (GPLog.LOG_HEAVY)
+                    GPLog.addLogEntry(this, "recentering triggered"); //$NON-NLS-1$                
             }
         } catch (Exception e) {
-            if (Debug.D) {
-                Logger.e(this, "On location change error", e); //$NON-NLS-1$
-            }
+            GPLog.error(this, "On location change error", e); //$NON-NLS-1$
             // finish the activity to reset
             finish();
         }
@@ -1445,13 +1441,13 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         double lon = mapCenter.longitudeE6 / LibraryConstants.E6;
         double lat = mapCenter.latitudeE6 / LibraryConstants.E6;
 
-        if (Debug.D) {
+        if (GPLog.LOG_HEAVY) {
             StringBuilder sb = new StringBuilder();
             sb.append("Map Center moved: "); //$NON-NLS-1$
             sb.append(lon);
             sb.append("/"); //$NON-NLS-1$
             sb.append(lat);
-            Logger.i(this, sb.toString());
+            GPLog.addLogEntry(this, sb.toString());
         }
 
         PositionUtilities.putMapCenterInPreferences(preferences, lon, lat, mapPosition.getZoomLevel());
@@ -1501,8 +1497,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     };
 
     private void updateBatteryCondition( int level ) {
-        if (Debug.D)
-            Logger.d(this, "BATTERY LEVEL GEOPAP: " + level); //$NON-NLS-1$
+        if (GPLog.LOG_HEAVY)
+            GPLog.addLogEntry(this, "BATTERY LEVEL GEOPAP: " + level); //$NON-NLS-1$
         StringBuilder sb = new StringBuilder();
         sb.append(level);
         if (level < 100) {

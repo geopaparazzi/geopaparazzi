@@ -26,9 +26,10 @@ import static eu.geopaparazzi.library.forms.FormUtilities.TAG_VALUE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_BOOLEAN;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_DATE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_DOUBLE;
-import static eu.geopaparazzi.library.forms.FormUtilities.*;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_LABEL;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_LABELWITHLINE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_MAP;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_NFCUID;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_PICTURES;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_SKETCH;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRING;
@@ -57,13 +58,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
 import eu.geopaparazzi.library.forms.views.GNfcUidView;
 import eu.geopaparazzi.library.forms.views.GView;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
-import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
  * The fragment detail view.
@@ -213,7 +214,7 @@ public class FragmentDetail extends Fragment {
                     } else if (type.equals(TYPE_NFCUID)) {
                         addedView = new GNfcUidView(this, null, requestCode, mainView, key, value, constraintDescription);
                     } else {
-                        Logger.i(this, "Type non implemented yet: " + type); //$NON-NLS-1$
+                        GPLog.addLogEntry(this, null, null, "Type non implemented yet: " + type);
                     }
                     key2WidgetMap.put(key, addedView);
                     keyList.add(key);
@@ -277,7 +278,7 @@ public class FragmentDetail extends Fragment {
                     if (text != null)
                         FormUtilities.update(formItems, key, text);
                 } catch (JSONException e) {
-                    Logger.e(this, e.getLocalizedMessage(), e);
+                    GPLog.error(this, e.getLocalizedMessage(), e);
                     e.printStackTrace();
                 }
             }

@@ -54,9 +54,8 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Base64;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
  * Network utils methods.
@@ -265,7 +264,9 @@ public class NetworkUtilities {
 
             wr = new BufferedOutputStream(conn.getOutputStream());
             long bufferSize = Math.min(fileSize, maxBufferSize);
-            Logger.i(TAG, "BUFFER USED: " + bufferSize);
+
+            if (GPLog.LOG)
+                GPLog.addLogEntry(TAG, "BUFFER USED: " + bufferSize);
             byte[] buffer = new byte[(int) bufferSize];
             int bytesRead = fis.read(buffer, 0, (int) bufferSize);
             long totalBytesWritten = 0;
@@ -281,8 +282,9 @@ public class NetworkUtilities {
             wr.flush();
 
             String responseMessage = conn.getResponseMessage();
-            if (Debug.D)
-                Logger.d(TAG, "POST RESPONSE: " + responseMessage);
+
+            if (GPLog.LOG)
+                GPLog.addLogEntry(TAG, "POST RESPONSE: " + responseMessage);
             return responseMessage;
         } catch (Exception e) {
             e.printStackTrace();
@@ -396,8 +398,9 @@ public class NetworkUtilities {
             }
         } else {
             String message = "Failed the http GET request.";
-            Logger.d(TAG, message);
-            throw new IOException(message);
+            IOException ioException = new IOException(message);
+            GPLog.error(TAG, message, ioException);
+            throw ioException;
         }
         return builder.toString();
     }

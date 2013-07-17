@@ -17,9 +17,8 @@ import org.xml.sax.InputSource;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gps.IGpsLogDbHelper;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
 
 @SuppressWarnings("nls")
 public class OpenRouteServiceHandler {
@@ -167,8 +166,7 @@ public class OpenRouteServiceHandler {
                         logDumper.addGpsLogDataPoint(sqliteDatabase, newLogId, lon, lat, altim, nowPlus10Secs);
                     }
                 } catch (NumberFormatException e) {
-                    if (Debug.D)
-                        Logger.e(this, "Cannot draw route.", e);
+                    GPLog.error(this, "Cannot draw route.", e);
                 }
             }
 

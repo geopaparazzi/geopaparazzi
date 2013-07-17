@@ -17,13 +17,19 @@
  */
 package eu.geopaparazzi.library.util;
 
-import static eu.geopaparazzi.library.util.LibraryConstants.*;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_ELEV;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_LAT;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_LON;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_MAPCENTER_LAT;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_MAPCENTER_LON;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_MAP_ZOOM;
+
+import java.util.logging.Logger;
+
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.debug.Debug;
 
 /**
  * Position and preferences related utils.
@@ -51,8 +57,8 @@ public class PositionUtilities {
         Editor editor = preferences.edit();
         float longFloat = (float) longitude * LibraryConstants.E6;
         float latFloat = (float) latitude * LibraryConstants.E6;
-        if (Debug.D) {
-            Logger.d("POSITIONUTILITIES", "putGpsLocation: " + longFloat + "/" + latFloat);
+        if (GPLog.LOG_HEAVY) {
+            GPLog.addLogEntry("POSITIONUTILITIES", "putGpsLocation: " + longFloat + "/" + latFloat);
         }
         editor.putFloat(PREFS_KEY_LON, longFloat);
         editor.putFloat(PREFS_KEY_LAT, latFloat);
@@ -84,8 +90,8 @@ public class PositionUtilities {
             // we also do not believe in 0,0
             return null;
         }
-        if (Debug.D) {
-            Logger.d("POSITIONUTILITIES", "getGpsLocation: " + lon + "/" + lat);
+        if (GPLog.LOG_HEAVY) {
+            GPLog.addLogEntry("POSITIONUTILITIES", "getGpsLocation: " + lon + "/" + lat);
         }
         double elevation = (double) preferences.getFloat(PREFS_KEY_ELEV, 0f);
         return new double[]{lon, lat, elevation};
@@ -106,8 +112,8 @@ public class PositionUtilities {
         Editor editor = preferences.edit();
         float longFloat = (float) longitude * LibraryConstants.E6;
         float latFloat = (float) latitude * LibraryConstants.E6;
-        if (Debug.D) {
-            Logger.d("POSITIONUTILITIES", "putMapCenter: " + longFloat + "/" + latFloat);
+        if (GPLog.LOG_HEAVY) {
+            GPLog.addLogEntry("POSITIONUTILITIES", "putMapCenter: " + longFloat + "/" + latFloat);
         }
         editor.putFloat(PREFS_KEY_MAPCENTER_LON, longFloat);
         editor.putFloat(PREFS_KEY_MAPCENTER_LAT, latFloat);
@@ -141,8 +147,9 @@ public class PositionUtilities {
                 // try to get the last gps location
                 double[] lastGpsLocation = getGpsLocationFromPreferences(preferences);
                 if (lastGpsLocation != null) {
-                    if (Debug.D) {
-                        Logger.d("POSITIONUTILITIES", "getMapCenter-fromgps: " + lastGpsLocation[0] + "/" + lastGpsLocation[1]);
+                    if (GPLog.LOG_HEAVY) {
+                        GPLog.addLogEntry("POSITIONUTILITIES", "getMapCenter-fromgps: " + lastGpsLocation[0] + "/"
+                                + lastGpsLocation[1]);
                     }
                     return new double[]{lastGpsLocation[0], lastGpsLocation[1], zoom};
                 } else {
@@ -158,8 +165,8 @@ public class PositionUtilities {
             }
         }
 
-        if (Debug.D) {
-            Logger.d("POSITIONUTILITIES", "getMapCenter-fromgps: " + lon + "/" + lat);
+        if (GPLog.LOG_HEAVY) {
+            GPLog.addLogEntry("POSITIONUTILITIES", "getMapCenter-fromgps: " + lon + "/" + lat);
         }
         return new double[]{lon, lat, zoom};
     }

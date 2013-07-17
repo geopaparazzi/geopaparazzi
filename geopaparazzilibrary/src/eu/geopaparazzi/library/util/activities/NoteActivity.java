@@ -28,9 +28,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
  * Notes taking activity.
@@ -102,7 +102,7 @@ public class NoteActivity extends Activity {
                     setResult(Activity.RESULT_OK, intent);
 
                 } catch (Exception e) {
-                    Logger.e(this, e.getLocalizedMessage(), e);
+                    GPLog.error(this, e.getLocalizedMessage(), e);
                     e.printStackTrace();
                     Utilities.messageDialog(NoteActivity.this, R.string.notenonsaved, null);
                 }

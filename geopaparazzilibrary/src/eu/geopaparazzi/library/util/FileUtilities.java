@@ -33,8 +33,7 @@ import java.util.List;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-
-import eu.geopaparazzi.library.util.debug.Logger;
+import eu.geopaparazzi.library.database.GPLog;
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
@@ -92,7 +91,7 @@ public class FileUtilities {
                 try {
                     br.close();
                 } catch (IOException e) {
-                    Logger.e("FILEUTILS", e.getLocalizedMessage(), e); //$NON-NLS-1$
+                    GPLog.error("FILEUTILS", e.getLocalizedMessage(), e); //$NON-NLS-1$
                     e.printStackTrace();
                 }
             }
@@ -117,7 +116,7 @@ public class FileUtilities {
                 try {
                     br.close();
                 } catch (IOException e) {
-                    Logger.e("FILEUTILS", e.getLocalizedMessage(), e); //$NON-NLS-1$
+                    GPLog.error("FILEUTILS", e.getLocalizedMessage(), e); //$NON-NLS-1$
                     e.printStackTrace();
                 }
             }
@@ -134,7 +133,7 @@ public class FileUtilities {
                 try {
                     bw.close();
                 } catch (IOException e) {
-                    Logger.e("FILEUTILS", e.getLocalizedMessage(), e); //$NON-NLS-1$
+                    GPLog.error("FILEUTILS", e.getLocalizedMessage(), e); //$NON-NLS-1$
                     e.printStackTrace();
                 }
             }

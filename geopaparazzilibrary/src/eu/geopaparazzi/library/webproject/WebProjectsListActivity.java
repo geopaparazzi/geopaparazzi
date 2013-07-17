@@ -41,9 +41,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
  * Web projects listing activity.
@@ -52,7 +51,7 @@ import eu.geopaparazzi.library.util.debug.Logger;
  */
 public class WebProjectsListActivity extends ListActivity {
     private static final String ERROR = "error"; //$NON-NLS-1$
-    
+
     private ArrayAdapter<Webproject> arrayAdapter;
     private EditText filterText;
 
@@ -119,8 +118,8 @@ public class WebProjectsListActivity extends ListActivity {
     }
 
     private void filterList( String filterText ) {
-        if (Debug.D)
-            Logger.d(this, "filter projects list"); //$NON-NLS-1$
+        if (GPLog.LOG)
+            GPLog.addLogEntry(this, "filter projects list"); //$NON-NLS-1$
 
         projectListToLoad.clear();
         for( Webproject project : projectList ) {
@@ -133,8 +132,8 @@ public class WebProjectsListActivity extends ListActivity {
     }
 
     private void refreshList() {
-        if (Debug.D)
-            Logger.d(this, "refreshing projects list"); //$NON-NLS-1$
+        if (GPLog.LOG)
+            GPLog.addLogEntry(this, "refreshing projects list"); //$NON-NLS-1$
         arrayAdapter = new ArrayAdapter<Webproject>(this, R.layout.webprojectsrow, projectListToLoad){
             @Override
             public View getView( int position, View cView, ViewGroup parent ) {
@@ -193,7 +192,7 @@ public class WebProjectsListActivity extends ListActivity {
                             webproject);
                     return returnCode;
                 } catch (Exception e) {
-                    Logger.e(this, e.getLocalizedMessage(), e);
+                    GPLog.error(this, e.getLocalizedMessage(), e);
                     e.printStackTrace();
                     return e.getMessage();
                 }
@@ -202,7 +201,8 @@ public class WebProjectsListActivity extends ListActivity {
             protected void onPostExecute( String response ) { // on UI thread!
                 cloudProgressDialog.dismiss();
                 if (response.startsWith(ReturnCodes.OK.getMsgString())) {
-                    String msg = getString(R.string.project_successfully_downloaded);// . Load the new
+                    String msg = getString(R.string.project_successfully_downloaded);// . Load the
+                                                                                     // new
                     // project?";
                     Utilities.messageDialog(WebProjectsListActivity.this, msg, null);
                     // AlertDialog.Builder builder = new

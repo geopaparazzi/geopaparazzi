@@ -27,8 +27,7 @@ import java.util.List;
 
 import android.bluetooth.BluetoothSocket;
 import android.os.SystemClock;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
+import eu.geopaparazzi.library.database.GPLog;
 
 /**
  * A utility class used to manage the communication with the bluetooth GPS whn the connection has been established.
@@ -86,12 +85,19 @@ public class NmeaGpsDevice implements IBluetoothIOHandler {
                 tmpOut2 = new PrintStream(tmpOut, false, "US-ASCII");
             }
         } catch (IOException e) {
-            if (Debug.D)
-                Logger.e(LOG_TAG, "error while getting socket streams", e);
+            error("error while getting socket streams", e);
         }
         in = tmpIn;
         out = tmpOut;
         out2 = tmpOut2;
+    }
+
+    private void error( String msg, Exception e ) {
+        GPLog.error(this, msg, e);
+    }
+    private void log( String msg ) {
+        if (GPLog.LOG)
+            GPLog.addLogEntry(this, null, null, msg);
     }
 
     /* (non-Javadoc)
@@ -140,8 +146,7 @@ public class NmeaGpsDevice implements IBluetoothIOHandler {
                 now = SystemClock.uptimeMillis();
             }
         } catch (IOException e) {
-            if (Debug.D)
-                Logger.e(LOG_TAG, "error while getting data", e);
+            error("error while getting data", e);
         } finally {
             // cleanly closing everything...
             this.close();
@@ -179,11 +184,9 @@ public class NmeaGpsDevice implements IBluetoothIOHandler {
                 out.flush();
             }
         } catch (IOException e) {
-            if (Debug.D)
-                Logger.e(LOG_TAG, "Exception during write", e);
+            error("Exception during write", e);
         } catch (InterruptedException e) {
-            if (Debug.D)
-                Logger.e(LOG_TAG, "Exception during write", e);
+            error("Exception during write", e);
         }
     }
 
@@ -202,8 +205,7 @@ public class NmeaGpsDevice implements IBluetoothIOHandler {
                 out2.flush();
             }
         } catch (InterruptedException e) {
-            if (Debug.D)
-                Logger.e(LOG_TAG, "Exception during write", e);
+            error("Exception during write", e);
         }
     }
 
@@ -214,29 +216,23 @@ public class NmeaGpsDevice implements IBluetoothIOHandler {
     public void close() {
         ready = false;
         try {
-            if (Debug.D)
-                Logger.d(LOG_TAG, "closing Bluetooth GPS output sream");
+            log("closing Bluetooth GPS output sream");
             in.close();
         } catch (IOException e) {
-            if (Debug.D)
-                Logger.e(LOG_TAG, "error while closing GPS NMEA output stream", e);
+            error("error while closing GPS NMEA output stream", e);
         } finally {
             try {
-                if (Debug.D)
-                    Logger.d(LOG_TAG, "closing Bluetooth GPS input streams");
+                log("closing Bluetooth GPS input streams");
                 out2.close();
                 out.close();
             } catch (IOException e) {
-                if (Debug.D)
-                    Logger.e(LOG_TAG, "error while closing GPS input streams", e);
+                error("error while closing GPS input streams", e);
             } finally {
                 try {
-                    if (Debug.D)
-                        Logger.d(LOG_TAG, "closing Bluetooth GPS socket");
+                    log("closing Bluetooth GPS socket");
                     socket.close();
                 } catch (IOException e) {
-                    if (Debug.D)
-                        Logger.e(LOG_TAG, "error while closing GPS socket", e);
+                    error("error while closing GPS socket", e);
                 }
             }
             bluetoothListeners.clear();

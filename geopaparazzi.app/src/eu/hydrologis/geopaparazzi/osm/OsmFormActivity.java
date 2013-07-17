@@ -17,7 +17,17 @@
  */
 package eu.hydrologis.geopaparazzi.osm;
 
-import static eu.hydrologis.geopaparazzi.osm.FormUtilities.*;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.CONSTRAINT_MANDATORY;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.CONSTRAINT_RANGE;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_KEY;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_LONGNAME;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_TYPE;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_VALUE;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TYPE_BOOLEAN;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TYPE_DOUBLE;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TYPE_STRING;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TYPE_STRINGCOMBO;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TYPE_STRINGMULTIPLECHOICE;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,13 +53,13 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
 import eu.geopaparazzi.library.forms.constraints.MandatoryConstraint;
 import eu.geopaparazzi.library.forms.constraints.RangeConstraint;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
@@ -150,7 +160,7 @@ public class OsmFormActivity extends Activity {
                         alertDialog.show();
                     }
                 } catch (Exception e) {
-                    Logger.e(this, e.getLocalizedMessage(), e);
+                    GPLog.error(this, e.getLocalizedMessage(), e);
                     e.printStackTrace();
                     AlertDialog.Builder builder = new AlertDialog.Builder(OsmFormActivity.this);
                     builder.setMessage("An error occurred while saving:\n" + endString).setCancelable(false)
@@ -240,7 +250,7 @@ public class OsmFormActivity extends Activity {
             }
 
         } catch (JSONException e) {
-            Logger.e(this, e.getLocalizedMessage(), e);
+            GPLog.error(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
         }
 
@@ -286,7 +296,7 @@ public class OsmFormActivity extends Activity {
                 FormUtilities.updateExtras(formItemsArray, latitude, longitude, category, tagName);
 
             } catch (JSONException e) {
-                Logger.e(this, e.getLocalizedMessage(), e);
+                GPLog.error(this, e.getLocalizedMessage(), e);
                 e.printStackTrace();
             }
 

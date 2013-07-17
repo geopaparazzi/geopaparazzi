@@ -33,13 +33,12 @@ import android.content.SharedPreferences.Editor;
 import android.content.res.AssetManager;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.CompressionUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
@@ -140,13 +139,12 @@ public class OsmUtilities {
         // json = json.substring(1);
 
         wpsXmlString = wpsXmlString.replaceFirst("JSON", json);
-        if (Debug.D)
-            Logger.d("OSMUTILITIES", "WPSXML SENT: " + wpsXmlString);
-        // System.out.println(wpsXmlString);
+        if (GPLog.LOG)
+            GPLog.addLogEntry("OSMUTILITIES", "WPSXML SENT: " + wpsXmlString);
 
         String response = NetworkUtilities.sendPost(serverUrl, wpsXmlString, null, null);
-        if (Debug.D)
-            Logger.i("OSMUTILITIES", "RESPONSE FROM SERVER:" + response);
+        if (GPLog.LOG)
+            GPLog.addLogEntry("OSMUTILITIES", "RESPONSE FROM SERVER:" + response);
         return response;
     }
 

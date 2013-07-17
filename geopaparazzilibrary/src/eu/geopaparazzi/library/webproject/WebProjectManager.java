@@ -31,11 +31,10 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.CompressionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
  * Singleton to handle cloud up- and download.
@@ -91,8 +90,8 @@ public enum WebProjectManager {
 
             server = server + "/" + UPLOADPATH;
             String result = NetworkUtilities.sendFilePost(server, zipFile, user, passwd);
-            if (Debug.D) {
-                Logger.i(this, result);
+            if (GPLog.LOG) {
+                GPLog.addLogEntry(this, result);
             }
             result = result.trim();
             if (result.toLowerCase().equals("ok")) {

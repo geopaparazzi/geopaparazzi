@@ -24,6 +24,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import android.content.Context;
 import android.content.Intent;
@@ -41,20 +42,20 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.sketch.DrawingActivity;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
  * A custom Sketch view.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class GSketchView extends View implements GView{
+public class GSketchView extends View implements GView {
 
     private String _value;
 
@@ -158,17 +159,14 @@ public class GSketchView extends View implements GView{
     }
 
     private void refresh( final Context context ) {
-        if (Debug.D)
-            Logger.d(this, "Entering refresh....");
+        log("Entering refresh....");
 
         if (_value != null && _value.length() > 0) {
             String[] imageSplit = _value.split(";");
-            if (Debug.D)
-                Logger.d(this, "Handling images: " + _value);
+            log("Handling images: " + _value);
 
             for( String imageAbsolutePath : imageSplit ) {
-                if (Debug.D)
-                    Logger.d(this, "img: " + imageAbsolutePath);
+                log("img: " + imageAbsolutePath);
 
                 if (imageAbsolutePath.length() == 0) {
                     continue;
@@ -179,8 +177,7 @@ public class GSketchView extends View implements GView{
 
                 final File image = new File(imageAbsolutePath);
                 if (!image.exists()) {
-                    if (Debug.D)
-                        Logger.d(this, "Img doesn't exist on disk....");
+                    log("Img doesn't exist on disk....");
                     continue;
                 }
 
@@ -198,8 +195,7 @@ public class GSketchView extends View implements GView{
                         context.startActivity(intent);
                     }
                 });
-                if (Debug.D)
-                    Logger.d(this, "Creating thumb and adding it: " + imageAbsolutePath);
+                log("Creating thumb and adding it: " + imageAbsolutePath);
                 imageLayout.addView(imageView);
                 imageLayout.invalidate();
                 addedImages.add(imageAbsolutePath);
@@ -212,14 +208,17 @@ public class GSketchView extends View implements GView{
                 }
                 _value = sb.substring(1);
 
-                if (Debug.D)
-                    Logger.d(this, "New img paths: " + _value);
+                log("New img paths: " + _value);
 
             }
-            if (Debug.D)
-                Logger.d(this, "Exiting refresh....");
+            log("Exiting refresh....");
 
         }
+    }
+
+    private void log( String msg ) {
+        if (GPLog.LOG_HEAVY)
+            GPLog.addLogEntry(this, null, null, msg);
     }
 
     public String getValue() {

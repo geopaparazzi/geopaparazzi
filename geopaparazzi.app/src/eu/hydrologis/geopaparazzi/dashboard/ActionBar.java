@@ -20,6 +20,7 @@ package eu.hydrologis.geopaparazzi.dashboard;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -34,12 +35,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gps.GpsLocation;
 import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.gps.GpsManagerListener;
 import eu.geopaparazzi.library.sensors.SensorsManager;
 import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.actionbar.ActionItem;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.actionbar.QuickAction;
@@ -172,12 +173,12 @@ public class ActionBar implements GpsManagerListener {
             // if a list is available, check if the status gps is installed
             for( PackageInfo packageInfo : installedPackages ) {
                 String packageName = packageInfo.packageName;
-                if (Debug.D)
-                    Logger.d("ACTIONBAR", packageName);
+                if (GPLog.LOG_HEAVY)
+                    GPLog.addLogEntry("ACTIONBAR", packageName);
                 if (packageName.startsWith(gpsStatusPackage)) {
                     hasGpsStatus = true;
-                    if (Debug.D)
-                        Logger.d("ACTIONBAR", "Found package: " + packageName);
+                    if (GPLog.LOG_HEAVY)
+                        GPLog.addLogEntry("ACTIONBAR", "Found package: " + packageName);
                     break;
                 }
             }
@@ -276,26 +277,26 @@ public class ActionBar implements GpsManagerListener {
         Resources resources = gpsOnOffView.getResources();
 
         if (gpsManager.isEnabled()) {
-            if (Debug.D)
-                Logger.d(this, "GPS seems to be on");
+            if (GPLog.LOG_HEAVY)
+                GPLog.addLogEntry(this, "GPS seems to be on");
             if (gpsManager.isLogging()) {
-                if (Debug.D)
-                    Logger.d(this, "GPS seems to be also logging");
+                if (GPLog.LOG_HEAVY)
+                    GPLog.addLogEntry(this, "GPS seems to be also logging");
                 gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_logging));
             } else {
                 if (gpsManager.hasValidData()) {
-                    if (Debug.D)
-                        Logger.d(this, "GPS has fix");
+                    if (GPLog.LOG_HEAVY)
+                        GPLog.addLogEntry(this, "GPS has fix");
                     gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_hasfix_notlogging));
                 } else {
-                    if (Debug.D)
-                        Logger.d(this, "GPS is not logging");
+                    if (GPLog.LOG_HEAVY)
+                        GPLog.addLogEntry(this, "GPS is not logging");
                     gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_notlogging));
                 }
             }
         } else {
-            if (Debug.D)
-                Logger.d(this, "GPS seems to be off");
+            if (GPLog.LOG_HEAVY)
+                GPLog.addLogEntry(this, "GPS seems to be off");
             gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_off));
         }
     }
@@ -304,14 +305,14 @@ public class ActionBar implements GpsManagerListener {
     }
 
     public void onStatusChanged( int status ) {
-        if (Debug.D)
-            Logger.d(this, "Check logging on gps status update.");
+        if (GPLog.LOG_HEAVY)
+            GPLog.addLogEntry(this, "Check logging on gps status update.");
         checkLogging();
     }
 
     public void onGpsStatusChanged( boolean newHasFix ) {
-        if (Debug.D)
-            Logger.d(this, "Check logging on gps fix update.");
+        if (GPLog.LOG_HEAVY)
+            GPLog.addLogEntry(this, "Check logging on gps fix update.");
         checkLogging();
     }
 }

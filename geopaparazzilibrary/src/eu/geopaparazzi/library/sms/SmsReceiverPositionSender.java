@@ -25,9 +25,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.telephony.SmsMessage;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
  * Sms reciever and gps coordinates sender.
@@ -73,8 +72,8 @@ public class SmsReceiverPositionSender extends BroadcastReceiver {
                     if (body == null) {
                         continue;
                     }
-                    if (Debug.D)
-                        Logger.i(this, "Got message: " + body);
+                    if (GPLog.LOG)
+                        GPLog.addLogEntry(this, "Got message: " + body);
                     if (body.toLowerCase().matches(".*geopap.*")) {
                         isGeopapsms = true;
                     }
@@ -93,8 +92,8 @@ public class SmsReceiverPositionSender extends BroadcastReceiver {
                         msg = SmsUtilities.createPositionText(context, null);
                     }
 
-                    if (Debug.D)
-                        Logger.i(this, msg);
+                    if (GPLog.LOG)
+                        GPLog.addLogEntry(this, msg);
                     String addr = smsMessage.getOriginatingAddress();
                     SmsUtilities.sendSMS(context, addr, msg, true);
                 }

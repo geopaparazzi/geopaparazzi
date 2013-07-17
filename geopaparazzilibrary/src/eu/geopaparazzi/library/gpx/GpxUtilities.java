@@ -22,12 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gpx.parser.GpxParser;
 import eu.geopaparazzi.library.gpx.parser.GpxParser.Route;
 import eu.geopaparazzi.library.gpx.parser.GpxParser.TrackSegment;
 import eu.geopaparazzi.library.gpx.parser.WayPoint;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
  * Utilities to handle gpx stuff.
@@ -137,8 +136,7 @@ public class GpxUtilities {
                 }
             }
         } else {
-            if (Debug.D)
-                Logger.d("GPXUTILITIES", "ERROR"); //$NON-NLS-1$ //$NON-NLS-2$
+            GPLog.error("GPXUTILITIES", "ERROR", new RuntimeException()); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return gpxItems;
 

@@ -26,9 +26,8 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.hydrologis.geopaparazzi.R;
@@ -116,8 +115,8 @@ public class SliderDrawView extends View {
             textWidth = rect.width();
             x = cWidth / 2 - textWidth / 2;
             canvas.drawText(distanceText, x, upper + delta + textHeight, measureTextPaint);
-            if (Debug.D)
-                Logger.d(this, "Drawing measure path text: " + upper); //$NON-NLS-1$
+            if (GPLog.LOG_HEAVY)
+                GPLog.addLogEntry(this, "Drawing measure path text: " + upper); //$NON-NLS-1$
         } else if (doInfoMode) {
             canvas.drawRect(rect, infoRectPaintFill);
             canvas.drawRect(rect, infoRectPaintStroke);
@@ -171,8 +170,8 @@ public class SliderDrawView extends View {
 
                 infoDialog(ul.getLatitude(), ul.getLongitude(), lr.getLatitude(), lr.getLongitude());
 
-                if (Debug.D)
-                    Logger.d(this, "UNTOUCH: " + tmpP.x + "/" + tmpP.y); //$NON-NLS-1$//$NON-NLS-2$
+                if (GPLog.LOG_HEAVY)
+                    GPLog.addLogEntry(this, "UNTOUCH: " + tmpP.x + "/" + tmpP.y); //$NON-NLS-1$//$NON-NLS-2$
                 break;
             }
         }
@@ -197,8 +196,8 @@ public class SliderDrawView extends View {
                 lastX = currentX;
                 lastY = currentY;
 
-                if (Debug.D)
-                    Logger.d(this, "TOUCH: " + tmpP.x + "/" + tmpP.y); //$NON-NLS-1$//$NON-NLS-2$
+                if (GPLog.LOG_HEAVY)
+                    GPLog.addLogEntry(this, "TOUCH: " + tmpP.x + "/" + tmpP.y); //$NON-NLS-1$//$NON-NLS-2$
                 break;
             case MotionEvent.ACTION_MOVE:
                 float dx = currentX - lastX;
@@ -212,8 +211,8 @@ public class SliderDrawView extends View {
                 GeoPoint currentGeoPoint = pj.fromPixels(round(currentX), round(currentY));
                 pj.toPixels(currentGeoPoint, tmpP);
                 measurePath.lineTo(tmpP.x, tmpP.y);
-                if (Debug.D)
-                    Logger.d(this, "DRAG: " + tmpP.x + "/" + tmpP.y); //$NON-NLS-1$ //$NON-NLS-2$
+                if (GPLog.LOG_HEAVY)
+                    GPLog.addLogEntry(this, "DRAG: " + tmpP.x + "/" + tmpP.y); //$NON-NLS-1$ //$NON-NLS-2$
                 // the measurement
                 GeoPoint previousGeoPoint = pj.fromPixels(round(lastX), round(lastY));
 
@@ -231,8 +230,8 @@ public class SliderDrawView extends View {
                 invalidate();
                 break;
             case MotionEvent.ACTION_UP:
-                if (Debug.D)
-                    Logger.d(this, "UNTOUCH: " + tmpP.x + "/" + tmpP.y); //$NON-NLS-1$//$NON-NLS-2$
+                if (GPLog.LOG_HEAVY)
+                    GPLog.addLogEntry(this, "UNTOUCH: " + tmpP.x + "/" + tmpP.y); //$NON-NLS-1$//$NON-NLS-2$
                 break;
             }
         }

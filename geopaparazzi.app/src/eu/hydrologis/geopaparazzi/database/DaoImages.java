@@ -32,9 +32,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.util.Image;
 
 /**
@@ -75,7 +75,7 @@ public class DaoImages {
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
-            Logger.e("DAOIMAGES", e.getLocalizedMessage(), e);
+            GPLog.error("DAOIMAGES", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();
@@ -93,7 +93,7 @@ public class DaoImages {
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
-            Logger.e("DAOIMAGES", e.getLocalizedMessage(), e);
+            GPLog.error("DAOIMAGES", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();
@@ -243,8 +243,8 @@ public class DaoImages {
         String CREATE_INDEX_IMAGES_X_BY_Y = sB.toString();
 
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
-        if (Debug.D)
-            Logger.i("DAOIMAGES", "Create the images table.");
+        if (GPLog.LOG_HEAVY)
+            Log.i("DAOIMAGES", "Create the images table.");
 
         sqliteDatabase.beginTransaction();
         try {
@@ -254,7 +254,7 @@ public class DaoImages {
 
             sqliteDatabase.setTransactionSuccessful();
         } catch (Exception e) {
-            Logger.e("DAOIMAGES", e.getLocalizedMessage(), e);
+            Log.e("DAOIMAGES", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         } finally {
             sqliteDatabase.endTransaction();

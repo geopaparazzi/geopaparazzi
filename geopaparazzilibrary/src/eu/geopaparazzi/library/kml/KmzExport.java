@@ -25,9 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.CompressionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
-import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
  * A kmz exporter for notes, logs and pics.
@@ -95,12 +95,12 @@ public class KmzExport {
                             if (imageFile.exists()) {
                                 existingImages.add(imageFile);
                             } else {
-                                Logger.w(this, "Can't find image: " + imageFile.getAbsolutePath());
+                                GPLog.addLogEntry(this, null, null, "Can't find image: " + imageFile.getAbsolutePath());
                             }
                         }
                     }
                 } catch (Exception e) {
-                    Logger.e(this, e.getLocalizedMessage(), e);
+                    GPLog.error(this, e.getLocalizedMessage(), e);
                     e.printStackTrace();
                 }
             }

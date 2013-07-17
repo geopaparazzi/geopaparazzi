@@ -33,8 +33,7 @@ import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.widget.EditText;
 import android.widget.Toast;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
+import eu.geopaparazzi.library.database.GPLog;
 
 /**
  * Utilities class.
@@ -84,8 +83,8 @@ public class Utilities {
         decimalDegree = (decimalDegree - (int) decimalDegree) * 60000;
         sb.append((int) decimalDegree);
         sb.append("/1000");
-        if (Debug.D) {
-            Logger.i("UTILITIES", sb.toString());
+        if (GPLog.LOG) {
+            GPLog.addLogEntry("UTILITIES", sb.toString());
         }
         return sb.toString();
     }

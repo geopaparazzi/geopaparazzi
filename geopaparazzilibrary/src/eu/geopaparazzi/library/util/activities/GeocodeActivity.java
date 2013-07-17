@@ -36,13 +36,13 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.routing.openrouteservice.OpenRouteServiceHandler;
 import eu.geopaparazzi.library.routing.openrouteservice.OpenRouteServiceHandler.Preference;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
  * Activity that performs geocoding on a user entered location.
@@ -88,7 +88,7 @@ public class GeocodeActivity extends ListActivity {
 
             setListAdapter(new ArrayAdapter<AddressWrapper>(this, R.layout.geocode_row, addressWrapperList));
         } catch (IOException e) {
-            Logger.e(this, "Could not geocode address", e); //$NON-NLS-1$
+            GPLog.error(this, "Could not geocode address", e); //$NON-NLS-1$
             new AlertDialog.Builder(this).setMessage(R.string.geocodeErrorMessage).setTitle(R.string.geocodeErrorTitle)
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                         @Override

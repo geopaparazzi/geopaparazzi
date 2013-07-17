@@ -36,9 +36,8 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.DynamicDoubleArray;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.util.Constants;
@@ -112,8 +111,7 @@ public class ProfileChartActivity extends Activity {
                 line = DaoGpsLog.getGpslogAsLine(this, logid, -1);
 
             } catch (IOException e) {
-                if (Debug.D)
-                    Logger.e(this, e.getLocalizedMessage(), e);
+                GPLog.error(this, e.getLocalizedMessage(), e);
                 e.printStackTrace();
             }
 

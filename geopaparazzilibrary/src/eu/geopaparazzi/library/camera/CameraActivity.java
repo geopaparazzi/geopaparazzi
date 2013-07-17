@@ -35,13 +35,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.sensors.SensorsManager;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.library.util.debug.Debug;
-import eu.geopaparazzi.library.util.debug.Logger;
 
 /**
  * The taking pictures activity.
@@ -166,8 +165,9 @@ public class CameraActivity extends Activity {
             String altimString = String.valueOf(elevation);
             String azimuthString = String.valueOf((int) azimuth);
 
-            if (Debug.D) {
-                Logger.i(this, "Lat=" + lat + " -- Lon=" + lon + " -- Azim=" + azimuth + " -- Altim=" + altimString);
+            if (GPLog.LOG) {
+                GPLog.addLogEntry(this, null, null, "Lat=" + lat + " -- Lon=" + lon + " -- Azim=" + azimuth + " -- Altim="
+                        + altimString);
             }
 
             try {
