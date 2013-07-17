@@ -104,16 +104,16 @@ public class DaoLog {
      * Add a log entry by concatenating (;) some more info in the message.
      * 
      * @param sqliteDatabase
-     * @param user a user name or id.
-     * @param msgType a description of the log message type. If
+     * @param user a user name or id. If
      *              <code>null</code>, defaults to UNKNOWN_USER
-     * @param logMessage the message itself. If <code>null</code>, 
-     *              defaults to INFO.
+     * @param tag a tag for the log message. If <code>null</code>, 
+     *              defaults to INFO. 
+     * @param logMessage the message itself.
      * @throws IOException
      */
     public static void addLogEntry( SQLiteDatabase sqliteDatabase,//
             String user, //
-            String msgType,//
+            String tag,//
             String logMessage ) throws IOException {
 
         StringBuilder sb = new StringBuilder();
@@ -121,10 +121,10 @@ public class DaoLog {
             user = "UNKNOWN_USER";
         }
         sb.append(user).append(";");
-        if (msgType == null || msgType.length() == 0) {
-            msgType = "INFO";
+        if (tag == null || tag.length() == 0) {
+            tag = "INFO";
         }
-        sb.append(msgType).append(";");
+        sb.append(tag).append(";");
         sb.append(logMessage);
         addLogEntry(sqliteDatabase, sb.toString());
     }
@@ -172,10 +172,8 @@ public class DaoLog {
     }
 
     public static String getLogQuery() {
-        // select _id, datetime(dataora/1000, 'unixepoch'), logmsg from log order by
-        // dataora desc
         StringBuilder sb = new StringBuilder();
-        sb.append("select _id, datetime(dataora/1000, 'unixepoch'), logmsg from log order by dataora desc");
+        sb.append("select _id, datetime(dataora/1000, 'unixepoch', 'localtime') as timestamp, logmsg from log order by dataora desc");
         String query = sb.toString();
         return query;
     }
