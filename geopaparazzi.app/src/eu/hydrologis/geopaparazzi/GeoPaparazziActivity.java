@@ -37,7 +37,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -55,8 +54,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SlidingDrawer;
 import android.widget.Toast;
-import eu.geopaparazzi.library.database.ADbHelper;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
 import eu.geopaparazzi.library.gps.GpsLocation;
 import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.sensors.SensorsManager;
@@ -125,7 +124,7 @@ public class GeoPaparazziActivity extends Activity {
 
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
-        init();
+        initializeResourcesManager();
 
         fileSourcesMap = new HashMap<String, String>();
         rasterSourcesMap = new HashMap<String, SpatialRasterTable>();
@@ -277,7 +276,7 @@ public class GeoPaparazziActivity extends Activity {
         actionBar.checkLogging();
 
     }
-    private void init() {
+    private void initializeResourcesManager() {
         Object stateObj = getLastNonConfigurationInstance();
         if (stateObj instanceof ResourcesManager) {
             resourcesManager = (ResourcesManager) stateObj;
@@ -320,7 +319,23 @@ public class GeoPaparazziActivity extends Activity {
         setContentView(R.layout.geopap_main);
 
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        GPLogPreferencesHandler.checkLog(preferences);
+        GPLogPreferencesHandler.checkLogHeavy(preferences);
+        GPLogPreferencesHandler.checkLogAbsurd(preferences);
+        
+        try {
+            DatabaseManager.getInstance().getDatabase(this);
+            checkMapsAndLogsVisibility();
 
+            SpatialDatabasesManager.reset();
+            File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
+            SpatialDatabasesManager.getInstance().init(this, mapsDir);
+        } catch (IOException e) {
+            Log.e(getClass().getSimpleName(), e.getLocalizedMessage(), e);
+            e.printStackTrace();
+            Utilities.toast(this, R.string.databaseError, Toast.LENGTH_LONG);
+        }
+        
         gpsManager = GpsManager.getInstance(this);
         sensorManager = SensorsManager.getInstance(this);
 
@@ -407,20 +422,6 @@ public class GeoPaparazziActivity extends Activity {
                 push(statusUpdateButtonId, v);
             }
         });
-
-        try {
-            SQLiteDatabase database = DatabaseManager.getInstance().getDatabase(this);
-            ADbHelper.getInstance().setDatabase(database);
-            checkMapsAndLogsVisibility();
-
-            SpatialDatabasesManager.reset();
-            File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
-            SpatialDatabasesManager.getInstance().init(this, mapsDir);
-        } catch (IOException e) {
-            GPLog.error(this, e.getLocalizedMessage(), e);
-            e.printStackTrace();
-            Utilities.toast(this, R.string.databaseError, Toast.LENGTH_LONG);
-        }
 
         boolean doOsmPref = preferences.getBoolean(Constants.PREFS_KEY_DOOSM, false);
         if (doOsmPref)

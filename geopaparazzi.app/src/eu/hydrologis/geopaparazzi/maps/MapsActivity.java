@@ -574,7 +574,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
     public boolean onTouch( View v, MotionEvent event ) {
         int action = event.getAction();
-        if (GPLog.LOG_HEAVY)
+        if (GPLog.LOG_ABSURD)
             GPLog.addLogEntry(this, "onTouch issued with motionevent: " + action); //$NON-NLS-1$
 
         if (action == MotionEvent.ACTION_UP) {
@@ -1035,7 +1035,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     }
 
     protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
-        if (GPLog.LOG_HEAVY)
+        if (GPLog.LOG_ABSURD)
             GPLog.addLogEntry(this, "Activity returned"); //$NON-NLS-1$
         super.onActivityResult(requestCode, resultCode, data);
         switch( requestCode ) {
@@ -1415,7 +1415,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             }
             if (doCenter) {
                 setNewCenter(lon, lat, false);
-                if (GPLog.LOG_HEAVY)
+                if (GPLog.LOG_ABSURD)
                     GPLog.addLogEntry(this, "recentering triggered"); //$NON-NLS-1$                
             }
         } catch (Exception e) {
@@ -1441,7 +1441,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         double lon = mapCenter.longitudeE6 / LibraryConstants.E6;
         double lat = mapCenter.latitudeE6 / LibraryConstants.E6;
 
-        if (GPLog.LOG_HEAVY) {
+        if (GPLog.LOG_ABSURD) {
             StringBuilder sb = new StringBuilder();
             sb.append("Map Center moved: "); //$NON-NLS-1$
             sb.append(lon);
@@ -1497,7 +1497,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     };
 
     private void updateBatteryCondition( int level ) {
-        if (GPLog.LOG_HEAVY)
+        if (GPLog.LOG_ABSURD)
             GPLog.addLogEntry(this, "BATTERY LEVEL GEOPAP: " + level); //$NON-NLS-1$
         StringBuilder sb = new StringBuilder();
         sb.append(level);

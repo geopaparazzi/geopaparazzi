@@ -20,7 +20,6 @@ package eu.hydrologis.geopaparazzi.dashboard;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -40,7 +39,6 @@ import eu.geopaparazzi.library.gps.GpsLocation;
 import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.gps.GpsManagerListener;
 import eu.geopaparazzi.library.sensors.SensorsManager;
-import eu.geopaparazzi.library.util.debug.Debug;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.actionbar.ActionItem;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.actionbar.QuickAction;
@@ -277,25 +275,25 @@ public class ActionBar implements GpsManagerListener {
         Resources resources = gpsOnOffView.getResources();
 
         if (gpsManager.isEnabled()) {
-            if (GPLog.LOG_HEAVY)
+            if (GPLog.LOG_ABSURD)
                 GPLog.addLogEntry(this, "GPS seems to be on");
             if (gpsManager.isLogging()) {
-                if (GPLog.LOG_HEAVY)
+                if (GPLog.LOG_ABSURD)
                     GPLog.addLogEntry(this, "GPS seems to be also logging");
                 gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_logging));
             } else {
                 if (gpsManager.hasValidData()) {
-                    if (GPLog.LOG_HEAVY)
+                    if (GPLog.LOG_ABSURD)
                         GPLog.addLogEntry(this, "GPS has fix");
                     gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_hasfix_notlogging));
                 } else {
-                    if (GPLog.LOG_HEAVY)
+                    if (GPLog.LOG_ABSURD)
                         GPLog.addLogEntry(this, "GPS is not logging");
                     gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_notlogging));
                 }
             }
         } else {
-            if (GPLog.LOG_HEAVY)
+            if (GPLog.LOG_ABSURD)
                 GPLog.addLogEntry(this, "GPS seems to be off");
             gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_off));
         }
@@ -305,13 +303,13 @@ public class ActionBar implements GpsManagerListener {
     }
 
     public void onStatusChanged( int status ) {
-        if (GPLog.LOG_HEAVY)
+        if (GPLog.LOG_ABSURD)
             GPLog.addLogEntry(this, "Check logging on gps status update.");
         checkLogging();
     }
 
     public void onGpsStatusChanged( boolean newHasFix ) {
-        if (GPLog.LOG_HEAVY)
+        if (GPLog.LOG_ABSURD)
             GPLog.addLogEntry(this, "Check logging on gps fix update.");
         checkLogging();
     }

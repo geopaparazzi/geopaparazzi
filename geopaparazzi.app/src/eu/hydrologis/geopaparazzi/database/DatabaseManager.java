@@ -24,6 +24,7 @@ import java.util.Locale;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import eu.geopaparazzi.library.database.ADbHelper;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.debug.Debug;
@@ -57,26 +58,8 @@ public class DatabaseManager {
     }
 
     public SQLiteDatabase getDatabase( Context context ) throws IOException {
-        if (databaseHelper == null) {
-            // SharedPreferences preferences = GeoPaparazziActivity.preferences;
-            // String newDbKey =
-            // ApplicationManager.getInstance(getContext()).getResource().getString(R.string.database_new);
-            // doNew = preferences.getBoolean(newDbKey, false);
-            // if (doNew) {
-            // // need to backup the database file
-            // String nameWithoutExtention = FileUtils.getNameWithoutExtention(databaseFile);
-            // String backupFilePath = nameWithoutExtention + "_bkp_"
-            // + Constants.TIMESTAMPFORMATTER.format(new java.util.Date()) + ".db";
-            // File backupFile = new File(backupFilePath);
-            // if (databaseFile.exists()) {
-            // boolean renameTo = databaseFile.renameTo(backupFile);
-            // if (!renameTo) {
-            // throw new IOException("An error occurred while renaming the database.");
-            // }
-            // }
-            //
-            // }
-            File databaseFile = ResourcesManager.getInstance(context).getDatabaseFile();
+        File databaseFile = ResourcesManager.getInstance(context).getDatabaseFile();
+        if (databaseHelper == null || !databaseFile.exists()) {
 
             databaseHelper = new DatabaseOpenHelper(databaseFile);
 
@@ -92,7 +75,9 @@ public class DatabaseManager {
             }
         }
 
-        return databaseHelper.getWritableDatabase(context);
+        SQLiteDatabase writableDatabase = databaseHelper.getWritableDatabase(context);
+        ADbHelper.getInstance().setDatabase(writableDatabase);
+        return writableDatabase;
     }
 
     public void closeDatabase() {

@@ -21,14 +21,19 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi.database.DatabaseManager;
 import eu.hydrologis.geopaparazzi.database.SqlViewActivity;
 
 /**
@@ -58,11 +63,51 @@ public class SecretActivity extends Activity {
         });
         boolean isDemoMode = preferences.getBoolean(LibraryConstants.PREFS_KEY_MOCKMODE, false);
         demoCheckbox.setChecked(isDemoMode);
+
+        checkLogs(preferences);
+    }
+
+    private void checkLogs( final SharedPreferences preferences ) {
+        CheckBox logCheckbox = (CheckBox) findViewById(R.id.logCheckbox);
+        logCheckbox.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener(){
+            public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
+                GPLogPreferencesHandler.setLog(isChecked, preferences);
+            }
+        });
+        logCheckbox.setChecked(GPLogPreferencesHandler.checkLog(preferences));
+
+        CheckBox logHeavyCheckbox = (CheckBox) findViewById(R.id.logHeavyCheckbox);
+        logHeavyCheckbox.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener(){
+            public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
+                GPLogPreferencesHandler.setLogHeavy(isChecked, preferences);
+            }
+        });
+        logHeavyCheckbox.setChecked(GPLogPreferencesHandler.checkLogHeavy(preferences));
+
+        CheckBox logAbsurdCheckbox = (CheckBox) findViewById(R.id.logAbsCheckbox);
+        logAbsurdCheckbox.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener(){
+            public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
+                GPLogPreferencesHandler.setLogAbsurd(isChecked, preferences);
+            }
+        });
+        logAbsurdCheckbox.setChecked(GPLogPreferencesHandler.checkLogAbsurd(preferences));
+
     }
 
     public void startSqlView( View view ) {
         Intent sqlViewIntent = new Intent(this, SqlViewActivity.class);
         startActivity(sqlViewIntent);
+    }
+
+    public void clearLog( View view ) {
+        try {
+            SQLiteDatabase database = DatabaseManager.getInstance().getDatabase(this);
+            GPLog.clearLogTable(database);
+            Utilities.messageDialog(this, "Log cleared.", null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Utilities.messageDialog(this, "An error occurred: " + e.getLocalizedMessage(), null);
+        }
     }
 
     private int backCount = 0;
