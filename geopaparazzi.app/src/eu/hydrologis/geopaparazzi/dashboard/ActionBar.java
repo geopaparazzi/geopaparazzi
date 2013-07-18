@@ -361,16 +361,9 @@ public class ActionBar implements GpsManagerListener {
 
     public void gpsStart() {
         gotFix = false;
-        if (GPLog.LOG_ABSURD)
-            GPLog.addLogEntry(this, "Check logging on gps start.");
-        checkLogging();
     }
 
     public void gpsStop() {
-        gotFix = false;
-        if (GPLog.LOG_ABSURD)
-            GPLog.addLogEntry(this, "Check logging on gps stop.");
-        checkLogging();
     }
 
     public void onGpsStatusChanged( int event, GpsStatus status ) {

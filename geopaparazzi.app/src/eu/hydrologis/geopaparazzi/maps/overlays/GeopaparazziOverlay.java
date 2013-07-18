@@ -362,7 +362,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
         } else {
             currentGpsLog.clear();
         }
-        if (GPLog.LOG_HEAVY)
+        if (GPLog.LOG_ABSURD)
             GPLog.addLogEntry(this, "Set gps data: " + position.getLongitude() + "/" + position.getLatitude() + "/" + accuracy);
         overlayGps.setCircleData(position, accuracy);
     }
