@@ -283,7 +283,7 @@ public class GpsDatabaseLogger implements GpsManagerListener {
     public void onGpsStatusChanged( int event, GpsStatus status ) {
         switch( event ) {
         case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
-            if ((SystemClock.elapsedRealtime() - lastLocationupdateMillis) < 2000l) {
+            if ((SystemClock.elapsedRealtime() - lastLocationupdateMillis) < (GpsManager.WAITSECONDS * 2000l)) {
                 if (!gotFix) {
                     gotFix = true;
                 }

@@ -31,7 +31,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.GpsStatus;
 import android.location.Location;
-import android.location.LocationProvider;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -380,7 +379,7 @@ public class ActionBar implements GpsManagerListener {
         switch( event ) {
         case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
             lastGpsStatus = status;
-            if ((SystemClock.elapsedRealtime() - lastLocationupdateMillis) < 2000l) {
+            if ((SystemClock.elapsedRealtime() - lastLocationupdateMillis) < (GpsManager.WAITSECONDS * 2000l)) {
                 if (!gotFix) {
                     gotFix = true;
                     checkLogging();

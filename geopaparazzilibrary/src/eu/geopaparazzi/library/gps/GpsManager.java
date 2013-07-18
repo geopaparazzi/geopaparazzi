@@ -50,6 +50,11 @@ import eu.geopaparazzi.library.util.debug.TestMock;
 @SuppressWarnings("nls")
 public class GpsManager implements LocationListener, Listener {
 
+    /**
+     * GPS time interval.
+     */
+    public static int WAITSECONDS = 1;
+
     private static GpsManager gpsManager;
     private GpsStatus mStatus;
 
@@ -177,7 +182,7 @@ public class GpsManager implements LocationListener, Listener {
             log("Gps started.");
 
             float minDistance = 0.2f;
-            long waitForSecs = 1;
+            long waitForSecs = WAITSECONDS;
 
             // boolean doAtAndroidLevel = false;//
             // preferences.getBoolean(PREFS_KEY_GPSDOATANDROIDLEVEL,
@@ -390,7 +395,7 @@ public class GpsManager implements LocationListener, Listener {
         if (GPLog.LOG_HEAVY)
             GPLog.addLogEntry("GPSMANAGER", null, null, msg);
     }
-    
+
     private static void logABS( String msg ) {
         if (GPLog.LOG_ABSURD)
             GPLog.addLogEntry("GPSMANAGER", null, null, msg);
