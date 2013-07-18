@@ -75,9 +75,7 @@ public class DatabaseManager {
             }
         }
 
-        SQLiteDatabase writableDatabase = databaseHelper.getWritableDatabase(context);
-        ADbHelper.getInstance().setDatabase(writableDatabase);
-        return writableDatabase;
+        return databaseHelper.getWritableDatabase(context);
     }
 
     public void closeDatabase() {
@@ -106,6 +104,7 @@ public class DatabaseManager {
                 if (Debug.D)
                     Log.i("SQLiteHelper", "Opening database at " + databaseFile);
                 db = SQLiteDatabase.openOrCreateDatabase(databaseFile, null);
+                ADbHelper.getInstance().setDatabase(db);
                 int dbVersion = db.getVersion();
                 if (DATABASE_VERSION > dbVersion)
                     upgrade(DATABASE_VERSION, dbVersion, context);
@@ -116,6 +115,7 @@ public class DatabaseManager {
                     Log.i("SQLiteHelper", "db folder is writable: " + databaseFile.getParentFile().canWrite());
                 }
                 db = SQLiteDatabase.openOrCreateDatabase(databaseFile, null);
+                ADbHelper.getInstance().setDatabase(db);
                 create(context);
             }
         }
