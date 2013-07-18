@@ -141,7 +141,7 @@ public class GPLog {
 
         StringBuilder sb = new StringBuilder();
         if (user == null || user.length() == 0) {
-            user = "UNKNOWN_USER";
+            user = "UU";
         }
         sb.append(user).append(";");
         if (tag == null || tag.length() == 0) {
