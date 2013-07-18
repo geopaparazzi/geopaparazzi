@@ -29,7 +29,12 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.location.GpsStatus;
+import android.location.Location;
+import android.location.LocationProvider;
 import android.net.Uri;
+import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -38,6 +43,7 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gps.GpsLocation;
 import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.gps.GpsManagerListener;
+import eu.geopaparazzi.library.gps.GpsStatusInfo;
 import eu.geopaparazzi.library.sensors.SensorsManager;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.actionbar.ActionItem;
@@ -65,11 +71,18 @@ public class ActionBar implements GpsManagerListener {
     private static String gpsonString;
     private final GpsManager gpsManager;
     private final SensorsManager sensorsManager;
+    private boolean gotFix;
+    private boolean isProviderEnabled;
+    private GpsStatus lastGpsStatus;
+    private long lastLocationupdateMillis;
 
     public ActionBar( View actionBarView, GpsManager gpsManager, SensorsManager sensorsManager ) {
         this.actionBarView = actionBarView;
         this.gpsManager = gpsManager;
         this.sensorsManager = sensorsManager;
+
+        // set initial enablement
+        isProviderEnabled = gpsManager.isEnabled();
 
         gpsManager.addListener(this);
 
@@ -241,6 +254,8 @@ public class ActionBar implements GpsManagerListener {
                 }
             }
             sb.append("\n");
+            addGpsStatusInfo(sb);
+
         } else {
             sb.append(timeString);
             sb.append(" ").append(loc.getTimeString()); //$NON-NLS-1$
@@ -258,9 +273,21 @@ public class ActionBar implements GpsManagerListener {
             sb.append(" ").append((int) (360 - azimuth)); //$NON-NLS-1$
             sb.append("\n");
             sb.append(loggingString);
-            sb.append(": ").append(gpsManager.isLogging()); //$NON-NLS-1$
+            sb.append(": ").append(gpsManager.isDatabaseLogging()); //$NON-NLS-1$
+            sb.append("\n");
+            addGpsStatusInfo(sb);
         }
         return sb.toString();
+    }
+
+    private void addGpsStatusInfo( StringBuilder sb ) {
+        if (lastGpsStatus != null) {
+            GpsStatusInfo info = new GpsStatusInfo(lastGpsStatus);
+            int satCount = info.getSatCount();
+            // int satForFixCount = info.getSatUsedInFixCount();
+            sb.append("satellites: ").append(satCount).append("\n");
+            // sb.append("used for fix: ").append(satForFixCount).append("\n");
+        }
     }
 
     public void checkLogging() {
@@ -272,23 +299,33 @@ public class ActionBar implements GpsManagerListener {
             }
         });
 
+        if (GPLog.LOG_ABSURD && lastGpsStatus != null) {
+            GpsStatusInfo info = new GpsStatusInfo(lastGpsStatus);
+            int satCount = info.getSatCount();
+            int satForFixCount = info.getSatUsedInFixCount();
+            StringBuilder sb = new StringBuilder();
+            sb.append("satellites: ").append(satCount);
+            sb.append(" of which for fix: ").append(satForFixCount);
+            GPLog.addLogEntry(this, sb.toString());
+        }
+
         Resources resources = gpsOnOffView.getResources();
 
-        if (gpsManager.isEnabled()) {
+        if (isProviderEnabled) {// gpsManager.isEnabled()) {
             if (GPLog.LOG_ABSURD)
                 GPLog.addLogEntry(this, "GPS seems to be on");
-            if (gpsManager.isLogging()) {
+            if (gpsManager.isDatabaseLogging()) {
                 if (GPLog.LOG_ABSURD)
                     GPLog.addLogEntry(this, "GPS seems to be also logging");
                 gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_logging));
             } else {
-                if (gpsManager.hasValidData()) {
+                if (gotFix) {
                     if (GPLog.LOG_ABSURD)
                         GPLog.addLogEntry(this, "GPS has fix");
                     gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_hasfix_notlogging));
                 } else {
                     if (GPLog.LOG_ABSURD)
-                        GPLog.addLogEntry(this, "GPS is not logging");
+                        GPLog.addLogEntry(this, "GPS doesn't have a fix");
                     gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_notlogging));
                 }
             }
@@ -299,18 +336,62 @@ public class ActionBar implements GpsManagerListener {
         }
     }
 
-    public void onLocationChanged( GpsLocation loc ) {
+    public void onLocationChanged( Location location ) {
+        if (location == null) {
+            return;
+        }
+        lastLocationupdateMillis = SystemClock.elapsedRealtime();
     }
 
-    public void onStatusChanged( int status ) {
+    public void onProviderDisabled( String provider ) {
         if (GPLog.LOG_ABSURD)
-            GPLog.addLogEntry(this, "Check logging on gps status update.");
+            GPLog.addLogEntry(this, "Check logging on provider disabled.");
+        isProviderEnabled = false;
         checkLogging();
     }
 
-    public void onGpsStatusChanged( boolean newHasFix ) {
+    public void onProviderEnabled( String provider ) {
+        isProviderEnabled = true;
         if (GPLog.LOG_ABSURD)
-            GPLog.addLogEntry(this, "Check logging on gps fix update.");
+            GPLog.addLogEntry(this, "Check logging on provider enabled.");
         checkLogging();
+    }
+
+    public void onStatusChanged( String provider, int status, Bundle extras ) {
+    }
+
+    public void gpsStart() {
+        gotFix = false;
+        if (GPLog.LOG_ABSURD)
+            GPLog.addLogEntry(this, "Check logging on gps start.");
+        checkLogging();
+    }
+
+    public void gpsStop() {
+        gotFix = false;
+        if (GPLog.LOG_ABSURD)
+            GPLog.addLogEntry(this, "Check logging on gps stop.");
+        checkLogging();
+    }
+
+    public void onGpsStatusChanged( int event, GpsStatus status ) {
+        // if (GPLog.LOG_ABSURD)
+        // GPLog.addLogEntry(this, "Check logging on gps status update.");
+        switch( event ) {
+        case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
+            lastGpsStatus = status;
+            if ((SystemClock.elapsedRealtime() - lastLocationupdateMillis) < 2000l) {
+                if (!gotFix) {
+                    gotFix = true;
+                    checkLogging();
+                }
+            } else {
+                if (gotFix) {
+                    gotFix = false;
+                    checkLogging();
+                }
+            }
+            break;
+        }
     }
 }

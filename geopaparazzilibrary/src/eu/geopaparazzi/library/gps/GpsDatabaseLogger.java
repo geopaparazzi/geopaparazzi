@@ -30,7 +30,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteFullException;
+import android.location.GpsStatus;
 import android.location.Location;
+import android.os.Bundle;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 import eu.geopaparazzi.library.R;
@@ -47,7 +50,7 @@ import eu.geopaparazzi.library.util.Utilities;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public class GpsLogger implements GpsManagerListener {
+public class GpsDatabaseLogger implements GpsManagerListener {
     private final Context context;
 
     /**
@@ -62,7 +65,7 @@ public class GpsLogger implements GpsManagerListener {
      */
     private Location previousLogLoc = null;
 
-    private boolean isLogging = false;
+    private boolean isDatabaseLogging = false;
 
     private List<double[]> currentXY = new ArrayList<double[]>();
 
@@ -72,8 +75,17 @@ public class GpsLogger implements GpsManagerListener {
     private int currentPointsNum;
     private float currentDistance;
 
-    public GpsLogger( Context context ) {
+    public GpsDatabaseLogger( Context context ) {
         this.context = context;
+    }
+
+    private long currentRecordedLogId = -1;
+
+    private volatile boolean gotFix;
+
+    private long lastLocationupdateMillis;
+    public long getCurrentRecordedLogId() {
+        return currentRecordedLogId;
     }
 
     /**
@@ -81,13 +93,8 @@ public class GpsLogger implements GpsManagerListener {
      * 
      * @return true if the logger is active and recording points into the database.
      */
-    public boolean isLogging() {
-        return isLogging;
-    }
-
-    private long currentRecordedLogId = -1;
-    public long getCurrentRecordedLogId() {
-        return currentRecordedLogId;
+    public boolean isDatabaseLogging() {
+        return isDatabaseLogging;
     }
 
     /**
@@ -95,12 +102,12 @@ public class GpsLogger implements GpsManagerListener {
      * 
      * @param logName a name for the new log or <code>null</code>.
      */
-    public void startLogging( final String logName, final IGpsLogDbHelper dbHelper ) {
-        if (isLogging) {
+    public void startDatabaseLogging( final String logName, final IGpsLogDbHelper dbHelper ) {
+        if (isDatabaseLogging) {
             // we do not start twice
             return;
         }
-        isLogging = true;
+        isDatabaseLogging = true;
         currentXY.clear();
 
         Thread t = new Thread(){
@@ -136,41 +143,38 @@ public class GpsLogger implements GpsManagerListener {
                     currentPointsNum = 0;
                     currentDistance = 0;
                     previousLogLoc = null;
-                    while( isLogging ) {
-                        if (gpsLoc == null) {
-                            waitGpsInterval(waitForSecs);
-                            continue;
-                        }
-                        if (previousLogLoc == null) {
+                    while( isDatabaseLogging ) {
+                        if (gotFix) {
+                            if (gpsLoc == null) {
+                                waitGpsInterval(waitForSecs);
+                                continue;
+                            }
+                            if (previousLogLoc == null) {
+                                previousLogLoc = gpsLoc;
+                            }
+                            double recLon = gpsLoc.getLongitude();
+                            double recLat = gpsLoc.getLatitude();
+                            double recAlt = gpsLoc.getAltitude();
+                            float lastDistance = previousLogLoc.distanceTo(gpsLoc);
+                            logABS("gpsloc: " + gpsLoc.getLatitude() + "/" + gpsLoc.getLongitude());
+                            logABS("previousLoc: " + previousLogLoc.getLatitude() + "/" + previousLogLoc.getLongitude());
+                            logABS("distance: " + lastDistance + " - mindistance: " + minDistance);
+                            // ignore near points
+                            if (lastDistance < minDistance) {
+                                waitGpsInterval(waitForSecs);
+                                continue;
+                            }
+                            try {
+                                dbHelper.addGpsLogDataPoint(sqliteDatabase, gpsLogId, recLon, recLat, recAlt, gpsLoc.getSqlDate());
+                                currentXY.add(new double[]{recLon, recLat});
+                            } catch (Exception e) {
+                                GPLog.error(this, e.getLocalizedMessage(), e);
+                                throw new IOException(e.getLocalizedMessage());
+                            }
+                            currentPointsNum++;
+                            currentDistance = currentDistance + lastDistance;
                             previousLogLoc = gpsLoc;
                         }
-
-                        double recLon = gpsLoc.getLongitude();
-                        double recLat = gpsLoc.getLatitude();
-                        double recAlt = gpsLoc.getAltitude();
-
-                        float lastDistance = previousLogLoc.distanceTo(gpsLoc);
-                        logABS("gpsloc: " + gpsLoc.getLatitude() + "/" + gpsLoc.getLongitude());
-                        logABS("previousLoc: " + previousLogLoc.getLatitude() + "/" + previousLogLoc.getLongitude());
-                        logABS("distance: " + lastDistance + " - mindistance: " + minDistance);
-                        // ignore near points
-                        if (lastDistance < minDistance) {
-                            waitGpsInterval(waitForSecs);
-                            continue;
-                        }
-
-                        try {
-                            dbHelper.addGpsLogDataPoint(sqliteDatabase, gpsLogId, recLon, recLat, recAlt, gpsLoc.getSqlDate());
-                            currentXY.add(new double[]{recLon, recLat});
-                        } catch (Exception e) {
-                            GPLog.error(this, e.getLocalizedMessage(), e);
-                            throw new IOException(e.getLocalizedMessage());
-                        }
-                        currentPointsNum++;
-                        currentDistance = currentDistance + lastDistance;
-
-                        previousLogLoc = gpsLoc;
-
                         // and wait
                         waitGpsInterval(waitForSecs);
                     }
@@ -199,7 +203,7 @@ public class GpsLogger implements GpsManagerListener {
                     GPLog.error(this, msg, e);
                     Utilities.toast(context, msg, Toast.LENGTH_LONG);
                 } finally {
-                    isLogging = false;
+                    isDatabaseLogging = false;
                     currentXY.clear();
                 }
                 logH("Exit logging...");
@@ -213,7 +217,6 @@ public class GpsLogger implements GpsManagerListener {
                     e.printStackTrace();
                     String msg = context.getResources().getString(R.string.cantwrite_gpslog);
                     GPLog.error(this, msg, e);
-                    Utilities.toast(context, msg, Toast.LENGTH_LONG);
                 }
             }
         };
@@ -222,8 +225,8 @@ public class GpsLogger implements GpsManagerListener {
         Utilities.toast(context, R.string.gpsloggingon, Toast.LENGTH_SHORT);
     }
 
-    public void stopLogging() {
-        isLogging = false;
+    public void stopDatabaseLogging() {
+        isDatabaseLogging = false;
         Utilities.toast(context, R.string.gpsloggingoff, Toast.LENGTH_SHORT);
     }
 
@@ -233,7 +236,7 @@ public class GpsLogger implements GpsManagerListener {
      * @return the list of lon,lat.
      */
     public List<double[]> getCurrentRecordedLog() {
-        if (isLogging) {
+        if (isDatabaseLogging) {
             return currentXY;
         } else {
             return null;
@@ -246,6 +249,64 @@ public class GpsLogger implements GpsManagerListener {
 
     public int getCurrentDistance() {
         return (int) currentDistance;
+    }
+
+    public void onLocationChanged( Location location ) {
+        if (location == null) {
+            return;
+        }
+        lastLocationupdateMillis = SystemClock.elapsedRealtime();
+
+        gpsLoc = new GpsLocation(location);
+    }
+
+    public void onStatusChanged( String provider, int status, Bundle extras ) {
+    }
+
+    public void onProviderEnabled( String provider ) {
+    }
+
+    public void onProviderDisabled( String provider ) {
+    }
+
+    public void gpsStart() {
+        gotFix = false;
+        logH("gpsStart called");
+    }
+
+    public void gpsStop() {
+        lastLocationupdateMillis = 0;
+        gotFix = false;
+        logH("gpsStop called");
+    }
+
+    public void onGpsStatusChanged( int event, GpsStatus status ) {
+        switch( event ) {
+        case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
+            if ((SystemClock.elapsedRealtime() - lastLocationupdateMillis) < 2000l) {
+                if (!gotFix) {
+                    gotFix = true;
+                }
+            } else {
+                if (gotFix) {
+                    gotFix = false;
+                }
+            }
+            break;
+        }
+    }
+
+    private void logH( String msg ) {
+        if (GPLog.LOG_HEAVY)
+            GPLog.addLogEntry(this, null, null, msg);
+    }
+    private void logABS( String msg ) {
+        if (GPLog.LOG_ABSURD)
+            GPLog.addLogEntry(this, null, null, msg);
+    }
+
+    boolean hasFix() {
+        return gotFix;
     }
 
     // /////////////////////////////////////////////////
@@ -312,22 +373,4 @@ public class GpsLogger implements GpsManagerListener {
     // }
     // }
 
-    public void onLocationChanged( GpsLocation loc ) {
-        gpsLoc = new GpsLocation(loc);
-    }
-
-    public void onStatusChanged( int status ) {
-    }
-
-    public void onGpsStatusChanged( boolean hasFix ) {
-    }
-
-    private void logH( String msg ) {
-        if (GPLog.LOG_HEAVY)
-            GPLog.addLogEntry(this, null, null, msg);
-    }
-    private void logABS( String msg ) {
-        if (GPLog.LOG_ABSURD)
-            GPLog.addLogEntry(this, null, null, msg);
-    }
 }

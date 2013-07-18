@@ -322,7 +322,7 @@ public class GeoPaparazziActivity extends Activity {
         GPLogPreferencesHandler.checkLog(preferences);
         GPLogPreferencesHandler.checkLogHeavy(preferences);
         GPLogPreferencesHandler.checkLogAbsurd(preferences);
-        
+
         try {
             DatabaseManager.getInstance().getDatabase(this);
             checkMapsAndLogsVisibility();
@@ -335,7 +335,7 @@ public class GeoPaparazziActivity extends Activity {
             e.printStackTrace();
             Utilities.toast(this, R.string.databaseError, Toast.LENGTH_LONG);
         }
-        
+
         gpsManager = GpsManager.getInstance(this);
         sensorManager = SensorsManager.getInstance(this);
 
@@ -472,7 +472,7 @@ public class GeoPaparazziActivity extends Activity {
         }
         case R.id.dashboard_log_item_button: {
             QuickAction qa = new QuickAction(v);
-            if (gpsManager.isLogging()) {
+            if (gpsManager.isDatabaseLogging()) {
                 ActionItem stopLogQuickAction = QuickActionsFactory.INSTANCE.getStopLogQuickAction(actionBar, qa, this);
                 qa.addActionItem(stopLogQuickAction);
             } else {

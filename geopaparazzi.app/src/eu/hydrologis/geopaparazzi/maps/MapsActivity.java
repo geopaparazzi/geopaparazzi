@@ -62,6 +62,8 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
+import android.location.GpsStatus;
+import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.BatteryManager;
@@ -1370,69 +1372,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     // return super.onKeyDown(keyCode, event);
     // }
 
-    public void onLocationChanged( GpsLocation loc ) {
-        if (loc == null) {
-            return;
-        }
-
-        if (this.mapView.getWidth() <= 0 || this.mapView.getWidth() <= 0) {
-            return;
-        }
-        try {
-            double lat = loc.getLatitude();
-            double lon = loc.getLongitude();
-            float[] nsweE6 = getMapWorldBoundsE6();
-            int latE6 = (int) ((float) lat * LibraryConstants.E6);
-            int lonE6 = (int) ((float) lon * LibraryConstants.E6);
-            boolean centerOnGps = preferences.getBoolean(Constants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
-
-            int nE6 = (int) nsweE6[0];
-            int sE6 = (int) nsweE6[1];
-            int wE6 = (int) nsweE6[2];
-            int eE6 = (int) nsweE6[3];
-
-            // Rect bounds = new Rect(wE6, nE6, eE6, sE6);
-            if (boundsContain(latE6, lonE6, nE6, sE6, wE6, eE6)) {
-                GeoPoint point = new GeoPoint(latE6, lonE6);
-                float accuracy = loc.getAccuracy();
-                dataOverlay.setGpsPosition(point, accuracy);
-                dataOverlay.requestRedraw();
-            }
-
-            Projection p = mapView.getProjection();
-            int paddingX = (int) (p.getLongitudeSpan() * 0.2);
-            int paddingY = (int) (p.getLatitudeSpan() * 0.2);
-            int newEE6 = eE6 - paddingX;
-            int newWE6 = wE6 + paddingX;
-            int newSE6 = sE6 + paddingY;
-            int newNE6 = nE6 - paddingY;
-
-            boolean doCenter = false;
-            if (!boundsContain(latE6, lonE6, newNE6, newSE6, newWE6, newEE6)) {
-                if (centerOnGps) {
-                    doCenter = true;
-                }
-            }
-            if (doCenter) {
-                setNewCenter(lon, lat, false);
-                if (GPLog.LOG_ABSURD)
-                    GPLog.addLogEntry(this, "recentering triggered"); //$NON-NLS-1$                
-            }
-        } catch (Exception e) {
-            GPLog.error(this, "On location change error", e); //$NON-NLS-1$
-            // finish the activity to reset
-            finish();
-        }
-    }
-
     private boolean boundsContain( int latE6, int lonE6, int nE6, int sE6, int wE6, int eE6 ) {
         return lonE6 > wE6 && lonE6 < eE6 && latE6 > sE6 && latE6 < nE6;
-    }
-
-    public void onStatusChanged( int status ) {
-    }
-
-    public void onGpsStatusChanged( boolean hasFix ) {
     }
 
     private synchronized void saveCenterPref() {
@@ -1505,6 +1446,79 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             sb.append("%"); //$NON-NLS-1$
         }
         batteryButton.setText(sb.toString());
+    }
+
+    public void onLocationChanged( Location loc ) {
+        if (loc == null) {
+            return;
+        }
+
+        if (this.mapView.getWidth() <= 0 || this.mapView.getWidth() <= 0) {
+            return;
+        }
+        try {
+            double lat = loc.getLatitude();
+            double lon = loc.getLongitude();
+            float[] nsweE6 = getMapWorldBoundsE6();
+            int latE6 = (int) ((float) lat * LibraryConstants.E6);
+            int lonE6 = (int) ((float) lon * LibraryConstants.E6);
+            boolean centerOnGps = preferences.getBoolean(Constants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
+
+            int nE6 = (int) nsweE6[0];
+            int sE6 = (int) nsweE6[1];
+            int wE6 = (int) nsweE6[2];
+            int eE6 = (int) nsweE6[3];
+
+            // Rect bounds = new Rect(wE6, nE6, eE6, sE6);
+            if (boundsContain(latE6, lonE6, nE6, sE6, wE6, eE6)) {
+                GeoPoint point = new GeoPoint(latE6, lonE6);
+                float accuracy = loc.getAccuracy();
+                dataOverlay.setGpsPosition(point, accuracy);
+                dataOverlay.requestRedraw();
+            }
+
+            Projection p = mapView.getProjection();
+            int paddingX = (int) (p.getLongitudeSpan() * 0.2);
+            int paddingY = (int) (p.getLatitudeSpan() * 0.2);
+            int newEE6 = eE6 - paddingX;
+            int newWE6 = wE6 + paddingX;
+            int newSE6 = sE6 + paddingY;
+            int newNE6 = nE6 - paddingY;
+
+            boolean doCenter = false;
+            if (!boundsContain(latE6, lonE6, newNE6, newSE6, newWE6, newEE6)) {
+                if (centerOnGps) {
+                    doCenter = true;
+                }
+            }
+            if (doCenter) {
+                setNewCenter(lon, lat, false);
+                if (GPLog.LOG_ABSURD)
+                    GPLog.addLogEntry(this, "recentering triggered"); //$NON-NLS-1$                
+            }
+        } catch (Exception e) {
+            GPLog.error(this, "On location change error", e); //$NON-NLS-1$
+            // finish the activity to reset
+            finish();
+        }
+    }
+
+    public void onProviderDisabled( String provider ) {
+    }
+
+    public void onProviderEnabled( String provider ) {
+    }
+
+    public void onStatusChanged( String provider, int status, Bundle extras ) {
+    }
+
+    public void gpsStart() {
+    }
+
+    public void gpsStop() {
+    }
+
+    public void onGpsStatusChanged( int event, GpsStatus status ) {
     }
 
 }

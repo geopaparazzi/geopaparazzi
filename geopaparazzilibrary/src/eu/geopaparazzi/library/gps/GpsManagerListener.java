@@ -16,17 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package eu.geopaparazzi.library.gps;
+
+import android.location.GpsStatus;
+import android.location.LocationListener;
+
 /**
  * Listener for GPS.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public interface GpsManagerListener {
-
-    public void onLocationChanged( GpsLocation loc );
-
-    public void onGpsStatusChanged( boolean hasFix );
-
-    public void onStatusChanged(int status);
+public interface GpsManagerListener extends LocationListener{
+    public void gpsStart();
+    public void gpsStop();
+    public void onGpsStatusChanged(int event, GpsStatus status);
 
 }

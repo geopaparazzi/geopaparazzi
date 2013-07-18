@@ -17,11 +17,6 @@
  */
 package eu.geopaparazzi.library.gps;
 
-import static eu.geopaparazzi.library.util.LibraryConstants.GPS_LOGGING_DISTANCE;
-import static eu.geopaparazzi.library.util.LibraryConstants.GPS_LOGGING_INTERVAL;
-import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGINGDISTANCE;
-import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGINGINTERVAL;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +32,6 @@ import android.location.GpsStatus.Listener;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import eu.geopaparazzi.library.R;
@@ -57,18 +51,19 @@ import eu.geopaparazzi.library.util.debug.TestMock;
 public class GpsManager implements LocationListener, Listener {
 
     private static GpsManager gpsManager;
+    private GpsStatus mStatus;
 
     private List<GpsManagerListener> listeners = new ArrayList<GpsManagerListener>();
 
     /**
      * The object responsible to log traces into the database. 
      */
-    private static GpsLogger gpsLogger;
+    private static GpsDatabaseLogger gpsLogger;
 
     /**
      * The last taken gps location.
      */
-    private GpsLocation gpsLoc = null;
+    private GpsLocation lastGpsLocation = null;
 
     /**
      * The previous gps location or null if no gps location was taken yet.
@@ -78,7 +73,7 @@ public class GpsManager implements LocationListener, Listener {
     private Location previousLoc = null;
 
     private LocationManager locationManager;
-    private boolean isListening = false;
+    private boolean gpsStarted = false;
     private SharedPreferences preferences;
     private boolean useNetworkPositions;
 
@@ -96,7 +91,7 @@ public class GpsManager implements LocationListener, Listener {
             gpsManager = new GpsManager(context);
             gpsManager.checkLoggerExists(context);
             gpsManager.checkGps(context);
-            gpsManager.startListening();
+            gpsManager.gpsStart();
             log("STARTED LISTENING");
         }
         // woke up from death and has the manager already but isn't listening any more
@@ -104,7 +99,7 @@ public class GpsManager implements LocationListener, Listener {
             gpsManager = new GpsManager(context);
             gpsManager.checkLoggerExists(context);
             gpsManager.checkGps(context);
-            gpsManager.startListening();
+            gpsManager.gpsStart();
             log("STARTED LISTENING AFTER REVIEW");
         }
         return gpsManager;
@@ -147,56 +142,62 @@ public class GpsManager implements LocationListener, Listener {
 
         IntentFilter filter = new IntentFilter(PROX_ALERT_INTENT);
         context.registerReceiver(new ProximityIntentReceiver(), filter);
-
     }
 
     /**
      * Disposes the GpsManager and with it all connected services.
      */
     public void dispose( Context context ) {
-        if (isLogging()) {
-            stopLogging(context);
+        if (isDatabaseLogging()) {
+            stopDatabaseLogging(context);
         }
 
-        if (locationManager != null) {
+        if (locationManager != null && gpsStarted) {
             locationManager.removeUpdates(gpsManager);
             locationManager.removeGpsStatusListener(gpsManager);
+            for( GpsManagerListener activity : listeners ) {
+                activity.gpsStop();
+            }
         }
         if (TestMock.isOn) {
             TestMock.stopMocking(locationManager);
         }
-        isListening = false;
+        gpsStarted = false;
+        log("GpsManager disposed.");
     }
 
     /**
      * Starts listening to the gps provider.
      */
-    private void startListening() {
+    private void gpsStart() {
         if (Debug.doMock || isMockMode) {
-            log("Using Mock locations");
+            log("Gps started using Mock locations");
             TestMock.startMocking(locationManager, gpsManager);
         } else {
-            log("Using GPS");
+            log("Gps started.");
 
-            float minDistance = 0.5f;
+            float minDistance = 0.2f;
             long waitForSecs = 1;
 
-            boolean doAtAndroidLevel = false;// preferences.getBoolean(PREFS_KEY_GPSDOATANDROIDLEVEL,
-                                             // true);
-            if (doAtAndroidLevel) {
-                String minDistanceStr = preferences.getString(PREFS_KEY_GPSLOGGINGDISTANCE, String.valueOf(GPS_LOGGING_DISTANCE));
-                try {
-                    minDistance = Float.parseFloat(minDistanceStr);
-                } catch (Exception e) {
-                    // ignore and use default
-                }
-                String intervalStr = preferences.getString(PREFS_KEY_GPSLOGGINGINTERVAL, String.valueOf(GPS_LOGGING_INTERVAL));
-                try {
-                    waitForSecs = Long.parseLong(intervalStr);
-                } catch (Exception e) {
-                    // ignore and use default
-                }
-            }
+            // boolean doAtAndroidLevel = false;//
+            // preferences.getBoolean(PREFS_KEY_GPSDOATANDROIDLEVEL,
+            // // true);
+            // if (doAtAndroidLevel) {
+            // String minDistanceStr = preferences.getString(PREFS_KEY_GPSLOGGINGDISTANCE,
+            // String.valueOf(GPS_LOGGING_DISTANCE));
+            // try {
+            // minDistance = Float.parseFloat(minDistanceStr);
+            // } catch (Exception e) {
+            // // ignore and use default
+            // }
+            // String intervalStr = preferences.getString(PREFS_KEY_GPSLOGGINGINTERVAL,
+            // String.valueOf(GPS_LOGGING_INTERVAL));
+            // try {
+            // waitForSecs = Long.parseLong(intervalStr);
+            // } catch (Exception e) {
+            // // ignore and use default
+            // }
+            // }
 
             if (useNetworkPositions) {
                 locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, waitForSecs * 1000l, minDistance,
@@ -207,7 +208,10 @@ public class GpsManager implements LocationListener, Listener {
             }
             locationManager.addGpsStatusListener(gpsManager);
         }
-        isListening = true;
+        gpsStarted = true;
+        for( GpsManagerListener activity : listeners ) {
+            activity.gpsStart();
+        }
     }
 
     /**
@@ -227,7 +231,7 @@ public class GpsManager implements LocationListener, Listener {
         } else {
             gpsIsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         }
-        logABS("Gps is on: " + gpsIsEnabled);
+        logABS("Gps is enabled: " + gpsIsEnabled);
         return gpsIsEnabled;
     }
 
@@ -241,7 +245,7 @@ public class GpsManager implements LocationListener, Listener {
             if (TestMock.isOn)
                 return true;
         }
-        return getLocation() != null;
+        return gpsLogger.hasFix();// getLocation() != null;
     }
 
     /**
@@ -249,20 +253,15 @@ public class GpsManager implements LocationListener, Listener {
      * 
      * @return <code>true</code> if the GPS is currently used to record data.
      */
-    public boolean isLogging() {
-        // if (Debug.doMock) {
-        // if (TestMock.isOn)
-        // return true;
-        // }
-
+    public boolean isDatabaseLogging() {
         if (gpsLogger == null) {
             return false;
         }
-        return gpsLogger.isLogging();
+        return gpsLogger.isDatabaseLogging();
     }
 
     public boolean isGpsListening() {
-        return isListening;
+        return gpsStarted;
     }
 
     public void checkGps( final Context context ) {
@@ -288,7 +287,7 @@ public class GpsManager implements LocationListener, Listener {
     }
 
     public GpsLocation getLocation() {
-        return gpsLoc;
+        return lastGpsLocation;
     }
 
     public int getCurrentRunningGpsLogPointsNum() {
@@ -317,7 +316,7 @@ public class GpsManager implements LocationListener, Listener {
 
     private void checkLoggerExists( Context context ) {
         if (gpsLogger == null) {
-            gpsLogger = new GpsLogger(context);
+            gpsLogger = new GpsDatabaseLogger(context);
         }
     }
 
@@ -327,93 +326,63 @@ public class GpsManager implements LocationListener, Listener {
      * @param logName a name for the new gps log or <code>null</code>.
      * @param dbHelper the db helper.
      */
-    public void startLogging( Context context, String logName, IGpsLogDbHelper dbHelper ) {
+    public void startDatabaseLogging( Context context, String logName, IGpsLogDbHelper dbHelper ) {
         checkLoggerExists(context);
         addListener(gpsLogger);
-        gpsLogger.startLogging(logName, dbHelper);
+        gpsLogger.startDatabaseLogging(logName, dbHelper);
     }
 
     /**
      * Stop gps logging.
      */
-    public void stopLogging( Context context ) {
+    public void stopDatabaseLogging( Context context ) {
         checkLoggerExists(context);
-        gpsLogger.stopLogging();
+        gpsLogger.stopDatabaseLogging();
         removeListener(gpsLogger);
     }
 
     public void onLocationChanged( Location loc ) {
         if (loc == null)
             return;
-        gpsLoc = new GpsLocation(loc);
-        boolean first = true;
-        if (previousLoc == null) {
-            previousLoc = loc;
-            first = false;
-        }
+        lastGpsLocation = new GpsLocation(loc);
 
         // Logger.d(gpsManager,
         //                "Position update: " + gpsLoc.getLongitude() + "/" + gpsLoc.getLatitude() + "/" + gpsLoc.getAltitude()); //$NON-NLS-1$ //$NON-NLS-2$
-        gpsLoc.setPreviousLoc(previousLoc);
-        synchronized (listeners) {
-            for( GpsManagerListener listener : listeners ) {
-                listener.onLocationChanged(gpsLoc);
-                if (first) {
-                    // trigger also a status changed in order to simulate first fix
-                    listener.onStatusChanged(LocationProvider.AVAILABLE);
-                }
-            }
-        }
+        lastGpsLocation.setPreviousLoc(previousLoc);
         // save last known location
-        double recLon = gpsLoc.getLongitude();
-        double recLat = gpsLoc.getLatitude();
-        double recAlt = gpsLoc.getAltitude();
+        double recLon = lastGpsLocation.getLongitude();
+        double recLat = lastGpsLocation.getLatitude();
+        double recAlt = lastGpsLocation.getAltitude();
         PositionUtilities.putGpsLocationInPreferences(preferences, recLon, recLat, recAlt);
 
         previousLoc = loc;
-    }
-
-    public void onProviderDisabled( String provider ) {
-        // if (isGpsLogging()) {
-        // stopLogging();
-        // }
-        // stopListening();
-    }
-
-    public void onProviderEnabled( String provider ) {
+        for( GpsManagerListener activity : listeners ) {
+            activity.onLocationChanged(lastGpsLocation);
+        }
     }
 
     public void onStatusChanged( String provider, int status, Bundle extras ) {
-        switch( status ) {
-        case LocationProvider.OUT_OF_SERVICE:
-        case LocationProvider.TEMPORARILY_UNAVAILABLE:
-            // if (gpsLoc != null && gpsLoc.getProvider() != null &&
-            // gpsLoc.getProvider().equals(provider)) {
-            // gpsLoc = null;
-            // }
-            break;
-        case LocationProvider.AVAILABLE:
-            break;
+        for( GpsManagerListener activity : listeners ) {
+            activity.onStatusChanged(provider, status, extras);
         }
-        synchronized (listeners) {
-            for( GpsManagerListener listener : listeners ) {
-                listener.onStatusChanged(status);
-            }
+    }
+
+    public void onProviderEnabled( String provider ) {
+        for( GpsManagerListener activity : listeners ) {
+            activity.onProviderEnabled(provider);
+        }
+    }
+
+    public void onProviderDisabled( String provider ) {
+        for( GpsManagerListener activity : listeners ) {
+            activity.onProviderDisabled(provider);
         }
     }
 
     public void onGpsStatusChanged( int event ) {
-        switch( event ) {
-        case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
-            break;
-        case GpsStatus.GPS_EVENT_FIRST_FIX:
-            log("First fix");
-            synchronized (listeners) {
-                for( GpsManagerListener listener : listeners ) {
-                    listener.onGpsStatusChanged(true);
-                }
-            }
-            break;
+        mStatus = locationManager.getGpsStatus(mStatus);
+        for( GpsManagerListener activity : listeners ) {
+            activity.onGpsStatusChanged(event, mStatus);
         }
     }
 
@@ -421,6 +390,7 @@ public class GpsManager implements LocationListener, Listener {
         if (GPLog.LOG_HEAVY)
             GPLog.addLogEntry("GPSMANAGER", null, null, msg);
     }
+    
     private static void logABS( String msg ) {
         if (GPLog.LOG_ABSURD)
             GPLog.addLogEntry("GPSMANAGER", null, null, msg);

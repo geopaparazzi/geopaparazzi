@@ -357,7 +357,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
     @SuppressWarnings("nls")
     public void setGpsPosition( GeoPoint position, float accuracy ) {
         GpsManager gpsManager = GpsManager.getInstance(context);
-        if (gpsManager.isLogging()) {
+        if (gpsManager.isDatabaseLogging()) {
             currentGpsLog.add(position);
         } else {
             currentGpsLog.clear();
@@ -519,7 +519,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
          * gps logging track
          */
         GpsManager gpsManager = GpsManager.getInstance(context);
-        if (gpsManager.isLogging()) {
+        if (gpsManager.isDatabaseLogging()) {
             // if a track is recorded, show it
             synchronized (gpslogOverlay) {
                 int size = currentGpsLog.size();
@@ -612,7 +612,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
          */
         Paint gpsStatusFill = null;
         if (gpsManager.isEnabled()) {
-            if (gpsManager.isLogging()) {
+            if (gpsManager.isDatabaseLogging()) {
                 gpsStatusFill = gpsBlueFill;
             } else {
                 if (gpsManager.hasValidData()) {
