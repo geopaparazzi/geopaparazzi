@@ -273,9 +273,9 @@ public class GeoPaparazziActivity extends Activity {
             actionBar = ActionBar.getActionBar(this, R.id.action_bar, gpsManager, sensorManager);
             actionBar.setTitle(R.string.app_name, R.id.action_bar_title);
         }
-        actionBar.checkLogging();
-
+        // actionBar.checkLogging();
     }
+    
     private void initializeResourcesManager() {
         Object stateObj = getLastNonConfigurationInstance();
         if (stateObj instanceof ResourcesManager) {
