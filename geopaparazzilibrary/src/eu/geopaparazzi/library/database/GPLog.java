@@ -22,11 +22,15 @@ import java.util.Date;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import eu.geopaparazzi.library.util.LibraryConstants;
+
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 /**
+ * The class that handles logging to the database.
+ * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
@@ -40,10 +44,16 @@ public class GPLog {
      * If <code>true</code>, normal logging is activated.
      */
     public static boolean LOG = true;
+
     /**
      * If <code>true</code> heavy logging is activated.
      */
-    public static boolean LOG_HEAVY = false;
+    public static boolean LOG_HEAVY = true;
+
+    /**
+     * If <code>true</code>, all logging is activated.
+     */
+    public static boolean LOG_ABSURD = false;
 
     public static final String ERROR_TAG = "ERROR";
 
@@ -110,14 +120,15 @@ public class GPLog {
     public static void addLogEntry( String logMessage ) throws IOException {
         SQLiteDatabase sqliteDatabase = ADbHelper.getInstance().getDatabase();
         ContentValues values = new ContentValues();
-        long time = new Date().getTime();
+        Date date = new Date();
+        long time = date.getTime();
         values.put(COLUMN_DATAORA, time);
         values.put(COLUMN_LOGMSG, logMessage);
         insertOrThrow(sqliteDatabase, TABLE_LOG, values);
 
         if (LOG_ANDROID) {
             StringBuilder sb = new StringBuilder();
-            sb.append(time);
+            sb.append(LibraryConstants.iso8601Format.format(date));
             sb.append(": ");
             sb.append(logMessage);
             Log.i("GPLOG", sb.toString());

@@ -57,7 +57,7 @@ public class PositionUtilities {
         Editor editor = preferences.edit();
         float longFloat = (float) longitude * LibraryConstants.E6;
         float latFloat = (float) latitude * LibraryConstants.E6;
-        if (GPLog.LOG_HEAVY) {
+        if (GPLog.LOG_ABSURD) {
             GPLog.addLogEntry("POSITIONUTILITIES", "putGpsLocation: " + longFloat + "/" + latFloat);
         }
         editor.putFloat(PREFS_KEY_LON, longFloat);
@@ -90,7 +90,7 @@ public class PositionUtilities {
             // we also do not believe in 0,0
             return null;
         }
-        if (GPLog.LOG_HEAVY) {
+        if (GPLog.LOG_ABSURD) {
             GPLog.addLogEntry("POSITIONUTILITIES", "getGpsLocation: " + lon + "/" + lat);
         }
         double elevation = (double) preferences.getFloat(PREFS_KEY_ELEV, 0f);
@@ -112,7 +112,7 @@ public class PositionUtilities {
         Editor editor = preferences.edit();
         float longFloat = (float) longitude * LibraryConstants.E6;
         float latFloat = (float) latitude * LibraryConstants.E6;
-        if (GPLog.LOG_HEAVY) {
+        if (GPLog.LOG_ABSURD) {
             GPLog.addLogEntry("POSITIONUTILITIES", "putMapCenter: " + longFloat + "/" + latFloat);
         }
         editor.putFloat(PREFS_KEY_MAPCENTER_LON, longFloat);
@@ -147,7 +147,7 @@ public class PositionUtilities {
                 // try to get the last gps location
                 double[] lastGpsLocation = getGpsLocationFromPreferences(preferences);
                 if (lastGpsLocation != null) {
-                    if (GPLog.LOG_HEAVY) {
+                    if (GPLog.LOG_ABSURD) {
                         GPLog.addLogEntry("POSITIONUTILITIES", "getMapCenter-fromgps: " + lastGpsLocation[0] + "/"
                                 + lastGpsLocation[1]);
                     }
@@ -165,7 +165,7 @@ public class PositionUtilities {
             }
         }
 
-        if (GPLog.LOG_HEAVY) {
+        if (GPLog.LOG_ABSURD) {
             GPLog.addLogEntry("POSITIONUTILITIES", "getMapCenter-fromgps: " + lon + "/" + lat);
         }
         return new double[]{lon, lat, zoom};

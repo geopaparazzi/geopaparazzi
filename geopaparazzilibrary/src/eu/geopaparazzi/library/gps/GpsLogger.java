@@ -111,7 +111,7 @@ public class GpsLogger implements GpsManagerListener {
                     java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
                     long gpsLogId = dbHelper.addGpsLog(context, now, now, logName, 2f, "red", true);
                     currentRecordedLogId = gpsLogId;
-                    log("Starting gps logging. Logid: " + gpsLogId);
+                    logH("Starting gps logging. Logid: " + gpsLogId);
 
                     // get preferences
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -131,7 +131,7 @@ public class GpsLogger implements GpsManagerListener {
                     } catch (Exception e) {
                         // ignore and use default
                     }
-                    log("Waiting interval: " + waitForSecs);
+                    logH("Waiting interval: " + waitForSecs);
 
                     currentPointsNum = 0;
                     currentDistance = 0;
@@ -150,9 +150,9 @@ public class GpsLogger implements GpsManagerListener {
                         double recAlt = gpsLoc.getAltitude();
 
                         float lastDistance = previousLogLoc.distanceTo(gpsLoc);
-                        log("gpsloc: " + gpsLoc.getLatitude() + "/" + gpsLoc.getLongitude());
-                        log("previousLoc: " + previousLogLoc.getLatitude() + "/" + previousLogLoc.getLongitude());
-                        log("distance: " + lastDistance + " - mindistance: " + minDistance);
+                        logABS("gpsloc: " + gpsLoc.getLatitude() + "/" + gpsLoc.getLongitude());
+                        logABS("previousLoc: " + previousLogLoc.getLatitude() + "/" + previousLogLoc.getLongitude());
+                        logABS("distance: " + lastDistance + " - mindistance: " + minDistance);
                         // ignore near points
                         if (lastDistance < minDistance) {
                             waitGpsInterval(waitForSecs);
@@ -176,7 +176,7 @@ public class GpsLogger implements GpsManagerListener {
                     }
 
                     if (currentPointsNum < 2) {
-                        log("Removing gpslog, since too few points were added. Logid: " + gpsLogId);
+                        logABS("Removing gpslog, since too few points were added. Logid: " + gpsLogId);
                         dbHelper.deleteGpslog(context, gpsLogId);
                     } else {
                         // set the end timestamp
@@ -202,7 +202,7 @@ public class GpsLogger implements GpsManagerListener {
                     isLogging = false;
                     currentXY.clear();
                 }
-                log("Exit logging...");
+                logH("Exit logging...");
             }
 
             private void waitGpsInterval( long waitForSecs ) {
@@ -322,8 +322,12 @@ public class GpsLogger implements GpsManagerListener {
     public void onGpsStatusChanged( boolean hasFix ) {
     }
 
-    private void log( String msg ) {
+    private void logH( String msg ) {
         if (GPLog.LOG_HEAVY)
+            GPLog.addLogEntry(this, null, null, msg);
+    }
+    private void logABS( String msg ) {
+        if (GPLog.LOG_ABSURD)
             GPLog.addLogEntry(this, null, null, msg);
     }
 }

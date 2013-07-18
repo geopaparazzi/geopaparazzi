@@ -227,7 +227,7 @@ public class GpsManager implements LocationListener, Listener {
         } else {
             gpsIsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         }
-        log("Gps is on: " + gpsIsEnabled);
+        logABS("Gps is on: " + gpsIsEnabled);
         return gpsIsEnabled;
     }
 
@@ -419,6 +419,10 @@ public class GpsManager implements LocationListener, Listener {
 
     private static void log( String msg ) {
         if (GPLog.LOG_HEAVY)
+            GPLog.addLogEntry("GPSMANAGER", null, null, msg);
+    }
+    private static void logABS( String msg ) {
+        if (GPLog.LOG_ABSURD)
             GPLog.addLogEntry("GPSMANAGER", null, null, msg);
     }
 }
