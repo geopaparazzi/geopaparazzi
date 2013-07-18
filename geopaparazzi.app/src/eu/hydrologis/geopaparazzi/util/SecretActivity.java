@@ -41,7 +41,12 @@ import eu.hydrologis.geopaparazzi.database.SqlViewActivity;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class SecretActivity extends Activity {
+public class SecretActivity extends Activity implements CheckBox.OnCheckedChangeListener {
+
+    private CheckBox logCheckbox;
+    private CheckBox logHeavyCheckbox;
+    private CheckBox logAbsurdCheckbox;
+
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
@@ -64,34 +69,55 @@ public class SecretActivity extends Activity {
         boolean isDemoMode = preferences.getBoolean(LibraryConstants.PREFS_KEY_MOCKMODE, false);
         demoCheckbox.setChecked(isDemoMode);
 
-        checkLogs(preferences);
+        initLogs(preferences);
     }
 
-    private void checkLogs( final SharedPreferences preferences ) {
-        CheckBox logCheckbox = (CheckBox) findViewById(R.id.logCheckbox);
-        logCheckbox.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener(){
-            public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
-                GPLogPreferencesHandler.setLog(isChecked, preferences);
-            }
-        });
+    private void initLogs( final SharedPreferences preferences ) {
+        logCheckbox = (CheckBox) findViewById(R.id.logCheckbox);
+        logCheckbox.setOnCheckedChangeListener(this);
         logCheckbox.setChecked(GPLogPreferencesHandler.checkLog(preferences));
 
-        CheckBox logHeavyCheckbox = (CheckBox) findViewById(R.id.logHeavyCheckbox);
-        logHeavyCheckbox.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener(){
-            public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
-                GPLogPreferencesHandler.setLogHeavy(isChecked, preferences);
-            }
-        });
+        logHeavyCheckbox = (CheckBox) findViewById(R.id.logHeavyCheckbox);
+        logHeavyCheckbox.setOnCheckedChangeListener(this);
         logHeavyCheckbox.setChecked(GPLogPreferencesHandler.checkLogHeavy(preferences));
 
-        CheckBox logAbsurdCheckbox = (CheckBox) findViewById(R.id.logAbsCheckbox);
-        logAbsurdCheckbox.setOnCheckedChangeListener(new CheckBox.OnCheckedChangeListener(){
-            public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
-                GPLogPreferencesHandler.setLogAbsurd(isChecked, preferences);
-            }
-        });
+        logAbsurdCheckbox = (CheckBox) findViewById(R.id.logAbsCheckbox);
+        logAbsurdCheckbox.setOnCheckedChangeListener(this);
         logAbsurdCheckbox.setChecked(GPLogPreferencesHandler.checkLogAbsurd(preferences));
+    }
 
+    public void onCheckedChanged( CompoundButton checkBox, boolean newState ) {
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (logCheckbox != null && logCheckbox == checkBox)
+            if (newState) {
+                GPLogPreferencesHandler.setLog(true, preferences);
+            } else {
+                GPLogPreferencesHandler.setLog(false, preferences);
+                GPLogPreferencesHandler.setLogHeavy(false, preferences);
+                GPLogPreferencesHandler.setLogAbsurd(false, preferences);
+                logHeavyCheckbox.setChecked(false);
+                logAbsurdCheckbox.setChecked(false);
+            }
+        if (logHeavyCheckbox != null && logHeavyCheckbox == checkBox)
+            if (newState) {
+                GPLogPreferencesHandler.setLog(true, preferences);
+                GPLogPreferencesHandler.setLogHeavy(true, preferences);
+                logCheckbox.setChecked(true);
+            } else {
+                GPLogPreferencesHandler.setLogHeavy(false, preferences);
+                GPLogPreferencesHandler.setLogAbsurd(false, preferences);
+                logAbsurdCheckbox.setChecked(false);
+            }
+        if (logAbsurdCheckbox != null && logAbsurdCheckbox == checkBox)
+            if (newState) {
+                GPLogPreferencesHandler.setLog(true, preferences);
+                GPLogPreferencesHandler.setLogHeavy(true, preferences);
+                GPLogPreferencesHandler.setLogAbsurd(true, preferences);
+                logCheckbox.setChecked(true);
+                logHeavyCheckbox.setChecked(true);
+            } else {
+                GPLogPreferencesHandler.setLogAbsurd(false, preferences);
+            }
     }
 
     public void startSqlView( View view ) {
