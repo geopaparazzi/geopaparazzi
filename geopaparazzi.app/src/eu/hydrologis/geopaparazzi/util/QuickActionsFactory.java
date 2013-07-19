@@ -72,7 +72,7 @@ public enum QuickActionsFactory {
         notesQuickaction.setOnClickListener(new OnClickListener(){
             public void onClick( View v ) {
                 boolean isValid = false;
-                if (GpsManager.getInstance(activity).hasValidData()) {
+                if (GpsManager.getInstance(activity).hasFix()) {
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
                     double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
                     if (gpsLocation != null) {
@@ -108,7 +108,7 @@ public enum QuickActionsFactory {
             public void onClick( View v ) {
                 try {
                     boolean isValid = false;
-                    if (GpsManager.getInstance(activity).hasValidData()) {
+                    if (GpsManager.getInstance(activity).hasFix()) {
                         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
                         double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
                         if (gpsLocation != null) {
@@ -141,7 +141,7 @@ public enum QuickActionsFactory {
             public void onClick( View v ) {
                 try {
                     boolean isValid = false;
-                    if (GpsManager.getInstance(context).hasValidData()) {
+                    if (GpsManager.getInstance(context).hasFix()) {
                         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
                         double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
                         if (gpsLocation != null) {
@@ -216,7 +216,7 @@ public enum QuickActionsFactory {
         startLogQuickaction.setOnClickListener(new OnClickListener(){
             public void onClick( View v ) {
                 final GpsManager gpsManager = GpsManager.getInstance(context);
-                if (gpsManager.hasValidData()) {
+                if (gpsManager.hasFix()) {
                     final String defaultLogName = "log_" + LibraryConstants.TIMESTAMPFORMATTER.format(new Date()); //$NON-NLS-1$
                     final EditText input = new EditText(context);
                     input.setText(defaultLogName);
@@ -276,7 +276,7 @@ public enum QuickActionsFactory {
             public void onClick( View v ) {
                 try {
                     boolean isValid = false;
-                    if (GpsManager.getInstance(activity).hasValidData()) {
+                    if (GpsManager.getInstance(activity).hasFix()) {
                         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(activity);
                         double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
                         // double[] gpsLocation =

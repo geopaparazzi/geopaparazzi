@@ -305,7 +305,7 @@ public class GpsDatabaseLogger implements GpsManagerListener {
             GPLog.addLogEntry(this, null, null, msg);
     }
 
-    boolean hasFix() {
+    public boolean hasFix() {
         return gotFix;
     }
 

@@ -615,7 +615,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
             if (gpsManager.isDatabaseLogging()) {
                 gpsStatusFill = gpsBlueFill;
             } else {
-                if (gpsManager.hasValidData()) {
+                if (gpsManager.hasFix()) {
                     gpsStatusFill = gpsGreenFill;
                 } else {
                     gpsStatusFill = gpsOrangeFill;

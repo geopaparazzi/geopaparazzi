@@ -244,8 +244,8 @@ public class ActionBar implements GpsManagerListener {
             // Logger.d("COMPASSVIEW", "Location from gps is null!");
             sb.append(nodataString);
             sb.append("\n");
-            if (gpsManager.isEnabled()) {
-                if (!gpsManager.hasValidData()) {
+            if (isProviderEnabled) {
+                if (!gotFix) {
                     sb.append(acquirefixString);
                 } else {
                     sb.append(gpsonString);
@@ -385,5 +385,9 @@ public class ActionBar implements GpsManagerListener {
             }
             break;
         }
+    }
+
+    public boolean hasFix() {
+        return gotFix;
     }
 }

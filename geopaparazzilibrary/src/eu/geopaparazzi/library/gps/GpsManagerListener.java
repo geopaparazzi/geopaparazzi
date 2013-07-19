@@ -25,9 +25,49 @@ import android.location.LocationListener;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public interface GpsManagerListener extends LocationListener{
-    public void gpsStart();
-    public void gpsStop();
-    public void onGpsStatusChanged(int event, GpsStatus status);
+public interface GpsManagerListener extends LocationListener {
 
+    public void gpsStart();
+
+    public void gpsStop();
+
+    /**
+     * Handles gps status changes.
+     * 
+     * <p>Here the fix can be checked through something like:<br>
+     * 
+     * <pre>
+     *  switch( event ) {
+     *   case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
+     *       if ((SystemClock.elapsedRealtime() - lastLocationupdateMillis) < (GpsManager.WAITSECONDS * 2000l)) {
+     *           if (!gotFix) {
+     *               gotFix = true;
+     *           }
+     *       } else {
+     *           if (gotFix) {
+     *               gotFix = false;
+     *           }
+     *       }
+     *       break;
+     *   }
+     * </pre>
+     * 
+     * <p>where <code>lastLocationupdateMillis</code> should be set in 
+     * the {@link LocationListener#onLocationChanged(android.location.Location)} method 
+     * like: 
+     * <pre>
+     *   lastLocationupdateMillis = SystemClock.elapsedRealtime();
+     * </pre>
+     * 
+     * @param event
+     * @param status
+     */
+    public void onGpsStatusChanged( int event, GpsStatus status );
+
+    /**
+     * Check on available fix and data.
+     * 
+     * @return <code>true</code> if fix is available and data are valid.
+     */
+    public boolean hasFix();
 }

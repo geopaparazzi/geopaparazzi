@@ -25,7 +25,6 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.mapsforge.android.maps.DebugSettings;
 import org.mapsforge.android.maps.MapActivity;
@@ -1519,6 +1518,10 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     }
 
     public void onGpsStatusChanged( int event, GpsStatus status ) {
+    }
+
+    public boolean hasFix() {
+        throw new RuntimeException("Not to be called");
     }
 
 }

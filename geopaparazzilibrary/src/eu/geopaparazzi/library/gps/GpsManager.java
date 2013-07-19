@@ -33,6 +33,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
@@ -83,6 +84,10 @@ public class GpsManager implements LocationListener, Listener {
     private boolean useNetworkPositions;
 
     private boolean isMockMode;
+
+    private long lastLocationupdateMillis;
+
+    private boolean gotFix;
 
     private GpsManager( Context context ) {
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
@@ -245,12 +250,12 @@ public class GpsManager implements LocationListener, Listener {
      * 
      * @return <code>true</code> if the GPS is in a usable logging state.
      */
-    public boolean hasValidData() {
+    public boolean hasFix() {
         if (Debug.doMock || isMockMode) {
             if (TestMock.isOn)
                 return true;
         }
-        return gpsLogger.hasFix();// getLocation() != null;
+        return gotFix;
     }
 
     /**
@@ -349,6 +354,7 @@ public class GpsManager implements LocationListener, Listener {
     public void onLocationChanged( Location loc ) {
         if (loc == null)
             return;
+        lastLocationupdateMillis = SystemClock.elapsedRealtime();
         lastGpsLocation = new GpsLocation(loc);
 
         // Logger.d(gpsManager,
@@ -386,6 +392,22 @@ public class GpsManager implements LocationListener, Listener {
 
     public void onGpsStatusChanged( int event ) {
         mStatus = locationManager.getGpsStatus(mStatus);
+
+        // check fix
+        switch( event ) {
+        case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
+            if ((SystemClock.elapsedRealtime() - lastLocationupdateMillis) < (GpsManager.WAITSECONDS * 2000l)) {
+                if (!gotFix) {
+                    gotFix = true;
+                }
+            } else {
+                if (gotFix) {
+                    gotFix = false;
+                }
+            }
+            break;
+        }
+
         for( GpsManagerListener activity : listeners ) {
             activity.onGpsStatusChanged(event, mStatus);
         }
