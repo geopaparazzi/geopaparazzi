@@ -113,7 +113,12 @@ public class GPictureView extends View implements GView {
 
                 Date currentDate = new Date();
                 String currentDatestring = LibraryConstants.TIMESTAMPFORMATTER.format(currentDate);
-                File mediaDir = ResourcesManager.getInstance(context).getMediaDir();
+                File mediaDir = null;
+                try {
+                    mediaDir = ResourcesManager.getInstance(context).getMediaDir();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 lastImageFile = new File(mediaDir, "IMG_" + currentDatestring + ".jpg");
 
                 String relativeImagePath = mediaDir.getName() + File.separator + lastImageFile.getName();

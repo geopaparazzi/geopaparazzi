@@ -125,7 +125,7 @@ public class OsmFormActivity extends Activity {
                 tagsJsonFile = new File(tagsFolderFile, sb.toString());
             }
             formJsonString = FileUtilities.readfile(tagsJsonFile);
-        } catch (IOException e1) {
+        } catch (Exception e1) {
             e1.printStackTrace();
         }
 

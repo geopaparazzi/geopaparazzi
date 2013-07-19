@@ -15,7 +15,11 @@ public class OsmImageCache {
     private File tagsFolderFile;
 
     private OsmImageCache( Context context ) {
-        tagsFolderFile = OsmTagsManager.getInstance().getTagsFolderFile(context);
+        try {
+            tagsFolderFile = OsmTagsManager.getInstance().getTagsFolderFile(context);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // public void dispose(){

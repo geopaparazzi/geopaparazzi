@@ -206,7 +206,7 @@ public class GpsDatabaseLogger implements GpsManagerListener {
                     isDatabaseLogging = false;
                     currentXY.clear();
                 }
-                logH("Exit logging...");
+                logABS("Exit logging...");
             }
 
             private void waitGpsInterval( long waitForSecs ) {

@@ -58,7 +58,12 @@ public class DatabaseManager {
     }
 
     public SQLiteDatabase getDatabase( Context context ) throws IOException {
-        File databaseFile = ResourcesManager.getInstance(context).getDatabaseFile();
+        File databaseFile;
+        try {
+            databaseFile = ResourcesManager.getInstance(context).getDatabaseFile();
+        } catch (Exception e) {
+            throw new IOException(e.getLocalizedMessage());
+        }
         if (databaseHelper == null || !databaseFile.exists()) {
 
             databaseHelper = new DatabaseOpenHelper(databaseFile);

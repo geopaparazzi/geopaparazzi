@@ -124,46 +124,50 @@ public class GeoPaparazziActivity extends Activity {
 
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
-        initializeResourcesManager();
 
-        fileSourcesMap = new HashMap<String, String>();
-        rasterSourcesMap = new HashMap<String, SpatialRasterTable>();
-
-        tileSourcesMap = new LinkedHashMap<Integer, String>();
-        tileSourcesMap.put(1001, MapGeneratorInternal.DATABASE_RENDERER.name());
-        tileSourcesMap.put(1002, MapGeneratorInternal.MAPNIK.name());
-        tileSourcesMap.put(1003, MapGeneratorInternal.OPENCYCLEMAP.name());
-
-        File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
-        int i = 1004;
-        if (mapsDir != null && mapsDir.exists()) {
-            File[] mapFiles = mapsDir.listFiles(new FilenameFilter(){
-                public boolean accept( File dir, String filename ) {
-                    return filename.endsWith(".mapurl"); //$NON-NLS-1$
-                }
-            });
-
-            Arrays.sort(mapFiles);
-
-            for( File file : mapFiles ) {
-                String name = FileUtilities.getNameWithoutExtention(file);
-                tileSourcesMap.put(i++, name);
-                fileSourcesMap.put(name, file.getAbsolutePath());
-            }
-        }
-
-        /*
-         * add also geopackage tables
-         */
         try {
-            List<SpatialRasterTable> spatialRasterTables = SpatialDatabasesManager.getInstance().getSpatialRasterTables(false);
-            for( SpatialRasterTable table : spatialRasterTables ) {
-                tileSourcesMap.put(i++, table.getTableName());
-                rasterSourcesMap.put(table.getTableName(), table);
+            initializeResourcesManager();
+            
+            fileSourcesMap = new HashMap<String, String>();
+            rasterSourcesMap = new HashMap<String, SpatialRasterTable>();
+            
+            tileSourcesMap = new LinkedHashMap<Integer, String>();
+            tileSourcesMap.put(1001, MapGeneratorInternal.DATABASE_RENDERER.name());
+            tileSourcesMap.put(1002, MapGeneratorInternal.MAPNIK.name());
+            tileSourcesMap.put(1003, MapGeneratorInternal.OPENCYCLEMAP.name());
+            File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
+            int i = 1004;
+            if (mapsDir != null && mapsDir.exists()) {
+                File[] mapFiles = mapsDir.listFiles(new FilenameFilter(){
+                    public boolean accept( File dir, String filename ) {
+                        return filename.endsWith(".mapurl"); //$NON-NLS-1$
+                    }
+                });
+
+                Arrays.sort(mapFiles);
+
+                for( File file : mapFiles ) {
+                    String name = FileUtilities.getNameWithoutExtention(file);
+                    tileSourcesMap.put(i++, name);
+                    fileSourcesMap.put(name, file.getAbsolutePath());
+                }
+                /*
+                 * add also geopackage tables
+                 */
+                try {
+                    List<SpatialRasterTable> spatialRasterTables = SpatialDatabasesManager.getInstance().getSpatialRasterTables(false);
+                    for( SpatialRasterTable table : spatialRasterTables ) {
+                        tileSourcesMap.put(i++, table.getTableName());
+                        rasterSourcesMap.put(table.getTableName(), table);
+                    }
+                } catch (jsqlite.Exception e) {
+                    e.printStackTrace();
+                }
             }
-        } catch (jsqlite.Exception e) {
-            e.printStackTrace();
+        } catch (Exception e1) {
+            e1.printStackTrace();
         }
+
 
         checkIncomingGeosms();
         checkIncomingSmsData();
@@ -275,8 +279,8 @@ public class GeoPaparazziActivity extends Activity {
         }
         // actionBar.checkLogging();
     }
-    
-    private void initializeResourcesManager() {
+
+    private void initializeResourcesManager() throws Exception {
         Object stateObj = getLastNonConfigurationInstance();
         if (stateObj instanceof ResourcesManager) {
             resourcesManager = (ResourcesManager) stateObj;
@@ -291,8 +295,12 @@ public class GeoPaparazziActivity extends Activity {
                     .setPositiveButton(this.getString(android.R.string.yes), new DialogInterface.OnClickListener(){
                         public void onClick( DialogInterface dialog, int id ) {
                             ResourcesManager.setUseInternalMemory(true);
-                            resourcesManager = ResourcesManager.getInstance(GeoPaparazziActivity.this);
-                            initIfOk();
+                            try {
+                                resourcesManager = ResourcesManager.getInstance(GeoPaparazziActivity.this);
+                                initIfOk();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     }).setNegativeButton(this.getString(android.R.string.no), new DialogInterface.OnClickListener(){
                         public void onClick( DialogInterface dialog, int id ) {
@@ -330,7 +338,7 @@ public class GeoPaparazziActivity extends Activity {
             SpatialDatabasesManager.reset();
             File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
             SpatialDatabasesManager.getInstance().init(this, mapsDir);
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e(getClass().getSimpleName(), e.getLocalizedMessage(), e);
             e.printStackTrace();
             Utilities.toast(this, R.string.databaseError, Toast.LENGTH_LONG);
@@ -569,7 +577,12 @@ public class GeoPaparazziActivity extends Activity {
             if (mapGeneratorInternalNew != null) {
                 if (mapGeneratorInternalNew.equals(MapGeneratorInternal.DATABASE_RENDERER)) {
                     // check existing maps and ask for which to load
-                    File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
+                    File mapsDir = null;
+                    try {
+                        mapsDir = ResourcesManager.getInstance(this).getMapsDir();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     if (mapsDir == null || !mapsDir.exists()) {
                         Utilities.messageDialog(this, eu.hydrologis.geopaparazzi.R.string.no_external_sdcard_for_db_renderer,
                                 null);
@@ -793,14 +806,15 @@ public class GeoPaparazziActivity extends Activity {
 
         gpsManager.dispose(this);
 
-        ResourcesManager.resetManager();
-        resourcesManager = null;
-
         try {
             SpatialDatabasesManager.getInstance().closeDatabases();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        DatabaseManager.getInstance().closeDatabase();
+
+        ResourcesManager.resetManager();
+        resourcesManager = null;
 
         super.finish();
     }
@@ -858,7 +872,7 @@ public class GeoPaparazziActivity extends Activity {
                             Intent intent = getIntent();
                             finish();
                             startActivity(intent);
-                        } catch (IOException e) {
+                        } catch (Exception e) {
                             GPLog.error(this, e.getLocalizedMessage(), e);
                             e.printStackTrace();
                             Toast.makeText(GeoPaparazziActivity.this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();

@@ -51,7 +51,7 @@ public class KmzExport {
         this.outputFile = outputFile;
     }
 
-    public void export( Context context, List<KmlRepresenter> kmlRepresenters ) throws IOException {
+    public void export( Context context, List<KmlRepresenter> kmlRepresenters ) throws Exception {
         if (name == null) {
             name = "Geopaparazzi Export";
         }

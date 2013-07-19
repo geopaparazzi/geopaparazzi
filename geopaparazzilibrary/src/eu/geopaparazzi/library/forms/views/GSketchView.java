@@ -107,7 +107,12 @@ public class GSketchView extends View implements GView {
 
                 Date currentDate = new Date();
                 String currentDatestring = LibraryConstants.TIMESTAMPFORMATTER.format(currentDate);
-                File mediaDir = ResourcesManager.getInstance(context).getMediaDir();
+                File mediaDir = null;
+                try {
+                    mediaDir = ResourcesManager.getInstance(context).getMediaDir();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 lastImageFile = new File(mediaDir, "SKETCH_" + currentDatestring + ".png");
                 Intent sketchIntent = new Intent(context, DrawingActivity.class);
                 String imagePath = lastImageFile.getAbsolutePath();

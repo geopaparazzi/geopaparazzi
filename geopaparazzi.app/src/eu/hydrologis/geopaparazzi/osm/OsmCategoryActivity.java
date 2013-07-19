@@ -41,6 +41,8 @@ public class OsmCategoryActivity extends Activity {
 
     private String category;
 
+    private String[] itemsForCategory = new String[0];
+    
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
         setContentView(R.layout.osmcategorytags);
@@ -48,7 +50,11 @@ public class OsmCategoryActivity extends Activity {
         Bundle extras = getIntent().getExtras();
         category = extras.getString(Constants.OSM_CATEGORY_KEY);
 
-        final String[] itemsForCategory = OsmTagsManager.getInstance().getItemsForCategory(this, category);
+        try {
+            itemsForCategory = OsmTagsManager.getInstance().getItemsForCategory(this, category);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         GridView buttonGridView = (GridView) findViewById(R.id.osmtagsgridview);
 

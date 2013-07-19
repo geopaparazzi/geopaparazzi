@@ -81,8 +81,9 @@ public class OsmTagsManager {
      * 
      * @param context the {@link Context}.
      * @return the root folder for OSM tags.
+     * @throws Exception 
      */
-    public synchronized File getTagsFolderFile( Context context ) {
+    public synchronized File getTagsFolderFile( Context context ) throws Exception {
         if (tagsFolderFile == null) {
             File geoPaparazziDir = ResourcesManager.getInstance(context).getApplicationDir();
             tagsFolderFile = new File(geoPaparazziDir.getParentFile(), TAGSFOLDERNAME);
@@ -123,8 +124,9 @@ public class OsmTagsManager {
      * @param context the {@link Context}.
      * @param category the category from which to fetch the items.
      * @return the names of the items of the category. 
+     * @throws Exception 
      */
-    public String[] getItemsForCategory( Context context, String category ) {
+    public String[] getItemsForCategory( Context context, String category ) throws Exception {
         File tagsFolderFile = getTagsFolderFile(context);
         File categoryFolderFile = new File(tagsFolderFile, category);
         File[] iconFiles = categoryFolderFile.listFiles(new FileFilter(){

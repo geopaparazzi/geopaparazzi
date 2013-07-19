@@ -894,8 +894,12 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 File absolutePath = new File(title);
                 if (!absolutePath.exists()) {
                     // try relative to media
-                    File mediaDir = ResourcesManager.getInstance(context).getMediaDir();
-                    absolutePath = new File(mediaDir.getParentFile(), title);
+                    try {
+                        File mediaDir = ResourcesManager.getInstance(context).getMediaDir();
+                        absolutePath = new File(mediaDir.getParentFile(), title);
+                    } catch (java.lang.Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 intent.setDataAndType(Uri.fromFile(absolutePath), "image/*"); //$NON-NLS-1$
                 context.startActivity(intent);

@@ -226,8 +226,14 @@ public class OsmUtilities {
                     public void onClick( DialogInterface dialog, int whichButton ) {
                     }
                 }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
+                    private File parentFile;
+
                     public void onClick( DialogInterface dialog, int whichButton ) {
-                        final File parentFile = ResourcesManager.getInstance(activity).getApplicationDir().getParentFile();
+                        try {
+                            parentFile = ResourcesManager.getInstance(activity).getApplicationDir().getParentFile();
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
                         final File osmZipFile = new File(parentFile, "osmtags.zip");
                         File osmFolderFile = new File(parentFile, "osmtags");
 

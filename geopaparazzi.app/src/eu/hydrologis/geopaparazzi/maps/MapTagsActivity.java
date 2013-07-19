@@ -195,11 +195,11 @@ public class MapTagsActivity extends Activity {
         case (CAMERA_RETURN_CODE): {
             String relativeImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
             if (relativeImagePath != null) {
-                File imgFile = new File(ResourcesManager.getInstance(this).getMediaDir().getParentFile(), relativeImagePath);
-                if (!imgFile.exists()) {
-                    return;
-                }
                 try {
+                    File imgFile = new File(ResourcesManager.getInstance(this).getMediaDir().getParentFile(), relativeImagePath);
+                    if (!imgFile.exists()) {
+                        return;
+                    }
                     double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
                     double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
                     double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);

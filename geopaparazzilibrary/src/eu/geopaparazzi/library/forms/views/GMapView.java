@@ -75,7 +75,12 @@ public class GMapView extends View implements GView {
         image = new File(value);
         if (!image.exists()) {
             // look also in media folder for relative path name
-            File mediaDir = ResourcesManager.getInstance(context).getMediaDir();
+            File mediaDir = null;
+            try {
+                mediaDir = ResourcesManager.getInstance(context).getMediaDir();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             File parentFolder = mediaDir.getParentFile();
             image = new File(parentFolder, value);
         }

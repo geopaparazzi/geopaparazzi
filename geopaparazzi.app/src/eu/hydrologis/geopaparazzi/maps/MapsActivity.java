@@ -241,7 +241,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                     mapGenerator = CustomTileDownloader.file2TileDownloader(new File(filePath), mapsDir.getAbsolutePath());
                     minZoomLevel = mapGenerator.getStartZoomLevel();
                     maxZoomLevel = mapGenerator.getZoomLevelMax();
-                } catch (IOException e) {
+                } catch (Exception e) {
                     mapGenerator = createMapGenerator(MapGeneratorInternal.MAPNIK);
                 }
             } else if (mapGeneratorInternal != null) {
@@ -381,25 +381,29 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         addnotebytagButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
                 // generate screenshot in background in order to not freeze
-                File mediaDir = ResourcesManager.getInstance(MapsActivity.this).getMediaDir();
-                final File tmpImageFile = new File(mediaDir.getParentFile(), LibraryConstants.TMPPNGIMAGENAME);
-                new Thread(new Runnable(){
-                    public void run() {
-                        try {
-                            mapView.takeScreenshot(Bitmap.CompressFormat.PNG, 90, tmpImageFile);
-                        } catch (Exception e) {
+                try {
+                    File mediaDir = ResourcesManager.getInstance(MapsActivity.this).getMediaDir();
+                    final File tmpImageFile = new File(mediaDir.getParentFile(), LibraryConstants.TMPPNGIMAGENAME);
+                    new Thread(new Runnable(){
+                        public void run() {
+                            try {
+                                mapView.takeScreenshot(Bitmap.CompressFormat.PNG, 90, tmpImageFile);
+                            } catch (Exception e) {
+                            }
                         }
-                    }
-                }).start();
+                    }).start();
+                    MapViewPosition mapPosition = mapView.getMapPosition();
+                    GeoPoint mapCenter = mapPosition.getMapCenter();
+                    Intent mapTagsIntent = new Intent(MapsActivity.this, MapTagsActivity.class);
+                    mapTagsIntent.putExtra(LibraryConstants.LATITUDE, (double) (mapCenter.latitudeE6 / LibraryConstants.E6));
+                    mapTagsIntent.putExtra(LibraryConstants.LONGITUDE, (double) (mapCenter.longitudeE6 / LibraryConstants.E6));
+                    mapTagsIntent.putExtra(LibraryConstants.ELEVATION, 0.0);
+                    mapTagsIntent.putExtra(LibraryConstants.TMPPNGIMAGENAME, tmpImageFile.getAbsolutePath());
+                    startActivity(mapTagsIntent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-                MapViewPosition mapPosition = mapView.getMapPosition();
-                GeoPoint mapCenter = mapPosition.getMapCenter();
-                Intent mapTagsIntent = new Intent(MapsActivity.this, MapTagsActivity.class);
-                mapTagsIntent.putExtra(LibraryConstants.LATITUDE, (double) (mapCenter.latitudeE6 / LibraryConstants.E6));
-                mapTagsIntent.putExtra(LibraryConstants.LONGITUDE, (double) (mapCenter.longitudeE6 / LibraryConstants.E6));
-                mapTagsIntent.putExtra(LibraryConstants.ELEVATION, 0.0);
-                mapTagsIntent.putExtra(LibraryConstants.TMPPNGIMAGENAME, tmpImageFile.getAbsolutePath());
-                startActivity(mapTagsIntent);
 
             }
         });

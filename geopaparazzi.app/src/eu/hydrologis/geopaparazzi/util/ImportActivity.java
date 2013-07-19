@@ -58,7 +58,11 @@ public class ImportActivity extends Activity {
         ImageButton gpxExportButton = (ImageButton) findViewById(R.id.gpxImportButton);
         gpxExportButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                importGpx();
+                try {
+                    importGpx();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
         ImageButton cloudImportButton = (ImageButton) findViewById(R.id.cloudImportButton);
@@ -94,7 +98,12 @@ public class ImportActivity extends Activity {
             public void onClick( View v ) {
                 final ImportActivity context = ImportActivity.this;
 
-                ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
+                ResourcesManager resourcesManager = null;
+                try {
+                    resourcesManager = ResourcesManager.getInstance(context);
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
                 File sdcardDir = resourcesManager.getSdcardDir();
                 File bookmarksfile = new File(sdcardDir, "bookmarks.csv"); //$NON-NLS-1$
                 if (bookmarksfile.exists()) {
@@ -146,7 +155,7 @@ public class ImportActivity extends Activity {
         });
     }
 
-    private void importGpx() {
+    private void importGpx() throws Exception {
         Intent browseIntent = new Intent(ImportActivity.this, DirectoryBrowserActivity.class);
         browseIntent.putExtra(DirectoryBrowserActivity.STARTFOLDERPATH, ResourcesManager.getInstance(ImportActivity.this)
                 .getApplicationDir().getAbsolutePath());

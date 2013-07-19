@@ -17,6 +17,9 @@
  */
 package eu.geopaparazzi.library.util.debug;
 
+import java.io.File;
+import java.io.IOException;
+
 /**
  * Small interface to get hold of all debug possibilities in one place. 
  * 
@@ -51,4 +54,22 @@ public class Debug {
      * <p>For release = <code>false</code>.
      */
     public final static boolean doOverwriteTags = false;
+
+    /**
+     * Dump heap data to a folder.
+     * 
+     * <p>This will need to be converted to be analized in MAT with:
+     * <pre>
+     * hprof-conv heap_dump_id_.dalvik-hprof heap_dump_id.hprof
+     * </pre>
+     * 
+     * @param folder the folder to which to dump to.
+     * @param id the id to add to the file name.
+     * @throws IOException 
+     */
+    public static void dumpHProfData( File folder, int id ) throws IOException {
+        String absPath = new File(folder, "heap_dump_" + id + ".dalvik-hprof").getAbsolutePath();
+        android.os.Debug.dumpHprofData(absPath);
+    }
+
 }

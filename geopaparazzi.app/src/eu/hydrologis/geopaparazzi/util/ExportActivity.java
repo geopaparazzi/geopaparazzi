@@ -245,7 +245,7 @@ public class ExportActivity extends Activity {
                     export.export(ExportActivity.this, kmlRepresenterList);
 
                     return kmlOutputFile.getAbsolutePath();
-                } catch (IOException e) {
+                } catch (Exception e) {
                     GPLog.error(this, e.getLocalizedMessage(), e);
                     e.printStackTrace();
                     return null;
@@ -303,7 +303,7 @@ public class ExportActivity extends Activity {
                     export.export(ExportActivity.this, gpxRepresenterList);
 
                     return gpxOutputFile.getAbsolutePath();
-                } catch (IOException e) {
+                } catch (Exception e) {
                     GPLog.error(this, e.getLocalizedMessage(), e);
                     e.printStackTrace();
                     return null;
@@ -386,7 +386,7 @@ public class ExportActivity extends Activity {
             } else {
                 Utilities.messageDialog(this, "Successfully exported bookmarks: " + exported, null);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             Utilities.messageDialog(this, "An error occurred while exporting the bookmarks.", null);
         }

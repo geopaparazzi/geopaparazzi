@@ -31,7 +31,9 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.database.GPLog;
 
 /**
  * Singleton that takes care of resources management.
@@ -50,7 +52,7 @@ public class ResourcesManager implements Serializable {
     private Context context;
 
     private File applicationDir;
-    private File debugLogFile;
+
     private File databaseFile;
 
     private File mediaDir;
@@ -84,14 +86,11 @@ public class ResourcesManager implements Serializable {
      * 
      * @param context the context to refer to.
      * @return the {@link ResourcesManager} instance.
+     * @throws Exception 
      */
-    public synchronized static ResourcesManager getInstance( Context context ) {
+    public synchronized static ResourcesManager getInstance( Context context ) throws Exception {
         if (resourcesManager == null) {
-            try {
-                resourcesManager = new ResourcesManager(context);
-            } catch (Exception e) {
-                return null;
-            }
+            resourcesManager = new ResourcesManager(context);
         }
         return resourcesManager;
     }
@@ -147,6 +146,9 @@ public class ResourcesManager implements Serializable {
         }
         // the folder doesn't exist for some reason, fallback on default
         String state = Environment.getExternalStorageState();
+        if (GPLog.LOG_HEAVY) {
+            Log.i("RESOURCESMANAGER", state);
+        }
         boolean mExternalStorageAvailable;
         boolean mExternalStorageWriteable;
         if (Environment.MEDIA_MOUNTED.equals(state)) {
@@ -158,6 +160,7 @@ public class ResourcesManager implements Serializable {
             mExternalStorageAvailable = mExternalStorageWriteable = false;
         }
 
+        String cantCreateSdcardmsg = context.getResources().getString(R.string.cantcreate_sdcard);
         File possibleApplicationDir;
         if (mExternalStorageAvailable && mExternalStorageWriteable) {
             String customFolderPath = preferences.getString(PREFS_KEY_CUSTOM_EXTERNALSTORAGE, "asdasdpoipoi");
@@ -171,29 +174,64 @@ public class ResourcesManager implements Serializable {
         } else if (useInternalMemory) {
             possibleApplicationDir = context.getDir(applicationLabel, Context.MODE_PRIVATE);
         } else {
-            throw new IOException();
+            String msgFormat = Utilities.format(cantCreateSdcardmsg, "sdcard/" + applicationLabel);
+            throw new IOException(msgFormat);
         }
+
         if (baseFolder.length() == 0 || !parentExists || !parentCanWrite) {
             applicationDir = possibleApplicationDir;
         }
 
-        String cantCreateSdcardmsg = context.getResources().getString(R.string.cantcreate_sdcard);
+        if (GPLog.LOG_HEAVY) {
+            Log.i("RESOURCESMANAGER", "Possible app dir: " + applicationDir);
+        }
+
         String applicationDirPath = applicationDir.getAbsolutePath();
         if (!applicationDir.exists()) {
             createdApplicationDirOnInit = true;
+
+            // RandomAccessFile file = null;
+            // try {
+            // file = new RandomAccessFile(applicationDir, "rw");
+            // final FileLock fileLock = file.getChannel().tryLock();
+            // Log.i("RESOURCESMANAGER", "Got the lock? " + (null != fileLock));
+            // if (null != fileLock) {
+            // Log.i("RESOURCESMANAGER", "Is a valid lock? " + fileLock.isValid());
+            // }
+            // } finally {
+            // file.close();
+            // }
+
+            // Process proc = Runtime.getRuntime().exec(new String[]{"lsof",
+            // applicationDir.getAbsolutePath()});
+            // StringBuilder sb = new StringBuilder("LOSF RESULT: ");
+            // BufferedReader stdInput = new BufferedReader(new
+            // InputStreamReader(proc.getInputStream()));
+            // BufferedReader stdError = new BufferedReader(new
+            // InputStreamReader(proc.getErrorStream()));
+            // String s;
+            // while( (s = stdInput.readLine()) != null ) {
+            // sb.append(s).append("\n");
+            // }
+            // while( (s = stdError.readLine()) != null ) {
+            // sb.append(s).append("\n");
+            // }
+            // Log.i("RESOURCESMANAGER", sb.toString());
             if (!applicationDir.mkdirs()) {
                 String msgFormat = Utilities.format(cantCreateSdcardmsg, applicationDirPath);
-                messageDialog(context, msgFormat, null);
+                throw new IOException(msgFormat);
             }
         }
+        if (GPLog.LOG_HEAVY) {
+            Log.i("RESOURCESMANAGER", "App dir exists: " + applicationDir.exists());
+        }
         databaseFile = new File(applicationDirPath, databaseName);
-        debugLogFile = new File(applicationDirPath, "debug.log"); //$NON-NLS-1$
 
         mediaDir = new File(applicationDir, PATH_MEDIA);
         if (!mediaDir.exists())
             if (!mediaDir.mkdir()) {
                 String msgFormat = Utilities.format(cantCreateSdcardmsg, mediaDir.getAbsolutePath());
-                messageDialog(context, msgFormat, null);
+                throw new IOException(msgFormat);
             }
 
         exportDir = applicationDir.getParentFile();
@@ -271,15 +309,6 @@ public class ResourcesManager implements Serializable {
      */
     public File getDatabaseFile() {
         return databaseFile;
-    }
-
-    /**
-     * Get the {@link File} to the log file.
-     * 
-     * @return the {@link File} to the log file. 
-     */
-    public File getDebugLogFile() {
-        return debugLogFile;
     }
 
     /**

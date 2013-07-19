@@ -84,19 +84,24 @@ public class CameraActivity extends Activity {
         super.onCreate(icicle);
 
         Bundle extras = getIntent().getExtras();
-        File imageSaveFolder = ResourcesManager.getInstance(this).getMediaDir();
-        if (extras != null) {
-            String imageSaveFolderRelativePath = extras.getString(LibraryConstants.PREFS_KEY_CAMERA_IMAGESAVEFOLDER);
-            if (imageSaveFolderRelativePath != null && imageSaveFolderRelativePath.length() > 0) {
-                File applicationDir = ResourcesManager.getInstance(this).getApplicationDir();
-                imageSaveFolder = new File(applicationDir, imageSaveFolderRelativePath);
+        File imageSaveFolder = null;
+        try {
+            imageSaveFolder = ResourcesManager.getInstance(this).getMediaDir();
+            if (extras != null) {
+                String imageSaveFolderRelativePath = extras.getString(LibraryConstants.PREFS_KEY_CAMERA_IMAGESAVEFOLDER);
+                if (imageSaveFolderRelativePath != null && imageSaveFolderRelativePath.length() > 0) {
+                    File applicationDir = ResourcesManager.getInstance(this).getApplicationDir();
+                    imageSaveFolder = new File(applicationDir, imageSaveFolderRelativePath);
+                }
+                imageName = extras.getString(LibraryConstants.PREFS_KEY_CAMERA_IMAGENAME);
+                lon = extras.getDouble(LibraryConstants.LONGITUDE);
+                lat = extras.getDouble(LibraryConstants.LATITUDE);
+                elevation = extras.getDouble(LibraryConstants.ELEVATION);
+            } else {
+                throw new RuntimeException("Not implemented yet...");
             }
-            imageName = extras.getString(LibraryConstants.PREFS_KEY_CAMERA_IMAGENAME);
-            lon = extras.getDouble(LibraryConstants.LONGITUDE);
-            lat = extras.getDouble(LibraryConstants.LATITUDE);
-            elevation = extras.getDouble(LibraryConstants.ELEVATION);
-        } else {
-            throw new RuntimeException("Not implemented yet...");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         if (!imageSaveFolder.exists()) {
