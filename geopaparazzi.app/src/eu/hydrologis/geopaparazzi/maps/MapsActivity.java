@@ -404,7 +404,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                     e.printStackTrace();
                 }
 
-
             }
         });
 
@@ -572,6 +571,15 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             Drawable newBookmarkMarker = ArrayGeopaparazziOverlay.boundCenter(bookmarkMarker);
             List<OverlayItem> bookmarksOverlays = DaoBookmarks.getBookmarksOverlays(this, newBookmarkMarker);
             dataOverlay.addItems(bookmarksOverlays);
+
+            // read last known gps position
+            double[] lastKnownPostion = PositionUtilities.getGpsLocationFromPreferences(preferences);
+            if (lastKnownPostion != null) {
+                GeoPoint geoPoint = new GeoPoint((int) (lastKnownPostion[0] * LibraryConstants.E6),
+                        (int) (lastKnownPostion[1] * LibraryConstants.E6));
+                dataOverlay.setGpsPosition(geoPoint, 0f);
+            }
+            // dataOverlay.requestRedraw();
         } catch (IOException e1) {
             e1.printStackTrace();
         }

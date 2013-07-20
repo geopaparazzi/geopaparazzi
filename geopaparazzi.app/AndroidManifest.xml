@@ -36,7 +36,7 @@
         android:largeScreens="true"
         android:normalScreens="true"
         android:resizeable="true"
-        android:smallScreens="true" >
+        android:smallScreens="true" android:xlargeScreens="true">
     </supports-screens>
 
     <application
