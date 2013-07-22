@@ -180,7 +180,7 @@
     <string name="use_custom_sdcard_summary">Use a custom sdcard path (useful in case of multiple storages). WARNING: USE AT OWN RISK</string>
     <string name="custom_sdcard_path">Custom sdcard path</string>
     <string name="opacity">opacity</string>
-    <string name="size">size</string>
+    <string name="size">Size</string>
     <string name="notes_properties">Notes Properties</string>
     <string name="visibility">Visibility</string>
     <string name="custom_icon_properties">Custom icon properties</string>
@@ -188,5 +188,9 @@
     <string name="labels">Labels</string>
     <string name="show_labels">show labels</string>
     <string name="halo">halo</string>
+    <string name="screen_preferences">Screen preferences</string>
+    <string name="cross_properties_summary">Properties of the cross used to place notes.</string>
+    <string name="cross_properties">Center Cross</string>
+    <string name="color">Color</string>
 
 </resources>

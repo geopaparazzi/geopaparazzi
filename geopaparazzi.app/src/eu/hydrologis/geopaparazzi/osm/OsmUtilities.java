@@ -117,7 +117,7 @@ public class OsmUtilities {
         wpsXmlString = wpsXmlString.replaceFirst("PASSWORD", pwd);
         wpsXmlString = wpsXmlString.replaceFirst("CHANGESET", description);
 
-        List<Note> notesList = DaoNotes.getNotesList(context);
+        List<Note> notesList = DaoNotes.getNotesList();
         StringBuilder sb = new StringBuilder();
         for( Note note : notesList ) {
             if (note.getType() == NoteType.OSM.getTypeNum()) {

@@ -86,7 +86,7 @@ public class GpsDataListActivity extends ListActivity {
         gpslogItems = new LogMapItem[0];
         try {
             if (doReread) {
-                List<LogMapItem> logsList = DaoGpsLog.getGpslogs(this);
+                List<LogMapItem> logsList = DaoGpsLog.getGpslogs();
                 Collections.sort(logsList, mapItemSorter);
                 gpslogItems = logsList.toArray(new LogMapItem[0]);
             }
@@ -169,7 +169,7 @@ public class GpsDataListActivity extends ListActivity {
             return true;
         case SELECTALL:
             try {
-                DaoGpsLog.setLogsVisibility(this, true);
+                DaoGpsLog.setLogsVisibility(true);
                 refreshList(true);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -177,7 +177,7 @@ public class GpsDataListActivity extends ListActivity {
             return true;
         case UNSELECTALL:
             try {
-                DaoGpsLog.setLogsVisibility(this, false);
+                DaoGpsLog.setLogsVisibility(false);
                 refreshList(true);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -209,7 +209,7 @@ public class GpsDataListActivity extends ListActivity {
                     MapItem mapItem = selected.get(i);
                     long id = mapItem.getId();
                     try {
-                        DaoGpsLog.mergeLogs(GpsDataListActivity.this, id, mainId);
+                        DaoGpsLog.mergeLogs(id, mainId);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -232,7 +232,7 @@ public class GpsDataListActivity extends ListActivity {
             boolean oneVisible = false;
             for( MapItem item : gpslogItems ) {
                 if (item.isDirty()) {
-                    DaoGpsLog.updateLogProperties(this, item.getId(), item.getColor(), item.getWidth(), item.isVisible(), null);
+                    DaoGpsLog.updateLogProperties(item.getId(), item.getColor(), item.getWidth(), item.isVisible(), null);
                     item.setDirty(false);
                 }
                 if (!oneVisible && item.isVisible()) {

@@ -27,7 +27,6 @@ import org.mapsforge.android.maps.overlay.OverlayItem;
 import org.mapsforge.core.model.GeoPoint;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
@@ -58,9 +57,8 @@ public class DaoImages {
 
     private static SimpleDateFormat dateFormatter = LibraryConstants.TIME_FORMATTER_SQLITE;
 
-    public static void addImage( Context context, double lon, double lat, double altim, double azim, Date timestamp, String text,
-            String path ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    public static void addImage( double lon, double lat, double altim, double azim, Date timestamp, String text, String path ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
             ContentValues values = new ContentValues();
@@ -82,8 +80,8 @@ public class DaoImages {
         }
     }
 
-    public static void deleteImage( Context context, long id ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    public static void deleteImage( long id ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
             // delete note
@@ -100,25 +98,25 @@ public class DaoImages {
         }
     }
 
-    public static void deleteLastInsertedImage( Context context ) throws IOException {
+    public static void deleteLastInsertedImage() throws IOException {
         if (LASTINSERTEDIMAGE_ID != -1) {
-            deleteImage(context, LASTINSERTEDIMAGE_ID);
+            deleteImage(LASTINSERTEDIMAGE_ID);
         }
     }
 
     /**
      * Get the collected notes from the database inside a given bound.
-     * 
      * @param n
      * @param s
      * @param w
      * @param e
+     * 
      * @return the list of notes inside the bounds.
      * @throws IOException
      */
-    public static List<Image> getImagesInWorldBounds( Context context, float n, float s, float w, float e ) throws IOException {
+    public static List<Image> getImagesInWorldBounds( float n, float s, float w, float e ) throws IOException {
 
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         String query = "SELECT _id, lon, lat, altim, azim, path, text, ts FROM XXX WHERE (lon BETWEEN XXX AND XXX) AND (lat BETWEEN XXX AND XXX)";
         // String[] args = new String[]{TABLE_NOTES, String.valueOf(w), String.valueOf(e),
         // String.valueOf(s), String.valueOf(n)};
@@ -158,8 +156,8 @@ public class DaoImages {
      * @return list of notes.
      * @throws IOException
      */
-    public static List<Image> getImagesList( Context context ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    public static List<Image> getImagesList( ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         List<Image> images = new ArrayList<Image>();
         String asColumnsToReturn[] = {COLUMN_ID, COLUMN_LON, COLUMN_LAT, COLUMN_ALTIM, COLUMN_AZIM, COLUMN_PATH, COLUMN_TS,
                 COLUMN_TEXT};
@@ -184,8 +182,8 @@ public class DaoImages {
         return images;
     }
 
-    public static List<OverlayItem> getImagesOverlayList( Context context, Drawable marker ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    public static List<OverlayItem> getImagesOverlayList( Drawable marker ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         List<OverlayItem> images = new ArrayList<OverlayItem>();
         String asColumnsToReturn[] = {COLUMN_LON, COLUMN_LAT, COLUMN_PATH, COLUMN_TEXT};
         String strSortOrder = "_id ASC";
@@ -205,7 +203,7 @@ public class DaoImages {
         return images;
     }
 
-    public static void createTables( Context context ) throws IOException {
+    public static void createTables( ) throws IOException {
         StringBuilder sB = new StringBuilder();
 
         sB = new StringBuilder();
@@ -242,7 +240,7 @@ public class DaoImages {
         sB.append(" );");
         String CREATE_INDEX_IMAGES_X_BY_Y = sB.toString();
 
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         if (GPLog.LOG_HEAVY)
             Log.i("DAOIMAGES", "Create the images table.");
 

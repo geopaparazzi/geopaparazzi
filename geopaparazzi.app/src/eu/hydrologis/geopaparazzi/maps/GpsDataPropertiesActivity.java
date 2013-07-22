@@ -139,7 +139,7 @@ public class GpsDataPropertiesActivity extends Activity {
             zoomButton.setOnClickListener(new Button.OnClickListener(){
                 public void onClick( View v ) {
                     try {
-                        double[] firstPoint = DaoGpsLog.getGpslogFirstPoint(GpsDataPropertiesActivity.this, item.getId());
+                        double[] firstPoint = DaoGpsLog.getGpslogFirstPoint(item.getId());
                         if (firstPoint != null) {
                             Intent intent = getIntent();
                             intent.putExtra(LibraryConstants.LATITUDE, firstPoint[1]);
@@ -169,8 +169,8 @@ public class GpsDataPropertiesActivity extends Activity {
             okButton.setOnClickListener(new Button.OnClickListener(){
                 public void onClick( View v ) {
                     try {
-                        DaoGpsLog.updateLogProperties(GpsDataPropertiesActivity.this, item.getId(), newColor, newWidth,
-                                item.isVisible(), newText);
+                        DaoGpsLog.updateLogProperties(item.getId(), newColor, newWidth, item.isVisible(),
+                                newText);
                     } catch (IOException e) {
                         GPLog.error(this, e.getLocalizedMessage(), e);
                         e.printStackTrace();

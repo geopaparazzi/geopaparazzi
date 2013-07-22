@@ -88,7 +88,7 @@ public class BookmarksListActivity extends ListActivity {
         if (GPLog.LOG_HEAVY)
             GPLog.addLogEntry(this, "refreshing bookmarks list"); //$NON-NLS-1$
         try {
-            List<Bookmark> bookmarksList = DaoBookmarks.getAllBookmarks(this);
+            List<Bookmark> bookmarksList = DaoBookmarks.getAllBookmarks();
 
             Collections.sort(bookmarksList, bookmarksSorter);
             bookmarksNames = new String[bookmarksList.size()];
@@ -112,7 +112,7 @@ public class BookmarksListActivity extends ListActivity {
         if (GPLog.LOG_HEAVY)
             GPLog.addLogEntry(this, "filter bookmarks list"); //$NON-NLS-1$
         try {
-            List<Bookmark> bookmarksList = DaoBookmarks.getAllBookmarks(this);
+            List<Bookmark> bookmarksList = DaoBookmarks.getAllBookmarks();
             Collections.sort(bookmarksList, bookmarksSorter);
 
             bookmarksMap.clear();
@@ -168,7 +168,7 @@ public class BookmarksListActivity extends ListActivity {
                                                 return;
                                             }
                                             Bookmark bookmark = bookmarksMap.get(name);
-                                            DaoBookmarks.updateBookmarkName(BookmarksListActivity.this, bookmark.getId(), newName);
+                                            DaoBookmarks.updateBookmarkName(bookmark.getId(), newName);
                                             refreshList();
                                         } catch (IOException e) {
                                             GPLog.error(this, e.getLocalizedMessage(), e);

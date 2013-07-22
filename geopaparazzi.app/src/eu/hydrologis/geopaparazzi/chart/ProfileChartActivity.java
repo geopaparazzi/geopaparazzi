@@ -108,7 +108,7 @@ public class ProfileChartActivity extends Activity {
             try {
                 long logid = extras.getLong(Constants.ID);
 
-                line = DaoGpsLog.getGpslogAsLine(this, logid, -1);
+                line = DaoGpsLog.getGpslogAsLine(logid, -1);
 
             } catch (IOException e) {
                 GPLog.error(this, e.getLocalizedMessage(), e);

@@ -25,7 +25,6 @@ import org.mapsforge.android.maps.overlay.OverlayItem;
 import org.mapsforge.core.model.GeoPoint;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
@@ -52,9 +51,9 @@ public class DaoBookmarks {
 
     public static final String TABLE_BOOKMARKS = "bookmarks";
 
-    public static void addBookmark( Context context, double lon, double lat, String text, double zoom, double north,
-            double south, double west, double east ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    public static void addBookmark( double lon, double lat, String text, double zoom, double north, double south, double west,
+            double east ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
             ContentValues values = new ContentValues();
@@ -77,8 +76,8 @@ public class DaoBookmarks {
         }
     }
 
-    public static void deleteBookmark( Context context, long id ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    public static void deleteBookmark( long id ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
             // delete note
@@ -95,8 +94,8 @@ public class DaoBookmarks {
         }
     }
 
-    public static void updateBookmarkName( Context context, long id, String newName ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    public static void updateBookmarkName( long id, String newName ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
             StringBuilder sb = new StringBuilder();
@@ -124,18 +123,17 @@ public class DaoBookmarks {
 
     /**
      * Get the collected notes from the database inside a given bound.
-     * 
      * @param n
      * @param s
      * @param w
      * @param e
+     * 
      * @return the list of notes inside the bounds.
      * @throws IOException
      */
-    public static List<Bookmark> getBookmarksInWorldBounds( Context context, float n, float s, float w, float e )
-            throws IOException {
+    public static List<Bookmark> getBookmarksInWorldBounds( float n, float s, float w, float e ) throws IOException {
 
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         String query = "SELECT _id, lon, lat, text FROM XXX WHERE (lon BETWEEN XXX AND XXX) AND (lat BETWEEN XXX AND XXX)";
         // String[] args = new String[]{TABLE_NOTES, String.valueOf(w), String.valueOf(e),
         // String.valueOf(s), String.valueOf(n)};
@@ -165,8 +163,8 @@ public class DaoBookmarks {
         return bookmarks;
     }
 
-    public static List<Bookmark> getAllBookmarks( Context context ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    public static List<Bookmark> getAllBookmarks() throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         String query = "SELECT _id, lon, lat, text, zoom, bnorth, bsouth, bwest, beast FROM " + TABLE_BOOKMARKS;
 
         // Logger.i("DAOBOOKMARKS", "Query: " + query);
@@ -193,27 +191,32 @@ public class DaoBookmarks {
         return bookmarks;
     }
 
-    public static List<OverlayItem> getBookmarksOverlays( Context context, Drawable marker ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    public static List<OverlayItem> getBookmarksOverlays( Drawable marker ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         String query = "SELECT lon, lat, text FROM " + TABLE_BOOKMARKS;
 
-        Cursor c = sqliteDatabase.rawQuery(query, null);
-        List<OverlayItem> bookmarks = new ArrayList<OverlayItem>();
-        c.moveToFirst();
-        while( !c.isAfterLast() ) {
-            double lon = c.getDouble(0);
-            double lat = c.getDouble(1);
-            String text = c.getString(2);
+        Cursor c = null;
+        try {
+            c = sqliteDatabase.rawQuery(query, null);
+            List<OverlayItem> bookmarks = new ArrayList<OverlayItem>();
+            c.moveToFirst();
+            while( !c.isAfterLast() ) {
+                double lon = c.getDouble(0);
+                double lat = c.getDouble(1);
+                String text = c.getString(2);
 
-            OverlayItem bookmark = new OverlayItem(new GeoPoint(lat, lon), text, null, marker);
-            bookmarks.add(bookmark);
-            c.moveToNext();
+                OverlayItem bookmark = new OverlayItem(new GeoPoint(lat, lon), text, null, marker);
+                bookmarks.add(bookmark);
+                c.moveToNext();
+            }
+            return bookmarks;
+        } finally {
+            if (c != null)
+                c.close();
         }
-        c.close();
-        return bookmarks;
     }
 
-    public static void createTables( Context context ) throws IOException {
+    public static void createTables() throws IOException {
         StringBuilder sB = new StringBuilder();
 
         sB = new StringBuilder();
@@ -243,7 +246,7 @@ public class DaoBookmarks {
         sB.append(" );");
         String CREATE_INDEX_BOOKMARKS_X_BY_Y = sB.toString();
 
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         if (GPLog.LOG_ANDROID)
             Log.i("DAOBOOKMARKS", "Create the bookmarks table.");
 

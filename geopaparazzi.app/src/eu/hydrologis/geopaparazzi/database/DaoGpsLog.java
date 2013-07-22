@@ -82,7 +82,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     private static SimpleDateFormat dateFormatterForFile = LibraryConstants.TIMESTAMPFORMATTER;
 
     public SQLiteDatabase getDatabase( Context context ) throws Exception {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         return sqliteDatabase;
     }
 
@@ -98,7 +98,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
      */
     public long addGpsLog( Context context, Date startTs, Date endTs, String text, float width, String color, boolean visible )
             throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         long rowId;
         try {
@@ -142,7 +142,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     }
 
     public void deleteGpslog( Context context, long id ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
             // delete log
@@ -173,7 +173,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     }
 
     public void setEndTs( Context context, long logid, Date end ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         try {
             sqliteDatabase.beginTransaction();
 
@@ -207,8 +207,8 @@ public class DaoGpsLog implements IGpsLogDbHelper {
      * @return the logs list
      * @throws IOException
      */
-    public static List<LogMapItem> getGpslogs( Context context ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    public static List<LogMapItem> getGpslogs( ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         List<LogMapItem> logsList = new ArrayList<LogMapItem>();
 
         StringBuilder sB = new StringBuilder();
@@ -276,8 +276,8 @@ public class DaoGpsLog implements IGpsLogDbHelper {
      * @return the logs list
      * @throws IOException
      */
-    public static List<OverlayWay> getGpslogOverlays( Context context ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    public static List<OverlayWay> getGpslogOverlays( ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         List<OverlayWay> logsList = new ArrayList<OverlayWay>();
 
         StringBuilder sB = new StringBuilder();
@@ -352,15 +352,14 @@ public class DaoGpsLog implements IGpsLogDbHelper {
 
     /**
      * Get a gpslog by id.
-     * 
-     * @param context the {@link Context}.
      * @param logId the log id.
      * @param paintOutline the paint to use.
+     * 
      * @return the way overlay.
      * @throws IOException
      */
-    public static OverlayWay getGpslogOverlayById( Context context, long logId, Paint paintOutline ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    public static OverlayWay getGpslogOverlayById( long logId, Paint paintOutline ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         OverlayWay way = new OverlayWay();
         List<GeoPoint> gpslogGeoPoints = getGpslogGeoPoints(sqliteDatabase, logId, -1);
         way.setPaint(null, paintOutline);
@@ -405,9 +404,9 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         }
     }
 
-    public static void updateLogProperties( Context context, long logid, String color, float width, boolean visible, String name )
+    public static void updateLogProperties( long logid, String color, float width, boolean visible, String name )
             throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
 
@@ -453,8 +452,8 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         }
     }
 
-    public static void setLogsVisibility( Context context, boolean visible ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    public static void setLogsVisibility( boolean visible ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
 
@@ -481,8 +480,8 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         }
     }
 
-    public static void mergeLogs( Context context, long logidToRemove, long destinationLogId ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    public static void mergeLogs( long logidToRemove, long destinationLogId ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
 
@@ -547,7 +546,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     // public static HashMap<Long, Line> getLinesInWorldBounds( Context context, float n, float s,
     // float w, float e )
     // throws IOException {
-    // SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    // SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
     // HashMap<Long, Line> linesMap = new HashMap<Long, Line>();
     // n = n + DatabaseManager.BUFFER;
     // s = s - DatabaseManager.BUFFER;
@@ -592,9 +591,9 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     // return linesMap;
     // }
 
-    public static LineArray getLinesInWorldBoundsByIdDecimated2( Context context, float n, float s, float w, float e,
-            Projection pj, long logId, int decimationFactor ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    public static LineArray getLinesInWorldBoundsByIdDecimated2( float n, float s, float w, float e, Projection pj,
+            long logId, int decimationFactor ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         n = n + DatabaseManager.BUFFER;
         s = s - DatabaseManager.BUFFER;
         e = e + DatabaseManager.BUFFER;
@@ -660,8 +659,6 @@ public class DaoGpsLog implements IGpsLogDbHelper {
 
     /**
      * Retrieve a log in the given world bounds as {@link Path} to be drawn.
-     * 
-     * @param context
      * @param n
      * @param s
      * @param w
@@ -670,11 +667,12 @@ public class DaoGpsLog implements IGpsLogDbHelper {
      * @param pj
      * @param logId
      * @param decimationFactor
+     * 
      * @throws IOException
      */
-    public static void getPathInWorldBoundsByIdDecimated( Context context, float n, float s, float w, float e, Path path,
-            Projection pj, long logId, int decimationFactor ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    public static void getPathInWorldBoundsByIdDecimated( float n, float s, float w, float e, Path path, Projection pj,
+            long logId, int decimationFactor ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         n = n + DatabaseManager.BUFFER;
         s = s - DatabaseManager.BUFFER;
         e = e + DatabaseManager.BUFFER;
@@ -745,8 +743,8 @@ public class DaoGpsLog implements IGpsLogDbHelper {
      * @return the map of lines.
      * @throws IOException
      */
-    public static LinkedHashMap<Long, Line> getLinesMap( Context context ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    public static LinkedHashMap<Long, Line> getLinesMap( ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         LinkedHashMap<Long, Line> linesMap = new LinkedHashMap<Long, Line>();
 
         String asColumnsToReturn[] = {COLUMN_LOGID, COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_ALTIM, COLUMN_DATA_TS};
@@ -778,15 +776,14 @@ public class DaoGpsLog implements IGpsLogDbHelper {
 
     /**
      * Get the linefor a certainlog id from the db
-     * 
-     * @param context
      * @param logId the id of the log.
      * @param pointsNum the max num of points that we want (-1 means all).
+     * 
      * @return the line.
      * @throws IOException
      */
-    public static Line getGpslogAsLine( Context context, long logId, int pointsNum ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    public static Line getGpslogAsLine( long logId, int pointsNum ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
 
         String asColumnsToReturn[] = {COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_ALTIM, COLUMN_DATA_TS};
         String strSortOrder = COLUMN_DATA_TS + " ASC";
@@ -825,14 +822,13 @@ public class DaoGpsLog implements IGpsLogDbHelper {
 
     /**
      * Get the first point of a gps log.
-     * 
-     * @param context
      * @param logId the id of the log to query.
+     * 
      * @return the array of [lon, lat] of the first point.
      * @throws IOException
      */
-    public static double[] getGpslogFirstPoint( Context context, long logId ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    public static double[] getGpslogFirstPoint( long logId ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
 
         String asColumnsToReturn[] = {COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_ALTIM, COLUMN_DATA_TS};
         String strSortOrder = COLUMN_DATA_TS + " ASC";
@@ -865,7 +861,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
      * @throws IOException
      */
     public static void importGpxToMap( Context context, GpxItem gpxItem ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         String gpxName = gpxItem.getName();
 
         // waypoints
@@ -955,7 +951,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     }
     // public static void importGpxToGpslogs( Context context, GpxItem gpxItem ) throws IOException
     // {
-    // SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    // SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
     // String filename = gpxItem.getFilename();
     // List<PointF3D> points = gpxItem.read();
     // Date date = new Date(System.currentTimeMillis());
@@ -983,7 +979,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     // }
     // }
 
-    public static void createTables( Context context ) throws IOException {
+    public static void createTables( ) throws IOException {
         StringBuilder sB = new StringBuilder();
 
         /*
@@ -1044,7 +1040,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         sB.append(" );");
         String CREATE_INDEX_GPSLOG_LOGID_X_Y = sB.toString();
 
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         if (GPLog.LOG_ANDROID)
             Log.i("DAOGPSLOG", "Create the gpslog_data table.");
         sqliteDatabase.execSQL(CREATE_TABLE_GPSLOG_DATA);

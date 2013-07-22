@@ -198,7 +198,7 @@ public class GeoPaparazziActivity extends Activity {
                             String[] split = pParameter.split(",");
                             double lat = Double.parseDouble(split[0]);
                             double lon = Double.parseDouble(split[1]);
-                            DaoBookmarks.addBookmark(this, lon, lat, "GeoSMS position", 16, -1, -1, -1, -1);
+                            DaoBookmarks.addBookmark(lon, lat, "GeoSMS position", 16, -1, -1, -1, -1);
                             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
                             PositionUtilities.putMapCenterInPreferences(preferences, lon, lat, 16);
                             Intent mapIntent = new Intent(this, MapsActivity.class);
@@ -240,12 +240,11 @@ public class GeoPaparazziActivity extends Activity {
                             for( SmsData smsData : sms2Data ) {
                                 String text = smsData.text.replaceAll("\\_", " "); //$NON-NLS-1$//$NON-NLS-2$
                                 if (smsData.TYPE == SmsData.NOTE) {
-                                    DaoNotes.addNote(this, smsData.x, smsData.y, smsData.z,
-                                            new java.sql.Date(new Date().getTime()), text, NoteType.POI.getDef(), null,
-                                            NoteType.POI.getTypeNum());
+                                    DaoNotes.addNote(smsData.x, smsData.y, smsData.z, new java.sql.Date(new Date().getTime()),
+                                            text, NoteType.POI.getDef(), null, NoteType.POI.getTypeNum());
                                     notesNum++;
                                 } else if (smsData.TYPE == SmsData.BOOKMARK) {
-                                    DaoBookmarks.addBookmark(this, smsData.x, smsData.y, text, smsData.z, -1, -1, -1, -1);
+                                    DaoBookmarks.addBookmark(smsData.x, smsData.y, text, smsData.z, -1, -1, -1, -1);
                                     bookmarksNum++;
                                 }
                             }
@@ -332,7 +331,7 @@ public class GeoPaparazziActivity extends Activity {
         GPLogPreferencesHandler.checkLogAbsurd(preferences);
 
         try {
-            DatabaseManager.getInstance().getDatabase(this);
+            DatabaseManager.getInstance().getDatabase();
             checkMapsAndLogsVisibility();
 
             SpatialDatabasesManager.reset();
@@ -466,7 +465,7 @@ public class GeoPaparazziActivity extends Activity {
                     }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                         public void onClick( DialogInterface dialog, int whichButton ) {
                             try {
-                                DaoNotes.deleteLastInsertedNote(GeoPaparazziActivity.this);
+                                DaoNotes.deleteLastInsertedNote();
                                 Utilities.toast(GeoPaparazziActivity.this, R.string.last_note_deleted, Toast.LENGTH_LONG);
                             } catch (IOException e) {
                                 GPLog.error(this, e.getLocalizedMessage(), e);
@@ -723,8 +722,8 @@ public class GeoPaparazziActivity extends Activity {
                         double lat = Double.parseDouble(noteArray[1]);
                         double elev = Double.parseDouble(noteArray[2]);
                         Date date = LibraryConstants.TIME_FORMATTER.parse(noteArray[3]);
-                        DaoNotes.addNote(this, lon, lat, elev, new java.sql.Date(date.getTime()), noteArray[4],
-                                NoteType.POI.getDef(), null, NoteType.POI.getTypeNum());
+                        DaoNotes.addNote(lon, lat, elev, new java.sql.Date(date.getTime()), noteArray[4], NoteType.POI.getDef(),
+                                null, NoteType.POI.getTypeNum());
                     } catch (Exception e) {
                         e.printStackTrace();
                         Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
@@ -746,8 +745,7 @@ public class GeoPaparazziActivity extends Activity {
                         double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
                         double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
                         double azim = data.getDoubleExtra(LibraryConstants.AZIMUTH, 0.0);
-                        DaoImages.addImage(this, lon, lat, elev, azim, new java.sql.Date(new Date().getTime()), "", //$NON-NLS-1$
-                                relativeImagePath);
+                        DaoImages.addImage(lon, lat, elev, azim, new java.sql.Date(new Date().getTime()), "", relativeImagePath);
                     } catch (Exception e) {
                         e.printStackTrace();
 
@@ -788,38 +786,35 @@ public class GeoPaparazziActivity extends Activity {
     }
 
     public void finish() {
-        if (actionBar != null)
-            actionBar.cleanup();
-
-        if (GPLog.LOG)
-            Log.i("GEOPAPARAZZIACTIVITY", "Finish called!"); //$NON-NLS-1$
-        // save last location just in case
-        if (resourcesManager == null) {
-            super.finish();
-            return;
-        }
-
-        GpsLocation loc = gpsManager.getLocation();
-        if (loc != null) {
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-            PositionUtilities.putGpsLocationInPreferences(preferences, loc.getLongitude(), loc.getLatitude(), loc.getAltitude());
-        }
-
-        Utilities.toast(this, R.string.loggingoff, Toast.LENGTH_LONG);
-
-        gpsManager.dispose(this);
-
         try {
-            SpatialDatabasesManager.getInstance().closeDatabases();
-        } catch (Exception e) {
-            e.printStackTrace();
+            if (actionBar != null)
+                actionBar.cleanup();
+            if (GPLog.LOG)
+                Log.i("GEOPAPARAZZIACTIVITY", "Finish called!"); //$NON-NLS-1$
+            // save last location just in case
+            if (resourcesManager == null) {
+                super.finish();
+                return;
+            }
+            GpsLocation loc = gpsManager.getLocation();
+            if (loc != null) {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                PositionUtilities.putGpsLocationInPreferences(preferences, loc.getLongitude(), loc.getLatitude(),
+                        loc.getAltitude());
+            }
+            Utilities.toast(this, R.string.loggingoff, Toast.LENGTH_LONG);
+            gpsManager.dispose(this);
+            try {
+                SpatialDatabasesManager.getInstance().closeDatabases();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            DatabaseManager.getInstance().closeDatabase();
+            ResourcesManager.resetManager();
+            resourcesManager = null;
+        } finally {
+            super.finish();
         }
-        DatabaseManager.getInstance().closeDatabase();
-
-        ResourcesManager.resetManager();
-        resourcesManager = null;
-
-        super.finish();
     }
 
     private AlertDialog alertDialog = null;
@@ -889,7 +884,7 @@ public class GeoPaparazziActivity extends Activity {
     private SlidingDrawer slidingDrawer;
 
     private void checkMapsAndLogsVisibility() throws IOException {
-        List<LogMapItem> maps = DaoGpsLog.getGpslogs(this);
+        List<LogMapItem> maps = DaoGpsLog.getGpslogs();
         boolean oneVisible = false;
         for( LogMapItem item : maps ) {
             if (!oneVisible && item.isVisible()) {

@@ -127,7 +127,7 @@ public class SecretActivity extends Activity implements CheckBox.OnCheckedChange
 
     public void clearLog( View view ) {
         try {
-            SQLiteDatabase database = DatabaseManager.getInstance().getDatabase(this);
+            SQLiteDatabase database = DatabaseManager.getInstance().getDatabase();
             GPLog.clearLogTable(database);
             Utilities.messageDialog(this, "Log cleared.", null);
         } catch (Exception e) {

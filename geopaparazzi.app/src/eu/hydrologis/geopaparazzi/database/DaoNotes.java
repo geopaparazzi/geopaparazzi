@@ -27,7 +27,6 @@ import org.mapsforge.android.maps.overlay.OverlayItem;
 import org.mapsforge.core.model.GeoPoint;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
@@ -72,13 +71,13 @@ public class DaoNotes {
 
     private static SimpleDateFormat dateFormatter = LibraryConstants.TIME_FORMATTER_SQLITE;
 
-    public static void addNote( Context context, double lon, double lat, double altim, Date timestamp, String text,
-            String category, String form, int type ) throws IOException {
+    public static void addNote( double lon, double lat, double altim, Date timestamp, String text, String category,
+            String form, int type ) throws IOException {
         if (category == null) {
             category = NoteType.POI.getDef();
         }
 
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
             addNoteNoTransaction(lon, lat, altim, timestamp, text, category, form, type, sqliteDatabase);
@@ -110,8 +109,8 @@ public class DaoNotes {
         LASTINSERTEDNOTE_ID = sqliteDatabase.insertOrThrow(TABLE_NOTES, null, values);
     }
 
-    public static void deleteNote( Context context, long id ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    public static void deleteNote( long id ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
             // delete note
@@ -128,20 +127,20 @@ public class DaoNotes {
         }
     }
 
-    public static void updateForm( Context context, long id, String jsonStr ) throws IOException {
+    public static void updateForm( long id, String jsonStr ) throws IOException {
         ContentValues updatedValues = new ContentValues();
         updatedValues.put(COLUMN_FORM, jsonStr);
 
         String where = COLUMN_ID + "=" + id;
         String[] whereArgs = null;
 
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
 
         sqliteDatabase.update(TABLE_NOTES, updatedValues, where, whereArgs);
     }
 
-    public static void deleteNotesByType( Context context, NoteType noteType ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    public static void deleteNotesByType( NoteType noteType ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
             // delete note
@@ -158,14 +157,14 @@ public class DaoNotes {
         }
     }
 
-    public static void deleteLastInsertedNote( Context context ) throws IOException {
+    public static void deleteLastInsertedNote() throws IOException {
         if (LASTINSERTEDNOTE_ID != -1) {
-            deleteNote(context, LASTINSERTEDNOTE_ID);
+            deleteNote(LASTINSERTEDNOTE_ID);
         }
     }
 
     // public static void importGpxToNotes( Context context, GpxItem gpxItem ) throws IOException {
-    // SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    // SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
     // sqliteDatabase.beginTransaction();
     // try {
     // List<PointF3D> points = gpxItem.read();
@@ -193,17 +192,17 @@ public class DaoNotes {
 
     /**
      * Get the collected notes from the database inside a given bound.
-     * 
      * @param n
      * @param s
      * @param w
      * @param e
+     * 
      * @return the list of notes inside the bounds.
      * @throws IOException
      */
-    public static List<Note> getNotesInWorldBounds( Context context, float n, float s, float w, float e ) throws IOException {
+    public static List<Note> getNotesInWorldBounds( float n, float s, float w, float e ) throws IOException {
 
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         String query = "SELECT _id, lon, lat, altim, text, cat, ts, type, form FROM XXX WHERE (lon BETWEEN XXX AND XXX) AND (lat BETWEEN XXX AND XXX)";
         // String[] args = new String[]{TABLE_NOTES, String.valueOf(w), String.valueOf(e),
         // String.valueOf(s), String.valueOf(n)};
@@ -244,8 +243,8 @@ public class DaoNotes {
      * @return list of notes.
      * @throws IOException
      */
-    public static List<Note> getNotesList( Context context ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    public static List<Note> getNotesList( ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         List<Note> notesList = new ArrayList<Note>();
         String asColumnsToReturn[] = {COLUMN_ID, COLUMN_LON, COLUMN_LAT, COLUMN_ALTIM, COLUMN_TS, COLUMN_TEXT, COLUMN_CATEGORY,
                 COLUMN_FORM, COLUMN_TYPE};
@@ -274,12 +273,11 @@ public class DaoNotes {
     /**
      * Get the list of notes from the db as OverlayItems.
      * @param marker 
-     * 
      * @return list of notes.
      * @throws IOException
      */
-    public static List<OverlayItem> getNoteOverlaysList( Context context, Drawable marker ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+    public static List<OverlayItem> getNoteOverlaysList( Drawable marker ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         List<OverlayItem> notesList = new ArrayList<OverlayItem>();
         String asColumnsToReturn[] = {COLUMN_LON, COLUMN_LAT, COLUMN_TS, COLUMN_TEXT};// ,
                                                                                       // COLUMN_FORM};
@@ -440,7 +438,7 @@ public class DaoNotes {
         }
     }
 
-    public static void createTables( Context context ) throws IOException {
+    public static void createTables( ) throws IOException {
         StringBuilder sB = new StringBuilder();
 
         sB = new StringBuilder();
@@ -478,7 +476,7 @@ public class DaoNotes {
         sB.append(" );");
         String CREATE_INDEX_NOTES_X_BY_Y = sB.toString();
 
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase(context);
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         if (GPLog.LOG_HEAVY)
             Log.i("DAONOTES", "Create the notes table.");
 

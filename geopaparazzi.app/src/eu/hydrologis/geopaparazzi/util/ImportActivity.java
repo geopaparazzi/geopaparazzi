@@ -109,7 +109,7 @@ public class ImportActivity extends Activity {
                 if (bookmarksfile.exists()) {
                     try {
                         // try to load it
-                        List<Bookmark> allBookmarks = DaoBookmarks.getAllBookmarks(context);
+                        List<Bookmark> allBookmarks = DaoBookmarks.getAllBookmarks();
                         TreeSet<String> bookmarksNames = new TreeSet<String>();
                         for( Bookmark bookmark : allBookmarks ) {
                             String tmpName = bookmark.getName();
@@ -135,7 +135,7 @@ public class ImportActivity extends Activity {
                                 }
                                 double lat = Double.parseDouble(split[1]);
                                 double lon = Double.parseDouble(split[2]);
-                                DaoBookmarks.addBookmark(context, lon, lat, name, zoom, -1, -1, -1, -1);
+                                DaoBookmarks.addBookmark(lon, lat, name, zoom, -1, -1, -1, -1);
                                 imported++;
                             } catch (Exception e) {
 

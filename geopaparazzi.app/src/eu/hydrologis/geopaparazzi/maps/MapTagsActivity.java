@@ -165,8 +165,7 @@ public class MapTagsActivity extends Activity {
                     String catStr = formArray[5];
                     String jsonStr = formArray[6];
                     java.util.Date date = LibraryConstants.TIME_FORMATTER_SQLITE.parse(dateStr);
-                    DaoNotes.addNote(this, lon, lat, elev, new Date(date.getTime()), nameStr, catStr, jsonStr,
-                            NoteType.POI.getTypeNum());
+                    DaoNotes.addNote(lon, lat, elev, new Date(date.getTime()), nameStr, catStr, jsonStr, NoteType.POI.getTypeNum());
                 } catch (Exception e) {
                     e.printStackTrace();
                     Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
@@ -182,8 +181,7 @@ public class MapTagsActivity extends Activity {
                     double lat = Double.parseDouble(noteArray[1]);
                     double elev = Double.parseDouble(noteArray[2]);
                     java.util.Date date = LibraryConstants.TIME_FORMATTER.parse(noteArray[3]);
-                    DaoNotes.addNote(this, lon, lat, elev, new Date(date.getTime()), noteArray[4], noteArray[5], noteArray[6],
-                            NoteType.POI.getTypeNum());
+                    DaoNotes.addNote(lon, lat, elev, new Date(date.getTime()), noteArray[4], noteArray[5], noteArray[6], NoteType.POI.getTypeNum());
                 } catch (Exception e) {
                     e.printStackTrace();
 
@@ -205,8 +203,7 @@ public class MapTagsActivity extends Activity {
                     double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
                     double azim = data.getDoubleExtra(LibraryConstants.AZIMUTH, 0.0);
 
-                    DaoImages.addImage(this, lon, lat, elev, azim, new Date(new java.util.Date().getTime()), "", //$NON-NLS-1$
-                            relativeImagePath);
+                    DaoImages.addImage(lon, lat, elev, azim, new Date(new java.util.Date().getTime()), "", relativeImagePath);
                 } catch (Exception e) {
                     e.printStackTrace();
 
@@ -227,8 +224,7 @@ public class MapTagsActivity extends Activity {
                     double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
                     double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
 
-                    DaoImages.addImage(this, lon, lat, elev, -9999.0, new Date(new java.util.Date().getTime()), "", //$NON-NLS-1$
-                            absoluteImagePath);
+                    DaoImages.addImage(lon, lat, elev, -9999.0, new Date(new java.util.Date().getTime()), "", absoluteImagePath);
                 } catch (Exception e) {
                     e.printStackTrace();
 

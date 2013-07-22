@@ -548,28 +548,28 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             dataOverlay.clearItems();
             dataOverlay.clearWays();
 
-            List<OverlayWay> logOverlaysList = DaoGpsLog.getGpslogOverlays(this);
+            List<OverlayWay> logOverlaysList = DaoGpsLog.getGpslogOverlays();
             dataOverlay.addWays(logOverlaysList);
 
             /* images */
             if (DataManager.getInstance().areImagesVisible()) {
                 Drawable imageMarker = getResources().getDrawable(R.drawable.photo);
                 Drawable newImageMarker = ArrayGeopaparazziOverlay.boundCenter(imageMarker);
-                List<OverlayItem> imagesOverlaysList = DaoImages.getImagesOverlayList(this, newImageMarker);
+                List<OverlayItem> imagesOverlaysList = DaoImages.getImagesOverlayList(newImageMarker);
                 dataOverlay.addItems(imagesOverlaysList);
             }
 
             /* gps notes */
             if (DataManager.getInstance().areNotesVisible()) {
                 Drawable newNotesMarker = ArrayGeopaparazziOverlay.boundCenter(notesDrawable);
-                List<OverlayItem> noteOverlaysList = DaoNotes.getNoteOverlaysList(this, newNotesMarker);
+                List<OverlayItem> noteOverlaysList = DaoNotes.getNoteOverlaysList(newNotesMarker);
                 dataOverlay.addItems(noteOverlaysList);
             }
 
             /* bookmarks */
             Drawable bookmarkMarker = getResources().getDrawable(R.drawable.bookmark);
             Drawable newBookmarkMarker = ArrayGeopaparazziOverlay.boundCenter(bookmarkMarker);
-            List<OverlayItem> bookmarksOverlays = DaoBookmarks.getBookmarksOverlays(this, newBookmarkMarker);
+            List<OverlayItem> bookmarksOverlays = DaoBookmarks.getBookmarksOverlays(newBookmarkMarker);
             dataOverlay.addItems(bookmarksOverlays);
 
             // read last known gps position
@@ -734,7 +734,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                                                     public void onClick( DialogInterface dialog, int id ) {
                                                         try {
-                                                            DaoNotes.deleteNotesByType(MapsActivity.this, NoteType.OSM);
+                                                            DaoNotes.deleteNotesByType(NoteType.OSM);
                                                         } catch (IOException e) {
                                                             e.printStackTrace();
                                                         }
@@ -914,7 +914,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     private void sendData() throws IOException {
         float[] nswe = getMapWorldBounds();
         List<SmsData> smsData = new ArrayList<SmsData>();
-        List<Bookmark> bookmarksList = DaoBookmarks.getBookmarksInWorldBounds(this, nswe[0], nswe[1], nswe[2], nswe[3]);
+        List<Bookmark> bookmarksList = DaoBookmarks.getBookmarksInWorldBounds(nswe[0], nswe[1], nswe[2], nswe[3]);
         for( Bookmark bookmark : bookmarksList ) {
             double lat = bookmark.getLat();
             double lon = bookmark.getLon();
@@ -929,7 +929,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             smsData.add(data);
         }
 
-        List<Note> notesList = DaoNotes.getNotesInWorldBounds(this, nswe[0], nswe[1], nswe[2], nswe[3]);
+        List<Note> notesList = DaoNotes.getNotesInWorldBounds(nswe[0], nswe[1], nswe[2], nswe[3]);
         for( Note note : notesList ) {
             double lat = note.getLat();
             double lon = note.getLon();
@@ -1184,11 +1184,11 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                         float w = (float) (lon - 0.00001f);
                         float e = (float) (lon + 0.00001f);
 
-                        List<Note> notesInWorldBounds = DaoNotes.getNotesInWorldBounds(this, n, s, w, e);
+                        List<Note> notesInWorldBounds = DaoNotes.getNotesInWorldBounds(n, s, w, e);
                         if (notesInWorldBounds.size() > 0) {
                             Note note = notesInWorldBounds.get(0);
                             long id = note.getId();
-                            DaoNotes.updateForm(this, id, jsonStr);
+                            DaoNotes.updateForm(id, jsonStr);
                         }
 
                     } catch (Exception e) {
@@ -1213,8 +1213,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                     public void onClick( DialogInterface dialog, int whichButton ) {
                         try {
                             float[] nswe = getMapWorldBounds();
-                            final List<Bookmark> bookmarksInBounds = DaoBookmarks.getBookmarksInWorldBounds(MapsActivity.this,
-                                    nswe[0], nswe[1], nswe[2], nswe[3]);
+                            final List<Bookmark> bookmarksInBounds = DaoBookmarks.getBookmarksInWorldBounds(nswe[0],
+                                    nswe[1], nswe[2], nswe[3]);
                             int bookmarksNum = bookmarksInBounds.size();
 
                             bookmarksRemoveDialog = new ProgressDialog(MapsActivity.this);
@@ -1231,7 +1231,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                                     for( final Bookmark bookmark : bookmarksInBounds ) {
                                         bookmarksRemoveHandler.sendEmptyMessage(0);
                                         try {
-                                            DaoBookmarks.deleteBookmark(MapsActivity.this, bookmark.getId());
+                                            DaoBookmarks.deleteBookmark(bookmark.getId());
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                         }
@@ -1260,8 +1260,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                         try {
                             float[] nswe = getMapWorldBounds();
 
-                            final List<Note> notesInBounds = DaoNotes.getNotesInWorldBounds(MapsActivity.this, nswe[0], nswe[1],
-                                    nswe[2], nswe[3]);
+                            final List<Note> notesInBounds = DaoNotes.getNotesInWorldBounds(nswe[0], nswe[1], nswe[2],
+                                    nswe[3]);
 
                             int notesNum = notesInBounds.size();
 
@@ -1280,7 +1280,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                                     try {
                                         for( Note note : notesInBounds ) {
                                             try {
-                                                DaoNotes.deleteNote(MapsActivity.this, note.getId());
+                                                DaoNotes.deleteNote(note.getId());
                                                 onProgressUpdate(0);
                                             } catch (IOException e) {
                                                 e.printStackTrace();
@@ -1341,8 +1341,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
                             int zoom = mapView.getMapPosition().getZoomLevel();
                             float[] nswe = getMapWorldBounds();
-                            DaoBookmarks.addBookmark(getApplicationContext(), centerLon, centerLat, newName, zoom, nswe[0],
-                                    nswe[1], nswe[2], nswe[3]);
+                            DaoBookmarks.addBookmark(centerLon, centerLat, newName, zoom, nswe[0], nswe[1],
+                                    nswe[2], nswe[3]);
                             mapView.invalidateOnUiThread();
                         } catch (IOException e) {
                             GPLog.error(this, e.getLocalizedMessage(), e);

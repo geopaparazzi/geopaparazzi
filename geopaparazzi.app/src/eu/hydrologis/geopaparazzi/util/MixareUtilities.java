@@ -62,7 +62,7 @@ public class MixareUtilities {
      */
     public static void runRegionOnMixare( Context context, float n, float s, float w, float e ) throws Exception {
         List<PointF3D> points = new ArrayList<PointF3D>();
-        List<Bookmark> bookmarksList = DaoBookmarks.getBookmarksInWorldBounds(context, n, s, w, e);
+        List<Bookmark> bookmarksList = DaoBookmarks.getBookmarksInWorldBounds(n, s, w, e);
         for( Bookmark bookmark : bookmarksList ) {
             double lat = bookmark.getLat();
             double lon = bookmark.getLon();
@@ -72,7 +72,7 @@ public class MixareUtilities {
             points.add(p);
         }
 
-        List<Note> notesList = DaoNotes.getNotesInWorldBounds(context, n, s, w, e);
+        List<Note> notesList = DaoNotes.getNotesInWorldBounds(n, s, w, e);
         for( Note note : notesList ) {
             double lat = note.getLat();
             double lon = note.getLon();

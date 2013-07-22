@@ -915,7 +915,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     float e = (float) (lon + 0.00001f);
 
                     try {
-                        List<Note> notesInWorldBounds = DaoNotes.getNotesInWorldBounds(context, n, s, w, e);
+                        List<Note> notesInWorldBounds = DaoNotes.getNotesInWorldBounds(n, s, w, e);
                         if (notesInWorldBounds.size() > 0) {
                             Note note = notesInWorldBounds.get(0);
                             int type = note.getType();

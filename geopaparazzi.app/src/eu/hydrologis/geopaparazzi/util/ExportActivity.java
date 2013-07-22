@@ -197,13 +197,13 @@ public class ExportActivity extends Activity {
                     /*
                      * add gps logs
                      */
-                    List<LogMapItem> gpslogs = DaoGpsLog.getGpslogs(ExportActivity.this);
+                    List<LogMapItem> gpslogs = DaoGpsLog.getGpslogs();
                     HashMap<Long, LogMapItem> mapitemsMap = new HashMap<Long, LogMapItem>();
                     for( LogMapItem log : gpslogs ) {
                         mapitemsMap.put(log.getId(), log);
                     }
 
-                    HashMap<Long, Line> linesMap = DaoGpsLog.getLinesMap(ExportActivity.this);
+                    HashMap<Long, Line> linesMap = DaoGpsLog.getLinesMap();
                     Collection<Entry<Long, Line>> linesSet = linesMap.entrySet();
                     for( Entry<Long, Line> lineEntry : linesSet ) {
                         Long id = lineEntry.getKey();
@@ -218,14 +218,14 @@ public class ExportActivity extends Activity {
                     /*
                      * get notes
                      */
-                    List<Note> notesList = DaoNotes.getNotesList(ExportActivity.this);
+                    List<Note> notesList = DaoNotes.getNotesList();
                     for( Note note : notesList ) {
                         kmlRepresenterList.add(note);
                     }
                     /*
                      * add pictures
                      */
-                    List<Image> imagesList = DaoImages.getImagesList(ExportActivity.this);
+                    List<Image> imagesList = DaoImages.getImagesList();
                     for( Image image : imagesList ) {
                         kmlRepresenterList.add(image);
                     }
@@ -233,7 +233,7 @@ public class ExportActivity extends Activity {
                     /*
                      * add bookmarks
                      */
-                    List<Bookmark> bookmarksList = DaoBookmarks.getAllBookmarks(ExportActivity.this);
+                    List<Bookmark> bookmarksList = DaoBookmarks.getAllBookmarks();
                     for( Bookmark bookmark : bookmarksList ) {
                         kmlRepresenterList.add(bookmark);
                     }
@@ -283,7 +283,7 @@ public class ExportActivity extends Activity {
                     /*
                      * add gps logs
                      */
-                    HashMap<Long, Line> linesMap = DaoGpsLog.getLinesMap(ExportActivity.this);
+                    HashMap<Long, Line> linesMap = DaoGpsLog.getLinesMap();
                     Collection<Line> linesCollection = linesMap.values();
                     for( Line line : linesCollection ) {
                         gpxRepresenterList.add(line);
@@ -291,7 +291,7 @@ public class ExportActivity extends Activity {
                     /*
                      * get notes
                      */
-                    List<Note> notesList = DaoNotes.getNotesList(ExportActivity.this);
+                    List<Note> notesList = DaoNotes.getNotesList();
                     for( Note note : notesList ) {
                         gpxRepresenterList.add(note);
                     }
@@ -335,7 +335,7 @@ public class ExportActivity extends Activity {
     private void exportBookmarks() {
 
         try {
-            List<Bookmark> allBookmarks = DaoBookmarks.getAllBookmarks(this);
+            List<Bookmark> allBookmarks = DaoBookmarks.getAllBookmarks();
             TreeSet<String> bookmarksNames = new TreeSet<String>();
             for( Bookmark bookmark : allBookmarks ) {
                 String tmpName = bookmark.getName();

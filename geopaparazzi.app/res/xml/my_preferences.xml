@@ -50,42 +50,46 @@
         </EditTextPreference>
     </PreferenceScreen>
     <PreferenceScreen
-        android:order="60"
-        android:summary="Properties of the cross used to place notes."
-        android:title="Screen Center Cross" >
-        <ListPreference
-            android:entries="@array/array_colornames"
-            android:entryValues="@array/array_colornames"
-            android:key="PREFS_KEY_CROSS_COLOR"
-            android:order="61"
-            android:title="Color" />
-        <ListPreference
-            android:entries="@array/decimation_factor"
-            android:entryValues="@array/decimation_factor"
-            android:key="PREFS_KEY_CROSS_WIDTH"
-            android:order="62"
-            android:title="@string/width" />
-        <ListPreference
-            android:entries="@array/cross_size"
-            android:entryValues="@array/cross_size"
-            android:key="PREFS_KEY_CROSS_SIZE"
-            android:order="63"
-            android:title="Size" />
+        android:order="30"
+        android:title="@string/screen_preferences" >
+        <PreferenceScreen
+            android:order="60"
+            android:summary="@string/cross_properties_summary"
+            android:title="@string/cross_properties" >
+            <ListPreference
+                android:entries="@array/array_colornames"
+                android:entryValues="@array/array_colornames"
+                android:key="PREFS_KEY_CROSS_COLOR"
+                android:order="61"
+                android:title="@string/color" />
+            <ListPreference
+                android:entries="@array/decimation_factor"
+                android:entryValues="@array/decimation_factor"
+                android:key="PREFS_KEY_CROSS_WIDTH"
+                android:order="62"
+                android:title="@string/width" />
+            <ListPreference
+                android:entries="@array/cross_size"
+                android:entryValues="@array/cross_size"
+                android:key="PREFS_KEY_CROSS_SIZE"
+                android:order="63"
+                android:title="@string/size" />
+        </PreferenceScreen>
+
+        <EditTextPreference
+            android:defaultValue="1.0"
+            android:inputType="numberDecimal"
+            android:key="mapsview_textsize_factor"
+            android:order="80"
+            android:title="@string/map_textsize_factor" />
+
+        <CheckBoxPreference
+            android:key="PREFS_KEY_SCREEN_ON"
+            android:order="90"
+            android:summary="@string/keep_screen_on_summary"
+            android:title="@string/keep_screen_on" >
+        </CheckBoxPreference>
     </PreferenceScreen>
-
-    <EditTextPreference
-        android:defaultValue="1.0"
-        android:inputType="numberDecimal"
-        android:key="mapsview_textsize_factor"
-        android:order="80"
-        android:title="@string/map_textsize_factor" />
-
-    <CheckBoxPreference
-        android:key="PREFS_KEY_SCREEN_ON"
-        android:order="90"
-        android:summary="@string/keep_screen_on_summary"
-        android:title="@string/keep_screen_on" >
-    </CheckBoxPreference>
 
     <EditTextPreference
         android:defaultValue=""

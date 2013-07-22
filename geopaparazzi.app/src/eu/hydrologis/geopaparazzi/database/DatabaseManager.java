@@ -28,6 +28,7 @@ import eu.geopaparazzi.library.database.ADbHelper;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.debug.Debug;
+import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 
 /**
  * The database manager.
@@ -57,7 +58,8 @@ public class DatabaseManager {
         return dbManager;
     }
 
-    public SQLiteDatabase getDatabase( Context context ) throws IOException {
+    public SQLiteDatabase getDatabase() throws IOException {
+        Context context = GeopaparazziApplication.getInstance().getApplicationContext();
         File databaseFile;
         try {
             databaseFile = ResourcesManager.getInstance(context).getDatabaseFile();
@@ -146,10 +148,10 @@ public class DatabaseManager {
 
             // CREATE TABLES
             GPLog.createTables(db);
-            DaoNotes.createTables(context);
-            DaoGpsLog.createTables(context);
-            DaoBookmarks.createTables(context);
-            DaoImages.createTables(context);
+            DaoNotes.createTables();
+            DaoGpsLog.createTables();
+            DaoBookmarks.createTables();
+            DaoImages.createTables();
         }
 
         /**
@@ -165,10 +167,10 @@ public class DatabaseManager {
                 DaoNotes.upgradeNotesFromDB1ToDB2(db);
             }
             if (oldDbVersion <= 2) {
-                DaoBookmarks.createTables(context);
+                DaoBookmarks.createTables();
             }
             if (oldDbVersion <= 3) {
-                DaoImages.createTables(context);
+                DaoImages.createTables();
             }
             if (oldDbVersion <= 4) {
                 DaoNotes.upgradeNotesFromDB4ToDB5(db);
