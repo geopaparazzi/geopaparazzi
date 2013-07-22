@@ -49,8 +49,6 @@ public class ResourcesManager implements Serializable {
 
     private static final String PATH_MEDIA = "media"; //$NON-NLS-1$
 
-    private Context context;
-
     private File applicationDir;
 
     private File databaseFile;
@@ -99,17 +97,13 @@ public class ResourcesManager implements Serializable {
         resourcesManager = null;
     }
 
-    public Context getContext() {
-        return context;
-    }
-
     public String getApplicationName() {
         return applicationLabel;
     }
 
     private ResourcesManager( Context context ) throws Exception {
-        this.context = context.getApplicationContext();
-        ApplicationInfo appInfo = context.getApplicationInfo();
+        Context appContext = context.getApplicationContext();
+        ApplicationInfo appInfo = appContext.getApplicationInfo();
 
         String packageName = appInfo.packageName;
         int lastDot = packageName.lastIndexOf('.');
@@ -134,7 +128,7 @@ public class ResourcesManager implements Serializable {
          *    |          `--- debug.log 
          *    `-- mapsdir
          */
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(appContext);
         String baseFolder = preferences.getString(PREFS_KEY_BASEFOLDER, ""); //$NON-NLS-1$
         applicationDir = new File(baseFolder);
         File parentFile = applicationDir.getParentFile();
@@ -160,7 +154,7 @@ public class ResourcesManager implements Serializable {
             mExternalStorageAvailable = mExternalStorageWriteable = false;
         }
 
-        String cantCreateSdcardmsg = context.getResources().getString(R.string.cantcreate_sdcard);
+        String cantCreateSdcardmsg = appContext.getResources().getString(R.string.cantcreate_sdcard);
         File possibleApplicationDir;
         if (mExternalStorageAvailable && mExternalStorageWriteable) {
             String customFolderPath = preferences.getString(PREFS_KEY_CUSTOM_EXTERNALSTORAGE, "asdasdpoipoi");
@@ -172,7 +166,7 @@ public class ResourcesManager implements Serializable {
             }
             possibleApplicationDir = new File(sdcardDir, applicationLabel);
         } else if (useInternalMemory) {
-            possibleApplicationDir = context.getDir(applicationLabel, Context.MODE_PRIVATE);
+            possibleApplicationDir = appContext.getDir(applicationLabel, Context.MODE_PRIVATE);
         } else {
             String msgFormat = Utilities.format(cantCreateSdcardmsg, "sdcard/" + applicationLabel);
             throw new IOException(msgFormat);
@@ -240,7 +234,7 @@ public class ResourcesManager implements Serializable {
         if (!mapsDir.exists())
             if (!mapsDir.mkdir()) {
                 String msgFormat = Utilities.format(cantCreateSdcardmsg, mapsDir.getAbsolutePath());
-                messageDialog(context, msgFormat, null);
+                messageDialog(appContext, msgFormat, null);
                 mapsDir = sdcardDir;
             }
     }
@@ -289,9 +283,10 @@ public class ResourcesManager implements Serializable {
      * <p>Note that this will reset all the folders and resources that are bound 
      * to it. For example there might be the need to recreate the database file.</p>
      * 
+     * @param context the context to use.
      * @param path the path to the new application.
      */
-    public void setApplicationDir( String path ) {
+    public void setApplicationDir(Context context, String path ) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         Editor editor = preferences.edit();
         editor.putString(LibraryConstants.PREFS_KEY_BASEFOLDER, path);

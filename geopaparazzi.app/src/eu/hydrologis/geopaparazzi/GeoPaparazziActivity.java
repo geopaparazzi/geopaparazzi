@@ -869,7 +869,7 @@ public class GeoPaparazziActivity extends Activity {
                             if (!newGeopaparazziDirFile.mkdir()) {
                                 throw new IOException("Unable to create the geopaparazzi folder."); //$NON-NLS-1$
                             }
-                            ResourcesManager.getInstance(GeoPaparazziActivity.this).setApplicationDir(
+                            ResourcesManager.getInstance(GeoPaparazziActivity.this).setApplicationDir(GeoPaparazziActivity.this,
                                     newGeopaparazziDirFile.getAbsolutePath());
 
                             Intent intent = getIntent();
