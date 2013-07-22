@@ -175,6 +175,10 @@ public class GpsManager implements LocationListener, Listener {
         gpsStarted = false;
         log("GpsManager disposed.");
     }
+    
+    public boolean hasLoggerShutdown(){
+        return gpsLogger.isShutdown();
+    }
 
     /**
      * Starts listening to the gps provider.

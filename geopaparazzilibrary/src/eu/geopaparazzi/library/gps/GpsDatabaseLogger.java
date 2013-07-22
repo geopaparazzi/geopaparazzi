@@ -66,6 +66,7 @@ public class GpsDatabaseLogger implements GpsManagerListener {
     private Location previousLogLoc = null;
 
     private boolean isDatabaseLogging = false;
+    private boolean isShutdown = false;
 
     private List<double[]> currentXY = new ArrayList<double[]>();
 
@@ -96,6 +97,13 @@ public class GpsDatabaseLogger implements GpsManagerListener {
     public boolean isDatabaseLogging() {
         return isDatabaseLogging;
     }
+    
+    /**
+     * @return <code>true</code> only if the gps thread has finished.
+     */
+    public boolean isShutdown() {
+        return isShutdown;
+    }
 
     /**
      * Starts logging into the database.
@@ -114,6 +122,8 @@ public class GpsDatabaseLogger implements GpsManagerListener {
 
             public void run() {
                 try {
+                    isShutdown = false;
+                    
                     SQLiteDatabase sqliteDatabase = dbHelper.getDatabase(context);
                     java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
                     long gpsLogId = dbHelper.addGpsLog(context, now, now, logName, 2f, "red", true);
@@ -211,8 +221,10 @@ public class GpsDatabaseLogger implements GpsManagerListener {
                 } finally {
                     isDatabaseLogging = false;
                     currentXY.clear();
+                    isShutdown = true;
                 }
                 logABS("Exit logging...");
+                
             }
 
             private void waitGpsInterval( long waitForSecs ) {
