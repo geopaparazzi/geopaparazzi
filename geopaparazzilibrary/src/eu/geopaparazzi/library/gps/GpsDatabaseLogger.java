@@ -165,8 +165,11 @@ public class GpsDatabaseLogger implements GpsManagerListener {
                                 continue;
                             }
                             try {
-                                dbHelper.addGpsLogDataPoint(sqliteDatabase, gpsLogId, recLon, recLat, recAlt, gpsLoc.getSqlDate());
-                                currentXY.add(new double[]{recLon, recLat});
+                                if (isDatabaseLogging) {
+                                    dbHelper.addGpsLogDataPoint(sqliteDatabase, gpsLogId, recLon, recLat, recAlt,
+                                            gpsLoc.getSqlDate());
+                                    currentXY.add(new double[]{recLon, recLat});
+                                }
                             } catch (Exception e) {
                                 GPLog.error(this, e.getLocalizedMessage(), e);
                                 throw new IOException(e.getLocalizedMessage());
@@ -174,6 +177,9 @@ public class GpsDatabaseLogger implements GpsManagerListener {
                             currentPointsNum++;
                             currentDistance = currentDistance + lastDistance;
                             previousLogLoc = gpsLoc;
+                        }
+                        if (!isDatabaseLogging) {
+                            break;
                         }
                         // and wait
                         waitGpsInterval(waitForSecs);
