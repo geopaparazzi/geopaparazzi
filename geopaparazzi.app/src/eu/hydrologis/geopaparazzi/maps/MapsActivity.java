@@ -573,10 +573,10 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             dataOverlay.addItems(bookmarksOverlays);
 
             // read last known gps position
-            double[] lastKnownPostion = PositionUtilities.getGpsLocationFromPreferences(preferences);
-            if (lastKnownPostion != null) {
-                GeoPoint geoPoint = new GeoPoint((int) (lastKnownPostion[0] * LibraryConstants.E6),
-                        (int) (lastKnownPostion[1] * LibraryConstants.E6));
+            GpsLocation location = GpsManager.getInstance(this).getLocation();
+            if (location != null) {
+                GeoPoint geoPoint = new GeoPoint((int) (location.getLatitude() * LibraryConstants.E6),
+                        (int) (location.getLongitude() * LibraryConstants.E6));
                 dataOverlay.setGpsPosition(geoPoint, 0f);
             }
             // dataOverlay.requestRedraw();
@@ -820,7 +820,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         mapView.getController().setZoom(zoom);
         setZoomGuiText(zoom);
         mapView.getController().setCenter(
-                new GeoPoint((int) (centerX * LibraryConstants.E6), (int) (centerY * LibraryConstants.E6)));
+                new GeoPoint((int) (centerY * LibraryConstants.E6), (int) (centerX * LibraryConstants.E6)));
     }
 
     public double[] getCenterLonLat() {

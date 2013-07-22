@@ -127,10 +127,10 @@ public class GeoPaparazziActivity extends Activity {
 
         try {
             initializeResourcesManager();
-            
+
             fileSourcesMap = new HashMap<String, String>();
             rasterSourcesMap = new HashMap<String, SpatialRasterTable>();
-            
+
             tileSourcesMap = new LinkedHashMap<Integer, String>();
             tileSourcesMap.put(1001, MapGeneratorInternal.DATABASE_RENDERER.name());
             tileSourcesMap.put(1002, MapGeneratorInternal.MAPNIK.name());
@@ -155,7 +155,8 @@ public class GeoPaparazziActivity extends Activity {
                  * add also geopackage tables
                  */
                 try {
-                    List<SpatialRasterTable> spatialRasterTables = SpatialDatabasesManager.getInstance().getSpatialRasterTables(false);
+                    List<SpatialRasterTable> spatialRasterTables = SpatialDatabasesManager.getInstance().getSpatialRasterTables(
+                            false);
                     for( SpatialRasterTable table : spatialRasterTables ) {
                         tileSourcesMap.put(i++, table.getTableName());
                         rasterSourcesMap.put(table.getTableName(), table);
@@ -167,7 +168,6 @@ public class GeoPaparazziActivity extends Activity {
         } catch (Exception e1) {
             e1.printStackTrace();
         }
-
 
         checkIncomingGeosms();
         checkIncomingSmsData();
@@ -788,6 +788,9 @@ public class GeoPaparazziActivity extends Activity {
     }
 
     public void finish() {
+        if (actionBar != null)
+            actionBar.cleanup();
+
         if (GPLog.LOG)
             Log.i("GEOPAPARAZZIACTIVITY", "Finish called!"); //$NON-NLS-1$
         // save last location just in case

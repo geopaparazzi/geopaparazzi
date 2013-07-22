@@ -21,6 +21,7 @@ import java.util.Iterator;
 
 import android.location.GpsSatellite;
 import android.location.GpsStatus;
+import android.os.SystemClock;
 
 /**
  * Class to get info from {@link GpsStatus}.
@@ -29,6 +30,14 @@ import android.location.GpsStatus;
  */
 public class GpsStatusInfo {
 
+    /**
+     * The accepted time between a point and the other to say it has fix.
+     * 
+     * <p>This is 5 secs right now, because the pick interval is 1 sec.
+     * If that changes, it shoul be related to the pick interval of the GPS.
+     */
+    private static final long FIX_TIME_INTERVAL_CHECK = 5000l;
+    
     private GpsStatus status;
     private int maxSatellites;
     private int satCount;
@@ -70,6 +79,31 @@ public class GpsStatusInfo {
     public int getSatUsedInFixCount() {
         analyze();
         return satUsedInFixCount;
+    }
+
+    /**
+     * Checks if there fix is still there based on the last picked location.
+     * 
+     * @param hasFix fix state previous to the check. 
+     * @param lastLocationUpdateMillis the millis of the last picked location.
+     * @param event the Gps status event triggered.
+     * @return <code>true</code>, if it has fix.
+     */
+    public static boolean checkFix( boolean hasFix, long lastLocationUpdateMillis, int event ) {
+        switch( event ) {
+        case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
+            if ((SystemClock.elapsedRealtime() - lastLocationUpdateMillis) < FIX_TIME_INTERVAL_CHECK) {
+                if (!hasFix) {
+                    hasFix = true;
+                }
+            } else {
+                if (hasFix) {
+                    hasFix = false;
+                }
+            }
+            break;
+        }
+        return hasFix;
     }
 
 }

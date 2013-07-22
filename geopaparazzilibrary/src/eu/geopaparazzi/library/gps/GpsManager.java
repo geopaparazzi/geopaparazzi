@@ -297,7 +297,11 @@ public class GpsManager implements LocationListener, Listener {
     }
 
     public GpsLocation getLocation() {
-        return lastGpsLocation;
+        if (lastGpsLocation == null)
+            return null;
+        synchronized (lastGpsLocation) {
+            return lastGpsLocation;
+        }
     }
 
     public int getCurrentRunningGpsLogPointsNum() {
@@ -354,21 +358,21 @@ public class GpsManager implements LocationListener, Listener {
     public void onLocationChanged( Location loc ) {
         if (loc == null)
             return;
-        lastLocationupdateMillis = SystemClock.elapsedRealtime();
         lastGpsLocation = new GpsLocation(loc);
-
-        // Logger.d(gpsManager,
-        //                "Position update: " + gpsLoc.getLongitude() + "/" + gpsLoc.getLatitude() + "/" + gpsLoc.getAltitude()); //$NON-NLS-1$ //$NON-NLS-2$
-        lastGpsLocation.setPreviousLoc(previousLoc);
-        // save last known location
-        double recLon = lastGpsLocation.getLongitude();
-        double recLat = lastGpsLocation.getLatitude();
-        double recAlt = lastGpsLocation.getAltitude();
-        PositionUtilities.putGpsLocationInPreferences(preferences, recLon, recLat, recAlt);
-
-        previousLoc = loc;
-        for( GpsManagerListener activity : listeners ) {
-            activity.onLocationChanged(lastGpsLocation);
+        synchronized (lastGpsLocation) {
+            lastLocationupdateMillis = SystemClock.elapsedRealtime();
+            // Logger.d(gpsManager,
+            //                "Position update: " + gpsLoc.getLongitude() + "/" + gpsLoc.getLatitude() + "/" + gpsLoc.getAltitude()); //$NON-NLS-1$ //$NON-NLS-2$
+            lastGpsLocation.setPreviousLoc(previousLoc);
+            // save last known location
+            double recLon = lastGpsLocation.getLongitude();
+            double recLat = lastGpsLocation.getLatitude();
+            double recAlt = lastGpsLocation.getAltitude();
+            PositionUtilities.putGpsLocationInPreferences(preferences, recLon, recLat, recAlt);
+            previousLoc = loc;
+            for( GpsManagerListener activity : listeners ) {
+                activity.onLocationChanged(lastGpsLocation);
+            }
         }
     }
 

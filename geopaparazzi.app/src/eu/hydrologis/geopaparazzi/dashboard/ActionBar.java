@@ -107,6 +107,10 @@ public class ActionBar implements GpsManagerListener {
         checkLogging();
     }
 
+    public void cleanup() {
+        gpsManager.removeListener(this);
+    }
+
     public View getActionBarView() {
         return actionBarView;
     }
@@ -183,11 +187,11 @@ public class ActionBar implements GpsManagerListener {
             // if a list is available, check if the status gps is installed
             for( PackageInfo packageInfo : installedPackages ) {
                 String packageName = packageInfo.packageName;
-                if (GPLog.LOG_HEAVY)
+                if (GPLog.LOG_ABSURD)
                     GPLog.addLogEntry("ACTIONBAR", packageName);
                 if (packageName.startsWith(gpsStatusPackage)) {
                     hasGpsStatus = true;
-                    if (GPLog.LOG_HEAVY)
+                    if (GPLog.LOG_ABSURD)
                         GPLog.addLogEntry("ACTIONBAR", "Found package: " + packageName);
                     break;
                 }
@@ -367,24 +371,11 @@ public class ActionBar implements GpsManagerListener {
     }
 
     public void onGpsStatusChanged( int event, GpsStatus status ) {
-        // if (GPLog.LOG_ABSURD)
-        // GPLog.addLogEntry(this, "Check logging on gps status update.");
-        switch( event ) {
-        case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
-            lastGpsStatus = status;
-            if ((SystemClock.elapsedRealtime() - lastLocationupdateMillis) < (GpsManager.WAITSECONDS * 2000l)) {
-                if (!gotFix) {
-                    gotFix = true;
-                    checkLogging();
-                }
-            } else {
-                if (gotFix) {
-                    gotFix = false;
-                    checkLogging();
-                }
-            }
-            break;
+        boolean tmpGotFix = GpsStatusInfo.checkFix(gotFix, lastLocationupdateMillis, event);
+        if (tmpGotFix != gotFix) {
+            checkLogging();
         }
+        gotFix = tmpGotFix;
     }
 
     public boolean hasFix() {
