@@ -213,6 +213,9 @@ public class GPLog {
      * @throws IOException
      */
     private static long insertOrThrow( SQLiteDatabase sqliteDatabase, String table, ContentValues values ) throws IOException {
+        if (sqliteDatabase == null) {
+            throw new IOException("Database not ready!");
+        }
         long id = sqliteDatabase.insertOrThrow(table, null, values);
         if (id == -1) {
             Set<Entry<String, Object>> valueSet = values.valueSet();
