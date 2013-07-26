@@ -7,11 +7,13 @@
                     {"key":"recycling:batteries", "value":"",  "type":"boolean"},
                     {"key":"recycling:cans", "value":"",  "type":"boolean"},
                     {"key":"recycling:clothes", "value":"",  "type":"boolean"},
+                    {"key":"recycling:drugs", "value":"",  "type":"boolean"},
                     {"key":"recycling:glass", "value":"",  "type":"boolean"},
                     {"key":"recycling:green_waste", "value":"",  "type":"boolean"},
                     {"key":"recycling:paper", "value":"",  "type":"boolean"},
                     {"key":"recycling:plastic", "value":"",  "type":"boolean"},
                     {"key":"recycling:scrap_metal", "value":"",  "type":"boolean"},
+                    {"key":"recycling:waste", "value":"",  "type":"boolean"},
                     {"key":"recycling_type", "value":"", 
                       "values":{ "items":[
                               { "item":"" },
