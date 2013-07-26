@@ -23,13 +23,9 @@ import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_LON;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_MAPCENTER_LAT;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_MAPCENTER_LON;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_MAP_ZOOM;
-
-import java.util.logging.Logger;
-
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.util.debug.Debug;
 
 /**
  * Position and preferences related utils.
@@ -38,6 +34,7 @@ import eu.geopaparazzi.library.util.debug.Debug;
  */
 public class PositionUtilities {
 
+    private static final String LOG_TAG = "POSITIONUTILITIES";
     private static final float NOVALUE_CHECKVALUE = -9998f;
     private static final float NOVALUE = -9999f;
 
@@ -54,11 +51,15 @@ public class PositionUtilities {
     @SuppressWarnings("nls")
     public static void putGpsLocationInPreferences( SharedPreferences preferences, double longitude, double latitude,
             double elevation ) {
+        if (longitude > 1E5 || longitude < -1E5 //
+                || latitude > 1E5 || latitude < -1E5) {
+            throw new IllegalArgumentException("The method takes coordinate values in their real format.");
+        }
         Editor editor = preferences.edit();
         float longFloat = (float) longitude * LibraryConstants.E6;
         float latFloat = (float) latitude * LibraryConstants.E6;
         if (GPLog.LOG_ABSURD) {
-            GPLog.addLogEntry("POSITIONUTILITIES", "putGpsLocation: " + longFloat + "/" + latFloat);
+            GPLog.addLogEntry(LOG_TAG, "putGpsLocation: " + longFloat + "/" + latFloat);
         }
         editor.putFloat(PREFS_KEY_LON, longFloat);
         editor.putFloat(PREFS_KEY_LAT, latFloat);
@@ -76,22 +77,21 @@ public class PositionUtilities {
      */
     @SuppressWarnings("nls")
     public static double[] getGpsLocationFromPreferences( SharedPreferences preferences ) {
+        // these are *E6 values of the coordinates
         float lonFloat = preferences.getFloat(PREFS_KEY_LON, NOVALUE);
         float latFloat = preferences.getFloat(PREFS_KEY_LAT, NOVALUE);
-        if (lonFloat < NOVALUE_CHECKVALUE || latFloat < NOVALUE_CHECKVALUE) {
-            return null;
-        }
+
         double lon = (double) lonFloat / LibraryConstants.E6;
         double lat = (double) latFloat / LibraryConstants.E6;
-        // if (lon < NOVALUE_CHECKVALUE || lat < NOVALUE_CHECKVALUE) {
-        // return null;
-        // }
+        if (lon < NOVALUE_CHECKVALUE || lat < NOVALUE_CHECKVALUE) {
+            return null;
+        }
         if (lon == 0f && lat == 0f) {
             // we also do not believe in 0,0
             return null;
         }
         if (GPLog.LOG_ABSURD) {
-            GPLog.addLogEntry("POSITIONUTILITIES", "getGpsLocation: " + lon + "/" + lat);
+            GPLog.addLogEntry(LOG_TAG, "getGpsLocation: " + lon + "/" + lat);
         }
         double elevation = (double) preferences.getFloat(PREFS_KEY_ELEV, 0f);
         return new double[]{lon, lat, elevation};
@@ -113,7 +113,7 @@ public class PositionUtilities {
         float longFloat = (float) longitude * LibraryConstants.E6;
         float latFloat = (float) latitude * LibraryConstants.E6;
         if (GPLog.LOG_ABSURD) {
-            GPLog.addLogEntry("POSITIONUTILITIES", "putMapCenter: " + longFloat + "/" + latFloat);
+            GPLog.addLogEntry(LOG_TAG, "putMapCenter: " + longFloat + "/" + latFloat);
         }
         editor.putFloat(PREFS_KEY_MAPCENTER_LON, longFloat);
         editor.putFloat(PREFS_KEY_MAPCENTER_LAT, latFloat);
@@ -148,8 +148,7 @@ public class PositionUtilities {
                 double[] lastGpsLocation = getGpsLocationFromPreferences(preferences);
                 if (lastGpsLocation != null) {
                     if (GPLog.LOG_ABSURD) {
-                        GPLog.addLogEntry("POSITIONUTILITIES", "getMapCenter-fromgps: " + lastGpsLocation[0] + "/"
-                                + lastGpsLocation[1]);
+                        GPLog.addLogEntry(LOG_TAG, "getMapCenter-fromgps: " + lastGpsLocation[0] + "/" + lastGpsLocation[1]);
                     }
                     return new double[]{lastGpsLocation[0], lastGpsLocation[1], zoom};
                 } else {
@@ -166,7 +165,7 @@ public class PositionUtilities {
         }
 
         if (GPLog.LOG_ABSURD) {
-            GPLog.addLogEntry("POSITIONUTILITIES", "getMapCenter-fromgps: " + lon + "/" + lat);
+            GPLog.addLogEntry(LOG_TAG, "getMapCenter-fromgps: " + lon + "/" + lat);
         }
         return new double[]{lon, lat, zoom};
     }
