@@ -55,6 +55,7 @@ import eu.hydrologis.geopaparazzi.dashboard.quickaction.actionbar.QuickAction;
  */
 @SuppressWarnings("nls")
 public class ActionBar implements GpsManagerListener {
+    private static final boolean LOG_HOW = GPLog.LOG_ABSURD;
     private static DecimalFormat formatter = new DecimalFormat("0.00000"); //$NON-NLS-1$
     private final View actionBarView;
     private ActionItem infoQuickaction;
@@ -75,9 +76,9 @@ public class ActionBar implements GpsManagerListener {
     private GpsStatus lastGpsStatus;
     private long lastLocationupdateMillis;
 
-    public ActionBar( View actionBarView, GpsManager gpsManager, SensorsManager sensorsManager ) {
+    private ActionBar( View actionBarView, GpsManager _gpsManager, SensorsManager sensorsManager ) {
         this.actionBarView = actionBarView;
-        this.gpsManager = gpsManager;
+        gpsManager = _gpsManager;
         this.sensorsManager = sensorsManager;
 
         // set initial enablement
@@ -187,11 +188,11 @@ public class ActionBar implements GpsManagerListener {
             // if a list is available, check if the status gps is installed
             for( PackageInfo packageInfo : installedPackages ) {
                 String packageName = packageInfo.packageName;
-                if (GPLog.LOG_ABSURD)
+                if (LOG_HOW)
                     GPLog.addLogEntry("ACTIONBAR", packageName);
                 if (packageName.startsWith(gpsStatusPackage)) {
                     hasGpsStatus = true;
-                    if (GPLog.LOG_ABSURD)
+                    if (LOG_HOW)
                         GPLog.addLogEntry("ACTIONBAR", "Found package: " + packageName);
                     break;
                 }
@@ -220,7 +221,6 @@ public class ActionBar implements GpsManagerListener {
                             context.startActivity(intent);
                         }
                     }).show();
-
         }
     }
 
@@ -302,7 +302,7 @@ public class ActionBar implements GpsManagerListener {
             }
         });
 
-        if (GPLog.LOG_ABSURD && lastGpsStatus != null) {
+        if (LOG_HOW && lastGpsStatus != null) {
             GpsStatusInfo info = new GpsStatusInfo(lastGpsStatus);
             int satCount = info.getSatCount();
             int satForFixCount = info.getSatUsedInFixCount();
@@ -315,25 +315,25 @@ public class ActionBar implements GpsManagerListener {
         Resources resources = gpsOnOffView.getResources();
 
         if (isProviderEnabled) {// gpsManager.isEnabled()) {
-            if (GPLog.LOG_ABSURD)
+            if (LOG_HOW)
                 GPLog.addLogEntry(this, "GPS seems to be on");
             if (gpsManager.isDatabaseLogging()) {
-                if (GPLog.LOG_ABSURD)
+                if (LOG_HOW)
                     GPLog.addLogEntry(this, "GPS seems to be also logging");
                 gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_logging));
             } else {
                 if (gotFix) {
-                    if (GPLog.LOG_ABSURD)
+                    if (LOG_HOW)
                         GPLog.addLogEntry(this, "GPS has fix");
                     gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_hasfix_notlogging));
                 } else {
-                    if (GPLog.LOG_ABSURD)
+                    if (LOG_HOW)
                         GPLog.addLogEntry(this, "GPS doesn't have a fix");
                     gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_notlogging));
                 }
             }
         } else {
-            if (GPLog.LOG_ABSURD)
+            if (LOG_HOW)
                 GPLog.addLogEntry(this, "GPS seems to be off");
             gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_off));
         }
@@ -347,7 +347,7 @@ public class ActionBar implements GpsManagerListener {
     }
 
     public void onProviderDisabled( String provider ) {
-        if (GPLog.LOG_ABSURD)
+        if (LOG_HOW)
             GPLog.addLogEntry(this, "Check logging on provider disabled.");
         isProviderEnabled = false;
         checkLogging();
@@ -355,7 +355,7 @@ public class ActionBar implements GpsManagerListener {
 
     public void onProviderEnabled( String provider ) {
         isProviderEnabled = true;
-        if (GPLog.LOG_ABSURD)
+        if (LOG_HOW)
             GPLog.addLogEntry(this, "Check logging on provider enabled.");
         checkLogging();
     }
@@ -373,9 +373,9 @@ public class ActionBar implements GpsManagerListener {
     public void onGpsStatusChanged( int event, GpsStatus status ) {
         boolean tmpGotFix = GpsStatusInfo.checkFix(gotFix, lastLocationupdateMillis, event);
         if (tmpGotFix != gotFix) {
+            gotFix = tmpGotFix;
             checkLogging();
         }
-        gotFix = tmpGotFix;
     }
 
     public boolean hasFix() {
