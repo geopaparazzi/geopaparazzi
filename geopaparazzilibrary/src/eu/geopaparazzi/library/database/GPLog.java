@@ -131,8 +131,13 @@ public class GPLog {
             sb.append(LibraryConstants.iso8601Format.format(date));
             sb.append(": ");
             sb.append(logMessage);
-            Log.i("GPLOG", sb.toString());
+            String string = sb.toString();
+            log("GPLOG", string);
         }
+    }
+
+    private static int log( String tag, String string ) {
+        return Log.i(tag, string);
     }
 
     /**
@@ -196,12 +201,12 @@ public class GPLog {
         }
         addLogEntry(caller, null, ERROR_TAG, localizedMessage);
         if (LOG_ANDROID) {
-            Log.i("GPLOG_ERROR", localizedMessage);
+            log("GPLOG_ERROR", localizedMessage);
         }
         String stackTrace = Log.getStackTraceString(t);
         addLogEntry(caller, null, ERROR_TAG, stackTrace);
         if (LOG_ANDROID) {
-            Log.i("GPLOG_ERROR", stackTrace);
+            log("GPLOG_ERROR", stackTrace);
         }
     }
     /**

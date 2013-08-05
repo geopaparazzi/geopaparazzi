@@ -257,6 +257,11 @@ public interface LibraryConstants {
     public final String PREFS_KEY_MOCKMODE = "PREFS_KEY_MOCKMODE";
 
     /**
+     * Key used to define the mock class to use in the prefs. 
+     */
+    public final String PREFS_KEY_MOCKCLASS = "PREFS_KEY_MOCKCLASS";
+
+    /**
      * Default gps logging interval.
      */
     public static final int GPS_LOGGING_INTERVAL = 3;
