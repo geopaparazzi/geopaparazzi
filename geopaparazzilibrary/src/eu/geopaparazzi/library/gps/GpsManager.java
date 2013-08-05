@@ -175,8 +175,8 @@ public class GpsManager implements LocationListener, Listener {
         gpsStarted = false;
         log("GpsManager disposed.");
     }
-    
-    public boolean hasLoggerShutdown(){
+
+    public boolean hasLoggerShutdown() {
         return gpsLogger.isShutdown();
     }
 
@@ -402,19 +402,7 @@ public class GpsManager implements LocationListener, Listener {
         mStatus = locationManager.getGpsStatus(mStatus);
 
         // check fix
-        switch( event ) {
-        case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
-            if ((SystemClock.elapsedRealtime() - lastLocationupdateMillis) < (GpsManager.WAITSECONDS * 2000l)) {
-                if (!gotFix) {
-                    gotFix = true;
-                }
-            } else {
-                if (gotFix) {
-                    gotFix = false;
-                }
-            }
-            break;
-        }
+        gotFix = GpsStatusInfo.checkFix(gotFix, lastLocationupdateMillis, event);
 
         for( GpsManagerListener activity : listeners ) {
             activity.onGpsStatusChanged(event, mStatus);
