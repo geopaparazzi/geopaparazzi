@@ -80,6 +80,12 @@ public class DaoImages {
         }
     }
 
+    /**
+     * Deletes the image reference without actually deleting teh image from disk.
+     * 
+     * @param id
+     * @throws IOException
+     */
     public static void deleteImage( long id ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();

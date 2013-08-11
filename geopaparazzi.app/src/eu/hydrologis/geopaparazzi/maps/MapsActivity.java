@@ -125,6 +125,7 @@ import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
+import eu.hydrologis.geopaparazzi.util.Image;
 import eu.hydrologis.geopaparazzi.util.MixareUtilities;
 import eu.hydrologis.geopaparazzi.util.Note;
 
@@ -1213,8 +1214,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                     public void onClick( DialogInterface dialog, int whichButton ) {
                         try {
                             float[] nswe = getMapWorldBounds();
-                            final List<Bookmark> bookmarksInBounds = DaoBookmarks.getBookmarksInWorldBounds(nswe[0],
-                                    nswe[1], nswe[2], nswe[3]);
+                            final List<Bookmark> bookmarksInBounds = DaoBookmarks.getBookmarksInWorldBounds(nswe[0], nswe[1],
+                                    nswe[2], nswe[3]);
                             int bookmarksNum = bookmarksInBounds.size();
 
                             bookmarksRemoveDialog = new ProgressDialog(MapsActivity.this);
@@ -1260,10 +1261,12 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                         try {
                             float[] nswe = getMapWorldBounds();
 
-                            final List<Note> notesInBounds = DaoNotes.getNotesInWorldBounds(nswe[0], nswe[1], nswe[2],
+                            final List<Note> notesInBounds = DaoNotes.getNotesInWorldBounds(nswe[0], nswe[1], nswe[2], nswe[3]);
+                            final List<Image> imagesInBounds = DaoImages.getImagesInWorldBounds(nswe[0], nswe[1], nswe[2],
                                     nswe[3]);
 
                             int notesNum = notesInBounds.size();
+                            notesNum = notesNum + imagesInBounds.size();
 
                             final ProgressDialog notesRemoveDialog = new ProgressDialog(MapsActivity.this);
                             notesRemoveDialog.setCancelable(true);
@@ -1281,6 +1284,14 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                                         for( Note note : notesInBounds ) {
                                             try {
                                                 DaoNotes.deleteNote(note.getId());
+                                                onProgressUpdate(0);
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                        for( Image image : imagesInBounds ) {
+                                            try {
+                                                DaoImages.deleteImage(image.getId());
                                                 onProgressUpdate(0);
                                             } catch (IOException e) {
                                                 e.printStackTrace();
@@ -1341,8 +1352,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
                             int zoom = mapView.getMapPosition().getZoomLevel();
                             float[] nswe = getMapWorldBounds();
-                            DaoBookmarks.addBookmark(centerLon, centerLat, newName, zoom, nswe[0], nswe[1],
-                                    nswe[2], nswe[3]);
+                            DaoBookmarks.addBookmark(centerLon, centerLat, newName, zoom, nswe[0], nswe[1], nswe[2], nswe[3]);
                             mapView.invalidateOnUiThread();
                         } catch (IOException e) {
                             GPLog.error(this, e.getLocalizedMessage(), e);
