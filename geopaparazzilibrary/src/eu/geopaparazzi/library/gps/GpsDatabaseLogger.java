@@ -97,7 +97,7 @@ public class GpsDatabaseLogger implements GpsManagerListener {
     public boolean isDatabaseLogging() {
         return isDatabaseLogging;
     }
-    
+
     /**
      * @return <code>true</code> only if the gps thread has finished.
      */
@@ -123,7 +123,7 @@ public class GpsDatabaseLogger implements GpsManagerListener {
             public void run() {
                 try {
                     isShutdown = false;
-                    
+
                     SQLiteDatabase sqliteDatabase = dbHelper.getDatabase(context);
                     java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
                     long gpsLogId = dbHelper.addGpsLog(context, now, now, logName, 2f, "red", true);
@@ -224,7 +224,7 @@ public class GpsDatabaseLogger implements GpsManagerListener {
                     isShutdown = true;
                 }
                 logABS("Exit logging...");
-                
+
             }
 
             private void waitGpsInterval( long waitForSecs ) {
@@ -299,7 +299,19 @@ public class GpsDatabaseLogger implements GpsManagerListener {
     }
 
     public void onGpsStatusChanged( int event, GpsStatus status ) {
-        gotFix = GpsStatusInfo.checkFix(gotFix, lastLocationupdateMillis, event);
+        // check fix
+        boolean tmpGotFix = GpsStatusInfo.checkFix(gotFix, lastLocationupdateMillis, event);
+        if (!tmpGotFix) {
+            // check if it is just standing still
+            GpsStatusInfo info = new GpsStatusInfo(status);
+            int satForFixCount = info.getSatUsedInFixCount();
+            if (satForFixCount > 2) {
+                tmpGotFix = true;
+                // updating loc update, assuming the still filter is giving troubles
+                lastLocationupdateMillis = SystemClock.elapsedRealtime();
+            }
+        }
+        gotFix = tmpGotFix;
     }
 
     private void logH( String msg ) {

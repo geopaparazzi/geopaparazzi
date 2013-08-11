@@ -402,8 +402,18 @@ public class GpsManager implements LocationListener, Listener {
         mStatus = locationManager.getGpsStatus(mStatus);
 
         // check fix
-        gotFix = GpsStatusInfo.checkFix(gotFix, lastLocationupdateMillis, event);
-
+        boolean tmpGotFix = GpsStatusInfo.checkFix(gotFix, lastLocationupdateMillis, event);
+        if (!tmpGotFix) {
+            // check if it is just standing still
+            GpsStatusInfo info = new GpsStatusInfo(mStatus);
+            int satForFixCount = info.getSatUsedInFixCount();
+            if (satForFixCount > 2) {
+                tmpGotFix = true;
+                // updating loc update, assuming the still filter is giving troubles
+                lastLocationupdateMillis = SystemClock.elapsedRealtime();
+            }
+        }
+        gotFix = tmpGotFix;
         for( GpsManagerListener activity : listeners ) {
             activity.onGpsStatusChanged(event, mStatus);
         }

@@ -363,6 +363,22 @@ public class ActionBar implements GpsManagerListener {
     }
 
     public void onStatusChanged( String provider, int status, Bundle extras ) {
+        // switch( status ) {
+        // case LocationProvider.AVAILABLE:
+        // if (LOG_HOW)
+        // GPLog.addLogEntry(this, "AVAILABLE.");
+        // break;
+        // case LocationProvider.OUT_OF_SERVICE:
+        // if (LOG_HOW)
+        // GPLog.addLogEntry(this, "AVAILABLE.");
+        // break;
+        // case LocationProvider.TEMPORARILY_UNAVAILABLE:
+        // if (LOG_HOW)
+        // GPLog.addLogEntry(this, "AVAILABLE.");
+        // break;
+        // default:
+        // break;
+        // }
     }
 
     public void gpsStart() {
@@ -376,13 +392,25 @@ public class ActionBar implements GpsManagerListener {
         boolean tmpGotFix = GpsStatusInfo.checkFix(gotFix, lastLocationupdateMillis, event);
         if (tmpGotFix != gotFix) {
             gotFix = tmpGotFix;
-            checkLogging();
             if (LOG_HOW)
                 if (gotFix) {
                     GPLog.addLogEntry(this, "Aquired fix.");
                 } else {
                     GPLog.addLogEntry(this, "Lost fix.");
                 }
+            if (!gotFix) {
+                // check if it is just standing still
+                GpsStatusInfo info = new GpsStatusInfo(lastGpsStatus);
+                int satForFixCount = info.getSatUsedInFixCount();
+                if (satForFixCount > 2) {
+                    gotFix = true;
+                    // updating loc update, assuming the still filter is giving troubles
+                    lastLocationupdateMillis = SystemClock.elapsedRealtime();
+                    if (LOG_HOW)
+                        GPLog.addLogEntry(this, "Fix kept due to fix satellites.");
+                }
+            }
+            checkLogging();
         }
         if (gotFix) {
             lastGpsStatus = status;
