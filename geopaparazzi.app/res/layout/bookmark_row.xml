@@ -13,10 +13,9 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:padding="5dip"
-        android:src="@drawable/ic_tab_goto_selected" />
+        android:src="@android:drawable/ic_menu_mylocation" />
 
     <TextView
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/bookmarkrowtext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,13 +29,22 @@
         android:textColor="@color/main_text_color_neutral" />
 
     <ImageView
-        android:id="@+id/renamebutton"
+        android:id="@+id/deletebutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:padding="5dip"
-        android:src="@drawable/ic_tab_rename_selected" />
+        android:src="@android:drawable/ic_menu_delete" />
+
+    <ImageView
+        android:id="@+id/renamebutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/deletebutton"
+        android:layout_toLeftOf="@+id/deletebutton"
+        android:padding="5dip"
+        android:src="@android:drawable/ic_menu_edit" />
 
     <ImageView
         android:id="@+id/alertbutton"
@@ -45,6 +53,6 @@
         android:layout_alignTop="@+id/renamebutton"
         android:layout_toLeftOf="@+id/renamebutton"
         android:padding="5dip"
-        android:src="@drawable/ic_tab_alertsign_selected" />
+        android:src="@android:drawable/ic_dialog_alert" />
 
 </RelativeLayout>

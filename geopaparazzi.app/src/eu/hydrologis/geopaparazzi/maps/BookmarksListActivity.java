@@ -32,6 +32,7 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -181,6 +182,38 @@ public class BookmarksListActivity extends ListActivity {
                     }
                 });
 
+                final ImageView deleteButton = (ImageView) rowView.findViewById(R.id.deletebutton);
+                deleteButton.setOnClickListener(new View.OnClickListener(){
+                    public void onClick( View v ) {
+                        final String name = bookmarkText.getText().toString();
+                        final Bookmark bookmark = bookmarksMap.get(name);
+                        Utilities.yesNoMessageDialog(BookmarksListActivity.this,
+                                "Are you sure you want to delete the bookmark? This can't be undone.", new Runnable(){
+                                    public void run() {
+                                        new AsyncTask<String, Void, String>(){
+                                            protected String doInBackground( String... params ) {
+                                                return "";
+                                            }
+
+                                            protected void onPostExecute( String response ) {
+                                                try {
+                                                    DaoBookmarks.deleteBookmark(bookmark.getId());
+                                                    refreshList();
+                                                } catch (IOException e) {
+                                                    GPLog.error(this, e.getLocalizedMessage(), e);
+                                                    e.printStackTrace();
+                                                    Toast.makeText(getApplicationContext(), e.getLocalizedMessage(),
+                                                            Toast.LENGTH_LONG).show();
+                                                }
+                                            }
+                                        }.execute((String) null);
+
+                                    }
+                                }, null);
+
+                    }
+                });
+
                 final ImageView goButton = (ImageView) rowView.findViewById(R.id.gobutton);
                 goButton.setOnClickListener(new View.OnClickListener(){
                     public void onClick( View v ) {
@@ -234,7 +267,6 @@ public class BookmarksListActivity extends ListActivity {
 
         setListAdapter(arrayAdapter);
     }
-
     private TextWatcher filterTextWatcher = new TextWatcher(){
 
         public void afterTextChanged( Editable s ) {
