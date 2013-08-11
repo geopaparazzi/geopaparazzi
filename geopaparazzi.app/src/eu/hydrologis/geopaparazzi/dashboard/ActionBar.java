@@ -371,6 +371,7 @@ public class ActionBar implements GpsManagerListener {
     }
 
     public void onGpsStatusChanged( int event, GpsStatus status ) {
+        lastGpsStatus = status;
         boolean tmpGotFix = GpsStatusInfo.checkFix(gotFix, lastLocationupdateMillis, event);
         if (tmpGotFix != gotFix) {
             gotFix = tmpGotFix;
