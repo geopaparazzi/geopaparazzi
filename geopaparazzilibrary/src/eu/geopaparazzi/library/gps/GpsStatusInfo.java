@@ -19,6 +19,8 @@ package eu.geopaparazzi.library.gps;
 
 import java.util.Iterator;
 
+import eu.geopaparazzi.library.database.GPLog;
+
 import android.location.GpsSatellite;
 import android.location.GpsStatus;
 import android.os.SystemClock;
@@ -33,11 +35,11 @@ public class GpsStatusInfo {
     /**
      * The accepted time between a point and the other to say it has fix.
      * 
-     * <p>This is 5 secs right now, because the pick interval is 1 sec.
-     * If that changes, it shoul be related to the pick interval of the GPS.
+     * <p>This is 10 secs right now, because the pick interval is 1 sec.
+     * If that changes, it should be related to the pick interval of the GPS.
      */
-    private static final long FIX_TIME_INTERVAL_CHECK = 5000l;
-    
+    private static final long FIX_TIME_INTERVAL_CHECK = 10000l;
+
     private GpsStatus status;
     private int maxSatellites;
     private int satCount;
@@ -92,7 +94,10 @@ public class GpsStatusInfo {
     public static boolean checkFix( boolean hasFix, long lastLocationUpdateMillis, int event ) {
         switch( event ) {
         case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
-            if ((SystemClock.elapsedRealtime() - lastLocationUpdateMillis) < FIX_TIME_INTERVAL_CHECK) {
+            long diff = SystemClock.elapsedRealtime() - lastLocationUpdateMillis;
+            if (GPLog.LOG_ABSURD)
+                GPLog.addLogEntry("GPSSTATUSINFO", "gps event diff: " + diff);
+            if (diff < FIX_TIME_INTERVAL_CHECK) {
                 if (!hasFix) {
                     hasFix = true;
                 }

@@ -344,6 +344,8 @@ public class ActionBar implements GpsManagerListener {
             return;
         }
         lastLocationupdateMillis = SystemClock.elapsedRealtime();
+        if (GPLog.LOG_ABSURD)
+            GPLog.addLogEntry(this, "Location update: " + location);
     }
 
     public void onProviderDisabled( String provider ) {
@@ -371,11 +373,21 @@ public class ActionBar implements GpsManagerListener {
     }
 
     public void onGpsStatusChanged( int event, GpsStatus status ) {
-        lastGpsStatus = status;
         boolean tmpGotFix = GpsStatusInfo.checkFix(gotFix, lastLocationupdateMillis, event);
         if (tmpGotFix != gotFix) {
             gotFix = tmpGotFix;
             checkLogging();
+            if (LOG_HOW)
+                if (gotFix) {
+                    GPLog.addLogEntry(this, "Aquired fix.");
+                } else {
+                    GPLog.addLogEntry(this, "Lost fix.");
+                }
+        }
+        if (gotFix) {
+            lastGpsStatus = status;
+        } else {
+            lastGpsStatus = null;
         }
     }
 
