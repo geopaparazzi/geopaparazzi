@@ -13,7 +13,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:padding="5dip"
-        android:src="@android:drawable/ic_menu_mylocation" />
+        android:src="@android:drawable/ic_menu_goto" />
 
     <TextView
         android:id="@+id/bookmarkrowtext"
@@ -53,6 +53,6 @@
         android:layout_alignTop="@+id/renamebutton"
         android:layout_toLeftOf="@+id/renamebutton"
         android:padding="5dip"
-        android:src="@android:drawable/ic_dialog_alert" />
+        android:src="@android:drawable/ic_menu_notifications" />
 
 </RelativeLayout>
