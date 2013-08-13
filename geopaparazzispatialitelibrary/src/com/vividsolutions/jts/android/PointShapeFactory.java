@@ -124,7 +124,7 @@ public interface PointShapeFactory {
          */
         public DrawableShape createPoint( PointF point ) {
             float x = (float) (point.x - (size / 2));
-            float y = (float) (point.y + (size / 2));
+            float y = (float) (point.y - (size / 2));
             RectShape pointMarker = new RectShape(x, y, (float) size, (float) size);
             return pointMarker;
         }
@@ -239,7 +239,7 @@ public interface PointShapeFactory {
          */
         public DrawableShape createPoint( PointF point ) {
             float x = (float) (point.x - (size / 2));
-            float y = (float) (point.y + (size / 2));
+            float y = (float) (point.y - (size / 2));
             OvalShape shape = new OvalShape(x, y, (float) size, (float) size);
             return shape;
         }
