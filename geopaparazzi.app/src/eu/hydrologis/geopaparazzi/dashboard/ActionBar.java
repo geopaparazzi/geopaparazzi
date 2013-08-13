@@ -400,7 +400,7 @@ public class ActionBar implements GpsManagerListener {
                 }
             if (!gotFix) {
                 // check if it is just standing still
-                GpsStatusInfo info = new GpsStatusInfo(lastGpsStatus);
+                GpsStatusInfo info = new GpsStatusInfo(status);
                 int satForFixCount = info.getSatUsedInFixCount();
                 if (satForFixCount > 2) {
                     gotFix = true;
@@ -412,11 +412,7 @@ public class ActionBar implements GpsManagerListener {
             }
             checkLogging();
         }
-        if (gotFix) {
-            lastGpsStatus = status;
-        } else {
-            lastGpsStatus = null;
-        }
+        lastGpsStatus = status;
     }
 
     public boolean hasFix() {
