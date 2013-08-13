@@ -6,7 +6,6 @@
     android:orientation="vertical" >
 
     <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/innerlayout"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
@@ -107,11 +106,11 @@
                     </ImageButton>
 
                     <ImageButton
-                        android:id="@+id/removenotesbutton"
+                        android:id="@+id/listnotesbutton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dip"
-                        android:background="@drawable/deletenote" >
+                        android:background="@drawable/noteslist" >
                     </ImageButton>
 
                     <ImageButton
@@ -120,14 +119,6 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="5dip"
                         android:background="@drawable/addbookmark" >
-                    </ImageButton>
-
-                    <ImageButton
-                        android:id="@+id/removebookmarkbutton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dip"
-                        android:background="@drawable/deletebookmark" >
                     </ImageButton>
 
                     <ImageButton

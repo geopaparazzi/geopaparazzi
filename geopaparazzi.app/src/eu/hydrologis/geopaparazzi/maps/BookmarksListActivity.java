@@ -187,8 +187,8 @@ public class BookmarksListActivity extends ListActivity {
                     public void onClick( View v ) {
                         final String name = bookmarkText.getText().toString();
                         final Bookmark bookmark = bookmarksMap.get(name);
-                        Utilities.yesNoMessageDialog(BookmarksListActivity.this,
-                                "Are you sure you want to delete the bookmark? This can't be undone.", new Runnable(){
+                        Utilities.yesNoMessageDialog(BookmarksListActivity.this, getString(R.string.prompt_delete_bookmark),
+                                new Runnable(){
                                     public void run() {
                                         new AsyncTask<String, Void, String>(){
                                             protected String doInBackground( String... params ) {

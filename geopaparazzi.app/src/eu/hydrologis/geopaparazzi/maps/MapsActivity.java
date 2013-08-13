@@ -125,7 +125,6 @@ import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
-import eu.hydrologis.geopaparazzi.util.Image;
 import eu.hydrologis.geopaparazzi.util.MixareUtilities;
 import eu.hydrologis.geopaparazzi.util.Note;
 
@@ -134,7 +133,7 @@ import eu.hydrologis.geopaparazzi.util.Note;
  */
 public class MapsActivity extends MapActivity implements GpsManagerListener, OnTouchListener {
     private final int INSERTCOORD_RETURN_CODE = 666;
-    private final int BOOKMARKS_RETURN_CODE = 667;
+    private final int ZOOM_RETURN_CODE = 667;
     private final int GPSDATAPROPERTIES_RETURN_CODE = 668;
     private final int DATAPROPERTIES_RETURN_CODE = 671;
     public static final int FORMUPDATE_RETURN_CODE = 669;
@@ -415,17 +414,11 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             }
         });
 
-        ImageButton removeNotesButton = (ImageButton) findViewById(R.id.removenotesbutton);
-        removeNotesButton.setOnClickListener(new Button.OnClickListener(){
+        ImageButton listNotesButton = (ImageButton) findViewById(R.id.listnotesbutton);
+        listNotesButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                deleteVisibleNotes();
-            }
-        });
-
-        ImageButton removeBookmarksButton = (ImageButton) findViewById(R.id.removebookmarkbutton);
-        removeBookmarksButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
-                deleteVisibleBookmarks();
+                Intent intent = new Intent(MapsActivity.this, NotesListActivity.class);
+                startActivityForResult(intent, ZOOM_RETURN_CODE);
             }
         });
 
@@ -433,7 +426,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         listBookmarksButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
                 Intent intent = new Intent(MapsActivity.this, BookmarksListActivity.class);
-                startActivityForResult(intent, BOOKMARKS_RETURN_CODE);
+                startActivityForResult(intent, ZOOM_RETURN_CODE);
             }
         });
 
@@ -1100,7 +1093,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             }
             break;
         }
-        case (BOOKMARKS_RETURN_CODE): {
+        case (ZOOM_RETURN_CODE): {
             if (resultCode == Activity.RESULT_OK) {
                 double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0d);
                 double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0d);
@@ -1203,129 +1196,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         }
     }
 
-    private void deleteVisibleBookmarks() {
-
-        new AlertDialog.Builder(this).setTitle(R.string.delete_visible_bookmarks_title)
-                .setMessage(R.string.delete_visible_bookmarks_prompt).setIcon(android.R.drawable.ic_dialog_alert)
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
-                    public void onClick( DialogInterface dialog, int whichButton ) {
-                    }
-                }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
-                    public void onClick( DialogInterface dialog, int whichButton ) {
-                        try {
-                            float[] nswe = getMapWorldBounds();
-                            final List<Bookmark> bookmarksInBounds = DaoBookmarks.getBookmarksInWorldBounds(nswe[0], nswe[1],
-                                    nswe[2], nswe[3]);
-                            int bookmarksNum = bookmarksInBounds.size();
-
-                            bookmarksRemoveDialog = new ProgressDialog(MapsActivity.this);
-                            bookmarksRemoveDialog.setCancelable(true);
-                            bookmarksRemoveDialog.setMessage(MessageFormat.format(
-                                    getString(R.string.mapsactivity_delete_bookmarks), bookmarksNum));
-                            bookmarksRemoveDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                            bookmarksRemoveDialog.setProgress(0);
-                            bookmarksRemoveDialog.setMax(bookmarksNum);
-                            bookmarksRemoveDialog.show();
-
-                            new Thread(){
-                                public void run() {
-                                    for( final Bookmark bookmark : bookmarksInBounds ) {
-                                        bookmarksRemoveHandler.sendEmptyMessage(0);
-                                        try {
-                                            DaoBookmarks.deleteBookmark(bookmark.getId());
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                    bookmarksDeleted = true;
-                                    bookmarksRemoveHandler.sendEmptyMessage(0);
-                                }
-                            }.start();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }).show();
-
-    }
-
-    private void deleteVisibleNotes() {
-
-        new AlertDialog.Builder(this).setTitle(R.string.delete_visible_notes_title)
-                .setMessage(R.string.delete_visible_notes_prompt).setIcon(android.R.drawable.ic_dialog_alert)
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
-                    public void onClick( DialogInterface dialog, int whichButton ) {
-                    }
-                }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
-                    public void onClick( DialogInterface dialog, int whichButton ) {
-                        try {
-                            float[] nswe = getMapWorldBounds();
-
-                            final List<Note> notesInBounds = DaoNotes.getNotesInWorldBounds(nswe[0], nswe[1], nswe[2], nswe[3]);
-                            final List<Image> imagesInBounds = DaoImages.getImagesInWorldBounds(nswe[0], nswe[1], nswe[2],
-                                    nswe[3]);
-
-                            int notesNum = notesInBounds.size();
-                            notesNum = notesNum + imagesInBounds.size();
-
-                            final ProgressDialog notesRemoveDialog = new ProgressDialog(MapsActivity.this);
-                            notesRemoveDialog.setCancelable(true);
-                            notesRemoveDialog.setMessage(MessageFormat.format(getString(R.string.mapsactivity_delete_notes),
-                                    notesNum));
-                            notesRemoveDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-                            notesRemoveDialog.setProgress(0);
-                            notesRemoveDialog.setMax(notesNum);
-                            notesRemoveDialog.show();
-
-                            new AsyncTask<String, Void, String>(){
-
-                                protected String doInBackground( String... params ) {
-                                    try {
-                                        for( Note note : notesInBounds ) {
-                                            try {
-                                                DaoNotes.deleteNote(note.getId());
-                                                onProgressUpdate(0);
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                        for( Image image : imagesInBounds ) {
-                                            try {
-                                                DaoImages.deleteImage(image.getId());
-                                                onProgressUpdate(0);
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                        return ""; //$NON-NLS-1$
-                                    } catch (Exception e) {
-                                        return "ERROR: " + e.getLocalizedMessage(); //$NON-NLS-1$
-                                    }
-
-                                }
-
-                                protected void onProgressUpdate( Integer... progress ) { // on UI
-                                    notesRemoveDialog.incrementProgressBy(1);
-                                }
-
-                                protected void onPostExecute( String response ) { // on UI thread!
-                                    notesRemoveDialog.dismiss();
-                                    if (response.startsWith("ERROR")) { //$NON-NLS-1$
-                                        Utilities.messageDialog(MapsActivity.this, response, null);
-                                    } else {
-                                        mapView.invalidate();
-                                    }
-                                }
-
-                            }.execute((String) null);
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }).show();
-
-    }
     private void addBookmark() {
         GeoPoint mapCenter = mapView.getMapPosition().getMapCenter();
         final float centerLat = mapCenter.latitudeE6 / LibraryConstants.E6;

@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_toLeftOf="@+id/alertbutton"
+        android:layout_toLeftOf="@+id/editbutton"
         android:layout_toRightOf="@+id/gobutton"
         android:gravity="center_vertical"
         android:padding="5dip"
@@ -38,21 +38,12 @@
         android:src="@android:drawable/ic_menu_delete" />
 
     <ImageView
-        android:id="@+id/renamebutton"
+        android:id="@+id/editbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/deletebutton"
         android:layout_toLeftOf="@+id/deletebutton"
         android:padding="5dip"
         android:src="@android:drawable/ic_menu_edit" />
-
-    <ImageView
-        android:id="@+id/alertbutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/renamebutton"
-        android:layout_toLeftOf="@+id/renamebutton"
-        android:padding="5dip"
-        android:src="@android:drawable/ic_menu_rotate" />
 
 </RelativeLayout>

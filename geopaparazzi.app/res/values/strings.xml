@@ -192,5 +192,7 @@
     <string name="cross_properties_summary">Properties of the cross used to place notes.</string>
     <string name="cross_properties">Center Cross</string>
     <string name="color">Color</string>
+    <string name="prompt_delete_note">Are you sure you want to delete the note? This can\'t be undone.</string>
+    <string name="prompt_delete_bookmark">Are you sure you want to delete the bookmark? This can\'t be undone.</string>
 
 </resources>

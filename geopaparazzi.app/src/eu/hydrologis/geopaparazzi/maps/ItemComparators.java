@@ -20,6 +20,7 @@ package eu.hydrologis.geopaparazzi.maps;
 import java.util.Comparator;
 
 import eu.hydrologis.geopaparazzi.util.Bookmark;
+import eu.hydrologis.geopaparazzi.util.Note;
 
 /**
  * {@link MapItem} comparators to sort them.
@@ -90,6 +91,29 @@ public class ItemComparators {
 
             int compareTo = id1.compareTo(id2);
 
+            if (compareTo < 0) {
+                return doInverse ? 1 : -1;
+            } else if (compareTo > 0) {
+                return doInverse ? -1 : 1;
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    public static class NotesComparator implements Comparator<Note> {
+        private boolean doInverse = false;
+        public NotesComparator() {
+        }
+        public NotesComparator( boolean doInverse ) {
+            this.doInverse = doInverse;
+        }
+        public int compare( Note m1, Note m2 ) {
+            String id1 = m1.getName();
+            String id2 = m2.getName();
+            
+            int compareTo = id1.compareTo(id2);
+            
             if (compareTo < 0) {
                 return doInverse ? 1 : -1;
             } else if (compareTo > 0) {
