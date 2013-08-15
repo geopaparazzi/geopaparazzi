@@ -135,6 +135,9 @@ public class TestMock {
                         } else {
                             long millis = t - previousT;
                             // Log.i("MOCK_PROVIDER_NAME", nextLine + "///" + millis);
+                            if (millis < 0) {
+                                millis = 2000;
+                            }
                             Thread.sleep(millis);
                         }
                         previousT = t;

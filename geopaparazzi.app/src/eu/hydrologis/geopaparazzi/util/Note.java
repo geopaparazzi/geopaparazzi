@@ -36,7 +36,7 @@ import eu.geopaparazzi.library.util.Utilities;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class Note implements KmlRepresenter, GpxRepresenter {
+public class Note implements INote, KmlRepresenter, GpxRepresenter {
     private final String name;
     private final String description;
     private final String timeStamp;

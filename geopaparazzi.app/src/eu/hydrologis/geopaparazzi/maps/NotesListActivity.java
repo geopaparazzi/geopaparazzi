@@ -17,6 +17,7 @@
  */
 package eu.hydrologis.geopaparazzi.maps;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,6 +30,7 @@ import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -44,10 +46,14 @@ import android.widget.Toast;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.FormActivity;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
+import eu.hydrologis.geopaparazzi.util.INote;
+import eu.hydrologis.geopaparazzi.util.Image;
 import eu.hydrologis.geopaparazzi.util.Note;
 
 /**
@@ -57,8 +63,8 @@ import eu.hydrologis.geopaparazzi.util.Note;
  */
 public class NotesListActivity extends ListActivity {
     private String[] notesNames;
-    private Map<String, Note> notesMap = new HashMap<String, Note>();
-    private Comparator<Note> notesSorter = new ItemComparators.NotesComparator(false);
+    private Map<String, INote> notesMap = new HashMap<String, INote>();
+    private Comparator<INote> notesSorter = new ItemComparators.NotesComparator(false);
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -86,13 +92,18 @@ public class NotesListActivity extends ListActivity {
         if (GPLog.LOG_HEAVY)
             GPLog.addLogEntry(this, "refreshing notes list"); //$NON-NLS-1$
         try {
-            List<Note> notesList = DaoNotes.getNotesList();
 
-            Collections.sort(notesList, notesSorter);
-            notesNames = new String[notesList.size()];
+            List<INote> allNotesList = new ArrayList<INote>();
+            List<Note> notesList = DaoNotes.getNotesList();
+            allNotesList.addAll(notesList);
+            List<Image> imagesList = DaoImages.getImagesList();
+            allNotesList.addAll(imagesList);
+            Collections.sort(allNotesList, notesSorter);
+
+            notesNames = new String[allNotesList.size()];
             notesMap.clear();
             int index = 0;
-            for( Note note : notesList ) {
+            for( INote note : allNotesList ) {
                 String name = note.getName();
                 notesMap.put(name, note);
                 notesNames[index] = name;
@@ -110,13 +121,17 @@ public class NotesListActivity extends ListActivity {
         if (GPLog.LOG_HEAVY)
             GPLog.addLogEntry(this, "filter notes list"); //$NON-NLS-1$
         try {
+            List<INote> allNotesList = new ArrayList<INote>();
             List<Note> notesList = DaoNotes.getNotesList();
-            Collections.sort(notesList, notesSorter);
+            allNotesList.addAll(notesList);
+            List<Image> imagesList = DaoImages.getImagesList();
+            allNotesList.addAll(imagesList);
+            Collections.sort(allNotesList, notesSorter);
 
             notesMap.clear();
             filterText = ".*" + filterText.toLowerCase() + ".*"; //$NON-NLS-1$ //$NON-NLS-2$
             List<String> namesList = new ArrayList<String>();
-            for( Note note : notesList ) {
+            for( INote note : allNotesList ) {
                 String name = note.getName();
                 String nameLower = name.toLowerCase();
                 if (nameLower.matches(filterText)) {
@@ -148,27 +163,46 @@ public class NotesListActivity extends ListActivity {
                 editButton.setOnClickListener(new View.OnClickListener(){
                     public void onClick( View v ) {
                         final String name = notesText.getText().toString();
-                        Note note = notesMap.get(name);
-                        if (note.getForm() == null || note.getForm().length() == 0) {
-                            // can't edit simple notes
-                            Utilities.messageDialog(NotesListActivity.this,
-                                    "Only complex notes can be edited. Simple notes can be simply replaced.", null);
-                            return;
-                        }
+                        INote iNote = notesMap.get(name);
+                        if (iNote instanceof Note) {
+                            Note note = (Note) iNote;
+                            if (note.getForm() == null || note.getForm().length() == 0) {
+                                // can't edit simple notes
+                                Utilities.messageDialog(NotesListActivity.this,
+                                        "Only complex notes can be edited. Simple notes can be simply replaced.", null);
+                                return;
+                            }
 
-                        int type = note.getType();
-                        double lat = note.getLat();
-                        double lon = note.getLon();
-                        String form = note.getForm();
-                        if (form != null && form.length() > 0 && type != NoteType.OSM.getTypeNum()) {
-                            double altim = note.getAltim();
-                            Intent formIntent = new Intent(NotesListActivity.this, FormActivity.class);
-                            formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_JSON, form);
-                            formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_NAME, name);
-                            formIntent.putExtra(LibraryConstants.LATITUDE, (double) lat);
-                            formIntent.putExtra(LibraryConstants.LONGITUDE, (double) lon);
-                            formIntent.putExtra(LibraryConstants.ELEVATION, (double) altim);
-                            NotesListActivity.this.startActivityForResult(formIntent, MapsActivity.FORMUPDATE_RETURN_CODE);
+                            int type = note.getType();
+                            double lat = note.getLat();
+                            double lon = note.getLon();
+                            String form = note.getForm();
+                            if (form != null && form.length() > 0 && type != NoteType.OSM.getTypeNum()) {
+                                double altim = note.getAltim();
+                                Intent formIntent = new Intent(NotesListActivity.this, FormActivity.class);
+                                formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_JSON, form);
+                                formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_NAME, name);
+                                formIntent.putExtra(LibraryConstants.LATITUDE, (double) lat);
+                                formIntent.putExtra(LibraryConstants.LONGITUDE, (double) lon);
+                                formIntent.putExtra(LibraryConstants.ELEVATION, (double) altim);
+                                NotesListActivity.this.startActivityForResult(formIntent, MapsActivity.FORMUPDATE_RETURN_CODE);
+                            }
+                        } else if (iNote instanceof Image) {
+                            Image image = (Image) iNote;
+                            Intent intent = new Intent();
+                            intent.setAction(android.content.Intent.ACTION_VIEW);
+                            File absolutePath = new File(image.getPath());
+                            if (!absolutePath.exists()) {
+                                // try relative to media
+                                try {
+                                    File mediaDir = ResourcesManager.getInstance(NotesListActivity.this).getMediaDir();
+                                    absolutePath = new File(mediaDir.getParentFile(), image.getPath());
+                                } catch (java.lang.Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            intent.setDataAndType(Uri.fromFile(absolutePath), "image/*"); //$NON-NLS-1$
+                            NotesListActivity.this.startActivity(intent);
                         }
 
                     }
@@ -178,7 +212,7 @@ public class NotesListActivity extends ListActivity {
                 deleteButton.setOnClickListener(new View.OnClickListener(){
                     public void onClick( View v ) {
                         final String name = notesText.getText().toString();
-                        final Note note = notesMap.get(name);
+                        final INote note = notesMap.get(name);
                         Utilities.yesNoMessageDialog(NotesListActivity.this, getString(R.string.prompt_delete_note),
                                 new Runnable(){
                                     public void run() {
@@ -189,7 +223,11 @@ public class NotesListActivity extends ListActivity {
 
                                             protected void onPostExecute( String response ) {
                                                 try {
-                                                    DaoNotes.deleteNote(note.getId());
+                                                    if (note instanceof Note) {
+                                                        DaoNotes.deleteNote(note.getId());
+                                                    } else if (note instanceof Image) {
+                                                        DaoImages.deleteImage(note.getId());
+                                                    }
                                                     refreshList();
                                                 } catch (IOException e) {
                                                     GPLog.error(this, e.getLocalizedMessage(), e);
@@ -209,7 +247,7 @@ public class NotesListActivity extends ListActivity {
                 final ImageView goButton = (ImageView) rowView.findViewById(R.id.gobutton);
                 goButton.setOnClickListener(new View.OnClickListener(){
                     public void onClick( View v ) {
-                        Note note = notesMap.get(notesText.getText().toString());
+                        INote note = notesMap.get(notesText.getText().toString());
                         if (note != null) {
                             Intent intent = getIntent();
                             intent.putExtra(LibraryConstants.LATITUDE, note.getLat());

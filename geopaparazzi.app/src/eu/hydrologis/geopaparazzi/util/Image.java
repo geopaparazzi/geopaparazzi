@@ -29,8 +29,9 @@ import eu.geopaparazzi.library.util.Utilities;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class Image implements KmlRepresenter {
-    private final String name;
+public class Image implements INote, KmlRepresenter {
+    public static final String IMAGE_NOTE = "image note";
+    private String name;
     private final long id;
     private final double lon;
     private final double lat;
@@ -57,7 +58,7 @@ public class Image implements KmlRepresenter {
         if (name != null) {
             this.name = name;
         } else {
-            this.name = ""; //$NON-NLS-1$
+            this.name = IMAGE_NOTE;
         }
         this.lon = lon;
         this.lat = lat;
@@ -88,6 +89,9 @@ public class Image implements KmlRepresenter {
     }
 
     public String getName() {
+        if (name.length() == 0) {
+            name = IMAGE_NOTE;
+        }
         return name;
     }
 
