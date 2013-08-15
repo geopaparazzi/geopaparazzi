@@ -756,22 +756,25 @@ public class GeoPaparazziActivity extends Activity {
             break;
         }
         case (RETURNCODE_SKETCH): {
-            String absoluteImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
-            if (absoluteImagePath != null) {
-                File imgFile = new File(absoluteImagePath);
-                if (!imgFile.exists()) {
-                    return;
-                }
-                try {
-                    double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
-                    double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
-                    double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
+            if (data != null) {
+                String absoluteImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
+                if (absoluteImagePath != null) {
+                    File imgFile = new File(absoluteImagePath);
+                    if (!imgFile.exists()) {
+                        return;
+                    }
+                    try {
+                        double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
+                        double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
+                        double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
 
-                    DaoImages.addImage(lon, lat, elev, -9999.0, new java.sql.Date(new Date().getTime()), "", absoluteImagePath);
-                } catch (Exception e) {
-                    e.printStackTrace();
+                        DaoImages.addImage(lon, lat, elev, -9999.0, new java.sql.Date(new Date().getTime()), "",
+                                absoluteImagePath);
+                    } catch (Exception e) {
+                        e.printStackTrace();
 
-                    Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
+                        Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
+                    }
                 }
             }
             break;

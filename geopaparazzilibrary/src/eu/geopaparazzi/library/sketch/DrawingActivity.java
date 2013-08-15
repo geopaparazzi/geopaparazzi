@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -295,6 +296,15 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
 
             undoBtn.setEnabled(true);
         }
+    }
+    
+    public boolean onKeyDown( int keyCode, KeyEvent event ) {
+        // force to exit through the exit button
+        switch( keyCode ) {
+        case KeyEvent.KEYCODE_BACK:
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     private void checkWidth() {
