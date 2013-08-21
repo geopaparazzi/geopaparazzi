@@ -9,4 +9,5 @@
   <string name="point_shape_">Forma punto</string>
   <string name="point_size">Dimensione punto</string>
   <string name="decimation">Decimazione</string>
+  <string name="decimation_factor_default">0.000001</string>
 </resources>

@@ -8,4 +8,5 @@
   <string name="fill_alpha">Transparence du remplissage</string>
   <string name="point_shape_">"Couche de points"</string>
   <string name="point_size">Taille du point</string>
+  <string name="decimation_factor_default">0,000001</string>
 </resources>
