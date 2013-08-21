@@ -54,6 +54,7 @@
   <string name="route_extraction_error">Une erreur s\'est produite lors de l\'extraction de l\'itinéraire.</string>
   <string name="available_only_with_network">Cette fonction est disponible uniquement avec une connexion réseau active.</string>
   <string name="error_while_storing_form_data">Une erreur s\'est produite durant le stockage des données du formulaire.</string>
+  <string name="view_routing_url_in_browser">Vous voulez ouvrir l\'URL utilisé dans un un navigateur ?</string>
   <string name="enter_geocode_string">Insérer un lieu ou une adresse</string>
   <string name="no_valid_destination_selected">Adresse sélectionnée invalide.</string>
   <string name="couldnt_find_geocache_results">Impossible de trouver le lieu recherché. Essayer de changer la recherche.</string>
@@ -66,6 +67,7 @@
   <string name="redo">restaurer</string>
   <string name="hello_world">Hello world!</string>
   <string name="menu_settings">Paramètres</string>
+  <string name="title_activity_nfc_id_reader">NfcIdReaderActivity</string>
   <string name="activate_nfc">Merci d\'activer NFC et d\'appuyer sur la touche retour pour revenir à l\'application ! </string>
   <string name="unable_to_read_tag_id">Impossible de lire l\'id du tag</string>
   <string name="stroke_color">Couleur du trait        </string>
