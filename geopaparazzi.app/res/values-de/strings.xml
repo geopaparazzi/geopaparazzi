@@ -58,7 +58,6 @@
   <string name="text_gpson">GPS an</string>
   <string name="debug">Debug Einstellungen</string>
   <string name="enable_debug">Aktiviere Debug-Log</string>
-  <string name="gpslogging_only">Diese Funktion ist nur verfügbar, wenn GPS aktiviert und Position bereits empfangen wurde.</string>
   <string name="remove_last_note_prompt">Letzte Notiz wirklich löschen? Aktion kann nicht rückgängig gemacht werden.</string>
   <string name="installgpsstatus_title">Installiere GPS-Status</string>
   <string name="installgpsstatus_message">Geopaparazzi benötigt die GPS-Status Anwendung zur Kompass-Darstellung. Soll diese installiert werden?</string>

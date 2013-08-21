@@ -66,7 +66,6 @@
   <string name="text_gpson">gps megy</string>
   <string name="debug">Hibakereső beállítások</string>
   <string name="enable_debug">Hiba naplózás</string>
-  <string name="gpslogging_only">Ez a funkció csak akkor érhető el, ha a gps aktív és a jelzése hozzáférhető.</string>
   <string name="remove_last_note_prompt">Valóban el kívánja távolítani az utolsó szöveg jegyzetet? Nem visszavonható.</string>
   <string name="installgpsstatus_title">GPS Status installálása</string>
   <string name="installgpsstatus_message">A Geopaparazzi iránytű és gps infók megjelenítésére a GPS Status alkalmazást használja. Kívánja installálni?</string>
@@ -123,7 +122,6 @@
   <string name="error_set_cloud_settings">Nem megfelelőek a Geopap-felhő beállítások. Ellenőrizze az értékeket!</string>
   <string name="exporting_data_to_the_cloud">Adatok exportálása a felhőbe.</string>
   <string name="error_uploadig_project_to_cloud">Hiba történt a projekt Geopap-felhőbe történő feltöltése során.</string>
-  <string name="project_succesfully_uploaded_to_cloud">A projekt Geopap-felhőbe való feltöltése sikeresen lezajlott.</string>
   <string name="exporting_data_to_kmz">Adatok exportálása KMZ-be.</string>
   <string name="exporting_data_to_gpx">Adatok exportálása GPX-be</string>
   <string name="media_upload">MÉDIA FELTÖLTÉS</string>

@@ -65,7 +65,6 @@
   <string name="text_gpson">GPS aktiivinen</string>
   <string name="debug">Tarkista asetukset</string>
   <string name="enable_debug">Tee tarkistusloki</string>
-  <string name="gpslogging_only">Tämä toiminto on mahdollinen vain GPS-seurannan aikana.</string>
   <string name="remove_last_note_prompt">Haluatko todella peruuttamattomasti poistaa viime muistiinpanon?</string>
   <string name="installgpsstatus_title">Asenna GPS Status</string>
   <string name="installgpsstatus_message">Geopaparazzi käyttää GPS Status-ohjelmaa kompassi- ja GPS-tietojen näyttämiseen. Haluatko asentaa sen?</string>
@@ -122,7 +121,6 @@
   <string name="error_set_cloud_settings">Geopap-pilven asetukset eivät ole kunnossa. Tarkista asetukset.</string>
   <string name="exporting_data_to_the_cloud">Viedään tiedot pilveen.</string>
   <string name="error_uploadig_project_to_cloud">Tapahtui virhe vietäessä projektia Geopap-pilveen</string>
-  <string name="project_succesfully_uploaded_to_cloud">Projektin vieminen pilveen onnistui</string>
   <string name="exporting_data_to_kmz">Viedään KMZ-tiedostoksi</string>
   <string name="exporting_data_to_gpx">Viedään GPX-tiedostoksi</string>
   <string name="media_upload">Median lataus</string>

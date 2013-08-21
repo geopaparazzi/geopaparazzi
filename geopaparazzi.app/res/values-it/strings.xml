@@ -66,7 +66,7 @@
   <string name="text_gpson">gps attivo</string>
   <string name="debug">Settaggi di debug</string>
   <string name="enable_debug">Attiva log di debug</string>
-  <string name="gpslogging_only">Questa funzione è attiva solo quando il gps è attivo e ha segnale.</string>
+  <string name="gpslogging_only">Questa funzione è disponibile solo quando il gps è attivo ed è disponibile un segnale.</string>
   <string name="remove_last_note_prompt">Vuoi veramente rimuovere l\'ultima nota? Non e\' possibile tornare indietro.</string>
   <string name="installgpsstatus_title">Installa GPS Status</string>
   <string name="installgpsstatus_message">Geopaparazzi usa l\'applicazione Gps Status come bussola e vista informazioni gps. La vuoi installare?</string>
@@ -123,7 +123,7 @@
   <string name="error_set_cloud_settings">Le impostazioni di geopap-nuvola non sono impostate correttamente. Si prega di controllare le impostazioni.</string>
   <string name="exporting_data_to_the_cloud">Esportazione dei dati della nuvola.</string>
   <string name="error_uploadig_project_to_cloud">Errore durante il caricamento del progetto su Geopap-Cloud</string>
-  <string name="project_succesfully_uploaded_to_cloud">Il progetto è stato caricato con successo sul cloud Geopap-Nuvola</string>
+  <string name="project_succesfully_uploaded_to_cloud">Il progetto è stato caricato con successo su Geopap-cloud</string>
   <string name="exporting_data_to_kmz">Esportazione di dati in KMZ.</string>
   <string name="exporting_data_to_gpx">Esportazione di dati in GPX</string>
   <string name="media_upload">CARICAMENTO FILE MEDIA</string>
@@ -163,4 +163,26 @@
   <string name="map_textsize_factor">Fattore dimensione testo mappa</string>
   <string name="keep_screen_on">Mantieni schermo acceso</string>
   <string name="keep_screen_on_summary">Mantiene lo schermo acceso per dashboard e vista mappa</string>
+  <string name="the_secret_view">La vista segreta</string>
+  <string name="database_queries">Query alla base dati</string>
+  <string name="demo_mode">Modalità demo</string>
+  <string name="select_database_query">Selezionare query alla base dati</string>
+  <string name="launch_query">Esecuzione query</string>
+  <string name="use_custom_sdcard_summary">Utilizzare un percorso personalizzato alla sdcard (utile nel caso di schede multiple). AVVISO: UTILIZZARE A PROPRIO RISCHIO</string>
+  <string name="custom_sdcard_path">Percorso sdcard personalizzato</string>
+  <string name="opacity">opacità</string>
+  <string name="size">Dimensione</string>
+  <string name="notes_properties">Proprietà note</string>
+  <string name="visibility">Visibilità</string>
+  <string name="custom_icon_properties">Proprietà icone personalizzata</string>
+  <string name="use_custom">utilizzare custom</string>
+  <string name="labels">Etichette</string>
+  <string name="show_labels">visualizza etichette</string>
+  <string name="halo">halo</string>
+  <string name="screen_preferences">Impostazioni schermo</string>
+  <string name="cross_properties_summary">Proprietà della crocetta utilizzata per l\'inserimento note.</string>
+  <string name="cross_properties">Crocetta centrale</string>
+  <string name="color">Colore</string>
+  <string name="prompt_delete_note">Sei sicuro di che voler eliminare la nota? Azione non annullabile.</string>
+  <string name="prompt_delete_bookmark">Sei sicuro di che voler eliminare il segnalibro? Azione non annullabile.</string>
 </resources>
