@@ -157,16 +157,40 @@ public class ResourcesManager implements Serializable {
         String cantCreateSdcardmsg = appContext.getResources().getString(R.string.cantcreate_sdcard);
         File possibleApplicationDir;
         if (mExternalStorageAvailable && mExternalStorageWriteable) {
+            // and external storage exists and is usable
             String customFolderPath = preferences.getString(PREFS_KEY_CUSTOM_EXTERNALSTORAGE, "asdasdpoipoi");
             File customFolderFile = new File(customFolderPath);
             if (customFolderFile.exists() && customFolderFile.isDirectory() && customFolderFile.canWrite()) {
+                /*
+                 * the user wants a different storage path:
+                 * - use that as sdcard
+                 * - create an app folder inside it
+                 */
                 sdcardDir = customFolderFile;
+                possibleApplicationDir = new File(sdcardDir, applicationLabel);
             } else {
-                sdcardDir = Environment.getExternalStorageDirectory();
+                if (customFolderPath.equals("internal")) {
+                    /*
+                     * the user folder doesn't exist, but is "internal":
+                     * - use internal app memory
+                     * - set sdcard anyways to the external folder for maps use
+                     */
+                    useInternalMemory = true;
+                    possibleApplicationDir = appContext.getDir(applicationLabel, Context.MODE_PRIVATE);
+                    sdcardDir = Environment.getExternalStorageDirectory();
+                } else {
+                    sdcardDir = Environment.getExternalStorageDirectory();
+                    possibleApplicationDir = new File(sdcardDir, applicationLabel);
+                }
             }
-            possibleApplicationDir = new File(sdcardDir, applicationLabel);
         } else if (useInternalMemory) {
+            /*
+             * no external storage available:
+             * - use internal memory
+             * - set sdcard for maps inside the space
+             */
             possibleApplicationDir = appContext.getDir(applicationLabel, Context.MODE_PRIVATE);
+            sdcardDir = possibleApplicationDir;
         } else {
             String msgFormat = Utilities.format(cantCreateSdcardmsg, "sdcard/" + applicationLabel);
             throw new IOException(msgFormat);
@@ -176,9 +200,9 @@ public class ResourcesManager implements Serializable {
             applicationDir = possibleApplicationDir;
         }
 
-        if (GPLog.LOG_HEAVY) {
-            Log.i("RESOURCESMANAGER", "Possible app dir: " + applicationDir);
-        }
+        // if (GPLog.LOG_HEAVY) {
+        Log.i("RESOURCESMANAGER", "Possible app dir: " + applicationDir);
+        // }
 
         String applicationDirPath = applicationDir.getAbsolutePath();
         if (!applicationDir.exists()) {
@@ -286,7 +310,7 @@ public class ResourcesManager implements Serializable {
      * @param context the context to use.
      * @param path the path to the new application.
      */
-    public void setApplicationDir(Context context, String path ) {
+    public void setApplicationDir( Context context, String path ) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         Editor editor = preferences.edit();
         editor.putString(LibraryConstants.PREFS_KEY_BASEFOLDER, path);
