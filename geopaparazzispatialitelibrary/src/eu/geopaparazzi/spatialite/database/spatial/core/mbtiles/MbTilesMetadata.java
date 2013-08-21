@@ -107,19 +107,24 @@ public class MbTilesMetadata {
                 throw new MetadataParseException("No mandatory field 'description'.");
 
             String type = hm.remove("type");
-            if (type == null || !(type.equals("overlay") || type.equals("baselayer")))
-                throw new MetadataParseException("No mandatory field 'type' or not in [ overlay, baselayer ].");
-
-            String version;
-            tmp = hm.remove("version");
-            if (tmp == null)
-                throw new MetadataParseException("No mandatory field 'version'");
-            try {
-                Double.parseDouble(tmp);
-                version = tmp;
-            } catch (NumberFormatException e) {
-                throw new MetadataParseException("Invalid syntax for mandatory field 'version'. Must be a plain number.");
+            if (type == null || !(type.equals("overlay") || type.equals("baselayer"))) {
+                // we suppose it is a baselayer by default, if not available
+                type = "baselayer";
+                // throw new
+                // MetadataParseException("No mandatory field 'type' or not in [ overlay, baselayer ].");
             }
+
+            String version = "1.1";
+            // tmp = hm.remove("version");
+            // if (tmp == null)
+            // throw new MetadataParseException("No mandatory field 'version'");
+            // try {
+            // Double.parseDouble(tmp);
+            // version = tmp;
+            // } catch (NumberFormatException e) {
+            // throw new
+            // MetadataParseException("Invalid syntax for mandatory field 'version'. Must be a plain number.");
+            // }
 
             String format = hm.remove("format");
             if (format == null || !(type.equals("png") || type.equals("jpg")))
@@ -156,8 +161,6 @@ public class MbTilesMetadata {
 
         @Override
         public MbTilesMetadata validate( HashMap<String, String> hm ) throws MetadataParseException {
-            String tmp;
-
             String name = hm.remove("name");
             if (name == null)
                 throw new MetadataParseException("No mandatory field 'name'.");
@@ -167,19 +170,24 @@ public class MbTilesMetadata {
                 throw new MetadataParseException("No mandatory field 'description'.");
 
             String type = hm.remove("type");
-            if (type == null || !(type.equals("overlay") || type.equals("baselayer")))
-                throw new MetadataParseException("No mandatory field 'type' or not in [ overlay, baselayer ].");
-
-            String version;
-            tmp = hm.remove("version");
-            if (tmp == null)
-                throw new MetadataParseException("No mandatory field 'version'");
-            try {
-                Double.parseDouble(tmp);
-                version = tmp;
-            } catch (NumberFormatException e) {
-                throw new MetadataParseException("Invalid syntax for mandatory field 'version'. Must be a plain number.");
+            if (type == null || !(type.equals("overlay") || type.equals("baselayer"))) {
+                // we suppose it is a baselayer by default, if not available
+                type = "baselayer";
+                // throw new
+                // MetadataParseException("No mandatory field 'type' or not in [ overlay, baselayer ].");
             }
+
+            String version = "1.0";
+            // tmp = hm.remove("version");
+            // if (tmp == null)
+            // throw new MetadataParseException("No mandatory field 'version'");
+            // try {
+            // Double.parseDouble(tmp);
+            // version = tmp;
+            // } catch (NumberFormatException e) {
+            // throw new
+            // MetadataParseException("Invalid syntax for mandatory field 'version'. Must be a plain number.");
+            // }
 
             String minZoomStr = hm.remove("minzoom");
             int minZoom = 0;
