@@ -71,8 +71,8 @@ public class DaoNotes {
 
     private static SimpleDateFormat dateFormatter = LibraryConstants.TIME_FORMATTER_SQLITE;
 
-    public static void addNote( double lon, double lat, double altim, Date timestamp, String text, String category,
-            String form, int type ) throws IOException {
+    public static void addNote( double lon, double lat, double altim, Date timestamp, String text, String category, String form,
+            int type ) throws IOException {
         if (category == null) {
             category = NoteType.POI.getDef();
         }
@@ -127,9 +127,12 @@ public class DaoNotes {
         }
     }
 
-    public static void updateForm( long id, String jsonStr ) throws IOException {
+    public static void updateForm( long id, String noteText, String jsonStr ) throws IOException {
         ContentValues updatedValues = new ContentValues();
         updatedValues.put(COLUMN_FORM, jsonStr);
+        if (noteText != null && noteText.length() > 0) {
+            updatedValues.put(COLUMN_TEXT, noteText);
+        }
 
         String where = COLUMN_ID + "=" + id;
         String[] whereArgs = null;
@@ -243,7 +246,7 @@ public class DaoNotes {
      * @return list of notes.
      * @throws IOException
      */
-    public static List<Note> getNotesList( ) throws IOException {
+    public static List<Note> getNotesList() throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         List<Note> notesList = new ArrayList<Note>();
         String asColumnsToReturn[] = {COLUMN_ID, COLUMN_LON, COLUMN_LAT, COLUMN_ALTIM, COLUMN_TS, COLUMN_TEXT, COLUMN_CATEGORY,
@@ -438,7 +441,7 @@ public class DaoNotes {
         }
     }
 
-    public static void createTables( ) throws IOException {
+    public static void createTables() throws IOException {
         StringBuilder sB = new StringBuilder();
 
         sB = new StringBuilder();

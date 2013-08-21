@@ -1171,6 +1171,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                     try {
                         double lon = Double.parseDouble(formArray[0]);
                         double lat = Double.parseDouble(formArray[1]);
+                        String textStr = formArray[4];
                         String jsonStr = formArray[6];
 
                         float n = (float) (lat + 0.00001f);
@@ -1182,7 +1183,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                         if (notesInWorldBounds.size() > 0) {
                             Note note = notesInWorldBounds.get(0);
                             long id = note.getId();
-                            DaoNotes.updateForm(id, jsonStr);
+                            DaoNotes.updateForm(id, textStr, jsonStr);
                         }
 
                     } catch (Exception e) {
