@@ -60,6 +60,18 @@ public class CustomTileDownloader extends TileDownloader {
     public CustomTileDownloader( List<String> fileLines, String parentPath ) {
         super();
 
+        if (GPLog.LOG_HEAVY) {
+            try {
+                GPLog.addLogEntry("CustomTileDownloader called with:");
+                GPLog.addLogEntry("parentPath: " + parentPath);
+                for( String fileLine : fileLines ) {
+                    GPLog.addLogEntry("-> " + fileLine);
+                }
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        }
+
         for( String line : fileLines ) {
             line = line.trim();
             if (line.length() == 0) {
