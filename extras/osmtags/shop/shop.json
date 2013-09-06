@@ -1,0 +1,18 @@
+[{
+	"shortname": "",
+	"longname":"",
+	"form": {
+		"formitems":[
+		    {"key":"shop", "value":"", "type":"primary_key"},
+		    {"key":"name", "value":"", "type":"string"},
+                    {"key":"opening_hours", "value":"", "type":"string"},
+                    {"key":"operator", "value":"", "type":"string"},
+                    {"key":"phone", "value":"", "type":"string"},
+                    {"key":"fax", "value":"", "type":"string"},
+                    {"key":"website", "value":"", "type":"string"},
+                    {"key":"email", "value":"", "type":"string"},
+                    {"key":"LONGITUDE", "value":"", "type":"hidden"},
+                    {"key":"LATITUDE", "value":"", "type":"hidden"}
+		]
+	}
+}]

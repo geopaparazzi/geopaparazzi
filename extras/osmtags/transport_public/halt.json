@@ -1,0 +1,10 @@
+[{
+        "shortname": "",
+        "longname":"",
+        "form": {
+                "formitems":[
+                    {"key":"railway", "value":"", "type":"primary_key"},
+                    {"key":"name", "value":"", "type":"string"}
+                ]
+        }
+}]

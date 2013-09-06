@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orderingFromXml="true" >
+
+    <PreferenceScreen
+        android:order="1"
+        android:title="@string/gps_preferences" >
+        <EditTextPreference
+            android:defaultValue="0"
+            android:inputType="number"
+            android:key="PREFS_KEY_GPS_LOGGING_DISTANCE"
+            android:order="3"
+            android:title="@string/gps_logging_distance" >
+        </EditTextPreference>
+
+        <ListPreference
+            android:defaultValue="5"
+            android:entries="@array/gps_time_name"
+            android:entryValues="@array/gps_time_value"
+            android:key="PREFS_KEY_GPS_LOGGING_INTERVAL"
+            android:order="4"
+            android:title="@string/gps_logging_interval" >
+        </ListPreference>
+
+        <CheckBoxPreference
+            android:key="enable_automatic_center_on_gps"
+            android:order="5"
+            android:title="@string/enable_automatic_center_on_gps" >
+        </CheckBoxPreference>
+        <CheckBoxPreference
+            android:key="PREFS_KEY_GPS_USE_NETWORK_POSITION"
+            android:order="6"
+            android:title="@string/gps_use_coarse" >
+        </CheckBoxPreference>
+    </PreferenceScreen>
+    <PreferenceScreen
+        android:order="7"
+        android:title="@string/sms_preferences" >
+        <CheckBoxPreference
+            android:key="PREFS_KEY_SMSCATCHER"
+            android:order="8"
+            android:title="@string/sms_catcher" >
+        </CheckBoxPreference>
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="panic_number"
+            android:order="10"
+            android:title="@string/panic_number" >
+        </EditTextPreference>
+    </PreferenceScreen>
+    <PreferenceScreen
+        android:order="30"
+        android:title="@string/screen_preferences" >
+        <PreferenceScreen
+            android:order="60"
+            android:summary="@string/cross_properties_summary"
+            android:title="@string/cross_properties" >
+            <ListPreference
+                android:entries="@array/array_colornames"
+                android:entryValues="@array/array_colornames"
+                android:key="PREFS_KEY_CROSS_COLOR"
+                android:order="61"
+                android:title="@string/color" />
+            <ListPreference
+                android:entries="@array/decimation_factor"
+                android:entryValues="@array/decimation_factor"
+                android:key="PREFS_KEY_CROSS_WIDTH"
+                android:order="62"
+                android:title="@string/width" />
+            <ListPreference
+                android:entries="@array/cross_size"
+                android:entryValues="@array/cross_size"
+                android:key="PREFS_KEY_CROSS_SIZE"
+                android:order="63"
+                android:title="@string/size" />
+        </PreferenceScreen>
+
+        <EditTextPreference
+            android:defaultValue="1.0"
+            android:inputType="numberDecimal"
+            android:key="mapsview_textsize_factor"
+            android:order="80"
+            android:title="@string/map_textsize_factor" />
+
+        <CheckBoxPreference
+            android:key="PREFS_KEY_SCREEN_ON"
+            android:order="90"
+            android:summary="@string/keep_screen_on_summary"
+            android:title="@string/keep_screen_on" >
+        </CheckBoxPreference>
+    </PreferenceScreen>
+
+    <EditTextPreference
+        android:defaultValue=""
+        android:key="PREFS_KEY_CUSTOM_EXTERNALSTORAGE"
+        android:order="100"
+        android:summary="@string/use_custom_sdcard_summary"
+        android:title="@string/custom_sdcard_path" >
+    </EditTextPreference>
+
+    <PreferenceScreen
+        android:order="200"
+        android:title="@string/osm_preferences" >
+        <CheckBoxPreference
+            android:key="PREFS_KEY_DOOSM"
+            android:order="201"
+            android:title="@string/osm_do_it" >
+        </CheckBoxPreference>
+
+        <EditTextPreference
+            android:key="osm_user_key"
+            android:order="202"
+            android:title="@string/osm_user_label" >
+        </EditTextPreference>
+        <EditTextPreference
+            android:inputType="textPassword"
+            android:key="osm_pwd_key"
+            android:order="203"
+            android:title="@string/osm_password_label" >
+        </EditTextPreference>
+        <EditTextPreference
+            android:defaultValue="http://lucadelu.org/cgi-bin/zoo_loader.cgi"
+            android:key="osm_server_key"
+            android:order="204"
+            android:title="@string/osm_server_label" >
+        </EditTextPreference>
+    </PreferenceScreen>
+    <PreferenceScreen
+        android:order="210"
+        android:title="@string/geopapcloud_preferences" >
+        <EditTextPreference
+            android:key="geopapcloud_user_key"
+            android:order="212"
+            android:title="@string/geopapcloud_user_label" >
+        </EditTextPreference>
+        <EditTextPreference
+            android:inputType="textPassword"
+            android:key="geopapcloud_pwd_key"
+            android:order="213"
+            android:title="@string/geopapcloud_password_label" >
+        </EditTextPreference>
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="geopapcloud_server_key"
+            android:order="214"
+            android:title="@string/geopapcloud_server_label" >
+        </EditTextPreference>
+    </PreferenceScreen>
+
+</PreferenceScreen>

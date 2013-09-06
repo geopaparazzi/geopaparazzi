@@ -1,0 +1,20 @@
+[{
+	"shortname": "",
+	"longname":"",
+	"form": {
+		"formitems":[
+		    {"key":"tourism", "value":"information", "type":"hidden"},
+ 		    {"key":"information", "value":"guidepost", "type":"hidden"},
+                    {"key":"name", "value":"", "type":"string"}, 
+                    {"key":"ele", "value":"", "type":"string"}, 
+                    {"key":"hiking", "value":"", "type":"boolean"},
+                    {"key":"bicycle", "value":"", "type":"boolean"},
+                    {"key":"horse", "value":"", "type":"boolean"},
+                    {"key":"sky", "value":"", "type":"boolean"},
+                    {"key":"mtb", "value":"", "type":"boolean"},
+                    {"key":"description", "value":"", "type":"string"},
+                    {"key":"LONGITUDE", "value":"", "type":"hidden"},
+                    {"key":"LATITUDE", "value":"", "type":"hidden"}
+        ]
+    }
+}]

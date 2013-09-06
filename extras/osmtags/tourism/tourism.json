@@ -1,0 +1,14 @@
+[{
+	"shortname": "",
+	"longname":"",
+	"form": {
+		"formitems":[
+		    {"key":"tourism", "value":"", "type":"primary_key"},
+		    {"key":"name", "value":"", "type":"string"}, 
+                    {"key":"opening_hours", "value":"", "type":"string"},
+                    {"key":"wikipedia", "value":"", "type":"string"},
+                    {"key":"LONGITUDE", "value":"", "type":"hidden"},
+                    {"key":"LATITUDE", "value":"", "type":"hidden"}
+                ]
+        }
+}]

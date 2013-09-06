@@ -1,0 +1,11 @@
+[{
+        "shortname": "",
+        "longname":"",
+        "form": {
+                "formitems":[
+                    {"key":"shop", "value":"car", "type":"hidden"},
+                    {"key":"name", "value":"", "type":"string"},
+                    {"key":"operator", "value":"", "type":"string"},
+                    {"key":"opening_hours", "value":"", "type":"string"}
+        }
+}]

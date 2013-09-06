@@ -1,0 +1,147 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_background" >
+
+    <TextView
+        android:id="@+id/scanning_data_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="5dp"
+        android:gravity="center_horizontal"
+        android:text="Scanning for data..."
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/main_text_color" />
+
+    <ProgressBar
+        android:id="@+id/scanning_progressbar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/scanning_data_label"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:indeterminateOnly="true" />
+
+    <TableLayout
+        android:id="@+id/tableLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/scanning_progressbar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp" >
+
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/bluetoothActiveLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@layout/background_red"
+                android:padding="10dp"
+                android:text="Bluetooth"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/main_text_color_neutral" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/nfcActiveLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@layout/background_red"
+                android:padding="10dp"
+                android:text="    NFC    "
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/main_text_color_neutral" />
+        </TableRow>
+    </TableLayout>
+
+    <TextView
+        android:id="@+id/read_id_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/tableLayout1"
+        android:layout_margin="10dp"
+        android:layout_marginTop="10dp"
+        android:text="Last read id:"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/main_text_color" />
+
+    <EditText
+        android:id="@+id/read_id_edittext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/read_id_label"
+        android:layout_margin="5dp"
+        android:ems="10"
+        android:enabled="false"
+        android:textColor="@color/main_non_okcolor" >
+
+        <requestFocus />
+    </EditText>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/read_id_edittext"
+        android:orientation="vertical"
+        android:weightSum="2" >
+
+        <Button
+            android:id="@+id/okbutton"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:background="@layout/geopap_button"
+            android:onClick="okPushed"
+            android:padding="10dp"
+            android:text="@android:string/ok"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/main_text_color" />
+
+        <Button
+            android:id="@+id/cancelbutton"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:background="@layout/geopap_button"
+            android:onClick="cancelPushed"
+            android:padding="10dp"
+            android:text="@android:string/cancel"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/main_text_color" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:layout_above="@+id/read_id_label"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/main_text_color" >
+    </LinearLayout>
+
+</RelativeLayout>

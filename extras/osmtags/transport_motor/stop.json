@@ -1,0 +1,8 @@
+[{
+        "shortname": "",
+        "longname":"",
+        "form": {
+                "formitems":[
+                    {"key":"highway", "value":"stop", "type":"hidden"}
+                ]
+}]

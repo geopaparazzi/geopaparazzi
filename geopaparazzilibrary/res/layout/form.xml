@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/formbgcolor"
+    android:orientation="vertical" >
+
+    <fragment
+        android:id="@+id/listFragment"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/saveButton"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        class="eu.geopaparazzi.library.forms.FragmentList" />
+
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="5dp"
+        android:onClick="saveClicked"
+        android:text="@string/save" />
+
+    <Button
+        android:id="@+id/cancelButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/saveButton"
+        android:layout_alignBottom="@+id/saveButton"
+        android:layout_toRightOf="@+id/saveButton"
+        android:onClick="cancelClicked"
+        android:text="@string/cancel" />
+
+</RelativeLayout>

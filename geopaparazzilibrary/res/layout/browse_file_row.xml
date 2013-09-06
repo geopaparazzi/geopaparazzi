@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView android:id="@+id/browselist_text"
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="wrap_content"
+	android:text="asdasdadsd" android:textColor="@color/main_text_color_neutral"
+	android:padding="15dp" />

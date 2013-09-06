@@ -1,0 +1,7 @@
+Important things to do when releasing:
+
+* Check the release number (versionCode and versionName)
+* In the class eu.hydrologis.geopaparazzi.util.debug.Debug set doMock = false
+* In the class eu.hydrologis.geopaparazzi.util.debug.Debug set D = false;
+* Remove the location mock access in AndroidManifest.xml, i.e. comment line:
+    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION"></uses-permission>

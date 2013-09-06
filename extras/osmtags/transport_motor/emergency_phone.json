@@ -1,0 +1,8 @@
+[{
+        "shortname": "",
+        "longname":"",
+        "form": {
+                "formitems":[
+                    {"key":"amenity", "value":"emergency_phone", "type":"hidden"}
+                ]
+}]

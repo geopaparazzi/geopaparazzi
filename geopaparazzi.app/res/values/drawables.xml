@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<drawable name="search_button_pressed">@color/main_selection</drawable>
+	<drawable name="search_button_released">@android:color/transparent</drawable>
+</resources>

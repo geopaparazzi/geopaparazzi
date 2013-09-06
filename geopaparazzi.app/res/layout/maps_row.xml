@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="fill_parent"
+	xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/row_container"
+	android:padding="5dp" android:layout_height="fill_parent">
+	<CheckBox android:layout_height="wrap_content"
+		android:layout_width="wrap_content" android:id="@+id/visible"
+		android:layout_alignParentLeft="true" android:layout_alignParentTop="true"
+		android:focusable="false" android:focusableInTouchMode="false" />
+	<TextView android:layout_height="wrap_content"
+		android:layout_width="wrap_content" android:paddingLeft="10dp"
+		android:layout_centerHorizontal="true" android:text=""
+		android:layout_toRightOf="@+id/visible" android:layout_alignBaseline="@+id/visible"
+		android:textColor="@color/main_text_color_neutral" android:id="@+id/filename"
+		android:focusable="false" android:focusableInTouchMode="false" />
+</RelativeLayout>

@@ -1,0 +1,51 @@
+[{
+        "shortname": "",
+        "longname":"",
+        "form": {
+                "formitems":[
+                    {"key":"amenity", "value":"parking", "type":"hidden"},
+                    {"key":"name", "value":"", "type":"string"},
+                    {"key":"ref", "value":"", "type":"string"},
+                    {"key":"operator", "value":"", "type":"string"},
+                    {"key":"parking", "value":"", 
+                      "values":{ "items":[
+                                { "item":"surface" },
+                                { "item":"underground" },
+                                { "item":"multi-storey" }
+                            ]
+                        }, "type":"stringcombo"
+                    },
+                    {"key":"access", "value":"", 
+                      "values":{ "items":[
+                                { "item":"" },
+                                { "item":"yes" },
+                                { "item":"no" },
+                                { "item":"private" },
+                                { "item":"permissive" },
+                                { "item":"customers" }
+                            ]
+                        }, "type":"stringcombo"
+                    },
+                    {"key":"fee", "value":"", 
+                      "values":{ "items":[
+                                { "item":"" },
+                                { "item":"yes" },
+                                { "item":"no" }
+                            ]
+                        }, "type":"stringcombo"
+                    },
+                    {"key":"park_ride", "value":"", 
+                      "values":{ "items":[
+                                { "item":"" },
+                                { "item":"yes" },
+                                { "item":"no" }
+                            ]
+                        }, "type":"stringcombo"
+                    },
+                    {"key":"capacity", "value":"", "type":"string"},
+                    {"key":"capacity:disable", "value":"", "type":"string"},
+                    {"key":"capacity:women", "value":"", "type":"string"},
+                    {"key":"capacity:parent", "value":"", "type":"string"}
+                ]
+        }
+}]

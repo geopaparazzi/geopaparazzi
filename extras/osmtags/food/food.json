@@ -1,0 +1,39 @@
+[{
+	"shortname": "",
+	"longname":"",
+	"form": {
+		"formitems":[
+		    {"key":"amenity", "value":"", "type":"primary_key"},
+		    {"key":"name", "value":"", "type":"string"},
+                    {"key":"operator", "value":"", "type":"string"},
+                    {"key":"opening_hours", "value":"", "type":"string"},
+                    {"key":"internet_access", "value":"", 
+                      "values":{ "items":[
+                              { "item":"" },
+                              { "item":"yes" },
+                              { "item":"wlan" },
+                              { "item":"wired" },
+                              { "item":"terminal" },
+                              { "item":"no" }
+                          ]
+                      }, "type":"stringcombo"
+                    },
+                    {"key":"internet_access:fee", "value":"",  "type":"boolean"},
+                    {"key":"wheelchair", "value":"", 
+                      "values":{ "items":[
+                              { "item":"" },
+                              { "item":"yes" },
+                              { "item":"limited" },
+                              { "item":"no" }
+                          ]
+                      }, "type":"stringcombo"
+                    },
+                    {"key":"website", "value":"", "type":"string"},
+                    {"key":"email", "value":"", "type":"string"},
+                    {"key":"phone", "value":"", "type":"string"},
+                    {"key":"fax", "value":"", "type":"string"},
+                    {"key":"LONGITUDE", "value":"", "type":"hidden"},
+                    {"key":"LATITUDE", "value":"", "type":"hidden"}
+		]
+	}
+}]

@@ -1,0 +1,60 @@
+[{
+        "shortname": "",
+        "longname":"",
+        "form": {
+                "formitems":[
+                    {"key":"emergency", "value":"fire_hydrant", "type":"hidden"},
+                    {"key":"name", "value":"",  "type":"string"},
+                    {"key":"operator", "value":"",  "type":"string"},
+                    {"key":"ref", "value":"",  "type":"string"},
+
+                    {"key":"fire_hydrant:diameter", "value":"", 
+                      "values":{ "items":[
+                              { "item":"" },
+                              { "item":"50" },
+                              { "item":"80" },
+                              { "item":"100" },
+                              { "item":"150" },
+                              { "item":"200" },
+                              { "item":"250" },
+                              { "item":"300" },
+                              { "item":"400" }
+                          ]
+                      }, "type":"stringcombo"
+                    },
+                    {"key":"fire_hydrant:position", "value":"", 
+                      "values":{ "items":[
+                              { "item":"" },
+                              { "item":"lane" },
+                              { "item":"green" },
+                              { "item":"parking_lot" },
+                              { "item":"sidewalk" }
+                          ]
+                      }, "type":"stringcombo"
+                    },
+                    {"key":"fire_hydrant:type", "value":"", 
+                      "values":{ "items":[
+                              { "item":"" },
+                              { "item":"pillar" },
+                              { "item":"pond" },
+                              { "item":"underground" },
+                              { "item":"wall" }
+                          ]
+                      }, "type":"stringcombo"
+                    },
+                    {"key":"fire_hydrant:pressure", "value":"", 
+                      "values":{ "items":[
+                              { "item":"" },
+                              { "item":"5" },
+                              { "item":"6" },
+                              { "item":"8" },
+                              { "item":"suction" }
+                          ]
+                      }, "type":"stringcombo"
+                    },
+                    {"key":"fire_hydrant:count", "value":"",  "type":"string"},
+                    {"key":"LONGITUDE", "value":"", "type":"hidden"},
+                    {"key":"LATITUDE", "value":"", "type":"hidden"}
+                ]
+        }
+}]

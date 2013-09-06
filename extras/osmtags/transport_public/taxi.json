@@ -1,0 +1,10 @@
+[{
+        "shortname": "",
+        "longname":"",
+        "form": {
+                "formitems":[
+                    {"key":"amenity", "value":"", "type":"primary_key"},
+                    {"key":"name", "value":"", "type":"string"}
+                ]
+        }
+}]

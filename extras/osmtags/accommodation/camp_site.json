@@ -1,0 +1,68 @@
+[{
+	"shortname": "caravan",
+	"longname":"caravan site",
+	"form": {
+		"formitems":[
+		    {"key":"tourism", "value":"", "type":"primary_key"},
+		    {"key":"name", "value":"", "type":"string"},
+		    {"key":"star", "value":"", 
+                      "values":{ "items":[
+                                { "item":"" },
+                                { "item":"1" },
+                                { "item":"2" },
+                                { "item":"3" },
+                                { "item":"4" },
+                                { "item":"5" },
+                                { "item":"6" },
+                                { "item":"7" }
+                            ]
+                        }, "type":"stringcombo"
+                    },
+                    {"key":"internet_access", "value":"", 
+                      "values":{ "items":[
+                              { "item":"" },
+                              { "item":"yes" },
+                              { "item":"wlan" },
+                              { "item":"wired" },
+                              { "item":"terminal" },
+                              { "item":"no" }
+                          ]
+                      }, "type":"stringcombo"
+                    },
+		    {"key":"internet_access:fee", "value":"", 
+                      "values":{ "items":[
+                                { "item":"" },
+                                { "item":"yes" },
+                                { "item":"no" }
+                            ]
+                        }, "type":"stringcombo"
+                    },
+ 		    {"key":"wheelchair", "value":"", 
+                      "values":{ "items":[
+                                { "item":"" },
+                                { "item":"yes" },
+                                { "item":"limited" },
+                                { "item":"no" }
+                            ]
+                        }, "type":"stringcombo"
+                    },  
+		    {"key":"capacity", "value":"", "type":"string"},
+		    {"key":"fee", "value":"", 
+                      "values":{ "items":[
+                                { "item":"" },
+                                { "item":"yes" },
+                                { "item":"no" },
+                                { "item":"interval" }
+                            ]
+                        }, "type":"stringcombo"
+                    },
+                    {"key":"power_supply", "value":"", "type":"boolean"},
+		    {"key":"website", "value":"", "type":"string"},
+		    {"key":"email", "value":"", "type":"string"},
+                    {"key":"phone", "value":"", "type":"string"},
+                    {"key":"fax", "value":"", "type":"string"},
+                    {"key":"LONGITUDE", "value":"", "type":"hidden"},
+                    {"key":"LATITUDE", "value":"", "type":"hidden"}            
+		]
+	}
+}]

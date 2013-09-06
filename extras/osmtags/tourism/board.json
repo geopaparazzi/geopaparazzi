@@ -1,0 +1,26 @@
+[{
+	"shortname": "",
+	"longname":"",
+	"form": {
+		"formitems":[
+		    {"key":"tourism", "value":"information", "type":"hidden"},
+ 		    {"key":"information", "value":"board", "type":"hidden"},  
+                    {"key":"name", "value":"", "type":"string"},  
+                    {"key":"board_type", "value":"", 
+                      "values":{ "items":[
+                              { "item":"" },
+                              { "item":"notice" },
+                              { "item":"history" },
+                              { "item":"nature" },
+                              { "item":"wildlife" },
+                              { "item":"plants" },
+                              { "item":"board" }
+                          ]
+                      }, "type":"stringcombo"
+                    },
+		    {"key":"description", "value":"", "type":"string"},
+                    {"key":"LONGITUDE", "value":"", "type":"hidden"},
+                    {"key":"LATITUDE", "value":"", "type":"hidden"}
+        ]
+    }
+}]

@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/osm_frameLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/innerlayout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <!-- space for map view -->
+    </RelativeLayout>
+
+    <!-- the tools slider -->
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <SlidingDrawer
+            android:id="@+id/mapslide"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:content="@+id/mapslidecontent"
+            android:handle="@+id/mapslidehandle"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/mapslidehandle"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/max" >
+            </ImageView>
+
+            <FrameLayout
+                android:id="@+id/mapslidecontent"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical" >
+
+                <eu.hydrologis.geopaparazzi.maps.SliderDrawView
+                    android:id="@+id/sliderdrawview"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent" >
+                </eu.hydrologis.geopaparazzi.maps.SliderDrawView>
+
+                <!-- the zoombar -->
+
+                <LinearLayout
+                    android:id="@+id/seekbarlayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="right"
+                    android:orientation="vertical" >
+
+                    <Button
+                        android:id="@+id/zoomin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_margin="5dip"
+                        android:background="@drawable/buttoncirclezoomin" >
+                    </Button>
+
+                    <TextView
+                        android:id="@+id/zoomlevel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_margin="5dip"
+                        android:shadowColor="@color/main_background"
+                        android:shadowDx="2"
+                        android:shadowDy="2"
+                        android:shadowRadius="0.01"
+                        android:text="01"
+                        android:textColor="@color/main_text_color_neutral"
+                        android:textStyle="bold" >
+                    </TextView>
+
+                    <Button
+                        android:id="@+id/zoomout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_margin="10dip"
+                        android:background="@drawable/buttoncirclezoomout" >
+                    </Button>
+                </LinearLayout>
+                <!-- the tools buttons -->
+
+                <LinearLayout
+                    android:id="@+id/maptoolslayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="left"
+                    android:orientation="horizontal" >
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:orientation="vertical" >
+
+                        <ImageButton
+                            android:id="@+id/addnotebytagbutton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dip"
+                            android:background="@drawable/addnote" >
+                        </ImageButton>
+
+                        <ImageButton
+                            android:id="@+id/listnotesbutton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dip"
+                            android:background="@drawable/noteslist" >
+                        </ImageButton>
+
+                        <ImageButton
+                            android:id="@+id/togglemeasuremodebutton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dip"
+                            android:background="@drawable/measuremode" >
+                        </ImageButton>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:orientation="vertical" >
+
+                        <ImageButton
+                            android:id="@+id/addbookmarkbutton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dip"
+                            android:background="@drawable/addbookmark" >
+                        </ImageButton>
+
+                        <ImageButton
+                            android:id="@+id/bookmarkslistbutton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dip"
+                            android:background="@drawable/bookmarkslist" >
+                        </ImageButton>
+                    </LinearLayout>
+                </LinearLayout>
+                <!-- the center on gps button -->
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center"
+                    android:orientation="horizontal" >
+
+                    <Button
+                        android:id="@+id/battery"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="3dip"
+                        android:layout_marginRight="15dip"
+                        android:background="@drawable/battery"
+                        android:text="-"
+                        android:textColor="@color/main_text_color_neutral"
+                        android:textStyle="bold" >
+                    </Button>
+
+                    <ImageButton
+                        android:id="@+id/center_on_gps_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/action_bar_button_drawable"
+                        android:padding="5dp"
+                        android:src="@android:drawable/ic_menu_mylocation" >
+                    </ImageButton>
+
+                    <Button
+                        android:id="@+id/info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="3dip"
+                        android:layout_marginLeft="15dip"
+                        android:background="@drawable/infomode" >
+                    </Button>
+                </LinearLayout>
+            </FrameLayout>
+        </SlidingDrawer>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <SlidingDrawer
+            android:id="@+id/osmslide"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:content="@+id/osmslidecontent"
+            android:handle="@+id/osmslidehandle"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:id="@+id/osmslidehandle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/osm" >
+            </ImageView>
+
+            <LinearLayout
+                android:id="@+id/osmslidecontent"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center"
+                android:background="@color/main_background"
+                android:orientation="vertical"
+                android:padding="10dip" >
+
+                <GridView
+                    android:id="@+id/osmcategoriesview"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:horizontalSpacing="5dp"
+                    android:numColumns="1"
+                    android:verticalSpacing="5dp" />
+
+                <Button
+                    android:id="@+id/syncosmbutton"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_margin="5dip"
+                    android:layout_weight="10"
+                    android:text="Sync OSM notes with server" >
+                </Button>
+            </LinearLayout>
+        </SlidingDrawer>
+    </FrameLayout>
+
+</FrameLayout>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/osm_button_linearlayout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp"
+    android:background="#FFFFFF"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="5dp" >
+
+    <ImageButton
+        android:id="@+id/osm_item_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/action_bar_button_drawable"
+        android:padding="@dimen/dashboard_button_padding" />
+
+    <TextView
+        android:id="@+id/osm_item_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/osm_item_image"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="4dp"
+        android:gravity="center_horizontal"
+        android:padding="@dimen/dashboard_button_padding"
+        android:text="button"
+        android:textColor="#0000FF" />
+
+</RelativeLayout>

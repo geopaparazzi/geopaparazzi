@@ -1,0 +1,36 @@
+[{
+        "shortname": "",
+        "longname":"",
+        "form": {
+                "formitems":[
+                    {"key":"amenity", "value":"bench", "type":"hidden"},
+                    {"key":"backrest", "value":"",  "type":"boolean"},
+                    {"key":"colour", "value":"", 
+                      "values":{ "items":[
+                              { "item":"" },
+                              { "item":"black" },
+                              { "item":"blue" },
+                              { "item":"brown" },
+                              { "item":"gray" },
+                              { "item":"green" },
+                              { "item":"red" },
+                              { "item":"white" }
+                          ]
+                      }, "type":"stringcombo"
+                    },
+                    {"key":"material", "value":"", 
+                      "values":{ "items":[
+                              { "item":"" },
+                              { "item":"metal" },
+                              { "item":"plastic" },
+                              { "item":"stone" },
+                              { "item":"wood" }
+                          ]
+                      }, "type":"stringcombo"
+                    },
+                    {"key":"seats", "value":"",  "type":"string"},
+                    {"key":"LONGITUDE", "value":"", "type":"hidden"},
+                    {"key":"LATITUDE", "value":"", "type":"hidden"}
+                ]
+        }
+}]

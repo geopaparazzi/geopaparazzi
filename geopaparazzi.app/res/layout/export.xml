@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_background"
+    android:orientation="vertical" >
+
+    <ImageButton
+        android:id="@+id/kmzExportButton"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1"
+        android:background="@drawable/action_bar_button_drawable"
+        android:padding="20dip"
+        android:src="@drawable/export_kmz" />
+
+    <ImageButton
+        android:id="@+id/gpxExportButton"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1"
+        android:background="@drawable/action_bar_button_drawable"
+        android:padding="20dip"
+        android:src="@drawable/export_gpx" />
+
+    <ImageButton
+        android:id="@+id/cloudExportButton"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1"
+        android:background="@drawable/action_bar_button_drawable"
+        android:padding="20dip"
+        android:src="@drawable/export_cloud" />
+
+    <ImageButton
+        android:id="@+id/bookmarksExportButton"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1"
+        android:background="@drawable/action_bar_button_drawable"
+        android:padding="20dip"
+        android:src="@drawable/export_bookmarks" />
+
+</LinearLayout>

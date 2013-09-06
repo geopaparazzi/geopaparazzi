@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/main_background" >
+
+    <TextView
+        android:id="@+id/askcoordlabel"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="@string/askcoord"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:textColor="@color/main_text_color" >
+    </TextView>
+
+    <EditText
+        android:id="@+id/longitudetext"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/askcoordlabel"
+        android:layout_margin="5dp"
+        android:layout_toRightOf="@+id/longitudelabel"
+        android:text="11.330748" >
+    </EditText>
+
+    <TextView
+        android:id="@+id/longitudelabel"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/longitudetext"
+        android:layout_alignBottom="@+id/longitudetext"
+        android:layout_alignLeft="@+id/askcoordlabel"
+        android:layout_margin="10dp"
+        android:text="@string/longitude"
+        android:textColor="@color/main_text_color" />
+
+    <TextView
+        android:id="@+id/latitudelabel"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/askcoordlabel"
+        android:layout_below="@+id/longitudetext"
+        android:layout_margin="10dp"
+        android:layout_marginTop="14dp"
+        android:text="@string/latitude"
+        android:textColor="@color/main_text_color" />
+
+    <EditText
+        android:id="@+id/latitudetext"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/latitudelabel"
+        android:layout_alignBottom="@+id/latitudelabel"
+        android:layout_alignLeft="@+id/longitudetext"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:text="46.482556" />
+
+    <Button
+        android:id="@+id/coordOkButton"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/latitudetext"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="false"
+        android:layout_marginTop="30dp"
+        android:text="@string/okcoord" />
+
+</RelativeLayout>

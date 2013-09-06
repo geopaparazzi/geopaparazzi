@@ -1,0 +1,19 @@
+[{
+        "shortname": "",
+        "longname":"",
+        "form": {
+                "formitems":[
+                    {"key":"amenity", "value":"telephone", "type":"hidden"},
+                    {"key":"operator", "value":"", "type":"string"},
+                    {"key":"ref", "value":"", "type":"string"},
+                    {"key":"payment:telephone_cards", "value":"",  "type":"boolean"},
+                    {"key":"payment:coins", "value":"",  "type":"boolean"},
+                    {"key":"payment:credit_cards", "value":"",  "type":"boolean"},
+                    {"key":"payment:debit_cards", "value":"",  "type":"boolean"},
+                    {"key":"payment:electronic_purses", "value":"",  "type":"boolean"},
+                    {"key":"payment:notes", "value":"",  "type":"boolean"},
+                    {"key":"LONGITUDE", "value":"", "type":"hidden"},
+                    {"key":"LATITUDE", "value":"", "type":"hidden"}
+                ]
+        }
+}]

@@ -1,0 +1,51 @@
+[{
+	"shortname": "",
+	"longname":"",
+	"form": {
+		"formitems":[
+		    {"key":"amenity", "value":"place_of_worship", "type":"hidden"},
+		    {"key":"name", "value":"", "type":"string"}, 
+                    {"key":"religion", "value":"", 
+                      "values":{ "items":[
+                              { "item":""},
+                              { "item":"bahai" },
+                              { "item":"buddhist" },
+                              { "item":"christian" },
+                              { "item":"hindu" },
+                              { "item":"jain" },
+                              { "item":"jewish" },
+                              { "item":"muslim" },
+                              { "item":"sikh" },
+                              { "item":"spiritualist" },
+                              { "item":"taoist" },
+                              { "item":"unitarian" },
+                              { "item":"zoroastrian" }
+                          ]
+                      }, "type":"stringcombo"
+                    },
+                    {"key":"denomination", "value":"", 
+                      "values":{ "items":[
+                              { "item":""},
+                              { "item":"evangelican" },
+                              { "item":"jahovahs_witness" },
+                              { "item":"lutheran" },
+                              { "item":"methodist" },
+                              { "item":"mormon" },
+                              { "item":"othodox" },
+                              { "item":"pentecostal" },
+                              { "item":"presbuterian" },
+                              { "item":"protestan" },
+                              { "item":"quaker" },
+                              { "item":"shia" },
+                              { "item":"sunni" }
+                          ]
+                      }, "type":"stringcombo"
+                    },
+                    {"key":"opening_hours", "value":"", "type":"string"},
+                    {"key":"service_time", "value":"", "type":"string"},
+                    {"key":"wikipedia", "value":"", "type":"string"},
+                    {"key":"LONGITUDE", "value":"", "type":"hidden"},
+                    {"key":"LATITUDE", "value":"", "type":"hidden"}
+        ]
+    }
+}]

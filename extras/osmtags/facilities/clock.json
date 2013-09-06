@@ -1,0 +1,44 @@
+[{
+        "shortname": "",
+        "longname":"",
+        "form": {
+                "formitems":[
+                    {"key":"amenity", "value":"clock", "type":"hidden"},
+                    {"key":"display", "value":"", 
+                      "values":{ "items":[
+                              { "item":"" },
+                              { "item":"analog" },
+                              { "item":"digital" },
+                              { "item":"sundial" },
+                              { "item":"unorthodox" }
+                          ]
+                      }, "type":"stringcombo"
+                    },
+                    {"key":"support", "value":"", 
+                      "values":{ "items":[
+                              { "item":"" },
+                              { "item":"pole" },
+                              { "item":"wall_mounted" },
+                              { "item":"billboard" },
+                              { "item":"ground" }
+                          ]
+                      }, "type":"stringcombo"
+                    },
+                    {"key":"visibility", "value":"", 
+                      "values":{ "items":[
+                              { "item":"" },
+                              { "item":"house" },
+                              { "item":"street" },
+                              { "item":"area" }
+                          ]
+                      }, "type":"stringcombo"
+                    },
+                    {"key":"date", "value":"",  "type":"boolean"},
+                    {"key":"barometer", "value":"",  "type":"boolean"},
+                    {"key":"hygrometer", "value":"",  "type":"boolean"},
+                    {"key":"thermometer", "value":"",  "type":"boolean"},
+                    {"key":"LONGITUDE", "value":"", "type":"hidden"},
+                    {"key":"LATITUDE", "value":"", "type":"hidden"}
+                ]
+        }
+}]

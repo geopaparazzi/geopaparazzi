@@ -1,0 +1,13 @@
+[{
+        "shortname": "",
+        "longname":"",
+        "form": {
+                "formitems":[
+                    {"key":"amenity", "value":"car_rental", "type":"hidden"},
+                    {"key":"name", "value":"", "type":"string"},
+                    {"key":"operator", "value":"", "type":"string"},
+                    {"key":"brand", "value":"", "type":"string"},
+                    {"key":"opening_hours", "value":"", "type":"string"}
+                ]
+        }
+}]

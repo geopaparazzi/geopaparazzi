@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <string-array name="array_colornames" tools:ignore="MissingTranslation">
+        <item>red</item>
+        <item>blue</item>
+        <item>green</item>
+        <item>black</item>
+        <item>white</item>
+        <item>gray</item>
+        <item>cyan</item>
+        <item>magenta</item>
+        <item>yellow</item>
+        <item>lightgray</item>
+        <item>darkgray</item>
+    </string-array>
+    <string-array name="array_widths" tools:ignore="MissingTranslation">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>25</item>
+        <item>30</item>
+    </string-array>
+    <string-array name="array_sizes" tools:ignore="MissingTranslation">
+        <item>1</item>
+        <item>3</item>
+        <item>5</item>
+        <item>7</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+        <item>25</item>
+        <item>30</item>
+        <item>40</item>
+        <item>50</item>
+    </string-array>
+    <string-array name="array_percentage" tools:ignore="MissingTranslation">
+        <item>0</item>
+        <item>10</item>
+        <item>20</item>
+        <item>30</item>
+        <item>40</item>
+        <item>50</item>
+        <item>60</item>
+        <item>70</item>
+        <item>80</item>
+        <item>90</item>
+        <item>100</item>
+    </string-array>
+    <string-array name="array_shapes" tools:ignore="MissingTranslation">
+        <item>circle</item>
+        <item>cross</item>
+        <item>square</item>
+        <item>star</item>
+        <item>triangle</item>
+        <item>X</item>
+    </string-array>
+
+</resources>

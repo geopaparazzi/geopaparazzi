@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	Copyright (C) 2010, 2011 Herbert von Broeuschmeul
+	Copyright (C) 2010, 2011 BluetoothGPS4Droid Project
+	  
+	This file is part of BluetoothGPS4Droid.
+	
+	BluetoothGPS4Droid is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+	
+	BluetoothGPS4Droid is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+	
+	You should have received a copy of the GNU General Public License
+	along with BluetoothGPS4Droid. If not, see : http://www.gnu.org/licenses/.
+-->
+<PreferenceScreen
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:title="Bluetooth" >
+	<ListPreference 
+		android:dialogTitle="@string/pref_bluetooth_device_title"
+		android:title="@string/pref_bluetooth_device_title" 
+		android:key="@string/pref_bluetooth_device_key" 	
+		android:summary="@string/pref_bluetooth_device_summary" />
+	<CheckBoxPreference 
+		android:dependency="@string/pref_bluetooth_device_key"
+		android:key="@string/pref_start_gps_key"
+		android:persistent="true"
+		android:disableDependentsState="true"
+		android:title="@string/pref_start_gps_title"
+		android:summaryOn="@string/pref_start_gps_summary_on"
+		android:summaryOff="@string/pref_start_gps_summary_off" />
+	<!-- LOCATION PROVIDER OPTIONS
+	<PreferenceScreen
+		android:dependency="@string/pref_start_gps_key"
+		android:shouldDisableView="true"
+		android:key="@string/pref_gps_location_provider_key"
+		android:summary="@string/pref_gps_location_provider_summary"
+		android:title="@string/pref_gps_location_provider_title" >
+		<CheckBoxPreference 
+			android:key="@string/pref_replace_std_gps_key"
+			android:persistent="true"
+			android:disableDependentsState="true"
+			android:defaultValue="true"
+			android:title="@string/pref_replace_std_gps_title"
+			android:summaryOn="@string/pref_replace_std_gps_summary_on"
+			android:summaryOff="@string/pref_replace_std_gps_summary_off" />
+		<CheckBoxPreference
+			android:key="@string/pref_force_enable_provider_key"
+			android:persistent="true"
+			android:defaultValue="false"
+			android:title="@string/pref_force_enable_provider_title"
+			android:summaryOn="@string/pref_force_enable_provider_summary_on"
+			android:summaryOff="@string/pref_force_enable_provider_summary_off" />
+		<EditTextPreference
+			android:dependency="@string/pref_replace_std_gps_key"
+			android:key="@string/pref_mock_gps_name_key"
+			android:title="@string/pref_mock_gps_name_title"
+			android:defaultValue="@string/defaultMockGpsName"
+			android:summary="@string/pref_mock_gps_name_summary" />
+		<EditTextPreference
+			android:key="@string/pref_connection_retries_key"
+			android:title="@string/pref_connection_retries_title"
+			android:defaultValue="@string/defaultConnectionRetries"
+			android:inputType="numberDecimal"
+			android:summary="@string/pref_connection_retries_summary" />
+	</PreferenceScreen>
+	 -->
+	 <!--  SIRF OPTIONS
+	<CheckBoxPreference 
+		android:key="@string/pref_sirf_gps_key"
+		android:persistent="true"
+		android:defaultValue="false"
+		android:disableDependentsState="false"
+		android:title="@string/pref_sirf_gps_title"
+		android:summaryOn="@string/pref_sirf_gps_summary_on"
+		android:summaryOff="@string/pref_sirf_gps_summary_off" />
+	<PreferenceScreen 
+		android:title="@string/pref_start_gps_params_title"
+		android:dependency="@string/pref_sirf_gps_key"
+		android:orderingFromXml="true"
+		android:shouldDisableView = "true" >
+		<PreferenceCategory
+			android:order="200"
+			android:orderingFromXml="true"
+			android:title="@string/pref_sirf_nmea_category_title" >
+			<CheckBoxPreference
+				android:key="@string/pref_sirf_enable_gga_key"
+				android:enabled="false"
+				android:persistent="true"
+				android:defaultValue="true"
+				android:title="@string/pref_enable_gga_title"
+				android:summaryOn="@string/pref_enable_gga_summary_on"
+				android:summaryOff="@string/pref_enable_gga_summary_off" />
+			<CheckBoxPreference
+				android:key="@string/pref_sirf_enable_rmc_key"
+				android:enabled="false"
+				android:persistent="true"
+				android:defaultValue="true"
+				android:title="@string/pref_enable_rmc_title"
+				android:summaryOn="@string/pref_enable_rmc_summary_on"
+				android:summaryOff="@string/pref_enable_rmc_summary_off" />
+			<CheckBoxPreference
+				android:key="@string/pref_sirf_enable_gsa_key"
+				android:persistent="true"
+				android:title="@string/pref_enable_gsa_title"
+				android:summaryOn="@string/pref_enable_gsa_summary_on"
+				android:summaryOff="@string/pref_enable_gsa_summary_off" />
+			<CheckBoxPreference
+				android:key="@string/pref_sirf_enable_gsv_key"
+				android:persistent="true"
+				android:title="@string/pref_enable_gsv_title"
+				android:summaryOn="@string/pref_enable_gsv_summary_on"
+				android:summaryOff="@string/pref_enable_gsv_summary_off" />
+			<CheckBoxPreference
+				android:key="@string/pref_sirf_enable_vtg_key"
+				android:persistent="true"
+				android:title="@string/pref_enable_vtg_title"
+				android:summaryOn="@string/pref_enable_vtg_summary_on"
+				android:summaryOff="@string/pref_enable_vtg_summary_off" />
+			<CheckBoxPreference
+				android:key="@string/pref_sirf_enable_gll_key"
+				android:persistent="true"
+				android:title="@string/pref_enable_gll_title"
+				android:summaryOn="@string/pref_enable_gll_summary_on"
+				android:summaryOff="@string/pref_enable_gll_summary_off" />
+			<CheckBoxPreference
+				android:key="@string/pref_sirf_enable_zda_key"
+				android:persistent="true"
+				android:title="@string/pref_enable_zda_title"
+				android:summaryOn="@string/pref_enable_zda_summary_on"
+				android:summaryOff="@string/pref_enable_zda_summary_off" />
+		</PreferenceCategory>
+		<PreferenceCategory
+			android:order="100"
+			android:title="@string/pref_sirf_gps_category_title" >
+			<CheckBoxPreference 
+				android:key="@string/pref_sirf_enable_sbas_key"
+				android:persistent="true"
+				android:defaultValue="true"
+				android:title="@string/pref_enable_sbas_title"
+				android:summaryOn="@string/pref_enable_sbas_summary_on"
+				android:summaryOff="@string/pref_enable_sbas_summary_off" />
+			<CheckBoxPreference 
+				android:key="@string/pref_sirf_enable_nmea_key"
+				android:enabled="false"
+				android:persistent="true"
+				android:defaultValue="true"
+				android:title="@string/pref_enable_nmea_title"
+				android:summaryOn="@string/pref_enable_nmea_summary_on"
+				android:summaryOff="@string/pref_enable_nmea_summary_off" />
+			<CheckBoxPreference 
+				android:key="@string/pref_sirf_enable_static_navigation_key"
+				android:persistent="true"
+				android:defaultValue="false"
+				android:title="@string/pref_enable_static_navigation_title"
+				android:summaryOn="@string/pref_enable_static_navigation_summary_on"
+				android:summaryOff="@string/pref_enable_static_navigation_summary_off" />
+		</PreferenceCategory>
+	</PreferenceScreen>
+	 -->
+	 <!-- OTHERS
+	<CheckBoxPreference
+		android:enabled="true"
+		android:key="@string/pref_recording_key"
+		android:persistent="true"
+		android:title="@string/pref_recording_title"
+		android:summaryOn="@string/pref_recording_summary_on"
+		android:summaryOff="@string/pref_recording_summary_off" />
+	<PreferenceScreen android:title="@string/pref_recording_params_title" >
+		<EditTextPreference
+			android:key="@string/pref_trackfile_directory_key"
+			android:title="@string/pref_trackfile_directory_title"
+			android:defaultValue="@string/defaultTrackFileDirectory"
+			android:summary="@string/pref_trackfile_directory_summary" />
+		<EditTextPreference
+			android:key="@string/pref_trackfile_prefix_key"
+			android:title="@string/pref_trackfile_prefix_title"
+			android:defaultValue="@string/defaultTrackFilePrefix"
+			android:summary="@string/pref_trackfile_prefix_summary" />
+	</PreferenceScreen>
+	 -->
+</PreferenceScreen>

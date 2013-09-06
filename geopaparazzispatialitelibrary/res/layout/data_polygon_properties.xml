@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_background"
+    android:orientation="vertical"
+    android:padding="5dp" >
+
+    <LinearLayout
+        android:id="@+id/buttonsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp" >
+
+        <Button
+            android:id="@+id/okButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onOkClick"
+            android:text="@android:string/ok" />
+
+        <Button
+            android:id="@+id/navButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="onCancelClick"
+            android:text="@android:string/cancel" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/color_spinner"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center_vertical"
+        android:padding="5dp"
+        android:text="@string/stroke_color"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/main_text_color_neutral" />
+
+    <Spinner
+        android:id="@+id/color_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/textView1"
+        android:entries="@array/array_colornames"
+        android:padding="5dp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/width_spinner"
+        android:layout_alignParentLeft="true"
+        android:layout_alignRight="@+id/textView1"
+        android:layout_below="@+id/textView1"
+        android:gravity="center_vertical"
+        android:padding="5dp"
+        android:text="@string/width"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/main_text_color_neutral" />
+
+    <Spinner
+        android:id="@+id/width_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/color_spinner"
+        android:layout_toRightOf="@+id/textView2"
+        android:entries="@array/array_widths"
+        android:padding="5dp" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/alpha_spinner"
+        android:layout_alignParentLeft="true"
+        android:layout_alignRight="@+id/textView2"
+        android:layout_below="@+id/textView2"
+        android:gravity="center_vertical"
+        android:padding="5dp"
+        android:text="@string/alpha"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/main_text_color_neutral" />
+
+    <Spinner
+        android:id="@+id/alpha_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/width_spinner"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/width_spinner"
+        android:entries="@array/array_percentage"
+        android:padding="5dp" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/fill_color_spinner"
+        android:layout_alignParentLeft="true"
+        android:layout_alignRight="@+id/textView3"
+        android:layout_below="@+id/textView3"
+        android:gravity="center_vertical"
+        android:padding="5dp"
+        android:text="@string/fill_color"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/main_text_color_neutral" />
+
+    <Spinner
+        android:id="@+id/fill_color_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/alpha_spinner"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/textView3"
+        android:entries="@array/array_colornames"
+        android:padding="5dp" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/fill_alpha_spinner"
+        android:layout_alignParentLeft="true"
+        android:layout_alignRight="@+id/textView4"
+        android:layout_below="@+id/textView4"
+        android:gravity="center_vertical"
+        android:padding="5dp"
+        android:text="@string/fill_alpha"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/main_text_color_neutral" />
+
+    <Spinner
+        android:id="@+id/fill_alpha_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/fill_color_spinner"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/fill_color_spinner"
+        android:entries="@array/array_percentage"
+        android:padding="5dp" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/decimation_text"
+        android:layout_alignParentLeft="true"
+        android:layout_alignRight="@+id/textView5"
+        android:layout_below="@+id/textView5"
+        android:gravity="center_vertical"
+        android:padding="5dp"
+        android:text="@string/decimation"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/main_text_color_neutral" />
+
+    <EditText
+        android:id="@+id/decimation_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/fill_alpha_spinner"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/fill_alpha_spinner"
+        android:inputType="numberDecimal"
+        android:padding="5dp"
+        android:text="@string/decimation_factor_default" />
+
+</RelativeLayout>

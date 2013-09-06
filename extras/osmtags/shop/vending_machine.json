@@ -1,0 +1,50 @@
+[{
+        "shortname": "",
+        "longname":"",
+        "form": {
+                "formitems":[
+                    {"key":"amenity", "value":"vending_machine", "type":"hidden"},
+                    {"key":"vending", "value":"", 
+                      "values":{ "items":[
+                              { "item":"" },
+                              { "item":"public_transport_tickets" },
+                              { "item":"public_transport_plans" },
+                              { "item":"parking_tickets" },
+                              { "item":"food" },
+                              { "item":"drinks" },
+                              { "item":"sweets" },
+                              { "item":"cigarettes" },
+                              { "item":"photos" },
+                              { "item":"animal_food" },
+                              { "item":"newspapers" },
+                              { "item":"toys" },
+                              { "item":"stampss" },
+                              { "item":"SIM_cards" },
+                              { "item":"telephon_vouchers" },
+                              { "item":"vouchers" },
+                              { "item":"condoms" },
+                              { "item":"tampons" },
+                              { "item":"excrement_bags" },
+                              { "item":"bicycle_tube" },
+                              { "item":"ice_cubes" },
+                              { "item":"milk" },
+                              { "item":"toll" },
+                              { "item":"chemist" },
+                              { "item":"elongated_coin" }
+                          ]
+                      }, "type":"stringcombo"
+                    },
+                    {"key":"operator", "value":"", "type":"string"},
+                    {"key":"ref", "value":"", "type":"string"},
+                    {"key":"note", "value":"", "type":"string"},
+                    {"key":"payment:account_cards", "value":"",  "type":"boolean"},
+                    {"key":"payment:coins", "value":"",  "type":"boolean"},
+                    {"key":"payment:credit_cards", "value":"",  "type":"boolean"},
+                    {"key":"payment:debit_cards", "value":"",  "type":"boolean"},
+                    {"key":"payment:electronic_purses", "value":"",  "type":"boolean"},
+                    {"key":"payment:notes", "value":"",  "type":"boolean"},
+                    {"key":"LONGITUDE", "value":"", "type":"hidden"},
+                    {"key":"LATITUDE", "value":"", "type":"hidden"}
+                ]
+        }
+}]

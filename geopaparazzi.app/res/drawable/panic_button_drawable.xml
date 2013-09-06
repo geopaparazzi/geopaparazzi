@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:state_pressed="true">
+		<shape android:shape="rectangle" >
+			<solid android:color="@color/main_non_okcolor"/>
+			<corners android:radius="5dp" />
+			<stroke android:width="1dp" android:color="@color/main_non_okcolor_border"/>
+		</shape>
+	</item>
+	<item android:state_pressed="false" android:drawable="@drawable/panic" />
+</selector>
+
