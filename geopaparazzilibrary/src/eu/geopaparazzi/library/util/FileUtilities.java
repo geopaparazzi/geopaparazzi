@@ -28,6 +28,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -229,4 +230,22 @@ public class FileUtilities {
         return thumbnail;
     }
 
+    /**
+     * Read files to byte array.
+     * 
+     * @param file the file to read.
+     * @return the read byte array.
+     * @throws IOException
+     */
+    public static byte[] readFileToByte( File file ) throws IOException {
+        RandomAccessFile f = new RandomAccessFile(file, "r");
+        try {
+            long length = f.length();
+            byte[] data = new byte[(int) length];
+            f.readFully(data);
+            return data;
+        } finally {
+            f.close();
+        }
+    }
 }
