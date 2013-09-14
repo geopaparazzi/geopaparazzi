@@ -41,9 +41,9 @@ import eu.geopaparazzi.library.database.GPLog;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class Utilities {
-    
-    private static double originShift = 2 * Math.PI * 6378137 / 2.0;
 
+    private static double originShift = 2 * Math.PI * 6378137 / 2.0;
+    private static final double METER_TO_FEET_CONVERSION_FACTOR = 3.2808399;
 
     public static String getUniqueDeviceId( Context context ) {
         // try to go for the imei
@@ -388,7 +388,6 @@ public class Utilities {
         }
         return quadKey;
     }
-    
 
     /**
      * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
@@ -405,7 +404,7 @@ public class Utilities {
         double[] maxs = metersToLatLon(bounds[2], bounds[3]);
         return new double[]{mins[1], maxs[0], maxs[1], mins[0]};
     }
-    
+
     /**
      * Returns bounds of the given tile in EPSG:900913 coordinates
      *
@@ -455,7 +454,6 @@ public class Utilities {
         return new double[]{mx, my};
     }
 
-
     /**
      * Resolution (meters/pixel) for given zoom level (measured at Equator)
      *
@@ -468,8 +466,6 @@ public class Utilities {
         double initialResolution = 2 * Math.PI * 6378137 / tileSize;
         return initialResolution / Math.pow(2, zoom);
     }
-
-
 
     @SuppressWarnings("nls")
     public static String makeXmlSafe( String string ) {
@@ -542,6 +538,16 @@ public class Utilities {
         StatFs stat = new StatFs(file.getPath());
         long bytes = (long) stat.getBlockSize() * (long) stat.getBlockCount();
         return bytes / (1024.f * 1024.f);
+    }
+
+    /** 
+     * Convert meters to feet. 
+      * 
+      * @param meters the value in meters to convert to feet.
+      * @return meters converted to feet. 
+      */
+    public static double toFeet( final double meters ) {
+        return meters * METER_TO_FEET_CONVERSION_FACTOR;
     }
 
 }

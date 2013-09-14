@@ -89,6 +89,12 @@
             android:summary="@string/keep_screen_on_summary"
             android:title="@string/keep_screen_on" >
         </CheckBoxPreference>
+        <CheckBoxPreference
+            android:key="PREFS_KEY_IMPERIAL"
+            android:order="91"
+            android:summary="@string/keep_use_imperial_sum"
+            android:title="@string/keep_use_imperial" >
+        </CheckBoxPreference>
     </PreferenceScreen>
 
     <EditTextPreference
