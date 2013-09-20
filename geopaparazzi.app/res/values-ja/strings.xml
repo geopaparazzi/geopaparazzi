@@ -184,7 +184,6 @@
   <string name="halo">輪郭</string>
   <string name="screen_preferences">画面設定</string>
   <string name="cross_properties_summary">ノートを配置するために使用される十字のプロパティ</string>
-  <string name="cross_properties">センタークロス</string>
   <string name="color">色</string>
   <string name="prompt_delete_note">ノートを削除してもよろしいですか。この操作は取り消しできません。</string>
   <string name="prompt_delete_bookmark">ブックマークを削除してもよろしいですか？この操作は取り消しできません。</string>

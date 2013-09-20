@@ -184,7 +184,6 @@
   <string name="halo">Halo</string>
   <string name="screen_preferences">Préférences d\'affichage</string>
   <string name="cross_properties_summary">Propriétés de la Croix utilisée pour placer les notes.</string>
-  <string name="cross_properties">Centrer la croix</string>
   <string name="color">Couleur</string>
   <string name="prompt_delete_note">Êtes-vous sûr de que vouloir supprimer la note ? Cette action ne peut pas être annulée.</string>
   <string name="prompt_delete_bookmark">Êtes-vous sûr de que vouloir supprimer le signet ? Cette action ne peut pas être annulée.</string>

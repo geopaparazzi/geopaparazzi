@@ -184,7 +184,6 @@
   <string name="halo">halo</string>
   <string name="screen_preferences">Skjerminnstillinger</string>
   <string name="cross_properties_summary">Egenskaper for krysset som brukes til å plassere notater.</string>
-  <string name="cross_properties">Senterkryss</string>
   <string name="color">Farge</string>
   <string name="prompt_delete_note">Er du sikker på at du vil slette notatet? Dette kan ikke angres.</string>
   <string name="prompt_delete_bookmark">Er du sikker på at du vil slette bokmerket? Dette kan ikke angres.</string>

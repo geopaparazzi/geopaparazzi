@@ -175,7 +175,6 @@
   <string name="use_custom">Käytä mukautettuja</string>
   <string name="halo">Halo</string>
   <string name="screen_preferences">Näytön asetukset</string>
-  <string name="cross_properties">Keskityspiste</string>
   <string name="color">Väri</string>
   <string name="prompt_delete_note">Oletko varma, että haluat poistaa muistiinpanon? Tätä ei voi kumota.</string>
   <string name="prompt_delete_bookmark">Oletko varma, että haluat poistaa kirjanmerkin? Tätä ei voi kumota.</string>
