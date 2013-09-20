@@ -2,17 +2,17 @@
 host = https://www.transifex.com
 type = ANDROID
 
-[geopaparazzi.mainapp]
+[geopaparazzi.geopaparazzi-app-stringsxml]
 file_filter = geopaparazzi.app/res/values-<lang>/strings.xml
 source_file = geopaparazzi.app/res/values/strings.xml
 source_lang = en
 
-[geopaparazzi.library]
+[geopaparazzi.geopaparazzi-library-stringsxml]
 file_filter = geopaparazzilibrary/res/values-<lang>/strings.xml
 source_file = geopaparazzilibrary/res/values/strings.xml
 source_lang = en
 
-[geopaparazzi.spatialite]
+[geopaparazzi.geopaparazzi-spatialite-stringsxml]
 file_filter = geopaparazzispatialitelibrary/res/values-<lang>/strings.xml
 source_file = geopaparazzispatialitelibrary/res/values/strings.xml
 source_lang = en
