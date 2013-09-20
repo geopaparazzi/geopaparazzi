@@ -1,0 +1,5 @@
+pull all languages from transifex: tx pull
+
+push source file to server: tx push -s
+push translation file to server: tx push -t
+
