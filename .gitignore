@@ -20,6 +20,9 @@ local.properties
 .project
 .directory
 
+# transifex stuff
+tx.exe
+
 *.swp
 *~
 
