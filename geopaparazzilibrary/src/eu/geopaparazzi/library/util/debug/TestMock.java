@@ -19,12 +19,13 @@ package eu.geopaparazzi.library.util.debug;
 
 import java.lang.reflect.Method;
 
+import android.content.ContentResolver;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.SystemClock;
-import android.util.Log;
+import android.provider.Settings;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gps.GpsManager;
 
@@ -162,4 +163,19 @@ public class TestMock {
         isOn = false;
         locationManager.removeTestProvider(MOCK_PROVIDER_NAME);
     }
+
+    /**
+     * Checks if mock locations were set.
+     * 
+     * @param contentResolver
+     * @return true if they were set.
+     */
+    public static boolean isMockEnabled( ContentResolver contentResolver ) {
+        if (Settings.Secure.getString(contentResolver, Settings.Secure.ALLOW_MOCK_LOCATION).equals("0")) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 }
