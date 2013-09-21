@@ -15,15 +15,20 @@
   <string name="lat">Breite: </string>
   <string name="lon">Länge: </string>
   <string name="azimuth">Azimut: </string>
+  <string name="go_to">Gehe zu</string>
   <string name="goto_coordinate">Gehe zur Koordinate</string>
+  <string name="geocoding">Geocodierung</string>
   <string name="prompt_gpsenable">GPS ist derzeit deaktiviert. Aktivieren?</string>
   <string name="width_label">Breite</string>
   <string name="color_label">Farbe</string>
   <string name="mainmenu_kmlexport">Exportieren</string>
+  <string name="mainmenu_import">import</string>
   <string name="mainmenu_gpsdataselect">GPS-Daten</string>
   <string name="mainmenu_preferences">Einstellungen</string>
   <string name="mainmenu_merge">Ausgewählte Logs zusammenführen</string>
   <string name="gpslogproperty">Einstellungen für: </string>
+  <string name="gpslog_chart">Diagramm</string>
+  <string name="gpslog_zoom">Vergrößern auf</string>
   <string name="gpslog_delete">Löschen</string>
   <string name="mapproperty">Einstellungen für: </string>
   <string name="map_zoom">Zoom auf karte</string>
@@ -108,4 +113,15 @@
   <string name="geopapcloud_user_label">Benutzername</string>
   <string name="geopapcloud_password_label">Kennwort</string>
   <string name="geopapcloud_server_label">Server verbunden zu</string>
+  <string name="start">Anfang:</string>
+  <string name="end_">Ende:</string>
+  <string name="opacity">Transparenz</string>
+  <string name="size">Größe</string>
+  <string name="visibility">Sichtbarkeit</string>
+  <string name="labels">Beschriftung</string>
+  <string name="show_labels">Zeige Beschriftung</string>
+  <string name="cross_properties">Fadenkreuz</string>
+  <string name="color">Farbe</string>
+  <string name="keep_use_imperial">Verwende britische Maßeinheiten</string>
+  <string name="keep_use_imperial_sum">Verwendet britische Maßeinheiten anstelle von metrischen, soweit möglich.</string>
 </resources>

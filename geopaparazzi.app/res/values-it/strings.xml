@@ -4,8 +4,8 @@
   <string name="no">no</string>
   <string name="app_name">GeoPaparazzi</string>
   <string name="notesvisibilityToggle">Cambia visibilità delle note.</string>
-  <string name="kmlsaved">Dati esportati con successo: </string>
-  <string name="kmlnonsaved">Si è verificato un errore durante l\'esportazione di dati!</string>
+  <string name="kmlsaved">Dati esportati con successo in: </string>
+  <string name="kmlnonsaved">Si è verificato un errore durante l\'esportazione dei dati!</string>
   <string name="loggingoff">Fermati tutti i sensori.</string>
   <string name="nogps_data">Al momento nessun dato gps è disponibile!</string>
   <string name="about">Informazioni</string>
@@ -187,4 +187,6 @@
   <string name="color">Colore</string>
   <string name="prompt_delete_note">Sei sicuro di che voler eliminare la nota? Azione non annullabile.</string>
   <string name="prompt_delete_bookmark">Sei sicuro di che voler eliminare il segnalibro? Azione non annullabile.</string>
+  <string name="keep_use_imperial">Usa le unità imperiali</string>
+  <string name="keep_use_imperial_sum">Usa, ove possibile, le unità imperiali al posto delle metriche.</string>
 </resources>
