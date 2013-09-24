@@ -288,7 +288,7 @@ public class ActionBar implements GpsManagerListener {
             GpsStatusInfo info = new GpsStatusInfo(lastGpsStatus);
             int satCount = info.getSatCount();
             // int satForFixCount = info.getSatUsedInFixCount();
-            sb.append("satellites: ").append(satCount).append("\n");
+            sb.append(R.string.satellites).append(": ").append(satCount).append("\n");
             // sb.append("used for fix: ").append(satForFixCount).append("\n");
         }
     }

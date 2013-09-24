@@ -196,5 +196,6 @@
     <string name="prompt_delete_bookmark">Are you sure you want to delete the bookmark? This can\'t be undone.</string>
     <string name="keep_use_imperial">Use imperial units</string>
     <string name="keep_use_imperial_sum">Uses imperial units instead of metric where possible.</string>
+    <string name="satellites">satellites</string>
 
 </resources>
