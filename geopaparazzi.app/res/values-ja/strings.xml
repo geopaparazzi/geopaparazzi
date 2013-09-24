@@ -55,7 +55,7 @@
   <string name="panic">パニック通知！</string>
   <string name="panic_number">パニック通知番号</string>
   <string name="panic_number_notset">有効なパニック通知番号が利用できません. パニック通知番号をセットしましたか？</string>
-  <string name="panic_upper">  SMSメッセージを送信する  </string>
+  <string name="panic_upper">  パニックメッセージ送信  </string>
   <string name="send_status_update">位置情報を送信する</string>
   <string name="help_needed">Help needed!</string>
   <string name="message_sent">メッセージを送信する</string>
@@ -71,7 +71,7 @@
   <string name="installgpsstatus_message">GeoPaparazziはコンパス機能やGPS情報の閲覧にGps Statusを使います。Gps Statusをインストールしてもよろしいですか？</string>
   <!--added after 2.1.2-->
   <string name="reset">新しいプロジェクト</string>
-  <string name="load">既存のプロジェクトの読み込む</string>
+  <string name="load">既存プロジェクト読込み</string>
   <string name="phonenumber_hint">カンマで区切られた電話番号を入力します。</string>
   <string name="pick_phonenumber_label">…</string>
   <!--added after 2.1.4-->
@@ -88,7 +88,7 @@
   <string name="mapsactivity_delete_bookmarks">{0} 個のブックマークを削除しています...</string>
   <string name="mapsactivity_delete_notes">{0} 個のノートを削除しています...</string>
   <string name="mapsactivity_new_bookmark">新しいブックマーク</string>
-  <string name="mapsactivity_enter_bookmark_name">新しいブックマーク名を入力してください。(optional)</string>
+  <string name="mapsactivity_enter_bookmark_name">新しいブックマーク名を入力してください。(オプション)</string>
   <string name="maptagsactivity_error_reading_tags">タグの読み込みに失敗しました。</string>
   <!--added after 2.3.1-->
   <string name="mapsactivity_menu_toggle_compass">コンパスを開く</string>
@@ -97,7 +97,7 @@
   <string name="imagefromgps">地図の中心へ画像</string>
   <string name="notefromgps">地図の中心へノート</string>
   <string name="quicknotes">MAP CENTER NOTES</string>
-  <string name="formnotes">FORM BASED NOTES</string>
+  <string name="formnotes">フォームノート</string>
   <!--added after 2.5.0-->
   <string name="an_error_occurred_while_creating_the_chart_">グラフの作成中にエラーが発生しました。</string>
   <string name="osm_preferences">OpenStreetMap設定</string>
@@ -107,7 +107,7 @@
   <string name="osm_server_label">接続サーバ</string>
   <string name="osm_notes_properly_uploaded">OSMノートが正しくアップロードされました\n\nアップロードされたノートをデバイスから削除しますか？</string>
   <string name="an_error_occurred_while_uploading_osm_tags">OSM タグのアップロード中にエラーが発生しました。</string>
-  <string name="enable_automatic_center_on_gps">自動で地図中心をGPS座標へ</string>
+  <string name="enable_automatic_center_on_gps">自動で地図中心を\nGPS座標へ</string>
   <string name="profile">プロファイル</string>
   <string name="loading_data">データを読み込んでいます...</string>
   <string name="profilelable_distance">距離 [m]</string>
@@ -117,7 +117,7 @@
   <string name="error_osm_server">OSM サーバーへ接続中にエラーが発生しました。ログインとパスワードを確認してください。または、OSM のサーバーが利用できない可能性があります。</string>
   <string name="check_valid_field">フィールド \"{0}\"が無効です、チェックしてください。</string>
   <string name="view_in_mixare">mixare で表示します。</string>
-  <string name="gps_use_coarse">GPS の代わりにネットワーク位置を使用する (再起動が必要)</string>
+  <string name="gps_use_coarse">GPS の代わりにネット\nワーク位置を使用する\n (再起動が必要)</string>
   <string name="type_to_filter">フィルターの種類</string>
   <string name="geopapcloud_preferences">Geopap-Cloud設定</string>
   <string name="geopapcloud_user_label">ユーザー名</string>
@@ -136,7 +136,7 @@
   <string name="loaded_project_in">読み込まれているプロジェクト:</string>
   <string name="no_sdcard_use_internal_memory">利用可能なSDカードがありません(PCにマウントされていないか確認してください) 。デバイスの内部メモリを代わりに使用しますか。この場合、マップ ビューのスペース上の理由から任意のマップ表示されないことに注意してください。</string>
   <string name="add_message">追加メッセージ</string>
-  <string name="insert_an_optional_text_to_send_with_the_geosms">GeoSMS を送信するオプションのテキストを挿入します。</string>
+  <string name="insert_an_optional_text_to_send_with_the_geosms">GeoSMS で送信するオプションのテキストを挿入します。</string>
   <string name="enter_a_name_for_the_new_project">新しいプロジェクトの名前を入力します。</string>
   <string name="chosen_project_exists">選択したプロジェクトの名前は既に存在します、別の名前を選んでください。</string>
   <string name="no_external_sdcard_for_db_renderer">データベースのレンダリングは、外部ストレージからのみサポートされています。外部ストレージが見つかりませんでした、外部ストレージは利用可能ですか？</string>
@@ -184,7 +184,10 @@
   <string name="halo">輪郭</string>
   <string name="screen_preferences">画面設定</string>
   <string name="cross_properties_summary">ノートを配置するために使用される十字のプロパティ</string>
+  <string name="cross_properties">センタークロス</string>
   <string name="color">色</string>
   <string name="prompt_delete_note">ノートを削除してもよろしいですか。この操作は取り消しできません。</string>
   <string name="prompt_delete_bookmark">ブックマークを削除してもよろしいですか？この操作は取り消しできません。</string>
+  <string name="keep_use_imperial">インペリアル単位を使用する</string>
+  <string name="keep_use_imperial_sum">可能であればメートルの代わりにインペリアルを使用する</string>
 </resources>

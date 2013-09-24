@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="stroke_color">테두리 색상</string>
+  <string name="width">테두리 두께</string>
+  <string name="alpha">테두리 알파</string>
+  <string name="fill_color">채움 색상</string>
+  <string name="fill_alpha">채움 알파</string>
+  <string name="point_shape_">점 모양</string>
+  <string name="point_size">점 크기</string>
+  <string name="decimation">데시메이션</string>
+  <string name="decimation_factor_default">0.000001</string>
+</resources>

@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="yes">예</string>
+  <string name="no">아니오</string>
+  <string name="app_name">GeoPaparazzi</string>
+  <string name="notesvisibilityToggle">메모 보이기 전환</string>
+  <string name="kmlsaved">데이터를 성공적으로 내보냄:</string>
+  <string name="kmlnonsaved">데이터 내보내기 중 오류가 발생했습니다!</string>
+  <string name="loggingoff">모든 센서가 중단되었습니다.</string>
+  <string name="nogps_data">GPS 데이터를 아직 사용할 수 없습니다!</string>
+  <string name="about">정보</string>
+  <string name="exit">나가기</string>
+  <string name="utctime">시간:</string>
+  <string name="altim">고도:</string>
+  <string name="lat">위도:</string>
+  <string name="lon">경도:</string>
+  <string name="azimuth">방위각:</string>
+  <string name="go_to">이동</string>
+  <string name="goto_coordinate">위치로 이동</string>
+  <string name="geocoding">지오코딩</string>
+  <string name="prompt_gpsenable">GPS를 사용할 수 없습니다! 사용 가능하도록 설정하시겠습니까?</string>
+  <string name="width_label">두께</string>
+  <string name="color_label">색상</string>
+  <string name="mainmenu_kmlexport">내보내기</string>
+  <string name="mainmenu_import">가져오기</string>
+  <string name="mainmenu_gpsdataselect">GPS 데이터 목록</string>
+  <string name="mainmenu_preferences">환경설정</string>
+  <string name="mainmenu_merge">선택된 로그를 병합</string>
+  <string name="gpslogproperty">등록정보: </string>
+  <string name="gpslog_chart">차트</string>
+  <string name="gpslog_zoom">확대</string>
+  <string name="gpslog_delete">삭제</string>
+  <string name="mapproperty">등록정보: </string>
+  <string name="map_zoom">지도 확대</string>
+  <string name="map_delete">지도 삭제</string>
+  <string name="gps_preferences">GPS 환경설정</string>
+  <string name="gps_logging_distance">GPS 기록 최소 거리</string>
+  <string name="gps_logging_interval">GPS 기록 최소 간격</string>
+  <string name="gps_use_android_level">안드로이드 수준에서 사용 (배터리 절약, 재시작 필요)</string>
+  <string name="sms_preferences">SMS 환경설정</string>
+  <!--added after 2.1.2-->
+  <!--added after 2.1.4-->
+  <!--added after 2.3.1-->
+  <!--added after 2.4.3-->
+  <!--added after 2.5.0-->
+</resources>

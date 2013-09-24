@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="stroke_color">Barva tahu</string>
+  <string name="width">Šířka tahu</string>
+  <string name="alpha">Průhlednost tahu</string>
+  <string name="fill_color">Barva výplně</string>
+  <string name="fill_alpha">Průhlednost výplně</string>
+  <string name="point_shape_">Tvar bodu</string>
+  <string name="point_size">Velikost bodu</string>
+  <string name="decimation">Decimace</string>
+  <string name="decimation_factor_default">0.000001</string>
+</resources>
