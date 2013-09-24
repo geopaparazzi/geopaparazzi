@@ -184,9 +184,11 @@
   <string name="halo">halo</string>
   <string name="screen_preferences">Impostazioni schermo</string>
   <string name="cross_properties_summary">Proprietà della crocetta utilizzata per l\'inserimento note.</string>
+  <string name="cross_properties">Crocetta centrale</string>
   <string name="color">Colore</string>
   <string name="prompt_delete_note">Sei sicuro di che voler eliminare la nota? Azione non annullabile.</string>
   <string name="prompt_delete_bookmark">Sei sicuro di che voler eliminare il segnalibro? Azione non annullabile.</string>
   <string name="keep_use_imperial">Usa le unità imperiali</string>
   <string name="keep_use_imperial_sum">Usa, ove possibile, le unità imperiali al posto delle metriche.</string>
+  <string name="satellites">satelliti</string>
 </resources>
