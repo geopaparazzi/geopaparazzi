@@ -157,9 +157,11 @@ public class GpxParser {
                 }
             } else if (NODE_ELEVATION.equals(localName)) {
                 if (mCurrentTrackPoint != null) {
-                    mCurrentTrackPoint.setElevation(Double.parseDouble(mStringAccumulator.toString()));
+                    double elev = Double.parseDouble(mStringAccumulator.toString());
+                    mCurrentTrackPoint.setElevation(elev);
                 } else if (mCurrentWayPoint != null) {
-                    mCurrentWayPoint.setElevation(Double.parseDouble(mStringAccumulator.toString()));
+                    double elev = Double.parseDouble(mStringAccumulator.toString());
+                    mCurrentWayPoint.setElevation(elev);
                 }
             } else if (NODE_DESCRIPTION.equals(localName)) {
                 if (mCurrentWayPoint != null) {

@@ -208,7 +208,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
      * @return the logs list
      * @throws IOException
      */
-    public static List<LogMapItem> getGpslogs( ) throws IOException {
+    public static List<LogMapItem> getGpslogs() throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         List<LogMapItem> logsList = new ArrayList<LogMapItem>();
 
@@ -277,7 +277,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
      * @return the logs list
      * @throws IOException
      */
-    public static List<OverlayWay> getGpslogOverlays( ) throws IOException {
+    public static List<OverlayWay> getGpslogOverlays() throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         List<OverlayWay> logsList = new ArrayList<OverlayWay>();
 
@@ -592,8 +592,8 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     // return linesMap;
     // }
 
-    public static LineArray getLinesInWorldBoundsByIdDecimated2( float n, float s, float w, float e, Projection pj,
-            long logId, int decimationFactor ) throws IOException {
+    public static LineArray getLinesInWorldBoundsByIdDecimated2( float n, float s, float w, float e, Projection pj, long logId,
+            int decimationFactor ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         n = n + DatabaseManager.BUFFER;
         s = s - DatabaseManager.BUFFER;
@@ -744,7 +744,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
      * @return the map of lines.
      * @throws IOException
      */
-    public static LinkedHashMap<Long, Line> getLinesMap( ) throws IOException {
+    public static LinkedHashMap<Long, Line> getLinesMap() throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         LinkedHashMap<Long, Line> linesMap = new LinkedHashMap<Long, Line>();
 
@@ -874,7 +874,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             try {
                 for( int i = 0; i < wayPoints.size(); i++ ) {
                     WayPoint point = wayPoints.get(i);
-                    DaoNotes.addNoteNoTransaction(point.getLongitude(), point.getLatitude(), -1.0, date, gpxName,
+                    DaoNotes.addNoteNoTransaction(point.getLongitude(), point.getLatitude(), point.getElevation(), date, gpxName,
                             NoteType.POI.getDef(), "", NoteType.POI.getTypeNum(), sqliteDatabase);
                 }
                 sqliteDatabase.setTransactionSuccessful();
@@ -908,9 +908,14 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                     long currentTimeMillis = System.currentTimeMillis();
                     List<TrackPoint> points = trackSegment.getPoints();
                     for( int i = 0; i < points.size(); i++ ) {
-                        date = new Date(currentTimeMillis + i * 1000l);
                         TrackPoint point = points.get(i);
-                        helper.addGpsLogDataPoint(sqliteDatabase, logId, point.getLongitude(), point.getLatitude(), -1.0, date);
+                        if (point.getTime() > 0) {
+                            date = new Date(point.getTime());
+                        } else {
+                            date = new Date(currentTimeMillis + i * 1000l);
+                        }
+                        helper.addGpsLogDataPoint(sqliteDatabase, logId, point.getLongitude(), point.getLatitude(),
+                                point.getElevation(), date);
                     }
                     sqliteDatabase.setTransactionSuccessful();
                 } catch (Exception e) {
@@ -923,22 +928,43 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         }
         // routes
         List<Route> routes = gpxItem.getRoutes();
-        if (routes.size() > 0) {
+        if (routes.size() > 1) {
             for( Route route : routes ) {
                 String rName = route.getName();
                 if (rName == null) {
                     rName = gpxName;
                 }
+                long startL = route.getFirstPointTime();
+                long endL = route.getLastPointTime();
+                Date startDate;
+                Date endDate;
+                if (startL > 0) {
+                    startDate = new Date(startL);
+                } else {
+                    startDate = new Date(System.currentTimeMillis());
+                }
+                if (endL > 0) {
+                    endDate = new Date(endL);
+                } else {
+                    endDate = new Date(System.currentTimeMillis());
+                }
                 Date date = new Date(System.currentTimeMillis());
                 DaoGpsLog helper = new DaoGpsLog();
-                long logId = helper.addGpsLog(context, date, date, rName, 2f, "green", true);
+                long logId = helper.addGpsLog(context, startDate, endDate, rName, 2f, "green", true);
 
                 sqliteDatabase.beginTransaction();
                 try {
+                    long currentTimeMillis = System.currentTimeMillis();
                     List<RoutePoint> points = route.getPoints();
                     for( int i = 0; i < points.size(); i++ ) {
                         RoutePoint point = points.get(i);
-                        helper.addGpsLogDataPoint(sqliteDatabase, logId, point.getLongitude(), point.getLatitude(), -1.0, date);
+                        if (point.getTime() > 0) {
+                            date = new Date(point.getTime());
+                        } else {
+                            date = new Date(currentTimeMillis + i * 1000l);
+                        }
+                        helper.addGpsLogDataPoint(sqliteDatabase, logId, point.getLongitude(), point.getLatitude(),
+                                point.getElevation(), date);
                     }
                     sqliteDatabase.setTransactionSuccessful();
                 } catch (Exception e) {
@@ -980,7 +1006,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     // }
     // }
 
-    public static void createTables( ) throws IOException {
+    public static void createTables() throws IOException {
         StringBuilder sB = new StringBuilder();
 
         /*
