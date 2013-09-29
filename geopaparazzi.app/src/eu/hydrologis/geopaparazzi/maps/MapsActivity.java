@@ -279,9 +279,16 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         }
 
         MapScaleBar mapScaleBar = this.mapView.getMapScaleBar();
-        mapScaleBar.setImperialUnits(false);
-        mapScaleBar.setText(TextField.KILOMETER, " km"); //$NON-NLS-1$
-        mapScaleBar.setText(TextField.METER, " m"); //$NON-NLS-1$
+        
+        boolean doImperial = preferences.getBoolean(Constants.PREFS_KEY_IMPERIAL, false);
+        mapScaleBar.setImperialUnits(doImperial);
+        if (doImperial) {
+            mapScaleBar.setText(TextField.FOOT, " ft"); //$NON-NLS-1$
+            mapScaleBar.setText(TextField.MILE, " mi"); //$NON-NLS-1$
+        }else{
+            mapScaleBar.setText(TextField.KILOMETER, " km"); //$NON-NLS-1$
+            mapScaleBar.setText(TextField.METER, " m"); //$NON-NLS-1$
+        }
 
         if (Debug.D) {
             // boolean drawTileFrames = preferences.getBoolean("drawTileFrames", false);
