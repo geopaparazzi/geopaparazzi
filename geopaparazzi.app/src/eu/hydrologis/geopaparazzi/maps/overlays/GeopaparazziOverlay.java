@@ -53,6 +53,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.FormActivity;
 import eu.geopaparazzi.library.gps.GpsManager;
+import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
@@ -180,7 +181,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
         // cross
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String crossColorStr = preferences.getString(Constants.PREFS_KEY_CROSS_COLOR, "red");
-        int crossColor = Color.parseColor(crossColorStr);
+        int crossColor = ColorUtilities.toColor(crossColorStr);
         String crossWidthStr = preferences.getString(Constants.PREFS_KEY_CROSS_WIDTH, "3");
         float crossWidth = 3f;
         try {

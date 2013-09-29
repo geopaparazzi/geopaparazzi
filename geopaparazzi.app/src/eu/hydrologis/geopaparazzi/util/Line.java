@@ -29,6 +29,7 @@ import android.location.Location;
 import eu.geopaparazzi.library.gpx.GpxRepresenter;
 import eu.geopaparazzi.library.gpx.GpxUtilities;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
+import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.DynamicDoubleArray;
 import eu.geopaparazzi.library.util.Utilities;
 
@@ -157,7 +158,7 @@ public class Line implements KmlRepresenter, GpxRepresenter {
         sB.append("</LineString>\n");
         sB.append("<Style>\n");
         sB.append("<LineStyle>\n");
-        int parsedColor = Color.parseColor(color);
+        int parsedColor = ColorUtilities.toColor(color);
         String hexColor = "#" + Integer.toHexString(parsedColor);
         sB.append("<color>").append(hexColor).append("</color>\n");
         sB.append("<width>").append(width).append("</width>\n");

@@ -2,17 +2,23 @@
 <resources>
 
     <string-array name="array_colornames">
-        <item>red</item>
-        <item>blue</item>
-        <item>green</item>
         <item>black</item>
-        <item>white</item>
-        <item>gray</item>
+        <item>blue</item>
         <item>cyan</item>
-        <item>magenta</item>
-        <item>yellow</item>
-        <item>lightgray</item>
         <item>darkgray</item>
+        <item>gray</item>
+        <item>green</item>
+        <item>lightgray</item>
+        <item>magenta</item>
+        <item>red</item>
+        <item>white</item>
+        <item>yellow</item>
+        <item>purple</item>
+        <item>violet</item>
+        <item>turquoise</item>
+        <item>plum</item>
+        <item>tomato</item>
+        <item>salmon</item>
     </string-array>
     <string-array name="array_widths">
         <item>1</item>

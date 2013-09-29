@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <string-array name="array_colornames" tools:ignore="MissingTranslation">
-        <item>red</item>
-        <item>blue</item>
-        <item>green</item>
+    <string-array name="array_colornames">
         <item>black</item>
-        <item>white</item>
-        <item>gray</item>
+        <item>blue</item>
         <item>cyan</item>
-        <item>magenta</item>
-        <item>yellow</item>
-        <item>lightgray</item>
         <item>darkgray</item>
+        <item>gray</item>
+        <item>green</item>
+        <item>lightgray</item>
+        <item>magenta</item>
+        <item>red</item>
+        <item>white</item>
+        <item>yellow</item>
+        <item>purple</item>
+        <item>violet</item>
+        <item>turquoise</item>
+        <item>plum</item>
+        <item>tomato</item>
+        <item>salmon</item>
     </string-array>
     <string-array name="array_widths" tools:ignore="MissingTranslation">
         <item>1</item>

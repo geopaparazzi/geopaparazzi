@@ -98,6 +98,7 @@ import eu.geopaparazzi.library.mixare.MixareHandler;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.sms.SmsData;
 import eu.geopaparazzi.library.sms.SmsUtilities;
+import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
@@ -500,7 +501,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             OvalShape notesShape = new OvalShape();
             Paint notesPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             notesPaint.setStyle(Paint.Style.FILL);
-            notesPaint.setColor(Color.parseColor(colorStr));
+            notesPaint.setColor(ColorUtilities.toColor(colorStr));
             notesPaint.setAlpha((int) opacity);
 
             ShapeDrawable notesShapeDrawable = new ShapeDrawable(notesShape);

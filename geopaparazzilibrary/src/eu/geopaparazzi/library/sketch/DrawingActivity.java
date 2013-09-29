@@ -25,6 +25,7 @@ import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.sketch.brush.Brush;
 import eu.geopaparazzi.library.sketch.brush.PenBrush;
 import eu.geopaparazzi.library.sketch.commands.DrawingPath;
+import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
@@ -316,7 +317,7 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
     private void checkColor() {
         Object selectedItem = colorSpinner.getSelectedItem();
         String newColorStr = selectedItem.toString();
-        currentColor = Color.parseColor(newColorStr.trim());
+        currentColor = ColorUtilities.toColor(newColorStr.trim());
     }
 
 }

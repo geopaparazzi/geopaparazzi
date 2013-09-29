@@ -17,6 +17,7 @@
  */
 package eu.hydrologis.geopaparazzi.maps;
 
+import eu.geopaparazzi.library.util.ColorUtilities;
 import android.graphics.Color;
 
 /**
@@ -49,7 +50,7 @@ public class DataManager {
     }
 
     public void setNotesColor( String colorStr ) {
-        int color = Color.parseColor(colorStr);
+        int color = ColorUtilities.toColor(colorStr);
         this.notesColor = color;
     }
 

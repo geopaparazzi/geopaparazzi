@@ -35,6 +35,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.spatialite.R;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.OrderComparator;
@@ -150,7 +151,7 @@ public class DataListActivity extends ListActivity {
                     }
                 });
 
-                // rowView.setBackgroundColor(Color.parseColor(item.getColor()));
+                // rowView.setBackgroundColor(ColorUtilities.toColor(item.getColor()));
                 nameView.setText(item.getName());
 
                 visibleView.setChecked(item.getStyle().enabled != 0);

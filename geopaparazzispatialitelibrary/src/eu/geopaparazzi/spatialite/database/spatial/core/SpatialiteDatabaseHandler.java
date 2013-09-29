@@ -35,6 +35,8 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKBReader;
 
+import eu.geopaparazzi.library.util.ColorUtilities;
+
 /**
  * An utility class to handle the spatial database.
  * 
@@ -585,7 +587,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
         }
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.FILL);
-        paint.setColor(Color.parseColor(style.fillcolor));
+        paint.setColor(ColorUtilities.toColor(style.fillcolor));
         float alpha = style.fillalpha * 255f;
         paint.setAlpha((int) alpha);
         return paint;
@@ -602,7 +604,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
         paint.setAntiAlias(true);
         paint.setStrokeCap(Cap.ROUND);
         paint.setStrokeJoin(Join.ROUND);
-        paint.setColor(Color.parseColor(style.strokecolor));
+        paint.setColor(ColorUtilities.toColor(style.strokecolor));
         float alpha = style.strokealpha * 255f;
         paint.setAlpha((int) alpha);
         paint.setStrokeWidth(style.width);

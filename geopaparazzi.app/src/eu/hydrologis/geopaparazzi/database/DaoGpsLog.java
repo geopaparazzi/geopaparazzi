@@ -48,6 +48,7 @@ import eu.geopaparazzi.library.gpx.parser.GpxParser.TrackSegment;
 import eu.geopaparazzi.library.gpx.parser.RoutePoint;
 import eu.geopaparazzi.library.gpx.parser.TrackPoint;
 import eu.geopaparazzi.library.gpx.parser.WayPoint;
+import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.hydrologis.geopaparazzi.maps.LogMapItem;
 import eu.hydrologis.geopaparazzi.util.Line;
@@ -320,7 +321,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
 
                     Paint wayPaintOutline = new Paint(Paint.ANTI_ALIAS_FLAG);
                     wayPaintOutline.setStyle(Paint.Style.STROKE);
-                    int lineColor = Color.parseColor(color);
+                    int lineColor = ColorUtilities.toColor(color);
                     wayPaintOutline.setColor(lineColor);
                     wayPaintOutline.setAlpha(255);
                     wayPaintOutline.setStrokeWidth((float) width);
