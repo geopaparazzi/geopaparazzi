@@ -190,4 +190,5 @@
   <string name="prompt_delete_bookmark">ブックマークを削除してもよろしいですか？この操作は取り消しできません。</string>
   <string name="keep_use_imperial">インペリアル単位を使用する</string>
   <string name="keep_use_imperial_sum">可能であればメートルの代わりにインペリアルを使用する</string>
+  <string name="satellites">衛星数</string>
 </resources>

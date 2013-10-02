@@ -53,9 +53,9 @@
   <string name="audio_recording">Nahrává se zvuk. Zatlačte zde pro zastavení nahrávání</string>
   <string name="audio_recording_stop">Zastavit</string>
   <string name="panic">Poplach!</string>
-  <string name="panic_number">Poplachové číslo</string>
-  <string name="panic_number_notset">Zdá se, že není dostupné žádné poplachové číslo. Nastavil jste ho v nastavení?</string>
-  <string name="panic_upper">Poplach!</string>
+  <string name="panic_number">Číslo pro stav nouze</string>
+  <string name="panic_number_notset">Zdá se, že není dostupné žádné číslo pro stav nouze, na které má být zpráva zaslána. Nastavil jste ho v nastavení?</string>
+  <string name="panic_upper">STAV NOUZE!</string>
   <string name="send_status_update">Poslat polohu</string>
   <string name="help_needed">Pomoc je potřeba!</string>
   <string name="message_sent">Zpráva poslána</string>
@@ -190,4 +190,5 @@
   <string name="prompt_delete_bookmark">Opravdu chcete smazat záložku? Tento krok nelze vrátit zpět.</string>
   <string name="keep_use_imperial">Použít britské rozměrové jednotky</string>
   <string name="keep_use_imperial_sum">Použít britské rozměrové jednotky namísto metrických tam, kde je to možné.</string>
+  <string name="satellites">Družice</string>
 </resources>
