@@ -144,7 +144,7 @@ public class FileUtilities {
     /**
      * Returns true if all deletions were successful. If a deletion fails, the method stops
      * attempting to delete and returns false.
-     * 
+     *
      * @param filehandle
      * @return true if all deletions were successful
      */
@@ -173,7 +173,7 @@ public class FileUtilities {
 
     /**
      * Delete file or folder recursively on exit of the program
-     * 
+     *
      * @param filehandle
      * @return true if all went well
      */
@@ -193,7 +193,7 @@ public class FileUtilities {
 
     /**
      * Checks if a given file exists in a supplied folder.
-     * 
+     *
      * @param fileName the name of the file to check.
      * @param folder the folder.
      * @return <code>true</code>, if the file exists
@@ -210,7 +210,7 @@ public class FileUtilities {
 
     /**
      * Read a bitmap, resampled to the supplied width.
-     * 
+     *
      * @param imageFile the image to read.
      * @param newWidth the new width to which to sample.
      * @return the read {@link Bitmap}.
@@ -232,7 +232,7 @@ public class FileUtilities {
 
     /**
      * Read files to byte array.
-     * 
+     *
      * @param file the file to read.
      * @return the read byte array.
      * @throws IOException
@@ -247,5 +247,32 @@ public class FileUtilities {
         } finally {
             f.close();
         }
+    }
+    /**
+     * Recursive earch of files with a specfic extention.
+     * - this can be called multible times, adding to the same list
+     * @param search_dir the directory to read.
+     * @param s_extention the extention of the files to search for.
+     * @param return_files the List<File> where the found files will be added to.
+     * @return the number of files found.
+     */
+    public static int search_directory_recursive(File search_dir,String s_extention,List<File> return_files)
+    { // search maps-dirctory for a specfic map-type (extention)
+     File[] list_files = search_dir.listFiles();
+     for( File this_file : list_files )
+     { // mj10777: collect desired extention
+      if (this_file.isDirectory())
+      {  // mj10777: read recursive directories inside the sdcard/maps directory
+       search_directory_recursive(this_file,s_extention,return_files);
+      }
+      else
+      {
+       if (this_file.getName().endsWith(s_extention))
+       {
+        return_files.add(this_file);
+       }
+      }
+     }
+     return return_files.size();
     }
 }

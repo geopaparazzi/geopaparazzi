@@ -44,7 +44,7 @@ import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
 
 /**
  * Data listing activity.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class DataListActivity extends ListActivity {
@@ -152,7 +152,8 @@ public class DataListActivity extends ListActivity {
                 });
 
                 // rowView.setBackgroundColor(ColorUtilities.toColor(item.getColor()));
-                nameView.setText(item.getName());
+                // mj10777: some tables may have more than one column, thus the column name will also be shown
+                nameView.setText(item.getName()+" ["+item.getGeomName()+"]");
 
                 visibleView.setChecked(item.getStyle().enabled != 0);
                 visibleView.setOnCheckedChangeListener(new OnCheckedChangeListener(){

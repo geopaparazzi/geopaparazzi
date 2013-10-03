@@ -22,6 +22,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -94,7 +95,7 @@ import eu.hydrologis.geopaparazzi.util.SecretActivity;
 
 /**
  * The main {@link Activity activity} of GeoPaparazzi.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class GeoPaparazziActivity extends Activity {
@@ -126,6 +127,9 @@ public class GeoPaparazziActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         try {
+            SpatialDatabasesManager.s_log_tag="mj10777";
+             // SpatialDatabasesManager.s_log_tag=Constants.GEOPAPARAZZI;
+            SpatialDatabasesManager.i_log_debug=1;
             initializeResourcesManager();
 
             fileSourcesMap = new HashMap<String, String>();
@@ -137,19 +141,31 @@ public class GeoPaparazziActivity extends Activity {
             tileSourcesMap.put(1003, MapGeneratorInternal.OPENCYCLEMAP.name());
             File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
             int i = 1004;
-            if (mapsDir != null && mapsDir.exists()) {
-                File[] mapFiles = mapsDir.listFiles(new FilenameFilter(){
-                    public boolean accept( File dir, String filename ) {
-                        return filename.endsWith(".mapurl"); //$NON-NLS-1$
-                    }
-                });
-
-                Arrays.sort(mapFiles);
-
-                for( File file : mapFiles ) {
-                    String name = FileUtilities.getNameWithoutExtention(file);
-                    tileSourcesMap.put(i++, name);
-                    fileSourcesMap.put(name, file.getAbsolutePath());
+            if (mapsDir != null && mapsDir.exists())
+            {
+                String s_extention=".mapurl";
+                List<File> search_files=new ArrayList<File>();
+                FileUtilities.search_directory_recursive(mapsDir,s_extention,search_files) ;
+                Collections.sort(search_files);
+                // SpatialDatabasesManager.app_log(-1,"GeoGeomCollActivity.onCreate: "+s_extention+"["+search_files.size()+"]");
+                for( File file : search_files)
+                {
+                 String name = FileUtilities.getNameWithoutExtention(file);
+                 // SpatialDatabasesManager.app_log(-1,"GeoGeomCollActivity.onCreate: "+s_extention+"["+name+"]");
+                 tileSourcesMap.put(i++, name);
+                 fileSourcesMap.put(name, file.getAbsolutePath());
+                }
+                search_files.clear();
+                s_extention=".map";
+                FileUtilities.search_directory_recursive(mapsDir,s_extention,search_files) ;
+                Collections.sort(search_files);
+                // SpatialDatabasesManager.app_log(-1,"GeoGeomCollActivity.onCreate: "+s_extention+"["+search_files.size()+"]");
+                for( File file : search_files)
+                {
+                 String name = FileUtilities.getNameWithoutExtention(file);
+                 // SpatialDatabasesManager.app_log(-1,"GeoGeomCollActivity.onCreate: "+s_extention+"["+name+"]");
+                 tileSourcesMap.put(i++, name);
+                 fileSourcesMap.put(name, file.getAbsolutePath());
                 }
                 /*
                  * add also geopackage tables
@@ -221,7 +237,7 @@ public class GeoPaparazziActivity extends Activity {
     private void checkIncomingSmsData() {
         /*
          * check if it was opened for a link of the kind
-         * 
+         *
          * http://maps.google.com/maps?q=46.068941,11.169849&GeoSMS
          */
         Uri data = getIntent().getData();
@@ -591,22 +607,27 @@ public class GeoPaparazziActivity extends Activity {
                     final List<String> mapPaths = new ArrayList<String>();
                     final List<String> mapNames = new ArrayList<String>();
 
-                    File[] mapFiles = mapsDir.listFiles(new FilenameFilter(){
-                        public boolean accept( File dir, String filename ) {
-                            return filename.endsWith(".map"); //$NON-NLS-1$
-                        }
-                    });
-
-                    if (mapFiles == null || mapFiles.length == 0) {
-                        Utilities.messageDialog(this, eu.hydrologis.geopaparazzi.R.string.no_map_files_found_go_online, null);
-                        return true;
+                    String s_extention=".map";
+                    List<File> search_files=new ArrayList<File>();
+                    FileUtilities.search_directory_recursive(mapsDir,s_extention,search_files);
+                    s_extention=".mbtiles";
+                    FileUtilities.search_directory_recursive(mapsDir,s_extention,search_files);
+                    if (search_files.size() == 0)
+                    {
+                     Utilities.messageDialog(this,eu.hydrologis.geopaparazzi.R.string.no_map_files_found_go_online, null);
+                     return true;
                     }
-
-                    for( File mapFile : mapFiles ) {
-                        mapPaths.add(mapFile.getAbsolutePath());
-                        mapNames.add(FileUtilities.getNameWithoutExtention(mapFile));
+                    else
+                    {
+                     Collections.sort(search_files);
+                     for( File file : search_files)
+                     {
+                      String file_name = FileUtilities.getNameWithoutExtention(file);
+                      // SpatialDatabasesManager.app_log(-1,"GeoGeomCollActivity.onMenuItemSelected: "+s_extention+"["+file_name+"]");
+                      mapPaths.add(file.getAbsolutePath());
+                      mapNames.add(file_name);
+                     }
                     }
-
                     String[] mapNamesArrays = mapNames.toArray(new String[0]);
                     boolean[] mapNamesChecked = new boolean[mapNamesArrays.length];
                     DialogInterface.OnMultiChoiceClickListener dialogListener = new DialogInterface.OnMultiChoiceClickListener(){
@@ -646,14 +667,14 @@ public class GeoPaparazziActivity extends Activity {
 
     /**
      * Sets the tilesource.
-     * 
+     *
      * <p>
      * If both arguments are set null, it will try to get info from the preferences,
      * and used sources are saved into preferences.
      * </p>
-     * 
+     *
      * @param sourceName if source is <code>null</code>, mapnik is used.
-     * @param mapfile the map file to use in case it is a database based source. 
+     * @param mapfile the map file to use in case it is a database based source.
      */
     private void setTileSource( String sourceName, File mapfile ) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);

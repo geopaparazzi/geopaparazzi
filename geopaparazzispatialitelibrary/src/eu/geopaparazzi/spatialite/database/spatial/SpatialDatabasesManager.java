@@ -36,14 +36,52 @@ import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler;
 import android.content.Context;
+import android.util.Log;
 
 /**
  * The spatial database manager.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class SpatialDatabasesManager {
 
+    public static String s_log_tag="";
+    public static int i_log_debug=0;
+    // -----------------------------------------------
+    /**
+    * Function for global logging
+    * - s_log_tag value will be shown in as TAG in logcat [default Constants.GEOPAPARAZZI;]
+    *  -- change values in GeoPaparazziActivity.onCreate((
+    *  use 'import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;' where needed
+    * @param i_parm -1=use global value ; 0=no message ; 1=info ; 2=warning ;3=error ; 4=debug
+    * @param s_message message text to be shown in logcat
+    */
+    public static void app_log(int i_parm,String s_message)
+    { // if < 0: use global setting
+     if (i_parm < 0)
+      i_parm = i_log_debug;
+     if (s_log_tag == "")
+      s_log_tag="mj10777";
+     switch (i_parm)
+     {
+      case 0:
+       // ignore
+      break;
+      case 2:
+       Log.w(s_log_tag,s_message);
+      break;
+      case 3:
+       Log.e(s_log_tag,s_message);
+      break;
+      case 4:
+       Log.d(s_log_tag,s_message);
+      break;
+      case 1:
+      default:
+       Log.i(s_log_tag,s_message);
+      break;
+     }
+    }
     private List<ISpatialDatabaseHandler> sdbHandlers = new ArrayList<ISpatialDatabaseHandler>();
     private HashMap<SpatialVectorTable, ISpatialDatabaseHandler> vectorTablesMap = new HashMap<SpatialVectorTable, ISpatialDatabaseHandler>();
     private HashMap<SpatialRasterTable, ISpatialDatabaseHandler> rasterTablesMap = new HashMap<SpatialRasterTable, ISpatialDatabaseHandler>();
@@ -63,22 +101,34 @@ public class SpatialDatabasesManager {
         spatialDbManager = null;
     }
 
-    public void init( Context context, File mapsDir ) {
-        File[] sqliteFiles = mapsDir.listFiles(new FilenameFilter(){
-            public boolean accept( File dir, String filename ) {
-                return filename.endsWith(".sqlite") || filename.endsWith(".mbtiles");
-            }
-        });
-
-        for( File sqliteFile : sqliteFiles ) {
-            ISpatialDatabaseHandler sdb = null;
-            if (sqliteFile.getName().endsWith("mbtiles")) {
-                sdb = new MbtilesDatabaseHandler(sqliteFile.getAbsolutePath());
-            } else {
-                sdb = new SpatialiteDatabaseHandler(sqliteFile.getAbsolutePath());
-            }
-            sdbHandlers.add(sdb);
+    public void init(Context context,File mapsDir )
+    {
+      File[] list_files = mapsDir.listFiles();
+      for( File this_file : list_files )
+      { // mj10777: collect spatialite.geometries and .mbtiles databases
+       if (this_file.isDirectory())
+       {  // mj10777: read recursive directories inside the sdcard/maps directory
+        init(context,this_file);
+       }
+       else
+       {
+        if (this_file.getName().endsWith(".sqlite") || this_file.getName().endsWith(".db") || this_file.getName().endsWith(".mbtiles"))
+        { // mj10777: added '.db' - should cause no conflicts inside  sdcard/maps directory
+         ISpatialDatabaseHandler sdb = null;
+         if (this_file.getName().endsWith(".mbtiles"))
+         {
+          sdb = new MbtilesDatabaseHandler(this_file.getAbsolutePath(),null);
+          // SpatialDatabasesManager.app_log(i_debug,"MbtilesDatabase: ["+this_file.getAbsolutePath()+"]");
+         }
+        else
+        {
+         sdb = new SpatialiteDatabaseHandler(this_file.getAbsolutePath());
+         // SpatialDatabasesManager.app_log(i_debug,"SpatialiteDatabase: ["+this_file.getAbsolutePath()+"]");
         }
+        sdbHandlers.add(sdb);
+       }
+      }
+     }
     }
     public List<ISpatialDatabaseHandler> getSpatialDatabaseHandlers() {
         return sdbHandlers;
