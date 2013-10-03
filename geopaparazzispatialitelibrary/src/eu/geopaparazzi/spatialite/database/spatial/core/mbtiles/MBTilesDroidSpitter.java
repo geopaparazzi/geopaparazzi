@@ -38,7 +38,7 @@ public class MBTilesDroidSpitter
    * - if the file does not exist, a valid mbtile database will be created
    * - if the parent directory does not exist, it will be created
    * @param file_mbtiles mbtiles.db file to open
-   * @param mbtiles_metadata list of initial metadata values to set apon creation [otherwise can be null]
+   * @param mbtiles_metadata list of initial metadata values to set upon creation [otherwise can be null]
    */
  public MBTilesDroidSpitter(File file_mbtiles,HashMap<String,String> mbtiles_metadata)
  {
@@ -49,7 +49,7 @@ public class MBTilesDroidSpitter
    this.mbtiles_metadata = mbtiles_metadata;
   if (!this.file_mbtiles.exists())
   { // if the parent directory does not exist, it will be created
-    // - a mbtiles database will be created with default values and closedConfig.
+    // - a mbtiles database will be created with default values and closed
    try
    {
     create_mbtiles(this.file_mbtiles);
@@ -64,16 +64,14 @@ public class MBTilesDroidSpitter
  // -----------------------------------------------
  /**
    * Open mbtiles Database
-   * @param fetchMetadata 1: fetch and loada the mbtile metaadata
+   * @param fetchMetadata 1: fetch and load the mbtiles metaadata
    * @return void
    */
  public void open(boolean fetchMetadata,String metadataVersion)
  {
   if (metadataVersion != "")
    this.s_metadataVersion=metadataVersion;
-  // db_mbtiles = mbtilesdb.getReadableDatabase();
   db_mbtiles = SQLiteDatabase.openOrCreateDatabase(file_mbtiles, null);
-  //  db_mbtiles = SQLiteDatabase.openDatabase(file_mbtiles.getAbsolutePath(),null,SQLiteDatabase.OPEN_READONLY);
   if (!fetchMetadata)
    return;
   try
@@ -191,7 +189,7 @@ public class MBTilesDroidSpitter
  public int insertBitmapTile(int i_x,int i_y_osm,int i_z,Bitmap tile_bitmap,int i_force_unique,int i_fetch_bounds) throws IOException
  { // i_rc=0: correct, otherwise error
   int i_rc=0;
-  // i_parm=1: 'ff-ee-dd.rgb' [to be used as tile_id], blank if image is not Blank (all pixels use one RGB vlaue)
+  // i_parm=1: 'ff-ee-dd.rgb' [to be used as tile_id], blank if image is not Blank (all pixels use one RGB value)
   String s_tile_id=get_pixel_rgb_toString(tile_bitmap,1);
   ByteArrayOutputStream ba_stream = new ByteArrayOutputStream();
   try
@@ -280,7 +278,7 @@ public class MBTilesDroidSpitter
    String s_tile_data=get_hex(ba_tile_data);
    final Cursor c = db_mbtiles.rawQuery("SELECT tile_id FROM images WHERE (hex(tile_data) = '?')", new String[]{s_tile_data});
    if (c.moveToFirst())
-   { // TODO: do something if multible results are returned
+   { // TODO: do something if multiple results are returned
     s_tile_id_query= c.getString(c.getColumnIndex("tile_id"));
    }
    c.close();
@@ -500,7 +498,7 @@ public class MBTilesDroidSpitter
   String s_sql_create_index_map="CREATE UNIQUE INDEX IF NOT EXISTS "+s_map_tablename+"_index ON "+s_map_tablename+" ("+s_mbtiles_field_zoom_level+","+s_mbtiles_field_tile_column+","+s_mbtiles_field_tile_row+")";
   String s_sql_create_index_metadata="CREATE UNIQUE INDEX IF NOT EXISTS "+s_metadata_tablename+"_index ON "+s_metadata_tablename+" ("+s_mbtiles_field_name+")";
   // String s_sql_create_android_metadata="CREATE TABLE IF NOT EXISTS android_"+s_metadata_tablename+" (locale text)";
-  // mj10777: not needed in android - cone with sqlite_db.setLocale(Locale.getDefault());
+  // mj10777: not needed in android - done with sqlite_db.setLocale(Locale.getDefault());
   // ----------------------------------------------
   mbtiles_db.beginTransaction();
   try
@@ -565,9 +563,9 @@ public class MBTilesDroidSpitter
  // -----------------------------------------------
  /**
    * General Function to update mbtiles metadata Table
-   * @param mbtiles_db Database connection [apon creation, this is a local variable, otherwise the class variable]
+   * @param mbtiles_db Database connection [upon creation, this is a local variable, otherwise the class variable]
    * @param mbtiles_metadata list of key,values to update. [fill this with valued that need to be added/changed]
-   * @param i_reload_metadata reload values after update [not needed apon creation, update after bounds/center/zoom changes]
+   * @param i_reload_metadata reload values after update [not needed upon creation, update after bounds/center/zoom changes]
    * @return 0: no error
    */
  public int update_mbtiles_metadata(SQLiteDatabase mbtiles_db,HashMap<String,String> mbtiles_metadata,int i_reload_metadata) throws IOException
@@ -614,8 +612,8 @@ public class MBTilesDroidSpitter
  // -----------------------------------------------
  /**
     * Retrieve min/max tiles for each zoom-level from mbtiles
-   * - no checking for possible 'holes' inside zoom-level ore done
-   * @param i_reload_metadata reload values after update [not needed apon creation, update after bounds/center/zoom changes]
+   * - no checking for possible 'holes' inside zoom-level are done
+   * @param i_reload_metadata reload values after update [not needed upon creation, update after bounds/center/zoom changes]
    * @param i_update update to mbiles database if bounds min/max zoom have changed
    * @return the retrieved values. ['zoom','min_x,min_y,max_x,max_y']
    */
@@ -674,7 +672,7 @@ public class MBTilesDroidSpitter
  // -----------------------------------------------
  /**
     * Retrieve min/max tiles for each zoom-level from mbtiles
-   * - no checking for possible 'holes' inside zoom-level ore done
+   * - no checking for possible 'holes' inside zoom-level are done
    * @return the retrieved values. ['zoom','min_x,min_y,max_x,max_y']
    */
  public HashMap<String,String> fetch_bounds_minmax_tiles()
@@ -779,7 +777,7 @@ public class MBTilesDroidSpitter
  /**
    * Converts byte[] to hex String
    *
-   * @param ba_data the by[] to cinvert
+   * @param ba_data the byte[] to convert
    * @return the hex string to be used to compare with sql 'WHERE (hex(tile_data) = '?')'
    */
  public static String get_hex(byte [] ba_data)
@@ -876,7 +874,7 @@ public class MBTilesDroidSpitter
  }
  // -----------------------------------------------
  /**
-   * Retrieve RGB vlaue of Bitmap Pixel
+   * Retrieve RGB value of Bitmap Pixel
    * - RGB_565 will be converted to ARGB_8888
    * @param i_bitmap_config Bitmap.Config of Bitmap
    * @param i_pixel Bitmap.Pixel value

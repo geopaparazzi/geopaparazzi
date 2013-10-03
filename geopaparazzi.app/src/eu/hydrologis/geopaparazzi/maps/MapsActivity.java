@@ -189,7 +189,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         registerReceiver(batteryReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
 
      preferences = PreferenceManager.getDefaultSharedPreferences(this);
-     // mj10777: .mbtiles,. .map and .mapurl files may know there bounds and desired center point
+     // mj10777: .mbtiles,.map and .mapurl files may know there bounds and desired center point
      // - 'checkCenterLocation' will change this value if out of range
      double[] mapCenterLocation = PositionUtilities.getMapCenterFromPreferences(preferences,true,true);
      // check for screen on
@@ -224,7 +224,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
       if (filePath != null)
       { // replace a ONLINE TileSource, where a OFFLINE Source [mbtiles or map] has be selected due to a missing Internet connection.
        File check_file=new File(filePath);
-       // the extentions should correspond to the vlaues used in GeoPaparazziActivity.onMenuItemSelected
+       // the extentions should correspond to the values used in GeoPaparazziActivity.onMenuItemSelected
        if ((tileSourceName.length() != 0) && (check_file.exists()) && ((filePath.endsWith(".mbtiles")) || (filePath.endsWith(".map"))))
        { // select a offline .mbtiles to replace a online map[tileSourceName] without internet connection
         if (tileSourceName != FileUtilities.getNameWithoutExtention(check_file))

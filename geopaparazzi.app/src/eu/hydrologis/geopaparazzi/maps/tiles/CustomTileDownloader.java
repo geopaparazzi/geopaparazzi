@@ -53,22 +53,22 @@ public class CustomTileDownloader extends TileDownloader {
     private static String PROTOCOL = "http"; //$NON-NLS-1$
     private static byte ZOOM_MIN = 0;
     private static byte ZOOM_MAX = 18;
-    private static byte ZOOM_DEFAULT = 0; // mbtiles specfic
+    private static byte ZOOM_DEFAULT = 0; // mbtiles specific
     private final int minZoom;
     private final int maxZoom;
-    private final int defaultZoom;  // mbtiles specfic
+    private final int defaultZoom;  // mbtiles specific
     private final double centerX; // wsg84
     private final double centerY;  // wsg84
     private final double bounds_west;  // wsg84
     private final double bounds_east;  // wsg84
     private final double bounds_north;  // wsg84
     private final double bounds_south;  // wsg84
-    private String s_mbtiles_file; // mbtiles specfic
-    private File file_mbtiles=null;  // mbtiles specfic
-    private String s_name;  // mbtiles specfic
-    private String s_description;  // mbtiles specfic
-    private String s_format;  // mbtiles specfic
-    private String s_tile_row_type="tms"; // mbtiles specfic
+    private String s_mbtiles_file; // mbtiles specific
+    private File file_mbtiles=null;  // mbtiles specific
+    private String s_name;  // mbtiles specific
+    private String s_description;  // mbtiles specific
+    private String s_format;  // mbtiles specific
+    private String s_tile_row_type="tms"; // mbtiles specific
     private MbtilesDatabaseHandler mbtiles_db = null;
     private HashMap<String,String> mbtiles_metadata = null;
 

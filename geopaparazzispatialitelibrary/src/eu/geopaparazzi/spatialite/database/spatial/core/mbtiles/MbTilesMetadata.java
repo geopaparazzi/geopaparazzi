@@ -102,7 +102,7 @@ public class MbTilesMetadata
    * createFromCursor
    * @param c: Sql Cursor being used
    * @param idx_col_key: index field of the metdata field 'name' [should be 0]
-   * @param idx_col_v: index field of the metdata field 'value' [should be 1]
+   * @param idx_col_value: index field of the metdata field 'value' [should be 1]
    * @return HashMap<String,String> with key,values to be validated
    */
  public static MbTilesMetadata createFromCursor(Cursor c,int idx_col_key,int idx_col_value,MetadataValidator validator) throws MetadataParseException
@@ -215,8 +215,8 @@ public class MbTilesMetadata
    {
     maxZoom = Integer.parseInt(maxZoomStr);
    }
-   // center: tilemill specfic parameter
-   // - not part of the specfication, but usefull when first loading and the map is out of the range
+   // center: tilemill specific parameter
+   // - not part of the specification, but usefull when first loading and the map is out of the range
    // - the map designer can determin the 'main point of interest' and desired zoom level
    // -- which may NOT be the center of the map OR the minZoom [which are the default]
    // - the application will only use this point when the present point is outside the bounds
@@ -316,8 +316,8 @@ public class MbTilesMetadata
    {
     maxZoom = Integer.parseInt(maxZoomStr);
    }
-   // center: tilemill specfic parameter
-   // - not part of the specfication, but usefull when first loading and the map is out of the range
+   // center: tilemill specific parameter
+   // - not part of the specification, but usefull when first loading and the map is out of the range
    // - the map designer can determin the 'main point of interest' and desired zoom level
    // -- which may NOT be the center of the map OR the minZoom [which are the default]
    // - the application will only use this point when the present point is outside the bounds
@@ -386,7 +386,7 @@ public class MbTilesMetadata
  /**
    * Parse default Center Position and Zoom-Level
    * - Format (Wsg84) : center_x, center_y, zoom
-   * - tilemill specfic parameter
+   * - tilemill specific parameter
    * - the map designer can determin the 'main point of interest' and desired zoom level
    * -- which may NOT be the center of the map OR the minZoom [which are the default]
    * - the application will only use this point when the present point is outside the bounds

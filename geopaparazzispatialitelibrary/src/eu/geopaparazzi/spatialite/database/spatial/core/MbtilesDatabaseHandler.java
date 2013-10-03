@@ -58,7 +58,7 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler
    * - if the file does not exist, a valid mbtile database will be created
    * - if the parent directory does not exist, it will be created
    * @param s_mbtiles_path full path to mbtiles file to open
-   * @param mbtiles_metadata list of initial metadata values to set apon creation [otherwise can be null]
+   * @param mbtiles_metadata list of initial metadata values to set upon creation [otherwise can be null]
    * @return void
    */
  public MbtilesDatabaseHandler(String s_mbtiles_path,HashMap<String,String> mbtiles_metadata)

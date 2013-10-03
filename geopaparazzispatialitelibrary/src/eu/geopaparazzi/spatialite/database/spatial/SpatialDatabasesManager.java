@@ -51,7 +51,7 @@ public class SpatialDatabasesManager {
     /**
     * Function for global logging
     * - s_log_tag value will be shown in as TAG in logcat [default Constants.GEOPAPARAZZI;]
-    *  -- change values in GeoPaparazziActivity.onCreate((
+    *  -- change values in GeoPaparazziActivity.onCreate()
     *  use 'import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;' where needed
     * @param i_parm -1=use global value ; 0=no message ; 1=info ; 2=warning ;3=error ; 4=debug
     * @param s_message message text to be shown in logcat

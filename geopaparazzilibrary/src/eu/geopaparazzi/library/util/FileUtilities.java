@@ -249,15 +249,15 @@ public class FileUtilities {
         }
     }
     /**
-     * Recursive earch of files with a specfic extention.
-     * - this can be called multible times, adding to the same list
+     * Recursive earch of files with a specific extention.
+     * - this can be called multiple times, adding to the same list
      * @param search_dir the directory to read.
      * @param s_extention the extention of the files to search for.
      * @param return_files the List<File> where the found files will be added to.
      * @return the number of files found.
      */
     public static int search_directory_recursive(File search_dir,String s_extention,List<File> return_files)
-    { // search maps-dirctory for a specfic map-type (extention)
+    { // search maps-dirctory for a specific map-type (extention)
      File[] list_files = search_dir.listFiles();
      for( File this_file : list_files )
      { // mj10777: collect desired extention
