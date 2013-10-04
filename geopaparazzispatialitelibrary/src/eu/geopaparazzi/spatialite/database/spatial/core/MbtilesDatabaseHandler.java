@@ -206,7 +206,7 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler
    * @param i_fetch_bounds 1=force a calculation of the bounds and min/max zoom levels
    * @return 0: correct, otherwise error
    */
- public int insertBitmapTile(int i_x,int i_y_osm,int i_z,Bitmap tile_bitmap,int i_fetch_bounds) throws IOException
+ public int insertBitmapTile(int i_x,int i_y_osm,int i_z,Bitmap tile_bitmap,int i_force_unique,int i_fetch_bounds) throws IOException
  { // i_rc= correct, otherwise error
   int i_rc=0;
   try
@@ -216,8 +216,8 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler
   catch (IOException e)
   {
    i_rc=1;
-   SpatialDatabasesManager.app_log(3,"["+s_mbtiles_file+"] "+e.getMessage());
-   e.printStackTrace();
+   SpatialDatabasesManager.app_log(3,"["+s_mbtiles_file+"] "+e.getMessage(),e);
+   //   e.printStackTrace();
   }
   return i_rc;
  }

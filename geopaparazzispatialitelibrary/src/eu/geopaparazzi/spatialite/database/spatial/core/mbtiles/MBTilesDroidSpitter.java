@@ -20,6 +20,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import eu.geopaparazzi.spatialite.database.spatial.core.mbtiles.MbTilesMetadata.MetadataParseException;
 import eu.geopaparazzi.spatialite.database.spatial.core.mbtiles.MbTilesMetadata.MetadataValidator;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
@@ -56,8 +57,7 @@ public class MBTilesDroidSpitter
    }
    catch (IOException e)
    {
-    SpatialDatabasesManager.app_log(3,"["+file_mbtiles.getName()+"] "+e.getLocalizedMessage());
-    e.printStackTrace();
+    SpatialDatabasesManager.app_log(3,"["+file_mbtiles.getName()+"] "+e.getMessage(),e);
    }
   }
  }
@@ -80,9 +80,8 @@ public class MBTilesDroidSpitter
   }
   catch (MetadataParseException e)
   {
-   // System.out.println("["+file_mbtiles.getName()+"] "+e.getMessage());
-   SpatialDatabasesManager.app_log(3,"["+file_mbtiles.getName()+"] "+e.getMessage());
-   e.printStackTrace();
+   String s_stackTrace = "["+file_mbtiles.getName()+"] "+e.getMessage()+"\n"+Log.getStackTraceString(e);
+   SpatialDatabasesManager.app_log(3,s_stackTrace);
   }
  }
  // -----------------------------------------------
@@ -208,8 +207,7 @@ public class MBTilesDroidSpitter
   catch (Exception e)
   {
    i_rc=1;
-   SpatialDatabasesManager.app_log(3,"["+file_mbtiles.getName()+"] "+e.getMessage());
-   e.printStackTrace();
+   SpatialDatabasesManager.app_log(3,"["+file_mbtiles.getName()+"] "+e.getMessage(),e);
   }
   return i_rc;
  }
@@ -250,38 +248,55 @@ public class MBTilesDroidSpitter
    s_tile_id=i_z+"-"+i_x+"-"+i_y+"."+s_tile_row_type; // 'tms' or 'osm'
   }
   else
-  { //  This should be a 'Blank' Image :'ff-ee-dd.rgb', check if allready strored in 'images' table
-   final Cursor c = db_mbtiles.rawQuery("SELECT count(tile_id) AS count_tile_id FROM images WHERE (tile_id = '?')", new String[]{s_tile_id});
-   if (c.moveToFirst())
+  { //  This should be a 'Blank' Image :'ff-ee-dd.rgb', check if allready stored in 'images' table
+   String s_sql_query="SELECT count(tile_id) AS count_tile_id FROM images WHERE (tile_id = '"+s_tile_id+"')";
+   // mj10777: A good wms-server to test 'blank-images' (i.e. all pixels of image have the same RGB) is:
+   // http://fbinter.stadt-berlin.de/fb/wms/senstadt/ortsteil?LAYERS=0&FORMAT=image/jpeg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=visual&SRS=EPSG:4326&BBOX=XXX,YYY,XXX,YYY&WIDTH=256&HEIGHT=256
+   // SELECT count(tile_id) FROM images where tile_id like '%.rgb'  : 8
+   // SELECT count(tile_id) FROM map where tile_id like '%.rgb'  : 177
+   try
    {
-    int i_count_tile_id = c.getInt(c.getColumnIndex("count_tile_id"));
-    if (i_count_tile_id > 0)
-    { // We have this image, do not add again
-     b_unique=false;
+    final Cursor c = db_mbtiles.rawQuery(s_sql_query,null);
+    if (c != null)
+    {
+     if (c.moveToFirst())
+     {
+      int i_count_tile_id = c.getInt(c.getColumnIndex("count_tile_id"));
+      if (i_count_tile_id > 0)
+      { // We have this image, do not add again
+       b_unique=false;
+      }
+     }
+     c.close();
     }
    }
-   c.close();
+   catch (Exception e)
+   {
+    i_rc=1;
+    throw new IOException("MBTilesDroidSpitter:insertTile query["+s_sql_query+"] error["+e.getLocalizedMessage()+"] ");
+   }
   }
   String s_mbtiles_field_zoom_level="zoom_level";
   String s_mbtiles_field_tile_column="tile_column";
   String s_mbtiles_field_tile_row="tile_row";
   String s_grid_id="";
   // The use of 'i_force_unique == 1' will probely slow things down to a craw
-  if (i_force_unique == 1)
+  // SpatialDatabasesManager.app_log(1,"insertTile  tile_id["+s_tile_id+"] force_unique["+i_force_unique+"] unique["+b_unique+"]");
+  if ((i_force_unique == 1) && (b_unique))
   { // mj10777: not yet properly tested:
    // - query the images table, searching for 'ba_tile_data'
    // -- if found:
    // --- set  'b_unique=false;'
    // --- replace 's_tile_id' with images.tile_id of found record
-   // ?? another way to query for binary data in java ??
    String s_tile_id_query="";
-   String s_tile_data=get_hex(ba_tile_data);
-   final Cursor c = db_mbtiles.rawQuery("SELECT tile_id FROM images WHERE (hex(tile_data) = '?')", new String[]{s_tile_data});
-   if (c.moveToFirst())
-   { // TODO: do something if multiple results are returned
-    s_tile_id_query= c.getString(c.getColumnIndex("tile_id"));
+   try
+   {
+    s_tile_id_query=search_tile_image(ba_tile_data);
    }
-   c.close();
+   catch (Exception e)
+   {
+    i_rc=1;
+   }
    if (s_tile_id_query != "")
    { // We have this image, do not add again
     b_unique=false;
@@ -336,6 +351,41 @@ public class MBTilesDroidSpitter
  }
  // -----------------------------------------------
  /**
+   * Function to check if image exists in the image-table
+   * - avoids duplicate images
+   * @param ba_tile_data the image-data extracted from the Bitmap.
+   * @return tile_id of found image or blank
+   */
+ private String search_tile_image(byte[] ba_tile_data) throws IOException
+ { // The use of 'i_force_unique == 1' will probely slow things down to a craw
+  String s_tile_id="";
+  String s_tile_data=get_hex(ba_tile_data);
+  String s_sql_query="SELECT tile_id FROM images WHERE (hex(tile_data) = '"+s_tile_data+"')";
+  try
+  {    // ?? another way to query for binary data in java ??
+   final Cursor c = db_mbtiles.rawQuery(s_sql_query,null);
+   if (c != null)
+   {
+    if (c.moveToFirst())
+    { // TODO: do something if multiple results are returned
+     s_tile_id=c.getString(c.getColumnIndex("tile_id"));
+    }
+    c.close();
+   }
+   //
+  }
+  catch (Exception e)
+  {
+   throw new IOException("MBTilesDroidSpitter:search_tile_image query["+s_sql_query+"] error["+e.getLocalizedMessage()+"] ");
+  }
+  if (s_tile_id != "")
+  {
+   SpatialDatabasesManager.app_log(1,"MBTilesDroidSpitter:s earch_tile_image["+file_mbtiles.getName()+"]  tile_id["+s_tile_id+"] [a non-blank unique image has been found]");
+  }
+  return s_tile_id;
+ }
+ // -----------------------------------------------
+ /**
    * Function to check if inserted tile is outside known bounds and min/max zoom, update metadata if desired
    * - i_y_osm must be in is Open-Street-Map 'Slippy Map' notation [will be converted to 'tms' notation if needed]
    * @param i_x the value for tile_column field in the map,tiles Tables and part of the tile_id when image is not blank
@@ -352,13 +402,13 @@ public class MBTilesDroidSpitter
   {
    try
    {
-   fetch_bounds_minmax(1,i_update);
+    fetch_bounds_minmax(1,i_update);
    }
    catch (Exception e)
    {
     i_rc=1;
-    SpatialDatabasesManager.app_log(3,"["+file_mbtiles.getName()+"] "+e.getMessage());
-    e.printStackTrace();
+    SpatialDatabasesManager.app_log(3,"["+file_mbtiles.getName()+"] "+e.getMessage(),e);
+    // e.printStackTrace()
    }
    return i_rc;
   }
@@ -376,8 +426,7 @@ public class MBTilesDroidSpitter
     }
     catch (Exception e)
     {
-     SpatialDatabasesManager.app_log(3,"["+file_mbtiles.getName()+"] "+e.getMessage());
-     e.printStackTrace();
+     SpatialDatabasesManager.app_log(3,"["+file_mbtiles.getName()+"] "+e.getMessage(),e);
     }
    }
    i_rc=1;
@@ -447,8 +496,7 @@ public class MBTilesDroidSpitter
    {
     sqlite_db.close();
     sqlite_db = null;
-    SpatialDatabasesManager.app_log(3,"["+file_mbtiles.getName()+"] "+e.getMessage());
-    e.printStackTrace();
+    SpatialDatabasesManager.app_log(3,"["+file_mbtiles.getName()+"] "+e.getMessage(),e);
     i_rc=2;
     return i_rc;
    }
@@ -638,9 +686,9 @@ public class MBTilesDroidSpitter
     {
      String[] sa_splitted = s_zoom_min_max.split(",");
      if (sa_splitted.length == 2)
-     {
+     { // only the last record (with min/max zoom) will be used
       String s_minzoom=sa_splitted[0];
-      String s_maxzoom=sa_splitted[0];
+      String s_maxzoom=sa_splitted[1];
       if ((s_minzoom != "") && (s_maxzoom != ""))
       {
        sa_splitted = s_bounds_tiles.split(",");
@@ -649,6 +697,7 @@ public class MBTilesDroidSpitter
         update_metadata.put("bounds",s_bounds_tiles);
         update_metadata.put("minzoom",s_minzoom);
         update_metadata.put("maxzoom",s_maxzoom);
+        // SpatialDatabasesManager.app_log(1,"fetch_bounds_minmax  bounds["+s_bounds_tiles+"] minzoom["+s_minzoom+"] maxzoom["+s_maxzoom+"]");
        }
       }
      }
@@ -663,8 +712,7 @@ public class MBTilesDroidSpitter
    }
    catch (Exception e)
    {
-    SpatialDatabasesManager.app_log(3,"["+file_mbtiles.getName()+"] "+e.getMessage());
-    e.printStackTrace();
+    SpatialDatabasesManager.app_log(3,"["+file_mbtiles.getName()+"] "+e.getMessage(),e);
    }
   }
   return update_metadata;
@@ -814,9 +862,7 @@ public class MBTilesDroidSpitter
   {
    for (int i=0;i<rgb.length;i++)
    {
-    String s_rgb_value=Integer.toHexString((byte)rgb[i]);
-    if (s_rgb_value.length() < 2)
-     s_rgb_value="0"+s_rgb_value;
+    String s_rgb_value=String.format("%02x", (0xFF & rgb[i])); // .toUpperCase();
     if ((i_parm == 1) && (i < (rgb.length-1)))
      s_rgb_value=s_rgb_value+"-";
     s_rgb=s_rgb+s_rgb_value;

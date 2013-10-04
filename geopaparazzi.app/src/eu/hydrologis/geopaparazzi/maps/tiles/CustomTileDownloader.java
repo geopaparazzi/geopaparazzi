@@ -69,6 +69,8 @@ public class CustomTileDownloader extends TileDownloader {
     private String s_description;  // mbtiles specific
     private String s_format;  // mbtiles specific
     private String s_tile_row_type="tms"; // mbtiles specific
+    private int i_force_unique=0;
+    private int i_force_bounds=1; // after each insert, update bounds and min/max zoom levels
     private MbtilesDatabaseHandler mbtiles_db = null;
     private HashMap<String,String> mbtiles_metadata = null;
 
@@ -216,6 +218,32 @@ public class CustomTileDownloader extends TileDownloader {
                   // use default: handle exception
                  }
                 }
+                if (line.startsWith("force_unique"))
+                { // will force mbtiles to check image is unique per insert [blank images are already determined and not checked]
+                 try
+                 {
+                  i_force_unique = Integer.parseInt(value);
+                  if ((i_force_unique < 0) || (i_force_unique > 1))
+                   i_force_unique=0;
+                 }
+                 catch (Exception e)
+                 {
+                  i_force_unique=0;
+                 }
+                }
+                if (line.startsWith("force_bounds"))
+                { // will force mbtiles to check and update bounds and min/max zoom per insert
+                 try
+                 {
+                  i_force_bounds = Integer.parseInt(value);
+                  if ((i_force_bounds < 0) || (i_force_bounds > 1))
+                   i_force_bounds=0;
+                 }
+                 catch (Exception e)
+                 {
+                  i_force_bounds=0;
+                 }
+                }
             }
         }
         this.centerX = center[0];
@@ -341,25 +369,14 @@ public class CustomTileDownloader extends TileDownloader {
             {
              if (mbtiles_db != null)
              { // we have a valid image, store this to the active mbtiles.db
-              int i_pixel=0;
-              for(int i=1;i<pixels.length;i++)
-              {
-               if (pixels[i-1] != pixels[i])
-               {
-                i_pixel++;
-                i=pixels.length;
-               }
-              }
-              if (i_pixel > 0)
-              { // only when they are not the same color [this must be done before recycle() is called]
+              // [this must be done before recycle() is called]
               // decodedBitmap == ARGB_8888 ; bitmap == RGB_565
-               mbtiles_db.insertBitmapTile(i_tile_x,i_tile_y_osm,i_zoom,decodedBitmap,0);
-              }
+              mbtiles_db.insertBitmapTile(i_tile_x,i_tile_y_osm,i_zoom,decodedBitmap,i_force_unique,i_force_bounds);
               // SpatialDatabasesManager.app_log(-1,"CustomTileDownloader:executeJob:mbtiles_db tile["+i_zoom+"/"+i_tile_x+"/"+i_tile_y_osm+"] saved");
              }
-                // copy all pixels from the decoded bitmap to the color array
-                decodedBitmap.getPixels(this.pixels, 0, Tile.TILE_SIZE, 0, 0, Tile.TILE_SIZE, Tile.TILE_SIZE);
-                decodedBitmap.recycle();
+             // copy all pixels from the decoded bitmap to the color array
+             decodedBitmap.getPixels(this.pixels, 0, Tile.TILE_SIZE, 0, 0, Tile.TILE_SIZE, Tile.TILE_SIZE);
+             decodedBitmap.recycle();
             } else {
                 for( int i = 0; i < pixels.length; i++ ) {
                     pixels[i] = Color.WHITE;

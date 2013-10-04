@@ -30,6 +30,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
+// import android.util.Log;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
@@ -104,8 +105,11 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
             db.open(spatialDbFile.getAbsolutePath(), jsqlite.Constants.SQLITE_OPEN_READWRITE
                     | jsqlite.Constants.SQLITE_OPEN_CREATE);
             fileName = spatialDbFile.getName();
-        } catch (Exception e) {
-            e.printStackTrace();
+        }
+        catch (Exception e)
+        {
+         SpatialDatabasesManager.app_log(3,"["+dbPath+"] "+e.getMessage(),e);
+         //   e.printStackTrace();
         }
     }
 
@@ -379,8 +383,11 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                 if (centerStmt != null)
                     centerStmt.close();
             }
-        } catch (java.lang.Exception e) {
-            e.printStackTrace();
+        }
+        catch (java.lang.Exception e)
+        {
+         SpatialDatabasesManager.app_log(3,"["+fileName+"] "+e.getMessage(),e);
+         //   e.printStackTrace();
         }
     }
 

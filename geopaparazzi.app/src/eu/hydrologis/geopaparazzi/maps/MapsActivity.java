@@ -55,6 +55,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -228,11 +229,19 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
        if ((tileSourceName.length() != 0) && (check_file.exists()) && ((filePath.endsWith(".mbtiles")) || (filePath.endsWith(".map"))))
        { // select a offline .mbtiles to replace a online map[tileSourceName] without internet connection
         if (tileSourceName != FileUtilities.getNameWithoutExtention(check_file))
-        {
+        { // mj10777: PROBLEM: once set we cannot change to any other offline map
          if (filePath.endsWith(".map"))
           tileSourceName=""; // for some reason this must be empty for .map ..
-          else
-           tileSourceName=FileUtilities.getNameWithoutExtention(check_file); // but not dot mbtiles.
+         else
+         {
+          tileSourceName=FileUtilities.getNameWithoutExtention(check_file); // but not .mbtiles.
+          // filePath=""; // for some reason this must be empty for .mbtiles ..
+         }
+         // filePath="";
+         // Editor editor = preferences.edit();
+         // editor.putString(Constants.PREFS_KEY_TILESOURCE,tileSourceName);
+         // editor.putString(Constants.PREFS_KEY_TILESOURCE_FILE,filePath);
+         // editor.commit();
          SpatialDatabasesManager.app_log(-1,"MapActivity.onCreate[changed] tileSource["+tileSourceName+"] filePath["+filePath+"]");
         }
        }
@@ -301,7 +310,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
           maxZoomLevel = mapGenerator.getZoomLevelMax();
           // mj10777: i_rc=0=inside valid area/zoom ; i_rc > 0 outside area or zoom ; i_parm=0 no corrections ; 1= correct mapCenterLocation values.
           checkCenterLocation(mapCenterLocation,1) ;
-          SpatialDatabasesManager.app_log(-1,"MapActivity.onCreate Map["+filePath+"] zoom_min_max["+minZoomLevel+","+maxZoomLevel+"]");
+          SpatialDatabasesManager.app_log(-1,"MapActivity.onCreate: .map["+filePath+"] zoom_min_max["+minZoomLevel+","+maxZoomLevel+"]");
          }
          else
          {
@@ -312,7 +321,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
           mapGenerator = custom_tile;
           minZoomLevel = mapGenerator.getStartZoomLevel();
           maxZoomLevel = mapGenerator.getZoomLevelMax();
-          SpatialDatabasesManager.app_log(-1,"MapActivity.onCreate CustomTileDownloader["+filePath+"] zoom_min_max["+minZoomLevel+","+maxZoomLevel+"]");
+          SpatialDatabasesManager.app_log(-1,"MapActivity.onCreate Custom.mapurl["+filePath+"] zoom_min_max["+minZoomLevel+","+maxZoomLevel+"]");
          }
         }
         catch (Exception e)

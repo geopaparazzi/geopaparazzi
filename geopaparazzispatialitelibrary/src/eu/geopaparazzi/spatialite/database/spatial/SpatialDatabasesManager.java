@@ -51,9 +51,43 @@ public class SpatialDatabasesManager {
     /**
     * Function for global logging
     * - s_log_tag value will be shown in as TAG in logcat [default Constants.GEOPAPARAZZI;]
-    *  -- change values in GeoPaparazziActivity.onCreate()
-    *  use 'import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;' where needed
-    * @param i_parm -1=use global value ; 0=no message ; 1=info ; 2=warning ;3=error ; 4=debug
+    *  -- change values in GeoPaparazziActivity.onCreate((
+    *  use 'import eu.geogeomcoll.spatialite.database.spatial.SpatialDatabasesManager;' where needed
+    * @param i_parm -1=use global value ; 0=no message ; 1=info ; 2=warning ;3=error ; 4=debug ; 5=What a Terrible Failure!” ; 6=verbose
+    * @param s_message message text to be shown in logcat
+    * @param exception result of Log.getStackTraceString(exception) will be added to the message [jsqlite,java.lang and java.io.IOException]
+    */
+    public static void app_log(int i_parm,String s_message,jsqlite.Exception exception)
+    {
+     if (exception != null)
+     {
+      s_message+="\n"+Log.getStackTraceString(exception);
+     }
+     app_log(i_parm,s_message);
+    }
+    public static void app_log(int i_parm,String s_message,java.lang.Exception exception)
+    {
+     if (exception != null)
+     {
+      s_message+="\n"+Log.getStackTraceString(exception);
+     }
+     app_log(i_parm,s_message);
+    }
+    public static void app_log(int i_parm,String s_message,java.io.IOException exception)
+    {
+     if (exception != null)
+     {
+      s_message+="\n"+Log.getStackTraceString(exception);
+     }
+     app_log(i_parm,s_message);
+    }
+    // -----------------------------------------------
+    /**
+    * Function for global logging
+    * - s_log_tag value will be shown in as TAG in logcat [default Constants.GEOPAPARAZZI;]
+    *  -- change values in GeoPaparazziActivity.onCreate((
+    *  use 'import eu.geogeomcoll.spatialite.database.spatial.SpatialDatabasesManager;' where needed
+    * @param i_parm -1=use global value ; 0=no message ; 1=info ; 2=warning ;3=error ; 4=debug ; 5=What a Terrible Failure!” ; 6=verbose
     * @param s_message message text to be shown in logcat
     */
     public static void app_log(int i_parm,String s_message)
@@ -67,17 +101,23 @@ public class SpatialDatabasesManager {
       case 0:
        // ignore
       break;
-      case 2:
+      case 2: // method is used to log warnings.
        Log.w(s_log_tag,s_message);
       break;
-      case 3:
+      case 3: // method is used to log errors.
        Log.e(s_log_tag,s_message);
       break;
-      case 4:
+      case 4: // method is used to log debug messages.
        Log.d(s_log_tag,s_message);
       break;
+      case 5: // method is used to log terrible failures that should never happen. (“WTF” stands for “What a Terrible Failure!” of course.)
+       Log.wtf(s_log_tag,s_message);
+      break;
+      case 6: // method is used to log verbose messages.
+       Log.v(s_log_tag,s_message);
+      break;
       case 1:
-      default:
+      default: // method is used to log informational messages.
        Log.i(s_log_tag,s_message);
       break;
      }
