@@ -127,9 +127,10 @@ public class GeoPaparazziActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         try {
-            SpatialDatabasesManager.s_log_tag="mj10777";
-             // SpatialDatabasesManager.s_log_tag=Constants.GEOPAPARAZZI;
-            SpatialDatabasesManager.i_log_debug=1;
+            // mj10777: default tag 'geopaparazzi' default 'i_log_debug' = 0 [when used with '-1' : no messages will be shown]
+            SpatialDatabasesManager.s_log_tag=Constants.GEOPAPARAZZI;
+            // SpatialDatabasesManager.s_log_tag="mj10777";
+            // SpatialDatabasesManager.i_log_debug=1;
             initializeResourcesManager();
 
             fileSourcesMap = new HashMap<String, String>();
@@ -555,7 +556,8 @@ public class GeoPaparazziActivity extends Activity {
         return true;
     }
 
-    public boolean onMenuItemSelected( int featureId, MenuItem item ) {
+    public boolean onMenuItemSelected( int featureId, MenuItem item )
+    {
         switch( item.getItemId() ) {
         case MENU_ABOUT:
             Intent intent = new Intent(this, AboutActivity.class);
@@ -603,10 +605,8 @@ public class GeoPaparazziActivity extends Activity {
                                 null);
                         return true;
                     }
-
                     final List<String> mapPaths = new ArrayList<String>();
                     final List<String> mapNames = new ArrayList<String>();
-
                     String s_extention=".map";
                     List<File> search_files=new ArrayList<File>();
                     FileUtilities.search_directory_recursive(mapsDir,s_extention,search_files);
@@ -620,7 +620,7 @@ public class GeoPaparazziActivity extends Activity {
                     else
                     {
                      Collections.sort(search_files);
-                     for( File file : search_files)
+                     for(File file : search_files)
                      {
                       String file_name = FileUtilities.getNameWithoutExtention(file);
                       // SpatialDatabasesManager.app_log(-1,"GeoGeomCollActivity.onMenuItemSelected: "+s_extention+"["+file_name+"]");
@@ -664,7 +664,6 @@ public class GeoPaparazziActivity extends Activity {
         }
         return super.onMenuItemSelected(featureId, item);
     }
-
     /**
      * Sets the tilesource.
      *

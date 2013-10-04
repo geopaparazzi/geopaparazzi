@@ -420,7 +420,7 @@ public class CustomTileDownloader extends TileDownloader {
     }
     // -----------------------------------------------
     /**
-     * Function to retrieve Tile byte[] from the mbtiles Database [for 'SpatialiteDatabaseHandler']
+     *Function to check and correct bounds / zoom level [for 'CustomDownloader']
      * - i_y_osm must be in is Open-Street-Map 'Slippy Map' notation [will be converted to 'tms' notation if needed]
      * @param mapCenterLocation [point/zoom to check] result of PositionUtilities.getMapCenterFromPreferences(preferences,true,true);
      * @param i_parm 1= change mapCenterLocation values if out of range

@@ -188,7 +188,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         setContentView(R.layout.mapsview);
 
         registerReceiver(batteryReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-
      preferences = PreferenceManager.getDefaultSharedPreferences(this);
      // mj10777: .mbtiles,.map and .mapurl files may know there bounds and desired center point
      // - 'checkCenterLocation' will change this value if out of range
@@ -220,32 +219,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
       boolean b_map_file=false;
       String tileSourceName = preferences.getString(Constants.PREFS_KEY_TILESOURCE, ""); //$NON-NLS-1$
       String filePath = preferences.getString(Constants.PREFS_KEY_TILESOURCE_FILE, ""); //$NON-NLS-1$
-      SpatialDatabasesManager.app_log(-1,"MapActivity.onCreate tileSource["+tileSourceName+"] filePath["+filePath+"]");
+      // SpatialDatabasesManager.app_log(-1,"MapActivity.onCreate tileSource["+tileSourceName+"] filePath["+filePath+"]");
       MapGeneratorInternal mapGeneratorInternal = null;
-      if (filePath != null)
-      { // replace a ONLINE TileSource, where a OFFLINE Source [mbtiles or map] has be selected due to a missing Internet connection.
-       File check_file=new File(filePath);
-       // the extentions should correspond to the values used in GeoPaparazziActivity.onMenuItemSelected
-       if ((tileSourceName.length() != 0) && (check_file.exists()) && ((filePath.endsWith(".mbtiles")) || (filePath.endsWith(".map"))))
-       { // select a offline .mbtiles to replace a online map[tileSourceName] without internet connection
-        if (tileSourceName != FileUtilities.getNameWithoutExtention(check_file))
-        { // mj10777: PROBLEM: once set we cannot change to any other offline map
-         if (filePath.endsWith(".map"))
-          tileSourceName=""; // for some reason this must be empty for .map ..
-         else
-         {
-          tileSourceName=FileUtilities.getNameWithoutExtention(check_file); // but not .mbtiles.
-          // filePath=""; // for some reason this must be empty for .mbtiles ..
-         }
-         // filePath="";
-         // Editor editor = preferences.edit();
-         // editor.putString(Constants.PREFS_KEY_TILESOURCE,tileSourceName);
-         // editor.putString(Constants.PREFS_KEY_TILESOURCE_FILE,filePath);
-         // editor.commit();
-         SpatialDatabasesManager.app_log(-1,"MapActivity.onCreate[changed] tileSource["+tileSourceName+"] filePath["+filePath+"]");
-        }
-       }
-      }
       try
       {
        mapGeneratorInternal = MapGeneratorInternal.valueOf(tileSourceName);
@@ -272,12 +247,12 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         maxZoomLevel = rasterTable.getMaxZoom();
         // mj10777: i_rc=0=inside valid area/zoom ; i_rc > 0 outside area or zoom ; i_parm=0 no corrections ; 1= correct mapCenterLocation values.
         rasterTable.checkCenterLocation(mapCenterLocation,1) ;
-        SpatialDatabasesManager.app_log(-1,"MapActivity.onCreate GeopackageTileDownloader rasterTable["+rasterTable.getTableName()+"] zoom_min_max["+minZoomLevel+","+maxZoomLevel+"]");
+        // SpatialDatabasesManager.app_log(-1,"MapActivity.onCreate GeopackageTileDownloader rasterTable["+rasterTable.getTableName()+"] zoom_min_max["+minZoomLevel+","+maxZoomLevel+"]");
        }
        catch (jsqlite.Exception e)
        {
-        e.printStackTrace();
-        // SpatialDatabasesManager.app_log(-1,"MapActivity.onCreate GeopackageTileDownloader rasterTable[failed]");
+        // e.printStackTrace();
+        SpatialDatabasesManager.app_log(2,"MapActivity.onCreate GeopackageTileDownloader rasterTable[failed]",e);
         mapGenerator = createMapGenerator(MapGeneratorInternal.MAPNIK);
        }
       }
@@ -310,7 +285,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
           maxZoomLevel = mapGenerator.getZoomLevelMax();
           // mj10777: i_rc=0=inside valid area/zoom ; i_rc > 0 outside area or zoom ; i_parm=0 no corrections ; 1= correct mapCenterLocation values.
           checkCenterLocation(mapCenterLocation,1) ;
-          SpatialDatabasesManager.app_log(-1,"MapActivity.onCreate: .map["+filePath+"] zoom_min_max["+minZoomLevel+","+maxZoomLevel+"]");
+          // SpatialDatabasesManager.app_log(-1,"MapActivity.onCreate: .map["+filePath+"] zoom_min_max["+minZoomLevel+","+maxZoomLevel+"]");
          }
          else
          {
@@ -321,12 +296,12 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
           mapGenerator = custom_tile;
           minZoomLevel = mapGenerator.getStartZoomLevel();
           maxZoomLevel = mapGenerator.getZoomLevelMax();
-          SpatialDatabasesManager.app_log(-1,"MapActivity.onCreate Custom.mapurl["+filePath+"] zoom_min_max["+minZoomLevel+","+maxZoomLevel+"]");
+          // SpatialDatabasesManager.app_log(-1,"MapActivity.onCreate Custom.mapurl["+filePath+"] zoom_min_max["+minZoomLevel+","+maxZoomLevel+"]");
          }
         }
         catch (Exception e)
         {
-         // SpatialDatabasesManager.app_log(-1,"MapActivity.onCreate createMapGenerator[MAPNIK]["+filePath+"] [failed]");
+         // SpatialDatabasesManager.app_log(-1,"MapActivity.onCreate createMapGenerator[MAPNIK]["+filePath+"] [failed] [-1-]");
          mapGenerator = createMapGenerator(MapGeneratorInternal.MAPNIK);
         }
        }
@@ -335,11 +310,11 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         if (mapGeneratorInternal != null)
         {
          mapGenerator = createMapGenerator(mapGeneratorInternal);
-         SpatialDatabasesManager.app_log(-1,"MapActivity.onCreate createMapGenerator[mapGeneratorInternal] [being used]");
+         // SpatialDatabasesManager.app_log(-1,"MapActivity.onCreate createMapGenerator[mapGeneratorInternal] [being used]");
         }
         else
         {
-         // SpatialDatabasesManager.app_log(-1,"MapActivity.onCreate createMapGenerator[MAPNIK] [failed]");
+         // SpatialDatabasesManager.app_log(-1,"MapActivity.onCreate createMapGenerator[MAPNIK] [failed] [-2-]");
          mapGenerator = createMapGenerator(MapGeneratorInternal.MAPNIK);
         }
        }
@@ -562,8 +537,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     }
     // -----------------------------------------------
     /**
-     * Function to retrieve Tile byte[] from the mbtiles Database [for 'SpatialiteDatabaseHandler']
-     * - i_y_osm must be in is Open-Street-Map 'Slippy Map' notation [will be converted to 'tms' notation if needed]
+     * Function to check and correct bounds / zoom level [for 'Map-Files only']
      * @param mapCenterLocation [point/zoom to check] result of PositionUtilities.getMapCenterFromPreferences(preferences,true,true);
      * @param i_parm 1= change mapCenterLocation values if out of range
      * @return 0=inside valid area/zoom ; i_rc > 0 outside area or zoom ; i_parm=0 no corrections ; 1= correct tileBounds values.
@@ -572,6 +546,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     { // mj10777: i_rc=0=inside valid area/zoom ; i_rc > 0 outside area or zoom ; i_parm=0 no corrections ; 1= correct mapCenterLocation values.
      int i_rc=0; // inside area
       // MapDatabase().openFile(File).getMapFileInfo()
+      if (this.mapView.getMapDatabase() == null)
+       return 100; // supported only with map files
      MapFileInfo mapFileInfo = this.mapView.getMapDatabase().getMapFileInfo();
      double bounds_west=(double)(mapFileInfo.boundingBox.getMinLongitude());
      double bounds_south=(double)(mapFileInfo.boundingBox.getMinLatitude());

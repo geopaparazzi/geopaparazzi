@@ -94,8 +94,7 @@ public class SpatialRasterTable {
     }
     // -----------------------------------------------
     /**
-     * Function to retrieve Tile byte[] from the mbtiles Database [for 'SpatialiteDatabaseHandler']
-     * - i_y_osm must be in is Open-Street-Map 'Slippy Map' notation [will be converted to 'tms' notation if needed]
+     * Function to check and correct bounds / zoom level [for 'SpatialiteDatabaseHandler']
      * @param mapCenterLocation [point/zoom to check] result of PositionUtilities.getMapCenterFromPreferences(preferences,true,true);
      * @param i_parm 1= change mapCenterLocation values if out of range
      * @return 0=inside valid area/zoom ; i_rc > 0 outside area or zoom ; i_parm=0 no corrections ; 1= correct tileBounds values.
