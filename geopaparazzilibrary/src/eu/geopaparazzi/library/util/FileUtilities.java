@@ -249,30 +249,27 @@ public class FileUtilities {
         }
     }
     /**
-     * Recursive earch of files with a specific extention.
-     * - this can be called multiple times, adding to the same list
-     * @param search_dir the directory to read.
-     * @param s_extention the extention of the files to search for.
-     * @param return_files the List<File> where the found files will be added to.
+     * Recursive search of files with a specific extension.
+     * 
+     * <p>This can be called multiple times, adding to the same list
+     * 
+     * @param searchDir the directory to read.
+     * @param searchExtention the extension of the files to search for.
+     * @param returnFiles the List<File> where the found files will be added to.
      * @return the number of files found.
      */
-    public static int search_directory_recursive(File search_dir,String s_extention,List<File> return_files)
-    { // search maps-dirctory for a specific map-type (extention)
-     File[] list_files = search_dir.listFiles();
-     for( File this_file : list_files )
-     { // mj10777: collect desired extention
-      if (this_file.isDirectory())
-      {  // mj10777: read recursive directories inside the sdcard/maps directory
-       search_directory_recursive(this_file,s_extention,return_files);
-      }
-      else
-      {
-       if (this_file.getName().endsWith(s_extention))
-       {
-        return_files.add(this_file);
-       }
-      }
-     }
-     return return_files.size();
+    public static int searchDirectoryRecursive( File searchDir, String searchExtention, List<File> returnFiles ) {
+        File[] listFiles = searchDir.listFiles();
+        for( File thisFile : listFiles ) { // mj10777: collect desired extension
+            if (thisFile.isDirectory()) { // mj10777: read recursive directories inside the
+                                           // sdcard/maps directory
+                searchDirectoryRecursive(thisFile, searchExtention, returnFiles);
+            } else {
+                if (thisFile.getName().endsWith(searchExtention)) {
+                    returnFiles.add(thisFile);
+                }
+            }
+        }
+        return returnFiles.size();
     }
 }
