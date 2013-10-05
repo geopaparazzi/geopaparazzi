@@ -88,6 +88,7 @@
   <string name="mapsactivity_enter_bookmark_name">Namen für das neue Lesezeichen eingeben(optional)</string>
   <string name="maptagsactivity_error_reading_tags">Fehler beim Lesen der Tags</string>
   <!--added after 2.3.1-->
+  <string name="mapsactivity_menu_toggle_compass">Öffne Kompass</string>
   <!--added after 2.4.3-->
   <string name="imagesvisibilityToggle">Bildsichtbarkeit umschalten</string>
   <!--added after 2.5.0-->
@@ -113,15 +114,43 @@
   <string name="geopapcloud_user_label">Benutzername</string>
   <string name="geopapcloud_password_label">Kennwort</string>
   <string name="geopapcloud_server_label">Server verbunden zu</string>
+  <string name="exporting_data">Exportieren von Daten</string>
+  <string name="exporting_data_to_the_cloud">Exportieren von Daten in die Cloud.</string>
+  <string name="error_uploadig_project_to_cloud">Ein Fehler ist aufgetreten während des Hochladens des Projekts in die Geopap Cloud</string>
+  <string name="project_succesfully_uploaded_to_cloud">Das Projekt wurde erfolgreich in die Geopap Cloud geladen.</string>
+  <string name="exporting_data_to_kmz">Exportieren von Daten als KMZ</string>
+  <string name="exporting_data_to_gpx">Exportieren von Daten als GPX</string>
+  <string name="enter_a_name_for_the_new_project">Geben Sie einen Namen für das Projekt ein</string>
+  <string name="chosen_project_exists">Der gewählte Projektname existiert bereits, bitte wählen Sie einen anderen Namen</string>
+  <string name="select_map_to_use">Wählen Sie eine Karte aus</string>
+  <string name="no_map_file_found_going_to_mapnik">Ein \"map file\" konnte nicht gefunden werden, schalte auf MAPNIK als Tile-Quelle um.</string>
+  <string name="enter_project_description">Geben Sie eine Beschreibung für das Projekt</string>
+  <string name="no_images">Keine Bilder</string>
+  <string name="with_images">Mit Bildern</string>
+  <string name="successfully_imported_bookmarks">Lesezeichen erfolgreich exportiert: </string>
+  <string name="error_bookmarks_import">Ein Fehler ist während des Imports der Lesezeichen aufgetreten!</string>
+  <string name="no_message_sent">Es wurde keine Nachricht gesendet.</string>
   <string name="start">Anfang:</string>
   <string name="end_">Ende:</string>
+  <string name="database_queries">Datenbank-Abfragen</string>
+  <string name="demo_mode">Demo-Modus</string>
+  <string name="select_database_query">Wählen Sie eine Datenbank-Abfrage</string>
+  <string name="launch_query">Starte Abfrage</string>
+  <string name="custom_sdcard_path">Benutzerdefinierter Pfad für SD-Cards</string>
   <string name="opacity">Transparenz</string>
   <string name="size">Größe</string>
+  <string name="notes_properties">Notizen-Eigenschaften</string>
   <string name="visibility">Sichtbarkeit</string>
+  <string name="custom_icon_properties">Benutzerdefinierte Symbol-Eigenschaften</string>
   <string name="labels">Beschriftung</string>
   <string name="show_labels">Zeige Beschriftung</string>
+  <string name="halo">Halo</string>
+  <string name="screen_preferences">Bildschirm-Einstellungen</string>
   <string name="cross_properties">Fadenkreuz</string>
   <string name="color">Farbe</string>
+  <string name="prompt_delete_note">Wollen Sie wirklich die Notiz entfernen? Dieses kann nicht rückgängig gemacht werden.</string>
+  <string name="prompt_delete_bookmark">Wollen Sie wirklich alle Lesezeichen entfernen? Dieses kann nicht rückgängig gemacht werden.</string>
   <string name="keep_use_imperial">Verwende britische Maßeinheiten</string>
   <string name="keep_use_imperial_sum">Verwendet britische Maßeinheiten anstelle von metrischen, soweit möglich.</string>
+  <string name="satellites">Satelliten</string>
 </resources>
