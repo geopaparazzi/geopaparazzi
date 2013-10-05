@@ -11,20 +11,20 @@ public enum MapGeneratorInternal {
      * 
      * @see <a href="http://wiki.openstreetmap.org/wiki/Mapnik">Mapnik</a>
      */
-    MAPNIK,
+    mapnik,
 
     /**
      * Map tiles are downloaded from the OpenCycleMap server.
      * 
      * @see <a href="http://opencyclemap.org/">OpenCycleMap</a>
      */
-    OPENCYCLEMAP;
+    opencyclemap;
 
     public static MapGenerator createMapGenerator( MapGeneratorInternal mapGeneratorInternal ) {
         switch( mapGeneratorInternal ) {
-        case MAPNIK:
+        case mapnik:
             return new MapnikTileDownloader();
-        case OPENCYCLEMAP:
+        case opencyclemap:
             return new OpenCycleMapTileDownloader();
         default:
             return new DatabaseRenderer();

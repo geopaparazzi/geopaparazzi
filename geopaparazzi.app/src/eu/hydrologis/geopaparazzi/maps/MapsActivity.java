@@ -218,7 +218,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                     rasterTable.checkCenterLocation(mapCenterLocation, true);
                 } catch (jsqlite.Exception e) {
                     // e.printStackTrace();
-                    mapGenerator = MapGeneratorInternal.createMapGenerator(MapGeneratorInternal.MAPNIK);
+                    mapGenerator = MapGeneratorInternal.createMapGenerator(MapGeneratorInternal.mapnik);
                 }
             } else {
                 if (tileSourceName.length() == 0 && filePath != null && new File(filePath).exists()) {
@@ -252,13 +252,13 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                             maxZoomLevel = mapGenerator.getZoomLevelMax();
                         }
                     } catch (Exception e) {
-                        mapGenerator = MapGeneratorInternal.createMapGenerator(MapGeneratorInternal.MAPNIK);
+                        mapGenerator = MapGeneratorInternal.createMapGenerator(MapGeneratorInternal.mapnik);
                     }
                 } else {
                     if (mapGeneratorInternal != null) {
                         mapGenerator = MapGeneratorInternal.createMapGenerator(mapGeneratorInternal);
                     } else {
-                        mapGenerator = MapGeneratorInternal.createMapGenerator(MapGeneratorInternal.MAPNIK);
+                        mapGenerator = MapGeneratorInternal.createMapGenerator(MapGeneratorInternal.mapnik);
                     }
                 }
             }

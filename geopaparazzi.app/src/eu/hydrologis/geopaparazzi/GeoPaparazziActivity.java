@@ -22,12 +22,10 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -116,7 +114,7 @@ public class GeoPaparazziActivity extends Activity {
     private boolean sliderIsOpen = false;
     private GpsManager gpsManager;
     private SensorsManager sensorManager;
-    private HashMap<Integer, String> tileSourcesMap = null;
+    private List<String> tileSourcesList = null;
     private HashMap<String, String> fileSourcesMap = null;
     private HashMap<String, SpatialRasterTable> rasterSourcesMap = null;
 
@@ -129,12 +127,11 @@ public class GeoPaparazziActivity extends Activity {
             fileSourcesMap = new HashMap<String, String>();
             rasterSourcesMap = new HashMap<String, SpatialRasterTable>();
 
-            tileSourcesMap = new LinkedHashMap<Integer, String>();
+            tileSourcesList = new ArrayList<String>();
             // tileSourcesMap.put(1001, MapGeneratorInternal.DATABASE_RENDERER.name());
-            tileSourcesMap.put(1002, MapGeneratorInternal.MAPNIK.name());
-            tileSourcesMap.put(1003, MapGeneratorInternal.OPENCYCLEMAP.name());
+            tileSourcesList.add(MapGeneratorInternal.mapnik.name());
+            tileSourcesList.add(MapGeneratorInternal.opencyclemap.name());
             File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
-            int i = 1004;
             if (mapsDir != null && mapsDir.exists()) {
                 String s_extention = ".mapurl";
                 List<File> search_files = new ArrayList<File>();
@@ -142,7 +139,7 @@ public class GeoPaparazziActivity extends Activity {
                 Collections.sort(search_files);
                 for( File file : search_files ) {
                     String name = FileUtilities.getNameWithoutExtention(file);
-                    tileSourcesMap.put(i++, name);
+                    tileSourcesList.add(name);
                     fileSourcesMap.put(name, file.getAbsolutePath());
                 }
                 search_files.clear();
@@ -151,7 +148,7 @@ public class GeoPaparazziActivity extends Activity {
                 Collections.sort(search_files);
                 for( File file : search_files ) {
                     String name = FileUtilities.getNameWithoutExtention(file);
-                    tileSourcesMap.put(i++, name);
+                    tileSourcesList.add(name);
                     fileSourcesMap.put(name, file.getAbsolutePath());
                 }
                 /*
@@ -161,7 +158,7 @@ public class GeoPaparazziActivity extends Activity {
                     List<SpatialRasterTable> spatialRasterTables = SpatialDatabasesManager.getInstance().getSpatialRasterTables(
                             false);
                     for( SpatialRasterTable table : spatialRasterTables ) {
-                        tileSourcesMap.put(i++, table.getTableName());
+                        tileSourcesList.add(table.getTableName());
                         rasterSourcesMap.put(table.getTableName(), table);
                     }
                 } catch (jsqlite.Exception e) {
@@ -171,6 +168,12 @@ public class GeoPaparazziActivity extends Activity {
         } catch (Exception e1) {
             e1.printStackTrace();
         }
+
+        Collections.sort(tileSourcesList, new Comparator<String>(){
+            public int compare( String o1, String o2 ) {
+                return o1.compareToIgnoreCase(o2);
+            }
+        });
 
         checkIncomingGeosms();
         checkIncomingSmsData();
@@ -529,9 +532,9 @@ public class GeoPaparazziActivity extends Activity {
         final SubMenu subMenu = menu.addSubMenu(Menu.NONE, MENU_TILE_SOURCE_ID, 1, R.string.mapsactivity_menu_tilesource)
                 .setIcon(R.drawable.ic_menu_tilesource);
         {
-            Set<Entry<Integer, String>> entrySet = tileSourcesMap.entrySet();
-            for( Entry<Integer, String> entry : entrySet ) {
-                subMenu.add(0, entry.getKey(), Menu.NONE, entry.getValue());
+            int index = 1000;
+            for( String entry : tileSourcesList ) {
+                subMenu.add(0, index++, Menu.NONE, entry);
             }
         }
         menu.add(Menu.NONE, MENU_RESET, 2, R.string.reset).setIcon(android.R.drawable.ic_menu_revert);
