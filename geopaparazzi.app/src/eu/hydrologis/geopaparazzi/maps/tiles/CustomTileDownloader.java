@@ -108,22 +108,32 @@ public class CustomTileDownloader extends TileDownloader {
             if (split != -1) {
                 String value = line.substring(split + 1).trim();
                 if (line.startsWith("url")) {
-
                     int indexOfZ = value.indexOf("ZZZ");
                     if (indexOfZ != -1) {
-                        HOST_NAME = value.substring(0, indexOfZ);
-                        tilePart = value.substring(indexOfZ);
+                        // tile_servers and local files [order of ZZZ,XXX,YY is no longer inportant]
+                        // url=http://mt1.google.com/vt/lyrs=s,h&x=XXX&y=YYY&z=ZZZ
+                        // url=mytilesfolder/ZZZ/XXX/YYY.png
+                        // url=http://tile.openstreetmap.org/ZZZ/XXX/YYY.png
+                        String s_work = value;
+                        if (value.startsWith("http")) { // tms_server
+                            s_work = value.substring(7); // removed: 'http://'
+                        }
+                        int indexOfSeperator = s_work.indexOf("/");
+                        // tms_servern and local files will always have a '/' in them
+                        HOST_NAME = s_work.substring(0, indexOfSeperator);
+                        tilePart = s_work.substring(indexOfSeperator);
+                        if (!value.startsWith("http")) { // local files
+                            PROTOCOL = "file";
+                            HOST_NAME = parentPath + File.separator + HOST_NAME;
+                            isFile = true;
+                        }
                     } else {
-                        HOST_NAME = "http://";
-                    }
-                    if (value.startsWith("http")) {
-                        // remove http
-                        HOST_NAME = HOST_NAME.substring(7);
-                        tilePart = value;
-                    } else {
-                        PROTOCOL = "file";
-                        HOST_NAME = parentPath + File.separator + HOST_NAME;
-                        isFile = true;
+                        // wms_server 
+                        // url=http://fbinter.stadt-berlin.de/fb/wms/senstadt/plz?LAYERS=0,1&FORMAT=image/png&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=visual&SRS=EPSG:4326&BBOX=XXX,YYY,XXX,YYY&WIDTH=256&HEIGHT=256
+                        int indexOfParms = value.indexOf("?"); 
+                        // wms server should always have a '?' in them
+                        HOST_NAME = value.substring(7, indexOfParms); // removed: 'http://'
+                        tilePart = value.substring(indexOfParms);
                     }
                 }
                 if (line.startsWith("minzoom")) {
