@@ -37,6 +37,7 @@
   <string name="gps_logging_distance">Tallennusväli matkassa</string>
   <string name="gps_logging_interval">Tallennusväli ajassa</string>
   <string name="gps_use_android_level">Käytä käyttöjärjestelmätasolla (säästää akkua, tarvitsee uudelleenkäynnistyksen)</string>
+  <string name="gps_use_android_level_summary">Jos valinta on käytössä gps-asetukset ovat voimassa käyttöjärjestelmätasoisesti. Tämä voi säästää akkua, mutta voi aiheuttaa epävakautta pitkää päivitysväliä käytettäessä. Säästääksesi akkua käytä yli 100 sekunnin päivitysväliä.</string>
   <string name="sms_preferences">Tekstiviestiasetukset</string>
   <string name="sms_catcher">Salli paikannus</string>
   <string name="databaseError">Tietokantaan yhdistäminen epäonnistui</string>
@@ -64,6 +65,7 @@
   <string name="text_gpson">GPS aktiivinen</string>
   <string name="debug">Tarkista asetukset</string>
   <string name="enable_debug">Tee tarkistusloki</string>
+  <string name="gpslogging_only">Toiminto on mahdollinen jos gps on käytettävissä.</string>
   <string name="remove_last_note_prompt">Haluatko todella peruuttamattomasti poistaa viime muistiinpanon?</string>
   <string name="installgpsstatus_title">Asenna GPS Status</string>
   <string name="installgpsstatus_message">Geopaparazzi käyttää GPS Status-ohjelmaa kompassi- ja GPS-tietojen näyttämiseen. Haluatko asentaa sen?</string>
@@ -159,7 +161,9 @@
   <string name="imported_notes_and_bookmarks">Tuotiin {0} muistiinpanoa ja {1} kirjanmerkkiä.</string>
   <string name="start">Alku:</string>
   <string name="end_">Loppu:</string>
+  <string name="map_textsize_factor">Karttatekstien kokokerroin</string>
   <string name="keep_screen_on">Pidä näyttö päällä</string>
+  <string name="keep_screen_on_summary">Näyttö päällä jos kojelauta tai kartta näytöllä.</string>
   <string name="the_secret_view">Salainen näkymä</string>
   <string name="database_queries">Tietokantakyselyt</string>
   <string name="demo_mode">Demotila</string>
@@ -173,9 +177,16 @@
   <string name="visibility">Näkyvyys</string>
   <string name="custom_icon_properties">Mukautetut kuvakeasetukset</string>
   <string name="use_custom">Käytä mukautettuja</string>
+  <string name="labels">Lipuke</string>
+  <string name="show_labels">näytä lipukkeet</string>
   <string name="halo">Halo</string>
   <string name="screen_preferences">Näytön asetukset</string>
+  <string name="cross_properties_summary">Muistiinpanot sijoitettu pisteen tietojen perusteella</string>
+  <string name="cross_properties">Keskityspiste</string>
   <string name="color">Väri</string>
   <string name="prompt_delete_note">Oletko varma, että haluat poistaa muistiinpanon? Tätä ei voi kumota.</string>
   <string name="prompt_delete_bookmark">Oletko varma, että haluat poistaa kirjanmerkin? Tätä ei voi kumota.</string>
+  <string name="keep_use_imperial">Käytä imperiaalisia mittayksikköjä</string>
+  <string name="keep_use_imperial_sum">Käytä imperiaalisia mittoja metristen sijasta.</string>
+  <string name="satellites">satelliitit</string>
 </resources>
