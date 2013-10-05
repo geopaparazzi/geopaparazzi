@@ -18,7 +18,10 @@
 package eu.hydrologis.geopaparazzi;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,6 +37,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.AssetManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -79,7 +83,6 @@ import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
 import eu.hydrologis.geopaparazzi.maps.LogMapItem;
 import eu.hydrologis.geopaparazzi.maps.MapsActivity;
-import eu.hydrologis.geopaparazzi.maps.tiles.MapGeneratorInternal;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
 import eu.hydrologis.geopaparazzi.preferences.PreferencesActivity;
 import eu.hydrologis.geopaparazzi.util.Constants;
@@ -128,9 +131,6 @@ public class GeoPaparazziActivity extends Activity {
             rasterSourcesMap = new HashMap<String, SpatialRasterTable>();
 
             tileSourcesList = new ArrayList<String>();
-            // tileSourcesMap.put(1001, MapGeneratorInternal.DATABASE_RENDERER.name());
-            tileSourcesList.add(MapGeneratorInternal.mapnik.name());
-            tileSourcesList.add(MapGeneratorInternal.opencyclemap.name());
             File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
             if (mapsDir != null && mapsDir.exists()) {
                 String s_extention = ".mapurl";
@@ -139,8 +139,10 @@ public class GeoPaparazziActivity extends Activity {
                 Collections.sort(search_files);
                 for( File file : search_files ) {
                     String name = FileUtilities.getNameWithoutExtention(file);
-                    tileSourcesList.add(name);
-                    fileSourcesMap.put(name, file.getAbsolutePath());
+                    if (!ignoreTileSource(name)) {
+                        tileSourcesList.add(name);
+                        fileSourcesMap.put(name, file.getAbsolutePath());
+                    }
                 }
                 search_files.clear();
                 s_extention = ".map";
@@ -148,8 +150,10 @@ public class GeoPaparazziActivity extends Activity {
                 Collections.sort(search_files);
                 for( File file : search_files ) {
                     String name = FileUtilities.getNameWithoutExtention(file);
-                    tileSourcesList.add(name);
-                    fileSourcesMap.put(name, file.getAbsolutePath());
+                    if (!ignoreTileSource(name)) {
+                        tileSourcesList.add(name);
+                        fileSourcesMap.put(name, file.getAbsolutePath());
+                    }
                 }
                 /*
                  * add also geopackage tables
@@ -158,15 +162,43 @@ public class GeoPaparazziActivity extends Activity {
                     List<SpatialRasterTable> spatialRasterTables = SpatialDatabasesManager.getInstance().getSpatialRasterTables(
                             false);
                     for( SpatialRasterTable table : spatialRasterTables ) {
-                        tileSourcesList.add(table.getTableName());
-                        rasterSourcesMap.put(table.getTableName(), table);
+                        String name = table.getTableName();
+                        if (!ignoreTileSource(name)) {
+                            tileSourcesList.add(name);
+                            rasterSourcesMap.put(name, table);
+                        }
                     }
                 } catch (jsqlite.Exception e) {
                     e.printStackTrace();
                 }
             }
-        } catch (Exception e1) {
-            e1.printStackTrace();
+
+            /*
+             * if they do not exist add two mbtiles based mapnik and opencycle
+             * tile sources as default ones. They will automatically 
+             * be backed into a mbtiles db.
+             */
+            if (mapsDir != null && mapsDir.exists()) {
+                AssetManager assetManager = this.getAssets();
+                File mapnikFile = new File(mapsDir, "mapnik.mapurl");
+                if (!mapnikFile.exists()) {
+                    InputStream inputStream = assetManager.open("tilesources/mapnik.mapurl");
+                    OutputStream outputStream = new FileOutputStream(mapnikFile);
+                    FileUtilities.copyFile(inputStream, outputStream);
+                    tileSourcesList.add("mapnik");
+                    fileSourcesMap.put("mapnik", mapnikFile.getAbsolutePath());
+                }
+                File opencycleFile = new File(mapsDir, "opencycle.mapurl");
+                if (!opencycleFile.exists()) {
+                    InputStream inputStream = assetManager.open("tilesources/opencycle.mapurl");
+                    FileOutputStream outputStream = new FileOutputStream(opencycleFile);
+                    FileUtilities.copyFile(inputStream, outputStream);
+                    tileSourcesList.add("opencycle");
+                    fileSourcesMap.put("opencycle", opencycleFile.getAbsolutePath());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         Collections.sort(tileSourcesList, new Comparator<String>(){
@@ -178,6 +210,12 @@ public class GeoPaparazziActivity extends Activity {
         checkIncomingGeosms();
         checkIncomingSmsData();
 
+    }
+    private boolean ignoreTileSource( String name ) {
+        if (name.startsWith("_")) {
+            return true;
+        }
+        return false;
     }
 
     @SuppressWarnings("nls")
@@ -573,27 +611,27 @@ public class GeoPaparazziActivity extends Activity {
             return true;
         default: {
             String name = item.getTitle().toString();
-            MapGeneratorInternal mapGeneratorInternalNew = null;
-            try {
-                mapGeneratorInternalNew = MapGeneratorInternal.valueOf(name);
-            } catch (IllegalArgumentException e) {
-                // ignore, is custom
-            }
-            if (mapGeneratorInternalNew != null) {
-                setTileSource(mapGeneratorInternalNew.toString(), null);
+            // MapGeneratorInternal mapGeneratorInternalNew = null;
+            // try {
+            // mapGeneratorInternalNew = MapGeneratorInternal.valueOf(name);
+            // } catch (IllegalArgumentException e) {
+            // // ignore, is custom
+            // }
+            // if (mapGeneratorInternalNew != null) {
+            // setTileSource(mapGeneratorInternalNew.toString(), null);
+            // } else {
+            String fileSource = fileSourcesMap.get(name);
+            if (fileSource != null) {
+                setTileSource(null, new File(fileSource));
             } else {
-                String fileSource = fileSourcesMap.get(name);
-                if (fileSource != null) {
-                    setTileSource(null, new File(fileSource));
-                } else {
-                    // try raster
-                    SpatialRasterTable spatialRasterTable = rasterSourcesMap.get(name);
-                    if (spatialRasterTable != null) {
-                        setTileSource(spatialRasterTable);
-                    }
+                // try raster
+                SpatialRasterTable spatialRasterTable = rasterSourcesMap.get(name);
+                if (spatialRasterTable != null) {
+                    setTileSource(spatialRasterTable);
                 }
-
             }
+
+            // }
         }
         }
         return super.onMenuItemSelected(featureId, item);
