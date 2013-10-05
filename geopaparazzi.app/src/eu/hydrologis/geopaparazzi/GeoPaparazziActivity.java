@@ -18,6 +18,7 @@
 package eu.hydrologis.geopaparazzi;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -126,77 +127,7 @@ public class GeoPaparazziActivity extends Activity {
 
         try {
             initializeResourcesManager();
-
-            fileSourcesMap = new HashMap<String, String>();
-            rasterSourcesMap = new HashMap<String, SpatialRasterTable>();
-
-            tileSourcesList = new ArrayList<String>();
-            File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
-            if (mapsDir != null && mapsDir.exists()) {
-                String s_extention = ".mapurl";
-                List<File> search_files = new ArrayList<File>();
-                FileUtilities.searchDirectoryRecursive(mapsDir, s_extention, search_files);
-                Collections.sort(search_files);
-                for( File file : search_files ) {
-                    String name = FileUtilities.getNameWithoutExtention(file);
-                    if (!ignoreTileSource(name)) {
-                        tileSourcesList.add(name);
-                        fileSourcesMap.put(name, file.getAbsolutePath());
-                    }
-                }
-                search_files.clear();
-                s_extention = ".map";
-                FileUtilities.searchDirectoryRecursive(mapsDir, s_extention, search_files);
-                Collections.sort(search_files);
-                for( File file : search_files ) {
-                    String name = FileUtilities.getNameWithoutExtention(file);
-                    if (!ignoreTileSource(name)) {
-                        tileSourcesList.add(name);
-                        fileSourcesMap.put(name, file.getAbsolutePath());
-                    }
-                }
-                /*
-                 * add also geopackage tables
-                 */
-                try {
-                    List<SpatialRasterTable> spatialRasterTables = SpatialDatabasesManager.getInstance().getSpatialRasterTables(
-                            false);
-                    for( SpatialRasterTable table : spatialRasterTables ) {
-                        String name = table.getTableName();
-                        if (!ignoreTileSource(name)) {
-                            tileSourcesList.add(name);
-                            rasterSourcesMap.put(name, table);
-                        }
-                    }
-                } catch (jsqlite.Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            /*
-             * if they do not exist add two mbtiles based mapnik and opencycle
-             * tile sources as default ones. They will automatically 
-             * be backed into a mbtiles db.
-             */
-            if (mapsDir != null && mapsDir.exists()) {
-                AssetManager assetManager = this.getAssets();
-                File mapnikFile = new File(mapsDir, "mapnik.mapurl");
-                if (!mapnikFile.exists()) {
-                    InputStream inputStream = assetManager.open("tilesources/mapnik.mapurl");
-                    OutputStream outputStream = new FileOutputStream(mapnikFile);
-                    FileUtilities.copyFile(inputStream, outputStream);
-                    tileSourcesList.add("mapnik");
-                    fileSourcesMap.put("mapnik", mapnikFile.getAbsolutePath());
-                }
-                File opencycleFile = new File(mapsDir, "opencycle.mapurl");
-                if (!opencycleFile.exists()) {
-                    InputStream inputStream = assetManager.open("tilesources/opencycle.mapurl");
-                    FileOutputStream outputStream = new FileOutputStream(opencycleFile);
-                    FileUtilities.copyFile(inputStream, outputStream);
-                    tileSourcesList.add("opencycle");
-                    fileSourcesMap.put("opencycle", opencycleFile.getAbsolutePath());
-                }
-            }
+            handleTileSources();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -210,6 +141,79 @@ public class GeoPaparazziActivity extends Activity {
         checkIncomingGeosms();
         checkIncomingSmsData();
 
+    }
+
+    private void handleTileSources() throws Exception, IOException, FileNotFoundException {
+        fileSourcesMap = new HashMap<String, String>();
+        rasterSourcesMap = new HashMap<String, SpatialRasterTable>();
+
+        tileSourcesList = new ArrayList<String>();
+        File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
+        if (mapsDir != null && mapsDir.exists()) {
+            String s_extention = ".mapurl";
+            List<File> search_files = new ArrayList<File>();
+            FileUtilities.searchDirectoryRecursive(mapsDir, s_extention, search_files);
+            Collections.sort(search_files);
+            for( File file : search_files ) {
+                String name = FileUtilities.getNameWithoutExtention(file);
+                if (!ignoreTileSource(name)) {
+                    tileSourcesList.add(name);
+                    fileSourcesMap.put(name, file.getAbsolutePath());
+                }
+            }
+            search_files.clear();
+            s_extention = ".map";
+            FileUtilities.searchDirectoryRecursive(mapsDir, s_extention, search_files);
+            Collections.sort(search_files);
+            for( File file : search_files ) {
+                String name = FileUtilities.getNameWithoutExtention(file);
+                if (!ignoreTileSource(name)) {
+                    tileSourcesList.add(name);
+                    fileSourcesMap.put(name, file.getAbsolutePath());
+                }
+            }
+            /*
+             * add also geopackage tables
+             */
+            try {
+                List<SpatialRasterTable> spatialRasterTables = SpatialDatabasesManager.getInstance()
+                        .getSpatialRasterTables(false);
+                for( SpatialRasterTable table : spatialRasterTables ) {
+                    String name = table.getTableName();
+                    if (!ignoreTileSource(name)) {
+                        tileSourcesList.add(name);
+                        rasterSourcesMap.put(name, table);
+                    }
+                }
+            } catch (jsqlite.Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        /*
+         * if they do not exist add two mbtiles based mapnik and opencycle
+         * tile sources as default ones. They will automatically 
+         * be backed into a mbtiles db.
+         */
+        if (mapsDir != null && mapsDir.exists()) {
+            AssetManager assetManager = this.getAssets();
+            File mapnikFile = new File(mapsDir, "mapnik.mapurl");
+            if (!mapnikFile.exists()) {
+                InputStream inputStream = assetManager.open("tilesources/mapnik.mapurl");
+                OutputStream outputStream = new FileOutputStream(mapnikFile);
+                FileUtilities.copyFile(inputStream, outputStream);
+                tileSourcesList.add("mapnik");
+                fileSourcesMap.put("mapnik", mapnikFile.getAbsolutePath());
+            }
+            File opencycleFile = new File(mapsDir, "opencycle.mapurl");
+            if (!opencycleFile.exists()) {
+                InputStream inputStream = assetManager.open("tilesources/opencycle.mapurl");
+                FileOutputStream outputStream = new FileOutputStream(opencycleFile);
+                FileUtilities.copyFile(inputStream, outputStream);
+                tileSourcesList.add("opencycle");
+                fileSourcesMap.put("opencycle", opencycleFile.getAbsolutePath());
+            }
+        }
     }
     private boolean ignoreTileSource( String name ) {
         if (name.startsWith("_")) {
@@ -242,7 +246,15 @@ public class GeoPaparazziActivity extends Activity {
                             String[] split = pParameter.split(",");
                             double lat = Double.parseDouble(split[0]);
                             double lon = Double.parseDouble(split[1]);
-                            DaoBookmarks.addBookmark(lon, lat, "GeoSMS position", 16, -1, -1, -1, -1);
+
+                            String msg = "GeoSMS position";
+                            String pathTrim = path.trim();
+                            int firstSPaceIndex = pathTrim.indexOf(' ');
+                            if (firstSPaceIndex != -1) {
+                                msg = pathTrim.substring(0, firstSPaceIndex);
+                            }
+
+                            DaoBookmarks.addBookmark(lon, lat, msg, 16, -1, -1, -1, -1);
                             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
                             PositionUtilities.putMapCenterInPreferences(preferences, lon, lat, 16);
                             Intent mapIntent = new Intent(this, MapsActivity.class);
