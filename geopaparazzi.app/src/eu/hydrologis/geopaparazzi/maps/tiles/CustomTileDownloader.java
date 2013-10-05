@@ -19,9 +19,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.List;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.mapsforge.android.maps.mapgenerator.MapGeneratorJob;
 import org.mapsforge.android.maps.mapgenerator.tiledownloader.TileDownloader;
@@ -35,7 +35,6 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.core.MbtilesDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 
 /**
  * A MapGenerator that downloads tiles from the Mapnik server at OpenStreetMap.
@@ -56,23 +55,23 @@ public class CustomTileDownloader extends TileDownloader {
     private static byte ZOOM_DEFAULT = 0; // mbtiles specific
     private final int minZoom;
     private final int maxZoom;
-    private final int defaultZoom;  // mbtiles specific
+    private final int defaultZoom; // mbtiles specific
     private final double centerX; // wsg84
-    private final double centerY;  // wsg84
-    private final double bounds_west;  // wsg84
-    private final double bounds_east;  // wsg84
-    private final double bounds_north;  // wsg84
-    private final double bounds_south;  // wsg84
+    private final double centerY; // wsg84
+    private final double bounds_west; // wsg84
+    private final double bounds_east; // wsg84
+    private final double bounds_north; // wsg84
+    private final double bounds_south; // wsg84
     private String s_mbtiles_file; // mbtiles specific
-    private File file_mbtiles=null;  // mbtiles specific
-    private String s_name;  // mbtiles specific
-    private String s_description;  // mbtiles specific
-    private String s_format;  // mbtiles specific
-    private String s_tile_row_type="tms"; // mbtiles specific
-    private int i_force_unique=0;
-    private int i_force_bounds=1; // after each insert, update bounds and min/max zoom levels
+    private File file_mbtiles = null; // mbtiles specific
+    private String s_name; // mbtiles specific
+    private String s_description; // mbtiles specific
+    private String s_format; // mbtiles specific
+    private String s_tile_row_type = "tms"; // mbtiles specific
+    private int i_force_unique = 0;
+    private int i_force_bounds = 1; // after each insert, update bounds and min/max zoom levels
     private MbtilesDatabaseHandler mbtiles_db = null;
-    private HashMap<String,String> mbtiles_metadata = null;
+    private HashMap<String, String> mbtiles_metadata = null;
 
     private GeoPoint centerPoint = new GeoPoint(0, 0);
 
@@ -83,10 +82,10 @@ public class CustomTileDownloader extends TileDownloader {
     @SuppressWarnings("nls")
     public CustomTileDownloader( List<String> fileLines, String parentPath ) {
         super();
-        double[] bounds = {-180.0,-85.05113,180,85.05113};
-        double[] center = {0.0,0.0};
-        s_mbtiles_file="";
-        mbtiles_metadata = new LinkedHashMap<String,String>();
+        double[] bounds = {-180.0, -85.05113, 180, 85.05113};
+        double[] center = {0.0, 0.0};
+        s_mbtiles_file = "";
+        mbtiles_metadata = new LinkedHashMap<String, String>();
         if (GPLog.LOG_HEAVY) {
             try {
                 GPLog.addLogEntry("CustomTileDownloader called with:");
@@ -159,124 +158,101 @@ public class CustomTileDownloader extends TileDownloader {
                         type = TILESCHEMA.wms;
                     }
                 }
-                if (line.startsWith("mbtiles"))
-                {
-                 // HOST_NAME = parentPath + File.separator + HOST_NAME;
-                 if (value.startsWith(File.separator))
-                 {
-                  value=value.substring(1,value.length()-2);
-                 }
-                 s_mbtiles_file=parentPath+File.separator+value;
-                 // SpatialDatabasesManager.app_log(-1,"CustomTileDownloader[mbtiles] s_mbtiles_file["+s_mbtiles_file+"]");
-                 if (s_mbtiles_file.length() > 0 )
-                 {
-                  file_mbtiles=new File(s_mbtiles_file);
-                 }
+                if (line.startsWith("mbtiles")) {
+                    // HOST_NAME = parentPath + File.separator + HOST_NAME;
+                    if (value.startsWith(File.separator)) {
+                        value = value.substring(1, value.length() - 2);
+                    }
+                    s_mbtiles_file = parentPath + File.separator + value;
+                    // SpatialDatabasesManager.app_log(-1,"CustomTileDownloader[mbtiles] s_mbtiles_file["+s_mbtiles_file+"]");
+                    if (s_mbtiles_file.length() > 0) {
+                        file_mbtiles = new File(s_mbtiles_file);
+                    }
                 }
-                if (line.startsWith("bounds"))
-                {
-                 try
-                 {
-                  String[] coord = value.split("\\s+"); //$NON-NLS-1$
-                  bounds[0] = Double.parseDouble(coord[0]);
-                  bounds[1] = Double.parseDouble(coord[1]);
-                  bounds[2] = Double.parseDouble(coord[2]);
-                  bounds[3] = Double.parseDouble(coord[3]);
-                 }
-                 catch (NumberFormatException e)
-                 {
-                  bounds = new double[]{-180.0,-85.05113,180,85.05113};
-                 }
+                if (line.startsWith("bounds")) {
+                    try {
+                        String[] coord = value.split("\\s+"); //$NON-NLS-1$
+                        bounds[0] = Double.parseDouble(coord[0]);
+                        bounds[1] = Double.parseDouble(coord[1]);
+                        bounds[2] = Double.parseDouble(coord[2]);
+                        bounds[3] = Double.parseDouble(coord[3]);
+                    } catch (NumberFormatException e) {
+                        bounds = new double[]{-180.0, -85.05113, 180, 85.05113};
+                    }
                 }
-                if (line.startsWith("name"))
-                {
-                 this.s_name=value;
+                if (line.startsWith("name")) {
+                    this.s_name = value;
                 }
-                if (line.startsWith("description"))
-                {
-                 this.s_description=value;
+                if (line.startsWith("description")) {
+                    this.s_description = value;
                 }
-                if (line.startsWith("format"))
-                {
-                 this.s_format=value;
+                if (line.startsWith("format")) {
+                    this.s_format = value;
                 }
-                if (line.startsWith("tile_row_type"))
-                {
-                 if (value.equals("tms") || value.equals("osm"))
-                 {
-                  this.s_tile_row_type=value;
-                 }
+                if (line.startsWith("tile_row_type")) {
+                    if (value.equals("tms") || value.equals("osm")) {
+                        this.s_tile_row_type = value;
+                    }
                 }
-                if (line.startsWith("defaultzoom"))
-                {
-                 try
-                 {
-                  ZOOM_DEFAULT = Byte.valueOf(value);
-                 }
-                 catch (Exception e)
-                 {
-                  // use default: handle exception
-                 }
+                if (line.startsWith("defaultzoom")) {
+                    try {
+                        ZOOM_DEFAULT = Byte.valueOf(value);
+                    } catch (Exception e) {
+                        // use default: handle exception
+                    }
                 }
-                if (line.startsWith("force_unique"))
-                { // will force mbtiles to check image is unique per insert [blank images are already determined and not checked]
-                 try
-                 {
-                  i_force_unique = Integer.parseInt(value);
-                  if ((i_force_unique < 0) || (i_force_unique > 1))
-                   i_force_unique=0;
-                 }
-                 catch (Exception e)
-                 {
-                  i_force_unique=0;
-                 }
+                if (line.startsWith("force_unique")) {
+                    // will force mbtiles to check image is
+                    // unique per insert [blank images are
+                    // already determined and not checked]
+                    try {
+                        i_force_unique = Integer.parseInt(value);
+                        if ((i_force_unique < 0) || (i_force_unique > 1))
+                            i_force_unique = 0;
+                    } catch (Exception e) {
+                        i_force_unique = 0;
+                    }
                 }
-                if (line.startsWith("force_bounds"))
-                { // will force mbtiles to check and update bounds and min/max zoom per insert
-                 try
-                 {
-                  i_force_bounds = Integer.parseInt(value);
-                  if ((i_force_bounds < 0) || (i_force_bounds > 1))
-                   i_force_bounds=0;
-                 }
-                 catch (Exception e)
-                 {
-                  i_force_bounds=0;
-                 }
+                if (line.startsWith("force_bounds")) {
+                    // will force mbtiles to check and update
+                    // bounds and min/max zoom per insert
+                    try {
+                        i_force_bounds = Integer.parseInt(value);
+                        if ((i_force_bounds < 0) || (i_force_bounds > 1))
+                            i_force_bounds = 0;
+                    } catch (Exception e) {
+                        i_force_bounds = 0;
+                    }
                 }
             }
         }
         this.centerX = center[0];
         this.centerY = center[1];
-        this.bounds_west=bounds[0];
-        this.bounds_south=bounds[1];
-        this.bounds_east=bounds[2];
-        this.bounds_north=bounds[3];
+        this.bounds_west = bounds[0];
+        this.bounds_south = bounds[1];
+        this.bounds_east = bounds[2];
+        this.bounds_north = bounds[3];
         this.minZoom = ZOOM_MIN;
         this.maxZoom = ZOOM_MAX;
         if (ZOOM_MIN > ZOOM_DEFAULT)
-         ZOOM_DEFAULT=ZOOM_MIN;
-        this.defaultZoom=ZOOM_DEFAULT;
-        if (s_mbtiles_file.length() > 0 )
-        {
-         if (file_mbtiles.exists())
-         { // this will open an existing mbtiles_db
-          mbtiles_db = new MbtilesDatabaseHandler(file_mbtiles.getAbsolutePath(),null);
-         }
-         else
-         { // this will create the mbtiles_db and set default values
-          mbtiles_metadata.put("name",this.s_name);
-          mbtiles_metadata.put("description",this.s_description);
-          mbtiles_metadata.put("format",this.s_format);
-          mbtiles_metadata.put("tile_row_type",this.s_tile_row_type);
-          String s_bbox=this.bounds_west+","+this.bounds_south+","+this.bounds_east+","+this.bounds_north;
-          mbtiles_metadata.put("bounds",s_bbox);
-          s_bbox=this.centerX+","+this.centerY+","+this.defaultZoom;
-          mbtiles_metadata.put("center",s_bbox);
-          mbtiles_metadata.put("minzoom",Integer.toString(this.minZoom));
-          mbtiles_metadata.put("maxzoom",Integer.toString(this.maxZoom));
-          mbtiles_db = new MbtilesDatabaseHandler(file_mbtiles.getAbsolutePath(),mbtiles_metadata);
-         }
+            ZOOM_DEFAULT = ZOOM_MIN;
+        this.defaultZoom = ZOOM_DEFAULT;
+        if (s_mbtiles_file.length() > 0) {
+            if (file_mbtiles.exists()) { // this will open an existing mbtiles_db
+                mbtiles_db = new MbtilesDatabaseHandler(file_mbtiles.getAbsolutePath(), null);
+            } else { // this will create the mbtiles_db and set default values
+                mbtiles_metadata.put("name", this.s_name);
+                mbtiles_metadata.put("description", this.s_description);
+                mbtiles_metadata.put("format", this.s_format);
+                mbtiles_metadata.put("tile_row_type", this.s_tile_row_type);
+                String s_bbox = this.bounds_west + "," + this.bounds_south + "," + this.bounds_east + "," + this.bounds_north;
+                mbtiles_metadata.put("bounds", s_bbox);
+                s_bbox = this.centerX + "," + this.centerY + "," + this.defaultZoom;
+                mbtiles_metadata.put("center", s_bbox);
+                mbtiles_metadata.put("minzoom", Integer.toString(this.minZoom));
+                mbtiles_metadata.put("maxzoom", Integer.toString(this.maxZoom));
+                mbtiles_db = new MbtilesDatabaseHandler(file_mbtiles.getAbsolutePath(), mbtiles_metadata);
+            }
         }
     }
     public String getHostName() {
@@ -334,13 +310,11 @@ public class CustomTileDownloader extends TileDownloader {
             int i_zoom = tile.zoomLevel;
             int i_tile_x = (int) tile.tileX;
             int i_tile_y_osm = (int) tile.tileY;
-            if (mbtiles_db != null)
-            { // try to retrieve this tile from the active mbtiles.db
-             if (mbtiles_db.getBitmapTile(i_tile_x,i_tile_y_osm,i_zoom,Tile.TILE_SIZE,bitmap))
-             { // tile was found and the bitmap filled, return
-              // SpatialDatabasesManager.app_log(-1,"CustomTileDownloader:executeJob:mbtiles_db tile["+i_zoom+"/"+i_tile_x+"/"+i_tile_y_osm+"] retrieved");
-              return true;
-             }
+            if (mbtiles_db != null) { // try to retrieve this tile from the active mbtiles.db
+                if (mbtiles_db.getBitmapTile(i_tile_x, i_tile_y_osm, i_zoom, Tile.TILE_SIZE, bitmap)) {
+                    // tile was found and the bitmap filled, return
+                    return true;
+                }
             }
             StringBuilder sb = new StringBuilder();
             if (isFile) {
@@ -365,18 +339,16 @@ public class CustomTileDownloader extends TileDownloader {
                 inputStream.close();
             }
             // check if the input stream could be decoded into a bitmap
-            if (decodedBitmap != null)
-            {
-             if (mbtiles_db != null)
-             { // we have a valid image, store this to the active mbtiles.db
-              // [this must be done before recycle() is called]
-              // decodedBitmap == ARGB_8888 ; bitmap == RGB_565
-              mbtiles_db.insertBitmapTile(i_tile_x,i_tile_y_osm,i_zoom,decodedBitmap,i_force_unique,i_force_bounds);
-              // SpatialDatabasesManager.app_log(-1,"CustomTileDownloader:executeJob:mbtiles_db tile["+i_zoom+"/"+i_tile_x+"/"+i_tile_y_osm+"] saved");
-             }
-             // copy all pixels from the decoded bitmap to the color array
-             decodedBitmap.getPixels(this.pixels, 0, Tile.TILE_SIZE, 0, 0, Tile.TILE_SIZE, Tile.TILE_SIZE);
-             decodedBitmap.recycle();
+            if (decodedBitmap != null) {
+                if (mbtiles_db != null) {
+                    // we have a valid image, store this to the active mbtiles.db
+                    // [this must be done before recycle() is called]
+                    // decodedBitmap == ARGB_8888 ; bitmap == RGB_565
+                    mbtiles_db.insertBitmapTile(i_tile_x, i_tile_y_osm, i_zoom, decodedBitmap, i_force_unique, i_force_bounds);
+                }
+                // copy all pixels from the decoded bitmap to the color array
+                decodedBitmap.getPixels(this.pixels, 0, Tile.TILE_SIZE, 0, 0, Tile.TILE_SIZE, Tile.TILE_SIZE);
+                decodedBitmap.recycle();
             } else {
                 for( int i = 0; i < pixels.length; i++ ) {
                     pixels[i] = Color.WHITE;
@@ -387,28 +359,24 @@ public class CustomTileDownloader extends TileDownloader {
             bitmap.setPixels(this.pixels, 0, Tile.TILE_SIZE, 0, 0, Tile.TILE_SIZE, Tile.TILE_SIZE);
             return true;
         } catch (UnknownHostException e) {
-            e.printStackTrace();
             return false;
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
     }
-    // mj10777: this should be renamed 'cleanup() ' when no longer 'final' in TileDownloader
-    public void close()
-    { // cleanup() is final and cannot be used ??
-     if (mbtiles_db != null)
-     {
-      try
-      {
-       mbtiles_db.update_bounds();
-       mbtiles_db.close();
-       mbtiles_db=null;
-      }
-      catch (Exception e)
-      {
-      }
-     }
+
+    // TODO mj10777: check if this is safe after final has been removed from TileDownloader
+    public void cleanup() {
+        if (mbtiles_db != null) {
+            try {
+                mbtiles_db.update_bounds();
+                mbtiles_db.close();
+                mbtiles_db = null;
+            } catch (Exception e) {
+                // ignore
+            }
+        }
     }
     public byte getZoomLevelMax() {
         return ZOOM_MAX;
@@ -418,80 +386,67 @@ public class CustomTileDownloader extends TileDownloader {
         List<String> fileLines = FileUtilities.readfileToList(file);
         return new CustomTileDownloader(fileLines, parentPath);
     }
-    // -----------------------------------------------
+
     /**
-     *Function to check and correct bounds / zoom level [for 'CustomDownloader']
-     * - i_y_osm must be in is Open-Street-Map 'Slippy Map' notation [will be converted to 'tms' notation if needed]
+     * Function to check and correct bounds / zoom level [for 'CustomDownloader']
+     *
+     * <p>i_y_osm must be in is Open-Street-Map 'Slippy Map' notation 
+     * [will be converted to 'tms' notation if needed]
+     *
      * @param mapCenterLocation [point/zoom to check] result of PositionUtilities.getMapCenterFromPreferences(preferences,true,true);
-     * @param i_parm 1= change mapCenterLocation values if out of range
-     * @return 0=inside valid area/zoom ; i_rc > 0 outside area or zoom ; i_parm=0 no corrections ; 1= correct tileBounds values.
+     * @param doCorrectIfOutOfRange if <code>true</code>, change mapCenterLocation values if out of range
+     * @return 0=inside valid area/zoom ; i_rc > 0 outside area or zoom ; 
+     *          i_parm=0 no corrections ; 1= correct tileBounds values.
      */
-    public int checkCenterLocation(double[] mapCenterLocation,int i_parm)
-    {
-     int i_rc=0; // inside area
-     // SpatialDatabasesManager.app_log(-1,"CustomTileDownloader.checkCenterLocation: center_location[x="+mapCenterLocation[0]+" ; y="+mapCenterLocation[1]+" ; z="+mapCenterLocation[2]+"] bbox=["+bounds_west+","+bounds_south+","+bounds_east+","+bounds_north+"]");
-     if (((mapCenterLocation[0] < bounds_west) || (mapCenterLocation[0] > bounds_east)) ||
-          ((mapCenterLocation[1] < bounds_south) || (mapCenterLocation[1] > bounds_north)) ||
-          ((mapCenterLocation[2] < minZoom) || (mapCenterLocation[2] > maxZoom)))
-      {
-       if (((mapCenterLocation[0] >= bounds_west) && (mapCenterLocation[0] <= bounds_east)) &&
-            ((mapCenterLocation[1] >=bounds_south) && (mapCenterLocation[1] <= bounds_north)))
-       { // We are inside the Map-Area, but Zoom is not correct
-        if  (mapCenterLocation[2] < minZoom)
-        {
-         i_rc=1;
-         if (i_parm == 1)
-         {
-          mapCenterLocation[2]=minZoom;
-         }
+    public int checkCenterLocation( double[] mapCenterLocation, boolean doCorrectIfOutOfRange ) {
+        int i_rc = 0; // inside area
+        // SpatialDatabasesManager.app_log(-1,"CustomTileDownloader.checkCenterLocation: center_location[x="+mapCenterLocation[0]+" ; y="+mapCenterLocation[1]+" ; z="+mapCenterLocation[2]+"] bbox=["+bounds_west+","+bounds_south+","+bounds_east+","+bounds_north+"]");
+        if (((mapCenterLocation[0] < bounds_west) || (mapCenterLocation[0] > bounds_east))
+                || ((mapCenterLocation[1] < bounds_south) || (mapCenterLocation[1] > bounds_north))
+                || ((mapCenterLocation[2] < minZoom) || (mapCenterLocation[2] > maxZoom))) {
+            if (((mapCenterLocation[0] >= bounds_west) && (mapCenterLocation[0] <= bounds_east))
+                    && ((mapCenterLocation[1] >= bounds_south) && (mapCenterLocation[1] <= bounds_north))) {
+                // We are inside the Map-Area, but Zoom is not correct
+                if (mapCenterLocation[2] < minZoom) {
+                    i_rc = 1;
+                    if (doCorrectIfOutOfRange) {
+                        mapCenterLocation[2] = minZoom;
+                    }
+                }
+                if (mapCenterLocation[2] > maxZoom) {
+                    i_rc = 2;
+                    if (doCorrectIfOutOfRange) {
+                        mapCenterLocation[2] = maxZoom;
+                    }
+                }
+            } else {
+                if (mapCenterLocation[2] < minZoom) {
+                    i_rc = 11;
+                    if (doCorrectIfOutOfRange) {
+                        mapCenterLocation[2] = minZoom;
+                    }
+                }
+                if (mapCenterLocation[2] > maxZoom) {
+                    i_rc = 12;
+                    if (doCorrectIfOutOfRange) {
+                        mapCenterLocation[2] = maxZoom;
+                    }
+                }
+                if ((mapCenterLocation[0] < bounds_west) || (mapCenterLocation[0] > bounds_east)) {
+                    i_rc = 13;
+                    if (doCorrectIfOutOfRange) {
+                        mapCenterLocation[0] = centerX;
+                    }
+                }
+                if ((mapCenterLocation[1] < bounds_south) || (mapCenterLocation[1] > bounds_north)) {
+                    i_rc = 14;
+                    if (doCorrectIfOutOfRange) {
+                        mapCenterLocation[1] = centerY;
+                    }
+                }
+            }
         }
-        if (mapCenterLocation[2] > maxZoom)
-        {
-         i_rc=2;
-         if (i_parm == 1)
-         {
-          mapCenterLocation[2]=maxZoom;
-         }
-        }
-       }
-       else
-       {
-        if  (mapCenterLocation[2] < minZoom)
-        {
-         i_rc=11;
-         if (i_parm == 1)
-         {
-          mapCenterLocation[2]=minZoom;
-         }
-        }
-        if (mapCenterLocation[2] > maxZoom)
-        {
-         i_rc=12;
-         if (i_parm == 1)
-         {
-          mapCenterLocation[2]=maxZoom;
-         }
-        }
-        if ((mapCenterLocation[0] < bounds_west) || (mapCenterLocation[0] > bounds_east))
-        {
-         i_rc=13;
-         if (i_parm == 1)
-         {
-          mapCenterLocation[0]=centerX;
-         }
-        }
-        if ((mapCenterLocation[1] < bounds_south) || (mapCenterLocation[1] > bounds_north))
-        {
-         i_rc=14;
-         if (i_parm == 1)
-         {
-          mapCenterLocation[1]=centerY;
-         }
-        }
-       }
-       // SpatialDatabasesManager.app_log(-1,"CustomTileDownloader.checkCenterLocation: changed["+i_rc+"] : center_location[x="+mapCenterLocation[0]+" ; y="+mapCenterLocation[1]+" ; z="+mapCenterLocation[2]+"] bbox=["+bounds_west+","+bounds_south+","+bounds_east+","+bounds_north+"]");
-      }
-      return i_rc;
+        return i_rc;
     }
     // public void setMapView( MapView mapView ) {
     // this.mapView = mapView;

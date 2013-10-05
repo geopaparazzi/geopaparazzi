@@ -188,147 +188,108 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         setContentView(R.layout.mapsview);
 
         registerReceiver(batteryReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-     preferences = PreferenceManager.getDefaultSharedPreferences(this);
-     // mj10777: .mbtiles,.map and .mapurl files may know there bounds and desired center point
-     // - 'checkCenterLocation' will change this value if out of range
-     double[] mapCenterLocation = PositionUtilities.getMapCenterFromPreferences(preferences,true,true);
-     // check for screen on
-     boolean keepScreenOn = preferences.getBoolean(Constants.PREFS_KEY_SCREEN_ON, false);
-     if (keepScreenOn)
-     {
-      getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-     }
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        // mj10777: .mbtiles,.map and .mapurl files may know their bounds and desired center point
+        // - 'checkCenterLocation' will change this value if out of range
+        double[] mapCenterLocation = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
+        // check for screen on
+        boolean keepScreenOn = preferences.getBoolean(Constants.PREFS_KEY_SCREEN_ON, false);
+        if (keepScreenOn) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
 
-     /*
-      * create main mapview
-     */
-     mapView = new MapView(this);
-     mapView.setClickable(true);
-     mapView.setBuiltInZoomControls(false);
-     mapView.setOnTouchListener(this);
+        /*
+         * create main mapview
+        */
+        mapView = new MapView(this);
+        mapView.setClickable(true);
+        mapView.setBuiltInZoomControls(false);
+        mapView.setOnTouchListener(this);
 
-     // TODO
-     // boolean persistent = preferences.getBoolean("cachePersistence", false);
-     // int capacity = Math.min(preferences.getInt("cacheSize", FILE_SYSTEM_CACHE_SIZE_DEFAULT),
-     // FILE_SYSTEM_CACHE_SIZE_MAX);
-     // TileCache fileSystemTileCache = this.mapView.getFileSystemTileCache();
-     // fileSystemTileCache.setPersistent(persistent);
-     // fileSystemTileCache.setCapacity(capacity);
-     { // get proper rendering engine
-      MapGenerator mapGenerator;
-      boolean b_map_file=false;
-      String tileSourceName = preferences.getString(Constants.PREFS_KEY_TILESOURCE, ""); //$NON-NLS-1$
-      String filePath = preferences.getString(Constants.PREFS_KEY_TILESOURCE_FILE, ""); //$NON-NLS-1$
-      // SpatialDatabasesManager.app_log(-1,"MapActivity.onCreate tileSource["+tileSourceName+"] filePath["+filePath+"]");
-      MapGeneratorInternal mapGeneratorInternal = null;
-      try
-      {
-       mapGeneratorInternal = MapGeneratorInternal.valueOf(tileSourceName);
-      }
-      catch (IllegalArgumentException e)
-      {
-       // ignore, is custom
-      }
-      SpatialRasterTable rasterTable = null;
-      try
-      {
-       rasterTable = SpatialDatabasesManager.getInstance().getRasterTableByName(tileSourceName);
-      }
-      catch (jsqlite.Exception e1)
-      {
-       e1.printStackTrace();
-      }
-      if (rasterTable != null)
-      {
-       try
-       {
-        mapGenerator = new GeopackageTileDownloader(rasterTable);
-        minZoomLevel = rasterTable.getMinZoom();
-        maxZoomLevel = rasterTable.getMaxZoom();
-        // mj10777: i_rc=0=inside valid area/zoom ; i_rc > 0 outside area or zoom ; i_parm=0 no corrections ; 1= correct mapCenterLocation values.
-        rasterTable.checkCenterLocation(mapCenterLocation,1) ;
-        // SpatialDatabasesManager.app_log(-1,"MapActivity.onCreate GeopackageTileDownloader rasterTable["+rasterTable.getTableName()+"] zoom_min_max["+minZoomLevel+","+maxZoomLevel+"]");
-       }
-       catch (jsqlite.Exception e)
-       {
-        // e.printStackTrace();
-        SpatialDatabasesManager.app_log(2,"MapActivity.onCreate GeopackageTileDownloader rasterTable[failed]",e);
-        mapGenerator = createMapGenerator(MapGeneratorInternal.MAPNIK);
-       }
-      }
-      else
-      {
-       if (tileSourceName.length() == 0 && filePath != null && new File(filePath).exists())
-       {
-        try
-        {
-         if (filePath.endsWith(".map"))
-         {
-          File mapfile = new File(filePath);
-          mapView.setMapFile(mapfile);
-          String nameNoExt = FileUtilities.getNameWithoutExtention(mapfile);
-          File xmlFile = new File(mapfile.getParentFile(), nameNoExt + ".xml"); //$NON-NLS-1$
-          if (xmlFile.exists())
-          {
-           try
-           {
-            mapView.setRenderTheme(xmlFile);
-           }
-           catch (FileNotFoundException e)
-           {
-            // ignore the theme
-           }
-          }
-          mapGenerator = mapView.getMapGenerator();
-          b_map_file=true;
-          minZoomLevel = mapGenerator.getStartZoomLevel();
-          maxZoomLevel = mapGenerator.getZoomLevelMax();
-          // mj10777: i_rc=0=inside valid area/zoom ; i_rc > 0 outside area or zoom ; i_parm=0 no corrections ; 1= correct mapCenterLocation values.
-          checkCenterLocation(mapCenterLocation,1) ;
-          // SpatialDatabasesManager.app_log(-1,"MapActivity.onCreate: .map["+filePath+"] zoom_min_max["+minZoomLevel+","+maxZoomLevel+"]");
-         }
-         else
-         {
-          File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
-          CustomTileDownloader custom_tile = CustomTileDownloader.file2TileDownloader(new File(filePath), mapsDir.getAbsolutePath());
-          // mj10777: i_rc=0=inside valid area/zoom ; i_rc > 0 outside area or zoom ; i_parm=0 no corrections ; 1= correct mapCenterLocation values.
-          custom_tile.checkCenterLocation(mapCenterLocation,1) ;
-          mapGenerator = custom_tile;
-          minZoomLevel = mapGenerator.getStartZoomLevel();
-          maxZoomLevel = mapGenerator.getZoomLevelMax();
-          // SpatialDatabasesManager.app_log(-1,"MapActivity.onCreate Custom.mapurl["+filePath+"] zoom_min_max["+minZoomLevel+","+maxZoomLevel+"]");
-         }
+        // TODO
+        // boolean persistent = preferences.getBoolean("cachePersistence", false);
+        // int capacity = Math.min(preferences.getInt("cacheSize", FILE_SYSTEM_CACHE_SIZE_DEFAULT),
+        // FILE_SYSTEM_CACHE_SIZE_MAX);
+        // TileCache fileSystemTileCache = this.mapView.getFileSystemTileCache();
+        // fileSystemTileCache.setPersistent(persistent);
+        // fileSystemTileCache.setCapacity(capacity);
+        { // get proper rendering engine
+            MapGenerator mapGenerator;
+            boolean b_map_file = false;
+            String tileSourceName = preferences.getString(Constants.PREFS_KEY_TILESOURCE, ""); //$NON-NLS-1$
+            String filePath = preferences.getString(Constants.PREFS_KEY_TILESOURCE_FILE, ""); //$NON-NLS-1$
+            MapGeneratorInternal mapGeneratorInternal = null;
+            try {
+                mapGeneratorInternal = MapGeneratorInternal.valueOf(tileSourceName);
+            } catch (IllegalArgumentException e) {
+                // ignore, is custom
+            }
+            SpatialRasterTable rasterTable = null;
+            try {
+                rasterTable = SpatialDatabasesManager.getInstance().getRasterTableByName(tileSourceName);
+            } catch (jsqlite.Exception e1) {
+                e1.printStackTrace();
+            }
+            if (rasterTable != null) {
+                try {
+                    mapGenerator = new GeopackageTileDownloader(rasterTable);
+                    minZoomLevel = rasterTable.getMinZoom();
+                    maxZoomLevel = rasterTable.getMaxZoom();
+                    rasterTable.checkCenterLocation(mapCenterLocation, true);
+                } catch (jsqlite.Exception e) {
+                    // e.printStackTrace();
+                    mapGenerator = createMapGenerator(MapGeneratorInternal.MAPNIK);
+                }
+            } else {
+                if (tileSourceName.length() == 0 && filePath != null && new File(filePath).exists()) {
+                    try {
+                        if (filePath.endsWith(".map")) {
+                            File mapfile = new File(filePath);
+                            mapView.setMapFile(mapfile);
+                            String nameNoExt = FileUtilities.getNameWithoutExtention(mapfile);
+                            File xmlFile = new File(mapfile.getParentFile(), nameNoExt + ".xml"); //$NON-NLS-1$
+                            if (xmlFile.exists()) {
+                                try {
+                                    mapView.setRenderTheme(xmlFile);
+                                } catch (FileNotFoundException e) {
+                                    // ignore the theme
+                                }
+                            }
+                            mapGenerator = mapView.getMapGenerator();
+                            b_map_file = true;
+                            minZoomLevel = mapGenerator.getStartZoomLevel();
+                            maxZoomLevel = mapGenerator.getZoomLevelMax();
+                            // mj10777: i_rc=0=inside valid area/zoom ; i_rc > 0 outside area or
+                            // zoom ; i_parm=0 no corrections ; 1= correct mapCenterLocation values.
+                            checkCenterLocation(mapCenterLocation, true);
+                        } else {
+                            File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
+                            CustomTileDownloader customTileDownloader = CustomTileDownloader.file2TileDownloader(new File(filePath),
+                                    mapsDir.getAbsolutePath());
+                            customTileDownloader.checkCenterLocation(mapCenterLocation, true);
+                            mapGenerator = customTileDownloader;
+                            minZoomLevel = mapGenerator.getStartZoomLevel();
+                            maxZoomLevel = mapGenerator.getZoomLevelMax();
+                        }
+                    } catch (Exception e) {
+                        mapGenerator = createMapGenerator(MapGeneratorInternal.MAPNIK);
+                    }
+                } else {
+                    if (mapGeneratorInternal != null) {
+                        mapGenerator = createMapGenerator(mapGeneratorInternal);
+                    } else {
+                        mapGenerator = createMapGenerator(MapGeneratorInternal.MAPNIK);
+                    }
+                }
+            }
+            if (!b_map_file) { // with map files mapGenerator has already been added.
+                mapView.setMapGenerator(mapGenerator);
+            }
+            if (maxZoomLevel == -1) {
+                maxZoomLevel = mapView.getMapZoomControls().getZoomLevelMax();
+                minZoomLevel = mapView.getMapZoomControls().getZoomLevelMin();
+            }
         }
-        catch (Exception e)
-        {
-         // SpatialDatabasesManager.app_log(-1,"MapActivity.onCreate createMapGenerator[MAPNIK]["+filePath+"] [failed] [-1-]");
-         mapGenerator = createMapGenerator(MapGeneratorInternal.MAPNIK);
-        }
-       }
-       else
-       {
-        if (mapGeneratorInternal != null)
-        {
-         mapGenerator = createMapGenerator(mapGeneratorInternal);
-         // SpatialDatabasesManager.app_log(-1,"MapActivity.onCreate createMapGenerator[mapGeneratorInternal] [being used]");
-        }
-        else
-        {
-         // SpatialDatabasesManager.app_log(-1,"MapActivity.onCreate createMapGenerator[MAPNIK] [failed] [-2-]");
-         mapGenerator = createMapGenerator(MapGeneratorInternal.MAPNIK);
-        }
-       }
-      }
-      if (!b_map_file)
-      { // with map files mapGenerator has allready been added.
-       mapView.setMapGenerator(mapGenerator);
-      }
-      if (maxZoomLevel == -1)
-      {
-       maxZoomLevel = mapView.getMapZoomControls().getZoomLevelMax();
-       minZoomLevel = mapView.getMapZoomControls().getZoomLevelMin();
-      }
-     }
 
         MapScaleBar mapScaleBar = this.mapView.getMapScaleBar();
 
@@ -337,7 +298,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         if (doImperial) {
             mapScaleBar.setText(TextField.FOOT, " ft"); //$NON-NLS-1$
             mapScaleBar.setText(TextField.MILE, " mi"); //$NON-NLS-1$
-        }else{
+        } else {
             mapScaleBar.setText(TextField.KILOMETER, " km"); //$NON-NLS-1$
             mapScaleBar.setText(TextField.METER, " m"); //$NON-NLS-1$
         }
@@ -356,12 +317,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         rl.addView(mapView, new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
 
         GpsManager.getInstance(this).addListener(this);
-
-        // /* measure tool */
-        // {
-        // mMeasureOverlay = new MeasureToolOverlay(this, mResourceProxy);
-        // this.mapsView.getOverlays().add(mMeasureOverlay);
-        // }
 
         GeoPoint geoPoint = new GeoPoint(mapCenterLocation[1], mapCenterLocation[0]);
         mapView.getController().setZoom((int) mapCenterLocation[2]);
@@ -538,89 +493,80 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     // -----------------------------------------------
     /**
      * Function to check and correct bounds / zoom level [for 'Map-Files only']
+     * 
      * @param mapCenterLocation [point/zoom to check] result of PositionUtilities.getMapCenterFromPreferences(preferences,true,true);
-     * @param i_parm 1= change mapCenterLocation values if out of range
+     * @param doCorrectIfOutOfRange if <code>true</code>, change mapCenterLocation values if out of range.
      * @return 0=inside valid area/zoom ; i_rc > 0 outside area or zoom ; i_parm=0 no corrections ; 1= correct tileBounds values.
      */
-    public int checkCenterLocation(double[] mapCenterLocation,int i_parm)
-    { // mj10777: i_rc=0=inside valid area/zoom ; i_rc > 0 outside area or zoom ; i_parm=0 no corrections ; 1= correct mapCenterLocation values.
-     int i_rc=0; // inside area
-      // MapDatabase().openFile(File).getMapFileInfo()
-      if (this.mapView.getMapDatabase() == null)
-       return 100; // supported only with map files
-     MapFileInfo mapFileInfo = this.mapView.getMapDatabase().getMapFileInfo();
-     double bounds_west=(double)(mapFileInfo.boundingBox.getMinLongitude());
-     double bounds_south=(double)(mapFileInfo.boundingBox.getMinLatitude());
-     double bounds_east=(double)(mapFileInfo.boundingBox.getMaxLongitude());
-     double bounds_north=(double)(mapFileInfo.boundingBox.getMaxLatitude());
-     double centerX=mapFileInfo.boundingBox.getCenterPoint().getLongitude();
-     double centerY=mapFileInfo.boundingBox.getCenterPoint().getLatitude();
-     int maxZoom=this.mapView.getMapZoomControls().getZoomLevelMax();
-     int minZoom=this.mapView.getMapZoomControls().getZoomLevelMin();
-     // SpatialDatabasesManager.app_log(-1,"MapActivity.checkCenterLocation: center_location[x="+mapCenterLocation[0]+" ; y="+mapCenterLocation[1]+" ; z="+mapCenterLocation[2]+"] bbox=["+bounds_west+","+bounds_south+","+bounds_east+","+bounds_north+"]");
-     if (((mapCenterLocation[0] < bounds_west) || (mapCenterLocation[0] > bounds_east)) ||
-          ((mapCenterLocation[1] < bounds_south) || (mapCenterLocation[1] > bounds_north)) ||
-          ((mapCenterLocation[2] < minZoom) || (mapCenterLocation[2] > maxZoom)))
-      {
-       if (((mapCenterLocation[0] >= bounds_west) && (mapCenterLocation[0] <= bounds_east)) &&
-            ((mapCenterLocation[1] >=bounds_south) && (mapCenterLocation[1] <= bounds_north)))
-       { // We are inside the Map-Area, but Zoom is not correct
-        if  (mapCenterLocation[2] < minZoom)
-        {
-         i_rc=1;
-         if (i_parm == 1)
-         {
-          mapCenterLocation[2]=minZoom;
-         }
+    public int checkCenterLocation( double[] mapCenterLocation, boolean doCorrectIfOutOfRange ) {
+        /*
+         * mj10777: i_rc=0=inside valid area/zoom ; i_rc > 0 outside area or zoom ; 
+         * i_parm=0 no corrections ; 1= correct mapCenterLocation values.
+         */
+        int i_rc = 0; // inside area
+        // MapDatabase().openFile(File).getMapFileInfo()
+        if (this.mapView.getMapDatabase() == null)
+            return 100; // supported only with map files
+        MapFileInfo mapFileInfo = this.mapView.getMapDatabase().getMapFileInfo();
+        double bounds_west = (double) (mapFileInfo.boundingBox.getMinLongitude());
+        double bounds_south = (double) (mapFileInfo.boundingBox.getMinLatitude());
+        double bounds_east = (double) (mapFileInfo.boundingBox.getMaxLongitude());
+        double bounds_north = (double) (mapFileInfo.boundingBox.getMaxLatitude());
+        double centerX = mapFileInfo.boundingBox.getCenterPoint().getLongitude();
+        double centerY = mapFileInfo.boundingBox.getCenterPoint().getLatitude();
+        int maxZoom = this.mapView.getMapZoomControls().getZoomLevelMax();
+        int minZoom = this.mapView.getMapZoomControls().getZoomLevelMin();
+        // SpatialDatabasesManager.app_log(-1,"MapActivity.checkCenterLocation: center_location[x="+mapCenterLocation[0]+" ; y="+mapCenterLocation[1]+" ; z="+mapCenterLocation[2]+"] bbox=["+bounds_west+","+bounds_south+","+bounds_east+","+bounds_north+"]");
+        if (((mapCenterLocation[0] < bounds_west) || (mapCenterLocation[0] > bounds_east))
+                || ((mapCenterLocation[1] < bounds_south) || (mapCenterLocation[1] > bounds_north))
+                || ((mapCenterLocation[2] < minZoom) || (mapCenterLocation[2] > maxZoom))) {
+            if (((mapCenterLocation[0] >= bounds_west) && (mapCenterLocation[0] <= bounds_east))
+                    && ((mapCenterLocation[1] >= bounds_south) && (mapCenterLocation[1] <= bounds_north))) {
+                /*
+                 * We are inside the Map-Area, but Zoom is not correct
+                 */
+                if (mapCenterLocation[2] < minZoom) {
+                    i_rc = 1;
+                    if (doCorrectIfOutOfRange) {
+                        mapCenterLocation[2] = minZoom;
+                    }
+                }
+                if (mapCenterLocation[2] > maxZoom) {
+                    i_rc = 2;
+                    if (doCorrectIfOutOfRange) {
+                        mapCenterLocation[2] = maxZoom;
+                    }
+                }
+            } else {
+                if (mapCenterLocation[2] < minZoom) {
+                    i_rc = 11;
+                    if (doCorrectIfOutOfRange) {
+                        mapCenterLocation[2] = minZoom;
+                    }
+                }
+                if (mapCenterLocation[2] > maxZoom) {
+                    i_rc = 12;
+                    if (doCorrectIfOutOfRange) {
+                        mapCenterLocation[2] = maxZoom;
+                    }
+                }
+                if ((mapCenterLocation[0] < bounds_west) || (mapCenterLocation[0] > bounds_east)) {
+                    i_rc = 13;
+                    if (doCorrectIfOutOfRange) {
+                        mapCenterLocation[0] = centerX;
+                    }
+                }
+                if ((mapCenterLocation[1] < bounds_south) || (mapCenterLocation[1] > bounds_north)) {
+                    i_rc = 14;
+                    if (doCorrectIfOutOfRange) {
+                        mapCenterLocation[1] = centerY;
+                    }
+                }
+            }
         }
-        if (mapCenterLocation[2] > maxZoom)
-        {
-         i_rc=2;
-         if (i_parm == 1)
-         {
-          mapCenterLocation[2]=maxZoom;
-         }
-        }
-       }
-       else
-       {
-        if  (mapCenterLocation[2] < minZoom)
-        {
-         i_rc=11;
-         if (i_parm == 1)
-         {
-          mapCenterLocation[2]=minZoom;
-         }
-        }
-        if (mapCenterLocation[2] > maxZoom)
-        {
-         i_rc=12;
-         if (i_parm == 1)
-         {
-          mapCenterLocation[2]=maxZoom;
-         }
-        }
-        if ((mapCenterLocation[0] < bounds_west) || (mapCenterLocation[0] > bounds_east))
-        {
-         i_rc=13;
-         if (i_parm == 1)
-         {
-          mapCenterLocation[0]=centerX;
-         }
-        }
-        if ((mapCenterLocation[1] < bounds_south) || (mapCenterLocation[1] > bounds_north))
-        {
-         i_rc=14;
-         if (i_parm == 1)
-         {
-          mapCenterLocation[1]=centerY;
-         }
-        }
-       }
-       // SpatialDatabasesManager.app_log(-1,"MapActivity.checkCenterLocation: changed["+i_rc+"] : center_location[x="+mapCenterLocation[0]+" ; y="+mapCenterLocation[1]+" ; z="+mapCenterLocation[2]+"] bbox=["+bounds_west+","+bounds_south+","+bounds_east+","+bounds_north+"]");
-      }
-      return i_rc;
+        return i_rc;
     }
+    
     @Override
     protected void onResume() {
 

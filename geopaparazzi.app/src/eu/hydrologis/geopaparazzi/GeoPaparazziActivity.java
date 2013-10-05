@@ -18,12 +18,10 @@
 package eu.hydrologis.geopaparazzi;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -127,10 +125,6 @@ public class GeoPaparazziActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         try {
-            // mj10777: default tag 'geopaparazzi' default 'i_log_debug' = 0 [when used with '-1' : no messages will be shown]
-            SpatialDatabasesManager.s_log_tag=Constants.GEOPAPARAZZI;
-            // SpatialDatabasesManager.s_log_tag="mj10777";
-            // SpatialDatabasesManager.i_log_debug=1;
             initializeResourcesManager();
 
             fileSourcesMap = new HashMap<String, String>();
@@ -142,31 +136,24 @@ public class GeoPaparazziActivity extends Activity {
             tileSourcesMap.put(1003, MapGeneratorInternal.OPENCYCLEMAP.name());
             File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
             int i = 1004;
-            if (mapsDir != null && mapsDir.exists())
-            {
-                String s_extention=".mapurl";
-                List<File> search_files=new ArrayList<File>();
-                FileUtilities.search_directory_recursive(mapsDir,s_extention,search_files) ;
+            if (mapsDir != null && mapsDir.exists()) {
+                String s_extention = ".mapurl";
+                List<File> search_files = new ArrayList<File>();
+                FileUtilities.searchDirectoryRecursive(mapsDir, s_extention, search_files);
                 Collections.sort(search_files);
-                // SpatialDatabasesManager.app_log(-1,"GeoGeomCollActivity.onCreate: "+s_extention+"["+search_files.size()+"]");
-                for( File file : search_files)
-                {
-                 String name = FileUtilities.getNameWithoutExtention(file);
-                 // SpatialDatabasesManager.app_log(-1,"GeoGeomCollActivity.onCreate: "+s_extention+"["+name+"]");
-                 tileSourcesMap.put(i++, name);
-                 fileSourcesMap.put(name, file.getAbsolutePath());
+                for( File file : search_files ) {
+                    String name = FileUtilities.getNameWithoutExtention(file);
+                    tileSourcesMap.put(i++, name);
+                    fileSourcesMap.put(name, file.getAbsolutePath());
                 }
                 search_files.clear();
-                s_extention=".map";
-                FileUtilities.search_directory_recursive(mapsDir,s_extention,search_files) ;
+                s_extention = ".map";
+                FileUtilities.searchDirectoryRecursive(mapsDir, s_extention, search_files);
                 Collections.sort(search_files);
-                // SpatialDatabasesManager.app_log(-1,"GeoGeomCollActivity.onCreate: "+s_extention+"["+search_files.size()+"]");
-                for( File file : search_files)
-                {
-                 String name = FileUtilities.getNameWithoutExtention(file);
-                 // SpatialDatabasesManager.app_log(-1,"GeoGeomCollActivity.onCreate: "+s_extention+"["+name+"]");
-                 tileSourcesMap.put(i++, name);
-                 fileSourcesMap.put(name, file.getAbsolutePath());
+                for( File file : search_files ) {
+                    String name = FileUtilities.getNameWithoutExtention(file);
+                    tileSourcesMap.put(i++, name);
+                    fileSourcesMap.put(name, file.getAbsolutePath());
                 }
                 /*
                  * add also geopackage tables
@@ -556,8 +543,7 @@ public class GeoPaparazziActivity extends Activity {
         return true;
     }
 
-    public boolean onMenuItemSelected( int featureId, MenuItem item )
-    {
+    public boolean onMenuItemSelected( int featureId, MenuItem item ) {
         switch( item.getItemId() ) {
         case MENU_ABOUT:
             Intent intent = new Intent(this, AboutActivity.class);
@@ -607,26 +593,22 @@ public class GeoPaparazziActivity extends Activity {
                     }
                     final List<String> mapPaths = new ArrayList<String>();
                     final List<String> mapNames = new ArrayList<String>();
-                    String s_extention=".map";
-                    List<File> search_files=new ArrayList<File>();
-                    FileUtilities.search_directory_recursive(mapsDir,s_extention,search_files);
-                    s_extention=".mbtiles";
-                    FileUtilities.search_directory_recursive(mapsDir,s_extention,search_files);
-                    if (search_files.size() == 0)
-                    {
-                     Utilities.messageDialog(this,eu.hydrologis.geopaparazzi.R.string.no_map_files_found_go_online, null);
-                     return true;
-                    }
-                    else
-                    {
-                     Collections.sort(search_files);
-                     for(File file : search_files)
-                     {
-                      String file_name = FileUtilities.getNameWithoutExtention(file);
-                      // SpatialDatabasesManager.app_log(-1,"GeoGeomCollActivity.onMenuItemSelected: "+s_extention+"["+file_name+"]");
-                      mapPaths.add(file.getAbsolutePath());
-                      mapNames.add(file_name);
-                     }
+                    String s_extention = ".map";
+                    List<File> search_files = new ArrayList<File>();
+                    FileUtilities.searchDirectoryRecursive(mapsDir, s_extention, search_files);
+                    s_extention = ".mbtiles";
+                    FileUtilities.searchDirectoryRecursive(mapsDir, s_extention, search_files);
+                    if (search_files.size() == 0) {
+                        Utilities.messageDialog(this, eu.hydrologis.geopaparazzi.R.string.no_map_files_found_go_online, null);
+                        return true;
+                    } else {
+                        Collections.sort(search_files);
+                        for( File file : search_files ) {
+                            String file_name = FileUtilities.getNameWithoutExtention(file);
+                            // SpatialDatabasesManager.app_log(-1,"GeoGeomCollActivity.onMenuItemSelected: "+s_extention+"["+file_name+"]");
+                            mapPaths.add(file.getAbsolutePath());
+                            mapNames.add(file_name);
+                        }
                     }
                     String[] mapNamesArrays = mapNames.toArray(new String[0]);
                     boolean[] mapNamesChecked = new boolean[mapNamesArrays.length];

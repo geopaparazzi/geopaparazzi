@@ -35,7 +35,6 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.spatialite.R;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.OrderComparator;
@@ -75,7 +74,8 @@ public class DataListActivity extends ListActivity {
             e.printStackTrace();
         }
 
-        ArrayAdapter<SpatialVectorTable> arrayAdapter = new ArrayAdapter<SpatialVectorTable>(this, R.layout.data_row, spatialTables){
+        ArrayAdapter<SpatialVectorTable> arrayAdapter = new ArrayAdapter<SpatialVectorTable>(this, R.layout.data_row,
+                spatialTables){
             @Override
             public View getView( final int position, View cView, ViewGroup parent ) {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -152,8 +152,9 @@ public class DataListActivity extends ListActivity {
                 });
 
                 // rowView.setBackgroundColor(ColorUtilities.toColor(item.getColor()));
-                // mj10777: some tables may have more than one column, thus the column name will also be shown
-                nameView.setText(item.getName()+" ["+item.getGeomName()+"]");
+                // mj10777: some tables may have more than one column, thus the column name will
+                // also be shown
+                nameView.setText(item.getName() + " [" + item.getGeomName() + "]");
 
                 visibleView.setChecked(item.getStyle().enabled != 0);
                 visibleView.setOnCheckedChangeListener(new OnCheckedChangeListener(){
@@ -168,78 +169,6 @@ public class DataListActivity extends ListActivity {
         setListAdapter(arrayAdapter);
 
     }
-
-    // public boolean onMenuItemSelected( int featureId, MenuItem item ) {
-    // SpatialTable selectedTable = null;
-    // SpatialTable beforeSelectedTable = null;
-    // SpatialTable afterSelectedTable = null;
-    // for( int i = 0; i < spatialTables.size(); i++ ) {
-    // SpatialTable spatialTable = spatialTables.get(i);
-    // if (spatialTable.getStyle().enabled != 0) {
-    // // pick the first enabled
-    // selectedTable = spatialTable;
-    // if (i > 0) {
-    // beforeSelectedTable = spatialTables.get(i - 1);
-    // }
-    // if (i < spatialTables.size() - 1) {
-    // afterSelectedTable = spatialTables.get(i + 1);
-    // }
-    // break;
-    // }
-    // }
-    //
-    // switch( item.getItemId() ) {
-    // case MOVE_TOP:
-    // if (selectedTable != null) {
-    // SpatialTable first = spatialTables.get(0);
-    // int tmp1 = first.getStyle().order;
-    // int tmp2 = selectedTable.getStyle().order;
-    // selectedTable.getStyle().order = tmp1;
-    // first.getStyle().order = tmp2;
-    // Collections.sort(spatialTables, new OrderComparator());
-    // refreshList(false);
-    // }
-    // return true;
-    // case MOVE_UP:
-    // if (selectedTable != null) {
-    // if (beforeSelectedTable != null) {
-    // int tmp1 = beforeSelectedTable.getStyle().order;
-    // int tmp2 = selectedTable.getStyle().order;
-    // selectedTable.getStyle().order = tmp1;
-    // beforeSelectedTable.getStyle().order = tmp2;
-    // Collections.sort(spatialTables, new OrderComparator());
-    // refreshList(false);
-    // }
-    // }
-    // return true;
-    // case MOVE_DOWN:
-    // if (selectedTable != null) {
-    // if (afterSelectedTable != null) {
-    // int tmp1 = afterSelectedTable.getStyle().order;
-    // int tmp2 = selectedTable.getStyle().order;
-    // selectedTable.getStyle().order = tmp1;
-    // afterSelectedTable.getStyle().order = tmp2;
-    // Collections.sort(spatialTables, new OrderComparator());
-    // refreshList(false);
-    // }
-    // }
-    // return true;
-    // case MOVE_BOTTOM:
-    // if (selectedTable != null) {
-    // if (selectedTable != null) {
-    // SpatialTable last = spatialTables.get(spatialTables.size() - 1);
-    // int tmp1 = last.getStyle().order;
-    // int tmp2 = selectedTable.getStyle().order;
-    // selectedTable.getStyle().order = tmp1;
-    // last.getStyle().order = tmp2;
-    // Collections.sort(spatialTables, new OrderComparator());
-    // refreshList(false);
-    // }
-    // }
-    // return true;
-    // }
-    // return super.onMenuItemSelected(featureId, item);
-    // }
 
     @Override
     protected void onPause() {

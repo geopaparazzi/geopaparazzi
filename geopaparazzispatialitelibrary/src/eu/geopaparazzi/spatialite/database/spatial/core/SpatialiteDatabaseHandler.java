@@ -26,18 +26,15 @@ import java.util.List;
 import jsqlite.Database;
 import jsqlite.Exception;
 import jsqlite.Stmt;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
-// import android.util.Log;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKBReader;
 
 import eu.geopaparazzi.library.util.ColorUtilities;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 
 /**
  * An utility class to handle the spatial database.
@@ -58,7 +55,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
 
     private static final String METADATA_GEOPACKAGECONTENT_TABLE_NAME = "table_name";
     private static final String METADATA_GEOPACKAGECONTENT_DATA_TYPE = "data_type";
-    private static final String METADATA_GEOPACKAGECONTENT_DATA_TYPE_TILES = "tiles";
+    // private static final String METADATA_GEOPACKAGECONTENT_DATA_TYPE_TILES = "tiles";
     private static final String METADATA_GEOPACKAGECONTENT_DATA_TYPE_FEATURES = "features";
     private static final String METADATA_TILE_TABLE_NAME = "t_table_name";
     private static final String METADATA_ZOOM_LEVEL = "zoom_level";
@@ -105,11 +102,8 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
             db.open(spatialDbFile.getAbsolutePath(), jsqlite.Constants.SQLITE_OPEN_READWRITE
                     | jsqlite.Constants.SQLITE_OPEN_CREATE);
             fileName = spatialDbFile.getName();
-        }
-        catch (Exception e)
-        {
-         SpatialDatabasesManager.app_log(3,"["+dbPath+"] "+e.getMessage(),e);
-         //   e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -281,15 +275,15 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                         getZoomLevels(tableName, zoomLevels);
 
                         double[] centerCoordinate = {0.0, 0.0};
-                        double[] boundsCoordinates = {-180.0f,-85.05113f,180.0f,85.05113f};
-                        int i_parm=0; // tiles
-                        i_parm=1; // features
-                        getCenterCoordinate4326(tableName, centerCoordinate,boundsCoordinates,i_parm);
+                        double[] boundsCoordinates = {-180.0f, -85.05113f, 180.0f, 85.05113f};
+                        int i_parm = 0; // tiles
+                        i_parm = 1; // features
+                        getCenterCoordinate4326(tableName, centerCoordinate, boundsCoordinates, i_parm);
                         // select r_table_name,r_raster_column,srid from raster_columns
-                        // fromosm_tiles  tile_data   3857
+                        // fromosm_tiles tile_data 3857
                         // SpatialDatabasesManager.app_log(-1,"getSpatialRasterTables: Geopackage["+getFileName()+"] query["+query+"]");
                         SpatialRasterTable table = new SpatialRasterTable(tableName, columnName, srid, zoomLevels[0],
-                                zoomLevels[1], centerCoordinate[0], centerCoordinate[1], null,boundsCoordinates);
+                                zoomLevels[1], centerCoordinate[0], centerCoordinate[1], null, boundsCoordinates);
                         rasterTableList.add(table);
                     }
 
@@ -310,12 +304,14 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
      * @param tableName the raster table name.
      * @param centerCoordinate teh coordinate array to update with the extracted values.
      */
-    private void getCenterCoordinate4326( String tableName, double[] centerCoordinate, double[] boundsCoordinates , int i_parm) {
+    private void getCenterCoordinate4326( String tableName, double[] centerCoordinate, double[] boundsCoordinates, int i_parm ) {
         try {
             Stmt centerStmt = null;
             try {
                 WKBReader wkbReader = new WKBReader();
-                //select ST_AsBinary(CastToXY(ST_Transform(MakePoint((min_x + (max_x-min_x)/2), (min_y + (max_y-min_y)/2), srid), 4326))) from geopackage_contents where table_name = "fromosm_tiles";
+                // select ST_AsBinary(CastToXY(ST_Transform(MakePoint((min_x + (max_x-min_x)/2),
+                // (min_y + (max_y-min_y)/2), srid), 4326))) from geopackage_contents where
+                // table_name = "fromosm_tiles";
                 StringBuilder centerBuilder = new StringBuilder();
                 centerBuilder.append("select ST_AsBinary(CastToXY(ST_Transform(MakePoint(");
                 // centerBuilder.append("select AsText(ST_Transform(MakePoint(");
@@ -333,35 +329,39 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                 centerBuilder.append("),4326))) AS North_East from ");
                 centerBuilder.append(METADATA_TABLE_GEOPACKAGE_CONTENTS);
                 centerBuilder.append(" where ");
-                 // mj10777: Sample_Geopackage_Sigma_Bravo.zip ['sb1.geopackage' : renamed to 'Sample_Geopackage_Sigma_Bravo.sqlite']
                 // i_parm = 0 : could be area of the whole world [tiles]
-                // i_parm = 1 : could be area of main intrest [geonames] - assuming this is always true : use as a 'center'-point to move to if out of area
-                if (i_parm == 0)
-                { // select CastToXY(ST_Transform(MakePoint((min_x + (max_x-min_x)/2), (min_y + (max_y-min_y)/2), srid),4326)) AS Center,CastToXY(ST_Transform(MakePoint(min_x,min_y, srid),4326)) AS South_West,CastToXY(ST_Transform(MakePoint(max_x,max_y, srid), 4326)) AS North_East from geopackage_contents where table_name = "fromosm_tiles";
-                 // Center: SRID=4326;POINT(0 0)
-                 // South-West: SRID=4326;POINT(-179.9999999999996 -85.05110000000002)
-                 // Norht_East: SRID=4326;POINT(179.9999999999996 85.05110000000002)
-                 centerBuilder.append(METADATA_GEOPACKAGECONTENT_TABLE_NAME);
-                 centerBuilder.append("='");
-                 centerBuilder.append(tableName);
-                }
-                else
-                { // select CastToXY(ST_Transform(MakePoint((min_x + (max_x-min_x)/2), (min_y + (max_y-min_y)/2), srid),4326)) AS Center,CastToXY(ST_Transform(MakePoint(min_x,min_y, srid),4326)) AS South_West,CastToXY(ST_Transform(MakePoint(max_x,max_y, srid), 4326)) AS North_East from geopackage_contents where data_type = "features";
-                 // Center: SRID=4326;POINT(-73.28333499999999 19.041665)
-                 // South-West: SRID=4326;POINT(-75.5 18)
-                 // Norht_East: SRID=4326;POINT(-71.06667 20.08333)
-                 centerBuilder.append(METADATA_GEOPACKAGECONTENT_DATA_TYPE);
-                 centerBuilder.append("='");
-                 centerBuilder.append(METADATA_GEOPACKAGECONTENT_DATA_TYPE_FEATURES);
+                // i_parm = 1 : could be area of main intrest [geonames] - assuming this is always
+                // true : use as a 'center'-point to move to if out of area
+                if (i_parm == 0) {
+                    // select CastToXY(ST_Transform(MakePoint((min_x + (max_x-min_x)/2), (min_y +
+                    // (max_y-min_y)/2), srid),4326)) AS
+                    // Center,CastToXY(ST_Transform(MakePoint(min_x,min_y, srid),4326)) AS
+                    // South_West,CastToXY(ST_Transform(MakePoint(max_x,max_y, srid), 4326)) AS
+                    // North_East from geopackage_contents where table_name = "fromosm_tiles";
+                    // Center: SRID=4326;POINT(0 0)
+                    // South-West: SRID=4326;POINT(-179.9999999999996 -85.05110000000002)
+                    // Norht_East: SRID=4326;POINT(179.9999999999996 85.05110000000002)
+                    centerBuilder.append(METADATA_GEOPACKAGECONTENT_TABLE_NAME);
+                    centerBuilder.append("='");
+                    centerBuilder.append(tableName);
+                } else {
+                    // select CastToXY(ST_Transform(MakePoint((min_x + (max_x-min_x)/2), (min_y +
+                    // (max_y-min_y)/2), srid),4326)) AS
+                    // Center,CastToXY(ST_Transform(MakePoint(min_x,min_y, srid),4326)) AS
+                    // South_West,CastToXY(ST_Transform(MakePoint(max_x,max_y, srid), 4326)) AS
+                    // North_East from geopackage_contents where data_type = "features";
+                    // Center: SRID=4326;POINT(-73.28333499999999 19.041665)
+                    // South-West: SRID=4326;POINT(-75.5 18)
+                    // Norht_East: SRID=4326;POINT(-71.06667 20.08333)
+                    centerBuilder.append(METADATA_GEOPACKAGECONTENT_DATA_TYPE);
+                    centerBuilder.append("='");
+                    centerBuilder.append(METADATA_GEOPACKAGECONTENT_DATA_TYPE_FEATURES);
                 }
                 centerBuilder.append("';");
                 String centerQuery = centerBuilder.toString();
 
-                // SpatialDatabasesManager.app_log(-1,"SpatialiteDatabaseHandler:getCenterCoordinate4326: ["+tableName+"] query["+centerQuery+"]");
                 centerStmt = db.prepare(centerQuery);
                 if (centerStmt.step()) {
-                    // String geomBytes = centerStmt.column_string(0);
-                    // System.out.println();
                     byte[] geomBytes = centerStmt.column_bytes(0);
                     Geometry geometry = wkbReader.read(geomBytes);
                     Coordinate coordinate = geometry.getCoordinate();
@@ -371,23 +371,19 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                     geometry = wkbReader.read(geomBytes);
                     coordinate = geometry.getCoordinate();
                     boundsCoordinates[0] = coordinate.x;
-                    boundsCoordinates[1] =coordinate.y;
+                    boundsCoordinates[1] = coordinate.y;
                     geomBytes = centerStmt.column_bytes(2);
                     geometry = wkbReader.read(geomBytes);
                     coordinate = geometry.getCoordinate();
-                    boundsCoordinates[2] =coordinate.x;
-                    boundsCoordinates[3] =coordinate.y;
-                    // SpatialDatabasesManager.app_log(-1,"SpatialiteDatabaseHandler:getCenterCoordinate4326: center_location[x="+centerCoordinate[0]+" ; y="+centerCoordinate[1]+" ; bbox=["+boundsCoordinates[0]+","+boundsCoordinates[1]+","+boundsCoordinates[2]+","+boundsCoordinates[3]+"]");
+                    boundsCoordinates[2] = coordinate.x;
+                    boundsCoordinates[3] = coordinate.y;
                 }
             } finally {
                 if (centerStmt != null)
                     centerStmt.close();
             }
-        }
-        catch (java.lang.Exception e)
-        {
-         SpatialDatabasesManager.app_log(3,"["+fileName+"] "+e.getMessage(),e);
-         //   e.printStackTrace();
+        } catch (java.lang.Exception e) {
+            e.printStackTrace();
         }
     }
 
