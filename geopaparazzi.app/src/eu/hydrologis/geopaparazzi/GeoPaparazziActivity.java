@@ -119,7 +119,6 @@ public class GeoPaparazziActivity extends Activity {
     private HashMap<Integer, String> tileSourcesMap = null;
     private HashMap<String, String> fileSourcesMap = null;
     private HashMap<String, SpatialRasterTable> rasterSourcesMap = null;
-    private AlertDialog mapChoiceDialog;
 
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
@@ -131,7 +130,7 @@ public class GeoPaparazziActivity extends Activity {
             rasterSourcesMap = new HashMap<String, SpatialRasterTable>();
 
             tileSourcesMap = new LinkedHashMap<Integer, String>();
-            tileSourcesMap.put(1001, MapGeneratorInternal.DATABASE_RENDERER.name());
+            // tileSourcesMap.put(1001, MapGeneratorInternal.DATABASE_RENDERER.name());
             tileSourcesMap.put(1002, MapGeneratorInternal.MAPNIK.name());
             tileSourcesMap.put(1003, MapGeneratorInternal.OPENCYCLEMAP.name());
             File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
@@ -578,58 +577,8 @@ public class GeoPaparazziActivity extends Activity {
                 // ignore, is custom
             }
             if (mapGeneratorInternalNew != null) {
-                if (mapGeneratorInternalNew.equals(MapGeneratorInternal.DATABASE_RENDERER)) {
-                    // check existing maps and ask for which to load
-                    File mapsDir = null;
-                    try {
-                        mapsDir = ResourcesManager.getInstance(this).getMapsDir();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    if (mapsDir == null || !mapsDir.exists()) {
-                        Utilities.messageDialog(this, eu.hydrologis.geopaparazzi.R.string.no_external_sdcard_for_db_renderer,
-                                null);
-                        return true;
-                    }
-                    final List<String> mapPaths = new ArrayList<String>();
-                    final List<String> mapNames = new ArrayList<String>();
-                    String s_extention = ".map";
-                    List<File> search_files = new ArrayList<File>();
-                    FileUtilities.searchDirectoryRecursive(mapsDir, s_extention, search_files);
-                    s_extention = ".mbtiles";
-                    FileUtilities.searchDirectoryRecursive(mapsDir, s_extention, search_files);
-                    if (search_files.size() == 0) {
-                        Utilities.messageDialog(this, eu.hydrologis.geopaparazzi.R.string.no_map_files_found_go_online, null);
-                        return true;
-                    } else {
-                        Collections.sort(search_files);
-                        for( File file : search_files ) {
-                            String file_name = FileUtilities.getNameWithoutExtention(file);
-                            // SpatialDatabasesManager.app_log(-1,"GeoGeomCollActivity.onMenuItemSelected: "+s_extention+"["+file_name+"]");
-                            mapPaths.add(file.getAbsolutePath());
-                            mapNames.add(file_name);
-                        }
-                    }
-                    String[] mapNamesArrays = mapNames.toArray(new String[0]);
-                    boolean[] mapNamesChecked = new boolean[mapNamesArrays.length];
-                    DialogInterface.OnMultiChoiceClickListener dialogListener = new DialogInterface.OnMultiChoiceClickListener(){
-                        public void onClick( DialogInterface dialog, int which, boolean isChecked ) {
-                            String mapPath = mapPaths.get(which);
-                            setTileSource(MapGeneratorInternal.DATABASE_RENDERER.toString(), new File(mapPath));
-                            mapChoiceDialog.dismiss();
-                        }
-                    };
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle(eu.hydrologis.geopaparazzi.R.string.select_map_to_use);
-                    builder.setMultiChoiceItems(mapNamesArrays, mapNamesChecked, dialogListener);
-                    mapChoiceDialog = builder.create();
-                    mapChoiceDialog.show();
-                } else {
-                    setTileSource(mapGeneratorInternalNew.toString(), null);
-                }
+                setTileSource(mapGeneratorInternalNew.toString(), null);
             } else {
-
                 String fileSource = fileSourcesMap.get(name);
                 if (fileSource != null) {
                     setTileSource(null, new File(fileSource));
@@ -659,25 +608,6 @@ public class GeoPaparazziActivity extends Activity {
      */
     private void setTileSource( String sourceName, File mapfile ) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        MapGeneratorInternal mapGeneratorInternal = MapGeneratorInternal.MAPNIK;
-        if (sourceName != null) {
-            mapGeneratorInternal = MapGeneratorInternal.valueOf(sourceName);
-
-            if (mapGeneratorInternal.equals(MapGeneratorInternal.DATABASE_RENDERER)) {
-                if (mapfile == null || !mapfile.exists()) {
-                    // try from preferences
-                    String filePath = preferences.getString(Constants.PREFS_KEY_TILESOURCE_FILE, ""); //$NON-NLS-1$
-                    mapfile = new File(filePath);
-                    if (!mapfile.exists()) {
-                        mapGeneratorInternal = MapGeneratorInternal.MAPNIK;
-                        Utilities
-                                .messageDialog(this, eu.hydrologis.geopaparazzi.R.string.no_map_file_found_going_to_mapnik, null);
-                        mapfile = null;
-                    }
-                }
-            }
-        }
-
         Editor editor = preferences.edit();
         editor.putString(Constants.PREFS_KEY_TILESOURCE, sourceName);
         if (mapfile != null)

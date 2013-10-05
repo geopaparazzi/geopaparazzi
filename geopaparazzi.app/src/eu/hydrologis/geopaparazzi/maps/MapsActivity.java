@@ -36,13 +36,10 @@ import org.mapsforge.android.maps.MapViewPosition;
 import org.mapsforge.android.maps.Projection;
 import org.mapsforge.android.maps.mapgenerator.MapGenerator;
 import org.mapsforge.android.maps.mapgenerator.databaserenderer.DatabaseRenderer;
-import org.mapsforge.android.maps.mapgenerator.tiledownloader.MapnikTileDownloader;
-import org.mapsforge.android.maps.mapgenerator.tiledownloader.OpenCycleMapTileDownloader;
 import org.mapsforge.android.maps.overlay.Overlay;
 import org.mapsforge.android.maps.overlay.OverlayItem;
 import org.mapsforge.android.maps.overlay.OverlayWay;
 import org.mapsforge.core.model.GeoPoint;
-import org.mapsforge.core.model.BoundingBox;
 import org.mapsforge.map.reader.header.MapFileInfo;
 
 import android.app.Activity;
@@ -55,11 +52,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
@@ -70,8 +65,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.text.Editable;
@@ -170,19 +163,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     private List<String> smsString;
     private Drawable notesDrawable;
 
-    public static MapGenerator createMapGenerator( MapGeneratorInternal mapGeneratorInternal ) {
-        switch( mapGeneratorInternal ) {
-        case DATABASE_RENDERER:
-            return new DatabaseRenderer();
-        case MAPNIK:
-            return new MapnikTileDownloader();
-        case OPENCYCLEMAP:
-            return new OpenCycleMapTileDownloader();
-        }
-
-        throw new IllegalArgumentException("unknown enum value: " + mapGeneratorInternal); //$NON-NLS-1$
-    }
-
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
         setContentView(R.layout.mapsview);
@@ -238,7 +218,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                     rasterTable.checkCenterLocation(mapCenterLocation, true);
                 } catch (jsqlite.Exception e) {
                     // e.printStackTrace();
-                    mapGenerator = createMapGenerator(MapGeneratorInternal.MAPNIK);
+                    mapGenerator = MapGeneratorInternal.createMapGenerator(MapGeneratorInternal.MAPNIK);
                 }
             } else {
                 if (tileSourceName.length() == 0 && filePath != null && new File(filePath).exists()) {
@@ -264,21 +244,21 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                             checkCenterLocation(mapCenterLocation, true);
                         } else {
                             File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
-                            CustomTileDownloader customTileDownloader = CustomTileDownloader.file2TileDownloader(new File(filePath),
-                                    mapsDir.getAbsolutePath());
+                            CustomTileDownloader customTileDownloader = CustomTileDownloader.file2TileDownloader(new File(
+                                    filePath), mapsDir.getAbsolutePath());
                             customTileDownloader.checkCenterLocation(mapCenterLocation, true);
                             mapGenerator = customTileDownloader;
                             minZoomLevel = mapGenerator.getStartZoomLevel();
                             maxZoomLevel = mapGenerator.getZoomLevelMax();
                         }
                     } catch (Exception e) {
-                        mapGenerator = createMapGenerator(MapGeneratorInternal.MAPNIK);
+                        mapGenerator = MapGeneratorInternal.createMapGenerator(MapGeneratorInternal.MAPNIK);
                     }
                 } else {
                     if (mapGeneratorInternal != null) {
-                        mapGenerator = createMapGenerator(mapGeneratorInternal);
+                        mapGenerator = MapGeneratorInternal.createMapGenerator(mapGeneratorInternal);
                     } else {
-                        mapGenerator = createMapGenerator(MapGeneratorInternal.MAPNIK);
+                        mapGenerator = MapGeneratorInternal.createMapGenerator(MapGeneratorInternal.MAPNIK);
                     }
                 }
             }
@@ -566,7 +546,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         }
         return i_rc;
     }
-    
+
     @Override
     protected void onResume() {
 
@@ -1322,19 +1302,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                     }
                 }).setCancelable(false).show();
     }
-    private boolean bookmarksDeleted = false;
-    private ProgressDialog bookmarksRemoveDialog;
-    private Handler bookmarksRemoveHandler = new Handler(){
-        public void handleMessage( Message msg ) {
-            if (!bookmarksDeleted) {
-                bookmarksRemoveDialog.incrementProgressBy(1);
-            } else {
-                bookmarksRemoveDialog.dismiss();
-                mapView.invalidateOnUiThread();
-            }
-        }
-    };
-
     private TextView zoomLevelText;
 
     public void inalidateMap() {
