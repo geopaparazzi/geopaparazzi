@@ -603,6 +603,13 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         unregisterReceiver(batteryReceiver);
         GpsManager.getInstance(this).removeListener(this);
         dataOverlay.dispose();
+
+        if (mapView != null) {
+            MapGenerator mapGenerator = mapView.getMapGenerator();
+            if (mapGenerator != null) {
+                mapGenerator.cleanup();
+            }
+        }
         super.onDestroy();
     }
 
