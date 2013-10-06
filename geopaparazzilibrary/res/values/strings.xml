@@ -54,7 +54,7 @@
     <string name="route_extraction_error">An error occurred during the route extraction.</string>
     <string name="available_only_with_network">This function is available only with an active network connection.</string>
     <string name="error_while_storing_form_data">An error occurred while storing the form data.</string>
-    <string name="view_routing_url_in_browser">Do you want to open the used routing URL in a a browser?</string>
+    <string name="view_routing_url_in_browser">Do you want to open the used routing URL in a browser?</string>
     <string name="enter_geocode_string">insert place or address</string>
     <string name="no_valid_destination_selected">No valid destination selected.</string>
     <string name="couldnt_find_geocache_results">Could not find any location based on the search. Try to change the search string.</string>
