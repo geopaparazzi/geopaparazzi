@@ -123,6 +123,11 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
         undoBtn.setEnabled(false);
     }
 
+ protected void onDraw(Canvas canvas) {
+		
+		Bitmap myBitmap = BitmapFactory.decodeFile(LibraryConstants.TMPPNGIMAGENAME);
+          canvas.drawBitmap(myBitmap, 0, 0, null);
+    }
     public boolean onCreateOptionsMenu( Menu menu ) {
         super.onCreateOptionsMenu(menu);
         menu.add(Menu.NONE, MENU_SAVE, 1, R.string.save).setIcon(android.R.drawable.ic_menu_save);
