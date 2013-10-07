@@ -30,12 +30,73 @@ import android.util.Log;
 
 /**
  * The class that handles logging to the database.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
 public class GPLog {
-
+    //    GPLog.s_log_tag="mj10777";
+    //    GPLog.i_log_debug=1;
+    public static String s_log_tag="";
+    public static int i_log_debug=0;
+    // -----------------------------------------------
+    /**
+    * Function for global logging
+    * - s_log_tag value will be shown in as TAG in logcat [default Constants.GEOPAPARAZZI;]
+    *  -- change values in GeoPaparazziActivity.onCreate((
+    * @param i_parm -1=use global value ; 0=no message ; 1=info ; 2=warning ;3=error ; 4=debug ; 5=What a Terrible Failure!” ; 6=verbose
+    * @param s_message message text to be shown in logcat
+    * @param exception result of Log.getStackTraceString(exception) will be added to the message
+    */
+    public static void app_log(int i_parm,String s_message,Throwable exception)
+    {
+     if (exception != null)
+     {
+      s_message+="\n"+Log.getStackTraceString(exception);
+     }
+     app_log(i_parm,s_message);
+    }
+    // -----------------------------------------------
+    /**
+    * Function for global logging
+    * - s_log_tag value will be shown in as TAG in logcat [default Constants.GEOPAPARAZZI;]
+    *  -- change values in GeoPaparazziActivity.onCreate((
+    *  use 'import eu.geogeomcoll.spatialite.database.spatial.SpatialDatabasesManager;' where needed
+    * @param i_parm -1=use global value ; 0=no message ; 1=info ; 2=warning ;3=error ; 4=debug ; 5=What a Terrible Failure!” ; 6=verbose
+    * @param s_message message text to be shown in logcat
+    */
+    public static void app_log(int i_parm,String s_message)
+    { // if < 0: use global setting
+     if (i_parm < 0)
+      i_parm = i_log_debug;
+     if (s_log_tag == "")
+      s_log_tag="mj10777";
+     switch (i_parm)
+     {
+      case 0:
+       // ignore
+      break;
+      case 2: // method is used to log warnings.
+       Log.w(s_log_tag,s_message);
+      break;
+      case 3: // method is used to log errors.
+       Log.e(s_log_tag,s_message);
+      break;
+      case 4: // method is used to log debug messages.
+       Log.d(s_log_tag,s_message);
+      break;
+      case 5: // method is used to log terrible failures that should never happen. (“WTF” stands for “What a Terrible Failure!” of course.)
+       Log.wtf(s_log_tag,s_message);
+      break;
+      case 6: // method is used to log verbose messages.
+       Log.v(s_log_tag,s_message);
+      break;
+      case 1:
+      default: // method is used to log informational messages.
+       Log.i(s_log_tag,s_message);
+      break;
+     }
+    }
     /**
      * If <code>true</code>, android logging is activated.
      */
@@ -64,7 +125,7 @@ public class GPLog {
 
     /**
      * Create the default log table.
-     * 
+     *
      * @param sqliteDatabase the db into which to create the table.
      * @throws IOException
      */
@@ -113,7 +174,7 @@ public class GPLog {
 
     /**
      * Add a new log entry.
-     * 
+     *
      * @param logMessage the message to insert in the log.
      * @throws IOException
      */
@@ -142,12 +203,12 @@ public class GPLog {
 
     /**
      * Add a log entry by concatenating (;) some more info in the message.
-     * 
+     *
      * @param caller the calling class or tage name.
      * @param user a user name or id. If
      *              <code>null</code>, defaults to UNKNOWN_USER
-     * @param tag a tag for the log message. If <code>null</code>, 
-     *              defaults to INFO. 
+     * @param tag a tag for the log message. If <code>null</code>,
+     *              defaults to INFO.
      * @param logMessage the message itself.
      */
     public static void addLogEntry( Object caller, //
@@ -181,7 +242,7 @@ public class GPLog {
 
     /**
      * Add a log entry by concatenating (;) some more info in the message.
-     * 
+     *
      * @param caller the calling class or tage name.
      * @param logMessage the message itself.
      */
@@ -213,7 +274,7 @@ public class GPLog {
      * Do an insert or throw with the proper error handling.
      * @param table
      * @param values
-     * 
+     *
      * @return
      * @throws IOException
      */
@@ -238,7 +299,7 @@ public class GPLog {
 
     /**
      * Clear the log table.
-     * 
+     *
      * @param db the db to use.
      * @throws Exception
      */
