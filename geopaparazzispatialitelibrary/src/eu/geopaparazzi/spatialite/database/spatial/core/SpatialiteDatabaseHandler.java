@@ -281,7 +281,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                         getCenterCoordinate4326(tableName, centerCoordinate, boundsCoordinates, i_parm);
                         // select r_table_name,r_raster_column,srid from raster_columns
                         // fromosm_tiles tile_data 3857
-                        // SpatialDatabasesManager.app_log(-1,"getSpatialRasterTables: Geopackage["+getFileName()+"] query["+query+"]");
+                        // GPLog.app_log(-1,"getSpatialRasterTables: Geopackage["+getFileName()+"] query["+query+"]");
                         SpatialRasterTable table = new SpatialRasterTable(tableName, columnName, srid, zoomLevels[0],
                                 zoomLevels[1], centerCoordinate[0], centerCoordinate[1], null, boundsCoordinates);
                         rasterTableList.add(table);

@@ -50,18 +50,22 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
     // -----------------------------------------------
     /**
       * Constructor MbtilesDatabaseHandler
-      * 
+      *
       * <ul>
       *  <li>if the file does not exist, a valid mbtile database will be created</li>
       *  <li>if the parent directory does not exist, it will be created</li>
       * </ul>
-      * 
+      *
       * @param s_mbtiles_path full path to mbtiles file to open
       * @param mbtiles_metadata list of initial metadata values to set upon creation [otherwise can be null]
       * @return void
       */
     public MbtilesDatabaseHandler( String s_mbtiles_path, HashMap<String, String> mbtiles_metadata ) {
         this.mbtiles_metadata = mbtiles_metadata;
+        if (!s_mbtiles_path.endsWith(".mbtiles"))
+        { // .mbtiles files must have an .mbtiles extention, force this
+         s_mbtiles_path = s_mbtiles_path.substring(0, s_mbtiles_path.lastIndexOf("."))+".mbtiles";
+        }
         File file_mbtiles = new File(s_mbtiles_path);
         s_mbtiles_file = file_mbtiles.getName().substring(0, file_mbtiles.getName().lastIndexOf("."));
         db_mbtiles = new MBTilesDroidSpitter(file_mbtiles, this.mbtiles_metadata);
@@ -123,10 +127,10 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
     // -----------------------------------------------
     /**
       * Function to retrieve Tile byte[] from the mbtiles Database [for 'SpatialiteDatabaseHandler']
-      * 
-      * <p>i_y_osm must be in is Open-Street-Map 'Slippy Map' 
+      *
+      * <p>i_y_osm must be in is Open-Street-Map 'Slippy Map'
       * notation [will be converted to 'tms' notation if needed]
-      * 
+      *
       * @param query Format 'z,x,y_osm'
       * @return byte[] of the tile or null if no tile matched the given parameters
       */
@@ -151,9 +155,9 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
     // -----------------------------------------------
     /**
       * Function to retrieve Tile Bitmap from the mbtiles Database [for 'CustomTileDownloader']
-      * 
+      *
       * <p>i_y_osm must be in is Open-Street-Map 'Slippy Map' notation [will be converted to 'tms' notation if needed]
-      * 
+      *
       * @param i_x the value for tile_column field in the map,tiles Tables and part of the tile_id when image is not blank
       * @param i_y_osm the value for tile_row field in the map,tiles Tables and part of the tile_id when image is not blank
       * @param i_z the value for zoom_level field in the map,tiles Tables and part of the tile_id when image is not blank
@@ -190,14 +194,14 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
     // -----------------------------------------------
     /**
       * Function to insert a new Tile Bitmap to the mbtiles Database
-      * 
+      *
       * <ul>
-      *  <li>i_y_osm must be in is Open-Street-Map 'Slippy Map' notation [will 
+      *  <li>i_y_osm must be in is Open-Street-Map 'Slippy Map' notation [will
       *      be converted to 'tms' notation if needed]</li>
-      *  <li>checking will be done to determine if the Bitmap is blank [i.e. 
+      *  <li>checking will be done to determine if the Bitmap is blank [i.e.
       *      all pixels have the same RGB]</li>
       * </ul>
-      * 
+      *
       * @param i_x the value for tile_column field in the map,tiles Tables and part of the tile_id when image is not blank
       * @param i_y_osm the value for tile_row field in the map,tiles Tables and part of the tile_id when image is not blank
       * @param i_z the value for zoom_level field in the map,tiles Tables and part of the tile_id when image is not blank

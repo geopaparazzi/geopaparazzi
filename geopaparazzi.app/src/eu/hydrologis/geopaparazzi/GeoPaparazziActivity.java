@@ -124,7 +124,8 @@ public class GeoPaparazziActivity extends Activity {
 
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
-
+        GPLog.s_log_tag="mj10777";
+        GPLog.i_log_debug=1;
         try {
             initializeResourcesManager();
             handleTileSources();
@@ -192,7 +193,7 @@ public class GeoPaparazziActivity extends Activity {
 
         /*
          * if they do not exist add two mbtiles based mapnik and opencycle
-         * tile sources as default ones. They will automatically 
+         * tile sources as default ones. They will automatically
          * be backed into a mbtiles db.
          */
         if (mapsDir != null && mapsDir.exists()) {

@@ -21,12 +21,12 @@ public class MbTilesMetadata {
     // -----------------------------------------------
     /**
       * Constructor MbTilesMetadata
-      * 
+      *
       * <ul>
       * <li>if the file does not exist, a valid mbtile database will be created</li>
       * <li>if the parent directory does not exist, it will be created</li>
       * </ul>
-      * 
+      *
       * @param name: The name of the tileset.
       * @param description: A description of the layer as plain text.
       * @param version: The version of the tileset, as a plain number.
@@ -140,16 +140,16 @@ public class MbTilesMetadata {
     // -----------------------------------------------
     /**
       * validate MetadataValidator_1_1
-      * 
+      *
       * <p>https://github.com/mapbox/MbTiles.spec/blob/master/1.1/spec.md </br>
-      * mj10777: since this is a reader, we will attempt to supply default 
+      * mj10777: since this is a reader, we will attempt to supply default
       * values for missing or incorrect values</p>
-      * 
+      *
       * <ul>
       * <li>at the moment, only 1.1 should be called</li>
       * <li>checking of mandatory fields should exist (to insure that this is really a mbtiles file)</li>
       * </ul>
-      * 
+      *
       * @param name: [mandatory] The name of the tileset.
       * @param description: [mandatory] A description of the layer as plain text.
       * @param version: [mandatory] The version of the tileset, as a plain number.
@@ -170,7 +170,10 @@ public class MbTilesMetadata {
                 throw new MetadataParseException("No mandatory field 'name'.");
             String description = hm.remove("description");
             if (description == null)
-                throw new MetadataParseException("No mandatory field 'description'.");
+            { // gdal does not fill this value [it can have empty (NULL) value]
+             description=name;
+              //   throw new MetadataParseException("No mandatory field 'description'.");
+            }
             String type = hm.remove("type");
             if (type == null || (!type.equals("overlay") && type.equals("baselayer"))) {
                 // we suppose it is a baselayer by default, if not available
@@ -249,16 +252,16 @@ public class MbTilesMetadata {
     // -----------------------------------------------
     /**
       * validate MetadataValidator_1_0
-      * 
+      *
       * <p>https://github.com/mapbox/MbTiles.spec/blob/master/1.0/spec.md </br>
-      * mj10777: since this is a reader, we will attempt to supply default 
+      * mj10777: since this is a reader, we will attempt to supply default
       * values for missing or incorrect values</p>
-      * 
+      *
       * <ul>
       * <li>at the moment, only 1.1 should be called</li>
       * <li>checking of mandatory fields should exist (to insure that this is really a mbtiles file)</li>
       * </ul>
-      * 
+      *
       * @param name: [mandatory] The name of the tileset.
       * @param description: [mandatory] A description of the layer as plain text.
       * @param version: [mandatory] The version of the tileset, as a plain number.
