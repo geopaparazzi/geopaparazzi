@@ -124,8 +124,8 @@ public class GeoPaparazziActivity extends Activity {
 
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
-        GPLog.s_log_tag="mj10777";
-        GPLog.i_log_debug=1;
+        // GPLog.s_log_tag="mj10777";
+        // GPLog.i_log_debug=1;
         try {
             initializeResourcesManager();
             handleTileSources();
