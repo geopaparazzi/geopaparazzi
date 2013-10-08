@@ -35,68 +35,6 @@ import android.util.Log;
  */
 @SuppressWarnings("nls")
 public class GPLog {
-    //    GPLog.s_log_tag="mj10777";
-    //    GPLog.i_log_debug=1;
-    public static String s_log_tag="";
-    public static int i_log_debug=0;
-    // -----------------------------------------------
-    /**
-    * Function for global logging
-    * - s_log_tag value will be shown in as TAG in logcat [default Constants.GEOPAPARAZZI;]
-    *  -- change values in GeoPaparazziActivity.onCreate((
-    * @param i_parm -1=use global value ; 0=no message ; 1=info ; 2=warning ;3=error ; 4=debug ; 5=What a Terrible Failure!” ; 6=verbose
-    * @param s_message message text to be shown in logcat
-    * @param exception result of Log.getStackTraceString(exception) will be added to the message
-    */
-    public static void app_log(int i_parm,String s_message,Throwable exception)
-    {
-     if (exception != null)
-     {
-      s_message+="\n"+Log.getStackTraceString(exception);
-     }
-     app_log(i_parm,s_message);
-    }
-    // -----------------------------------------------
-    /**
-    * Function for global logging
-    * - s_log_tag value will be shown in as TAG in logcat [default Constants.GEOPAPARAZZI;]
-    *  -- change values in GeoPaparazziActivity.onCreate((
-    *  use 'import eu.geogeomcoll.spatialite.database.spatial.SpatialDatabasesManager;' where needed
-    * @param i_parm -1=use global value ; 0=no message ; 1=info ; 2=warning ;3=error ; 4=debug ; 5=What a Terrible Failure!” ; 6=verbose
-    * @param s_message message text to be shown in logcat
-    */
-    public static void app_log(int i_parm,String s_message)
-    { // if < 0: use global setting
-     if (i_parm < 0)
-      i_parm = i_log_debug;
-     if (s_log_tag == "")
-      s_log_tag="mj10777";
-     switch (i_parm)
-     {
-      case 0:
-       // ignore
-      break;
-      case 2: // method is used to log warnings.
-       Log.w(s_log_tag,s_message);
-      break;
-      case 3: // method is used to log errors.
-       Log.e(s_log_tag,s_message);
-      break;
-      case 4: // method is used to log debug messages.
-       Log.d(s_log_tag,s_message);
-      break;
-      case 5: // method is used to log terrible failures that should never happen. (“WTF” stands for “What a Terrible Failure!” of course.)
-       Log.wtf(s_log_tag,s_message);
-      break;
-      case 6: // method is used to log verbose messages.
-       Log.v(s_log_tag,s_message);
-      break;
-      case 1:
-      default: // method is used to log informational messages.
-       Log.i(s_log_tag,s_message);
-      break;
-     }
-    }
     /**
      * If <code>true</code>, android logging is activated.
      */
@@ -122,6 +60,16 @@ public class GPLog {
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_DATAORA = "dataora";
     public static final String COLUMN_LOGMSG = "logmsg";
+
+    /**
+     * Global default log tag (used in {@link #androidLog(int, String)} and {@link #androidLog(int, String, Throwable)}.
+     */
+    public static String GLOBAL_LOG_TAG = "GEOPAPARAZZI";
+
+    /**
+     * Global default log level (used in {@link #androidLog(int, String)} and {@link #androidLog(int, String, Throwable)}.
+     */
+    public static int GLOBAL_LOG_LEVEL = 0;
 
     /**
      * Create the default log table.
@@ -332,4 +280,79 @@ public class GPLog {
         String simpleName = obj.getClass().getSimpleName();
         return simpleName.toUpperCase();
     }
+
+    // ////////////////////////////////////////////////////
+    // ANDROID LOG UTILITIES
+    // ////////////////////////////////////////////////////
+
+    /**
+    * Function for global logging.
+    * 
+    * @param logLevel the log level to use. 
+    * <ul>
+    * <li>-1=use global value</li>
+    * <li>0=no message</li>
+    * <li>1=info</li>
+    * <li>2=warning</li>
+    * <li>3=error</li>
+    * <li>4=debug</li>
+    * <li>5=What a Terrible Failure!</li>
+    * <li>6=verbose</li>
+    * </ul>
+    * @param message message text to be shown in logcat.
+    * @param exception result of Log.getStackTraceString(exception) will be added to the message.
+    */
+    public static void androidLog( int logLevel, String message, Throwable exception ) {
+        if (exception != null) {
+            message += "\n" + Log.getStackTraceString(exception);
+        }
+        androidLog(logLevel, message);
+    }
+    /**
+    * Function for global logging.
+    *
+    * @param logLevel the log level to use. 
+    * <ul>
+    * <li>-1=use global value</li>
+    * <li>0=no message</li>
+    * <li>1=info</li>
+    * <li>2=warning</li>
+    * <li>3=error</li>
+    * <li>4=debug</li>
+    * <li>5=What a Terrible Failure!</li>
+    * <li>6=verbose</li>
+    * </ul>
+    * @param message message text to be shown in logcat.
+    */
+    public static void androidLog( int logLevel, String message ) {
+        if (logLevel < 0)
+            logLevel = GLOBAL_LOG_LEVEL;
+        if (GLOBAL_LOG_TAG == null || GLOBAL_LOG_TAG.length() == 0)
+            GLOBAL_LOG_TAG = "GEOPAPARAZZI";
+        switch( logLevel ) {
+        case 0:
+            // ignore
+            break;
+        case 2: // method is used to log warnings.
+            Log.w(GLOBAL_LOG_TAG, message);
+            break;
+        case 3: // method is used to log errors.
+            Log.e(GLOBAL_LOG_TAG, message);
+            break;
+        case 4: // method is used to log debug messages.
+            Log.d(GLOBAL_LOG_TAG, message);
+            break;
+        case 5: // method is used to log terrible failures that should never happen.
+            Log.wtf(GLOBAL_LOG_TAG, message);
+            break;
+        case 6: // method is used to log verbose messages.
+            Log.v(GLOBAL_LOG_TAG, message);
+            break;
+        case 1:
+        default: // method is used to log informational messages.
+            Log.i(GLOBAL_LOG_TAG, message);
+            break;
+        }
+    }
+
 }
