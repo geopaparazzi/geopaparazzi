@@ -84,12 +84,12 @@ public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callbac
                         }
                         final Canvas c = new Canvas(mBitmap);
 
-                        c.drawColor(Color.WHITE);
+                        c.drawColor(Color.TRANSPARENT);
                         // c.drawColor(0, PorterDuff.Mode.CLEAR);
                         if (canvas == null || mBitmap.isRecycled()) {
                             break;
                         }
-                        canvas.drawColor(Color.WHITE);
+                        canvas.drawColor(Color.TRANSPARENT);
                         // canvas.drawColor(0, PorterDuff.Mode.CLEAR);
 
                         commandManager.executeAll(c, previewDoneHandler);
@@ -101,6 +101,12 @@ public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callbac
                         // }
                         // }
                         previewPath.draw(c);
+                        
+                        
+                        
+                        Bitmap mBitmap = BitmapFactory.decodeFile(LibraryConstants.TMPPNGIMAGENAME);
+                             
+
 
                         canvas.drawBitmap(mBitmap, 0, 0, null);
 
