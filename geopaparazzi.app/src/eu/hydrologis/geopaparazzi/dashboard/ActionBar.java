@@ -75,6 +75,7 @@ public class ActionBar implements GpsManagerListener {
     private boolean isProviderEnabled;
     private GpsStatus lastGpsStatus;
     private long lastLocationupdateMillis;
+    private String satellitesString;
 
     private ActionBar( View actionBarView, GpsManager _gpsManager, SensorsManager sensorsManager ) {
         this.actionBarView = actionBarView;
@@ -127,6 +128,7 @@ public class ActionBar implements GpsManagerListener {
         loggingString = context.getString(R.string.text_logging);
         acquirefixString = context.getString(R.string.gps_searching_fix);
         gpsonString = context.getString(R.string.text_gpson);
+        satellitesString = context.getString(R.string.satellites);
 
     }
 
@@ -288,7 +290,7 @@ public class ActionBar implements GpsManagerListener {
             GpsStatusInfo info = new GpsStatusInfo(lastGpsStatus);
             int satCount = info.getSatCount();
             // int satForFixCount = info.getSatUsedInFixCount();
-            sb.append(R.string.satellites).append(": ").append(satCount).append("\n");
+            sb.append(satellitesString).append(": ").append(satCount).append("\n");
             // sb.append("used for fix: ").append(satForFixCount).append("\n");
         }
     }
