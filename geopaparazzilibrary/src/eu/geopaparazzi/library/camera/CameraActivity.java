@@ -171,7 +171,7 @@ public class CameraActivity extends Activity {
             String azimuthString = String.valueOf((int) azimuth);
 
             if (GPLog.LOG) {
-                GPLog.addLogEntry(this, null, null, "Exif Lat=" + lat + " -- Lon=" + lon + " -- Azim=" + azimuth + " -- Altim="
+                GPLog.addLogEntry(this, null, null, "Exif Lat=" + exifLat + " -- Lon=" + exifLon + " -- Azim=" + azimuth + " -- Altim="
                         + altimString);
             }
 
@@ -224,17 +224,19 @@ public class CameraActivity extends Activity {
                 File propertiesFile = new File(propertiesFilePath);
                 BufferedWriter bW = null;
                 try {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("latitude=");
+                    sb.append(String.valueOf(latitude));
+                    sb.append("\nlongitude=");
+                    sb.append(String.valueOf(longitude));
+                    sb.append("\nazimuth=");
+                    sb.append(azimuthString);
+                    sb.append("\naltim=");
+                    sb.append(altimString);
+                    sb.append("\nutctimestamp=");
+                    sb.append(currentDatestring).append("\n");
                     bW = new BufferedWriter(new FileWriter(propertiesFile));
-                    bW.write("latitude=");
-                    bW.write(String.valueOf(latitude));
-                    bW.write("\nlongitude=");
-                    bW.write(String.valueOf(longitude));
-                    bW.write("\nazimuth=");
-                    bW.write(azimuthString);
-                    bW.write("\naltim=");
-                    bW.write(altimString);
-                    bW.write("\nutctimestamp=");
-                    bW.write(currentDatestring);
+                    bW.write(sb.toString());
                 } finally {
                     bW.close();
                 }
