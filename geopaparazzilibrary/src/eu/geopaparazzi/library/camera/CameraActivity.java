@@ -162,16 +162,16 @@ public class CameraActivity extends Activity {
             if (lon < 0) {
                 lonRef = "W";
             }
-            lat = Math.abs(lat);
-            lon = Math.abs(lon);
+            double exifLat = Math.abs(latitude);
+            double exifLon = Math.abs(longitude);
 
-            String latString = Utilities.degreeDecimal2ExifFormat(lat);
-            String lonString = Utilities.degreeDecimal2ExifFormat(lon);
+            String latString = Utilities.degreeDecimal2ExifFormat(exifLat);
+            String lonString = Utilities.degreeDecimal2ExifFormat(exifLon);
             String altimString = String.valueOf(elevation);
             String azimuthString = String.valueOf((int) azimuth);
 
             if (GPLog.LOG) {
-                GPLog.addLogEntry(this, null, null, "Lat=" + lat + " -- Lon=" + lon + " -- Azim=" + azimuth + " -- Altim="
+                GPLog.addLogEntry(this, null, null, "Exif Lat=" + lat + " -- Lon=" + lon + " -- Azim=" + azimuth + " -- Altim="
                         + altimString);
             }
 
@@ -226,9 +226,9 @@ public class CameraActivity extends Activity {
                 try {
                     bW = new BufferedWriter(new FileWriter(propertiesFile));
                     bW.write("latitude=");
-                    bW.write(String.valueOf(lat));
+                    bW.write(String.valueOf(latitude));
                     bW.write("\nlongitude=");
-                    bW.write(String.valueOf(lon));
+                    bW.write(String.valueOf(longitude));
                     bW.write("\nazimuth=");
                     bW.write(azimuthString);
                     bW.write("\naltim=");
