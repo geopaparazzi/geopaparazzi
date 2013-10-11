@@ -928,7 +928,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         }
         // routes
         List<Route> routes = gpxItem.getRoutes();
-        if (routes.size() > 1) {
+        if (routes.size() > 0) {
             for( Route route : routes ) {
                 String rName = route.getName();
                 if (rName == null) {
