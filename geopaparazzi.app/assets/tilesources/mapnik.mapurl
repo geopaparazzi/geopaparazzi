@@ -6,3 +6,4 @@ type=google
 format=png
 defaultzoom=13
 mbtiles=defaulttiles/_mapnik.mbtiles
+description=Mapnik - Openstreetmap Slippy Map Tileserver
