@@ -17,6 +17,11 @@
  */
 package eu.hydrologis.geopaparazzi;
 
+import org.acra.ACRA;
+import org.acra.ReportField;
+import org.acra.ReportingInteractionMode;
+import org.acra.annotation.ReportsCrashes;
+
 import eu.geopaparazzi.library.database.GPLog;
 import android.app.Application;
 import android.util.Log;
@@ -26,6 +31,16 @@ import android.util.Log;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@ReportsCrashes(//
+formKey = "", //
+mailTo = "feedback@geopaparazzi.eu", //
+customReportContent = {//
+/*    */ReportField.APP_VERSION_CODE, ReportField.APP_VERSION_NAME, //
+        ReportField.ANDROID_VERSION, ReportField.PHONE_MODEL, //
+        ReportField.CUSTOM_DATA, ReportField.STACK_TRACE, ReportField.LOGCAT}, //
+mode = ReportingInteractionMode.TOAST, //
+resToastText = R.string.crash_toast_text, //
+logcatArguments = {"-t", "400", "-v", "time", "GPLOG:I", "*:S"})
 public class GeopaparazziApplication extends Application {
 
     private static GeopaparazziApplication instance = null;
@@ -35,6 +50,9 @@ public class GeopaparazziApplication extends Application {
         super.onCreate();
         instance = this;
 
+        ACRA.init(this);
+        Log.i("TRACKOIDAPPLICATION", "Initialized ACRA");
+        
         if (GPLog.LOG_ANDROID) {
             Log.i(getClass().getSimpleName(), "GeopaparazziApplication singleton created.");
         }
