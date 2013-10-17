@@ -22,7 +22,6 @@ import static eu.hydrologis.geopaparazzi.util.Constants.PREF_KEY_SERVER;
 import static eu.hydrologis.geopaparazzi.util.Constants.PREF_KEY_USER;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;

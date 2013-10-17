@@ -127,7 +127,7 @@ public class NetworkUtilities {
         // conn.setChunkedStreamingMode(0);
         conn.setUseCaches(false);
 
-        if (user != null && password != null) {
+        if (user != null && password != null && user.trim().length() > 0 && password.trim().length() > 0) {
             conn.setRequestProperty("Authorization", getB64Auth(user, password));
         }
         conn.connect();
@@ -201,7 +201,7 @@ public class NetworkUtilities {
             conn.setDoInput(true);
             // conn.setChunkedStreamingMode(0);
             conn.setUseCaches(false);
-            if (user != null && password != null) {
+            if (user != null && password != null && user.trim().length() > 0 && password.trim().length() > 0) {
                 conn.setRequestProperty("Authorization", getB64Auth(user, password));
             }
             conn.connect();
@@ -276,7 +276,7 @@ public class NetworkUtilities {
             // conn.setRequestProperty("Content-Length", "" + fileSize);
             // conn.setRequestProperty("Connection", "Keep-Alive");
 
-            if (user != null && password != null) {
+            if (user != null && password != null && user.trim().length() > 0 && password.trim().length() > 0) {
                 conn.setRequestProperty("Authorization", getB64Auth(user, password));
             }
             conn.connect();
@@ -362,7 +362,7 @@ public class NetworkUtilities {
         httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
         HttpPost httppost = new HttpPost(url);
 
-        if (user != null && pwd != null) {
+        if (user != null && pwd != null && user.trim().length() > 0 && pwd.trim().length() > 0) {
             String ret = getB64Auth(user, pwd);
             httppost.setHeader("Authorization", ret);
         }
@@ -426,7 +426,7 @@ public class NetworkUtilities {
         HttpClient client = new DefaultHttpClient();
         HttpGet httpGet = new HttpGet(urlStr);
 
-        if (user != null && password != null) {
+        if (user != null && password != null && user.trim().length() > 0 && password.trim().length() > 0) {
             httpGet.addHeader("Authorization", getB64Auth(user, password));
         }
         HttpResponse response = client.execute(httpGet);
