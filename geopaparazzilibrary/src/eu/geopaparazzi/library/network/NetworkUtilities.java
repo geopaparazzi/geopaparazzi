@@ -84,11 +84,17 @@ public class NetworkUtilities {
     private static HttpURLConnection makeNewConnection( String fileUrl ) throws Exception {
         // boolean doHttps =
         // CorePlugin.getDefault().getPreferenceStore().getBoolean(KeyManager.keys().getHttpConnectionTypeKey());
-        URL url = new URL(fileUrl);
         if (fileUrl.startsWith("https")) {
+            URL url = new URL(fileUrl);
             HttpsURLConnection urlC = (HttpsURLConnection) url.openConnection();
             return urlC;
+        } else if (fileUrl.startsWith("http")) {
+            URL url = new URL(fileUrl);
+            HttpURLConnection urlC = (HttpURLConnection) url.openConnection();
+            return urlC;
         } else {
+            // try to add http
+            URL url = new URL("http://" + fileUrl);
             HttpURLConnection urlC = (HttpURLConnection) url.openConnection();
             return urlC;
         }
