@@ -70,6 +70,7 @@ import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.AboutActivity;
 import eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity;
+import eu.geopaparazzi.library.util.debug.TestMock;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
@@ -125,6 +126,7 @@ public class GeoPaparazziActivity extends Activity {
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
         try {
+            checkMockLocations();
             initializeResourcesManager();
             handleTileSources();
         } catch (Exception e) {
@@ -140,6 +142,23 @@ public class GeoPaparazziActivity extends Activity {
         checkIncomingGeosms();
         checkIncomingSmsData();
 
+    }
+
+    private void checkMockLocations() {
+        /*
+         * check mock locations availability
+         */
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isMockMode = preferences.getBoolean(LibraryConstants.PREFS_KEY_MOCKMODE, false);
+        if (isMockMode) {
+            if (!TestMock.isMockEnabled(getContentResolver())) {
+                Utilities.messageDialog(this, "To use the demo mode you need to enable Androids mock locations in the developer settings. Disabling demo mode.", null);
+                Editor edit = preferences.edit();
+                edit.putBoolean(LibraryConstants.PREFS_KEY_MOCKMODE, false);
+                edit.commit();
+            }
+        }
+        
     }
 
     private void handleTileSources() throws Exception, IOException, FileNotFoundException {
