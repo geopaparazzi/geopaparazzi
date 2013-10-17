@@ -31,6 +31,7 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.CompressionUtilities;
@@ -89,12 +90,12 @@ public enum WebProjectManager {
             }
 
             server = server + "/" + UPLOADPATH;
-            String result = NetworkUtilities.sendFilePost(server, zipFile, user, passwd);
+            String result = NetworkUtilities.sendFilePost(context, server, zipFile, user, passwd);
             if (GPLog.LOG) {
                 GPLog.addLogEntry(this, result);
             }
-            result = result.trim();
-            if (result.toLowerCase().equals("ok")) {
+            String msgOk = context.getResources().getString(R.string.file_upload_completed_properly);
+            if (result.equals(msgOk)) {
                 return ReturnCodes.OK;
             } else {
                 return ReturnCodes.ERROR;

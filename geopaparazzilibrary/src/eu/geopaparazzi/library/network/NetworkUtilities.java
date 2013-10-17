@@ -51,9 +51,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreProtocolPNames;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Base64;
+import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
 
@@ -170,6 +172,8 @@ public class NetworkUtilities {
                 in.close();
             if (out != null)
                 out.close();
+            if (conn != null)
+                conn.disconnect();
         }
         return file;
     }
@@ -177,14 +181,17 @@ public class NetworkUtilities {
     /**
      * Sends a string via POST to a given url.
      * 
+     * @param context 
      * @param urlStr the url to which to send to.
      * @param string the string to send as post body.
      * @param user the user or <code>null</code>.
      * @param password the password or <code>null</code>.
+     * @param readResponse if <code>true</code>, the response from the server is read and parsed as return message.
      * @return the response.
      * @throws Exception
      */
-    public static String sendPost( String urlStr, String string, String user, String password ) throws Exception {
+    public static String sendPost( Context context, String urlStr, String string, String user, String password,
+            boolean readResponse ) throws Exception {
         BufferedOutputStream wr = null;
         HttpURLConnection conn = null;
         try {
@@ -206,19 +213,24 @@ public class NetworkUtilities {
             wr.flush();
 
             int responseCode = conn.getResponseCode();
-            StringBuilder returnMessageBuilder = new StringBuilder();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
-                while( true ) {
-                    String line = br.readLine();
-                    if (line == null)
-                        break;
-                    returnMessageBuilder.append(line + "\n");
+            if (readResponse) {
+                StringBuilder returnMessageBuilder = new StringBuilder();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
+                    while( true ) {
+                        String line = br.readLine();
+                        if (line == null)
+                            break;
+                        returnMessageBuilder.append(line + "\n");
+                    }
+                    br.close();
                 }
-                br.close();
-            }
 
-            return returnMessageBuilder.toString();
+                return returnMessageBuilder.toString();
+            } else {
+                return getMessageForCode(context, responseCode, context.getResources()
+                        .getString(R.string.post_completed_properly));
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
@@ -231,6 +243,7 @@ public class NetworkUtilities {
     /**
      * Send a file via HTTP POST with basic authentication.
      * 
+     * @param context 
      * @param urlStr the server url to POST to.
      * @param file the file to send.
      * @param user the user or <code>null</code>.
@@ -238,7 +251,7 @@ public class NetworkUtilities {
      * @return the return string from the POST.
      * @throws Exception
      */
-    public static String sendFilePost( String urlStr, File file, String user, String password ) throws Exception {
+    public static String sendFilePost( Context context, String urlStr, File file, String user, String password ) throws Exception {
         BufferedOutputStream wr = null;
         FileInputStream fis = null;
         HttpURLConnection conn = null;
@@ -287,11 +300,10 @@ public class NetworkUtilities {
             }
             wr.flush();
 
-            String responseMessage = conn.getResponseMessage();
+            int responseCode = conn.getResponseCode();
+            return getMessageForCode(context, responseCode,
+                    context.getResources().getString(R.string.file_upload_completed_properly));
 
-            if (GPLog.LOG)
-                GPLog.addLogEntry(TAG, "POST RESPONSE: " + responseMessage);
-            return responseMessage;
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
@@ -302,6 +314,32 @@ public class NetworkUtilities {
                 fis.close();
             if (conn != null)
                 conn.disconnect();
+        }
+    }
+
+    /**
+     * Get a default message for an HTTP code.
+     * 
+     * @param context the context to use.
+     * @param responseCode the http code.
+     * @param defaultOkMessage an optional message for the ok code.
+     * @return the message.
+     */
+    public static String getMessageForCode( Context context, int responseCode, String defaultOkMessage ) {
+        Resources resources = context.getResources();
+        switch( responseCode ) {
+        case HttpURLConnection.HTTP_OK:
+            if (defaultOkMessage != null) {
+                return defaultOkMessage;
+            } else {
+                return resources.getString(R.string.http_ok_msg);
+            }
+        case HttpURLConnection.HTTP_FORBIDDEN:
+            return resources.getString(R.string.http_forbidden_msg);
+        case HttpURLConnection.HTTP_NOT_FOUND:
+            return resources.getString(R.string.http_not_found_msg);
+        default:
+            return resources.getString(R.string.http_not_implemented_code_msg) + " " + responseCode;
         }
     }
 

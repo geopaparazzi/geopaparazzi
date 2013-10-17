@@ -149,7 +149,7 @@ int string cantwrite_gpslog 0x7f06008c
 int string connection_problem_notification_title 0x7f06004f
 int string couldnt_find_geocache_results 0x7f0600be
 int string decimation 0x7f0600d2
-int string decimation_factor_default 0x7f0600d4
+int string decimation_factor_default 0x7f0600da
 int string defaultConnectionRetries 0x7f060069
 int string defaultMockGpsName 0x7f06006c
 int string defaultTrackFileDirectory 0x7f06006a
@@ -165,6 +165,7 @@ int string enter_geocode_string 0x7f0600bc
 int string error_disk_full 0x7f06008b
 int string error_projects_list 0x7f0600a8
 int string error_while_storing_form_data 0x7f0600ba
+int string file_upload_completed_properly 0x7f0600d4
 int string fill_alpha 0x7f0600cf
 int string fill_color 0x7f0600ce
 int string foreground_gps_provider_started_notification 0x7f06004d
@@ -182,6 +183,10 @@ int string gpx_import_message 0x7f060095
 int string gpx_import_processing 0x7f060097
 int string gpx_import_title 0x7f060094
 int string hello_world 0x7f0600c6
+int string http_forbidden_msg 0x7f0600d5
+int string http_not_found_msg 0x7f0600d6
+int string http_not_implemented_code_msg 0x7f0600d7
+int string http_ok_msg 0x7f0600d9
 int string insert_note 0x7f060098
 int string last_position 0x7f060091
 int string last_position_unknown 0x7f060092
@@ -213,6 +218,7 @@ int string okcoord 0x7f0600a1
 int string openrouteservice 0x7f0600b3
 int string point_shape_ 0x7f0600d0
 int string point_size 0x7f0600d1
+int string post_completed_properly 0x7f0600d8
 int string pref_about_key 0x7f06005d
 int string pref_about_summary 0x7f06001b
 int string pref_about_title 0x7f06001a

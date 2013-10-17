@@ -142,7 +142,7 @@ public class OsmUtilities {
         if (GPLog.LOG)
             GPLog.addLogEntry("OSMUTILITIES", "WPSXML SENT: " + wpsXmlString);
 
-        String response = NetworkUtilities.sendPost(serverUrl, wpsXmlString, null, null);
+        String response = NetworkUtilities.sendPost(context, serverUrl, wpsXmlString, null, null, true);
         if (GPLog.LOG)
             GPLog.addLogEntry("OSMUTILITIES", "RESPONSE FROM SERVER:" + response);
         return response;
