@@ -336,6 +336,8 @@ public class NetworkUtilities {
             }
         case HttpURLConnection.HTTP_FORBIDDEN:
             return resources.getString(R.string.http_forbidden_msg);
+        case HttpURLConnection.HTTP_UNAUTHORIZED:
+            return resources.getString(R.string.http_forbidden_msg);
         case HttpURLConnection.HTTP_NOT_FOUND:
             return resources.getString(R.string.http_not_found_msg);
         default:
