@@ -53,7 +53,6 @@ import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.library.webproject.ReturnCodes;
 import eu.geopaparazzi.library.webproject.WebProjectManager;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
@@ -151,30 +150,27 @@ public class ExportActivity extends Activity {
 
         cloudProgressDialog = ProgressDialog.show(ExportActivity.this, getString(R.string.exporting_data),
                 context.getString(R.string.exporting_data_to_the_cloud), true, true);
-        new AsyncTask<String, Void, Integer>(){
-            protected Integer doInBackground( String... params ) {
+        new AsyncTask<String, Void, String>(){
+            protected String doInBackground( String... params ) {
                 try {
-                    ReturnCodes returnCode = WebProjectManager.INSTANCE.uploadProject(context, addMedia, serverUrl, user, pwd);
-                    return returnCode.getMsgCode();
+                    String message = WebProjectManager.INSTANCE.uploadProject(context, addMedia, serverUrl, user, pwd);
+                    return message;
                 } catch (Exception e) {
                     GPLog.error(this, e.getLocalizedMessage(), e);
-                    e.printStackTrace();
-                    return ReturnCodes.ERROR.getMsgCode();
+                    return e.getLocalizedMessage();
                 }
             }
 
-            protected void onPostExecute( Integer response ) { // on UI thread!
+            protected void onPostExecute( String response ) { // on UI thread!
                 cloudProgressDialog.dismiss();
-                ReturnCodes code = ReturnCodes.get4Code(response);
-                String msg;
-                if (code == ReturnCodes.ERROR) {
-                    msg = getString(R.string.error_uploadig_project_to_cloud);
-                } else {
-                    msg = getString(R.string.project_succesfully_uploaded_to_cloud);
-                }
-
+                // String msg;
+                // if (code == ReturnCodes.ERROR) {
+                // msg = getString(R.string.error_uploadig_project_to_cloud);
+                // } else {
+                // msg = getString(R.string.project_succesfully_uploaded_to_cloud);
+                // }
                 AlertDialog.Builder builder = new AlertDialog.Builder(ExportActivity.this);
-                builder.setMessage(msg).setCancelable(false)
+                builder.setMessage(response).setCancelable(false)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                             public void onClick( DialogInterface dialog, int id ) {
                             }

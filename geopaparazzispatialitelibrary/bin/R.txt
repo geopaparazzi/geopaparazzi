@@ -149,7 +149,7 @@ int string cantwrite_gpslog 0x7f06008c
 int string connection_problem_notification_title 0x7f06004f
 int string couldnt_find_geocache_results 0x7f0600be
 int string decimation 0x7f0600d2
-int string decimation_factor_default 0x7f0600da
+int string decimation_factor_default 0x7f0600db
 int string defaultConnectionRetries 0x7f060069
 int string defaultMockGpsName 0x7f06006c
 int string defaultTrackFileDirectory 0x7f06006a
@@ -344,6 +344,7 @@ int string sirf_nmea_zda_on 0x7f060079
 int string sirf_software_version 0x7f060085
 int string stroke_color 0x7f0600cb
 int string take_picture 0x7f0600c1
+int string the_file_exists_wont_overwrite 0x7f0600da
 int string title_activity_nfc_id_reader 0x7f0600c8
 int string type_to_filter 0x7f0600a4
 int string unable_to_read_tag_id 0x7f0600ca

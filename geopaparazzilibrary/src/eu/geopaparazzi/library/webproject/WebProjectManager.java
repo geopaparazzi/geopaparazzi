@@ -69,9 +69,9 @@ public enum WebProjectManager {
      * @param server the server to which to upload.
      * @param user the username for authentication.
      * @param passwd the password for authentication.
-     * @return the return code.
+     * @return the return message.
      */
-    public ReturnCodes uploadProject( Context context, boolean addMedia, String server, String user, String passwd ) {
+    public String uploadProject( Context context, boolean addMedia, String server, String user, String passwd ) {
         try {
             ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
             File appFolder = resourcesManager.getApplicationDir();
@@ -94,15 +94,10 @@ public enum WebProjectManager {
             if (GPLog.LOG) {
                 GPLog.addLogEntry(this, result);
             }
-            String msgOk = context.getResources().getString(R.string.file_upload_completed_properly);
-            if (result.equals(msgOk)) {
-                return ReturnCodes.OK;
-            } else {
-                return ReturnCodes.ERROR;
-            }
+            return result;
         } catch (Exception e) {
             e.printStackTrace();
-            return ReturnCodes.ERROR;
+            return e.getLocalizedMessage();
         }
     }
 
@@ -142,15 +137,14 @@ public enum WebProjectManager {
                 }
             }
 
-            return ReturnCodes.OK.getMsgString();
+            return context.getString(R.string.project_successfully_downloaded);
         } catch (Exception e) {
             String message = e.getMessage();
-            if (message.startsWith(ReturnCodes.FILEEXISTS.getMsgString())) {
-                return message;
+            if (message.equals(CompressionUtilities.FILE_EXISTS)) {
+                String wontOverwrite = context.getString(R.string.the_file_exists_wont_overwrite);
+                return wontOverwrite;
             }
-
-            e.printStackTrace();
-            return ReturnCodes.ERROR.getMsgString();
+            return e.getLocalizedMessage();
         }
     }
 
@@ -195,15 +189,6 @@ public enum WebProjectManager {
         List<Webproject> wpList = new ArrayList<Webproject>();
 
         JSONObject jsonObject = new JSONObject(json);
-
-        // JSONArray tagArrayObj = new JSONArray(json);
-        // int tagsNum = tagArrayObj.length();
-        // if (tagsNum != 2) {
-        // throw new IOException("Two tags expected");
-        // }
-        // JSONObject errorObject = tagArrayObj.getJSONObject(0);
-        // JSONObject projectsObject = tagArrayObj.getJSONObject(1);
-        // JSONArray projectsArray = projectsObject.getJSONArray("projects");
         JSONArray projectsArray = jsonObject.getJSONArray("projects");
         int projectNum = projectsArray.length();
         for( int i = 0; i < projectNum; i++ ) {

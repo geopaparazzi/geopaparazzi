@@ -200,27 +200,9 @@ public class WebProjectsListActivity extends ListActivity {
 
             protected void onPostExecute( String response ) { // on UI thread!
                 cloudProgressDialog.dismiss();
-                if (response.startsWith(ReturnCodes.OK.getMsgString())) {
-                    String msg = getString(R.string.project_successfully_downloaded);// . Load the
-                                                                                     // new
-                    // project?";
-                    Utilities.messageDialog(WebProjectsListActivity.this, msg, null);
-                    // AlertDialog.Builder builder = new
-                    // AlertDialog.Builder(WebProjectsListActivity.this);
-                    // builder.setMessage(msg).setCancelable(false)
-                    // .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener(){
-                    // public void onClick( DialogInterface dialog, int id ) {
-                    // Intent i = getBaseContext().getPackageManager().getLaunchIntentForPackage(
-                    // getBaseContext().getPackageName());
-                    // i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    // startActivity(i);
-                    // }
-                    // }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener(){
-                    // public void onClick( DialogInterface dialog, int id ) {
-                    // }
-                    // });
-                    // AlertDialog alertDialog = builder.create();
-                    // alertDialog.show();
+                String okMsg = getString(R.string.project_successfully_downloaded);
+                if (response.equals(okMsg)) {
+                    Utilities.messageDialog(WebProjectsListActivity.this, okMsg, null);
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(WebProjectsListActivity.this);
                     builder.setMessage(response).setCancelable(false)

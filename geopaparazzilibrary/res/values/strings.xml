@@ -75,15 +75,15 @@
     <string name="alpha">Stroke alpha</string>
     <string name="fill_color">Fill color</string>
     <string name="fill_alpha">Fill alpha</string>
-    <string name="point_shape_">"Point shape     "</string>
+    <string name="point_shape_">Point shape     </string>
     <string name="point_size">Point size</string>
     <string name="decimation">Decimation</string>
     <string name="no_data">No data available</string>
     <string name="file_upload_completed_properly">File upload completed properly.</string>
     <string name="http_forbidden_msg">The access to the server has been denied. Please check your credentials and connection url.</string>
     <string name="http_not_found_msg">The requested resource could not be found. Please check your connection url.</string>
-    <string name="http_not_implemented_code_msg">"Trapped a return message code (please sent it to the developer): "</string>
+    <string name="http_not_implemented_code_msg">Trapped a return message code (please sent it to the developer): </string>
     <string name="post_completed_properly">Post completed properly.</string>
     <string name="http_ok_msg">The request was processed successful.</string>
-
+    <string name="the_file_exists_wont_overwrite">The file exists. Won\'t overwrite: </string>
 </resources>

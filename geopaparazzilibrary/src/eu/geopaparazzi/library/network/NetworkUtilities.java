@@ -166,7 +166,6 @@ public class NetworkUtilities {
                 bytesRead = in.read(buffer, 0, (int) maxBufferSize);
             }
             out.flush();
-
         } finally {
             if (in != null)
                 in.close();

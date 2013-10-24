@@ -32,7 +32,6 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.webproject.ReturnCodes;
 
 /**
  * Utilities class to zip and unzip folders.
@@ -40,6 +39,9 @@ import eu.geopaparazzi.library.webproject.ReturnCodes;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class CompressionUtilities {
+
+    public static final String THE_BASE_FILE_IS_SUPPOSED_TO_BE_A_DIRECTORY = "The base file is supposed to be a directory.";
+    public static final String FILE_EXISTS = "FILE EXISTS";
 
     /**
      * Compress a folder and its contents.
@@ -67,7 +69,7 @@ public class CompressionUtilities {
                     fileWriter.close();
             }
         } else {
-            throw new IOException("The base file is supposed to be a directory."); //$NON-NLS-1$
+            throw new IOException(THE_BASE_FILE_IS_SUPPOSED_TO_BE_A_DIRECTORY); //$NON-NLS-1$
         }
     }
 
@@ -103,7 +105,7 @@ public class CompressionUtilities {
                         if (addTimeStamp) {
                             newFirstName = firstName + "_" + dateTimeFormatter.format(new Date()); //$NON-NLS-1$
                         } else {
-                            throw new IOException(ReturnCodes.FILEEXISTS.getMsgString() + " " + baseFile); //$NON-NLS-1$
+                            throw new IOException(FILE_EXISTS + baseFile); //$NON-NLS-1$
                         }
                     }
                 }
