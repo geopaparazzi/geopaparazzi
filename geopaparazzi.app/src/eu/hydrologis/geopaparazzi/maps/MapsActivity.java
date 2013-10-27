@@ -19,6 +19,7 @@ package eu.hydrologis.geopaparazzi.maps;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
@@ -55,7 +56,9 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
@@ -380,7 +383,14 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                     new Thread(new Runnable(){
                         public void run() {
                             try {
-                                mapView.takeScreenshot(Bitmap.CompressFormat.PNG, 90, tmpImageFile);
+                                Rect t = new Rect();
+                                mapView.getDrawingRect(t);
+                                Bitmap bufferedBitmap = Bitmap.createBitmap(t.width(), t.height(), Bitmap.Config.ARGB_8888);
+                                Canvas bufferedCanvas = new Canvas(bufferedBitmap);
+                                mapView.draw(bufferedCanvas);
+                                FileOutputStream out = new FileOutputStream(tmpImageFile);
+                                bufferedBitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+                                out.close();
                             } catch (Exception e) {
                             }
                         }
