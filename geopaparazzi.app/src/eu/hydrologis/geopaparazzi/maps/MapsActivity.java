@@ -602,7 +602,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     protected void onDestroy() {
         unregisterReceiver(batteryReceiver);
         GpsManager.getInstance(this).removeListener(this);
-        dataOverlay.dispose();
+        if (dataOverlay != null)
+            dataOverlay.dispose();
 
         if (mapView != null) {
             MapGenerator mapGenerator = mapView.getMapGenerator();
