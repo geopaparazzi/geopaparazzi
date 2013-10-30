@@ -24,8 +24,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -44,12 +44,10 @@ import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.markers.MarkersUtilities;
-import eu.geopaparazzi.library.sketch.DrawingActivity;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
-import eu.geopaparazzi.library.util.debug.Debug;
 
 /**
  * A custom Sketch view.
@@ -115,15 +113,30 @@ public class GSketchView extends View implements GView {
                     e.printStackTrace();
                 }
                 lastImageFile = new File(mediaDir, "SKETCH_" + currentDatestring + ".png");
-                Intent sketchIntent = new Intent(context, DrawingActivity.class);
-                String imagePath = lastImageFile.getAbsolutePath();
-                sketchIntent.putExtra(LibraryConstants.PREFS_KEY_PATH, imagePath);
-                if (gpsLocation != null) {
-                    sketchIntent.putExtra(LibraryConstants.LATITUDE, gpsLocation[1]);
-                    sketchIntent.putExtra(LibraryConstants.LONGITUDE, gpsLocation[0]);
-                    sketchIntent.putExtra(LibraryConstants.ELEVATION, gpsLocation[2]);
+                
+                // the old way
+                // Intent sketchIntent = new Intent(context, DrawingActivity.class);
+                // String imagePath = lastImageFile.getAbsolutePath();
+                // sketchIntent.putExtra(LibraryConstants.PREFS_KEY_PATH, imagePath);
+                // context.startActivity(sketchIntent);
+
+                /*
+                 * open markers for new sketch
+                 */
+                if (MarkersUtilities.appInstalled(context)) {
+                    Intent sketchIntent = new Intent();
+                    sketchIntent
+                            .setComponent(new ComponentName(MarkersUtilities.APP_PACKAGE, MarkersUtilities.APP_MAIN_ACTIVITY));
+                    sketchIntent.putExtra(MarkersUtilities.EXTRA_KEY, lastImageFile.getAbsolutePath());
+                    if (gpsLocation != null) {
+                        sketchIntent.putExtra(LibraryConstants.LATITUDE, gpsLocation[1]);
+                        sketchIntent.putExtra(LibraryConstants.LONGITUDE, gpsLocation[0]);
+                        sketchIntent.putExtra(LibraryConstants.ELEVATION, gpsLocation[2]);
+                    }
+                    context.startActivity(sketchIntent);
+                } else {
+                    MarkersUtilities.openMarketToInstall(context);
                 }
-                context.startActivity(sketchIntent);
             }
         });
 
@@ -164,7 +177,7 @@ public class GSketchView extends View implements GView {
         refresh(context);
     }
 
-    private void refresh( final Context context ) {
+    public void refresh( final Context context ) {
         log("Entering refresh....");
 
         if (_value != null && _value.length() > 0) {
@@ -177,10 +190,11 @@ public class GSketchView extends View implements GView {
                 if (imageAbsolutePath.length() == 0) {
                     continue;
                 }
+                
                 if (addedImages.contains(imageAbsolutePath.trim())) {
                     continue;
                 }
-
+                
                 final File image = new File(imageAbsolutePath);
                 if (!image.exists()) {
                     log("Img doesn't exist on disk....");
@@ -196,17 +210,22 @@ public class GSketchView extends View implements GView {
                 imageView.setOnClickListener(new View.OnClickListener(){
                     public void onClick( View v ) {
                         /*
-                         * open in markers
+                         * open in markers to edit it
                          */
-                        Intent intent = new Intent(MarkersUtilities.ACTION_EDIT);
-                        intent.setDataAndType(Uri.fromFile(image), "image/*"); //$NON-NLS-1$
-                        intent.putExtra(MarkersUtilities.EXTRA_KEY, image.getAbsolutePath());
-                        context.startActivity(intent);
+                        if (MarkersUtilities.appInstalled(context)) {
+                            Intent intent = new Intent(MarkersUtilities.ACTION_EDIT);
+                            intent.setDataAndType(Uri.fromFile(image), "image/*"); //$NON-NLS-1$
+                            intent.putExtra(MarkersUtilities.EXTRA_KEY, image.getAbsolutePath());
+                            context.startActivity(intent);
+                        } else {
+                            MarkersUtilities.openMarketToInstall(context);
+                        }
                     }
                 });
                 log("Creating thumb and adding it: " + imageAbsolutePath);
                 imageLayout.addView(imageView);
                 imageLayout.invalidate();
+                
                 addedImages.add(imageAbsolutePath);
             }
 
