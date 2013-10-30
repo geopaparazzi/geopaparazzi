@@ -127,4 +127,10 @@ public class GNfcUidView extends View implements GView {
         uidText.setText(rfidUID);
     }
 
+    @Override
+    public void refresh( Context context ) {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

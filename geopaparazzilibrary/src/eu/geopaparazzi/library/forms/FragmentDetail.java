@@ -40,6 +40,7 @@ import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_TIME;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -228,7 +229,7 @@ public class FragmentDetail extends Fragment {
         }
         return view;
     }
-
+    
     public void onActivityResult( int requestCode, int resultCode, Intent data ) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {

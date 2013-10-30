@@ -178,7 +178,7 @@ public class GPictureView extends View implements GView {
         refresh(context);
     }
 
-    private void refresh( final Context context ) {
+    public void refresh( final Context context ) {
         log("Entering refresh....");
 
         if (_value != null && _value.length() > 0) {

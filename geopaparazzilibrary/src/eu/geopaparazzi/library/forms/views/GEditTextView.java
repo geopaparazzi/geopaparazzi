@@ -109,4 +109,10 @@ public class GEditTextView extends View implements GView {
     public void setOnActivityResult( Intent data ) {
     }
 
+    @Override
+    public void refresh( Context context ) {
+        // TODO Auto-generated method stub
+        
+    }
+
 }
