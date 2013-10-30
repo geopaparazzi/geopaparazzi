@@ -43,6 +43,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.markers.MarkersUtilities;
 import eu.geopaparazzi.library.sketch.DrawingActivity;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
@@ -194,9 +195,12 @@ public class GSketchView extends View implements GView {
                 imageView.setBackgroundDrawable(getResources().getDrawable(R.drawable.border_black_1px));
                 imageView.setOnClickListener(new View.OnClickListener(){
                     public void onClick( View v ) {
-                        Intent intent = new Intent();
-                        intent.setAction(android.content.Intent.ACTION_VIEW);
+                        /*
+                         * open in markers
+                         */
+                        Intent intent = new Intent(MarkersUtilities.ACTION_EDIT);
                         intent.setDataAndType(Uri.fromFile(image), "image/*"); //$NON-NLS-1$
+                        intent.putExtra(MarkersUtilities.EXTRA_KEY, image.getAbsolutePath());
                         context.startActivity(intent);
                     }
                 });
