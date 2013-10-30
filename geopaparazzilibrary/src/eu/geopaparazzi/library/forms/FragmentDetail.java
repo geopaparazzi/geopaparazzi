@@ -57,10 +57,12 @@ import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
+import eu.geopaparazzi.library.forms.views.GMapView;
 import eu.geopaparazzi.library.forms.views.GNfcUidView;
 import eu.geopaparazzi.library.forms.views.GView;
 import eu.geopaparazzi.library.util.FileUtilities;
@@ -84,6 +86,8 @@ public class FragmentDetail extends Fragment {
     @Override
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
+        
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
     @Override
@@ -229,13 +233,25 @@ public class FragmentDetail extends Fragment {
         }
         return view;
     }
-    
+
     public void onActivityResult( int requestCode, int resultCode, Intent data ) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             GView gView = requestCodes2WidgetMap.get(requestCode);
             if (gView != null) {
                 gView.setOnActivityResult(data);
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Collection<GView> views = requestCodes2WidgetMap.values();
+        for( GView view : views ) {
+            if (view instanceof GMapView) {
+                view.refresh(((GMapView) view).getContext());
             }
         }
     }

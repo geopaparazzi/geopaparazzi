@@ -33,6 +33,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.markers.MarkersUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
 
@@ -44,6 +45,8 @@ import eu.geopaparazzi.library.util.ResourcesManager;
 public class GMapView extends View implements GView {
 
     private File image;
+    private ImageView imageView;
+    private LinearLayout mainLayout;
 
     public GMapView( Context context, AttributeSet attrs, int defStyle ) {
         super(context, attrs, defStyle);
@@ -57,7 +60,7 @@ public class GMapView extends View implements GView {
             String constraintDescription ) {
         super(context, attrs);
 
-        LinearLayout mainLayout = new LinearLayout(context);
+        mainLayout = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
                 LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(10, 10, 10, 10);
@@ -84,22 +87,50 @@ public class GMapView extends View implements GView {
             File parentFolder = mediaDir.getParentFile();
             image = new File(parentFolder, value);
         }
-
         if (image.exists()) {
-            Bitmap thumbnail = FileUtilities.readScaledBitmap(image, 200);
-            ImageView imageView = new ImageView(context);
+            imageView = new ImageView(context);
             imageView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             imageView.setPadding(5, 5, 5, 5);
-            imageView.setImageBitmap(thumbnail);
             imageView.setOnClickListener(new View.OnClickListener(){
                 public void onClick( View v ) {
-                    Intent intent = new Intent();
-                    intent.setAction(android.content.Intent.ACTION_VIEW);
-                    intent.setDataAndType(Uri.fromFile(image), "image/*"); //$NON-NLS-1$
-                    context.startActivity(intent);
+                    // the old way
+                    // Intent intent = new Intent();
+                    // intent.setAction(android.content.Intent.ACTION_VIEW);
+                    //                    intent.setDataAndType(Uri.fromFile(image), "image/*"); //$NON-NLS-1$
+                    // context.startActivity(intent);
+
+                    /*
+                     * open in markers to edit it
+                     */
+                    if (MarkersUtilities.appInstalled(context)) {
+                        Intent intent = new Intent(MarkersUtilities.ACTION_EDIT);
+                        intent.setDataAndType(Uri.fromFile(image), "image/*"); //$NON-NLS-1$
+                        intent.putExtra(MarkersUtilities.EXTRA_KEY, image.getAbsolutePath());
+                        context.startActivity(intent);
+                    } else {
+                        MarkersUtilities.openMarketToInstall(context);
+                    }
                 }
             });
             mainLayout.addView(imageView);
+        }
+        if (image.exists() && imageView != null) {
+            Bitmap thumbnail = FileUtilities.readScaledBitmap(image, 200);
+            imageView.setImageBitmap(thumbnail);
+        }
+
+    }
+
+    public void refresh( final Context context ) {
+        try {
+            // THIS IS PLAIN UGLY
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (image.exists() && imageView != null) {
+            Bitmap thumbnail = FileUtilities.readScaledBitmap(image, 200);
+            imageView.setImageBitmap(thumbnail);
         }
     }
 
@@ -109,12 +140,6 @@ public class GMapView extends View implements GView {
 
     @Override
     public void setOnActivityResult( Intent data ) {
-    }
-
-    @Override
-    public void refresh( Context context ) {
-        // TODO Auto-generated method stub
-        
     }
 
 }
