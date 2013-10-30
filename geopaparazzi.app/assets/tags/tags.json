@@ -4,30 +4,14 @@
         "sectiondescription": "note with image",
         "forms": [
             {
-                "formname": "text note",
-                "formitems": [
-                    {
-                        "key": "title",
-                        "value": "",
-                        "type": "string",
-                        "mandatory": "yes"
-                    },
-                    {
-                        "key": "description",
-                        "value": "",
-                        "type": "string",
-                        "mandatory": "yes"
-                    }
-                ]
-            },
-            {
                 "formname": "image note",
                 "formitems": [
 					{
                         "key": "description",
+                        "islabel": "true",
                         "value": "",
                         "type": "string",
-                        "mandatory": "yes"
+                        "mandatory": "no"
                     },
                     {
 						"key": "pictures of the environment around the note",
@@ -42,30 +26,14 @@
         "sectiondescription": "note with sketch",
         "forms": [
             {
-                "formname": "text note",
-                "formitems": [
-                    {
-                        "key": "title",
-                        "value": "",
-                        "type": "string",
-                        "mandatory": "yes"
-                    },
-                    {
-                        "key": "description",
-                        "value": "",
-                        "type": "string",
-                        "mandatory": "yes"
-                    }
-                ]
-            },
-            {
                 "formname": "sketch note",
                 "formitems": [
 					{
                         "key": "description",
+                        "islabel": "true",
                         "value": "",
                         "type": "string",
-                        "mandatory": "yes"
+                        "mandatory": "no"
                     },
                     {
 						"key": "sketches with drawings of the environment around the note",
@@ -80,30 +48,14 @@
         "sectiondescription": "note with map image",
         "forms": [
             {
-                "formname": "text note",
-                "formitems": [
-                    {
-                        "key": "title",
-                        "value": "",
-                        "type": "string",
-                        "mandatory": "yes"
-                    },
-                    {
-                        "key": "description",
-                        "value": "",
-                        "type": "string",
-                        "mandatory": "yes"
-                    }
-                ]
-            },
-            {
                 "formname": "map image note",
                 "formitems": [
 					{
                         "key": "description",
+                        "islabel": "true",
                         "value": "",
                         "type": "string",
-                        "mandatory": "yes"
+                        "mandatory": "no"
                     },
                     {
 						"key": "map around note",
@@ -123,14 +75,15 @@
                     {
                         "key": "title",
                         "value": "",
+                        "islabel": "true",
                         "type": "string",
-                        "mandatory": "yes"
+                        "mandatory": "no"
                     },
                     {
                         "key": "description",
                         "value": "",
                         "type": "string",
-                        "mandatory": "yes"
+                        "mandatory": "no"
                     }
                 ]
             }
