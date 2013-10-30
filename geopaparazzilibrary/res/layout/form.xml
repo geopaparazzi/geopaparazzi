@@ -21,9 +21,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_margin="5dp"
-        android:onClick="saveClicked"
-        android:text="@string/save" />
+        android:layout_margin="10dp"
+        android:background="@android:drawable/ic_input_add"
+        android:onClick="saveClicked" />
 
     <Button
         android:id="@+id/cancelButton"
@@ -31,8 +31,9 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/saveButton"
         android:layout_alignBottom="@+id/saveButton"
+        android:layout_margin="10dp"
         android:layout_toRightOf="@+id/saveButton"
-        android:onClick="cancelClicked"
-        android:text="@string/cancel" />
+        android:background="@android:drawable/ic_delete"
+        android:onClick="cancelClicked" />
 
 </RelativeLayout>
