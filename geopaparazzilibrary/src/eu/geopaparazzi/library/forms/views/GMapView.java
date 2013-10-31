@@ -102,15 +102,9 @@ public class GMapView extends View implements GView {
                     /*
                      * open in markers to edit it
                      */
-                    if (MarkersUtilities.appInstalled(context)) {
-                        Intent intent = new Intent(MarkersUtilities.ACTION_EDIT);
-                        intent.setDataAndType(Uri.fromFile(image), "image/*"); //$NON-NLS-1$
-                        intent.putExtra(MarkersUtilities.EXTRA_KEY, image.getAbsolutePath());
-                        context.startActivity(intent);
-                    } else {
-                        MarkersUtilities.openMarketToInstall(context);
-                    }
+                    MarkersUtilities.launchOnImage(context, image);
                 }
+
             });
             mainLayout.addView(imageView);
         }

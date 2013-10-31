@@ -17,10 +17,12 @@
  */
 package eu.geopaparazzi.library.markers;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,6 +31,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.provider.MediaStore;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.LibraryConstants;
 
 /**
  * Utilities for interaction with the Makers-for-android project. 
@@ -99,6 +102,48 @@ public class MarkersUtilities {
                         context.startActivity(intent);
                     }
                 }).show();
+    }
+
+    /**
+     * Launches Marker in edit mode on a given image, saving over the same image.
+     * 
+     * @param context
+     * @param image the image to edit and save to.
+     */
+    public static void launchOnImage( final Context context, File image ) {
+        if (MarkersUtilities.appInstalled(context)) {
+            Intent intent = new Intent(MarkersUtilities.ACTION_EDIT);
+            intent.setDataAndType(Uri.fromFile(image), "image/*"); //$NON-NLS-1$
+            intent.putExtra(MarkersUtilities.EXTRA_KEY, image.getAbsolutePath());
+            context.startActivity(intent);
+        } else {
+            MarkersUtilities.openMarketToInstall(context);
+        }
+    }
+
+    /**
+     * Opens Marker in new sketch mode, supplying a file to save to.
+     * 
+     * <p>If position data are supplied, they should be used to create a properties file.
+     * 
+     * @param context
+     * @param image the image file to save to. 
+     * @param gpsLocation the position of the sketch or <code>null</code>.
+     */
+    public static void launch( Context context, File image, double[] gpsLocation ) {
+        if (MarkersUtilities.appInstalled(context)) {
+            Intent sketchIntent = new Intent();
+            sketchIntent.setComponent(new ComponentName(MarkersUtilities.APP_PACKAGE, MarkersUtilities.APP_MAIN_ACTIVITY));
+            sketchIntent.putExtra(MarkersUtilities.EXTRA_KEY, image.getAbsolutePath());
+            if (gpsLocation != null) {
+                sketchIntent.putExtra(LibraryConstants.LATITUDE, gpsLocation[1]);
+                sketchIntent.putExtra(LibraryConstants.LONGITUDE, gpsLocation[0]);
+                sketchIntent.putExtra(LibraryConstants.ELEVATION, gpsLocation[2]);
+            }
+            context.startActivity(sketchIntent);
+        } else {
+            MarkersUtilities.openMarketToInstall(context);
+        }
     }
 
 }

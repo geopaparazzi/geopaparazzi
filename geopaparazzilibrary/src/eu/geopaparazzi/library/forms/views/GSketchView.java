@@ -114,7 +114,7 @@ public class GSketchView extends View implements GView {
                     e.printStackTrace();
                 }
                 lastImageFile = new File(mediaDir, "SKETCH_" + currentDatestring + ".png");
-                
+
                 // the old way
                 // Intent sketchIntent = new Intent(context, DrawingActivity.class);
                 // String imagePath = lastImageFile.getAbsolutePath();
@@ -124,20 +124,7 @@ public class GSketchView extends View implements GView {
                 /*
                  * open markers for new sketch
                  */
-                if (MarkersUtilities.appInstalled(context)) {
-                    Intent sketchIntent = new Intent();
-                    sketchIntent
-                            .setComponent(new ComponentName(MarkersUtilities.APP_PACKAGE, MarkersUtilities.APP_MAIN_ACTIVITY));
-                    sketchIntent.putExtra(MarkersUtilities.EXTRA_KEY, lastImageFile.getAbsolutePath());
-                    if (gpsLocation != null) {
-                        sketchIntent.putExtra(LibraryConstants.LATITUDE, gpsLocation[1]);
-                        sketchIntent.putExtra(LibraryConstants.LONGITUDE, gpsLocation[0]);
-                        sketchIntent.putExtra(LibraryConstants.ELEVATION, gpsLocation[2]);
-                    }
-                    context.startActivity(sketchIntent);
-                } else {
-                    MarkersUtilities.openMarketToInstall(context);
-                }
+                MarkersUtilities.launch(context, lastImageFile, gpsLocation);
             }
         });
 
@@ -191,11 +178,11 @@ public class GSketchView extends View implements GView {
                 if (imageAbsolutePath.length() == 0) {
                     continue;
                 }
-                
+
                 if (addedImages.contains(imageAbsolutePath.trim())) {
                     continue;
                 }
-                
+
                 final File image = new File(imageAbsolutePath);
                 if (!image.exists()) {
                     log("Img doesn't exist on disk....");
@@ -213,20 +200,13 @@ public class GSketchView extends View implements GView {
                         /*
                          * open in markers to edit it
                          */
-                        if (MarkersUtilities.appInstalled(context)) {
-                            Intent intent = new Intent(MarkersUtilities.ACTION_EDIT);
-                            intent.setDataAndType(Uri.fromFile(image), "image/*"); //$NON-NLS-1$
-                            intent.putExtra(MarkersUtilities.EXTRA_KEY, image.getAbsolutePath());
-                            context.startActivity(intent);
-                        } else {
-                            MarkersUtilities.openMarketToInstall(context);
-                        }
+                        MarkersUtilities.launchOnImage(context, image);
                     }
                 });
                 log("Creating thumb and adding it: " + imageAbsolutePath);
                 imageLayout.addView(imageView);
                 imageLayout.invalidate();
-                
+
                 addedImages.add(imageAbsolutePath);
             }
 
