@@ -99,6 +99,9 @@ public class MapTagsActivity extends Activity {
             // no gps, can use only map center
             togglePositionTypeButtonGps.setChecked(false);
             togglePositionTypeButtonGps.setEnabled(false);
+            Editor edit = preferences.edit();
+            edit.putBoolean(USE_MAPCENTER_POSITION, false);
+            edit.apply();
         } else {
             if (useMapCenterPosition) {
                 togglePositionTypeButtonGps.setChecked(false);
@@ -198,7 +201,7 @@ public class MapTagsActivity extends Activity {
     private void checkPositionCoordinates() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean useMapCenterPosition = preferences.getBoolean(USE_MAPCENTER_POSITION, false);
-        if (useMapCenterPosition) {
+        if (useMapCenterPosition || gpsLocation == null) {
             latitude = mapCenterLatitude;
             longitude = mapCenterLongitude;
             elevation = mapCenterElevation;
