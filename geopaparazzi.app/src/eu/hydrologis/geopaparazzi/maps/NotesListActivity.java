@@ -64,7 +64,7 @@ import eu.hydrologis.geopaparazzi.util.Note;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class NotesListActivity extends ListActivity {
-    private static final String SHARE_NOTE_WITH = "Share note with...";
+    private static String SHARE_NOTE_WITH = "";
     private String[] notesNames;
     private Map<String, INote> notesMap = new HashMap<String, INote>();
     private Comparator<INote> notesSorter = new ItemComparators.NotesComparator(false);
@@ -73,6 +73,8 @@ public class NotesListActivity extends ListActivity {
         super.onCreate(icicle);
 
         setContentView(R.layout.noteslist);
+
+        SHARE_NOTE_WITH = getResources().getString(R.string.share_note_with);
 
         refreshList();
 

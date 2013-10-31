@@ -198,6 +198,7 @@
     <string name="keep_use_imperial_sum">Uses imperial units instead of metric where possible.</string>
     <string name="satellites">satellites</string>
     <string name="crash_toast_text">The application experienced a fatal error. Crash information will be collected, that are useful to solve the problem. Please send them to the development team when possible.</string>
+    <string name="share_note_with">Share note with...</string>
     
 
 </resources>
