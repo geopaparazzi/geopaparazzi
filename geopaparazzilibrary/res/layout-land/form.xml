@@ -27,9 +27,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
-            android:layout_margin="5dp"
-            android:onClick="saveClicked"
-            android:text="@string/save" />
+            android:layout_margin="10dp"
+            android:background="@android:drawable/ic_menu_add"
+            android:onClick="saveClicked" />
 
         <Button
             android:id="@+id/cancelButton"
@@ -37,9 +37,21 @@
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/saveButton"
             android:layout_alignBottom="@+id/saveButton"
+            android:layout_margin="10dp"
             android:layout_toRightOf="@+id/saveButton"
-            android:onClick="cancelClicked"
-            android:text="@string/cancel" />
+            android:background="@android:drawable/ic_menu_close_clear_cancel"
+            android:onClick="cancelClicked" />
+
+        <Button
+            android:id="@+id/shareButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/cancelButton"
+            android:layout_alignBottom="@+id/cancelButton"
+            android:layout_margin="10dp"
+            android:layout_toRightOf="@+id/cancelButton"
+            android:background="@android:drawable/ic_menu_share"
+            android:onClick="shareClicked" />
     </RelativeLayout>
 
     <fragment
