@@ -45,6 +45,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.FormActivity;
+import eu.geopaparazzi.library.forms.FormUtilities;
+import eu.geopaparazzi.library.share.ShareUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
@@ -62,6 +64,7 @@ import eu.hydrologis.geopaparazzi.util.Note;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class NotesListActivity extends ListActivity {
+    private static final String SHARE_NOTE_WITH = "Share note with...";
     private String[] notesNames;
     private Map<String, INote> notesMap = new HashMap<String, INote>();
     private Comparator<INote> notesSorter = new ItemComparators.NotesComparator(false);
@@ -158,6 +161,74 @@ public class NotesListActivity extends ListActivity {
 
                 final TextView notesText = (TextView) rowView.findViewById(R.id.bookmarkrowtext);
                 notesText.setText(notesNames[position]);
+
+                final ImageView shareButton = (ImageView) rowView.findViewById(R.id.sharebutton);
+                shareButton.setOnClickListener(new View.OnClickListener(){
+                    public void onClick( View v ) {
+                        final String name = notesText.getText().toString();
+                        INote iNote = notesMap.get(name);
+                        float lat = (float) iNote.getLat();
+                        float lon = (float) iNote.getLon();
+                        String osmUrl = Utilities.osmUrlFromLatLong(lat, lon, true, false);
+                        if (iNote instanceof Note) {
+                            Note note = (Note) iNote;
+                            if (note.getForm() == null || note.getForm().length() == 0) {
+                                // simple note
+                                String text = note.getName();
+                                text = text + "\n" + osmUrl;
+                                ShareUtilities.shareText(NotesListActivity.this, SHARE_NOTE_WITH, text);
+                            } else {
+                                int type = note.getType();
+                                String form = note.getForm();
+                                try {
+                                    String formText = FormUtilities.formToPlainText(form, false);
+                                    formText = formText + "\n" + osmUrl;
+                                    if (form != null && form.length() > 0 && type != NoteType.OSM.getTypeNum()) {
+                                        // double altim = note.getAltim();
+                                        List<String> imagePaths = note.getImagePaths();
+                                        File imageFile = null;
+                                        if (imagePaths.size() > 0) {
+                                            String imagePath = imagePaths.get(0);
+                                            imageFile = new File(imagePath);
+                                            if (!imageFile.exists()) {
+                                                imageFile = null;
+                                            }
+                                        }
+                                        if (imageFile != null) {
+                                            ShareUtilities.shareTextAndImage(NotesListActivity.this, SHARE_NOTE_WITH, formText,
+                                                    imageFile);
+                                        } else {
+                                            ShareUtilities.shareText(NotesListActivity.this, SHARE_NOTE_WITH, formText);
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    Utilities.errorDialog(NotesListActivity.this, e, null);
+                                }
+                            }
+
+                        } else if (iNote instanceof Image) {
+                            Image image = (Image) iNote;
+                            File imageFile = new File(image.getPath());
+                            try {
+                                if (!imageFile.exists()) {
+                                    // try relative to media
+                                    File mediaDir = ResourcesManager.getInstance(NotesListActivity.this).getMediaDir();
+                                    imageFile = new File(mediaDir.getParentFile(), image.getPath());
+                                }
+                            } catch (java.lang.Exception e) {
+                                e.printStackTrace();
+                            }
+                            if (imageFile.exists()) {
+                                ShareUtilities.shareTextAndImage(NotesListActivity.this, SHARE_NOTE_WITH, osmUrl, imageFile);
+                            } else {
+                                Utilities.errorDialog(NotesListActivity.this, new IOException("The image is missing: "
+                                        + imageFile), null);
+                            }
+                        }
+
+                    }
+                });
 
                 final ImageView editButton = (ImageView) rowView.findViewById(R.id.editbutton);
                 editButton.setOnClickListener(new View.OnClickListener(){

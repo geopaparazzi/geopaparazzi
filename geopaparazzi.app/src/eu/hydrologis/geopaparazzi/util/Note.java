@@ -47,7 +47,7 @@ public class Note implements INote, KmlRepresenter, GpxRepresenter {
     private final String category;
     private final String section;
     private final int type;
-    private List<String> images = new ArrayList<String>();
+    private List<String> images = null;
 
     /**
      * A wrapper for a note.
@@ -129,6 +129,7 @@ public class Note implements INote, KmlRepresenter, GpxRepresenter {
 
     @SuppressWarnings("nls")
     public String toKmlString() throws Exception {
+        images = new ArrayList<String>();
         String name = Utilities.makeXmlSafe(this.name);
         StringBuilder sB = new StringBuilder();
         sB.append("<Placemark>\n");
@@ -241,11 +242,63 @@ public class Note implements INote, KmlRepresenter, GpxRepresenter {
         return sB.toString();
     }
 
+    private void getImages() throws Exception {
+        images = new ArrayList<String>();
+        if (section != null && section.length() > 0) {
+            JSONObject sectionObject = new JSONObject(section);
+            List<String> formsNames = TagsManager.getFormNames4Section(sectionObject);
+            for( String formName : formsNames ) {
+                JSONObject form4Name = TagsManager.getForm4Name(formName, sectionObject);
+                JSONArray formItems = TagsManager.getFormItems(form4Name);
+                for( int i = 0; i < formItems.length(); i++ ) {
+                    JSONObject formItem = formItems.getJSONObject(i);
+                    if (!formItem.has(FormUtilities.TAG_KEY)) {
+                        continue;
+                    }
+
+                    String type = formItem.getString(FormUtilities.TAG_TYPE);
+                    String value = formItem.getString(FormUtilities.TAG_VALUE);
+
+                    if (type.equals(FormUtilities.TYPE_PICTURES)) {
+                        if (value.trim().length() == 0) {
+                            continue;
+                        }
+                        String[] imageSplit = value.split(";");
+                        for( String image : imageSplit ) {
+                            images.add(image);
+                        }
+                    } else if (type.equals(FormUtilities.TYPE_MAP)) {
+                        if (value.trim().length() == 0) {
+                            continue;
+                        }
+                        String image = value.trim();
+                        images.add(image);
+                    } else if (type.equals(FormUtilities.TYPE_SKETCH)) {
+                        if (value.trim().length() == 0) {
+                            continue;
+                        }
+                        String[] imageSplit = value.split(";");
+                        for( String image : imageSplit ) {
+                            images.add(image);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public boolean hasImages() {
-        return images.size() > 0;
+        return images != null && images.size() > 0;
     }
 
     public List<String> getImagePaths() {
+        if (images == null) {
+            try {
+                getImages();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         return images;
     }
 

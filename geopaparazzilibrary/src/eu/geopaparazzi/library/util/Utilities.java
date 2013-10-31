@@ -31,6 +31,7 @@ import android.os.Looper;
 import android.os.StatFs;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 import eu.geopaparazzi.library.database.GPLog;
@@ -201,7 +202,39 @@ public class Utilities {
 
             protected void onPostExecute( String response ) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setMessage(msg).setCancelable(false)
+                builder.setMessage(msg).setIcon(android.R.drawable.ic_dialog_info).setCancelable(false)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
+                            public void onClick( DialogInterface dialog, int id ) {
+                                if (okRunnable != null) {
+                                    new Thread(okRunnable).start();
+                                }
+                            }
+                        });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+            }
+        }.execute((String) null);
+    }
+
+    /**
+     * Execute a generic error dialog in an {@link AsyncTask}.
+     * 
+     * @param context the {@link Context} to use.
+     * @param t the exception.
+     * @param okRunnable optional {@link Runnable} to trigger after ok was pressed. 
+     */
+    public static void errorDialog( final Context context, final Throwable t, final Runnable okRunnable ) {
+
+        new AsyncTask<String, Void, String>(){
+            protected String doInBackground( String... params ) {
+                return ""; //$NON-NLS-1$
+            }
+
+            protected void onPostExecute( String response ) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder //
+                .setTitle(t.getLocalizedMessage()).setMessage(Log.getStackTraceString(t))
+                        .setIcon(android.R.drawable.ic_dialog_alert).setCancelable(false)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                             public void onClick( DialogInterface dialog, int id ) {
                                 if (okRunnable != null) {
@@ -548,6 +581,34 @@ public class Utilities {
       */
     public static double toFeet( final double meters ) {
         return meters * METER_TO_FEET_CONVERSION_FACTOR;
+    }
+
+    /**
+     * Create an OSM url from coordinates.
+     * 
+     * @param lat
+     * @param lon
+     * @param withMarker
+     * @param withGeosmsParam
+     * @return
+     */
+    public static String osmUrlFromLatLong( float lat, float lon, boolean withMarker, boolean withGeosmsParam ) {
+        StringBuilder sB = new StringBuilder();
+        sB.append("http://www.osm.org/?lat=");
+        sB.append(lat);
+        sB.append("&lon=");
+        sB.append(lon);
+        sB.append("&zoom=14");
+        if (withMarker) {
+            sB.append("&layers=M&mlat=");
+            sB.append(lat);
+            sB.append("&mlon=");
+            sB.append(lon);
+        }
+        if (withGeosmsParam) {
+            sB.append("&GeoSMS");
+        }
+        return sB.toString();
     }
 
 }
