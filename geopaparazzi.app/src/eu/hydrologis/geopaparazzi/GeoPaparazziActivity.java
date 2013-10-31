@@ -31,6 +31,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.mapsforge.android.maps.MapViewPosition;
+import org.mapsforge.core.model.GeoPoint;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -39,6 +42,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -70,6 +76,7 @@ import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.AboutActivity;
 import eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity;
+import eu.geopaparazzi.library.util.activities.NoteActivity;
 import eu.geopaparazzi.library.util.debug.TestMock;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
@@ -84,6 +91,7 @@ import eu.hydrologis.geopaparazzi.database.DatabaseManager;
 import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
 import eu.hydrologis.geopaparazzi.maps.LogMapItem;
+import eu.hydrologis.geopaparazzi.maps.MapTagsActivity;
 import eu.hydrologis.geopaparazzi.maps.MapsActivity;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
 import eu.hydrologis.geopaparazzi.preferences.PreferencesActivity;
@@ -152,13 +160,17 @@ public class GeoPaparazziActivity extends Activity {
         boolean isMockMode = preferences.getBoolean(LibraryConstants.PREFS_KEY_MOCKMODE, false);
         if (isMockMode) {
             if (!TestMock.isMockEnabled(getContentResolver())) {
-                Utilities.messageDialog(this, "To use the demo mode you need to enable Androids mock locations in the developer settings. Disabling demo mode.", null);
+                Utilities
+                        .messageDialog(
+                                this,
+                                "To use the demo mode you need to enable Androids mock locations in the developer settings. Disabling demo mode.",
+                                null);
                 Editor edit = preferences.edit();
                 edit.putBoolean(LibraryConstants.PREFS_KEY_MOCKMODE, false);
                 edit.commit();
             }
         }
-        
+
     }
 
     private void handleTileSources() throws Exception, IOException, FileNotFoundException {
@@ -521,13 +533,31 @@ public class GeoPaparazziActivity extends Activity {
     public void push( int id, View v ) {
         switch( id ) {
         case R.id.dashboard_note_item_button: {
-            QuickAction qa = new QuickAction(v);
-            qa.addActionItem(QuickActionsFactory.INSTANCE.getNotesQuickAction(qa, this, RETURNCODE_NOTES));
-            qa.addActionItem(QuickActionsFactory.INSTANCE.getPicturesQuickAction(qa, this, RETURNCODE_PICS));
-            qa.addActionItem(QuickActionsFactory.INSTANCE.getAudioQuickAction(qa, this, resourcesManager.getMediaDir()));
-            qa.addActionItem(QuickActionsFactory.INSTANCE.getSketchQuickAction(qa, this, RETURNCODE_SKETCH));
-            qa.setAnimStyle(QuickAction.ANIM_AUTO);
-            qa.show();
+            boolean isValid = false;
+            if (GpsManager.getInstance(this).hasFix()) {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
+                if (gpsLocation != null) {
+                    try {
+                        // File mediaDir = ResourcesManager.getInstance(this).getMediaDir();
+                        // final File tmpImageFile = new File(mediaDir.getParentFile(),
+                        // LibraryConstants.TMPPNGIMAGENAME);
+                        Intent mapTagsIntent = new Intent(this, MapTagsActivity.class);
+                        // mapTagsIntent.putExtra(LibraryConstants.LATITUDE, gpsLocation[1]);
+                        // mapTagsIntent.putExtra(LibraryConstants.LONGITUDE, gpsLocation[0]);
+                        // mapTagsIntent.putExtra(LibraryConstants.ELEVATION, gpsLocation[2]);
+                        // mapTagsIntent.putExtra(LibraryConstants.TMPPNGIMAGENAME,
+                        // tmpImageFile.getAbsolutePath());
+                        startActivity(mapTagsIntent);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    isValid = true;
+                }
+            }
+            if (!isValid)
+                Utilities.messageDialog(this, R.string.gpslogging_only, null);
+
             break;
         }
         case R.id.dashboard_undonote_item_button: {

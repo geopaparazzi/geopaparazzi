@@ -7,12 +7,13 @@
     android:orientation="vertical"
     android:padding="10dip" >
 
-    <TextView
-        android:id="@+id/quicknotesfromtag"
-        android:layout_width="wrap_content"
+    <ToggleButton
+        android:id="@+id/togglePositionTypeGps"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dip"
-        android:text="@string/quicknotes" />
+        android:layout_margin="10dp"
+        android:textOff="notes placed in map center position"
+        android:textOn="notes placed in gps position" />
 
     <LinearLayout
         android:id="@+id/linearLayout1"
@@ -63,7 +64,6 @@
         android:text="@string/osm_tagsgrid" />
 
     <GridView
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/osmgridview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"

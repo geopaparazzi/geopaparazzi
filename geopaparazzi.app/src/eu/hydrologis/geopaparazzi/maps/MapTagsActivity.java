@@ -23,20 +23,27 @@ import java.util.Set;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 import eu.geopaparazzi.library.camera.CameraActivity;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.FormActivity;
 import eu.geopaparazzi.library.forms.TagsManager;
+import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.markers.MarkersUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.NoteActivity;
@@ -51,6 +58,7 @@ import eu.hydrologis.geopaparazzi.database.NoteType;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class MapTagsActivity extends Activity {
+    private static final String USE_MAPCENTER_POSITION = "USE_MAPCENTER_POSITION";
     private static final int NOTE_RETURN_CODE = 666;
     private static final int CAMERA_RETURN_CODE = 667;
     private static final int FORM_RETURN_CODE = 669;
@@ -58,22 +66,51 @@ public class MapTagsActivity extends Activity {
     private double latitude;
     private double longitude;
     private double elevation;
+    private double mapCenterLatitude;
+    private double mapCenterLongitude;
+    private double mapCenterElevation;
     private String[] tagNamesArray;
+    private double[] gpsLocation;
+    private ToggleButton togglePositionTypeButtonGps;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
         setContentView(R.layout.tags);
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            latitude = extras.getDouble(LibraryConstants.LATITUDE);
-            longitude = extras.getDouble(LibraryConstants.LONGITUDE);
-            elevation = extras.getDouble(LibraryConstants.ELEVATION);
+        togglePositionTypeButtonGps = (ToggleButton) findViewById(R.id.togglePositionTypeGps);
+        togglePositionTypeButtonGps.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+            public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
+                Editor edit = preferences.edit();
+                edit.putBoolean(USE_MAPCENTER_POSITION, !isChecked);
+                edit.apply();
+            }
+        });
+
+        boolean useMapCenterPosition = preferences.getBoolean(USE_MAPCENTER_POSITION, false);
+        double[] mapCenter = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
+        mapCenterLatitude = mapCenter[1];
+        mapCenterLongitude = mapCenter[0];
+        mapCenterElevation = 0.0;
+        if (GpsManager.getInstance(this).hasFix()) {
+            gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
+        }
+        if (gpsLocation == null) {
+            // no gps, can use only map center
+            togglePositionTypeButtonGps.setChecked(false);
+            togglePositionTypeButtonGps.setEnabled(false);
+        } else {
+            if (useMapCenterPosition) {
+                togglePositionTypeButtonGps.setChecked(false);
+            } else {
+                togglePositionTypeButtonGps.setChecked(true);
+            }
         }
 
         ImageButton imageButton = (ImageButton) findViewById(R.id.imagefromtag);
         imageButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
+                checkPositionCoordinates();
                 Intent intent = new Intent(MapTagsActivity.this, CameraActivity.class);
                 intent.putExtra(LibraryConstants.LONGITUDE, longitude);
                 intent.putExtra(LibraryConstants.LATITUDE, latitude);
@@ -85,6 +122,7 @@ public class MapTagsActivity extends Activity {
         ImageButton noteButton = (ImageButton) findViewById(R.id.notefromtag);
         noteButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
+                checkPositionCoordinates();
                 Intent intent = new Intent(MapTagsActivity.this, NoteActivity.class);
                 intent.putExtra(LibraryConstants.LONGITUDE, longitude);
                 intent.putExtra(LibraryConstants.LATITUDE, latitude);
@@ -95,6 +133,7 @@ public class MapTagsActivity extends Activity {
         ImageButton sketchButton = (ImageButton) findViewById(R.id.sketchfromtag);
         sketchButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
+                checkPositionCoordinates();
 
                 java.util.Date currentDate = new java.util.Date();
                 String currentDatestring = LibraryConstants.TIMESTAMPFORMATTER.format(currentDate);
@@ -105,7 +144,7 @@ public class MapTagsActivity extends Activity {
                     e.printStackTrace();
                 }
                 File newImageFile = new File(mediaDir, "SKETCH_" + currentDatestring + ".png");
-                
+
                 double[] gpsLocation = new double[]{longitude, latitude, elevation};
                 MarkersUtilities.launchForResult(MapTagsActivity.this, newImageFile, gpsLocation, SKETCH_RETURN_CODE);
             }
@@ -132,6 +171,7 @@ public class MapTagsActivity extends Activity {
                         try {
                             String userDefinedButtonName = tagNamesArray[position];
 
+                            checkPositionCoordinates();
                             // launch form activity
                             Intent formIntent = new Intent(MapTagsActivity.this, FormActivity.class);
                             formIntent.putExtra(LibraryConstants.PREFS_KEY_FORM_NAME, userDefinedButtonName);
@@ -155,6 +195,20 @@ public class MapTagsActivity extends Activity {
         buttonGridView.setAdapter(arrayAdapter);
     }
 
+    private void checkPositionCoordinates() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean useMapCenterPosition = preferences.getBoolean(USE_MAPCENTER_POSITION, false);
+        if (useMapCenterPosition) {
+            latitude = mapCenterLatitude;
+            longitude = mapCenterLongitude;
+            elevation = mapCenterElevation;
+        } else {
+            latitude = gpsLocation[1];
+            longitude = gpsLocation[0];
+            elevation = gpsLocation[2];
+        }
+    }
+
     protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != Activity.RESULT_OK) {
@@ -173,7 +227,8 @@ public class MapTagsActivity extends Activity {
                     String catStr = formArray[5];
                     String jsonStr = formArray[6];
                     java.util.Date date = LibraryConstants.TIME_FORMATTER_SQLITE.parse(dateStr);
-                    DaoNotes.addNote(lon, lat, elev, new Date(date.getTime()), nameStr, catStr, jsonStr, NoteType.POI.getTypeNum());
+                    DaoNotes.addNote(lon, lat, elev, new Date(date.getTime()), nameStr, catStr, jsonStr,
+                            NoteType.POI.getTypeNum());
                 } catch (Exception e) {
                     e.printStackTrace();
                     Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
@@ -189,7 +244,8 @@ public class MapTagsActivity extends Activity {
                     double lat = Double.parseDouble(noteArray[1]);
                     double elev = Double.parseDouble(noteArray[2]);
                     java.util.Date date = LibraryConstants.TIME_FORMATTER.parse(noteArray[3]);
-                    DaoNotes.addNote(lon, lat, elev, new Date(date.getTime()), noteArray[4], noteArray[5], noteArray[6], NoteType.POI.getTypeNum());
+                    DaoNotes.addNote(lon, lat, elev, new Date(date.getTime()), noteArray[4], noteArray[5], noteArray[6],
+                            NoteType.POI.getTypeNum());
                 } catch (Exception e) {
                     e.printStackTrace();
 

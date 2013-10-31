@@ -395,13 +395,16 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                             }
                         }
                     }).start();
-                    MapViewPosition mapPosition = mapView.getMapPosition();
-                    GeoPoint mapCenter = mapPosition.getMapCenter();
+                    // MapViewPosition mapPosition = mapView.getMapPosition();
+                    // GeoPoint mapCenter = mapPosition.getMapCenter();
                     Intent mapTagsIntent = new Intent(MapsActivity.this, MapTagsActivity.class);
-                    mapTagsIntent.putExtra(LibraryConstants.LATITUDE, (double) (mapCenter.latitudeE6 / LibraryConstants.E6));
-                    mapTagsIntent.putExtra(LibraryConstants.LONGITUDE, (double) (mapCenter.longitudeE6 / LibraryConstants.E6));
-                    mapTagsIntent.putExtra(LibraryConstants.ELEVATION, 0.0);
-                    mapTagsIntent.putExtra(LibraryConstants.TMPPNGIMAGENAME, tmpImageFile.getAbsolutePath());
+                    // mapTagsIntent.putExtra(LibraryConstants.LATITUDE, (double)
+                    // (mapCenter.latitudeE6 / LibraryConstants.E6));
+                    // mapTagsIntent.putExtra(LibraryConstants.LONGITUDE, (double)
+                    // (mapCenter.longitudeE6 / LibraryConstants.E6));
+                    // mapTagsIntent.putExtra(LibraryConstants.ELEVATION, 0.0);
+                    // mapTagsIntent.putExtra(LibraryConstants.TMPPNGIMAGENAME,
+                    // tmpImageFile.getAbsolutePath());
                     startActivity(mapTagsIntent);
                 } catch (Exception e) {
                     e.printStackTrace();
