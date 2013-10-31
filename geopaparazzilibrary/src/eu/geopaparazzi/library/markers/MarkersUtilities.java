@@ -21,6 +21,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
@@ -46,7 +47,15 @@ public class MarkersUtilities {
     public static final String EXTRA_KEY = MediaStore.EXTRA_OUTPUT;
     private static boolean hasApp = false;
 
+    /**
+     * If <code>true</code>, the Markers code is available as library to the project.
+     */
+    private static boolean MARKERS_IS_INTEGRATED = true;
+
     public static boolean appInstalled( final Context context ) {
+        if (MARKERS_IS_INTEGRATED) {
+            return true;
+        }
         if (!hasApp) {
             List<PackageInfo> installedPackages = new ArrayList<PackageInfo>();
             { // try to get the installed packages list. Seems to have troubles over different
@@ -112,10 +121,20 @@ public class MarkersUtilities {
      */
     public static void launchOnImage( final Context context, File image ) {
         if (MarkersUtilities.appInstalled(context)) {
-            Intent intent = new Intent(MarkersUtilities.ACTION_EDIT);
-            intent.setDataAndType(Uri.fromFile(image), "image/*"); //$NON-NLS-1$
-            intent.putExtra(MarkersUtilities.EXTRA_KEY, image.getAbsolutePath());
-            context.startActivity(intent);
+            Intent sketchIntent = null;
+            if (MARKERS_IS_INTEGRATED) {
+                try {
+                    sketchIntent = new Intent(context, Class.forName(APP_MAIN_ACTIVITY));
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                sketchIntent = new Intent();
+            }
+            sketchIntent.setAction(ACTION_EDIT);
+            sketchIntent.setDataAndType(Uri.fromFile(image), "image/*"); //$NON-NLS-1$
+            sketchIntent.putExtra(MarkersUtilities.EXTRA_KEY, image.getAbsolutePath());
+            context.startActivity(sketchIntent);
         } else {
             MarkersUtilities.openMarketToInstall(context);
         }
@@ -132,17 +151,40 @@ public class MarkersUtilities {
      */
     public static void launch( Context context, File image, double[] gpsLocation ) {
         if (MarkersUtilities.appInstalled(context)) {
-            Intent sketchIntent = new Intent();
-            sketchIntent.setComponent(new ComponentName(MarkersUtilities.APP_PACKAGE, MarkersUtilities.APP_MAIN_ACTIVITY));
-            sketchIntent.putExtra(MarkersUtilities.EXTRA_KEY, image.getAbsolutePath());
-            if (gpsLocation != null) {
-                sketchIntent.putExtra(LibraryConstants.LATITUDE, gpsLocation[1]);
-                sketchIntent.putExtra(LibraryConstants.LONGITUDE, gpsLocation[0]);
-                sketchIntent.putExtra(LibraryConstants.ELEVATION, gpsLocation[2]);
-            }
+            Intent sketchIntent = prepareIntent(context, image, gpsLocation);
             context.startActivity(sketchIntent);
         } else {
             MarkersUtilities.openMarketToInstall(context);
+        }
+    }
+
+    private static Intent prepareIntent( Context context, File image, double[] gpsLocation ) {
+        Intent sketchIntent = null;
+        if (MARKERS_IS_INTEGRATED) {
+            try {
+                sketchIntent = new Intent(context, Class.forName(APP_MAIN_ACTIVITY));
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        } else {
+            sketchIntent = new Intent();
+            sketchIntent.setComponent(new ComponentName(MarkersUtilities.APP_PACKAGE, MarkersUtilities.APP_MAIN_ACTIVITY));
+        }
+        sketchIntent.putExtra(MarkersUtilities.EXTRA_KEY, image.getAbsolutePath());
+        if (gpsLocation != null) {
+            sketchIntent.putExtra(LibraryConstants.LATITUDE, gpsLocation[1]);
+            sketchIntent.putExtra(LibraryConstants.LONGITUDE, gpsLocation[0]);
+            sketchIntent.putExtra(LibraryConstants.ELEVATION, gpsLocation[2]);
+        }
+        return sketchIntent;
+    }
+
+    public static void launchForResult( Activity activity, File image, double[] gpsLocation, int requestCode ) {
+        if (MarkersUtilities.appInstalled(activity)) {
+            Intent sketchIntent = prepareIntent(activity, image, gpsLocation);
+            activity.startActivityForResult(sketchIntent, requestCode);
+        } else {
+            MarkersUtilities.openMarketToInstall(activity);
         }
     }
 

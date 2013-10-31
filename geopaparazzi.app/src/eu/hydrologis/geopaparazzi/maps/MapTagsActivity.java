@@ -23,7 +23,9 @@ import java.util.Set;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -35,8 +37,10 @@ import eu.geopaparazzi.library.camera.CameraActivity;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.FormActivity;
 import eu.geopaparazzi.library.forms.TagsManager;
+import eu.geopaparazzi.library.markers.MarkersUtilities;
 import eu.geopaparazzi.library.sketch.DrawingActivity;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.NoteActivity;
@@ -95,11 +99,19 @@ public class MapTagsActivity extends Activity {
         ImageButton sketchButton = (ImageButton) findViewById(R.id.sketchfromtag);
         sketchButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                Intent intent = new Intent(MapTagsActivity.this, DrawingActivity.class);
-                intent.putExtra(LibraryConstants.LONGITUDE, longitude);
-                intent.putExtra(LibraryConstants.LATITUDE, latitude);
-                intent.putExtra(LibraryConstants.ELEVATION, elevation);
-                MapTagsActivity.this.startActivityForResult(intent, SKETCH_RETURN_CODE);
+
+                java.util.Date currentDate = new java.util.Date();
+                String currentDatestring = LibraryConstants.TIMESTAMPFORMATTER.format(currentDate);
+                File mediaDir = null;
+                try {
+                    mediaDir = ResourcesManager.getInstance(MapTagsActivity.this).getMediaDir();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                File newImageFile = new File(mediaDir, "SKETCH_" + currentDatestring + ".png");
+                
+                double[] gpsLocation = new double[]{longitude, latitude, elevation};
+                MarkersUtilities.launchForResult(MapTagsActivity.this, newImageFile, gpsLocation, SKETCH_RETURN_CODE);
             }
         });
 
