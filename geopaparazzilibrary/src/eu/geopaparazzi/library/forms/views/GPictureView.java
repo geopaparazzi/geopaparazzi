@@ -32,6 +32,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewTreeObserver;
@@ -44,6 +45,7 @@ import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.camera.CameraActivity;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.markers.MarkersUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
@@ -98,14 +100,6 @@ public class GPictureView extends View implements GView {
         button.setText(R.string.take_picture);
         textLayout.addView(button);
 
-        final EditText imagesText = new EditText(context);
-        imagesText.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
-        imagesText.setPadding(2, 2, 2, 2);
-        imagesText.setText(value);
-        imagesText.setTextColor(context.getResources().getColor(R.color.main_text_color_neutral));
-        imagesText.setKeyListener(null);
-        textLayout.addView(imagesText);
-
         button.setOnClickListener(new View.OnClickListener(){
             public void onClick( View v ) {
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -120,16 +114,6 @@ public class GPictureView extends View implements GView {
                     e.printStackTrace();
                 }
                 lastImageFile = new File(mediaDir, "IMG_" + currentDatestring + ".jpg");
-
-                String relativeImagePath = mediaDir.getName() + File.separator + lastImageFile.getName();
-                String text = imagesText.getText().toString();
-                StringBuilder sb = new StringBuilder();
-                sb.append(text);
-                if (text.length() != 0) {
-                    sb.append(";");
-                }
-                sb.append(relativeImagePath);
-                imagesText.setText(sb.toString());
 
                 Intent cameraIntent = new Intent(context, CameraActivity.class);
                 cameraIntent.putExtra(LibraryConstants.PREFS_KEY_CAMERA_IMAGENAME, lastImageFile.getName());
@@ -209,10 +193,21 @@ public class GPictureView extends View implements GView {
                 imageView.setBackgroundDrawable(getResources().getDrawable(R.drawable.border_black_1px));
                 imageView.setOnClickListener(new View.OnClickListener(){
                     public void onClick( View v ) {
-                        Intent intent = new Intent();
-                        intent.setAction(android.content.Intent.ACTION_VIEW);
-                        intent.setDataAndType(Uri.fromFile(image), "image/*"); //$NON-NLS-1$
-                        context.startActivity(intent);
+                        /*
+                         * open in markers to edit it
+                         */
+                        if (MarkersUtilities.appInstalled(context)) {
+                            Intent intent = new Intent(MarkersUtilities.ACTION_EDIT);
+                            intent.setDataAndType(Uri.fromFile(image), "image/*"); //$NON-NLS-1$
+                            intent.putExtra(MarkersUtilities.EXTRA_KEY, image.getAbsolutePath());
+                            context.startActivity(intent);
+                        } else {
+                            MarkersUtilities.openMarketToInstall(context);
+                        }
+                        // Intent intent = new Intent();
+                        // intent.setAction(android.content.Intent.ACTION_VIEW);
+                        //                        intent.setDataAndType(Uri.fromFile(image), "image/*"); //$NON-NLS-1$
+                        // context.startActivity(intent);
                     }
                 });
                 log("Creating thumb and adding it: " + imageAbsolutePath);
