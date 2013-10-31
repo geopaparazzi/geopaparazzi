@@ -18,6 +18,7 @@
 package eu.geopaparazzi.library.forms;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -504,6 +505,59 @@ public class FormUtilities {
             }
         }
         return sB.toString();
+    }
+    
+    /**
+     * Get the images paths out of a form string.
+     * 
+     * @param formString the form.
+     * @return the list of images paths.
+     * @throws Exception
+     */
+    public static List<String> getImages( String formString ) throws Exception {
+        List<String> images = new ArrayList<String>();
+        if (formString != null && formString.length() > 0) {
+            JSONObject sectionObject = new JSONObject(formString);
+            List<String> formsNames = TagsManager.getFormNames4Section(sectionObject);
+            for( String formName : formsNames ) {
+                JSONObject form4Name = TagsManager.getForm4Name(formName, sectionObject);
+                JSONArray formItems = TagsManager.getFormItems(form4Name);
+                for( int i = 0; i < formItems.length(); i++ ) {
+                    JSONObject formItem = formItems.getJSONObject(i);
+                    if (!formItem.has(FormUtilities.TAG_KEY)) {
+                        continue;
+                    }
+
+                    String type = formItem.getString(FormUtilities.TAG_TYPE);
+                    String value = formItem.getString(FormUtilities.TAG_VALUE);
+
+                    if (type.equals(FormUtilities.TYPE_PICTURES)) {
+                        if (value.trim().length() == 0) {
+                            continue;
+                        }
+                        String[] imageSplit = value.split(";");
+                        for( String image : imageSplit ) {
+                            images.add(image);
+                        }
+                    } else if (type.equals(FormUtilities.TYPE_MAP)) {
+                        if (value.trim().length() == 0) {
+                            continue;
+                        }
+                        String image = value.trim();
+                        images.add(image);
+                    } else if (type.equals(FormUtilities.TYPE_SKETCH)) {
+                        if (value.trim().length() == 0) {
+                            continue;
+                        }
+                        String[] imageSplit = value.split(";");
+                        for( String image : imageSplit ) {
+                            images.add(image);
+                        }
+                    }
+                }
+            }
+        }
+        return images;
     }
 
 }

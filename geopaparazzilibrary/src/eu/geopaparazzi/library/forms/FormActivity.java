@@ -17,10 +17,11 @@
  */
 package eu.geopaparazzi.library.forms;
 
-import static eu.geopaparazzi.library.forms.FormUtilities.TAG_KEY;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_ISLABEL;
+import static eu.geopaparazzi.library.forms.FormUtilities.TAG_KEY;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_VALUE;
 
+import java.io.File;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
+import eu.geopaparazzi.library.share.ShareUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 
@@ -136,12 +138,47 @@ public class FormActivity extends FragmentActivity {
             Utilities.messageDialog(this, e.getLocalizedMessage(), null);
         }
     }
+
+    public void shareClicked( View view ) {
+        try {
+            shareAction();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Utilities.messageDialog(this, e.getLocalizedMessage(), null);
+        }
+    }
     public void cancelClicked( View view ) {
         finish();
     }
 
+    private void shareAction() throws Exception {
+        String form = sectionObject.toString();
+        float lat = (float) latitude;
+        float lon = (float) longitude;
+        String osmUrl = Utilities.osmUrlFromLatLong(lat, lon, true, false);
+        // double altim = note.getAltim();
+        List<String> imagePaths = FormUtilities.getImages(form);
+        File imageFile = null;
+        if (imagePaths.size() > 0) {
+            String imagePath = imagePaths.get(0);
+            imageFile = new File(imagePath);
+            if (!imageFile.exists()) {
+                imageFile = null;
+            }
+        }
+        String formText = FormUtilities.formToPlainText(form, false);
+        formText = formText + "\n" + osmUrl;
+        String shareNoteMsg = getResources().getString(R.string.share_note_with);
+        if (imageFile != null) {
+            ShareUtilities.shareTextAndImage(this, shareNoteMsg, formText, imageFile);
+        } else {
+            ShareUtilities.shareText(this, shareNoteMsg, formText);
+        }
+
+    }
+
     private void saveAction() throws Exception {
-        // if i landscape mode store last inserted info, since that fragment has not been stored
+        // if in landscape mode store last inserted info, since that fragment has not been stored
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             FragmentDetail detailFragment = (FragmentDetail) getSupportFragmentManager().findFragmentById(R.id.detailFragment);
             if (detailFragment != null) {

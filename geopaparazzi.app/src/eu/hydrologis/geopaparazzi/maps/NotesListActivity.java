@@ -74,7 +74,7 @@ public class NotesListActivity extends ListActivity {
 
         setContentView(R.layout.noteslist);
 
-        SHARE_NOTE_WITH = getResources().getString(R.string.share_note_with);
+        SHARE_NOTE_WITH = getResources().getString(eu.geopaparazzi.library.R.string.share_note_with);
 
         refreshList();
 
