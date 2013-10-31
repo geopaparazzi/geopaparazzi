@@ -38,9 +38,11 @@ import android.widget.EditText;
 import eu.geopaparazzi.library.camera.CameraActivity;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gps.GpsManager;
+import eu.geopaparazzi.library.markers.MarkersUtilities;
 import eu.geopaparazzi.library.sketch.DrawingActivity;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
+import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.NoteActivity;
 import eu.hydrologis.geopaparazzi.R;
@@ -49,6 +51,7 @@ import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.ActionItem;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
+import eu.hydrologis.geopaparazzi.maps.MapTagsActivity;
 
 /**
  * A factory for quick actions.
@@ -282,11 +285,22 @@ public enum QuickActionsFactory {
                         // double[] gpsLocation =
                         // PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
                         if (gpsLocation != null) {
-                            Intent cameraIntent = new Intent(activity, DrawingActivity.class);
-                            cameraIntent.putExtra(LibraryConstants.LATITUDE, gpsLocation[1]);
-                            cameraIntent.putExtra(LibraryConstants.LONGITUDE, gpsLocation[0]);
-                            cameraIntent.putExtra(LibraryConstants.ELEVATION, gpsLocation[2]);
-                            activity.startActivityForResult(cameraIntent, requestCode);
+                            java.util.Date currentDate = new java.util.Date();
+                            String currentDatestring = LibraryConstants.TIMESTAMPFORMATTER.format(currentDate);
+                            File mediaDir = null;
+                            try {
+                                mediaDir = ResourcesManager.getInstance(activity).getMediaDir();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            File newImageFile = new File(mediaDir, "SKETCH_" + currentDatestring + ".png");
+                            MarkersUtilities.launchForResult(activity, newImageFile, gpsLocation, requestCode);
+
+                            // Intent cameraIntent = new Intent(activity, DrawingActivity.class);
+                            // cameraIntent.putExtra(LibraryConstants.LATITUDE, gpsLocation[1]);
+                            // cameraIntent.putExtra(LibraryConstants.LONGITUDE, gpsLocation[0]);
+                            // cameraIntent.putExtra(LibraryConstants.ELEVATION, gpsLocation[2]);
+                            // activity.startActivityForResult(cameraIntent, requestCode);
                             isValid = true;
                         }
                     }

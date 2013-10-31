@@ -107,6 +107,17 @@
         </activity>
         <activity android:name="eu.geopaparazzi.spatialite.database.spatial.activities.DataListActivity" >
         </activity>
+        <activity android:name="com.google.android.apps.markers.MarkersActivity"
+                  android:configChanges="orientation|screenSize"
+                  >
+            <intent-filter>
+                <action android:name="android.intent.action.EDIT" />
+                <action android:name="android.intent.action.SEND" />
+                <data android:mimeType="image/*" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            
+        </activity>
         <activity android:name=".maps.MapsActivity" >
             <intent-filter>
                 <action android:name="eu.hydrologis.geopaparazzi.maps.MAP_VIEW" />
