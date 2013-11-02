@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/gpslogname"
             android:padding="5dp"
-            android:text="@string/start" />
+            android:text="@string/start_" />
 
         <TextView
             android:id="@+id/endtime_label"
@@ -48,6 +48,12 @@
             android:layout_below="@+id/starttime_label"
             android:padding="5dp"
             android:text="@string/end_" />
+
+        <View
+            android:id="@+id/strut"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_centerHorizontal="true" />
 
         <TextView
             android:id="@+id/widthLabel"
@@ -61,6 +67,7 @@
             android:id="@+id/widthText"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/strut"
             android:layout_below="@id/widthLabel"
             android:padding="5dp"
             android:paddingBottom="15dp" />
@@ -69,7 +76,8 @@
             android:id="@+id/colorLabel"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/widthText"
+            android:layout_alignLeft="@+id/strut"
+            android:layout_alignTop="@+id/widthLabel"
             android:padding="5dp"
             android:text="@string/color_label" >
         </TextView>
@@ -78,68 +86,61 @@
             android:id="@+id/color_spinner"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/colorLabel"
             android:layout_below="@id/colorLabel"
             android:padding="5dp"
             android:paddingBottom="30dp" />
 
-        <LinearLayout
-            android:id="@+id/prop_buttons"
+        <TextView
+            android:id="@+id/zoomLabel"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/color_spinner"
-            android:orientation="horizontal"
-            android:padding="5dp" >
+            android:layout_below="@+id/color_spinner"
+            android:padding="5dp"
+            android:text="@string/gpslog_zoom" />
 
-            <Button
-                android:id="@+id/gpslog_chart"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/gpslog_chart" >
-            </Button>
-
-            <Button
-                android:id="@+id/gpslog_zoom"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/gpslog_zoom" >
-            </Button>
-
-            <Button
-                android:id="@+id/gpslog_delete"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/gpslog_delete" >
-            </Button>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/row_container5"
+        <Button
+            android:id="@+id/gpslog_zoom_start"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/prop_buttons"
-            android:layout_margin="15dp"
-            android:orientation="horizontal"
-            android:padding="5dp" >
+            android:layout_alignRight="@+id/strut"
+            android:layout_below="@+id/zoomLabel"
+            android:text="@string/start" />
 
-            <Button
-                android:id="@+id/gpslog_ok"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@android:string/ok" >
-            </Button>
+        <Button
+            android:id="@+id/gpslog_zoom_end"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/strut"
+            android:layout_below="@+id/zoomLabel"
+            android:text="@string/end" />
 
-            <Button
-                android:id="@+id/gpslog_cancel"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@android:string/cancel" >
-            </Button>
-        </LinearLayout>
+        <TextView
+            android:id="@+id/otherLabel"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/gpslog_zoom_start"
+            android:padding="5dp"
+            android:text="@string/other" />
+
+        <Button
+            android:id="@+id/gpslog_chart"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/otherLabel"
+            android:layout_alignRight="@+id/gpslog_zoom_start"
+            android:layout_below="@+id/otherLabel"
+            android:text="@string/gpslog_chart" />
+
+        <Button
+            android:id="@+id/gpslog_delete"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/gpslog_zoom_end"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/otherLabel"
+            android:text="@string/gpslog_delete" />
+
     </RelativeLayout>
 
 </ScrollView>

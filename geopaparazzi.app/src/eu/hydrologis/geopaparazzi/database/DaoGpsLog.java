@@ -35,7 +35,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
@@ -833,6 +832,36 @@ public class DaoGpsLog implements IGpsLogDbHelper {
 
         String asColumnsToReturn[] = {COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_ALTIM, COLUMN_DATA_TS};
         String strSortOrder = COLUMN_DATA_TS + " ASC";
+        String strWhere = COLUMN_LOGID + "=" + logId;
+        Cursor c = null;
+        try {
+            c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, null, null, null, strSortOrder, "1");
+            c.moveToFirst();
+            double[] lonLat = new double[2];
+            while( !c.isAfterLast() ) {
+                lonLat[0] = c.getDouble(0);
+                lonLat[1] = c.getDouble(1);
+                break;
+            }
+            return lonLat;
+        } finally {
+            if (c != null)
+                c.close();
+        }
+    }
+
+    /**
+     * Get the last point of a gps log.
+     * @param logId the id of the log to query.
+     * 
+     * @return the array of [lon, lat] of the last point.
+     * @throws IOException
+     */
+    public static double[] getGpslogLastPoint( long logId ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+        
+        String asColumnsToReturn[] = {COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_ALTIM, COLUMN_DATA_TS};
+        String strSortOrder = COLUMN_DATA_TS + " DESC";
         String strWhere = COLUMN_LOGID + "=" + logId;
         Cursor c = null;
         try {

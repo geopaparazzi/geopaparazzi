@@ -29,7 +29,7 @@
     <string name="mainmenu_merge">merge selected logs</string>
     <string name="gpslogproperty">Properties for: </string>
     <string name="gpslog_chart">Chart</string>
-    <string name="gpslog_zoom">Zoom to</string>
+    <string name="gpslog_zoom">zoom to</string>
     <string name="gpslog_delete">Delete</string>
     <string name="mapproperty">Properties for: </string>
     <string name="map_zoom">Zoom to the map</string>
@@ -158,17 +158,17 @@
     <string name="center_on_map">center on map</string>
     <string name="proximity_radius">Proximity Radius</string>
     <string name="add_proximity_radius">Add proximity alert radius in meters.</string>
-    <string name="sent_sms">"Sent sms : "</string>
+    <string name="sent_sms">Sent sms : </string>
     <string name="send_data">send data</string>
     <string name="found_no_data_to_send">Found no data to send in the current visible map.</string>
     <string name="insert_phone_to_send">" sms will be sent to transfer the selected data.\nPlease insert a valid phone number to send the data to."</string>
     <string name="no_message_sent">No message sent.</string>
-    <string name="logs_will_be_merged">" logs will be merged together in this operation. Continue?"</string>
-    <string name="distance">"Distance: "</string>
+    <string name="logs_will_be_merged"> logs will be merged together in this operation. Continue?</string>
+    <string name="distance">Distance: </string>
     <string name="imported_notes_and_bookmarks">Imported {0} notes and {1} bookmarks.</string>
     <string name="could_not_open_sms">Could not open the passed sms data URI.</string>
-    <string name="start">"Start: "</string>
-    <string name="end_">"End: "</string>
+    <string name="start_">Start: </string>
+    <string name="end_">End: </string>
     <string name="map_textsize_factor">Map textsize factor</string>
     <string name="keep_screen_on">Keep the screen on</string>
     <string name="keep_screen_on_summary">Keeps the screen on when on dashboard and map view</string>
@@ -198,5 +198,8 @@
     <string name="keep_use_imperial_sum">Uses imperial units instead of metric where possible.</string>
     <string name="satellites">satellites</string>
     <string name="crash_toast_text">The application experienced a fatal error. Crash information will be collected, that are useful to solve the problem. Please send them to the development team when possible.</string>
+    <string name="start">start</string>
+    <string name="end">end</string>
+    <string name="other">other</string>
 
 </resources>

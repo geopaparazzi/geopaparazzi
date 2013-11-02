@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -60,6 +61,9 @@ public class GpsDataPropertiesActivity extends Activity {
         super.onCreate(icicle);
 
         setContentView(R.layout.gpslog_properties);
+
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
         getResourcesAndColors();
 
         Bundle extras = getIntent().getExtras();
@@ -135,8 +139,8 @@ public class GpsDataPropertiesActivity extends Activity {
                     startActivity(intent);
                 }
             });
-            final Button zoomButton = (Button) findViewById(R.id.gpslog_zoom);
-            zoomButton.setOnClickListener(new Button.OnClickListener(){
+            final Button zoomToStartButton = (Button) findViewById(R.id.gpslog_zoom_start);
+            zoomToStartButton.setOnClickListener(new Button.OnClickListener(){
                 public void onClick( View v ) {
                     try {
                         double[] firstPoint = DaoGpsLog.getGpslogFirstPoint(item.getId());
@@ -150,8 +154,28 @@ public class GpsDataPropertiesActivity extends Activity {
                         GPLog.error(this, e.getLocalizedMessage(), e);
                         e.printStackTrace();
                     }
+                    finish();
                 }
             });
+            final Button zoomToEndButton = (Button) findViewById(R.id.gpslog_zoom_end);
+            zoomToEndButton.setOnClickListener(new Button.OnClickListener(){
+                public void onClick( View v ) {
+                    try {
+                        double[] firstPoint = DaoGpsLog.getGpslogLastPoint(item.getId());
+                        if (firstPoint != null) {
+                            Intent intent = getIntent();
+                            intent.putExtra(LibraryConstants.LATITUDE, firstPoint[1]);
+                            intent.putExtra(LibraryConstants.LONGITUDE, firstPoint[0]);
+                            setResult(Activity.RESULT_OK, intent);
+                        }
+                        finish();
+                    } catch (IOException e) {
+                        GPLog.error(this, e.getLocalizedMessage(), e);
+                        e.printStackTrace();
+                    }
+                }
+            });
+
             final Button deleteButton = (Button) findViewById(R.id.gpslog_delete);
             deleteButton.setOnClickListener(new Button.OnClickListener(){
                 public void onClick( View v ) {
@@ -164,28 +188,21 @@ public class GpsDataPropertiesActivity extends Activity {
                     }
                 }
             });
+        }
+    }
+    
+    @Override
+    public void finish() {
+        updateWithNewValues();
+        super.finish();
+    }
 
-            final Button okButton = (Button) findViewById(R.id.gpslog_ok);
-            okButton.setOnClickListener(new Button.OnClickListener(){
-                public void onClick( View v ) {
-                    try {
-                        DaoGpsLog.updateLogProperties(item.getId(), newColor, newWidth, item.isVisible(),
-                                newText);
-                    } catch (IOException e) {
-                        GPLog.error(this, e.getLocalizedMessage(), e);
-                        e.printStackTrace();
-                    }
-                    finish();
-                }
-            });
-
-            final Button cancelButton = (Button) findViewById(R.id.gpslog_cancel);
-            cancelButton.setOnClickListener(new Button.OnClickListener(){
-                public void onClick( View v ) {
-                    finish();
-                }
-            });
-
+    private void updateWithNewValues() {
+        try {
+            DaoGpsLog.updateLogProperties(item.getId(), newColor, newWidth, item.isVisible(), newText);
+        } catch (IOException e) {
+            GPLog.error(this, e.getLocalizedMessage(), e);
+            e.printStackTrace();
         }
     }
 
