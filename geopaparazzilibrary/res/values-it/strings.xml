@@ -78,4 +78,12 @@
   <string name="point_size">Dimensione del punto</string>
   <string name="decimation">Decimazione</string>
   <string name="no_data">Non sono disponibili dati</string>
+  <string name="file_upload_completed_properly">Il caricamento del file e\' avvenuto con successo.</string>
+  <string name="http_forbidden_msg">E\' stato negato l\'accesso al server. Si prega di controllare le credenziali di accesso e il percorso per la connessione.</string>
+  <string name="http_not_found_msg">La risorsa richiesta non e\' stata trovata. Si prega di controllare il percorso per la connessione.</string>
+  <string name="http_not_implemented_code_msg">E\' stato ricevuto un messaggio di errore non previsto (si prega di mandarlo al team di sviluppo):</string>
+  <string name="post_completed_properly">Il post e\' avvenuto con successo.</string>
+  <string name="http_ok_msg">La richiesta e\' stata elaborata con successo.</string>
+  <string name="the_file_exists_wont_overwrite">Il file esiste. Non posso sovrascrivere:</string>
+  <string name="share_note_with">Condividi nota con...</string>
 </resources>
