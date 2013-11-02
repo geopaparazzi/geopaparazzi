@@ -28,7 +28,6 @@
   <string name="mainmenu_merge">選択したログをマージ</string>
   <string name="gpslogproperty">設定: </string>
   <string name="gpslog_chart">グラフ</string>
-  <string name="gpslog_zoom">拡大</string>
   <string name="gpslog_delete">削除</string>
   <string name="mapproperty">設定: </string>
   <string name="map_zoom">マップにズーム</string>
@@ -161,7 +160,6 @@
   <string name="distance">距離: </string>
   <string name="imported_notes_and_bookmarks">{0}のメモ と {1} のブックマークをインポートします。</string>
   <string name="could_not_open_sms">SMSで渡された URI を開くことができません。</string>
-  <string name="start">スタート: </string>
   <string name="end_">エンド: </string>
   <string name="map_textsize_factor">マップテキストサイズ</string>
   <string name="keep_screen_on">画面の保持</string>

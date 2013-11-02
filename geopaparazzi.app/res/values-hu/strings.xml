@@ -28,7 +28,6 @@
   <string name="mainmenu_merge">megadott naplók egyesítése</string>
   <string name="gpslogproperty">Tulajdonságai: </string>
   <string name="gpslog_chart">Diagram</string>
-  <string name="gpslog_zoom">Nagyítson rá</string>
   <string name="gpslog_delete">Törölje</string>
   <string name="mapproperty">Tulajdonságai: </string>
   <string name="map_zoom">Térképre nagyít</string>
@@ -159,7 +158,6 @@
   <string name="distance">Távolság:</string>
   <string name="imported_notes_and_bookmarks">Importálva {0} jegyzet és {1} könyvjelző.</string>
   <string name="could_not_open_sms">Nem nyitható meg az átadott SMS adat.</string>
-  <string name="start">Indítás: </string>
   <string name="end_">Vége: </string>
   <string name="map_textsize_factor">Térkép felirat méretezés</string>
   <string name="keep_screen_on">Képkijelzés fenntartása</string>

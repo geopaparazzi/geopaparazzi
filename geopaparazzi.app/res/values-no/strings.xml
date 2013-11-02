@@ -28,7 +28,6 @@
   <string name="mainmenu_merge">slå sammen valgte logger</string>
   <string name="gpslogproperty">Egenskaper for: </string>
   <string name="gpslog_chart">Diagram</string>
-  <string name="gpslog_zoom">Zoom til</string>
   <string name="gpslog_delete">Slette</string>
   <string name="mapproperty">Egenskaper for: </string>
   <string name="map_zoom">Zoom til kartet</string>
@@ -161,7 +160,6 @@
   <string name="distance">Distanse:</string>
   <string name="imported_notes_and_bookmarks">Importerte {0} notater og {1} bokmerker.</string>
   <string name="could_not_open_sms">Kunne ikke åpne de sendte sms dataene (URI).</string>
-  <string name="start">Start:</string>
   <string name="end_">Slutt:</string>
   <string name="map_textsize_factor">Faktor for tekststørrelse i kart</string>
   <string name="keep_screen_on">Behold skjermen på</string>

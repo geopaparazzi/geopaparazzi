@@ -28,7 +28,6 @@
   <string name="mainmenu_merge">Ausgewählte Logs zusammenführen</string>
   <string name="gpslogproperty">Einstellungen für: </string>
   <string name="gpslog_chart">Diagramm</string>
-  <string name="gpslog_zoom">Vergrößern auf</string>
   <string name="gpslog_delete">Löschen</string>
   <string name="mapproperty">Einstellungen für: </string>
   <string name="map_zoom">Zoom auf karte</string>
@@ -127,6 +126,7 @@
   <string name="osm_insert_a_changeset_description">Geben Sie eine Beschreibung für die Änderungen an.</string>
   <string name="set_description">Beschreibung eingeben</string>
   <string name="loaded_project_in">Projekt geladen in:</string>
+  <string name="add_message">Nachricht hinzufügen</string>
   <string name="insert_an_optional_text_to_send_with_the_geosms">Geben Sie einen optionalen Text an, der zur GeoSMS mit gesendet werden soll.</string>
   <string name="enter_a_name_for_the_new_project">Geben Sie einen Namen für das Projekt ein</string>
   <string name="chosen_project_exists">Der gewählte Projektname existiert bereits, bitte wählen Sie einen anderen Namen</string>
@@ -150,7 +150,6 @@
   <string name="logs_will_be_merged">LOG-Dateien werden bei dieser Operation zusammengeführt. Möchten Sie fortfahren?</string>
   <string name="distance">Entfernung:</string>
   <string name="imported_notes_and_bookmarks">{0} Notizen und {1} Lesezeichen importiert.</string>
-  <string name="start">Anfang:</string>
   <string name="end_">Ende:</string>
   <string name="keep_screen_on">Den Bildschirm anlassen</string>
   <string name="keep_screen_on_summary">Der Bildschirm wird angelassen, wenn Dashboard oder Kartenansicht zu sehen ist</string>

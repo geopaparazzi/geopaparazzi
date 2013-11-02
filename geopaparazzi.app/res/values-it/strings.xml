@@ -28,7 +28,6 @@
   <string name="mainmenu_merge">unisci log selezionati</string>
   <string name="gpslogproperty">Proprietà per: </string>
   <string name="gpslog_chart">Grafico</string>
-  <string name="gpslog_zoom">Zoom</string>
   <string name="gpslog_delete">Elimina</string>
   <string name="mapproperty">Proprietà per: </string>
   <string name="map_zoom">Zooma alla mappa</string>
@@ -161,7 +160,6 @@
   <string name="distance">Distanza:</string>
   <string name="imported_notes_and_bookmarks">Importate {0} note e {1} segnalibri.</string>
   <string name="could_not_open_sms">Impossibile aprire i dati contenuti nell\'sms.</string>
-  <string name="start">Inizio:</string>
   <string name="end_">Fine:</string>
   <string name="map_textsize_factor">Fattore dimensione testo mappa</string>
   <string name="keep_screen_on">Mantieni schermo acceso</string>

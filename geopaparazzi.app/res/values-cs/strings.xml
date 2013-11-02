@@ -28,7 +28,6 @@
   <string name="mainmenu_merge">Sloučit vybrané zápisy</string>
   <string name="gpslogproperty">Vlastnosti pro:</string>
   <string name="gpslog_chart">Graf</string>
-  <string name="gpslog_zoom">Přiblížit</string>
   <string name="gpslog_delete">Smazat</string>
   <string name="mapproperty">Vlastnosti pro:</string>
   <string name="map_zoom">Přiblížit mapu</string>
@@ -161,7 +160,6 @@
   <string name="distance">Vzdálenost:</string>
   <string name="imported_notes_and_bookmarks">Zavedeno {0} poznámek a {1} záložek.</string>
   <string name="could_not_open_sms">Nepodařilo se otevřít URI převzatých dat SMS.</string>
-  <string name="start">Začátek:</string>
   <string name="end_">Konec:</string>
   <string name="map_textsize_factor">Násobek velikosti textu mapy</string>
   <string name="keep_screen_on">Udržovat obrazovku zapnutou</string>

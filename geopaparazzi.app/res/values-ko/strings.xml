@@ -28,7 +28,6 @@
   <string name="mainmenu_merge">선택된 로그를 병합</string>
   <string name="gpslogproperty">등록정보: </string>
   <string name="gpslog_chart">차트</string>
-  <string name="gpslog_zoom">확대</string>
   <string name="gpslog_delete">삭제</string>
   <string name="mapproperty">등록정보: </string>
   <string name="map_zoom">지도 확대</string>
@@ -161,7 +160,6 @@
   <string name="distance">거리:</string>
   <string name="imported_notes_and_bookmarks">{0} 메모와 {1} 북마크를 불러왔습니다.</string>
   <string name="could_not_open_sms">전달된 SMS 데이터 URI를 열 수 없습니다.</string>
-  <string name="start">시작:</string>
   <string name="end_">종료:</string>
   <string name="map_textsize_factor">지도 텍스트 크기 인자</string>
   <string name="keep_screen_on">화면을 유지</string>
