@@ -312,9 +312,12 @@ public abstract class GeopaparazziOverlay extends Overlay {
             int x = overlayWay.cachedWayPositions[i][0].x - drawPosition.x;
             int y = overlayWay.cachedWayPositions[i][0].y - drawPosition.y;
             this.wayPath.moveTo(x, y);
+            int lastX = 0;
+            int lastY = 0;
             for( int j = 1; j < overlayWay.cachedWayPositions[i].length; ++j ) {
-                this.wayPath.lineTo(overlayWay.cachedWayPositions[i][j].x - drawPosition.x, overlayWay.cachedWayPositions[i][j].y
-                        - drawPosition.y);
+                lastX = overlayWay.cachedWayPositions[i][j].x - drawPosition.x;
+                lastY = overlayWay.cachedWayPositions[i][j].y - drawPosition.y;
+                this.wayPath.lineTo(lastX, lastY);
             }
 
             // draw start points
@@ -336,7 +339,9 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     wayStartPaintFill.setColor(defaultWayPaintFill.getColor());
                 }
             }
-            canvas.drawCircle(x, y, size * 2, wayStartPaintFill);
+            size = size * 2;
+            canvas.drawCircle(lastX, lastY, size, wayStartPaintFill);
+            canvas.drawRect(x - size, y - size, x + size, y + size, wayStartPaintFill);
         }
 
         // draw them
@@ -358,7 +363,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
             }
         }
     }
-    
+
     private void assembleGpsWayPath( Point drawPosition, OverlayWay overlayWay ) {
         this.gpsPath.reset();
         for( int i = 0; i < overlayWay.cachedWayPositions.length; ++i ) {
