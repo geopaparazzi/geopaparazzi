@@ -112,6 +112,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
     /*
      * way stuff
      */
+    private Paint wayStartPaintFill;
     private Paint defaultWayPaintFill;
     private Paint defaultWayPaintOutline;
     private Path wayPath;
@@ -208,6 +209,9 @@ public abstract class GeopaparazziOverlay extends Overlay {
         this.path = new Path();
         this.gpsPath = new Path();
 
+        wayStartPaintFill = new Paint(Paint.ANTI_ALIAS_FLAG);
+        wayStartPaintFill.setStyle(Paint.Style.FILL);
+
         gpsMarker = context.getResources().getDrawable(R.drawable.current_position);
         gpsFill = new Paint(Paint.ANTI_ALIAS_FLAG);
         gpsFill.setStyle(Paint.Style.FILL);
@@ -301,19 +305,41 @@ public abstract class GeopaparazziOverlay extends Overlay {
      */
     public abstract int itemSize();
 
-    private void assembleWayPath( Point drawPosition, OverlayWay overlayWay ) {
+    private void drawWayPathOnCanvas( Canvas canvas, Point drawPosition, OverlayWay overlayWay ) {
+        // assemble the ways
         this.wayPath.reset();
         for( int i = 0; i < overlayWay.cachedWayPositions.length; ++i ) {
-            this.wayPath.moveTo(overlayWay.cachedWayPositions[i][0].x - drawPosition.x, overlayWay.cachedWayPositions[i][0].y
-                    - drawPosition.y);
+            int x = overlayWay.cachedWayPositions[i][0].x - drawPosition.x;
+            int y = overlayWay.cachedWayPositions[i][0].y - drawPosition.y;
+            this.wayPath.moveTo(x, y);
             for( int j = 1; j < overlayWay.cachedWayPositions[i].length; ++j ) {
                 this.wayPath.lineTo(overlayWay.cachedWayPositions[i][j].x - drawPosition.x, overlayWay.cachedWayPositions[i][j].y
                         - drawPosition.y);
             }
-        }
-    }
 
-    private void drawWayPathOnCanvas( Canvas canvas, OverlayWay overlayWay ) {
+            // draw start points
+            float size = 2;
+            if (overlayWay.hasPaint) {
+                // use the paints from the current way
+                if (overlayWay.paintOutline != null) {
+                    wayStartPaintFill.setColor(overlayWay.paintOutline.getColor());
+                    size = overlayWay.paintOutline.getStrokeWidth();
+                } else if (overlayWay.paintFill != null) {
+                    wayStartPaintFill.setColor(overlayWay.paintFill.getColor());
+                }
+            } else {
+                // use the default paint objects
+                if (this.defaultWayPaintOutline != null) {
+                    wayStartPaintFill.setColor(defaultWayPaintOutline.getColor());
+                    size = defaultWayPaintOutline.getStrokeWidth();
+                } else if (this.defaultWayPaintFill != null) {
+                    wayStartPaintFill.setColor(defaultWayPaintFill.getColor());
+                }
+            }
+            canvas.drawCircle(x, y, size * 2, wayStartPaintFill);
+        }
+
+        // draw them
         if (overlayWay.hasPaint) {
             // use the paints from the current way
             if (overlayWay.paintOutline != null) {
@@ -332,7 +358,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
             }
         }
     }
-
+    
     private void assembleGpsWayPath( Point drawPosition, OverlayWay overlayWay ) {
         this.gpsPath.reset();
         for( int i = 0; i < overlayWay.cachedWayPositions.length; ++i ) {
@@ -418,8 +444,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     overlayWay.cachedZoomLevel = drawZoomLevel;
                 }
 
-                assembleWayPath(drawPosition, overlayWay);
-                drawWayPathOnCanvas(canvas, overlayWay);
+                drawWayPathOnCanvas(canvas, drawPosition, overlayWay);
             }
         }
 
