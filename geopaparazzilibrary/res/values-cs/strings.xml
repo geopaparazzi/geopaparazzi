@@ -78,4 +78,12 @@
   <string name="point_size">Velikost bodu</string>
   <string name="decimation">Decimování</string>
   <string name="no_data">Nejsou dostupná žádná data</string>
+  <string name="file_upload_completed_properly">Nahrání souboru bylo řádně dokončeno.</string>
+  <string name="http_forbidden_msg">Přístup k serveru byl odepřen. Prověřte, prosím, své přihlašovací údaje a adresu (URL) spojení.</string>
+  <string name="http_not_found_msg">Požadovaný zdroj se nepodařilo najít. Prověřte, prosím, adresu (URL) svého spojení.</string>
+  <string name="http_not_implemented_code_msg">Zachycen kód vrácené hodnoty (pošlete jej, prosím, vývojáři):</string>
+  <string name="post_completed_properly">Odeslání bylo řádně dokončeno.</string>
+  <string name="http_ok_msg">Požadavek byl úspěšně zpracován.</string>
+  <string name="the_file_exists_wont_overwrite">Soubor existuje. Nebude přepsán:</string>
+  <string name="share_note_with">Sdílet poznámku s...</string>
 </resources>

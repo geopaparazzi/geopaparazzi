@@ -78,4 +78,12 @@
   <string name="point_size">Pont méret</string>
   <string name="decimation">Méretezés</string>
   <string name="no_data">Nincs elérhető adat</string>
+  <string name="file_upload_completed_properly">A fájl feltöltés rendben lezajlott.</string>
+  <string name="http_forbidden_msg">A hozzáférés a szerverhez visszautasításra került. Ellenőrizze az engedélyét és az url-t.</string>
+  <string name="http_not_found_msg">A kért forrás nem található. Kérem ellenőrizze a kapcsolat url-t!</string>
+  <string name="http_not_implemented_code_msg">Válasz üzenet érkezett (Kérem küldje el a fejlesztőnek!):</string>
+  <string name="post_completed_properly">A küldés rendben lezajlott.</string>
+  <string name="http_ok_msg">A kérés megfelelően feldolgozásra került.</string>
+  <string name="the_file_exists_wont_overwrite">A fájl már létezik. Ne írja felül:</string>
+  <string name="share_note_with">Ossza meg a jegyzetet v.kivel...</string>
 </resources>

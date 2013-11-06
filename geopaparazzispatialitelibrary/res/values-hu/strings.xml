@@ -8,4 +8,5 @@
   <string name="point_shape_">Pont alakzat</string>
   <string name="point_size">Pont méret</string>
   <string name="decimation">Méretezés</string>
+  <string name="decimation_factor_default">0.000001</string>
 </resources>

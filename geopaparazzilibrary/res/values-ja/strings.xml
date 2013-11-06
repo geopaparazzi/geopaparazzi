@@ -78,4 +78,12 @@
   <string name="point_size">ポイントサイズ</string>
   <string name="decimation">デシメーション</string>
   <string name="no_data">データがありません。</string>
+  <string name="file_upload_completed_properly">ファイルアップロードが正常に終了しました。</string>
+  <string name="http_forbidden_msg">サーバアクセスは拒否されました。アクセス権と接続urlを確認してください。</string>
+  <string name="http_not_found_msg">要求されたリソースが見つかりませんでした。接続urlを確認してください。</string>
+  <string name="http_not_implemented_code_msg">返信メッセージがトラップされました (開発者にお送りください): </string>
+  <string name="post_completed_properly">送信が正常に終了しました。</string>
+  <string name="http_ok_msg">リクエストは正常に処理されました。</string>
+  <string name="the_file_exists_wont_overwrite">ファイルが存在します。上書きできません。</string>
+  <string name="share_note_with">ノートのシェア...</string>
 </resources>
