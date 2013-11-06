@@ -28,6 +28,7 @@
   <string name="mainmenu_merge">選択したログをマージ</string>
   <string name="gpslogproperty">設定: </string>
   <string name="gpslog_chart">グラフ</string>
+  <string name="gpslog_zoom">拡大</string>
   <string name="gpslog_delete">削除</string>
   <string name="mapproperty">設定: </string>
   <string name="map_zoom">マップにズーム</string>
@@ -160,6 +161,7 @@
   <string name="distance">距離: </string>
   <string name="imported_notes_and_bookmarks">{0}のメモ と {1} のブックマークをインポートします。</string>
   <string name="could_not_open_sms">SMSで渡された URI を開くことができません。</string>
+  <string name="start_">スタート: </string>
   <string name="end_">エンド: </string>
   <string name="map_textsize_factor">マップテキストサイズ</string>
   <string name="keep_screen_on">画面の保持</string>
@@ -189,4 +191,8 @@
   <string name="keep_use_imperial">インペリアル単位を使用する</string>
   <string name="keep_use_imperial_sum">可能であればメートルの代わりにインペリアルを使用する</string>
   <string name="satellites">衛星数</string>
+  <string name="crash_toast_text">アプリケーションに重大なエラーが発生しました。問題解決のために有用なクラッシュ情報が収集されています。もしよろしければ、開発チームにクラッシュ情報をお送りください。</string>
+  <string name="start">開始</string>
+  <string name="end">終了</string>
+  <string name="other">その他</string>
 </resources>

@@ -28,6 +28,7 @@
   <string name="mainmenu_merge">Sloučit vybrané zápisy</string>
   <string name="gpslogproperty">Vlastnosti pro:</string>
   <string name="gpslog_chart">Graf</string>
+  <string name="gpslog_zoom">Přiblížit</string>
   <string name="gpslog_delete">Smazat</string>
   <string name="mapproperty">Vlastnosti pro:</string>
   <string name="map_zoom">Přiblížit mapu</string>
@@ -160,6 +161,7 @@
   <string name="distance">Vzdálenost:</string>
   <string name="imported_notes_and_bookmarks">Zavedeno {0} poznámek a {1} záložek.</string>
   <string name="could_not_open_sms">Nepodařilo se otevřít URI převzatých dat SMS.</string>
+  <string name="start_">Začátek:</string>
   <string name="end_">Konec:</string>
   <string name="map_textsize_factor">Násobek velikosti textu mapy</string>
   <string name="keep_screen_on">Udržovat obrazovku zapnutou</string>
@@ -189,4 +191,8 @@
   <string name="keep_use_imperial">Použít britské rozměrové jednotky</string>
   <string name="keep_use_imperial_sum">Použít britské rozměrové jednotky namísto metrických tam, kde je to možné.</string>
   <string name="satellites">Družice</string>
+  <string name="crash_toast_text">Program postihla vážná chyba. Informace o pádu, které jsou užitečné při řešení potíží, budou sebrány. Pokud je to možné, pošlete je, prosím, vývojářskému týmu.</string>
+  <string name="start">Začátek</string>
+  <string name="end">Konec</string>
+  <string name="other">Jiné</string>
 </resources>
