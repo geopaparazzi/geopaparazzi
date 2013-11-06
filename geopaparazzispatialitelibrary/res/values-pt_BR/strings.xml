@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="stroke_color">Cor do traço</string>
+  <string name="width">Largura do traço</string>
+  <string name="alpha">Alfa do traço</string>
+  <string name="fill_color">Cor de preenchimento</string>
+  <string name="fill_alpha">Alfa de preenchimento</string>
+  <string name="point_shape_">Forma do ponto</string>
+  <string name="point_size">Tamanho do ponto</string>
+  <string name="decimation">Eliminação</string>
+  <string name="decimation_factor_default">0.000001</string>
+</resources>
