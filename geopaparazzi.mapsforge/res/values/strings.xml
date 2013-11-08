@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+ <string name="app_name">ACTIVITY_ENTRY_NAME</string>
+ <string name="mapsdir_treeview_filedirectory_menu">File/Directory List</string>
+ <string name="mapsdir_treeview_filedirectory_menu_condensed">File/Directory</string>
+ <string name="mapsdir_treeview_maptype_menu">Map Types List</string>
+ <string name="mapsdir_treeview_maptype_menu_condensed">Map Types</string>
+ <string name="mapsdir_treeview_expand_all_menu">Expand all</string>
+ <string name="mapsdir_treeview_expand_all_condensed">Expand All</string>
+ <string name="mapsdir_treeview_collapsible_menu_enable">Enable collapsible</string>
+ <string name="mapsdir_treeview_collapsible_condensed_enable">Enable collapsible</string>
+ <string name="mapsdir_treeview_collapsible_menu_disable">Disable collapsible</string>
+ <string name="mapsdir_treeview_collapsible_menu_disable_condensed">Disable collapsible</string>
+ <string name="mapsdir_treeview_collapse_all_menu">Collapse all</string>
+ <string name="mapsdir_treeview_collapse_all_menu_condensed">Collapse all</string>
+ <string name="mapsdir_treeview_expand_menu">Expand</string>
+ <string name="mapsdir_treeview_expand_menu_condensed">Expand</string>
+ <string name="mapsdir_treeview_load_menu">Load map</string>
+ <string name="mapsdir_treeview_load_menu_condensed">Load</string>
+ <string name="mapsdir_treeview_properties_menu">Properties of map</string>
+ <string name="mapsdir_treeview_properties_menu_condensed">Properties</string>
+ <string name="mapsdir_treeview_properties_edit_menu">Change Properties of map</string>
+ <string name="mapsdir_treeview_properties_edit_menu_condensed">Change Properties</string>
+ <string name="mapsdir_treeview_delete_menu">Delete</string>
+ <string name="mapsdir_treeview_delete_menu_condensed">Delete</string>
+ <string name="mapsdir_treeview_item_fields_options_button">Options</string>
+</resources>

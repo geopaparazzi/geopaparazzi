@@ -1,0 +1,8 @@
+url=http://tile.opencyclemap.org/cycle/ZZZ/XXX/YYY.png
+minzoom=0
+maxzoom=19
+center=11.42 46.8
+type=google
+format=png
+defaultzoom=13
+mbtiles=defaulttiles/_opencycle.mbtiles
