@@ -28,6 +28,7 @@ import jsqlite.Exception;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.spatialite.database.spatial.core.mbtiles.MBTilesDroidSpitter;
 import eu.geopaparazzi.spatialite.database.spatial.core.mbtiles.MbTilesMetadata;
 
@@ -42,9 +43,23 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
     public final static String COL_METADATA_NAME = "name";
     public final static String COL_METADATA_VALUE = "value";
     private List<SpatialRasterTable> rasterTableList;
-    private String s_mbtiles_file;
+    private File file_map; // all DatabaseHandler/Table classes should use these names
+    private String s_map_file; // [with path] all DatabaseHandler/Table classes should use these names
+    private String s_name_file; // [without path] all DatabaseHandler/Table classes should use these names
+    private String s_name; // all DatabaseHandler/Table classes should use these names
+    private String s_description; // all DatabaseHandler/Table classes should use these names
+    private String s_map_type="mbtiles"; // all DatabaseHandler/Table classes should use these names
     private MBTilesDroidSpitter db_mbtiles;
     private HashMap<String, String> mbtiles_metadata = null;
+    private int minZoom;
+    private int maxZoom;
+    private double centerX; // wsg84
+    private double centerY; // wsg84
+    private double bounds_west; // wsg84
+    private double bounds_east; // wsg84
+    private double bounds_north; // wsg84
+    private double bounds_south; // wsg84
+    private int defaultZoom;
     // private int i_force_unique = 0;
 
     // -----------------------------------------------
@@ -62,19 +77,41 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
       */
     public MbtilesDatabaseHandler( String s_mbtiles_path, HashMap<String, String> mbtiles_metadata ) {
         this.mbtiles_metadata = mbtiles_metadata;
-        if (!s_mbtiles_path.endsWith(".mbtiles"))
+        // GPLog.GLOBAL_LOG_LEVEL=1;
+        // GPLog.androidLog(-1,"MbtilesDatabaseHandler[" + s_mbtiles_path + "]");
+        if (!s_mbtiles_path.endsWith("."+s_map_type))
         { // .mbtiles files must have an .mbtiles extention, force this
-         s_mbtiles_path = s_mbtiles_path.substring(0, s_mbtiles_path.lastIndexOf("."))+".mbtiles";
+         s_mbtiles_path = s_mbtiles_path.substring(0, s_mbtiles_path.lastIndexOf("."))+"."+s_map_type;
         }
-        File file_mbtiles = new File(s_mbtiles_path);
-        s_mbtiles_file = file_mbtiles.getName().substring(0, file_mbtiles.getName().lastIndexOf("."));
-        db_mbtiles = new MBTilesDroidSpitter(file_mbtiles, this.mbtiles_metadata);
+        this.file_map = new File(s_mbtiles_path);
+        s_map_file=file_map.getAbsolutePath();
+        s_name_file=file_map.getName();
+        this.s_name = file_map.getName().substring(0, file_map.getName().lastIndexOf("."));
+        db_mbtiles = new MBTilesDroidSpitter(file_map, this.mbtiles_metadata);
+        // GPLog.GLOBAL_LOG_LEVEL=0;
+        setDescription(s_name);
+        // GPLog.androidLog(-1,"MbtilesDatabaseHandler[" + file_map.getAbsolutePath() + "] name["+s_name+"] s_description["+s_description+"]");
     }
-
-    public String getFileName() {
-        return s_mbtiles_file;
+    // -----------------------------------------------
+    /**
+      * Is the mbtiles file considerd valid
+      * - metadata table exists and has data
+      * - 'tiles' is either a table or a view and the correct fields exist
+      * -- if a view: do the tables map and images exist with the correct fields
+      * checking is done once when the 'metadata' is retrieved the first time [fetchMetadata()]
+      * @return b_mbtiles_valid true if valid, otherwise false
+      */
+    public boolean isValid()
+    {
+     if (db_mbtiles != null)
+     {
+      return db_mbtiles.isValid();
+     }
+     else
+     {
+      return false;
+     }
     }
-
     public List<SpatialVectorTable> getSpatialVectorTables( boolean forceRead ) throws Exception {
         return Collections.emptyList();
     }
@@ -87,8 +124,8 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
             float[] bounds = metadata.bounds;// left, bottom, right, top
             double[] d_bounds = {bounds[0], bounds[1], bounds[2], bounds[3]};
             float[] center = metadata.center;// center_x,center_y,zoom
+            this.s_name = metadata.name;
             // String tableName = metadata.name;
-            String columnName = null;
             float centerX = 0f;
             float centerY = 0f;
             int defaultZoom = metadata.maxZoom;
@@ -102,9 +139,21 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
                     centerY = bounds[1] + (bounds[3] - bounds[1]) / 2f;
                 }
             }
-            SpatialRasterTable table = new SpatialRasterTable(s_mbtiles_file, columnName, "3857", metadata.minZoom,
+            setDescription(metadata.description);
+            SpatialRasterTable table = new SpatialRasterTable(s_map_file, s_name, "3857", metadata.minZoom,
                     metadata.maxZoom, centerX, centerY, "?,?,?", d_bounds);
             table.setDefaultZoom(defaultZoom);
+            table.setDescription(s_description);
+            table.setMapType(s_map_type);
+            this.minZoom = table.getMinZoom();
+            this.maxZoom = table.getMaxZoom();
+            this.defaultZoom = table.getDefaultZoom();
+            this.centerX = table.getCenterX();
+            this.centerY = table.getCenterY();
+            this.bounds_west = table.getMinLongitude();
+            this.bounds_south = table.getMinLatitude();
+            this.bounds_east = table.getMaxLongitude();
+            this.bounds_north = getMaxLatitude();
             // for mbtiles the desired center can be set by the
             // database developer and may be different than the
             // true center/zoom
@@ -240,6 +289,245 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
         if (db_mbtiles != null) {
             db_mbtiles.fetch_bounds_minmax(0, 1);;
         }
+    }
+    // -----------------------------------------------
+    /**
+      * Return long name of map/file
+      *
+      * <p>default: file name with path and extention
+      * <p>mbtiles : will be a '.mbtiles' sqlite-file-name
+      * <p>map : will be a mapforge '.map' file-name
+      *
+      * @return file_map.getAbsolutePath();
+      */
+    public String getFileNamePath() {
+        return this.s_map_file; // file_map.getAbsolutePath();
+    }
+    // -----------------------------------------------
+    /**
+      * Return short name of map/file
+      *
+      * <p>default: file name without path but with extention
+      *
+      * @return file_map.getAbsolutePath();
+      */
+    public String getFileName() {
+        return this.s_name_file; // file_map.getName();
+    }
+    // -----------------------------------------------
+    /**
+      * Return short name of map/file
+      *
+      * <p>default: file name without path and extention
+      * <p>mbtiles : metadata 'name'
+      * <p>map : will be value of 'comment', if not null
+      *
+      * @return s_name as short name of map/file
+      */
+    public String getName() {
+        return this.s_name; // comment or file-name without path and extention
+    }
+        // -----------------------------------------------
+    /**
+      * Return String of bounds [wms-format]
+      *
+      * <p>x_min,y_min,x_max,y_max
+      *
+      * @return bounds formatted using wms format
+      */
+    public String getBounds_toString() {
+        return bounds_west+","+bounds_south+","+bounds_east+","+bounds_north;
+    }
+    // -----------------------------------------------
+    /**
+      * Return String of Map-Center with default Zoom
+      *
+      * <p>x_position,y_position,default_zoom
+      *
+      * @return center formatted using mbtiles format
+      */
+    public String getCenter_toString() {
+        return centerX+","+centerY+","+defaultZoom;
+    }
+    // -----------------------------------------------
+    /**
+      * Return long description of map/file
+      *
+      * <p>default: s_name with bounds and center
+      * <p>mbtiles : metadata description'
+      * <p>map : will be value of 'comment', if not null
+      *
+      * @return s_description long description of map/file
+      */
+    public String getDescription() {
+        if ((this.s_description == null) || (this.s_description.length() == 0) || (this.s_description.equals(this.s_name)))
+         setDescription(this.s_name); // will set default values with bounds and center if it is the same as 's_name' or empty
+        return this.s_description; // long comment
+    }
+     // -----------------------------------------------
+    /**
+      * Set long description of map/file
+      *
+      * <p>default: s_name with bounds and center
+      * <p>mbtiles : metadata description'
+      * <p>map : will be value of 'comment', if not null
+      *
+      * @return s_description long description of map/file
+      */
+    public void setDescription(String s_description) {
+        if ((s_description == null) || (s_description.length() == 0) || (s_description.equals(this.s_name)))
+        {
+         this.s_description = s_name+" bounds["+getBounds_toString()+"] center["+getCenter_toString()+"]";
+        }
+        else
+         this.s_description = s_description;
+    }
+    // -----------------------------------------------
+    /**
+      * Return map-file as 'File'
+      *
+      * <p>if the class does not fail, this file exists
+      * <p>mbtiles : will be a '.mbtiles' sqlite-file
+      * <p>map : will be a mapforge '.map' file
+      *
+      * @return file_map as File
+      */
+    public File getFile() {
+        return this.file_map;
+    }
+    // -----------------------------------------------
+    /**
+      * Return Min Zoom
+      *
+      * <p>default :  0
+      * <p>mbtiles : taken from value of metadata 'minzoom'
+      * <p>map : value is given in 'StartZoomLevel'
+      *
+      * @return integer minzoom
+      */
+    public int getMinZoom() {
+        return minZoom;
+    }
+    // -----------------------------------------------
+    /**
+      * Return Max Zoom
+      *
+      * <p>default :  22
+      * <p>mbtiles : taken from value of metadata 'maxzoom'
+      * <p>map : value not defined, seems to calculate bitmap from vector data [18]
+      *
+      * @return integer maxzoom
+      */
+    public int getMaxZoom() {
+        return maxZoom;
+    }
+    // -----------------------------------------------
+    /**
+      * Return Min/Max Zoom as string
+      *
+      * <p>default :  1-22
+      * <p>mbtiles : taken from value of metadata 'min/maxzoom'
+      *
+      * @return String min/maxzoom
+      */
+    public String getZoom_Levels() {
+        return getMinZoom()+"-"+getMaxZoom();
+    }
+    // -----------------------------------------------
+    /**
+      * Return West X Value [Longitude]
+      *
+      * <p>default :  -180.0 [if not otherwise set]
+      * <p>mbtiles : taken from 1st value of metadata 'bounds'
+      *
+      * @return double of West X Value [Longitude]
+      */
+    public double getMinLongitude() {
+        return bounds_west;
+    }
+    // -----------------------------------------------
+    /**
+      * Return South Y Value [Latitude]
+      *
+      * <p>default :  -85.05113 [if not otherwise set]
+      * <p>mbtiles : taken from 2nd value of metadata 'bounds'
+      *
+      * @return double of South Y Value [Latitude]
+      */
+    public double getMinLatitude() {
+        return bounds_south;
+    }
+    // -----------------------------------------------
+    /**
+      * Return East X Value [Longitude]
+      *
+      * <p>default :  180.0 [if not otherwise set]
+      * <p>mbtiles : taken from 3th value of metadata 'bounds'
+      *
+      * @return double of East X Value [Longitude]
+      */
+    public double getMaxLongitude() {
+        return bounds_east;
+    }
+    // -----------------------------------------------
+    /**
+      * Return North Y Value [Latitude]
+      *
+      * <p>default :  85.05113 [if not otherwise set]
+      * <p>mbtiles : taken from 4th value of metadata 'bounds'
+      *
+      * @return double of North Y Value [Latitude]
+      */
+    public double getMaxLatitude() {
+        return bounds_north;
+    }
+    // -----------------------------------------------
+    /**
+      * Return Center X Value [Longitude]
+      *
+      * <p>default : center of bounds
+      * <p>mbtiles : taken from 1st value of metadata 'center'
+      *
+      * @return double of X Value [Longitude]
+      */
+    public double getCenterX() {
+        return centerX;
+    }
+    // -----------------------------------------------
+    /**
+      * Return Center Y Value [Latitude]
+      *
+      * <p>default : center of bounds
+      * <p>mbtiles : taken from 2nd value of metadata 'center'
+      *
+      * @return double of Y Value [Latitude]
+      */
+    public double getCenterY() {
+        return centerY;
+    }
+    // -----------------------------------------------
+    /**
+      * Retrieve Zoom level
+      *
+      * <p>default : minZoom
+      * <p>mbtiles : taken from 3rd value of metadata 'center'
+      *
+     * @return defaultZoom
+      */
+    public int getDefaultZoom() {
+        return defaultZoom;
+    }
+    // -----------------------------------------------
+    /**
+      * Set default Zoom level
+      *
+      * <p>default : minZoom
+      * <p>mbtiles : taken from 3rd value of metadata 'center'
+      *
+      * @param i_zoom desired Zoom level
+      */
+    public void setDefaultZoom( int i_zoom ) {
+        defaultZoom = i_zoom;
     }
     // /////////////////////////////////////////////////
     // UNUSED
