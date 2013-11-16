@@ -180,7 +180,7 @@ public class MapTagsActivity extends Activity {
                 // tagButton.setText(tagNamesArray[position]);
                 tagButton.setText(spanString);
                 tagButton.setTextColor(buttonTextColor);
-                tagButton.setBackground(buttonDrawable);
+                tagButton.setBackgroundDrawable(buttonDrawable);
                 int ind = 35;
                 tagButton.setPadding(0, ind, 0, ind);
                 ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) parent.getLayoutParams();
