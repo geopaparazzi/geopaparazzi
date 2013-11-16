@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto"
+ package="eu.geopaparazzi.mapsdirmanager" android:versionCode="1" android:versionName="0.1">
+
+ <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+ <uses-permission android:name="android.permission.INTERNET" />
+ <uses-permission android:name="android.permission.WAKE_LOCK" />
+ <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+ <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="15" />
+
+ <application android:icon="@drawable/icon_mapsdir" android:label="@string/app_name">
+  <activity android:name=".MapsDirActivity" android:theme="@style/MapsDir">
+   <intent-filter>
+    <action android:name="android.intent.action.MAIN" />
+    <category android:name="android.intent.category.LAUNCHER" />
+   </intent-filter>
+  </activity>
+  <activity android:name=".preferences.EditPreferences" />
+  <activity android:name=".filepicker.FilePicker" />
+  <activity android:name=".InfoView" android:theme="@android:style/Theme.NoTitleBar" />
+  <activity android:name="eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.MapsDirTreeViewList" />
+ </application>
+</manifest>
