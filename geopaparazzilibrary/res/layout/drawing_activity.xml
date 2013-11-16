@@ -40,7 +40,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:background="@layout/button_background_drawable"
+            android:background="@drawable/button_background_drawable"
             android:contentDescription="@string/redo"
             android:onClick="onClick"
             android:src="@android:drawable/ic_media_ff" />
@@ -53,7 +53,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_toLeftOf="@id/redoButton"
-            android:background="@layout/button_background_drawable"
+            android:background="@drawable/button_background_drawable"
             android:contentDescription="@string/undo"
             android:onClick="onClick"
             android:src="@android:drawable/ic_media_rew" />
