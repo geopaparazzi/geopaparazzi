@@ -28,6 +28,7 @@
   <string name="mainmenu_merge">Yhdistä valitut jäljet</string>
   <string name="gpslogproperty">Ominaisuudet: </string>
   <string name="gpslog_chart">Kaavio</string>
+  <string name="gpslog_zoom">Lähennä</string>
   <string name="gpslog_delete">Poista</string>
   <string name="mapproperty">Gpx-ominaisuudet: </string>
   <string name="map_zoom">Kohdista gpx-tiedostoon</string>
@@ -158,6 +159,7 @@
   <string name="logs_will_be_merged">\" lokit yhdistetään. Jatketaanko?</string>
   <string name="distance">Etäisyys:</string>
   <string name="imported_notes_and_bookmarks">Tuotiin {0} muistiinpanoa ja {1} kirjanmerkkiä.</string>
+  <string name="start_">Aloita:</string>
   <string name="end_">Loppu:</string>
   <string name="map_textsize_factor">Karttatekstien kokokerroin</string>
   <string name="keep_screen_on">Pidä näyttö päällä</string>
@@ -187,4 +189,7 @@
   <string name="keep_use_imperial">Käytä imperiaalisia mittayksikköjä</string>
   <string name="keep_use_imperial_sum">Käytä imperiaalisia mittoja metristen sijasta.</string>
   <string name="satellites">satelliitit</string>
+  <string name="start">aloita</string>
+  <string name="end">lopeta</string>
+  <string name="other">muu</string>
 </resources>
