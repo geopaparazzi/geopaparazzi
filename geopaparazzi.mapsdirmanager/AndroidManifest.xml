@@ -10,7 +10,7 @@
  <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="15" />
 
  <application android:icon="@drawable/icon_mapsdir" android:label="@string/app_name">
-  <activity android:name=".MapsDirActivity" android:theme="@style/MapsDir">
+  <activity android:name=".MapsDirActivity" >
    <intent-filter>
     <action android:name="android.intent.action.MAIN" />
     <category android:name="android.intent.category.LAUNCHER" />

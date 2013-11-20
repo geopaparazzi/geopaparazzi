@@ -420,12 +420,20 @@ public class GpsManager implements LocationListener, Listener {
     }
 
     private static void log( String msg ) {
-        if (GPLog.LOG_HEAVY)
-            GPLog.addLogEntry("GPSMANAGER", null, null, msg);
+        try {
+            if (GPLog.LOG_HEAVY)
+                GPLog.addLogEntry("GPSMANAGER", null, null, msg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private static void logABS( String msg ) {
-        if (GPLog.LOG_ABSURD)
-            GPLog.addLogEntry("GPSMANAGER", null, null, msg);
+        try {
+            if (GPLog.LOG_ABSURD)
+                GPLog.addLogEntry("GPSMANAGER", null, null, msg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
