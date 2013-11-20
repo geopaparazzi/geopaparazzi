@@ -23,7 +23,7 @@ import eu.hydrologis.geopaparazzi.gpx.GpxImportActivity;
 
 /**
  * Various constants.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
@@ -103,19 +103,20 @@ public interface Constants {
     public static final String OSM_TAG_KEY = "OSM_TAG_KEY";
     public static final String PREFS_KEY_DOOSM = "PREFS_KEY_DOOSM";
     public static final String PREFS_KEY_OSMTAGSVERSION = "PREFS_KEY_OSMTAGSVERSION";
-    
+
     /*
      * CLOUD
      */
     public static final String PREF_KEY_USER = "geopapcloud_user_key"; //$NON-NLS-1$
     public static final String PREF_KEY_PWD = "geopapcloud_pwd_key"; //$NON-NLS-1$
     public static final String PREF_KEY_SERVER = "geopapcloud_server_key";//$NON-NLS-1$
-    
+
     /*
-     * mapsforge 
+     * mapsforge
+     * for i_version=1 [MapDirManager] : PREFS_KEY_TILESOURCE,PREFS_KEY_TILESOURCE_FILE moved to LibraryConstants
      */
-    public static final String PREFS_KEY_TILESOURCE = "PREFS_KEY_TILESOURCE";
-    public static final String PREFS_KEY_TILESOURCE_FILE = "PREFS_KEY_TILESOURCE_FILE";
+    // public static final String PREFS_KEY_TILESOURCE = "PREFS_KEY_TILESOURCE";
+    // public static final String PREFS_KEY_TILESOURCE_FILE = "PREFS_KEY_TILESOURCE_FILE";
     public static final String PREFS_KEY_MAPSVIEW_TEXTSIZE_FACTOR = "mapsview_textsize_factor";
     /*
      * cross properties
@@ -130,7 +131,7 @@ public interface Constants {
     public static final String PREFS_KEY_NOTES_CUSTOMCOLOR = "PREFS_KEY_NOTES_CUSTOMCOLOR";
     public static final String PREFS_KEY_NOTES_SIZE = "PREFS_KEY_NOTES_SIZE";
     public static final String PREFS_KEY_NOTES_OPACITY = "PREFS_KEY_NOTES_OPACITY";
-    
+
     /*
      * notes text properties
      */
