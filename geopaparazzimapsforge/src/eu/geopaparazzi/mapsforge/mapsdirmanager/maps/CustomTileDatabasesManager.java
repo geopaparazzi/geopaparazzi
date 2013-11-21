@@ -51,7 +51,6 @@ public class CustomTileDatabasesManager {
     private static final String[] sa_extentions = new String[]{".mapurl"};
     private static final int i_extention_mapurl = 0;
     private int i_count_tables=0;
-    public static boolean isConnectedToInternet=false;
     private CustomTileDatabasesManager() {
     }
 

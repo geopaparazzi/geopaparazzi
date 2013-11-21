@@ -19,23 +19,14 @@ package eu.geopaparazzi.mapsforge.mapsdirmanager.maps;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import jsqlite.Exception;
 import android.content.Context;
-
-import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapDatabaseHandler;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapTable;
-import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.network.NetworkUtilities;
-import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.spatialite.database.spatial.core.MbtilesDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.OrderComparator;
 
 /**
  * The map database manager.
@@ -48,11 +39,10 @@ public class MapDatabasesManager {
     private List<MapDatabaseHandler> mapHandlers = new ArrayList<MapDatabaseHandler>();
     private HashMap<MapTable, MapDatabaseHandler> mapTablesMap = new HashMap<MapTable, MapDatabaseHandler>();
     private static MapDatabasesManager mapDbManager = null;
-    private static final String[] sa_extentions = new String[]{".map",".xml"};
-    private static final int i_extention_map = 0;
+    private final String[] sa_extentions = new String[]{".map",".xml"};
+    private final int i_extention_map = 0;
     private static final int i_extention_xml = 1;
     
-    private boolean isConnectedToInternet=false;
     private MapDatabasesManager() {
     }
 
@@ -66,14 +56,13 @@ public class MapDatabasesManager {
     public static void reset() {
         mapDbManager = null;
     }
-    public static String get_map_extention() {
+    public  String get_map_extention() {
         return sa_extentions[i_extention_map];
     }
-    public static String get_xml_extention() {
+    public  String get_xml_extention() {
         return sa_extentions[i_extention_xml];
     }
     public void init( Context context, File mapsDir ) {
-        isConnectedToInternet = NetworkUtilities.isNetworkAvailable(context);
         
         File[] list_files = mapsDir.listFiles();
         for( File this_file : list_files ) {
@@ -137,14 +126,6 @@ public class MapDatabasesManager {
             }
         }
         return null;
-    }
-    /**
-     * Check for active Internet connection
-     * <p>done in MapsDirManager
-     */
-    public boolean isConnectedToInternet()
-    {
-     return isConnectedToInternet;
     }
     /**
      * Close  all Databases that may be open
