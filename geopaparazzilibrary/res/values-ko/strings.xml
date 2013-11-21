@@ -85,5 +85,5 @@
   <string name="post_completed_properly">성공적으로 게시를 완료했습니다.</string>
   <string name="http_ok_msg">요청이 성공적으로 처리되었습니다.</string>
   <string name="the_file_exists_wont_overwrite">파일이 존재합니다. 덮어 쓰지 않습니다:</string>
-  <string name="share_note_with">노트 공유...</string>
+  <string name="share_note_with">메모 공유...</string>
 </resources>

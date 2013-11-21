@@ -34,8 +34,8 @@
   <string name="map_zoom">지도 확대</string>
   <string name="map_delete">지도 삭제</string>
   <string name="gps_preferences">GPS 설정</string>
-  <string name="gps_logging_distance">최소 GPS 기록 거리</string>
-  <string name="gps_logging_interval">최소 GPS 기록 간격</string>
+  <string name="gps_logging_distance">GPS 기록 최소 거리</string>
+  <string name="gps_logging_interval">GPS 기록 최소 간격</string>
   <string name="gps_use_android_level">안드로이드 수준에서 사용 (배터리 절약, 재시작 필요)</string>
   <string name="gps_use_android_level_summary">선택하면, GPS 설정은 운영체제 수준에서 적용되며, 매터리를 절약할 수 있지만 큰 간격을 설정하는 경우 덜 안정적인 신호를 얻게 됩니다  (장치에 GPS 연결 문제가있는 경우,이 확인란을 선택하지 않은 상태로 둡니다). 100초 미만의 간격에는 GPS OS가 지속적으로 전원을 공급합니다. 더 나은 배터리 수명을 위해 더 큰 간격을 선택하십시오.</string>
   <string name="sms_preferences">SMS 설정</string>
@@ -116,7 +116,7 @@
   <string name="available_only_with_network">해당 기능은 활성화된 네트워크 연결에서만 사용 가능합니다.</string>
   <string name="error_osm_server">OSM 서버에 연결하는 동안 오류가 발생했습니다. 로그인과 암호를 확인하시기 바랍니다. OSM 서버를 사용할 수 없을 가능성도 있습니다.</string>
   <string name="check_valid_field">필드 \"{0}\"이 유효한지 확인하십시오.</string>
-  <string name="view_in_mixare">혼합 보기</string>
+  <string name="view_in_mixare">Mixare에서 보기</string>
   <string name="gps_use_coarse">GPS 대신 네트워크 기반 위치 사용 (재시작 필요)</string>
   <string name="type_to_filter">필터 입력</string>
   <string name="geopapcloud_preferences">Geopap-Cloud 설정</string>
@@ -190,7 +190,7 @@
   <string name="prompt_delete_bookmark">북마크를 삭제하시겠습니까? 이 작업은 취소할 수 없습니다.</string>
   <string name="keep_use_imperial">영국식 단위 사용</string>
   <string name="keep_use_imperial_sum">가능하면 미터 단위 대신 영국식 단위를 사용합니다.</string>
-  <string name="satellites">위성영상</string>
+  <string name="satellites">위성</string>
   <string name="crash_toast_text">응용 프로그램에 치명적인 오류가 발생했습니다. 문제를 해결하는 데 유용한 충돌 정보가 수집될 것입니다. 가능하면 개발 팀에게 보내 주시기 바랍니다.</string>
   <string name="start">시작</string>
   <string name="end">끝</string>
