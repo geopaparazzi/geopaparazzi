@@ -25,10 +25,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.SpannableString;
+import android.text.style.StyleSpan;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -163,11 +168,24 @@ public class MapTagsActivity extends Activity {
             e1.printStackTrace();
         }
 
+        final int buttonTextColor = getResources().getColor(R.color.main_text_color);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.gpslog_row, tagNamesArray){
             public View getView( final int position, View cView, ViewGroup parent ) {
 
                 Button tagButton = new Button(MapTagsActivity.this);
-                tagButton.setText(tagNamesArray[position]);
+
+                Drawable buttonDrawable = getResources().getDrawable(R.drawable.button_background_drawable);
+                SpannableString spanString = new SpannableString(tagNamesArray[position]);
+                spanString.setSpan(new StyleSpan(Typeface.BOLD), 0, spanString.length(), 0);
+                // tagButton.setText(tagNamesArray[position]);
+                tagButton.setText(spanString);
+                tagButton.setTextColor(buttonTextColor);
+                tagButton.setBackgroundDrawable(buttonDrawable);
+                int ind = 35;
+                tagButton.setPadding(0, ind, 0, ind);
+                ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) parent.getLayoutParams();
+                mlp.setMargins(0, ind, 0, ind);
+
                 // osmButton.setImageResource(R.drawable.gps);
                 tagButton.setOnClickListener(new Button.OnClickListener(){
                     public void onClick( View v ) {

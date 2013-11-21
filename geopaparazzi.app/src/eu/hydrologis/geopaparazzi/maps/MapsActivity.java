@@ -930,11 +930,10 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
     public boolean onCreateOptionsMenu( Menu menu ) {
         super.onCreateOptionsMenu(menu);
-        menu.add(Menu.NONE, MENU_DATA, 1, "Geometries").setIcon(android.R.drawable.ic_menu_compass);
-        menu.add(Menu.NONE, MENU_TILE_SOURCE_ID, 2, R.string.mapsactivity_menu_tilesource).setIcon(R.drawable.ic_menu_tilesource);
-        menu.add(Menu.NONE, MENU_GPSDATA, 3, R.string.mainmenu_gpsdataselect).setIcon(android.R.drawable.ic_menu_compass);
-        menu.add(Menu.NONE, MENU_SCALE_ID, 4, R.string.mapsactivity_menu_toggle_scalebar).setIcon(R.drawable.ic_menu_scalebar);
-        menu.add(Menu.NONE, MENU_COMPASS_ID, 5, R.string.mapsactivity_menu_toggle_compass).setIcon(
+        menu.add(Menu.NONE, MENU_GPSDATA, 1, R.string.mainmenu_gpsdataselect).setIcon(android.R.drawable.ic_menu_compass);
+        menu.add(Menu.NONE, MENU_DATA, 2, R.string.data).setIcon(android.R.drawable.ic_menu_compass);
+        menu.add(Menu.NONE, MENU_SCALE_ID, 3, R.string.mapsactivity_menu_toggle_scalebar).setIcon(R.drawable.ic_menu_scalebar);
+        menu.add(Menu.NONE, MENU_COMPASS_ID, 4, R.string.mapsactivity_menu_toggle_compass).setIcon(
                 android.R.drawable.ic_menu_compass);
         menu.add(Menu.NONE, CENTER_ON_MAP, 6, R.string.center_on_map).setIcon(android.R.drawable.ic_menu_mylocation);
         menu.add(Menu.NONE, GO_TO, 7, R.string.go_to).setIcon(android.R.drawable.ic_menu_myplaces);

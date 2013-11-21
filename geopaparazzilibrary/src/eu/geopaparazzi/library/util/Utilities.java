@@ -611,4 +611,16 @@ public class Utilities {
         return sB.toString();
     }
 
+    /**
+     * Method to help define file names that need to be hidden.
+     * 
+     * <p>Currently ones that start with _ are hidden.</p>
+     * 
+     * @param name the name to check.
+     * @return <code>true</code> if the name defines a file to hide.
+     */
+    public static boolean isNameFromHiddenFile( String name ) {
+        return name.startsWith("_");
+    }
+
 }

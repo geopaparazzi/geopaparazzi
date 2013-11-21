@@ -30,6 +30,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.core.ISpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.MbtilesDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.OrderComparator;
@@ -111,17 +112,21 @@ public class SpatialDatabasesManager {
                 // mj10777: read recursive directories inside the sdcard/maps directory
                 init(context, this_file);
             } else {
-                for (int i=0;i<sa_extentions.length;i++)  {
-                  if (this_file.getName().endsWith(sa_extentions[i])) {
-                    ISpatialDatabaseHandler sdb = null;
-                    if (this_file.getName().endsWith(get_mbtiles_extention())) {
-                        sdb = new MbtilesDatabaseHandler(this_file.getAbsolutePath(), null);
-                    } else {
-                        sdb = new SpatialiteDatabaseHandler(this_file.getAbsolutePath());
+                for( int i = 0; i < sa_extentions.length; i++ ) {
+                    String name = this_file.getName();
+                    if (Utilities.isNameFromHiddenFile(name)) {
+                        continue;
                     }
-                    // GPLog.androidLog(-1,"SpatialDatabasesManager["+i+"]["+sa_extentions[i]+"]: init["+this_file.getAbsolutePath()+"] ");
-                    sdbHandlers.add(sdb);
-                   }
+                    if (name.endsWith(sa_extentions[i])) {
+                        ISpatialDatabaseHandler sdb = null;
+                        if (name.endsWith(get_mbtiles_extention())) {
+                            sdb = new MbtilesDatabaseHandler(this_file.getAbsolutePath(), null);
+                        } else {
+                            sdb = new SpatialiteDatabaseHandler(this_file.getAbsolutePath());
+                        }
+                        // GPLog.androidLog(-1,"SpatialDatabasesManager["+i+"]["+sa_extentions[i]+"]: init["+this_file.getAbsolutePath()+"] ");
+                        sdbHandlers.add(sdb);
+                    }
                 }
             }
         }

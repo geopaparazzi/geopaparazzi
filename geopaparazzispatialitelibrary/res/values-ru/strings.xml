@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="stroke_color">Цвет штрихов</string>
+  <string name="width">Ширина штрихов</string>
+  <string name="alpha">Прозрачность штрихов</string>
+  <string name="fill_color">Цвет заливки</string>
+  <string name="fill_alpha">Прозрачность заливки</string>
+  <string name="point_shape_">Форма точки</string>
+  <string name="point_size">Размер точки</string>
+  <string name="decimation">Прореживание</string>
+  <string name="decimation_factor_default">0,000001</string>
+</resources>

@@ -77,4 +77,10 @@
   <string name="point_shape_">Pisteen muoto</string>
   <string name="point_size">Pistekoko</string>
   <string name="no_data">Tietoja ei saatavilla</string>
+  <string name="file_upload_completed_properly">Tiedoston lataus onnistui.</string>
+  <string name="http_forbidden_msg">Yhteys palvelimeen estettiin. Tarkista käyttöoikeutesi ja yhteysosoite.</string>
+  <string name="http_not_found_msg">Pyydettyä lähdettä ei löytynyt. Tarkista yhteysosoite.</string>
+  <string name="http_ok_msg">Pyyntö toteutettu.</string>
+  <string name="the_file_exists_wont_overwrite">Tiedosto on olemassa. Ei korvata:</string>
+  <string name="share_note_with">Jaa muistiinpano...</string>
 </resources>

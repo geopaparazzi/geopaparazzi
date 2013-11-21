@@ -26,11 +26,14 @@ import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.util.LibraryConstants;
 
@@ -44,8 +47,8 @@ public class DirectoryBrowserActivity extends ListActivity {
     public static final String SHOWHIDDEN = "SHOWHIDDEN"; //$NON-NLS-1$
     public static final String FOLDER = "folder"; //$NON-NLS-1$
 
-    private List<String> items = null;
-    private List<String> itemsNames = null;
+    private List<String> items = new ArrayList<String>();
+    private List<String> itemsNames = new ArrayList<String>();
     private File startFolderFile;
     private String intentId;
     private String extention;
@@ -55,6 +58,7 @@ public class DirectoryBrowserActivity extends ListActivity {
     private boolean doFolder;
     private boolean doHidden;
     private String startFolder;
+    private FileArrayAdapter fileListAdapter;
 
     @Override
     public void onCreate( Bundle icicle ) {
@@ -106,6 +110,7 @@ public class DirectoryBrowserActivity extends ListActivity {
 
         startFolderFile = new File(startFolder);
         getFiles(startFolderFile, startFolderFile.listFiles(fileFilter));
+
     }
 
     private void handleIntent( String absolutePath ) {
@@ -153,8 +158,8 @@ public class DirectoryBrowserActivity extends ListActivity {
     private void getFiles( File parent, File[] files ) {
         Arrays.sort(files);
         currentDir = parent;
-        items = new ArrayList<String>();
-        itemsNames = new ArrayList<String>();
+        items.clear();
+        itemsNames.clear();
         for( File file : files ) {
             if (!doHidden && file.getName().startsWith(".")) { //$NON-NLS-1$
                 continue;
@@ -162,7 +167,52 @@ public class DirectoryBrowserActivity extends ListActivity {
             items.add(file.getAbsolutePath());
             itemsNames.add(file.getName());
         }
-        ArrayAdapter<String> fileList = new ArrayAdapter<String>(this, R.layout.browse_file_row, itemsNames);
-        setListAdapter(fileList);
+
+        if (fileListAdapter == null) {
+            fileListAdapter = new FileArrayAdapter(this, itemsNames);
+            setListAdapter(fileListAdapter);
+        } else {
+            fileListAdapter.notifyDataSetChanged();
+        }
     }
+
+    private static class FileArrayAdapter extends ArrayAdapter<String> {
+        private final Activity context;
+        private final List<String> names;
+
+        public FileArrayAdapter( Activity context, List<String> names ) {
+            super(context, R.id.browselist_text, names);
+            this.context = context;
+            this.names = names;
+        }
+
+        static class ViewHolder {
+            public TextView textView;
+        }
+
+        @Override
+        public int getCount() {
+            return names.size();
+        }
+
+        @Override
+        public View getView( int position, View convertView, ViewGroup parent ) {
+            ViewHolder holder;
+            // Recycle existing view if passed as parameter
+            View rowView = convertView;
+            if (rowView == null) {
+                LayoutInflater inflater = context.getLayoutInflater();
+                rowView = inflater.inflate(R.layout.browse_file_row, null, true);
+                holder = new ViewHolder();
+                holder.textView = (TextView) rowView.findViewById(R.id.browselist_text);
+                rowView.setTag(holder);
+            } else {
+                holder = (ViewHolder) rowView.getTag();
+            }
+            holder.textView.setText(names.get(position));
+
+            return rowView;
+        }
+    }
+
 }

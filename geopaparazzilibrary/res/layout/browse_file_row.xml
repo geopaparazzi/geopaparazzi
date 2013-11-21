@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView android:id="@+id/browselist_text"
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent" android:layout_height="wrap_content"
-	android:text="asdasdadsd" android:textColor="@color/main_text_color_neutral"
-	android:padding="15dp" />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/border_1px"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/browselist_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/main_background"
+        android:padding="15dp"
+        android:text="asdasdadsd"
+        android:textColor="@color/main_text_color_neutral" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/border_1px"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+</LinearLayout>

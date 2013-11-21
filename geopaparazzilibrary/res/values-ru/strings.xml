@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="yes">да</string>
+  <string name="no">нет</string>
+  <string name="last_position">Последняя позиция</string>
+  <string name="gpx_import_title">Линия или точка?</string>
+  <string name="longitude">долгота</string>
+  <string name="latitude">широта</string>
+  <string name="select_dotdot">Выбрать…</string>
+  <string name="downloading">Загрузка…</string>
+  <string name="geocodeErrorTitle">Ошибка геокодирования</string>
+  <string name="route_to">Маршрут до:</string>
+  <string name="save">Сохранить</string>
+  <string name="cancel">Отменить</string>
+  <string name="undo">оменить</string>
+  <string name="redo">повторить</string>
+  <string name="menu_settings">Настройки</string>
+  <string name="stroke_color">Цвет штрихов</string>
+  <string name="width">Ширина штрихов</string>
+  <string name="alpha">Прозрачность штрихов</string>
+  <string name="fill_color">Цвет заливки</string>
+  <string name="fill_alpha">Прозрачность заливки</string>
+  <string name="point_shape_">Форма точки</string>
+  <string name="point_size">Размер точки</string>
+</resources>
