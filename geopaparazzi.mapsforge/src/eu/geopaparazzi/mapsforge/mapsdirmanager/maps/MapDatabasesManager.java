@@ -28,6 +28,7 @@ import java.util.Set;
 import jsqlite.Exception;
 import android.content.Context;
 
+import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapDatabaseHandler;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapTable;
 import eu.geopaparazzi.library.database.GPLog;
@@ -48,6 +49,7 @@ public class MapDatabasesManager {
     private static final String[] sa_extentions = new String[]{".map",".xml"};
     private static final int i_extention_map = 0;
     private static final int i_extention_xml = 1;
+    public static boolean isConnectedToInternet=false;
     private MapDatabasesManager() {
     }
 
@@ -126,6 +128,14 @@ public class MapDatabasesManager {
             }
         }
         return null;
+    }
+    /**
+     * Check for active Internet connection
+     * <p>done in MapsDirManager
+     */
+    public boolean isConnectedToInternet()
+    {
+     return MapsDirManager.getInstance().isConnectedToInternet();
     }
     /**
      * Close  all Databases that may be open

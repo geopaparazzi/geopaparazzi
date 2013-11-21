@@ -19,7 +19,7 @@ package eu.geopaparazzi.spatialite.database.spatial.core;
 
 /**
  * Geometry types.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public enum GeometryType {
@@ -77,10 +77,10 @@ public enum GeometryType {
     public int getType() {
         return type;
     }
-    
+
     /**
      * Get the type from the int value in spatialite 4.
-     * 
+     *
      * @param value the type.
      * @return the {@link GeometryType}.
      */
@@ -167,9 +167,9 @@ public enum GeometryType {
 
     /**
      * Get the {@link GeometryType} int value from the geometry type name as of spatialite 3.
-     * 
+     *
      * <b>WARNING: this returns just the basic geom types!</b>
-     * 
+     *
      * @param name the geometry type name.
      * @return the type.
      */
@@ -186,6 +186,9 @@ public enum GeometryType {
             return POLYGON_XY.getType();
         } else if (name.toUpperCase().startsWith("MULTIPOLYGON")) {
             return MULTIPOLYGON_XY.getType();
+        }
+        else if (name.toUpperCase().startsWith("GEOMETRYCOLLECTION")) {
+            return GEOMETRYCOLLECTION_XY.getType();
         }
         throw new IllegalArgumentException("No geometry type of value: " + name);
     }

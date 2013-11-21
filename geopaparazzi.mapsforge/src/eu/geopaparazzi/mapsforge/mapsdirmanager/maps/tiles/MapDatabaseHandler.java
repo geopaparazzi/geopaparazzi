@@ -465,14 +465,13 @@ public class MapDatabaseHandler {
       * @param i_y_osm the value for tile_row field in the map,tiles Tables and part of the tile_id when image is not blank
       * @param i_z the value for zoom_level field in the map,tiles Tables and part of the tile_id when image is not blank
       * @param tile_bitmap the Bitmap to extract image-data extracted from. [Will be converted to JPG or PNG depending on metdata setting]
-      * @param i_fetch_bounds 1=force a calculation of the bounds and min/max zoom levels
       * @return 0: correct, otherwise error
       */
-    public int insertBitmapTile( int i_x, int i_y_osm, int i_z, Bitmap tile_bitmap, int i_force_unique, int i_fetch_bounds )
+    public int insertBitmapTile( int i_x, int i_y_osm, int i_z, Bitmap tile_bitmap, int i_force_unique)
             throws IOException { // i_rc= correct, otherwise error
         int i_rc = 0;
         try { // i_rc=0: inserted [if needed bounds min/max zoom have been updated]
-            i_rc = mbtiles_db.insertBitmapTile(i_x, i_y_osm, i_z, tile_bitmap, i_force_unique, i_fetch_bounds);
+            i_rc = mbtiles_db.insertBitmapTile(i_x, i_y_osm, i_z, tile_bitmap, i_force_unique);
         } catch (IOException e) {
             i_rc = 1;
             // e.printStackTrace();
@@ -497,7 +496,7 @@ public class MapDatabaseHandler {
       */
     public void update_bounds() {
         if (mbtiles_db != null) {
-            mbtiles_db.update_bounds();
+            mbtiles_db.update_bounds(0);
         }
     }
 }

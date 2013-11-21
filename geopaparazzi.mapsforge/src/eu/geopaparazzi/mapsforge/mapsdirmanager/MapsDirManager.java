@@ -37,6 +37,8 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.mapgenerator.MapGenerator;
@@ -96,6 +98,7 @@ public class MapsDirManager {
     private static double centerX = 0.0;
     private static double centerY = 0.0;
     private static double[] mapCenterLocation;
+    public static boolean isConnectedToInternet=false;
     private MapsDirManager() {
     }
    // -----------------------------------------------
@@ -127,6 +130,27 @@ public class MapsDirManager {
     public static void reset() {
         mapsdirManager = null;
     }
+    public static boolean isConnectedToInternet()
+    {
+     ConnectivityManager connectivity = (ConnectivityManager) this_context.getSystemService(Context.CONNECTIVITY_SERVICE);
+     if (connectivity != null)
+     {
+      NetworkInfo[] info = connectivity.getAllNetworkInfo();
+      if (info != null)
+      {
+       for (int i = 0; i < info.length; i++)
+       {
+        if (info[i].getState() == NetworkInfo.State.CONNECTED)
+        {
+         isConnectedToInternet=true;
+         return isConnectedToInternet;
+        }
+       }
+      }
+     }
+     isConnectedToInternet=false;
+     return isConnectedToInternet;
+    }
     // -----------------------------------------------
     /**
       * Collect map-information in sdcard/maps directory
@@ -143,6 +167,7 @@ public class MapsDirManager {
       */
     public static void init( Context context, File mapsDir ) throws Exception, IOException, FileNotFoundException {
         this_context=context;
+        isConnectedToInternet();
         try
         {
          if ((mapsDir == null) || (!mapsDir.exists()))
@@ -164,7 +189,7 @@ public class MapsDirManager {
         // MapsDirTreeViewList.use_treeType=MapsDirTreeViewList.TreeType.MAPTYPE;
         // SharedPreferences  preferences = PreferenceManager.getDefaultSharedPreferences(this);
         mapCenterLocation = PositionUtilities.getMapCenterFromPreferences(preferences,true,true);
-        // GPLog.GLOBAL_LOG_LEVEL=1;
+         GPLog.GLOBAL_LOG_LEVEL=1;
         GPLog.GLOBAL_LOG_TAG = "mj10777";
         SpatialDatabasesManager.reset();
         MapDatabasesManager.reset();
@@ -328,7 +353,7 @@ public class MapsDirManager {
      FileUtilities.copyFile(inputStream, outputStream);
      if (opencycleFile.exists())
      {
-      this_mapinfo=new ClassNodeInfo(i_count_classes++,i_type,"url","CustomTileTable",
+      this_mapinfo=new ClassNodeInfo(i_count_classes++,i_type,"mapurl","CustomTileTable",
        opencycleFile.getAbsolutePath(),opencycleFile.getName(),
        opencycleFile.getAbsolutePath(),"opencycle","opencycle",
        "-180.00000,-85.05113,180.00000,85.05113","13.3777065575123,52.5162690144797","0-18");
@@ -348,7 +373,7 @@ public class MapsDirManager {
      FileUtilities.copyFile(inputStream, outputStream);
      if (mapnikFile.exists())
      { // this should be done as the last to insure a default setting
-      mapnik_mapinfo=new ClassNodeInfo(i_count_classes++,i_type,"url","CustomTileTable",
+      mapnik_mapinfo=new ClassNodeInfo(i_count_classes++,i_type,"mapurl","CustomTileTable",
        mapnikFile.getAbsolutePath(),mapnikFile.getName(),
        mapnikFile.getAbsolutePath(),"mapnik","mapnik",
        "-180.00000,-85.05113,180.00000,85.05113","13.3777065575123,52.5162690144797","0-18");

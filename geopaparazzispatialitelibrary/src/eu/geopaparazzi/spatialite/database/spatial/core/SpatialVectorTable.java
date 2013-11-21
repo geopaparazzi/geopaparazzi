@@ -259,7 +259,7 @@ public class SpatialVectorTable {
         return isPoint;
     }
     public boolean isGeometryCollection() {
-        return isPoint;
+        return isGeometryCollection;
     }
 
     private void checkType() {
@@ -277,6 +277,7 @@ public class SpatialVectorTable {
         case MULTIPOLYGON_XYZ:
         case MULTIPOLYGON_XYZM:
             isPolygon = true;
+            s_map_type="polygon";
             break;
         case POINT_XY:
         case POINT_XYM:
@@ -287,6 +288,7 @@ public class SpatialVectorTable {
         case MULTIPOINT_XYZ:
         case MULTIPOINT_XYZM:
             isPoint = true;
+            s_map_type="point";
             break;
         case LINESTRING_XY:
         case LINESTRING_XYM:
@@ -297,12 +299,14 @@ public class SpatialVectorTable {
         case MULTILINESTRING_XYZ:
         case MULTILINESTRING_XYZM:
             isLine = true;
+            s_map_type="linestring";
             break;
         case GEOMETRYCOLLECTION_XY:
         case GEOMETRYCOLLECTION_XYM:
         case GEOMETRYCOLLECTION_XYZ:
         case GEOMETRYCOLLECTION_XYZM:
          isGeometryCollection = true;
+         s_map_type="GeometryCollection";
          break;
         default:
             throw new IllegalArgumentException("No geom type for: " + TYPE+" isGeometryCollection["+isGeometryCollection+"]");

@@ -452,7 +452,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
             // Take care that the fields are at the same position as the others
             // SELECT vector_layers_statistics.table_name,vector_layers_statistics.geometry_column,vector_layers.geometry_type,vector_layers.srid,vector_layers_statistics.layer_type,vector_layers_statistics.row_count,vector_layers_statistics.extent_min_x,vector_layers_statistics.extent_min_y,vector_layers_statistics.extent_max_x,vector_layers_statistics.extent_max_y,vector_layers.coord_dimension,vector_layers.spatial_index_enabled,vector_layers_statistics.last_verified FROM vector_layers_statistics,vector_layers WHERE ((vector_layers_statistics.table_name = vector_layers.table_name) AND (vector_layers_statistics.geometry_column = vector_layers.geometry_column))
             sb_vector_layers.append("SELECT ");
-            sb_vector_layers.append(", "+METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".table_name"); // 0
+            sb_vector_layers.append(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".table_name"); // 0
             sb_vector_layers.append(", "+METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".geometry_column"); // 1
             sb_vector_layers.append(", "+METADATA_VECTOR_LAYERS_TABLE_NAME+"."+METADATA_GEOMETRY_TYPE4); // 2
             sb_vector_layers.append(", "+METADATA_VECTOR_LAYERS_TABLE_NAME+"."+METADATA_SRID); // 3
@@ -531,6 +531,8 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                     int i_spatial_index_enabled=0;
                     String s_last_verified="";
                     if (is_vector_layer) {
+                     srid=stmt.column_string(3);
+                     int i_srid = Integer.parseInt(srid);
                      s_layer_type=stmt.column_string(4);
                      i_row_count=stmt.column_int(5);
                      boundsCoordinates[0]=stmt.column_double(6);
@@ -540,8 +542,8 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                      i_coord_dimension=stmt.column_int(10);
                      i_spatial_index_enabled=stmt.column_int(11);
                      s_last_verified=stmt.column_string(12);
-                     if (!srid.equals("4326"))
-                     {
+                     if ((!srid.equals("4326")) && (i_srid > 2))
+                     { // GeoPackage: have 0 or 1: srid has NOT been properly set - should be 4326 is: (1,2,3) [Luciad_GeoPackage.gpkg] ; try 4326 [wsg84]
                       int i_parm=0;
                       getSpatialVector_4326(srid,centerCoordinate,boundsCoordinates,i_parm);
                      }
@@ -554,6 +556,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                     SpatialVectorTable table = new SpatialVectorTable(getFileNamePath(),table_name, geometry_column, geometry_type, srid,centerCoordinate,boundsCoordinates,
                      s_layer_type,i_row_count,i_coord_dimension,i_spatial_index_enabled,s_last_verified);
                     vectorTableList.add(table);
+                     GPLog.androidLog(-1,"SpatialiteDatabaseHandler["+getFileNamePath()+"][" + table.getBounds_toString()+ "] ["+is_vector_layer+"]");
                 }
             } finally {
                 stmt.close();
@@ -584,6 +587,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
      * @param centerCoordinate teh coordinate array to update with the extracted values.
      */
     private void getSpatialVector_4326( String srid, double[] centerCoordinate, double[] boundsCoordinates, int i_parm ) {
+        String centerQuery ="";
         try {
             Stmt centerStmt = null;
             double bounds_west = boundsCoordinates[0];
@@ -600,8 +604,8 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                 StringBuilder centerBuilder = new StringBuilder();
                 centerBuilder.append("SELECT ST_AsBinary(CastToXY(ST_Transform(MakePoint(");
                 // centerBuilder.append("select AsText(ST_Transform(MakePoint(");
-                centerBuilder.append("("+bounds_west+" + ("+bounds_east+"-"+bounds_west+")/2), ");
-                centerBuilder.append("("+bounds_south+" + ("+bounds_north+"-"+bounds_south+")/2), ");
+                centerBuilder.append("("+bounds_west+" + ("+bounds_east+" - "+bounds_west+")/2), ");
+                centerBuilder.append("("+bounds_south+" + ("+bounds_north+" - "+bounds_south+")/2), ");
                 centerBuilder.append(srid);
                 centerBuilder.append("),4326))) AS Center,");
                 centerBuilder.append("ST_AsBinary(CastToXY(ST_Transform(MakePoint(");
@@ -610,13 +614,13 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                 centerBuilder.append("),4326))) AS South_West,");
                 centerBuilder.append("ST_AsBinary(CastToXY(ST_Transform(MakePoint(");
                 centerBuilder.append(""+bounds_south+","+bounds_north+", ");
-                centerBuilder.append(METADATA_SRID);
+                centerBuilder.append(srid);
                 centerBuilder.append("),4326))) AS North_East ");
                 if (i_parm == 0) {
                 } else {
                 }
-                centerBuilder.append("';");
-                String centerQuery = centerBuilder.toString();
+                //centerBuilder.append("';");
+                centerQuery = centerBuilder.toString();
 
                 centerStmt = db.prepare(centerQuery);
                 if (centerStmt.step()) {
@@ -641,7 +645,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                     centerStmt.close();
             }
         } catch (java.lang.Exception e) {
-            GPLog.androidLog(4,"SpatialiteDatabaseHandler[" + file_map.getAbsolutePath() + "]", e);
+            GPLog.androidLog(4,"SpatialiteDatabaseHandler[" + file_map.getAbsolutePath() + "] sql["+centerQuery+"]", e);
         }
     }
     @Override
@@ -1048,9 +1052,8 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
         qSb.append(" FROM ");
         qSb.append(spatialTable.getName());
         qSb.append(";");
-
-        String selectQuery = qSb.toString();
-        Stmt stmt = db.prepare(selectQuery);
+         String selectQuery = qSb.toString();
+          Stmt stmt = db.prepare(selectQuery);
         try {
             if (stmt.step()) {
                 float w = (float) stmt.column_double(0);

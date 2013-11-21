@@ -22,11 +22,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
+import java.util.Map;
 import java.util.Set;
 
 import jsqlite.Exception;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.spatialite.database.spatial.core.ISpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.MbtilesDatabaseHandler;
@@ -52,6 +54,8 @@ public class SpatialDatabasesManager {
     private static final int i_extention_db = 1;
     private static final int i_extention_sqlite = 2;
     private static final int i_extention_gpkt = 3;
+    private Context this_context=null;
+    public boolean isConnectedToInternet=false;
     private SpatialDatabasesManager() {
     }
 
@@ -61,7 +65,27 @@ public class SpatialDatabasesManager {
         }
         return spatialDbManager;
     }
-
+    public boolean isConnectedToInternet()
+    {
+     ConnectivityManager connectivity = (ConnectivityManager) this_context.getSystemService(Context.CONNECTIVITY_SERVICE);
+     if (connectivity != null)
+     {
+      NetworkInfo[] info = connectivity.getAllNetworkInfo();
+      if (info != null)
+      {
+       for (int i = 0; i < info.length; i++)
+       {
+        if (info[i].getState() == NetworkInfo.State.CONNECTED)
+        {
+         isConnectedToInternet=true;
+         return isConnectedToInternet;
+        }
+       }
+      }
+     }
+     isConnectedToInternet=false;
+     return isConnectedToInternet;
+    }
     public static void reset() {
         spatialDbManager = null;
     }
@@ -78,6 +102,8 @@ public class SpatialDatabasesManager {
         return sa_extentions[i_extention_gpkt];
     }
     public void init( Context context, File mapsDir ) {
+        this_context=context;
+        isConnectedToInternet();
         File[] list_files = mapsDir.listFiles();
         for( File this_file : list_files ) {
             // mj10777: collect spatialite.geometries and .mbtiles databases
@@ -156,8 +182,8 @@ public class SpatialDatabasesManager {
     }
 
     public void updateStyles() throws Exception {
-        Set<Entry<SpatialVectorTable, ISpatialDatabaseHandler>> entrySet = vectorTablesMap.entrySet();
-        for( Entry<SpatialVectorTable, ISpatialDatabaseHandler> entry : entrySet ) {
+        for (Map.Entry<SpatialVectorTable, ISpatialDatabaseHandler> entry : vectorTablesMap.entrySet())
+        {
             SpatialVectorTable key = entry.getKey();
             ISpatialDatabaseHandler value = entry.getValue();
             value.updateStyle(key.getStyle());

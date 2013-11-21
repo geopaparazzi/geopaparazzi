@@ -33,7 +33,7 @@ public class CustomTileTable {
     private String s_name_file; // [without path] all DatabaseHandler/Table classes should use these names
     private String s_name; // all DatabaseHandler/Table classes should use these names
     private String s_description; // all DatabaseHandler/Table classes should use these names
-    private String s_map_type="url"; // all DatabaseHandler/Table classes should use these names
+    private String s_map_type="mapurl"; // all DatabaseHandler/Table classes should use these names
     private String tileQuery;
     private final int minZoom;
     private final int maxZoom;

@@ -206,7 +206,7 @@ public class MapsDirActivity extends MapActivity {
 
         try {
             //maps_dir = ResourcesManager.getInstance(this).getMapsDir();
-            // maps_dir = new File("/mnt/extSdCard/maps");
+             maps_dir = new File("/mnt/extSdCard/maps");
             // define in MapsDirTreeViewList, which Context-Menues should be suppoted for this Application
             // Should the Properties-Menu be supported/shown?
             MapsDirTreeViewList.b_properties_file=true;
@@ -215,7 +215,7 @@ public class MapsDirActivity extends MapActivity {
             // Should the Delete-Menu be supported/shown?
             MapsDirTreeViewList.b_delete_file=false;
             MapsDirManager.reset();
-            MapsDirManager.init(this,null);
+            MapsDirManager.init(this,maps_dir);
             maps_dir=MapsDirManager.get_maps_dir();
             GPLog.androidLog(-1,getClass().getSimpleName()+" maps_dir["+maps_dir.getAbsolutePath()+"]");
             FilePicker.DEFAULT_DIRECTORY=maps_dir.getAbsolutePath();

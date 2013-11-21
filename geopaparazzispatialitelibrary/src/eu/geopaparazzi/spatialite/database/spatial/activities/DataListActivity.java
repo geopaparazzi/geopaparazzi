@@ -120,7 +120,7 @@ public class DataListActivity extends ListActivity {
                         Intent intent = null;
                         if (item.isLine()) {
                             intent = new Intent(DataListActivity.this, LinesDataPropertiesActivity.class);
-                        } else if (item.isPolygon()) {
+                        } else if ((item.isPolygon()) || (item.isGeometryCollection())) {
                             intent = new Intent(DataListActivity.this, PolygonsDataPropertiesActivity.class);
                         } else if (item.isPoint()) {
                             intent = new Intent(DataListActivity.this, PointsDataPropertiesActivity.class);
@@ -154,7 +154,7 @@ public class DataListActivity extends ListActivity {
                 // rowView.setBackgroundColor(ColorUtilities.toColor(item.getColor()));
                 // mj10777: some tables may have more than one column, thus the column name will
                 // also be shown
-                nameView.setText(item.getName() + " [" + item.getGeomName() + "]");
+                nameView.setText(item.getName() + " [" + item.getGeomName() + "] [" + item.getMapType() + "]");
 
                 visibleView.setChecked(item.getStyle().enabled != 0);
                 visibleView.setOnCheckedChangeListener(new OnCheckedChangeListener(){
