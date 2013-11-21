@@ -27,8 +27,8 @@ import eu.geopaparazzi.mapsforge.R;
  */
  // https://code.google.com/p/tree-view-list-android/
 public class TreeViewList extends ListView {
-    private static final int DEFAULT_COLLAPSED_RESOURCE = R.drawable.mapsdir_treeview_collapsed;
-    private static final int DEFAULT_EXPANDED_RESOURCE = R.drawable.mapsdir_treeview_expanded;
+    private static final int DEFAULT_COLLAPSED_RESOURCE = R.drawable.folder_closed;
+    private static final int DEFAULT_EXPANDED_RESOURCE = R.drawable.folder_open;
     private static final int DEFAULT_INDENT = 0;
     private static final int DEFAULT_GRAVITY = Gravity.LEFT
             | Gravity.CENTER_VERTICAL;
