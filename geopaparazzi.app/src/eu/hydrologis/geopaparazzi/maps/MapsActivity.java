@@ -916,7 +916,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     public boolean onCreateOptionsMenu( Menu menu ) {
         super.onCreateOptionsMenu(menu);
         menu.add(Menu.NONE, MENU_GPSDATA, 1, R.string.mainmenu_gpsdataselect).setIcon(android.R.drawable.ic_menu_compass);
-        menu.add(Menu.NONE, MENU_DATA, 2, "data").setIcon(android.R.drawable.ic_menu_compass);
+        menu.add(Menu.NONE, MENU_DATA, 2, R.string.data).setIcon(android.R.drawable.ic_menu_compass);
         menu.add(Menu.NONE, MENU_SCALE_ID, 3, R.string.mapsactivity_menu_toggle_scalebar).setIcon(R.drawable.ic_menu_scalebar);
         menu.add(Menu.NONE, MENU_COMPASS_ID, 4, R.string.mapsactivity_menu_toggle_compass).setIcon(
                 android.R.drawable.ic_menu_compass);
