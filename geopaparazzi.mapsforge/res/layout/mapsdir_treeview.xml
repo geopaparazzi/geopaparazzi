@@ -17,25 +17,29 @@
  */
 -->
 
-<LinearLayout
- xmlns:android="http://schemas.android.com/apk/res/android"
- xmlns:treeView="http://schemas.android.com/apk/res-auto"
- android:layout_width="fill_parent"
- android:layout_height="fill_parent"
- android:orientation="vertical">
- <ListView
-  android:layout_width="0dip"
-  android:layout_height="0dip"
-  android:scrollbars="vertical"
-  android:visibility="gone"> <!-- Just to test some attributes in IDE -->
- </ListView>
- <eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.TreeViewList
- android:id="@+id/mapsdir_treeview"
- android:layout_width="fill_parent"
- android:layout_height="fill_parent"
- treeView:indicator_gravity="right|center_vertical"
- android:scrollbars="vertical"
- android:smoothScrollbar="true"/>
- <requestFocus />
-</LinearLayout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:treeView="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" 
+    android:background="@color/main_background"
+    >
 
+    <ListView
+        android:layout_width="0dip"
+        android:layout_height="0dip"
+        android:scrollbars="vertical"
+        android:visibility="gone" > <!-- Just to test some attributes in IDE -->
+    </ListView>
+
+    <eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.TreeViewList
+        android:id="@+id/mapsdir_treeview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scrollbars="vertical"
+        android:smoothScrollbar="true"
+        treeView:indicator_gravity="right|center_vertical" />
+
+    <requestFocus />
+
+</LinearLayout>
