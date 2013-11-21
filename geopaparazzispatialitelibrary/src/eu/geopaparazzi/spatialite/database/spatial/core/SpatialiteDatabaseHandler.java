@@ -556,7 +556,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                     SpatialVectorTable table = new SpatialVectorTable(getFileNamePath(),table_name, geometry_column, geometry_type, srid,centerCoordinate,boundsCoordinates,
                      s_layer_type,i_row_count,i_coord_dimension,i_spatial_index_enabled,s_last_verified);
                     vectorTableList.add(table);
-                     GPLog.androidLog(-1,"SpatialiteDatabaseHandler["+getFileNamePath()+"][" + table.getBounds_toString()+ "] ["+is_vector_layer+"]");
+                     // GPLog.androidLog(-1,"SpatialiteDatabaseHandler["+getFileNamePath()+"][" + table.getBounds_toString()+ "] ["+is_vector_layer+"]");
                 }
             } finally {
                 stmt.close();
