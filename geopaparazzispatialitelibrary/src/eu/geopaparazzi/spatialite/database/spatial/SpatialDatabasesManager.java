@@ -56,7 +56,6 @@ public class SpatialDatabasesManager {
     private static final int i_extention_sqlite = 2;
     private static final int i_extention_gpkt = 3;
     private Context this_context=null;
-    public boolean isConnectedToInternet=false;
     private SpatialDatabasesManager() {
     }
 
@@ -65,27 +64,6 @@ public class SpatialDatabasesManager {
             spatialDbManager = new SpatialDatabasesManager();
         }
         return spatialDbManager;
-    }
-    public boolean isConnectedToInternet()
-    {
-     ConnectivityManager connectivity = (ConnectivityManager) this_context.getSystemService(Context.CONNECTIVITY_SERVICE);
-     if (connectivity != null)
-     {
-      NetworkInfo[] info = connectivity.getAllNetworkInfo();
-      if (info != null)
-      {
-       for (int i = 0; i < info.length; i++)
-       {
-        if (info[i].getState() == NetworkInfo.State.CONNECTED)
-        {
-         isConnectedToInternet=true;
-         return isConnectedToInternet;
-        }
-       }
-      }
-     }
-     isConnectedToInternet=false;
-     return isConnectedToInternet;
     }
     public static void reset() {
         spatialDbManager = null;
@@ -104,7 +82,6 @@ public class SpatialDatabasesManager {
     }
     public void init( Context context, File mapsDir ) {
         this_context=context;
-        isConnectedToInternet();
         File[] list_files = mapsDir.listFiles();
         for( File this_file : list_files ) {
             // mj10777: collect spatialite.geometries and .mbtiles databases

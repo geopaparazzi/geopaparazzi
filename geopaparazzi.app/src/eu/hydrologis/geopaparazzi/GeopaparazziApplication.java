@@ -22,7 +22,9 @@ import org.acra.ReportField;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 
+import eu.geopaparazzi.library.GeopaparazziLibraryContextHolder;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.spatialite.database.spatial.SpatialiteContextHolder;
 import android.app.Application;
 import android.util.Log;
 
@@ -49,6 +51,8 @@ public class GeopaparazziApplication extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
+        GeopaparazziLibraryContextHolder.INSTANCE.setContext(instance);
+        SpatialiteContextHolder.INSTANCE.setContext(instance);
 
         ACRA.init(this);
         Log.i("TRACKOIDAPPLICATION", "Initialized ACRA");

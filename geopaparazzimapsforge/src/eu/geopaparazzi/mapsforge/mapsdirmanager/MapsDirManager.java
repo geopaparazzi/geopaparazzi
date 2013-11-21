@@ -69,39 +69,38 @@ import eu.geopaparazzi.spatialite.database.spatial.core.OrderComparator;
  *
  * @author Mark Johnson (www.mj10777.de)
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class MapsDirManager {
-    private static final int MAP=0;
-    private static final int MBTILES=1;
-    private static final int GPKG=2;
-    private static final int SPATIALITE=3;
-    private static final int MAPURL=4;
-    private static List<ClassNodeInfo> maptype_classes = new LinkedList<ClassNodeInfo>();
-    private static File maps_dir=null;
-    private static Context this_context=null;
-    private static List<CustomTileDatabaseHandler> customtileHandlers = new ArrayList<CustomTileDatabaseHandler>();
-    private static HashMap<CustomTileTable, CustomTileDatabaseHandler> customtileTablesMap = new HashMap<CustomTileTable, CustomTileDatabaseHandler>();
+    private static final int MAP = 0;
+    private static final int MBTILES = 1;
+    private static final int GPKG = 2;
+    private static final int SPATIALITE = 3;
+    private static final int MAPURL = 4;
+    private List<ClassNodeInfo> maptype_classes = new LinkedList<ClassNodeInfo>();
+    private File maps_dir = null;
+    private List<CustomTileDatabaseHandler> customtileHandlers = new ArrayList<CustomTileDatabaseHandler>();
+    private HashMap<CustomTileTable, CustomTileDatabaseHandler> customtileTablesMap = new HashMap<CustomTileTable, CustomTileDatabaseHandler>();
     private static MapsDirManager mapsdirManager = null;
-    private static final String[] sa_extentions = new String[]{".mapurl"};
-    private static final int i_extention_mapurl = 0;
-    private static int i_selected_type=MBTILES;
-    private static String s_selected_type="";
-    private static String s_selected_map="";
-    private static ClassNodeInfo selected_mapinfo=null;
-    private static MapGenerator selected_mapGenerator;
-    private static double bounds_west = 180.0;
-    private static double bounds_south = -85.05113;
-    private static double bounds_east = 180.0;
-    private static double bounds_north = 85.05113;
-    private static int minZoom = 0;
-    private static int maxZoom = 18;
-    private static int defaultZoom;
-    private static double centerX = 0.0;
-    private static double centerY = 0.0;
-    private static double[] mapCenterLocation;
-    public static boolean isConnectedToInternet=false;
+    private final String[] sa_extentions = new String[]{".mapurl"};
+    private final int i_extention_mapurl = 0;
+    private int i_selected_type = MBTILES;
+    private String s_selected_type = "";
+    private String s_selected_map = "";
+    private ClassNodeInfo selected_mapinfo = null;
+    private MapGenerator selected_mapGenerator;
+    private double bounds_west = 180.0;
+    private double bounds_south = -85.05113;
+    private double bounds_east = 180.0;
+    private double bounds_north = 85.05113;
+    private int minZoom = 0;
+    private int maxZoom = 18;
+    private int defaultZoom;
+    private double centerX = 0.0;
+    private double centerY = 0.0;
+    private double[] mapCenterLocation;
     private MapsDirManager() {
     }
-   // -----------------------------------------------
+    // -----------------------------------------------
     /**
       * Constructor MapsDirManager
       *
@@ -124,32 +123,11 @@ public class MapsDirManager {
         }
         return mapsdirManager;
     }
-    public static File get_maps_dir() {
+    public File get_maps_dir() {
         return maps_dir;
     }
-    public static void reset() {
+    public void reset() {
         mapsdirManager = null;
-    }
-    public static boolean isConnectedToInternet()
-    {
-     ConnectivityManager connectivity = (ConnectivityManager) this_context.getSystemService(Context.CONNECTIVITY_SERVICE);
-     if (connectivity != null)
-     {
-      NetworkInfo[] info = connectivity.getAllNetworkInfo();
-      if (info != null)
-      {
-       for (int i = 0; i < info.length; i++)
-       {
-        if (info[i].getState() == NetworkInfo.State.CONNECTED)
-        {
-         isConnectedToInternet=true;
-         return isConnectedToInternet;
-        }
-       }
-      }
-     }
-     isConnectedToInternet=false;
-     return isConnectedToInternet;
     }
     // -----------------------------------------------
     /**
@@ -165,51 +143,53 @@ public class MapsDirManager {
       * @param mapsDir Directory to search [ResourcesManager.getInstance(this).getMapsDir();]
       *
       */
-    public static void init( Context context, File mapsDir ) throws Exception, IOException, FileNotFoundException {
-        this_context=context;
-        isConnectedToInternet();
-        try
-        {
-         if ((mapsDir == null) || (!mapsDir.exists()))
-         { // a maps directory has not been supplied [default] or the given does not exist:
-           // - use the library logic to create a usable map directory
-          mapsDir = ResourcesManager.getInstance(this_context).getMapsDir();
-         }
+    public void init( Context context, File mapsDir ) throws Exception, IOException, FileNotFoundException {
+        try {
+            if ((mapsDir == null) || (!mapsDir.exists())) { // a maps directory has not been
+                                                            // supplied [default] or the given does
+                                                            // not exist:
+                                                            // - use the library logic to create a
+                                                            // usable map directory
+                mapsDir = ResourcesManager.getInstance(context).getMapsDir();
+            }
+        } catch (Throwable t) {
+            GPLog.androidLog(4, "MapsDirManager init[invalid maps directory]", t);
         }
-        catch (Throwable t)
-        {
-         GPLog.androidLog(4,"MapsDirManager init[invalid maps directory]",t);
-        }
-        maps_dir=mapsDir;
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this_context);
+        maps_dir = mapsDir;
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         s_selected_type = preferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE, ""); //$NON-NLS-1$
         s_selected_map = preferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE_FILE, ""); //$NON-NLS-1$
         // The TreeView type can be set here - depending on user/application preference
         // MapsDirTreeViewList.use_treeType=TreeType.FILEDIRECTORY; // [default]
         // MapsDirTreeViewList.use_treeType=MapsDirTreeViewList.TreeType.MAPTYPE;
-        // SharedPreferences  preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        mapCenterLocation = PositionUtilities.getMapCenterFromPreferences(preferences,true,true);
-         GPLog.GLOBAL_LOG_LEVEL=1;
+        // SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mapCenterLocation = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
+        GPLog.GLOBAL_LOG_LEVEL = 1;
         GPLog.GLOBAL_LOG_TAG = "mj10777";
         SpatialDatabasesManager.reset();
         MapDatabasesManager.reset();
         CustomTileDatabasesManager.reset();
         if (maps_dir != null && maps_dir.exists()) {
-         try {
-          SpatialDatabasesManager.getInstance().init(this_context,maps_dir);
-          GPLog.androidLog(-1,"MapsDirManager manager[SpatialDatabasesManager] size["+SpatialDatabasesManager.getInstance().size()+"]");
-          GPLog.androidLog(-1,"MapsDirManager manager[SpatialDatabasesManager] size_raster["+SpatialDatabasesManager.getInstance().size_raster()+"]");
-          GPLog.androidLog(-1,"MapsDirManager manager[SpatialDatabasesManager] size_vector["+SpatialDatabasesManager.getInstance().size_vector()+"]");
-          MapDatabasesManager.getInstance().init(this_context,maps_dir);
-          GPLog.androidLog(-1,"MapsDirManager manager[MapDatabasesManager] size["+MapDatabasesManager.getInstance().size()+"]");
-          CustomTileDatabasesManager.getInstance().init(this_context,maps_dir);
-          GPLog.androidLog(-1,"MapsDirManager manager[CustomTileDatabasesManager] size["+CustomTileDatabasesManager.getInstance().size()+"]");
-          GPLog.GLOBAL_LOG_LEVEL=1;
-          GPLog.androidLog(1,"MapsDirManager init[" + maps_dir.getAbsolutePath() + "]");
-          handleTileSources();
-         } catch (Exception e) {
-            GPLog.androidLog(4,"MapsDirManager init[" + maps_dir.getAbsolutePath() + "]", e);
-         }
+            try {
+                SpatialDatabasesManager.getInstance().init(context, maps_dir);
+                GPLog.androidLog(-1, "MapsDirManager manager[SpatialDatabasesManager] size["
+                        + SpatialDatabasesManager.getInstance().size() + "]");
+                GPLog.androidLog(-1, "MapsDirManager manager[SpatialDatabasesManager] size_raster["
+                        + SpatialDatabasesManager.getInstance().size_raster() + "]");
+                GPLog.androidLog(-1, "MapsDirManager manager[SpatialDatabasesManager] size_vector["
+                        + SpatialDatabasesManager.getInstance().size_vector() + "]");
+                MapDatabasesManager.getInstance().init(context, maps_dir);
+                GPLog.androidLog(-1, "MapsDirManager manager[MapDatabasesManager] size["
+                        + MapDatabasesManager.getInstance().size() + "]");
+                CustomTileDatabasesManager.getInstance().init(context, maps_dir);
+                GPLog.androidLog(-1, "MapsDirManager manager[CustomTileDatabasesManager] size["
+                        + CustomTileDatabasesManager.getInstance().size() + "]");
+                GPLog.GLOBAL_LOG_LEVEL = 1;
+                GPLog.androidLog(1, "MapsDirManager init[" + maps_dir.getAbsolutePath() + "]");
+                handleTileSources(context);
+            } catch (Exception e) {
+                GPLog.androidLog(4, "MapsDirManager init[" + maps_dir.getAbsolutePath() + "]", e);
+            }
         }
     }
     // -----------------------------------------------
@@ -222,174 +202,162 @@ public class MapsDirManager {
       *  <li>filter out portions not desired</li>
       * </ul>
       * <p>from GeoPaparazziActivity.java [2013-10-11]
+     * @param context 
       */
-    private static void handleTileSources() throws Exception, IOException, FileNotFoundException
-    {
-     int i_count_classes=0;
-     int i_type=MAPURL;
-     ClassNodeInfo this_mapinfo=null;
-     ClassNodeInfo mapnik_mapinfo=null;
-     // This will be our default map if everything else fails
-     File mapnikFile = new File(maps_dir, "mapnik.mapurl");
-     /*
-       * add mapurl tables
-       */
-     try
-     {
-      List<CustomTileTable> customtileTables = CustomTileDatabasesManager.getInstance().getTables(false);
-      for( CustomTileTable table : customtileTables )
-      {
-       String name = "["+table.getMapType()+"] "+table.getName();
-       // GPLog.androidLog(-1,"MapsDirManager CustomTileTable name[" + name+ "] getFileName[" + table.getFileNamePath()+ "] getName[" + table.getName()+ "] getDescription["+table.getDescription()+"]");
-       if (!ignoreTileSource(name))
-       {
-        this_mapinfo=new ClassNodeInfo(i_count_classes++,i_type,table.getMapType(),"CustomTileTable",
-         table.getFileNamePath(),table.getFileName(),
-         table.getFileNamePath(),table.getName(),table.getDescription(),
-         table.getBounds_toString(),table.getCenter_toString(),table.getZoom_Levels());
-        maptype_classes.add(this_mapinfo);
-        if (table.getFileNamePath().equals(mapnikFile.getAbsolutePath()))
-        { // if nothing is selected, this will be the default
-         mapnik_mapinfo=this_mapinfo;
+    private void handleTileSources( Context context ) throws Exception, IOException, FileNotFoundException {
+        int i_count_classes = 0;
+        int i_type = MAPURL;
+        ClassNodeInfo this_mapinfo = null;
+        ClassNodeInfo mapnik_mapinfo = null;
+        // This will be our default map if everything else fails
+        File mapnikFile = new File(maps_dir, "mapnik.mapurl");
+        /*
+          * add mapurl tables
+          */
+        try {
+            List<CustomTileTable> customtileTables = CustomTileDatabasesManager.getInstance().getTables(false);
+            for( CustomTileTable table : customtileTables ) {
+                String name = "[" + table.getMapType() + "] " + table.getName();
+                // GPLog.androidLog(-1,"MapsDirManager CustomTileTable name[" + name+
+                // "] getFileName[" + table.getFileNamePath()+ "] getName[" + table.getName()+
+                // "] getDescription["+table.getDescription()+"]");
+                if (!ignoreTileSource(name)) {
+                    this_mapinfo = new ClassNodeInfo(i_count_classes++, i_type, table.getMapType(), "CustomTileTable",
+                            table.getFileNamePath(), table.getFileName(), table.getFileNamePath(), table.getName(),
+                            table.getDescription(), table.getBounds_toString(), table.getCenter_toString(),
+                            table.getZoom_Levels());
+                    maptype_classes.add(this_mapinfo);
+                    if (table.getFileNamePath().equals(mapnikFile.getAbsolutePath())) { // if
+                                                                                        // nothing
+                                                                                        // is
+                                                                                        // selected,
+                                                                                        // this will
+                                                                                        // be the
+                                                                                        // default
+                        mapnik_mapinfo = this_mapinfo;
+                    }
+                    if ((selected_mapinfo == null) && (s_selected_map.equals(table.getFileNamePath()))) {
+                        selected_mapinfo = this_mapinfo;
+                        s_selected_type = selected_mapinfo.getTypeText();
+                        i_selected_type = selected_mapinfo.getType();
+                    }
+                }
+            }
+        } catch (jsqlite.Exception e) {
+            GPLog.androidLog(4, "MapsDirManager handleTileSources CustomTileTable[" + maps_dir.getAbsolutePath() + "]", e);
         }
-        if ((selected_mapinfo == null) && (s_selected_map.equals(table.getFileNamePath())))
-        {
-         selected_mapinfo=this_mapinfo;
-         s_selected_type=selected_mapinfo.getTypeText();
-         i_selected_type=selected_mapinfo.getType();
+        /*
+          * add also map tables
+          */
+        i_type = MAP;
+        try {
+            List<MapTable> mapTables = MapDatabasesManager.getInstance().getTables(false);
+            for( MapTable table : mapTables ) {
+                String name = "[" + table.getMapType() + "] " + table.getName();
+                // GPLog.androidLog(-1,"MapsDirManager MapTable name[" + name+ "] getFileName[" +
+                // table.getFileNamePath()+ "] getName[" + table.getName()+
+                // "] getDescription["+table.getDescription()+"]");
+                if (!ignoreTileSource(name)) {
+                    this_mapinfo = new ClassNodeInfo(i_count_classes++, i_type, table.getMapType(), "MapTable",
+                            table.getFileNamePath(), table.getFileName(), table.getFileNamePath(), table.getName(),
+                            table.getDescription(), table.getBounds_toString(), table.getCenter_toString(),
+                            table.getZoom_Levels());
+                    maptype_classes.add(this_mapinfo);
+                    if ((selected_mapinfo == null) && (s_selected_map.equals(table.getFileNamePath()))) {
+                        selected_mapinfo = this_mapinfo;
+                        s_selected_type = selected_mapinfo.getTypeText();
+                        i_selected_type = selected_mapinfo.getType();
+                    }
+                }
+            }
+        } catch (jsqlite.Exception e) {
+            GPLog.androidLog(4, "MapsDirManager handleTileSources MapTable[" + maps_dir.getAbsolutePath() + "]", e);
         }
-       }
-      }
-     }
-     catch (jsqlite.Exception e)
-     {
-      GPLog.androidLog(4,"MapsDirManager handleTileSources CustomTileTable[" + maps_dir.getAbsolutePath() + "]", e);
-     }
-    /*
-      * add also map tables
-      */
-     i_type=MAP;
-     try
-     {
-      List<MapTable> mapTables = MapDatabasesManager.getInstance().getTables(false);
-      for( MapTable table : mapTables )
-      {
-       String name = "["+table.getMapType()+"] "+table.getName();
-       // GPLog.androidLog(-1,"MapsDirManager MapTable name[" + name+ "] getFileName[" + table.getFileNamePath()+ "] getName[" + table.getName()+ "] getDescription["+table.getDescription()+"]");
-       if (!ignoreTileSource(name))
-       {
-        this_mapinfo=new ClassNodeInfo(i_count_classes++,i_type,table.getMapType(),"MapTable",
-         table.getFileNamePath(),table.getFileName(),
-         table.getFileNamePath(),table.getName(),table.getDescription(),
-         table.getBounds_toString(),table.getCenter_toString(),table.getZoom_Levels());
-        maptype_classes.add(this_mapinfo);
-        if ((selected_mapinfo == null) && (s_selected_map.equals(table.getFileNamePath())))
-        {
-         selected_mapinfo=this_mapinfo;
-         s_selected_type=selected_mapinfo.getTypeText();
-         i_selected_type=selected_mapinfo.getType();
+        /*
+         * add also mbtiles,geopackage tables
+         */
+        try {
+            List<SpatialRasterTable> spatialRasterTables = SpatialDatabasesManager.getInstance().getSpatialRasterTables(false);
+            // GPLog.androidLog(-1,"MapsDirManager manager[SpatialDatabasesManager] size_raster["+SpatialDatabasesManager.getInstance().size_raster()+"]");
+            // GPLog.androidLog(-1,"MapsDirManager manager[SpatialDatabasesManager] size_vector["+SpatialDatabasesManager.getInstance().size_vector()+"]");
+            // [26] [/mnt/extSdCard/maps/geopackage_files/Luciad_GeoPackage.gpkg]
+            // [27] [/mnt/extSdCard/maps/geopackage_files/Luciad_GeoPackage.gpkg]
+            for( SpatialRasterTable table : spatialRasterTables ) {
+                String name = "[" + table.getMapType() + "] " + table.getName();
+                // GPLog.androidLog(-1,"MapsDirManager SpatialRasterTable name[" + name+
+                // "] getFileName[" + table.getFileNamePath()+ "] getName[" + table.getName()+
+                // "] getDescription["+table.getDescription()+"]");
+                if (!ignoreTileSource(name)) {
+                    i_type = MBTILES;
+                    String s_type = table.getMapType();
+                    if (!s_type.equals("mbtiles")) {
+                        i_type = SPATIALITE;
+                        if (s_type.equals("gpkg"))
+                            i_type = GPKG;
+                    }
+                    this_mapinfo = new ClassNodeInfo(i_count_classes++, i_type, s_type, "SpatialRasterTable",
+                            table.getFileNamePath(), table.getFileName(), table.getFileNamePath(), table.getName(),
+                            table.getDescription(), table.getBounds_toString(), table.getCenter_toString(),
+                            table.getZoom_Levels());
+                    maptype_classes.add(this_mapinfo);
+                    if ((selected_mapinfo == null) && (s_selected_map.equals(table.getFileNamePath()))) {
+                        selected_mapinfo = this_mapinfo;
+                        s_selected_type = selected_mapinfo.getTypeText();
+                        i_selected_type = selected_mapinfo.getType();
+                    }
+                }
+            }
+        } catch (jsqlite.Exception e) {
+            GPLog.androidLog(4, "MapsDirManager handleTileSources SpatialRasterTable[" + maps_dir.getAbsolutePath() + "]", e);
         }
-       }
-      }
-     }
-     catch (jsqlite.Exception e)
-     {
-      GPLog.androidLog(4,"MapsDirManager handleTileSources MapTable[" + maps_dir.getAbsolutePath() + "]", e);
-     }
-    /*
-     * add also mbtiles,geopackage tables
-     */
-    try
-    {
-     List<SpatialRasterTable> spatialRasterTables = SpatialDatabasesManager.getInstance().getSpatialRasterTables(false);
-     // GPLog.androidLog(-1,"MapsDirManager manager[SpatialDatabasesManager] size_raster["+SpatialDatabasesManager.getInstance().size_raster()+"]");
-     // GPLog.androidLog(-1,"MapsDirManager manager[SpatialDatabasesManager] size_vector["+SpatialDatabasesManager.getInstance().size_vector()+"]");
-     //  [26] [/mnt/extSdCard/maps/geopackage_files/Luciad_GeoPackage.gpkg]
-     //  [27] [/mnt/extSdCard/maps/geopackage_files/Luciad_GeoPackage.gpkg]
-     for( SpatialRasterTable table : spatialRasterTables )
-     {
-      String name = "["+table.getMapType()+"] "+table.getName();
-      // GPLog.androidLog(-1,"MapsDirManager SpatialRasterTable name[" + name+ "] getFileName[" + table.getFileNamePath()+ "] getName[" + table.getName()+ "] getDescription["+table.getDescription()+"]");
-      if (!ignoreTileSource(name))
-      {
-       i_type=MBTILES;
-       String s_type=table.getMapType();
-       if (!s_type.equals("mbtiles"))
-       {
-        i_type=SPATIALITE;
-        if (s_type.equals("gpkg"))
-         i_type=GPKG;
-       }
-       this_mapinfo=new ClassNodeInfo(i_count_classes++,i_type,s_type,"SpatialRasterTable",
-        table.getFileNamePath(),table.getFileName(),
-        table.getFileNamePath(),table.getName(),table.getDescription(),
-        table.getBounds_toString(),table.getCenter_toString(),table.getZoom_Levels());
-       maptype_classes.add(this_mapinfo);
-       if ((selected_mapinfo == null) && (s_selected_map.equals(table.getFileNamePath())))
-       {
-        selected_mapinfo=this_mapinfo;
-        s_selected_type=selected_mapinfo.getTypeText();
-        i_selected_type=selected_mapinfo.getType();
-       }
-      }
-     }
+        /*
+         * if they do not exist add two mbtiles based mapnik and opencycle
+         * tile sources as default ones. They will automatically
+         * be backed into a mbtiles db.
+        */
+        i_type = MAPURL;
+        AssetManager assetManager = context.getAssets();
+        File opencycleFile = new File(maps_dir, "opencycle.mapurl");
+        if ((!opencycleFile.exists()) && (assetManager != null)) {
+            InputStream inputStream = assetManager.open("tilesources/opencycle.mapurl");
+            FileOutputStream outputStream = new FileOutputStream(opencycleFile);
+            FileUtilities.copyFile(inputStream, outputStream);
+            if (opencycleFile.exists()) {
+                this_mapinfo = new ClassNodeInfo(i_count_classes++, i_type, "mapurl", "CustomTileTable",
+                        opencycleFile.getAbsolutePath(), opencycleFile.getName(), opencycleFile.getAbsolutePath(), "opencycle",
+                        "opencycle", "-180.00000,-85.05113,180.00000,85.05113", "13.3777065575123,52.5162690144797", "0-18");
+                maptype_classes.add(this_mapinfo);
+                if ((selected_mapinfo == null) && (s_selected_map.equals(opencycleFile.getAbsolutePath()))) {
+                    selected_mapinfo = this_mapinfo;
+                    s_selected_type = selected_mapinfo.getTypeText();
+                    i_selected_type = selected_mapinfo.getType();
+                }
+            }
+        }
+        if ((!mapnikFile.exists()) && (assetManager != null)) {
+            InputStream inputStream = assetManager.open("tilesources/mapnik.mapurl");
+            OutputStream outputStream = new FileOutputStream(mapnikFile);
+            FileUtilities.copyFile(inputStream, outputStream);
+            if (mapnikFile.exists()) { // this should be done as the last to insure a default
+                                       // setting
+                mapnik_mapinfo = new ClassNodeInfo(i_count_classes++, i_type, "mapurl", "CustomTileTable",
+                        mapnikFile.getAbsolutePath(), mapnikFile.getName(), mapnikFile.getAbsolutePath(), "mapnik", "mapnik",
+                        "-180.00000,-85.05113,180.00000,85.05113", "13.3777065575123,52.5162690144797", "0-18");
+                maptype_classes.add(mapnik_mapinfo);
+            }
+        }
+        if ((selected_mapinfo == null) && (mapnik_mapinfo != null)) { // if nothing was selected OR
+                                                                      // the selected not found then
+                                                                      // 'mapnick' as default [this
+                                                                      // should always exist]
+            selected_mapinfo = mapnik_mapinfo;
+            s_selected_type = selected_mapinfo.getTypeText();
+            i_selected_type = selected_mapinfo.getType();
+        }
+        GPLog.androidLog(-1, "MapsDirManager MapsDirTreeViewList.setMapTypeClasses count[" + maptype_classes.size() + "] ");
+        // List will be returned sorted as Directory-File with levels set.
+        maptype_classes = MapsDirTreeViewList.setMapTypeClasses(maptype_classes, get_maps_dir());
     }
-    catch (jsqlite.Exception e)
-    {
-     GPLog.androidLog(4,"MapsDirManager handleTileSources SpatialRasterTable[" + maps_dir.getAbsolutePath() + "]", e);
-    }
-    /*
-     * if they do not exist add two mbtiles based mapnik and opencycle
-     * tile sources as default ones. They will automatically
-     * be backed into a mbtiles db.
-    */
-    i_type=MAPURL;
-    AssetManager assetManager = this_context.getAssets();
-    File opencycleFile = new File(maps_dir, "opencycle.mapurl");
-    if ((!opencycleFile.exists()) && (assetManager != null))
-    {
-     InputStream inputStream = assetManager.open("tilesources/opencycle.mapurl");
-     FileOutputStream outputStream = new FileOutputStream(opencycleFile);
-     FileUtilities.copyFile(inputStream, outputStream);
-     if (opencycleFile.exists())
-     {
-      this_mapinfo=new ClassNodeInfo(i_count_classes++,i_type,"mapurl","CustomTileTable",
-       opencycleFile.getAbsolutePath(),opencycleFile.getName(),
-       opencycleFile.getAbsolutePath(),"opencycle","opencycle",
-       "-180.00000,-85.05113,180.00000,85.05113","13.3777065575123,52.5162690144797","0-18");
-      maptype_classes.add(this_mapinfo);
-      if ((selected_mapinfo == null) && (s_selected_map.equals(opencycleFile.getAbsolutePath())))
-      {
-       selected_mapinfo=this_mapinfo;
-       s_selected_type=selected_mapinfo.getTypeText();
-       i_selected_type=selected_mapinfo.getType();
-      }
-     }
-    }
-    if ((!mapnikFile.exists()) && (assetManager != null))
-    {
-     InputStream inputStream = assetManager.open("tilesources/mapnik.mapurl");
-     OutputStream outputStream = new FileOutputStream(mapnikFile);
-     FileUtilities.copyFile(inputStream, outputStream);
-     if (mapnikFile.exists())
-     { // this should be done as the last to insure a default setting
-      mapnik_mapinfo=new ClassNodeInfo(i_count_classes++,i_type,"mapurl","CustomTileTable",
-       mapnikFile.getAbsolutePath(),mapnikFile.getName(),
-       mapnikFile.getAbsolutePath(),"mapnik","mapnik",
-       "-180.00000,-85.05113,180.00000,85.05113","13.3777065575123,52.5162690144797","0-18");
-      maptype_classes.add(mapnik_mapinfo);
-     }
-    }
-    if ((selected_mapinfo == null) && (mapnik_mapinfo != null))
-    { // if nothing was selected OR the selected not found then 'mapnick'  as default [this should always exist]
-     selected_mapinfo=mapnik_mapinfo;
-     s_selected_type=selected_mapinfo.getTypeText();
-     i_selected_type=selected_mapinfo.getType();
-    }
-    GPLog.androidLog(-1,"MapsDirManager MapsDirTreeViewList.setMapTypeClasses count[" + maptype_classes.size()+ "] ");
-    // List will be returned sorted as Directory-File with levels set.
-    maptype_classes=MapsDirTreeViewList.setMapTypeClasses(maptype_classes,get_maps_dir());
-   }
     // -----------------------------------------------
     /**
       * Filter out certain file-types
@@ -399,7 +367,7 @@ public class MapsDirManager {
       * @param name Filename to check
       * @return true if condition is fullfilled ; else false not fullfilled
       */
-    private static boolean ignoreTileSource( String name ) {
+    private boolean ignoreTileSource( String name ) {
         if (name.startsWith("_")) {
             return true;
         }
@@ -415,25 +383,24 @@ public class MapsDirManager {
       * @param map_View Map-View to set (if not null)
       * @return i_rc 0 ir correct ; else false not fullfilled
       */
-    public static int selected_MapClassInfo(ClassNodeInfo selected_classinfo,MapView map_View,double[] mapCenterLocation)
-    {
-     int i_rc=-1;
-     if (selected_classinfo != null)
-     {
-      selected_mapinfo=selected_classinfo;
-      s_selected_type=selected_mapinfo.getTypeText();
-      i_selected_type=selected_mapinfo.getType();
-      s_selected_map=selected_mapinfo.getFileNamePath();
-      // This will save the values to the user-proverences
-      setTileSource(s_selected_type,s_selected_map);
-      i_rc=0;
-      if (map_View != null)
-      {
-       i_rc=load_Map(map_View,mapCenterLocation);
-      }
-     }
-     // GPLog.androidLog(-1,"MapsDirManager -I-> selected_MapClassInf mapinfo[" +selected_mapinfo.getShortDescription()+ "] i_rc["+i_rc+"]");
-     return i_rc;
+    public int selected_MapClassInfo( Context context, ClassNodeInfo selected_classinfo, MapView map_View,
+            double[] mapCenterLocation ) {
+        int i_rc = -1;
+        if (selected_classinfo != null) {
+            selected_mapinfo = selected_classinfo;
+            s_selected_type = selected_mapinfo.getTypeText();
+            i_selected_type = selected_mapinfo.getType();
+            s_selected_map = selected_mapinfo.getFileNamePath();
+            // This will save the values to the user-proverences
+            setTileSource(context, s_selected_type, s_selected_map);
+            i_rc = 0;
+            if (map_View != null) {
+                i_rc = load_Map(map_View, mapCenterLocation);
+            }
+        }
+        // GPLog.androidLog(-1,"MapsDirManager -I-> selected_MapClassInf mapinfo["
+        // +selected_mapinfo.getShortDescription()+ "] i_rc["+i_rc+"]");
+        return i_rc;
     }
     // -----------------------------------------------
     /**
@@ -445,130 +412,119 @@ public class MapsDirManager {
       * @param map_View Map-View to set (if not null)
       * @return i_rc 0 if correct ; else false not fullfilled
       */
-    public static int load_Map(MapView map_View,double[] mapCenterLocation)
-    {
-     int i_rc=-1;
-     if ((map_View != null) && (selected_mapinfo != null))
-     {
-      try
-      {
-       boolean b_redrawTiles=false;
-       GPLog.androidLog(-1,"MapsDirManager -I-> load_Map["+s_selected_type+"] mapinfo[" +selected_mapinfo.getShortDescription()+ "]");
-       selected_mapGenerator=null;
-       minZoom = 0;
-       maxZoom = 18;
-       defaultZoom = 17;
-       bounds_west = 180.0;
-       bounds_south = -85.05113;
-       bounds_east = 180.0;
-       bounds_north = 85.05113;
-       centerX = 0.0;
-       centerY = 0.0;
-       switch (i_selected_type)
-       {
-        case MAP:
-        {
-         MapTable selected_table = MapDatabasesManager.getInstance().getMapTableByName(s_selected_map);
-         if (selected_table != null)
-         {
-          minZoom=selected_table.getMinZoom();
-          maxZoom=selected_table.getMaxZoom();
-          defaultZoom=selected_table.getDefaultZoom();
-          bounds_west=selected_table.getMinLongitude();
-          bounds_east=selected_table.getMaxLongitude();
-          bounds_south=selected_table.getMinLatitude();
-          bounds_north=selected_table.getMaxLatitude();
-          centerX=selected_table.getCenterX();
-          centerY=selected_table.getCenterY();
-          map_View.setMapFile(selected_table.getFile());
-          if (selected_table.getXmlFile().exists())
-          {
-           try
-           {
-            map_View.setRenderTheme(selected_table.getXmlFile());
-           }
-           catch (FileNotFoundException e)
-           { // ignore the theme
-           }
-          }
-          selected_mapGenerator = map_View.getMapGenerator();
-         }
+    public int load_Map( MapView map_View, double[] mapCenterLocation ) {
+        int i_rc = -1;
+        if ((map_View != null) && (selected_mapinfo != null)) {
+            try {
+                boolean b_redrawTiles = false;
+                GPLog.androidLog(-1,
+                        "MapsDirManager -I-> load_Map[" + s_selected_type + "] mapinfo[" + selected_mapinfo.getShortDescription()
+                                + "]");
+                selected_mapGenerator = null;
+                minZoom = 0;
+                maxZoom = 18;
+                defaultZoom = 17;
+                bounds_west = 180.0;
+                bounds_south = -85.05113;
+                bounds_east = 180.0;
+                bounds_north = 85.05113;
+                centerX = 0.0;
+                centerY = 0.0;
+                switch( i_selected_type ) {
+                case MAP: {
+                    MapTable selected_table = MapDatabasesManager.getInstance().getMapTableByName(s_selected_map);
+                    if (selected_table != null) {
+                        minZoom = selected_table.getMinZoom();
+                        maxZoom = selected_table.getMaxZoom();
+                        defaultZoom = selected_table.getDefaultZoom();
+                        bounds_west = selected_table.getMinLongitude();
+                        bounds_east = selected_table.getMaxLongitude();
+                        bounds_south = selected_table.getMinLatitude();
+                        bounds_north = selected_table.getMaxLatitude();
+                        centerX = selected_table.getCenterX();
+                        centerY = selected_table.getCenterY();
+                        map_View.setMapFile(selected_table.getFile());
+                        if (selected_table.getXmlFile().exists()) {
+                            try {
+                                map_View.setRenderTheme(selected_table.getXmlFile());
+                            } catch (FileNotFoundException e) { // ignore the theme
+                            }
+                        }
+                        selected_mapGenerator = map_View.getMapGenerator();
+                    }
+                }
+                    break;
+                case MBTILES:
+                case GPKG:
+                case SPATIALITE: {
+                    SpatialRasterTable selected_table = SpatialDatabasesManager.getInstance()
+                            .getRasterTableByName(s_selected_map);
+                    if (selected_table != null) {
+                        minZoom = selected_table.getMinZoom();
+                        maxZoom = selected_table.getMaxZoom();
+                        defaultZoom = selected_table.getDefaultZoom();
+                        bounds_west = selected_table.getMinLongitude();
+                        bounds_east = selected_table.getMaxLongitude();
+                        bounds_south = selected_table.getMinLatitude();
+                        bounds_north = selected_table.getMaxLatitude();
+                        centerX = selected_table.getCenterX();
+                        centerY = selected_table.getCenterY();
+                        selected_mapGenerator = new GeopackageTileDownloader(selected_table);
+                        map_View.setMapGenerator(selected_mapGenerator);
+                    }
+                }
+                    break;
+                case MAPURL: {
+                    CustomTileTable selected_table = CustomTileDatabasesManager.getInstance().getCustomTileTableByName(
+                            s_selected_map);
+                    if (selected_table != null) {
+                        minZoom = selected_table.getMinZoom();
+                        maxZoom = selected_table.getMaxZoom();
+                        defaultZoom = selected_table.getDefaultZoom();
+                        bounds_west = selected_table.getMinLongitude();
+                        bounds_east = selected_table.getMaxLongitude();
+                        bounds_south = selected_table.getMinLatitude();
+                        bounds_north = selected_table.getMaxLatitude();
+                        centerX = selected_table.getCenterX();
+                        centerY = selected_table.getCenterY();
+                        selected_mapGenerator = selected_table.getCustomTileDownloader();
+                        map_View.setMapGenerator(selected_mapGenerator);
+                    }
+                }
+                    break;
+                default:
+                    i_selected_type = i_rc;
+                    break;
+                }
+            } catch (jsqlite.Exception e) {
+                selected_mapGenerator = MapGeneratorInternal.createMapGenerator(MapGeneratorInternal.mapnik);
+                map_View.setMapGenerator(selected_mapGenerator);
+            }
+            if (selected_mapGenerator != null) {
+                i_rc = 0;
+                if (mapCenterLocation == null) { // if the user has not given a desired position,
+                                                 // retrieve it from the map-view
+                    GeoPoint mapCenter = map_View.getMapPosition().getMapCenter();
+                    mapCenterLocation = new double[]{mapCenter.getLongitude(), mapCenter.getLatitude(),
+                            (double) map_View.getMapPosition().getZoomLevel()};
+                }
+                if (mapCenterLocation != null) { // this will adapt the present position of the
+                                                 // map-view to the supported area of the map [true]
+                    checkCenterLocation(mapCenterLocation, true);
+                    GeoPoint geoPoint = new GeoPoint(mapCenterLocation[1], mapCenterLocation[0]);
+                    map_View.getController().setZoom((int) mapCenterLocation[2]);
+                    map_View.getController().setCenter(geoPoint);
+                }
+                // 20131108 mj10777: when a new map is loaded inside a MapActivity, the old tiles
+                // are still shown
+                map_View.invalidateOnUiThread();
+                // if (b_redrawTiles)
+                // map_View.redrawTiles();
+                // else
+                // map_View.invalidateOnUiThread();
+            }
         }
-        break;
-        case MBTILES:
-        case GPKG:
-        case SPATIALITE:
-        {
-         SpatialRasterTable selected_table = SpatialDatabasesManager.getInstance().getRasterTableByName(s_selected_map);
-         if (selected_table != null)
-         {
-          minZoom=selected_table.getMinZoom();
-          maxZoom=selected_table.getMaxZoom();
-          defaultZoom=selected_table.getDefaultZoom();
-          bounds_west=selected_table.getMinLongitude();
-          bounds_east=selected_table.getMaxLongitude();
-          bounds_south=selected_table.getMinLatitude();
-          bounds_north=selected_table.getMaxLatitude();
-          centerX=selected_table.getCenterX();
-          centerY=selected_table.getCenterY();
-          selected_mapGenerator = new GeopackageTileDownloader(selected_table);
-          map_View.setMapGenerator(selected_mapGenerator);
-         }
-        }
-        break;
-        case MAPURL:
-        {
-         CustomTileTable selected_table=CustomTileDatabasesManager.getInstance().getCustomTileTableByName(s_selected_map);
-         if (selected_table != null)
-         {
-          minZoom=selected_table.getMinZoom();
-          maxZoom=selected_table.getMaxZoom();
-          defaultZoom=selected_table.getDefaultZoom();
-          bounds_west=selected_table.getMinLongitude();
-          bounds_east=selected_table.getMaxLongitude();
-          bounds_south=selected_table.getMinLatitude();
-          bounds_north=selected_table.getMaxLatitude();
-          centerX=selected_table.getCenterX();
-          centerY=selected_table.getCenterY();
-          selected_mapGenerator = selected_table.getCustomTileDownloader();
-          map_View.setMapGenerator(selected_mapGenerator);
-         }
-        }
-        break;
-        default:
-        i_selected_type=i_rc;
-        break;
-       }
-      }
-      catch (jsqlite.Exception e)
-      {
-       selected_mapGenerator = MapGeneratorInternal.createMapGenerator(MapGeneratorInternal.mapnik);
-       map_View.setMapGenerator(selected_mapGenerator);
-      }
-      if (selected_mapGenerator != null)
-      {
-       i_rc=0;
-       if (mapCenterLocation == null)
-       { // if the user has not given a desired position, retrieve it from the map-view
-        GeoPoint mapCenter = map_View.getMapPosition().getMapCenter();
-        mapCenterLocation= new double[]{mapCenter.getLongitude(),mapCenter.getLatitude(),(double)map_View.getMapPosition().getZoomLevel()};
-       }
-       if (mapCenterLocation != null)
-       { // this will adapt the present position of the map-view to the supported area of the map [true]
-        checkCenterLocation(mapCenterLocation,true);
-        GeoPoint geoPoint = new GeoPoint(mapCenterLocation[1], mapCenterLocation[0]);
-        map_View.getController().setZoom((int) mapCenterLocation[2]);
-        map_View.getController().setCenter(geoPoint);
-       }
-       // 20131108 mj10777: when a new map is loaded inside a MapActivity, the old tiles are still shown
-       map_View.invalidateOnUiThread();
-      // if (b_redrawTiles)
-      //  map_View.redrawTiles();
-      // else
-      //  map_View.invalidateOnUiThread();
-      }
-     }
-     return i_rc;
+        return i_rc;
     }
     // -----------------------------------------------
     /**
@@ -580,7 +536,7 @@ public class MapsDirManager {
       *
       * @return integer minzoom
       */
-    public static int getMinZoom() {
+    public int getMinZoom() {
         return minZoom;
     }
     // -----------------------------------------------
@@ -593,7 +549,7 @@ public class MapsDirManager {
       *
       * @return integer maxzoom
       */
-    public static int getMaxZoom() {
+    public int getMaxZoom() {
         return maxZoom;
     }
     /**
@@ -603,7 +559,7 @@ public class MapsDirManager {
      * @param doCorrectIfOutOfRange if <code>true</code>, change mapCenterLocation values if out of range.
      * @return 0=inside valid area/zoom ; i_rc > 0 outside area or zoom ; i_parm=0 no corrections ; 1= correct tileBounds values.
      */
-    public static int checkCenterLocation( double[] mapCenterLocation, boolean doCorrectIfOutOfRange ) {
+    public int checkCenterLocation( double[] mapCenterLocation, boolean doCorrectIfOutOfRange ) {
         int i_rc = 0; // inside area
         if (((mapCenterLocation[0] < bounds_west) || (mapCenterLocation[0] > bounds_east))
                 || ((mapCenterLocation[1] < bounds_south) || (mapCenterLocation[1] > bounds_north))
@@ -666,8 +622,8 @@ public class MapsDirManager {
      * @param s_selected_type map-type of file
      * @param s_selected_map absolute path of file
      */
-    private static void setTileSource( String s_selected_type, String s_selected_map ) {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this_context);
+    private void setTileSource( Context context, String s_selected_type, String s_selected_map ) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         Editor editor = preferences.edit();
         editor.putString(LibraryConstants.PREFS_KEY_TILESOURCE, s_selected_type);
         editor.putString(LibraryConstants.PREFS_KEY_TILESOURCE_FILE, s_selected_map);
@@ -680,14 +636,14 @@ public class MapsDirManager {
       * <p>call from application-Activity  finish()
       *
       */
-    public static void finish() {
+    public void finish() {
         try {
-               SpatialDatabasesManager.getInstance().closeDatabases();
-               MapDatabasesManager.getInstance().closeDatabases();
-               CustomTileDatabasesManager.getInstance().closeDatabases();
-            } catch (Exception e) {
-                GPLog.androidLog(4,"MapsDirManager finish[" + maps_dir.getName() + "]", e);
-            }
-     }
+            SpatialDatabasesManager.getInstance().closeDatabases();
+            MapDatabasesManager.getInstance().closeDatabases();
+            CustomTileDatabasesManager.getInstance().closeDatabases();
+        } catch (Exception e) {
+            GPLog.androidLog(4, "MapsDirManager finish[" + maps_dir.getName() + "]", e);
+        }
+    }
 
 }

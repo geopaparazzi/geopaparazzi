@@ -135,14 +135,6 @@ public class CustomTileDatabasesManager {
         return null;
     }
     /**
-     * Check for active Internet connection
-     * <p>done in MapsDirManager
-     */
-    public boolean isConnectedToInternet()
-    {
-     return MapsDirManager.getInstance().isConnectedToInternet();
-    }
-    /**
      * Close  all Databases that may be open
      * <p>mbtiles 'MbtilesDatabaseHandler' database will be closed with '.close();' if active
      * <p>- 'update_bounds();' will be called beforhand

@@ -203,9 +203,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         // TileCache fileSystemTileCache = this.mapView.getFileSystemTileCache();
         // fileSystemTileCache.setPersistent(persistent);
         // fileSystemTileCache.setCapacity(capacity);
-        int i_version=1;
-        if (i_version == 0)
-        { // get proper rendering engine
+        int i_version = 1;
+        if (i_version == 0) { // get proper rendering engine
             MapGenerator mapGenerator;
             boolean b_map_file = false;
             String tileSourceName = preferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE, ""); //$NON-NLS-1$
@@ -282,11 +281,10 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 minZoomLevel = mapView.getMapZoomControls().getZoomLevelMin();
             }
         }
-        if (i_version == 1)
-        { // [MapDirManager]
-         MapsDirManager.load_Map(mapView,mapCenterLocation);
-         minZoomLevel = MapsDirManager.getMinZoom();
-         maxZoomLevel = MapsDirManager.getMaxZoom();
+        if (i_version == 1) { // [MapDirManager]
+            MapsDirManager.getInstance().load_Map(mapView, mapCenterLocation);
+            minZoomLevel = MapsDirManager.getInstance().getMinZoom();
+            maxZoomLevel = MapsDirManager.getInstance().getMaxZoom();
         }
 
         MapScaleBar mapScaleBar = this.mapView.getMapScaleBar();
@@ -946,9 +944,9 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
     public boolean onMenuItemSelected( int featureId, MenuItem item ) {
         switch( item.getItemId() ) {
-         case MENU_TILE_SOURCE_ID:
-          startMapsDirTreeViewList();
-          return true;
+        case MENU_TILE_SOURCE_ID:
+            startMapsDirTreeViewList();
+            return true;
         case MENU_GPSDATA:
             Intent gpsDatalistIntent = new Intent(this, GpsDataListActivity.class);
             startActivityForResult(gpsDatalistIntent, GPSDATAPROPERTIES_RETURN_CODE);
@@ -957,7 +955,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             Intent datalistIntent = new Intent(this, DataListActivity.class);
             startActivityForResult(datalistIntent, DATAPROPERTIES_RETURN_CODE);
             return true;
-
         case MENU_SCALE_ID:
             MapScaleBar mapScaleBar = mapView.getMapScaleBar();
             boolean showMapScaleBar = mapScaleBar.isShowMapScaleBar();
@@ -1024,17 +1021,13 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
      *  result will be sent to MapDirManager and saved there and stored to preferences
      *  - when the MapView is created, this stroed value will be read and loaded
      */
-     private void startMapsDirTreeViewList()
-     {
-      try
-      {
-       startActivityForResult(new Intent(this,MapsDirTreeViewList.class),MAPSDIR_FILETREE);
-       }
-      catch (Exception e)
-      {
-       GPLog.androidLog(4,"GeoPaparazziActivity -E-> failed[startActivity(new Intent(this,MapsDirTreeViewList.class));]",e);
-      }
-     }
+    private void startMapsDirTreeViewList() {
+        try {
+            startActivityForResult(new Intent(this, MapsDirTreeViewList.class), MAPSDIR_FILETREE);
+        } catch (Exception e) {
+            GPLog.androidLog(4, "GeoPaparazziActivity -E-> failed[startActivity(new Intent(this,MapsDirTreeViewList.class));]", e);
+        }
+    }
     private void sendData() throws IOException {
         float[] nswe = getMapWorldBounds();
         List<SmsData> smsData = new ArrayList<SmsData>();
@@ -1176,32 +1169,33 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             GPLog.addLogEntry(this, "Activity returned"); //$NON-NLS-1$
         super.onActivityResult(requestCode, resultCode, data);
         switch( requestCode ) {
-         case MAPSDIR_FILETREE:
-         {
-          if (resultCode == Activity.RESULT_OK)
-          {
-           // String s_SELECTED_FILE=data.getStringExtra(MapsDirTreeViewList.SELECTED_FILE);
-           // String s_SELECTED_TYPE=data.getStringExtra(MapsDirTreeViewList.SELECTED_TYPE);
-           // selected_classinfo will contain all information about the map
-           // MapsDirManager will store this internaly and store the values to preferences
-           // - if this is called from a non-Map-Activity:
-           // -- the map_view parameter und the position parameter MUST be null
-           // - if this is called from a Map-Activity:
-           // -- the map_view parameter and the position parameter should be given
-           // --- the position parameter is not given [null], it will use the position of the map_view
-           // -- if not null : selected_MapClassInfo() will call MapsDirManager.load_Map(map_view,mapCenterLocation);
-           if (MapsDirTreeViewList.selected_classinfo != null)
-           {
-            // MapsDirManager.load_Map(mapView,null);
-            // GPLog.androidLog(-1,"MapsActivity -I->  onActivityResult s_selected_map[" +MapsDirTreeViewList.selected_classinfo.getShortDescription()+ "] ");
-            MapsDirManager.selected_MapClassInfo(MapsDirTreeViewList.selected_classinfo,mapView,null);
-            // mj10777: not sure what to do with these values ??
-            minZoomLevel = MapsDirManager.getMinZoom();
-            maxZoomLevel = MapsDirManager.getMaxZoom();
-           }
-          }
-         }
-         break;
+        case MAPSDIR_FILETREE: {
+            if (resultCode == Activity.RESULT_OK) {
+                // String s_SELECTED_FILE=data.getStringExtra(MapsDirTreeViewList.SELECTED_FILE);
+                // String s_SELECTED_TYPE=data.getStringExtra(MapsDirTreeViewList.SELECTED_TYPE);
+                // selected_classinfo will contain all information about the map
+                // MapsDirManager will store this internaly and store the values to preferences
+                // - if this is called from a non-Map-Activity:
+                // -- the map_view parameter und the position parameter MUST be null
+                // - if this is called from a Map-Activity:
+                // -- the map_view parameter and the position parameter should be given
+                // --- the position parameter is not given [null], it will use the position of the
+                // map_view
+                // -- if not null : selected_MapClassInfo() will call
+                // MapsDirManager.load_Map(map_view,mapCenterLocation);
+                if (MapsDirTreeViewList.selected_classinfo != null) {
+                    // MapsDirManager.load_Map(mapView,null);
+                    // GPLog.androidLog(-1,"MapsActivity -I->  onActivityResult s_selected_map["
+                    // +MapsDirTreeViewList.selected_classinfo.getShortDescription()+ "] ");
+                    MapsDirManager.getInstance().selected_MapClassInfo(this, MapsDirTreeViewList.selected_classinfo, mapView,
+                            null);
+                    // mj10777: not sure what to do with these values ??
+                    minZoomLevel = MapsDirManager.getInstance().getMinZoom();
+                    maxZoomLevel = MapsDirManager.getInstance().getMaxZoom();
+                }
+            }
+        }
+            break;
         case (INSERTCOORD_RETURN_CODE): {
             if (resultCode == Activity.RESULT_OK) {
 

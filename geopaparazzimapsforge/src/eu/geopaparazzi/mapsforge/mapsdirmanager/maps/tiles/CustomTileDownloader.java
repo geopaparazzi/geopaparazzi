@@ -29,10 +29,13 @@ import org.mapsforge.android.maps.mapgenerator.tiledownloader.TileDownloader;
 import org.mapsforge.core.model.GeoPoint;
 import org.mapsforge.core.model.Tile;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import eu.geopaparazzi.library.GeopaparazziLibraryContextHolder;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.CustomTileDatabasesManager;
@@ -50,7 +53,7 @@ public class CustomTileDownloader extends TileDownloader {
         tms, google, wms
     }
     // no wonder this was causing problems, must must NOT be static with a manager
-    private String HOST_NAME="";
+    private String HOST_NAME = "";
     private static String PROTOCOL = "http"; //$NON-NLS-1$
     private static byte ZOOM_MIN = 0;
     private static byte ZOOM_MAX = 18;
@@ -65,8 +68,10 @@ public class CustomTileDownloader extends TileDownloader {
     private final double bounds_north; // wsg84
     private final double bounds_south; // wsg84
     private File file_map; // all DatabaseHandler/Table classes should use these names
-    private String s_map_file; // [with path] all DatabaseHandler/Table classes should use these names
-    private String s_name_file; // [without path] all DatabaseHandler/Table classes should use these names
+    private String s_map_file; // [with path] all DatabaseHandler/Table classes should use these
+                               // names
+    private String s_name_file; // [without path] all DatabaseHandler/Table classes should use these
+                                // names
     private String s_mbtiles_file; // mbtiles specific
     private File file_mbtiles = null; // mbtiles specific
     private String s_name; // mbtiles specific
@@ -79,30 +84,31 @@ public class CustomTileDownloader extends TileDownloader {
     private HashMap<String, String> mbtiles_metadata = null; // list for mbtiles support
     private HashMap<String, String> mbtiles_request_url = null; // list for mbtiles request support
     private int i_tile_server = 0; // if no 'SSS' is found, server logic will not be called
-    private String s_request_type="";
-    private String s_request_url="";
-    private String s_request_bounds="";
-    private String s_request_zoom_levels="";
+    private String s_request_type = "";
+    private String s_request_url = "";
+    private String s_request_bounds = "";
+    private String s_request_zoom_levels = "";
     private GeoPoint centerPoint = new GeoPoint(0, 0);
 
-    private String tilePart="";
+    private String tilePart = "";
     private boolean isFile = false;
     private TILESCHEMA type = TILESCHEMA.google;
+    private boolean isConnectedToInternet;
 
     @SuppressWarnings("nls")
     public CustomTileDownloader( File file_map, String parentPath ) {
         super();
-         s_map_file=file_map.getAbsolutePath();
-         s_name_file=file_map.getName();
-         this.s_name = file_map.getName().substring(0, file_map.getName().lastIndexOf("."));
-         List<String> fileLines = new ArrayList<String>();
-         try {
-          fileLines = FileUtilities.readfileToList(file_map);
-         }
-         catch (IOException e) {
-             GPLog.androidLog(4,getClass().getSimpleName()+"[CustomTileDownloader.FileUtilities.readfileToList]", e);
-            }
-        // parentPath = '/mnt/sdcard/maps' : this will be appended to all pathis given in the 'mapurl' file
+        s_map_file = file_map.getAbsolutePath();
+        s_name_file = file_map.getName();
+        this.s_name = file_map.getName().substring(0, file_map.getName().lastIndexOf("."));
+        List<String> fileLines = new ArrayList<String>();
+        try {
+            fileLines = FileUtilities.readfileToList(file_map);
+        } catch (IOException e) {
+            GPLog.androidLog(4, getClass().getSimpleName() + "[CustomTileDownloader.FileUtilities.readfileToList]", e);
+        }
+        // parentPath = '/mnt/sdcard/maps' : this will be appended to all pathis given in the
+        // 'mapurl' file
         double[] bounds = {-180.0, -85.05113, 180, 85.05113};
         double[] center = {0.0, 0.0};
         double[] request_bounds = new double[]{0.0, 0.0, 0.0, 0.0};
@@ -118,7 +124,7 @@ public class CustomTileDownloader extends TileDownloader {
                     GPLog.addLogEntry("-> " + fileLine);
                 }
             } catch (IOException e1) {
-             GPLog.androidLog(4,getClass().getSimpleName()+"[CustomTileDownloader.nCreation]", e1);
+                GPLog.androidLog(4, getClass().getSimpleName() + "[CustomTileDownloader.nCreation]", e1);
             }
         }
 
@@ -129,22 +135,21 @@ public class CustomTileDownloader extends TileDownloader {
             }
 
             int split = line.indexOf('=');
-            if (split < 0)
-            { // some sort of comment, save back when editing mapurl file
-             mapurl_metadata.put(line,"");
+            if (split < 0) { // some sort of comment, save back when editing mapurl file
+                mapurl_metadata.put(line, "");
             }
             if (split != -1) {
-                String parm = line.substring(0,split);
+                String parm = line.substring(0, split);
                 String value = line.substring(split + 1).trim();
                 // save value for future editing
-                mapurl_metadata.put(parm,value); // parm without '='
-                // GPLog.androidLog(-1,"CustomTileDownloader parm[" + parm+ "] value[" + value+ "]");
+                mapurl_metadata.put(parm, value); // parm without '='
+                // GPLog.androidLog(-1,"CustomTileDownloader parm[" + parm+ "] value[" + value+
+                // "]");
                 if (line.startsWith("url")) {
-                    s_request_url=value;
+                    s_request_url = value;
                     int indexOfS = value.indexOf("SSS");
-                    if (indexOfS != -1)
-                    {
-                     i_tile_server = 1; // Server logic will not be called [1,2]
+                    if (indexOfS != -1) {
+                        i_tile_server = 1; // Server logic will not be called [1,2]
                     }
                     int indexOfZ = value.indexOf("ZZZ");
                     if (indexOfZ != -1) {
@@ -164,7 +169,7 @@ public class CustomTileDownloader extends TileDownloader {
                             PROTOCOL = "file";
                             HOST_NAME = parentPath + File.separator + HOST_NAME;
                             isFile = true;
-                            s_request_url="";
+                            s_request_url = "";
                         }
                     } else {
                         // wms_server
@@ -262,24 +267,24 @@ public class CustomTileDownloader extends TileDownloader {
                         i_force_unique = 0;
                     }
                 }
-                 if (line.startsWith("request_type")) {
+                if (line.startsWith("request_type")) {
                     if (!value.equals("off"))
-                     s_request_type=value;
-                   }
+                        s_request_type = value;
+                }
                 if (line.startsWith("request_bounds")) {
-                    s_request_bounds=value;
+                    s_request_bounds = value;
                     try {
-                       String[] coord = value.split("\\s+"); //$NON-NLS-1$
-                       request_bounds[0] = Double.parseDouble(coord[0]);
-                       request_bounds[1] = Double.parseDouble(coord[1]);
-                       request_bounds[2] = Double.parseDouble(coord[2]);
-                       request_bounds[3] = Double.parseDouble(coord[3]);
+                        String[] coord = value.split("\\s+"); //$NON-NLS-1$
+                        request_bounds[0] = Double.parseDouble(coord[0]);
+                        request_bounds[1] = Double.parseDouble(coord[1]);
+                        request_bounds[2] = Double.parseDouble(coord[2]);
+                        request_bounds[3] = Double.parseDouble(coord[3]);
                     } catch (NumberFormatException e) {
-                        s_request_bounds="";
+                        s_request_bounds = "";
                     }
                 }
                 if (line.startsWith("request_zoom_levels")) {
-                    s_request_zoom_levels=value;
+                    s_request_zoom_levels = value;
                 }
             }
         }
@@ -294,106 +299,94 @@ public class CustomTileDownloader extends TileDownloader {
         if (ZOOM_MIN > ZOOM_DEFAULT)
             ZOOM_DEFAULT = ZOOM_MIN;
         this.defaultZoom = ZOOM_DEFAULT;
-        setDescription(this.s_description); // will set default values with bounds and center if it is the same as 's_name' or empty
+        setDescription(this.s_description); // will set default values with bounds and center if it
+                                            // is the same as 's_name' or empty
         if (s_mbtiles_file.length() > 0) {
-            if (!s_request_type.equals(""))
-            {
-             int i_run=0;
-             int i_load=0;
-             int i_delete=0;
-             int indexOfS = s_request_type.indexOf(",");
-             if (indexOfS != -1)
-             {
-              String[] sa_string=s_request_type.split(",");
-              s_request_type="";
-              String s_comma="";
-              for (int i=0;i<sa_string.length;i++)
-              {
-               if (sa_string[i].equals("run"))
-               { // no 'run', no fun [ignore all commands]
-                i_run++;
-               }
-               if (sa_string[i].equals("fill"))
-               { // will request missing tiles only
-                if (!s_request_type.equals(""))
-                 s_comma=",";
-                s_request_type=s_comma+sa_string[i].trim();
-               }
-               if (sa_string[i].equals("replace"))
-               { // will replace existing tiles
-                if (!s_request_type.equals(""))
-                 s_comma=",";
-                s_request_type=s_comma+sa_string[i].trim();
-               }
-               if (sa_string[i].equals("drop"))
-               { // will delete the requested tiles, retaining the allready downloaded tiles
-                if (!s_request_type.equals(""))
-                 s_comma=",";
-                s_request_type=s_comma+sa_string[i].trim();
-               }
-               if (sa_string[i].equals("vacuum"))
-               {
-                if (!s_request_type.equals(""))
-                 s_comma=",";
-                s_request_type=s_comma+sa_string[i].trim();
-               }
-               if (sa_string[i].equals("update_bounds"))
-               {
-                if (!s_request_type.equals(""))
-                 s_comma=",";
-                s_request_type=s_comma+sa_string[i].trim();
-               }
-               if (sa_string[i].equals("delete"))
-               { //planned for future
-                if (!s_request_type.equals(""))
-                 s_comma=",";
-                s_request_type=s_comma+sa_string[i].trim();
-               }
-               if (sa_string[i].equals("load"))
-               {
-                i_load=1;
-               }
-               GPLog.androidLog(-1,"CustomTileDownloader sa_string["+i+"].[" + sa_string[i]+ "] [" + s_request_type+ "]");
-              }
-              if (i_load != 1)
-              {
-               s_request_bounds="";
-               s_request_zoom_levels="";
-               s_request_url="";
-              }
-             }
-             if (i_run > 0)
-             {
-              mbtiles_request_url.put("request_type",s_request_type);
-             }
-             if ((!s_request_zoom_levels.equals("")) && (!s_request_url.equals("")))
-             {
-              String s_bbox = this.bounds_west + "," + this.bounds_south + "," + this.bounds_east + "," + this.bounds_north;
-              if (!s_request_bounds.equals(""))
-              {
-               s_request_bounds = request_bounds[0] + "," + request_bounds[1] + "," + request_bounds[2] + "," + request_bounds[3];
-              }
-              else
-              { // simplify filling of upper zoom-levels, fill supported area
-               s_request_bounds = s_bbox;
-               request_bounds=bounds;
-              }
-              if ((request_bounds[0] >= bounds[0]) && (request_bounds[2] <= bounds[2]) && (request_bounds[1] >= bounds[1]) && (request_bounds[3] <= bounds[3]))
-              {
-               mbtiles_request_url.put("request_url",s_request_url);
-               mbtiles_request_url.put("request_bounds",s_request_bounds);
-               mbtiles_request_url.put("request_bounds_url", s_bbox);
-               s_bbox = Integer.toString(this.minZoom) + "-" + Integer.toString(this.maxZoom);
-               mbtiles_request_url.put("request_zoom_levels_url",s_bbox);
-               mbtiles_request_url.put("request_zoom_levels",s_request_zoom_levels);
-               String s_request_y_type="wms"; // 0=osm ; 1=tms ; 2=wms
-               if (type == TILESCHEMA.google)
-                s_request_y_type="osm";
-               if (type == TILESCHEMA.tms)
-                s_request_y_type="tms";
-                mbtiles_request_url.put("request_y_type",s_request_y_type);
-              }
-             }
+            if (!s_request_type.equals("")) {
+                int i_run = 0;
+                int i_load = 0;
+                int i_delete = 0;
+                int indexOfS = s_request_type.indexOf(",");
+                if (indexOfS != -1) {
+                    String[] sa_string = s_request_type.split(",");
+                    s_request_type = "";
+                    String s_comma = "";
+                    for( int i = 0; i < sa_string.length; i++ ) {
+                        if (sa_string[i].equals("run")) { // no 'run', no fun [ignore all commands]
+                            i_run++;
+                        }
+                        if (sa_string[i].equals("fill")) { // will request missing tiles only
+                            if (!s_request_type.equals(""))
+                                s_comma = ",";
+                            s_request_type = s_comma + sa_string[i].trim();
+                        }
+                        if (sa_string[i].equals("replace")) { // will replace existing tiles
+                            if (!s_request_type.equals(""))
+                                s_comma = ",";
+                            s_request_type = s_comma + sa_string[i].trim();
+                        }
+                        if (sa_string[i].equals("drop")) { // will delete the requested tiles,
+                                                           // retaining the allready downloaded
+                                                           // tiles
+                            if (!s_request_type.equals(""))
+                                s_comma = ",";
+                            s_request_type = s_comma + sa_string[i].trim();
+                        }
+                        if (sa_string[i].equals("vacuum")) {
+                            if (!s_request_type.equals(""))
+                                s_comma = ",";
+                            s_request_type = s_comma + sa_string[i].trim();
+                        }
+                        if (sa_string[i].equals("update_bounds")) {
+                            if (!s_request_type.equals(""))
+                                s_comma = ",";
+                            s_request_type = s_comma + sa_string[i].trim();
+                        }
+                        if (sa_string[i].equals("delete")) { // planned for future
+                            if (!s_request_type.equals(""))
+                                s_comma = ",";
+                            s_request_type = s_comma + sa_string[i].trim();
+                        }
+                        if (sa_string[i].equals("load")) {
+                            i_load = 1;
+                        }
+                        GPLog.androidLog(-1, "CustomTileDownloader sa_string[" + i + "].[" + sa_string[i] + "] ["
+                                + s_request_type + "]");
+                    }
+                    if (i_load != 1) {
+                        s_request_bounds = "";
+                        s_request_zoom_levels = "";
+                        s_request_url = "";
+                    }
+                }
+                if (i_run > 0) {
+                    mbtiles_request_url.put("request_type", s_request_type);
+                }
+                if ((!s_request_zoom_levels.equals("")) && (!s_request_url.equals(""))) {
+                    String s_bbox = this.bounds_west + "," + this.bounds_south + "," + this.bounds_east + "," + this.bounds_north;
+                    if (!s_request_bounds.equals("")) {
+                        s_request_bounds = request_bounds[0] + "," + request_bounds[1] + "," + request_bounds[2] + ","
+                                + request_bounds[3];
+                    } else { // simplify filling of upper zoom-levels, fill supported area
+                        s_request_bounds = s_bbox;
+                        request_bounds = bounds;
+                    }
+                    if ((request_bounds[0] >= bounds[0]) && (request_bounds[2] <= bounds[2]) && (request_bounds[1] >= bounds[1])
+                            && (request_bounds[3] <= bounds[3])) {
+                        mbtiles_request_url.put("request_url", s_request_url);
+                        mbtiles_request_url.put("request_bounds", s_request_bounds);
+                        mbtiles_request_url.put("request_bounds_url", s_bbox);
+                        s_bbox = Integer.toString(this.minZoom) + "-" + Integer.toString(this.maxZoom);
+                        mbtiles_request_url.put("request_zoom_levels_url", s_bbox);
+                        mbtiles_request_url.put("request_zoom_levels", s_request_zoom_levels);
+                        String s_request_y_type = "wms"; // 0=osm ; 1=tms ; 2=wms
+                        if (type == TILESCHEMA.google)
+                            s_request_y_type = "osm";
+                        if (type == TILESCHEMA.tms)
+                            s_request_y_type = "tms";
+                        mbtiles_request_url.put("request_y_type", s_request_y_type);
+                    }
+                }
             }
             if (file_mbtiles.exists()) { // this will open an existing mbtiles_db
                 mbtiles_db = new MbtilesDatabaseHandler(file_mbtiles.getAbsolutePath(), null);
@@ -410,9 +403,8 @@ public class CustomTileDownloader extends TileDownloader {
                 mbtiles_metadata.put("maxzoom", Integer.toString(this.maxZoom));
                 mbtiles_db = new MbtilesDatabaseHandler(file_mbtiles.getAbsolutePath(), mbtiles_metadata);
             }
-            if (mbtiles_request_url.size() > 0)
-            {
-             mbtiles_db.run_retrieve_url(mbtiles_request_url);
+            if (mbtiles_request_url.size() > 0) {
+                mbtiles_db.run_retrieve_url(mbtiles_request_url);
             }
         }
         // GPLog.androidLog(-1,"CustomTileDownloader parentPath[" + parentPath+ "]");
@@ -569,7 +561,7 @@ public class CustomTileDownloader extends TileDownloader {
       * @return bounds formatted using wms format
       */
     public String getBounds_toString() {
-        return bounds_west+","+bounds_south+","+bounds_east+","+bounds_north;
+        return bounds_west + "," + bounds_south + "," + bounds_east + "," + bounds_north;
     }
     // -----------------------------------------------
     /**
@@ -580,7 +572,7 @@ public class CustomTileDownloader extends TileDownloader {
       * @return center formatted using mbtiles format
       */
     public String getCenter_toString() {
-        return centerX+","+centerY+","+defaultZoom;
+        return centerX + "," + centerY + "," + defaultZoom;
     }
     // -----------------------------------------------
     /**
@@ -594,10 +586,11 @@ public class CustomTileDownloader extends TileDownloader {
       */
     public String getDescription() {
         if ((this.s_description == null) || (this.s_description.length() == 0) || (this.s_description.equals(this.s_name)))
-         setDescription(getName()); // will set default values with bounds and center if it is the same as 's_name' or empty
+            setDescription(getName()); // will set default values with bounds and center if it is
+                                       // the same as 's_name' or empty
         return this.s_description; // long comment
     }
-     // -----------------------------------------------
+    // -----------------------------------------------
     /**
       * Set long description of map/file
       *
@@ -607,13 +600,11 @@ public class CustomTileDownloader extends TileDownloader {
       *
       * @return s_description long description of map/file
       */
-    public void setDescription(String s_description) {
-        if ((s_description == null) || (s_description.length() == 0) || (s_description.equals(this.s_name)))
-        {
-         this.s_description = getName()+" bounds["+getBounds_toString()+"] center["+getCenter_toString()+"]";
-        }
-        else
-         this.s_description = s_description;
+    public void setDescription( String s_description ) {
+        if ((s_description == null) || (s_description.length() == 0) || (s_description.equals(this.s_name))) {
+            this.s_description = getName() + " bounds[" + getBounds_toString() + "] center[" + getCenter_toString() + "]";
+        } else
+            this.s_description = s_description;
     }
     public MbtilesDatabaseHandler getmbtiles() {
         return mbtiles_db;
@@ -658,7 +649,8 @@ public class CustomTileDownloader extends TileDownloader {
             if (mbtiles_db != null) { // try to retrieve this tile from the active mbtiles.db
                 if (mbtiles_db.getBitmapTile(i_tile_x, i_tile_y_osm, i_zoom, Tile.TILE_SIZE, bitmap)) {
                     // tile was found and the bitmap filled, return
-                    // GPLog.androidLog(-1,"CustomTileDownloader.executeJob: name["+getName() +"] mbtiles_db["+mbtiles_db.getFileName()+"] tilePath["+i_zoom+"/"+i_tile_x+"/"+i_tile_y_osm+"] ");
+                    // GPLog.androidLog(-1,"CustomTileDownloader.executeJob: name["+getName()
+                    // +"] mbtiles_db["+mbtiles_db.getFileName()+"] tilePath["+i_zoom+"/"+i_tile_x+"/"+i_tile_y_osm+"] ");
                     return true;
                 }
             }
@@ -669,31 +661,36 @@ public class CustomTileDownloader extends TileDownloader {
                 if (!tilePath.startsWith("http")) //$NON-NLS-1$
                     sb.append("http://"); //$NON-NLS-1$
             }
-            String s_host_name=HOST_NAME;
-            if (i_tile_server > 0)
-            { // ['http://otileSSS.mqcdn.com/'] replace 'http://otile1.mqcdn.com/' with ''http://otile2.mqcdn.com/'
-             s_host_name = s_host_name.replaceFirst("SSS", String.valueOf(i_tile_server++)); //$NON-NLS-1$
-             if (i_tile_server > 2)
-              i_tile_server=1;
+            String s_host_name = HOST_NAME;
+            if (i_tile_server > 0) { // ['http://otileSSS.mqcdn.com/'] replace
+                                     // 'http://otile1.mqcdn.com/' with ''http://otile2.mqcdn.com/'
+                s_host_name = s_host_name.replaceFirst("SSS", String.valueOf(i_tile_server++)); //$NON-NLS-1$
+                if (i_tile_server > 2)
+                    i_tile_server = 1;
             }
             sb.append(s_host_name);
             sb.append(tilePath);
-            // GPLog.androidLog(-1,"CustomTileDownloader.executeJob: name["+getName() +"] host_name["+s_host_name+"] tilePath["+tilePath+"] ");
+            // GPLog.androidLog(-1,"CustomTileDownloader.executeJob: name["+getName()
+            // +"] host_name["+s_host_name+"] tilePath["+tilePath+"] ");
             // GPLog.androidLog(-1,"CustomTileDownloader.executeJob: request["+sb.toString()+"] ");
             Bitmap decodedBitmap = null;
-            if (isConnectedToInternet())
-            {
-             URL url = new URL(sb.toString());
-             InputStream inputStream = url.openStream();
-             try {
-                 decodedBitmap = BitmapFactory.decodeStream(inputStream);
-             } catch (Exception e) {
-                 // ignore and set the image as empty
-                 if (GPLog.LOG_HEAVY)
-                     GPLog.addLogEntry(this, "Could not find image: " + sb.toString()); //$NON-NLS-1$
-             } finally {
-                 inputStream.close();
-             }
+
+            Context context = GeopaparazziLibraryContextHolder.INSTANCE.getContext();
+            if (context != null) {
+                isConnectedToInternet = NetworkUtilities.isNetworkAvailable(context);
+            }
+            if (isConnectedToInternet) {
+                URL url = new URL(sb.toString());
+                InputStream inputStream = url.openStream();
+                try {
+                    decodedBitmap = BitmapFactory.decodeStream(inputStream);
+                } catch (Exception e) {
+                    // ignore and set the image as empty
+                    if (GPLog.LOG_HEAVY)
+                        GPLog.addLogEntry(this, "Could not find image: " + sb.toString()); //$NON-NLS-1$
+                } finally {
+                    inputStream.close();
+                }
             }
             // check if the input stream could be decoded into a bitmap
             if (decodedBitmap != null) {
@@ -721,14 +718,6 @@ public class CustomTileDownloader extends TileDownloader {
             e.printStackTrace();
             return false;
         }
-    }
-    /**
-     * Check for active Internet connection
-     * <p>done in MapsDirManager, through CustomTileDatabasesManager
-     */
-    public boolean isConnectedToInternet()
-    {
-     return CustomTileDatabasesManager.getInstance().isConnectedToInternet();
     }
     // TODO mj10777: check if this is safe after final has been removed from TileDownloader
     public void cleanup() {

@@ -32,6 +32,7 @@ import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapDatabaseHandler;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapTable;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.core.MbtilesDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.OrderComparator;
@@ -50,7 +51,8 @@ public class MapDatabasesManager {
     private static final String[] sa_extentions = new String[]{".map",".xml"};
     private static final int i_extention_map = 0;
     private static final int i_extention_xml = 1;
-    public static boolean isConnectedToInternet=false;
+    
+    private boolean isConnectedToInternet=false;
     private MapDatabasesManager() {
     }
 
@@ -71,6 +73,8 @@ public class MapDatabasesManager {
         return sa_extentions[i_extention_xml];
     }
     public void init( Context context, File mapsDir ) {
+        isConnectedToInternet = NetworkUtilities.isNetworkAvailable(context);
+        
         File[] list_files = mapsDir.listFiles();
         for( File this_file : list_files ) {
             // mj10777: collect spatialite.geometries and .mbtiles databases
@@ -140,7 +144,7 @@ public class MapDatabasesManager {
      */
     public boolean isConnectedToInternet()
     {
-     return MapsDirManager.getInstance().isConnectedToInternet();
+     return isConnectedToInternet;
     }
     /**
      * Close  all Databases that may be open
