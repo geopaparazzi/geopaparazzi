@@ -28,7 +28,7 @@
     <!-- compatibility -->
     <uses-sdk
         android:minSdkVersion="10"
-        android:targetSdkVersion="19" >
+        android:targetSdkVersion="11" >
     </uses-sdk>
 
     <supports-screens
