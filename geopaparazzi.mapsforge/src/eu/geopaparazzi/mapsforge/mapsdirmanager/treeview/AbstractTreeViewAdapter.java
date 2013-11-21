@@ -218,7 +218,7 @@ public abstract class AbstractTreeViewAdapter<T> extends BaseAdapter implements
     private Drawable getDrawableOrDefaultBackground(final Drawable r) {
         if (r == null) {
             return activity.getResources()
-                    .getDrawable(R.drawable.mapsdir_treeview_selector_background).mutate();
+                    .getDrawable(R.drawable.mapsdir_treeview_bkgnd_transparent).mutate();
         } else {
             return r;
         }
