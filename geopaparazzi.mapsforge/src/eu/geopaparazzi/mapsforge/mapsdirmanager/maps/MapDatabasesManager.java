@@ -31,6 +31,7 @@ import android.content.Context;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapDatabaseHandler;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapTable;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.core.MbtilesDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.OrderComparator;
 
@@ -75,7 +76,11 @@ public class MapDatabasesManager {
                 // mj10777: read recursive directories inside the sdcard/maps directory
                 init(context, this_file);
             } else {
-                if (this_file.getName().endsWith(get_map_extention()) ) {
+                String name = this_file.getName();
+                if (Utilities.isNameFromHiddenFile(name)) {
+                    continue;
+                }
+                if (name.endsWith(get_map_extention()) ) {
                     MapDatabaseHandler map = new MapDatabaseHandler(this_file.getAbsolutePath());
                     mapHandlers.add(map);
                 }

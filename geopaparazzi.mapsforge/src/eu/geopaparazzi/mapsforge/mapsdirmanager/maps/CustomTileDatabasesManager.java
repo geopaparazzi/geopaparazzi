@@ -33,6 +33,7 @@ import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.CustomTileDatabaseHan
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.CustomTileTable;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.CustomTileDownloader;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.core.MbtilesDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.OrderComparator;
 
@@ -75,7 +76,11 @@ public class CustomTileDatabasesManager {
                 // mj10777: read recursive directories inside the sdcard/maps directory
                 init(context, this_file);
             } else {
-                if (this_file.getName().endsWith(get_mapurl_extention()) ) {
+                String name = this_file.getName();
+                if (Utilities.isNameFromHiddenFile(name)) {
+                    continue;
+                }
+                if (name.endsWith(get_mapurl_extention()) ) {
                     CustomTileDatabaseHandler map = new CustomTileDatabaseHandler(this_file.getAbsolutePath(),MapsDirManager.getInstance().get_maps_dir().getAbsolutePath());
                     customtileHandlers.add(map);
                     i_count_tables++;
