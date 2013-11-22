@@ -653,8 +653,7 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
                 s_request_y_type = s_value;
                 i_load_url++;
             }
-            GPLog.androidLog(-1, "run_retrieve_url: key[" + s_key + "]  value[" + s_value + "] load[" + i_load_url + "] run["
-                    + i_run_url + "]");
+            //GPLog.androidLog(-1, "run_retrieve_url: key[" + s_key + "]  value[" + s_value + "] load[" + i_load_url + "] run["+ i_run_url + "]");
         }
         // The order of adding is important
         if (i_update_bounds > 0) { // will do an extensive check on bounds and zoom-level, updating
@@ -699,11 +698,12 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
     // -----------------------------------------------
     /**
       * Returns list of collected 'request_url'
+      * @param i_limit amount of records to retrieve [i_limit < 1 == all]
       * @return HashMap<String,String> mbtiles_request_url [tile_id,tile_url]
       */
-    public HashMap<String, String> retrieve_request_url() {
+    public HashMap<String, String> retrieve_request_url(int i_limit) {
         if (db_mbtiles != null) {
-            return db_mbtiles.retrieve_request_url();
+            return db_mbtiles.retrieve_request_url(i_limit);
         }
         return new LinkedHashMap<String, String>();
     }
@@ -721,7 +721,7 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
     }
     // -----------------------------------------------
     /**
-      * Returns status of table: request_url
+      * Returns amount of records of table: request_url
       * parm values:
       * 0: return existing value [set when database was opended,not reading the table] [MBTilesDroidSpitter.i_request_url_read_value]
       * 1 : return existing value return existing value [reading the table with count after checking if it exits] [MBTilesDroidSpitter.i_request_url_read_db]

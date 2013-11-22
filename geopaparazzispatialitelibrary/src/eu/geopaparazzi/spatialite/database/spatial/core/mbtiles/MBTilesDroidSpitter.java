@@ -846,7 +846,7 @@ public class MBTilesDroidSpitter {
       break;
       case i_request_url_count_create:
       {
-       s_sql_request_url="CREATE TABLE IF NOT EXISTS request_url (tile_id TEXT,tile_url TEXT)";
+       s_sql_request_url="CREATE TABLE IF NOT EXISTS request_url (tile_id TEXT PRIMARY KEY,tile_url TEXT)";
        try
        {
         db_mbtiles.execSQL(s_sql_request_url);
@@ -949,6 +949,23 @@ public class MBTilesDroidSpitter {
       case i_request_url_count_delete:
       { // delete
        s_sql_request_url = "DELETE FROM 'request_url' WHERE ( tile_id = '"+s_tile_id+"')";
+       try
+       { // no lock/unlock here, done in 'insert_list_request_url'
+        db_mbtiles.execSQL(s_sql_request_url);
+        this.i_request_url_count--;
+       }
+       catch (Exception e)
+       {
+        // GPLog.androidLog(4,"MBTilesDroidSplitter: ["+getName()+"] -E-> insert_request_url: parm["+i_parm+"][3=INSERT;4=DELETE]  tile_id["+s_tile_id+"]",e);
+       }
+       finally
+       {
+        if (this.i_request_url_count < 1)
+        { // this will delete the empty table
+         this.i_request_url_count=0;
+         get_request_url_count(i_request_url_count_drop);
+        }
+       }
       }
       break;
       case i_request_url_count_insert:
@@ -957,43 +974,24 @@ public class MBTilesDroidSpitter {
        { // this will create the  table
         get_request_url_count(i_request_url_count_create);
        }
-       s_sql_request_url = "INSERT OR REPLACE INTO 'request_url' VALUES('"+s_tile_id+"','"+s_tile_url+"')";
+       // s_sql_request_url = "INSERT OR REPLACE INTO 'request_url' VALUES('"+s_tile_id+"','"+s_tile_url+"')";
+       ContentValues tiles_values = new ContentValues();
+       tiles_values.put("tile_id", s_tile_id);
+       tiles_values.put("tile_url", s_tile_url);
+       try
+       { // no lock/unlock here, done in 'insert_list_request_url'
+        db_mbtiles.insertOrThrow("request_url", null, tiles_values);
+        // will only be added if it did not exist
+        this.i_request_url_count++;
+       }
+       catch (Exception e)
+       {
+        // GPLog.androidLog(4,"MBTilesDroidSplitter: ["+getName()+"] -E-> insert_request_url: parm["+i_parm+"][3=INSERT;4=DELETE]  tile_id["+s_tile_id+"]",e);
+       }
       }
       break;
      }
      // GPLog.androidLog(-1,"MBTilesDroidSplitter: ["+getName()+"] -I-> insert_request_url: parm["+i_parm+"][3=INSERT;4=DELETE]  tile_id["+s_tile_id+"]");
-     if (!s_sql_request_url.equals(""))
-     {
-      try
-      { // no lock/unlock here, done in 'insert_list_request_url'
-       db_mbtiles.execSQL(s_sql_request_url);
-      }
-      catch (Exception e)
-      {
-       GPLog.androidLog(4,"MBTilesDroidSplitter: ["+getName()+"] -E-> insert_request_url: parm["+i_parm+"][3=INSERT;4=DELETE]  tile_id["+s_tile_id+"]",e);
-      }
-      finally
-      {
-       switch (i_parm)
-       {
-        case i_request_url_count_delete:
-        { // delete
-         this.i_request_url_count--;
-         if (this.i_request_url_count < 1)
-         { // this will delete the empty table
-          this.i_request_url_count=0;
-          get_request_url_count(i_request_url_count_drop);
-         }
-        }
-        break;
-        case i_request_url_count_insert:
-        { // insert
-         this.i_request_url_count++;
-        }
-        break;
-       }
-      }
-     }
      return this.i_request_url_count;
     }
     // -----------------------------------------------
@@ -1065,17 +1063,23 @@ public class MBTilesDroidSpitter {
     /**
       * Returns list of collected 'request_url'
       * - Query only when 'this.i_request_url_count' > 0 ; i.e. Table exists and has records
+      * @param i_limit amount of records to retrieve [i_limit < 1 == all]
       * @return HashMap<String,String> mbtiles_request_url [tile_id,tile_url]
       */
-    public HashMap<String, String> retrieve_request_url()
+    public HashMap<String, String> retrieve_request_url(int i_limit)
     {
      HashMap<String, String> mbtiles_request_url = new LinkedHashMap<String, String>();
+     String s_limit="";
+     if ((i_limit > 0) && (i_limit < this.i_request_url_count))
+     { // avoid excesive memory usage
+      s_limit=" LIMIT "+i_limit;
+     }
      if (this.i_request_url_count > 0)
      {
       db_lock.readLock().lock();
       try
       {
-       String s_mbtiles_request_url = "SELECT tile_id,tile_url FROM request_url";
+       String s_mbtiles_request_url = "SELECT tile_id,tile_url FROM request_url"+s_limit;
        Cursor c_tiles = db_mbtiles.rawQuery(s_mbtiles_request_url, null);
        if (c_tiles!= null)
        { // avoid CursorIndexOutOfBoundsException

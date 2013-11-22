@@ -318,40 +318,39 @@ public class CustomTileDownloader extends TileDownloader {
                         if (sa_string[i].equals("fill")) { // will request missing tiles only
                             if (!s_request_type.equals(""))
                                 s_comma = ",";
-                            s_request_type = s_comma + sa_string[i].trim();
+                            s_request_type += s_comma + sa_string[i].trim();
                         }
                         if (sa_string[i].equals("replace")) { // will replace existing tiles
                             if (!s_request_type.equals(""))
                                 s_comma = ",";
-                            s_request_type = s_comma + sa_string[i].trim();
+                            s_request_type += s_comma + sa_string[i].trim();
                         }
                         if (sa_string[i].equals("drop")) { // will delete the requested tiles,
                                                            // retaining the allready downloaded
                                                            // tiles
                             if (!s_request_type.equals(""))
                                 s_comma = ",";
-                            s_request_type = s_comma + sa_string[i].trim();
+                            s_request_type += s_comma + sa_string[i].trim();
                         }
                         if (sa_string[i].equals("vacuum")) {
                             if (!s_request_type.equals(""))
                                 s_comma = ",";
-                            s_request_type = s_comma + sa_string[i].trim();
+                            s_request_type += s_comma + sa_string[i].trim();
                         }
                         if (sa_string[i].equals("update_bounds")) {
                             if (!s_request_type.equals(""))
                                 s_comma = ",";
-                            s_request_type = s_comma + sa_string[i].trim();
+                            s_request_type += s_comma + sa_string[i].trim();
                         }
                         if (sa_string[i].equals("delete")) { // planned for future
                             if (!s_request_type.equals(""))
                                 s_comma = ",";
-                            s_request_type = s_comma + sa_string[i].trim();
+                            s_request_type += s_comma + sa_string[i].trim();
                         }
                         if (sa_string[i].equals("load")) {
                             i_load = 1;
                         }
-                        GPLog.androidLog(-1, "CustomTileDownloader sa_string[" + i + "].[" + sa_string[i] + "] ["
-                                + s_request_type + "]");
+                        // GPLog.androidLog(-1, "CustomTileDownloader sa_string[" + i + "].[" + sa_string[i] + "] ["+ s_request_type + "]");
                     }
                     if (i_load != 1) {
                         s_request_bounds = "";
