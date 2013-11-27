@@ -16,6 +16,7 @@ public class MbTilesMetadata {
     public final int maxZoom;
     public final int defaultZoom;
     public String s_tile_row_type = "tms";
+    public String s_center_parm = "";
     public final HashMap<String, String> extra;
     public static final MetadataValidatorFactory metadataValidatorFactory = new MetadataValidatorFactory();
     // -----------------------------------------------
@@ -71,6 +72,7 @@ public class MbTilesMetadata {
         if ((s_tile_row_type != "") && ((s_tile_row_type.equals("tms")) || (s_tile_row_type.equals("osm"))))
             this.s_tile_row_type = s_tile_row_type;
         this.defaultZoom = (int) this.center[2];
+        this.s_center_parm = center[0]+","+center[1]+","+this.defaultZoom;
     }
 
     @Override

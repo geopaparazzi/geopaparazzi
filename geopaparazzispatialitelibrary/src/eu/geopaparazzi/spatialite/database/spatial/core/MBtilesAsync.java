@@ -30,6 +30,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.mbtiles.MBTilesDroidSpit
 class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, Integer> {
     private MbtilesDatabaseHandler db_mbtiles;
     private List<MbtilesDatabaseHandler.AsyncTasks> async_parms = null;
+    private HashMap<String, String> async_mbtiles_metadata=null;
     private HashMap<String, String> mbtiles_request_url = null;
     private String s_request_url_source = "";
     private int i_tile_server = 0; // if no 'SSS' is found, server logic will not be called
@@ -38,6 +39,7 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
     private String s_request_bounds_url = "";
     private int i_request_zoom_min = 22; // will be set properly on construction
     private int i_request_zoom_max = 0; // will be set properly on construction
+    private int i_request_zoom_level=-1; // active request zoom_level
     private int i_url_zoom_min = 22; // will be set properly on construction
     private int i_url_zoom_max = 0; // will be set properly on construction
     private String s_request_y_type = "osm"; // 0=osm ; 1=tms ; 2=wms
@@ -61,6 +63,7 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
     public MBtilesAsync(MbtilesDatabaseHandler db_mbtiles ) {
         this.db_mbtiles = db_mbtiles;
         this.async_parms = this.db_mbtiles.getAsyncParms();
+        this.async_mbtiles_metadata=this.db_mbtiles.async_mbtiles_metadata;
         for( int i = 0; i < async_parms.size(); i++ ) {
             s_message += this.async_parms.get(i);
             if (i < (async_parms.size() - 1))
@@ -112,13 +115,33 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
             }
             MbtilesDatabaseHandler.AsyncTasks async_task = this.async_parms.get(i);
             switch( async_task ) {
-            case ANALYZE_VACUUM: { // implemented, but not tested
-                i_rc = on_analyse_vacuum();
+             case RESET_METADATA:
+             {
+              if ((this.async_mbtiles_metadata != null) && (this.async_mbtiles_metadata.size() > 0))
+              { // i_reload_metadata 1: reload values after update
+               try
+               {
+                db_mbtiles.update_metadata(this.async_mbtiles_metadata,1);
+                publishProgress("-I-> update_metadata[" + db_mbtiles.getName() + "]: bounds["+ db_mbtiles.getBounds_toString()+"] zoom_levels["+db_mbtiles.getZoom_Levels() + "] center_parms["+db_mbtiles.getCenterParms() + "] rc="+i_rc);
+               }
+               catch (Exception e)
+               {
+               }
+              }
+             }
+             break;
+            case ANALYZE_VACUUM: { // implemented, but not tested : 20131123: does not seem to work correctly
+                publishProgress("-I-> on_analyze_vacuum[" + db_mbtiles.getName() + "]: support discontinued ");
+                // publishProgress("-I-> on_analyze_vacuum[" + db_mbtiles.getName() + "]: starting ");
+                // i_rc = on_analyze_vacuum();
+                // publishProgress("-I-> on_analyze_vacuum[" + db_mbtiles.getName() + "]:  i_rc="+i_rc);
             }
                 break;
             case UPDATE_BOUNDS: { // extensive checking of bounds with update of mbtiles.metadata
                                   // table
+                publishProgress("-I-> on_update_bounds[" + db_mbtiles.getName() + "]: starting: bounds["+ db_mbtiles.getBounds_toString()+"] zoom_levels["+db_mbtiles.getZoom_Levels() + "] center_parms["+db_mbtiles.getCenterParms() + "]");
                 i_rc = on_update_bounds();
+                publishProgress("-I-> on_update_bounds[" + db_mbtiles.getName() + "]: end: bounds["+ db_mbtiles.getBounds_toString()+"] zoom_levels["+db_mbtiles.getZoom_Levels() + "] center_parms["+db_mbtiles.getCenterParms() + "] rc="+i_rc);
             }
                 break;
             case REQUEST_URL: { // retrieve tiles found in 'request_url'
@@ -126,6 +149,8 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
                 // i_test_downloads=1;
                 if (i_test_downloads == 0) {
                     i_rc = on_request_url();
+                    // this will update the metadata Table, if we are not being canceled
+                    on_update_bounds();
                 } else {
                     try {
                         Bitmap bm_test = null;
@@ -178,22 +203,20 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
       * - A VACUUM will fail if there is an open transaction, or if there are one or more active SQL statements when it is run.
       * @return 0=correct ; 1=ANALYSE has failed ; 2=VACUUM has failed
       */
-    private int on_analyse_vacuum() {
-        return db_mbtiles.on_analyse_vacuum();
+    private int on_analyze_vacuum() {
+        return db_mbtiles.on_analyze_vacuum();
     }
     // -----------------------------------------------
     /**
-      * will retrieve the list of requested tile-images
-      * - retrieves list from 'request_url' table [if any]
-      * - for each request 'on_request_tile_id_url' will be called
-      * -- isCancelled() is called before each request
-      * @return i_rc [ 0: task compleated; 1=task interupted]
+      * Extensive checking of Bounds for all Zoom-Levels
+      * - results will be written to metadata-Table
+      * @return i_rc [ 0: task compleated; 1=task interupted ; 2: task is being canceled]
      */
     private int on_update_bounds() {
-        int i_rc = 0;
-        int i_reload_metadata = 1;
-        db_mbtiles.update_bounds(i_reload_metadata);
-        return i_rc;
+      if (!isCancelled())
+        return db_mbtiles.update_bounds(1);
+      else
+       return 2;
     }
     // -----------------------------------------------
     /**
@@ -205,10 +228,11 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
      */
     private int on_request_url() {
         int i_rc = 0;
-        int i_count_tiles_total = db_mbtiles.get_request_url_count(0); // mbtiles_request_url.size();
+        int i_count_tiles_total = db_mbtiles.get_request_url_count(1); // read the table and return the amount
         int i_count_tiles_count = 0;
         int i_count_tiles_left = 0;
         int i_count_rest = 1;
+        int i_request_zoom_level_prev=-1;
         if (i_count_tiles_total > 0) { // avoid divide by zero error
             i_count_rest = i_count_tiles_total / 20; // 100=1% ; 80=1.25% ; 40=2.5% ; 20=5% ; 10=10%
                                                      // ; 5=20% ; 1=100%
@@ -226,9 +250,6 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
             if (i_count_rest < 1)
                 i_count_rest = 1;
         }
-        s_message = "-I-> on_request_url[" + s_request_type + "][" + db_mbtiles.getName() + "]: mbtiles_request_url["
-                + i_count_tiles_total + "] ";
-        publishProgress(s_message);
         Context context = SpatialiteContextHolder.INSTANCE.getContext();
         boolean networkAvailable = NetworkUtilities.isNetworkAvailable(context);
         int i_limit=100; // avoid excesive memory usage
@@ -262,17 +283,38 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
             i_rc = on_request_tile_id_url(s_tile_id, s_tile_url);
             i_count_tiles_count++;
             i_count_tiles_left = i_count_tiles_total - i_count_tiles_count;
+            if (i_request_zoom_level > 0)
+            { // i_request_zoom_level is set in 'on_request_tile_id_url'
+              if (i_request_zoom_level_prev < 0)
+              { // The first message when starting - list the first tile that was downloaded
+               s_message = "-I-> on_request_url[" + s_request_type + "][" + db_mbtiles.getName() + "]: mbtiles_request_url["
+                + i_count_tiles_total + "] tile_id[" + s_tile_id + "] open[" + i_count_tiles_left + "] ";
+               publishProgress(s_message);
+              }
+              if (i_request_zoom_level_prev != i_request_zoom_level)
+              {  // A new Zoom-level has been started this will update the metadata Table with true min/max zoom-levels and bounds
+               on_update_bounds();
+               publishProgress("-I-> on_update_bounds["+i_request_zoom_level+"][" + db_mbtiles.getName() + "]: bounds["+ db_mbtiles.getBounds_toString()+"] zoom_levels["+db_mbtiles.getZoom_Levels() + "] center_parms["+db_mbtiles.getCenterParms() + "] ");
+               i_request_zoom_level_prev=i_request_zoom_level;
+              }
+            }
             if ((i_count_tiles_count % i_count_rest) == 0) {
                 double d_procent = (double) i_count_tiles_left;
                 d_procent = 100 - ((d_procent / i_count_tiles_total) * 100);
                 s_message = "-I-> on_request_url[" + db_mbtiles.getName() + "][" + s_request_type + "]: tile_id[" + s_tile_id
-                        + "] retrieved[" + i_count_tiles_count + "] [" + d_procent + " %] open[" + i_count_tiles_left
+                        + "] retrieved[" + i_count_tiles_count + "] [" + String.format("%.4f",d_procent) + " %] open[" + i_count_tiles_left
                         + "] total[" + i_count_tiles_total + "]";
                 publishProgress(s_message);
             }
          }
          // retrieve the next amount, avoiding excesive memory usage
          mbtiles_request_url = db_mbtiles.retrieve_request_url(i_limit);
+        }
+        i_count_tiles_total = db_mbtiles.get_request_url_count(1);
+        if (i_count_tiles_total < 1)
+        { // when completed, call update_bounds
+         on_update_bounds();
+         publishProgress("-I-> on_update_bounds["+i_request_zoom_level+"][" + db_mbtiles.getName() + "]: bounds["+ db_mbtiles.getBounds_toString()+"] zoom_levels["+db_mbtiles.getZoom_Levels() + "] center_parms["+db_mbtiles.getCenterParms() + "] ");
         }
         return i_rc;
     }
@@ -290,6 +332,7 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
         int[] zxy_osm_tms = MBTilesDroidSpitter.get_zxy_from_tile_id(s_tile_id);
         if ((zxy_osm_tms != null) && (zxy_osm_tms.length == 4)) {
             int i_zoom = zxy_osm_tms[0];
+            i_request_zoom_level=i_zoom;
             int i_tile_x = zxy_osm_tms[1];
             int i_tile_y_osm = zxy_osm_tms[2];
             int i_tile_y_tms = zxy_osm_tms[3];
@@ -455,7 +498,7 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
         int i_rc = 0;
         int i_max_limit=100;
         int i_limit=0;
-        int i_count_tiles_total = db_mbtiles.get_request_url_count(0);
+        int i_count_tiles_total = db_mbtiles.get_request_url_count(1);
         int i_count_tiles_level = 0;
         mbtiles_request_url = new LinkedHashMap<String, String>();
         s_message = "-I-> on_request_create[" + s_request_type + "][" + db_mbtiles.getName() + "]: zoom_levels["
@@ -509,8 +552,9 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
                     + i_count_tiles_level + "] total[" + i_count_tiles_total + "]";
             publishProgress(s_message);
         }
+        i_count_tiles_total = db_mbtiles.get_request_url_count(1);
         s_message = "-I-> on_request_create[" + s_request_type + "][" + db_mbtiles.getName() + "]:  requested tiles["
-                + i_count_tiles_total + "] have been saved.";
+                + i_count_tiles_total + "] exist.";
         publishProgress(s_message);
         return i_rc;
     }

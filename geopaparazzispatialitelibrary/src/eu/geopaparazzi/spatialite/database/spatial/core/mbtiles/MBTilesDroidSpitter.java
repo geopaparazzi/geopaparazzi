@@ -37,6 +37,7 @@ public class MBTilesDroidSpitter {
     private MbTilesMetadata metadata = null;
     private String s_metadataVersion = "1.1";
     private String s_tile_row_type = "tms";
+    private String s_center_parm = "";
     private int i_type_tiles=-1; // mbtiles is only valid if 'i_type_tiles' == 0 or 1 [table or view]
     private int i_request_url_count=-1; // > 0 table 'request_url' exists
     public static final int i_request_url_count_read_value=0;
@@ -47,6 +48,7 @@ public class MBTilesDroidSpitter {
     public static final int i_request_url_count_delete=5;
     private boolean b_mbtiles_valid=false;
     private HashMap<String, String> mbtiles_metadata = null;
+    HashMap<String, String> bounds_lat_long=null;
     // avoid SpatialiteLockException's - multiple read/writes will be queued
     private ReentrantReadWriteLock db_lock = new ReentrantReadWriteLock();
     // -----------------------------------------------
@@ -149,6 +151,32 @@ public class MBTilesDroidSpitter {
       */
     public String getName() {
         return this.s_name; // comment or file-name without path and extention
+    }
+    // -----------------------------------------------
+    /**
+      * Return list of all zoom-levels and Bounds in LatLong
+      * - last entry: min/max zoom-levels and Bounds
+      * - this is calculated from the Database and will update the metadata-table
+      * @return bounds_lat_long list of zoom-levels and Bounds in LatLong
+      */
+    public HashMap<String, String> getBoundsZoomLevels()
+    {
+     if (bounds_lat_long == null)
+     {
+      int i_reload_metadata=1;
+      fetch_bounds_minmax(i_reload_metadata, 1);
+     }
+     return bounds_lat_long;
+    }
+    // -----------------------------------------------
+    /**
+      * Return center position with zoom-level
+      * -  entry: from metatable
+      * @return Center as LatLong and default zoom-level [13.37771496361961,52.51628011262304,17]
+      */
+    public String getCenterParms()
+    {
+     return this.s_center_parm;
     }
     // -----------------------------------------------
     /**
@@ -546,6 +574,7 @@ public class MBTilesDroidSpitter {
         if (this.metadata != null)
         { // mbtiles is only valid if 'metadata' has values
          this.s_tile_row_type = this.metadata.s_tile_row_type;
+         this.s_center_parm = this.metadata.s_center_parm;
          if (i_type_tiles < 0)
          { // mbtiles is only valid if 'i_type_tiles' == 0 or 1 [table or view]
           i_type_tiles=check_type_tiles();
@@ -1004,6 +1033,7 @@ public class MBTilesDroidSpitter {
       */
     public int insert_list_request_url(HashMap<String, String> mbtiles_request_url)
     {
+     int i_request_url_count_prev = this.i_request_url_count;
      db_lock.writeLock().lock();
      db_mbtiles.beginTransaction();
      try
@@ -1014,6 +1044,7 @@ public class MBTilesDroidSpitter {
        String s_tile_url = request_url.getValue();
        insert_request_url(i_request_url_count_insert,s_tile_id,s_tile_url);
       }
+      db_mbtiles.setTransactionSuccessful();
      }
      catch (Exception e)
      {
@@ -1021,7 +1052,6 @@ public class MBTilesDroidSpitter {
      }
      finally
      {
-      db_mbtiles.setTransactionSuccessful();
       db_mbtiles.endTransaction();
       db_lock.writeLock().unlock();
      }
@@ -1036,26 +1066,26 @@ public class MBTilesDroidSpitter {
       * - A VACUUM will fail if there is an open transaction, or if there are one or more active SQL statements when it is run.
       * @return 0=correct ; 1=ANALYSE has failed ; 2=VACUUM has failed
       */
-    public int on_analyse_vacuum()
+    public int on_analyze_vacuum()
     {
      int i_rc=0;
      db_lock.writeLock().lock();
      try
      {
-      i_rc=1;
-      db_mbtiles.execSQL("ANALYSE");
       i_rc=2;
       db_mbtiles.execSQL("VACUUM");
+      i_rc=1;
+      // db_mbtiles.execSQL("ANALYZE"); // ANALYZE
       i_rc=0;
      }
      catch (Exception e)
      {
-      GPLog.androidLog(4,"MBTilesDroidSplitter: ["+getName()+"] -E-> on_analyse_vacuum["+i_rc+"] ",e);
+      GPLog.androidLog(4,"MBTilesDroidSplitter: ["+getName()+"] -E-> on_analyze_vacuum["+i_rc+"] ",e);
      }
      finally
      {
       db_lock.writeLock().unlock();
-      GPLog.androidLog(-1,"MBTilesDroidSplitter: ["+getName()+"] -I-> on_analyse_vacuum["+i_rc+"] ");
+      GPLog.androidLog(-1,"MBTilesDroidSplitter: ["+getName()+"] -I-> on_analyze_vacuum["+i_rc+"] ");
      }
      return i_rc;
     }
@@ -1288,12 +1318,14 @@ public class MBTilesDroidSpitter {
       * General Function to update mbtiles metadata Table
       * @param mbtiles_db Database connection [upon creation, this is a local variable, otherwise the class variable]
       * @param mbtiles_metadata list of key,values to update. [fill this with valued that need to be added/changed]
-      * @param i_reload_metadata reload values after update [not needed upon creation, update after bounds/center/zoom changes]
+      * @param i_reload_metadata 1: reload values after update [not needed upon creation, update after bounds/center/zoom changes]
       * @return 0: no error
       */
     public int update_mbtiles_metadata( SQLiteDatabase mbtiles_db, HashMap<String, String> mbtiles_metadata, int i_reload_metadata )
             throws IOException { // i_rc=0: no error
         int i_rc = 0;
+        if (mbtiles_db == null)
+         mbtiles_db=getmbtiles();
         if (mbtiles_metadata == null)
             mbtiles_metadata = this.mbtiles_metadata;
         String s_metadata_tablename = "metadata";
@@ -1336,12 +1368,17 @@ public class MBTilesDroidSpitter {
     public HashMap<String, String> fetch_bounds_minmax( int i_reload_metadata, int i_update ) {
         HashMap<String, String> update_metadata = new LinkedHashMap<String, String>();
         HashMap<String, String> bounds_min_max = fetch_bounds_minmax_tiles();
-        // GPLog.androidLog(-1,"MBTilesDroidSpitter.ifetch_bounds_minmax: parms["+i_reload_metadata+"/"+i_update+"] bounds_min_max=["+bounds_min_max.size()+"]");
+        // GPLog.androidLog(-1,"MBTilesDroidSpitter.fetch_bounds_minmax: parms["+i_reload_metadata+"/"+i_update+"] bounds_min_max=["+bounds_min_max.size()+"]");
         if (bounds_min_max.size() > 0) {
-            HashMap<String, String> bounds_lat_long = fetch_bounds_minmax_latlong(bounds_min_max, 256);
+            if (bounds_lat_long != null)
+            {
+             bounds_lat_long.clear();
+            }
+            bounds_lat_long = fetch_bounds_minmax_latlong(bounds_min_max, 256);
             if (bounds_lat_long.size() > 0) { // how to retrieve that last value only?
                 String s_zoom_min_max = "";
                 String s_bounds_tiles = "";
+                String s_bounds_center = "";
                 for (Map.Entry<String, String> zoom_levels : bounds_lat_long.entrySet())
                 {
                     s_zoom_min_max = zoom_levels.getKey();
@@ -1349,18 +1386,27 @@ public class MBTilesDroidSpitter {
                 }
                 if ((s_bounds_tiles != "") && (s_bounds_tiles != "")) {
                     String[] sa_splitted = s_zoom_min_max.split(",");
-                    if (sa_splitted.length == 2) { // only the last record (with min/max zoom) will
+                    if (sa_splitted.length == 3) { // only the last record (with min/max/center zoom) will
                                                    // be used
                         String s_minzoom = sa_splitted[0];
                         String s_maxzoom = sa_splitted[1];
-                        if ((s_minzoom != "") && (s_maxzoom != "")) {
-                            sa_splitted = s_bounds_tiles.split(",");
-                            if (sa_splitted.length == 4) {
-                                update_metadata.put("bounds", s_bounds_tiles);
-                                update_metadata.put("minzoom", s_minzoom);
-                                update_metadata.put("maxzoom", s_maxzoom);
-                                GPLog.androidLog(1,"fetch_bounds_minmax  bounds["+s_bounds_tiles+"] minzoom["+s_minzoom+"] maxzoom["+s_maxzoom+"]");
-                            }
+                        String s_centerzoom = sa_splitted[2];
+                        if ((s_minzoom != "") && (s_maxzoom != ""))
+                        {
+                            sa_splitted = s_bounds_tiles.split(";");
+                            if (sa_splitted.length == 2)
+                            {
+                             s_bounds_tiles=sa_splitted[0];
+                             s_bounds_center=sa_splitted[1]+","+s_centerzoom;
+                             sa_splitted = s_bounds_tiles.split(",");
+                             if (sa_splitted.length == 4) {
+                                 update_metadata.put("bounds", s_bounds_tiles);
+                                 update_metadata.put("minzoom", s_minzoom);
+                                 update_metadata.put("maxzoom", s_maxzoom);
+                                 update_metadata.put("center", s_bounds_center);
+                                 // GPLog.androidLog(1,"fetch_bounds_minmax  bounds["+s_bounds_tiles+"] minzoom["+s_minzoom+"] maxzoom["+s_maxzoom+"]");
+                             }
+                           }
                         }
                     }
                 }
@@ -1376,32 +1422,57 @@ public class MBTilesDroidSpitter {
         return update_metadata;
     }
     // -----------------------------------------------
+    // SELECT count(tile_id) from map WHERE zoom_level = 7;
+    // SELECT tile_id from map WHERE zoom_level = 7;
+    // to delete a zoom_level properly:
+    // DELETE FROM map WHERE zoom_level = 7;
+    // DELETE FROM map WHERE tile_id = "ff-ff-ff.rgb";
+    // -----------------------------------------------
     /**
        * Retrieve min/max tiles for each zoom-level from mbtiles
       * - no checking for possible 'holes' inside zoom-level are done
       * - 20131107 mj10777: this function causes problems when online retrieving is done
       * -- with big databases it takes time to compleate this, so the application can stall or crash
       * --- an alternitive will be worked out at a later time
+      * - 20131123: now work correctl and speedaly - but should only be used when really needed
       * @return the retrieved values. ['zoom','min_x,min_y,max_x,max_y']
       */
     public HashMap<String, String> fetch_bounds_minmax_tiles() {
         HashMap<String, String> bounds_min_max = new LinkedHashMap<String, String>();
-        final String SQL_GET_MINMAXZOOM_TILES = "SELECT zoom_level,min(tile_column) AS min_x,min(tile_row) AS min_y,max(tile_column) AS max_x,max(tile_row) AS max_y FROM tiles WHERE zoom_level IN(SELECT DISTINCT zoom_level FROM tiles ORDER BY zoom_level ASC) GROUP BY zoom_level";
-        // GPLog.androidLog(-1,"MBTilesDroidSpitter.fetch_bounds_minmax_tiles: sql["+SQL_GET_MINMAXZOOM_TILES+"]");
+        List<Integer> zoom_levels = null;
+        int i_zoom_level=0;
+        int i_version=0;
+        // These querys run much quicker with 'maps"
+        String s_table="map";
+        if (i_type_tiles == 0)
+        { // mbtiles is only valid if 'i_type_tiles' == 0 or 1 [table or view]
+         s_table="tiles"; // map will not exist
+        }
+        // SELECT zoom_level,min(tile_column) AS min_x,min(tile_row) AS min_y,max(tile_column) AS max_x,max(tile_row) AS max_y FROM tiles WHERE zoom_level IN(SELECT DISTINCT zoom_level FROM tiles ORDER BY zoom_level ASC) GROUP BY zoom_level
+        // tiles: 00:00:07.160  ; map 00:00:03.200
+        // SELECT DISTINCT zoom_level FROM tiles ORDER BY zoom_level ASC
+        // tiles: 00:00:03.209  ; map 00:00:00.040
+        // SELECT zoom_level,min(tile_column) AS min_x,min(tile_row) AS min_y,max(tile_column) AS max_x,max(tile_row) AS max_y FROM tiles WHERE zoom_level = 16
+        // tiles: 00:00:03.200  ; map 00:00:00.040
+        String SQL_GET_MINMAXZOOM_TILES="SELECT zoom_level,min(tile_column) AS min_x,min(tile_row) AS min_y,max(tile_column) AS max_x,max(tile_row) AS max_y FROM "+s_table+" WHERE zoom_level IN(SELECT DISTINCT zoom_level FROM "+s_table+" ORDER BY zoom_level ASC) GROUP BY zoom_level";
+        Cursor c_tiles = null;
         db_lock.readLock().lock();
         try
         {
-         final Cursor c = db_mbtiles.rawQuery(SQL_GET_MINMAXZOOM_TILES, null);
-         // mj10777: 20131106: seems to be timing out
-         if (c != null) { // avoid CursorIndexOutOfBoundsException
-          c.moveToFirst();
-          do { // 12 2197 2750 2203 2754
-              String s_zoom = c.getString(0);
-              String s_bounds_tiles = c.getString(1) + "," + c.getString(2) + "," + c.getString(3) + "," + c.getString(4);
-              bounds_min_max.put(s_zoom, s_bounds_tiles);
-              // GPLog.androidLog(-1,"MBTilesDroidSpitter.fetch_bounds_minmax_tiles: sql["+s_zoom+","+s_bounds_tiles+"]");
-           } while( c.moveToNext() );
-          c.close();
+         // GPLog.androidLog(-1,"MBTilesDroidSpitter.fetch_bounds_minmax_tiles: sql["+SQL_GET_MINMAXZOOM_TILES+"]");
+         c_tiles = db_mbtiles.rawQuery(SQL_GET_MINMAXZOOM_TILES, null);
+         // mj10777: 20131123: avoid using table/view 'tiles' - with big databases can bring things to a halt
+         if (c_tiles != null)
+         { // avoid CursorIndexOutOfBoundsException
+          c_tiles.moveToFirst();
+          do
+          { // 12 2197 2750 2203 2754
+           String s_zoom = c_tiles.getString(0);
+           String s_bounds_tiles = c_tiles.getString(1) + "," + c_tiles.getString(2) + "," + c_tiles.getString(3) + "," + c_tiles.getString(4);
+           bounds_min_max.put(s_zoom, s_bounds_tiles);
+           // GPLog.androidLog(-1,"MBTilesDroidSpitter.fetch_bounds_minmax_tiles: sql["+s_zoom+","+s_bounds_tiles+"]");
+          } while( c_tiles.moveToNext() );
+          c_tiles.close();
          }
         }
         catch (Exception e)
@@ -1417,14 +1488,15 @@ public class MBTilesDroidSpitter {
     // -----------------------------------------------
     /**
       * Convert zoom/min/max tile number bounds into lat long for each zoom-level
-      * - last entry the min-max zoo and the min/max lat/long of all zoom-levels
+      * - last entry the min-max zoom and the min/max lat/long of all zoom-levels
       * @param bounds_tiles (result of fetch_bounds_minmax_tiles())
       * @return the converted values. ['zoom','min_x,min_y,max_x,max_y']
       */
     public HashMap<String, String> fetch_bounds_minmax_latlong( HashMap<String, String> bounds_tiles, int i_tize_size ) {
-        double[] max_bounds = new double[]{180.0, 85.05113, -180.0, -85.05113};
+        double[] max_bounds = new double[]{180.0, 85.05113, -180.0, -85.05113,0,0};
         int i_min_zoom = 22;
         int i_max_zoom = 0;
+        int i_zoom_center=0;
         HashMap<String, String> bounds_lat_long = new LinkedHashMap<String, String>();
         for (Map.Entry<String, String> zoom_bounds : bounds_tiles.entrySet())
         {
@@ -1442,11 +1514,22 @@ public class MBTilesDroidSpitter {
                 max_bounds[2] = tile_bounds[2];
             if (tile_bounds[3] > max_bounds[3])
                 max_bounds[3] = tile_bounds[3];
-            String s_bounds_tiles = tile_bounds[0] + "," + tile_bounds[1] + "," + tile_bounds[2] + "," + tile_bounds[3];
+            if (((tile_bounds[4] >= max_bounds[0]) && (tile_bounds[4] <= max_bounds[2])) &&
+                 ((tile_bounds[5] >= max_bounds[1]) && (tile_bounds[5] <= max_bounds[3])))
+            {
+             if (i_zoom_center < i_zoom)
+             { // The center of the highest Zoom-Level will be set as center
+              max_bounds[4] = tile_bounds[4];
+              max_bounds[5] = tile_bounds[5];
+              i_zoom_center=i_zoom;
+             }
+            }
+            String s_bounds_tiles = tile_bounds[0] + "," + tile_bounds[1] + "," + tile_bounds[2] + "," + tile_bounds[3]+";"+tile_bounds[4]+","+tile_bounds[5];
             bounds_lat_long.put(zoom_bounds.getKey(), s_bounds_tiles);
+            // GPLog.androidLog(-1,"MBTilesDroidSpitter.fetch_bounds_minmax_tiles: bounds_lat_long["+i_zoom+","+s_bounds_tiles+"]");
         }
-        String s_zoom = i_min_zoom + "," + i_max_zoom;
-        String s_bounds_tiles = max_bounds[0] + "," + max_bounds[1] + "," + max_bounds[2] + "," + max_bounds[3];
+        String s_zoom = i_min_zoom + "," + i_max_zoom+","+i_zoom_center;
+        String s_bounds_tiles = max_bounds[0] + "," + max_bounds[1] + "," + max_bounds[2] + "," + max_bounds[3]+";"+max_bounds[4]+","+max_bounds[5];
         bounds_lat_long.put(s_zoom, s_bounds_tiles);
         return bounds_lat_long;
     }
@@ -1507,7 +1590,9 @@ public class MBTilesDroidSpitter {
         bounds = tileLatLonBounds(i_max_x, i_max_y_osm, i_zoom, i_tize_size);
         double d_max_x = bounds[2];
         double d_max_y = bounds[3];
-        return new double[]{d_min_x, d_min_y, d_max_x, d_max_y};
+        double d_center_x = (d_max_x+d_min_x)/2;
+        double d_center_y = (d_max_y+d_min_y)/2;
+        return new double[]{d_min_x, d_min_y, d_max_x, d_max_y,d_center_x,d_center_y};
     }
     // -----------------------------------------------
     /**

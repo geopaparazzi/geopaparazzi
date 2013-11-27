@@ -6,7 +6,22 @@ import jsqlite.Exception;
 import android.graphics.Paint;
 
 public interface ISpatialDatabaseHandler {
-
+    // -----------------------------------------------
+    /**
+      * Return long name of map/file
+      *
+      * <p>default: file name with path and extention
+      * <p>mbtiles : will be a '.mbtiles' sqlite-file-name
+      * <p>map : will be a mapforge '.map' file-name
+      *
+      * @return file_map.getAbsolutePath();
+      */
+    public abstract String getFileNamePath() ;
+    /**
+      * Is the database file considered valid
+      * @return true or false
+       */
+    public abstract boolean  isValid(  );
     /**
      * Get the spatial tables from the database.
      *

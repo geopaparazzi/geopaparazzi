@@ -65,6 +65,7 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
                                            // names
     private MBTilesDroidSpitter db_mbtiles;
     private HashMap<String, String> mbtiles_metadata = null;
+    public HashMap<String, String> async_mbtiles_metadata = null;
     private int minZoom;
     private int maxZoom;
     private double centerX; // wsg84
@@ -78,7 +79,9 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
     private MBtilesAsync mbtiles_async = null;
     // echo "ANALYZE;VACUUM; " >> ${this_dir}.sql;
     public static enum AsyncTasks { // MbtilesDatabaseHandler.AsyncTasks.ASYNC_PARMS
-        ASYNC_PARMS, ANALYZE_VACUUM, REQUEST_URL, REQUEST_CREATE, REQUEST_DROP, REQUEST_DELETE, REQUEST_PING, UPDATE_BOUNDS
+        ASYNC_PARMS, ANALYZE_VACUUM, REQUEST_URL, REQUEST_CREATE,
+        REQUEST_DROP, REQUEST_DELETE, REQUEST_PING, UPDATE_BOUNDS,
+        RESET_METADATA
     }
     public List<MbtilesDatabaseHandler.AsyncTasks> async_parms = new ArrayList<MbtilesDatabaseHandler.AsyncTasks>();
     public String s_request_url_source = "";
@@ -128,12 +131,12 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
       * checking is done once when the 'metadata' is retrieved the first time [fetchMetadata()]
       * @return b_mbtiles_valid true if valid, otherwise false
       */
+    @Override
     public boolean isValid() {
-        if (db_mbtiles != null) {
-            return db_mbtiles.isValid();
-        } else {
-            return false;
+     if (db_mbtiles.getmbtiles() == null) { // in case .'open' was forgotten
+            open(); // "" : default value will be used '1.1'
         }
+        return db_mbtiles.isValid();
     }
     // -----------------------------------------------
     /**
@@ -143,7 +146,7 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
       */
     public List<MbtilesDatabaseHandler.AsyncTasks> getAsyncParms() {
         if (db_mbtiles.getmbtiles() == null) { // in case .'open' was forgotten
-            db_mbtiles.open(true, ""); // "" : default value will be used '1.1'
+            open(); // "" : default value will be used '1.1'
         }
         return async_parms;
     }
@@ -154,41 +157,13 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
     public List<SpatialRasterTable> getSpatialRasterTables( boolean forceRead ) throws Exception {
         if (rasterTableList == null || forceRead) {
             rasterTableList = new ArrayList<SpatialRasterTable>();
-            db_mbtiles.open(true, ""); // "" : default value will be used '1.1'
-            MbTilesMetadata metadata = db_mbtiles.getMetadata();
-            float[] bounds = metadata.bounds;// left, bottom, right, top
-            double[] d_bounds = {bounds[0], bounds[1], bounds[2], bounds[3]};
-            float[] center = metadata.center;// center_x,center_y,zoom
-            this.s_name = metadata.name;
-            // String tableName = metadata.name;
-            float centerX = 0f;
-            float centerY = 0f;
-            int defaultZoom = metadata.maxZoom;
-            if (center != null) {
-                centerX = center[0];
-                centerY = center[1];
-                defaultZoom = (int) center[2];
-            } else {
-                if (bounds != null) {
-                    centerX = bounds[0] + (bounds[2] - bounds[0]) / 2f;
-                    centerY = bounds[1] + (bounds[3] - bounds[1]) / 2f;
-                }
-            }
-            setDescription(metadata.description);
-            SpatialRasterTable table = new SpatialRasterTable(s_map_file, s_name, "3857", metadata.minZoom, metadata.maxZoom,
+            open();
+            double[] d_bounds = {this.bounds_west,this.bounds_south,this.bounds_east,this.bounds_north};
+            SpatialRasterTable table = new SpatialRasterTable(s_map_file, s_name, "3857", this.minZoom, this.maxZoom,
                     centerX, centerY, "?,?,?", d_bounds);
             table.setDefaultZoom(defaultZoom);
-            table.setDescription(s_description);
+            table.setDescription(getDescription());
             table.setMapType(s_map_type);
-            this.minZoom = table.getMinZoom();
-            this.maxZoom = table.getMaxZoom();
-            this.defaultZoom = table.getDefaultZoom();
-            this.centerX = table.getCenterX();
-            this.centerY = table.getCenterY();
-            this.bounds_west = table.getMinLongitude();
-            this.bounds_south = table.getMinLatitude();
-            this.bounds_east = table.getMaxLongitude();
-            this.bounds_north = getMaxLatitude();
             // for mbtiles the desired center can be set by the
             // database developer and may be different than the
             // true center/zoom
@@ -252,7 +227,7 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
     public boolean getBitmapTile( int i_x, int i_y_osm, int i_z, int i_pixel_size, Bitmap tile_bitmap ) {
         boolean b_rc = true;
         if (db_mbtiles.getmbtiles() == null) { // in case .'open' was forgotten
-            db_mbtiles.open(true, ""); // "" : default value will be used '1.1'
+            open(); // "" : default value will be used '1.1'
         }
         int[] pixels = new int[i_pixel_size * i_pixel_size];
         byte[] rasterBytes = db_mbtiles.getTileAsBytes(i_x, i_y_osm, i_z);
@@ -304,7 +279,57 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
         }
         return i_rc;
     }
-
+    // -----------------------------------------------
+    /**
+      * Open mbtiles Database, with all default tasks
+      * @return void
+      */
+    public void open()  {
+        if (db_mbtiles.getmbtiles() == null)
+        {
+         db_mbtiles.open(true, ""); // "" : default value will be used '1.1'
+         load_metadata();
+        }
+    }
+    // -----------------------------------------------
+    /**
+      * Load and set metadata from mbtiles Database, with all default tasks
+      * - do this in one place to insure that it is allways done in the same way
+      * @return void
+      */
+    public void load_metadata()
+    {
+     MbTilesMetadata metadata = db_mbtiles.getMetadata();
+     float[] bounds = metadata.bounds;// left, bottom, right, top
+     double[] d_bounds = {bounds[0], bounds[1], bounds[2], bounds[3]};
+     float[] center = metadata.center;// center_x,center_y,zoom
+     this.s_name = metadata.name;
+     // String tableName = metadata.name;
+     float centerX = 0f;
+     float centerY = 0f;
+     this.defaultZoom = metadata.maxZoom;
+     this.minZoom=metadata.minZoom;
+     this.maxZoom=metadata.maxZoom;
+     this.bounds_west = d_bounds[0];
+     this.bounds_south = d_bounds[1];
+     this.bounds_east = d_bounds[2];
+     this.bounds_north = d_bounds[3];
+     if (center != null)
+     {
+      this.centerX = center[0];
+      this.centerY = center[1];
+      this.defaultZoom = (int) center[2];
+     }
+     else
+     {
+      if (bounds != null)
+      {
+       this.centerX = bounds[0] + (bounds[2] - bounds[0]) / 2f;
+       this.centerY = bounds[1] + (bounds[3] - bounds[1]) / 2f;
+      }
+     }
+     setDescription(metadata.description);
+    }
     // -----------------------------------------------
     /**
       * Close mbtiles Database
@@ -322,14 +347,70 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
     }
     // -----------------------------------------------
     /**
+      * Return list of all zoom-levels and Bounds in LatLong
+      * - last entry: min/max zoom-levels and Bounds
+      * - this is calculated from the Database and will update the metadata-table
+      * @return bounds_lat_long list of zoom-levels and Bounds in LatLong
+      */
+    public HashMap<String, String> getBoundsZoomLevels()
+    {
+     if (db_mbtiles != null) {
+      return db_mbtiles.getBoundsZoomLevels();
+     }
+     return new LinkedHashMap<String, String>();
+    }
+    // -----------------------------------------------
+    /**
+      * Return center position with zoom-level
+      * -  entry: from metatable
+      * @return Center as LatLong and default zoom-level [13.37771496361961,52.51628011262304,17]
+      */
+    public String getCenterParms()
+    {
+     if (db_mbtiles != null) {
+      return db_mbtiles.getCenterParms();
+     }
+     return "";
+    }
+    // -----------------------------------------------
+    /**
       * Update mbtiles Bounds / Zoom (min/max) levels
       * @param i_reload_metadata reload values after update [not needed upon creation, update after bounds/center/zoom changes]
       * @return void
       */
-    public void update_bounds( int i_reload_metadata ) {
+    public int update_bounds( int i_reload_metadata ) {
+     int i_rc=1;
         if (db_mbtiles != null) {
             db_mbtiles.fetch_bounds_minmax(i_reload_metadata, 1);
+            load_metadata(); // will read and reset values
+            i_rc=0;
         }
+        return i_rc;
+    }
+    // -----------------------------------------------
+    /**
+      * General Function to update mbtiles metadata Table
+      * @param mbtiles_metadata list of key,values to update. [fill this with valued that need to be added/changed]
+      * @param i_reload_metadata 1: reload values after update [not needed upon creation, update after bounds/center/zoom changes]
+      * @return 0: no error
+      */
+    public int update_metadata( HashMap<String, String> mbtiles_metadata, int i_reload_metadata ) throws IOException
+    {
+     int i_rc=1;
+     if (db_mbtiles != null) {
+            try
+            {
+             i_rc=db_mbtiles.update_mbtiles_metadata(null,mbtiles_metadata,i_reload_metadata);
+             if (i_reload_metadata == 1)
+              load_metadata(); // will read and reset values
+             i_rc=0;
+            }
+            catch (IOException e)
+            {
+             GPLog.androidLog(4,"MbtilesDatabaseHandler.update_metadata[" + getFileNamePath()+ "]", e);
+            }
+        }
+        return i_rc;
     }
     // -----------------------------------------------
     /**
@@ -341,6 +422,7 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
       *
       * @return file_map.getAbsolutePath();
       */
+    @Override
     public String getFileNamePath() {
         return this.s_map_file; // file_map.getAbsolutePath();
     }
@@ -593,24 +675,30 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
     public void intersectionToString4Polygon( String boundsSrid, SpatialVectorTable spatialTable, double n, double e,
             StringBuilder sb, String indentStr ) throws Exception {
     }
-    public void run_retrieve_url( HashMap<String, String> mbtiles_request_url ) {
-        int i_run_url = 0;
+    public void run_retrieve_url( HashMap<String, String> mbtiles_request_url,HashMap<String, String> async_mbtiles_metadata ) {
+        int i_run_create = 0;
+        int i_run_fill = 0;
+        int i_run_replace = 0;
         int i_load_url = 0;
         int i_delete = 0;
         int i_drop = 0;
         int i_vacuum = 0;
         int i_update_bounds = 0;
+        this.async_mbtiles_metadata=async_mbtiles_metadata;
         for( Map.Entry<String, String> request_url : mbtiles_request_url.entrySet() ) {
             String s_key = request_url.getKey();
             String s_value = request_url.getValue();
             if (s_key.equals("request_type")) {
                 if (s_value.indexOf("fill") != -1) { // will request missing tiles only
-                    i_run_url = 1;
+                    i_run_fill = 1;
                     s_request_type = "fill";
                 }
                 if (s_value.indexOf("replace") != -1) { // will replace existing tiles
-                    i_run_url = 2;
+                    i_run_replace = 1;
                     s_request_type = "replace";
+                }
+                if (s_value.indexOf("load") != -1) { // will replace existing tiles
+                    i_load_url = 1;
                 }
                 if (s_value.indexOf("drop") != -1) { // will delete the requested tiles, retaining
                                                      // the allready downloaded tiles
@@ -631,31 +719,45 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
             }
             if (s_key.equals("request_url")) {
                 s_request_url_source = s_value;
-                i_load_url++;
             }
             if (s_key.equals("request_bounds")) {
                 s_request_bounds = s_value;
-                i_load_url++;
             }
             if (s_key.equals("request_bounds_url")) {
                 s_request_bounds_url = s_value;
-                i_load_url++;
-            }
+             }
             if (s_key.equals("request_zoom_levels")) {
                 s_request_zoom_levels = s_value;
-                i_load_url++;
             }
             if (s_key.equals("request_zoom_levels_url")) {
+              // reserved for future
                 s_request_zoom_levels_url = s_value;
-                i_load_url++;
             }
             if (s_key.equals("request_y_type")) {
+             // reserved for future
                 s_request_y_type = s_value;
-                i_load_url++;
             }
-            //GPLog.androidLog(-1, "run_retrieve_url: key[" + s_key + "]  value[" + s_value + "] load[" + i_load_url + "] run["+ i_run_url + "]");
+            //GPLog.androidLog(-1, "run_retrieve_url: key[" + s_key + "]  value[" + s_value + "] load[" + i_load_url + "] ");
+        }
+        // check if the pre-requriment for REQUEST_CREATE are fullfilled
+        if ((i_run_fill != 0) || (i_run_replace != 1))
+        {
+         if ((i_run_fill == 1) && (i_run_replace == 1))
+         {
+          i_run_replace=0;
+          s_request_type = "fill";
+         }
+         if ((!s_request_url_source.equals("")) && (!s_request_bounds.equals("")) &&
+              (!s_request_zoom_levels.equals("")))
+         { // run only if set, some cheding might be wise
+          i_run_create=1;
+         }
         }
         // The order of adding is important
+        if ((this.async_mbtiles_metadata != null) && (this.async_mbtiles_metadata.size() > 0))
+        {
+         async_parms.add(AsyncTasks.RESET_METADATA);
+        }
         if (i_update_bounds > 0) { // will do an extensive check on bounds and zoom-level, updating
                                    // the mbtiles.metadata table
             async_parms.add(AsyncTasks.UPDATE_BOUNDS);
@@ -670,10 +772,10 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
         if (i_vacuum > 0) { // VACUUM should run AFTER any deleting and BEFORE any inserting
             async_parms.add(AsyncTasks.ANALYZE_VACUUM);
         }
-        if (i_load_url > 3) { // REQUEST_CREATE
+        if (i_run_create > 0) { // REQUEST_CREATE
             async_parms.add(AsyncTasks.REQUEST_CREATE);
         }
-        if (i_run_url > 0) { // will download requested tiles
+        if (i_load_url > 0) { // will download requested tiles
             async_parms.add(AsyncTasks.REQUEST_URL);
         }
         if (async_parms.size() > 0) {
@@ -692,6 +794,7 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
                    mbtiles_async.execute(AsyncTasks.ASYNC_PARMS);
                   }
             */
+            // GPLog.androidLog(-1,"run_retrieve_url.Build.VERSION.SDK_INT.["+Build.VERSION.SDK_INT+"]"); // 20131125: 15
             mbtiles_async.execute(AsyncTasks.ASYNC_PARMS);
         }
     }
@@ -779,10 +882,10 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
       * - A VACUUM will fail if there is an open transaction, or if there are one or more active SQL statements when it is run.
       * @return 0=correct ; 1=ANALYSE has failed ; 2=VACUUM has failed
       */
-    public int on_analyse_vacuum() {
+    public int on_analyze_vacuum() {
         int i_rc = 0;
         if (db_mbtiles != null) {
-            return db_mbtiles.on_analyse_vacuum();
+            return db_mbtiles.on_analyze_vacuum();
         }
         return i_rc;
     }
