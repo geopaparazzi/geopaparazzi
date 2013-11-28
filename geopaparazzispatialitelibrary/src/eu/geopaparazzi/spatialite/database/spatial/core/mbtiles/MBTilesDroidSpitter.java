@@ -38,17 +38,18 @@ public class MBTilesDroidSpitter {
     private String s_metadataVersion = "1.1";
     private String s_tile_row_type = "tms";
     private String s_center_parm = "";
-    private int i_type_tiles=-1; // mbtiles is only valid if 'i_type_tiles' == 0 or 1 [table or view]
-    private int i_request_url_count=-1; // > 0 table 'request_url' exists
-    public static final int i_request_url_count_read_value=0;
-    public static final int i_request_url_count_read_db=1;
-    public static final int i_request_url_count_create=2;
-    public static final int i_request_url_count_drop=3;
-    public static final int i_request_url_count_insert=4;
-    public static final int i_request_url_count_delete=5;
-    private boolean b_mbtiles_valid=false;
+    private int i_type_tiles = -1; // mbtiles is only valid if 'i_type_tiles' == 0 or 1 [table or
+                                   // view]
+    private int i_request_url_count = -1; // > 0 table 'request_url' exists
+    public static final int i_request_url_count_read_value = 0;
+    public static final int i_request_url_count_read_db = 1;
+    public static final int i_request_url_count_create = 2;
+    public static final int i_request_url_count_drop = 3;
+    public static final int i_request_url_count_insert = 4;
+    public static final int i_request_url_count_delete = 5;
+    private boolean b_mbtiles_valid = false;
     private HashMap<String, String> mbtiles_metadata = null;
-    HashMap<String, String> bounds_lat_long=null;
+    HashMap<String, String> bounds_lat_long = null;
     // avoid SpatialiteLockException's - multiple read/writes will be queued
     private ReentrantReadWriteLock db_lock = new ReentrantReadWriteLock();
     // -----------------------------------------------
@@ -75,19 +76,20 @@ public class MBTilesDroidSpitter {
                                            // - a mbtiles database will be created with default
                                            // values and closed
             try {
-              if (!this.file_mbtiles.getName().endsWith(".mbtiles"))
-              { // .mbtiles files must have an .mbtiles extention, force this
-               String s_mbtiles_path=file_mbtiles.getParentFile().getAbsolutePath();
-               s_name = this.file_mbtiles.getName().substring(0, this.file_mbtiles.getName().lastIndexOf("."));
-               this.file_mbtiles = new File(s_mbtiles_path+"/"+s_name+".mbtiles");
-              }
-              create_mbtiles(this.file_mbtiles);
+                if (!this.file_mbtiles.getName().endsWith(".mbtiles")) { // .mbtiles files must have
+                                                                         // an .mbtiles extention,
+                                                                         // force this
+                    String s_mbtiles_path = file_mbtiles.getParentFile().getAbsolutePath();
+                    s_name = this.file_mbtiles.getName().substring(0, this.file_mbtiles.getName().lastIndexOf("."));
+                    this.file_mbtiles = new File(s_mbtiles_path + "/" + s_name + ".mbtiles");
+                }
+                create_mbtiles(this.file_mbtiles);
             } catch (IOException e) {
-                GPLog.androidLog(4,"MBTilesDroidSpitter[" + file_mbtiles.getAbsolutePath() + "]", e);
+                GPLog.androidLog(4, "MBTilesDroidSpitter[" + file_mbtiles.getAbsolutePath() + "]", e);
             }
         }
         this.s_name = this.file_mbtiles.getName().substring(0, this.file_mbtiles.getName().lastIndexOf("."));
-        this.s_mbtiles_file=file_mbtiles.getAbsolutePath();
+        this.s_mbtiles_file = file_mbtiles.getAbsolutePath();
     }
     // -----------------------------------------------
     /**
@@ -104,10 +106,9 @@ public class MBTilesDroidSpitter {
         try {
             fetchMetadata(this.s_metadataVersion);
         } catch (MetadataParseException e) {
-            GPLog.androidLog(4,"MBTilesDroidSpitter[" + file_mbtiles.getAbsolutePath() + "]", e);
+            GPLog.androidLog(4, "MBTilesDroidSpitter[" + file_mbtiles.getAbsolutePath() + "]", e);
         }
-        if (!isValid())
-        { // this mbtiles file is invalid
+        if (!isValid()) { // this mbtiles file is invalid
         }
     }
     // -----------------------------------------------
@@ -126,7 +127,7 @@ public class MBTilesDroidSpitter {
     public SQLiteDatabase getmbtiles() {
         return db_mbtiles;
     }
-   // -----------------------------------------------
+    // -----------------------------------------------
     /**
       * Return long name of map/file
       *
@@ -159,14 +160,12 @@ public class MBTilesDroidSpitter {
       * - this is calculated from the Database and will update the metadata-table
       * @return bounds_lat_long list of zoom-levels and Bounds in LatLong
       */
-    public HashMap<String, String> getBoundsZoomLevels()
-    {
-     if (bounds_lat_long == null)
-     {
-      int i_reload_metadata=1;
-      fetch_bounds_minmax(i_reload_metadata, 1);
-     }
-     return bounds_lat_long;
+    public HashMap<String, String> getBoundsZoomLevels() {
+        if (bounds_lat_long == null) {
+            int i_reload_metadata = 1;
+            fetch_bounds_minmax(i_reload_metadata, 1);
+        }
+        return bounds_lat_long;
     }
     // -----------------------------------------------
     /**
@@ -174,9 +173,8 @@ public class MBTilesDroidSpitter {
       * -  entry: from metatable
       * @return Center as LatLong and default zoom-level [13.37771496361961,52.51628011262304,17]
       */
-    public String getCenterParms()
-    {
-     return this.s_center_parm;
+    public String getCenterParms() {
+        return this.s_center_parm;
     }
     // -----------------------------------------------
     /**
@@ -232,26 +230,21 @@ public class MBTilesDroidSpitter {
             return null;
         }
         // db_lock.readLock().lock();
-        byte[] blob_data=null;
-        try
-        {
-         final Cursor c = db_mbtiles.rawQuery("select tile_data from tiles where tile_column=? and tile_row=? and zoom_level=?",
-                new String[]{s_x, s_y, s_z});
-         if (!c.moveToFirst())
-         {
-             c.close();
-             // db_lock.readLock().unlock();
-             return null;
-         }
-         blob_data = c.getBlob(c.getColumnIndex("tile_data"));
-         c.close();
-        }
-        catch (Exception e)
-        {
-        }
-        finally
-        { // causes crash
-         // db_lock.readLock().unlock();
+        byte[] blob_data = null;
+        try {
+            final Cursor c = db_mbtiles.rawQuery(
+                    "select tile_data from tiles where tile_column=? and tile_row=? and zoom_level=?",
+                    new String[]{s_x, s_y, s_z});
+            if (!c.moveToFirst()) {
+                c.close();
+                // db_lock.readLock().unlock();
+                return null;
+            }
+            blob_data = c.getBlob(c.getColumnIndex("tile_data"));
+            c.close();
+        } catch (Exception e) {
+        } finally { // causes crash
+                    // db_lock.readLock().unlock();
         }
         return blob_data;
     }
@@ -267,8 +260,10 @@ public class MBTilesDroidSpitter {
       * @param i_force_unique 1=check if image is unique in Database [may be slow if used]
       * @return 0: correct, otherwise error
       */
-    public int insertBitmapTile( int i_x, int i_y_osm, int i_z, Bitmap tile_bitmap, int i_force_unique )
-            throws IOException { // i_rc=0: correct, otherwise error
+    public int insertBitmapTile( int i_x, int i_y_osm, int i_z, Bitmap tile_bitmap, int i_force_unique ) throws IOException { // i_rc=0:
+                                                                                                                              // correct,
+                                                                                                                              // otherwise
+                                                                                                                              // error
         int i_rc = 0;
         // i_parm=1: 'ff-ee-dd.rgb' [to be used as tile_id], blank if image is not Blank (all pixels
         // use one RGB value)
@@ -285,7 +280,7 @@ public class MBTilesDroidSpitter {
             i_rc = insertTile(s_tile_id, i_x, i_y_osm, i_z, ba_tile_data, i_force_unique);
         } catch (Exception e) {
             i_rc = 1;
-            GPLog.androidLog(4,"MBTilesDroidSpitter[" + file_mbtiles.getAbsolutePath() + "]", e);
+            GPLog.androidLog(4, "MBTilesDroidSpitter[" + file_mbtiles.getAbsolutePath() + "]", e);
         }
         // GPLog.androidLog(-1,"MBTilesDroidSpitter.insertBitmapTile: inserting["+i_z+"/"+i_x+"/"+i_y_osm+"] rc=["+i_rc+"]");
         return i_rc;
@@ -304,15 +299,15 @@ public class MBTilesDroidSpitter {
       * @param i_force_unique 1=check if image is unique in Database [may be slow if used]
       * @return 0: no error
       */
-    private int insertTile( String s_tile_id, int i_x, int i_y_osm, int i_z, byte[] ba_tile_data, int i_force_unique) throws IOException { // i_rc=0: correct, otherwise error
+    private int insertTile( String s_tile_id, int i_x, int i_y_osm, int i_z, byte[] ba_tile_data, int i_force_unique )
+            throws IOException { // i_rc=0: correct, otherwise error
         int i_rc = 0;
-        if (!isValid())
-        { // this mbtiles file is invalid
-         return 100; // invalid mbtiles
+        if (!isValid()) { // this mbtiles file is invalid
+            return 100; // invalid mbtiles
         }
         boolean b_unique = true;
         if (s_tile_id == "") {
-           s_tile_id=get_tile_id_from_zxy( i_z, i_x,i_y_osm ) ;
+            s_tile_id = get_tile_id_from_zxy(i_z, i_x, i_y_osm);
         } else { // This should be a 'Blank' Image :'ff-ee-dd.rgb', check if allready stored in
                  // 'images' table
             b_unique = search_blank_image(s_tile_id);
@@ -356,82 +351,85 @@ public class MBTilesDroidSpitter {
                 s_tile_id = s_tile_id_query;
             }
         }
-        // The Database may have been closed in the meantime, we just don't know that yet - should bail out gracefully
+        // The Database may have been closed in the meantime, we just don't know that yet - should
+        // bail out gracefully
         // - avoid 'IllegalStateException' '(conn# x): already closed'
-        if (db_mbtiles.isOpen())
-        { // You cannot lock the Database if the connection is not open
-         db_lock.writeLock().lock();
-         db_mbtiles.beginTransaction();
-         try {
-            if (b_unique) { // We do not have this image, add it
-             if (i_type_tiles == 1)
-             {
-                ContentValues image_values = new ContentValues();
-                image_values.put(s_mbtiles_field_tile_data, ba_tile_data);
-                image_values.put(s_mbtiles_field_tile_id, s_tile_id);
-                db_mbtiles.insertOrThrow(s_images_tablename, null, image_values);
-             }
-            }
-            if (i_type_tiles == 1)
-            { // 'tiles' is a view
-             // Note: the 'map' table will/should only reference an existing image in the 'images'.
-             // table
-             // - it is possible that there is more than one reference to an existing image
-             // -- sample: an area has 15 tiles of one color (all pixels of the tile have the same
-             // RGB)
-             // --- this image will be stored 1 time in 'images', but will be used 15 times in 'map'
-             ContentValues map_values = new ContentValues();
-             map_values.put(s_mbtiles_field_zoom_level, i_z);
-             map_values.put(s_mbtiles_field_tile_column, i_x);
-             map_values.put(s_mbtiles_field_tile_row, i_y);
-             map_values.put(s_mbtiles_field_tile_id, s_tile_id);
-             map_values.put(s_mbtiles_field_grid_id, s_grid_id);
-             db_mbtiles.insertOrThrow(s_map_tablename, null, map_values);
-            }
-            if (i_type_tiles == 0)
-            { // 'tiles' is a table
-             ContentValues tiles_values = new ContentValues();
-             tiles_values.put(s_mbtiles_field_zoom_level, i_z);
-             tiles_values.put(s_mbtiles_field_tile_column, i_x);
-             tiles_values.put(s_mbtiles_field_tile_row, i_y);
-             tiles_values.put(s_mbtiles_field_tile_data, ba_tile_data);
-             db_mbtiles.insertOrThrow(s_tiles_tablename, null, tiles_values);
-            }
-            db_mbtiles.setTransactionSuccessful();
-         } catch (Exception e) {
-          if (e.getMessage() != null)
-          {
-           String s_message=e.getMessage();
-           if (s_message.equals("error code 19: constraint failed"))
-           {  // When the tile allready exists: not to be considered an error
-            i_rc = 0;
-            return i_rc;
-           }
-          }
-            throw new IOException("MBTilesDroidSpitter:insertTile error[" + e.getLocalizedMessage() + "] rc="+i_rc);
-         } finally {
-            db_mbtiles.endTransaction();
-            db_lock.writeLock().unlock();
-            int i_update = 1;
-            try { // if the bounds or min/max zoom have changed, update changed values and reload
-                  // metadata
-                i_update = checkBounds(i_x, i_y_osm, i_z, i_update);
-                // i_update=0: inside bounds ; othewise bounds and metadata have changed - not used
+        if (db_mbtiles.isOpen()) { // You cannot lock the Database if the connection is not open
+            db_lock.writeLock().lock();
+            db_mbtiles.beginTransaction();
+            try {
+                if (b_unique) { // We do not have this image, add it
+                    if (i_type_tiles == 1) {
+                        ContentValues image_values = new ContentValues();
+                        image_values.put(s_mbtiles_field_tile_data, ba_tile_data);
+                        image_values.put(s_mbtiles_field_tile_id, s_tile_id);
+                        db_mbtiles.insertOrThrow(s_images_tablename, null, image_values);
+                    }
+                }
+                if (i_type_tiles == 1) { // 'tiles' is a view
+                                         // Note: the 'map' table will/should only reference an
+                                         // existing image in the 'images'.
+                                         // table
+                                         // - it is possible that there is more than one reference
+                                         // to an existing image
+                                         // -- sample: an area has 15 tiles of one color (all pixels
+                                         // of the tile have the same
+                                         // RGB)
+                                         // --- this image will be stored 1 time in 'images', but
+                                         // will be used 15 times in 'map'
+                    ContentValues map_values = new ContentValues();
+                    map_values.put(s_mbtiles_field_zoom_level, i_z);
+                    map_values.put(s_mbtiles_field_tile_column, i_x);
+                    map_values.put(s_mbtiles_field_tile_row, i_y);
+                    map_values.put(s_mbtiles_field_tile_id, s_tile_id);
+                    map_values.put(s_mbtiles_field_grid_id, s_grid_id);
+                    db_mbtiles.insertOrThrow(s_map_tablename, null, map_values);
+                }
+                if (i_type_tiles == 0) { // 'tiles' is a table
+                    ContentValues tiles_values = new ContentValues();
+                    tiles_values.put(s_mbtiles_field_zoom_level, i_z);
+                    tiles_values.put(s_mbtiles_field_tile_column, i_x);
+                    tiles_values.put(s_mbtiles_field_tile_row, i_y);
+                    tiles_values.put(s_mbtiles_field_tile_data, ba_tile_data);
+                    db_mbtiles.insertOrThrow(s_tiles_tablename, null, tiles_values);
+                }
+                db_mbtiles.setTransactionSuccessful();
             } catch (Exception e) {
-                i_rc = 1;
+                if (e.getMessage() != null) {
+                    String s_message = e.getMessage();
+                    if (s_message.equals("error code 19: constraint failed")) { // When the tile
+                                                                                // allready exists:
+                                                                                // not to be
+                                                                                // considered an
+                                                                                // error
+                        i_rc = 0;
+                        return i_rc;
+                    }
+                }
+                throw new IOException("MBTilesDroidSpitter:insertTile error[" + e.getLocalizedMessage() + "] rc=" + i_rc);
+            } finally {
+                db_mbtiles.endTransaction();
+                db_lock.writeLock().unlock();
+                int i_update = 1;
+                try { // if the bounds or min/max zoom have changed, update changed values and
+                      // reload
+                      // metadata
+                    i_update = checkBounds(i_x, i_y_osm, i_z, i_update);
+                    // i_update=0: inside bounds ; othewise bounds and metadata have changed - not
+                    // used
+                } catch (Exception e) {
+                    i_rc = 1;
+                }
             }
-         }
-        }
-        else
-        { // '(conn# x): already closed'
-         i_rc = 1;
-         return i_rc;
+        } else { // '(conn# x): already closed'
+            i_rc = 1;
+            return i_rc;
         }
 
         // GPLog.androidLog(-1,"MBTilesDroidSpitter.insertTile: inserted["+i_z+"/"+i_x+"/"+i_y_osm+"] rc=["+i_rc+"]");
         return i_rc;
     }
-        // -----------------------------------------------
+    // -----------------------------------------------
     /**
       * Function to check if image is blank
       * - avoids duplicate images
@@ -440,45 +438,39 @@ public class MBTilesDroidSpitter {
       */
     private boolean search_blank_image( String s_tile_id ) throws IOException {
         boolean b_unique = true;
-        if (i_type_tiles != 1)
-        { // there will be no 'images' table, return
-         return b_unique;
+        if (i_type_tiles != 1) { // there will be no 'images' table, return
+            return b_unique;
         }
-            String s_sql_query = "SELECT count(tile_id) AS count_tile_id FROM images WHERE (tile_id = '" + s_tile_id + "')";
-            // mj10777: A good wms-server to test 'blank-images' (i.e. all pixels of image have the
-            // same RGB) is:
-            // http://fbinter.stadt-berlin.de/fb/wms/senstadt/ortsteil?LAYERS=0&FORMAT=image/jpeg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=visual&SRS=EPSG:4326&BBOX=XXX,YYY,XXX,YYY&WIDTH=256&HEIGHT=256
-            // SELECT count(tile_id) FROM images where tile_id like '%.rgb' : 8
-            // SELECT count(tile_id) FROM map where tile_id like '%.rgb' : 177
-            db_lock.readLock().lock();
-            try {
-                final Cursor c = db_mbtiles.rawQuery(s_sql_query, null);
-                if (c != null) {
-                    if (c.moveToFirst()) {
-                        int i_count_tile_id = c.getInt(c.getColumnIndex("count_tile_id"));
-                        if (i_count_tile_id > 0) { // We have this image, do not add again
-                            b_unique = false;
-                        }
+        String s_sql_query = "SELECT count(tile_id) AS count_tile_id FROM images WHERE (tile_id = '" + s_tile_id + "')";
+        // mj10777: A good wms-server to test 'blank-images' (i.e. all pixels of image have the
+        // same RGB) is:
+        // http://fbinter.stadt-berlin.de/fb/wms/senstadt/ortsteil?LAYERS=0&FORMAT=image/jpeg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=visual&SRS=EPSG:4326&BBOX=XXX,YYY,XXX,YYY&WIDTH=256&HEIGHT=256
+        // SELECT count(tile_id) FROM images where tile_id like '%.rgb' : 8
+        // SELECT count(tile_id) FROM map where tile_id like '%.rgb' : 177
+        db_lock.readLock().lock();
+        try {
+            final Cursor c = db_mbtiles.rawQuery(s_sql_query, null);
+            if (c != null) {
+                if (c.moveToFirst()) {
+                    int i_count_tile_id = c.getInt(c.getColumnIndex("count_tile_id"));
+                    if (i_count_tile_id > 0) { // We have this image, do not add again
+                        b_unique = false;
                     }
-                    c.close();
                 }
-            } catch (Exception e) {
-             String s_message=e.getMessage();
-             int index_of_text = s_message.indexOf("already closed");
-             if (index_of_text != -1)
-             {
-              return false;
-             }
-             else
-             {
+                c.close();
+            }
+        } catch (Exception e) {
+            String s_message = e.getMessage();
+            int index_of_text = s_message.indexOf("already closed");
+            if (index_of_text != -1) {
+                return false;
+            } else {
                 throw new IOException("MBTilesDroidSpitter:search_blank_image query[" + s_sql_query + "] error["
                         + e.getLocalizedMessage() + "] ");
-             }
             }
-            finally
-            {
-             db_lock.readLock().unlock();
-            }
+        } finally {
+            db_lock.readLock().unlock();
+        }
         return b_unique;
     }
     // -----------------------------------------------
@@ -495,9 +487,8 @@ public class MBTilesDroidSpitter {
                                                                                  // things down to a
                                                                                  // craw
         String s_tile_id = "";
-        if (i_type_tiles != 1)
-        { // there will be no 'images' table, return
-         return s_tile_id;
+        if (i_type_tiles != 1) { // there will be no 'images' table, return
+            return s_tile_id;
         }
         String s_tile_data = get_hex(ba_tile_data);
         String s_sql_query = "SELECT tile_id FROM images WHERE (hex(tile_data) = '" + s_tile_data + "')";
@@ -513,10 +504,8 @@ public class MBTilesDroidSpitter {
         } catch (Exception e) {
             throw new IOException("MBTilesDroidSpitter:search_tile_image query[" + s_sql_query + "] error["
                     + e.getLocalizedMessage() + "] ");
-        }
-        finally
-        {
-         db_lock.readLock().unlock();
+        } finally {
+            db_lock.readLock().unlock();
         }
         if (s_tile_id != "") {
             String msg = "MBTilesDroidSpitter:search_tile_image[" + file_mbtiles.getAbsolutePath() + "]  tile_id[" + s_tile_id
@@ -550,7 +539,7 @@ public class MBTilesDroidSpitter {
                 try {
                     update_mbtiles_metadata(db_mbtiles, update_metadata, i_reload_metadata);
                 } catch (Exception e) {
-                    GPLog.androidLog(4,"MBTilesDroidSpitter[" + file_mbtiles.getAbsolutePath() + "]", e);
+                    GPLog.androidLog(4, "MBTilesDroidSpitter[" + file_mbtiles.getAbsolutePath() + "]", e);
                 }
             }
             i_rc = 1;
@@ -571,24 +560,22 @@ public class MBTilesDroidSpitter {
             return null;
         this.metadata = MbTilesMetadata.createFromCursor(c, c.getColumnIndex(MbTilesSQLite.COL_METADATA_NAME),
                 c.getColumnIndex(MbTilesSQLite.COL_METADATA_VALUE), validator);
-        if (this.metadata != null)
-        { // mbtiles is only valid if 'metadata' has values
-         this.s_tile_row_type = this.metadata.s_tile_row_type;
-         this.s_center_parm = this.metadata.s_center_parm;
-         if (i_type_tiles < 0)
-         { // mbtiles is only valid if 'i_type_tiles' == 0 or 1 [table or view]
-          i_type_tiles=check_type_tiles();
-          switch (i_type_tiles)
-          {
-           case 0:
-           case 1:
-            b_mbtiles_valid=true;
-           break;
-           default:
-            b_mbtiles_valid=false;
-           break;
-          }
-         }
+        if (this.metadata != null) { // mbtiles is only valid if 'metadata' has values
+            this.s_tile_row_type = this.metadata.s_tile_row_type;
+            this.s_center_parm = this.metadata.s_center_parm;
+            if (i_type_tiles < 0) { // mbtiles is only valid if 'i_type_tiles' == 0 or 1 [table or
+                                    // view]
+                i_type_tiles = check_type_tiles();
+                switch( i_type_tiles ) {
+                case 0:
+                case 1:
+                    b_mbtiles_valid = true;
+                    break;
+                default:
+                    b_mbtiles_valid = false;
+                    break;
+                }
+            }
         }
         return this.metadata;
     }
@@ -601,11 +588,10 @@ public class MBTilesDroidSpitter {
       * checking is done once when the 'metadata' is retrieved the first time [fetchMetadata()]
       * @return b_mbtiles_valid true if valid, otherwise false
       */
-    public boolean isValid()
-    {
-     return b_mbtiles_valid;
+    public boolean isValid() {
+        return b_mbtiles_valid;
     }
-   // -----------------------------------------------
+    // -----------------------------------------------
     /**
       * Checks table type of 'tiles' [needed for an insert of a tile]
       *  tiles : do the fields zoom_level [z], tile_column [x], tile_row [y] and tile_data exist
@@ -617,104 +603,89 @@ public class MBTilesDroidSpitter {
       * with these checks, reading / writing should always work [if a netadata table exists, the mbtiles is valid]
       * @return i_rc to set 'i_type_tiles' [view[1] or table[0]], anything else should be consider an error for inserting
       */
-    private int check_type_tiles()
-    {
-     int i_rc=-1;
-     boolean b_mbtiles_valid=false;
-     String s_type_tiles="";
-     String s_field="";
-     int i_field_count=0;
-     Cursor c_tiles = db_mbtiles.rawQuery("SELECT type AS type_tiles FROM sqlite_master WHERE tbl_name = 'tiles'", null);
-     if (c_tiles != null)
-     {
-      if (c_tiles.moveToFirst())
-      {
-       s_type_tiles = c_tiles.getString(c_tiles.getColumnIndex("type_tiles"));
-      }
-      c_tiles.close();
-     }
-     if (s_type_tiles.equals("view") || s_type_tiles.equals("table"))
-     { //  i_type_tiles<0 = invalid mbtiles ; 0='tiles' is a table ; 1='tiles' is a view
-      Cursor c_fields = db_mbtiles.rawQuery("pragma table_info(tiles)",null);
-      if (c_fields != null)
-      {
-       if (c_fields.moveToFirst())
-       {
-        do
-        { // tiles : do the fields zoom_level [z], tile_column [x], tile_row [y] and tile_data exist
-         s_field = c_fields.getString(c_fields.getColumnIndex("name"));
-         if ((s_field.equals("zoom_level")) || (s_field.equals("tile_column")) || (s_field.equals("tile_row")) || (s_field.equals("tile_data")))
-         {
-          i_field_count++;
-         }
-        } while( c_fields.moveToNext() );
-       }
-       c_fields.close();
-      }
-      if (i_field_count != 4)
-      { // set as invalid
-       s_type_tiles="";
-      }
-      if (s_type_tiles.equals("table"))
-      {
-       i_rc=0;
-       b_mbtiles_valid=true;
-      }
-      if (s_type_tiles.equals("view"))
-      { // the view will reference 2 tables [map,images] with specific fields
-       i_field_count=0;
-       c_fields = db_mbtiles.rawQuery("pragma table_info(map)",null);
-       if (c_fields != null)
-       {
-        if (c_fields.moveToFirst())
-        {
-         do
-         { // map : do the fields zoom_level [z], tile_column [x], tile_row [y] and tile_id exist
-          s_field = c_fields.getString(c_fields.getColumnIndex("name"));
-          if ((s_field.equals("zoom_level")) || (s_field.equals("tile_column")) || (s_field.equals("tile_row")) || (s_field.equals("tile_id")))
-          {
-           i_field_count++;
-          }
-         } while( c_fields.moveToNext() );
+    private int check_type_tiles() {
+        int i_rc = -1;
+        boolean b_mbtiles_valid = false;
+        String s_type_tiles = "";
+        String s_field = "";
+        int i_field_count = 0;
+        Cursor c_tiles = db_mbtiles.rawQuery("SELECT type AS type_tiles FROM sqlite_master WHERE tbl_name = 'tiles'", null);
+        if (c_tiles != null) {
+            if (c_tiles.moveToFirst()) {
+                s_type_tiles = c_tiles.getString(c_tiles.getColumnIndex("type_tiles"));
+            }
+            c_tiles.close();
         }
-        c_fields.close();
-       }
-       if (i_field_count == 4)
-       {
-        i_field_count=0;
-        c_fields = db_mbtiles.rawQuery("pragma table_info(images)",null);
-        if (c_fields != null)
-        {
-         if (c_fields.moveToFirst())
-         {
-          do
-          { // images : do the fields tile_data and tile_id exist
-           s_field = c_fields.getString(c_fields.getColumnIndex("name"));
-           if ((s_field.equals("tile_id")) || (s_field.equals("tile_data")))
-           {
-            i_field_count++;
-           }
-          } while( c_fields.moveToNext() );
-         }
-         c_fields.close();
+        if (s_type_tiles.equals("view") || s_type_tiles.equals("table")) { // i_type_tiles<0 =
+                                                                           // invalid mbtiles ;
+                                                                           // 0='tiles' is a table ;
+                                                                           // 1='tiles' is a view
+            Cursor c_fields = db_mbtiles.rawQuery("pragma table_info(tiles)", null);
+            if (c_fields != null) {
+                if (c_fields.moveToFirst()) {
+                    do { // tiles : do the fields zoom_level [z], tile_column [x], tile_row [y] and
+                         // tile_data exist
+                        s_field = c_fields.getString(c_fields.getColumnIndex("name"));
+                        if ((s_field.equals("zoom_level")) || (s_field.equals("tile_column")) || (s_field.equals("tile_row"))
+                                || (s_field.equals("tile_data"))) {
+                            i_field_count++;
+                        }
+                    } while( c_fields.moveToNext() );
+                }
+                c_fields.close();
+            }
+            if (i_field_count != 4) { // set as invalid
+                s_type_tiles = "";
+            }
+            if (s_type_tiles.equals("table")) {
+                i_rc = 0;
+                b_mbtiles_valid = true;
+            }
+            if (s_type_tiles.equals("view")) { // the view will reference 2 tables [map,images] with
+                                               // specific fields
+                i_field_count = 0;
+                c_fields = db_mbtiles.rawQuery("pragma table_info(map)", null);
+                if (c_fields != null) {
+                    if (c_fields.moveToFirst()) {
+                        do { // map : do the fields zoom_level [z], tile_column [x], tile_row [y]
+                             // and tile_id exist
+                            s_field = c_fields.getString(c_fields.getColumnIndex("name"));
+                            if ((s_field.equals("zoom_level")) || (s_field.equals("tile_column")) || (s_field.equals("tile_row"))
+                                    || (s_field.equals("tile_id"))) {
+                                i_field_count++;
+                            }
+                        } while( c_fields.moveToNext() );
+                    }
+                    c_fields.close();
+                }
+                if (i_field_count == 4) {
+                    i_field_count = 0;
+                    c_fields = db_mbtiles.rawQuery("pragma table_info(images)", null);
+                    if (c_fields != null) {
+                        if (c_fields.moveToFirst()) {
+                            do { // images : do the fields tile_data and tile_id exist
+                                s_field = c_fields.getString(c_fields.getColumnIndex("name"));
+                                if ((s_field.equals("tile_id")) || (s_field.equals("tile_data"))) {
+                                    i_field_count++;
+                                }
+                            } while( c_fields.moveToNext() );
+                        }
+                        c_fields.close();
+                    }
+                    if (i_field_count == 2) {
+                        i_rc = 1;
+                        b_mbtiles_valid = true;
+                    }
+                }
+                if (i_rc != 1) {
+                    s_type_tiles = "";
+                }
+            }
         }
-        if (i_field_count == 2)
-        {
-         i_rc=1;
-         b_mbtiles_valid=true;
+        if (b_mbtiles_valid) {
+            get_request_url_count(i_request_url_count_read_db); // will read status from Database
         }
-       }
-       if (i_rc != 1)
-       {
-        s_type_tiles="";
-       }
-      }
-     }
-     if (b_mbtiles_valid)
-     {
-      get_request_url_count(i_request_url_count_read_db); // will read status from Database
-     }
-     return i_rc;
+        return i_rc;
     }
     // -----------------------------------------------
     /**
@@ -728,111 +699,104 @@ public class MBTilesDroidSpitter {
       * @param s_request_type request type ['fill','replace','exists']
       * @return ist_tile_id [list of 'tile_id' needed]
       */
-    public List<String> build_request_list(double[] request_bounds,int i_zoom_level,String s_request_type)
-    {
-     List<String> list_tile_id = new ArrayList<String>(); // this will be the final object - depending on type
-     if ((!s_request_type.equals("fill")) && (!s_request_type.equals("replace")) && (!s_request_type.equals("exists")))
-      s_request_type="exists"; // set default, if invalid
-     int[] tile_bounds=LatLonBounds_to_TileBounds(request_bounds,i_zoom_level);
-     // i_zoom=tile_bounds[0];
-     int i_min_x=tile_bounds[1];
-     int i_min_y_osm=tile_bounds[2];
-     int i_max_x=tile_bounds[3];
-     int i_max_y_osm=tile_bounds[4];
-     int i_min_y_tms=i_min_y_osm;
-     int i_max_y_tms=i_max_y_osm;
-     int i_min_y=i_min_y_osm;
-     int i_max_y=i_max_y_osm;
-     int i_count_x=i_max_x-i_max_x;
-     int i_count_y=i_max_y_osm-i_max_y_osm;
-     if (s_tile_row_type.equals("tms")) {
+    public List<String> build_request_list( double[] request_bounds, int i_zoom_level, String s_request_type ) {
+        List<String> list_tile_id = new ArrayList<String>(); // this will be the final object -
+                                                             // depending on type
+        if ((!s_request_type.equals("fill")) && (!s_request_type.equals("replace")) && (!s_request_type.equals("exists")))
+            s_request_type = "exists"; // set default, if invalid
+        int[] tile_bounds = LatLonBounds_to_TileBounds(request_bounds, i_zoom_level);
+        // i_zoom=tile_bounds[0];
+        int i_min_x = tile_bounds[1];
+        int i_min_y_osm = tile_bounds[2];
+        int i_max_x = tile_bounds[3];
+        int i_max_y_osm = tile_bounds[4];
+        int i_min_y_tms = i_min_y_osm;
+        int i_max_y_tms = i_max_y_osm;
+        int i_min_y = i_min_y_osm;
+        int i_max_y = i_max_y_osm;
+        int i_count_x = i_max_x - i_max_x;
+        int i_count_y = i_max_y_osm - i_max_y_osm;
+        if (s_tile_row_type.equals("tms")) {
             int[] tmsTileXY = MBTilesDroidSpitter.googleTile2TmsTile(i_min_x, i_min_y_osm, i_zoom_level);
             i_min_y_tms = tmsTileXY[1];
-            i_min_y=i_min_y_tms;
+            i_min_y = i_min_y_tms;
             tmsTileXY = MBTilesDroidSpitter.googleTile2TmsTile(i_max_x, i_max_y_osm, i_zoom_level);
             i_max_y_tms = tmsTileXY[1];
-            i_max_y=i_max_y_tms;
+            i_max_y = i_max_y_tms;
         }
-     if ((s_request_type.equals("fill")) || (s_request_type.equals("replace")))
-     { // Sorted from West to East ; North to South
-      for (int x=i_min_x;x<=i_max_x;x++)
-      { // fill the list will all possible combinations : will be the result of 'replace'
-       // the osm number for north[max] is smaller that south[min]
-       for (int y=i_max_y_osm;y<=i_min_y_osm;y++)
-       { // input must be y with osm-notation - returned will be the notation based on the active database
-        String s_tile_id=get_tile_id_from_zxy(i_zoom_level,x,y);
-        list_tile_id.add(s_tile_id);
-       }
-      }
-      if (s_request_type.equals("replace"))
-      {
-       return list_tile_id; // returns all posibilities
-      }
-     }
-     List<String> list_tile_id_exists = new ArrayList<String>();
-     String s_table="map";
-     if (i_type_tiles == 0)
-     { // mbtiles is only valid if 'i_type_tiles' == 0 or 1 [table or view]
-      s_table="tiles"; // map will not exist
-     }
-     String s_select_where="WHERE ((zoom_level = "+i_zoom_level+") AND ";
-     s_select_where=s_select_where+"((tile_column >= "+i_min_x+") AND (tile_column <= "+i_max_x+")) AND ";
-     if (s_tile_row_type.equals("tms"))
-     { // tms: Sorted from West to East ; North to South
-      s_select_where=s_select_where+"((tile_row >= "+i_min_y+") AND (tile_row <= "+i_max_y+"))) ";
-      s_select_where=s_select_where+"ORDER BY tile_column ASC,tile_row DESC";
-     }
-     else
-     { // osm: Sorted from West to East ; North to South
-      s_select_where=s_select_where+"((tile_row >= "+i_max_y+") AND (tile_row <= "+i_min_y+"))) ";
-      s_select_where=s_select_where+"ORDER BY tile_column ASC,tile_row ASC";
-     }
-     String s_select_sql="SELECT tile_column,tile_row FROM "+s_table+" "+s_select_where;
-     // SELECT tile_column,tile_row FROM map
-     // WHERE ((zoom_level = 15) AND
-     // ((tile_column >= 1759) AND (tile_column <= 17608)) AND
-     // ((tile_row >= 22013) AND (tile_row <= 22026)))
-     // ORDER BY tile_column ASC,tile_row DESC
-     db_lock.readLock().lock();
-     try
-     {
-      Cursor c_tiles = db_mbtiles.rawQuery(s_select_sql, null);
-      if (c_tiles != null)
-      {
-       if (c_tiles.moveToFirst())
-       {
-        do
-        { // map : do the fields zoom_level [z], tile_column [x], tile_row [y] and tile_id exist
-         int i_tile_column= c_tiles.getInt(c_tiles.getColumnIndex("tile_column"));
-         int i_tile_row = c_tiles.getInt(c_tiles.getColumnIndex("tile_row"));
-         String s_tile_id=i_zoom_level+"-"+i_tile_column+"-"+i_tile_row+"."+s_tile_row_type;
-         list_tile_id_exists.add(s_tile_id);
-        } while( c_tiles.moveToNext() );
-       }
-      }
-      c_tiles.close();
-     }
-     catch (Exception e)
-     {
-     }
-     finally
-     {
-      db_lock.readLock().unlock();
-     }
-     // GPLog.androidLog(-1,"build_request_list["+s_request_type+"] all["+list_tile_id.size()+"] exists["+list_tile_id_exists.size()+"] sql["+s_select_sql+"]");
-     if (s_request_type.equals("exists"))
-     {
-      list_tile_id.clear();
-      return list_tile_id_exists; // returns all that exist
-     }
-     // 'fill' remove existing from the compleate list and return the missing
-     for (int i=0;i<list_tile_id_exists.size();i++)
-     {
-      String s_tile_id=list_tile_id_exists.get(i);
-      list_tile_id.remove(s_tile_id);
-     }
-     list_tile_id_exists.clear();
-     return list_tile_id;
+        if ((s_request_type.equals("fill")) || (s_request_type.equals("replace"))) { // Sorted from
+                                                                                     // West to East
+                                                                                     // ; North to
+                                                                                     // South
+            for( int x = i_min_x; x <= i_max_x; x++ ) { // fill the list will all possible
+                                                        // combinations : will be the result of
+                                                        // 'replace'
+                                                        // the osm number for north[max] is smaller
+                                                        // that south[min]
+                for( int y = i_max_y_osm; y <= i_min_y_osm; y++ ) { // input must be y with
+                                                                    // osm-notation - returned will
+                                                                    // be the notation based on the
+                                                                    // active database
+                    String s_tile_id = get_tile_id_from_zxy(i_zoom_level, x, y);
+                    list_tile_id.add(s_tile_id);
+                }
+            }
+            if (s_request_type.equals("replace")) {
+                return list_tile_id; // returns all posibilities
+            }
+        }
+        List<String> list_tile_id_exists = new ArrayList<String>();
+        String s_table = "map";
+        if (i_type_tiles == 0) { // mbtiles is only valid if 'i_type_tiles' == 0 or 1 [table or
+                                 // view]
+            s_table = "tiles"; // map will not exist
+        }
+        String s_select_where = "WHERE ((zoom_level = " + i_zoom_level + ") AND ";
+        s_select_where = s_select_where + "((tile_column >= " + i_min_x + ") AND (tile_column <= " + i_max_x + ")) AND ";
+        if (s_tile_row_type.equals("tms")) { // tms: Sorted from West to East ; North to South
+            s_select_where = s_select_where + "((tile_row >= " + i_min_y + ") AND (tile_row <= " + i_max_y + "))) ";
+            s_select_where = s_select_where + "ORDER BY tile_column ASC,tile_row DESC";
+        } else { // osm: Sorted from West to East ; North to South
+            s_select_where = s_select_where + "((tile_row >= " + i_max_y + ") AND (tile_row <= " + i_min_y + "))) ";
+            s_select_where = s_select_where + "ORDER BY tile_column ASC,tile_row ASC";
+        }
+        String s_select_sql = "SELECT tile_column,tile_row FROM " + s_table + " " + s_select_where;
+        // SELECT tile_column,tile_row FROM map
+        // WHERE ((zoom_level = 15) AND
+        // ((tile_column >= 1759) AND (tile_column <= 17608)) AND
+        // ((tile_row >= 22013) AND (tile_row <= 22026)))
+        // ORDER BY tile_column ASC,tile_row DESC
+        db_lock.readLock().lock();
+        try {
+            Cursor c_tiles = db_mbtiles.rawQuery(s_select_sql, null);
+            if (c_tiles != null) {
+                if (c_tiles.moveToFirst()) {
+                    do { // map : do the fields zoom_level [z], tile_column [x], tile_row [y] and
+                         // tile_id exist
+                        int i_tile_column = c_tiles.getInt(c_tiles.getColumnIndex("tile_column"));
+                        int i_tile_row = c_tiles.getInt(c_tiles.getColumnIndex("tile_row"));
+                        String s_tile_id = i_zoom_level + "-" + i_tile_column + "-" + i_tile_row + "." + s_tile_row_type;
+                        list_tile_id_exists.add(s_tile_id);
+                    } while( c_tiles.moveToNext() );
+                }
+            }
+            c_tiles.close();
+        } catch (Exception e) {
+        } finally {
+            db_lock.readLock().unlock();
+        }
+        // GPLog.androidLog(-1,"build_request_list["+s_request_type+"] all["+list_tile_id.size()+"] exists["+list_tile_id_exists.size()+"] sql["+s_select_sql+"]");
+        if (s_request_type.equals("exists")) {
+            list_tile_id.clear();
+            return list_tile_id_exists; // returns all that exist
+        }
+        // 'fill' remove existing from the compleate list and return the missing
+        for( int i = 0; i < list_tile_id_exists.size(); i++ ) {
+            String s_tile_id = list_tile_id_exists.get(i);
+            list_tile_id.remove(s_tile_id);
+        }
+        list_tile_id_exists.clear();
+        return list_tile_id;
     }
     // -----------------------------------------------
     /**
@@ -846,114 +810,92 @@ public class MBTilesDroidSpitter {
       * @param i_parm type of result
       * @return i_request_url_count [< 0: table does not exist; 0=exist but is empty ; > 0 open requests]
       */
-    public int get_request_url_count(int i_parm)
-    {
-     String s_sql_request_url="";
-     switch (i_parm)
-     {
-      case i_request_url_count_drop:
-      { // create if '-1' or delete if '0', otherwise return count
-       s_sql_request_url="DROP TABLE IF EXISTS request_url";
-       try
-       {
-        db_mbtiles.execSQL(s_sql_request_url);
-       }
-       catch (Exception e)
-       {
-        s_sql_request_url="";
-        GPLog.androidLog(4,"MBTilesDroidSplitter: ["+getName()+"] -E-> get_request_url_count: parm["+i_parm+"][2=DROP or CREATE request_url] get_request_url_count["+this.i_request_url_count+"]  sql["+s_sql_request_url+"]",e);
-       }
-       finally
-       {
-        if (!s_sql_request_url.equals(""))
-        { // no error [DROP  or CREATE was compleated correctly]
-         // table has been deleted and is empty
-         this.i_request_url_count=-1;
+    public int get_request_url_count( int i_parm ) {
+        String s_sql_request_url = "";
+        switch( i_parm ) {
+        case i_request_url_count_drop: { // create if '-1' or delete if '0', otherwise return count
+            s_sql_request_url = "DROP TABLE IF EXISTS request_url";
+            try {
+                db_mbtiles.execSQL(s_sql_request_url);
+            } catch (Exception e) {
+                s_sql_request_url = "";
+                GPLog.androidLog(4, "MBTilesDroidSplitter: [" + getName() + "] -E-> get_request_url_count: parm[" + i_parm
+                        + "][2=DROP or CREATE request_url] get_request_url_count[" + this.i_request_url_count + "]  sql["
+                        + s_sql_request_url + "]", e);
+            } finally {
+                if (!s_sql_request_url.equals("")) { // no error [DROP or CREATE was compleated
+                                                     // correctly]
+                                                     // table has been deleted and is empty
+                    this.i_request_url_count = -1;
+                }
+            }
         }
-       }
-      }
-      break;
-      case i_request_url_count_create:
-      {
-       s_sql_request_url="CREATE TABLE IF NOT EXISTS request_url (tile_id TEXT PRIMARY KEY,tile_url TEXT)";
-       try
-       {
-        db_mbtiles.execSQL(s_sql_request_url);
-       }
-       catch (Exception e)
-       {
-        s_sql_request_url="";
-        GPLog.androidLog(4,"MBTilesDroidSplitter: ["+getName()+"] -E-> get_request_url_count: parm["+i_parm+"][2=DROP or CREATE request_url] get_request_url_count["+this.i_request_url_count+"]  sql["+s_sql_request_url+"]",e);
-       }
-       finally
-       {
-        if (!s_sql_request_url.equals(""))
-        { // no error [DROP  or CREATE was compleated correctly]
-         // table has been created and is empty
-         this.i_request_url_count=0;
+            break;
+        case i_request_url_count_create: {
+            s_sql_request_url = "CREATE TABLE IF NOT EXISTS request_url (tile_id TEXT PRIMARY KEY,tile_url TEXT)";
+            try {
+                db_mbtiles.execSQL(s_sql_request_url);
+            } catch (Exception e) {
+                s_sql_request_url = "";
+                GPLog.androidLog(4, "MBTilesDroidSplitter: [" + getName() + "] -E-> get_request_url_count: parm[" + i_parm
+                        + "][2=DROP or CREATE request_url] get_request_url_count[" + this.i_request_url_count + "]  sql["
+                        + s_sql_request_url + "]", e);
+            } finally {
+                if (!s_sql_request_url.equals("")) { // no error [DROP or CREATE was compleated
+                                                     // correctly]
+                                                     // table has been created and is empty
+                    this.i_request_url_count = 0;
+                }
+            }
         }
-       }
-      }
-      break;
-      case i_request_url_count_read_db:
-      { // read from database
-       int i_field_count=0;
-       db_lock.readLock().lock();
-       try
-       {
-        s_sql_request_url="pragma table_info(request_url)";
-        Cursor c_tiles = db_mbtiles.rawQuery(s_sql_request_url, null);
-        if (c_tiles != null)
-        { // then the table exists [no it does not! fields must be read]
-         if ((c_tiles.getCount() > 0) && (c_tiles.moveToFirst()))
-         {
-          do
-          { // tiles : do the fields zoom_level [z], tile_column [x], tile_row [y] and tile_data exist
-           String s_field = c_tiles.getString(c_tiles.getColumnIndex("name"));
-           if ((s_field.equals("tile_id")) || (s_field.equals("tile_url")))
-           {
-            i_field_count++;
-           }
-          } while( c_tiles.moveToNext() );
-         }
-         c_tiles.close();
-         if (i_field_count > 0)
-         {
-          this.i_request_url_count=0;
-          s_sql_request_url="SELECT count(tile_id) AS count_id FROM request_url";
-          c_tiles = db_mbtiles.rawQuery(s_sql_request_url, null);
-          if (c_tiles != null)
-          {
-           if (c_tiles.moveToFirst())
-           {
-            this.i_request_url_count = c_tiles.getInt(c_tiles.getColumnIndex("count_id"));
-           }
-          }
-          c_tiles.close();
-         }
-         else
-         {
-          this.i_request_url_count=-1;
-         }
+            break;
+        case i_request_url_count_read_db: { // read from database
+            int i_field_count = 0;
+            db_lock.readLock().lock();
+            try {
+                s_sql_request_url = "pragma table_info(request_url)";
+                Cursor c_tiles = db_mbtiles.rawQuery(s_sql_request_url, null);
+                if (c_tiles != null) { // then the table exists [no it does not! fields must be
+                                       // read]
+                    if ((c_tiles.getCount() > 0) && (c_tiles.moveToFirst())) {
+                        do { // tiles : do the fields zoom_level [z], tile_column [x], tile_row [y]
+                             // and tile_data exist
+                            String s_field = c_tiles.getString(c_tiles.getColumnIndex("name"));
+                            if ((s_field.equals("tile_id")) || (s_field.equals("tile_url"))) {
+                                i_field_count++;
+                            }
+                        } while( c_tiles.moveToNext() );
+                    }
+                    c_tiles.close();
+                    if (i_field_count > 0) {
+                        this.i_request_url_count = 0;
+                        s_sql_request_url = "SELECT count(tile_id) AS count_id FROM request_url";
+                        c_tiles = db_mbtiles.rawQuery(s_sql_request_url, null);
+                        if (c_tiles != null) {
+                            if (c_tiles.moveToFirst()) {
+                                this.i_request_url_count = c_tiles.getInt(c_tiles.getColumnIndex("count_id"));
+                            }
+                        }
+                        c_tiles.close();
+                    } else {
+                        this.i_request_url_count = -1;
+                    }
+                }
+            } catch (Exception e) {
+                GPLog.androidLog(4, "MBTilesDroidSplitter: [" + getName() + "] -E-> get_request_url_count: parm[" + i_parm
+                        + "][1=pragma table_info(request_url) or count(tile_id)] get_request_url_count["
+                        + this.i_request_url_count + "]  sql[" + s_sql_request_url + "]", e);
+            } finally {
+                db_lock.readLock().unlock();
+            }
         }
-       }
-       catch (Exception e)
-       {
-        GPLog.androidLog(4,"MBTilesDroidSplitter: ["+getName()+"] -E-> get_request_url_count: parm["+i_parm+"][1=pragma table_info(request_url) or count(tile_id)] get_request_url_count["+this.i_request_url_count+"]  sql["+s_sql_request_url+"]",e);
-       }
-       finally
-       {
-        db_lock.readLock().unlock();
-       }
-      }
-      break;
-      default:
-      case i_request_url_count_read_value:
-      { // return existing value
-      }
-      break;
-     }
-     return this.i_request_url_count;
+            break;
+        default:
+        case i_request_url_count_read_value: { // return existing value
+        }
+            break;
+        }
+        return this.i_request_url_count;
     }
     // -----------------------------------------------
     /**
@@ -970,58 +912,45 @@ public class MBTilesDroidSpitter {
       * @param s_tile_url full url to retrieve tile with
       * @return i_request_url_count [< 0: table does not exist; 0=exist but is empty ; > 0 open requests]
       */
-    public int insert_request_url(int i_parm,String s_tile_id,String s_tile_url)
-    {
-     String s_sql_request_url="";
-     switch (i_parm)
-     {
-      case i_request_url_count_delete:
-      { // delete
-       s_sql_request_url = "DELETE FROM 'request_url' WHERE ( tile_id = '"+s_tile_id+"')";
-       try
-       { // no lock/unlock here, done in 'insert_list_request_url'
-        db_mbtiles.execSQL(s_sql_request_url);
-        this.i_request_url_count--;
-       }
-       catch (Exception e)
-       {
-        // GPLog.androidLog(4,"MBTilesDroidSplitter: ["+getName()+"] -E-> insert_request_url: parm["+i_parm+"][3=INSERT;4=DELETE]  tile_id["+s_tile_id+"]",e);
-       }
-       finally
-       {
-        if (this.i_request_url_count < 1)
-        { // this will delete the empty table
-         this.i_request_url_count=0;
-         get_request_url_count(i_request_url_count_drop);
+    public int insert_request_url( int i_parm, String s_tile_id, String s_tile_url ) {
+        String s_sql_request_url = "";
+        switch( i_parm ) {
+        case i_request_url_count_delete: { // delete
+            s_sql_request_url = "DELETE FROM 'request_url' WHERE ( tile_id = '" + s_tile_id + "')";
+            try { // no lock/unlock here, done in 'insert_list_request_url'
+                db_mbtiles.execSQL(s_sql_request_url);
+                this.i_request_url_count--;
+            } catch (Exception e) {
+                // GPLog.androidLog(4,"MBTilesDroidSplitter: ["+getName()+"] -E-> insert_request_url: parm["+i_parm+"][3=INSERT;4=DELETE]  tile_id["+s_tile_id+"]",e);
+            } finally {
+                if (this.i_request_url_count < 1) { // this will delete the empty table
+                    this.i_request_url_count = 0;
+                    get_request_url_count(i_request_url_count_drop);
+                }
+            }
         }
-       }
-      }
-      break;
-      case i_request_url_count_insert:
-      { // insert
-       if (this.i_request_url_count < 0)
-       { // this will create the  table
-        get_request_url_count(i_request_url_count_create);
-       }
-       // s_sql_request_url = "INSERT OR REPLACE INTO 'request_url' VALUES('"+s_tile_id+"','"+s_tile_url+"')";
-       ContentValues tiles_values = new ContentValues();
-       tiles_values.put("tile_id", s_tile_id);
-       tiles_values.put("tile_url", s_tile_url);
-       try
-       { // no lock/unlock here, done in 'insert_list_request_url'
-        db_mbtiles.insertOrThrow("request_url", null, tiles_values);
-        // will only be added if it did not exist
-        this.i_request_url_count++;
-       }
-       catch (Exception e)
-       {
-        // GPLog.androidLog(4,"MBTilesDroidSplitter: ["+getName()+"] -E-> insert_request_url: parm["+i_parm+"][3=INSERT;4=DELETE]  tile_id["+s_tile_id+"]",e);
-       }
-      }
-      break;
-     }
-     // GPLog.androidLog(-1,"MBTilesDroidSplitter: ["+getName()+"] -I-> insert_request_url: parm["+i_parm+"][3=INSERT;4=DELETE]  tile_id["+s_tile_id+"]");
-     return this.i_request_url_count;
+            break;
+        case i_request_url_count_insert: { // insert
+            if (this.i_request_url_count < 0) { // this will create the table
+                get_request_url_count(i_request_url_count_create);
+            }
+            // s_sql_request_url =
+            // "INSERT OR REPLACE INTO 'request_url' VALUES('"+s_tile_id+"','"+s_tile_url+"')";
+            ContentValues tiles_values = new ContentValues();
+            tiles_values.put("tile_id", s_tile_id);
+            tiles_values.put("tile_url", s_tile_url);
+            try { // no lock/unlock here, done in 'insert_list_request_url'
+                db_mbtiles.insertOrThrow("request_url", null, tiles_values);
+                // will only be added if it did not exist
+                this.i_request_url_count++;
+            } catch (Exception e) {
+                // GPLog.androidLog(4,"MBTilesDroidSplitter: ["+getName()+"] -E-> insert_request_url: parm["+i_parm+"][3=INSERT;4=DELETE]  tile_id["+s_tile_id+"]",e);
+            }
+        }
+            break;
+        }
+        // GPLog.androidLog(-1,"MBTilesDroidSplitter: ["+getName()+"] -I-> insert_request_url: parm["+i_parm+"][3=INSERT;4=DELETE]  tile_id["+s_tile_id+"]");
+        return this.i_request_url_count;
     }
     // -----------------------------------------------
     /**
@@ -1031,34 +960,29 @@ public class MBTilesDroidSpitter {
       * - '.beginTransaction()' and '.endTransaction()' [and, of course: '.setTransactionSuccessful();']
       * @return i_request_url_count [< 0: table does not exist; 0=exist but is empty ; > 0 open requests]
       */
-    public int insert_list_request_url(HashMap<String, String> mbtiles_request_url)
-    {
-     int i_request_url_count_prev = this.i_request_url_count;
-     db_lock.writeLock().lock();
-     db_mbtiles.beginTransaction();
-     try
-     {
-      for (Map.Entry<String, String> request_url : mbtiles_request_url.entrySet())
-      {
-       String s_tile_id = request_url.getKey();
-       String s_tile_url = request_url.getValue();
-       insert_request_url(i_request_url_count_insert,s_tile_id,s_tile_url);
-      }
-      db_mbtiles.setTransactionSuccessful();
-     }
-     catch (Exception e)
-     {
-      GPLog.androidLog(4,"MBTilesDroidSplitter: ["+getName()+"] -E-> insert_list_request_url["+this.i_request_url_count+"]  mbtiles_request_url.size["+mbtiles_request_url.size()+"] empty["+mbtiles_request_url.isEmpty()+"]",e);
-     }
-     finally
-     {
-      db_mbtiles.endTransaction();
-      db_lock.writeLock().unlock();
-     }
-     // GPLog.androidLog(-1,"["+getName()+"] insert_list_request_url["+this.i_request_url_count+"] ");
-     return this.i_request_url_count;
+    public int insert_list_request_url( HashMap<String, String> mbtiles_request_url ) {
+        int i_request_url_count_prev = this.i_request_url_count;
+        db_lock.writeLock().lock();
+        db_mbtiles.beginTransaction();
+        try {
+            for( Map.Entry<String, String> request_url : mbtiles_request_url.entrySet() ) {
+                String s_tile_id = request_url.getKey();
+                String s_tile_url = request_url.getValue();
+                insert_request_url(i_request_url_count_insert, s_tile_id, s_tile_url);
+            }
+            db_mbtiles.setTransactionSuccessful();
+        } catch (Exception e) {
+            GPLog.androidLog(4, "MBTilesDroidSplitter: [" + getName() + "] -E-> insert_list_request_url["
+                    + this.i_request_url_count + "]  mbtiles_request_url.size[" + mbtiles_request_url.size() + "] empty["
+                    + mbtiles_request_url.isEmpty() + "]", e);
+        } finally {
+            db_mbtiles.endTransaction();
+            db_lock.writeLock().unlock();
+        }
+        // GPLog.androidLog(-1,"["+getName()+"] insert_list_request_url["+this.i_request_url_count+"] ");
+        return this.i_request_url_count;
     }
-   // -----------------------------------------------
+    // -----------------------------------------------
     /**
       * House-keeping tasks for Database
       * The ANALYZE command gathers statistics about tables and indices
@@ -1066,75 +990,59 @@ public class MBTilesDroidSpitter {
       * - A VACUUM will fail if there is an open transaction, or if there are one or more active SQL statements when it is run.
       * @return 0=correct ; 1=ANALYSE has failed ; 2=VACUUM has failed
       */
-    public int on_analyze_vacuum()
-    {
-     int i_rc=0;
-     db_lock.writeLock().lock();
-     try
-     {
-      i_rc=2;
-      db_mbtiles.execSQL("VACUUM");
-      i_rc=1;
-      // db_mbtiles.execSQL("ANALYZE"); // ANALYZE
-      i_rc=0;
-     }
-     catch (Exception e)
-     {
-      GPLog.androidLog(4,"MBTilesDroidSplitter: ["+getName()+"] -E-> on_analyze_vacuum["+i_rc+"] ",e);
-     }
-     finally
-     {
-      db_lock.writeLock().unlock();
-      GPLog.androidLog(-1,"MBTilesDroidSplitter: ["+getName()+"] -I-> on_analyze_vacuum["+i_rc+"] ");
-     }
-     return i_rc;
+    public int on_analyze_vacuum() {
+        int i_rc = 0;
+        db_lock.writeLock().lock();
+        try {
+            i_rc = 2;
+            db_mbtiles.execSQL("VACUUM");
+            i_rc = 1;
+            // db_mbtiles.execSQL("ANALYZE"); // ANALYZE
+            i_rc = 0;
+        } catch (Exception e) {
+            GPLog.androidLog(4, "MBTilesDroidSplitter: [" + getName() + "] -E-> on_analyze_vacuum[" + i_rc + "] ", e);
+        } finally {
+            db_lock.writeLock().unlock();
+            GPLog.androidLog(-1, "MBTilesDroidSplitter: [" + getName() + "] -I-> on_analyze_vacuum[" + i_rc + "] ");
+        }
+        return i_rc;
     }
-   // -----------------------------------------------
+    // -----------------------------------------------
     /**
       * Returns list of collected 'request_url'
       * - Query only when 'this.i_request_url_count' > 0 ; i.e. Table exists and has records
       * @param i_limit amount of records to retrieve [i_limit < 1 == all]
       * @return HashMap<String,String> mbtiles_request_url [tile_id,tile_url]
       */
-    public HashMap<String, String> retrieve_request_url(int i_limit)
-    {
-     HashMap<String, String> mbtiles_request_url = new LinkedHashMap<String, String>();
-     String s_limit="";
-     if ((i_limit > 0) && (i_limit < this.i_request_url_count))
-     { // avoid excesive memory usage
-      s_limit=" LIMIT "+i_limit;
-     }
-     if (this.i_request_url_count > 0)
-     {
-      db_lock.readLock().lock();
-      try
-      {
-       String s_mbtiles_request_url = "SELECT tile_id,tile_url FROM request_url"+s_limit;
-       Cursor c_tiles = db_mbtiles.rawQuery(s_mbtiles_request_url, null);
-       if (c_tiles!= null)
-       { // avoid CursorIndexOutOfBoundsException
-        if ((c_tiles.getCount() > 0) && (c_tiles.moveToFirst()))
-        {
-         do
-         {
-          String s_tile_id = c_tiles.getString(c_tiles.getColumnIndex("tile_id"));
-          String s_tile_url = c_tiles.getString(c_tiles.getColumnIndex("tile_url"));
-          mbtiles_request_url.put(s_tile_id, s_tile_url);
-         } while( c_tiles.moveToNext() );
+    public HashMap<String, String> retrieve_request_url( int i_limit ) {
+        HashMap<String, String> mbtiles_request_url = new LinkedHashMap<String, String>();
+        String s_limit = "";
+        if ((i_limit > 0) && (i_limit < this.i_request_url_count)) { // avoid excesive memory usage
+            s_limit = " LIMIT " + i_limit;
         }
-        c_tiles.close();
-       }
-      }
-      catch (Exception e)
-      {
-       GPLog.androidLog(4,"MBTilesDroidSplitter: ["+getName()+"] -E-> retrieve_request_url["+this.i_request_url_count+"] ",e);
-      }
-      finally
-      {
-       db_lock.readLock().unlock();
-      }
-     }
-     return mbtiles_request_url;
+        if (this.i_request_url_count > 0) {
+            db_lock.readLock().lock();
+            try {
+                String s_mbtiles_request_url = "SELECT tile_id,tile_url FROM request_url" + s_limit;
+                Cursor c_tiles = db_mbtiles.rawQuery(s_mbtiles_request_url, null);
+                if (c_tiles != null) { // avoid CursorIndexOutOfBoundsException
+                    if ((c_tiles.getCount() > 0) && (c_tiles.moveToFirst())) {
+                        do {
+                            String s_tile_id = c_tiles.getString(c_tiles.getColumnIndex("tile_id"));
+                            String s_tile_url = c_tiles.getString(c_tiles.getColumnIndex("tile_url"));
+                            mbtiles_request_url.put(s_tile_id, s_tile_url);
+                        } while( c_tiles.moveToNext() );
+                    }
+                    c_tiles.close();
+                }
+            } catch (Exception e) {
+                GPLog.androidLog(4, "MBTilesDroidSplitter: [" + getName() + "] -E-> retrieve_request_url["
+                        + this.i_request_url_count + "] ", e);
+            } finally {
+                db_lock.readLock().unlock();
+            }
+        }
+        return mbtiles_request_url;
     }
     // -----------------------------------------------
     /**
@@ -1177,7 +1085,7 @@ public class MBTilesDroidSpitter {
             } catch (Exception e) {
                 sqlite_db.close();
                 sqlite_db = null;
-                GPLog.androidLog(4,"MBTilesDroidSpitter[" + file_mbtiles.getAbsolutePath() + "]", e);
+                GPLog.androidLog(4, "MBTilesDroidSpitter[" + file_mbtiles.getAbsolutePath() + "]", e);
                 i_rc = 2;
                 return i_rc;
             }
@@ -1325,7 +1233,7 @@ public class MBTilesDroidSpitter {
             throws IOException { // i_rc=0: no error
         int i_rc = 0;
         if (mbtiles_db == null)
-         mbtiles_db=getmbtiles();
+            mbtiles_db = getmbtiles();
         if (mbtiles_metadata == null)
             mbtiles_metadata = this.mbtiles_metadata;
         String s_metadata_tablename = "metadata";
@@ -1333,10 +1241,9 @@ public class MBTilesDroidSpitter {
         db_lock.writeLock().lock();
         mbtiles_db.beginTransaction();
         try {
-            for (Map.Entry<String, String> metadata : mbtiles_metadata.entrySet())
-            {
-                String s_tile_insert_metadata = "INSERT OR REPLACE INTO '" + s_metadata_tablename + "' VALUES('" + metadata.getKey()
-                        + "','" + metadata.getValue() + "')";
+            for( Map.Entry<String, String> metadata : mbtiles_metadata.entrySet() ) {
+                String s_tile_insert_metadata = "INSERT OR REPLACE INTO '" + s_metadata_tablename + "' VALUES('"
+                        + metadata.getKey() + "','" + metadata.getValue() + "')";
                 mbtiles_db.execSQL(s_tile_insert_metadata);
             }
             mbtiles_db.setTransactionSuccessful();
@@ -1370,43 +1277,40 @@ public class MBTilesDroidSpitter {
         HashMap<String, String> bounds_min_max = fetch_bounds_minmax_tiles();
         // GPLog.androidLog(-1,"MBTilesDroidSpitter.fetch_bounds_minmax: parms["+i_reload_metadata+"/"+i_update+"] bounds_min_max=["+bounds_min_max.size()+"]");
         if (bounds_min_max.size() > 0) {
-            if (bounds_lat_long != null)
-            {
-             bounds_lat_long.clear();
+            if (bounds_lat_long != null) {
+                bounds_lat_long.clear();
             }
             bounds_lat_long = fetch_bounds_minmax_latlong(bounds_min_max, 256);
             if (bounds_lat_long.size() > 0) { // how to retrieve that last value only?
                 String s_zoom_min_max = "";
                 String s_bounds_tiles = "";
                 String s_bounds_center = "";
-                for (Map.Entry<String, String> zoom_levels : bounds_lat_long.entrySet())
-                {
+                for( Map.Entry<String, String> zoom_levels : bounds_lat_long.entrySet() ) {
                     s_zoom_min_max = zoom_levels.getKey();
                     s_bounds_tiles = zoom_levels.getValue();
                 }
                 if ((s_bounds_tiles != "") && (s_bounds_tiles != "")) {
                     String[] sa_splitted = s_zoom_min_max.split(",");
-                    if (sa_splitted.length == 3) { // only the last record (with min/max/center zoom) will
+                    if (sa_splitted.length == 3) { // only the last record (with min/max/center
+                                                   // zoom) will
                                                    // be used
                         String s_minzoom = sa_splitted[0];
                         String s_maxzoom = sa_splitted[1];
                         String s_centerzoom = sa_splitted[2];
-                        if ((s_minzoom != "") && (s_maxzoom != ""))
-                        {
+                        if ((s_minzoom != "") && (s_maxzoom != "")) {
                             sa_splitted = s_bounds_tiles.split(";");
-                            if (sa_splitted.length == 2)
-                            {
-                             s_bounds_tiles=sa_splitted[0];
-                             s_bounds_center=sa_splitted[1]+","+s_centerzoom;
-                             sa_splitted = s_bounds_tiles.split(",");
-                             if (sa_splitted.length == 4) {
-                                 update_metadata.put("bounds", s_bounds_tiles);
-                                 update_metadata.put("minzoom", s_minzoom);
-                                 update_metadata.put("maxzoom", s_maxzoom);
-                                 update_metadata.put("center", s_bounds_center);
-                                 // GPLog.androidLog(1,"fetch_bounds_minmax  bounds["+s_bounds_tiles+"] minzoom["+s_minzoom+"] maxzoom["+s_maxzoom+"]");
-                             }
-                           }
+                            if (sa_splitted.length == 2) {
+                                s_bounds_tiles = sa_splitted[0];
+                                s_bounds_center = sa_splitted[1] + "," + s_centerzoom;
+                                sa_splitted = s_bounds_tiles.split(",");
+                                if (sa_splitted.length == 4) {
+                                    update_metadata.put("bounds", s_bounds_tiles);
+                                    update_metadata.put("minzoom", s_minzoom);
+                                    update_metadata.put("maxzoom", s_maxzoom);
+                                    update_metadata.put("center", s_bounds_center);
+                                    // GPLog.androidLog(1,"fetch_bounds_minmax  bounds["+s_bounds_tiles+"] minzoom["+s_minzoom+"] maxzoom["+s_maxzoom+"]");
+                                }
+                            }
                         }
                     }
                 }
@@ -1416,7 +1320,7 @@ public class MBTilesDroidSpitter {
             try {
                 update_mbtiles_metadata(db_mbtiles, update_metadata, i_reload_metadata);
             } catch (Exception e) {
-                GPLog.androidLog(4,"MBTilesDroidSpitter[" + file_mbtiles.getAbsolutePath() + "]", e);
+                GPLog.androidLog(4, "MBTilesDroidSpitter[" + file_mbtiles.getAbsolutePath() + "]", e);
             }
         }
         return update_metadata;
@@ -1440,50 +1344,52 @@ public class MBTilesDroidSpitter {
     public HashMap<String, String> fetch_bounds_minmax_tiles() {
         HashMap<String, String> bounds_min_max = new LinkedHashMap<String, String>();
         List<Integer> zoom_levels = null;
-        int i_zoom_level=0;
-        int i_version=0;
+        int i_zoom_level = 0;
+        int i_version = 0;
         // These querys run much quicker with 'maps"
-        String s_table="map";
-        if (i_type_tiles == 0)
-        { // mbtiles is only valid if 'i_type_tiles' == 0 or 1 [table or view]
-         s_table="tiles"; // map will not exist
+        String s_table = "map";
+        if (i_type_tiles == 0) { // mbtiles is only valid if 'i_type_tiles' == 0 or 1 [table or
+                                 // view]
+            s_table = "tiles"; // map will not exist
         }
-        // SELECT zoom_level,min(tile_column) AS min_x,min(tile_row) AS min_y,max(tile_column) AS max_x,max(tile_row) AS max_y FROM tiles WHERE zoom_level IN(SELECT DISTINCT zoom_level FROM tiles ORDER BY zoom_level ASC) GROUP BY zoom_level
-        // tiles: 00:00:07.160  ; map 00:00:03.200
+        // SELECT zoom_level,min(tile_column) AS min_x,min(tile_row) AS min_y,max(tile_column) AS
+        // max_x,max(tile_row) AS max_y FROM tiles WHERE zoom_level IN(SELECT DISTINCT zoom_level
+        // FROM tiles ORDER BY zoom_level ASC) GROUP BY zoom_level
+        // tiles: 00:00:07.160 ; map 00:00:03.200
         // SELECT DISTINCT zoom_level FROM tiles ORDER BY zoom_level ASC
-        // tiles: 00:00:03.209  ; map 00:00:00.040
-        // SELECT zoom_level,min(tile_column) AS min_x,min(tile_row) AS min_y,max(tile_column) AS max_x,max(tile_row) AS max_y FROM tiles WHERE zoom_level = 16
-        // tiles: 00:00:03.200  ; map 00:00:00.040
-        String SQL_GET_MINMAXZOOM_TILES="SELECT zoom_level,min(tile_column) AS min_x,min(tile_row) AS min_y,max(tile_column) AS max_x,max(tile_row) AS max_y FROM "+s_table+" WHERE zoom_level IN(SELECT DISTINCT zoom_level FROM "+s_table+" ORDER BY zoom_level ASC) GROUP BY zoom_level";
+        // tiles: 00:00:03.209 ; map 00:00:00.040
+        // SELECT zoom_level,min(tile_column) AS min_x,min(tile_row) AS min_y,max(tile_column) AS
+        // max_x,max(tile_row) AS max_y FROM tiles WHERE zoom_level = 16
+        // tiles: 00:00:03.200 ; map 00:00:00.040
+        String SQL_GET_MINMAXZOOM_TILES = "SELECT zoom_level,min(tile_column) AS min_x,min(tile_row) AS min_y,max(tile_column) AS max_x,max(tile_row) AS max_y FROM "
+                + s_table
+                + " WHERE zoom_level IN(SELECT DISTINCT zoom_level FROM "
+                + s_table
+                + " ORDER BY zoom_level ASC) GROUP BY zoom_level";
         Cursor c_tiles = null;
         db_lock.readLock().lock();
-        try
-        {
-         // GPLog.androidLog(-1,"MBTilesDroidSpitter.fetch_bounds_minmax_tiles: sql["+SQL_GET_MINMAXZOOM_TILES+"]");
-         c_tiles = db_mbtiles.rawQuery(SQL_GET_MINMAXZOOM_TILES, null);
-         // mj10777: 20131123: avoid using table/view 'tiles' - with big databases can bring things to a halt
-         if (c_tiles != null)
-         { // avoid CursorIndexOutOfBoundsException
-          c_tiles.moveToFirst();
-          do
-          { // 12 2197 2750 2203 2754
-           String s_zoom = c_tiles.getString(0);
-           String s_bounds_tiles = c_tiles.getString(1) + "," + c_tiles.getString(2) + "," + c_tiles.getString(3) + "," + c_tiles.getString(4);
-           bounds_min_max.put(s_zoom, s_bounds_tiles);
-           // GPLog.androidLog(-1,"MBTilesDroidSpitter.fetch_bounds_minmax_tiles: sql["+s_zoom+","+s_bounds_tiles+"]");
-          } while( c_tiles.moveToNext() );
-          c_tiles.close();
-         }
+        try {
+            // GPLog.androidLog(-1,"MBTilesDroidSpitter.fetch_bounds_minmax_tiles: sql["+SQL_GET_MINMAXZOOM_TILES+"]");
+            c_tiles = db_mbtiles.rawQuery(SQL_GET_MINMAXZOOM_TILES, null);
+            // mj10777: 20131123: avoid using table/view 'tiles' - with big databases can bring
+            // things to a halt
+            if (c_tiles != null) { // avoid CursorIndexOutOfBoundsException
+                c_tiles.moveToFirst();
+                do { // 12 2197 2750 2203 2754
+                    String s_zoom = c_tiles.getString(0);
+                    String s_bounds_tiles = c_tiles.getString(1) + "," + c_tiles.getString(2) + "," + c_tiles.getString(3) + ","
+                            + c_tiles.getString(4);
+                    bounds_min_max.put(s_zoom, s_bounds_tiles);
+                    // GPLog.androidLog(-1,"MBTilesDroidSpitter.fetch_bounds_minmax_tiles: sql["+s_zoom+","+s_bounds_tiles+"]");
+                } while( c_tiles.moveToNext() );
+                c_tiles.close();
+            }
+        } catch (Exception e) {
+            GPLog.androidLog(4, "MBTilesDroidSpitter.fetch_bounds_minmax_tiles: sql[" + SQL_GET_MINMAXZOOM_TILES + "]", e);
+        } finally {
+            db_lock.readLock().unlock();
         }
-        catch (Exception e)
-        {
-         GPLog.androidLog(4,"MBTilesDroidSpitter.fetch_bounds_minmax_tiles: sql["+SQL_GET_MINMAXZOOM_TILES+"]",e);
-        }
-        finally
-        {
-         db_lock.readLock().unlock();
-        }
-       return bounds_min_max;
+        return bounds_min_max;
     }
     // -----------------------------------------------
     /**
@@ -1493,13 +1399,12 @@ public class MBTilesDroidSpitter {
       * @return the converted values. ['zoom','min_x,min_y,max_x,max_y']
       */
     public HashMap<String, String> fetch_bounds_minmax_latlong( HashMap<String, String> bounds_tiles, int i_tize_size ) {
-        double[] max_bounds = new double[]{180.0, 85.05113, -180.0, -85.05113,0,0};
+        double[] max_bounds = new double[]{180.0, 85.05113, -180.0, -85.05113, 0, 0};
         int i_min_zoom = 22;
         int i_max_zoom = 0;
-        int i_zoom_center=0;
+        int i_zoom_center = 0;
         HashMap<String, String> bounds_lat_long = new LinkedHashMap<String, String>();
-        for (Map.Entry<String, String> zoom_bounds : bounds_tiles.entrySet())
-        {
+        for( Map.Entry<String, String> zoom_bounds : bounds_tiles.entrySet() ) {
             double[] tile_bounds = tile_bounds_to_latlong(zoom_bounds.getKey(), zoom_bounds.getValue(), i_tize_size);
             int i_zoom = Integer.parseInt(zoom_bounds.getKey());
             if (i_zoom < i_min_zoom)
@@ -1514,22 +1419,23 @@ public class MBTilesDroidSpitter {
                 max_bounds[2] = tile_bounds[2];
             if (tile_bounds[3] > max_bounds[3])
                 max_bounds[3] = tile_bounds[3];
-            if (((tile_bounds[4] >= max_bounds[0]) && (tile_bounds[4] <= max_bounds[2])) &&
-                 ((tile_bounds[5] >= max_bounds[1]) && (tile_bounds[5] <= max_bounds[3])))
-            {
-             if (i_zoom_center < i_zoom)
-             { // The center of the highest Zoom-Level will be set as center
-              max_bounds[4] = tile_bounds[4];
-              max_bounds[5] = tile_bounds[5];
-              i_zoom_center=i_zoom;
-             }
+            if (((tile_bounds[4] >= max_bounds[0]) && (tile_bounds[4] <= max_bounds[2]))
+                    && ((tile_bounds[5] >= max_bounds[1]) && (tile_bounds[5] <= max_bounds[3]))) {
+                if (i_zoom_center < i_zoom) { // The center of the highest Zoom-Level will be set as
+                                              // center
+                    max_bounds[4] = tile_bounds[4];
+                    max_bounds[5] = tile_bounds[5];
+                    i_zoom_center = i_zoom;
+                }
             }
-            String s_bounds_tiles = tile_bounds[0] + "," + tile_bounds[1] + "," + tile_bounds[2] + "," + tile_bounds[3]+";"+tile_bounds[4]+","+tile_bounds[5];
+            String s_bounds_tiles = tile_bounds[0] + "," + tile_bounds[1] + "," + tile_bounds[2] + "," + tile_bounds[3] + ";"
+                    + tile_bounds[4] + "," + tile_bounds[5];
             bounds_lat_long.put(zoom_bounds.getKey(), s_bounds_tiles);
             // GPLog.androidLog(-1,"MBTilesDroidSpitter.fetch_bounds_minmax_tiles: bounds_lat_long["+i_zoom+","+s_bounds_tiles+"]");
         }
-        String s_zoom = i_min_zoom + "," + i_max_zoom+","+i_zoom_center;
-        String s_bounds_tiles = max_bounds[0] + "," + max_bounds[1] + "," + max_bounds[2] + "," + max_bounds[3]+";"+max_bounds[4]+","+max_bounds[5];
+        String s_zoom = i_min_zoom + "," + i_max_zoom + "," + i_zoom_center;
+        String s_bounds_tiles = max_bounds[0] + "," + max_bounds[1] + "," + max_bounds[2] + "," + max_bounds[3] + ";"
+                + max_bounds[4] + "," + max_bounds[5];
         bounds_lat_long.put(s_zoom, s_bounds_tiles);
         return bounds_lat_long;
     }
@@ -1543,14 +1449,13 @@ public class MBTilesDroidSpitter {
      * @param i_y_osm y_tile [n osm notation]
      * @return  s_tile_id tile_id to use [z-x-y.osm/tms]
      */
-    public String get_tile_id_from_zxy( int i_z, int i_x,int i_y_osm )
-    {
-     int i_y=i_y_osm;
-     if (s_tile_row_type.equals("tms")) {
+    public String get_tile_id_from_zxy( int i_z, int i_x, int i_y_osm ) {
+        int i_y = i_y_osm;
+        if (s_tile_row_type.equals("tms")) {
             int[] tmsTileXY = MBTilesDroidSpitter.googleTile2TmsTile(i_x, i_y_osm, i_z);
             i_y = tmsTileXY[1];
         }
-     return i_z + "-" + i_x + "-" + i_y + "." + s_tile_row_type; // 'tms' or 'osm';
+        return i_z + "-" + i_x + "-" + i_y + "." + s_tile_row_type; // 'tms' or 'osm';
     }
     // -----------------------------------------------
     /**
@@ -1590,9 +1495,9 @@ public class MBTilesDroidSpitter {
         bounds = tileLatLonBounds(i_max_x, i_max_y_osm, i_zoom, i_tize_size);
         double d_max_x = bounds[2];
         double d_max_y = bounds[3];
-        double d_center_x = (d_max_x+d_min_x)/2;
-        double d_center_y = (d_max_y+d_min_y)/2;
-        return new double[]{d_min_x, d_min_y, d_max_x, d_max_y,d_center_x,d_center_y};
+        double d_center_x = (d_max_x + d_min_x) / 2;
+        double d_center_y = (d_max_y + d_min_y) / 2;
+        return new double[]{d_min_x, d_min_y, d_max_x, d_max_y, d_center_x, d_center_y};
     }
     // -----------------------------------------------
     /**
@@ -1648,34 +1553,31 @@ public class MBTilesDroidSpitter {
      * @return  zxy_osm z,x,y_osm values
      */
     public static int[] get_zxy_from_tile_id( String s_tile_id ) {
-       int[] zxy_osm = null;
-       String[] sa_string=s_tile_id.split("-");
-       if (sa_string.length == 3)
-       {  // s_tile_id = i_z + "-" + i_x + "-" + i_y + "." + s_tile_row_type; // 'tms' or 'osm'
-        int i_z=Integer.parseInt(sa_string[0]);
-        int i_x=Integer.parseInt(sa_string[1]);
-        String s_y=sa_string[2];
-        sa_string=s_y.split("\\."); // not .split(".");
-        // get_zxy_from_tile_id[17-70427-88057.tms] s_y[88057.tms] [0]
-        // GPLog.androidLog(-1,"get_zxy_from_tile_id["+s_tile_id+"] s_y["+s_y+"] ["+sa_string.length+"]");
-        if (sa_string.length == 2)
-        {
-         int i_y_osm=Integer.parseInt(sa_string[0]);
-         int i_y_tms=i_y_osm;
-         s_y=sa_string[1];
-         zxy_osm=new int[]{i_z,i_x,i_y_osm,i_y_tms};
-         if (s_y.equals("tms"))
-         {
-          int[] xy_osm = tmsTile2GoogleTile(i_x,i_y_tms, i_z);
-          if (xy_osm.length == 2)
-          {
-           zxy_osm[2] = xy_osm[1];
-          }
-         }
+        int[] zxy_osm = null;
+        String[] sa_string = s_tile_id.split("-");
+        if (sa_string.length == 3) { // s_tile_id = i_z + "-" + i_x + "-" + i_y + "." +
+                                     // s_tile_row_type; // 'tms' or 'osm'
+            int i_z = Integer.parseInt(sa_string[0]);
+            int i_x = Integer.parseInt(sa_string[1]);
+            String s_y = sa_string[2];
+            sa_string = s_y.split("\\."); // not .split(".");
+            // get_zxy_from_tile_id[17-70427-88057.tms] s_y[88057.tms] [0]
+            // GPLog.androidLog(-1,"get_zxy_from_tile_id["+s_tile_id+"] s_y["+s_y+"] ["+sa_string.length+"]");
+            if (sa_string.length == 2) {
+                int i_y_osm = Integer.parseInt(sa_string[0]);
+                int i_y_tms = i_y_osm;
+                s_y = sa_string[1];
+                zxy_osm = new int[]{i_z, i_x, i_y_osm, i_y_tms};
+                if (s_y.equals("tms")) {
+                    int[] xy_osm = tmsTile2GoogleTile(i_x, i_y_tms, i_z);
+                    if (xy_osm.length == 2) {
+                        zxy_osm[2] = xy_osm[1];
+                    }
+                }
+            }
         }
-       }
-    return zxy_osm;
-   }
+        return zxy_osm;
+    }
     // -----------------------------------------------
     /**
      * Determin if the Bitmap is blank (i.e. all pixels are of ONE colour)
@@ -1802,29 +1704,43 @@ public class MBTilesDroidSpitter {
         double[] maxs = metersToLatLon(bounds[2], bounds[3]);
         return new double[]{mins[1], maxs[0], maxs[1], mins[0]};
     }
+
     /**
-      * <p>Code copied from: http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Lon..2Flat._to_tile_numbers</p>
-      *
-      * @param latlong_bounds [position_y,position_x]
-      * @param zoom
-      * @return [zoom,xtile,ytile_osm]
-      */
-    public static int[] getTileNumber(final double lat, final double lon, final int zoom) {
-     int xtile = (int)Math.floor( (lon + 180) / 360 * (1<<zoom) ) ;
-     int ytile_osm = (int)Math.floor( (1 - Math.log(Math.tan(Math.toRadians(lat)) + 1 / Math.cos(Math.toRadians(lat))) / Math.PI) / 2 * (1<<zoom) ) ;
-    return new int[]{zoom, xtile, ytile_osm};
-   }
-   /**
-      * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
-      *
-      * @param latlong_bounds [minx,miny,maxx,minx]
-      * @param zoom
-      * @param tileSize
-      * @return [zoom,minx, miny, maxx, maxy of tile_bounds]
-      */
+     * <p>Code copied from: http://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Lon..2Flat._to_tile_numbers </p>
+     * 20131128: corrections added to correct going over or under max/min extent
+     * - was causing http 400 Bad Requests
+     * - updated openstreetmap wiki
+     * @param latlong_bounds [position_y,position_x]
+     * @param zoom
+     * @return [zoom,xtile,ytile_osm]
+     */
+    public static int[] getTileNumber( final double lat, final double lon, final int zoom ) {
+        int xtile = (int) Math.floor((lon + 180) / 360 * (1 << zoom));
+        int ytile_osm = (int) Math.floor((1 - Math.log(Math.tan(Math.toRadians(lat)) + 1 / Math.cos(Math.toRadians(lat)))
+                / Math.PI)
+                / 2 * (1 << zoom));
+        if (xtile < 0)
+            xtile = 0;
+        if (xtile >= (1 << zoom))
+            xtile = ((1 << zoom) - 1);
+        if (ytile_osm < 0)
+            ytile_osm = 0;
+        if (ytile_osm >= (1 << zoom))
+            ytile_osm = ((1 << zoom) - 1);
+        return new int[]{zoom, xtile, ytile_osm};
+    }
+
+    /**
+       * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
+       *
+       * @param latlong_bounds [minx,miny,maxx,minx]
+       * @param zoom
+       * @param tileSize
+       * @return [zoom,minx, miny, maxx, maxy of tile_bounds]
+       */
     public static int[] LatLonBounds_to_TileBounds( double[] latlong_bounds, int zoom ) {
-        int[]  min_tile_bounds = getTileNumber(latlong_bounds[1],latlong_bounds[0], zoom);
-        int[]  max_tile_bounds = getTileNumber(latlong_bounds[3],latlong_bounds[2], zoom);
+        int[] min_tile_bounds = getTileNumber(latlong_bounds[1], latlong_bounds[0], zoom);
+        int[] max_tile_bounds = getTileNumber(latlong_bounds[3], latlong_bounds[2], zoom);
         return new int[]{zoom, min_tile_bounds[1], min_tile_bounds[2], max_tile_bounds[1], max_tile_bounds[2]};
     }
     /**

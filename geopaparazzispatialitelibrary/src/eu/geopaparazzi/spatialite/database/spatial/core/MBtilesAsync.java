@@ -456,6 +456,13 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
             i_http_not_usable = 1;
         }
             break;
+        case HttpURLConnection.HTTP_BAD_REQUEST: 
+        { // 400: Bad Request 
+        // malformed url or tiles out of range 
+        // after 10 attempts, will abort 
+        i_http_bad_requests++; 
+        } 
+        break; 
         default:
             GPLog.androidLog(-1, "mbtiles_Async.get_http_result: " + s_http_result);
             break;
