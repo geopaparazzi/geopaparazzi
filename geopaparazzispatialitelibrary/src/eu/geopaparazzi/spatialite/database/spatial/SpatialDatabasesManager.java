@@ -102,7 +102,10 @@ public class SpatialDatabasesManager {
                             sdb = new SpatialiteDatabaseHandler(this_file.getAbsolutePath());
                         }
                         // GPLog.androidLog(-1,"SpatialDatabasesManager["+i+"]["+sa_extentions[i]+"]: init["+this_file.getAbsolutePath()+"] ");
-                        sdbHandlers.add(sdb);
+                        if (sdb.isValid())
+                        {
+                         sdbHandlers.add(sdb);
+                        }
                     }
                 }
             }
@@ -130,14 +133,26 @@ public class SpatialDatabasesManager {
 
     public List<SpatialVectorTable> getSpatialVectorTables( boolean forceRead ) throws Exception {
         List<SpatialVectorTable> tables = new ArrayList<SpatialVectorTable>();
-        for( ISpatialDatabaseHandler sdbHandler : sdbHandlers ) {
-            List<SpatialVectorTable> spatialTables = sdbHandler.getSpatialVectorTables(forceRead);
-            for( SpatialVectorTable spatialTable : spatialTables ) {
-                tables.add(spatialTable);
-                vectorTablesMap.put(spatialTable, sdbHandler);
+        List<ISpatialDatabaseHandler> remove_Handlers = new ArrayList<ISpatialDatabaseHandler>();
+        for( ISpatialDatabaseHandler sdbHandler : sdbHandlers )
+        {
+           List<SpatialVectorTable> spatialTables = sdbHandler.getSpatialVectorTables(forceRead);
+           if (sdbHandler.isValid())
+           {
+            for( SpatialVectorTable spatialTable : spatialTables )
+            {
+               tables.add(spatialTable);
+               vectorTablesMap.put(spatialTable, sdbHandler);
             }
+           }
         }
-
+        for( ISpatialDatabaseHandler remove : remove_Handlers )
+        {
+         String s_remove=remove.getFileNamePath()+" ["+remove.isValid()+"]";
+         remove.close();
+         sdbHandlers.remove(remove);
+         GPLog.androidLog(-1,"SpatialDatabasesManager remove[" + s_remove + "] size["+sdbHandlers.size()+"]");
+        }
         Collections.sort(tables, new OrderComparator());
         // set proper order index across tables
         for( int i = 0; i < tables.size(); i++ ) {
@@ -148,16 +163,27 @@ public class SpatialDatabasesManager {
 
     public List<SpatialRasterTable> getSpatialRasterTables( boolean forceRead ) throws Exception {
         List<SpatialRasterTable> tables = new ArrayList<SpatialRasterTable>();
+        List<ISpatialDatabaseHandler> remove_Handlers = new ArrayList<ISpatialDatabaseHandler>();
+        String s_table_count="";
         for( ISpatialDatabaseHandler sdbHandler : sdbHandlers ) {
             try {
                 List<SpatialRasterTable> spatialTables = sdbHandler.getSpatialRasterTables(forceRead);
-                for( SpatialRasterTable spatialTable : spatialTables ) {
-                    tables.add(spatialTable);
-                    rasterTablesMap.put(spatialTable, sdbHandler);
+                if (sdbHandler.isValid())
+                {
+                 for( SpatialRasterTable spatialTable : spatialTables )
+                 {
+                  tables.add(spatialTable);
+                  rasterTablesMap.put(spatialTable, sdbHandler);
+                 }
                 }
             } catch (java.lang.Exception e) {
                 // ignore the handler and try to g on
             }
+        }
+        for( ISpatialDatabaseHandler remove : remove_Handlers )
+        {
+         remove.close();
+         sdbHandlers.remove(remove);
         }
         // Collections.sort(tables, new OrderComparator());
         return tables;

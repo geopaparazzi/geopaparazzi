@@ -17,6 +17,12 @@
  */
 package eu.geopaparazzi.spatialite.database.spatial.core;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import eu.geopaparazzi.library.database.GPLog;
 
 // https://www.gaia-gis.it/fossil/libspatialite/wiki?name=metadata-4.0
@@ -57,6 +63,12 @@ public class SpatialVectorTable {
     private boolean isLine = false;
     private boolean isPoint = false;
     private boolean isGeometryCollection = false;
+    private HashMap<String, String> fields_list=null; // full list of fields of this table  [name,type]
+    private HashMap<String, String> fields_list_non_vector=null; // only non-geometry fields [name,type]
+    private List<String> label_list=null; // only non-geometry fields [name]
+    private String s_label_field=""; // Table field to be used as a label
+    // list of possible primary keys - for more that one: seperated with ';'
+    private String s_primary_key_fields="";
 
     public SpatialVectorTable( String  s_map_file,String name, String geomName, int geomType, String srid, double[] center , double[] bounds,
      String s_layer_type,int i_row_count,int i_coord_dimension,int i_spatial_index_enabled,String s_last_verified ) {
@@ -81,6 +93,34 @@ public class SpatialVectorTable {
         checkType();
         String s_dump="isPoint["+isPoint+"] isLine["+isLine+"] isPolygon["+isPolygon+"] isGeometryCollection["+isGeometryCollection+"]";
         // GPLog.androidLog(-1,"SpatialVectorTable geomName[" + geomName + "] name["+name+"] types["+s_dump+"]");
+    }
+    // -----------------------------------------------
+    /**
+      * Check of the Bounds of all the Vector-Tables collected in this class
+      * Goal: when painting the Geometries: check of viewport is inside these bounds
+      * - if the Viewport is outside these Bounds: all Tables can be ignored
+      * -- this is called when the Tables are created
+      * @param boundsCoordinates [as wsg84]
+      * @return true if the given bounds are inside the bounds of the all the Tables ; otherwise false
+      */
+    public boolean checkBounds(double[] boundsCoordinates)
+    {
+     boolean b_rc=false;
+     if ((boundsCoordinates[0] >= this.bounds_west) && (boundsCoordinates[1] >= this.bounds_south) &&
+          (boundsCoordinates[2] <= this.bounds_east) && (boundsCoordinates[3] <= this.bounds_north))
+     {
+      b_rc=true;
+     }
+     return b_rc;
+    }
+    // -----------------------------------------------
+    public float[] getTableBounds()
+    {
+     float w = (float) this.bounds_west;
+     float s = (float) this.bounds_south;
+     float e = (float) this.bounds_east;
+     float n = (float) this.bounds_north;
+     return new float[]{n, s, e, w};
     }
     // -----------------------------------------------
     /**
@@ -244,7 +284,109 @@ public class SpatialVectorTable {
     public Style getStyle() {
         return style;
     }
+    // -----------------------------------------------
+    /**
+      * Returns a list of non-vector fields of this table
+      * - to fill a ComboBox
+      */
+    public List<String> getLabelList() {
+        return label_list;
+    }
 
+    // -----------------------------------------------
+    /**
+      * Returns Primary Key Fields
+      * - seperated with ';' when more than one
+      */
+    public String getPrimaryKeyFields() {
+        return s_primary_key_fields;
+    }
+   // -----------------------------------------------
+    /**
+      * Returns selected label field of this table
+      * - to help retrieve the value for a label
+      */
+    public String getLabelField() {
+        return s_label_field;
+    }
+    // -----------------------------------------------
+    /**
+      * Set selected label field of this table
+      * - as a result of a ComboBox selection
+      * - to help retrieve the value for a label
+      */
+    public void setLabelField(String s_label_field) {
+        this.s_label_field=s_label_field;
+    }
+    // -----------------------------------------------
+    /**
+      * Set Fields list of table
+      * - a second fields list will be created from non-vector Fields
+      * -- fields_list_non_vector [with name,type]
+      * -- label_list [with name]
+      * - sets selected field from fir charater field
+      * -- if none are found, first field
+      */
+    public void setFieldsList( HashMap<String, String> fields_list )
+    {
+     this.fields_list=fields_list;
+     s_label_field="";
+     String s_label_field_alt="";
+     if (label_list != null)
+     {
+      label_list.clear();
+     }
+     else
+     {
+      label_list = new ArrayList<String>();
+     }
+     if (fields_list_non_vector != null)
+     {
+      fields_list_non_vector.clear();
+     }
+     else
+     {
+      fields_list_non_vector = new LinkedHashMap<String, String>();
+     }
+     if (this.fields_list != null)
+     {
+      for (Map.Entry<String, String> field_list : this.fields_list.entrySet())
+      {
+       String s_field_name = field_list.getKey();
+       // pk: 0 || 1;Data-TypeTEXT || DOUBLE || INTEGER || REAL || DATE || BLOB || geometry-types
+       // field is a primary-key = '1;Data-Type'
+       // field is NOT a primary-key = '0;Data-Type'
+       String s_field_type = field_list.getValue();
+       // GPLog.androidLog(-1,"SpatialVectorTable.setFieldsList["+getName()+"] field_name["+s_field_name+"] field_type["+s_field_type+"]");
+       if ((s_field_type.indexOf("POINT") == -1) && (s_field_type.indexOf("LINESTRING") == -1) &&
+            (s_field_type.indexOf("POLYGON") == -1) && (s_field_type.indexOf("GEOMETRYCOLLECTION") == -1))
+       {
+        fields_list_non_vector.put(s_field_name, s_field_type);
+        label_list.add(s_field_name);
+        if (s_label_field_alt.equals(""))
+        {
+         s_label_field_alt=s_field_name;
+        }
+        // s_primary_key_fields
+        if (s_field_type.indexOf("1;") != -1)
+        { // list of possible primary keys - for more that one: seperated with ';'
+         if (!s_primary_key_fields.equals(""))
+          s_primary_key_fields+=";";
+         s_primary_key_fields+=s_field_name;
+        }
+        if ((s_field_type.indexOf("TEXT") != -1) && (s_label_field.equals("")))
+        { // set a charater field as default
+         s_label_field=s_field_name;
+        }
+       }
+      }
+      if (s_label_field.equals(""))
+      { // if no charater field was found, set first field  as default
+       s_label_field=s_label_field_alt;
+      }
+      // GPLog.androidLog(-1,"SpatialVectorTable.setFieldsList["+getName()+"] label_list["+label_list.size()+"] fields_list_non_vector["+fields_list_non_vector.size()+"] fields_list["+this.fields_list.size()+"]  selected_name["+s_label_field+"] field_type["+s_primary_key_fields+"]");
+     }
+    }
     public void setStyle( Style style ) {
         this.style = style;
     }

@@ -48,7 +48,7 @@ import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
  */
 public class DataListActivity extends ListActivity {
 
-    private List<SpatialVectorTable> spatialTables = new ArrayList<SpatialVectorTable>();;
+    private List<SpatialVectorTable> spatialTables = new ArrayList<SpatialVectorTable>();
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -81,7 +81,6 @@ public class DataListActivity extends ListActivity {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View rowView = inflater.inflate(R.layout.data_row, null);
                 final SpatialVectorTable item = spatialTables.get(position);
-
                 TextView nameView = (TextView) rowView.findViewById(R.id.name);
                 CheckBox visibleView = (CheckBox) rowView.findViewById(R.id.visible);
                 ImageButton listUpButton = (ImageButton) rowView.findViewById(R.id.upButton);
