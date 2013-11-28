@@ -78,6 +78,11 @@ import eu.geopaparazzi.library.util.activities.AboutActivity;
 import eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity;
 import eu.geopaparazzi.library.util.activities.NoteActivity;
 import eu.geopaparazzi.library.util.debug.TestMock;
+// -begin- MapsDir specific
+import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.MapsDirTreeViewList;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.ClassNodeInfo;
+// -end-  MapsDir specific
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
@@ -115,6 +120,7 @@ public class GeoPaparazziActivity extends Activity {
     private static final int MENU_SETTINGS = 4;
     private static final int MENU_RESET = 5;
     private static final int MENU_LOAD = 6;
+    private static final int MAPSDIR_FILETREE = 777;
 
     private ResourcesManager resourcesManager;
     private ActionBar actionBar;
@@ -130,23 +136,26 @@ public class GeoPaparazziActivity extends Activity {
     private List<String> tileSourcesList = null;
     private HashMap<String, String> fileSourcesMap = null;
     private HashMap<String, SpatialRasterTable> rasterSourcesMap = null;
+    private static int i_version = 0;
 
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
+        i_version = 1;
         try {
             checkMockLocations();
             initializeResourcesManager();
-            handleTileSources();
+            if (i_version == 0)
+                handleTileSources();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        Collections.sort(tileSourcesList, new Comparator<String>(){
-            public int compare( String o1, String o2 ) {
-                return o1.compareToIgnoreCase(o2);
-            }
-        });
-
+        if (i_version == 0) {
+            Collections.sort(tileSourcesList, new Comparator<String>(){
+                public int compare( String o1, String o2 ) {
+                    return o1.compareToIgnoreCase(o2);
+                }
+            });
+        }
         checkIncomingGeosms();
         checkIncomingSmsData();
 
@@ -172,7 +181,7 @@ public class GeoPaparazziActivity extends Activity {
         }
 
     }
-
+    // [MapDirManager] - no longer needed - done in MapDirManager.handleTileSources()
     private void handleTileSources() throws Exception, IOException, FileNotFoundException {
         fileSourcesMap = new HashMap<String, String>();
         rasterSourcesMap = new HashMap<String, SpatialRasterTable>();
@@ -420,9 +429,32 @@ public class GeoPaparazziActivity extends Activity {
             DatabaseManager.getInstance().getDatabase();
             checkMapsAndLogsVisibility();
 
-            SpatialDatabasesManager.reset();
-            File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
-            SpatialDatabasesManager.getInstance().init(this, mapsDir);
+            if (i_version == 0) {
+                File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
+                SpatialDatabasesManager.reset();
+                SpatialDatabasesManager.getInstance().init(this, mapsDir);
+            } else { // [MapDirManager]
+                     // define in MapsDirTreeViewList, which Context-Menues should be suppoted for
+                     // this Application
+                     // Should the Properties-Menu be supported/shown?
+                MapsDirTreeViewList.b_properties_file = true;
+                // Should the Edit-Menu be supported/shown?
+                MapsDirTreeViewList.b_edit_file = false;
+                // Should the Delete-Menu be supported/shown?
+                MapsDirTreeViewList.b_delete_file = false;
+                MapsDirManager.getInstance().reset();
+                // if the 'maps_dir' parameter is null, then MapsDirManager will call:
+                // - ResourcesManager.getInstance(this).getMapsDir();
+                // to retrieve the 'maps_dir : call:
+                // - maps_dir=MapsDirManager.get_maps_dir();
+                MapsDirManager.getInstance().init(this, null);
+                // MapsDirManager will read the preferences values for the last map
+                // - it will collect all information about the maps on the sdcard/maps
+                // -- when the prefered map is found, this data will be stored
+                // --- when the Map-Activity is created:
+                // --- the selected map will be loaded with
+                // MapsDirManager.load_Map(map_view,mapCenterLocation);
+            }
         } catch (Exception e) {
             Log.e(getClass().getSimpleName(), e.getLocalizedMessage(), e);
             e.printStackTrace();
@@ -627,12 +659,18 @@ public class GeoPaparazziActivity extends Activity {
     public boolean onCreateOptionsMenu( Menu menu ) {
         super.onCreateOptionsMenu(menu);
         menu.add(Menu.NONE, MENU_SETTINGS, 0, R.string.mainmenu_preferences).setIcon(android.R.drawable.ic_menu_preferences);
-        final SubMenu subMenu = menu.addSubMenu(Menu.NONE, MENU_TILE_SOURCE_ID, 1, R.string.mapsactivity_menu_tilesource)
-                .setIcon(R.drawable.ic_menu_tilesource);
-        {
-            int index = 1000;
-            for( String entry : tileSourcesList ) {
-                subMenu.add(0, index++, Menu.NONE, entry);
+        if (i_version == 1) {
+            menu.add(Menu.NONE, MENU_TILE_SOURCE_ID, 1, R.string.mapsactivity_menu_tilesource).setIcon(
+                    R.drawable.ic_menu_tilesource);
+        }
+        if (i_version == 0) {
+            final SubMenu subMenu = menu.addSubMenu(Menu.NONE, MENU_TILE_SOURCE_ID, 1, R.string.mapsactivity_menu_tilesource)
+                    .setIcon(R.drawable.ic_menu_tilesource);
+            {
+                int index = 1000;
+                for( String entry : tileSourcesList ) {
+                    subMenu.add(0, index++, Menu.NONE, entry);
+                }
             }
         }
         menu.add(Menu.NONE, MENU_RESET, 2, R.string.reset).setIcon(android.R.drawable.ic_menu_revert);
@@ -668,33 +706,58 @@ public class GeoPaparazziActivity extends Activity {
             finish();
             return true;
         case MENU_TILE_SOURCE_ID:
-            return true;
+            if (i_version == 1) {
+                startMapsDirTreeViewList();
+            }
+            if (i_version == 0) {
+                return true;
+            }
         default: {
-            String name = item.getTitle().toString();
-            // MapGeneratorInternal mapGeneratorInternalNew = null;
-            // try {
-            // mapGeneratorInternalNew = MapGeneratorInternal.valueOf(name);
-            // } catch (IllegalArgumentException e) {
-            // // ignore, is custom
-            // }
-            // if (mapGeneratorInternalNew != null) {
-            // setTileSource(mapGeneratorInternalNew.toString(), null);
-            // } else {
-            String fileSource = fileSourcesMap.get(name);
-            if (fileSource != null) {
-                setTileSource(null, new File(fileSource));
-            } else {
-                // try raster
-                SpatialRasterTable spatialRasterTable = rasterSourcesMap.get(name);
-                if (spatialRasterTable != null) {
-                    setTileSource(spatialRasterTable);
+            if (i_version == 0) { // [MapDirManager]
+                String name = item.getTitle().toString();
+                // MapGeneratorInternal mapGeneratorInternalNew = null;
+                // try {
+                // mapGeneratorInternalNew = MapGeneratorInternal.valueOf(name);
+                // } catch (IllegalArgumentException e) {
+                // // ignore, is custom
+                // }
+                // if (mapGeneratorInternalNew != null) {
+                // setTileSource(mapGeneratorInternalNew.toString(), null);
+                // } else {
+                String fileSource = fileSourcesMap.get(name);
+                if (fileSource != null) {
+                    setTileSource(null, new File(fileSource));
+                } else {
+                    // try raster
+                    SpatialRasterTable spatialRasterTable = rasterSourcesMap.get(name);
+                    if (spatialRasterTable != null) {
+                        setTileSource(spatialRasterTable);
+                    }
                 }
             }
-
             // }
         }
         }
         return super.onMenuItemSelected(featureId, item);
+    }
+    /**
+     * Start the Dialog to select a map
+     *
+     * <p>
+     * MapDirManager creates a static-list of maps and sends it to the MapsDirTreeViewList class
+     * - when first called this list will build a diretory/file list AND a map-type/Diretory/File list
+     * - once created, this list will be retained during the Application
+     * - the user can switch from a sorted list as Directory/File OR Map-Type/Diretory/File view
+     * </p>
+     *  result will be sent to MapDirManager and saved there and stored to preferences
+     *  - when the MapView is created, this stroed value will be read and loaded
+     */
+    private void startMapsDirTreeViewList() {
+        try {
+            startActivityForResult(new Intent(this, MapsDirTreeViewList.class), MAPSDIR_FILETREE);
+        } catch (Exception e) {
+            GPLog.androidLog(4, "GeoPaparazziActivity -E-> failed[startActivity(new Intent(this,MapsDirTreeViewList.class));]", e);
+        }
     }
     /**
      * Sets the tilesource.
@@ -703,30 +766,50 @@ public class GeoPaparazziActivity extends Activity {
      * If both arguments are set null, it will try to get info from the preferences,
      * and used sources are saved into preferences.
      * </p>
-     *
+     * [MapDirManager] : no longer needed. Done in MapDirManager.setTileSource()
      * @param sourceName if source is <code>null</code>, mapnik is used.
      * @param mapfile the map file to use in case it is a database based source.
      */
     private void setTileSource( String sourceName, File mapfile ) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         Editor editor = preferences.edit();
-        editor.putString(Constants.PREFS_KEY_TILESOURCE, sourceName);
+        editor.putString(LibraryConstants.PREFS_KEY_TILESOURCE, sourceName);
         if (mapfile != null)
-            editor.putString(Constants.PREFS_KEY_TILESOURCE_FILE, mapfile.getAbsolutePath());
+            editor.putString(LibraryConstants.PREFS_KEY_TILESOURCE_FILE, mapfile.getAbsolutePath());
         editor.commit();
 
     }
-
+    // [MapDirManager] : no longer needed. Done in MapDirManager.setTileSource()
     private void setTileSource( SpatialRasterTable table ) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         Editor editor = preferences.edit();
-        editor.putString(Constants.PREFS_KEY_TILESOURCE, table.getTableName());
+        editor.putString(LibraryConstants.PREFS_KEY_TILESOURCE, table.getTableName());
         editor.commit();
     }
 
     protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
         super.onActivityResult(requestCode, resultCode, data);
         switch( requestCode ) {
+        case MAPSDIR_FILETREE: {
+            if (resultCode == Activity.RESULT_OK) {
+                // String s_SELECTED_FILE=data.getStringExtra(MapsDirTreeViewList.SELECTED_FILE);
+                // String s_SELECTED_TYPE=data.getStringExtra(MapsDirTreeViewList.SELECTED_TYPE);
+                // selected_classinfo will contain all information about the map
+                // MapsDirManager will store this internaly and store the values to preferences
+                // - if this is called from a non-Map-Activity:
+                // -- the map_view parameter und the position parameter MUST be null
+                // - if this is called from a Map-Activity:
+                // -- the map_view parameter and the position parameter should be given
+                // --- the position parameter is not given [null], it will use the position of the
+                // map_view
+                // -- if not null : selected_MapClassInfo() will call
+                // MapsDirManager.load_Map(map_view,mapCenterLocation);
+                if (MapsDirTreeViewList.selected_classinfo != null) {
+                    MapsDirManager.getInstance().selected_MapClassInfo(this, MapsDirTreeViewList.selected_classinfo, null, null);
+                }
+            }
+        }
+            break;
         case (RETURNCODE_BROWSE_FOR_NEW_PREOJECT): {
             if (resultCode == Activity.RESULT_OK) {
                 String chosenFolderToLoad = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
@@ -862,7 +945,11 @@ public class GeoPaparazziActivity extends Activity {
             Utilities.toast(this, R.string.loggingoff, Toast.LENGTH_LONG);
             gpsManager.dispose(this);
             try {
-                SpatialDatabasesManager.getInstance().closeDatabases();
+                if (i_version == 0) {
+                    SpatialDatabasesManager.getInstance().closeDatabases();
+                } else { // close and cleanup anything needed for all map-connections
+                    MapsDirManager.getInstance().finish();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

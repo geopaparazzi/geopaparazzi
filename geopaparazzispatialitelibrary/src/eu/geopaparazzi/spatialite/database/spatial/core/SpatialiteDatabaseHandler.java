@@ -34,6 +34,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKBReader;
 
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.ColorUtilities;
 
 /**
@@ -66,6 +67,14 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
     private static final String METADATA_GEOMETRY_TYPE3 = "type";
     private static final String METADATA_GEOMETRY_COLUMN = "f_geometry_column";
     private static final String METADATA_TABLE_NAME = "f_table_name";
+    // https://www.gaia-gis.it/fossil/libspatialite/wiki?name=metadata-4.0
+    private static final String METADATA_VECTOR_LAYERS_TABLE_NAME = " vector_layers";
+    private static final String METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME = " vector_layers_statistics";
+    // vector_layers
+    // SELECT layer_type,table_name,geometry_column,geometry_type,coord_dimension,srid,spatial_index_enabled FROM vector_layers
+    // SELECT  * FROM vector_layers_statistics
+    // SELECT vector_layers_statistics.layer_type,vector_layers_statistics.table_name,vector_layers_statistics.geometry_column,vector_layers_statistics.row_count,vector_layers_statistics.extent_min_x,vector_layers_statistics.extent_min_y,vector_layers_statistics.extent_max_x,vector_layers_statistics.extent_max_y,vector_layers.geometry_type,vector_layers.coord_dimension,vector_layers.srid,vector_layers.spatial_index_enabled,vector_layers_statistics.last_verified FROM vector_layers_statistics,vector_layers WHERE ((vector_layers_statistics.table_name = vector_layers.table_name) AND (vector_layers_statistics.geometry_column = vector_layers.geometry_column))
+    // v4: SELECT f_table_name,f_geometry_column,geometry_type,srid FROM geometry_columns
 
     private static final String NAME = "name";
     private static final String SIZE = "size";
@@ -90,27 +99,291 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
 
     private List<SpatialVectorTable> vectorTableList;
     private List<SpatialRasterTable> rasterTableList;
-    private String fileName;
-
+    private File file_map; // all DatabaseHandler/Table classes should use these names
+    private String s_map_file; // [with path] all DatabaseHandler/Table classes should use these names
+    private String s_name_file; // [without path] all DatabaseHandler/Table classes should use these names
+    private String s_name; // all DatabaseHandler/Table classes should use these names
+    private String s_description; // all DatabaseHandler/Table classes should use these names
+    private String s_map_type; // all DatabaseHandler/Table classes should use these names
+    private int minZoom;
+    private int maxZoom;
+    private double centerX; // wsg84
+    private double centerY; // wsg84
+    private double bounds_west; // wsg84
+    private double bounds_east; // wsg84
+    private double bounds_north; // wsg84
+    private double bounds_south; // wsg84
+    private int defaultZoom;
     public SpatialiteDatabaseHandler( String dbPath ) {
         try {
-            File spatialDbFile = new File(dbPath);
-            if (!spatialDbFile.getParentFile().exists()) {
+            file_map = new File(dbPath);
+            if (!file_map.getParentFile().exists()) {
                 throw new RuntimeException();
             }
+            s_map_file=file_map.getAbsolutePath();
+            s_name_file=file_map.getName();
+            s_name = file_map.getName().substring(0, file_map.getName().lastIndexOf("."));
             db = new jsqlite.Database();
-            db.open(spatialDbFile.getAbsolutePath(), jsqlite.Constants.SQLITE_OPEN_READWRITE
+            db.open(s_map_file, jsqlite.Constants.SQLITE_OPEN_READWRITE
                     | jsqlite.Constants.SQLITE_OPEN_CREATE);
-            fileName = spatialDbFile.getName();
         } catch (Exception e) {
-            e.printStackTrace();
+            GPLog.androidLog(4,"SpatialiteDatabaseHandler[" + file_map.getAbsolutePath() + "]", e);
         }
+        this.minZoom = 0;
+        this.maxZoom = 22;
+        this.defaultZoom = minZoom;
+        this.centerX = 0.0;
+        this.centerY = 0.0;
+        this.bounds_west = -180.0;
+        this.bounds_south = -85.05113;
+        this.bounds_east = 180.0;
+        this.bounds_north = 85.05113;
+        setDescription(s_name);
+        // GPLog.androidLog(-1,"SpatialiteDatabaseHandler[" + file_map.getAbsolutePath() + "] name["+s_name+"] s_description["+s_description+"]");
     }
-
+    // -----------------------------------------------
+    /**
+      * Return long name of map/file
+      *
+      * <p>default: file name with path and extention
+      * <p>mbtiles : will be a '.mbtiles' sqlite-file-name
+      * <p>map : will be a mapforge '.map' file-name
+      *
+      * @return file_map.getAbsolutePath();
+      */
+    public String getFileNamePath() {
+        return this.s_map_file; // file_map.getAbsolutePath();
+    }
+    // -----------------------------------------------
+    /**
+      * Return short name of map/file
+      *
+      * <p>default: file name without path but with extention
+      *
+      * @return file_map.getAbsolutePath();
+      */
     public String getFileName() {
-        return fileName;
+        return this.s_name_file; // file_map.getName();
     }
-
+    // -----------------------------------------------
+    /**
+      * Return short name of map/file
+      *
+      * <p>default: file name without path and extention
+      * <p>mbtiles : metadata 'name'
+      * <p>map : will be value of 'comment', if not null
+      *
+      * @return s_name as short name of map/file
+      */
+    public String getName() {
+        if ((s_name == null) || (s_name.length() == 0))
+        {
+         s_name=this.file_map.getName().substring(0,this.file_map.getName().lastIndexOf("."));
+        }
+        return this.s_name; // comment or file-name without path and extention
+    }
+        // -----------------------------------------------
+    /**
+      * Return String of bounds [wms-format]
+      *
+      * <p>x_min,y_min,x_max,y_max
+      *
+      * @return bounds formatted using wms format
+      */
+    public String getBounds_toString() {
+        return bounds_west+","+bounds_south+","+bounds_east+","+bounds_north;
+    }
+    // -----------------------------------------------
+    /**
+      * Return String of Map-Center with default Zoom
+      *
+      * <p>x_position,y_position,default_zoom
+      *
+      * @return center formatted using mbtiles format
+      */
+    public String getCenter_toString() {
+        return centerX+","+centerY+","+defaultZoom;
+    }
+    // -----------------------------------------------
+    /**
+      * Return Min/Max Zoom as string
+      *
+      * <p>default :  1-22
+      * <p>mbtiles : taken from value of metadata 'min/maxzoom'
+      *
+      * @return String min/maxzoom
+      */
+    public String getZoom_Levels() {
+        return getMinZoom()+"-"+getMaxZoom();
+    }
+    // -----------------------------------------------
+    /**
+      * Return long description of map/file
+      *
+      * <p>default: s_name with bounds and center
+      * <p>mbtiles : metadata description'
+      * <p>map : will be value of 'comment', if not null
+      *
+      * @return s_description long description of map/file
+      */
+    public String getDescription() {
+        if ((this.s_description == null) || (this.s_description.length() == 0) || (this.s_description.equals(this.s_name)))
+         setDescription(getName()); // will set default values with bounds and center if it is the same as 's_name' or empty
+        return this.s_description; // long comment
+    }
+     // -----------------------------------------------
+    /**
+      * Set long description of map/file
+      *
+      * <p>default: s_name with bounds and center
+      * <p>mbtiles : metadata description'
+      * <p>map : will be value of 'comment', if not null
+      *
+      * @return s_description long description of map/file
+      */
+    public void setDescription(String s_description) {
+        if ((s_description == null) || (s_description.length() == 0) || (s_description.equals(this.s_name)))
+        {
+         this.s_description = getName()+" bounds["+getBounds_toString()+"] center["+getCenter_toString()+"]";
+        }
+        else
+         this.s_description = s_description;
+    }
+    // -----------------------------------------------
+    /**
+      * Return map-file as 'File'
+      *
+      * <p>if the class does not fail, this file exists
+      * <p>mbtiles : will be a '.mbtiles' sqlite-file
+      * <p>map : will be a mapforge '.map' file
+      *
+      * @return file_map as File
+      */
+    public File getFile() {
+        return this.file_map;
+    }
+    // -----------------------------------------------
+    /**
+      * Return Min Zoom
+      *
+      * <p>default :  0
+      * <p>mbtiles : taken from value of metadata 'minzoom'
+      * <p>map : value is given in 'StartZoomLevel'
+      *
+      * @return integer minzoom
+      */
+    public int getMinZoom() {
+        return minZoom;
+    }
+    // -----------------------------------------------
+    /**
+      * Return Max Zoom
+      *
+      * <p>default :  22
+      * <p>mbtiles : taken from value of metadata 'maxzoom'
+      * <p>map : value not defined, seems to calculate bitmap from vector data [18]
+      *
+      * @return integer maxzoom
+      */
+    public int getMaxZoom() {
+        return maxZoom;
+    }
+    // -----------------------------------------------
+    /**
+      * Return West X Value [Longitude]
+      *
+      * <p>default :  -180.0 [if not otherwise set]
+      * <p>mbtiles : taken from 1st value of metadata 'bounds'
+      *
+      * @return double of West X Value [Longitude]
+      */
+    public double getMinLongitude() {
+        return bounds_west;
+    }
+    // -----------------------------------------------
+    /**
+      * Return South Y Value [Latitude]
+      *
+      * <p>default :  -85.05113 [if not otherwise set]
+      * <p>mbtiles : taken from 2nd value of metadata 'bounds'
+      *
+      * @return double of South Y Value [Latitude]
+      */
+    public double getMinLatitude() {
+        return bounds_south;
+    }
+    // -----------------------------------------------
+    /**
+      * Return East X Value [Longitude]
+      *
+      * <p>default :  180.0 [if not otherwise set]
+      * <p>mbtiles : taken from 3th value of metadata 'bounds'
+      *
+      * @return double of East X Value [Longitude]
+      */
+    public double getMaxLongitude() {
+        return bounds_east;
+    }
+    // -----------------------------------------------
+    /**
+      * Return North Y Value [Latitude]
+      *
+      * <p>default :  85.05113 [if not otherwise set]
+      * <p>mbtiles : taken from 4th value of metadata 'bounds'
+      *
+      * @return double of North Y Value [Latitude]
+      */
+    public double getMaxLatitude() {
+        return bounds_north;
+    }
+    // -----------------------------------------------
+    /**
+      * Return Center X Value [Longitude]
+      *
+      * <p>default : center of bounds
+      * <p>mbtiles : taken from 1st value of metadata 'center'
+      *
+      * @return double of X Value [Longitude]
+      */
+    public double getCenterX() {
+        return centerX;
+    }
+    // -----------------------------------------------
+    /**
+      * Return Center Y Value [Latitude]
+      *
+      * <p>default : center of bounds
+      * <p>mbtiles : taken from 2nd value of metadata 'center'
+      *
+      * @return double of Y Value [Latitude]
+      */
+    public double getCenterY() {
+        return centerY;
+    }
+    // -----------------------------------------------
+    /**
+      * Retrieve Zoom level
+      *
+      * <p>default : minZoom
+      * <p>mbtiles : taken from 3rd value of metadata 'center'
+      *
+     * @return defaultZoom
+      */
+    public int getDefaultZoom() {
+        return defaultZoom;
+    }
+    // -----------------------------------------------
+    /**
+      * Set default Zoom level
+      *
+      * <p>default : minZoom
+      * <p>mbtiles : taken from 3rd value of metadata 'center'
+      *
+      * @param i_zoom desired Zoom level
+      */
+    public void setDefaultZoom( int i_zoom ) {
+        defaultZoom = i_zoom;
+    }
     /**
      * Get the version of Spatialite.
      *
@@ -172,7 +445,36 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
     public List<SpatialVectorTable> getSpatialVectorTables( boolean forceRead ) throws Exception {
         if (vectorTableList == null || forceRead) {
             vectorTableList = new ArrayList<SpatialVectorTable>();
-
+            StringBuilder sb_vector_layers = new StringBuilder();
+            boolean is_vector_layer = true;
+            boolean is3 = false;
+            boolean is4 = false;
+            // Take care that the fields are at the same position as the others
+            // SELECT vector_layers_statistics.table_name,vector_layers_statistics.geometry_column,vector_layers.geometry_type,vector_layers.srid,vector_layers_statistics.layer_type,vector_layers_statistics.row_count,vector_layers_statistics.extent_min_x,vector_layers_statistics.extent_min_y,vector_layers_statistics.extent_max_x,vector_layers_statistics.extent_max_y,vector_layers.coord_dimension,vector_layers.spatial_index_enabled,vector_layers_statistics.last_verified FROM vector_layers_statistics,vector_layers WHERE ((vector_layers_statistics.table_name = vector_layers.table_name) AND (vector_layers_statistics.geometry_column = vector_layers.geometry_column))
+            sb_vector_layers.append("SELECT ");
+            sb_vector_layers.append(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".table_name"); // 0
+            sb_vector_layers.append(", "+METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".geometry_column"); // 1
+            sb_vector_layers.append(", "+METADATA_VECTOR_LAYERS_TABLE_NAME+"."+METADATA_GEOMETRY_TYPE4); // 2
+            sb_vector_layers.append(", "+METADATA_VECTOR_LAYERS_TABLE_NAME+"."+METADATA_SRID); // 3
+            sb_vector_layers.append(", "+METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".layer_type"); // 4
+            sb_vector_layers.append(", "+METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".row_count"); // 5
+            sb_vector_layers.append(", "+METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".extent_min_x"); // 6
+            sb_vector_layers.append(", "+METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".extent_min_y"); // 7
+            sb_vector_layers.append(", "+METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".extent_max_x"); // 8
+            sb_vector_layers.append(", "+METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".extent_max_y"); // 9
+            sb_vector_layers.append(", "+METADATA_VECTOR_LAYERS_TABLE_NAME+".coord_dimension"); // 10
+            sb_vector_layers.append(", "+METADATA_VECTOR_LAYERS_TABLE_NAME+".spatial_index_enabled"); // 11
+            sb_vector_layers.append(", "+METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".last_verified"); // 12
+            sb_vector_layers.append(" FROM "+METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+","+METADATA_VECTOR_LAYERS_TABLE_NAME);
+            sb_vector_layers.append(" WHERE(("+METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".table_name="+METADATA_VECTOR_LAYERS_TABLE_NAME+".table_name) AND");
+            sb_vector_layers.append(" ("+METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".geometry_column="+METADATA_VECTOR_LAYERS_TABLE_NAME+".geometry_column))");
+            String query_vector = sb_vector_layers.toString();
+            Stmt stmt = null;
+            try {
+                stmt = db.prepare(query_vector);
+            } catch (java.lang.Exception e_vector) {
+            is_vector_layer = false;
+            is3 = true;
             StringBuilder sb3 = new StringBuilder();
             sb3.append("select ");
             sb3.append(METADATA_TABLE_NAME);
@@ -186,13 +488,13 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
             sb3.append(METADATA_TABLE_GEOMETRY_COLUMNS);
             sb3.append(";");
             String query3 = sb3.toString();
-
-            boolean is3 = true;
-            Stmt stmt = null;
             try {
                 stmt = db.prepare(query3);
             } catch (java.lang.Exception e) {
+             is3 = false;
+             is4 = true;
                 // try with spatialite 4 syntax
+                // SELECT f_table_name,f_geometry_column,geometry_type,srid FROM geometry_columns
                 StringBuilder sb4 = new StringBuilder();
                 sb4.append("select ");
                 sb4.append(METADATA_TABLE_NAME);
@@ -207,24 +509,54 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                 sb4.append(";");
                 String query4 = sb4.toString();
                 stmt = db.prepare(query4);
-                is3 = false;
+             }
             }
             try {
                 while( stmt.step() ) {
-                    String name = stmt.column_string(0);
-                    String geomName = stmt.column_string(1);
-
-                    int geomType = 0;
+                    String table_name = stmt.column_string(0);
+                    String geometry_column = stmt.column_string(1);
+                    int geometry_type = 0;
                     if (is3) {
                         String type = stmt.column_string(2);
-                        geomType = GeometryType.forValue(type);
+                        geometry_type = GeometryType.forValue(type);
                     } else {
-                        geomType = stmt.column_int(2);
+                        geometry_type = stmt.column_int(2);
                     }
-
-                    String srid = String.valueOf(stmt.column_int(3));
-                    SpatialVectorTable table = new SpatialVectorTable(name, geomName, geomType, srid);
+                   double[] centerCoordinate = {0.0, 0.0};
+                   double[] boundsCoordinates = {-180.0f, -85.05113f, 180.0f, 85.05113f};
+                   String srid = String.valueOf(stmt.column_int(3));
+                   String s_layer_type="geometry";
+                    int i_row_count=0;
+                    int i_coord_dimension=0;
+                    int i_spatial_index_enabled=0;
+                    String s_last_verified="";
+                    if (is_vector_layer) {
+                     srid=stmt.column_string(3);
+                     int i_srid = Integer.parseInt(srid);
+                     s_layer_type=stmt.column_string(4);
+                     i_row_count=stmt.column_int(5);
+                     boundsCoordinates[0]=stmt.column_double(6);
+                     boundsCoordinates[1]=stmt.column_double(7);
+                     boundsCoordinates[2]=stmt.column_double(8);
+                     boundsCoordinates[3]=stmt.column_double(9);
+                     i_coord_dimension=stmt.column_int(10);
+                     i_spatial_index_enabled=stmt.column_int(11);
+                     s_last_verified=stmt.column_string(12);
+                     if ((!srid.equals("4326")) && (i_srid > 2))
+                     { // GeoPackage: have 0 or 1: srid has NOT been properly set - should be 4326 is: (1,2,3) [Luciad_GeoPackage.gpkg] ; try 4326 [wsg84]
+                      int i_parm=0;
+                      getSpatialVector_4326(srid,centerCoordinate,boundsCoordinates,i_parm);
+                     }
+                     else
+                     {
+                      centerCoordinate[0] = boundsCoordinates[0] + (boundsCoordinates[2] - boundsCoordinates[0]) / 2;
+                      centerCoordinate[1] = boundsCoordinates[1] + (boundsCoordinates[3] - boundsCoordinates[1]) / 2;
+                     }
+                    }
+                    SpatialVectorTable table = new SpatialVectorTable(getFileNamePath(),table_name, geometry_column, geometry_type, srid,centerCoordinate,boundsCoordinates,
+                     s_layer_type,i_row_count,i_coord_dimension,i_spatial_index_enabled,s_last_verified);
                     vectorTableList.add(table);
+                     // GPLog.androidLog(-1,"SpatialiteDatabaseHandler["+getFileNamePath()+"][" + table.getBounds_toString()+ "] ["+is_vector_layer+"]");
                 }
             } finally {
                 stmt.close();
@@ -248,12 +580,79 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
 
         return vectorTableList;
     }
+    /**
+     * Extract the center coordinate of a raster tileset.
+     *
+     * @param tableName the raster table name.
+     * @param centerCoordinate teh coordinate array to update with the extracted values.
+     */
+    private void getSpatialVector_4326( String srid, double[] centerCoordinate, double[] boundsCoordinates, int i_parm ) {
+        String centerQuery ="";
+        try {
+            Stmt centerStmt = null;
+            double bounds_west = boundsCoordinates[0];
+            double bounds_south = boundsCoordinates[1];
+            double bounds_east = boundsCoordinates[2];
+            double bounds_north = boundsCoordinates[3];
+            // srid=3068
+            // 3460.411441 1208.430179 49230.152810 38747.958906
+            // SELECT CastToXY(ST_Transform(MakePoint((3460.411441+(49230.152810-3460.411441)/2),(1208.430179+(38747.958906-1208.430179)/2),3068),4326)) AS Center
+            // SELECT CastToXY(ST_Transform(MakePoint(3460.411441,1208.430179,3068),4326)) AS South_West
+            // SELECT CastToXY(ST_Transform(MakePoint(49230.152810,38747.958906,3068),4326)) AS North_East
+            try {
+                WKBReader wkbReader = new WKBReader();
+                StringBuilder centerBuilder = new StringBuilder();
+                centerBuilder.append("SELECT ST_AsBinary(CastToXY(ST_Transform(MakePoint(");
+                // centerBuilder.append("select AsText(ST_Transform(MakePoint(");
+                centerBuilder.append("("+bounds_west+" + ("+bounds_east+" - "+bounds_west+")/2), ");
+                centerBuilder.append("("+bounds_south+" + ("+bounds_north+" - "+bounds_south+")/2), ");
+                centerBuilder.append(srid);
+                centerBuilder.append("),4326))) AS Center,");
+                centerBuilder.append("ST_AsBinary(CastToXY(ST_Transform(MakePoint(");
+                centerBuilder.append(""+bounds_west+","+bounds_south+", ");
+                centerBuilder.append(srid);
+                centerBuilder.append("),4326))) AS South_West,");
+                centerBuilder.append("ST_AsBinary(CastToXY(ST_Transform(MakePoint(");
+                centerBuilder.append(""+bounds_south+","+bounds_north+", ");
+                centerBuilder.append(srid);
+                centerBuilder.append("),4326))) AS North_East ");
+                if (i_parm == 0) {
+                } else {
+                }
+                //centerBuilder.append("';");
+                centerQuery = centerBuilder.toString();
 
+                centerStmt = db.prepare(centerQuery);
+                if (centerStmt.step()) {
+                    byte[] geomBytes = centerStmt.column_bytes(0);
+                    Geometry geometry = wkbReader.read(geomBytes);
+                    Coordinate coordinate = geometry.getCoordinate();
+                    centerCoordinate[0] = coordinate.x;
+                    centerCoordinate[1] = coordinate.y;
+                    geomBytes = centerStmt.column_bytes(1);
+                    geometry = wkbReader.read(geomBytes);
+                    coordinate = geometry.getCoordinate();
+                    boundsCoordinates[0] = coordinate.x;
+                    boundsCoordinates[1] = coordinate.y;
+                    geomBytes = centerStmt.column_bytes(2);
+                    geometry = wkbReader.read(geomBytes);
+                    coordinate = geometry.getCoordinate();
+                    boundsCoordinates[2] = coordinate.x;
+                    boundsCoordinates[3] = coordinate.y;
+                }
+            } finally {
+                if (centerStmt != null)
+                    centerStmt.close();
+            }
+        } catch (java.lang.Exception e) {
+            GPLog.androidLog(4,"SpatialiteDatabaseHandler[" + file_map.getAbsolutePath() + "] sql["+centerQuery+"]", e);
+        }
+    }
     @Override
     public List<SpatialRasterTable> getSpatialRasterTables( boolean forceRead ) throws Exception {
         if (rasterTableList == null || forceRead) {
             rasterTableList = new ArrayList<SpatialRasterTable>();
-
+            SpatialRasterTable table=null;
             StringBuilder sb = new StringBuilder();
             sb.append("select ");
             sb.append(METADATA_RASTER_TABLE_NAME);
@@ -269,8 +668,8 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                     String tableName = stmt.column_string(0);
                     String columnName = stmt.column_string(1);
                     String srid = String.valueOf(stmt.column_int(2));
-
-                    if (tableName != null) {
+                    // 20131107 mj10777: sometimes a table is being added more than one
+                    if ((tableName != null) && (table == null)){
                         int[] zoomLevels = {0, 18};
                         getZoomLevels(tableName, zoomLevels);
 
@@ -281,9 +680,23 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                         getCenterCoordinate4326(tableName, centerCoordinate, boundsCoordinates, i_parm);
                         // select r_table_name,r_raster_column,srid from raster_columns
                         // fromosm_tiles tile_data 3857
-                        // GPLog.app_log(-1,"getSpatialRasterTables: Geopackage["+getFileName()+"] query["+query+"]");
-                        SpatialRasterTable table = new SpatialRasterTable(tableName, columnName, srid, zoomLevels[0],
+                        // GPLog.androidLog(-1,"getSpatialRasterTables: Geopackage["+getFileNamePath()+"] ");
+                        table = new SpatialRasterTable(getFileNamePath(), "", srid, zoomLevels[0],
                                 zoomLevels[1], centerCoordinate[0], centerCoordinate[1], null, boundsCoordinates);
+                        table.setMapType("gpkg");
+                        table.setTableName(tableName);
+                        table.setColumnName(columnName);
+                        this.minZoom = table.getMinZoom();
+                        this.maxZoom = table.getMaxZoom();
+                        this.defaultZoom = table.getDefaultZoom();
+                        this.centerX = table.getCenterX();
+                        this.centerY = table.getCenterY();
+                        this.bounds_west = table.getMinLongitude();
+                        this.bounds_south = table.getMinLatitude();
+                        this.bounds_east = table.getMaxLongitude();
+                        this.bounds_north = getMaxLatitude();
+                        setDescription(columnName);
+                        table.setDescription(this.s_description);
                         rasterTableList.add(table);
                     }
 
@@ -359,31 +772,93 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                 }
                 centerBuilder.append("';");
                 String centerQuery = centerBuilder.toString();
-
                 centerStmt = db.prepare(centerQuery);
+                byte[] geomBytes=null;
                 if (centerStmt.step()) {
-                    byte[] geomBytes = centerStmt.column_bytes(0);
-                    Geometry geometry = wkbReader.read(geomBytes);
-                    Coordinate coordinate = geometry.getCoordinate();
-                    centerCoordinate[0] = coordinate.x;
-                    centerCoordinate[1] = coordinate.y;
-                    geomBytes = centerStmt.column_bytes(1);
-                    geometry = wkbReader.read(geomBytes);
-                    coordinate = geometry.getCoordinate();
-                    boundsCoordinates[0] = coordinate.x;
-                    boundsCoordinates[1] = coordinate.y;
-                    geomBytes = centerStmt.column_bytes(2);
-                    geometry = wkbReader.read(geomBytes);
-                    coordinate = geometry.getCoordinate();
-                    boundsCoordinates[2] = coordinate.x;
-                    boundsCoordinates[3] = coordinate.y;
+                    // srid has been properly set [Sample_Geopackage_Haiti.gpkg]
+                    geomBytes = centerStmt.column_bytes(0);
+                    if (geomBytes == null)
+                    { // srid has NOT been properly set - should be 4326 is: (1,2,3) [Luciad_GeoPackage.gpkg] ; try 4326 [wsg84]
+                     centerBuilder = new StringBuilder();
+                     centerBuilder.append("select ST_AsBinary(CastToXY(MakePoint(");
+                     // centerBuilder.append("select AsText(ST_Transform(MakePoint(");
+                     centerBuilder.append("(min_x + (max_x-min_x)/2), ");
+                     centerBuilder.append("(min_y + (max_y-min_y)/2),");
+                     centerBuilder.append("4326))) AS Center,");
+                     centerBuilder.append("ST_AsBinary(CastToXY(MakePoint(");
+                     centerBuilder.append("min_x,min_y,");
+                     centerBuilder.append("4326))) AS South_West,");
+                     centerBuilder.append("ST_AsBinary(CastToXY(MakePoint(");
+                     centerBuilder.append("max_x,max_y,");
+                     centerBuilder.append("4326))) AS North_East from ");
+                     centerBuilder.append(METADATA_TABLE_GEOPACKAGE_CONTENTS);
+                     centerBuilder.append(" where ");
+                     // i_parm = 0 : could be area of the whole world [tiles]
+                     // i_parm = 1 : could be area of main intrest [geonames] - assuming this is always
+                    // true : use as a 'center'-point to move to if out of area
+                    if (i_parm == 0) {
+                    // select CastToXY(MakePoint((min_x + (max_x-min_x)/2), (min_y +
+                    // (max_y-min_y)/2),4326)) AS
+                    // Center,CastToXY(MakePoint(min_x,min_y),4326)) AS
+                    // South_West,CastToXY(MakePoint(max_x,max_y, 4326)) AS
+                    // North_East from geopackage_contents where table_name = "fromosm_tiles";
+                    // Center: SRID=4326;POINT(0 0)
+                    // South-West: SRID=4326;POINT(-179.9999999999996 -85.05110000000002)
+                    // Norht_East: SRID=4326;POINT(179.9999999999996 85.05110000000002)
+                    centerBuilder.append(METADATA_GEOPACKAGECONTENT_TABLE_NAME);
+                    centerBuilder.append("='");
+                    centerBuilder.append(tableName);
+                } else {
+                    // select CastToXY(ST_Transform(MakePoint((min_x + (max_x-min_x)/2), (min_y +
+                    // (max_y-min_y)/2), srid),4326)) AS
+                    // Center,CastToXY(ST_Transform(MakePoint(min_x,min_y, srid),4326)) AS
+                    // South_West,CastToXY(ST_Transform(MakePoint(max_x,max_y, srid), 4326)) AS
+                    // North_East from geopackage_contents where data_type = "features";
+                    // Center: SRID=4326;POINT(-73.28333499999999 19.041665)
+                    // South-West: SRID=4326;POINT(-75.5 18)
+                    // Norht_East: SRID=4326;POINT(-71.06667 20.08333)
+                    // select CastToXY(MakePoint((min_x + (max_x-min_x)/2), (min_y + (max_y-min_y)/2),4326)) AS Center,
+                    //           CastToXY(MakePoint(min_x,min_y,4326)) AS South_West,
+                    //           CastToXY(MakePoint(max_x,max_y,4326)) AS North_East from geopackage_contents where data_type='features';
+                    centerBuilder.append(METADATA_GEOPACKAGECONTENT_DATA_TYPE);
+                    centerBuilder.append("='");
+                    centerBuilder.append(METADATA_GEOPACKAGECONTENT_DATA_TYPE_FEATURES);
+                     centerBuilder.append("';");
+                    }
+                     centerQuery = centerBuilder.toString();
+                     centerStmt = db.prepare(centerQuery);
+                     if (centerStmt.step()) {
+                      geomBytes = centerStmt.column_bytes(0);
+                      if (geomBytes == null)
+                      {
+                       GPLog.androidLog(4,"SpatialiteDatabaseHandler["+getFileNamePath()+"]: getCenterCoordinate4326: sql["+centerQuery+"] ");
+                      }
+                     }
+                    }
                 }
+                if (geomBytes != null)
+                { // a result has been returned
+                 Geometry geometry = wkbReader.read(geomBytes);
+                 Coordinate coordinate = geometry.getCoordinate();
+                 centerCoordinate[0] = coordinate.x;
+                 centerCoordinate[1] = coordinate.y;
+                 geomBytes = centerStmt.column_bytes(1);
+                 geometry = wkbReader.read(geomBytes);
+                 coordinate = geometry.getCoordinate();
+                 boundsCoordinates[0] = coordinate.x;
+                 boundsCoordinates[1] = coordinate.y;
+                 geomBytes = centerStmt.column_bytes(2);
+                 geometry = wkbReader.read(geomBytes);
+                 coordinate = geometry.getCoordinate();
+                 boundsCoordinates[2] = coordinate.x;
+                 boundsCoordinates[3] = coordinate.y;
+               }
             } finally {
                 if (centerStmt != null)
                     centerStmt.close();
             }
         } catch (java.lang.Exception e) {
-            e.printStackTrace();
+            GPLog.androidLog(4,"SpatialiteDatabaseHandler[" + file_map.getAbsolutePath() + "]", e);
         }
     }
 
@@ -577,9 +1052,8 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
         qSb.append(" FROM ");
         qSb.append(spatialTable.getName());
         qSb.append(";");
-
-        String selectQuery = qSb.toString();
-        Stmt stmt = db.prepare(selectQuery);
+         String selectQuery = qSb.toString();
+          Stmt stmt = db.prepare(selectQuery);
         try {
             if (stmt.step()) {
                 float w = (float) stmt.column_double(0);
@@ -770,7 +1244,10 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
 
         return q;
     }
-
+    /**
+     * Close  all Databases that may be open
+     * <p>sqlite 'SpatialRasterTable,SpatialVectorTable and MBTilesDroidSpitter' databases will be closed with '.close();' if active
+     */
     public void close() throws Exception {
         if (db != null) {
             db.close();

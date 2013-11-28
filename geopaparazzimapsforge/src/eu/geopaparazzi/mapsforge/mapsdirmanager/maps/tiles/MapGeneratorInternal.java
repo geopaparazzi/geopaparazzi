@@ -1,4 +1,4 @@
-package eu.hydrologis.geopaparazzi.maps.tiles;
+package eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles;
 
 import org.mapsforge.android.maps.mapgenerator.MapGenerator;
 import org.mapsforge.android.maps.mapgenerator.databaserenderer.DatabaseRenderer;
@@ -8,14 +8,14 @@ import org.mapsforge.android.maps.mapgenerator.tiledownloader.OpenCycleMapTileDo
 public enum MapGeneratorInternal {
     /**
      * Map tiles are downloaded from the Mapnik server.
-     * 
+     *
      * @see <a href="http://wiki.openstreetmap.org/wiki/Mapnik">Mapnik</a>
      */
     mapnik,
 
     /**
      * Map tiles are downloaded from the OpenCycleMap server.
-     * 
+     *
      * @see <a href="http://opencyclemap.org/">OpenCycleMap</a>
      */
     opencyclemap;

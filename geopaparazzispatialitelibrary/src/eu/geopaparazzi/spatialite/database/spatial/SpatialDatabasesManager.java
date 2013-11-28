@@ -22,11 +22,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
+import java.util.Map;
 import java.util.Set;
 
 import jsqlite.Exception;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.core.ISpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.MbtilesDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.OrderComparator;
@@ -46,6 +50,12 @@ public class SpatialDatabasesManager {
     private HashMap<SpatialRasterTable, ISpatialDatabaseHandler> rasterTablesMap = new HashMap<SpatialRasterTable, ISpatialDatabaseHandler>();
 
     private static SpatialDatabasesManager spatialDbManager = null;
+    private static final String[] sa_extentions = new String[]{".mbtiles",".db",".sqlite",".gpkg"};
+    private static final int i_extention_mbtiles = 0;
+    private static final int i_extention_db = 1;
+    private static final int i_extention_sqlite = 2;
+    private static final int i_extention_gpkt = 3;
+    private Context this_context=null;
     private SpatialDatabasesManager() {
     }
 
@@ -55,12 +65,23 @@ public class SpatialDatabasesManager {
         }
         return spatialDbManager;
     }
-
     public static void reset() {
         spatialDbManager = null;
     }
-
+    public static String get_mbtiles_extention() {
+        return sa_extentions[i_extention_mbtiles];
+    }
+    public static String get_db_extention() {
+        return sa_extentions[i_extention_db];
+    }
+    public static String get_sqlite_extention() {
+        return sa_extentions[i_extention_sqlite];
+    }
+    public static String get_gpkt_extention() {
+        return sa_extentions[i_extention_gpkt];
+    }
     public void init( Context context, File mapsDir ) {
+        this_context=context;
         File[] list_files = mapsDir.listFiles();
         for( File this_file : list_files ) {
             // mj10777: collect spatialite.geometries and .mbtiles databases
@@ -68,20 +89,41 @@ public class SpatialDatabasesManager {
                 // mj10777: read recursive directories inside the sdcard/maps directory
                 init(context, this_file);
             } else {
-                if (this_file.getName().endsWith(".sqlite") || this_file.getName().endsWith(".db")
-                        || this_file.getName().endsWith(".mbtiles")) {
-                    ISpatialDatabaseHandler sdb = null;
-                    if (this_file.getName().endsWith(".mbtiles")) {
-                        sdb = new MbtilesDatabaseHandler(this_file.getAbsolutePath(), null);
-                    } else {
-                        sdb = new SpatialiteDatabaseHandler(this_file.getAbsolutePath());
+                for( int i = 0; i < sa_extentions.length; i++ ) {
+                    String name = this_file.getName();
+                    if (Utilities.isNameFromHiddenFile(name)) {
+                        continue;
                     }
-                    sdbHandlers.add(sdb);
+                    if (name.endsWith(sa_extentions[i])) {
+                        ISpatialDatabaseHandler sdb = null;
+                        if (name.endsWith(get_mbtiles_extention())) {
+                            sdb = new MbtilesDatabaseHandler(this_file.getAbsolutePath(), null);
+                        } else {
+                            sdb = new SpatialiteDatabaseHandler(this_file.getAbsolutePath());
+                        }
+                        // GPLog.androidLog(-1,"SpatialDatabasesManager["+i+"]["+sa_extentions[i]+"]: init["+this_file.getAbsolutePath()+"] ");
+                        sdbHandlers.add(sdb);
+                    }
                 }
             }
         }
+        // GPLog.androidLog(-1,"SpatialDatabasesManager init[" + mapsDir.getName() + "] size["+sdbHandlers.size()+"]");
     }
-    
+    private boolean ignoreTileSource( String name ) {
+        if (name.startsWith("_")) {
+            return true;
+        }
+        return false;
+    }
+    public int size() {
+        return sdbHandlers.size();
+    }
+    public int size_raster() {
+        return rasterTablesMap.size();
+    }
+    public int size_vector() {
+        return vectorTablesMap.size();
+    }
     public List<ISpatialDatabaseHandler> getSpatialDatabaseHandlers() {
         return sdbHandlers;
     }
@@ -122,8 +164,8 @@ public class SpatialDatabasesManager {
     }
 
     public void updateStyles() throws Exception {
-        Set<Entry<SpatialVectorTable, ISpatialDatabaseHandler>> entrySet = vectorTablesMap.entrySet();
-        for( Entry<SpatialVectorTable, ISpatialDatabaseHandler> entry : entrySet ) {
+        for (Map.Entry<SpatialVectorTable, ISpatialDatabaseHandler> entry : vectorTablesMap.entrySet())
+        {
             SpatialVectorTable key = entry.getKey();
             ISpatialDatabaseHandler value = entry.getValue();
             value.updateStyle(key.getStyle());
@@ -160,7 +202,7 @@ public class SpatialDatabasesManager {
     public SpatialRasterTable getRasterTableByName( String table ) throws Exception {
         List<SpatialRasterTable> spatialTables = getSpatialRasterTables(false);
         for( SpatialRasterTable spatialTable : spatialTables ) {
-            if (spatialTable.getTableName().equals(table)) {
+            if (spatialTable.getFileNamePath().equals(table)) {
                 return spatialTable;
             }
         }

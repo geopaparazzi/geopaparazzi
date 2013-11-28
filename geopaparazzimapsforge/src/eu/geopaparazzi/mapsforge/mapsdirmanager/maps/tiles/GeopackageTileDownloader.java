@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi.maps.tiles;
+package eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles;
 
 import org.mapsforge.android.maps.mapgenerator.MapGeneratorJob;
 import org.mapsforge.android.maps.mapgenerator.tiledownloader.TileDownloader;
@@ -51,7 +51,7 @@ public class GeopackageTileDownloader extends TileDownloader {
 
         ZOOM_MAX = (byte) table.getMaxZoom();
         ZOOM_MIN = (byte) table.getMinZoom();
-        
+
         tilePart = table.getTileQuery();
     }
 
@@ -116,7 +116,7 @@ public class GeopackageTileDownloader extends TileDownloader {
             bitmap.setPixels(this.pixels, 0, Tile.TILE_SIZE, 0, 0, Tile.TILE_SIZE, Tile.TILE_SIZE);
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+           GPLog.androidLog(4,"GeopackageTileDownloader.executeJob]", e);
             return false;
         }
     }

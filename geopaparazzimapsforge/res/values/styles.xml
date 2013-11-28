@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="mapsdir_treeview_ListStyle" parent="@android:attr/listViewStyle">
+        <item name="android:background">@color/main_background</item>
+        <item name="android:divider">@drawable/mapsdir_treeview_divider</item>
+    </style>
+
+    <style name="mapsdir_treeview_VerticalDividerForList">
+        <item name="android:layout_width">1px</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:layout_marginLeft">4px</item>
+        <item name="android:background">@color/main_decorations</item>
+    </style>
+
+</resources>

@@ -75,7 +75,7 @@ import eu.hydrologis.geopaparazzi.util.Note;
  * The overlay may be used to show additional ways such as calculated routes. Closed polygons, for example buildings or
  * areas, are also supported. A way node sequence is considered as a closed polygon if the first and the last way node
  * are equal.
- * 
+ *
  * @param <Generic>
  *            the type of ways handled by this overlay.
  */
@@ -86,7 +86,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
     /**
      * Sets the bounds of the given drawable so that (0,0) is the center of the bottom row.
-     * 
+     *
      * @param balloon
      *            the drawable whose bounds should be set.
      * @return the given drawable with set bounds.
@@ -99,7 +99,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
     /**
      * Sets the bounds of the given drawable so that (0,0) is the center of the bounding box.
-     * 
+     *
      * @param balloon
      *            the drawable whose bounds should be set.
      * @return the given drawable with set bounds.
@@ -401,7 +401,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
     /**
      * Creates a way in this overlay.
-     * 
+     *
      * @param index
      *            the index of the way.
      * @return the way.
@@ -677,7 +677,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
     }
 
     private void drawFromSpatialite( Canvas canvas, Point drawPosition, Projection projection, byte drawZoomLevel ) {
-        /* 
+        /*
          * draw from spatialite
          */
         GeoPoint zeroPoint = projection.fromPixels(0, 0);
@@ -693,7 +693,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
             List<SpatialVectorTable> spatialTables = sdManager.getSpatialVectorTables(false);
             for( int i = 0; i < spatialTables.size(); i++ ) {
                 SpatialVectorTable spatialTable = spatialTables.get(i);
-                if (spatialTable.getStyle().enabled == 0) {
+                 if (spatialTable.getStyle().enabled == 0) {
                     continue;
                 }
                 if (isInterrupted() || sizeHasChanged()) {
@@ -701,10 +701,11 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     return;
                 }
                 ISpatialDatabaseHandler spatialDatabaseHandler = sdManager.getVectorHandler(spatialTable);
-
+                String s_geometry_type="";
                 Style style4Table = spatialTable.getStyle();
                 GeometryIterator geometryIterator = null;
                 try {
+                    // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite["+spatialTable.getName()+"]: geometry_type["+spatialTable.getMapType()+"] ");
                     geometryIterator = spatialDatabaseHandler.getGeometryIteratorInBounds("4326", spatialTable, n, s, e, w);
                     Paint fill = null;
                     Paint stroke = null;
@@ -712,7 +713,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                         fill = spatialDatabaseHandler.getFillPaint4Style(style4Table);
                     if (style4Table.strokecolor != null && style4Table.strokecolor.trim().length() > 0)
                         stroke = spatialDatabaseHandler.getStrokePaint4Style(style4Table);
-                    if (spatialTable.isPolygon()) {
+                    if ((spatialTable.isPolygon()) || (spatialTable.isGeometryCollection())) {
                         PointTransformation pointTransformer = new MapsforgePointTransformation(projection, drawPosition,
                                 drawZoomLevel);
                         ShapeWriter wr = new ShapeWriter(pointTransformer);
@@ -791,7 +792,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
     /**
      * Creates an item in this overlay.
-     * 
+     *
      * @param index
      *            the index of the item.
      * @return the item.
@@ -800,7 +801,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
     /**
      * Checks whether an item has been hit by an event and calls the appropriate handler.
-     * 
+     *
      * @param geoPoint
      *            the point of the event.
      * @param mapView
@@ -890,7 +891,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
      * Handles a long press event.
      * <p>
      * The default implementation of this method does nothing and returns false.
-     * 
+     *
      * @param index
      *            the index of the item that has been long pressed.
      * @return true if the event was handled, false otherwise.
@@ -903,7 +904,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
      * Handles a tap event.
      * <p>
      * The default implementation of this method does nothing and returns false.
-     * 
+     *
      * @param index
      *            the index of the item that has been tapped.
      * @return true if the event was handled, false otherwise.

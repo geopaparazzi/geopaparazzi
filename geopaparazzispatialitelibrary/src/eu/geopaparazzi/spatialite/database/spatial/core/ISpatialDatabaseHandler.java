@@ -9,7 +9,7 @@ public interface ISpatialDatabaseHandler {
 
     /**
      * Get the spatial tables from the database.
-     * 
+     *
      * @param forceRead force a clean read from the db instead of using cached.
      * @return the list of {@link SpatialVectorTable}s.
      * @throws Exception
@@ -22,17 +22,17 @@ public interface ISpatialDatabaseHandler {
 
     /**
      * Get the table's bounds.
-     * 
+     *
      * @param spatialTable the table to use.
      * @param destSrid the srid to which to project to.
      * @return the bounds as [n,s,e,w].
-     * @throws Exception 
+     * @throws Exception
      */
     public float[] getTableBounds( SpatialVectorTable spatialTable, String destSrid ) throws Exception;
 
     /**
      * Get the {@link GeometryIterator} of a table in a given bound.
-     * 
+     *
      * @param destSrid the srid to which to transform to.
      * @param table the table to use.
      * @param n north bound.
@@ -46,9 +46,9 @@ public interface ISpatialDatabaseHandler {
 
     /**
      * Get the stroke {@link Paint} for a given style.
-     * 
+     *
      * <p>Paints are cached and reused.</p>
-     * 
+     *
      * @param style the {@link Style} to use.
      * @return the paint.
      */
@@ -56,9 +56,9 @@ public interface ISpatialDatabaseHandler {
 
     /**
      * Get the fill {@link Paint} for a given style.
-     * 
+     *
      * <p>Paints are cached and reused.</p>
-     * 
+     *
      * @param style the {@link Style} to use.
      * @return the paint.
      */
@@ -73,5 +73,4 @@ public interface ISpatialDatabaseHandler {
 
     public void intersectionToString4Polygon( String boundsSrid, SpatialVectorTable spatialTable, double n, double e,
             StringBuilder sb, String indentStr ) throws Exception;
-
 }
