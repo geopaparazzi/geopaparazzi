@@ -166,7 +166,6 @@ public class MapsDirManager {
         // SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         mapCenterLocation = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
         GPLog.GLOBAL_LOG_LEVEL = 1;
-        GPLog.GLOBAL_LOG_TAG = "mj10777";
         SpatialDatabasesManager.reset();
         MapDatabasesManager.reset();
         CustomTileDatabasesManager.reset();

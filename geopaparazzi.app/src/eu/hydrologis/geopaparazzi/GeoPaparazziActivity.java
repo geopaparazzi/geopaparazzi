@@ -30,22 +30,19 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
-import org.mapsforge.android.maps.MapViewPosition;
-import org.mapsforge.core.model.GeoPoint;
+import java.util.concurrent.ExecutionException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
@@ -76,13 +73,9 @@ import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.AboutActivity;
 import eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity;
-import eu.geopaparazzi.library.util.activities.NoteActivity;
 import eu.geopaparazzi.library.util.debug.TestMock;
-// -begin- MapsDir specific
 import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.MapsDirTreeViewList;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.ClassNodeInfo;
-// -end-  MapsDir specific
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
@@ -106,6 +99,8 @@ import eu.hydrologis.geopaparazzi.util.GpUtilities;
 import eu.hydrologis.geopaparazzi.util.ImportActivity;
 import eu.hydrologis.geopaparazzi.util.QuickActionsFactory;
 import eu.hydrologis.geopaparazzi.util.SecretActivity;
+// -begin- MapsDir specific
+// -end-  MapsDir specific
 
 /**
  * The main {@link Activity activity} of GeoPaparazzi.
@@ -425,42 +420,6 @@ public class GeoPaparazziActivity extends Activity {
         GPLogPreferencesHandler.checkLogHeavy(preferences);
         GPLogPreferencesHandler.checkLogAbsurd(preferences);
 
-        try {
-            DatabaseManager.getInstance().getDatabase();
-            checkMapsAndLogsVisibility();
-
-            if (i_version == 0) {
-                File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
-                SpatialDatabasesManager.reset();
-                SpatialDatabasesManager.getInstance().init(this, mapsDir);
-            } else { // [MapDirManager]
-                     // define in MapsDirTreeViewList, which Context-Menues should be suppoted for
-                     // this Application
-                     // Should the Properties-Menu be supported/shown?
-                MapsDirTreeViewList.b_properties_file = true;
-                // Should the Edit-Menu be supported/shown?
-                MapsDirTreeViewList.b_edit_file = false;
-                // Should the Delete-Menu be supported/shown?
-                MapsDirTreeViewList.b_delete_file = false;
-                MapsDirManager.getInstance().reset();
-                // if the 'maps_dir' parameter is null, then MapsDirManager will call:
-                // - ResourcesManager.getInstance(this).getMapsDir();
-                // to retrieve the 'maps_dir : call:
-                // - maps_dir=MapsDirManager.get_maps_dir();
-                MapsDirManager.getInstance().init(this, null);
-                // MapsDirManager will read the preferences values for the last map
-                // - it will collect all information about the maps on the sdcard/maps
-                // -- when the prefered map is found, this data will be stored
-                // --- when the Map-Activity is created:
-                // --- the selected map will be loaded with
-                // MapsDirManager.load_Map(map_view,mapCenterLocation);
-            }
-        } catch (Exception e) {
-            Log.e(getClass().getSimpleName(), e.getLocalizedMessage(), e);
-            e.printStackTrace();
-            Utilities.toast(this, R.string.databaseError, Toast.LENGTH_LONG);
-        }
-
         gpsManager = GpsManager.getInstance(this);
         sensorManager = SensorsManager.getInstance(this);
 
@@ -560,6 +519,77 @@ public class GeoPaparazziActivity extends Activity {
         if (keepScreenOn) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
+
+        try {
+            DatabaseManager.getInstance().getDatabase();
+            checkMapsAndLogsVisibility();
+
+            if (i_version == 0) {
+                File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
+                SpatialDatabasesManager.reset();
+                SpatialDatabasesManager.getInstance().init(this, mapsDir);
+            } else {
+                initMapsDirManager();
+            }
+        } catch (Exception e) {
+            Log.e(getClass().getSimpleName(), e.getLocalizedMessage(), e);
+            e.printStackTrace();
+            Utilities.toast(this, R.string.databaseError, Toast.LENGTH_LONG);
+        }
+    }
+
+    private void initMapsDirManager() throws jsqlite.Exception, IOException, FileNotFoundException {
+        // [MapDirManager]
+        // define in MapsDirTreeViewList, which Context-Menues should be suppoted for
+        // this Application
+        // Should the Properties-Menu be supported/shown?
+        MapsDirTreeViewList.b_properties_file = true;
+        // Should the Edit-Menu be supported/shown?
+        MapsDirTreeViewList.b_edit_file = false;
+        // Should the Delete-Menu be supported/shown?
+        MapsDirTreeViewList.b_delete_file = false;
+        MapsDirManager.getInstance().reset();
+        // if the 'maps_dir' parameter is null, then MapsDirManager will call:
+        // - ResourcesManager.getInstance(this).getMapsDir();
+        // to retrieve the 'maps_dir : call:
+        // - maps_dir=MapsDirManager.get_maps_dir();
+
+        final ProgressDialog importDialog = new ProgressDialog(this);
+        importDialog.setCancelable(true);
+        importDialog.setTitle("Maps Manager");
+        importDialog.setMessage("Loading maps...");
+        importDialog.setCancelable(false);
+        importDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        importDialog.setIndeterminate(true);
+        importDialog.show();
+
+        AsyncTask<String, Void, String> asyncTask = new AsyncTask<String, Void, String>(){
+            protected String doInBackground( String... params ) {
+                try {
+                    MapsDirManager.getInstance().init(GeoPaparazziActivity.this, null);
+                    return "";
+                } catch (Exception e) {
+                    return "ERROR: " + e.getLocalizedMessage();
+                }
+            }
+            protected void onPostExecute( String response ) { // on UI thread!
+                importDialog.dismiss();
+                if (response.startsWith("ERROR")) {
+                    Utilities.messageDialog(GeoPaparazziActivity.this, response, null);
+                }
+            }
+        };
+        try {
+            asyncTask.execute((String) null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // MapsDirManager will read the preferences values for the last map
+        // - it will collect all information about the maps on the sdcard/maps
+        // -- when the prefered map is found, this data will be stored
+        // --- when the Map-Activity is created:
+        // --- the selected map will be loaded with
+        // MapsDirManager.load_Map(map_view,mapCenterLocation);
     }
 
     public void push( int id, View v ) {
