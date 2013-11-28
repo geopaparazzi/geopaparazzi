@@ -28,10 +28,29 @@
     </TextView>
 
     <ImageButton
-        android:id="@+id/action_bar_info"
+        android:id="@+id/action_bar_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/action_bar_button_drawable"
+        android:padding="2dp"
+        android:src="@drawable/action_bar_menu" >
+    </ImageButton>
+
+    <LinearLayout
+        android:id="@+id/sep0"
+        android:layout_width="2dp"
+        android:layout_height="fill_parent"
+        android:layout_toLeftOf="@+id/action_bar_menu"
+        android:background="@color/main_background"
+        android:orientation="horizontal" />
+
+    <ImageButton
+        android:id="@+id/action_bar_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/sep0"
         android:layout_centerVertical="true"
         android:background="@drawable/action_bar_button_drawable"
         android:padding="2dp"
@@ -43,8 +62,8 @@
         android:layout_width="2dp"
         android:layout_height="fill_parent"
         android:layout_toLeftOf="@+id/action_bar_info"
-        android:background="@color/main_background" >
-    </LinearLayout>
+        android:background="@color/main_background"
+        android:orientation="horizontal" />
 
     <ImageButton
         android:id="@+id/action_bar_compass"
@@ -62,8 +81,8 @@
         android:layout_width="2dp"
         android:layout_height="fill_parent"
         android:layout_toLeftOf="@+id/action_bar_compass"
-        android:background="@color/main_background" >
-    </LinearLayout>
+        android:background="@color/main_background"
+        android:orientation="horizontal" />
 
     <Button
         android:id="@+id/gpsOnOff"
