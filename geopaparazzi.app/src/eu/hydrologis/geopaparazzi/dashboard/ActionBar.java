@@ -76,6 +76,7 @@ public class ActionBar implements GpsManagerListener {
     private GpsStatus lastGpsStatus;
     private long lastLocationupdateMillis;
     private String satellitesString;
+    private ImageButton menuButton;
 
     private ActionBar( View actionBarView, GpsManager _gpsManager, SensorsManager sensorsManager ) {
         this.actionBarView = actionBarView;
@@ -106,11 +107,18 @@ public class ActionBar implements GpsManagerListener {
             }
         });
 
+        final int menuButtonId = R.id.action_bar_menu;
+        menuButton = (ImageButton) actionBarView.findViewById(menuButtonId);
+
         checkLogging();
     }
 
     public void cleanup() {
         gpsManager.removeListener(this);
+    }
+    
+    public ImageButton getMenuButton() {
+        return menuButton;
     }
 
     public View getActionBarView() {

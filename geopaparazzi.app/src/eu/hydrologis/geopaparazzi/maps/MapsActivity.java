@@ -71,10 +71,12 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.text.Editable;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -176,9 +178,21 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
         setContentView(R.layout.mapsview);
+        
+        // register menu button
+        final Button menuButton = (Button) findViewById(R.id.menu_map_btn);
+        menuButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                openContextMenu(menuButton);
+            }
+        });
+        registerForContextMenu(menuButton);
 
+        // register for battery updates
         registerReceiver(batteryReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        
         // mj10777: .mbtiles,.map and .mapurl files may know their bounds and desired center point
         // - 'checkCenterLocation' will change this value if out of range
         double[] mapCenterLocation = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
@@ -926,8 +940,9 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         return lonLat;
     }
 
-    public boolean onCreateOptionsMenu( Menu menu ) {
-        super.onCreateOptionsMenu(menu);
+    @Override
+    public void onCreateContextMenu( ContextMenu menu, View v, ContextMenuInfo menuInfo ) {
+        super.onCreateContextMenu(menu, v, menuInfo);
         menu.add(Menu.NONE, MENU_GPSDATA, 1, R.string.mainmenu_gpsdataselect).setIcon(android.R.drawable.ic_menu_compass);
         menu.add(Menu.NONE, MENU_DATA, 2, R.string.data).setIcon(android.R.drawable.ic_menu_compass);
         menu.add(Menu.NONE, MENU_SCALE_ID, 3, R.string.mapsactivity_menu_toggle_scalebar).setIcon(R.drawable.ic_menu_scalebar);
@@ -939,10 +954,9 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             menu.add(Menu.NONE, MENU_SENDDATA_ID, 8, R.string.send_data).setIcon(android.R.drawable.ic_menu_send);
         }
         menu.add(Menu.NONE, MENU_MIXARE_ID, 9, R.string.view_in_mixare).setIcon(R.drawable.icon_datasource);
-        return true;
     }
 
-    public boolean onMenuItemSelected( int featureId, MenuItem item ) {
+    public boolean onContextItemSelected( MenuItem item ) {
         switch( item.getItemId() ) {
         case MENU_TILE_SOURCE_ID:
             startMapsDirTreeViewList();
@@ -1007,7 +1021,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         }
         default:
         }
-        return super.onMenuItemSelected(featureId, item);
+        return super.onContextItemSelected(item);
     }
     /**
      * Start the Dialog to select a map

@@ -30,7 +30,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -48,6 +47,8 @@ import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -365,6 +366,14 @@ public class GeoPaparazziActivity extends Activity {
         if (actionBar == null) {
             actionBar = ActionBar.getActionBar(this, R.id.action_bar, gpsManager, sensorManager);
             actionBar.setTitle(R.string.app_name, R.id.action_bar_title);
+
+            final ImageButton menuButton = actionBar.getMenuButton();
+            menuButton.setOnClickListener(new Button.OnClickListener(){
+                public void onClick( View v ) {
+                    openContextMenu(menuButton);
+                }
+            });
+            registerForContextMenu(menuButton);
         }
         // actionBar.checkLogging();
     }
@@ -684,10 +693,9 @@ public class GeoPaparazziActivity extends Activity {
         }
     }
 
-    // public boolean onPrepareOptionsMenu (Menu menu) {
     @Override
-    public boolean onCreateOptionsMenu( Menu menu ) {
-        super.onCreateOptionsMenu(menu);
+    public void onCreateContextMenu( ContextMenu menu, View v, ContextMenuInfo menuInfo ) {
+        super.onCreateContextMenu(menu, v, menuInfo);
         menu.add(Menu.NONE, MENU_SETTINGS, 0, R.string.mainmenu_preferences).setIcon(android.R.drawable.ic_menu_preferences);
         if (i_version == 1) {
             menu.add(Menu.NONE, MENU_TILE_SOURCE_ID, 1, R.string.mapsactivity_menu_tilesource).setIcon(
@@ -707,11 +715,10 @@ public class GeoPaparazziActivity extends Activity {
         menu.add(Menu.NONE, MENU_LOAD, 3, R.string.load).setIcon(android.R.drawable.ic_menu_set_as);
         menu.add(Menu.NONE, MENU_EXIT, 4, R.string.exit).setIcon(android.R.drawable.ic_lock_power_off);
         menu.add(Menu.NONE, MENU_ABOUT, 5, R.string.about).setIcon(android.R.drawable.ic_menu_info_details);
-
-        return true;
     }
 
-    public boolean onMenuItemSelected( int featureId, MenuItem item ) {
+    @Override
+    public boolean onContextItemSelected( MenuItem item ) {
         switch( item.getItemId() ) {
         case MENU_ABOUT:
             Intent intent = new Intent(this, AboutActivity.class);
@@ -768,8 +775,10 @@ public class GeoPaparazziActivity extends Activity {
             // }
         }
         }
-        return super.onMenuItemSelected(featureId, item);
+
+        return super.onContextItemSelected(item);
     }
+
     /**
      * Start the Dialog to select a map
      *
