@@ -52,8 +52,8 @@
                 <LinearLayout
                     android:id="@+id/seekbarlayout"
                     android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:layout_gravity="right"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|bottom"
                     android:orientation="vertical" >
 
                     <Button
@@ -61,7 +61,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="5dip"
+                        android:layout_marginBottom="@dimen/mapview_sides_space"
                         android:background="@drawable/buttoncirclezoomin" >
                     </Button>
 
@@ -70,7 +70,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="5dip"
+                        android:layout_marginBottom="@dimen/mapview_sides_space"
                         android:shadowColor="@color/main_background"
                         android:shadowDx="2"
                         android:shadowDy="2"
@@ -85,7 +85,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="10dip"
+                        android:layout_marginBottom="@dimen/mapview_bottom_space"
                         android:background="@drawable/buttoncirclezoomout" >
                     </Button>
                 </LinearLayout>
@@ -94,15 +94,15 @@
                 <LinearLayout
                     android:id="@+id/maptoolslayout"
                     android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:layout_gravity="left"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|bottom"
                     android:orientation="vertical" >
 
                     <ImageButton
                         android:id="@+id/addnotebytagbutton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="5dip"
+                        android:layout_margin="@dimen/mapview_sides_space"
                         android:background="@drawable/addnote" >
                     </ImageButton>
 
@@ -110,7 +110,7 @@
                         android:id="@+id/listnotesbutton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="5dip"
+                        android:layout_margin="@dimen/mapview_sides_space"
                         android:background="@drawable/noteslist" >
                     </ImageButton>
 
@@ -118,7 +118,7 @@
                         android:id="@+id/addbookmarkbutton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="5dip"
+                        android:layout_margin="@dimen/mapview_sides_space"
                         android:background="@drawable/addbookmark" >
                     </ImageButton>
 
@@ -126,7 +126,7 @@
                         android:id="@+id/bookmarkslistbutton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="5dip"
+                        android:layout_margin="@dimen/mapview_sides_space"
                         android:background="@drawable/bookmarkslist" >
                     </ImageButton>
 
@@ -134,7 +134,9 @@
                         android:id="@+id/togglemeasuremodebutton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="5dip"
+                        android:layout_marginTop="@dimen/mapview_sides_space"
+                        android:layout_marginLeft="@dimen/mapview_sides_space"
+                        android:layout_marginBottom="@dimen/mapview_bottom_space"
                         android:background="@drawable/measuremode" >
                     </ImageButton>
                 </LinearLayout>
@@ -150,8 +152,8 @@
                         android:id="@+id/battery"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="15dip"
-                        android:layout_marginRight="15dip"
+                        android:layout_marginBottom="@dimen/mapview_bottom_space"
+                        android:layout_marginRight="@dimen/mapview_bottom_space"
                         android:background="@drawable/battery"
                         android:text="-"
                         android:textColor="@color/main_text_color_neutral"
@@ -163,7 +165,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/action_bar_button_drawable"
-                        android:padding="5dp"
+                        android:padding="@dimen/mapview_sides_space"
                         android:src="@android:drawable/ic_menu_mylocation" >
                     </ImageButton>
 
@@ -171,8 +173,8 @@
                         android:id="@+id/info"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dip"
-                        android:layout_marginBottom="15dip"
+                        android:layout_marginBottom="@dimen/mapview_bottom_space"
+                        android:layout_marginLeft="@dimen/mapview_bottom_space"
                         android:background="@drawable/infomode" >
                     </Button>
                 </LinearLayout>
@@ -228,22 +230,15 @@
         </SlidingDrawer>
     </FrameLayout>
 
-    <FrameLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_gravity="bottom|right"
-         >
-
-        <Button
-        android:layout_gravity="bottom|right"
-            android:id="@+id/menu_map_btn"
-            android:gravity="bottom|right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dip"
-            android:alpha="0.5"
-            android:background="@drawable/menu" >
-        </Button>
-    </FrameLayout>
+    <Button
+        android:id="@+id/menu_map_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|right"
+        android:layout_marginTop="@dimen/mapview_bottom_space"
+        android:layout_marginRight="@dimen/mapview_sides_space"
+        android:background="@drawable/menu" >
+        <!-- android:alpha="0.5"  -->
+    </Button>
 
 </FrameLayout>

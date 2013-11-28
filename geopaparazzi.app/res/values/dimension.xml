@@ -20,4 +20,7 @@
 	<dimen name="text_large">16sp</dimen>
 	<dimen name="text_normal">14sp</dimen>
 	<dimen name="text_small">12sp</dimen>
+	<!-- mapview sizes -->
+	<dimen name="mapview_bottom_space">9dip</dimen>
+	<dimen name="mapview_sides_space">5dip</dimen>
 </resources>
