@@ -239,20 +239,22 @@
             </LinearLayout>
         </SlidingDrawer>
     </FrameLayout>
+
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_gravity="bottom|right"
-         >
+        android:layout_gravity="bottom|right" >
 
         <Button
-        android:layout_gravity="bottom|right"
             android:id="@+id/menu_map_btn"
-            android:gravity="bottom|right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
             android:layout_marginBottom="15dip"
-            android:background="@drawable/menu" >
+            android:alpha="0.5"
+            android:background="@drawable/menu"
+            android:gravity="bottom|right" >
         </Button>
     </FrameLayout>
+
 </FrameLayout>
