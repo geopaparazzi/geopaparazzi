@@ -53,6 +53,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -157,6 +158,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     private final int MENU_COMPASS_ID = 8;
     private final int MENU_SENDDATA_ID = 9;
 
+    private static final String IS_SLIDER_OPEN = "IS_SLIDER_OPEN";
     private DecimalFormat formatter = new DecimalFormat("00"); //$NON-NLS-1$
     private SlidingDrawer slidingDrawer;
     private MapView mapView;
@@ -201,6 +203,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         if (keepScreenOn) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
+        boolean isSliderOpen = preferences.getBoolean(IS_SLIDER_OPEN, false);
 
         /*
          * create main mapview
@@ -387,14 +390,25 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         slidingDrawer.setOnDrawerOpenListener(new SlidingDrawer.OnDrawerOpenListener(){
             public void onDrawerOpened() {
                 slideHandleButton.setBackgroundResource(R.drawable.min);
+                Editor edit = preferences.edit();
+                edit.putBoolean(IS_SLIDER_OPEN, true);
+                edit.commit();
             }
         });
         slidingDrawer.setOnDrawerCloseListener(new SlidingDrawer.OnDrawerCloseListener(){
             public void onDrawerClosed() {
                 slideHandleButton.setBackgroundResource(R.drawable.max);
+                Editor edit = preferences.edit();
+                edit.putBoolean(IS_SLIDER_OPEN, false);
+                edit.commit();
             }
         });
-
+        if (isSliderOpen) {
+            slidingDrawer.open();
+        }else{
+            slidingDrawer.close();
+        }
+        
         sliderDrawView = (SliderDrawView) findViewById(R.id.sliderdrawview);
 
         /*
