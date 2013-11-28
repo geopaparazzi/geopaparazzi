@@ -9,14 +9,14 @@
     <string name="kmlnonsaved">An error occurred during the data export!</string>
     <string name="loggingoff">Stopped all sensors.</string>
     <string name="nogps_data">No gps data available yet!</string>
-    <string name="about">about</string>
-    <string name="exit">exit</string>
+    <string name="about">About</string>
+    <string name="exit">Exit</string>
     <string name="utctime">time: </string>
     <string name="altim">altim: </string>
     <string name="lat">lat: </string>
     <string name="lon">lon: </string>
     <string name="azimuth">azimuth: </string>
-    <string name="go_to">go to</string>
+    <string name="go_to">Go to</string>
     <string name="goto_coordinate">go to coordinate</string>
     <string name="geocoding">geocoding</string>
     <string name="prompt_gpsenable">Your gps is disabled! Would you like to enable it?</string>
@@ -24,8 +24,8 @@
     <string name="color_label">color</string>
     <string name="mainmenu_kmlexport">export</string>
     <string name="mainmenu_import">import</string>
-    <string name="mainmenu_gpsdataselect">gps data list</string>
-    <string name="mainmenu_preferences">preferences</string>
+    <string name="mainmenu_gpsdataselect">Gps data list</string>
+    <string name="mainmenu_preferences">Settings</string>
     <string name="mainmenu_merge">merge selected logs</string>
     <string name="gpslogproperty">Properties for: </string>
     <string name="gpslog_chart">Chart</string>
@@ -72,8 +72,8 @@
     <string name="installgpsstatus_message">Geopaparazzi uses the Gps Status Application as compass and gps info view. Do you want to install it?</string>
 
     <!-- added after 2.1.2 -->
-    <string name="reset">new project</string>
-    <string name="load">load an existing project</string>
+    <string name="reset">Create new project</string>
+    <string name="load">Load existing project</string>
     <string name="phonenumber_hint">Enter comma separated phone numbers…</string>
     <string name="pick_phonenumber_label">…</string>
 
@@ -86,8 +86,8 @@
     <string name="delete_visible_bookmarks_prompt">Do you really want to remove all visible bookmarks? This can\'t be undone.</string>
     <string name="gps_searching_fix">Gps is trying to acquire fix.</string>
     <string name="bookmarks_list_rename">Rename the bookmark</string>
-    <string name="mapsactivity_menu_toggle_scalebar">toggle scalebar</string>
-    <string name="mapsactivity_menu_tilesource">tile source</string>
+    <string name="mapsactivity_menu_toggle_scalebar">Toggle scalebar</string>
+    <string name="mapsactivity_menu_tilesource">Select tile source</string>
     <string name="mapsactivity_delete_bookmarks">Deleting {0} bookmarks…</string>
     <string name="mapsactivity_delete_notes">Deleting {0} notes…</string>
     <string name="mapsactivity_new_bookmark">New bookmark</string>
@@ -95,7 +95,7 @@
     <string name="maptagsactivity_error_reading_tags">Error in reading tags</string>
 
     <!-- added after 2.3.1 -->
-    <string name="mapsactivity_menu_toggle_compass">open compass</string>
+    <string name="mapsactivity_menu_toggle_compass">Open compass</string>
 
     <!-- added after 2.4.3 -->
     <string name="imagesvisibilityToggle">Toggle images visibility</string>
@@ -122,7 +122,7 @@
     <string name="available_only_with_network">This function is available only with an active network connection.</string>
     <string name="error_osm_server">An error occurred while connecting to the OSM server. Please check your login and password. It is also possible that the OSM server is not available.</string>
     <string name="check_valid_field">Please check that the field \"{0}\" is valid.</string>
-    <string name="view_in_mixare">view in mixare</string>
+    <string name="view_in_mixare">View in mixare</string>
     <string name="gps_use_coarse">Use network based position instead of gps (needs restart)</string>
     <string name="type_to_filter">type to filter</string>
     <string name="geopapcloud_preferences">Geopap-Cloud Preferences</string>
@@ -155,11 +155,11 @@
     <string name="successfully_imported_bookmarks">"Successfully imported bookmarks: "</string>
     <string name="error_bookmarks_import">An error occurred while importing the bookmarks.</string>
     <string name="no_bookmarks_csv">Could not find a bookmarks.csv file in the sdcard root. Please place your bookmarks there to import them.</string>
-    <string name="center_on_map">center on map</string>
+    <string name="center_on_map">Center on base map</string>
     <string name="proximity_radius">Proximity Radius</string>
     <string name="add_proximity_radius">Add proximity alert radius in meters.</string>
     <string name="sent_sms">Sent sms : </string>
-    <string name="send_data">send data</string>
+    <string name="send_data">Send data</string>
     <string name="found_no_data_to_send">Found no data to send in the current visible map.</string>
     <string name="insert_phone_to_send">" sms will be sent to transfer the selected data.\nPlease insert a valid phone number to send the data to."</string>
     <string name="no_message_sent">No message sent.</string>
@@ -201,6 +201,8 @@
     <string name="start">start</string>
     <string name="end">end</string>
     <string name="other">other</string>
-    <string name="data">data</string>
+    <string name="base_maps">Base maps</string>
+    <string name="maps_manager">Maps Manager</string>
+    <string name="loading_maps">Loading maps...</string>
 
 </resources>

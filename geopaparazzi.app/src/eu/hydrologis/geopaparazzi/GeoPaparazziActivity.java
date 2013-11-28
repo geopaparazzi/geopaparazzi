@@ -565,8 +565,8 @@ public class GeoPaparazziActivity extends Activity {
 
         final ProgressDialog importDialog = new ProgressDialog(this);
         importDialog.setCancelable(true);
-        importDialog.setTitle("Maps Manager");
-        importDialog.setMessage("Loading maps...");
+        importDialog.setTitle(getString(R.string.maps_manager));
+        importDialog.setMessage(getString(R.string.loading_maps));
         importDialog.setCancelable(false);
         importDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         importDialog.setIndeterminate(true);
@@ -696,13 +696,12 @@ public class GeoPaparazziActivity extends Activity {
     @Override
     public void onCreateContextMenu( ContextMenu menu, View v, ContextMenuInfo menuInfo ) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        menu.add(Menu.NONE, MENU_SETTINGS, 0, R.string.mainmenu_preferences).setIcon(android.R.drawable.ic_menu_preferences);
         if (i_version == 1) {
-            menu.add(Menu.NONE, MENU_TILE_SOURCE_ID, 1, R.string.mapsactivity_menu_tilesource).setIcon(
+            menu.add(Menu.NONE, MENU_TILE_SOURCE_ID, 0, R.string.mapsactivity_menu_tilesource).setIcon(
                     R.drawable.ic_menu_tilesource);
         }
         if (i_version == 0) {
-            final SubMenu subMenu = menu.addSubMenu(Menu.NONE, MENU_TILE_SOURCE_ID, 1, R.string.mapsactivity_menu_tilesource)
+            final SubMenu subMenu = menu.addSubMenu(Menu.NONE, MENU_TILE_SOURCE_ID, 0, R.string.mapsactivity_menu_tilesource)
                     .setIcon(R.drawable.ic_menu_tilesource);
             {
                 int index = 1000;
@@ -711,10 +710,11 @@ public class GeoPaparazziActivity extends Activity {
                 }
             }
         }
-        menu.add(Menu.NONE, MENU_RESET, 2, R.string.reset).setIcon(android.R.drawable.ic_menu_revert);
-        menu.add(Menu.NONE, MENU_LOAD, 3, R.string.load).setIcon(android.R.drawable.ic_menu_set_as);
-        menu.add(Menu.NONE, MENU_EXIT, 4, R.string.exit).setIcon(android.R.drawable.ic_lock_power_off);
-        menu.add(Menu.NONE, MENU_ABOUT, 5, R.string.about).setIcon(android.R.drawable.ic_menu_info_details);
+        menu.add(Menu.NONE, MENU_RESET, 1, R.string.reset).setIcon(android.R.drawable.ic_menu_revert);
+        menu.add(Menu.NONE, MENU_LOAD, 2, R.string.load).setIcon(android.R.drawable.ic_menu_set_as);
+        menu.add(Menu.NONE, MENU_SETTINGS, 3, R.string.mainmenu_preferences).setIcon(android.R.drawable.ic_menu_preferences);
+        menu.add(Menu.NONE, MENU_ABOUT, 4, R.string.about).setIcon(android.R.drawable.ic_menu_info_details);
+        menu.add(Menu.NONE, MENU_EXIT, 45, R.string.exit).setIcon(android.R.drawable.ic_lock_power_off);
     }
 
     @Override
