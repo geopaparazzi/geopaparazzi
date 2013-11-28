@@ -4,8 +4,6 @@
   <string name="notesvisibilityToggle">Conmutar visibilidad de las notas.</string>
   <string name="loggingoff">Parados todos los sensores.</string>
   <string name="nogps_data">No hay todavía datos gps disponibles!</string>
-  <string name="about">información</string>
-  <string name="exit">Salida</string>
   <string name="utctime">tiempo: </string>
   <string name="altim">altim: </string>
   <string name="lat">lat: </string>
@@ -15,8 +13,6 @@
   <string name="prompt_gpsenable">El receptor gps no está habilitado!Le gustaría que lo active?</string>
   <string name="width_label">anchura</string>
   <string name="color_label">color</string>
-  <string name="mainmenu_gpsdataselect">lista de los datos gps </string>
-  <string name="mainmenu_preferences">preferencias</string>
   <string name="mainmenu_merge">unir logs seleccionados</string>
   <string name="gpslogproperty">Propreidades para: </string>
   <string name="mapproperty">Propreidades para: </string>
@@ -53,7 +49,6 @@
   <string name="installgpsstatus_title">Instala GPS Status</string>
   <string name="installgpsstatus_message">Geopaparazzi utiliza la aplicación Gps Status como brújula y la vista información gps. Desea instalarla?</string>
   <!--added after 2.1.2-->
-  <string name="reset">Restablecer los datos</string>
   <!--added after 2.1.4-->
   <!--added after 2.3.1-->
   <!--added after 2.4.3-->

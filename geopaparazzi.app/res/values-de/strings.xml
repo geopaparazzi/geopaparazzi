@@ -8,14 +8,11 @@
   <string name="kmlnonsaved">Während des Daten-Exports ist ein Fehler aufgetreten!</string>
   <string name="loggingoff">Alle Sensoren gestoppt.</string>
   <string name="nogps_data">Bisher kein GPS-Signal!</string>
-  <string name="about">Über</string>
-  <string name="exit">Beenden</string>
   <string name="utctime">Zeit: </string>
   <string name="altim">Höhe: </string>
   <string name="lat">Breite: </string>
   <string name="lon">Länge: </string>
   <string name="azimuth">Azimut: </string>
-  <string name="go_to">Gehe zu</string>
   <string name="goto_coordinate">Gehe zur Koordinate</string>
   <string name="geocoding">Geocodierung</string>
   <string name="prompt_gpsenable">GPS ist derzeit deaktiviert. Aktivieren?</string>
@@ -23,8 +20,6 @@
   <string name="color_label">Farbe</string>
   <string name="mainmenu_kmlexport">Exportieren</string>
   <string name="mainmenu_import">import</string>
-  <string name="mainmenu_gpsdataselect">GPS-Daten</string>
-  <string name="mainmenu_preferences">Einstellungen</string>
   <string name="mainmenu_merge">Ausgewählte Logs zusammenführen</string>
   <string name="gpslogproperty">Einstellungen für: </string>
   <string name="gpslog_chart">Diagramm</string>
@@ -67,8 +62,6 @@
   <string name="installgpsstatus_title">Installiere GPS-Status</string>
   <string name="installgpsstatus_message">Geopaparazzi benötigt die GPS-Status Anwendung zur Kompass-Darstellung. Soll diese installiert werden?</string>
   <!--added after 2.1.2-->
-  <string name="reset">Neues Projekt</string>
-  <string name="load">Vorhandenes Projekt laden</string>
   <string name="phonenumber_hint">Eingabe Komma-getrennter Telefonnummern…</string>
   <string name="pick_phonenumber_label">…</string>
   <!--added after 2.1.4-->
@@ -80,15 +73,12 @@
   <string name="delete_visible_bookmarks_prompt">Wollen Sie wirklich alle sichtbaren Lesezeichen entfernen? Dieses kann nicht rückgängig gemacht werden.</string>
   <string name="gps_searching_fix">GPS versucht Position zu bestimmen.</string>
   <string name="bookmarks_list_rename">Lesezeichen umbenennen</string>
-  <string name="mapsactivity_menu_toggle_scalebar">Maßstabsleiste umschalten</string>
-  <string name="mapsactivity_menu_tilesource">Kachel-Herkunft</string>
   <string name="mapsactivity_delete_bookmarks">Löschen von {0} bookmarks…</string>
   <string name="mapsactivity_delete_notes">{0} Anmerkungen löschen</string>
   <string name="mapsactivity_new_bookmark">Neues Lesezeichen</string>
   <string name="mapsactivity_enter_bookmark_name">Namen für das neue Lesezeichen eingeben(optional)</string>
   <string name="maptagsactivity_error_reading_tags">Fehler beim Lesen der Tags</string>
   <!--added after 2.3.1-->
-  <string name="mapsactivity_menu_toggle_compass">Öffne Kompass</string>
   <!--added after 2.4.3-->
   <string name="imagesvisibilityToggle">Bildsichtbarkeit umschalten</string>
   <!--added after 2.5.0-->
@@ -109,7 +99,6 @@
   <string name="available_only_with_network">Diese Funktion steht nur mit einer aktiven Netzwerkverbindung zur Verfügung.</string>
   <string name="error_osm_server">Fehler beim Verbinden mit dem OSM-Server. Überprüfen Sie bitte Ihr Login und Passwort. Es ist auch möglich, dass der OSM-Server nicht verfügbar ist.</string>
   <string name="check_valid_field">Bitte überprüfen ob das Feld \"{0}\" gültig ist.</string>
-  <string name="view_in_mixare">In Mixare anzeigen</string>
   <string name="gps_use_coarse">Verwendung Netz-basierter Position anstelle von GPS (Neustart erforderlich)</string>
   <string name="type_to_filter">Eingeben, um zu filtern.</string>
   <string name="geopapcloud_preferences">Geopap-Cloud-Einstellungen</string>
@@ -139,11 +128,9 @@
   <string name="successfully_imported_bookmarks">Lesezeichen erfolgreich exportiert: </string>
   <string name="error_bookmarks_import">Ein Fehler ist während des Imports der Lesezeichen aufgetreten!</string>
   <string name="no_bookmarks_csv">Es konnte keine Datei bookmarks.csv im Root-Verzeichnis der SD Karte gefunden werden. Bitte kopieren Sie diese dahin, um sie zu importieren.</string>
-  <string name="center_on_map">Auf Karte zentrieren</string>
   <string name="proximity_radius">Umgebungsalarm</string>
   <string name="add_proximity_radius">Radius für den Umgebungsalarm in Metern hinzufügen</string>
   <string name="sent_sms">Verschickte SMS :</string>
-  <string name="send_data">Daten senden</string>
   <string name="found_no_data_to_send">Keine Daten zum Senden in aktuell dargestellter Karte gefunden. </string>
   <string name="insert_phone_to_send">SMS werden versendet, um die ausgewählten Daten zu übermitteln.\n\nBitte geben Sie einen zulässige Telefonnummer an, wohin die Daten gesendet werden sollen.</string>
   <string name="no_message_sent">Es wurde keine Nachricht gesendet.</string>

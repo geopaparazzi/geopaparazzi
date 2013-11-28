@@ -8,14 +8,11 @@
   <string name="kmlnonsaved">Ocorreu um erro durante a exportação de dados!</string>
   <string name="loggingoff">Parados todos os sensores.</string>
   <string name="nogps_data">Nenhum dado de gps disponível, ainda!</string>
-  <string name="about">sobre</string>
-  <string name="exit">sair</string>
   <string name="utctime">tempo:</string>
   <string name="altim">cota: </string>
   <string name="lat">lat: </string>
   <string name="lon">lon: </string>
   <string name="azimuth">azimute: </string>
-  <string name="go_to">ir para</string>
   <string name="goto_coordinate">ir para coordenar</string>
   <string name="geocoding">Geocodificação</string>
   <string name="prompt_gpsenable">Seu GPS está desabilitado! Você gostaria de habilitá-lo?</string>
@@ -23,8 +20,6 @@
   <string name="color_label">cor</string>
   <string name="mainmenu_kmlexport">exportar</string>
   <string name="mainmenu_import">importar</string>
-  <string name="mainmenu_gpsdataselect">Lista dados do gps</string>
-  <string name="mainmenu_preferences">preferências</string>
   <string name="mainmenu_merge">mesclar registros selecionados</string>
   <string name="gpslogproperty">Propriedades para: </string>
   <string name="gpslog_chart">Gráfico</string>
@@ -70,8 +65,6 @@
   <string name="installgpsstatus_title">Instalar estado do GPS</string>
   <string name="installgpsstatus_message">O Geopaparazzi usa o aplicativo de estado do GPS como bússola e como visão de informações de gps. Você deseja instalá-lo?</string>
   <!--added after 2.1.2-->
-  <string name="reset">novo projeto!</string>
-  <string name="load">carregar um projeto existente</string>
   <string name="phonenumber_hint">Digite números de telefone separados por vírgula…</string>
   <string name="pick_phonenumber_label">…</string>
   <!--added after 2.1.4-->
@@ -83,15 +76,12 @@
   <string name="delete_visible_bookmarks_prompt">Você realmente deseja remover todos os marcadores visíveis? Isto não pode ser desfeito.</string>
   <string name="gps_searching_fix">O Gps está tentando adquirir correção.</string>
   <string name="bookmarks_list_rename">Renomear o marcador</string>
-  <string name="mapsactivity_menu_toggle_scalebar">alternar barra de escala</string>
-  <string name="mapsactivity_menu_tilesource">fonte de ladrilho</string>
   <string name="mapsactivity_delete_bookmarks">Excluindo {0} marcadores…</string>
   <string name="mapsactivity_delete_notes">Excluindo {0} notas…</string>
   <string name="mapsactivity_new_bookmark">Novo marcador</string>
   <string name="mapsactivity_enter_bookmark_name">Digite um nome para o novo marcador (opcional)</string>
   <string name="maptagsactivity_error_reading_tags">Erro ao ler etiquetas</string>
   <!--added after 2.3.1-->
-  <string name="mapsactivity_menu_toggle_compass">abrir bússola</string>
   <!--added after 2.4.3-->
   <string name="imagesvisibilityToggle">Alternar visibilidade de imagens</string>
   <string name="imagefromgps">image centro do mapa</string>
@@ -116,7 +106,6 @@
   <string name="available_only_with_network">Esta função só está disponível com uma conexão de rede ativa.</string>
   <string name="error_osm_server">Ocorreu um erro ao conectar-se ao servidor de OSM. Por favor, verifique seus dados de acesso e sua senha. Também é possível que o servidor OSM não esteja disponível.</string>
   <string name="check_valid_field">Por favor verifique se o campo \"{0}\" é válido.</string>
-  <string name="view_in_mixare">ver no mixare</string>
   <string name="gps_use_coarse">Use posição baseada em rede, em vez de gps (precisa reiniciar)</string>
   <string name="type_to_filter">tipo a se filtrar</string>
   <string name="geopapcloud_preferences">Preferências do Geopap-Cloud</string>
@@ -149,11 +138,9 @@
   <string name="successfully_imported_bookmarks">Marcadores importados com sucesso: </string>
   <string name="error_bookmarks_import">Ocorreu um erro ao importar os marcadores.</string>
   <string name="no_bookmarks_csv">Não foi possível localizar um arquivo bookmarks.csv na raiz do cartão sd. Por gentileza, coloque seus marcadores lá para serem importados.</string>
-  <string name="center_on_map">centralizar no mapa</string>
   <string name="proximity_radius">Raio de proximidade</string>
   <string name="add_proximity_radius">Adicionar raio de alerta de proximidade em metros.</string>
   <string name="sent_sms">Sms enviado : </string>
-  <string name="send_data">Enviar dados</string>
   <string name="found_no_data_to_send">Não foi localizado nenhum dado a ser enviado no mapa visível atual.</string>
   <string name="insert_phone_to_send">sms será enviado para transferir os dados selecionados.\n\nPor favor insira um número de telefone válido para enviar os dados.</string>
   <string name="no_message_sent">Nenhuma mensagem enviada.</string>

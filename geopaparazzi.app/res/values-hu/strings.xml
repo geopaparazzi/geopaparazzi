@@ -8,14 +8,11 @@
   <string name="kmlnonsaved">Hiba történt az adatok exportálása során!</string>
   <string name="loggingoff">Minden vevő leállt.</string>
   <string name="nogps_data">Még nem érhető el gps adat!</string>
-  <string name="about">névjegy</string>
-  <string name="exit">kilépés</string>
   <string name="utctime">idő: </string>
   <string name="altim">magasság: </string>
   <string name="lat">lat: </string>
   <string name="lon">lon: </string>
   <string name="azimuth">irányszög: </string>
-  <string name="go_to">menj oda</string>
   <string name="goto_coordinate">menj koordinátára</string>
   <string name="geocoding">geokódolás</string>
   <string name="prompt_gpsenable">A gps le van tiltva! Elérhetővé akarja tenni?</string>
@@ -23,8 +20,6 @@
   <string name="color_label">szín</string>
   <string name="mainmenu_kmlexport">export</string>
   <string name="mainmenu_import">import</string>
-  <string name="mainmenu_gpsdataselect">gps adatok</string>
-  <string name="mainmenu_preferences">beállítások</string>
   <string name="mainmenu_merge">megadott naplók egyesítése</string>
   <string name="gpslogproperty">Tulajdonságai: </string>
   <string name="gpslog_chart">Diagram</string>
@@ -70,8 +65,6 @@
   <string name="installgpsstatus_title">GPS Status installálása</string>
   <string name="installgpsstatus_message">A Geopaparazzi iránytű és gps infók megjelenítésére a GPS Status alkalmazást használja. Kívánja installálni?</string>
   <!--added after 2.1.2-->
-  <string name="reset">új projekt</string>
-  <string name="load">projekt betöltése</string>
   <string name="phonenumber_hint">Adjon meg vesszővel elválasztott telefonszámokat...</string>
   <string name="pick_phonenumber_label">...</string>
   <!--added after 2.1.4-->
@@ -83,15 +76,12 @@
   <string name="delete_visible_bookmarks_prompt">Valóban törölni kívánja a látható könyvjelzőket? Nem visszavonható.</string>
   <string name="gps_searching_fix">A gps fix pozícióra vár.</string>
   <string name="bookmarks_list_rename">Könyvjelző átnevezés</string>
-  <string name="mapsactivity_menu_toggle_scalebar">léptékvonalzó</string>
-  <string name="mapsactivity_menu_tilesource">csempe forrása</string>
   <string name="mapsactivity_delete_bookmarks">{0} könyvjelző törlése...</string>
   <string name="mapsactivity_delete_notes">{0} jegyzet törlése...</string>
   <string name="mapsactivity_new_bookmark">Új könyvjelző</string>
   <string name="mapsactivity_enter_bookmark_name">Adjon nevet az új könyvjelzőnek (választható)</string>
   <string name="maptagsactivity_error_reading_tags">Cimke olvasási hiba</string>
   <!--added after 2.3.1-->
-  <string name="mapsactivity_menu_toggle_compass">gps iránytű</string>
   <!--added after 2.4.3-->
   <string name="imagesvisibilityToggle">Képmegjelenítés kapcsoló</string>
   <string name="imagefromgps">kép a térkép közepéhez</string>
@@ -116,7 +106,6 @@
   <string name="available_only_with_network">Ez a funkció csak aktív hálózati kapcsolat mellett érhető el.</string>
   <string name="error_osm_server">Hiba történt az OSM szerverhez kapcsolódás során, Ellenőrizze a felhasználó nevét és a jelszót. Az is lehetséges, hogy az OSM szerver nem elérhető.</string>
   <string name="check_valid_field">Ellenőrizze, hogy a \"{0}\" mező érvényes.</string>
-  <string name="view_in_mixare">Mixare nézet</string>
   <string name="gps_use_coarse">Mobilhálózati pozíció a GPS helyett (újraindítandó)</string>
   <string name="type_to_filter">szűrendő típus</string>
   <string name="geopapcloud_preferences">Geopap-Cloud beállítások</string>
@@ -149,11 +138,9 @@
   <string name="successfully_imported_bookmarks">Megfelelően importált könyvjelzők:</string>
   <string name="error_bookmarks_import">Hiba történt a könyvjelzők importálása során.</string>
   <string name="no_bookmarks_csv">Nem található a bookmarks.csv fájl az SD-kártya gyökerében. Az importáláshoz helyezze a könyvjelzőit oda.</string>
-  <string name="center_on_map">térképközépre ugrás</string>
   <string name="proximity_radius">Figyelmeztetési távolság</string>
   <string name="add_proximity_radius">Adja meg a közelségi figyelmeztetés sugarát (m)</string>
   <string name="sent_sms">Küldött sms:</string>
-  <string name="send_data">adatküldés</string>
   <string name="found_no_data_to_send">Az éppen látható térképen nincs elküldhető adat.</string>
   <string name="insert_phone_to_send">A kiválasztott adat átviteléhez SMS-t kell küldeni.\nAdja meg azt a telefonszámot ahová az adatot küldi.</string>
   <string name="no_message_sent">Nem ment üzenet.</string>
@@ -195,5 +182,4 @@
   <string name="start">indítás</string>
   <string name="end">vége</string>
   <string name="other">más</string>
-  <string name="data">adatrétegek</string>
 </resources>

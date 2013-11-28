@@ -8,14 +8,11 @@
   <string name="kmlnonsaved">Det oppstod en feil under dataeksport!</string>
   <string name="loggingoff">Stoppet alle sensorer.</string>
   <string name="nogps_data">Ingen gps data tilgjengelig ennå!</string>
-  <string name="about">om</string>
-  <string name="exit">Avslutt</string>
   <string name="utctime">tid: </string>
   <string name="altim">altim: </string>
   <string name="lat">lat: </string>
   <string name="lon">lon: </string>
   <string name="azimuth">asimuth: </string>
-  <string name="go_to">gå til</string>
   <string name="goto_coordinate">gå til koordinat</string>
   <string name="geocoding">geokoding</string>
   <string name="prompt_gpsenable">Gps er deaktivert! Ønsker du å aktivere den?</string>
@@ -23,8 +20,6 @@
   <string name="color_label">farge</string>
   <string name="mainmenu_kmlexport">eksportere</string>
   <string name="mainmenu_import">importere</string>
-  <string name="mainmenu_gpsdataselect">GPS data liste</string>
-  <string name="mainmenu_preferences">innstillinger</string>
   <string name="mainmenu_merge">slå sammen valgte logger</string>
   <string name="gpslogproperty">Egenskaper for: </string>
   <string name="gpslog_chart">Diagram</string>
@@ -69,8 +64,6 @@
   <string name="installgpsstatus_title">Installere GPS-Status</string>
   <string name="installgpsstatus_message">GeoPaparazzi bruker Gps Status-app som kompass og gps-informasjonsvisning. Vil du installere appen?</string>
   <!--added after 2.1.2-->
-  <string name="reset">nytt prosjekt</string>
-  <string name="load">laste inn et eksisterende prosjekt</string>
   <string name="phonenumber_hint">Tast inn komma-separerte telefonnumre…</string>
   <string name="pick_phonenumber_label">…</string>
   <!--added after 2.1.4-->
@@ -82,15 +75,12 @@
   <string name="delete_visible_bookmarks_prompt">Vil du virkelig fjerne alle synlige bokmerker? Dette kan ikke gjøres om.</string>
   <string name="gps_searching_fix">GPS prøver å låse seg til satellittsignal.</string>
   <string name="bookmarks_list_rename">Endre bokmerkenavnet</string>
-  <string name="mapsactivity_menu_toggle_scalebar">Vis/skjul målestokk</string>
-  <string name="mapsactivity_menu_tilesource">kartkilde</string>
   <string name="mapsactivity_delete_bookmarks">Sletter {0} bokmerker…</string>
   <string name="mapsactivity_delete_notes">Sletter {0} notater…</string>
   <string name="mapsactivity_new_bookmark">Nytt bokmerke</string>
   <string name="mapsactivity_enter_bookmark_name">Tast et navn for det nye bokmerket (valgfritt)</string>
   <string name="maptagsactivity_error_reading_tags">Feil under lesing av tagger</string>
   <!--added after 2.3.1-->
-  <string name="mapsactivity_menu_toggle_compass">åpne kompass</string>
   <!--added after 2.4.3-->
   <string name="imagesvisibilityToggle">Vis/skjul bilder</string>
   <string name="imagefromgps">bilde fra gps</string>
@@ -115,7 +105,6 @@
   <string name="available_only_with_network">Denne funksjonen er bare tilgjengelig med en aktiv nettverkstilkobling.</string>
   <string name="error_osm_server">Det oppstod en feil under tilkobling til OSM-serveren. Sjekk ditt brukernavn og passord. Det er også mulig at OSM-serveren ikke er tilgjengelig.</string>
   <string name="check_valid_field">Kontroller at feltet \"{0}\" er riktig.</string>
-  <string name="view_in_mixare">se i mixare</string>
   <string name="gps_use_coarse">Bruk nettverksbasert posisjon, i stedet for gps (krever omstart)</string>
   <string name="type_to_filter">tast inn for å filtrere</string>
   <string name="geopapcloud_preferences">Innstillinger for Geopap-Cloud</string>
@@ -148,11 +137,9 @@
   <string name="successfully_imported_bookmarks">Importerte bokmerker:</string>
   <string name="error_bookmarks_import">Det oppstod en feil under import av bokmerkene.</string>
   <string name="no_bookmarks_csv">Finner ikke en bookmarks.csv-fil i roten til sdcard. Plassèr dine bokmerker der, hvis du vil importere dem.</string>
-  <string name="center_on_map">midtstille på kart</string>
   <string name="proximity_radius">Radius for geografisk proksimitet (nærhet)</string>
   <string name="add_proximity_radius">Legge inn alarm-radius for geografisk proksimitet (meter).</string>
   <string name="sent_sms">Sendte sms:</string>
-  <string name="send_data">sende data</string>
   <string name="found_no_data_to_send">Fant ikke data å sende i det synlig kartet.</string>
   <string name="insert_phone_to_send">sms sendes for å overføre de valgte dataene. \nLegg inn et mobilnummer.</string>
   <string name="no_message_sent">Ingen melding ble sendt.</string>

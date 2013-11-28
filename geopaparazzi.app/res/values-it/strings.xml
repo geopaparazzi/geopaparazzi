@@ -15,7 +15,7 @@
   <string name="lat">lat: </string>
   <string name="lon">lon: </string>
   <string name="azimuth">azimut: </string>
-  <string name="go_to">vai a</string>
+  <string name="go_to">Vai a</string>
   <string name="goto_coordinate">vai a coordinata</string>
   <string name="geocoding">geocoding</string>
   <string name="prompt_gpsenable">Il gps non è attivo! Lo vuoi attivare?</string>
@@ -23,8 +23,8 @@
   <string name="color_label">colore</string>
   <string name="mainmenu_kmlexport">export</string>
   <string name="mainmenu_import">importa</string>
-  <string name="mainmenu_gpsdataselect">lista dati gps</string>
-  <string name="mainmenu_preferences">impostazioni</string>
+  <string name="mainmenu_gpsdataselect">Lista dati gps</string>
+  <string name="mainmenu_preferences">Impostazioni</string>
   <string name="mainmenu_merge">unisci log selezionati</string>
   <string name="gpslogproperty">Proprietà per: </string>
   <string name="gpslog_chart">Grafico</string>
@@ -70,8 +70,8 @@
   <string name="installgpsstatus_title">Installa GPS Status</string>
   <string name="installgpsstatus_message">Geopaparazzi usa l\'applicazione Gps Status come bussola e vista informazioni gps. La vuoi installare?</string>
   <!--added after 2.1.2-->
-  <string name="reset">Nuovo progetto</string>
-  <string name="load">caricare un progetto esistente</string>
+  <string name="reset">Crea nuovo progetto</string>
+  <string name="load">Carica un progetto esistente</string>
   <string name="phonenumber_hint">Immettere numeri di telefono separati da virgola</string>
   <string name="pick_phonenumber_label">...</string>
   <!--added after 2.1.4-->
@@ -83,15 +83,15 @@
   <string name="delete_visible_bookmarks_prompt">Sei sicuro di volere cancellare tutti i segnalibri visibili? Non è possibile tornare indietro.</string>
   <string name="gps_searching_fix">Il Gps sta cercando di acquisire il segnale.</string>
   <string name="bookmarks_list_rename">Rinomina segnlibro</string>
-  <string name="mapsactivity_menu_toggle_scalebar">cambia scala</string>
-  <string name="mapsactivity_menu_tilesource">sorgente tile</string>
+  <string name="mapsactivity_menu_toggle_scalebar">Cambia scala</string>
+  <string name="mapsactivity_menu_tilesource">Seleziona sorgente tile</string>
   <string name="mapsactivity_delete_bookmarks">﻿Eliminazione di {0} favoriti…</string>
   <string name="mapsactivity_delete_notes">﻿Eliminazione di {0} note...</string>
   <string name="mapsactivity_new_bookmark">Nuovo segnalibro</string>
   <string name="mapsactivity_enter_bookmark_name">Inserisci un nome per il nuovo segnalibro (opzionale)</string>
   <string name="maptagsactivity_error_reading_tags">Errore nella lettura dei tag</string>
   <!--added after 2.3.1-->
-  <string name="mapsactivity_menu_toggle_compass">apre la bussola</string>
+  <string name="mapsactivity_menu_toggle_compass">Apri bussola</string>
   <!--added after 2.4.3-->
   <string name="imagesvisibilityToggle">Alterna visibilità immagini</string>
   <string name="imagefromgps">immagine centro mappa</string>
@@ -116,7 +116,7 @@
   <string name="available_only_with_network">Questa funzione è disponibile solo con una connessione di rete attiva.</string>
   <string name="error_osm_server">Si è verificato un errore durante la connessione al server OSM. Si prega di controllare login e password. È anche possibile che il server OSM non sia disponibile.</string>
   <string name="check_valid_field">Si prega di verificare che il campo \"{0}\" è valido.</string>
-  <string name="view_in_mixare">visualizza a mixare</string>
+  <string name="view_in_mixare">Visualizza in mixare</string>
   <string name="gps_use_coarse">Utilizzare la posizione basata su rete invece del gps (necessario riavvio)</string>
   <string name="type_to_filter">inserire testo per filtrare</string>
   <string name="geopapcloud_preferences">Impostazioni Geopap-Cloud</string>
@@ -149,11 +149,11 @@
   <string name="successfully_imported_bookmarks">Importato correttamente i segnalibri:</string>
   <string name="error_bookmarks_import">E\' avvenuto un errore durante l\'importazione dei segnalibri.</string>
   <string name="no_bookmarks_csv">Impossibile trovare il file bookmarks.csv nella sdcard.</string>
-  <string name="center_on_map">centra sulla mappa</string>
+  <string name="center_on_map">Centra sulla mappa</string>
   <string name="proximity_radius">Raggio di prossimità</string>
   <string name="add_proximity_radius">Aggiungi raggio di avviso di prossimità in metri.</string>
   <string name="sent_sms">Sms inviati:</string>
-  <string name="send_data">invia dati</string>
+  <string name="send_data">Invia dati</string>
   <string name="found_no_data_to_send">Non ci sono dati inviabili nella attuale mappa visibile.</string>
   <string name="insert_phone_to_send"> sms verranno inviati per trasferire i dati selezionati. \nInserire un numero di telefono valido per inviare i dati.</string>
   <string name="no_message_sent">Nessun messaggio inviato.</string>
@@ -195,4 +195,7 @@
   <string name="start">inizio</string>
   <string name="end">fine</string>
   <string name="other">altro</string>
+  <string name="base_maps">Mappe di base</string>
+  <string name="maps_manager">Gestore mappe</string>
+  <string name="loading_maps">Caricamento mappe...</string>
 </resources>
