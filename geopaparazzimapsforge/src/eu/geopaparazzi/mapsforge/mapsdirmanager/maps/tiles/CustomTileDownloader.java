@@ -92,6 +92,7 @@ public class CustomTileDownloader extends TileDownloader {
 
     private String tilePart = "";
     private boolean isFile = false;
+    private boolean b_reset_metadata = false;
     private TILESCHEMA type = TILESCHEMA.google;
     private boolean isConnectedToInternet;
 
@@ -304,7 +305,7 @@ public class CustomTileDownloader extends TileDownloader {
         if (s_mbtiles_file.length() > 0) {
             if (!s_request_type.equals("")) {
                 int i_run = 0;
-                int i_load = 0;
+                int i_create = 0;
                 int i_delete = 0;
                 int indexOfS = s_request_type.indexOf(",");
                 if (indexOfS != -1) {
@@ -318,42 +319,48 @@ public class CustomTileDownloader extends TileDownloader {
                         if (sa_string[i].equals("fill")) { // will request missing tiles only
                             if (!s_request_type.equals(""))
                                 s_comma = ",";
-                            s_request_type = s_comma + sa_string[i].trim();
+                            s_request_type += s_comma + sa_string[i].trim();
+                         i_create = 1;
                         }
                         if (sa_string[i].equals("replace")) { // will replace existing tiles
                             if (!s_request_type.equals(""))
                                 s_comma = ",";
-                            s_request_type = s_comma + sa_string[i].trim();
+                            s_request_type += s_comma + sa_string[i].trim();
+                         i_create = 1; // if bothe 'fill' and 'replace' are given: 'fill' willl be used
                         }
                         if (sa_string[i].equals("drop")) { // will delete the requested tiles,
                                                            // retaining the allready downloaded
                                                            // tiles
                             if (!s_request_type.equals(""))
                                 s_comma = ",";
-                            s_request_type = s_comma + sa_string[i].trim();
+                            s_request_type += s_comma + sa_string[i].trim();
                         }
                         if (sa_string[i].equals("vacuum")) {
                             if (!s_request_type.equals(""))
                                 s_comma = ",";
-                            s_request_type = s_comma + sa_string[i].trim();
+                            s_request_type += s_comma + sa_string[i].trim();
                         }
                         if (sa_string[i].equals("update_bounds")) {
                             if (!s_request_type.equals(""))
                                 s_comma = ",";
-                            s_request_type = s_comma + sa_string[i].trim();
+                            s_request_type += s_comma + sa_string[i].trim();
+                        }
+                        if (sa_string[i].equals("reset_metadata")) {
+                            b_reset_metadata=true;
                         }
                         if (sa_string[i].equals("delete")) { // planned for future
                             if (!s_request_type.equals(""))
                                 s_comma = ",";
-                            s_request_type = s_comma + sa_string[i].trim();
+                            s_request_type += s_comma + sa_string[i].trim();
                         }
                         if (sa_string[i].equals("load")) {
-                            i_load = 1;
+                         if (!s_request_type.equals(""))
+                                s_comma = ",";
+                            s_request_type += s_comma + sa_string[i].trim();
                         }
-                        GPLog.androidLog(-1, "CustomTileDownloader sa_string[" + i + "].[" + sa_string[i] + "] ["
-                                + s_request_type + "]");
+                        // GPLog.androidLog(-1, "CustomTileDownloader sa_string[" + i + "].[" + sa_string[i] + "] ["+ s_request_type + "]");
                     }
-                    if (i_load != 1) {
+                    if (i_create != 1) {
                         s_request_bounds = "";
                         s_request_zoom_levels = "";
                         s_request_url = "";
@@ -388,23 +395,31 @@ public class CustomTileDownloader extends TileDownloader {
                     }
                 }
             }
+            if ((!file_mbtiles.exists()) || (b_reset_metadata))
+            {
+             mbtiles_metadata.put("name", this.s_name);
+             mbtiles_metadata.put("description", this.s_description);
+             if (!file_mbtiles.exists())
+             {
+              mbtiles_metadata.put("format", this.s_format);
+              mbtiles_metadata.put("tile_row_type", this.s_tile_row_type);
+             }
+             // 'reset_metadata': will manually reset the mbtiles-metadata entries:
+             // 'name','description','bounds','center','minzoom','maxzoom' ; NOT: 'format','tile_row_type'
+             String s_bbox = this.bounds_west + "," + this.bounds_south + "," + this.bounds_east + "," + this.bounds_north;
+             mbtiles_metadata.put("bounds", s_bbox);
+             s_bbox = this.centerX + "," + this.centerY + "," + this.defaultZoom;
+             mbtiles_metadata.put("center", s_bbox);
+             mbtiles_metadata.put("minzoom", Integer.toString(this.minZoom));
+             mbtiles_metadata.put("maxzoom", Integer.toString(this.maxZoom));
+            }
             if (file_mbtiles.exists()) { // this will open an existing mbtiles_db
                 mbtiles_db = new MbtilesDatabaseHandler(file_mbtiles.getAbsolutePath(), null);
             } else { // this will create the mbtiles_db and set default values
-                mbtiles_metadata.put("name", this.s_name);
-                mbtiles_metadata.put("description", this.s_description);
-                mbtiles_metadata.put("format", this.s_format);
-                mbtiles_metadata.put("tile_row_type", this.s_tile_row_type);
-                String s_bbox = this.bounds_west + "," + this.bounds_south + "," + this.bounds_east + "," + this.bounds_north;
-                mbtiles_metadata.put("bounds", s_bbox);
-                s_bbox = this.centerX + "," + this.centerY + "," + this.defaultZoom;
-                mbtiles_metadata.put("center", s_bbox);
-                mbtiles_metadata.put("minzoom", Integer.toString(this.minZoom));
-                mbtiles_metadata.put("maxzoom", Integer.toString(this.maxZoom));
                 mbtiles_db = new MbtilesDatabaseHandler(file_mbtiles.getAbsolutePath(), mbtiles_metadata);
             }
             if (mbtiles_request_url.size() > 0) {
-                mbtiles_db.run_retrieve_url(mbtiles_request_url);
+                mbtiles_db.run_retrieve_url(mbtiles_request_url,mbtiles_metadata);
             }
         }
         // GPLog.androidLog(-1,"CustomTileDownloader parentPath[" + parentPath+ "]");

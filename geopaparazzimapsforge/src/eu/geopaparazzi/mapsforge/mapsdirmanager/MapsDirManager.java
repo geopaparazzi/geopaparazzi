@@ -60,6 +60,7 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.MbtilesDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.OrderComparator;
@@ -202,7 +203,7 @@ public class MapsDirManager {
       *  <li>filter out portions not desired</li>
       * </ul>
       * <p>from GeoPaparazziActivity.java [2013-10-11]
-     * @param context 
+     * @param context
       */
     private void handleTileSources( Context context ) throws Exception, IOException, FileNotFoundException {
         int i_count_classes = 0;
@@ -277,9 +278,10 @@ public class MapsDirManager {
          * add also mbtiles,geopackage tables
          */
         try {
+            // List<SpatialVectorTable> spatialVectorTables =  SpatialDatabasesManager.getInstance().getSpatialVectorTables(false);
             List<SpatialRasterTable> spatialRasterTables = SpatialDatabasesManager.getInstance().getSpatialRasterTables(false);
-            // GPLog.androidLog(-1,"MapsDirManager manager[SpatialDatabasesManager] size_raster["+SpatialDatabasesManager.getInstance().size_raster()+"]");
-            // GPLog.androidLog(-1,"MapsDirManager manager[SpatialDatabasesManager] size_vector["+SpatialDatabasesManager.getInstance().size_vector()+"]");
+            GPLog.androidLog(-1,"MapsDirManager manager[SpatialDatabasesManager] size_raster["+SpatialDatabasesManager.getInstance().size_raster()+"]");
+            GPLog.androidLog(-1,"MapsDirManager manager[SpatialDatabasesManager] size_vector["+SpatialDatabasesManager.getInstance().size_vector()+"]");
             // [26] [/mnt/extSdCard/maps/geopackage_files/Luciad_GeoPackage.gpkg]
             // [27] [/mnt/extSdCard/maps/geopackage_files/Luciad_GeoPackage.gpkg]
             for( SpatialRasterTable table : spatialRasterTables ) {
