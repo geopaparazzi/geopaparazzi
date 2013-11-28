@@ -8,6 +8,7 @@
   <string name="about">о программе</string>
   <string name="exit">выход</string>
   <string name="utctime">время:</string>
+  <string name="altim">альтиметрия:</string>
   <string name="lat">широта:</string>
   <string name="lon">долгота:</string>
   <string name="azimuth">азимут:</string>
@@ -33,6 +34,7 @@
   <string name="gps_logging_distance">Минимальное записываемое расстояние GPS</string>
   <string name="gps_logging_interval">Минимальный записываемый интервал GPS</string>
   <string name="sms_preferences">Настройки SMS</string>
+  <string name="sms_catcher">Разрешить ловлю SMS</string>
   <string name="databaseError">При соединении с базой данных произошла ошибка</string>
   <string name="chart_profile_view">Просмотр профиля</string>
   <string name="gpx_import_processing">Импортируется GPX…</string>
@@ -42,6 +44,8 @@
   <string name="text_take_a_gps_note">сделать заметку</string>
   <string name="text_undo_a_gps_note">отменить заметку</string>
   <string name="gps_log">журнал GPS</string>
+  <string name="gps_log_name">Введите название журнала GPS или примите предложенное по умолчанию</string>
+  <string name="audio_recording">Записывается аудио… нажмите здесь для завершения</string>
   <string name="audio_recording_stop">стоп</string>
   <string name="panic">паника!</string>
   <string name="panic_number">Номер для паники</string>
@@ -69,6 +73,7 @@
   <string name="delete_visible_notes_prompt">Вы правда хотите удалить все видимые заметки? Это нельзя будет отменить.</string>
   <string name="delete_visible_bookmarks_title">УДАЛИТЬ ЗАКЛАДКИ</string>
   <string name="bookmarks_list_rename">Переименовать закладку</string>
+  <string name="mapsactivity_menu_toggle_scalebar">переключить линейку масштаба</string>
   <string name="mapsactivity_menu_tilesource">источник тайлов</string>
   <string name="mapsactivity_delete_bookmarks">Удаляются {0} закладок…</string>
   <string name="mapsactivity_delete_notes">Удаляются {0} заметок…</string>
@@ -95,7 +100,9 @@
   <string name="loading_data">Загрузка данных…</string>
   <string name="profilelable_distance">дистанция [м]</string>
   <string name="profilelable_elevation">возвышение [м]</string>
+  <string name="view_in_mixare">смотреть в mixare</string>
   <string name="gps_use_coarse">Использовать позиционирование сети вместо GPS (требуется перезапуск)</string>
+  <string name="type_to_filter">введите для фильтрации</string>
   <string name="geopapcloud_preferences">Настройки Geopap-Cloud</string>
   <string name="geopapcloud_user_label">Имя пользователя</string>
   <string name="geopapcloud_password_label">Пароль</string>
@@ -108,6 +115,7 @@
   <string name="media_upload">ЗАГРУЗКА МЕДИА</string>
   <string name="osm_insert_a_changeset_description">Ввести описание пакета правок</string>
   <string name="set_description">Задать описание</string>
+  <string name="loaded_project_in">Проект загружен в:</string>
   <string name="add_message">ДОБАВИТЬ СООБЩЕНИЕ</string>
   <string name="enter_a_name_for_the_new_project">Введите название нового проекта</string>
   <string name="select_map_to_use">Выберите карту для использования</string>
@@ -116,6 +124,7 @@
   <string name="with_images">С изображениями</string>
   <string name="successfully_imported_bookmarks">Успешно импортированные закладки:</string>
   <string name="error_bookmarks_import">При импорте закладок произошла ошибка.</string>
+  <string name="center_on_map">центрировать на карте</string>
   <string name="proximity_radius">Радиус приближения</string>
   <string name="add_proximity_radius">Добавить радиус приближения для уведомления в метрах</string>
   <string name="sent_sms">Отправленное SMS:</string>
@@ -123,6 +132,7 @@
   <string name="no_message_sent">Сообщение не отправлено.</string>
   <string name="distance">Расстояние:</string>
   <string name="imported_notes_and_bookmarks">Импортировано {0} заметок и {1} закладок.</string>
+  <string name="start_">Начало:</string>
   <string name="end_">Конец:</string>
   <string name="keep_screen_on">Не выключать экран</string>
   <string name="the_secret_view">Секретный вид</string>
@@ -149,4 +159,8 @@
   <string name="keep_use_imperial">Использовать английскую систему мер</string>
   <string name="keep_use_imperial_sum">Использовать английскую систему мер вместо метрической там, где это возможно.</string>
   <string name="satellites">спутники</string>
+  <string name="start">начало</string>
+  <string name="end">конец</string>
+  <string name="other">другое</string>
+  <string name="data">данные</string>
 </resources>

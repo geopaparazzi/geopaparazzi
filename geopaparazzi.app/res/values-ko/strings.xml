@@ -195,4 +195,5 @@
   <string name="start">시작</string>
   <string name="end">끝</string>
   <string name="other">기타</string>
+  <string name="data">데이터</string>
 </resources>

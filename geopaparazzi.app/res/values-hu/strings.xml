@@ -23,7 +23,7 @@
   <string name="color_label">szín</string>
   <string name="mainmenu_kmlexport">export</string>
   <string name="mainmenu_import">import</string>
-  <string name="mainmenu_gpsdataselect">gps adat lista</string>
+  <string name="mainmenu_gpsdataselect">gps adatok</string>
   <string name="mainmenu_preferences">beállítások</string>
   <string name="mainmenu_merge">megadott naplók egyesítése</string>
   <string name="gpslogproperty">Tulajdonságai: </string>
@@ -71,7 +71,7 @@
   <string name="installgpsstatus_message">A Geopaparazzi iránytű és gps infók megjelenítésére a GPS Status alkalmazást használja. Kívánja installálni?</string>
   <!--added after 2.1.2-->
   <string name="reset">új projekt</string>
-  <string name="load">létező projekt betöltése</string>
+  <string name="load">projekt betöltése</string>
   <string name="phonenumber_hint">Adjon meg vesszővel elválasztott telefonszámokat...</string>
   <string name="pick_phonenumber_label">...</string>
   <!--added after 2.1.4-->
@@ -104,10 +104,10 @@
   <string name="osm_do_it">OSM eszközök elérése</string>
   <string name="osm_user_label">Felhasználó név</string>
   <string name="osm_password_label">Jelszó</string>
-  <string name="osm_server_label">Elérendő kiszolgáló</string>
+  <string name="osm_server_label">Elérendő WPS szerver</string>
   <string name="osm_notes_properly_uploaded">Az OSM jegyzetek rendben feltöltődtek.\n\nEl kívánja távolítani ezen jegyzeteit az eszközről?</string>
   <string name="an_error_occurred_while_uploading_osm_tags">Hiba történt az OSM cimkék feltöltése során: </string>
-  <string name="enable_automatic_center_on_gps">Térkép mozgás a GPS-el</string>
+  <string name="enable_automatic_center_on_gps">GPS mozgatta térkép</string>
   <string name="profile">útprofil</string>
   <string name="loading_data">Adatok betöltése...</string>
   <string name="profilelable_distance">távolság [m]</string>
@@ -149,7 +149,7 @@
   <string name="successfully_imported_bookmarks">Megfelelően importált könyvjelzők:</string>
   <string name="error_bookmarks_import">Hiba történt a könyvjelzők importálása során.</string>
   <string name="no_bookmarks_csv">Nem található a bookmarks.csv fájl az SD-kártya gyökerében. Az importáláshoz helyezze a könyvjelzőit oda.</string>
-  <string name="center_on_map">középpont a térképen</string>
+  <string name="center_on_map">térképközépre ugrás</string>
   <string name="proximity_radius">Figyelmeztetési távolság</string>
   <string name="add_proximity_radius">Adja meg a közelségi figyelmeztetés sugarát (m)</string>
   <string name="sent_sms">Küldött sms:</string>
@@ -183,16 +183,17 @@
   <string name="show_labels">mutasd a cimkéket</string>
   <string name="halo">fényöv</string>
   <string name="screen_preferences">Képernyő beállítások</string>
-  <string name="cross_properties_summary">Jegyzet lerakó kereszt tulajdonságai</string>
-  <string name="cross_properties">Kereszt középre</string>
+  <string name="cross_properties_summary">Jegyzet pozícionáló kereszt beállításai</string>
+  <string name="cross_properties">Középponti kereszt</string>
   <string name="color">Szín</string>
   <string name="prompt_delete_note">Valóban törölnéd a jegyzetet? Ez nem visszavonható!</string>
   <string name="prompt_delete_bookmark">Valóban törölnéd a könyvjelzőt? Ez nem visszavonható!</string>
-  <string name="keep_use_imperial">Birodalmi mértékek</string>
-  <string name="keep_use_imperial_sum">Használj birodalmi mértéket metrikus helyett, ha lehetséges.</string>
+  <string name="keep_use_imperial">Angolszász mértékek</string>
+  <string name="keep_use_imperial_sum">Angolszász mértékek használata metrikus helyett.</string>
   <string name="satellites">műholdak</string>
   <string name="crash_toast_text">Az alkalmazás végzetes hibát tapasztalt. Az összeomlás információja begyűjtésre került a probléma megoldásához. Kérem küld el a fejlesztői csapatnak ha lehetséges!</string>
   <string name="start">indítás</string>
   <string name="end">vége</string>
   <string name="other">más</string>
+  <string name="data">adatrétegek</string>
 </resources>
