@@ -472,6 +472,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
     @Override
     public List<SpatialVectorTable> getSpatialVectorTables( boolean forceRead ) throws Exception {
         if (vectorTableList == null || forceRead) {
+            vectorTableList = new ArrayList<SpatialVectorTable>();
             get_tables(1); // 0=check if valid only ; 1=check if valid and fill
                            // vectorTableList,rasterTableList
         }
@@ -747,6 +748,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
     @Override
     public List<SpatialRasterTable> getSpatialRasterTables( boolean forceRead ) throws Exception {
         if (rasterTableList == null || forceRead) {
+            rasterTableList = new ArrayList<SpatialRasterTable>();
             get_tables(1); // 0=check if valid only ; 1=check if valid and fill
                            // vectorTableList,rasterTableList
         }
