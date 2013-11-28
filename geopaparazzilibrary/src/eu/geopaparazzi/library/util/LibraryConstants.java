@@ -37,7 +37,6 @@ public interface LibraryConstants {
     public final SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //$NON-NLS-1$
     public final SimpleDateFormat TIME_FORMATTER_SQLITE = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //$NON-NLS-1$
     public final SimpleDateFormat TIME_FORMATTER_GPX = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); //$NON-NLS-1$
-    ;
 
     /**
      * Key used by the gps logger to store the lat in the prefs.

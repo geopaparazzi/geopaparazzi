@@ -17,9 +17,11 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
+
 import static java.lang.Math.abs;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
+import static eu.geopaparazzi.library.util.LibraryConstants.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +33,7 @@ import eu.geopaparazzi.library.gpx.GpxUtilities;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
 import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.DynamicDoubleArray;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 
 /**
@@ -233,6 +236,8 @@ public class Line implements KmlRepresenter, GpxRepresenter {
         double[] altimArray = altimList.getInternalArray();
         for( int i = 0; i < size; i++ ) {
             String dateString = dateList.get(i);
+            // TODO change this sooner or later - needs ts to be hold differently in db
+            dateString = TIME_FORMATTER_GPX.format(TIME_FORMATTER_SQLITE.parse(dateString));
             String trackPointString = GpxUtilities.getTrackPointString(latArray[i], lonArray[i], altimArray[i], dateString);
             sb.append(trackPointString);
         }
