@@ -263,6 +263,36 @@ public class TagsManager {
         return itemsArray;
     }
 
+    public static LinkedHashMap<String, List<String>> extractComboValuesMap( JSONObject formItem ) throws JSONException {
+
+        LinkedHashMap<String, List<String>> valuesMap = new LinkedHashMap<String, List<String>>();
+
+        if (formItem.has(TAG_VALUES)) {
+            JSONObject valuesObj = formItem.getJSONObject(TAG_VALUES);
+
+            JSONArray names = valuesObj.names();
+            int length = names.length();
+            for( int i = 0; i < length; i++ ) {
+                String name = names.getString(i);
+                
+                List<String> valuesList = new ArrayList<String>();
+                JSONArray itemsArray = valuesObj.getJSONArray(name);
+                int length2 = itemsArray.length();
+                for( int j = 0; j < length2; j++ ) {
+                    JSONObject itemObj = itemsArray.getJSONObject(j);
+                    if (itemObj.has(TAG_ITEM)) {
+                        valuesList.add( itemObj.getString(TAG_ITEM).trim());
+                    } else {
+                        valuesList.add(" - ");
+                    }
+                }
+                valuesMap.put(name, valuesList);
+            }
+        }
+        return valuesMap;
+
+    }
+
     public static class TagObject {
         public String shortName;
         public String longName;

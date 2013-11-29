@@ -19,6 +19,7 @@ package eu.geopaparazzi.library.forms;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -50,6 +51,7 @@ import eu.geopaparazzi.library.forms.views.GPictureView;
 import eu.geopaparazzi.library.forms.views.GSketchView;
 import eu.geopaparazzi.library.forms.views.GTextView;
 import eu.geopaparazzi.library.forms.views.GTimeView;
+import eu.geopaparazzi.library.forms.views.GTwoConnectedComboView;
 import eu.geopaparazzi.library.forms.views.GView;
 import eu.geopaparazzi.library.util.MultipleChoiceDialog;
 import eu.geopaparazzi.library.util.Utilities;
@@ -110,6 +112,11 @@ public class FormUtilities {
      * Type for a {@link Spinner}.
      */
     public static final String TYPE_STRINGCOMBO = "stringcombo";
+
+    /**
+     * Type for two connected {@link Spinner}.
+     */
+    public static final String TYPE_CONNECTEDSTRINGCOMBO = "connectedstringcombo";
 
     /**
      * Type for a {@link MuSpinner}.
@@ -273,6 +280,24 @@ public class FormUtilities {
     public static GView addComboView( Context context, LinearLayout mainView, String key, String value, String[] itemsArray,
             String constraintDescription ) {
         GComboView comboView = new GComboView(context, null, mainView, key, value, itemsArray, constraintDescription);
+        return comboView;
+    }
+
+    /**
+     * Adds two connected {@link Spinner} to the supplied mainView.
+     * 
+     * @param context the context.
+     * @param mainView the main view to which to add the new widget to.
+     * @param key the key identifying the widget.
+     * @param value the value to put in the widget.
+     * @param valuesMap the map of connected strings to put in the spinners.
+     * @param constraintDescription 
+     * @return the added view.
+     */
+    public static GView addConnectedComboView( Context context, LinearLayout mainView, String key, String value,
+            LinkedHashMap<String, List<String>> valuesMap, String constraintDescription ) {
+        GTwoConnectedComboView comboView = new GTwoConnectedComboView(context, null, mainView, key, value, valuesMap,
+                constraintDescription);
         return comboView;
     }
 
@@ -506,7 +531,7 @@ public class FormUtilities {
         }
         return sB.toString();
     }
-    
+
     /**
      * Get the images paths out of a form string.
      * 
