@@ -21,7 +21,6 @@ import static eu.geopaparazzi.library.forms.FormUtilities.COLON;
 import static eu.geopaparazzi.library.forms.FormUtilities.UNDERSCORE;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -51,6 +50,7 @@ public class GTwoConnectedComboView extends View implements GView, OnItemSelecte
     private Spinner valuesSpinner;
     private LinkedHashMap<String, List<String>> dataMap;
     private LinearLayout textLayout;
+    private String value;
 
     public GTwoConnectedComboView( Context context, AttributeSet attrs, int defStyle ) {
         super(context, attrs, defStyle);
@@ -63,6 +63,7 @@ public class GTwoConnectedComboView extends View implements GView, OnItemSelecte
     public GTwoConnectedComboView( Context context, AttributeSet attrs, LinearLayout parentView, String key, String value,
             LinkedHashMap<String, List<String>> dataMap, String constraintDescription ) {
         super(context, attrs);
+        this.value = value;
         this.dataMap = dataMap;
 
         textLayout = new LinearLayout(context);
@@ -95,13 +96,17 @@ public class GTwoConnectedComboView extends View implements GView, OnItemSelecte
 
         List<String> valuesList = null;
         if (value != null) {
-            Set<Entry<String, List<String>>> entrySet = dataMap.entrySet();
             String titleString = null;
-            for( Entry<String, List<String>> entry : entrySet ) {
-                List<String> tmpValuesList = entry.getValue();
-                if (tmpValuesList.contains(value.trim())) {
-                    titleString = entry.getKey();
-                    break;
+            if (value.length() == 0) {
+                titleString = "";
+            } else {
+                Set<Entry<String, List<String>>> entrySet = dataMap.entrySet();
+                for( Entry<String, List<String>> entry : entrySet ) {
+                    List<String> tmpValuesList = entry.getValue();
+                    if (tmpValuesList.contains(value.trim())) {
+                        titleString = entry.getKey();
+                        break;
+                    }
                 }
             }
             if (titleString != null) {
@@ -126,15 +131,30 @@ public class GTwoConnectedComboView extends View implements GView, OnItemSelecte
                 dummyValuesList);
         valuesListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         valuesSpinner.setAdapter(valuesListAdapter);
-        valuesSpinner.setOnItemSelectedListener(this);
-
+        // valuesSpinner.setOnItemSelectedListener(this);
+        checkValueSpinnerSelection(valuesList);
         textLayout.addView(titleSpinner);
         textLayout.addView(valuesSpinner);
 
     }
 
+    private void checkValueSpinnerSelection( List<String> valuesList ) {
+        if (valuesList != null) {
+            for( int i = 0; i < valuesList.size(); i++ ) {
+                if (valuesList.get(i).equals(value.trim())) {
+                    valuesSpinner.setSelection(i);
+                    break;
+                }
+            }
+        }
+    }
+
     public String getValue() {
-        return valuesSpinner.getSelectedItem().toString();
+        Object selectedItem = valuesSpinner.getSelectedItem();
+        if (selectedItem == null) {
+            return "";
+        }
+        return selectedItem.toString();
     }
 
     @Override
@@ -160,6 +180,7 @@ public class GTwoConnectedComboView extends View implements GView, OnItemSelecte
                     android.R.layout.simple_spinner_item, valuesList);
             valuesListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             valuesSpinner.setAdapter(valuesListAdapter);
+            checkValueSpinnerSelection(valuesList);
         }
     }
 
