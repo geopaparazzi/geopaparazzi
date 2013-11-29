@@ -89,9 +89,14 @@ public class FormUtilities {
     public static final String TYPE_STRINGAREA = "stringarea";
 
     /**
-     * Type for a {@link EditText} containing generic numbers.
+     * Type for a {@link EditText} containing double numbers.
      */
     public static final String TYPE_DOUBLE = "double";
+
+    /**
+     * Type for a {@link EditText} containing integer numbers.
+     */
+    public static final String TYPE_INTEGER = "integer";
 
     /**
      * Type for a {@link Button} containing date.
@@ -227,9 +232,10 @@ public class FormUtilities {
      * @param type the text type:
      *          <ul>
      *             <li>0: text</li>
-     *             <li>1: numeric</li>
+     *             <li>1: double number</li>
      *             <li>2: phone</li>
      *             <li>3: date</li>
+     *             <li>4: integer number</li>
      *          </ul>
      * @param lines lines or 0 
      * @param constraintDescription 

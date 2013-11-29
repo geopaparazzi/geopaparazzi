@@ -108,6 +108,10 @@
                         "key": "a number",
                         "value": "",
                         "type": "double"
+                    },{
+                        "key": "an integer number",
+                        "value": "",
+                        "type": "integer"
                     }
                 ]
             },{

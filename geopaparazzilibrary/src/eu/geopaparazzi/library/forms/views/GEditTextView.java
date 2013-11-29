@@ -85,6 +85,9 @@ public class GEditTextView extends View implements GView {
         case 3:
             editView.setInputType(InputType.TYPE_CLASS_DATETIME);
             break;
+        case 4:
+            editView.setInputType(InputType.TYPE_CLASS_NUMBER);
+            break;
         default:
             break;
         }

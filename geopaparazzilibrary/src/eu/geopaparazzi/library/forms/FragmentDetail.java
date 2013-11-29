@@ -166,6 +166,9 @@ public class FragmentDetail extends Fragment {
                     } else if (type.equals(TYPE_DOUBLE)) {
                         addedView = FormUtilities.addEditText(activity, mainView, key, value, 1, 0, constraintDescription,
                                 readonly);
+                    } else if (type.equals(TYPE_INTEGER)) {
+                        addedView = FormUtilities.addEditText(activity, mainView, key, value, 4, 0, constraintDescription,
+                                readonly);
                     } else if (type.equals(TYPE_DATE)) {
                         addedView = FormUtilities.addDateView(FragmentDetail.this, mainView, key, value, constraintDescription,
                                 readonly);
