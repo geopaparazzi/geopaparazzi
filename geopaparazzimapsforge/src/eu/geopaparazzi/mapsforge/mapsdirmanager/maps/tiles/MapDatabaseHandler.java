@@ -19,6 +19,7 @@ package eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,6 +27,7 @@ import java.util.List;
 
 import org.mapsforge.map.reader.MapDatabase;
 import org.mapsforge.map.reader.header.FileOpenResult;
+import org.mapsforge.map.reader.header.MapFileHeader;
 import org.mapsforge.map.reader.header.MapFileInfo;
 import org.mapsforge.core.model.Tile;
 
@@ -102,7 +104,9 @@ public class MapDatabaseHandler {
            bounds_north = (double) (map_FileInfo.boundingBox.getMaxLatitude());
            centerX = map_FileInfo.boundingBox.getCenterPoint().getLongitude();
            centerY = map_FileInfo.boundingBox.getCenterPoint().getLatitude();
-           Byte startZoomLevel = map_FileInfo.startZoomLevel;
+           
+           
+           Byte startZoomLevel = getMinZoomlevel(map_Database);
            if (startZoomLevel != null) {
             minZoom = startZoomLevel;
            }
@@ -117,6 +121,34 @@ public class MapDatabaseHandler {
             GPLog.androidLog(4,"MapDatabaseHandler[" + file_map.getAbsolutePath() + "]", e);
         }
         // GPLog.androidLog(-1,"MapDatabaseHandler[" + file_map.getAbsolutePath() + "] name["+s_name+"] s_description["+s_description+"]");
+    }
+    /**
+     * Workaround to get the min zoom from a map file.
+     * 
+     * <p>This is done through reflection since the map_FileInfo.startZoomLevel value
+     * is different from the minZoomLevel of the file , but the minZoomLevel is 
+     * not accessible. 
+     * <p>Also the  startZoomLevel limits the level to 14, which is why this 
+     * workaround was done. 
+     * 
+     * @param mapDatabase the {@link MapDatabase} to guess the min zopomlevel from.
+     * @return the min zoomlevel or a default value 1.
+     */
+    private Byte getMinZoomlevel( MapDatabase mapDatabase ) {
+        try {
+            Field f1 = mapDatabase.getClass().getDeclaredField("mapFileHeader");
+            f1.setAccessible(true);
+            MapFileHeader mapFileHeader = (MapFileHeader) f1.get(mapDatabase);
+            Field f2 = mapFileHeader.getClass().getDeclaredField("zoomLevelMinimum");
+            f2.setAccessible(true);
+            Object object = f2.get(mapFileHeader);
+            Byte minZoomlevel = (Byte) object;
+            return minZoomlevel;
+        } catch (java.lang.Exception e) {
+            // ignore and return default
+            return 1;
+        }
+        
     }
     // -----------------------------------------------
     /**

@@ -34,7 +34,7 @@ import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_PICTURES;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_SKETCH;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRING;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRINGAREA;
-import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRINGCOMBO;
+import static eu.geopaparazzi.library.forms.FormUtilities.*;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRINGMULTIPLECHOICE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_TIME;
 
@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -165,6 +166,9 @@ public class FragmentDetail extends Fragment {
                     } else if (type.equals(TYPE_DOUBLE)) {
                         addedView = FormUtilities.addEditText(activity, mainView, key, value, 1, 0, constraintDescription,
                                 readonly);
+                    } else if (type.equals(TYPE_INTEGER)) {
+                        addedView = FormUtilities.addEditText(activity, mainView, key, value, 4, 0, constraintDescription,
+                                readonly);
                     } else if (type.equals(TYPE_DATE)) {
                         addedView = FormUtilities.addDateView(FragmentDetail.this, mainView, key, value, constraintDescription,
                                 readonly);
@@ -193,6 +197,9 @@ public class FragmentDetail extends Fragment {
                         JSONArray comboItems = TagsManager.getComboItems(jsonObject);
                         String[] itemsArray = TagsManager.comboItems2StringArray(comboItems);
                         addedView = FormUtilities.addComboView(activity, mainView, key, value, itemsArray, constraintDescription);
+                    } else if (type.equals(TYPE_CONNECTEDSTRINGCOMBO)) {
+                        LinkedHashMap<String, List<String>> valuesMap = TagsManager.extractComboValuesMap(jsonObject);
+                        addedView = FormUtilities.addConnectedComboView(activity, mainView, key, value, valuesMap, constraintDescription);
                     } else if (type.equals(TYPE_STRINGMULTIPLECHOICE)) {
                         JSONArray comboItems = TagsManager.getComboItems(jsonObject);
                         String[] itemsArray = TagsManager.comboItems2StringArray(comboItems);

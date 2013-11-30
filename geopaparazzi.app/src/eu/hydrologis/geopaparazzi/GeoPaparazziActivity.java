@@ -100,8 +100,6 @@ import eu.hydrologis.geopaparazzi.util.GpUtilities;
 import eu.hydrologis.geopaparazzi.util.ImportActivity;
 import eu.hydrologis.geopaparazzi.util.QuickActionsFactory;
 import eu.hydrologis.geopaparazzi.util.SecretActivity;
-// -begin- MapsDir specific
-// -end-  MapsDir specific
 
 /**
  * The main {@link Activity activity} of GeoPaparazzi.
