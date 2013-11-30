@@ -124,6 +124,10 @@ public class ClassNodeInfo<T>
  {
   return id;
  }
+ public boolean exists()
+ {
+  return this.b_file;
+ }
  public String getFileNamePath()
  {
   if (this.file_path != null)

@@ -184,7 +184,7 @@ public class MapsDirManager {
                 CustomTileDatabasesManager.getInstance().init(context, maps_dir);
                 GPLog.androidLog(-1, "MapsDirManager manager[CustomTileDatabasesManager] size["
                         + CustomTileDatabasesManager.getInstance().size() + "]");
-                GPLog.GLOBAL_LOG_LEVEL = 1;
+                GPLog.GLOBAL_LOG_LEVEL = -1;
                 GPLog.androidLog(1, "MapsDirManager init[" + maps_dir.getAbsolutePath() + "]");
                 handleTileSources(context);
             } catch (Exception e) {
@@ -211,6 +211,7 @@ public class MapsDirManager {
         ClassNodeInfo mapnik_mapinfo = null;
         // This will be our default map if everything else fails
         File mapnikFile = new File(maps_dir, "mapnik.mapurl");
+        // GPLog.androidLog(-1, "MapsDirManager handleTileSources  selected_map[" + s_selected_map + "]");
         /*
           * add mapurl tables
           */
@@ -323,7 +324,8 @@ public class MapsDirManager {
             InputStream inputStream = assetManager.open("tilesources/opencycle.mapurl");
             FileOutputStream outputStream = new FileOutputStream(opencycleFile);
             FileUtilities.copyFile(inputStream, outputStream);
-            if (opencycleFile.exists()) {
+        }
+        if (opencycleFile.exists()) {
                 this_mapinfo = new ClassNodeInfo(i_count_classes++, i_type, "mapurl", "CustomTileTable",
                         opencycleFile.getAbsolutePath(), opencycleFile.getName(), opencycleFile.getAbsolutePath(), "opencycle",
                         "opencycle", "-180.00000,-85.05113,180.00000,85.05113", "13.3777065575123,52.5162690144797", "0-18");
@@ -334,19 +336,23 @@ public class MapsDirManager {
                     i_selected_type = selected_mapinfo.getType();
                 }
             }
-        }
         if ((!mapnikFile.exists()) && (assetManager != null)) {
             InputStream inputStream = assetManager.open("tilesources/mapnik.mapurl");
             OutputStream outputStream = new FileOutputStream(mapnikFile);
             FileUtilities.copyFile(inputStream, outputStream);
-            if (mapnikFile.exists()) { // this should be done as the last to insure a default
+        }
+        if (mapnikFile.exists()) { // this should be done as the last to insure a default
                                        // setting
                 mapnik_mapinfo = new ClassNodeInfo(i_count_classes++, i_type, "mapurl", "CustomTileTable",
                         mapnikFile.getAbsolutePath(), mapnikFile.getName(), mapnikFile.getAbsolutePath(), "mapnik", "mapnik",
                         "-180.00000,-85.05113,180.00000,85.05113", "13.3777065575123,52.5162690144797", "0-18");
                 maptype_classes.add(mapnik_mapinfo);
+                if ((selected_mapinfo == null) && (s_selected_map.equals(mapnikFile.getAbsolutePath()))) {
+                    selected_mapinfo = this_mapinfo;
+                    s_selected_type = selected_mapinfo.getTypeText();
+                    i_selected_type = selected_mapinfo.getType();
+                }
             }
-        }
         if ((selected_mapinfo == null) && (mapnik_mapinfo != null)) { // if nothing was selected OR
                                                                       // the selected not found then
                                                                       // 'mapnick' as default [this
@@ -354,8 +360,9 @@ public class MapsDirManager {
             selected_mapinfo = mapnik_mapinfo;
             s_selected_type = selected_mapinfo.getTypeText();
             i_selected_type = selected_mapinfo.getType();
+            s_selected_map = selected_mapinfo.getFileNamePath();
         }
-        GPLog.androidLog(-1, "MapsDirManager MapsDirTreeViewList.setMapTypeClasses count[" + maptype_classes.size() + "] ");
+        GPLog.androidLog(-1, "MapsDirManager handleTileSources maptype_classes.count[" + maptype_classes.size() + "] selected_map[" + s_selected_map + "]");
         // List will be returned sorted as Directory-File with levels set.
         maptype_classes = MapsDirTreeViewList.setMapTypeClasses(maptype_classes, get_maps_dir());
     }
@@ -489,7 +496,19 @@ public class MapsDirManager {
                         centerX = selected_table.getCenterX();
                         centerY = selected_table.getCenterY();
                         selected_mapGenerator = selected_table.getCustomTileDownloader();
-                        map_View.setMapGenerator(selected_mapGenerator);
+                        try
+                        {
+                         map_View.setMapGenerator(selected_mapGenerator);
+                         GPLog.androidLog(1,
+                        "MapsDirManager -I-> MAPURL setMapGenerator[" + s_selected_type + "] selected_map[" + s_selected_map
+                                + "]");
+                        }
+                        catch (java.lang.NullPointerException e_mapurl)
+                        {
+                         GPLog.androidLog(4,
+                        "MapsDirManager -E-> MAPURL setMapGenerator[" + s_selected_type + "] selected_map[" + s_selected_map
+                                + "]",e_mapurl);
+                        }
                     }
                 }
                     break;
@@ -500,6 +519,9 @@ public class MapsDirManager {
             } catch (jsqlite.Exception e) {
                 selected_mapGenerator = MapGeneratorInternal.createMapGenerator(MapGeneratorInternal.mapnik);
                 map_View.setMapGenerator(selected_mapGenerator);
+                GPLog.androidLog(4,
+                        "MapsDirManager -E-> load_Map[" + s_selected_type + "] mapinfo[" + selected_mapinfo.getShortDescription()
+                                + "]",e);
             }
             if (selected_mapGenerator != null) {
                 i_rc = 0;

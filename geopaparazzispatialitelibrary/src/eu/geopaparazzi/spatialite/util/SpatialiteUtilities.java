@@ -18,6 +18,7 @@
 package eu.geopaparazzi.spatialite.util;
 
 import java.io.File;
+import java.io.IOException;
 
 import jsqlite.Database;
 import jsqlite.Exception;
@@ -35,8 +36,87 @@ import eu.geopaparazzi.library.database.GPLog;
  * @author Mark Johnson
  */
 public class SpatialiteUtilities {
-
-
+    // -----------------------------------------------
+    /**
+      * General Function to create jsqlite.Database with spatialite support
+      * - parent diretories will be created, if needed
+      * - needed Tables/View and default values for metdata-table will be created
+      * @param s_db_path name of Database file to create
+      * @return sqlite_db: pointer to Database created
+      */
+    public static Database create_db( String s_db_path)  throws IOException  {
+        Database sqlite_db = null;
+        File file_db = new File(s_db_path);
+        if (!file_db.getParentFile().exists())
+        {
+         File dir_db = file_db.getParentFile();
+         if (!dir_db.mkdir())
+         {
+          throw new IOException("SpatialiteUtilities: create_db: dir_db[" + dir_db.getAbsolutePath()
+                        + "] creation failed");
+         }
+        }
+        sqlite_db = new jsqlite.Database();
+        if (sqlite_db != null) {
+         try
+         {
+          sqlite_db.open(file_db.getAbsolutePath(), jsqlite.Constants.SQLITE_OPEN_READWRITE | jsqlite.Constants.SQLITE_OPEN_CREATE);
+          int i_rc=create_spatialite(sqlite_db,0);
+         }
+         catch (jsqlite.Exception e_stmt)
+         {
+          GPLog.androidLog(4, "create_spatialite[spatialite] dir_file["+file_db.getAbsolutePath()+"]", e_stmt);
+         }
+        }
+        return sqlite_db;
+    }
+    // -----------------------------------------------
+    /**
+      * General Function to create jsqlite.Database with spatialite support
+      * - parent diretories will be created, if needed
+      * - needed Tables/View and default values for metdata-table will be created
+      * @param sqlite_db: pointer to Database
+      * @param i_parm: 0=new Database - skip checking if it a patialite Database ; check Spatialite Version
+      * @return i_rc: pointer to Database created
+      */
+    public static int create_spatialite( Database sqlite_db , int i_parm) throws Exception {
+     int i_rc=0;
+     if (i_parm == 1)
+     {
+      // 0=not a spatialite version ; 1=until 2.3.1 ; 2=until 2.4.0 ; 3=until 3.1.0-RC2 ; 4=after 4.0.0-RC1
+      int i_spatialite_version=get_table_fields(sqlite_db,"");
+      if (i_spatialite_version > 0)
+      { // this is a spatialite Database, do not create
+       i_rc=1;
+       if (i_spatialite_version != 4)
+       { // TODO: logic for convertion to latest Spatialite Version [open]
+       }
+      }
+     }
+     if (i_rc == 0)
+     {
+      String s_sql_command="SELECT InitSpatialMetadata(1)"; // As transaction
+      Stmt this_stmt = sqlite_db.prepare(s_sql_command);
+      try
+      {
+       if (this_stmt.step())
+       {
+       }
+      }
+      catch (jsqlite.Exception e_stmt)
+      {
+       GPLog.androidLog(4, "create_spatialite[spatialite] sql["+s_sql_command+"]", e_stmt);
+      }
+      finally
+      {
+       if (this_stmt != null)
+       {
+        this_stmt.close();
+       }
+      }
+     }
+     return i_rc;
+    }
     // -----------------------------------------------
     /**
       * Goal is to determin the Spatialite version of the Database being used
@@ -52,11 +132,11 @@ public class SpatialiteUtilities {
       * -- views: vector_layers_statistics,vector_layers
       * -- SpatiaLite 4.0.0 : introduced
       * 20131129: at the moment not possible to distinguish beteewn 2.4.0 and 3.0.0 [no '2']
-      * @param db_java Database connection to use
+      * @param sqlite_db Database connection to use
       * @param s_table name of table to read [if empty: list of tables in Database]
       * @return i_spatialite_version [0=not a spatialite version ; 1=until 2.3.1 ; 2=until 2.4.0 ; 3=until 3.1.0-RC2 ; 4=after 4.0.0-RC1]
       */
-    private static int get_table_fields(Database db_java, String s_table) throws Exception {
+    private static int get_table_fields(Database sqlite_db, String s_table) throws Exception {
         Stmt this_stmt = null;
         // views: vector_layers_statistics,vector_layers
         boolean b_vector_layers_statistics = false;
@@ -74,7 +154,7 @@ public class SpatialiteUtilities {
         }
         String s_type = "";
         String s_name = "";
-        this_stmt = db_java.prepare(s_sql_command);
+        this_stmt = sqlite_db.prepare(s_sql_command);
         try {
             while( this_stmt.step() ) {
                 if (!s_table.equals("")) { // pragma table_info(berlin_strassen_geometry)
@@ -119,7 +199,7 @@ public class SpatialiteUtilities {
             {
                if (b_spatial_ref_sys)
                {
-                i_srs_wkt=get_table_fields(db_java,"spatial_ref_sys");
+                i_srs_wkt=get_table_fields(sqlite_db,"spatial_ref_sys");
                 if ((b_vector_layers_statistics) && (b_vector_layers) && (i_srs_wkt == 4))
                 { // Spatialite 4.0
                  i_spatialite_version = 4;
