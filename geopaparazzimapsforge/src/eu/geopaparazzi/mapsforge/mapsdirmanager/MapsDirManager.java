@@ -23,47 +23,35 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.List;
 
 import jsqlite.Exception;
-import android.content.Context;
-import android.content.res.AssetManager;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.preference.PreferenceManager;
+
 import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.mapgenerator.MapGenerator;
 import org.mapsforge.core.model.GeoPoint;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.MapDatabasesManager;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapDatabaseHandler;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapTable;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.GeopackageTileDownloader;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.CustomTileDatabasesManager;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.CustomTileDatabaseHandler;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.CustomTileTable;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.CustomTileDownloader;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapGeneratorInternal;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.MapsDirTreeViewList;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.ClassNodeInfo;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.content.res.AssetManager;
+import android.preference.PreferenceManager;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.CustomTileDatabasesManager;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.MapDatabasesManager;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.CustomTileTable;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.GeopackageTileDownloader;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapGeneratorInternal;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapTable;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.ClassNodeInfo;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.MapsDirTreeViewList;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
-import eu.geopaparazzi.spatialite.database.spatial.core.MbtilesDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.OrderComparator;
 
 /**
  * The manager of supported maps in the Application maps dir.
@@ -79,11 +67,7 @@ public class MapsDirManager {
     private static final int MAPURL = 4;
     private List<ClassNodeInfo> maptype_classes = new LinkedList<ClassNodeInfo>();
     private File maps_dir = null;
-    private List<CustomTileDatabaseHandler> customtileHandlers = new ArrayList<CustomTileDatabaseHandler>();
-    private HashMap<CustomTileTable, CustomTileDatabaseHandler> customtileTablesMap = new HashMap<CustomTileTable, CustomTileDatabaseHandler>();
     private static MapsDirManager mapsdirManager = null;
-    private final String[] sa_extentions = new String[]{".mapurl"};
-    private final int i_extention_mapurl = 0;
     private int i_selected_type = MBTILES;
     private String s_selected_type = "";
     private String s_selected_map = "";
@@ -326,37 +310,36 @@ public class MapsDirManager {
             FileUtilities.copyFile(inputStream, outputStream);
         }
         if (opencycleFile.exists()) {
-                this_mapinfo = new ClassNodeInfo(i_count_classes++, i_type, "mapurl", "CustomTileTable",
-                        opencycleFile.getAbsolutePath(), opencycleFile.getName(), opencycleFile.getAbsolutePath(), "opencycle",
-                        "opencycle", "-180.00000,-85.05113,180.00000,85.05113", "13.3777065575123,52.5162690144797", "0-18");
-                maptype_classes.add(this_mapinfo);
-                if ((selected_mapinfo == null) && (s_selected_map.equals(opencycleFile.getAbsolutePath()))) {
-                    selected_mapinfo = this_mapinfo;
-                    s_selected_type = selected_mapinfo.getTypeText();
-                    i_selected_type = selected_mapinfo.getType();
-                }
+            this_mapinfo = new ClassNodeInfo(i_count_classes++, i_type, "mapurl", "CustomTileTable",
+                    opencycleFile.getAbsolutePath(), opencycleFile.getName(), opencycleFile.getAbsolutePath(), "opencycle",
+                    "opencycle", "-180.00000,-85.05113,180.00000,85.05113", "13.3777065575123,52.5162690144797", "0-18");
+            maptype_classes.add(this_mapinfo);
+            if ((selected_mapinfo == null) && (s_selected_map.equals(opencycleFile.getAbsolutePath()))) {
+                selected_mapinfo = this_mapinfo;
+                s_selected_type = selected_mapinfo.getTypeText();
+                i_selected_type = selected_mapinfo.getType();
             }
+        }
         if ((!mapnikFile.exists()) && (assetManager != null)) {
             InputStream inputStream = assetManager.open("tilesources/mapnik.mapurl");
             OutputStream outputStream = new FileOutputStream(mapnikFile);
             FileUtilities.copyFile(inputStream, outputStream);
         }
-        if (mapnikFile.exists()) { // this should be done as the last to insure a default
-                                       // setting
-                mapnik_mapinfo = new ClassNodeInfo(i_count_classes++, i_type, "mapurl", "CustomTileTable",
-                        mapnikFile.getAbsolutePath(), mapnikFile.getName(), mapnikFile.getAbsolutePath(), "mapnik", "mapnik",
-                        "-180.00000,-85.05113,180.00000,85.05113", "13.3777065575123,52.5162690144797", "0-18");
-                maptype_classes.add(mapnik_mapinfo);
-                if ((selected_mapinfo == null) && (s_selected_map.equals(mapnikFile.getAbsolutePath()))) {
-                    selected_mapinfo = this_mapinfo;
-                    s_selected_type = selected_mapinfo.getTypeText();
-                    i_selected_type = selected_mapinfo.getType();
-                }
+        // this should be done as the last to insure a default setting
+        if (mapnikFile.exists()) {
+            mapnik_mapinfo = new ClassNodeInfo(i_count_classes++, i_type, "mapurl", "CustomTileTable",
+                    mapnikFile.getAbsolutePath(), mapnikFile.getName(), mapnikFile.getAbsolutePath(), "mapnik", "mapnik",
+                    "-180.00000,-85.05113,180.00000,85.05113", "13.3777065575123,52.5162690144797", "0-18");
+            maptype_classes.add(mapnik_mapinfo);
+            if ((selected_mapinfo == null) && (s_selected_map.equals(mapnikFile.getAbsolutePath()))) {
+                selected_mapinfo = this_mapinfo;
+                s_selected_type = selected_mapinfo.getTypeText();
+                i_selected_type = selected_mapinfo.getType();
             }
-        if ((selected_mapinfo == null) && (mapnik_mapinfo != null)) { // if nothing was selected OR
-                                                                      // the selected not found then
-                                                                      // 'mapnick' as default [this
-                                                                      // should always exist]
+        }
+        if ((selected_mapinfo == null) && (mapnik_mapinfo != null)) {
+            // if nothing was selected OR the selected not found then
+            // 'mapnik' as default [this should always exist]
             selected_mapinfo = mapnik_mapinfo;
             s_selected_type = selected_mapinfo.getTypeText();
             i_selected_type = selected_mapinfo.getType();
@@ -424,7 +407,6 @@ public class MapsDirManager {
         int i_rc = -1;
         if ((map_View != null) && (selected_mapinfo != null)) {
             try {
-                boolean b_redrawTiles = false;
                 GPLog.androidLog(-1,
                         "MapsDirManager -I-> load_Map[" + s_selected_type + "] mapinfo[" + selected_mapinfo.getShortDescription()
                                 + "]");
@@ -521,7 +503,7 @@ public class MapsDirManager {
                 map_View.setMapGenerator(selected_mapGenerator);
                 GPLog.androidLog(4,
                         "MapsDirManager -E-> load_Map[" + s_selected_type + "] mapinfo[" + selected_mapinfo.getShortDescription()
-                                + "]",e);
+                                + "]", e);
             }
             if (selected_mapGenerator != null) {
                 i_rc = 0;
