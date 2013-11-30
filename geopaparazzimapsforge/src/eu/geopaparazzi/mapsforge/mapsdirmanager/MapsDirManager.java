@@ -354,6 +354,7 @@ public class MapsDirManager {
             selected_mapinfo = mapnik_mapinfo;
             s_selected_type = selected_mapinfo.getTypeText();
             i_selected_type = selected_mapinfo.getType();
+            s_selected_map = selected_mapinfo.getFileNamePath();
         }
         GPLog.androidLog(-1, "MapsDirManager MapsDirTreeViewList.setMapTypeClasses count[" + maptype_classes.size() + "] ");
         // List will be returned sorted as Directory-File with levels set.
