@@ -388,10 +388,9 @@ public class GeoPaparazziActivity extends Activity {
         }
 
         if (resourcesManager == null) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(eu.hydrologis.geopaparazzi.R.string.no_sdcard_use_internal_memory).setCancelable(false)
-                    .setPositiveButton(this.getString(android.R.string.yes), new DialogInterface.OnClickListener(){
-                        public void onClick( DialogInterface dialog, int id ) {
+            Utilities.yesNoMessageDialog(this, getString(eu.hydrologis.geopaparazzi.R.string.no_sdcard_use_internal_memory),
+                    new Runnable(){
+                        public void run() {
                             ResourcesManager.setUseInternalMemory(true);
                             try {
                                 resourcesManager = ResourcesManager.getInstance(GeoPaparazziActivity.this);
@@ -400,13 +399,11 @@ public class GeoPaparazziActivity extends Activity {
                                 e.printStackTrace();
                             }
                         }
-                    }).setNegativeButton(this.getString(android.R.string.no), new DialogInterface.OnClickListener(){
-                        public void onClick( DialogInterface dialog, int id ) {
+                    }, new Runnable(){
+                        public void run() {
                             finish();
                         }
                     });
-            AlertDialog alertDialog = builder.create();
-            alertDialog.show();
         } else {
             initIfOk();
         }

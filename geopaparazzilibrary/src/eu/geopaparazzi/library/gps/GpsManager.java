@@ -39,6 +39,7 @@ import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.ProximityIntentReceiver;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.TestMock;
@@ -281,22 +282,12 @@ public class GpsManager implements LocationListener, Listener {
     public void checkGps( final Context context ) {
         if (!isEnabled()) {
             String prompt = context.getResources().getString(R.string.prompt_gpsenable);
-            String ok = context.getResources().getString(android.R.string.yes);
-            String cancel = context.getResources().getString(android.R.string.no);
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setMessage(prompt).setCancelable(false).setPositiveButton(ok, new DialogInterface.OnClickListener(){
-                public void onClick( DialogInterface dialog, int id ) {
+            Utilities.yesNoMessageDialog(context, prompt, new Runnable(){
+                public void run() {
                     Intent gpsOptionsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                     context.startActivity(gpsOptionsIntent);
                 }
-            });
-            builder.setNegativeButton(cancel, new DialogInterface.OnClickListener(){
-                public void onClick( DialogInterface dialog, int id ) {
-                    dialog.cancel();
-                }
-            });
-            AlertDialog alert = builder.create();
-            alert.show();
+            }, null);
         }
     }
 
