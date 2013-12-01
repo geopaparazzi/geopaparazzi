@@ -26,8 +26,6 @@ import eu.hydrologis.geopaparazzi.R;
  */
 public class QuickAction extends CustomPopupWindow {
     private final View root;
-    private final ImageView mArrowUp;
-    private final ImageView mArrowDown;
     private final LayoutInflater inflater;
     private final Context context;
 
@@ -55,9 +53,6 @@ public class QuickAction extends CustomPopupWindow {
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         root = (ViewGroup) inflater.inflate(R.layout.popup, null);
-
-        mArrowDown = (ImageView) root.findViewById(R.id.arrow_down);
-        mArrowUp = (ImageView) root.findViewById(R.id.arrow_up);
 
         setContentView(root);
 
@@ -143,8 +138,6 @@ public class QuickAction extends CustomPopupWindow {
             }
         }
 
-        showArrow(((onTop) ? R.id.arrow_down : R.id.arrow_up), anchorRect.centerX() - xPos);
-
         setAnimationStyle(screenWidth, anchorRect.centerX(), onTop);
 
         window.showAtLocation(anchor, Gravity.NO_GRAVITY, xPos, yPos);
@@ -159,7 +152,6 @@ public class QuickAction extends CustomPopupWindow {
      * 		  and vice versa
      */
     private void setAnimationStyle( int screenWidth, int requestedX, boolean onTop ) {
-        int arrowPos = requestedX - mArrowUp.getMeasuredWidth() / 2;
 
         switch( animStyle ) {
         case ANIM_GROW_FROM_LEFT:
@@ -179,14 +171,7 @@ public class QuickAction extends CustomPopupWindow {
             break;
 
         case ANIM_AUTO:
-            if (arrowPos <= screenWidth / 4) {
-                window.setAnimationStyle((onTop) ? R.style.Animations_PopUpMenu_Left : R.style.Animations_PopDownMenu_Left);
-            } else if (arrowPos > screenWidth / 4 && arrowPos < 3 * (screenWidth / 4)) {
-                window.setAnimationStyle((onTop) ? R.style.Animations_PopUpMenu_Center : R.style.Animations_PopDownMenu_Center);
-            } else {
-                window.setAnimationStyle((onTop) ? R.style.Animations_PopUpMenu_Right : R.style.Animations_PopDownMenu_Right);
-            }
-
+            window.setAnimationStyle((onTop) ? R.style.Animations_PopUpMenu_Right : R.style.Animations_PopDownMenu_Right);
             break;
         }
     }
@@ -195,7 +180,7 @@ public class QuickAction extends CustomPopupWindow {
      * Create action list
      */
     private void createActionList() {
-        View view;
+        View view = null;
         String title;
         Drawable icon;
         OnClickListener listener;
@@ -243,24 +228,4 @@ public class QuickAction extends CustomPopupWindow {
         return container;
     }
 
-    /**
-     * Show arrow
-     * 
-     * @param whichArrow arrow type resource id
-     * @param requestedX distance from left screen
-     */
-    private void showArrow( int whichArrow, int requestedX ) {
-        final View showArrow = (whichArrow == R.id.arrow_up) ? mArrowUp : mArrowDown;
-        final View hideArrow = (whichArrow == R.id.arrow_up) ? mArrowDown : mArrowUp;
-
-        final int arrowWidth = mArrowUp.getMeasuredWidth();
-
-        showArrow.setVisibility(View.VISIBLE);
-
-        ViewGroup.MarginLayoutParams param = (ViewGroup.MarginLayoutParams) showArrow.getLayoutParams();
-
-        param.leftMargin = requestedX - arrowWidth / 2;
-
-        hideArrow.setVisibility(View.INVISIBLE);
-    }
 }

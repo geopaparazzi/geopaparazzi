@@ -1,10 +1,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="horizontal" android:layout_width="fill_parent"
-	android:layout_height="wrap_content" android:clickable="true"
-	android:focusable="true" android:background="@drawable/quickaction_item2_btn">
-	<TextView android:id="@+id/title" android:layout_width="fill_parent"
-		android:layout_height="fill_parent" android:gravity="center_vertical"
-		android:paddingLeft="5dip" android:paddingRight="10dip" android:text="Chart"
-		android:textColor="@color/main_background" />
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/quickaction_item2_btn"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="horizontal" >
 
-</LinearLayout>         
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center_vertical"
+        android:paddingLeft="5dip"
+        android:paddingRight="10dip"
+        android:text="Chart"
+        android:textColor="@color/main_text_color_neutral" />
+
+</LinearLayout>

@@ -204,5 +204,7 @@
     <string name="base_maps">Base maps</string>
     <string name="maps_manager">Maps Manager</string>
     <string name="loading_maps">Loading maps...</string>
+    <string name="project">Project</string>
+    <string name="gps_status">GPS Status</string>
 
 </resources>

@@ -61,12 +61,19 @@
 
     <Button
         android:id="@+id/coordOkButton"
-        android:layout_width="120dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/latitudetext"
         android:layout_centerHorizontal="true"
         android:layout_centerInParent="false"
         android:layout_marginTop="30dp"
-        android:text="@string/okcoord" />
+        android:background="@drawable/button_background_drawable"
+        android:paddingBottom="@dimen/button_indent"
+        android:paddingLeft="@dimen/button_indent"
+        android:paddingRight="@dimen/button_indent"
+        android:paddingTop="@dimen/button_indent"
+        android:text="@string/okcoord"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/main_text_color" />
 
 </RelativeLayout>
