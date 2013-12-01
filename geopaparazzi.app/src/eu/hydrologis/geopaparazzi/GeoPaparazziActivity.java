@@ -33,6 +33,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.AlertDialog.Builder;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -59,6 +60,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.SlidingDrawer;
+import android.widget.TextView;
 import android.widget.Toast;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
@@ -630,23 +632,18 @@ public class GeoPaparazziActivity extends Activity {
             break;
         }
         case R.id.dashboard_undonote_item_button: {
-            new AlertDialog.Builder(this).setTitle(R.string.text_undo_a_gps_note).setMessage(R.string.remove_last_note_prompt)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
-                        public void onClick( DialogInterface dialog, int whichButton ) {
-                        }
-                    }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
-                        public void onClick( DialogInterface dialog, int whichButton ) {
-                            try {
-                                DaoNotes.deleteLastInsertedNote();
-                                Utilities.toast(GeoPaparazziActivity.this, R.string.last_note_deleted, Toast.LENGTH_LONG);
-                            } catch (IOException e) {
-                                GPLog.error(this, e.getLocalizedMessage(), e);
-                                e.printStackTrace();
-                                Utilities.toast(GeoPaparazziActivity.this, R.string.last_note_not_deleted, Toast.LENGTH_LONG);
-                            }
-                        }
-                    }).show();
+            Utilities.yesNoMessageDialog(this, getString(R.string.remove_last_note_prompt), new Runnable(){
+                public void run() {
+                    try {
+                        DaoNotes.deleteLastInsertedNote();
+                        Utilities.toast(GeoPaparazziActivity.this, R.string.last_note_deleted, Toast.LENGTH_LONG);
+                    } catch (IOException e) {
+                        GPLog.error(this, e.getLocalizedMessage(), e);
+                        e.printStackTrace();
+                        Utilities.toast(GeoPaparazziActivity.this, R.string.last_note_not_deleted, Toast.LENGTH_LONG);
+                    }
+                }
+            }, null);
 
             break;
         }
@@ -998,7 +995,6 @@ public class GeoPaparazziActivity extends Activity {
         }
     }
 
-    private AlertDialog alertDialog = null;
     private void resetData() {
         final String enterNewProjectString = getString(eu.hydrologis.geopaparazzi.R.string.enter_a_name_for_the_new_project);
         final String projectExistingString = getString(eu.hydrologis.geopaparazzi.R.string.chosen_project_exists);
@@ -1006,9 +1002,16 @@ public class GeoPaparazziActivity extends Activity {
         final File applicationParentDir = resourcesManager.getApplicationParentDir();
         final String newGeopaparazziDirName = Constants.GEOPAPARAZZI
                 + "_" + LibraryConstants.TIMESTAMPFORMATTER.format(new Date()); //$NON-NLS-1$
-        final EditText input = new EditText(this);
-        input.setText(newGeopaparazziDirName);
-        input.addTextChangedListener(new TextWatcher(){
+
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(eu.geopaparazzi.library.R.layout.inputdialog);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        final TextView text = (TextView) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogtext);
+        text.setText(enterNewProjectString);
+        final EditText editText = (EditText) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogEdittext);
+        final Button yesButton = (Button) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogButtonOK);
+        editText.setText(newGeopaparazziDirName);
+        editText.addTextChangedListener(new TextWatcher(){
             public void onTextChanged( CharSequence s, int start, int before, int count ) {
             }
             public void beforeTextChanged( CharSequence s, int start, int count, int after ) {
@@ -1017,49 +1020,47 @@ public class GeoPaparazziActivity extends Activity {
                 String newName = s.toString();
                 File newProjectFile = new File(applicationParentDir, newName);
                 if (newName == null || newName.length() < 1) {
-                    alertDialog.setMessage(enterNewProjectString);
-                    alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                    text.setText(enterNewProjectString);
+                    yesButton.setEnabled(false);
                 } else if (newProjectFile.exists()) {
-                    alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-                    alertDialog.setMessage(projectExistingString);
+                    yesButton.setEnabled(false);
+                    text.setText(projectExistingString);
                 } else {
-                    alertDialog.setMessage(enterNewProjectString);
-                    alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                    text.setText(enterNewProjectString);
+                    yesButton.setEnabled(true);
                 }
             }
         });
-        Builder builder = new AlertDialog.Builder(this).setTitle(R.string.reset);
-        builder.setMessage(enterNewProjectString);
-        builder.setView(input);
-        alertDialog = builder.setIcon(android.R.drawable.ic_dialog_alert)
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
-                    public void onClick( DialogInterface dialog, int whichButton ) {
+        yesButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick( View v ) {
+                try {
+                    Editable value = editText.getText();
+                    String newName = value.toString();
+                    DatabaseManager.getInstance().closeDatabase();
+                    File newGeopaparazziDirFile = new File(applicationParentDir.getAbsolutePath(), newName);
+                    if (!newGeopaparazziDirFile.mkdir()) {
+                        throw new IOException("Unable to create the geopaparazzi folder."); //$NON-NLS-1$
                     }
-                }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
-                    public void onClick( DialogInterface dialog, int whichButton ) {
-                        try {
-                            Editable value = input.getText();
-                            String newName = value.toString();
-                            DatabaseManager.getInstance().closeDatabase();
-                            File newGeopaparazziDirFile = new File(applicationParentDir.getAbsolutePath(), newName);
-                            if (!newGeopaparazziDirFile.mkdir()) {
-                                throw new IOException("Unable to create the geopaparazzi folder."); //$NON-NLS-1$
-                            }
-                            ResourcesManager.getInstance(GeoPaparazziActivity.this).setApplicationDir(GeoPaparazziActivity.this,
-                                    newGeopaparazziDirFile.getAbsolutePath());
+                    ResourcesManager.getInstance(GeoPaparazziActivity.this).setApplicationDir(GeoPaparazziActivity.this,
+                            newGeopaparazziDirFile.getAbsolutePath());
 
-                            Intent intent = getIntent();
-                            finish();
-                            startActivity(intent);
-                        } catch (Exception e) {
-                            GPLog.error(this, e.getLocalizedMessage(), e);
-                            e.printStackTrace();
-                            Toast.makeText(GeoPaparazziActivity.this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    }
-                }).setCancelable(false).create();
-        alertDialog.show();
-
+                    Intent intent = getIntent();
+                    finish();
+                    startActivity(intent);
+                } catch (Exception e) {
+                    GPLog.error(this, e.getLocalizedMessage(), e);
+                    e.printStackTrace();
+                    Toast.makeText(GeoPaparazziActivity.this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+        Button cancelButton = (Button) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogButtonCancel);
+        cancelButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick( View v ) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     private SlidingDrawer slidingDrawer;

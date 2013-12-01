@@ -208,32 +208,13 @@ public class Utilities {
             }
 
             protected void onPostExecute( String response ) {
-                // AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                // builder.setMessage(msg).setIcon(android.R.drawable.ic_dialog_info).setCancelable(false)
-                // .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
-                // public void onClick( DialogInterface dialog, int id ) {
-                // if (okRunnable != null) {
-                // new Thread(okRunnable).start();
-                // }
-                // }
-                // });
-                // AlertDialog alertDialog = builder.create();
-                // alertDialog.show();
-
                 final Dialog dialog = new Dialog(context);
                 dialog.setContentView(eu.geopaparazzi.library.R.layout.simpledialog);
-                // dialog.setTitle(msg);
                 dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-
-                // set the custom dialog components - text, image and button
                 TextView text = (TextView) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogtext);
                 text.setText(msg);
-
                 Button dialogButton = (Button) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogButtonOK);
-                // if button is clicked, close the custom dialog
                 dialogButton.setOnClickListener(new View.OnClickListener(){
-
-                    @Override
                     public void onClick( View v ) {
                         dialog.dismiss();
                         if (okRunnable != null) {
@@ -242,7 +223,6 @@ public class Utilities {
                     }
                 });
                 dialog.show();
-
             }
         }.execute((String) null);
     }
@@ -305,23 +285,30 @@ public class Utilities {
             }
 
             protected void onPostExecute( String response ) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setMessage(msg).setCancelable(false)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener(){
-                            public void onClick( DialogInterface dialog, int id ) {
-                                if (yesRunnable != null) {
-                                    new Thread(yesRunnable).start();
-                                }
-                            }
-                        }).setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener(){
-                            public void onClick( DialogInterface dialog, int id ) {
-                                if (noRunnable != null) {
-                                    new Thread(noRunnable).start();
-                                }
-                            }
-                        });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
+                final Dialog dialog = new Dialog(context);
+                dialog.setContentView(eu.geopaparazzi.library.R.layout.yesnodialog);
+                dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                TextView text = (TextView) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogtext);
+                text.setText(msg);
+                Button yesButton = (Button) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogButtonOK);
+                yesButton.setOnClickListener(new View.OnClickListener(){
+                    public void onClick( View v ) {
+                        dialog.dismiss();
+                        if (yesRunnable != null) {
+                            new Thread(yesRunnable).start();
+                        }
+                    }
+                });
+                Button noButton = (Button) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogButtonCancel);
+                noButton.setOnClickListener(new View.OnClickListener(){
+                    public void onClick( View v ) {
+                        dialog.dismiss();
+                        if (noRunnable != null) {
+                            new Thread(noRunnable).start();
+                        }
+                    }
+                });
+                dialog.show();
             }
         }.execute((String) null);
     }
@@ -380,28 +367,36 @@ public class Utilities {
      */
     public static void inputMessageDialog( final Context context, final String title, final String message,
             final String defaultText, final TextRunnable textRunnable ) {
-        final EditText input = new EditText(context);
-        input.setText(defaultText);
-        Builder builder = new AlertDialog.Builder(context).setTitle(title);
-        builder.setMessage(message);
-        builder.setView(input);
-        builder.setIcon(android.R.drawable.ic_dialog_alert)
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
-                    public void onClick( DialogInterface dialog, int whichButton ) {
-                    }
-                }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
-                    public void onClick( DialogInterface dialog, int whichButton ) {
-                        Editable value = input.getText();
-                        String newText = value.toString();
-                        if (newText == null || newText.length() < 1) {
-                            newText = defaultText;
-                        }
-                        if (textRunnable != null) {
-                            textRunnable.setText(newText);
-                            new Thread(textRunnable).start();
-                        }
-                    }
-                }).setCancelable(false).show();
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(eu.geopaparazzi.library.R.layout.inputdialog);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        TextView text = (TextView) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogtext);
+        text.setText(message);
+        final EditText editText = (EditText) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogEdittext);
+        editText.setText(defaultText);
+        Button yesButton = (Button) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogButtonOK);
+        yesButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick( View v ) {
+                Editable value = editText.getText();
+                String newText = value.toString();
+                if (newText == null || newText.length() < 1) {
+                    newText = defaultText;
+                }
+                dialog.dismiss();
+                if (textRunnable != null) {
+                    textRunnable.setText(newText);
+                    new Thread(textRunnable).start();
+                }
+            }
+        });
+        Button cancelButton = (Button) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogButtonCancel);
+        cancelButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick( View v ) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+        
     }
 
     public static void ring( Context context ) {
