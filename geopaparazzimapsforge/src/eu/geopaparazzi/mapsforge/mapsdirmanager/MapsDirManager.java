@@ -64,6 +64,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.MbtilesDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.OrderComparator;
+import  eu.geopaparazzi.spatialite.util.SpatialiteUtilities;
 
 /**
  * The manager of supported maps in the Application maps dir.
@@ -185,7 +186,9 @@ public class MapsDirManager {
                 GPLog.androidLog(-1, "MapsDirManager manager[CustomTileDatabasesManager] size["
                         + CustomTileDatabasesManager.getInstance().size() + "]");
                 GPLog.GLOBAL_LOG_LEVEL = -1;
+                // GPLog.GLOBAL_LOG_TAG="mj10777";
                 GPLog.androidLog(1, "MapsDirManager init[" + maps_dir.getAbsolutePath() + "]");
+                // SpatialiteUtilities.find_shapes( context, maps_dir);
                 handleTileSources(context);
             } catch (Exception e) {
                 GPLog.androidLog(4, "MapsDirManager init[" + maps_dir.getAbsolutePath() + "]", e);

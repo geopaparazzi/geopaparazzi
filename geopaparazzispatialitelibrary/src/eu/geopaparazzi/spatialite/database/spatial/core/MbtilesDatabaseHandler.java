@@ -432,7 +432,7 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
       *
       * <p>default: file name without path but with extention
       *
-      * @return file_map.getAbsolutePath();
+      * @return file_mapgetName();
       */
     public String getFileName() {
         return this.s_name_file; // file_map.getName();

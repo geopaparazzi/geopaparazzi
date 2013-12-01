@@ -17,13 +17,20 @@
  */
 package eu.geopaparazzi.spatialite.util;
 
+import android.content.Context;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+// import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import jsqlite.Database;
 import jsqlite.Exception;
 import jsqlite.Stmt;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.FileUtilities;
 
 /**
  * SpatialiteUtilities class.
@@ -33,6 +40,7 @@ import eu.geopaparazzi.library.database.GPLog;
  * - convert a sqlite3 Database to a Spatialite Database
  * - convert older spatialite Database to present version
  * -- these spatialite function may not be accessible from sql
+ * -->  SpatialiteUtilities.find_shapes(context, maps_dir);
  * @author Mark Johnson
  */
 public class SpatialiteUtilities {
@@ -61,11 +69,11 @@ public class SpatialiteUtilities {
          try
          {
           sqlite_db.open(file_db.getAbsolutePath(), jsqlite.Constants.SQLITE_OPEN_READWRITE | jsqlite.Constants.SQLITE_OPEN_CREATE);
-          int i_rc=create_spatialite(sqlite_db,0);
+          int i_rc=create_spatialite(sqlite_db,0); // i_rc should be 4
          }
          catch (jsqlite.Exception e_stmt)
          {
-          GPLog.androidLog(4, "create_spatialite[spatialite] dir_file["+file_db.getAbsolutePath()+"]", e_stmt);
+          GPLog.androidLog(4, "SpatialiteUtilities: create_spatialite[spatialite] dir_file["+file_db.getAbsolutePath()+"]", e_stmt);
          }
         }
         return sqlite_db;
@@ -88,31 +96,28 @@ public class SpatialiteUtilities {
       if (i_spatialite_version > 0)
       { // this is a spatialite Database, do not create
        i_rc=1;
-       if (i_spatialite_version != 4)
+       if (i_spatialite_version < 3)
        { // TODO: logic for convertion to latest Spatialite Version [open]
        }
       }
      }
      if (i_rc == 0)
      {
-      String s_sql_command="SELECT InitSpatialMetadata(1)"; // As transaction
-      Stmt this_stmt = sqlite_db.prepare(s_sql_command);
+      String s_sql_command="SELECT InitSpatialMetadata();";
       try
       {
-       if (this_stmt.step())
-       {
-       }
+       sqlite_db.exec(s_sql_command, null);
       }
       catch (jsqlite.Exception e_stmt)
       {
-       GPLog.androidLog(4, "create_spatialite[spatialite] sql["+s_sql_command+"]", e_stmt);
+       i_rc=sqlite_db.last_error();
+       GPLog.androidLog(4, "SpatialiteUtilities: create_spatialite sql["+s_sql_command+"] rc="+i_rc+"]", e_stmt);
       }
-      finally
-      {
-       if (this_stmt != null)
-       {
-        this_stmt.close();
-       }
+      // GPLog.androidLog(2, "SpatialiteUtilities: create_spatialite sql["+s_sql_command+"] rc="+i_rc+"]");
+      i_rc=get_table_fields(sqlite_db,"");
+      if (i_rc < 3)
+      { // error, should be 3 or 4
+       GPLog.androidLog(4, "SpatialiteUtilities: create_spatialite spatialite_version["+i_rc+"]");
       }
      }
      return i_rc;
@@ -126,7 +131,7 @@ public class SpatialiteUtilities {
       * - 'spatial_ref_sys'
       * -- SpatiaLite 2.0 until present version
       * -- SpatiaLite 2.3.1 has no field 'srs_wkt' or 'srtext' field,only 'proj4text' and
-      * -- SpatiaLite 2.4.0 first version with 'srs_wkt'
+      * -- SpatiaLite 2.4.0 first version with 'srs_wkt' and 'views_geometry_columns'
       * -- SpatiaLite 3.1.0-RC2 last version with 'srs_wkt'
       * -- SpatiaLite 4.0.0-RC1 : based on ISO SQL/MM standard 'srtext'
       * -- views: vector_layers_statistics,vector_layers
@@ -145,6 +150,7 @@ public class SpatialiteUtilities {
         boolean b_geometry_columns = false; // false=not a spatialite Database ; true is a spatialite Database
         int  i_srs_wkt = 0; // 0=not found = pre 2.4.0 ; 1=2.4.0 to 3.1.0 ; 2=starting with 4.0.0
         boolean b_spatial_ref_sys = false;
+        boolean b_views_geometry_columns = false;
         int i_spatialite_version=0; // 0=not a spatialite version ; 1=until 2.3.1 ; 2=until 2.4.0 ; 3=until 3.1.0-RC2 ; 4=after 4.0.0-RC1
         String s_sql_command = "";
         if (!s_table.equals("")) { // pragma table_info(geodb_geometry)
@@ -155,64 +161,79 @@ public class SpatialiteUtilities {
         String s_type = "";
         String s_name = "";
         this_stmt = sqlite_db.prepare(s_sql_command);
-        try {
-            while( this_stmt.step() ) {
-                if (!s_table.equals("")) { // pragma table_info(berlin_strassen_geometry)
-                    s_name = this_stmt.column_string(1);
-                    // 'proj4text' must always exist - otherwise invalid
-                    if (s_name.equals("proj4text"))
-                        b_spatial_ref_sys = true;
-                    if (s_name.equals("srs_wkt"))
-                        i_srs_wkt = 1;
-                    if (s_name.equals("srtext"))
-                        i_srs_wkt = 2;
-                }
-                if (s_table.equals("")) {
-                    s_name = this_stmt.column_string(0);
-                    s_type = this_stmt.column_string(1);
-                    if (s_type.equals("table")) {
-                        if (s_name.equals("geometry_columns")) {
-                            b_geometry_columns = true;
-                        if (s_name.equals("spatial_ref_sys")) {
-                            b_spatial_ref_sys = true;
-                        }
-                      }
-                    }
-                    if (s_type.equals("view")) { // SELECT name,type,sql FROM sqlite_master WHERE
-                                                 // (type='view')
-                           if (s_name.equals("vector_layers_statistics")) {
-                            b_vector_layers_statistics = true;
-                        }
-                        if (s_name.equals("vector_layers")) {
-                            b_vector_layers = true;
-                        }
-                    }
-                }
-            }
-        } finally {
-            if (this_stmt != null) {
-                this_stmt.close();
-            }
-        }
-        if (s_table.equals("")) {
-            if ((b_geometry_columns) && (b_spatial_ref_sys))
+        try
+        {
+         while( this_stmt.step() )
+         {
+          if (!s_table.equals(""))
+          { // pragma table_info(berlin_strassen_geometry)
+           s_name = this_stmt.column_string(1);
+           // 'proj4text' must always exist - otherwise invalid
+           if (s_name.equals("proj4text"))
+            b_spatial_ref_sys = true;
+           if (s_name.equals("srs_wkt"))
+            i_srs_wkt = 1;
+           if (s_name.equals("srtext"))
+            i_srs_wkt = 2;
+          }
+          if (s_table.equals(""))
+          {
+           s_name = this_stmt.column_string(0);
+           s_type = this_stmt.column_string(1);
+           if (s_type.equals("table"))
+           {
+            if (s_name.equals("geometry_columns"))
             {
-               if (b_spatial_ref_sys)
-               {
-                i_srs_wkt=get_table_fields(sqlite_db,"spatial_ref_sys");
-                if ((b_vector_layers_statistics) && (b_vector_layers) && (i_srs_wkt == 4))
-                { // Spatialite 4.0
-                 i_spatialite_version = 4;
-                }
-                else
-                {
-                 if ((!b_vector_layers_statistics) && (!b_vector_layers))
-                 { // 'srs_wkt' and missing 'vector_layers_statistics' is not possible - error
-                  i_spatialite_version = i_srs_wkt;
-                 }
-                }
-               }
+             b_geometry_columns = true;
             }
+            if (s_name.equals("spatial_ref_sys"))
+            {
+             b_spatial_ref_sys = true;
+            }
+            if (s_name.equals("views_geometry_columns"))
+            {
+             b_views_geometry_columns = true;
+            }
+           }
+           if (s_type.equals("view"))
+           { // SELECT name,type,sql FROM sqlite_master WHERE (type='view')
+            if (s_name.equals("vector_layers_statistics"))
+            { // An empty spatialite Database will not have this
+             b_vector_layers_statistics = true;
+            }
+            if (s_name.equals("vector_layers"))
+            { // An empty spatialite Database will not have this
+             b_vector_layers = true;
+            }
+           }
+          }
+         }
+        }
+        finally
+        {
+         if (this_stmt != null)
+         {
+          this_stmt.close();
+         }
+        }
+        if (s_table.equals(""))
+        {
+         GPLog.androidLog(-1, "SpatialiteUtilities: get_table_fields sql["+s_sql_command+"] geometry_columns["+b_geometry_columns+"] spatial_ref_sys["+b_spatial_ref_sys+"]");
+         if ((b_geometry_columns) && (b_spatial_ref_sys))
+         {
+          if (b_spatial_ref_sys)
+          {
+           i_srs_wkt=get_table_fields(sqlite_db,"spatial_ref_sys");
+           if (i_srs_wkt == 4)
+           { // Spatialite 4.0
+            i_spatialite_version = 4;
+           }
+           else
+           {
+            i_spatialite_version = i_srs_wkt;
+           }
+          }
+         }
         }
         else
         {
@@ -233,5 +254,206 @@ public class SpatialiteUtilities {
          }
         }
         return i_spatialite_version;
+    }
+        // -----------------------------------------------
+    /**
+      * Create geometry Table from Shape Table
+      * - 'RegisterVirtualGeometry' needs SpatiaLite 4.0.0
+      * @param sqlite_db Database connection to use
+      * @param s_table_path full path to Shape-Table [without .shp]
+      * @param s_table_name Table name of Shape-Table [without path]
+      * @param s_char_set Charecterset used in Shape [default 'CP1252', Windows Latin 1]
+      * @param i_srid srid of Shape-Table
+      * @return i_rc 0 or last_error from Database
+      */
+    private static int create_shape_table(Database sqlite_db, String s_table_path,String s_table_name,String s_char_set,int i_srid)
+    {
+     int i_rc=0;
+     if (s_char_set.equals(""))
+      s_char_set="CP1252";
+     String s_table_name_work=s_table_name+"_work";
+      GPLog.androidLog(-1,"SpatialiteUtilities create_shape_table[" + s_table_name + "] srid["+i_srid+"] ["+s_table_path+"]");
+      // CREATE VIRTUAL TABLE roads using virtualshape('/sdcard/maps/roads',CP1252,3857);
+     String s_sql_command="CREATE VIRTUAL TABLE "+s_table_name_work+" using virtualshape('"+s_table_path+"',"+s_char_set+","+i_srid+");";
+     GPLog.androidLog(-1,"SpatialiteUtilities create_shape_table[" + s_table_name + "] srid["+i_srid+"] ["+s_table_path+"]");
+     try
+     {
+      sqlite_db.exec(s_sql_command, null);
+      // SELECT RegisterVirtualGeometry('roads');
+      s_sql_command="SELECT RegisterVirtualGeometry('"+s_table_name_work+"');";
+      sqlite_db.exec(s_sql_command, null);
+      // CREATE TABLE myroads AS SELECT * FROM roads;
+      s_sql_command="CREATE TABLE "+s_table_name+" AS SELECT * FROM "+s_table_name_work+";";
+      sqlite_db.exec(s_sql_command, null);
+      // SELECT RecoverGeometryColumn('myroads','Geometry',3857,'LINESTRING')
+      // s_sql_command="SELECT RecoverGeometryColumn('"+s_table_name+"', AS SELECT * FROM "+s_table_name_work+";";
+      // SELECT CreateSpatialIndex('myroads','Geometry');
+     }
+     catch (jsqlite.Exception e_stmt)
+     {
+      i_rc=sqlite_db.last_error();
+      GPLog.androidLog(4, "SpatialiteUtilities: create_shape_table sql["+s_sql_command+"] rc="+i_rc+"]", e_stmt);
+     }
+     return i_rc;
+    }
+    // -----------------------------------------------
+    /**
+      * Attempt to determin srid from Shape .prj file
+      * - Shape-WKT rarley conforms to that used in 'spatial_ref_sys'
+      * @param sqlite_db Database connection to use
+      * @param s_srs_wkt name of 'spatial_ref_sys' to search [dependent on spatilite version]
+      * @param s_well_known_text read from the Shape .prj file
+      * @return srid of  .prj file where possible
+      */
+    private static int  read_shape_srid(Database sqlite_db, String s_srs_wkt,String s_well_known_text)
+    {
+     int i_srid=0;
+     if ((s_well_known_text.indexOf("GCS_WGS_1984") != -1) && (s_well_known_text.indexOf("D_WGS_1984") != -1) && (s_well_known_text.indexOf("Greenwich") != -1) && (s_well_known_text.indexOf("Degree") != -1))
+     { // // GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.017453292519943295]]
+      i_srid=4326;
+     }
+     if ((s_well_known_text.indexOf("GCS_DHDN") != -1) && (s_well_known_text.indexOf("D_Deutsches_Hauptdreiecksnetz") != -1) && (s_well_known_text.indexOf("Bessel_1841") != -1) && (s_well_known_text.indexOf("Greenwich") != -1)  && (s_well_known_text.indexOf("Degree") != -1))
+     { // // PROJCS["Cassini",GEOGCS["GCS_DHDN",DATUM["D_Deutsches_Hauptdreiecksnetz",SPHEROID["Bessel_1841",6377397.155,299.1528128]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]]
+      if ((s_well_known_text.indexOf("Cassini") != -1) && (s_well_known_text.indexOf("52.4186482") != -1)  && (s_well_known_text.indexOf("13.62720") != -1))
+      { // ,PROJECTION["Cassini"],PARAMETER["latitude_of_origin",52.41864827777778],PARAMETER["central_meridian",13.62720366666667],
+       if ((s_well_known_text.indexOf("40000") != -1) && (s_well_known_text.indexOf("10000") != -1))
+       { // PARAMETER["false_easting",40000],PARAMETER["false_northing",10000],UNIT["Meter",1],PARAMETER["scale_factor",1.0]]
+        i_srid=3068;
+       }
+      }
+     }
+     if (i_srid == 0)
+     { // TODO: do a lot of guessing
+       // PROJCS["DHDN / Soldner Berlin",GEOGCS["DHDN",DATUM["Deutsches_Hauptdreiecksnetz",SPHEROID["Bessel 1841",6377397.155,299.1528128,AUTHORITY["EPSG","7004"]],AUTHORITY["EPSG","6314"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4314"]],UNIT["metre",1,AUTHORITY["EPSG","9001"]],PROJECTION["Cassini_Soldner"],PARAMETER["latitude_of_origin",52.41864827777778],PARAMETER["central_meridian",13.62720366666667],PARAMETER["false_easting",40000],PARAMETER["false_northing",10000],AUTHORITY["EPSG","3068"],AXIS["x",NORTH],AXIS["y",EAST]]
+       // SELECT srid FROM spatial_ref_sys WHERE (srs_wkt LIKE 'GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.017453292519943295]]')
+      }
+     return i_srid;
+    }
+   // -----------------------------------------------
+    /**
+      * General Function to surch for Shape files
+      * - A Shape-File(s) resides in a directory
+      * - - the Directory name is the Database-Name
+      * - each Shape-Table must have a '.shp','.prj','.shx' and '.dbf'
+      * - the name with extention is the Table-Name
+      * @param shapes_list: File as found '.prj' files, File as directory
+      * @return nothing
+      */
+    private static void  create_shape_db( HashMap<File, File> shapes_list)
+    {
+     File shape_db=null;
+     File shape_dir=null;
+     List<String> table_list = new ArrayList<String>();
+     Database sqlite_db = null;
+     int i_spatialite_version=0;
+     String s_srs_wkt="srs_wkt";
+     String s_shape_path="";
+     for( Map.Entry<File, File> shape_list : shapes_list.entrySet() )
+     {
+      File file_prj = shape_list.getKey();
+      File file_directory =  shape_list.getValue();
+      if (sqlite_db == null)
+      {
+       shape_dir=file_directory;
+       s_shape_path = shape_dir.getParentFile().getAbsolutePath();
+       String s_shape_name = shape_dir.getName(); // .substring(0, shape_dir.getName().lastIndexOf("."));
+       shape_db= new File(s_shape_path + "/" + s_shape_name + ".db");
+       // GPLog.androidLog(-1,"SpatialiteUtilities create_shape_db[" + shape_db.getAbsolutePath() + "] shape_name["+s_shape_name+"] db.exists["+shape_db.exists()+"]");
+       if (shape_db.exists())
+       { // A database exist - abort
+        return;
+       }
+       try
+       {
+        sqlite_db=create_db(shape_db.getAbsolutePath());
+        i_spatialite_version=get_table_fields(sqlite_db,"");
+       }
+       catch (Throwable t)
+       {
+        GPLog.androidLog(4,"SpatialiteUtilities create_shape_db[" + shape_db.getAbsolutePath() + "] spatialite_version["+i_spatialite_version+"]",t);
+       }
+       if (i_spatialite_version >= 3)
+       { // created valid spatialite db
+        if (i_spatialite_version == 4)
+        {
+         s_srs_wkt="srtext";
+        }
+       }
+      }
+      if (sqlite_db != null)
+      {
+       String s_table_name = file_prj.getName().substring(0, file_prj.getName().lastIndexOf("."));
+       String s_well_known_text="";
+       try
+       { // GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.017453292519943295]]
+        s_well_known_text=FileUtilities.readfile(file_prj);
+        int i_srid=read_shape_srid(sqlite_db,s_srs_wkt,s_well_known_text);
+        String s_char_set="CP1252";
+        if (i_srid > 0)
+        {
+         String s_table_path = s_shape_path + "/" + s_table_name;
+         int i_rc=create_shape_table(sqlite_db,s_table_path,s_table_name,s_char_set,i_srid);
+         // GPLog.androidLog(-1,"SpatialiteUtilities create_shape_db[" + s_table_name + "] srid["+i_srid+"]");
+        }
+       }
+       catch (IOException e)
+       {
+       }
+      }
+     }
+     if (sqlite_db != null)
+     {
+      try
+      {
+       sqlite_db.close();
+      }
+      catch (jsqlite.Exception e_stmt)
+      {
+       GPLog.androidLog(4, "SpatialiteUtilities: create_shape_db: close() : failed", e_stmt);
+      }
+      sqlite_db=null;
+     }
+    }
+    // -----------------------------------------------
+    /**
+      * General Function to surch for Shape files
+      * - A Shape-File(s) resides in a directory
+      * - - the Directory name is the Database-Name
+      * - each Shape-Table must have a '.shp','.prj','.shx' and '.dbf'
+      * - the name with extention is the Table-Name
+      * @param context 'this' of Application Activity class
+      * @param mapsDir Directory to search [ResourcesManager.getInstance(this).getMapsDir();]
+      * @return shapes_list: File as found '.prj' files, File as directory
+      */
+    public static HashMap<File, File> find_shapes( Context context, File mapsDir )
+    {
+     File[] list_files = mapsDir.listFiles();
+     // each shape file must have a prj file, we will read the prj file later
+     HashMap<File, File> shapes_list = new HashMap<File, File>();
+     String s_extention=".prj";
+     String s_directory="";
+     File this_directoy=mapsDir;
+     for( File this_file : list_files )
+     {
+      if (this_file.isDirectory())
+      {// mj10777: read recursive directories inside the sdcard/maps directory
+       shapes_list = find_shapes(context, this_file);
+       if (shapes_list.size() > 0)
+       { // shape file Directory has been found: do something with it
+        // GPLog.androidLog(-1,"SpatialiteUtilities find_shapes[" + this_file.getAbsolutePath() + "] shapes[" + shapes_list.size() + "]");
+        create_shape_db(shapes_list);
+       }
+      }
+      else
+      {
+       String name = this_file.getName();
+       if (name.endsWith(s_extention) )
+       { // store each prj file and the directory found
+        shapes_list.put(this_file,this_directoy);
+       }
+      }
+     }
+     // GPLog.androidLog(-1,"SpatialiteUtilities find_shapes[" + mapsDir.getName() + "] size["+shapes_list+"]");
+     return shapes_list;
     }
 }
