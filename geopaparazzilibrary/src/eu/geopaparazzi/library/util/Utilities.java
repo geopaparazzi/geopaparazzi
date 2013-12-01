@@ -19,10 +19,13 @@ package eu.geopaparazzi.library.util;
 
 import java.io.File;
 
+import android.R;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -32,7 +35,11 @@ import android.os.StatFs;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import eu.geopaparazzi.library.database.GPLog;
 
@@ -201,19 +208,53 @@ public class Utilities {
             }
 
             protected void onPostExecute( String response ) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setMessage(msg).setIcon(android.R.drawable.ic_dialog_info).setCancelable(false)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
-                            public void onClick( DialogInterface dialog, int id ) {
-                                if (okRunnable != null) {
-                                    new Thread(okRunnable).start();
-                                }
-                            }
-                        });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
+                // AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                // builder.setMessage(msg).setIcon(android.R.drawable.ic_dialog_info).setCancelable(false)
+                // .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
+                // public void onClick( DialogInterface dialog, int id ) {
+                // if (okRunnable != null) {
+                // new Thread(okRunnable).start();
+                // }
+                // }
+                // });
+                // AlertDialog alertDialog = builder.create();
+                // alertDialog.show();
+
+                final Dialog dialog = new Dialog(context);
+                dialog.setContentView(eu.geopaparazzi.library.R.layout.simpledialog);
+                // dialog.setTitle(msg);
+                dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+                // set the custom dialog components - text, image and button
+                TextView text = (TextView) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogtext);
+                text.setText(msg);
+
+                Button dialogButton = (Button) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogButtonOK);
+                // if button is clicked, close the custom dialog
+                dialogButton.setOnClickListener(new View.OnClickListener(){
+
+                    @Override
+                    public void onClick( View v ) {
+                        dialog.dismiss();
+                        if (okRunnable != null) {
+                            new Thread(okRunnable).start();
+                        }
+                    }
+                });
+                dialog.show();
+
             }
         }.execute((String) null);
+    }
+
+    public class CustomDialog extends Dialog {
+        public CustomDialog( Context context, View view ) {
+            super(context);
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+            setContentView(view);
+            Drawable drawable = context.getResources().getDrawable(eu.geopaparazzi.library.R.drawable.dialog_background);
+            getWindow().getDecorView().setBackgroundDrawable(drawable);
+        }
     }
 
     /**
