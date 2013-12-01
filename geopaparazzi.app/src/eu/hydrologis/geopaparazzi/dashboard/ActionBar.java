@@ -82,6 +82,7 @@ public class ActionBar implements GpsManagerListener {
     private ImageButton menuButton;
     private String projectName;
     private String projectString;
+    private String indent = "  ";
 
     private ActionBar( View actionBarView, GpsManager _gpsManager, SensorsManager sensorsManager ) {
         this.actionBarView = actionBarView;
@@ -271,18 +272,17 @@ public class ActionBar implements GpsManagerListener {
         if (projectName != null && projectName.length() != 0) {
 
             sb.append(projectString).append(":\n");
-            sb.append(projectName).append("\n\n");
+            sb.append(indent).append(projectName).append("\n\n");
         }
         sb.append(gpsStatusString).append(":\n");
         if (loc == null || !gpsManager.isEnabled()) {
             // Logger.d("COMPASSVIEW", "Location from gps is null!");
-            sb.append(nodataString);
-            sb.append("\n");
+            sb.append(indent).append(nodataString).append("\n");
             if (isProviderEnabled) {
                 if (!gotFix) {
-                    sb.append(acquirefixString);
+                    sb.append(indent).append(acquirefixString);
                 } else {
-                    sb.append(gpsonString);
+                    sb.append(indent).append(gpsonString);
                     sb.append(": ").append(gpsManager.isEnabled()); //$NON-NLS-1$
                 }
             }
@@ -290,22 +290,22 @@ public class ActionBar implements GpsManagerListener {
             addGpsStatusInfo(sb);
 
         } else {
-            sb.append(timeString);
+            sb.append(indent).append(timeString);
             sb.append(" ").append(loc.getTimeString()); //$NON-NLS-1$
             sb.append("\n");
-            sb.append(latString);
+            sb.append(indent).append(latString);
             sb.append(" ").append(formatter.format(loc.getLatitude())); //$NON-NLS-1$
             sb.append("\n");
-            sb.append(lonString);
+            sb.append(indent).append(lonString);
             sb.append(" ").append(formatter.format(loc.getLongitude())); //$NON-NLS-1$
             sb.append("\n");
-            sb.append(altimString);
+            sb.append(indent).append(altimString);
             sb.append(" ").append((int) loc.getAltitude()); //$NON-NLS-1$
             sb.append("\n");
-            sb.append(azimString);
+            sb.append(indent).append(azimString);
             sb.append(" ").append((int) (360 - azimuth)); //$NON-NLS-1$
             sb.append("\n");
-            sb.append(loggingString);
+            sb.append(indent).append(loggingString);
             sb.append(": ").append(gpsManager.isDatabaseLogging()); //$NON-NLS-1$
             sb.append("\n");
             addGpsStatusInfo(sb);
@@ -318,7 +318,7 @@ public class ActionBar implements GpsManagerListener {
             GpsStatusInfo info = new GpsStatusInfo(lastGpsStatus);
             int satCount = info.getSatCount();
             // int satForFixCount = info.getSatUsedInFixCount();
-            sb.append(satellitesString).append(": ").append(satCount).append("\n");
+            sb.append(indent).append(satellitesString).append(": ").append(satCount).append("\n");
             // sb.append("used for fix: ").append(satForFixCount).append("\n");
         }
     }
