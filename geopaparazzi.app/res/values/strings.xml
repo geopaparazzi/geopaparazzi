@@ -3,7 +3,7 @@
 
     <string name="yes">yes</string>
     <string name="no">no</string>
-    <string name="app_name">GeoPaparazzi</string>
+    <string name="app_name">Geopaparazzi</string>
     <string name="notesvisibilityToggle">Toggle notes visibility.</string>
     <string name="kmlsaved">Data successfully exported to: </string>
     <string name="kmlnonsaved">An error occurred during the data export!</string>
