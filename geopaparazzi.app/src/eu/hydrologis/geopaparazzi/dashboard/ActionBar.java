@@ -17,6 +17,7 @@
  */
 package eu.hydrologis.geopaparazzi.dashboard;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,7 @@ import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.gps.GpsManagerListener;
 import eu.geopaparazzi.library.gps.GpsStatusInfo;
 import eu.geopaparazzi.library.sensors.SensorsManager;
+import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.actionbar.ActionItem;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.actionbar.QuickAction;
@@ -60,15 +62,16 @@ public class ActionBar implements GpsManagerListener {
     private final View actionBarView;
     private ActionItem infoQuickaction;
 
-    private static String nodataString;
-    private static String timeString;
-    private static String lonString;
-    private static String latString;
-    private static String altimString;
-    private static String azimString;
-    private static String loggingString;
-    private static String acquirefixString;
-    private static String gpsonString;
+    private String nodataString;
+    private String timeString;
+    private String lonString;
+    private String latString;
+    private String altimString;
+    private String azimString;
+    private String loggingString;
+    private String acquirefixString;
+    private String gpsonString;
+    private String gpsStatusString;
     private final GpsManager gpsManager;
     private final SensorsManager sensorsManager;
     private boolean gotFix;
@@ -77,11 +80,21 @@ public class ActionBar implements GpsManagerListener {
     private long lastLocationupdateMillis;
     private String satellitesString;
     private ImageButton menuButton;
+    private String projectName;
+    private String projectString;
 
     private ActionBar( View actionBarView, GpsManager _gpsManager, SensorsManager sensorsManager ) {
         this.actionBarView = actionBarView;
         gpsManager = _gpsManager;
         this.sensorsManager = sensorsManager;
+
+        try {
+            ResourcesManager resourcesManager = ResourcesManager.getInstance(actionBarView.getContext());
+            File applicationDir = resourcesManager.getApplicationDir();
+            projectName = applicationDir.getName();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // set initial enablement
         isProviderEnabled = gpsManager.isEnabled();
@@ -116,7 +129,7 @@ public class ActionBar implements GpsManagerListener {
     public void cleanup() {
         gpsManager.removeListener(this);
     }
-    
+
     public ImageButton getMenuButton() {
         return menuButton;
     }
@@ -137,7 +150,8 @@ public class ActionBar implements GpsManagerListener {
         acquirefixString = context.getString(R.string.gps_searching_fix);
         gpsonString = context.getString(R.string.text_gpson);
         satellitesString = context.getString(R.string.satellites);
-
+        projectString = context.getString(R.string.project);
+        gpsStatusString = context.getString(R.string.gps_status);
     }
 
     public static ActionBar getActionBar( Activity activity, int activityId, GpsManager gpsManager, SensorsManager sensorsManager ) {
@@ -254,6 +268,12 @@ public class ActionBar implements GpsManagerListener {
         GpsLocation loc = gpsManager.getLocation();
 
         StringBuilder sb = new StringBuilder();
+        if (projectName != null && projectName.length() != 0) {
+
+            sb.append(projectString).append(":\n");
+            sb.append(projectName).append("\n\n");
+        }
+        sb.append(gpsStatusString).append(":\n");
         if (loc == null || !gpsManager.isEnabled()) {
             // Logger.d("COMPASSVIEW", "Location from gps is null!");
             sb.append(nodataString);
