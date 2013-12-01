@@ -22,13 +22,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-// import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import jsqlite.Database;
 import jsqlite.Exception;
 import jsqlite.Stmt;
+import eu.geopaparazzi.spatialite.database.spatial.core.GeometryType;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.FileUtilities;
 
@@ -262,13 +262,15 @@ public class SpatialiteUtilities {
       * @param sqlite_db Database connection to use
       * @param s_table_path full path to Shape-Table [without .shp]
       * @param s_table_name Table name of Shape-Table [without path]
-      * @param s_char_set Charecterset used in Shape [default 'CP1252', Windows Latin 1]
+      * @param s_char_set Characterset used in Shape [default 'CP1252', Windows Latin 1]
       * @param i_srid srid of Shape-Table
       * @return i_rc 0 or last_error from Database
       */
     private static int create_shape_table(Database sqlite_db, String s_table_path,String s_table_name,String s_char_set,int i_srid)
     {
      int i_rc=0;
+     Stmt this_stmt = null;
+     int i_geometry_type=0;
      if (s_char_set.equals(""))
       s_char_set="CP1252";
      String s_table_name_work=s_table_name+"_work";
@@ -285,9 +287,29 @@ public class SpatialiteUtilities {
       // CREATE TABLE myroads AS SELECT * FROM roads;
       s_sql_command="CREATE TABLE "+s_table_name+" AS SELECT * FROM "+s_table_name_work+";";
       sqlite_db.exec(s_sql_command, null);
+      s_sql_command="SELECT geometry_type FROM vector_layers SHERE table_name='"+s_table_name;
+      this_stmt = sqlite_db.prepare(s_sql_command);
+      try
+      {
+       if ( this_stmt.step() )
+       {
+        i_geometry_type = this_stmt.column_int(0);
+       }
+      }
+      catch (jsqlite.Exception e_stmt)
+      {
+      }
+      GeometryType geometry_type = GeometryType.forValue(i_geometry_type);
+      String s_geometry_type = geometry_type.toString();
       // SELECT RecoverGeometryColumn('myroads','Geometry',3857,'LINESTRING')
-      // s_sql_command="SELECT RecoverGeometryColumn('"+s_table_name+"', AS SELECT * FROM "+s_table_name_work+";";
-      // SELECT CreateSpatialIndex('myroads','Geometry');
+      s_sql_command="SELECT RecoverGeometryColumn('"+s_table_name+"', 'Geometry',"+i_srid+",'"+s_geometry_type+"');";
+      sqlite_db.exec(s_sql_command, null);
+     // SELECT CreateSpatialIndex('myroads','Geometry');
+      s_sql_command="SELECT CreateSpatialIndex('"+s_table_name+"', 'Geometry');";
+      sqlite_db.exec(s_sql_command, null);
+      // SELECT DropVirtualGeometry('berlin_ortsteile_2010_work');
+      s_sql_command="SELECT DropVirtualGeometry('"+s_table_name_work+"');";
+      sqlite_db.exec(s_sql_command, null);
      }
      catch (jsqlite.Exception e_stmt)
      {
