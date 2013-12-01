@@ -2,17 +2,19 @@
 <resources>
   <string name="yes">Ano</string>
   <string name="no">Ne</string>
-  <string name="app_name">GeoPaparazzi</string>
   <string name="notesvisibilityToggle">Přepnout viditelnost poznámek.</string>
   <string name="kmlsaved">Data úspěšně vyvedena do: </string>
   <string name="kmlnonsaved">Během vyvádění dat se vyskytla chyba!</string>
   <string name="loggingoff">Všechna čidla zastavena.</string>
   <string name="nogps_data">Žádná data GPS nejsou ještě dostupná!</string>
+  <string name="about">O programu</string>
+  <string name="exit">Ukončit</string>
   <string name="utctime">Čas:</string>
   <string name="altim">Nadmořská výška:</string>
   <string name="lat">Šířka:</string>
   <string name="lon">Délka:</string>
   <string name="azimuth">Azimut: </string>
+  <string name="go_to">Jít na</string>
   <string name="goto_coordinate">Jít na souřadnici</string>
   <string name="geocoding">Zeměpisné kódování</string>
   <string name="prompt_gpsenable">Vaše GPS je zakázána! Chcete ji povolit?</string>
@@ -20,6 +22,8 @@
   <string name="color_label">Barva</string>
   <string name="mainmenu_kmlexport">Vyvést</string>
   <string name="mainmenu_import">Zavést</string>
+  <string name="mainmenu_gpsdataselect">Seznam dat GPS</string>
+  <string name="mainmenu_preferences">Nastavení</string>
   <string name="mainmenu_merge">Sloučit vybrané zápisy</string>
   <string name="gpslogproperty">Vlastnosti pro:</string>
   <string name="gpslog_chart">Graf</string>
@@ -65,6 +69,8 @@
   <string name="installgpsstatus_title">Instalovat stav GPS</string>
   <string name="installgpsstatus_message">Geopaparazzi používá pro stav GPS programy, jako je kompas a informační pohled na GPS. Chcete je nainstalovat?</string>
   <!--added after 2.1.2-->
+  <string name="reset">Vytvořit nový projekt</string>
+  <string name="load">Nahrát stávající projekt</string>
   <string name="phonenumber_hint">Zadat čárkou oddělená telefonní čísla...</string>
   <string name="pick_phonenumber_label">…</string>
   <!--added after 2.1.4-->
@@ -76,12 +82,15 @@
   <string name="delete_visible_bookmarks_prompt">Opravdu chcete odstranit všechny viditelné záložky? Tento krok nelze vrátit zpět.</string>
   <string name="gps_searching_fix">GPS se pokouší o získání opravy.</string>
   <string name="bookmarks_list_rename">Přejmenovat záložku</string>
+  <string name="mapsactivity_menu_toggle_scalebar">Přepnout pruh s měřítkem</string>
+  <string name="mapsactivity_menu_tilesource">Vybrat dlaždicový zdroj</string>
   <string name="mapsactivity_delete_bookmarks">Maže se {0} záložek…</string>
   <string name="mapsactivity_delete_notes">Maže se {0} poznámek…</string>
   <string name="mapsactivity_new_bookmark">Nová záložka</string>
   <string name="mapsactivity_enter_bookmark_name">Zadejte název nové záložky (volitelné)</string>
   <string name="maptagsactivity_error_reading_tags">Chyba při čtení značek</string>
   <!--added after 2.3.1-->
+  <string name="mapsactivity_menu_toggle_compass">Otevřít kompas</string>
   <!--added after 2.4.3-->
   <string name="imagesvisibilityToggle">Přepnout viditelnost obrázků</string>
   <string name="imagefromgps">Obrázek ve středu mapy</string>
@@ -106,6 +115,7 @@
   <string name="available_only_with_network">Tato funkce je dostupná jen s činným připojením k síti.</string>
   <string name="error_osm_server">Během připojování se k serveru OSM se vyskytly chyba. Ověřte, prosím, své přihlášení a své heslo. Také je možné, že server OSM není dostupný.</string>
   <string name="check_valid_field">Ověřte, prosím, že je pole \"{0}\" platné.</string>
+  <string name="view_in_mixare">Pohled v mixare</string>
   <string name="gps_use_coarse">Použít polohu založenou na síti místo GPS (vyžaduje opětovné spuštění)</string>
   <string name="type_to_filter">Pište pro filtrování</string>
   <string name="geopapcloud_preferences">Nastavení Geopap-Cloud</string>
@@ -138,9 +148,11 @@
   <string name="successfully_imported_bookmarks">Úspěšně zavedené záložky:</string>
   <string name="error_bookmarks_import">Během zavádění záložek se vyskytla chyba.</string>
   <string name="no_bookmarks_csv">V kořenovém adresáři se nepodařilo najít soubor bookmarks.csv. Pro zavedení vašich záložek je, prosím, umístěte tam.</string>
+  <string name="center_on_map">Soustředit na mapu</string>
   <string name="proximity_radius">Poloměr blízkosti</string>
   <string name="add_proximity_radius">Přidat poloměr pro výstrahu při blízkosti v metrech.</string>
   <string name="sent_sms">Poslána SMS:</string>
+  <string name="send_data">Poslat data</string>
   <string name="found_no_data_to_send">V nyní viditelné mapě nebyla nalezena žádná data k poslání.</string>
   <string name="insert_phone_to_send">Pro přenesení vybraných dat bude odeslána SMS.\n\nVložte, prosím, platné telefonní číslo, na které se data mají zaslat.</string>
   <string name="no_message_sent">Neposlána žádná zpráva.</string>
@@ -182,4 +194,7 @@
   <string name="start">Začátek</string>
   <string name="end">Konec</string>
   <string name="other">Jiné</string>
+  <string name="base_maps">Základní mapy</string>
+  <string name="maps_manager">Správce map</string>
+  <string name="loading_maps">Nahrávají se mapy...</string>
 </resources>

@@ -78,4 +78,12 @@
   <string name="point_size">Punktgröße</string>
   <string name="decimation">Dezimierung</string>
   <string name="no_data">Keinen Daten vorhanden</string>
+  <string name="file_upload_completed_properly">Datei-Upload ordnungsgemäß abgeschlossen.</string>
+  <string name="http_forbidden_msg">Der Zugriff auf den Server wurde verweigert. Bitte überprüfen Sie Ihre Anmeldeinformationen und Verbindungs-URL.</string>
+  <string name="http_not_found_msg">Die angeforderte Ressource wurde nicht gefunden. Bitte überprüfen Sie Ihre Verbindungs-URL.</string>
+  <string name="http_not_implemented_code_msg">Ein Return-Code wurde übermittelt (Bitte senden sie ihn an den Entwickler):</string>
+  <string name="post_completed_properly">Die Übertragung wurde ordnungsgemäß abgeschlossen.</string>
+  <string name="http_ok_msg">Die Anfrage wurde erfolgreich bearbeitet.</string>
+  <string name="the_file_exists_wont_overwrite">Die Datei existiert bereits und wird nicht überschrieben:</string>
+  <string name="share_note_with">Teile die Notiz mit ...</string>
 </resources>

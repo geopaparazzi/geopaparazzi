@@ -2,17 +2,19 @@
 <resources>
   <string name="yes">はい</string>
   <string name="no">いいえ</string>
-  <string name="app_name">GeoPaparazzi</string>
   <string name="notesvisibilityToggle">ノートを表示する</string>
   <string name="kmlsaved">正常にエクスポートされました:</string>
   <string name="kmlnonsaved">データのエクスポート中にエラーが発生しました ！</string>
   <string name="loggingoff">すべてのセンサーが停止しました。</string>
   <string name="nogps_data">まだGPSデータを取得していません。</string>
+  <string name="about">このアプリについて</string>
+  <string name="exit">終了</string>
   <string name="utctime">時間: </string>
   <string name="altim">高度: </string>
   <string name="lat">緯度: </string>
   <string name="lon">経度: </string>
   <string name="azimuth">方位角: </string>
+  <string name="go_to">目的地</string>
   <string name="goto_coordinate">座標系へ</string>
   <string name="geocoding">地理座標検索</string>
   <string name="prompt_gpsenable">GPSを起動してください!</string>
@@ -20,6 +22,8 @@
   <string name="color_label">色</string>
   <string name="mainmenu_kmlexport">エクスポート</string>
   <string name="mainmenu_import">インポート</string>
+  <string name="mainmenu_gpsdataselect">GPSデータリスト</string>
+  <string name="mainmenu_preferences">設定</string>
   <string name="mainmenu_merge">選択したログをマージ</string>
   <string name="gpslogproperty">設定: </string>
   <string name="gpslog_chart">グラフ</string>
@@ -65,6 +69,8 @@
   <string name="installgpsstatus_title">GPS Statusのインストール</string>
   <string name="installgpsstatus_message">GeoPaparazziはコンパス機能やGPS情報の閲覧にGps Statusを使います。Gps Statusをインストールしてもよろしいですか？</string>
   <!--added after 2.1.2-->
+  <string name="reset">新しいプロジェクト</string>
+  <string name="load">既存プロジェクトの読み込む</string>
   <string name="phonenumber_hint">カンマで区切られた電話番号を入力します。</string>
   <string name="pick_phonenumber_label">…</string>
   <!--added after 2.1.4-->
@@ -76,12 +82,15 @@
   <string name="delete_visible_bookmarks_prompt">本当に表示中の全てのノートを削除しますか？ 削除されたデータは元に戻せません。</string>
   <string name="gps_searching_fix">位置を取得しています</string>
   <string name="bookmarks_list_rename">ブックマーク名変更</string>
+  <string name="mapsactivity_menu_toggle_scalebar">スケールバー表示</string>
+  <string name="mapsactivity_menu_tilesource">タイルソース選択</string>
   <string name="mapsactivity_delete_bookmarks">{0} 個のブックマークを削除しています...</string>
   <string name="mapsactivity_delete_notes">{0} 個のノートを削除しています...</string>
   <string name="mapsactivity_new_bookmark">新しいブックマーク</string>
   <string name="mapsactivity_enter_bookmark_name">新しいブックマーク名を入力してください。(オプション)</string>
   <string name="maptagsactivity_error_reading_tags">タグの読み込みに失敗しました。</string>
   <!--added after 2.3.1-->
+  <string name="mapsactivity_menu_toggle_compass">コンパスを開く</string>
   <!--added after 2.4.3-->
   <string name="imagesvisibilityToggle">画像表示の切替</string>
   <string name="imagefromgps">地図の中心へ画像</string>
@@ -106,6 +115,7 @@
   <string name="available_only_with_network">この機能はネットワーク接続アクティブな場合に利用可能です。</string>
   <string name="error_osm_server">OSM サーバーへ接続中にエラーが発生しました。ログインとパスワードを確認してください。または、OSM のサーバーが利用できない可能性があります。</string>
   <string name="check_valid_field">フィールド \"{0}\"が無効です、チェックしてください。</string>
+  <string name="view_in_mixare">mixare で表示</string>
   <string name="gps_use_coarse">GPS の代わりにネット\nワーク位置を使用する\n (再起動が必要)</string>
   <string name="type_to_filter">フィルターの種類</string>
   <string name="geopapcloud_preferences">Geopap-Cloud設定</string>
@@ -138,9 +148,11 @@
   <string name="successfully_imported_bookmarks">ブックマークインポート正常終了: </string>
   <string name="error_bookmarks_import">ブックマークのインポート中にエラーが発生しました。</string>
   <string name="no_bookmarks_csv">SD カードのルートに bookmarks.csv ファイルが見つかりませんでした。そこにインポートするブックマークを配置してください。</string>
+  <string name="center_on_map">背景マップの中心へ</string>
   <string name="proximity_radius">近接半径</string>
   <string name="add_proximity_radius">近接アラートの半径をメートルで追加します。</string>
   <string name="sent_sms">SMS送信 : </string>
+  <string name="send_data">データ送信</string>
   <string name="found_no_data_to_send">現在の表示マップに送信するデータが見つかりません。</string>
   <string name="insert_phone_to_send"> SMS は選択されたデータを送信します。\nデータの送信先電話番号を入力してください。</string>
   <string name="no_message_sent">送信メッセージがありません。</string>
@@ -182,4 +194,7 @@
   <string name="start">開始</string>
   <string name="end">終了</string>
   <string name="other">その他</string>
+  <string name="base_maps">背景地図</string>
+  <string name="maps_manager">地図管理</string>
+  <string name="loading_maps">データを読み込んでいます...</string>
 </resources>

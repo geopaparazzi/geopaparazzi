@@ -7,4 +7,6 @@
   <string name="fill_alpha">Täytön läpinäkyvyys</string>
   <string name="point_shape_">Pisteen muoto</string>
   <string name="point_size">Pistekoko</string>
+  <string name="decimation">Desimaatio</string>
+  <string name="decimation_factor_default">0.000001</string>
 </resources>

@@ -2,7 +2,6 @@
 <resources>
   <string name="yes">Oui</string>
   <string name="no">Non</string>
-  <string name="app_name">GeoPaparazzi</string>
   <string name="notesvisibilityToggle">Activer/désactiver la visibilité des notes.</string>
   <string name="kmlsaved">Données exportées avec succès vers</string>
   <string name="kmlnonsaved">Une erreur s\'est produite lors de l\'exportation de données !</string>

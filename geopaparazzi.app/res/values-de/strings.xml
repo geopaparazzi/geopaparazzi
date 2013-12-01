@@ -2,17 +2,19 @@
 <resources>
   <string name="yes">Ja</string>
   <string name="no">Nein</string>
-  <string name="app_name">GeoPaparazzi</string>
   <string name="notesvisibilityToggle">Sichtbarkeit der Notizen umschalten.</string>
   <string name="kmlsaved">Daten erfolgreich exportiert nach: </string>
   <string name="kmlnonsaved">Während des Daten-Exports ist ein Fehler aufgetreten!</string>
   <string name="loggingoff">Alle Sensoren gestoppt.</string>
   <string name="nogps_data">Bisher kein GPS-Signal!</string>
+  <string name="about">Über</string>
+  <string name="exit">Beenden</string>
   <string name="utctime">Zeit: </string>
   <string name="altim">Höhe: </string>
   <string name="lat">Breite: </string>
   <string name="lon">Länge: </string>
   <string name="azimuth">Azimut: </string>
+  <string name="go_to">Gehe zu</string>
   <string name="goto_coordinate">Gehe zur Koordinate</string>
   <string name="geocoding">Geocodierung</string>
   <string name="prompt_gpsenable">GPS ist derzeit deaktiviert. Aktivieren?</string>
@@ -20,9 +22,12 @@
   <string name="color_label">Farbe</string>
   <string name="mainmenu_kmlexport">Exportieren</string>
   <string name="mainmenu_import">import</string>
+  <string name="mainmenu_gpsdataselect">GPS-Datenliste</string>
+  <string name="mainmenu_preferences">Einstellungen</string>
   <string name="mainmenu_merge">Ausgewählte Logs zusammenführen</string>
   <string name="gpslogproperty">Einstellungen für: </string>
   <string name="gpslog_chart">Diagramm</string>
+  <string name="gpslog_zoom">Vergrößern auf</string>
   <string name="gpslog_delete">Löschen</string>
   <string name="mapproperty">Einstellungen für: </string>
   <string name="map_zoom">Zoom auf karte</string>
@@ -30,6 +35,8 @@
   <string name="gps_preferences">GPS-Einstellungen</string>
   <string name="gps_logging_distance">Min. GPS Entfernung</string>
   <string name="gps_logging_interval">Min. GPS Intervall</string>
+  <string name="gps_use_android_level">Benutze Android-Level (reduziert Batterieverbrauch, erfordert Neustart)</string>
+  <string name="gps_use_android_level_summary">Wenn aktiviert, werden die GPS-Einstellungen auf Betriebssystemebene angewendet, was die Batterie schonen kann, aber eventuell ein weniger stabiles Signal liefert, falls große Intervalle gewählt werden (wenn Ihr Gerät GPS-Verbindungsprobleme hat, lassen Sie diese Option deaktiviert). Beachten Sie, dass das GPS bei Sendeintervallen von weniger als 100 Sekunden kontinuierlich mit Strom versorgt wird. Für eine bessere Akkulaufzeit wählen Sie größere Intervalle.</string>
   <string name="sms_preferences">SMS-Einstellungen</string>
   <string name="sms_catcher">Aktivierung SMS-Autopositionsrücksender</string>
   <string name="databaseError">Ein Fehler ist während des Verbindens mit der Datenbank aufgetreten</string>
@@ -62,6 +69,8 @@
   <string name="installgpsstatus_title">Installiere GPS-Status</string>
   <string name="installgpsstatus_message">Geopaparazzi benötigt die GPS-Status Anwendung zur Kompass-Darstellung. Soll diese installiert werden?</string>
   <!--added after 2.1.2-->
+  <string name="reset">Neues Projekt anlegen</string>
+  <string name="load">Vorhandenes Projekt laden</string>
   <string name="phonenumber_hint">Eingabe Komma-getrennter Telefonnummern…</string>
   <string name="pick_phonenumber_label">…</string>
   <!--added after 2.1.4-->
@@ -73,14 +82,21 @@
   <string name="delete_visible_bookmarks_prompt">Wollen Sie wirklich alle sichtbaren Lesezeichen entfernen? Dieses kann nicht rückgängig gemacht werden.</string>
   <string name="gps_searching_fix">GPS versucht Position zu bestimmen.</string>
   <string name="bookmarks_list_rename">Lesezeichen umbenennen</string>
+  <string name="mapsactivity_menu_toggle_scalebar">Maßstabsleiste umschalten</string>
+  <string name="mapsactivity_menu_tilesource">Kachel-Quelle auswählen</string>
   <string name="mapsactivity_delete_bookmarks">Löschen von {0} bookmarks…</string>
   <string name="mapsactivity_delete_notes">{0} Anmerkungen löschen</string>
   <string name="mapsactivity_new_bookmark">Neues Lesezeichen</string>
   <string name="mapsactivity_enter_bookmark_name">Namen für das neue Lesezeichen eingeben(optional)</string>
   <string name="maptagsactivity_error_reading_tags">Fehler beim Lesen der Tags</string>
   <!--added after 2.3.1-->
+  <string name="mapsactivity_menu_toggle_compass">Öffne Kompass</string>
   <!--added after 2.4.3-->
   <string name="imagesvisibilityToggle">Bildsichtbarkeit umschalten</string>
+  <string name="imagefromgps">Zentriere Karte auf Bild</string>
+  <string name="notefromgps">Zentriere Karte auf Notiz</string>
+  <string name="quicknotes">KARTEN MITTE NOTIZEN</string>
+  <string name="formnotes">FORMULAR NOTIZEN</string>
   <!--added after 2.5.0-->
   <string name="an_error_occurred_while_creating_the_chart_">Fehler beim Erstellen des Diagramms.</string>
   <string name="osm_preferences">OpenStreetMap-Einstellungen</string>
@@ -99,6 +115,7 @@
   <string name="available_only_with_network">Diese Funktion steht nur mit einer aktiven Netzwerkverbindung zur Verfügung.</string>
   <string name="error_osm_server">Fehler beim Verbinden mit dem OSM-Server. Überprüfen Sie bitte Ihr Login und Passwort. Es ist auch möglich, dass der OSM-Server nicht verfügbar ist.</string>
   <string name="check_valid_field">Bitte überprüfen ob das Feld \"{0}\" gültig ist.</string>
+  <string name="view_in_mixare">In Mixare anzeigen</string>
   <string name="gps_use_coarse">Verwendung Netz-basierter Position anstelle von GPS (Neustart erforderlich)</string>
   <string name="type_to_filter">Eingeben, um zu filtern.</string>
   <string name="geopapcloud_preferences">Geopap-Cloud-Einstellungen</string>
@@ -112,13 +129,16 @@
   <string name="project_succesfully_uploaded_to_cloud">Das Projekt wurde erfolgreich in die Geopap Cloud geladen.</string>
   <string name="exporting_data_to_kmz">Exportieren von Daten als KMZ</string>
   <string name="exporting_data_to_gpx">Exportieren von Daten als GPX</string>
+  <string name="media_upload">MEDIEN UPLOAD</string>
   <string name="osm_insert_a_changeset_description">Geben Sie eine Beschreibung für die Änderungen an.</string>
   <string name="set_description">Beschreibung eingeben</string>
   <string name="loaded_project_in">Projekt geladen in:</string>
+  <string name="no_sdcard_use_internal_memory">Es scheint keine SD-Card vorhanden zu sein (prüfen Sie, ob das Gerät nicht mit einem PC verbunden ist). Möchten Sie stattdessen den internen Speicher des Geräts verwenden? Bitte beachten Sie, dass in diesem Fall die Kartenansicht aus Platzgründen kein Karte anzeigen wird.</string>
   <string name="add_message">Nachricht hinzufügen</string>
   <string name="insert_an_optional_text_to_send_with_the_geosms">Geben Sie einen optionalen Text an, der zur GeoSMS mit gesendet werden soll.</string>
   <string name="enter_a_name_for_the_new_project">Geben Sie einen Namen für das Projekt ein</string>
   <string name="chosen_project_exists">Der gewählte Projektname existiert bereits, bitte wählen Sie einen anderen Namen</string>
+  <string name="no_external_sdcard_for_db_renderer">Databank-Rendering wird nur von externem Speicher unterstützt. Externer Speicher konnte nicht gefunden werden. Ist eine solcher vorhanden?</string>
   <string name="no_map_files_found_go_online">Es konnten keine Kartendateien im Verzeichnis /sdcard/maps gefunden werden. Es wird auf Onlinekarten zugegriffen.\n\nKarten können von http://download.mapsforge.org heruntergeladen werden.</string>
   <string name="select_map_to_use">Wählen Sie eine Karte aus</string>
   <string name="no_map_file_found_going_to_mapnik">Ein \"map file\" konnte nicht gefunden werden, schalte auf MAPNIK als Tile-Quelle um.</string>
@@ -128,18 +148,24 @@
   <string name="successfully_imported_bookmarks">Lesezeichen erfolgreich exportiert: </string>
   <string name="error_bookmarks_import">Ein Fehler ist während des Imports der Lesezeichen aufgetreten!</string>
   <string name="no_bookmarks_csv">Es konnte keine Datei bookmarks.csv im Root-Verzeichnis der SD Karte gefunden werden. Bitte kopieren Sie diese dahin, um sie zu importieren.</string>
+  <string name="center_on_map">Auf Basiskarte zentrieren</string>
   <string name="proximity_radius">Umgebungsalarm</string>
   <string name="add_proximity_radius">Radius für den Umgebungsalarm in Metern hinzufügen</string>
   <string name="sent_sms">Verschickte SMS :</string>
+  <string name="send_data">Daten senden</string>
   <string name="found_no_data_to_send">Keine Daten zum Senden in aktuell dargestellter Karte gefunden. </string>
   <string name="insert_phone_to_send">SMS werden versendet, um die ausgewählten Daten zu übermitteln.\n\nBitte geben Sie einen zulässige Telefonnummer an, wohin die Daten gesendet werden sollen.</string>
   <string name="no_message_sent">Es wurde keine Nachricht gesendet.</string>
   <string name="logs_will_be_merged">LOG-Dateien werden bei dieser Operation zusammengeführt. Möchten Sie fortfahren?</string>
   <string name="distance">Entfernung:</string>
   <string name="imported_notes_and_bookmarks">{0} Notizen und {1} Lesezeichen importiert.</string>
+  <string name="could_not_open_sms">Die weitergegebene SMS-Daten-URI konnte nicht geöffnet werden.</string>
+  <string name="start_">Anfang:</string>
   <string name="end_">Ende:</string>
+  <string name="map_textsize_factor">Faktor der Kartentextgröße </string>
   <string name="keep_screen_on">Den Bildschirm anlassen</string>
   <string name="keep_screen_on_summary">Der Bildschirm wird angelassen, wenn Dashboard oder Kartenansicht zu sehen ist</string>
+  <string name="the_secret_view">Die Geheimansicht</string>
   <string name="database_queries">Datenbank-Abfragen</string>
   <string name="demo_mode">Demo-Modus</string>
   <string name="select_database_query">Wählen Sie eine Datenbank-Abfrage</string>
@@ -151,6 +177,7 @@
   <string name="notes_properties">Notizen-Eigenschaften</string>
   <string name="visibility">Sichtbarkeit</string>
   <string name="custom_icon_properties">Benutzerdefinierte Symbol-Eigenschaften</string>
+  <string name="use_custom">benutzerdefinierte</string>
   <string name="labels">Beschriftung</string>
   <string name="show_labels">Zeige Beschriftung</string>
   <string name="halo">Halo</string>
@@ -163,4 +190,11 @@
   <string name="keep_use_imperial">Verwende britische Maßeinheiten</string>
   <string name="keep_use_imperial_sum">Verwendet britische Maßeinheiten anstelle von metrischen, soweit möglich.</string>
   <string name="satellites">Satelliten</string>
+  <string name="crash_toast_text">Bei der Anwendung kam es zu einem schwerwiegenden Fehler. Es werden Informationen zum Absturz gesammelt, die nützlich sind, um das Problem zu lösen. Bitte senden Sie diese,  wenn möglich, an das Entwicklungerteam.</string>
+  <string name="start">Start</string>
+  <string name="end">Ziel</string>
+  <string name="other">andere</string>
+  <string name="base_maps">Basiskarten</string>
+  <string name="maps_manager">Kartenmanager</string>
+  <string name="loading_maps">Lade Karten…</string>
 </resources>

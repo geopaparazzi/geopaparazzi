@@ -2,7 +2,6 @@
 <resources>
   <string name="yes">ja</string>
   <string name="no">nei</string>
-  <string name="app_name">GeoPaparazzi</string>
   <string name="notesvisibilityToggle">Synlighet notater, av/på.</string>
   <string name="kmlsaved">Data ble eksportert til: </string>
   <string name="kmlnonsaved">Det oppstod en feil under dataeksport!</string>

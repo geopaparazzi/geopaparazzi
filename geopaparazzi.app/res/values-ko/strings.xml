@@ -2,17 +2,19 @@
 <resources>
   <string name="yes">예</string>
   <string name="no">아니오</string>
-  <string name="app_name">GeoPaparazzi</string>
   <string name="notesvisibilityToggle">메모 보이기를 전환합니다.</string>
   <string name="kmlsaved">데이터를 성공적으로 내보냄:</string>
   <string name="kmlnonsaved">데이터를 내보내는 중 오류가 발생했습니다!</string>
   <string name="loggingoff">모든 센서가 중단되었습니다.</string>
   <string name="nogps_data">GPS 데이터를 아직 사용할 수 없습니다!</string>
+  <string name="about">프로그램 정보</string>
+  <string name="exit">종료</string>
   <string name="utctime">시간:</string>
   <string name="altim">고도:</string>
   <string name="lat">위도:</string>
   <string name="lon">경도:</string>
   <string name="azimuth">방위각:</string>
+  <string name="go_to">이동</string>
   <string name="goto_coordinate">위치로 이동</string>
   <string name="geocoding">지오코딩</string>
   <string name="prompt_gpsenable">GPS를 사용할 수 없습니다! 사용 가능하도록 설정하시겠습니까?</string>
@@ -20,6 +22,8 @@
   <string name="color_label">색상</string>
   <string name="mainmenu_kmlexport">내보내기</string>
   <string name="mainmenu_import">가져오기</string>
+  <string name="mainmenu_gpsdataselect">GPS 데이터 목록</string>
+  <string name="mainmenu_preferences">설정</string>
   <string name="mainmenu_merge">선택된 로그를 병합</string>
   <string name="gpslogproperty">등록정보: </string>
   <string name="gpslog_chart">차트</string>
@@ -65,6 +69,8 @@
   <string name="installgpsstatus_title">GPS 상태 설치</string>
   <string name="installgpsstatus_message">Geopaparazzi는 나침반과 GPS 정보를 보는데 GPS 상태 응용 프로그램을 사용합니다. 설치 하시겠습니까?</string>
   <!--added after 2.1.2-->
+  <string name="reset">새로운 프로젝트 생성하기</string>
+  <string name="load">기존 프로젝트 불러오기</string>
   <string name="phonenumber_hint">콤마로 분리된 전화번호를 입력...</string>
   <string name="pick_phonenumber_label">...</string>
   <!--added after 2.1.4-->
@@ -76,12 +82,15 @@
   <string name="delete_visible_bookmarks_prompt">보이는 모든 북마크를 삭제 하시겠습니까? 이 작업은 취소 할 수 없습니다.</string>
   <string name="gps_searching_fix">GPS가 위치를 확인하고 있습니다.</string>
   <string name="bookmarks_list_rename">북마크 이름 변경</string>
+  <string name="mapsactivity_menu_toggle_scalebar">축척바 토글</string>
+  <string name="mapsactivity_menu_tilesource">타일 소스 선택</string>
   <string name="mapsactivity_delete_bookmarks">북마크 {0} 삭제중...</string>
   <string name="mapsactivity_delete_notes">메모 {0} 삭제중...</string>
   <string name="mapsactivity_new_bookmark">새로운 북마크</string>
   <string name="mapsactivity_enter_bookmark_name">새로운 북마크 이름을 입력하십시오 (옵션)</string>
   <string name="maptagsactivity_error_reading_tags">태그를 읽는 중 오류가 발생했습니다</string>
   <!--added after 2.3.1-->
+  <string name="mapsactivity_menu_toggle_compass">나침반 열기</string>
   <!--added after 2.4.3-->
   <string name="imagesvisibilityToggle">이미지 보이기 토글</string>
   <string name="imagefromgps">지도 중심 이미지</string>
@@ -106,6 +115,7 @@
   <string name="available_only_with_network">해당 기능은 활성화된 네트워크 연결에서만 사용 가능합니다.</string>
   <string name="error_osm_server">OSM 서버에 연결하는 동안 오류가 발생했습니다. 로그인과 암호를 확인하시기 바랍니다. OSM 서버를 사용할 수 없을 가능성도 있습니다.</string>
   <string name="check_valid_field">필드 \"{0}\"이 유효한지 확인하십시오.</string>
+  <string name="view_in_mixare">MixAre에서 보기</string>
   <string name="gps_use_coarse">GPS 대신 네트워크 기반 위치 사용 (재시작 필요)</string>
   <string name="type_to_filter">필터 입력</string>
   <string name="geopapcloud_preferences">Geopap-Cloud 설정</string>
@@ -138,9 +148,11 @@
   <string name="successfully_imported_bookmarks">북마크를 성공적으로 불러왔습니다:</string>
   <string name="error_bookmarks_import">북마크를 불러오는 중 오류가 발생했습니다.</string>
   <string name="no_bookmarks_csv">SCard 루트에 bookmarks.csv 파일을 찾을 수 없습니다. 가져올 북마크 파일을 루트에 설정하십시오.</string>
+  <string name="center_on_map">기본 지도 중심으로</string>
   <string name="proximity_radius">근접 반경</string>
   <string name="add_proximity_radius">미터단위의 근접 경고 반경을 추가합니다.</string>
   <string name="sent_sms">보낸 SMS :</string>
+  <string name="send_data">데이터 보내기</string>
   <string name="found_no_data_to_send">현재 보이는 지도에서 보낼 데이터를 찾을 수 없습니다.</string>
   <string name="insert_phone_to_send">SMS는 선택한 데이터를 전송하기 위해 전송됩니다. \n\n데이터를 전송하기 위한 유효한 전화 번호를 입력하십시오.</string>
   <string name="no_message_sent">보낸 메세지가 없습니다.</string>
@@ -182,4 +194,7 @@
   <string name="start">시작</string>
   <string name="end">끝</string>
   <string name="other">기타</string>
+  <string name="base_maps">기본 지도</string>
+  <string name="maps_manager">지도 관리자</string>
+  <string name="loading_maps">지도 불러오는 중...</string>
 </resources>

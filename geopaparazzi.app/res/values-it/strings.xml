@@ -2,7 +2,7 @@
 <resources>
   <string name="yes">sì</string>
   <string name="no">no</string>
-  <string name="app_name">GeoPaparazzi</string>
+  <string name="app_name">Geopaparazzi</string>
   <string name="notesvisibilityToggle">Cambia visibilità delle note.</string>
   <string name="kmlsaved">Dati esportati con successo in: </string>
   <string name="kmlnonsaved">Si è verificato un errore durante l\'esportazione dei dati!</string>
@@ -198,4 +198,6 @@
   <string name="base_maps">Mappe di base</string>
   <string name="maps_manager">Gestore mappe</string>
   <string name="loading_maps">Caricamento mappe...</string>
+  <string name="project">Progetto</string>
+  <string name="gps_status">Stato del GPS</string>
 </resources>

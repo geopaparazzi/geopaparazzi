@@ -1,6 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-  <string name="app_name">GeoPaparazzi</string>
   <string name="notesvisibilityToggle">Conmutar visibilidad de las notas.</string>
   <string name="loggingoff">Parados todos los sensores.</string>
   <string name="nogps_data">No hay todavía datos gps disponibles!</string>

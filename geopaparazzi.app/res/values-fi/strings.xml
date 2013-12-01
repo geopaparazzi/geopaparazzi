@@ -2,17 +2,19 @@
 <resources>
   <string name="yes">Kyllä</string>
   <string name="no">Ei</string>
-  <string name="app_name">GeoPaparazzi</string>
   <string name="notesvisibilityToggle">Näytä muistiinpanot.</string>
   <string name="kmlsaved">Tiedot onnistuneesti viety:</string>
   <string name="kmlnonsaved">Tapahtui virhe tietojen viennissä!</string>
   <string name="loggingoff">GPS- ja anturiseuranta lopetettu.</string>
   <string name="nogps_data">GPS-tietoa ei vielä saatavilla!</string>
+  <string name="about">Info</string>
+  <string name="exit">Poistu</string>
   <string name="utctime">Aika: </string>
   <string name="altim">Korkeus: </string>
   <string name="lat">Lat: </string>
   <string name="lon">Lon: </string>
   <string name="azimuth">Suunta: </string>
+  <string name="go_to">Mene</string>
   <string name="goto_coordinate">Mene sijaintiin</string>
   <string name="geocoding">Geokoodaus</string>
   <string name="prompt_gpsenable">GPS ei ole aktiivinen! Aktivoi se puhelimen asetuksista.</string>
@@ -20,6 +22,8 @@
   <string name="color_label">Väri</string>
   <string name="mainmenu_kmlexport">Vie</string>
   <string name="mainmenu_import">Tuo</string>
+  <string name="mainmenu_gpsdataselect">Jäljet</string>
+  <string name="mainmenu_preferences">Asetukset</string>
   <string name="mainmenu_merge">Yhdistä valitut jäljet</string>
   <string name="gpslogproperty">Ominaisuudet: </string>
   <string name="gpslog_chart">Kaavio</string>
@@ -65,6 +69,8 @@
   <string name="installgpsstatus_title">Asenna GPS Status</string>
   <string name="installgpsstatus_message">Geopaparazzi käyttää GPS Status-ohjelmaa kompassi- ja GPS-tietojen näyttämiseen. Haluatko asentaa sen?</string>
   <!--added after 2.1.2-->
+  <string name="reset">Uusi projekti</string>
+  <string name="load">Lataa projekti</string>
   <string name="phonenumber_hint">Kirjoita puhelinnumerot, erota pilkulla</string>
   <string name="pick_phonenumber_label">...</string>
   <!--added after 2.1.4-->
@@ -76,12 +82,15 @@
   <string name="delete_visible_bookmarks_prompt">Haluatko todella poistaa esillä olevat kirjanmerkit peruuttamattomasti?</string>
   <string name="gps_searching_fix">GPS hakee sijaintia</string>
   <string name="bookmarks_list_rename">Nimeä kirjanmerkki uudelleen</string>
+  <string name="mapsactivity_menu_toggle_scalebar">Mittajana</string>
+  <string name="mapsactivity_menu_tilesource">Karttalähde</string>
   <string name="mapsactivity_delete_bookmarks">Poistetaan{0}kirjanmerkkiä...</string>
   <string name="mapsactivity_delete_notes">Poistetaan{0}muistiinpanoa...</string>
   <string name="mapsactivity_new_bookmark">Uusi kirjanmerkki</string>
   <string name="mapsactivity_enter_bookmark_name">Nimeä kirjanmerkki</string>
   <string name="maptagsactivity_error_reading_tags">Virhe kohteita luettaessa</string>
   <!--added after 2.3.1-->
+  <string name="mapsactivity_menu_toggle_compass">Avaa kompassi</string>
   <!--added after 2.4.3-->
   <string name="imagesvisibilityToggle">Vaihda kuvien näkyvyyttä</string>
   <string name="imagefromgps">Kuva sijainnista</string>
@@ -106,6 +115,7 @@
   <string name="available_only_with_network">Tämä toiminto on käytettävissä vain verkkoyhteyden ollessa päällä.</string>
   <string name="error_osm_server">Virhe yhdistettäessä OSM-palvelimeen. Tarkista käyttäjätunnuksesi ja salasanasi. On myös mahdollista, että OSM-palvelin ei ole käytettävissä.</string>
   <string name="check_valid_field">Tarkista, että kenttä {0} on kelvollinen.</string>
+  <string name="view_in_mixare">Katso Mixaressa</string>
   <string name="gps_use_coarse">Käytä verkkopaikannusta GPS:n sijaan. Vaatii uudelleen käynnistyksen.</string>
   <string name="type_to_filter">Kirjoita valitaksesi</string>
   <string name="geopapcloud_preferences">Geopap-pilviasetukset</string>
@@ -137,9 +147,11 @@
   <string name="successfully_imported_bookmarks">Kirjanmerkkien tuonti onnistui:</string>
   <string name="error_bookmarks_import">Virhe tuotaessa kirjanmerkit.</string>
   <string name="no_bookmarks_csv">Bookmarks.csv -tiedostoa ei löytynyt muistikortin juuresta.</string>
+  <string name="center_on_map">Keskitä kartta</string>
   <string name="proximity_radius">Säde lähestymistä varten</string>
   <string name="add_proximity_radius">Aseta lähestymishälytys metreissä</string>
   <string name="sent_sms">Lähetetyt tekstiviestit:</string>
+  <string name="send_data">Lähetä tiedot</string>
   <string name="found_no_data_to_send">Nykyisessä näkymässä ei dataa lähetettäväksi.</string>
   <string name="insert_phone_to_send">Valitut tiedot lähetetään tekstiviestillä. \nLisää puhelinnumero lähettääksesi tiedot.</string>
   <string name="no_message_sent">Viestiä ei lähetetty.</string>
@@ -179,4 +191,7 @@
   <string name="start">aloita</string>
   <string name="end">lopeta</string>
   <string name="other">muu</string>
+  <string name="base_maps">Kartat</string>
+  <string name="maps_manager">Karttojen hallinta</string>
+  <string name="loading_maps">Ladataan karttoja...</string>
 </resources>
