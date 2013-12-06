@@ -495,9 +495,10 @@ public class MapsDirManager {
                 if (mapCenterLocation != null) { // this will adapt the present position of the
                                                  // map-view to the supported area of the map [true]
                     checkCenterLocation(mapCenterLocation, true);
-                    GeoPoint geoPoint = new GeoPoint(mapCenterLocation[1], mapCenterLocation[0]);
-                    map_View.getController().setZoom((int) mapCenterLocation[2]);
-                    map_View.getController().setCenter(geoPoint);
+                    // GeoPoint geoPoint = new GeoPoint(mapCenterLocation[1], mapCenterLocation[0]);
+                    // map_View.getController().setZoom((int) mapCenterLocation[2]);
+                    // map_View.getController().setCenter(geoPoint);
+                    setMapViewCenter(map_View,mapCenterLocation,0);
                 }
                 // 20131108 mj10777: when a new map is loaded inside a MapActivity, the old tiles
                 // are still shown
@@ -608,6 +609,7 @@ public class MapsDirManager {
         GeoPoint geoPoint = new GeoPoint(mapCenterLocation[1], mapCenterLocation[0]);
         map_View.getController().setZoom((int) mapCenterLocation[2]);
         map_View.getController().setCenter(geoPoint);
+        // GPLog.androidLog(-1, "MapsDirManager setMapViewCenter[" + mapCenterLocation[0] + "," + mapCenterLocation[1] + "," + (int)mapCenterLocation[2] + "]");
         return map_View.getMapPosition().getZoomLevel();
     }
     /**

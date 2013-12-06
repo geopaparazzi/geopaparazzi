@@ -293,6 +293,9 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             if (!b_map_file) { // with map files mapGenerator has already been added.
                 mapView.setMapGenerator(mapGenerator);
             }
+           // GeoPoint geoPoint = new GeoPoint(mapCenterLocation[1], mapCenterLocation[0]);
+           // mapView.getController().setZoom((int) mapCenterLocation[2]);
+           // mapView.getController().setCenter(geoPoint);
             if (maxZoomLevel == -1) {
                 maxZoomLevel = mapView.getMapZoomControls().getZoomLevelMax();
                 minZoomLevel = mapView.getMapZoomControls().getZoomLevelMin();
