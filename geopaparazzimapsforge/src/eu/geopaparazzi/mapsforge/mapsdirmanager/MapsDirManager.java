@@ -349,8 +349,8 @@ public class MapsDirManager {
       *
       * <p>call from Application or Map-Activity
       *
-      * @param selected_classinfo Map that was selected
       * @param map_View Map-View to set (if not null)
+      * @param mapCenterLocation [point/zoom to check]
       * @return i_rc 0 ir correct ; else false not fullfilled
       */
     public int selected_MapClassInfo( Context context, ClassNodeInfo selected_classinfo, MapView map_View,
@@ -525,6 +525,19 @@ public class MapsDirManager {
     }
     // -----------------------------------------------
     /**
+      * Return Default Zoom
+      *
+      * <p>default :  0
+      * <p>mbtiles : taken from value of metadata 'minzoom'
+      * <p>map : value is given in 'StartZoomLevel'
+      *
+      * @return integer minzoom
+      */
+    public int getDefaultZoom() {
+        return defaultZoom;
+    }
+    // -----------------------------------------------
+    /**
       * Return Max Zoom
       *
       * <p>default :  22
@@ -535,6 +548,67 @@ public class MapsDirManager {
       */
     public int getMaxZoom() {
         return maxZoom;
+    }
+    // -----------------------------------------------
+    /**
+      * Return MapCenter of active Map
+      * - without zoom-level
+      * @return imapCenterLocation [centerX, centerY]
+      */
+    public double[] getMapCenter() {
+      double[] mapCenterLocation = new double[]{centerX, centerY};
+        return mapCenterLocation;
+    }
+     // -----------------------------------------------
+    /**
+      * Return MapCenter of active Map
+      * - with zoom-level
+      * <p>-  if (i_default_zoom == 0)
+      * <p>-- the getMaxZoom of the loaded map will be taken
+      * <p>-  if (i_default_zoom == 1)
+      * <p>-- the default Zoom of the loaded map will be taken
+      * <p>-  if (i_default_zoom == 2)
+      * <p>-- the getMinZoom() of the loaded map will be taken
+      * @return imapCenterLocation [point/zoom to set]
+      */
+    public double[] getMapCenterZoom(int i_default_zoom) {
+      double d_zoom=(double) defaultZoom;
+      if (i_default_zoom == 0)
+       d_zoom=(double) getMaxZoom();
+       if (i_default_zoom == 2)
+       d_zoom=(double) getMinZoom();
+      double[] mapCenterLocation = new double[]{centerX, centerY, d_zoom};
+        return mapCenterLocation;
+    }
+    // -----------------------------------------------
+    /**
+      * set MapView Center point
+      *
+      * <p>if (mapCenterLocation == null)
+      * <p>- the default Center of the loaded map will be taken
+      * <p>-  if (i_default_zoom == 1)
+      * <p>-- the default Zoom of the loaded map will be taken
+      * <p>-  if (i_default_zoom == 2)
+      * <p>-- the getMinZoom() of the loaded map will be taken
+      *  @param map_View Map-View to set (if not null)
+      * @param mapCenterLocation [point/zoom to set]
+      * @return zoom-level
+      */
+    public int setMapViewCenter(MapView map_View, double[] mapCenterLocation , int i_default_zoom) {
+     if (map_View == null)
+      return defaultZoom;
+        if (mapCenterLocation == null)
+        { // if the user has not given a desired position, retrieve it from the active-map
+          mapCenterLocation = getMapCenterZoom(1);
+          if (i_default_zoom == 0)
+          mapCenterLocation[2]= (double) map_View.getMapPosition().getZoomLevel();
+          if (i_default_zoom == 2)
+          mapCenterLocation[2]= (double) getMinZoom();
+        }
+        GeoPoint geoPoint = new GeoPoint(mapCenterLocation[1], mapCenterLocation[0]);
+        map_View.getController().setZoom((int) mapCenterLocation[2]);
+        map_View.getController().setCenter(geoPoint);
+        return map_View.getMapPosition().getZoomLevel();
     }
     /**
      * Function to check and correct bounds / zoom level [for 'SpatialiteDatabaseHandler']

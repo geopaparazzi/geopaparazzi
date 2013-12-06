@@ -180,7 +180,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
         setContentView(R.layout.mapsview);
-        
+
         // register menu button
         final Button menuButton = (Button) findViewById(R.id.menu_map_btn);
         menuButton.setOnClickListener(new Button.OnClickListener(){
@@ -192,9 +192,9 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
         // register for battery updates
         registerReceiver(batteryReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        
+
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        
+
         // mj10777: .mbtiles,.map and .mapurl files may know their bounds and desired center point
         // - 'checkCenterLocation' will change this value if out of range
         double[] mapCenterLocation = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
@@ -331,10 +331,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
         GpsManager.getInstance(this).addListener(this);
 
-        GeoPoint geoPoint = new GeoPoint(mapCenterLocation[1], mapCenterLocation[0]);
-        mapView.getController().setZoom((int) mapCenterLocation[2]);
-        mapView.getController().setCenter(geoPoint);
-
         int zoomInLevel = (int) mapCenterLocation[2] + 1;
         if (zoomInLevel > maxZoomLevel) {
             zoomInLevel = maxZoomLevel;
@@ -408,7 +404,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         }else{
             slidingDrawer.close();
         }
-        
+
         sliderDrawView = (SliderDrawView) findViewById(R.id.sliderdrawview);
 
         /*
@@ -914,10 +910,10 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         // SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (hasFocus) {
             double[] lastCenter = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
-
-            GeoPoint geoPoint = new GeoPoint(lastCenter[1], lastCenter[0]);
-            mapView.getController().setZoom((int) lastCenter[2]);
-            mapView.getController().setCenter(geoPoint);
+            MapsDirManager.getInstance().setMapViewCenter(mapView,lastCenter,0);
+            // GeoPoint geoPoint = new GeoPoint(lastCenter[1], lastCenter[0]);
+            // mapView.getController().setZoom((int) lastCenter[2]);
+            // mapView.getController().setCenter(geoPoint);
 
             setZoomGuiText((int) lastCenter[2]);
 
@@ -938,20 +934,23 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     }
 
     public void setNewCenter( double lon, double lat, boolean drawIcon ) {
-        mapView.getController().setCenter(new GeoPoint(lat, lon));
+        double[] mapCenterLocation = new double[]{lon, lat};
+        MapsDirManager.getInstance().setMapViewCenter(mapView,mapCenterLocation,0);
+        // mapView.getController().setCenter(new GeoPoint(lat, lon));
     }
 
     public void setNewCenterAtZoom( final double centerX, final double centerY, final int zoom ) {
-        mapView.getController().setZoom(zoom);
+        double[] mapCenterLocation = new double[]{centerX, centerY, (double) zoom};
+        MapsDirManager.getInstance().setMapViewCenter(mapView,mapCenterLocation,0);
+        // mapView.getController().setZoom(zoom);
         setZoomGuiText(zoom);
-        mapView.getController().setCenter(
-                new GeoPoint((int) (centerY * LibraryConstants.E6), (int) (centerX * LibraryConstants.E6)));
+        // mapView.getController().setCenter(new GeoPoint((int) (centerY * LibraryConstants.E6), (int) (centerX * LibraryConstants.E6)));
     }
 
     public double[] getCenterLonLat() {
-        GeoPoint mapCenter = mapView.getMapPosition().getMapCenter();
-        double[] lonLat = {mapCenter.longitudeE6 / LibraryConstants.E6, mapCenter.latitudeE6 / LibraryConstants.E6};
-        return lonLat;
+        // GeoPoint mapCenter = mapView.getMapPosition().getMapCenter();
+        // double[] lonLat = {mapCenter.longitudeE6 / LibraryConstants.E6, mapCenter.latitudeE6 / LibraryConstants.E6};
+        return MapsDirManager.getInstance().getMapCenter();
     }
 
     @Override
@@ -1018,6 +1017,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             return goTo();
         }
         case CENTER_ON_MAP: {
+         /*
             MapGenerator mapGenerator = mapView.getMapGenerator();
             GeoPoint mapCenter;
             MapController controller = mapView.getController();
@@ -1030,6 +1030,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             }
             controller.setCenter(mapCenter);
             controller.setZoom(minZoomLevel);
+            * */
+            MapsDirManager.getInstance().setMapViewCenter(mapView,null,2);
             saveCenterPref();
             return true;
         }
