@@ -1,4 +1,4 @@
 geopaparazzi
 ============
 
-Please start here: http://moovida.github.io/geopaparazzi/
+Please start here: http://geopaparazzi.github.io/geopaparazzi/
