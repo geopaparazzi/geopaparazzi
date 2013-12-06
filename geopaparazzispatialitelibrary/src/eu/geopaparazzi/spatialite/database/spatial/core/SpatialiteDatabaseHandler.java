@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import jsqlite.Database;
+import jsqlite.Constants;
 import jsqlite.Exception;
 import jsqlite.Stmt;
 import android.graphics.Paint;
@@ -152,6 +153,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
         }
         if (isValid()) {
             setDescription(s_name);
+            GPLog.androidLog(-1,"SpatialiteDatabaseHandler["+s_name+"]["+getJavaSqliteDescription()+"]");
         }
         // GPLog.androidLog(-1,"SpatialiteDatabaseHandler[" + file_map.getAbsolutePath() +
         // "] name["+s_name+"] s_description["+s_description+"]");
@@ -412,6 +414,49 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
     public void setDefaultZoom( int i_zoom ) {
         defaultZoom = i_zoom;
     }
+    // -----------------------------------------------
+    /**
+      * Return versions supported in JavaSqlite
+      * - JavaSqlite
+      * - Spatialite
+      * - Proj4
+      * - Geos
+      * -- there is no Spatialite function to retrieve the Sqlite version
+      * -- the Has() functions to not eork with spatialite 3.0.1
+      * @return s_description long description of map/file
+      */
+    public String getJavaSqliteDescription() {
+     String s_javasqlite_description="";
+     try
+     { // javasqlite[20120209],spatialite[4.1.1], proj4[Rel. 4.8.0, 6 March 2012],geos[3.4.2-CAPI-1.8.2 r3921],
+       //  spatialite_properties[HasIconv[1],HasMathSql[1],HasGeoCallbacks[0],HasProj[1],
+       // HasGeos[1],HasGeosAdvanced[1],HasGeosTrunk[0],HasLwGeom[0],
+       // HasLibXML2[0],HasEpsg[1],HasFreeXL[0]]]
+       // javasqlite[20120209],spatialite[3.0.1],proj4[Rel. 4.7.1, 23 September 2009],geos[3.2.2-CAPI-1.6.2],exception[? not a spatialite database, or spatialite < 4 ?]]
+      s_javasqlite_description="javasqlite["+getJavaSqliteVersion()+"],";
+      s_javasqlite_description+="spatialite["+getSpatialiteVersion()+"],";
+      s_javasqlite_description+="proj4["+getProj4Version()+"],";
+      s_javasqlite_description+="geos["+getGeosVersion()+"],";
+      s_javasqlite_description+="spatialite_properties["+getSpatialiteProperties()+"]]";
+
+     }
+     catch (Exception e)
+     {
+      s_javasqlite_description+="exception[? not a spatialite database, or spatialite < 4 ?]]";
+      GPLog.androidLog(4,"SpatialiteDatabaseHandler["+s_name+"].getJavaSqliteDescription[" + s_javasqlite_description+ "]", e);
+     }
+        return s_javasqlite_description;
+    }
+    // -----------------------------------------------
+    /**
+     * Get the version of JavaSqlite.
+     * known values: 20120209,20131124 as int
+     * @return the version of JavaSqlite in 'Constants.drv_minor'.
+     */
+    public String getJavaSqliteVersion()  {
+        return ""+Constants.drv_minor;
+    }
+    // -----------------------------------------------
     /**
      * Get the version of Spatialite.
      *
@@ -430,7 +475,30 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
         }
         return "-";
     }
-
+    // -----------------------------------------------
+    /**
+     * Get the properties of Spatialite.
+     * - use the known 'SELECT Has..' functions
+     * - when HasIconv=0: no VirtualShapes,VirtualXL
+     * @return the properties of Spatialite.
+     * @throws Exception
+     */
+    public String getSpatialiteProperties() throws Exception {
+     String s_value="-";
+        Stmt stmt = db_java.prepare("SELECT HasIconv(),HasMathSql(),HasGeoCallbacks(),HasProj(),HasGeos(),HasGeosAdvanced(),HasGeosTrunk(),HasLwGeom(),HasLibXML2(),HasEpsg(),HasFreeXL();");
+        try {
+            if (stmt.step()) {
+               s_value="HasIconv["+stmt.column_int(0)+"],HasMathSql["+stmt.column_int(1)+"],HasGeoCallbacks["+stmt.column_int(2)+"],";
+               s_value+="HasProj["+stmt.column_int(3)+"],HasGeos["+stmt.column_int(4)+"],HasGeosAdvanced["+stmt.column_int(5)+"],";
+               s_value+="HasGeosTrunk["+stmt.column_int(6)+"],HasLwGeom["+stmt.column_int(7)+"],HasLibXML2["+stmt.column_int(8)+"],";
+               s_value+="HasEpsg["+stmt.column_int(9)+"],HasFreeXL["+stmt.column_int(10)+"]";
+            }
+        } finally {
+            stmt.close();
+        }
+        return s_value;
+    }
+   // -----------------------------------------------
     /**
      * Get the version of proj.
      *
@@ -449,7 +517,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
         }
         return "-";
     }
-
+     // -----------------------------------------------
     /**
      * Get the version of geos.
      *

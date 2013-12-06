@@ -150,7 +150,7 @@ public class MapsDirManager {
         // MapsDirTreeViewList.use_treeType=MapsDirTreeViewList.TreeType.MAPTYPE;
         // SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         mapCenterLocation = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
-        GPLog.GLOBAL_LOG_LEVEL = 1;
+        GPLog.GLOBAL_LOG_LEVEL = -1;
         SpatialDatabasesManager.reset();
         MapDatabasesManager.reset();
         CustomTileDatabasesManager.reset();
@@ -194,10 +194,27 @@ public class MapsDirManager {
     private void handleTileSources( Context context ) throws Exception, IOException, FileNotFoundException {
         int i_count_classes = 0;
         int i_type = MAPURL;
+        AssetManager assetManager = context.getAssets();
         ClassNodeInfo this_mapinfo = null;
         ClassNodeInfo mapnik_mapinfo = null;
+        /*
+         * if they do not exist add two mbtiles based mapnik and opencycle
+         * tile sources as default ones. They will automatically
+         * be backed into a mbtiles db.
+        */
         // This will be our default map if everything else fails
         File mapnikFile = new File(maps_dir, "mapnik.mapurl");
+        if ((!mapnikFile.exists()) && (assetManager != null)) {
+         InputStream inputStream = assetManager.open("tilesources/mapnik.mapurl");
+         OutputStream outputStream = new FileOutputStream(mapnikFile);
+         FileUtilities.copyFile(inputStream, outputStream);
+        }
+        File opencycleFile = new File(maps_dir, "opencycle.mapurl");
+        if ((!opencycleFile.exists()) && (assetManager != null)) {
+            InputStream inputStream = assetManager.open("tilesources/opencycle.mapurl");
+            FileOutputStream outputStream = new FileOutputStream(opencycleFile);
+            FileUtilities.copyFile(inputStream, outputStream);
+        }
         // GPLog.androidLog(-1, "MapsDirManager handleTileSources  selected_map[" + s_selected_map + "]");
         /*
           * add mapurl tables
@@ -298,47 +315,6 @@ public class MapsDirManager {
             }
         } catch (jsqlite.Exception e) {
             GPLog.androidLog(4, "MapsDirManager handleTileSources SpatialRasterTable[" + maps_dir.getAbsolutePath() + "]", e);
-        }
-        /*
-         * if they do not exist add two mbtiles based mapnik and opencycle
-         * tile sources as default ones. They will automatically
-         * be backed into a mbtiles db.
-        */
-        i_type = MAPURL;
-        AssetManager assetManager = context.getAssets();
-        File opencycleFile = new File(maps_dir, "opencycle.mapurl");
-        if ((!opencycleFile.exists()) && (assetManager != null)) {
-            InputStream inputStream = assetManager.open("tilesources/opencycle.mapurl");
-            FileOutputStream outputStream = new FileOutputStream(opencycleFile);
-            FileUtilities.copyFile(inputStream, outputStream);
-        }
-        if (opencycleFile.exists()) {
-            this_mapinfo = new ClassNodeInfo(i_count_classes++, i_type, "mapurl", "CustomTileTable",
-                    opencycleFile.getAbsolutePath(), opencycleFile.getName(), opencycleFile.getAbsolutePath(), "opencycle",
-                    "opencycle", "-180.00000,-85.05113,180.00000,85.05113", "13.3777065575123,52.5162690144797", "0-18");
-            maptype_classes.add(this_mapinfo);
-            if ((selected_mapinfo == null) && (s_selected_map.equals(opencycleFile.getAbsolutePath()))) {
-                selected_mapinfo = this_mapinfo;
-                s_selected_type = selected_mapinfo.getTypeText();
-                i_selected_type = selected_mapinfo.getType();
-            }
-        }
-        if ((!mapnikFile.exists()) && (assetManager != null)) {
-            InputStream inputStream = assetManager.open("tilesources/mapnik.mapurl");
-            OutputStream outputStream = new FileOutputStream(mapnikFile);
-            FileUtilities.copyFile(inputStream, outputStream);
-        }
-        // this should be done as the last to insure a default setting
-        if (mapnikFile.exists()) {
-            mapnik_mapinfo = new ClassNodeInfo(i_count_classes++, i_type, "mapurl", "CustomTileTable",
-                    mapnikFile.getAbsolutePath(), mapnikFile.getName(), mapnikFile.getAbsolutePath(), "mapnik", "mapnik",
-                    "-180.00000,-85.05113,180.00000,85.05113", "13.3777065575123,52.5162690144797", "0-18");
-            maptype_classes.add(mapnik_mapinfo);
-            if ((selected_mapinfo == null) && (s_selected_map.equals(mapnikFile.getAbsolutePath()))) {
-                selected_mapinfo = this_mapinfo;
-                s_selected_type = selected_mapinfo.getTypeText();
-                i_selected_type = selected_mapinfo.getType();
-            }
         }
         if ((selected_mapinfo == null) && (mapnik_mapinfo != null)) {
             // if nothing was selected OR the selected not found then

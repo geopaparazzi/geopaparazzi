@@ -276,7 +276,7 @@ public class SpatialiteUtilities {
      String s_table_name_work=s_table_name+"_work";
       GPLog.androidLog(-1,"SpatialiteUtilities create_shape_table[" + s_table_name + "] srid["+i_srid+"] ["+s_table_path+"]");
       // CREATE VIRTUAL TABLE roads using virtualshape('/sdcard/maps/roads',CP1252,3857);
-     String s_sql_command="CREATE VIRTUAL TABLE "+s_table_name_work+" using virtualshape('"+s_table_path+"',"+s_char_set+","+i_srid+");";
+     String s_sql_command="CREATE VIRTUAL TABLE "+s_table_name_work+" USING VirtualShape('"+s_table_path+"',"+s_char_set+","+i_srid+");";
      GPLog.androidLog(-1,"SpatialiteUtilities create_shape_table[" + s_table_name + "] srid["+i_srid+"] ["+s_table_path+"]");
      try
      {
@@ -287,7 +287,7 @@ public class SpatialiteUtilities {
       // CREATE TABLE myroads AS SELECT * FROM roads;
       s_sql_command="CREATE TABLE "+s_table_name+" AS SELECT * FROM "+s_table_name_work+";";
       sqlite_db.exec(s_sql_command, null);
-      s_sql_command="SELECT geometry_type FROM vector_layers SHERE table_name='"+s_table_name;
+      s_sql_command="SELECT geometry_type FROM vector_layers WHERE table_name='"+s_table_name;
       this_stmt = sqlite_db.prepare(s_sql_command);
       try
       {
