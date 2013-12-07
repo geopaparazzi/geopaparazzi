@@ -30,6 +30,7 @@ import java.util.List;
 import org.mapsforge.android.maps.DebugSettings;
 import org.mapsforge.android.maps.MapActivity;
 import org.mapsforge.android.maps.MapScaleBar;
+import org.mapsforge.android.maps.MapScaleBar.ScreenPosition;
 import org.mapsforge.android.maps.MapScaleBar.TextField;
 import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.MapViewPosition;
@@ -315,6 +316,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             mapScaleBar.setText(TextField.KILOMETER, " km"); //$NON-NLS-1$
             mapScaleBar.setText(TextField.METER, " m"); //$NON-NLS-1$
         }
+        mapScaleBar.setScreenPosition(ScreenPosition.TOPLEFT);
 
         if (Debug.D) {
             // boolean drawTileFrames = preferences.getBoolean("drawTileFrames", false);
