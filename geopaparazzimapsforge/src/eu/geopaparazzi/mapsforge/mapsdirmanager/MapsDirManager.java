@@ -80,9 +80,12 @@ public class MapsDirManager {
     private double bounds_north = 85.05113;
     private int minZoom = 0;
     private int maxZoom = 18;
-    private int defaultZoom;
+    private int defaultZoom=0;
+    private int currentZoom=0;
     private double centerX = 0.0;
     private double centerY = 0.0;
+    private double currentX = 0.0;
+    private double currentY = 0.0;
     private double[] mapCenterLocation;
     private MapsDirManager() {
     }
@@ -494,7 +497,6 @@ public class MapsDirManager {
                 }
                 if (mapCenterLocation != null) { // this will adapt the present position of the
                                                  // map-view to the supported area of the map [true]
-                    checkCenterLocation(mapCenterLocation, true);
                     // GeoPoint geoPoint = new GeoPoint(mapCenterLocation[1], mapCenterLocation[0]);
                     // map_View.getController().setZoom((int) mapCenterLocation[2]);
                     // map_View.getController().setCenter(geoPoint);
@@ -526,6 +528,29 @@ public class MapsDirManager {
     }
     // -----------------------------------------------
     /**
+      * Return current Zoom
+      *
+      * @return integer minzoom
+      */
+    public int getCurrentZoom() {
+        return currentZoom;
+    }
+    // -----------------------------------------------
+    /**
+      * Set current Zoom
+      * - checking is done to insure that the new Zoom is inside the supported min/max Zoom-levels
+      * -- the present value will be retained if invalid
+      * @return integer currentZoom
+      */
+    public int setCurrentZoom(int i_zoom) {
+     if ((i_zoom >= getMinZoom()) && (i_zoom <= getMaxZoom()))
+     {
+      currentZoom=i_zoom;
+     }
+        return currentZoom;
+    }
+    // -----------------------------------------------
+    /**
       * Return Default Zoom
       *
       * <p>default :  0
@@ -552,12 +577,48 @@ public class MapsDirManager {
     }
     // -----------------------------------------------
     /**
+      * Return CenterX postion of of active Map
+      *
+      * @return double centerX
+      */
+    public double getCenterX() {
+        return centerX;
+    }
+    // -----------------------------------------------
+    /**
+      * Return CenterY postion of of active Map
+      *
+      * @return double centerY
+      */
+    public double getCenterY() {
+        return centerY;
+    }
+    // -----------------------------------------------
+    /**
+      * Return CurrentX postion of of active Map
+      *
+      * @return double centerX
+      */
+    public double getCurrentX() {
+        return currentX;
+    }
+    // -----------------------------------------------
+    /**
+      * Return CurrentY postion of of active Map
+      *
+      * @return double centerY
+      */
+    public double getCurrentY() {
+        return currentY;
+    }
+    // -----------------------------------------------
+    /**
       * Return MapCenter of active Map
       * - without zoom-level
       * @return imapCenterLocation [centerX, centerY]
       */
     public double[] getMapCenter() {
-      double[] mapCenterLocation = new double[]{centerX, centerY};
+      double[] mapCenterLocation = new double[]{getCenterX(), getCenterY()};
         return mapCenterLocation;
     }
      // -----------------------------------------------
@@ -578,39 +639,119 @@ public class MapsDirManager {
        d_zoom=(double) getMaxZoom();
        if (i_default_zoom == 2)
        d_zoom=(double) getMinZoom();
-      double[] mapCenterLocation = new double[]{centerX, centerY, d_zoom};
+      double[] mapCenterLocation = new double[]{getCenterX(), getCenterY(), d_zoom};
         return mapCenterLocation;
     }
     // -----------------------------------------------
     /**
       * set MapView Center point
-      *
+      * - this should be the only function used to compleate this task
+      * -- error logic has been build in use value incase the function was incorrectly called
       * <p>if (mapCenterLocation == null)
       * <p>- the default Center of the loaded map will be taken
       * <p>-  if (i_default_zoom == 1)
       * <p>-- the default Zoom of the loaded map will be taken
       * <p>-  if (i_default_zoom == 2)
       * <p>-- the getMinZoom() of the loaded map will be taken
-      *  @param map_View Map-View to set (if not null)
+      * @param map_View Map-View to set (if not null)
       * @param mapCenterLocation [point/zoom to set]
       * @return zoom-level
       */
     public int setMapViewCenter(MapView map_View, double[] mapCenterLocation , int i_default_zoom) {
      if (map_View == null)
       return defaultZoom;
+      double d_position_x=0,d_position_y=0;
+      // 0=correct to position inside bounds/zoom-level; 1: future: offer selection-list of valid maps inside this area
+      int i_position_correction_type=0;
+      int i_zoom=0;
         if (mapCenterLocation == null)
         { // if the user has not given a desired position, retrieve it from the active-map
           mapCenterLocation = getMapCenterZoom(1);
+          d_position_x=mapCenterLocation[0];
+          d_position_y=mapCenterLocation[1];
+          i_zoom=(int) mapCenterLocation[2];
           if (i_default_zoom == 0)
-          mapCenterLocation[2]= (double) map_View.getMapPosition().getZoomLevel();
+           i_zoom=map_View.getMapPosition().getZoomLevel();
           if (i_default_zoom == 2)
-          mapCenterLocation[2]= (double) getMinZoom();
+           i_zoom=getMinZoom();
         }
-        GeoPoint geoPoint = new GeoPoint(mapCenterLocation[1], mapCenterLocation[0]);
-        map_View.getController().setZoom((int) mapCenterLocation[2]);
+        else
+        {
+         if (mapCenterLocation.length > 1)
+         {
+          d_position_x=mapCenterLocation[0];
+          d_position_y=mapCenterLocation[1];
+          if (mapCenterLocation.length > 2)
+          {
+           i_zoom=(int) mapCenterLocation[2];
+          }
+          else
+          { // function was incorrectly called with only 2 parameters, instead of 3
+           i_zoom=map_View.getMapPosition().getZoomLevel();
+          }
+         }
+         else
+         { // function was incorrectly called, use default postions from active map
+          d_position_x=getCenterY();
+          d_position_y=getCenterY();
+          i_zoom=map_View.getMapPosition().getZoomLevel();
+         }
+        }
+        check_valid_position(d_position_x,d_position_y,i_zoom,i_position_correction_type);
+        GeoPoint geoPoint = new GeoPoint(getCurrentY(), getCurrentX());
+        map_View.getController().setZoom(getCurrentZoom());
         map_View.getController().setCenter(geoPoint);
-        // GPLog.androidLog(-1, "MapsDirManager setMapViewCenter[" + mapCenterLocation[0] + "," + mapCenterLocation[1] + "," + (int)mapCenterLocation[2] + "]");
+        // GPLog.androidLog(-1, "MapsDirManager setMapViewCenter[" + getCurrentX() + "," + getCurrentY(), + "," + getCurrentZoom() + "]");
         return map_View.getMapPosition().getZoomLevel();
+    }
+    // -----------------------------------------------
+    /**
+      * Check current position and correct if needed
+      * - i_parm=0: correct to position inside bounds/zoom-level
+      * -- positions will get 'stuck' at the min/max bounds
+      * -- zoom will get 'stuck' at the min/max zoom
+      * - i_parm=1: [TODO] offer selection-list of valid maps inside this area
+      * -- pre-condition for this is the posibility to change maps inside the map_view
+      * --- this at the moment is causing problems
+      * @param d_position_x x-position to move to
+      * @param d_position_y y-position to move to
+      * @param i_zoom zoom to set
+      * @param i_parm parameter: how to deal if out of bounds
+      * @return integer return code
+      */
+    private int check_valid_position( double d_position_x,double d_position_y, int i_zoom, int i_parm )
+    {
+     int i_rc=0;
+     switch (i_parm)
+     {
+      default:
+      case 0:
+      { // correct to position inside bounds/zoom-level
+       if ((d_position_x < bounds_west) || (d_position_x > bounds_east))
+       {
+        if (d_position_x < bounds_west)
+         d_position_x=bounds_west;
+        if (d_position_x > bounds_east)
+         d_position_x=bounds_east;
+       }
+       currentX=d_position_x;
+       if ((d_position_y < bounds_south) ||(d_position_y > bounds_north))
+       {
+        if (d_position_y < bounds_south)
+         d_position_y=bounds_south;
+        if (d_position_y > bounds_north)
+         d_position_y=bounds_north;
+       }
+       currentY=d_position_y;
+       setCurrentZoom(i_zoom);
+      }
+      break;
+      case 1:
+      { // offer selection-list of valid maps inside this area
+      }
+      break;
+     }
+     return i_rc;
     }
     /**
      * Function to check and correct bounds / zoom level [for 'SpatialiteDatabaseHandler']

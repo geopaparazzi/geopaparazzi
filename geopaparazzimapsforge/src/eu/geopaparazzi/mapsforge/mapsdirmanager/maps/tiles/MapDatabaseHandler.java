@@ -104,8 +104,8 @@ public class MapDatabaseHandler {
            bounds_north = (double) (map_FileInfo.boundingBox.getMaxLatitude());
            centerX = map_FileInfo.boundingBox.getCenterPoint().getLongitude();
            centerY = map_FileInfo.boundingBox.getCenterPoint().getLatitude();
-           
-           
+
+
            Byte startZoomLevel = getMinZoomlevel(map_Database);
            if (startZoomLevel != null) {
             minZoom = startZoomLevel;
@@ -124,14 +124,14 @@ public class MapDatabaseHandler {
     }
     /**
      * Workaround to get the min zoom from a map file.
-     * 
+     *
      * <p>This is done through reflection since the map_FileInfo.startZoomLevel value
-     * is different from the minZoomLevel of the file , but the minZoomLevel is 
-     * not accessible. 
-     * <p>Also the  startZoomLevel limits the level to 14, which is why this 
-     * workaround was done. 
-     * 
-     * @param mapDatabase the {@link MapDatabase} to guess the min zopomlevel from.
+     * is different from the minZoomLevel of the file , but the minZoomLevel is
+     * not accessible.
+     * <p>Also the  startZoomLevel limits the level to 14, which is why this
+     * workaround was done.
+     *
+     * @param mapDatabase the {@link MapDatabase} to guess the min zoomlevel from.
      * @return the min zoomlevel or a default value 1.
      */
     private Byte getMinZoomlevel( MapDatabase mapDatabase ) {
@@ -148,7 +148,7 @@ public class MapDatabaseHandler {
             // ignore and return default
             return 1;
         }
-        
+
     }
     // -----------------------------------------------
     /**

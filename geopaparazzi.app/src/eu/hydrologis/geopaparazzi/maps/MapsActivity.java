@@ -345,8 +345,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         zoomInButton = (Button) findViewById(R.id.zoomin);
         zoomInButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                String text = zoomLevelText.getText().toString();
-                int currentZoom = Integer.parseInt(text);
+                int currentZoom = getZoomLevel();
                 int newZoom = currentZoom + 1;
                 setZoomGuiText(newZoom);
                 mapView.getController().setZoom(newZoom);
@@ -359,8 +358,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         zoomOutButton = (Button) findViewById(R.id.zoomout);
         zoomOutButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                String text = zoomLevelText.getText().toString();
-                int currentZoom = Integer.parseInt(text);
+                int currentZoom = getZoomLevel();
                 int newZoom = currentZoom - 1;
                 setZoomGuiText(newZoom);
                 mapView.getController().setZoom(newZoom);
@@ -925,19 +923,44 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         saveCenterPref();
         super.onWindowFocusChanged(hasFocus);
     }
-
+     // -----------------------------------------------
+    /**
+      * Return current Zoom [from MapsDirManager]
+      *
+      * @return integer minzoom
+      */
+    private int getZoomLevel() {
+     return MapsDirManager.getInstance().getCurrentZoom();
+    }
+    // -----------------------------------------------
+    /**
+      * Set current Zoom  [in MapsDirManager]
+      * - checking is done to insure that the new Zoom is inside the supported min/max Zoom-levels
+      * -- the present value will be retained if invalid
+      * @return integer currentZoom
+      */
     private void setZoomGuiText( int newZoom ) {
-        if (newZoom > maxZoomLevel) {
-            newZoom = maxZoomLevel;
-        }
-        if (newZoom < minZoomLevel) {
-            newZoom = minZoomLevel;
-        }
+     // checking is done to insure that the new Zoom is inside the supported min/max Zoom-levels
+     newZoom=MapsDirManager.getInstance().setCurrentZoom(newZoom);
         zoomLevelText.setText(formatter.format(newZoom));
     }
-
+    // -----------------------------------------------
+    /**
+      * set MapView Center point [in MapsDirManager]
+      * - this should be the only function used to compleate this task
+      * -- error logic has been build in use value incase the function was incorrectly called
+      * <p>if (mapCenterLocation == null)
+      * <p>- the default Center of the loaded map will be taken
+      * <p>-  if (i_default_zoom == 1)
+      * <p>-- the default Zoom of the loaded map will be taken
+      * <p>-  if (i_default_zoom == 2)
+      * <p>-- the getMinZoom() of the loaded map will be taken
+      * @param map_View Map-View to set (if not null)
+      * @param mapCenterLocation [point/zoom to set]
+      * @return zoom-level
+      */
     public void setNewCenter( double lon, double lat, boolean drawIcon ) {
-        double[] mapCenterLocation = new double[]{lon, lat};
+        double[] mapCenterLocation = new double[]{lon, lat,(double)getZoomLevel()};
         MapsDirManager.getInstance().setMapViewCenter(mapView,mapCenterLocation,0);
         // mapView.getController().setCenter(new GeoPoint(lat, lon));
     }
