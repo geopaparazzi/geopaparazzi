@@ -29,14 +29,12 @@ import java.util.List;
 
 import org.mapsforge.android.maps.DebugSettings;
 import org.mapsforge.android.maps.MapActivity;
-import org.mapsforge.android.maps.MapController;
 import org.mapsforge.android.maps.MapScaleBar;
 import org.mapsforge.android.maps.MapScaleBar.TextField;
 import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.MapViewPosition;
 import org.mapsforge.android.maps.Projection;
 import org.mapsforge.android.maps.mapgenerator.MapGenerator;
-import org.mapsforge.android.maps.mapgenerator.databaserenderer.DatabaseRenderer;
 import org.mapsforge.android.maps.overlay.Overlay;
 import org.mapsforge.android.maps.overlay.OverlayItem;
 import org.mapsforge.android.maps.overlay.OverlayWay;
@@ -73,11 +71,11 @@ import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.text.Editable;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -109,6 +107,11 @@ import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.GeocodeActivity;
 import eu.geopaparazzi.library.util.activities.InsertCoordActivity;
 import eu.geopaparazzi.library.util.debug.Debug;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.CustomTileDownloader;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.GeopackageTileDownloader;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapGeneratorInternal;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.MapsDirTreeViewList;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.activities.DataListActivity;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
@@ -120,14 +123,6 @@ import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.maps.overlays.ArrayGeopaparazziOverlay;
-// -begin- MapsDir specific
-import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.MapsDirTreeViewList;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.ClassNodeInfo;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.CustomTileDownloader;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.GeopackageTileDownloader;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapGeneratorInternal;
-// -end-  MapsDir specific
 import eu.hydrologis.geopaparazzi.osm.OsmCategoryActivity;
 import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
@@ -135,6 +130,8 @@ import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.MixareUtilities;
 import eu.hydrologis.geopaparazzi.util.Note;
+// -begin- MapsDir specific
+// -end-  MapsDir specific
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
@@ -293,9 +290,9 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             if (!b_map_file) { // with map files mapGenerator has already been added.
                 mapView.setMapGenerator(mapGenerator);
             }
-           // GeoPoint geoPoint = new GeoPoint(mapCenterLocation[1], mapCenterLocation[0]);
-           // mapView.getController().setZoom((int) mapCenterLocation[2]);
-           // mapView.getController().setCenter(geoPoint);
+            // GeoPoint geoPoint = new GeoPoint(mapCenterLocation[1], mapCenterLocation[0]);
+            // mapView.getController().setZoom((int) mapCenterLocation[2]);
+            // mapView.getController().setCenter(geoPoint);
             if (maxZoomLevel == -1) {
                 maxZoomLevel = mapView.getMapZoomControls().getZoomLevelMax();
                 minZoomLevel = mapView.getMapZoomControls().getZoomLevelMin();
@@ -402,7 +399,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         });
         if (isSliderOpen) {
             slidingDrawer.open();
-        }else{
+        } else {
             slidingDrawer.close();
         }
 
@@ -848,39 +845,29 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
                                         msg = MessageFormat.format(
                                                 "Some of the features were uploaded, but not all of them ({0}).", text); //$NON-NLS-1$
-                                        openAlertDialog(msg);
+                                        Utilities.warningDialog(MapsActivity.this, msg, null);
                                     } else {
-                                        AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
-                                        builder.setMessage(msg)
-                                                .setCancelable(false)
-                                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
-                                                    public void onClick( DialogInterface dialog, int id ) {
-                                                        try {
-                                                            DaoNotes.deleteNotesByType(NoteType.OSM);
-                                                        } catch (IOException e) {
-                                                            e.printStackTrace();
-                                                        }
-                                                    }
-                                                })
-                                                .setNegativeButton(android.R.string.cancel,
-                                                        new DialogInterface.OnClickListener(){
-                                                            public void onClick( DialogInterface dialog, int id ) {
-                                                            }
-                                                        });
-                                        AlertDialog alertDialog = builder.create();
-                                        alertDialog.show();
+                                        Utilities.yesNoMessageDialog(MapsActivity.this, msg, new Runnable(){
+                                            public void run() {
+                                                try {
+                                                    DaoNotes.deleteNotesByType(NoteType.OSM);
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        }, null);
                                     }
                                 } else if (response.toLowerCase().trim().contains(OsmUtilities.ERROR_JSON)) {
                                     msg = getString(R.string.error_json_osm);
-                                    openAlertDialog(msg);
+                                    Utilities.warningDialog(MapsActivity.this, msg, null);
                                 } else if (response.toLowerCase().trim().contains(OsmUtilities.ERROR_OSM)) {
                                     msg = getString(R.string.error_osm_server);
-                                    openAlertDialog(msg);
+                                    Utilities.warningDialog(MapsActivity.this, msg, null);
                                 }
 
                             } else {
                                 String msg = getResources().getString(R.string.an_error_occurred_while_uploading_osm_tags);
-                                openAlertDialog(msg + e.getLocalizedMessage());
+                                Utilities.warningDialog(MapsActivity.this, msg + e.getLocalizedMessage(), null);
                             }
                         }
                     }.execute((String) null);
@@ -890,28 +877,12 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
     }
 
-    /**
-     * Open an alert dialog with a message and an ok button.
-     *
-     * @param msg the message to show.
-     */
-    private void openAlertDialog( String msg ) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
-        builder.setMessage(msg).setCancelable(false)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
-                    public void onClick( DialogInterface dialog, int id ) {
-                    }
-                });
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-    }
-
     @Override
     public void onWindowFocusChanged( boolean hasFocus ) {
         // SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (hasFocus) {
             double[] lastCenter = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
-            MapsDirManager.getInstance().setMapViewCenter(mapView,lastCenter,0);
+            MapsDirManager.getInstance().setMapViewCenter(mapView, lastCenter, 0);
             // GeoPoint geoPoint = new GeoPoint(lastCenter[1], lastCenter[0]);
             // mapView.getController().setZoom((int) lastCenter[2]);
             // mapView.getController().setCenter(geoPoint);
@@ -923,14 +894,14 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         saveCenterPref();
         super.onWindowFocusChanged(hasFocus);
     }
-     // -----------------------------------------------
+    // -----------------------------------------------
     /**
       * Return current Zoom [from MapsDirManager]
       *
       * @return integer minzoom
       */
     private int getZoomLevel() {
-     return MapsDirManager.getInstance().getCurrentZoom();
+        return MapsDirManager.getInstance().getCurrentZoom();
     }
     // -----------------------------------------------
     /**
@@ -940,8 +911,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
       * @return integer currentZoom
       */
     private void setZoomGuiText( int newZoom ) {
-     // checking is done to insure that the new Zoom is inside the supported min/max Zoom-levels
-     newZoom=MapsDirManager.getInstance().setCurrentZoom(newZoom);
+        // checking is done to insure that the new Zoom is inside the supported min/max Zoom-levels
+        newZoom = MapsDirManager.getInstance().setCurrentZoom(newZoom);
         zoomLevelText.setText(formatter.format(newZoom));
     }
     // -----------------------------------------------
@@ -960,22 +931,24 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
       * @return zoom-level
       */
     public void setNewCenter( double lon, double lat, boolean drawIcon ) {
-        double[] mapCenterLocation = new double[]{lon, lat,(double)getZoomLevel()};
-        MapsDirManager.getInstance().setMapViewCenter(mapView,mapCenterLocation,0);
+        double[] mapCenterLocation = new double[]{lon, lat, (double) getZoomLevel()};
+        MapsDirManager.getInstance().setMapViewCenter(mapView, mapCenterLocation, 0);
         // mapView.getController().setCenter(new GeoPoint(lat, lon));
     }
 
     public void setNewCenterAtZoom( final double centerX, final double centerY, final int zoom ) {
         double[] mapCenterLocation = new double[]{centerX, centerY, (double) zoom};
-        MapsDirManager.getInstance().setMapViewCenter(mapView,mapCenterLocation,0);
+        MapsDirManager.getInstance().setMapViewCenter(mapView, mapCenterLocation, 0);
         // mapView.getController().setZoom(zoom);
         setZoomGuiText(zoom);
-        // mapView.getController().setCenter(new GeoPoint((int) (centerY * LibraryConstants.E6), (int) (centerX * LibraryConstants.E6)));
+        // mapView.getController().setCenter(new GeoPoint((int) (centerY * LibraryConstants.E6),
+        // (int) (centerX * LibraryConstants.E6)));
     }
 
     public double[] getCenterLonLat() {
         // GeoPoint mapCenter = mapView.getMapPosition().getMapCenter();
-        // double[] lonLat = {mapCenter.longitudeE6 / LibraryConstants.E6, mapCenter.latitudeE6 / LibraryConstants.E6};
+        // double[] lonLat = {mapCenter.longitudeE6 / LibraryConstants.E6, mapCenter.latitudeE6 /
+        // LibraryConstants.E6};
         return MapsDirManager.getInstance().getMapCenter();
     }
 
@@ -1043,21 +1016,21 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             return goTo();
         }
         case CENTER_ON_MAP: {
-         /*
-            MapGenerator mapGenerator = mapView.getMapGenerator();
-            GeoPoint mapCenter;
-            MapController controller = mapView.getController();
-            if (mapGenerator instanceof DatabaseRenderer) {
-                mapCenter = mapView.getMapDatabase().getMapFileInfo().mapCenter;
-            } else {
-                mapCenter = mapGenerator.getStartPoint();
-                // Utilities.messageDialog(this,
-                // "This operation works only for file based data maps", null);
-            }
-            controller.setCenter(mapCenter);
-            controller.setZoom(minZoomLevel);
-            * */
-            MapsDirManager.getInstance().setMapViewCenter(mapView,null,2);
+            /*
+               MapGenerator mapGenerator = mapView.getMapGenerator();
+               GeoPoint mapCenter;
+               MapController controller = mapView.getController();
+               if (mapGenerator instanceof DatabaseRenderer) {
+                   mapCenter = mapView.getMapDatabase().getMapFileInfo().mapCenter;
+               } else {
+                   mapCenter = mapGenerator.getStartPoint();
+                   // Utilities.messageDialog(this,
+                   // "This operation works only for file based data maps", null);
+               }
+               controller.setCenter(mapCenter);
+               controller.setZoom(minZoomLevel);
+               * */
+            MapsDirManager.getInstance().setMapViewCenter(mapView, null, 2);
             saveCenterPref();
             return true;
         }
