@@ -42,10 +42,11 @@
 
     <application
         android:name="eu.hydrologis.geopaparazzi.GeopaparazziApplication"
-        android:icon="@drawable/icon"
-        android:launchMode="singleTask"
-        android:label="@string/app_name"
         android:allowBackup="true"
+        android:icon="@drawable/icon"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:launchMode="singleTask"
         android:theme="@android:style/Theme.NoTitleBar" >
         <activity
             android:name=".GeoPaparazziActivity"
@@ -107,7 +108,6 @@
         </activity>
         <activity android:name="eu.geopaparazzi.spatialite.database.spatial.activities.DataListActivity" >
         </activity>
-
         <activity android:name=".maps.MapsActivity" >
             <intent-filter>
                 <action android:name="eu.hydrologis.geopaparazzi.maps.MAP_VIEW" />
