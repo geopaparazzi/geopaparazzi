@@ -138,7 +138,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
-                android:text="Min zoom"
+                android:text="@string/min_zoom"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/main_text_color" />
 
@@ -154,7 +154,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
-                android:text="Max zoom"
+                android:text="@string/max_zoom"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/main_text_color" />
 

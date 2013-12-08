@@ -17,10 +17,13 @@
  */
 package eu.geopaparazzi.spatialite.database.spatial.activities;
 
+import java.util.ArrayList;
+
 import jsqlite.Exception;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import eu.geopaparazzi.spatialite.R;
@@ -42,6 +45,8 @@ public class PolygonsDataPropertiesActivity extends Activity {
     private Spinner fillColorSpinner;
     private Spinner fillAlphaSpinner;
     private EditText decimationText;
+    private Spinner minZoomSpinner;
+    private Spinner maxZoomSpinner;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -55,7 +60,9 @@ public class PolygonsDataPropertiesActivity extends Activity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        GPLog.androidLog(-1,"PolygonsDataPropertiesActivity.onCreate["+spatialTable.getName()+"] label_list.size["+spatialTable.getLabelList().size()+"] selected_label["+spatialTable.getLabelField()+"] PrimaryKeys["+spatialTable.getPrimaryKeyFields()+"] ");
+        GPLog.androidLog(-1, "PolygonsDataPropertiesActivity.onCreate[" + spatialTable.getName() + "] label_list.size["
+                + spatialTable.getLabelList().size() + "] selected_label[" + spatialTable.getLabelField() + "] PrimaryKeys["
+                + spatialTable.getPrimaryKeyFields() + "] ");
         colorSpinner = (Spinner) findViewById(R.id.color_spinner);
         String strokecolor = spatialTable.getStyle().strokecolor;
         int count = colorSpinner.getCount();
@@ -107,6 +114,37 @@ public class PolygonsDataPropertiesActivity extends Activity {
         String decimation = String.valueOf(spatialTable.getStyle().decimationFactor);
         decimationText = (EditText) findViewById(R.id.decimation_text);
         decimationText.setText(decimation);
+
+        int minZoom = spatialTable.getStyle().minZoom;
+        int tableMinZoom = spatialTable.getMinZoom();
+        int tableMaxZoom = spatialTable.getMaxZoom();
+        ArrayList<String> minMaxSequence = new ArrayList<String>();
+        for( int i = tableMinZoom; i <= tableMaxZoom; i++ ) {
+            minMaxSequence.add(String.valueOf(i));
+        }
+        minZoomSpinner = (Spinner) findViewById(R.id.minzoom_spinner);
+        ArrayAdapter<String> queryAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, minMaxSequence);
+        queryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        minZoomSpinner.setAdapter(queryAdapter);
+        count = minZoomSpinner.getCount();
+        for( int i = 0; i < count; i++ ) {
+            if (minZoomSpinner.getItemAtPosition(i).equals(String.valueOf(minZoom))) {
+                minZoomSpinner.setSelection(i);
+                break;
+            }
+        }
+
+        int maxZoom = spatialTable.getStyle().maxZoom;
+        maxZoomSpinner = (Spinner) findViewById(R.id.maxzoom_spinner);
+        queryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        maxZoomSpinner.setAdapter(queryAdapter);
+        count = maxZoomSpinner.getCount();
+        for( int i = 0; i < count; i++ ) {
+            if (maxZoomSpinner.getItemAtPosition(i).equals(String.valueOf(maxZoom))) {
+                maxZoomSpinner.setSelection(i);
+                break;
+            }
+        }
     }
 
     public void onOkClick( View view ) {
@@ -136,6 +174,12 @@ public class PolygonsDataPropertiesActivity extends Activity {
         } catch (java.lang.Exception e) {
         }
         spatialTable.getStyle().decimationFactor = decimation;
+
+        String minZoom = (String) minZoomSpinner.getSelectedItem();
+        spatialTable.getStyle().minZoom = Integer.parseInt(minZoom);
+
+        String maxZoom = (String) maxZoomSpinner.getSelectedItem();
+        spatialTable.getStyle().maxZoom = Integer.parseInt(maxZoom);
 
         try {
             SpatialDatabasesManager.getInstance().updateStyle(spatialTable);
