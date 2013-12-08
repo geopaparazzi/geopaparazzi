@@ -85,6 +85,7 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
     }
     public List<MbtilesDatabaseHandler.AsyncTasks> async_parms = new ArrayList<MbtilesDatabaseHandler.AsyncTasks>();
     public String s_request_url_source = "";
+    public String s_request_protocol=""; // 'file' or 'http'
     public String s_request_bounds = "";
     public String s_request_bounds_url = "";
     public String s_request_zoom_levels = "";
@@ -737,6 +738,11 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
              // reserved for future
                 s_request_y_type = s_value;
             }
+            if (s_key.equals("request_protocol")) {
+             // 'file' or 'http'
+                s_request_protocol = s_value;
+            }
+
             //GPLog.androidLog(-1, "run_retrieve_url: key[" + s_key + "]  value[" + s_value + "] load[" + i_load_url + "] ");
         }
         // check if the pre-requriment for REQUEST_CREATE are fullfilled
@@ -754,10 +760,6 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
          }
         }
         // The order of adding is important
-        if ((this.async_mbtiles_metadata != null) && (this.async_mbtiles_metadata.size() > 0))
-        {
-         async_parms.add(AsyncTasks.RESET_METADATA);
-        }
         if (i_update_bounds > 0) { // will do an extensive check on bounds and zoom-level, updating
                                    // the mbtiles.metadata table
             async_parms.add(AsyncTasks.UPDATE_BOUNDS);
@@ -777,6 +779,10 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
         }
         if (i_load_url > 0) { // will download requested tiles
             async_parms.add(AsyncTasks.REQUEST_URL);
+        }
+        if ((this.async_mbtiles_metadata != null) && (this.async_mbtiles_metadata.size() > 0))
+        {
+         async_parms.add(AsyncTasks.RESET_METADATA);
         }
         if (async_parms.size() > 0) {
             mbtiles_async = new MBtilesAsync(this);

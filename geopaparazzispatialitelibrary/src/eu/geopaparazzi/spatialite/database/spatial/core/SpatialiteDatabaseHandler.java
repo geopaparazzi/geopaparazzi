@@ -153,7 +153,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
         }
         if (isValid()) {
             setDescription(s_name);
-            GPLog.androidLog(-1,"SpatialiteDatabaseHandler["+s_name+"]["+getJavaSqliteDescription()+"]");
+            // GPLog.androidLog(-1,"SpatialiteDatabaseHandler["+s_name+"]["+getJavaSqliteDescription()+"]");
         }
         // GPLog.androidLog(-1,"SpatialiteDatabaseHandler[" + file_map.getAbsolutePath() +
         // "] name["+s_name+"] s_description["+s_description+"]");
