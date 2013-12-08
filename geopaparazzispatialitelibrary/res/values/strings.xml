@@ -11,4 +11,5 @@
     <string name="decimation_factor_default">0.000001</string>
     <string name="min_zoom">Min zoom</string>
     <string name="max_zoom">Max zoom</string>
+    <string name="dash_pattern">Dash pattern</string>
 </resources>

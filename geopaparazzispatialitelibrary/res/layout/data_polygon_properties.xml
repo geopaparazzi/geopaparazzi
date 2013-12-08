@@ -116,6 +116,55 @@
                 android:inputType="numberDecimal"
                 android:padding="5dp"
                 android:text="@string/decimation_factor_default" />
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:text="@string/min_zoom"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/main_text_color" />
+
+            <Spinner
+                android:id="@+id/minzoom_spinner"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/array_percentage"
+                android:padding="5dp" />
+
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:text="@string/max_zoom"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/main_text_color" />
+
+            <Spinner
+                android:id="@+id/maxzoom_spinner"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/array_percentage"
+                android:padding="5dp" />
+
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:text="@string/dash_pattern"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/main_text_color" />
+
+            <EditText
+                android:id="@+id/dashpattern_text"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:padding="5dp"
+                android:text="" />
         </LinearLayout>
     </ScrollView>
 

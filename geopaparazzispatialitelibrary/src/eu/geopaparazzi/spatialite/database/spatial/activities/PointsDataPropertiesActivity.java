@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Spinner;
 import eu.geopaparazzi.spatialite.R;
@@ -37,7 +38,7 @@ import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class PointsDataPropertiesActivity extends Activity implements OnItemSelectedListener {
+public class PointsDataPropertiesActivity extends Activity {
     private SpatialVectorTable spatialTable;
     private Spinner shapesSpinner;
     private Spinner sizeSpinner;
@@ -48,6 +49,7 @@ public class PointsDataPropertiesActivity extends Activity implements OnItemSele
     private Spinner fillAlphaSpinner;
     private Spinner minZoomSpinner;
     private Spinner maxZoomSpinner;
+    private EditText dashPatternText;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -63,7 +65,6 @@ public class PointsDataPropertiesActivity extends Activity implements OnItemSele
         }
 
         shapesSpinner = (Spinner) findViewById(R.id.shape_spinner);
-        shapesSpinner.setOnItemSelectedListener(this);
         String shape = spatialTable.getStyle().shape;
         int count = shapesSpinner.getCount();
         for( int i = 0; i < count; i++ ) {
@@ -74,7 +75,6 @@ public class PointsDataPropertiesActivity extends Activity implements OnItemSele
         }
         String size = String.valueOf((int) spatialTable.getStyle().size);
         sizeSpinner = (Spinner) findViewById(R.id.size_spinner);
-        sizeSpinner.setOnItemSelectedListener(this);
         count = sizeSpinner.getCount();
         for( int i = 0; i < count; i++ ) {
             if (sizeSpinner.getItemAtPosition(i).equals(size)) {
@@ -84,7 +84,6 @@ public class PointsDataPropertiesActivity extends Activity implements OnItemSele
         }
 
         colorSpinner = (Spinner) findViewById(R.id.color_spinner);
-        colorSpinner.setOnItemSelectedListener(this);
         String strokecolor = spatialTable.getStyle().strokecolor;
         count = colorSpinner.getCount();
         for( int i = 0; i < count; i++ ) {
@@ -95,7 +94,6 @@ public class PointsDataPropertiesActivity extends Activity implements OnItemSele
         }
         String width = String.valueOf((int) spatialTable.getStyle().width);
         widthSpinner = (Spinner) findViewById(R.id.width_spinner);
-        widthSpinner.setOnItemSelectedListener(this);
         count = widthSpinner.getCount();
         for( int i = 0; i < count; i++ ) {
             if (widthSpinner.getItemAtPosition(i).equals(width)) {
@@ -105,7 +103,6 @@ public class PointsDataPropertiesActivity extends Activity implements OnItemSele
         }
         String alpha = String.valueOf((int) (spatialTable.getStyle().strokealpha * 100f));
         alphaSpinner = (Spinner) findViewById(R.id.alpha_spinner);
-        alphaSpinner.setOnItemSelectedListener(this);
         count = alphaSpinner.getCount();
         for( int i = 0; i < count; i++ ) {
             if (alphaSpinner.getItemAtPosition(i).equals(alpha)) {
@@ -115,7 +112,6 @@ public class PointsDataPropertiesActivity extends Activity implements OnItemSele
         }
 
         fillColorSpinner = (Spinner) findViewById(R.id.fill_color_spinner);
-        fillColorSpinner.setOnItemSelectedListener(this);
         String fillcolor = spatialTable.getStyle().fillcolor;
         count = fillColorSpinner.getCount();
         for( int i = 0; i < count; i++ ) {
@@ -127,7 +123,6 @@ public class PointsDataPropertiesActivity extends Activity implements OnItemSele
 
         String fillAlpha = String.valueOf((int) (spatialTable.getStyle().fillalpha * 100f));
         fillAlphaSpinner = (Spinner) findViewById(R.id.fill_alpha_spinner);
-        fillAlphaSpinner.setOnItemSelectedListener(this);
         count = fillAlphaSpinner.getCount();
         for( int i = 0; i < count; i++ ) {
             if (fillAlphaSpinner.getItemAtPosition(i).equals(fillAlpha)) {
@@ -147,7 +142,6 @@ public class PointsDataPropertiesActivity extends Activity implements OnItemSele
         ArrayAdapter<String> queryAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, minMaxSequence);
         queryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         minZoomSpinner.setAdapter(queryAdapter);
-        minZoomSpinner.setOnItemSelectedListener(this);
         count = minZoomSpinner.getCount();
         for( int i = 0; i < count; i++ ) {
             if (minZoomSpinner.getItemAtPosition(i).equals(String.valueOf(minZoom))) {
@@ -160,7 +154,6 @@ public class PointsDataPropertiesActivity extends Activity implements OnItemSele
         maxZoomSpinner = (Spinner) findViewById(R.id.maxzoom_spinner);
         queryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         maxZoomSpinner.setAdapter(queryAdapter);
-        maxZoomSpinner.setOnItemSelectedListener(this);
         count = maxZoomSpinner.getCount();
         for( int i = 0; i < count; i++ ) {
             if (maxZoomSpinner.getItemAtPosition(i).equals(String.valueOf(maxZoom))) {
@@ -169,9 +162,48 @@ public class PointsDataPropertiesActivity extends Activity implements OnItemSele
             }
         }
 
+        String dashPattern = spatialTable.getStyle().dashPattern;
+        dashPatternText = (EditText) findViewById(R.id.dashpattern_text);
+        dashPatternText.setText(dashPattern);
+
     }
 
     public void onOkClick( View view ) {
+
+        String color = (String) colorSpinner.getSelectedItem();
+        spatialTable.getStyle().strokecolor = color;
+
+        String sizeString = (String) sizeSpinner.getSelectedItem();
+        float size = Float.parseFloat(sizeString);
+        spatialTable.getStyle().size = size;
+
+        String widthString = (String) widthSpinner.getSelectedItem();
+        float width = Float.parseFloat(widthString);
+        spatialTable.getStyle().width = width;
+
+        String alphaString = (String) alphaSpinner.getSelectedItem();
+        float alpha100 = Float.parseFloat(alphaString);
+        spatialTable.getStyle().strokealpha = alpha100 / 100f;
+
+        String fillColor = (String) fillColorSpinner.getSelectedItem();
+        spatialTable.getStyle().fillcolor = fillColor;
+
+        String fillAlphaString = (String) fillAlphaSpinner.getSelectedItem();
+        float fillAlpha100 = Float.parseFloat(fillAlphaString);
+        spatialTable.getStyle().fillalpha = fillAlpha100 / 100f;
+
+        String shapeColor = (String) shapesSpinner.getSelectedItem();
+        spatialTable.getStyle().shape = shapeColor;
+
+        String minZoom = (String) minZoomSpinner.getSelectedItem();
+        spatialTable.getStyle().minZoom = Integer.parseInt(minZoom);
+
+        String maxZoom = (String) maxZoomSpinner.getSelectedItem();
+        spatialTable.getStyle().maxZoom = Integer.parseInt(maxZoom);
+
+        String dashPatternString = dashPatternText.getText().toString();
+        spatialTable.getStyle().dashPattern = dashPatternString;
+
         try {
             SpatialDatabasesManager.getInstance().updateStyle(spatialTable);
             finish();
@@ -182,46 +214,6 @@ public class PointsDataPropertiesActivity extends Activity implements OnItemSele
 
     public void onCancelClick( View view ) {
         finish();
-    }
-
-    @Override
-    public void onItemSelected( AdapterView< ? > callingView, View view, int arg2, long arg3 ) {
-        if (callingView.equals(colorSpinner)) {
-            String color = (String) colorSpinner.getSelectedItem();
-            spatialTable.getStyle().strokecolor = color;
-        } else if (callingView.equals(sizeSpinner)) {
-            String sizeString = (String) sizeSpinner.getSelectedItem();
-            float size = Float.parseFloat(sizeString);
-            spatialTable.getStyle().size = size;
-        } else if (callingView.equals(widthSpinner)) {
-            String widthString = (String) widthSpinner.getSelectedItem();
-            float width = Float.parseFloat(widthString);
-            spatialTable.getStyle().width = width;
-        } else if (callingView.equals(alphaSpinner)) {
-            String alphaString = (String) alphaSpinner.getSelectedItem();
-            float alpha100 = Float.parseFloat(alphaString);
-            spatialTable.getStyle().strokealpha = alpha100 / 100f;
-        } else if (callingView.equals(fillColorSpinner)) {
-            String color = (String) fillColorSpinner.getSelectedItem();
-            spatialTable.getStyle().fillcolor = color;
-        } else if (callingView.equals(fillAlphaSpinner)) {
-            String alphaString = (String) fillAlphaSpinner.getSelectedItem();
-            float alpha100 = Float.parseFloat(alphaString);
-            spatialTable.getStyle().fillalpha = alpha100 / 100f;
-        } else if (callingView.equals(shapesSpinner)) {
-            String color = (String) shapesSpinner.getSelectedItem();
-            spatialTable.getStyle().shape = color;
-        } else if (callingView.equals(minZoomSpinner)) {
-            String minZoom = (String) minZoomSpinner.getSelectedItem();
-            spatialTable.getStyle().minZoom = Integer.parseInt(minZoom);
-        } else if (callingView.equals(maxZoomSpinner)) {
-            String maxZoom = (String) maxZoomSpinner.getSelectedItem();
-            spatialTable.getStyle().maxZoom = Integer.parseInt(maxZoom);
-        }
-    }
-
-    @Override
-    public void onNothingSelected( AdapterView< ? > arg0 ) {
     }
 
 }

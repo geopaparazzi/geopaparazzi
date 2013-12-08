@@ -47,6 +47,7 @@ public class PolygonsDataPropertiesActivity extends Activity {
     private EditText decimationText;
     private Spinner minZoomSpinner;
     private Spinner maxZoomSpinner;
+    private EditText dashPatternText;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -145,6 +146,10 @@ public class PolygonsDataPropertiesActivity extends Activity {
                 break;
             }
         }
+
+        String dashPattern = spatialTable.getStyle().dashPattern;
+        dashPatternText = (EditText) findViewById(R.id.dashpattern_text);
+        dashPatternText.setText(dashPattern);
     }
 
     public void onOkClick( View view ) {
@@ -180,6 +185,9 @@ public class PolygonsDataPropertiesActivity extends Activity {
 
         String maxZoom = (String) maxZoomSpinner.getSelectedItem();
         spatialTable.getStyle().maxZoom = Integer.parseInt(maxZoom);
+
+        String dashPatternString = dashPatternText.getText().toString();
+        spatialTable.getStyle().dashPattern = dashPatternString;
 
         try {
             SpatialDatabasesManager.getInstance().updateStyle(spatialTable);
