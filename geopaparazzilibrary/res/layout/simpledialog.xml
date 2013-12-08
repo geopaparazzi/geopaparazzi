@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/dialog_background"
+    android:orientation="vertical"
     android:paddingBottom="10dp" >
 
     <ScrollView
         android:id="@+id/dialogtext_scroll"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-                android:layout_above="@+id/dialogButtonOK"
-        android:layout_alignParentTop="true"
+        android:layout_height="0dp"
         android:layout_margin="15dp"
-         >
+        android:layout_weight="1" >
 
         <TextView
             android:id="@+id/dialogtext"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:text="dummy text"
+            android:text="dummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\n"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/main_text_color" />
     </ScrollView>
@@ -28,8 +27,9 @@
         android:id="@+id/dialogButtonOK"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:background="@drawable/button_background_drawable"
         android:paddingBottom="10dp"
         android:paddingLeft="30dp"
@@ -39,4 +39,4 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/main_text_color" />
 
-</RelativeLayout>
+</LinearLayout>
