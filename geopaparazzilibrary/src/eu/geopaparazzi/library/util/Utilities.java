@@ -326,6 +326,31 @@ public class Utilities {
     }
 
     /**
+     * A warning dialog. 
+     * 
+     * <b>NOT IMPLEMENTED YET, FOR NOW JUST CALLS {@link #messageDialog}</b>
+     * 
+     * @param context
+     * @param msg
+     * @param okRunnable
+     */
+    public static void warningDialog( final Context context, final String msg, final Runnable okRunnable ) {
+        messageDialog(context, msg, okRunnable);
+    }
+    /**
+     * A warning dialog. 
+     * 
+     * <b>NOT IMPLEMENTED YET, FOR NOW JUST CALLS {@link #messageDialog}</b>
+     * 
+     * @param context
+     * @param msgId
+     * @param okRunnable
+     */
+    public static void warningDialog( final Context context, final int msgId, final Runnable okRunnable ) {
+        messageDialog(context, msgId, okRunnable);
+    }
+
+    /**
      * Execute a toast in an {@link AsyncTask}.
      * 
      * @param context the {@link Context} to use.
@@ -396,7 +421,7 @@ public class Utilities {
             }
         });
         dialog.show();
-        
+
     }
 
     public static void ring( Context context ) {
