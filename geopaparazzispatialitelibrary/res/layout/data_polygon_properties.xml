@@ -27,7 +27,7 @@
                 android:padding="5dp"
                 android:text="@string/stroke_color"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/main_text_color_neutral" />
+                android:textColor="@color/main_text_color" />
 
             <Spinner
                 android:id="@+id/color_spinner"
@@ -43,7 +43,7 @@
                 android:padding="5dp"
                 android:text="@string/width"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/main_text_color_neutral" />
+                android:textColor="@color/main_text_color" />
 
             <Spinner
                 android:id="@+id/width_spinner"
@@ -59,7 +59,7 @@
                 android:padding="5dp"
                 android:text="@string/alpha"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/main_text_color_neutral" />
+                android:textColor="@color/main_text_color" />
 
             <Spinner
                 android:id="@+id/alpha_spinner"
@@ -75,7 +75,7 @@
                 android:padding="5dp"
                 android:text="@string/fill_color"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/main_text_color_neutral" />
+                android:textColor="@color/main_text_color" />
 
             <Spinner
                 android:id="@+id/fill_color_spinner"
@@ -91,7 +91,7 @@
                 android:padding="5dp"
                 android:text="@string/fill_alpha"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/main_text_color_neutral" />
+                android:textColor="@color/main_text_color" />
 
             <Spinner
                 android:id="@+id/fill_alpha_spinner"
@@ -107,7 +107,7 @@
                 android:padding="5dp"
                 android:text="@string/decimation"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/main_text_color_neutral" />
+                android:textColor="@color/main_text_color" />
 
             <EditText
                 android:id="@+id/decimation_text"
