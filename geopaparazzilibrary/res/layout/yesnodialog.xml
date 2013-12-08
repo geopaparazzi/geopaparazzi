@@ -5,22 +5,30 @@
     android:background="@drawable/dialog_background"
     android:paddingBottom="10dp" >
 
-    <TextView
-        android:id="@+id/dialogtext"
+    <ScrollView
+        android:id="@+id/dialogtext_scroll"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:gravity="center_horizontal"
-        android:text="dummy text"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/main_text_color" />
+        android:layout_above="@+id/buttons_layout"
+        android:layout_alignParentTop="true"
+        android:layout_margin="15dp" >
+
+        <TextView
+            android:id="@+id/dialogtext"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="dummy text"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/main_text_color" />
+    </ScrollView>
 
     <LinearLayout
+        android:id="@+id/buttons_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/dialogtext"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp"
         android:orientation="horizontal" >
 
         <Button

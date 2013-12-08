@@ -8,13 +8,16 @@
     <ScrollView
         android:id="@+id/dialogtext_scroll"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+                android:layout_above="@+id/dialogButtonOK"
+        android:layout_alignParentTop="true"
+        android:layout_margin="15dp"
+         >
 
         <TextView
             android:id="@+id/dialogtext"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
             android:gravity="center_horizontal"
             android:text="dummy text"
             android:textAppearance="?android:attr/textAppearanceLarge"
@@ -25,9 +28,8 @@
         android:id="@+id/dialogButtonOK"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/dialogtext_scroll"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp"
         android:background="@drawable/button_background_drawable"
         android:paddingBottom="10dp"
         android:paddingLeft="30dp"
