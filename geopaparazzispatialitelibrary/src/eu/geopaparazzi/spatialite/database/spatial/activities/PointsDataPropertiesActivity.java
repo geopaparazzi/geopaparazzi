@@ -17,11 +17,14 @@
  */
 package eu.geopaparazzi.spatialite.database.spatial.activities;
 
+import java.util.ArrayList;
+
 import jsqlite.Exception;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Spinner;
 import eu.geopaparazzi.spatialite.R;
@@ -43,6 +46,8 @@ public class PointsDataPropertiesActivity extends Activity implements OnItemSele
     private Spinner alphaSpinner;
     private Spinner fillColorSpinner;
     private Spinner fillAlphaSpinner;
+    private Spinner minZoomSpinner;
+    private Spinner maxZoomSpinner;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -77,7 +82,7 @@ public class PointsDataPropertiesActivity extends Activity implements OnItemSele
                 break;
             }
         }
-        
+
         colorSpinner = (Spinner) findViewById(R.id.color_spinner);
         colorSpinner.setOnItemSelectedListener(this);
         String strokecolor = spatialTable.getStyle().strokecolor;
@@ -131,6 +136,39 @@ public class PointsDataPropertiesActivity extends Activity implements OnItemSele
             }
         }
 
+        int minZoom = spatialTable.getStyle().minZoom;
+        int tableMinZoom = spatialTable.getMinZoom();
+        int tableMaxZoom = spatialTable.getMaxZoom();
+        ArrayList<String> minMaxSequence = new ArrayList<String>();
+        for( int i = tableMinZoom; i <= tableMaxZoom; i++ ) {
+            minMaxSequence.add(String.valueOf(i));
+        }
+        minZoomSpinner = (Spinner) findViewById(R.id.minzoom_spinner);
+        ArrayAdapter<String> queryAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, minMaxSequence);
+        queryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        minZoomSpinner.setAdapter(queryAdapter);
+        minZoomSpinner.setOnItemSelectedListener(this);
+        count = minZoomSpinner.getCount();
+        for( int i = 0; i < count; i++ ) {
+            if (minZoomSpinner.getItemAtPosition(i).equals(String.valueOf(minZoom))) {
+                minZoomSpinner.setSelection(i);
+                break;
+            }
+        }
+
+        int maxZoom = spatialTable.getStyle().maxZoom;
+        maxZoomSpinner = (Spinner) findViewById(R.id.maxzoom_spinner);
+        queryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        maxZoomSpinner.setAdapter(queryAdapter);
+        maxZoomSpinner.setOnItemSelectedListener(this);
+        count = maxZoomSpinner.getCount();
+        for( int i = 0; i < count; i++ ) {
+            if (maxZoomSpinner.getItemAtPosition(i).equals(String.valueOf(maxZoom))) {
+                maxZoomSpinner.setSelection(i);
+                break;
+            }
+        }
+
     }
 
     public void onOkClick( View view ) {
@@ -173,6 +211,12 @@ public class PointsDataPropertiesActivity extends Activity implements OnItemSele
         } else if (callingView.equals(shapesSpinner)) {
             String color = (String) shapesSpinner.getSelectedItem();
             spatialTable.getStyle().shape = color;
+        } else if (callingView.equals(minZoomSpinner)) {
+            String minZoom = (String) minZoomSpinner.getSelectedItem();
+            spatialTable.getStyle().minZoom = Integer.parseInt(minZoom);
+        } else if (callingView.equals(maxZoomSpinner)) {
+            String maxZoom = (String) maxZoomSpinner.getSelectedItem();
+            spatialTable.getStyle().maxZoom = Integer.parseInt(maxZoom);
         }
     }
 
