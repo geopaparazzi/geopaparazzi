@@ -693,16 +693,20 @@ public abstract class GeopaparazziOverlay extends Overlay {
             List<SpatialVectorTable> spatialTables = sdManager.getSpatialVectorTables(false);
             for( int i = 0; i < spatialTables.size(); i++ ) {
                 SpatialVectorTable spatialTable = spatialTables.get(i);
-                 if (spatialTable.getStyle().enabled == 0) {
+                if (spatialTable.getStyle().enabled == 0) {
                     continue;
                 }
                 if (isInterrupted() || sizeHasChanged()) {
                     // stop working
                     return;
                 }
-                ISpatialDatabaseHandler spatialDatabaseHandler = sdManager.getVectorHandler(spatialTable);
-                String s_geometry_type="";
                 Style style4Table = spatialTable.getStyle();
+                if ((int) drawZoomLevel < style4Table.minZoom || (int) drawZoomLevel > style4Table.maxZoom) {
+                    continue;
+                }
+
+                ISpatialDatabaseHandler spatialDatabaseHandler = sdManager.getVectorHandler(spatialTable);
+                String s_geometry_type = "";
                 GeometryIterator geometryIterator = null;
                 try {
                     // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite["+spatialTable.getName()+"]: geometry_type["+spatialTable.getMapType()+"] ");

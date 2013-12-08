@@ -29,6 +29,7 @@ import jsqlite.Database;
 import jsqlite.Constants;
 import jsqlite.Exception;
 import jsqlite.Stmt;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Paint.Cap;
 import android.graphics.Paint.Join;
@@ -1407,6 +1408,26 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
         float alpha = style.strokealpha * 255f;
         paint.setAlpha((int) alpha);
         paint.setStrokeWidth(style.width);
+
+        String dashPattern = style.dashPattern;
+        if (dashPattern.trim().length() > 0) {
+            String[] split = dashPattern.split(",");
+            if (split.length > 1) {
+                float[] dash = new float[split.length];
+                for( int i = 0; i < split.length; i++ ) {
+                    try {
+                        float tmpDash = Float.parseFloat(split[0].trim());
+                        dash[i] = tmpDash;
+                    } catch (NumberFormatException e) {
+                        // ignore and set default
+                        dash = new float[]{20f, 10f};
+                        break;
+                    }
+                }
+                paint.setPathEffect(new DashPathEffect(dash, 0));
+            }
+        }
+
         return paint;
     }
     // -----------------------------------------------
