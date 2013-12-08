@@ -170,7 +170,6 @@ public class CustomTileDownloader extends TileDownloader {
                             PROTOCOL = "file";
                             HOST_NAME = parentPath + File.separator + HOST_NAME;
                             isFile = true;
-                            s_request_url = "";
                         }
                     } else {
                         // wms_server
@@ -200,6 +199,8 @@ public class CustomTileDownloader extends TileDownloader {
                         String[] coord = value.split("\\s+"); //$NON-NLS-1$
                         double x = Double.parseDouble(coord[0]);
                         double y = Double.parseDouble(coord[1]);
+                        center[0]=x;
+                        center[1]=y;
                         centerPoint = new GeoPoint(y, x);
                     } catch (NumberFormatException e) {
                         // use default
@@ -320,6 +321,10 @@ public class CustomTileDownloader extends TileDownloader {
                             if (!s_request_type.equals(""))
                                 s_comma = ",";
                             s_request_type += s_comma + sa_string[i].trim();
+                            if (s_request_zoom_levels.equals(""))
+                            { // if not set, do all
+                             s_request_zoom_levels = Integer.toString(this.minZoom) + "-" + Integer.toString(this.maxZoom);
+                            }
                          i_create = 1;
                         }
                         if (sa_string[i].equals("replace")) { // will replace existing tiles
@@ -380,6 +385,10 @@ public class CustomTileDownloader extends TileDownloader {
                     }
                     if ((request_bounds[0] >= bounds[0]) && (request_bounds[2] <= bounds[2]) && (request_bounds[1] >= bounds[1])
                             && (request_bounds[3] <= bounds[3])) {
+                        if (PROTOCOL.equals("file"))
+                        { // this must be the absolute path ; 'file:' will be added later after checking if the file exists
+                         s_request_url=parentPath + File.separator + s_request_url;
+                        }
                         mbtiles_request_url.put("request_url", s_request_url);
                         mbtiles_request_url.put("request_bounds", s_request_bounds);
                         mbtiles_request_url.put("request_bounds_url", s_bbox);
@@ -392,6 +401,8 @@ public class CustomTileDownloader extends TileDownloader {
                         if (type == TILESCHEMA.tms)
                             s_request_y_type = "tms";
                         mbtiles_request_url.put("request_y_type", s_request_y_type);
+                        mbtiles_request_url.put("request_protocol", PROTOCOL);
+                        // GPLog.androidLog(-1, "CustomTileDownloader [" + PROTOCOL + "] ["+ s_request_url + "]");
                     }
                 }
             }
@@ -687,7 +698,8 @@ public class CustomTileDownloader extends TileDownloader {
             sb.append(tilePath);
             // GPLog.androidLog(-1,"CustomTileDownloader.executeJob: name["+getName()
             // +"] host_name["+s_host_name+"] tilePath["+tilePath+"] ");
-            // GPLog.androidLog(-1,"CustomTileDownloader.executeJob: request["+sb.toString()+"] ");
+            if (isFile)
+             GPLog.androidLog(-1,"CustomTileDownloader.executeJob: request["+sb.toString()+"] ");
             Bitmap decodedBitmap = null;
 
             Context context = GeopaparazziLibraryContextHolder.INSTANCE.getContext();

@@ -610,7 +610,7 @@ public class MBTilesDroidSpitter {
         String s_field = "";
         int i_field_count = 0;
         Cursor c_tiles = db_mbtiles.rawQuery("SELECT type AS type_tiles FROM sqlite_master WHERE tbl_name = 'tiles'", null);
-        if (c_tiles != null) {
+        if ((c_tiles != null) && (c_tiles.getColumnCount() > 0) && (c_tiles.getCount() > 0)) {
             if (c_tiles.moveToFirst()) {
                 s_type_tiles = c_tiles.getString(c_tiles.getColumnIndex("type_tiles"));
             }
@@ -769,7 +769,7 @@ public class MBTilesDroidSpitter {
         db_lock.readLock().lock();
         try {
             Cursor c_tiles = db_mbtiles.rawQuery(s_select_sql, null);
-            if (c_tiles != null) {
+            if ((c_tiles != null) && (c_tiles.getColumnCount() > 0) && (c_tiles.getCount() > 0)) {
                 if (c_tiles.moveToFirst()) {
                     do { // map : do the fields zoom_level [z], tile_column [x], tile_row [y] and
                          // tile_id exist
@@ -855,7 +855,7 @@ public class MBTilesDroidSpitter {
             try {
                 s_sql_request_url = "pragma table_info(request_url)";
                 Cursor c_tiles = db_mbtiles.rawQuery(s_sql_request_url, null);
-                if (c_tiles != null) { // then the table exists [no it does not! fields must be
+                if ((c_tiles != null) && (c_tiles.getColumnCount() > 0) && (c_tiles.getCount() > 0)) { // then the table exists [no it does not! fields must be
                                        // read]
                     if ((c_tiles.getCount() > 0) && (c_tiles.moveToFirst())) {
                         do { // tiles : do the fields zoom_level [z], tile_column [x], tile_row [y]
@@ -871,7 +871,7 @@ public class MBTilesDroidSpitter {
                         this.i_request_url_count = 0;
                         s_sql_request_url = "SELECT count(tile_id) AS count_id FROM request_url";
                         c_tiles = db_mbtiles.rawQuery(s_sql_request_url, null);
-                        if (c_tiles != null) {
+                        if ((c_tiles != null) && (c_tiles.getColumnCount() > 0) && (c_tiles.getCount() > 0)) {
                             if (c_tiles.moveToFirst()) {
                                 this.i_request_url_count = c_tiles.getInt(c_tiles.getColumnIndex("count_id"));
                             }
@@ -1025,7 +1025,7 @@ public class MBTilesDroidSpitter {
             try {
                 String s_mbtiles_request_url = "SELECT tile_id,tile_url FROM request_url" + s_limit;
                 Cursor c_tiles = db_mbtiles.rawQuery(s_mbtiles_request_url, null);
-                if (c_tiles != null) { // avoid CursorIndexOutOfBoundsException
+                if ((c_tiles != null) && (c_tiles.getColumnCount() > 0) && (c_tiles.getCount() > 0)) { // avoid CursorIndexOutOfBoundsException
                     if ((c_tiles.getCount() > 0) && (c_tiles.moveToFirst())) {
                         do {
                             String s_tile_id = c_tiles.getString(c_tiles.getColumnIndex("tile_id"));
@@ -1237,19 +1237,21 @@ public class MBTilesDroidSpitter {
         if (mbtiles_metadata == null)
             mbtiles_metadata = this.mbtiles_metadata;
         String s_metadata_tablename = "metadata";
+        String s_tile_insert_metadata="";
         // ----------------------------------------------
         db_lock.writeLock().lock();
         mbtiles_db.beginTransaction();
         try {
             for( Map.Entry<String, String> metadata : mbtiles_metadata.entrySet() ) {
-                String s_tile_insert_metadata = "INSERT OR REPLACE INTO '" + s_metadata_tablename + "' VALUES('"
+                s_tile_insert_metadata = "INSERT OR REPLACE INTO '" + s_metadata_tablename + "' VALUES('"
                         + metadata.getKey() + "','" + metadata.getValue() + "')";
                 mbtiles_db.execSQL(s_tile_insert_metadata);
+                // GPLog.androidLog(-1, "MBTilesDroidSpitter:update_mbtiles_metadata[" + s_tile_insert_metadata + "]");
             }
             mbtiles_db.setTransactionSuccessful();
         } catch (Exception e) {
             i_rc = 1;
-            throw new IOException("MBTilesDroidSpitter:update_mbtiles_metadata error[" + e.getLocalizedMessage() + "]");
+            throw new IOException("MBTilesDroidSpitter:update_mbtiles_metadata sql["+s_tile_insert_metadata+"] error[" + e.getLocalizedMessage() + "]");
         } finally {
             mbtiles_db.endTransaction();
             db_lock.writeLock().unlock();
@@ -1275,6 +1277,12 @@ public class MBTilesDroidSpitter {
     public HashMap<String, String> fetch_bounds_minmax( int i_reload_metadata, int i_update ) {
         HashMap<String, String> update_metadata = new LinkedHashMap<String, String>();
         HashMap<String, String> bounds_min_max = fetch_bounds_minmax_tiles();
+        String s_zoom_min_max = "";
+        String s_bounds_tiles = "";
+        String s_bounds_center = "";
+        String s_minzoom = "";
+        String s_maxzoom = "";
+        String s_centerzoom = "";
         // GPLog.androidLog(-1,"MBTilesDroidSpitter.fetch_bounds_minmax: parms["+i_reload_metadata+"/"+i_update+"] bounds_min_max=["+bounds_min_max.size()+"]");
         if (bounds_min_max.size() > 0) {
             if (bounds_lat_long != null) {
@@ -1282,9 +1290,6 @@ public class MBTilesDroidSpitter {
             }
             bounds_lat_long = fetch_bounds_minmax_latlong(bounds_min_max, 256);
             if (bounds_lat_long.size() > 0) { // how to retrieve that last value only?
-                String s_zoom_min_max = "";
-                String s_bounds_tiles = "";
-                String s_bounds_center = "";
                 for( Map.Entry<String, String> zoom_levels : bounds_lat_long.entrySet() ) {
                     s_zoom_min_max = zoom_levels.getKey();
                     s_bounds_tiles = zoom_levels.getValue();
@@ -1294,9 +1299,9 @@ public class MBTilesDroidSpitter {
                     if (sa_splitted.length == 3) { // only the last record (with min/max/center
                                                    // zoom) will
                                                    // be used
-                        String s_minzoom = sa_splitted[0];
-                        String s_maxzoom = sa_splitted[1];
-                        String s_centerzoom = sa_splitted[2];
+                        s_minzoom = sa_splitted[0];
+                        s_maxzoom = sa_splitted[1];
+                        s_centerzoom = sa_splitted[2];
                         if ((s_minzoom != "") && (s_maxzoom != "")) {
                             sa_splitted = s_bounds_tiles.split(";");
                             if (sa_splitted.length == 2) {
@@ -1308,7 +1313,6 @@ public class MBTilesDroidSpitter {
                                     update_metadata.put("minzoom", s_minzoom);
                                     update_metadata.put("maxzoom", s_maxzoom);
                                     update_metadata.put("center", s_bounds_center);
-                                    // GPLog.androidLog(1,"fetch_bounds_minmax  bounds["+s_bounds_tiles+"] minzoom["+s_minzoom+"] maxzoom["+s_maxzoom+"]");
                                 }
                             }
                         }
@@ -1317,6 +1321,7 @@ public class MBTilesDroidSpitter {
             }
         }
         if ((i_update == 1) && (update_metadata.size() > 0)) {
+         // GPLog.androidLog(1,"fetch_bounds_minmax[update]  bounds["+s_bounds_tiles+"] minzoom["+s_minzoom+"] maxzoom["+s_maxzoom+"] center["+s_bounds_center+"]");
             try {
                 update_mbtiles_metadata(db_mbtiles, update_metadata, i_reload_metadata);
             } catch (Exception e) {
@@ -1373,7 +1378,7 @@ public class MBTilesDroidSpitter {
             c_tiles = db_mbtiles.rawQuery(SQL_GET_MINMAXZOOM_TILES, null);
             // mj10777: 20131123: avoid using table/view 'tiles' - with big databases can bring
             // things to a halt
-            if (c_tiles != null) { // avoid CursorIndexOutOfBoundsException
+            if ((c_tiles != null) && (c_tiles.getColumnCount() > 0) && (c_tiles.getCount() > 0)) { // avoid CursorIndexOutOfBoundsException
                 c_tiles.moveToFirst();
                 do { // 12 2197 2750 2203 2754
                     String s_zoom = c_tiles.getString(0);
@@ -1385,7 +1390,7 @@ public class MBTilesDroidSpitter {
                 c_tiles.close();
             }
         } catch (Exception e) {
-            GPLog.androidLog(4, "MBTilesDroidSpitter.fetch_bounds_minmax_tiles: sql[" + SQL_GET_MINMAXZOOM_TILES + "]", e);
+            GPLog.androidLog(4, "MBTilesDroidSpitter.fetch_bounds_minmax_tiles:  sql[" + SQL_GET_MINMAXZOOM_TILES + "]", e);
         } finally {
             db_lock.readLock().unlock();
         }
