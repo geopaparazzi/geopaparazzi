@@ -36,6 +36,9 @@ public class Style {
     public String textfield = "";
     public int enabled = 0;
     public int order = 0;
+    public String dashPattern = "";
+    public int minZoom = 0;
+    public int maxZoom = 22;
 
     public String insertValuesString() {
         StringBuilder sb = new StringBuilder();
@@ -63,6 +66,12 @@ public class Style {
         sb.append(enabled);
         sb.append(", ");
         sb.append(order);
+        sb.append(", '");
+        sb.append(dashPattern);
+        sb.append("', ");
+        sb.append(minZoom);
+        sb.append(", ");
+        sb.append(maxZoom);
         sb.append(", ");
         sb.append(decimationFactor);
         return sb.toString();

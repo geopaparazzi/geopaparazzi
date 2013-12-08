@@ -18,7 +18,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:text="dummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\ndummy text\n"
+            android:text="dummy text"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/main_text_color" />
     </ScrollView>
