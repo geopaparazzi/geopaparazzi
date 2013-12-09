@@ -1416,7 +1416,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                 float[] dash = new float[split.length];
                 for( int i = 0; i < split.length; i++ ) {
                     try {
-                        float tmpDash = Float.parseFloat(split[0].trim());
+                        float tmpDash = Float.parseFloat(split[i].trim());
                         dash[i] = tmpDash;
                     } catch (NumberFormatException e) {
                         // ignore and set default
