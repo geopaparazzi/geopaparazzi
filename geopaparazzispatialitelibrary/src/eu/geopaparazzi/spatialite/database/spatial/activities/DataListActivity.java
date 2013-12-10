@@ -124,7 +124,7 @@ public class DataListActivity extends ListActivity {
                         } else if (item.isPoint()) {
                             intent = new Intent(DataListActivity.this, PointsDataPropertiesActivity.class);
                         }
-                        intent.putExtra(SpatialiteLibraryConstants.PREFS_KEY_TEXT, item.getName());
+                        intent.putExtra(SpatialiteLibraryConstants.PREFS_KEY_TEXT, item.getUniqueName());
                         startActivity(intent);
 
                     }
@@ -152,8 +152,8 @@ public class DataListActivity extends ListActivity {
 
                 // rowView.setBackgroundColor(ColorUtilities.toColor(item.getColor()));
                 // mj10777: some tables may have more than one column, thus the column name will
-                // also be shown
-                nameView.setText(item.getName() + " [" + item.getGeomName() + "] [" + item.getMapType() + "]");
+                // also be shown item.getUniqueName()
+                nameView.setText(item.getName() + "." + item.getGeomName() + " [" + item.getMapType() + "] [" + item.getFileName() + "]");
 
                 visibleView.setChecked(item.getStyle().enabled != 0);
                 visibleView.setOnCheckedChangeListener(new OnCheckedChangeListener(){

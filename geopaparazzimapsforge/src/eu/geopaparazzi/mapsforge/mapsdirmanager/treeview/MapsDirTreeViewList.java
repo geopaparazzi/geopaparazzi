@@ -92,7 +92,7 @@ public class MapsDirTreeViewList extends Activity
  private final int id_mapsdir_context_menu_expand_item=12;
  // -----------------------------------------------
  /**
-   * setMapTypeClasses : source of Dat
+   * setMapTypeClasses : source of Data
    *
    * <ul>
    *  <li>the data has been collected by the different Map-Classes</li>

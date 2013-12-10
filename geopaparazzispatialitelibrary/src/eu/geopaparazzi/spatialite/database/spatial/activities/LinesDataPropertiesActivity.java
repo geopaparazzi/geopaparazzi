@@ -33,7 +33,7 @@ import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
 
 /**
  * Line Data properties activity.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class LinesDataPropertiesActivity extends Activity {
@@ -91,9 +91,9 @@ public class LinesDataPropertiesActivity extends Activity {
         decimationText = (EditText) findViewById(R.id.decimation_text);
         decimationText.setText(decimation);
 
-        int minZoom = spatialTable.getStyle().minZoom;
-        int tableMinZoom = spatialTable.getMinZoom();
-        int tableMaxZoom = spatialTable.getMaxZoom();
+        int minZoom = spatialTable.getMinZoom();
+        int tableMinZoom = 0; // spatialTable.getMinZoom();
+        int tableMaxZoom = 22; // spatialTable.getMaxZoom();
         ArrayList<String> minMaxSequence = new ArrayList<String>();
         for( int i = tableMinZoom; i <= tableMaxZoom; i++ ) {
             minMaxSequence.add(String.valueOf(i));
@@ -110,7 +110,7 @@ public class LinesDataPropertiesActivity extends Activity {
             }
         }
 
-        int maxZoom = spatialTable.getStyle().maxZoom;
+        int maxZoom = spatialTable.getMaxZoom();
         maxZoomSpinner = (Spinner) findViewById(R.id.maxzoom_spinner);
         queryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         maxZoomSpinner.setAdapter(queryAdapter);
@@ -121,7 +121,7 @@ public class LinesDataPropertiesActivity extends Activity {
                 break;
             }
         }
-        
+
         String dashPattern = spatialTable.getStyle().dashPattern;
         dashPatternText = (EditText) findViewById(R.id.dashpattern_text);
         dashPatternText.setText(dashPattern);
@@ -154,7 +154,7 @@ public class LinesDataPropertiesActivity extends Activity {
 
         String minZoom = (String) minZoomSpinner.getSelectedItem();
         spatialTable.getStyle().minZoom = Integer.parseInt(minZoom);
-        
+
         String maxZoom = (String) maxZoomSpinner.getSelectedItem();
         spatialTable.getStyle().maxZoom = Integer.parseInt(maxZoom);
 

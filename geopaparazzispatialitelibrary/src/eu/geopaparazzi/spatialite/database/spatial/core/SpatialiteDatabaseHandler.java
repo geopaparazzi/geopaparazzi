@@ -733,7 +733,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
             for( SpatialVectorTable spatialTable : vectorTableList ) {
                 Style style4Table = null;
                 try {
-                    style4Table = getStyle4Table(spatialTable.getName());
+                    style4Table = getStyle4Table(spatialTable.getUniqueName());
                 } catch (java.lang.Exception e) {
                     resetStyleTable();
                 }
@@ -792,7 +792,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                 centerBuilder.append(srid);
                 centerBuilder.append("),4326))) AS South_West,");
                 centerBuilder.append("ST_AsBinary(CastToXY(ST_Transform(MakePoint(");
-                centerBuilder.append("" + bounds_south + "," + bounds_north + ", ");
+                centerBuilder.append("" + bounds_east + "," + bounds_north + ", ");
                 centerBuilder.append(srid);
                 centerBuilder.append("),4326))) AS North_East ");
                 if (i_parm == 0) {
@@ -1164,7 +1164,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                 sbIn.append(" values ");
                 sbIn.append(" ( ");
                 Style style = new Style();
-                style.name = spatialTable.getName();
+                style.name = spatialTable.getUniqueName();
                 sbIn.append(style.insertValuesString());
                 sbIn.append(" );");
 
@@ -1451,7 +1451,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                 stmt.close();
             }
             GPLog.androidLog(-1,
-                    "getWKBFromTableInBounds srid[" + destSrid + "] name[" + table.getGeomName() + "] size[" + list.size()
+                    "SpatialiteDatabaseHandler.getWKBFromTableInBounds srid[" + destSrid + "] name[" + table.getGeomName() + "] size[" + list.size()
                             + "]query[" + query + "]");
             return list;
         } catch (Exception ex) {
@@ -1482,6 +1482,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
     public GeometryIterator getGeometryIteratorInBounds( String destSrid, SpatialVectorTable table, double n, double s, double e,
             double w ) {
         String query = buildGeometriesInBoundsQuery(destSrid, table, n, s, e, w);
+        // GPLog.androidLog(-1,"SpatialiteDatabaseHandler.getGeometryIteratorInBounds["+table.getUniqueName()+"]: query["+query+"]");
         return new GeometryIterator(db_java, query);
     }
 
@@ -1490,64 +1491,57 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
         if (!table.getSrid().equals(destSrid)) {
             doTransform = true;
         }
-
         StringBuilder mbrSb = new StringBuilder();
         if (doTransform)
             mbrSb.append("ST_Transform(");
         mbrSb.append("BuildMBR(");
         mbrSb.append(w);
-        mbrSb.append(", ");
+        mbrSb.append(",");
         mbrSb.append(n);
-        mbrSb.append(", ");
+        mbrSb.append(",");
         mbrSb.append(e);
-        mbrSb.append(", ");
+        mbrSb.append(",");
         mbrSb.append(s);
         if (doTransform) {
-            mbrSb.append(", ");
+            mbrSb.append(",");
             mbrSb.append(destSrid);
-            mbrSb.append("), ");
+            mbrSb.append("),");
             mbrSb.append(table.getSrid());
         }
         mbrSb.append(")");
         String mbr = mbrSb.toString();
-
         StringBuilder qSb = new StringBuilder();
         qSb.append("SELECT ST_AsBinary(CastToXY(");
         if (doTransform)
             qSb.append("ST_Transform(");
         qSb.append(table.getGeomName());
         if (doTransform) {
-            qSb.append(", ");
+            qSb.append(",");
             qSb.append(destSrid);
             qSb.append(")");
         }
         qSb.append("))");
-        // qSb.append(", AsText(");
-        // if (doTransform)
-        // qSb.append("ST_Transform(");
-        // qSb.append(table.geomName);
-        // if (doTransform) {
-        // qSb.append(", ");
-        // qSb.append(destSrid);
-        // qSb.append(")");
-        // }
-        // qSb.append(")");
         qSb.append(" FROM ");
         qSb.append(table.getName());
+        // the SpatialIndex would be searching for a square, the ST_Intersects the Geometry
+        // the SpatialIndex could be fulfilled, but checking the Geometry could return the result that it is not
         qSb.append(" WHERE ST_Intersects(");
         qSb.append(table.getGeomName());
         qSb.append(", ");
         qSb.append(mbr);
         qSb.append(") = 1");
-        qSb.append("   AND ROWID IN (");
-        qSb.append("     SELECT ROWID FROM Spatialindex WHERE f_table_name ='");
+        qSb.append(" AND ROWID IN (");
+        qSb.append("SELECT ROWID FROM Spatialindex WHERE f_table_name ='");
         qSb.append(table.getName());
         qSb.append("'");
-        qSb.append("     AND search_frame = ");
+        // if a table has more than 1 geometry, the column-name MUST be given, otherwise no results.
+        qSb.append(" AND f_geometry_column = '");
+        qSb.append(table.getGeomName());
+        qSb.append("'");
+        qSb.append(" AND search_frame = ");
         qSb.append(mbr);
-        qSb.append(" );");
+        qSb.append(");");
         String q = qSb.toString();
-
         return q;
     }
     /**
@@ -1616,20 +1610,20 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
             StringBuilder sbQ = new StringBuilder();
             sbQ.append("SELECT ");
             sbQ.append("*");
-            sbQ.append(" from ").append(spatialTable.getName());
-            sbQ.append(" where ST_Intersects(");
+            sbQ.append(" FROM ").append(spatialTable.getName());
+            sbQ.append(" WHERE ST_Intersects(");
             if (doTransform)
                 sbQ.append("ST_Transform(");
             sbQ.append("BuildMBR(");
             sbQ.append(w);
-            sbQ.append(", ");
+            sbQ.append(",");
             sbQ.append(s);
-            sbQ.append(", ");
+            sbQ.append(",");
             sbQ.append(e);
-            sbQ.append(", ");
+            sbQ.append(",");
             sbQ.append(n);
             if (doTransform) {
-                sbQ.append(", ");
+                sbQ.append(",");
                 sbQ.append(boundsSrid);
                 sbQ.append("),");
                 sbQ.append(spatialTable.getSrid());
@@ -1675,7 +1669,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
         sbQ.append(spatialTable.getName());
         sbQ.append(" WHERE ST_Intersects(");
         sbQ.append(spatialTable.getGeomName());
-        sbQ.append(", ");
+        sbQ.append(",");
         if (doTransform)
             sbQ.append("ST_Transform(");
         sbQ.append("MakePoint(");
@@ -1683,16 +1677,21 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
         sbQ.append(",");
         sbQ.append(n);
         if (doTransform) {
-            sbQ.append(", ");
+            sbQ.append(",");
             sbQ.append(queryPointSrid);
-            sbQ.append("), ");
+            sbQ.append("),");
             sbQ.append(spatialTable.getSrid());
         }
         sbQ.append(")) = 1 ");
         sbQ.append("AND ROWID IN (");
         sbQ.append("SELECT ROWID FROM Spatialindex WHERE f_table_name ='");
         sbQ.append(spatialTable.getName());
-        sbQ.append("' AND search_frame = ");
+        sbQ.append("'");
+        // if a table has more than 1 geometry, the column-name MUST be given, otherwise no results.
+        sbQ.append(" AND f_geometry_column = '");
+        sbQ.append(spatialTable.getGeomName());
+        sbQ.append("'");
+        sbQ.append(" AND search_frame = ");
         if (doTransform)
             sbQ.append("ST_Transform(");
         sbQ.append("MakePoint(");
@@ -1700,9 +1699,9 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
         sbQ.append(",");
         sbQ.append(n);
         if (doTransform) {
-            sbQ.append(", ");
+            sbQ.append(",");
             sbQ.append(queryPointSrid);
-            sbQ.append("), ");
+            sbQ.append("),");
             sbQ.append(spatialTable.getSrid());
         }
         sbQ.append("));");
@@ -2277,7 +2276,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
             for( SpatialVectorTable spatialTable : vectorTableList ) {
                 Style style4Table = null;
                 try {
-                    style4Table = getStyle4Table(spatialTable.getName());
+                    style4Table = getStyle4Table(spatialTable.getUniqueName());
                 } catch (java.lang.Exception e) {
                     resetStyleTable();
                 }

@@ -218,7 +218,7 @@ public class SpatialDatabasesManager {
     public SpatialVectorTable getVectorTableByName( String table ) throws Exception {
         List<SpatialVectorTable> spatialTables = getSpatialVectorTables(false);
         for( SpatialVectorTable spatialTable : spatialTables ) {
-            if (spatialTable.getName().equals(table)) {
+            if (spatialTable.getUniqueName().equals(table)) {
                 return spatialTable;
             }
         }

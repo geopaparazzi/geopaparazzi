@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -52,6 +53,7 @@ import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.ClassNodeInfo;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.MapsDirTreeViewList;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.util.SpatialiteUtilities;
 
 /**
@@ -67,6 +69,8 @@ public class MapsDirManager {
     private static final int SPATIALITE = 3;
     private static final int MAPURL = 4;
     private List<ClassNodeInfo> maptype_classes = new LinkedList<ClassNodeInfo>();
+    private List<ClassNodeInfo> vector_classes = new LinkedList<ClassNodeInfo>();
+    private int i_vectorinfo_count=-1;
     private File maps_dir = null;
     private static MapsDirManager mapsdirManager = null;
     private int i_selected_type = MBTILES;
@@ -195,7 +199,7 @@ public class MapsDirManager {
      * @param context
       */
     private void handleTileSources( Context context ) throws Exception, IOException, FileNotFoundException {
-        int i_count_classes = 0;
+        int i_count_raster = 0;
         int i_type = MAPURL;
         AssetManager assetManager = context.getAssets();
         ClassNodeInfo this_mapinfo = null;
@@ -230,7 +234,7 @@ public class MapsDirManager {
                 // "] getFileName[" + table.getFileNamePath()+ "] getName[" + table.getName()+
                 // "] getDescription["+table.getDescription()+"]");
                 if (!ignoreTileSource(name)) {
-                    this_mapinfo = new ClassNodeInfo(i_count_classes++, i_type, table.getMapType(), "CustomTileTable",
+                    this_mapinfo = new ClassNodeInfo(i_count_raster++, i_type, table.getMapType(), "CustomTileTable",
                             table.getFileNamePath(), table.getFileName(), table.getFileNamePath(), table.getName(),
                             table.getDescription(), table.getBounds_toString(), table.getCenter_toString(),
                             table.getZoom_Levels());
@@ -266,7 +270,7 @@ public class MapsDirManager {
                 // table.getFileNamePath()+ "] getName[" + table.getName()+
                 // "] getDescription["+table.getDescription()+"]");
                 if (!ignoreTileSource(name)) {
-                    this_mapinfo = new ClassNodeInfo(i_count_classes++, i_type, table.getMapType(), "MapTable",
+                    this_mapinfo = new ClassNodeInfo(i_count_raster++, i_type, table.getMapType(), "MapTable",
                             table.getFileNamePath(), table.getFileName(), table.getFileNamePath(), table.getName(),
                             table.getDescription(), table.getBounds_toString(), table.getCenter_toString(),
                             table.getZoom_Levels());
@@ -282,10 +286,13 @@ public class MapsDirManager {
             GPLog.androidLog(4, "MapsDirManager handleTileSources MapTable[" + maps_dir.getAbsolutePath() + "]", e);
         }
         /*
+         * collect vector tables
+         */
+         load_vector_classes();
+        /*
          * add also mbtiles,geopackage tables
          */
         try {
-            // List<SpatialVectorTable> spatialVectorTables =  SpatialDatabasesManager.getInstance().getSpatialVectorTables(false);
             List<SpatialRasterTable> spatialRasterTables = SpatialDatabasesManager.getInstance().getSpatialRasterTables(false);
             GPLog.androidLog(-1,"MapsDirManager manager[SpatialDatabasesManager] size_raster["+SpatialDatabasesManager.getInstance().size_raster()+"]");
             GPLog.androidLog(-1,"MapsDirManager manager[SpatialDatabasesManager] size_vector["+SpatialDatabasesManager.getInstance().size_vector()+"]");
@@ -304,7 +311,7 @@ public class MapsDirManager {
                         if (s_type.equals("gpkg"))
                             i_type = GPKG;
                     }
-                    this_mapinfo = new ClassNodeInfo(i_count_classes++, i_type, s_type, "SpatialRasterTable",
+                    this_mapinfo = new ClassNodeInfo(i_count_raster++, i_type, s_type, "SpatialRasterTable",
                             table.getFileNamePath(), table.getFileName(), table.getFileNamePath(), table.getName(),
                             table.getDescription(), table.getBounds_toString(), table.getCenter_toString(),
                             table.getZoom_Levels());
@@ -512,6 +519,82 @@ public class MapsDirManager {
             }
         }
         return i_rc;
+    }
+    // -----------------------------------------------
+    /**
+      * Fill vector_classes with Information about found Vector-Tables
+      *
+      * @return i_vectorinfo_count amount of tables found
+      */
+    public int load_vector_classes()
+    {
+     if (vector_classes == null)
+     {
+      vector_classes = new LinkedList<ClassNodeInfo>();
+     }
+     else
+     {
+      vector_classes.clear();
+     }
+     i_vectorinfo_count=vector_classes.size();
+     try
+     {
+      List<SpatialVectorTable> spatialVectorTables =  SpatialDatabasesManager.getInstance().getSpatialVectorTables(false);
+      ClassNodeInfo this_vectorinfo = null;
+      for( int i = 0; i < spatialVectorTables.size(); i++ )
+      {
+       SpatialVectorTable table = spatialVectorTables.get(i);
+       this_vectorinfo = new ClassNodeInfo(i_vectorinfo_count++, table.getGeomType(), table.getMapType(), "SpatialVectorTable",
+                            table.getUniqueName(), table.getFileName(), table.getName(),table.getGeomName(),
+                            table.getName()+File.separator+table.getGeomName(), table.getBounds_toString(), table.getCenter_toString(),
+                            table.getZoom_Levels());
+        this_vectorinfo.setEnabled(table.IsStyle());
+        vector_classes.add(this_vectorinfo);
+       }
+      }
+      catch (jsqlite.Exception e) {
+            GPLog.androidLog(4, "MapsDirManager load_vector_classes() SpatialVectorTable[" + maps_dir.getAbsolutePath() + "]", e);
+      }
+      return i_vectorinfo_count;
+    }
+    // -----------------------------------------------
+    /**
+      * Return a list of VectorTables within these bounds an zoom-level
+      *
+      * we must have 5 values: north,south,east,west wsg84 values and a zoom-level
+      * @param bounds_zoom 5 values: north,south,east,west wsg84 values and zoom-level
+      * @param i_check_enabled 0: return all ; 1= return only those that are enabled
+      * @return List<SpatialVectorTable> vector_TableList
+      */
+    public List<SpatialVectorTable> getSpatialVectorTables(double[] bounds_zoom, int i_check_enabled)
+    {
+     List<SpatialVectorTable> vector_TableList = new ArrayList<SpatialVectorTable>();
+     if ((i_vectorinfo_count < 0) && (vector_classes.size() == 0))
+     { // if not loaded, load it
+      load_vector_classes();
+     }
+     SpatialDatabasesManager sdManager = SpatialDatabasesManager.getInstance();
+     for (int i=0;i<vector_classes.size();i++)
+     {
+      ClassNodeInfo this_vectorinfo = vector_classes.get(i);
+      SpatialVectorTable vector_table=null;
+      if (this_vectorinfo.checkPositionValues(bounds_zoom,i_check_enabled) > 0)
+      { // 0=conditions not fullfilled ; 1=compleatly inside valid bounds ; 2=partially inside valid bounds
+       try
+       {
+        vector_table=sdManager.getVectorTableByName(this_vectorinfo.getFileNamePath());
+        if (vector_table != null)
+        {
+         vector_TableList.add(vector_table);
+         // GPLog.androidLog(-1, "ClassNodeInfo[" + this_vectorinfo.toString() + "]");
+        }
+       }
+       catch (jsqlite.Exception e) {
+            GPLog.androidLog(4, "MapsDirManager getSpatialVectorTables SpatialVectorTable[" + maps_dir.getAbsolutePath() + "]", e);
+      }
+      }
+    }
+     return vector_TableList;
     }
     // -----------------------------------------------
     /**

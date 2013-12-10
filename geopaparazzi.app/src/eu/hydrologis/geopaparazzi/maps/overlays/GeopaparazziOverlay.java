@@ -56,6 +56,7 @@ import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.GeometryIterator;
 import eu.geopaparazzi.spatialite.database.spatial.core.ISpatialDatabaseHandler;
@@ -682,34 +683,44 @@ public abstract class GeopaparazziOverlay extends Overlay {
          */
         GeoPoint zeroPoint = projection.fromPixels(0, 0);
         GeoPoint whPoint = projection.fromPixels(canvas.getWidth(), canvas.getHeight());
-
         double n = zeroPoint.getLatitude();
         double w = zeroPoint.getLongitude();
         double s = whPoint.getLatitude();
         double e = whPoint.getLongitude();
-
+        int i_version=1;
         try {
-            SpatialDatabasesManager sdManager = SpatialDatabasesManager.getInstance();
-            List<SpatialVectorTable> spatialTables = sdManager.getSpatialVectorTables(false);
+             List<SpatialVectorTable> spatialTables=null;
+             SpatialDatabasesManager sdManager = sdManager = SpatialDatabasesManager.getInstance();
+            if (i_version == 0)
+            {
+             spatialTables = sdManager.getSpatialVectorTables(false);
+            }
+            if (i_version == 1)
+            {
+             double[] bounds_zoom= new double[]{w,s,e,n,(double)drawZoomLevel};
+             spatialTables =  MapsDirManager.getInstance().getSpatialVectorTables(bounds_zoom,1);
+            }
+            // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite size["+spatialTables.size()+"]: ["+drawZoomLevel+"]");
             for( int i = 0; i < spatialTables.size(); i++ ) {
                 SpatialVectorTable spatialTable = spatialTables.get(i);
-                if (spatialTable.getStyle().enabled == 0) {
+                if (i_version == 0)
+                {
+                 if (spatialTable.IsStyle() == 0) {
                     continue;
+                 }
+                 if ((int) drawZoomLevel < spatialTable.getMinZoom() || (int) drawZoomLevel > spatialTable.getMaxZoom()) {
+                    continue;
+                 }
                 }
                 if (isInterrupted() || sizeHasChanged()) {
                     // stop working
                     return;
                 }
                 Style style4Table = spatialTable.getStyle();
-                if ((int) drawZoomLevel < style4Table.minZoom || (int) drawZoomLevel > style4Table.maxZoom) {
-                    continue;
-                }
-
                 ISpatialDatabaseHandler spatialDatabaseHandler = sdManager.getVectorHandler(spatialTable);
                 String s_geometry_type = "";
                 GeometryIterator geometryIterator = null;
                 try {
-                    // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite["+spatialTable.getName()+"]: geometry_type["+spatialTable.getMapType()+"] ");
                     geometryIterator = spatialDatabaseHandler.getGeometryIteratorInBounds("4326", spatialTable, n, s, e, w);
                     Paint fill = null;
                     Paint stroke = null;
@@ -723,7 +734,8 @@ public abstract class GeopaparazziOverlay extends Overlay {
                         ShapeWriter wr = new ShapeWriter(pointTransformer);
                         wr.setRemoveDuplicatePoints(true);
                         wr.setDecimation(spatialTable.getStyle().decimationFactor);
-                        while( geometryIterator.hasNext() ) {
+                        // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite["+spatialTable.getUniqueName()+"]: geometry_type["+spatialTable.getMapType()+"] ["+spatialTable.IsStyle()+"] ["+spatialTable.getMinZoom()+"] ["+spatialTable.getMaxZoom()+"]");
+                         while( geometryIterator.hasNext() ) {
                             Geometry geom = geometryIterator.next();
                             if (geom != null) {
                                 DrawableShape shape = wr.toShape(geom);

@@ -34,8 +34,8 @@ import eu.geopaparazzi.library.database.GPLog;
  */
 public class SpatialVectorTable {
 
-    private final String name;
-    private final String geomName;
+    private final String s_table_name;
+    private final String s_geometry_column;
     private final int geomType;
     private final String srid;
     private Style style;
@@ -69,14 +69,16 @@ public class SpatialVectorTable {
     private String s_label_field=""; // Table field to be used as a label
     // list of possible primary keys - for more that one: seperated with ';'
     private String s_primary_key_fields="";
+    private String s_unique_name=""; // file-name+table-name+field-name
 
-    public SpatialVectorTable( String  s_map_file,String name, String geomName, int geomType, String srid, double[] center , double[] bounds,
+    public SpatialVectorTable( String  s_map_file,String s_table_name, String s_geometry_column, int geomType, String srid, double[] center , double[] bounds,
      String s_layer_type,int i_row_count,int i_coord_dimension,int i_spatial_index_enabled,String s_last_verified ) {
         this.s_map_file = s_map_file;
         this.file_map=new File(s_map_file);
         s_name_file=file_map.getName();
-        this.name = name;
-        this.geomName = geomName;
+        this.s_table_name = s_table_name;
+        this.s_geometry_column = s_geometry_column;
+        this.s_unique_name=this.s_map_file+File.separator+s_table_name+File.separator+s_geometry_column;
         this.geomType = geomType;
         this.srid = srid;
         this.centerX = center[0];
@@ -92,7 +94,7 @@ public class SpatialVectorTable {
         this.s_last_verified=s_last_verified;
         checkType();
         String s_dump="isPoint["+isPoint+"] isLine["+isLine+"] isPolygon["+isPolygon+"] isGeometryCollection["+isGeometryCollection+"]";
-        // GPLog.androidLog(-1,"SpatialVectorTable geomName[" + geomName + "] name["+name+"] types["+s_dump+"]");
+        // GPLog.androidLog(-1,"SpatialVectorTable unique_name[" + this.s_unique_name + "] types["+s_dump+"]");
     }
     // -----------------------------------------------
     /**
@@ -266,21 +268,24 @@ public class SpatialVectorTable {
         return getMinZoom()+"-"+getMaxZoom();
     }
     public String getName() {
-        return name;
+        return s_table_name; // table_name
     }
 
     public String getGeomName() {
-        return geomName;
+        return s_geometry_column;
     }
-
+    public String getUniqueName() {
+        return this.s_unique_name;
+    }
     public int getGeomType() {
         return geomType;
     }
-
     public String getSrid() {
         return srid;
     }
-
+    public int IsStyle() {
+        return style.enabled;
+    }
     public Style getStyle() {
         return style;
     }
@@ -389,6 +394,8 @@ public class SpatialVectorTable {
     }
     public void setStyle( Style style ) {
         this.style = style;
+        maxZoom=style.maxZoom;
+        minZoom=style.minZoom;
     }
 
     public boolean isPolygon() {
@@ -458,6 +465,6 @@ public class SpatialVectorTable {
 
     public void makeDefaultStyle() {
         style = new Style();
-        style.name = name;
+        style.name = getUniqueName();
     }
 }

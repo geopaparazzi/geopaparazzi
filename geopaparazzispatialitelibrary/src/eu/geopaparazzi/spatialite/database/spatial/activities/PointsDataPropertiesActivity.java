@@ -35,7 +35,7 @@ import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
 
 /**
  * Points Data properties activity.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class PointsDataPropertiesActivity extends Activity {
@@ -131,9 +131,9 @@ public class PointsDataPropertiesActivity extends Activity {
             }
         }
 
-        int minZoom = spatialTable.getStyle().minZoom;
-        int tableMinZoom = spatialTable.getMinZoom();
-        int tableMaxZoom = spatialTable.getMaxZoom();
+        int minZoom = spatialTable.getMinZoom();
+        int tableMinZoom = 0; // spatialTable.getMinZoom();
+        int tableMaxZoom = 22; //spatialTable.getMaxZoom();
         ArrayList<String> minMaxSequence = new ArrayList<String>();
         for( int i = tableMinZoom; i <= tableMaxZoom; i++ ) {
             minMaxSequence.add(String.valueOf(i));
@@ -150,7 +150,7 @@ public class PointsDataPropertiesActivity extends Activity {
             }
         }
 
-        int maxZoom = spatialTable.getStyle().maxZoom;
+        int maxZoom = spatialTable.getMaxZoom();
         maxZoomSpinner = (Spinner) findViewById(R.id.maxzoom_spinner);
         queryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         maxZoomSpinner.setAdapter(queryAdapter);

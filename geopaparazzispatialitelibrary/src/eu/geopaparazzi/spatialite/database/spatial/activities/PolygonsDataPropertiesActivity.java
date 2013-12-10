@@ -56,12 +56,13 @@ public class PolygonsDataPropertiesActivity extends Activity {
 
         Bundle extras = getIntent().getExtras();
         String tableName = extras.getString(SpatialiteLibraryConstants.PREFS_KEY_TEXT);
+        // GPLog.androidLog(-1, "PolygonsDataPropertiesActivity.onCreate[" + tableName + "]");
         try {
             spatialTable = SpatialDatabasesManager.getInstance().getVectorTableByName(tableName);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        GPLog.androidLog(-1, "PolygonsDataPropertiesActivity.onCreate[" + spatialTable.getName() + "] label_list.size["
+        GPLog.androidLog(-1, "PolygonsDataPropertiesActivity.onCreate[" + spatialTable.getUniqueName() + "] label_list.size["
                 + spatialTable.getLabelList().size() + "] selected_label[" + spatialTable.getLabelField() + "] PrimaryKeys["
                 + spatialTable.getPrimaryKeyFields() + "] ");
         colorSpinner = (Spinner) findViewById(R.id.color_spinner);
@@ -116,9 +117,9 @@ public class PolygonsDataPropertiesActivity extends Activity {
         decimationText = (EditText) findViewById(R.id.decimation_text);
         decimationText.setText(decimation);
 
-        int minZoom = spatialTable.getStyle().minZoom;
-        int tableMinZoom = spatialTable.getMinZoom();
-        int tableMaxZoom = spatialTable.getMaxZoom();
+        int minZoom = spatialTable.getMinZoom(); // spatialTable.getStyle().minZoom;
+        int tableMinZoom = 0; // spatialTable.getMinZoom();
+        int tableMaxZoom = 22; // spatialTable.getMaxZoom();
         ArrayList<String> minMaxSequence = new ArrayList<String>();
         for( int i = tableMinZoom; i <= tableMaxZoom; i++ ) {
             minMaxSequence.add(String.valueOf(i));
@@ -135,7 +136,7 @@ public class PolygonsDataPropertiesActivity extends Activity {
             }
         }
 
-        int maxZoom = spatialTable.getStyle().maxZoom;
+        int maxZoom = spatialTable.getMaxZoom(); // spatialTable.getStyle().maxZoom;
         maxZoomSpinner = (Spinner) findViewById(R.id.maxzoom_spinner);
         queryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         maxZoomSpinner.setAdapter(queryAdapter);
