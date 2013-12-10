@@ -562,6 +562,7 @@ public class MapsDirManager {
       * Return a list of VectorTables within these bounds an zoom-level
       *
       * we must have 5 values: north,south,east,west wsg84 values and a zoom-level
+      * if called with 'bounds_zoom == null': then all Tables, without checking, will be returned
       * @param bounds_zoom 5 values: north,south,east,west wsg84 values and zoom-level
       * @param i_check_enabled 0: return all ; 1= return only those that are enabled
       * @return List<SpatialVectorTable> vector_TableList

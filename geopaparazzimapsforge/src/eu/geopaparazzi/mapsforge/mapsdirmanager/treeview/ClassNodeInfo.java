@@ -149,6 +149,11 @@ public class ClassNodeInfo<T>
   { // this is not enabled, so return now [checking is desired]
    return i_rc;
   }
+  if (bounds_zoom == null)
+  { // no checking of any kind are done
+   i_rc=10;
+   return i_rc;
+  }
   if (bounds_zoom.length == 5)
   { // we must have 5 values: north,south,east,west wsg84 values and zoom-level
    int i_zoom=(int)bounds_zoom[4];
