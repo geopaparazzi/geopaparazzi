@@ -61,6 +61,7 @@ import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.GeometryIterator;
 import eu.geopaparazzi.spatialite.database.spatial.core.ISpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.GeometryType;
 import eu.geopaparazzi.spatialite.database.spatial.core.Style;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
@@ -676,7 +677,6 @@ public abstract class GeopaparazziOverlay extends Overlay {
         canvas.drawPath(crossPath, crossPaint);
 
     }
-
     private void drawFromSpatialite( Canvas canvas, Point drawPosition, Projection projection, byte drawZoomLevel ) {
         /*
          * draw from spatialite
@@ -687,38 +687,20 @@ public abstract class GeopaparazziOverlay extends Overlay {
         double w = zeroPoint.getLongitude();
         double s = whPoint.getLatitude();
         double e = whPoint.getLongitude();
-        int i_version=1;
         try {
              List<SpatialVectorTable> spatialTables=null;
              SpatialDatabasesManager sdManager = sdManager = SpatialDatabasesManager.getInstance();
-            if (i_version == 0)
-            {
-             spatialTables = sdManager.getSpatialVectorTables(false);
-            }
-            if (i_version == 1)
-            {
              double[] bounds_zoom= new double[]{w,s,e,n,(double)drawZoomLevel};
              spatialTables =  MapsDirManager.getInstance().getSpatialVectorTables(bounds_zoom,1);
-            }
-            // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite size["+spatialTables.size()+"]: ["+drawZoomLevel+"]");
+             // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite size["+spatialTables.size()+"]: ["+drawZoomLevel+"]");
             for( int i = 0; i < spatialTables.size(); i++ ) {
                 SpatialVectorTable spatialTable = spatialTables.get(i);
-                if (i_version == 0)
-                {
-                 if (spatialTable.IsStyle() == 0) {
-                    continue;
-                 }
-                 if ((int) drawZoomLevel < spatialTable.getMinZoom() || (int) drawZoomLevel > spatialTable.getMaxZoom()) {
-                    continue;
-                 }
-                }
                 if (isInterrupted() || sizeHasChanged()) {
                     // stop working
                     return;
                 }
                 Style style4Table = spatialTable.getStyle();
                 ISpatialDatabaseHandler spatialDatabaseHandler = sdManager.getVectorHandler(spatialTable);
-                String s_geometry_type = "";
                 GeometryIterator geometryIterator = null;
                 try {
                     geometryIterator = spatialDatabaseHandler.getGeometryIteratorInBounds("4326", spatialTable, n, s, e, w);
@@ -728,62 +710,62 @@ public abstract class GeopaparazziOverlay extends Overlay {
                         fill = spatialDatabaseHandler.getFillPaint4Style(style4Table);
                     if (style4Table.strokecolor != null && style4Table.strokecolor.trim().length() > 0)
                         stroke = spatialDatabaseHandler.getStrokePaint4Style(style4Table);
-                    if ((spatialTable.isPolygon()) || (spatialTable.isGeometryCollection())) {
-                        PointTransformation pointTransformer = new MapsforgePointTransformation(projection, drawPosition,
-                                drawZoomLevel);
-                        ShapeWriter wr = new ShapeWriter(pointTransformer);
-                        wr.setRemoveDuplicatePoints(true);
-                        wr.setDecimation(spatialTable.getStyle().decimationFactor);
-                        // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite["+spatialTable.getUniqueName()+"]: geometry_type["+spatialTable.getMapType()+"] ["+spatialTable.IsStyle()+"] ["+spatialTable.getMinZoom()+"] ["+spatialTable.getMaxZoom()+"]");
-                         while( geometryIterator.hasNext() ) {
-                            Geometry geom = geometryIterator.next();
-                            if (geom != null) {
-                                DrawableShape shape = wr.toShape(geom);
-                                if (fill != null)
-                                    shape.fill(canvas, fill);
-                                if (stroke != null)
-                                    shape.draw(canvas, stroke);
-                            }
-                            if (isInterrupted() || sizeHasChanged()) {
-                                // stop working
-                                return;
-                            }
+                    PointTransformation pointTransformer = new MapsforgePointTransformation(projection, drawPosition,drawZoomLevel);
+                    ShapeWriter shape_writer = null;
+                    ShapeWriter shape_writer_point = null;
+                    if (spatialTable.isPoint())
+                    {
+                     shape_writer  = new ShapeWriter(pointTransformer, spatialTable.getStyle().shape,spatialTable.getStyle().size);
+                    }
+                    else
+                    {
+                     shape_writer = new ShapeWriter(pointTransformer);
+                     if (spatialTable.isGeometryCollection())
+                     {
+                      shape_writer_point  = new ShapeWriter(pointTransformer, spatialTable.getStyle().shape,spatialTable.getStyle().size);
+                     }
+                    }
+                    shape_writer.setRemoveDuplicatePoints(true);
+                    shape_writer.setDecimation(spatialTable.getStyle().decimationFactor);
+                    while( geometryIterator.hasNext() )
+                    {
+                     Geometry geom = geometryIterator.next();
+                     if (geom != null)
+                     {
+                      if (spatialTable.isGeometryCollection())
+                      {
+                       int i_count_geometries=geom.getNumGeometries();
+                       for (int j=0;j< i_count_geometries;j++)
+                       {
+                        Geometry geom_collect = geom.getGeometryN(j);
+                        if (geom_collect != null)
+                        {
+                         String s_geometry_type = geom_collect.getGeometryType();
+                         // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite size["+s_geometry_type+"]: ["+drawZoomLevel+"]");
+                         if (s_geometry_type.toUpperCase().indexOf("POINT") != -1)
+                         {
+                          drawGeometry(geom_collect,canvas,shape_writer_point,fill,stroke);
+                         }
+                         else
+                         {
+                          drawGeometry(geom_collect,canvas,shape_writer,fill,stroke);
+                         }
+                         if (isInterrupted() || sizeHasChanged())
+                         { // stop working
+                          return;
+                         }
                         }
-                    } else if (spatialTable.isLine()) {
-                        PointTransformation pointTransformer = new MapsforgePointTransformation(projection, drawPosition,
-                                drawZoomLevel);
-                        ShapeWriter wr = new ShapeWriter(pointTransformer);
-                        wr.setRemoveDuplicatePoints(true);
-                        wr.setDecimation(spatialTable.getStyle().decimationFactor);
-                        while( geometryIterator.hasNext() ) {
-                            Geometry geom = geometryIterator.next();
-                            DrawableShape shape = wr.toShape(geom);
-                            if (stroke != null)
-                                shape.draw(canvas, stroke);
-                            if (isInterrupted() || sizeHasChanged()) {
-                                // stop working
-                                return;
-                            }
-                        }
-                    } else if (spatialTable.isPoint()) {
-                        PointTransformation pointTransformer = new MapsforgePointTransformation(projection, drawPosition,
-                                drawZoomLevel);
-                        ShapeWriter wr = new ShapeWriter(pointTransformer, spatialTable.getStyle().shape,
-                                spatialTable.getStyle().size);
-                        wr.setRemoveDuplicatePoints(true);
-                        wr.setDecimation(spatialTable.getStyle().decimationFactor);
-                        while( geometryIterator.hasNext() ) {
-                            Geometry geom = geometryIterator.next();
-                            DrawableShape shape = wr.toShape(geom);
-                            if (fill != null)
-                                shape.fill(canvas, fill);
-                            if (stroke != null)
-                                shape.draw(canvas, stroke);
-                            if (isInterrupted() || sizeHasChanged()) {
-                                // stop working
-                                return;
-                            }
-                        }
+                       }
+                      }
+                      else
+                      {
+                       drawGeometry(geom,canvas,shape_writer,fill,stroke);
+                       if (isInterrupted() || sizeHasChanged())
+                       { // stop working
+                        return;
+                       }
+                      }
+                     }
                     }
                 } finally {
                     if (geometryIterator != null)
@@ -791,8 +773,61 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 }
             }
         } catch (Exception e1) {
-            e1.printStackTrace();
+         GPLog.androidLog(4,"GeopaparazziOverlay.drawFromSpatialite [failed]",e1);
         }
+    }
+    private void drawGeometry(Geometry geom,Canvas canvas,ShapeWriter shape_writer,Paint fill,Paint stroke)
+    {
+     String s_geometry_type = geom.getGeometryType();
+     int i_geometry_type = GeometryType.forValue(s_geometry_type);
+     GeometryType geometry_type = GeometryType.forValue(i_geometry_type);
+     DrawableShape shape = shape_writer.toShape(geom);
+     switch(geometry_type)
+     {
+      case POINT_XY:
+      case POINT_XYM:
+      case POINT_XYZ:
+      case POINT_XYZM:
+      case MULTIPOINT_XY:
+      case MULTIPOINT_XYM:
+      case MULTIPOINT_XYZ:
+      case MULTIPOINT_XYZM:
+      {
+        if (fill != null)
+         shape.fill(canvas, fill);
+        if (stroke != null)
+         shape.draw(canvas, stroke);
+      }
+      break;
+      case LINESTRING_XY:
+      case LINESTRING_XYM:
+      case LINESTRING_XYZ:
+      case LINESTRING_XYZM:
+      case MULTILINESTRING_XY:
+      case MULTILINESTRING_XYM:
+      case MULTILINESTRING_XYZ:
+      case MULTILINESTRING_XYZM:
+      {
+       if (stroke != null)
+        shape.draw(canvas, stroke);
+      }
+      break;
+      case POLYGON_XY:
+      case POLYGON_XYM:
+      case POLYGON_XYZ:
+      case POLYGON_XYZM:
+      case MULTIPOLYGON_XY:
+      case MULTIPOLYGON_XYM:
+      case MULTIPOLYGON_XYZ:
+      case MULTIPOLYGON_XYZM:
+      {
+       if (fill != null)
+         shape.fill(canvas, fill);
+       if (stroke != null)
+        shape.draw(canvas, stroke);
+      }
+      break;
+     }
     }
     @Override
     protected String getThreadName() {

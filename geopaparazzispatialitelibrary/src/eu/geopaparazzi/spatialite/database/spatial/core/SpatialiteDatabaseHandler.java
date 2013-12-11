@@ -2031,8 +2031,8 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
             sb_layers.append(" FROM ");
             sb_layers.append(METADATA_TABLE_GEOMETRY_COLUMNS);
             sb_layers.append("  ORDER BY " + METADATA_TABLE_NAME + ";");
-            // version 3 ['type' instead of 'geometry_type']: SELECT
-            // f_table_name,f_geometry_column,geometry_type,srid FROM geometry_columns ORDER BY
+            // version 3 ['type' instead of 'geometry_type']:
+            // SELECT f_table_name,f_geometry_column,geometry_type,srid FROM geometry_columns ORDER BY
             // f_table_name
             s_sql_layers = sb_layers.toString();
         }
@@ -2103,26 +2103,27 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                     geometry_column = this_stmt.column_string(1);
                     i_srid = this_stmt.column_int(3);
                     s_srid = String.valueOf(i_srid);
+                    sb_layers = new StringBuilder();
+                    // SELECT Min(MbrMinX(coord_geometry)) AS min_x, Min(MbrMinY(coord_geometry)) AS min_y,Max(MbrMaxX(coord_geometry)) AS max_x, Max(MbrMaxY(coord_geometry)) AS max_y FROM geodb_geometry
+                    sb_layers.append("SELECT Min(MbrMinX(");
+                    sb_layers.append(geometry_column);
+                    sb_layers.append(")) AS min_x, Min(MbrMinY(");
+                    sb_layers.append(geometry_column);
+                    sb_layers.append(")) AS min_y,");
+                    sb_layers.append("Max(MbrMaxX(");
+                    sb_layers.append(geometry_column);
+                    sb_layers.append(")) AS max_x, Max(MbrMaxY(");
+                    sb_layers.append(geometry_column);
+                    sb_layers.append(")) AS max_y");
+                    sb_layers.append(" FROM ");
+                    sb_layers.append(table_name);
+                    sb_layers.append(";");
+                    String s_select_bounds = sb_layers.toString();
+                    Stmt bounds_stmt = null;
                     if (i_database_type == 3) { // for older spatialite v2+3 : Query extent of table
                                                 // and fill boundsCoordinates
                         s_geometry_type = this_stmt.column_string(2);
                         i_geometry_type = GeometryType.forValue(s_geometry_type);
-                        StringBuilder qSb = new StringBuilder();
-                        sb_layers.append("SELECT Min(MbrMinX(");
-                        sb_layers.append(geometry_column);
-                        sb_layers.append(")) AS min_x, Min(MbrMinY(");
-                        sb_layers.append(geometry_column);
-                        sb_layers.append(")) AS min_y,");
-                        sb_layers.append("Max(MbrMaxX(");
-                        sb_layers.append(geometry_column);
-                        sb_layers.append(")) AS max_x, Max(MbrMaxY(");
-                        sb_layers.append(geometry_column);
-                        sb_layers.append(")) AS max_y");
-                        sb_layers.append(" FROM ");
-                        sb_layers.append(table_name);
-                        sb_layers.append(";");
-                        String s_select_bounds = sb_layers.toString();
-                        Stmt bounds_stmt = null;
                         try {
                             bounds_stmt = db_java.prepare(s_select_bounds);
                             if (bounds_stmt.step()) {
@@ -2153,6 +2154,27 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                         i_coord_dimension = this_stmt.column_int(10);
                         i_spatial_index_enabled = this_stmt.column_int(11);
                         s_last_verified = this_stmt.column_string(12);
+                        if ((boundsCoordinates[0] == 0) && (boundsCoordinates[1] == 0) && (boundsCoordinates[2] == 0) && (boundsCoordinates[3] == 0))
+                        { // Sometimes there are no results for GEOMETRYCOLLECTION
+                         // String s_bounds_zoom_sent=boundsCoordinates[0]+","+boundsCoordinates[1]+","+boundsCoordinates[2]+","+boundsCoordinates[3]+";";
+                         // GPLog.androidLog(-1, "getSpatialVectorTables: geometycolletion 01 boundsCoordinates[" + s_bounds_zoom_sent+ "] ");
+                         try {
+                            bounds_stmt = db_java.prepare(s_select_bounds);
+                            if (bounds_stmt.step()) {
+                                boundsCoordinates[0] = bounds_stmt.column_double(0);
+                                boundsCoordinates[1] = bounds_stmt.column_double(1);
+                                boundsCoordinates[2] = bounds_stmt.column_double(2);
+                                boundsCoordinates[3] = bounds_stmt.column_double(3);
+                            }
+                         } catch (Exception e) {
+                         } finally {
+                            if (bounds_stmt != null) {
+                                bounds_stmt.close();
+                            }
+                            // s_bounds_zoom_sent=boundsCoordinates[0]+","+boundsCoordinates[1]+","+boundsCoordinates[2]+","+boundsCoordinates[3]+";";
+                            // GPLog.androidLog(-1, "getSpatialVectorTables: geometycolletion 02 boundsCoordinates[" + s_bounds_zoom_sent+ "] ["+s_select_bounds+"]");
+                         }
+                        }
                     }
                     // this should have a list of unique geometry-fields, we will look later for
                     // these in the views

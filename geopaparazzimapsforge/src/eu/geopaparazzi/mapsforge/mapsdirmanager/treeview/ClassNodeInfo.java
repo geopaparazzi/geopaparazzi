@@ -155,7 +155,7 @@ public class ClassNodeInfo<T>
    return i_rc;
   }
   if (bounds_zoom.length == 5)
-  { // we must have 5 values: north,south,east,west wsg84 values and zoom-level
+  { // we must have 5 values: west,south,east,north wsg84 values and zoom-level
    int i_zoom=(int)bounds_zoom[4];
    // String s_parms=bounds_zoom[0]+","+bounds_zoom[1]+","+bounds_zoom[2]+","+bounds_zoom[3]+";"+i_zoom;
    if ((i_zoom >= minZoom) && (i_zoom <= maxZoom))

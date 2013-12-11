@@ -30,6 +30,7 @@ import java.util.List;
 import jsqlite.Exception;
 
 import org.mapsforge.android.maps.MapView;
+import org.mapsforge.android.maps.Projection;
 import org.mapsforge.android.maps.mapgenerator.MapGenerator;
 import org.mapsforge.core.model.GeoPoint;
 
@@ -40,6 +41,7 @@ import android.content.res.AssetManager;
 import android.preference.PreferenceManager;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.FileUtilities;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
@@ -91,6 +93,8 @@ public class MapsDirManager {
     private double currentX = 0.0;
     private double currentY = 0.0;
     private double[] mapCenterLocation;
+    private MapView map_View=null;
+    private String s_bounds_zoom="";
     private MapsDirManager() {
     }
     // -----------------------------------------------
@@ -395,6 +399,10 @@ public class MapsDirManager {
     public int load_Map( MapView map_View, double[] mapCenterLocation ) {
         int i_rc = -1;
         if ((map_View != null) && (selected_mapinfo != null)) {
+           if (this.map_View == null)
+           {
+            this.map_View=map_View;
+           }
             try {
                 GPLog.androidLog(-1,
                         "MapsDirManager -I-> load_Map[" + s_selected_type + "] mapinfo[" + selected_mapinfo.getShortDescription()
@@ -422,6 +430,7 @@ public class MapsDirManager {
                         bounds_north = selected_table.getMaxLatitude();
                         centerX = selected_table.getCenterX();
                         centerY = selected_table.getCenterY();
+                        clear_TileCache();
                         map_View.setMapFile(selected_table.getFile());
                         if (selected_table.getXmlFile().exists()) {
                             try {
@@ -449,6 +458,7 @@ public class MapsDirManager {
                         centerX = selected_table.getCenterX();
                         centerY = selected_table.getCenterY();
                         selected_mapGenerator = new GeopackageTileDownloader(selected_table);
+                        clear_TileCache();
                         map_View.setMapGenerator(selected_mapGenerator);
                     }
                 }
@@ -469,6 +479,7 @@ public class MapsDirManager {
                         selected_mapGenerator = selected_table.getCustomTileDownloader();
                         try
                         {
+                         clear_TileCache();
                          map_View.setMapGenerator(selected_mapGenerator);
                          GPLog.androidLog(1,
                         "MapsDirManager -I-> MAPURL setMapGenerator[" + s_selected_type + "] selected_map[" + s_selected_map
@@ -557,19 +568,84 @@ public class MapsDirManager {
       }
       return i_vectorinfo_count;
     }
+     // -----------------------------------------------
+    /**
+      * Clear MapView TileCache
+      * - this.map_View is set in load_Map()
+      * - to be used when a new map is loaded
+      * @return nothing
+      */
+    private void clear_TileCache()
+    {
+     if (this.map_View != null)
+     {
+      this.map_View.getInMemoryTileCache().destroy();
+      if (this.map_View.getFileSystemTileCache().isPersistent())
+      {
+       this.map_View.getFileSystemTileCache().setPersistent(false);
+      }
+      this.map_View.getFileSystemTileCache().destroy();
+     }
+    }
+    // -----------------------------------------------
+    /**
+      * Return MapView Bounds with present Zoom-level
+      * - this.map_View is set in load_Map()
+      * @return bounds_zoom 7 values: west,south,east,north wsg84 values and zoom-level, meters-width,meters-height
+      */
+    public double[] get_bounds_zoom_meters()
+    {
+     double[] bounds_zoom= new double[]{0.0,0.0,0.0,0.0,0.0,0.0,0.0};
+     if (this.map_View != null)
+     {
+      Projection projection = this.map_View.getProjection();
+      GeoPoint nw_Point = projection.fromPixels(0, 0);
+      GeoPoint se_Point = projection.fromPixels(this.map_View.getWidth(), this.map_View.getHeight());
+      bounds_zoom[0]=nw_Point.getLongitude(); // West
+      bounds_zoom[3]=nw_Point.getLatitude(); // North
+      bounds_zoom[1]=se_Point.getLatitude(); // South
+      bounds_zoom[2]=se_Point.getLongitude(); // East
+      bounds_zoom[4]=(double)map_View.getMapPosition().getZoomLevel();
+      bounds_zoom[5] = Utilities.longitudeToMeters(se_Point.getLongitude(),nw_Point.getLongitude());
+      bounds_zoom[6] = Utilities.latitudeToMeters(nw_Point.getLatitude(),se_Point.getLatitude());
+      s_bounds_zoom=bounds_zoom[0]+","+bounds_zoom[1]+","+bounds_zoom[2]+","+bounds_zoom[3]+";"+(int)bounds_zoom[4]+";"+bounds_zoom[5]+","+bounds_zoom[6];
+     }
+     return bounds_zoom;
+    }
+    // -----------------------------------------------
+    /**
+      * Return MapView Bounds with present Zoom-level as string
+      * - 0: return last set value ; 1: recalulate
+      * @return s_bounds_zoom 5 values: west,south,east,north;zoom-level;meters-width;meters-height
+      */
+    public String get_bounds_zoom_meters_toString(int i_parm)
+    {
+     switch (i_parm)
+     {
+      case 1:
+      { // recalulate and set s_bounds_zoom
+       double[] bounds_zoom=get_bounds_zoom_meters();
+      }
+      break;
+     }
+     return s_bounds_zoom;
+    }
     // -----------------------------------------------
     /**
       * Return a list of VectorTables within these bounds an zoom-level
       *
-      * we must have 5 values: north,south,east,west wsg84 values and a zoom-level
+      * we must have 5 values: west,south,east,north wsg84 values and a zoom-level
       * if called with 'bounds_zoom == null': then all Tables, without checking, will be returned
-      * @param bounds_zoom 5 values: north,south,east,west wsg84 values and zoom-level
+      * @param bounds_zoom 5 values: west,south,east,north wsg84 values and zoom-level
       * @param i_check_enabled 0: return all ; 1= return only those that are enabled
       * @return List<SpatialVectorTable> vector_TableList
       */
     public List<SpatialVectorTable> getSpatialVectorTables(double[] bounds_zoom, int i_check_enabled)
     {
      List<SpatialVectorTable> vector_TableList = new ArrayList<SpatialVectorTable>();
+     // String s_bounds_zoom_sent=bounds_zoom[0]+","+bounds_zoom[1]+","+bounds_zoom[2]+","+bounds_zoom[3]+";"+(int)bounds_zoom[4];
+     // String s_bounds_zoom_calc=get_bounds_zoom_meters_toString(1);
+     // GPLog.androidLog(-1, "getSpatialVectorTables: bounds_zoom_sent[" + s_bounds_zoom_sent+ "] bounds_zoom_calc[" + s_bounds_zoom_calc+ "]");
      if ((i_vectorinfo_count < 0) && (vector_classes.size() == 0))
      { // if not loaded, load it
       load_vector_classes();

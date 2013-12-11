@@ -45,7 +45,7 @@ import eu.geopaparazzi.library.database.GPLog;
 
 /**
  * Utilities class.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class Utilities {
@@ -67,7 +67,7 @@ public class Utilities {
 
     /**
      * Checks if we are on the UI thread.
-     * 
+     *
      * @return <code>true</code> if we are on the UI thread.
      */
     public static boolean isCurrentThreadTheUiThread() {
@@ -76,7 +76,7 @@ public class Utilities {
 
     /**
      * Convert decimal degrees to exif format.
-     * 
+     *
      * @param decimalDegree the angle in decimal format.
      * @return the exif format string.
      */
@@ -99,7 +99,7 @@ public class Utilities {
 
     /**
      * Convert exif format to decimal degree.
-     * 
+     *
      * @param exifFormat the exif string of the gps position.
      * @return the decimal degree.
      */
@@ -130,7 +130,7 @@ public class Utilities {
 
     /**
      * Calculates the hypothenuse as of the Pythagorean theorem.
-     * 
+     *
      * @param d1 the length of the first leg.
      * @param d2 the length of the second leg.
      * @return the length of the hypothenuse.
@@ -141,8 +141,8 @@ public class Utilities {
 
     /**
      * Tries to adapt a value to the supplied type.
-     * 
-     * @param value the value to adapt. 
+     *
+     * @param value the value to adapt.
      * @param adaptee the class to adapt to.
      * @return the adapted object or <code>null</code>, if it fails.
      */
@@ -196,10 +196,10 @@ public class Utilities {
 
     /**
      * Execute a message dialog in an {@link AsyncTask}.
-     * 
+     *
      * @param context the {@link Context} to use.
      * @param msg the message to show.
-     * @param okRunnable optional {@link Runnable} to trigger after ok was pressed. 
+     * @param okRunnable optional {@link Runnable} to trigger after ok was pressed.
      */
     public static void messageDialog( final Context context, final String msg, final Runnable okRunnable ) {
         new AsyncTask<String, Void, String>(){
@@ -239,10 +239,10 @@ public class Utilities {
 
     /**
      * Execute a generic error dialog in an {@link AsyncTask}.
-     * 
+     *
      * @param context the {@link Context} to use.
      * @param t the exception.
-     * @param okRunnable optional {@link Runnable} to trigger after ok was pressed. 
+     * @param okRunnable optional {@link Runnable} to trigger after ok was pressed.
      */
     public static void errorDialog( final Context context, final Throwable t, final Runnable okRunnable ) {
 
@@ -271,11 +271,11 @@ public class Utilities {
 
     /**
      * Execute a message dialog in an {@link AsyncTask}.
-     * 
+     *
      * @param context the {@link Context} to use.
      * @param msg the message to show.
-     * @param yesRunnable optional {@link Runnable} to trigger after yes was pressed. 
-     * @param noRunnable optional {@link Runnable} to trigger after no was pressed. 
+     * @param yesRunnable optional {@link Runnable} to trigger after yes was pressed.
+     * @param noRunnable optional {@link Runnable} to trigger after no was pressed.
      */
     public static void yesNoMessageDialog( final Context context, final String msg, final Runnable yesRunnable,
             final Runnable noRunnable ) {
@@ -315,10 +315,10 @@ public class Utilities {
 
     /**
      * Execute a message dialog in an {@link AsyncTask}.
-     * 
+     *
      * @param context the {@link Context} to use.
      * @param msgId the id of the message to show.
-     * @param okRunnable optional {@link Runnable} to trigger after ok was pressed. 
+     * @param okRunnable optional {@link Runnable} to trigger after ok was pressed.
      */
     public static void messageDialog( final Context context, final int msgId, final Runnable okRunnable ) {
         String msg = context.getString(msgId);
@@ -326,10 +326,10 @@ public class Utilities {
     }
 
     /**
-     * A warning dialog. 
-     * 
+     * A warning dialog.
+     *
      * <b>NOT IMPLEMENTED YET, FOR NOW JUST CALLS {@link #messageDialog}</b>
-     * 
+     *
      * @param context
      * @param msg
      * @param okRunnable
@@ -338,10 +338,10 @@ public class Utilities {
         messageDialog(context, msg, okRunnable);
     }
     /**
-     * A warning dialog. 
-     * 
+     * A warning dialog.
+     *
      * <b>NOT IMPLEMENTED YET, FOR NOW JUST CALLS {@link #messageDialog}</b>
-     * 
+     *
      * @param context
      * @param msgId
      * @param okRunnable
@@ -352,10 +352,10 @@ public class Utilities {
 
     /**
      * Execute a toast in an {@link AsyncTask}.
-     * 
+     *
      * @param context the {@link Context} to use.
      * @param msg the message to show.
-     * @param okRunnable optional {@link Runnable} to trigger after ok was pressed. 
+     * @param okRunnable optional {@link Runnable} to trigger after ok was pressed.
      */
     public static void toast( final Context context, final String msg, final int length ) {
         new AsyncTask<String, Void, String>(){
@@ -371,10 +371,10 @@ public class Utilities {
 
     /**
      * Execute a toast in an {@link AsyncTask}.
-     * 
+     *
      * @param context the {@link Context} to use.
      * @param msgId the id of the message to show.
-     * @param okRunnable optional {@link Runnable} to trigger after ok was pressed. 
+     * @param okRunnable optional {@link Runnable} to trigger after ok was pressed.
      */
     public static void toast( final Context context, final int msgId, final int length ) {
         String msg = context.getString(msgId);
@@ -383,12 +383,12 @@ public class Utilities {
 
     /**
      * Execute a message dialog in an {@link AsyncTask}.
-     * 
+     *
      * @param context the {@link Context} to use.
      * @param title a title for the input dialog.
      * @param message a message to show.
-     * @param defaultText a default text to fill in. 
-     * @param textRunnable optional {@link TextRunnable} to trigger after ok was pressed. 
+     * @param defaultText a default text to fill in.
+     * @param textRunnable optional {@link TextRunnable} to trigger after ok was pressed.
      */
     public static void inputMessageDialog( final Context context, final String title, final String message,
             final String defaultText, final TextRunnable textRunnable ) {
@@ -433,9 +433,9 @@ public class Utilities {
 
     /**
      * Converts TMS tile coordinates to Google Tile coordinates.
-     * 
+     *
      * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
-     * 
+     *
      * @param tx the x tile number.
      * @param ty the y tile number.
      * @param zoom the current zoom level.
@@ -447,9 +447,9 @@ public class Utilities {
 
     /**
      * Converts Google tile coordinates to TMS Tile coordinates.
-     * 
+     *
      * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
-     * 
+     *
      * @param tx the x tile number.
      * @param ty the y tile number.
      * @param zoom the current zoom level.
@@ -461,9 +461,9 @@ public class Utilities {
 
     /**
      * Converts TMS tile coordinates to Microsoft QuadTree.
-     * 
+     *
      * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
-     * 
+     *
      * @return the quadtree key.
      */
     public static String quadTree( int tx, int ty, int zoom ) {
@@ -533,7 +533,78 @@ public class Utilities {
         lat = 180 / Math.PI * (2 * Math.atan(Math.exp(lat * Math.PI / 180.0)) - Math.PI / 2.0);
         return new double[]{-lat, lon};
     }
+     /**
+     * Equatorial radius of earth is required for distance computation.
+     */
+    public static final double EQUATORIALRADIUS = 6378137.0;
+   /**
+    * Convert a longitude coordinate (in degrees) to a horizontal distance in meters from the
+    * zero meridian
+    *
+    * @param longitude
+    *            in degrees
+    * @return longitude in meters in spherical mercator projection
+    */
+    public static double longitudeToMetersX(double longitude) {
+     return EQUATORIALRADIUS * java.lang.Math.toRadians(longitude);
+    }
 
+    /**
+     * Convert a meter measure to a longitude
+     *
+     * @param x
+     *            in meters
+     * @return longitude in degrees in spherical mercator projection
+     */
+    public static double metersXToLongitude(double x) {
+     return java.lang.Math.toDegrees(x / EQUATORIALRADIUS);
+    }
+
+    /**
+     * Convert a meter measure to a latitude
+     *
+     * @param y
+     *            in meters
+     * @return latitude in degrees in spherical mercator projection
+     */
+    public static double metersYToLatitude(double y) {
+     return java.lang.Math.toDegrees(java.lang.Math.atan(java.lang.Math.sinh(y
+      / EQUATORIALRADIUS)));
+    }
+
+   /**
+    * Convert a latitude coordinate (in degrees) to a vertical distance in meters from the
+    * equator
+    *
+    * @param latitude
+    *            in degrees
+    * @return latitude in meters in spherical mercator projection
+    */
+    public static double latitudeToMetersY(double latitude) {
+     return EQUATORIALRADIUS
+      * java.lang.Math.log(java.lang.Math.tan(java.lang.Math.PI / 4 + 0.5
+      * java.lang.Math.toRadians(latitude)));
+    }
+     /**
+    * Convert a east-longitude,west-longitude coordinate (in degrees) to distance in meters
+    *
+    * @param east longitude in degrees
+    * @param east longitude in degrees
+    * @return meters in spherical mercator projection
+    */
+    public static double longitudeToMeters(double east_longitude,double west_longitude) {
+     return longitudeToMetersX(east_longitude)-longitudeToMetersX(west_longitude);
+    }
+    /**
+    * Convert a north-latitude,south-latitude coordinate (in degrees) to distance in meters
+    *
+    * @param north latitude in degrees
+    * @param south latitude in degrees
+    * @return meters in spherical mercator projection
+    */
+    public static double latitudeToMeters(double north_latitude,double south_latitude) {
+     return latitudeToMetersY(north_latitude)-latitudeToMetersY(south_latitude);
+    }
     /**
      * Converts pixel coordinates in given zoom level of pyramid to EPSG:900913
      *
@@ -570,18 +641,18 @@ public class Utilities {
     }
 
     /**
-     * A string formatter. 
-     * 
+     * A string formatter.
+     *
      * <p>This method exists, because the method to use is not definitive yet.</p>
      * <p>
-     * Currently the format of the substitutes in the message are: 
+     * Currently the format of the substitutes in the message are:
      * <ul>
      *   <li>%1$d = for numeric</li>
      *   <li>%1$s = for strings</li>
-     * </ul> 
+     * </ul>
      * The %1, %2, etc refer to the number of the args.
      * </p>
-     * 
+     *
      * @param msg the message.
      * @param args the args to substitute.
      * @return the formatted string.
@@ -593,7 +664,7 @@ public class Utilities {
 
     /**
      * Convert bytes to hex string.
-     * 
+     *
      * @param b the bytes array to convert.
      * @param size the size of the array to consider.
      * @return the hex string.
@@ -612,7 +683,7 @@ public class Utilities {
 
     /**
      * Get the megabytes available in the filesystem at 'file'.
-     * 
+     *
      * @param file the filesystem's path.
      * @return the available space in mb.
      */
@@ -624,7 +695,7 @@ public class Utilities {
 
     /**
      * Get the size in megabytes of the filesystem at 'file'.
-     * 
+     *
      * @param file the filesystem's path.
      * @return the size in mb.
      */
@@ -634,11 +705,11 @@ public class Utilities {
         return bytes / (1024.f * 1024.f);
     }
 
-    /** 
-     * Convert meters to feet. 
-      * 
+    /**
+     * Convert meters to feet.
+      *
       * @param meters the value in meters to convert to feet.
-      * @return meters converted to feet. 
+      * @return meters converted to feet.
       */
     public static double toFeet( final double meters ) {
         return meters * METER_TO_FEET_CONVERSION_FACTOR;
@@ -646,7 +717,7 @@ public class Utilities {
 
     /**
      * Create an OSM url from coordinates.
-     * 
+     *
      * @param lat
      * @param lon
      * @param withMarker
@@ -674,9 +745,9 @@ public class Utilities {
 
     /**
      * Method to help define file names that need to be hidden.
-     * 
+     *
      * <p>Currently ones that start with _ are hidden.</p>
-     * 
+     *
      * @param name the name to check.
      * @return <code>true</code> if the name defines a file to hide.
      */

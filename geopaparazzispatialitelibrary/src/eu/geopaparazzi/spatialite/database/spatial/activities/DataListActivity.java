@@ -119,9 +119,9 @@ public class DataListActivity extends ListActivity {
                         Intent intent = null;
                         if (item.isLine()) {
                             intent = new Intent(DataListActivity.this, LinesDataPropertiesActivity.class);
-                        } else if ((item.isPolygon()) || (item.isGeometryCollection())) {
+                        } else if (item.isPolygon())  {
                             intent = new Intent(DataListActivity.this, PolygonsDataPropertiesActivity.class);
-                        } else if (item.isPoint()) {
+                        } else if ((item.isPoint()) || (item.isGeometryCollection())) {
                             intent = new Intent(DataListActivity.this, PointsDataPropertiesActivity.class);
                         }
                         intent.putExtra(SpatialiteLibraryConstants.PREFS_KEY_TEXT, item.getUniqueName());
