@@ -1,2 +1,4 @@
 include 'geopaparazzilibrary'
+include 'geopaparazzispatialitelibrary'
+include 'geopaparazzimapsforge'
 include 'geopaparazzi.app'

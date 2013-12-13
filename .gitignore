@@ -28,4 +28,6 @@ tx.exe
 
 # gradle stuff
 .gradle
-geopaparazzilibrary/build/
+geopaparazzilibrary/build
+geopaparazzimapsforge/build 
+geopaparazzispatialitelibrary/build
