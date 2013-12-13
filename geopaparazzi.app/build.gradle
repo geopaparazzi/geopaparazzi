@@ -29,8 +29,8 @@ android {
                 compile project(":geopaparazzispatialitelibrary")
                 compile project(":geopaparazzimapsforge")
                 compile project(":geopaparazzilibrary")
+                compile project(":geopaparazzimarkerslib")
                 compile files('libs/acra-4.5.0.jar')
-                compile files('libs/markers.jar')
         }
 
         sourceSets {
@@ -70,7 +70,7 @@ android {
                 signingConfig signingConfigs.release
                 applicationVariants.all { variant ->
                     def file = variant.outputFile
-                    variant.outputFile = new File(file.parent, file.name.replace(".app-release.apk", "-" + geopaparazziVersion + ".apk")) 
+                    variant.outputFile = new File(file.parent, file.name.replace("geopaparazzi.app-release.apk", "GeoPaparazzi_" + geopaparazziVersion + ".apk")) 
                 }
             }
         }       
