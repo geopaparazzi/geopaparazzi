@@ -46,21 +46,21 @@ public class GPLogPreferencesHandler {
         GPLog.LOG = doLog;
         Editor edit = preferences.edit();
         edit.putBoolean(PREFS_KEY_LOG, doLog);
-        edit.apply();
+        edit.commit();
     }
 
     public static void setLogHeavy( boolean doLog, SharedPreferences preferences ) {
         GPLog.LOG_HEAVY = doLog;
         Editor edit = preferences.edit();
         edit.putBoolean(PREFS_KEY_LOG_HEAVY, doLog);
-        edit.apply();
+        edit.commit();
     }
 
     public static void setLogAbsurd( boolean doLog, SharedPreferences preferences ) {
         GPLog.LOG_ABSURD = doLog;
         Editor edit = preferences.edit();
         edit.putBoolean(PREFS_KEY_LOG_ABSURD, doLog);
-        edit.apply();
+        edit.commit();
     }
 
     public static boolean checkLog( SharedPreferences preferences ) {
