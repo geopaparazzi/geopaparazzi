@@ -26,3 +26,6 @@ tx.exe
 *.swp
 *~
 
+# gradle stuff
+.gradle
+geopaparazzilibrary/build/
