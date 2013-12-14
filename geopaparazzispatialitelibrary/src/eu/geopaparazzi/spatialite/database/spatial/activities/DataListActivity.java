@@ -36,6 +36,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import eu.geopaparazzi.spatialite.R;
+// import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.OrderComparator;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
@@ -69,6 +70,8 @@ public class DataListActivity extends ListActivity {
         try {
             if (doReread)
                 spatialTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(doReread);
+                // no bounds checking, no enabled checking : all records will be returned
+                // spatialTables =  MapsDirManager.getInstance().getSpatialVectorTables(null,0,doReread);
         } catch (Exception e) {
             // Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();

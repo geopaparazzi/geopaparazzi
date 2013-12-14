@@ -149,15 +149,15 @@ public class ClassNodeInfo<T>
   { // this is not enabled, so return now [checking is desired]
    return i_rc;
   }
-  if (bounds_zoom == null)
+  if ((bounds_zoom == null) || (bounds_zoom.length != 5))
   { // no checking of any kind are done
    i_rc=10;
    return i_rc;
   }
-  if (bounds_zoom.length == 5)
+  if ((bounds_zoom.length == 5) || (bounds_zoom.length == 7))
   { // we must have 5 values: west,south,east,north wsg84 values and zoom-level
    int i_zoom=(int)bounds_zoom[4];
-   // String s_parms=bounds_zoom[0]+","+bounds_zoom[1]+","+bounds_zoom[2]+","+bounds_zoom[3]+";"+i_zoom;
+   String s_parms=bounds_zoom[0]+","+bounds_zoom[1]+","+bounds_zoom[2]+","+bounds_zoom[3]+";"+i_zoom;
    if ((i_zoom >= minZoom) && (i_zoom <= maxZoom))
    { // inside valid zoom-levels
     if (((bounds_zoom[0] >= bounds_west) && (bounds_zoom[2] <= bounds_east)) &&
@@ -373,7 +373,7 @@ public class ClassNodeInfo<T>
  }
  public static  enum SortParameter
  {
-  SORT_TYPE_TEXT,SORT_DIRECTORY,SORT_FILE,SORT_FILENAME_PATH
+  SORT_TYPE_TEXT,SORT_DIRECTORY,SORT_FILE,SORT_FILENAME_PATH,SORT_ENABLED
  }
 }
 

@@ -35,6 +35,12 @@ public class ClassNodeInfoSort implements Comparator<ClassNodeInfo>
      comparison = one.getFileNamePath().toLowerCase().compareTo(another.getFileNamePath().toLowerCase());
       if (comparison != 0) return comparison;
     break;
+    case SORT_ENABLED:
+     String s_one=""+one.getEnabled();
+     String s_another=""+another.getEnabled();
+     comparison = s_one.compareTo(s_another);
+      if (comparison != 0) return comparison;
+    break;
    }
   }
   return 0;

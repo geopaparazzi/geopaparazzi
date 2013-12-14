@@ -5,9 +5,9 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.LinkedList;
-import java.util.Comparator;
 
 import eu.geopaparazzi.mapsforge.R;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.InMemoryTreeStateManager;

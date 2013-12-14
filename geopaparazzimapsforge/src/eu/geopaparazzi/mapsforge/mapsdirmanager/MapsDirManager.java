@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -561,11 +563,14 @@ public class MapsDirManager {
                             table.getZoom_Levels());
         this_vectorinfo.setEnabled(table.IsStyle());
         vector_classes.add(this_vectorinfo);
+        // GPLog.androidLog(-1, "ClassNodeInfo[" + this_vectorinfo.toString() + "]");
        }
       }
       catch (jsqlite.Exception e) {
             GPLog.androidLog(4, "MapsDirManager load_vector_classes() SpatialVectorTable[" + maps_dir.getAbsolutePath() + "]", e);
       }
+     Comparator<ClassNodeInfo> cp_directory_file = ClassNodeInfo.getComparator(ClassNodeInfo.SortParameter.SORT_ENABLED,ClassNodeInfo.SortParameter.SORT_DIRECTORY,ClassNodeInfo.SortParameter.SORT_FILE);
+     Collections.sort(vector_classes,cp_directory_file);
       return i_vectorinfo_count;
     }
      // -----------------------------------------------
@@ -638,14 +643,17 @@ public class MapsDirManager {
       * if called with 'bounds_zoom == null': then all Tables, without checking, will be returned
       * @param bounds_zoom 5 values: west,south,east,north wsg84 values and zoom-level
       * @param i_check_enabled 0: return all ; 1= return only those that are enabled
+      * @param b_reread true: force new creation of vector-list ; false= read as is
       * @return List<SpatialVectorTable> vector_TableList
       */
-    public List<SpatialVectorTable> getSpatialVectorTables(double[] bounds_zoom, int i_check_enabled)
+    public List<SpatialVectorTable> getSpatialVectorTables(double[] bounds_zoom, int i_check_enabled, boolean b_reread)
     {
      List<SpatialVectorTable> vector_TableList = new ArrayList<SpatialVectorTable>();
      // String s_bounds_zoom_sent=bounds_zoom[0]+","+bounds_zoom[1]+","+bounds_zoom[2]+","+bounds_zoom[3]+";"+(int)bounds_zoom[4];
      // String s_bounds_zoom_calc=get_bounds_zoom_meters_toString(1);
      // GPLog.androidLog(-1, "getSpatialVectorTables: bounds_zoom_sent[" + s_bounds_zoom_sent+ "] bounds_zoom_calc[" + s_bounds_zoom_calc+ "]");
+     if (b_reread)
+      i_vectorinfo_count=-1;
      if ((i_vectorinfo_count < 0) && (vector_classes.size() == 0))
      { // if not loaded, load it
       load_vector_classes();
@@ -655,20 +663,34 @@ public class MapsDirManager {
      {
       ClassNodeInfo this_vectorinfo = vector_classes.get(i);
       SpatialVectorTable vector_table=null;
+      try
+      { // until DataListActivity is incorperted into MapsDirManager, we must read the enabled status in case it changed
+       vector_table=sdManager.getVectorTableByName(this_vectorinfo.getFileNamePath());
+       if (vector_table != null)
+       {
+        this_vectorinfo.setEnabled(vector_table.IsStyle());
+       }
+      }
+      catch (jsqlite.Exception e) {
+           // GPLog.androidLog(4, "MapsDirManager getSpatialVectorTables SpatialVectorTable[" + maps_dir.getAbsolutePath() + "]", e);
+       }
       if (this_vectorinfo.checkPositionValues(bounds_zoom,i_check_enabled) > 0)
       { // 0=conditions not fullfilled ; 1=compleatly inside valid bounds ; 2=partially inside valid bounds
-       try
+       /* try
        {
-        vector_table=sdManager.getVectorTableByName(this_vectorinfo.getFileNamePath());
+        */
+        // vector_table=sdManager.getVectorTableByName(this_vectorinfo.getFileNamePath());
         if (vector_table != null)
         {
          vector_TableList.add(vector_table);
          // GPLog.androidLog(-1, "ClassNodeInfo[" + this_vectorinfo.toString() + "]");
         }
+        /*
        }
        catch (jsqlite.Exception e) {
             GPLog.androidLog(4, "MapsDirManager getSpatialVectorTables SpatialVectorTable[" + maps_dir.getAbsolutePath() + "]", e);
-      }
+       }
+       */
       }
     }
      return vector_TableList;

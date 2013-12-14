@@ -1482,7 +1482,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
     public GeometryIterator getGeometryIteratorInBounds( String destSrid, SpatialVectorTable table, double n, double s, double e,
             double w ) {
         String query = buildGeometriesInBoundsQuery(destSrid, table, n, s, e, w);
-        // GPLog.androidLog(-1,"SpatialiteDatabaseHandler.getGeometryIteratorInBounds["+table.getUniqueName()+"]: query["+query+"]");
+        GPLog.androidLog(-1,"SpatialiteDatabaseHandler.getGeometryIteratorInBounds["+table.getUniqueName()+"]: query["+query+"]");
         return new GeometryIterator(db_java, query);
     }
 
@@ -2084,6 +2084,8 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
             String geometry_column = "";
             // GPLog.androidLog(-1,"SpatialiteDatabaseHandler["+getFileNamePath()+"] sql[" +
             // s_sql_layers+ "] valid["+b_database_valid+"] ");
+            // if a UpdateLayerStatistics is needed, do it only once [assume it is needed]
+            boolean b_UpdateLayerStatistics=true;
             try {
                 this_stmt = db_java.prepare(s_sql_layers);
                 while( this_stmt.step() ) {
@@ -2114,12 +2116,47 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                     sb_layers.append(geometry_column);
                     sb_layers.append(")) AS max_x, Max(MbrMaxY(");
                     sb_layers.append(geometry_column);
-                    sb_layers.append(")) AS max_y");
+                    sb_layers.append(")) AS max_y, count(");
+                    sb_layers.append(geometry_column);
+                    sb_layers.append(") AS i_row_count ");
                     sb_layers.append(" FROM ");
                     sb_layers.append(table_name);
                     sb_layers.append(";");
                     String s_select_bounds = sb_layers.toString();
                     Stmt bounds_stmt = null;
+                    int i_test=0; // i_CheckSpatialIndex is returning 0 all the time and can be used
+                    if ((!table_name.equals("")) && (!geometry_column.equals("")) && (i_test > 0))
+                    { // checking logic :CheckSpatialIndex,CreateSpatialIndex,RecoverSpatialIndex
+                     // SELECT CheckSpatialIndex('oddity','geometry');
+                     // NULL will be returned if the requested RTree doesn't exists
+                     // --> SELECT CreateSpatialIndex("oddity","geometry");
+                     // 0 will be returned if it needs to be recovered
+                     // --> SELECT RecoverSpatialIndex("oddity","geometry",0);
+                     String s_CheckSpatialIndex="SELECT CheckSpatialIndex('"+table_name+"','"+geometry_column+"');";
+                     int i_CheckSpatialIndex=-1;
+                     try
+                     {
+                      bounds_stmt = db_java.prepare(s_CheckSpatialIndex);
+                      if (bounds_stmt.step())
+                      {
+                       i_CheckSpatialIndex = bounds_stmt.column_int(0);
+                      }
+                     }
+                     catch (Exception e)
+                     {
+                     }
+                     finally
+                     {
+                      if (bounds_stmt != null)
+                      {
+                       bounds_stmt.close();
+                      }
+                      if (i_CheckSpatialIndex < 1)
+                      {
+                       GPLog.androidLog(-1,"SpatialiteDatabaseHandler["+getFileNamePath()+"] tablename["+table_name+"] geometry_column["+geometry_column+"] i_CheckSpatialIndex["+i_CheckSpatialIndex+"]");
+                      }
+                     }
+                    }
                     if (i_database_type == 3) { // for older spatialite v2+3 : Query extent of table
                                                 // and fill boundsCoordinates
                         s_geometry_type = this_stmt.column_string(2);
@@ -2131,6 +2168,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                                 boundsCoordinates[1] = bounds_stmt.column_double(1);
                                 boundsCoordinates[2] = bounds_stmt.column_double(2);
                                 boundsCoordinates[3] = bounds_stmt.column_double(3);
+                                i_row_count = bounds_stmt.column_int(4);
                             }
                         } catch (Exception e) {
                         } finally {
@@ -2158,22 +2196,67 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                         { // Sometimes there are no results for GEOMETRYCOLLECTION
                          // String s_bounds_zoom_sent=boundsCoordinates[0]+","+boundsCoordinates[1]+","+boundsCoordinates[2]+","+boundsCoordinates[3]+";";
                          // GPLog.androidLog(-1, "getSpatialVectorTables: geometycolletion 01 boundsCoordinates[" + s_bounds_zoom_sent+ "] ");
-                         try {
-                            bounds_stmt = db_java.prepare(s_select_bounds);
-                            if (bounds_stmt.step()) {
-                                boundsCoordinates[0] = bounds_stmt.column_double(0);
-                                boundsCoordinates[1] = bounds_stmt.column_double(1);
-                                boundsCoordinates[2] = bounds_stmt.column_double(2);
-                                boundsCoordinates[3] = bounds_stmt.column_double(3);
+                         // SELECT UpdateLayerStatistics();
+                         if ((!s_layer_type.equals("")) && (i_row_count == 0))
+                         { // at the moment we are reading one row of possibly many rows
+                          if (b_UpdateLayerStatistics)
+                          { // do this only for the first row, the next time the application is run it will have a proper table
+                           String s_UpdateLayerStatistics="SELECT UpdateLayerStatistics();";
+                           int i_UpdateLayerStatistics=-1;
+                           try
+                           {
+                            bounds_stmt = db_java.prepare(s_UpdateLayerStatistics);
+                            if (bounds_stmt.step())
+                            {
+                             i_UpdateLayerStatistics = this_stmt.column_int(0);
                             }
-                         } catch (Exception e) {
-                         } finally {
-                            if (bounds_stmt != null) {
-                                bounds_stmt.close();
+                           }
+                           catch (Exception e)
+                           {
+                           }
+                           finally
+                           {
+                            if (bounds_stmt != null)
+                            {
+                             bounds_stmt.close();
                             }
-                            // s_bounds_zoom_sent=boundsCoordinates[0]+","+boundsCoordinates[1]+","+boundsCoordinates[2]+","+boundsCoordinates[3]+";";
-                            // GPLog.androidLog(-1, "getSpatialVectorTables: geometycolletion 02 boundsCoordinates[" + s_bounds_zoom_sent+ "] ["+s_select_bounds+"]");
+                            if (i_UpdateLayerStatistics == 1)
+                            {  // the next time this application reads this database it will have a proper table
+                             b_UpdateLayerStatistics=false; // UpdateLayerStatistics is not needed
+                            }
+                           }
+                          }
                          }
+                         if ((boundsCoordinates[0] == 0) && (boundsCoordinates[1] == 0) && (boundsCoordinates[2] == 0) && (boundsCoordinates[3] == 0))
+                         { // this time (after UpdateLayerStatistics) wel will retrieve this Information in an otherway
+                          try
+                          {
+                           bounds_stmt = db_java.prepare(s_select_bounds);
+                           if (bounds_stmt.step())
+                           {
+                            boundsCoordinates[0] = bounds_stmt.column_double(0);
+                            boundsCoordinates[1] = bounds_stmt.column_double(1);
+                            boundsCoordinates[2] = bounds_stmt.column_double(2);
+                            boundsCoordinates[3] = bounds_stmt.column_double(3);
+                            i_row_count = bounds_stmt.column_int(4);
+                           }
+                          }
+                          catch (Exception e)
+                          {
+                          }
+                          finally
+                          {
+                           if (bounds_stmt != null)
+                           {
+                            bounds_stmt.close();
+                           }
+                          }
+                         }
+                        }
+                        else
+                        { // we have found a valid record
+                         // this will prevent UpdateLayerStatistics being called on empty tables - when they ARE not the first table
+                         b_UpdateLayerStatistics=false; // UpdateLayerStatistics is not needed
                         }
                     }
                     // this should have a list of unique geometry-fields, we will look later for

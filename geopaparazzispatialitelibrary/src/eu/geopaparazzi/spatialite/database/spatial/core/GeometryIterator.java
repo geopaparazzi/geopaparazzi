@@ -25,10 +25,11 @@ import jsqlite.Stmt;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKBReader;
+import eu.geopaparazzi.library.database.GPLog;
 
 /**
  * Class that iterates over Database geometries and doesn't keep everything in memory.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class GeometryIterator implements Iterator<Geometry> {
@@ -40,18 +41,21 @@ public class GeometryIterator implements Iterator<Geometry> {
         try {
             stmt = database.prepare(query);
         } catch (Exception e) {
-            e.printStackTrace();
+            GPLog.androidLog(4,"GeometryIterator.creation sql["+query+"]",e);
         }
     }
 
     @Override
     public boolean hasNext() {
         if (stmt == null)
-            return false;
-        try {
+        {
+         return false;
+        }
+        try
+        { // sqlite-amalgamation-3080100 allways returns false with BLOBS
             return stmt.step();
         } catch (Exception e) {
-            e.printStackTrace();
+         GPLog.androidLog(4,"GeometryIterator.hasNext()[stmt.step() failed]",e);
             return false;
         }
     }
@@ -59,13 +63,16 @@ public class GeometryIterator implements Iterator<Geometry> {
     @Override
     public Geometry next() {
         if (stmt == null)
+        {
+          GPLog.androidLog(4,"GeometryIterator.next() [stmt=null]");
             return null;
+         }
         try {
             byte[] geomBytes = stmt.column_bytes(0);
             Geometry geometry = wkbReader.read(geomBytes);
             return geometry;
         } catch (java.lang.Exception e) {
-            e.printStackTrace();
+            GPLog.androidLog(4,"GeometryIterator.next()[wkbReader.read() failed]",e);
             // String geomWKT = "";
             // try {
             // geomWKT = stmt.column_string(1);
