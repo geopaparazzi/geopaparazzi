@@ -88,7 +88,7 @@ public class MapTagsActivity extends Activity {
             public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
                 Editor edit = preferences.edit();
                 edit.putBoolean(USE_MAPCENTER_POSITION, !isChecked);
-                edit.apply();
+                edit.commit();
             }
         });
 
@@ -106,7 +106,7 @@ public class MapTagsActivity extends Activity {
             togglePositionTypeButtonGps.setEnabled(false);
             Editor edit = preferences.edit();
             edit.putBoolean(USE_MAPCENTER_POSITION, false);
-            edit.apply();
+            edit.commit();
         } else {
             if (useMapCenterPosition) {
                 togglePositionTypeButtonGps.setChecked(false);

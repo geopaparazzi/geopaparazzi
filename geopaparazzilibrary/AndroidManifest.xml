@@ -47,6 +47,7 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
+        
         <activity
             android:name="eu.geopaparazzi.library.camera.CameraActivity"
             android:configChanges="orientation" >
@@ -146,15 +147,6 @@
             </intent-filter>
         </receiver>
 
-        <activity
-            android:name=".nfc.NfcIdReaderActivity"
-            android:label="@string/title_activity_nfc_id_reader" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

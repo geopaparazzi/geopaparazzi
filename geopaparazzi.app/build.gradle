@@ -1,0 +1,79 @@
+buildscript {
+        repositories {
+                mavenCentral()
+        }
+        dependencies {
+                classpath 'com.android.tools.build:gradle:0.6.+'
+        }
+}
+
+apply plugin: 'android'
+
+task copyNativeLibs(type: Copy) {
+    from(new File(project(':geopaparazzispatialitelibrary').projectDir, 'libs')) { include '**/*.so' }
+    into new File(buildDir, 'native-libs')
+}
+tasks.withType(Compile) { compileTask -> compileTask.dependsOn copyNativeLibs }
+clean.dependsOn 'cleanCopyNativeLibs'
+tasks.withType(com.android.build.gradle.tasks.PackageApplication) { pkgTask ->
+    pkgTask.jniDir new File(buildDir, 'native-libs')
+}
+
+
+
+android {
+        compileSdkVersion 19
+        buildToolsVersion "19"
+        
+        dependencies {
+                compile project(":geopaparazzispatialitelibrary")
+                compile project(":geopaparazzimapsforge")
+                compile project(":geopaparazzilibrary")
+                compile project(":geopaparazzimarkerslib")
+                compile files('libs/acra-4.5.0.jar')
+        }
+
+        sourceSets {
+                main {
+                        manifest {
+                                srcFile 'AndroidManifest.xml'
+                        }
+                        java {
+                                srcDir 'src'
+                        }
+                        res {
+                                srcDir 'res'
+                        }
+                        assets {
+                                srcDir 'assets'
+                        }
+                        resources {
+                                srcDir 'src'
+                        }
+                        aidl {
+                                srcDir 'src'
+                        }
+                }
+        }
+
+        signingConfigs {
+            release {
+                storeFile file(System.getenv("KEYSTORE"))
+                storePassword System.getenv("KEYSTORE_PASSWORD")
+                keyAlias System.getenv("KEY_ALIAS")
+                keyPassword System.getenv("KEY_PASSWORD")
+            }
+        }
+     
+        buildTypes {
+            release {
+                signingConfig signingConfigs.release
+                applicationVariants.all { variant ->
+                    def file = variant.outputFile
+                    variant.outputFile = new File(file.parent, file.name.replace("geopaparazzi.app-release.apk", "GeoPaparazzi_" + geopaparazziVersion + ".apk")) 
+                }
+            }
+        }       
+
+
+}

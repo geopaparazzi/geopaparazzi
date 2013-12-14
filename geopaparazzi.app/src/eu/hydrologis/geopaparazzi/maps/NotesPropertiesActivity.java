@@ -64,7 +64,7 @@ public class NotesPropertiesActivity extends Activity {
             public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
                 Editor editor = preferences.edit();
                 editor.putBoolean(Constants.PREFS_KEY_NOTES_CHECK, useCustomCheckbox.isChecked());
-                editor.apply();
+                editor.commit();
             }
         });
 
@@ -94,7 +94,7 @@ public class NotesPropertiesActivity extends Activity {
             public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
                 Editor editor = preferences.edit();
                 editor.putBoolean(Constants.PREFS_KEY_NOTES_TEXT_VISIBLE, showLabelsCheckbox.isChecked());
-                editor.apply();
+                editor.commit();
             }
         });
 
@@ -110,7 +110,7 @@ public class NotesPropertiesActivity extends Activity {
             public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
                 Editor editor = preferences.edit();
                 editor.putBoolean(Constants.PREFS_KEY_NOTES_TEXT_DOHALO, haloCheckbox.isChecked());
-                editor.apply();
+                editor.commit();
             }
         });
     }
@@ -137,7 +137,7 @@ public class NotesPropertiesActivity extends Activity {
                 String sizeStr = selectedItem.toString();
                 Editor editor = preferences.edit();
                 editor.putString(prefsKey, sizeStr);
-                editor.apply();
+                editor.commit();
             }
             public void onNothingSelected( AdapterView< ? > arg0 ) {
             }
