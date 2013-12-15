@@ -33,8 +33,12 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/sqlQuerySpinner"
         android:layout_margin="5dp"
+        android:background="@drawable/button_background_drawable"
         android:onClick="launchQuery"
-        android:text="@string/launch_query" />
+        android:padding="@dimen/button_indent"
+        android:text="@string/launch_query"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/main_text_color" />
 
     <TextView
         android:id="@+id/orText"
@@ -79,7 +83,11 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/ownQueryEditText"
         android:layout_margin="5dp"
+        android:background="@drawable/button_background_drawable"
         android:onClick="launchOwnQuery"
-        android:text="Launch custom query" />
+        android:padding="@dimen/button_indent"
+        android:text="Launch custom query"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/main_text_color" />
 
 </RelativeLayout>

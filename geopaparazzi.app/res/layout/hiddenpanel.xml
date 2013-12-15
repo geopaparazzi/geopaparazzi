@@ -29,8 +29,12 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/configurazioneLabel"
         android:layout_margin="10dp"
+        android:background="@drawable/button_background_drawable"
         android:onClick="startSqlView"
-        android:text="@string/database_queries" />
+        android:padding="@dimen/button_indent"
+        android:text="@string/database_queries"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/main_text_color" />
 
     <CheckBox
         android:id="@+id/demoCheckbox"
@@ -92,7 +96,11 @@
         android:layout_alignRight="@+id/logAbsCheckbox"
         android:layout_below="@+id/logCheckbox"
         android:layout_marginLeft="10dp"
+        android:background="@drawable/button_background_drawable"
         android:onClick="clearLog"
-        android:text="Clear log" />
+        android:padding="@dimen/button_indent"
+        android:text="Clear log"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/main_text_color" />
 
 </RelativeLayout>

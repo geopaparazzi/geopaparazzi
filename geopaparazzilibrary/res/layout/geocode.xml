@@ -2,9 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main_background"
-    android:orientation="vertical" >
-
+    android:background="@color/main_background" >
+
     <EditText
         android:id="@+id/enterLocationValue"
         android:layout_width="wrap_content"
@@ -19,7 +18,7 @@
         android:inputType="text"
         android:text=""
         android:textColor="@color/main_text_color_neutral" />
-
+
     <ImageButton
         android:id="@+id/lookupLocationButton"
         android:layout_width="wrap_content"
@@ -44,17 +43,27 @@
             android:id="@+id/okButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/button_indent"
             android:layout_weight="1"
+            android:background="@drawable/button_background_drawable"
             android:onClick="onOkClick"
-            android:text="@string/go_to_button" />
+            android:padding="@dimen/button_indent"
+            android:text="@string/go_to_button"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/main_text_color" />
 
         <Button
             android:id="@+id/navButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/button_indent"
             android:layout_weight="1"
+            android:background="@drawable/button_background_drawable"
             android:onClick="onNavClick"
-            android:text="@string/route_to_button" />
+            android:padding="@dimen/button_indent"
+            android:text="@string/route_to_button"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/main_text_color" />
     </LinearLayout>
 
     <ListView
@@ -64,10 +73,10 @@
         android:layout_above="@id/buttonsLayout"
         android:layout_below="@id/lookupLocationButton"
         android:layout_margin="10dp"
+        android:background="@color/main_background"
         android:cacheColorHint="@color/main_background"
         android:choiceMode="singleChoice"
         android:drawSelectorOnTop="false"
-        android:background="@color/main_background"
         android:textColor="@color/main_text_color_neutral" />
 
 </RelativeLayout>
