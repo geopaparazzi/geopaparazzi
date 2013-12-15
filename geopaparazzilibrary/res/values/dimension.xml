@@ -25,4 +25,7 @@
 	<dimen name="mapview_sides_space">5dip</dimen>
 	<!-- button dims -->
 	<dimen name="button_indent">10dp</dimen>
+	<!-- custom dialog dims -->
+	<dimen name="dialog_minwidth">250dp</dimen>
+	<dimen name="dialog_minheight">180dp</dimen>
 </resources>

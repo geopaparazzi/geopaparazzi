@@ -3,6 +3,8 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/dialog_background"
+    android:minHeight="@dimen/dialog_minheight"
+    android:minWidth="@dimen/dialog_minwidth"
     android:orientation="vertical"
     android:paddingBottom="10dp" >
 
