@@ -129,10 +129,9 @@ public class SliderDrawView extends View {
 
         if (doMeasureMode) {
             int cWidth = canvas.getWidth();
-            RectF retfF = new RectF();
-            measurePath.computeBounds(retfF, true);
-            GPLog.androidLog(-1, "DRAWINFOLINE: " + retfF);
-
+            // RectF retfF = new RectF();
+            // measurePath.computeBounds(retfF, true);
+            // GPLog.androidLog(-1, "DRAWINFOLINE: " + retfF);
             canvas.drawPath(measurePath, measurePaint);
             int upper = 70;
             int delta = 5;
@@ -377,6 +376,8 @@ public class SliderDrawView extends View {
     public void disableInfo() {
         doInfoMode = false;
         this.mapView = null;
+        rect.set(0, 0, 0, 0);
+        invalidate();
     }
 
     public void enableInfo( MapView mapView ) {
