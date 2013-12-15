@@ -116,6 +116,7 @@ import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.MapsDirTreeViewList;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.activities.DataListActivity;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
@@ -497,6 +498,24 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             public void onClick( View v ) {
                 boolean isInInfoMode = !mapView.isClickable();
                 if (!isInInfoMode) {
+                    // check maps enablement
+                    try {
+                        final SpatialDatabasesManager sdbManager = SpatialDatabasesManager.getInstance();
+                        final List<SpatialVectorTable> spatialTables = sdbManager.getSpatialVectorTables(false);
+                        boolean atLeastOneEnabled = false;
+                        for( SpatialVectorTable spatialVectorTable : spatialTables ) {
+                            if (spatialVectorTable.getStyle().enabled == 1) {
+                                atLeastOneEnabled = true;
+                                break;
+                            }
+                        }
+                        if (!atLeastOneEnabled) {
+                            Utilities.messageDialog(MapsActivity.this, R.string.no_queriable_layer_is_visible, null);
+                            return;
+                        }
+                    } catch (jsqlite.Exception e) {
+                        e.printStackTrace();
+                    }
                     infoModeButton.setBackgroundResource(R.drawable.infomode_on);
                 } else {
                     infoModeButton.setBackgroundResource(R.drawable.infomode);

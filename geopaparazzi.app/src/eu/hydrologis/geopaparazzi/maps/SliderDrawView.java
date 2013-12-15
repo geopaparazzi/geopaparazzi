@@ -1,3 +1,20 @@
+/*
+ * Geopaparazzi - Digital field mapping on Android based devices
+ * Copyright (C) 2010  HydroloGIS (www.hydrologis.com)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.hydrologis.geopaparazzi.maps;
 
 import static java.lang.Math.abs;
@@ -36,6 +53,11 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.maps.overlays.SliderDrawProjection;
 import eu.hydrologis.geopaparazzi.util.Constants;
 
+/**
+ * A slider view to draw on.
+ * 
+ * @author Andrea Antonello (www.hydrologis.com)
+ */
 public class SliderDrawView extends View {
     private MapView mapView;
     private final Paint measurePaint = new Paint();
@@ -67,7 +89,7 @@ public class SliderDrawView extends View {
     private float bottom;
     private float top;
     private SliderDrawProjection sliderDrawProjection;
-    
+
     private StringBuilder textBuilder = new StringBuilder();
 
     public SliderDrawView( Context context, AttributeSet attrs ) {
@@ -75,7 +97,7 @@ public class SliderDrawView extends View {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         doImperial = preferences.getBoolean(Constants.PREFS_KEY_IMPERIAL, false);
-        
+
         measurePaint.setAntiAlias(true);
         measurePaint.setColor(Color.DKGRAY);
         measurePaint.setStrokeWidth(3f);
@@ -120,7 +142,7 @@ public class SliderDrawView extends View {
                 double distanceInFeet = Utilities.toFeet(measuredDistance);
                 textBuilder.append(String.valueOf((int) distanceInFeet));
                 textBuilder.append(" ft");
-            }else{
+            } else {
                 textBuilder.append(String.valueOf((int) measuredDistance));
                 textBuilder.append(" m");
             }
@@ -132,6 +154,7 @@ public class SliderDrawView extends View {
             if (GPLog.LOG_HEAVY)
                 GPLog.addLogEntry(this, "Drawing measure path text: " + upper); //$NON-NLS-1$
         } else if (doInfoMode) {
+            GPLog.androidLog(-1, "DRAWINFOBOX: " + rect);
             canvas.drawRect(rect, infoRectPaintFill);
             canvas.drawRect(rect, infoRectPaintStroke);
         }
@@ -165,6 +188,8 @@ public class SliderDrawView extends View {
                     lastY = currentY;
                     return true;
                 }
+                GPLog.androidLog(-1, "CURRENT:" + currentX + "/" + currentY);
+                GPLog.androidLog(-1, "LAST:" + lastX + "/" + lastY);
 
                 GeoPoint currentGeoPoint = pj.fromPixels(round(currentX), round(currentY));
                 pj.toPixels(currentGeoPoint, tmpP);
@@ -319,9 +344,7 @@ public class SliderDrawView extends View {
 
                 protected void onPostExecute( String response ) { // on UI thread!
                     importDialog.dismiss();
-                    if (response.length() == 0) {
-                        Utilities.messageDialog(context, "No queriable layer is visible.", null);
-                    } else if (response.startsWith("ERROR")) {
+                    if (response.startsWith("ERROR")) {
                         Utilities.messageDialog(context, response, null);
                     } else {
                         Utilities.messageDialog(context, response, null);
