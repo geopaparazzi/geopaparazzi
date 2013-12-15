@@ -80,15 +80,15 @@ public class SpatialDatabasesManager {
     public static String get_gpkt_extention() {
         return sa_extentions[i_extention_gpkt];
     }
-    public void init( Context context, File mapsDir ) {
+    public boolean init( Context context, File mapsDir ) {
         this_context=context;
+        List<ISpatialDatabaseHandler> sdb_Handlers = new ArrayList<ISpatialDatabaseHandler>();
+        boolean b_nomedia_file=false;
         File[] list_files = mapsDir.listFiles();
-        for( File this_file : list_files ) {
-            // mj10777: collect spatialite.geometries and .mbtiles databases
-            if (this_file.isDirectory()) {
-                // mj10777: read recursive directories inside the sdcard/maps directory
-                init(context, this_file);
-            } else {
+        for( File this_file : list_files )
+        { // nomedia logic: first check the files, if no '.nomedia' found: then its directories
+            if (this_file.isFile())
+            { // mj10777: collect spatialite.geometries and .mbtiles databases
                 for( int i = 0; i < sa_extentions.length; i++ ) {
                     String name = this_file.getName();
                     if (Utilities.isNameFromHiddenFile(name)) {
@@ -104,13 +104,34 @@ public class SpatialDatabasesManager {
                         // GPLog.androidLog(-1,"SpatialDatabasesManager["+i+"]["+sa_extentions[i]+"]: init["+this_file.getAbsolutePath()+"] ");
                         if (sdb.isValid())
                         {
-                         sdbHandlers.add(sdb);
+                         sdb_Handlers.add(sdb);
                         }
+                    }
+                    if (name.equals(".nomedia"))
+                    { // ignore all files of this directory
+                     b_nomedia_file=true;
+                     sdb_Handlers.clear();
+                     return b_nomedia_file;
                     }
                 }
             }
         }
-        // GPLog.androidLog(-1,"SpatialDatabasesManager init[" + mapsDir.getName() + "] size["+sdbHandlers.size()+"]");
+        if (!b_nomedia_file)
+        {
+         for (int i=0;i<sdb_Handlers.size();i++)
+         {
+          sdbHandlers.add(sdb_Handlers.get(i));
+         }
+        }
+        sdb_Handlers.clear();
+        for( File this_file : list_files )
+        {
+         if (this_file.isDirectory())
+         { // mj10777: read recursive directories inside the sdcard/maps directory
+          init(context, this_file);
+         }
+        }
+        return b_nomedia_file;
     }
     private boolean ignoreTileSource( String name ) {
         if (name.startsWith("_")) {

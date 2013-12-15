@@ -29,6 +29,7 @@ import org.mapsforge.map.reader.MapDatabase;
 import org.mapsforge.map.reader.header.FileOpenResult;
 import org.mapsforge.map.reader.header.MapFileHeader;
 import org.mapsforge.map.reader.header.MapFileInfo;
+import org.mapsforge.core.model.GeoPoint;
 import org.mapsforge.core.model.Tile;
 
 import jsqlite.Exception;
@@ -102,11 +103,20 @@ public class MapDatabaseHandler {
            bounds_south = (double) (map_FileInfo.boundingBox.getMinLatitude());
            bounds_east = (double) (map_FileInfo.boundingBox.getMaxLongitude());
            bounds_north = (double) (map_FileInfo.boundingBox.getMaxLatitude());
-           centerX = map_FileInfo.boundingBox.getCenterPoint().getLongitude();
-           centerY = map_FileInfo.boundingBox.getCenterPoint().getLatitude();
-
-
-           Byte startZoomLevel = getMinZoomlevel(map_Database);
+           GeoPoint startPosition=map_FileInfo.startPosition;
+           // long_description[california bounds[-125.8935,32.48171,-114.1291,42.01618] center[-120.0113,37.248945,14][-121.4944,38.58157]]
+           if (startPosition == null)
+           { // true center of map
+            centerX = map_FileInfo.boundingBox.getCenterPoint().getLongitude();
+            centerY = map_FileInfo.boundingBox.getCenterPoint().getLatitude();
+           }
+           else
+           { // user-defined center of map
+            centerY = startPosition.getLatitude();
+            centerX = startPosition.getLongitude();
+           }
+           Byte startZoomLevel=map_FileInfo.startZoomLevel;
+           // Byte startZoomLevel = getMinZoomlevel(map_Database);
            if (startZoomLevel != null) {
             minZoom = startZoomLevel;
            }
@@ -130,7 +140,10 @@ public class MapDatabaseHandler {
      * not accessible.
      * <p>Also the  startZoomLevel limits the level to 14, which is why this
      * workaround was done.
-     *
+     * 20131215: mj10777 this may possible be no longer needed, since startZoomLevel is public
+     * - berlin brandenburg show 8, us-maps 14
+     * -- this routine fails [may possible be used only after the file has been loaded]
+     * http://trac.openlayers.org/wiki/SettingZoomLevels
      * @param mapDatabase the {@link MapDatabase} to guess the min zoomlevel from.
      * @return the min zoomlevel or a default value 1.
      */

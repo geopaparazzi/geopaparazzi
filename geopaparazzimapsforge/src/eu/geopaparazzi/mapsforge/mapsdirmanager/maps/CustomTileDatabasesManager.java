@@ -50,7 +50,6 @@ public class CustomTileDatabasesManager {
     private static CustomTileDatabasesManager customtileDbManager = null;
     private static final String[] sa_extentions = new String[]{".mapurl"};
     private static final int i_extention_mapurl = 0;
-    private int i_count_tables=0;
     private CustomTileDatabasesManager() {
     }
 
@@ -67,27 +66,47 @@ public class CustomTileDatabasesManager {
     public static String get_mapurl_extention() {
         return sa_extentions[i_extention_mapurl];
     }
-    public void init( Context context, File mapsDir ) {
+    public boolean init( Context context, File mapsDir ) {
         File[] list_files = mapsDir.listFiles();
-        i_count_tables=0;
-        for( File this_file : list_files ) {
-            // mj10777: collect spatialite.geometries and .mbtiles databases
-            if (this_file.isDirectory()) {
-                // mj10777: read recursive directories inside the sdcard/maps directory
-                init(context, this_file);
-            } else {
+        List<CustomTileDatabaseHandler> customtile_Handlers = new ArrayList<CustomTileDatabaseHandler>();
+        boolean b_nomedia_file=false;
+        for( File this_file : list_files )
+        { // nomedia logic: first check the files, if no '.nomedia' found: then its directories
+            if (this_file.isFile())
+            {   // mj10777: collect .mapurl databases
                 String name = this_file.getName();
                 if (Utilities.isNameFromHiddenFile(name)) {
                     continue;
                 }
                 if (name.endsWith(get_mapurl_extention()) ) {
                     CustomTileDatabaseHandler map = new CustomTileDatabaseHandler(this_file.getAbsolutePath(),MapsDirManager.getInstance().get_maps_dir().getAbsolutePath());
-                    customtileHandlers.add(map);
-                    i_count_tables++;
+                    customtile_Handlers.add(map);
+                }
+                if (name.equals(".nomedia"))
+                { // ignore all files of this directory
+                 b_nomedia_file=true;
+                 customtile_Handlers.clear();
+                 return b_nomedia_file;
                 }
             }
         }
+        if (!b_nomedia_file)
+        {
+         for (int i=0;i<customtile_Handlers.size();i++)
+         {
+          customtileHandlers.add(customtile_Handlers.get(i));
+         }
+        }
+       customtile_Handlers.clear();
+       for( File this_file : list_files )
+       {
+        if (this_file.isDirectory())
+        {  // mj10777: read recursive directories inside the sdcard/maps directory
+         init(context, this_file);
+        }
+       }
         // GPLog.androidLog(-1,"CustomTileDatabasesManager init[" + mapsDir.getName() + "] size["+customtileHandlers.size()+"]");
+        return b_nomedia_file;
     }
     private boolean ignoreTileSource( String name ) {
         if (name.startsWith("_")) {
