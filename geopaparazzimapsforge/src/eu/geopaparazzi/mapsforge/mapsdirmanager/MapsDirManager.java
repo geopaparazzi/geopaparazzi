@@ -280,6 +280,7 @@ public class MapsDirManager {
                             table.getDescription(), table.getBounds_toString(), table.getCenter_toString(),
                             table.getZoom_Levels());
                     maptype_classes.add(this_mapinfo);
+                    // GPLog.androidLog(-1, "ClassNodeInfo[" + this_mapinfo.toString() + "]");
                     if ((selected_mapinfo == null) && (s_selected_map.equals(table.getFileNamePath()))) {
                         selected_mapinfo = this_mapinfo;
                         s_selected_type = selected_mapinfo.getTypeText();
@@ -508,26 +509,8 @@ public class MapsDirManager {
             }
             if (selected_mapGenerator != null) {
                 i_rc = 0;
-                if (mapCenterLocation == null) { // if the user has not given a desired position,
-                                                 // retrieve it from the map-view
-                    GeoPoint mapCenter = map_View.getMapPosition().getMapCenter();
-                    mapCenterLocation = new double[]{mapCenter.getLongitude(), mapCenter.getLatitude(),
-                            (double) map_View.getMapPosition().getZoomLevel()};
-                }
-                if (mapCenterLocation != null) { // this will adapt the present position of the
-                                                 // map-view to the supported area of the map [true]
-                    // GeoPoint geoPoint = new GeoPoint(mapCenterLocation[1], mapCenterLocation[0]);
-                    // map_View.getController().setZoom((int) mapCenterLocation[2]);
-                    // map_View.getController().setCenter(geoPoint);
-                    setMapViewCenter(map_View,mapCenterLocation,0);
-                }
-                // 20131108 mj10777: when a new map is loaded inside a MapActivity, the old tiles
-                // are still shown
-                map_View.invalidateOnUiThread();
-                // if (b_redrawTiles)
-                // map_View.redrawTiles();
-                // else
-                // map_View.invalidateOnUiThread();
+                // if mapCenterLocation == null, default values from seleted map will be used
+                setMapViewCenter(map_View,mapCenterLocation,1);
             }
         }
         return i_rc;
@@ -728,6 +711,10 @@ public class MapsDirManager {
      {
       currentZoom=i_zoom;
      }
+     else
+     {
+      currentZoom=getDefaultZoom();
+     }
         return currentZoom;
     }
     // -----------------------------------------------
@@ -836,6 +823,7 @@ public class MapsDirManager {
       * <p>-- the getMinZoom() of the loaded map will be taken
       * @param map_View Map-View to set (if not null)
       * @param mapCenterLocation [point/zoom to set]
+      * @param i_default_zoom [point/zoom to set]
       * @return zoom-level
       */
     public int setMapViewCenter(MapView map_View, double[] mapCenterLocation , int i_default_zoom) {
@@ -845,45 +833,49 @@ public class MapsDirManager {
       // 0=correct to position inside bounds/zoom-level; 1: future: offer selection-list of valid maps inside this area
       int i_position_correction_type=0;
       int i_zoom=0;
-        if (mapCenterLocation == null)
-        { // if the user has not given a desired position, retrieve it from the active-map
-          mapCenterLocation = getMapCenterZoom(1);
-          d_position_x=mapCenterLocation[0];
-          d_position_y=mapCenterLocation[1];
-          i_zoom=(int) mapCenterLocation[2];
-          if (i_default_zoom == 0)
-           i_zoom=map_View.getMapPosition().getZoomLevel();
-          if (i_default_zoom == 2)
-           i_zoom=getMinZoom();
+
+      if (mapCenterLocation == null)
+      { // if the user has not given a desired position, retrieve it from the active-map
+       // GPLog.androidLog(-1, "MapsDirInfo: setMapViewCenter[mapCenterLocation == null]");
+        mapCenterLocation = getMapCenterZoom(1);
+        d_position_x=mapCenterLocation[0];
+        d_position_y=mapCenterLocation[1];
+        i_zoom=(int) mapCenterLocation[2];
+        if (i_default_zoom == 0)
+         i_zoom=map_View.getMapPosition().getZoomLevel();
+        if (i_default_zoom == 2)
+         i_zoom=getMinZoom();
+      }
+      else
+      {
+       if (mapCenterLocation.length > 1)
+       {
+        d_position_x=mapCenterLocation[0];
+        d_position_y=mapCenterLocation[1];
+        if (mapCenterLocation.length > 2)
+        {
+         i_zoom=(int) mapCenterLocation[2];
         }
         else
-        {
-         if (mapCenterLocation.length > 1)
-         {
-          d_position_x=mapCenterLocation[0];
-          d_position_y=mapCenterLocation[1];
-          if (mapCenterLocation.length > 2)
-          {
-           i_zoom=(int) mapCenterLocation[2];
-          }
-          else
-          { // function was incorrectly called with only 2 parameters, instead of 3
-           i_zoom=map_View.getMapPosition().getZoomLevel();
-          }
-         }
-         else
-         { // function was incorrectly called, use default postions from active map
-          d_position_x=getCenterY();
-          d_position_y=getCenterY();
-          i_zoom=map_View.getMapPosition().getZoomLevel();
-         }
+        { // function was incorrectly called with only 2 parameters, instead of 3
+         i_zoom=map_View.getMapPosition().getZoomLevel();
         }
-        check_valid_position(d_position_x,d_position_y,i_zoom,i_position_correction_type);
-        GeoPoint geoPoint = new GeoPoint(getCurrentY(), getCurrentX());
-        map_View.getController().setZoom(getCurrentZoom());
-        map_View.getController().setCenter(geoPoint);
-        // GPLog.androidLog(-1, "MapsDirManager setMapViewCenter[" + getCurrentX() + "," + getCurrentY(), + "," + getCurrentZoom() + "]");
-        return map_View.getMapPosition().getZoomLevel();
+        // GPLog.androidLog(-1, "MapsDirInfo: setMapViewCenter[mapCenterLocation != null] ["+d_position_x+","+d_position_y+";"+i_zoom+"]");
+       }
+       else
+       { // function was incorrectly called, use default postions from active map
+        d_position_x=getCenterY();
+        d_position_y=getCenterY();
+        i_zoom=getDefaultZoom();
+       }
+       // GPLog.androidLog(-1, "MapsDirInfo: setMapViewCenter[mapCenterLocation != null] ["+mapCenterLocation.length+"]");
+      }
+      check_valid_position(d_position_x,d_position_y,i_zoom,i_position_correction_type);
+      GeoPoint geoPoint = new GeoPoint(getCurrentY(), getCurrentX());
+      map_View.getController().setZoom(getCurrentZoom());
+      map_View.getController().setCenter(geoPoint);
+      // GPLog.androidLog(-1, "MapsDirManager setMapViewCenter[" + getCurrentX() + "," + getCurrentY() + "," + getCurrentZoom() + ";" + getDefaultZoom() + "]");
+      return map_View.getMapPosition().getZoomLevel();
     }
     // -----------------------------------------------
     /**
@@ -908,20 +900,31 @@ public class MapsDirManager {
       default:
       case 0:
       { // correct to position inside bounds/zoom-level
+       if (((d_position_x < bounds_west) || (d_position_x > bounds_east)) ||
+            ((d_position_y < bounds_south) || (d_position_y > bounds_north)))
+       { // this is out of bounds, set center position
+         // even of only one of the values are incorrect:
+         // - the correct value may not show someting (.map files), thus force the change
+        d_position_x=getCenterX();
+        d_position_y=getCenterY();
+        // GPLog.androidLog(-1, "MapsDirInfo: setMapViewCenter[correction center] ["+d_position_x+","+d_position_y+";"+i_zoom+"]");
+       }
        if ((d_position_x < bounds_west) || (d_position_x > bounds_east))
        {
         if (d_position_x < bounds_west)
          d_position_x=bounds_west;
         if (d_position_x > bounds_east)
          d_position_x=bounds_east;
+         // GPLog.androidLog(-1, "MapsDirInfo: setMapViewCenter[correction X] ["+d_position_x+","+d_position_y+";"+i_zoom+"]");
        }
        currentX=d_position_x;
-       if ((d_position_y < bounds_south) ||(d_position_y > bounds_north))
+       if ((d_position_y < bounds_south) || (d_position_y > bounds_north))
        {
         if (d_position_y < bounds_south)
          d_position_y=bounds_south;
         if (d_position_y > bounds_north)
          d_position_y=bounds_north;
+         // GPLog.androidLog(-1, "MapsDirInfo: setMapViewCenter[correction Y] ["+d_position_x+","+d_position_y+";"+i_zoom+"]");
        }
        currentY=d_position_y;
        setCurrentZoom(i_zoom);
