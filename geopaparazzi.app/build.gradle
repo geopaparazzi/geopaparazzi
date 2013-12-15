@@ -55,16 +55,34 @@ android {
                         }
                 }
         }
-
         signingConfigs {
-            release {
-                storeFile file(System.getenv("KEYSTORE"))
-                storePassword System.getenv("KEYSTORE_PASSWORD")
-                keyAlias System.getenv("KEY_ALIAS")
-                keyPassword System.getenv("KEY_PASSWORD")
-            }
+         release
         }
-     
+        def Properties props = new Properties()
+        def propFile = new File('geopaparazzi.app/ant.properties')
+        if (propFile.canRead())
+        {
+         props.load(new FileInputStream(propFile)) 
+         if (props!=null && props.containsKey('key.store') && props.containsKey('key.store.password') &&
+             props.containsKey('key.alias') && props.containsKey('key.alias.password')) 
+         {
+          android.signingConfigs.release.storeFile = file(props['key.store'])
+          android.signingConfigs.release.storePassword = props['key.store.password']
+          android.signingConfigs.release.keyAlias = props['key.alias']
+          android.signingConfigs.release.keyPassword = props['key.alias.password']
+         } 
+         else 
+         {
+          println 'geopaparazzi.app/ant.properties found but some entries are missing'
+          android.buildTypes.release.signingConfig = null
+         }
+        }
+        else 
+        {
+         println 'geopaparazzi.app/ant.properties not found'
+         android.buildTypes.release.signingConfig = null
+        }
+  
         buildTypes {
             release {
                 signingConfig signingConfigs.release

@@ -788,7 +788,7 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
             mbtiles_async = new MBtilesAsync(this);
             // with .execute(): this crashes
             // mbtiles_async.execute(AsyncTasks.ASYNC_PARMS);
-            /*
+
                   if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB)
                   {
                    // GPLog.androidLog(-1,"run_retrieve_url.HONEYCOMB.["+Build.VERSION.SDK_INT+"]");
@@ -799,9 +799,9 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
                    // GPLog.androidLog(-1,"run_retrieve_url.OTHER.["+Build.VERSION.SDK_INT+"]");
                    mbtiles_async.execute(AsyncTasks.ASYNC_PARMS);
                   }
-            */
+
             // GPLog.androidLog(-1,"run_retrieve_url.Build.VERSION.SDK_INT.["+Build.VERSION.SDK_INT+"]"); // 20131125: 15
-            mbtiles_async.execute(AsyncTasks.ASYNC_PARMS);
+           // mbtiles_async.execute(AsyncTasks.ASYNC_PARMS);
         }
     }
     // -----------------------------------------------
