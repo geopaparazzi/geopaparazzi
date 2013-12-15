@@ -18,7 +18,6 @@
 package eu.hydrologis.geopaparazzi.maps;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -100,7 +99,6 @@ import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.sms.SmsData;
 import eu.geopaparazzi.library.sms.SmsUtilities;
 import eu.geopaparazzi.library.util.ColorUtilities;
-import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
@@ -109,13 +107,9 @@ import eu.geopaparazzi.library.util.activities.GeocodeActivity;
 import eu.geopaparazzi.library.util.activities.InsertCoordActivity;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.CustomTileDownloader;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.GeopackageTileDownloader;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapGeneratorInternal;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.MapsDirTreeViewList;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.activities.DataListActivity;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
@@ -219,92 +213,9 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         // TileCache fileSystemTileCache = this.mapView.getFileSystemTileCache();
         // fileSystemTileCache.setPersistent(persistent);
         // fileSystemTileCache.setCapacity(capacity);
-        int i_version = 1;
-        if (i_version == 0) { // get proper rendering engine
-            MapGenerator mapGenerator;
-            boolean b_map_file = false;
-            String tileSourceName = preferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE, ""); //$NON-NLS-1$
-            String filePath = preferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE_FILE, ""); //$NON-NLS-1$
-            MapGeneratorInternal mapGeneratorInternal = null;
-            try {
-                mapGeneratorInternal = MapGeneratorInternal.valueOf(tileSourceName);
-            } catch (IllegalArgumentException e) {
-                // ignore, is custom
-            }
-            SpatialRasterTable rasterTable = null;
-            try {
-                rasterTable = SpatialDatabasesManager.getInstance().getRasterTableByName(tileSourceName);
-            } catch (jsqlite.Exception e1) {
-                e1.printStackTrace();
-            }
-            if (rasterTable != null) {
-                try {
-                    mapGenerator = new GeopackageTileDownloader(rasterTable);
-                    minZoomLevel = rasterTable.getMinZoom();
-                    maxZoomLevel = rasterTable.getMaxZoom();
-                    rasterTable.checkCenterLocation(mapCenterLocation, true);
-                } catch (jsqlite.Exception e) {
-                    // e.printStackTrace();
-                    mapGenerator = MapGeneratorInternal.createMapGenerator(MapGeneratorInternal.mapnik);
-                }
-            } else {
-                if (tileSourceName.length() == 0 && filePath != null && new File(filePath).exists()) {
-                    try {
-                        if (filePath.endsWith(".map")) {
-                            File mapfile = new File(filePath);
-                            mapView.setMapFile(mapfile);
-                            String nameNoExt = FileUtilities.getNameWithoutExtention(mapfile);
-                            File xmlFile = new File(mapfile.getParentFile(), nameNoExt + ".xml"); //$NON-NLS-1$
-                            if (xmlFile.exists()) {
-                                try {
-                                    mapView.setRenderTheme(xmlFile);
-                                } catch (FileNotFoundException e) {
-                                    // ignore the theme
-                                }
-                            }
-                            mapGenerator = mapView.getMapGenerator();
-                            b_map_file = true;
-                            minZoomLevel = mapGenerator.getStartZoomLevel();
-                            maxZoomLevel = mapGenerator.getZoomLevelMax();
-                            // mj10777: i_rc=0=inside valid area/zoom ; i_rc > 0 outside area or
-                            // zoom ; i_parm=0 no corrections ; 1= correct mapCenterLocation values.
-                            checkCenterLocation(mapCenterLocation, true);
-                        } else {
-                            File mapsDir = ResourcesManager.getInstance(this).getMapsDir();
-                            CustomTileDownloader customTileDownloader = CustomTileDownloader.file2TileDownloader(new File(
-                                    filePath), mapsDir.getAbsolutePath());
-                            customTileDownloader.checkCenterLocation(mapCenterLocation, true);
-                            mapGenerator = customTileDownloader;
-                            minZoomLevel = mapGenerator.getStartZoomLevel();
-                            maxZoomLevel = mapGenerator.getZoomLevelMax();
-                        }
-                    } catch (Exception e) {
-                        mapGenerator = MapGeneratorInternal.createMapGenerator(MapGeneratorInternal.mapnik);
-                    }
-                } else {
-                    if (mapGeneratorInternal != null) {
-                        mapGenerator = MapGeneratorInternal.createMapGenerator(mapGeneratorInternal);
-                    } else {
-                        mapGenerator = MapGeneratorInternal.createMapGenerator(MapGeneratorInternal.mapnik);
-                    }
-                }
-            }
-            if (!b_map_file) { // with map files mapGenerator has already been added.
-                mapView.setMapGenerator(mapGenerator);
-            }
-            // GeoPoint geoPoint = new GeoPoint(mapCenterLocation[1], mapCenterLocation[0]);
-            // mapView.getController().setZoom((int) mapCenterLocation[2]);
-            // mapView.getController().setCenter(geoPoint);
-            if (maxZoomLevel == -1) {
-                maxZoomLevel = mapView.getMapZoomControls().getZoomLevelMax();
-                minZoomLevel = mapView.getMapZoomControls().getZoomLevelMin();
-            }
-        }
-        if (i_version == 1) { // [MapDirManager]
-            MapsDirManager.getInstance().load_Map(mapView, mapCenterLocation);
-            minZoomLevel = MapsDirManager.getInstance().getMinZoom();
-            maxZoomLevel = MapsDirManager.getInstance().getMaxZoom();
-        }
+        MapsDirManager.getInstance().load_Map(mapView, mapCenterLocation);
+        minZoomLevel = MapsDirManager.getInstance().getMinZoom();
+        maxZoomLevel = MapsDirManager.getInstance().getMaxZoom();
 
         MapScaleBar mapScaleBar = this.mapView.getMapScaleBar();
 
@@ -330,7 +241,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         setTextScale();
 
         final RelativeLayout rl = (RelativeLayout) findViewById(R.id.innerlayout);
-        rl.addView(mapView, new RelativeLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+        rl.addView(mapView, new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
         GpsManager.getInstance(this).addListener(this);
 
