@@ -37,6 +37,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -83,7 +84,6 @@ public class SliderDrawView extends View {
 
     private boolean doMeasureMode = false;
     private boolean doInfoMode = false;
-    private GeoPoint startGeoPoint;
     private float left;
     private float right;
     private float bottom;
@@ -129,6 +129,10 @@ public class SliderDrawView extends View {
 
         if (doMeasureMode) {
             int cWidth = canvas.getWidth();
+            RectF retfF = new RectF();
+            measurePath.computeBounds(retfF, true);
+            GPLog.androidLog(-1, "DRAWINFOLINE: " + retfF);
+
             canvas.drawPath(measurePath, measurePaint);
             int upper = 70;
             int delta = 5;
@@ -177,8 +181,11 @@ public class SliderDrawView extends View {
             int action = event.getAction();
             switch( action ) {
             case MotionEvent.ACTION_DOWN:
-                startGeoPoint = pj.fromPixels(round(currentX), round(currentY));
+                GeoPoint startGeoPoint = pj.fromPixels(round(currentX), round(currentY));
                 pj.toPixels(startGeoPoint, startP);
+
+                lastX = currentX;
+                lastY = currentY;
                 break;
             case MotionEvent.ACTION_MOVE:
                 float dx = currentX - lastX;
@@ -188,16 +195,13 @@ public class SliderDrawView extends View {
                     lastY = currentY;
                     return true;
                 }
-                GPLog.androidLog(-1, "CURRENT:" + currentX + "/" + currentY);
-                GPLog.androidLog(-1, "LAST:" + lastX + "/" + lastY);
-
                 GeoPoint currentGeoPoint = pj.fromPixels(round(currentX), round(currentY));
                 pj.toPixels(currentGeoPoint, tmpP);
 
-                left = tmpP.x < startP.x ? tmpP.x : startP.x;
-                right = tmpP.x > startP.x ? tmpP.x : startP.x;
-                bottom = tmpP.y < startP.y ? tmpP.y : startP.y;
-                top = tmpP.y > startP.y ? tmpP.y : startP.y;
+                left = Math.min(tmpP.x, startP.x);
+                right = Math.max(tmpP.x, startP.x);
+                bottom = Math.max(tmpP.y, startP.y);
+                top = Math.min(tmpP.y, startP.y);
                 rect.set((int) left, (int) top, (int) right, (int) bottom);
 
                 invalidate();
