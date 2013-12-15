@@ -689,10 +689,9 @@ public abstract class GeopaparazziOverlay extends Overlay {
         double s = whPoint.getLatitude();
         double e = whPoint.getLongitude();
         try {
-            List<SpatialVectorTable> spatialTables = null;
             SpatialDatabasesManager sdManager = SpatialDatabasesManager.getInstance();
             double[] bounds_zoom = new double[]{w, s, e, n, (double) drawZoomLevel};
-            spatialTables = MapsDirManager.getInstance().getSpatialVectorTables(bounds_zoom, 1, false);
+            List<SpatialVectorTable> spatialTables = MapsDirManager.getInstance().getSpatialVectorTables(bounds_zoom, 1, false);
             // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite size["+spatialTables.size()+"]: ["+drawZoomLevel+"]");
             for( int i = 0; i < spatialTables.size(); i++ ) {
                 SpatialVectorTable spatialTable = spatialTables.get(i);
@@ -701,6 +700,11 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     return;
                 }
                 Style style4Table = spatialTable.getStyle();
+                if (drawZoomLevel < style4Table.minZoom || drawZoomLevel > style4Table.maxZoom) {
+                    // we do not draw outside of the zoom levels
+                    continue;
+                }
+
                 ISpatialDatabaseHandler spatialDatabaseHandler = sdManager.getVectorHandler(spatialTable);
                 int i_geometryIterator = 0;
                 GeometryIterator geometryIterator = null;
@@ -775,6 +779,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
             GPLog.androidLog(4, "GeopaparazziOverlay.drawFromSpatialite [failed]", e1);
         }
     }
+
     private void drawGeometry( Geometry geom, Canvas canvas, ShapeWriter shape_writer, Paint fill, Paint stroke ) {
         String s_geometry_type = geom.getGeometryType();
         int i_geometry_type = GeometryType.forValue(s_geometry_type);
