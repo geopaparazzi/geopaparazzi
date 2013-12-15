@@ -441,7 +441,7 @@ public class GeoPaparazziActivity extends Activity {
         MapsDirTreeViewList.b_edit_file = false;
         // Should the Delete-Menu be supported/shown?
         MapsDirTreeViewList.b_delete_file = false;
-        MapsDirManager.getInstance().reset();
+        MapsDirManager.reset();
         // if the 'maps_dir' parameter is null, then MapsDirManager will call:
         // - ResourcesManager.getInstance(this).getMapsDir();
         // to retrieve the 'maps_dir : call:

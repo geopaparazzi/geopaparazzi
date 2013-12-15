@@ -16,8 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles;
-import eu.geopaparazzi.library.database.GPLog;
 import java.io.File;
+
+import eu.geopaparazzi.library.util.FileUtilities;
 /**
  * A map table from the map db.
  *
@@ -29,11 +30,13 @@ public class MapTable {
     private final String srid;
     private File file_map; // all DatabaseHandler/Table classes should use these names
     private File file_xml;
-    private String s_map_file; // [with path] all DatabaseHandler/Table classes should use these names
-    private String s_name_file; // [without path] all DatabaseHandler/Table classes should use these names
+    private String s_map_file; // [with path] all DatabaseHandler/Table classes should use these
+                               // names
+    private String s_name_file; // [without path] all DatabaseHandler/Table classes should use these
+                                // names
     private String s_name; // all DatabaseHandler/Table classes should use these names
     private String s_description; // all DatabaseHandler/Table classes should use these names
-    private String s_map_type="map"; // all DatabaseHandler/Table classes should use these names
+    private String s_map_type = "map"; // all DatabaseHandler/Table classes should use these names
     private String tileQuery;
     private final int minZoom;
     private final int maxZoom;
@@ -45,12 +48,12 @@ public class MapTable {
     private final double bounds_south; // wsg84
     private int defaultZoom;
 
-    public MapTable( String s_map_file, String s_name, String srid, int minZoom, int maxZoom, double centerX,
-            double centerY, String tileQuery, double[] bounds ) {
+    public MapTable( String s_map_file, String s_name, String srid, int minZoom, int maxZoom, double centerX, double centerY,
+            String tileQuery, double[] bounds ) {
         this.s_map_file = s_map_file;
-        this.file_map=new File(s_map_file);
-        this.file_xml = new File(file_map.getParentFile(),file_map.getName()+".xml");
-        this.s_name_file=file_map.getName();
+        this.file_map = new File(s_map_file);
+        this.file_xml = findXmlFile(file_map);
+        this.s_name_file = file_map.getName();
         this.s_name = s_name;
         this.srid = srid;
         this.minZoom = minZoom;
@@ -62,14 +65,26 @@ public class MapTable {
         this.bounds_south = bounds[1];
         this.bounds_east = bounds[2];
         this.bounds_north = bounds[3];
-        setDescription(getName()); // will set default values with bounds and center if it is the same as 's_name' or empty // will set default values with bounds and center if it is the same as 's_name' or empty
+        setDescription(getName()); // will set default values with bounds and center if it is the
+                                   // same as 's_name' or empty // will set default values with
+                                   // bounds and center if it is the same as 's_name' or empty
         if (tileQuery != null) {
             this.tileQuery = tileQuery;
         } else {
-            tileQuery = "select " + s_name + " from " + s_map_file
-                    + " where zoom_level = ? AND tile_column = ? AND tile_row = ?";
+            tileQuery = "select " + s_name + " from " + s_map_file + " where zoom_level = ? AND tile_column = ? AND tile_row = ?";
         }
-        // GPLog.androidLog(-1,"MapTable[" + file_map.getAbsolutePath() + "] name["+s_name+"] s_description["+s_description+"]");
+        // GPLog.androidLog(-1,"MapTable[" + file_map.getAbsolutePath() +
+        // "] name["+s_name+"] s_description["+s_description+"]");
+    }
+
+    private File findXmlFile( File file ) {
+        String nameWithoutExtention = FileUtilities.getNameWithoutExtention(file);
+        File xmlFile = new File(file.getParentFile(), nameWithoutExtention + ".xml");
+        if (!xmlFile.exists()) {
+            // try also file.map.xml
+            xmlFile = new File(file.getParentFile(), file.getName() + ".xml");
+        }
+        return xmlFile;
     }
 
     public String getSrid() {
@@ -111,9 +126,8 @@ public class MapTable {
       * @return s_name as short name of map/file
       */
     public String getName() {
-        if ((s_name == null) || (s_name.length() == 0))
-        {
-         s_name=this.file_map.getName().substring(0,this.file_map.getName().lastIndexOf("."));
+        if ((s_name == null) || (s_name.length() == 0)) {
+            s_name = this.file_map.getName().substring(0, this.file_map.getName().lastIndexOf("."));
         }
         return this.s_name; // comment or file-name without path and extention
     }
@@ -140,8 +154,8 @@ public class MapTable {
       *
       * @return s_name as short name of map/file
       */
-    public void setMapType(String s_map_type) {
-        this.s_map_type=s_map_type;
+    public void setMapType( String s_map_type ) {
+        this.s_map_type = s_map_type;
     }
     // -----------------------------------------------
     /**
@@ -152,7 +166,7 @@ public class MapTable {
       * @return bounds formatted using wms format
       */
     public String getBounds_toString() {
-        return bounds_west+","+bounds_south+","+bounds_east+","+bounds_north;
+        return bounds_west + "," + bounds_south + "," + bounds_east + "," + bounds_north;
     }
     // -----------------------------------------------
     /**
@@ -163,7 +177,7 @@ public class MapTable {
       * @return center formatted using mbtiles format
       */
     public String getCenter_toString() {
-        return centerX+","+centerY+","+defaultZoom;
+        return centerX + "," + centerY + "," + defaultZoom;
     }
     // -----------------------------------------------
     /**
@@ -177,10 +191,11 @@ public class MapTable {
       */
     public String getDescription() {
         if ((this.s_description == null) || (this.s_description.length() == 0) || (this.s_description.equals(this.s_name)))
-         setDescription(getName()); // will set default values with bounds and center if it is the same as 's_name' or empty
+            setDescription(getName()); // will set default values with bounds and center if it is
+                                       // the same as 's_name' or empty
         return this.s_description; // long comment
     }
-     // -----------------------------------------------
+    // -----------------------------------------------
     /**
       * Set long description of map/file
       *
@@ -190,13 +205,11 @@ public class MapTable {
       *
       * @return s_description long description of map/file
       */
-    public void setDescription(String s_description) {
-        if ((s_description == null) || (s_description.length() == 0) || (s_description.equals(this.s_name)))
-        {
-         this.s_description = getName()+" bounds["+getBounds_toString()+"] center["+getCenter_toString()+"]";
-        }
-        else
-         this.s_description = s_description;
+    public void setDescription( String s_description ) {
+        if ((s_description == null) || (s_description.length() == 0) || (s_description.equals(this.s_name))) {
+            this.s_description = getName() + " bounds[" + getBounds_toString() + "] center[" + getCenter_toString() + "]";
+        } else
+            this.s_description = s_description;
     }
     // -----------------------------------------------
     /**
@@ -260,7 +273,7 @@ public class MapTable {
       * @return String min/maxzoom
       */
     public String getZoom_Levels() {
-        return getMinZoom()+"-"+getMaxZoom();
+        return getMinZoom() + "-" + getMaxZoom();
     }
     // -----------------------------------------------
     /**

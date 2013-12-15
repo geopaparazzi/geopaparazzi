@@ -43,10 +43,10 @@ import android.content.res.AssetManager;
 import android.preference.PreferenceManager;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.FileUtilities;
-import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.CustomTileDatabasesManager;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.MapDatabasesManager;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.CustomTileTable;
@@ -58,7 +58,6 @@ import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.MapsDirTreeViewList;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
-import eu.geopaparazzi.spatialite.util.SpatialiteUtilities;
 
 /**
  * The manager of supported maps in the Application maps dir.
@@ -125,7 +124,7 @@ public class MapsDirManager {
     public File get_maps_dir() {
         return maps_dir;
     }
-    public void reset() {
+    public static void reset() {
         mapsdirManager = null;
     }
     // -----------------------------------------------
