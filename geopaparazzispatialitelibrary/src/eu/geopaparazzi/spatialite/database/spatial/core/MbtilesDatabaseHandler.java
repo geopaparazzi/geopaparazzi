@@ -789,10 +789,10 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
             // with .execute(): this crashes
             // mbtiles_async.execute(AsyncTasks.ASYNC_PARMS);
 
-                  if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.HONEYCOMB)
+                  if (Build.VERSION.SDK_INT>= 11) // use numbers for backwards compatibility Build.VERSION_CODES.HONEYCOMB)
                   {
                    // GPLog.androidLog(-1,"run_retrieve_url.HONEYCOMB.["+Build.VERSION.SDK_INT+"]");
-                   mbtiles_async.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,AsyncTasks.ASYNC_PARMS);
+                      mbtiles_async.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,AsyncTasks.ASYNC_PARMS);
                   }
                   else
                   {
