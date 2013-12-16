@@ -54,7 +54,7 @@ public class GPLog {
      */
     public static boolean LOG_ABSURD = false;
 
-    public static final String ERROR_TAG = "ERROR";
+    public static final String ERROR_TAG = "ERROR_GEOPAPARAZZI";
 
     public static final String TABLE_LOG = "log";
     public static final String COLUMN_ID = "_id";
@@ -124,24 +124,30 @@ public class GPLog {
      * Add a new log entry.
      *
      * @param logMessage the message to insert in the log.
-     * @throws IOException
      */
-    public static void addLogEntry( String logMessage ) throws IOException {
-        SQLiteDatabase sqliteDatabase = ADbHelper.getInstance().getDatabase();
-        ContentValues values = new ContentValues();
-        Date date = new Date();
-        long time = date.getTime();
-        values.put(COLUMN_DATAORA, time);
-        values.put(COLUMN_LOGMSG, logMessage);
-        insertOrThrow(sqliteDatabase, TABLE_LOG, values);
+    public static void addLogEntry( String logMessage ) {
+        try {
+            SQLiteDatabase sqliteDatabase = ADbHelper.getInstance().getDatabase();
+            if (!sqliteDatabase.isOpen()) {
+                sqliteDatabase = null;
+            }
+            ContentValues values = new ContentValues();
+            Date date = new Date();
+            long time = date.getTime();
+            values.put(COLUMN_DATAORA, time);
+            values.put(COLUMN_LOGMSG, logMessage);
+            insertOrThrow(sqliteDatabase, TABLE_LOG, values);
 
-        if (LOG_ANDROID) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(LibraryConstants.iso8601Format.format(date));
-            sb.append(": ");
-            sb.append(logMessage);
-            String string = sb.toString();
-            log("GPLOG", string);
+            if (LOG_ANDROID) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(LibraryConstants.iso8601Format.format(date));
+                sb.append(": ");
+                sb.append(logMessage);
+                String string = sb.toString();
+                log(GLOBAL_LOG_TAG, string);
+            }
+        } catch (Exception e) {
+            Log.e(GLOBAL_LOG_TAG, logMessage, e);
         }
     }
 
@@ -182,8 +188,7 @@ public class GPLog {
         sb.append(logMessage);
         try {
             addLogEntry(sb.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
             Log.e(ERROR_TAG, "Error inserting in log.", e);
         }
     }
@@ -226,9 +231,9 @@ public class GPLog {
      * @return
      * @throws IOException
      */
-    private static long insertOrThrow( SQLiteDatabase sqliteDatabase, String table, ContentValues values ) throws IOException {
-        if (sqliteDatabase == null) {
-            throw new IOException("Database not ready!");
+    private static long insertOrThrow( SQLiteDatabase sqliteDatabase, String table, ContentValues values ) throws Exception {
+        if (sqliteDatabase == null || !sqliteDatabase.isOpen()) {
+            throw new Exception("Database not ready!");
         }
         long id = sqliteDatabase.insertOrThrow(table, null, values);
         if (id == -1) {

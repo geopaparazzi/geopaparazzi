@@ -118,15 +118,11 @@ public class CustomTileDownloader extends TileDownloader {
         mbtiles_metadata = new LinkedHashMap<String, String>();
         mbtiles_request_url = new LinkedHashMap<String, String>();
         if (GPLog.LOG_HEAVY) {
-            try {
                 GPLog.addLogEntry("CustomTileDownloader called with:");
                 GPLog.addLogEntry("parentPath: " + parentPath);
                 for( String fileLine : fileLines ) {
                     GPLog.addLogEntry("-> " + fileLine);
                 }
-            } catch (IOException e1) {
-                GPLog.androidLog(4, getClass().getSimpleName() + "[CustomTileDownloader.nCreation]", e1);
-            }
         }
 
         for( String line : fileLines ) {

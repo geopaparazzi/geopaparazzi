@@ -47,6 +47,9 @@ public class DatabaseListActivity extends ListActivity {
         SQLiteDatabase database = null;
         try {
             database = ADbHelper.getInstance().getDatabase();
+            if (!database.isOpen()) {
+                database = null;
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

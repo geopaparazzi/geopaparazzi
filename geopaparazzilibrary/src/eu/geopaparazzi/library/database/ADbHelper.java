@@ -43,5 +43,4 @@ public class ADbHelper {
         this.db = db;
     }
 
-    
 }
