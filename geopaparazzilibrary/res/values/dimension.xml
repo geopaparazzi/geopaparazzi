@@ -26,6 +26,6 @@
 	<!-- button dims -->
 	<dimen name="button_indent">10dp</dimen>
 	<!-- custom dialog dims -->
-	<dimen name="dialog_minwidth">250dp</dimen>
+	<dimen name="dialog_minwidth">300dp</dimen>
 	<dimen name="dialog_minheight">180dp</dimen>
 </resources>
