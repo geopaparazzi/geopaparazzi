@@ -159,6 +159,7 @@ public class ResourcesManager implements Serializable {
         if (mExternalStorageAvailable && mExternalStorageWriteable) {
             // and external storage exists and is usable
             String customFolderPath = preferences.getString(PREFS_KEY_CUSTOM_EXTERNALSTORAGE, "asdasdpoipoi");
+            customFolderPath = customFolderPath.trim();
             File customFolderFile = new File(customFolderPath);
             if (customFolderFile.exists() && customFolderFile.isDirectory() && customFolderFile.canWrite()) {
                 /*
