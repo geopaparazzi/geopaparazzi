@@ -710,8 +710,7 @@ public class CustomTileDownloader extends TileDownloader {
             }
             sb.append(s_host_name);
             sb.append(tilePath);
-            // GPLog.androidLog(-1,"CustomTileDownloader.executeJob: name["+getName()
-            // +"] host_name["+s_host_name+"] tilePath["+tilePath+"] ");
+            // GPLog.androidLog(-1,"CustomTileDownloader.executeJob: name["+getName()+"] host_name["+s_host_name+"] tilePath["+tilePath+"] ");
             if (isFile)
              GPLog.androidLog(-1,"CustomTileDownloader.executeJob: request["+sb.toString()+"] ");
             Bitmap decodedBitmap = null;
@@ -722,14 +721,16 @@ public class CustomTileDownloader extends TileDownloader {
             }
             if (isConnectedToInternet) {
                 URL url = new URL(sb.toString());
-                InputStream inputStream = url.openStream();
+                InputStream inputStream = null;
                 try {
+                    inputStream = url.openStream();
                     decodedBitmap = BitmapFactory.decodeStream(inputStream);
                 } catch (Exception e) {
                     // ignore and set the image as empty
                     if (GPLog.LOG_HEAVY)
                         GPLog.addLogEntry(this, "Could not find image: " + sb.toString()); //$NON-NLS-1$
                 } finally {
+                  if (inputStream != null)
                     inputStream.close();
                 }
             }

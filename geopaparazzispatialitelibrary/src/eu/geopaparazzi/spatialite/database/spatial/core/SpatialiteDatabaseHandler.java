@@ -977,8 +977,8 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
     public GeometryIterator getGeometryIteratorInBounds( String destSrid, SpatialVectorTable table, double n, double s, double e,
             double w ) {
         String query = buildGeometriesInBoundsQuery(destSrid, table, n, s, e, w);
-        GPLog.androidLog(-1, "SpatialiteDatabaseHandler.getGeometryIteratorInBounds[" + table.getUniqueName() + "]: query["
-                + query + "]");
+        // GPLog.androidLog(-1, "SpatialiteDatabaseHandler.getGeometryIteratorInBounds[" + table.getUniqueName() + "]: query["
+        //        + query + "]");
         return new GeometryIterator(db_java, query);
     }
 

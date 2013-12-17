@@ -884,7 +884,7 @@ public class MapsDirManager {
       GeoPoint geoPoint = new GeoPoint(getCurrentY(), getCurrentX());
       map_View.getController().setZoom(getCurrentZoom());
       map_View.getController().setCenter(geoPoint);
-      // GPLog.androidLog(-1, "MapsDirManager setMapViewCenter[" + getCurrentX() + "," + getCurrentY() + "," + getCurrentZoom() + ";" + getDefaultZoom() + "]");
+      GPLog.androidLog(-1, "MapsDirManager setMapViewCenter[" + getCurrentX() + "," + getCurrentY() + "," + getCurrentZoom() + ";" + getDefaultZoom() + "]");
       return map_View.getMapPosition().getZoomLevel();
     }
     // -----------------------------------------------
