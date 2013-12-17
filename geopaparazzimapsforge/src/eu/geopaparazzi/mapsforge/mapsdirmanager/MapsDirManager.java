@@ -722,7 +722,7 @@ public class MapsDirManager {
      {
       currentZoom=getDefaultZoom();
      }
-        return currentZoom;
+     return currentZoom;
     }
     // -----------------------------------------------
     /**
@@ -823,11 +823,15 @@ public class MapsDirManager {
       * - this should be the only function used to compleate this task
       * -- error logic has been build in use value incase the function was incorrectly called
       * <p>if (mapCenterLocation == null)
-      * <p>- the default Center of the loaded map will be taken
+      * <p>- the getMinZoom() of the loaded map will be taken
+      * <p>-  if (i_default_zoom == 0)
+      * <p>-- the default Zoom of the loaded map will be taken
       * <p>-  if (i_default_zoom == 1)
       * <p>-- the default Zoom of the loaded map will be taken
       * <p>-  if (i_default_zoom == 2)
       * <p>-- the getMinZoom() of the loaded map will be taken
+      * <p>-  if (i_default_zoom == 3)
+      * <p>-- retain the present zoom-level of the MapView
       * @param map_View Map-View to set (if not null)
       * @param mapCenterLocation [point/zoom to set]
       * @param i_default_zoom [point/zoom to set]
@@ -844,14 +848,13 @@ public class MapsDirManager {
       if (mapCenterLocation == null)
       { // if the user has not given a desired position, retrieve it from the active-map
        // GPLog.androidLog(-1, "MapsDirInfo: setMapViewCenter[mapCenterLocation == null]");
-        mapCenterLocation = getMapCenterZoom(1);
+        mapCenterLocation = getMapCenterZoom(i_default_zoom);
         d_position_x=mapCenterLocation[0];
         d_position_y=mapCenterLocation[1];
         i_zoom=(int) mapCenterLocation[2];
-        if (i_default_zoom == 0)
+        if (i_default_zoom == 3)
          i_zoom=map_View.getMapPosition().getZoomLevel();
-        if (i_default_zoom == 2)
-         i_zoom=getMinZoom();
+        // GPLog.androidLog(-1, "MapsDirInfo: setMapViewCenter[mapCenterLocation == null] ["+d_position_x+","+d_position_y+";"+i_zoom+"] parm["+i_default_zoom+"]");
       }
       else
       {

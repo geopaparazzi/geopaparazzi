@@ -962,7 +962,12 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                controller.setCenter(mapCenter);
                controller.setZoom(minZoomLevel);
                * */
-            MapsDirManager.getInstance().setMapViewCenter(mapView, null, 2);
+               // When null is given:
+               // zoom to user defined center and axzoom-level = 2
+               // zoom to user defined center and zoom-level = 1
+               // zoom to user defined center and minzoom-level = 2
+               // zoom to user defined center and present zoom-level = 3
+            MapsDirManager.getInstance().setMapViewCenter(mapView, null, 1);
             saveCenterPref();
             return true;
         }
