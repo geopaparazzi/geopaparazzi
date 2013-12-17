@@ -36,6 +36,7 @@ import org.mapsforge.android.maps.Projection;
 import org.mapsforge.android.maps.mapgenerator.MapGenerator;
 import org.mapsforge.core.model.GeoPoint;
 
+import android.R;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -96,6 +97,7 @@ public class MapsDirManager {
     private double[] mapCenterLocation;
     private MapView map_View=null;
     private String s_bounds_zoom="";
+    private File mapnikFile;
     private MapsDirManager() {
     }
     // -----------------------------------------------
@@ -154,6 +156,25 @@ public class MapsDirManager {
             GPLog.androidLog(4, "MapsDirManager init[invalid maps directory]", t);
         }
         maps_dir = mapsDir;
+        
+        /*
+         * if they do not exist add two mbtiles based mapnik and opencycle
+         * tile sources as default ones. They will automatically
+         * be backed into a mbtiles db.
+        */
+        mapnikFile = new File(maps_dir, "mapnik.mapurl");
+        if (!mapnikFile.exists()) {
+            InputStream inputStream = context.getResources().openRawResource(eu.geopaparazzi.mapsforge.R.raw.mapnik);
+            OutputStream outputStream = new FileOutputStream(mapnikFile);
+            FileUtilities.copyFile(inputStream, outputStream);
+        }
+        File opencycleFile = new File(maps_dir, "opencycle.mapurl");
+        if (!opencycleFile.exists()) {
+            InputStream inputStream = context.getResources().openRawResource(eu.geopaparazzi.mapsforge.R.raw.opencycle);
+            FileOutputStream outputStream = new FileOutputStream(opencycleFile);
+            FileUtilities.copyFile(inputStream, outputStream);
+        }
+
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         s_selected_type = preferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE, ""); //$NON-NLS-1$
         s_selected_map = preferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE_FILE, ""); //$NON-NLS-1$
@@ -213,27 +234,9 @@ public class MapsDirManager {
     private void handleTileSources( Context context ) throws Exception, IOException, FileNotFoundException {
         int i_count_raster = 0;
         int i_type = MAPURL;
-        AssetManager assetManager = context.getAssets();
         ClassNodeInfo this_mapinfo = null;
         ClassNodeInfo mapnik_mapinfo = null;
-        /*
-         * if they do not exist add two mbtiles based mapnik and opencycle
-         * tile sources as default ones. They will automatically
-         * be backed into a mbtiles db.
-        */
-        // This will be our default map if everything else fails
-        File mapnikFile = new File(maps_dir, "mapnik.mapurl");
-        if ((!mapnikFile.exists()) && (assetManager != null)) {
-         InputStream inputStream = assetManager.open("tilesources/mapnik.mapurl");
-         OutputStream outputStream = new FileOutputStream(mapnikFile);
-         FileUtilities.copyFile(inputStream, outputStream);
-        }
-        File opencycleFile = new File(maps_dir, "opencycle.mapurl");
-        if ((!opencycleFile.exists()) && (assetManager != null)) {
-            InputStream inputStream = assetManager.open("tilesources/opencycle.mapurl");
-            FileOutputStream outputStream = new FileOutputStream(opencycleFile);
-            FileUtilities.copyFile(inputStream, outputStream);
-        }
+
         // GPLog.androidLog(-1, "MapsDirManager handleTileSources  selected_map[" + s_selected_map + "]");
         /*
           * add mapurl tables
