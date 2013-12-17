@@ -156,7 +156,7 @@ public class MapsDirManager {
             GPLog.androidLog(4, "MapsDirManager init[invalid maps directory]", t);
         }
         maps_dir = mapsDir;
-        
+
         /*
          * if they do not exist add two mbtiles based mapnik and opencycle
          * tile sources as default ones. They will automatically
@@ -887,7 +887,7 @@ public class MapsDirManager {
       GeoPoint geoPoint = new GeoPoint(getCurrentY(), getCurrentX());
       map_View.getController().setZoom(getCurrentZoom());
       map_View.getController().setCenter(geoPoint);
-      GPLog.androidLog(-1, "MapsDirManager setMapViewCenter[" + getCurrentX() + "," + getCurrentY() + "," + getCurrentZoom() + ";" + getDefaultZoom() + "]");
+      // GPLog.androidLog(-1, "MapsDirManager setMapViewCenter[" + getCurrentX() + "," + getCurrentY() + ", min_z[" + getMinZoom()+"], max_z[" + getMaxZoom()+"], current[" + getCurrentZoom() + "]; default[" + getDefaultZoom() + "]");
       return map_View.getMapPosition().getZoomLevel();
     }
     // -----------------------------------------------

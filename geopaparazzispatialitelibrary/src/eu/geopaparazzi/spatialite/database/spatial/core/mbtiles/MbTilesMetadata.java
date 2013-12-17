@@ -4,6 +4,8 @@
 package eu.geopaparazzi.spatialite.database.spatial.core.mbtiles;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.LinkedHashMap;
 
 import android.database.Cursor;
@@ -17,7 +19,7 @@ public class MbTilesMetadata {
     public final int defaultZoom;
     public String s_tile_row_type = "tms";
     public String s_center_parm = "";
-    public final HashMap<String, String> extra;
+    public final Map<String, String> extra;
     public static final MetadataValidatorFactory metadataValidatorFactory = new MetadataValidatorFactory();
     // -----------------------------------------------
     /**
@@ -40,7 +42,7 @@ public class MbTilesMetadata {
       * @param extra any other values found in the metadata table
       */
     public MbTilesMetadata( String name, String description, String type, String version, String format, float[] bounds,
-            float[] center, int minZoom, int maxZoom, String s_tile_row_type, HashMap<String, String> extra ) {
+            float[] center, int minZoom, int maxZoom, String s_tile_row_type, Map<String, String> extra ) {
         this.name = name;
         this.type = type;
         this.version = version;
@@ -106,7 +108,8 @@ public class MbTilesMetadata {
       */
     public static MbTilesMetadata createFromCursor( Cursor c, int idx_col_key, int idx_col_value, MetadataValidator validator )
             throws MetadataParseException {
-        HashMap<String, String> dumped = new LinkedHashMap<String, String>();
+
+        Map<String, String> dumped = new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
         c.moveToFirst();
         do {
             dumped.put(c.getString(idx_col_key), c.getString(idx_col_value));
@@ -116,7 +119,7 @@ public class MbTilesMetadata {
     }
 
     public static interface MetadataValidator {
-        MbTilesMetadata validate( HashMap<String, String> hm ) throws MetadataParseException;
+        MbTilesMetadata validate( Map<String, String> hm ) throws MetadataParseException;
     }
 
     @SuppressWarnings("serial")
@@ -165,7 +168,7 @@ public class MbTilesMetadata {
       */
     public static class MetadataValidator_1_1 implements MetadataValidator {
         @Override
-        public MbTilesMetadata validate( HashMap<String, String> hm ) throws MetadataParseException {
+        public MbTilesMetadata validate( Map<String, String> hm ) throws MetadataParseException {
             String tmp;
             String name = hm.remove("name");
             if (name == null)
@@ -212,6 +215,7 @@ public class MbTilesMetadata {
             if (minZoomStr != null) {
                 minZoom = Integer.parseInt(minZoomStr);
             }
+
             String maxZoomStr = hm.remove("maxzoom");
             int maxZoom = 22;
             if (maxZoomStr != null) {
@@ -287,7 +291,7 @@ public class MbTilesMetadata {
       */
     public static class MetadataValidator_1_0 implements MetadataValidator {
         @Override
-        public MbTilesMetadata validate( HashMap<String, String> hm ) throws MetadataParseException {
+        public MbTilesMetadata validate( Map<String, String> hm ) throws MetadataParseException {
             String tmp;
             String name = hm.remove("name");
             if (name == null)
