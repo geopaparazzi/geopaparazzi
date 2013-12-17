@@ -97,13 +97,12 @@
         </CheckBoxPreference>
     </PreferenceScreen>
 
-    <EditTextPreference
+    <eu.hydrologis.geopaparazzi.preferences.CustomSdcardPathPreference
         android:defaultValue=""
         android:key="PREFS_KEY_CUSTOM_EXTERNALSTORAGE"
         android:order="100"
         android:summary="@string/use_custom_sdcard_summary"
-        android:title="@string/custom_sdcard_path" >
-    </EditTextPreference>
+        android:title="@string/custom_sdcard_path" />
 
     <PreferenceScreen
         android:order="200"
