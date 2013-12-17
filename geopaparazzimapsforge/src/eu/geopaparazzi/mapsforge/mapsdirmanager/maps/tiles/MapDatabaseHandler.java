@@ -118,14 +118,13 @@ public class MapDatabaseHandler {
            Byte startZoomLevel=map_FileInfo.startZoomLevel;
            // Byte startZoomLevel = getMinZoomlevel(map_Database);
            if (startZoomLevel != null) {
-            minZoom = startZoomLevel;
+            defaultZoom = startZoomLevel;
            }
            else
            {
-            minZoom = 1;
+            defaultZoom = 14;
            }
            maxZoom = 22;
-           defaultZoom = minZoom;
            setDescription(s_name);
         } catch (java.lang.Exception e) {
             GPLog.androidLog(4,"MapDatabaseHandler[" + file_map.getAbsolutePath() + "]", e);

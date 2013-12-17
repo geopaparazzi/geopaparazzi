@@ -395,18 +395,22 @@ public class MBTilesDroidSpitter {
                 }
                 db_mbtiles.setTransactionSuccessful();
             } catch (Exception e) {
+                int i_catch_rc=0;
                 if (e.getMessage() != null) {
                     String s_message = e.getMessage();
-                    if (s_message.equals("error code 19: constraint failed")) { // When the tile
+                    if (s_message.indexOf("code 19") != -1) { // When the tile
                                                                                 // allready exists:
                                                                                 // not to be
                                                                                 // considered an
                                                                                 // error
-                        i_rc = 0;
-                        return i_rc;
+                        i_rc = 0; // this will delete the request_url entry
+                        i_catch_rc=19;
                     }
                 }
-                throw new IOException("MBTilesDroidSpitter:insertTile error[" + e.getLocalizedMessage() + "] rc=" + i_rc);
+                if (i_catch_rc == 0)
+                {
+                 throw new IOException("MBTilesDroidSpitter:insertTile error[" + e.getLocalizedMessage() + "] rc=" + i_rc);
+                }
             } finally {
                 db_mbtiles.endTransaction();
                 db_lock.writeLock().unlock();

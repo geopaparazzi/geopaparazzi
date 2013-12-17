@@ -217,6 +217,16 @@ public class MbTilesMetadata {
             if (maxZoomStr != null) {
                 maxZoom = Integer.parseInt(maxZoomStr);
             }
+            if (minZoom > maxZoom)
+            {
+             int i_zoom=minZoom;
+             minZoom = maxZoom;
+             maxZoom=i_zoom;
+            }
+            if ((minZoom < 0) || (minZoom > 22))
+             minZoom=0;
+            if ((maxZoom < 0) || (maxZoom > 22))
+             maxZoom=22;
             // center: tilemill specific parameter
             // - not part of the specification, but usefull when first loading and the map is out of
             // the range

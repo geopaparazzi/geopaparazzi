@@ -56,8 +56,8 @@ public class CustomTileDownloader extends TileDownloader {
     private String HOST_NAME = "";
     private static String PROTOCOL = "http"; //$NON-NLS-1$
     private static byte ZOOM_MIN = 0;
-    private static byte ZOOM_MAX = 18;
-    private static byte ZOOM_DEFAULT = 0; // mbtiles specific
+    private static byte ZOOM_MAX = 22;
+    private static byte ZOOM_DEFAULT = 14; // mbtiles specific
     private final int minZoom;
     private final int maxZoom;
     private final int defaultZoom; // mbtiles specific
@@ -178,14 +178,22 @@ public class CustomTileDownloader extends TileDownloader {
                 }
                 if (line.startsWith("minzoom")) {
                     try {
-                        ZOOM_MIN = Byte.valueOf(value);
+                        byte b_zoom = Byte.valueOf(value);
+                        if ((b_zoom >= 0) && (b_zoom <= 22))
+                        {
+                         ZOOM_MIN=b_zoom;
+                        }
                     } catch (Exception e) {
                         // use default: handle exception
                     }
                 }
                 if (line.startsWith("maxzoom")) {
                     try {
-                        ZOOM_MAX = Byte.valueOf(value);
+                        byte b_zoom = Byte.valueOf(value);
+                        if ((b_zoom >= 0) && (b_zoom <= 22))
+                        {
+                         ZOOM_MAX=b_zoom;
+                        }
                     } catch (Exception e) {
                         // use default: handle exception
                     }
@@ -248,7 +256,11 @@ public class CustomTileDownloader extends TileDownloader {
                 }
                 if (line.startsWith("defaultzoom")) {
                     try {
-                        ZOOM_DEFAULT = Byte.valueOf(value);
+                        byte b_zoom = Byte.valueOf(value);
+                        if ((b_zoom >= 0) && (b_zoom <= 22))
+                        {
+                         ZOOM_DEFAULT=b_zoom;
+                        }
                     } catch (Exception e) {
                         // use default: handle exception
                     }
@@ -292,6 +304,12 @@ public class CustomTileDownloader extends TileDownloader {
         this.bounds_south = bounds[1];
         this.bounds_east = bounds[2];
         this.bounds_north = bounds[3];
+        if (ZOOM_MIN > ZOOM_MAX)
+        {
+         byte b_zoom=ZOOM_MIN;
+         ZOOM_MIN=ZOOM_MAX;
+         ZOOM_MAX=b_zoom;
+        }
         this.minZoom = ZOOM_MIN;
         this.maxZoom = ZOOM_MAX;
         if (ZOOM_MIN > ZOOM_DEFAULT)

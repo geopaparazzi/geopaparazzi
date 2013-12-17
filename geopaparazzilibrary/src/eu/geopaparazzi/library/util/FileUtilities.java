@@ -40,6 +40,25 @@ import eu.geopaparazzi.library.database.GPLog;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class FileUtilities {
+     public static List<String> list_sdcards()  {
+        List<String> list_sdcards = new ArrayList<String>();
+        File dir_mnt=new File("/mnt");
+        if ((dir_mnt != null) && (dir_mnt.exists()) && (dir_mnt.canRead()))
+        { // '/mnt' will list the mounted directories accessable and can be soft-link's
+         File[] list_files = dir_mnt.listFiles();
+         for( File this_file : list_files )
+         {
+          if (this_file.isDirectory())
+          {
+           if (this_file.getAbsolutePath().toLowerCase().indexOf("sd") != -1)
+           { // 'sdcard' (now shown as '/storage/emulated/0') ; 'extSdCard'
+            list_sdcards.add(this_file.getAbsolutePath().trim());
+           }
+          }
+         }
+        }
+        return list_sdcards;
+    }
     public static void copyFile( String fromFile, String toFile ) throws IOException {
         File in = new File(fromFile);
         File out = new File(toFile);
@@ -250,9 +269,9 @@ public class FileUtilities {
     }
     /**
      * Recursive search of files with a specific extension.
-     * 
+     *
      * <p>This can be called multiple times, adding to the same list
-     * 
+     *
      * @param searchDir the directory to read.
      * @param searchExtention the extension of the files to search for.
      * @param returnFiles the List<File> where the found files will be added to.

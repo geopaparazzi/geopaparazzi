@@ -56,6 +56,16 @@ public class MapTable {
         this.s_name_file = file_map.getName();
         this.s_name = s_name;
         this.srid = srid;
+        if (minZoom > maxZoom)
+        {
+         int i_zoom=minZoom;
+         minZoom=maxZoom;
+         maxZoom=i_zoom;
+        }
+        if ((minZoom < 0) || (minZoom > 22))
+         minZoom=0;
+        if ((maxZoom < 0) || (maxZoom > 22))
+         maxZoom=22;
         this.minZoom = minZoom;
         this.maxZoom = maxZoom;
         this.defaultZoom = minZoom;

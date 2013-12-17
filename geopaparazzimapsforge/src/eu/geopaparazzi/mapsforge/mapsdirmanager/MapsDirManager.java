@@ -185,6 +185,13 @@ public class MapsDirManager {
                 // GPLog.GLOBAL_LOG_TAG="mj10777";
                 GPLog.androidLog(1, "MapsDirManager init[" + maps_dir.getAbsolutePath() + "]");
                 // SpatialiteUtilities.find_shapes( context, maps_dir);
+                /*
+                List<String> list_sdcards = FileUtilities.list_sdcards();
+                for (int i=0;i<list_sdcards.size();i++)
+                {
+                 GPLog.androidLog(1, "MapsDirManager sdcards[" + list_sdcards.get(i)+ "]");
+                }
+                * */
                 handleTileSources(context);
             } catch (Exception e) {
                 GPLog.androidLog(4, "MapsDirManager init[" + maps_dir.getAbsolutePath() + "]", e);
