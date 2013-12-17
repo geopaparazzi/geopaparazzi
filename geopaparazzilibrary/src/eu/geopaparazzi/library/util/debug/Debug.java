@@ -72,4 +72,8 @@ public class Debug {
         android.os.Debug.dumpHprofData(absPath);
     }
 
+    public static void attachUncaughtExceptionHandler() {
+        Thread.currentThread().setUncaughtExceptionHandler(new GPUncaughtExceptionHandler());
+    }
+
 }
