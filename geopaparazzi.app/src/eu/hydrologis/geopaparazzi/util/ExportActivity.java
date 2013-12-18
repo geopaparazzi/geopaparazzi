@@ -136,6 +136,15 @@ public class ExportActivity extends Activity {
         });
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        
+        Utilities.dismissProgressDialog(kmlProgressDialog);
+        Utilities.dismissProgressDialog(gpxProgressDialog);
+        Utilities.dismissProgressDialog(cloudProgressDialog);
+    }
+
     private void addProjectDescription( final EditText input ) {
         try {
             String description = input.getText().toString();
@@ -162,7 +171,7 @@ public class ExportActivity extends Activity {
             }
 
             protected void onPostExecute( String response ) { // on UI thread!
-                cloudProgressDialog.dismiss();
+                Utilities.dismissProgressDialog(cloudProgressDialog);
                 // String msg;
                 // if (code == ReturnCodes.ERROR) {
                 // msg = getString(R.string.error_uploadig_project_to_cloud);
@@ -248,7 +257,7 @@ public class ExportActivity extends Activity {
             }
 
             protected void onPostExecute( String response ) { // on UI thread!
-                kmlProgressDialog.dismiss();
+                Utilities.dismissProgressDialog(kmlProgressDialog);
                 String msg = ""; //$NON-NLS-1$
                 if (response.length() > 0) {
                     msg = getString(R.string.kmlsaved) + response;
@@ -306,7 +315,7 @@ public class ExportActivity extends Activity {
             }
 
             protected void onPostExecute( String response ) { // on UI thread!
-                gpxProgressDialog.dismiss();
+                Utilities.dismissProgressDialog(gpxProgressDialog);
                 String msg = ""; //$NON-NLS-1$
                 if (response.length() > 0) {
                     msg = getString(R.string.kmlsaved) + response;

@@ -90,6 +90,7 @@ public class SliderDrawView extends View {
     private SliderDrawProjection sliderDrawProjection;
 
     private StringBuilder textBuilder = new StringBuilder();
+    private ProgressDialog infoProgressDialog;
 
     public SliderDrawView( Context context, AttributeSet attrs ) {
         super(context, attrs);
@@ -161,7 +162,7 @@ public class SliderDrawView extends View {
             canvas.drawRect(rect, infoRectPaintStroke);
         }
     }
-
+    
     @Override
     public boolean onTouchEvent( MotionEvent event ) {
         if (mapView == null || mapView.isClickable()) {
@@ -285,15 +286,15 @@ public class SliderDrawView extends View {
             final List<SpatialVectorTable> spatialTables = sdbManager.getSpatialVectorTables(false);
 
             final Context context = getContext();
-            final ProgressDialog importDialog = new ProgressDialog(context);
-            importDialog.setCancelable(true);
-            importDialog.setTitle("INFO");
-            importDialog.setMessage("Extracting information...");
-            importDialog.setCancelable(true);
-            importDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            importDialog.setProgress(0);
-            importDialog.setMax(spatialTables.size());
-            importDialog.show();
+            infoProgressDialog = new ProgressDialog(context);
+            infoProgressDialog.setCancelable(true);
+            infoProgressDialog.setTitle("INFO");
+            infoProgressDialog.setMessage("Extracting information...");
+            infoProgressDialog.setCancelable(true);
+            infoProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            infoProgressDialog.setProgress(0);
+            infoProgressDialog.setMax(spatialTables.size());
+            infoProgressDialog.show();
 
             new AsyncTask<String, Void, String>(){
 
@@ -341,11 +342,12 @@ public class SliderDrawView extends View {
                 }
 
                 protected void onProgressUpdate( Integer... progress ) { // on UI thread!
-                    importDialog.incrementProgressBy(1);
+                    if (infoProgressDialog != null && infoProgressDialog.isShowing())
+                        infoProgressDialog.incrementProgressBy(1);
                 }
 
                 protected void onPostExecute( String response ) { // on UI thread!
-                    importDialog.dismiss();
+                    Utilities.dismissProgressDialog(infoProgressDialog);
                     if (response.startsWith("ERROR")) {
                         Utilities.messageDialog(context, response, null);
                     } else {

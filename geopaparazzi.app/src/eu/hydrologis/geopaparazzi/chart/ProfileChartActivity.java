@@ -38,6 +38,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.DynamicDoubleArray;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.util.Constants;
@@ -77,6 +78,8 @@ public class ProfileChartActivity extends Activity {
     private double yMaxAll;
 
     private double yMinAll;
+
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onRestoreInstanceState( Bundle savedState ) {
@@ -175,7 +178,7 @@ public class ProfileChartActivity extends Activity {
             });
             layout.addView(mChartView, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
 
-            final ProgressDialog progressDialog = ProgressDialog.show(this, "", getString(R.string.loading_data));
+            progressDialog = ProgressDialog.show(this, "", getString(R.string.loading_data));
 
             new AsyncTask<String, Void, XYSeries>(){
                 protected XYSeries doInBackground( String... params ) {
@@ -206,7 +209,7 @@ public class ProfileChartActivity extends Activity {
                     if (mChartView != null) {
                         mChartView.repaint();
                     }
-                    progressDialog.dismiss();
+                    Utilities.dismissProgressDialog(progressDialog);
                 }
             }.execute((String) null);
 

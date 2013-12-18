@@ -54,6 +54,7 @@ public class GeocodeActivity extends ListActivity {
     private static final int MAX_ADDRESSES = 30;
 
     private String noValidItemSelectedMsg = null;
+    private ProgressDialog orsProgressDialog;
 
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
@@ -62,6 +63,12 @@ public class GeocodeActivity extends ListActivity {
         setContentView(R.layout.geocode);
 
         noValidItemSelectedMsg = getString(R.string.no_valid_destination_selected);
+    }
+
+    @Override
+    protected void onPause() {
+        Utilities.dismissProgressDialog(orsProgressDialog);
+        super.onPause();
     }
 
     public void onLookupLocationClick( View view ) {
@@ -184,8 +191,8 @@ public class GeocodeActivity extends ListActivity {
                             final double[] lonLatZoom = PositionUtilities.getMapCenterFromPreferences(preferences, false, false);
                             final Intent intent = getIntent();
 
-                            final ProgressDialog orsProgressDialog = ProgressDialog.show(GeocodeActivity.this,
-                                    getString(R.string.openrouteservice), getString(R.string.downloading_route), true, false);
+                            orsProgressDialog = ProgressDialog.show(GeocodeActivity.this, getString(R.string.openrouteservice),
+                                    getString(R.string.downloading_route), true, false);
                             new AsyncTask<String, Void, String>(){
                                 private String usedUrlString;
 
@@ -221,7 +228,7 @@ public class GeocodeActivity extends ListActivity {
 
                                 protected void onPostExecute( String errorMessage ) { // on UI
                                                                                       // thread!
-                                    orsProgressDialog.dismiss();
+                                    Utilities.dismissProgressDialog(orsProgressDialog);
                                     if (errorMessage == null) {
                                         GeocodeActivity.this.setResult(RESULT_OK, intent);
                                         finish();

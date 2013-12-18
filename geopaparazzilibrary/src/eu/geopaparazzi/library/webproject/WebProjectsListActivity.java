@@ -62,6 +62,9 @@ public class WebProjectsListActivity extends ListActivity {
     private String pwd;
     private String url;
 
+    private ProgressDialog downloadProjectListDialog;
+    private ProgressDialog cloudProgressDialog;
+
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
         setContentView(R.layout.webprojectlist);
@@ -74,7 +77,7 @@ public class WebProjectsListActivity extends ListActivity {
         filterText = (EditText) findViewById(R.id.search_box);
         filterText.addTextChangedListener(filterTextWatcher);
 
-        final ProgressDialog downloadProjectListDialog = ProgressDialog.show(this, getString(R.string.downloading),
+        downloadProjectListDialog = ProgressDialog.show(this, getString(R.string.downloading),
                 getString(R.string.downloading_projects_list_from_server));
         new AsyncTask<String, Void, String>(){
 
@@ -93,7 +96,7 @@ public class WebProjectsListActivity extends ListActivity {
             }
 
             protected void onPostExecute( String response ) { // on UI thread!
-                downloadProjectListDialog.dismiss();
+                Utilities.dismissProgressDialog(downloadProjectListDialog);
                 WebProjectsListActivity context = WebProjectsListActivity.this;
                 if (response.equals(ERROR)) {
                     Utilities.messageDialog(context, R.string.error_projects_list, null);
@@ -110,6 +113,13 @@ public class WebProjectsListActivity extends ListActivity {
     protected void onResume() {
         super.onResume();
         refreshList();
+    }
+
+    @Override
+    protected void onPause() {
+        Utilities.dismissProgressDialog(downloadProjectListDialog);
+        Utilities.dismissProgressDialog(cloudProgressDialog);
+        super.onPause();
     }
 
     protected void onDestroy() {
@@ -183,7 +193,7 @@ public class WebProjectsListActivity extends ListActivity {
     };
 
     private void downloadProject( final Webproject webproject ) {
-        final ProgressDialog cloudProgressDialog = ProgressDialog.show(this, getString(R.string.downloading_project),
+        cloudProgressDialog = ProgressDialog.show(this, getString(R.string.downloading_project),
                 getString(R.string.downloading_project_to_the_device), true, true);
         new AsyncTask<String, Void, String>(){
             protected String doInBackground( String... params ) {
@@ -199,7 +209,7 @@ public class WebProjectsListActivity extends ListActivity {
             }
 
             protected void onPostExecute( String response ) { // on UI thread!
-                cloudProgressDialog.dismiss();
+                Utilities.dismissProgressDialog(cloudProgressDialog);
                 String okMsg = getString(R.string.project_successfully_downloaded);
                 if (response.equals(okMsg)) {
                     Utilities.messageDialog(WebProjectsListActivity.this, okMsg, null);

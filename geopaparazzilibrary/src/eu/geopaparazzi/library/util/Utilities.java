@@ -19,10 +19,9 @@ package eu.geopaparazzi.library.util;
 
 import java.io.File;
 
-import android.R;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
@@ -533,20 +532,20 @@ public class Utilities {
         lat = 180 / Math.PI * (2 * Math.atan(Math.exp(lat * Math.PI / 180.0)) - Math.PI / 2.0);
         return new double[]{-lat, lon};
     }
-     /**
-     * Equatorial radius of earth is required for distance computation.
-     */
-    public static final double EQUATORIALRADIUS = 6378137.0;
-   /**
-    * Convert a longitude coordinate (in degrees) to a horizontal distance in meters from the
-    * zero meridian
-    *
-    * @param longitude
-    *            in degrees
-    * @return longitude in meters in spherical mercator projection
+    /**
+    * Equatorial radius of earth is required for distance computation.
     */
-    public static double longitudeToMetersX(double longitude) {
-     return EQUATORIALRADIUS * java.lang.Math.toRadians(longitude);
+    public static final double EQUATORIALRADIUS = 6378137.0;
+    /**
+     * Convert a longitude coordinate (in degrees) to a horizontal distance in meters from the
+     * zero meridian
+     *
+     * @param longitude
+     *            in degrees
+     * @return longitude in meters in spherical mercator projection
+     */
+    public static double longitudeToMetersX( double longitude ) {
+        return EQUATORIALRADIUS * java.lang.Math.toRadians(longitude);
     }
 
     /**
@@ -556,8 +555,8 @@ public class Utilities {
      *            in meters
      * @return longitude in degrees in spherical mercator projection
      */
-    public static double metersXToLongitude(double x) {
-     return java.lang.Math.toDegrees(x / EQUATORIALRADIUS);
+    public static double metersXToLongitude( double x ) {
+        return java.lang.Math.toDegrees(x / EQUATORIALRADIUS);
     }
 
     /**
@@ -567,33 +566,31 @@ public class Utilities {
      *            in meters
      * @return latitude in degrees in spherical mercator projection
      */
-    public static double metersYToLatitude(double y) {
-     return java.lang.Math.toDegrees(java.lang.Math.atan(java.lang.Math.sinh(y
-      / EQUATORIALRADIUS)));
+    public static double metersYToLatitude( double y ) {
+        return java.lang.Math.toDegrees(java.lang.Math.atan(java.lang.Math.sinh(y / EQUATORIALRADIUS)));
     }
 
-   /**
-    * Convert a latitude coordinate (in degrees) to a vertical distance in meters from the
-    * equator
-    *
-    * @param latitude
-    *            in degrees
-    * @return latitude in meters in spherical mercator projection
-    */
-    public static double latitudeToMetersY(double latitude) {
-     return EQUATORIALRADIUS
-      * java.lang.Math.log(java.lang.Math.tan(java.lang.Math.PI / 4 + 0.5
-      * java.lang.Math.toRadians(latitude)));
+    /**
+     * Convert a latitude coordinate (in degrees) to a vertical distance in meters from the
+     * equator
+     *
+     * @param latitude
+     *            in degrees
+     * @return latitude in meters in spherical mercator projection
+     */
+    public static double latitudeToMetersY( double latitude ) {
+        return EQUATORIALRADIUS
+                * java.lang.Math.log(java.lang.Math.tan(java.lang.Math.PI / 4 + 0.5 * java.lang.Math.toRadians(latitude)));
     }
-     /**
+    /**
     * Convert a east-longitude,west-longitude coordinate (in degrees) to distance in meters
     *
     * @param east longitude in degrees
     * @param east longitude in degrees
     * @return meters in spherical mercator projection
     */
-    public static double longitudeToMeters(double east_longitude,double west_longitude) {
-     return longitudeToMetersX(east_longitude)-longitudeToMetersX(west_longitude);
+    public static double longitudeToMeters( double east_longitude, double west_longitude ) {
+        return longitudeToMetersX(east_longitude) - longitudeToMetersX(west_longitude);
     }
     /**
     * Convert a north-latitude,south-latitude coordinate (in degrees) to distance in meters
@@ -602,8 +599,8 @@ public class Utilities {
     * @param south latitude in degrees
     * @return meters in spherical mercator projection
     */
-    public static double latitudeToMeters(double north_latitude,double south_latitude) {
-     return latitudeToMetersY(north_latitude)-latitudeToMetersY(south_latitude);
+    public static double latitudeToMeters( double north_latitude, double south_latitude ) {
+        return latitudeToMetersY(north_latitude) - latitudeToMetersY(south_latitude);
     }
     /**
      * Converts pixel coordinates in given zoom level of pyramid to EPSG:900913
@@ -753,6 +750,17 @@ public class Utilities {
      */
     public static boolean isNameFromHiddenFile( String name ) {
         return name.startsWith("_");
+    }
+
+    /**
+     * Dismiss {@link ProgressDialog} with check in one line.
+     * 
+     * @param progressDialog the dialog to dismiss.
+     */
+    public static void dismissProgressDialog( ProgressDialog progressDialog ) {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
     }
 
 }

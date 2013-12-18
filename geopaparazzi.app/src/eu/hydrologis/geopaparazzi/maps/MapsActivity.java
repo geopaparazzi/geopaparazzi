@@ -102,6 +102,7 @@ import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.GeocodeActivity;
 import eu.geopaparazzi.library.util.activities.InsertCoordActivity;
@@ -169,6 +170,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     private SliderDrawView sliderDrawView;
     private List<String> smsString;
     private Drawable notesDrawable;
+    private ProgressDialog syncProgressDialog;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -528,6 +530,12 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     }
 
     @Override
+    protected void onPause() {
+        Utilities.dismissProgressDialog(syncProgressDialog);
+        super.onPause();
+    }
+
+    @Override
     protected void onResume() {
 
         // notes type
@@ -713,44 +721,24 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
             Button syncOsmButton = (Button) findViewById(R.id.syncosmbutton);
             syncOsmButton.setOnClickListener(new Button.OnClickListener(){
+
                 public void onClick( View v ) {
 
                     if (!NetworkUtilities.isNetworkAvailable(getApplicationContext())) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
-                        builder.setMessage(R.string.available_only_with_network).setCancelable(false)
-                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
-                                    public void onClick( DialogInterface dialog, int id ) {
-                                    }
-                                });
-                        AlertDialog alertDialog = builder.create();
-                        alertDialog.show();
+                        Utilities.messageDialog(getApplicationContext(), R.string.available_only_with_network, null);
                         return;
                     }
 
-                    final EditText input = new EditText(MapsActivity.this);
-                    input.setText(""); //$NON-NLS-1$
-                    Builder builder = new AlertDialog.Builder(MapsActivity.this);
-                    builder.setTitle(R.string.set_description);
-                    builder.setMessage(R.string.osm_insert_a_changeset_description);
-                    builder.setView(input);
-                    builder.setIcon(android.R.drawable.ic_dialog_alert)
-                            .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
-                                public void onClick( DialogInterface dialog, int whichButton ) {
-                                    sync(""); //$NON-NLS-1$
+                    Utilities.inputMessageDialog(getApplicationContext(), getString(R.string.set_description),
+                            getString(R.string.osm_insert_a_changeset_description), "", new TextRunnable(){
+                                public void run() {
+                                    sync(theTextToRunOn);
                                 }
-                            }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
-                                public void onClick( DialogInterface dialog, int whichButton ) {
-                                    Editable value = input.getText();
-                                    String newName = value.toString();
-                                    sync(newName);
-                                }
-                            }).setCancelable(false).show();
-
+                            });
                 }
 
                 private void sync( final String description ) {
-                    final ProgressDialog progressDialog = ProgressDialog.show(MapsActivity.this,
-                            "", getString(R.string.loading_data)); //$NON-NLS-1$
+                    syncProgressDialog = ProgressDialog.show(MapsActivity.this, "", getString(R.string.loading_data));
                     new AsyncTask<String, Void, String>(){
                         private Exception e = null;
 
@@ -766,7 +754,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                         }
 
                         protected void onPostExecute( String response ) {
-                            progressDialog.dismiss();
+                            Utilities.dismissProgressDialog(syncProgressDialog);
                             if (e == null) {
                                 String msg = getResources().getString(R.string.osm_notes_properly_uploaded);
                                 if (response.toLowerCase().trim().startsWith(OsmUtilities.FEATURES_IMPORTED)) {
@@ -951,11 +939,11 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                controller.setCenter(mapCenter);
                controller.setZoom(minZoomLevel);
                * */
-               // When null is given:
-               // zoom to user defined center and axzoom-level = 2
-               // zoom to user defined center and zoom-level = 1
-               // zoom to user defined center and minzoom-level = 2
-               // zoom to user defined center and present zoom-level = 3
+            // When null is given:
+            // zoom to user defined center and axzoom-level = 2
+            // zoom to user defined center and zoom-level = 1
+            // zoom to user defined center and minzoom-level = 2
+            // zoom to user defined center and present zoom-level = 3
             MapsDirManager.getInstance().setMapViewCenter(mapView, null, 1);
             saveCenterPref();
             return true;

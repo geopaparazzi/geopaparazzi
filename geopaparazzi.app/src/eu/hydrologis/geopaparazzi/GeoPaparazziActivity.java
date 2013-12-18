@@ -115,6 +115,8 @@ public class GeoPaparazziActivity extends Activity {
     private boolean sliderIsOpen = false;
     private GpsManager gpsManager;
     private SensorsManager sensorManager;
+    private SlidingDrawer slidingDrawer;
+    private ProgressDialog initMapsdirDialog;
 
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
@@ -243,6 +245,12 @@ public class GeoPaparazziActivity extends Activity {
                 Utilities.messageDialog(this, getString(eu.hydrologis.geopaparazzi.R.string.could_not_open_sms), null);
             }
         }
+    }
+
+    @Override
+    protected void onPause() {
+        Utilities.dismissProgressDialog(initMapsdirDialog);
+        super.onPause();
     }
 
     protected void onResume() {
@@ -447,14 +455,14 @@ public class GeoPaparazziActivity extends Activity {
         // to retrieve the 'maps_dir : call:
         // - maps_dir=MapsDirManager.get_maps_dir();
 
-        final ProgressDialog importDialog = new ProgressDialog(this);
-        importDialog.setCancelable(true);
-        importDialog.setTitle(getString(R.string.maps_manager));
-        importDialog.setMessage(getString(R.string.loading_maps));
-        importDialog.setCancelable(false);
-        importDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        importDialog.setIndeterminate(true);
-        importDialog.show();
+        initMapsdirDialog = new ProgressDialog(this);
+        initMapsdirDialog.setCancelable(true);
+        initMapsdirDialog.setTitle(getString(R.string.maps_manager));
+        initMapsdirDialog.setMessage(getString(R.string.loading_maps));
+        initMapsdirDialog.setCancelable(false);
+        initMapsdirDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        initMapsdirDialog.setIndeterminate(true);
+        initMapsdirDialog.show();
 
         AsyncTask<String, Void, String> asyncTask = new AsyncTask<String, Void, String>(){
             protected String doInBackground( String... params ) {
@@ -466,7 +474,7 @@ public class GeoPaparazziActivity extends Activity {
                 }
             }
             protected void onPostExecute( String response ) { // on UI thread!
-                importDialog.dismiss();
+                Utilities.dismissProgressDialog(initMapsdirDialog);
                 if (response.startsWith("ERROR")) {
                     Utilities.messageDialog(GeoPaparazziActivity.this, response, null);
                 }
@@ -872,8 +880,6 @@ public class GeoPaparazziActivity extends Activity {
         });
         dialog.show();
     }
-
-    private SlidingDrawer slidingDrawer;
 
     private void checkMapsAndLogsVisibility() throws IOException {
         List<LogMapItem> maps = DaoGpsLog.getGpslogs();

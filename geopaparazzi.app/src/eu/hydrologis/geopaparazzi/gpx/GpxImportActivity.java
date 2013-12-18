@@ -33,6 +33,7 @@ import eu.geopaparazzi.library.gpx.parser.GpxParser.TrackSegment;
 import eu.geopaparazzi.library.gpx.parser.WayPoint;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 
@@ -128,10 +129,17 @@ public class GpxImportActivity extends Activity {
         }
 
     }
-    private ProgressDialog gpxImportProgressDialog;
-    private Handler gpsImportHandler = new Handler(){
+
+    @Override
+    protected void onPause() {
+        Utilities.dismissProgressDialog(gpxImportProgressDialog);
+        super.onPause();
+    }
+    
+    private static ProgressDialog gpxImportProgressDialog;
+    private static Handler gpsImportHandler = new Handler(){
         public void handleMessage( android.os.Message msg ) {
-            gpxImportProgressDialog.dismiss();
+            Utilities.dismissProgressDialog(gpxImportProgressDialog);
         };
     };
 }
