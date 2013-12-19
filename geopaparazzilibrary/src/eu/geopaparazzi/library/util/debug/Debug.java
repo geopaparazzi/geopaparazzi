@@ -56,13 +56,13 @@ public class Debug {
      * <p>For release = <code>false</code>.
      */
     public final static boolean doOverwriteTags = false;
-    
+
     /**
      * Flag to define the use of mock locations instead of the gps.
      * 
      * <p>For release = <code>false</code>.
      */
-    public final static boolean debugMemory = false;
+    public final static boolean debugMemory = true;
 
     /**
      * Dump heap data to a folder.
@@ -115,8 +115,8 @@ public class Debug {
          */
         double totalPrivateDirty = memoryInfo.getTotalPrivateDirty() / 1024.0;
         double totalSharedDirty = memoryInfo.getTotalSharedDirty() / 1024.0;
-        String memMessage = String.format("Memory: Pss=%.2f MB, Private=%.2f MB, Shared=%.2f MB", totalPss, totalPrivateDirty,
-                totalSharedDirty);
+        String memMessage = String.format("Memory Pss=%.2f MB\nMemory Private=%.2f MB\nMemory Shared=%.2f MB", totalPss,
+                totalPrivateDirty, totalSharedDirty);
         return memMessage;
     }
 

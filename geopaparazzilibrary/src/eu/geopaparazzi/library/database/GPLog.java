@@ -127,16 +127,15 @@ public class GPLog {
      */
     public static void addLogEntry( String logMessage ) {
         try {
-            SQLiteDatabase sqliteDatabase = ADbHelper.getInstance().getDatabase();
-            if (!sqliteDatabase.isOpen()) {
-                sqliteDatabase = null;
-            }
-            ContentValues values = new ContentValues();
             Date date = new Date();
-            long time = date.getTime();
-            values.put(COLUMN_DATAORA, time);
-            values.put(COLUMN_LOGMSG, logMessage);
-            insertOrThrow(sqliteDatabase, TABLE_LOG, values);
+            SQLiteDatabase sqliteDatabase = ADbHelper.getInstance().getDatabase();
+            if (sqliteDatabase != null && sqliteDatabase.isOpen()) {
+                ContentValues values = new ContentValues();
+                long time = date.getTime();
+                values.put(COLUMN_DATAORA, time);
+                values.put(COLUMN_LOGMSG, logMessage);
+                insertOrThrow(sqliteDatabase, TABLE_LOG, values);
+            }
 
             if (LOG_ANDROID) {
                 StringBuilder sb = new StringBuilder();
