@@ -736,6 +736,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                         i_geometryIterator++;
                         Geometry geom = geometryIterator.next();
                         if (geom != null) {
+                            String s_label=geometryIterator.get_label_text();
                             String s_geometry_type = geom.getGeometryType();
                             if (spatialTable.isGeometryCollection()) {
                                 int i_count_geometries = geom.getNumGeometries();
@@ -760,6 +761,10 @@ public abstract class GeopaparazziOverlay extends Overlay {
                                 if (isInterrupted() || sizeHasChanged()) { // stop working
                                     return;
                                 }
+                            }
+                            if (!s_label.equals(""))
+                            { // Draw Label
+                             GPLog.androidLog(-1, "GeopaparazziOverlay.drawFromSpatialite  label["+s_label+"] description["+ spatialTable.getDescription() + "]");
                             }
                         } else {
                             GPLog.androidLog(-1, "GeopaparazziOverlay.drawFromSpatialite  [geom == null] description["

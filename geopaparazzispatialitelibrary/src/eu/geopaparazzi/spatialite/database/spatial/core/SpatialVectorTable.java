@@ -67,6 +67,7 @@ public class SpatialVectorTable {
     private HashMap<String, String> fields_list_non_vector=null; // only non-geometry fields [name,type]
     private List<String> label_list=null; // only non-geometry fields [name]
     private String s_label_field=""; // Table field to be used as a label
+    private int i_selected_label_index=-100;
     // list of possible primary keys - for more that one: seperated with ';'
     private String s_primary_key_fields="";
     private String s_unique_name=""; // file-name+table-name+field-name
@@ -310,9 +311,24 @@ public class SpatialVectorTable {
     /**
       * Returns selected label field of this table
       * - to help retrieve the value for a label
+      * -- will allways return the selected label [even if not enabled]
       */
     public String getLabelField() {
         return s_label_field;
+    }
+    // -----------------------------------------------
+    /**
+      * Returns selected label field of this table
+      * - to help retrieve the value for a label
+      * -- will return blank is label is NOT enabled
+      */
+    public String getSelectedLabelField() {
+     String s_label="";
+     if (this.i_selected_label_index > 0)
+     {
+      s_label=label_list.get(i_selected_label_index-1);
+     }
+     return s_label;
     }
     // -----------------------------------------------
     /**
@@ -320,8 +336,15 @@ public class SpatialVectorTable {
       * - as a result of a ComboBox selection
       * - to help retrieve the value for a label
       */
-    public void setLabelField(String s_label_field) {
-        this.s_label_field=s_label_field;
+    public void setLabelField(String s_label_field,int i_enabled) {
+         this.s_label_field=s_label_field;
+       i_selected_label_index=label_list.indexOf(this.s_label_field);
+       i_selected_label_index++;
+       // if 1 = entry 0 is selected ; 2 entry 1 is selected
+       if (i_enabled == 0)
+       { // if -1 = entry 0 is not selected ; -2 entry 1 is not selected
+        i_selected_label_index*= -1;
+       }
     }
     // -----------------------------------------------
     /**
@@ -337,6 +360,7 @@ public class SpatialVectorTable {
      this.fields_list=fields_list;
      s_label_field="";
      String s_label_field_alt="";
+     int i_selected_label_index_work=-100;
      if (label_list != null)
      {
       label_list.clear();
@@ -389,6 +413,7 @@ public class SpatialVectorTable {
       { // if no charater field was found, set first field  as default
        s_label_field=s_label_field_alt;
       }
+      setLabelField(s_label_field,0); // assume the default is not enabled
       // GPLog.androidLog(-1,"SpatialVectorTable.setFieldsList["+getName()+"] label_list["+label_list.size()+"] fields_list_non_vector["+fields_list_non_vector.size()+"] fields_list["+this.fields_list.size()+"]  selected_name["+s_label_field+"] field_type["+s_primary_key_fields+"]");
      }
     }
@@ -396,6 +421,22 @@ public class SpatialVectorTable {
         this.style = style;
         maxZoom=style.maxZoom;
         minZoom=style.minZoom;
+        // TODO replace this with a style value
+        // - selected comboxBox entry +1
+        // -- if NOT enabled ' i_value*=-1;
+        int i_style_selected_label_index=1;
+        String s_label="";
+        if (i_style_selected_label_index < 0)
+        {
+         i_style_selected_label_index*=-1;
+         s_label=label_list.get(i_style_selected_label_index-1);
+         setLabelField(s_label,0); // set label fields: is not enabled
+        }
+        else
+        {
+         s_label=label_list.get(i_style_selected_label_index-1);
+         setLabelField(s_label,1); // set label fields: is enabled
+        }
     }
 
     public boolean isPolygon() {
