@@ -424,18 +424,26 @@ public class SpatialVectorTable {
         // TODO replace this with a style value
         // - selected comboxBox entry +1
         // -- if NOT enabled ' i_value*=-1;
-        int i_style_selected_label_index=1;
+        int i_style_selected_label_index=2;
         String s_label="";
         if (i_style_selected_label_index < 0)
         {
          i_style_selected_label_index*=-1;
-         s_label=label_list.get(i_style_selected_label_index-1);
-         setLabelField(s_label,0); // set label fields: is not enabled
+         i_style_selected_label_index--;
+         if (i_style_selected_label_index < label_list.size())
+         {
+          s_label=label_list.get(i_style_selected_label_index);
+          setLabelField(s_label,0); // set label fields: is not enabled
+         }
         }
         else
         {
-         s_label=label_list.get(i_style_selected_label_index-1);
-         setLabelField(s_label,1); // set label fields: is enabled
+         i_style_selected_label_index--;
+         if (i_style_selected_label_index < label_list.size())
+         {
+          s_label=label_list.get(i_style_selected_label_index);
+          setLabelField(s_label,1); // set label fields: is enabled
+         }
         }
     }
 

@@ -18,6 +18,7 @@
 package eu.geopaparazzi.spatialite.database.spatial.activities;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import jsqlite.Exception;
 import android.app.Activity;
@@ -65,6 +66,10 @@ public class PolygonsDataPropertiesActivity extends Activity {
         GPLog.androidLog(-1, "PolygonsDataPropertiesActivity.onCreate[" + spatialTable.getUniqueName() + "] label_list.size["
                 + spatialTable.getLabelList().size() + "] selected_label[" + spatialTable.getLabelField() + "] PrimaryKeys["
                 + spatialTable.getPrimaryKeyFields() + "] ");
+        // List of non-Geomertry Fields
+        List<String> label_list=spatialTable.getLabelList();
+        // number (from 0) of selected Field
+        int i_label_list=label_list.indexOf(spatialTable.getLabelField());
         colorSpinner = (Spinner) findViewById(R.id.color_spinner);
         String strokecolor = spatialTable.getStyle().strokecolor;
         int count = colorSpinner.getCount();

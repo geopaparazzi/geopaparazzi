@@ -18,6 +18,7 @@
 package eu.geopaparazzi.spatialite.database.spatial.activities;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import jsqlite.Exception;
 import android.app.Activity;
@@ -63,7 +64,10 @@ public class PointsDataPropertiesActivity extends Activity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        // List of non-Geomertry Fields
+        List<String> label_list=spatialTable.getLabelList();
+        // number (from 0) of selected Field
+        int i_label_list=label_list.indexOf(spatialTable.getLabelField());
         shapesSpinner = (Spinner) findViewById(R.id.shape_spinner);
         String shape = spatialTable.getStyle().shape;
         int count = shapesSpinner.getCount();
