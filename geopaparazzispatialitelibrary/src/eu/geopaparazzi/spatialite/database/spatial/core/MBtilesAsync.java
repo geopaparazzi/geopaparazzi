@@ -579,6 +579,8 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
              s_url=s_request_url_source;
              s_request_y=s_request_y_type;
             }
+            // TODO: build in better logic to avoid TimeOut situations
+            int[] tile_bounds=MBTilesDroidSpitter.LatLonBounds_to_TileBounds( request_bounds, i_zoom_level );
             List<String> list_tile_id = db_mbtiles.build_request_list(request_bounds, i_zoom_level, s_request_type,s_url,s_request_y);
             s_message = "-I-> on_request_create[" + s_request_type + ","+s_request_protocol+"][" + db_mbtiles.getName() + "]: list_tile_id.size["+ list_tile_id.size() + "]";
             publishProgress(s_message);
