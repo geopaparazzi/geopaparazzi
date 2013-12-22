@@ -409,6 +409,7 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
                 input_stream = this_url.openStream();
                 s_http_message="File:OK";
                 i_http_code=200;
+                // GPLog.androidLog(-1, "mbtiles_Async on_request_tile_id_url[" + db_mbtiles.getName() + "][" + this_url.getProtocol() + "] ["+ s_tile_url + "] toExternalForm[" + this_url.toExternalForm()+"]");
                }
                else
                {

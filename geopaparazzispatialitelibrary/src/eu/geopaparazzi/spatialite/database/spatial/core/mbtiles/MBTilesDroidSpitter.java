@@ -40,6 +40,7 @@ public class MBTilesDroidSpitter {
     private String s_center_parm = "";
     private int i_type_tiles = -1; // mbtiles is only valid if 'i_type_tiles' == 0 or 1 [table or
                                    // view]
+    private boolean b_grid_id=false;
     private int i_request_url_count = -1; // > 0 table 'request_url' exists
     public static final int i_request_url_count_read_value = 0;
     public static final int i_request_url_count_read_db = 1;
@@ -382,7 +383,8 @@ public class MBTilesDroidSpitter {
                     map_values.put(s_mbtiles_field_tile_column, i_x);
                     map_values.put(s_mbtiles_field_tile_row, i_y);
                     map_values.put(s_mbtiles_field_tile_id, s_tile_id);
-                    map_values.put(s_mbtiles_field_grid_id, s_grid_id);
+                    if (b_grid_id)
+                     map_values.put(s_mbtiles_field_grid_id, s_grid_id);
                     db_mbtiles.insertOrThrow(s_map_tablename, null, map_values);
                 }
                 if (i_type_tiles == 0) { // 'tiles' is a table
@@ -635,6 +637,13 @@ public class MBTilesDroidSpitter {
                                 || (s_field.equals("tile_data"))) {
                             i_field_count++;
                         }
+                        else
+                        {
+                         if (s_field.equals("grid_id"))
+                         { // not all mbtiles map tables have a 'grid_id': avoid insert error
+                          b_grid_id=true;
+                         }
+                        }
                     } while( c_fields.moveToNext() );
                 }
                 c_fields.close();
@@ -658,6 +667,13 @@ public class MBTilesDroidSpitter {
                             if ((s_field.equals("zoom_level")) || (s_field.equals("tile_column")) || (s_field.equals("tile_row"))
                                     || (s_field.equals("tile_id"))) {
                                 i_field_count++;
+                            }
+                            else
+                            {
+                             if (s_field.equals("grid_id"))
+                             { // not all mbtiles map tables have a 'grid_id': avoid insert error
+                              b_grid_id=true;
+                             }
                             }
                         } while( c_fields.moveToNext() );
                     }
