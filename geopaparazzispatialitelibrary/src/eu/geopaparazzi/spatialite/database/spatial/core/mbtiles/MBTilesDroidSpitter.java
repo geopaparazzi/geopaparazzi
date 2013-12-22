@@ -774,14 +774,14 @@ public class MBTilesDroidSpitter {
                       {
                        i_y = i_y_tms;
                       }
-                      int indexOfZ = s_url_source.indexOf("ZZZ");
+                      int indexOfZ = s_file.indexOf("ZZZ");
                       if (indexOfZ != -1)
                       { // tile-server: replace ZZZ,XXX,YYY
-                       s_url_source = s_url_source.replaceFirst("ZZZ", String.valueOf(i_z)); //$NON-NLS-1$
-                       s_url_source = s_url_source.replaceFirst("XXX", String.valueOf(i_x)); //$NON-NLS-1$
-                       s_url_source = s_url_source.replaceFirst("YYY", String.valueOf(i_y)); //$NON-NLS-1$
-                       File file_tile= new File(s_url_source);
-                       if (file_tile.exists())
+                       s_file = s_file.replaceFirst("ZZZ", String.valueOf(i_z)); //$NON-NLS-1$
+                       s_file = s_file.replaceFirst("XXX", String.valueOf(i_x)); //$NON-NLS-1$
+                       s_file = s_file.replaceFirst("YYY", String.valueOf(i_y)); //$NON-NLS-1$
+                       File file_tile= new File(s_file);
+                       if (!file_tile.exists())
                        { // if the tile-file does not exist, do not add
                         s_tile_id="";
                        }
@@ -1792,14 +1792,34 @@ public class MBTilesDroidSpitter {
        * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
        *
        * @param latlong_bounds [minx,miny,maxx,minx]
-       * @param zoom
-       * @param tileSize
+       * @param i_zoom
        * @return [zoom,minx, miny, maxx, maxy of tile_bounds]
        */
-    public static int[] LatLonBounds_to_TileBounds( double[] latlong_bounds, int zoom ) {
-        int[] min_tile_bounds = getTileNumber(latlong_bounds[1], latlong_bounds[0], zoom);
-        int[] max_tile_bounds = getTileNumber(latlong_bounds[3], latlong_bounds[2], zoom);
-        return new int[]{zoom, min_tile_bounds[1], min_tile_bounds[2], max_tile_bounds[1], max_tile_bounds[2]};
+    public static int[] LatLonBounds_to_TileBounds( double[] latlong_bounds, int i_zoom ) {
+        int[] min_tile_bounds = getTileNumber(latlong_bounds[1], latlong_bounds[0], i_zoom);
+        int[] max_tile_bounds = getTileNumber(latlong_bounds[3], latlong_bounds[2], i_zoom);
+        return new int[]{i_zoom, min_tile_bounds[1], min_tile_bounds[2], max_tile_bounds[1], max_tile_bounds[2]};
+    }
+     /**
+       * <p>Code adapted from: LatLonBounds_to_TileBounds</p>
+       *
+       * @param tile_bounds [minx, miny_osm, maxx, maxy_osm of tile_bounds]
+       * @param i_zoom
+       * @return [zoom,minx, miny, maxx, maxy of tile_bounds]
+       * @return latlong_bounds [minx,miny,maxx,minx]
+       */
+    public static double[] TileBounds_to_LatLonBounds( int[] tile_bounds, int i_zoom ) {
+        int i_min_x = tile_bounds[0];
+        int i_min_y_osm = tile_bounds[1];
+        int i_max_x = tile_bounds[2];
+        int i_max_y_osm = tile_bounds[3];
+        double[] bounds = tileLatLonBounds(i_min_x, i_min_y_osm, i_zoom, 256);
+        double d_min_x = bounds[0];
+        double d_min_y = bounds[1];
+        bounds = tileLatLonBounds(i_max_x, i_max_y_osm, i_zoom, 256);
+        double d_max_x = bounds[2];
+        double d_max_y = bounds[3];
+        return new double[]{d_min_x, d_min_y, d_max_x, d_max_y};
     }
     /**
       * Returns bounds of the given tile in EPSG:900913 coordinates
