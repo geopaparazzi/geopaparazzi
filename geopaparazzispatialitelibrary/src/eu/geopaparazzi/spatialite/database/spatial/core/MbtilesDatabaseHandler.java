@@ -872,9 +872,9 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
       * @param s_request_type request type ['fill','replace','exists']
       * @return ist_tile_id [list of 'tile_id' needed]
       */
-    public List<String> build_request_list( double[] request_bounds, int i_zoom_level, String s_request_type ) {
+    public List<String> build_request_list( double[] request_bounds, int i_zoom_level, String s_request_type,String s_url_source, String s_request_y_type ) {
         if (db_mbtiles != null) {
-            return db_mbtiles.build_request_list(request_bounds, i_zoom_level, s_request_type);
+            return db_mbtiles.build_request_list(request_bounds, i_zoom_level, s_request_type,s_url_source,s_request_y_type);
         }
         return new ArrayList<String>();
     }

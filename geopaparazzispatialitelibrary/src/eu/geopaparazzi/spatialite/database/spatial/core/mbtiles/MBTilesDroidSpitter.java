@@ -720,7 +720,7 @@ public class MBTilesDroidSpitter {
       * @param s_request_type request type ['fill','replace','exists']
       * @return ist_tile_id [list of 'tile_id' needed]
       */
-    public List<String> build_request_list( double[] request_bounds, int i_zoom_level, String s_request_type ) {
+    public List<String> build_request_list( double[] request_bounds, int i_zoom_level, String s_request_type,String s_url_source, String s_request_y_type ) {
         List<String> list_tile_id = new ArrayList<String>(); // this will be the final object -
                                                              // depending on type
         if ((!s_request_type.equals("fill")) && (!s_request_type.equals("replace")) && (!s_request_type.equals("exists")))
@@ -759,7 +759,39 @@ public class MBTilesDroidSpitter {
                                                                     // be the notation based on the
                                                                     // active database
                     String s_tile_id = get_tile_id_from_zxy(i_zoom_level, x, y);
-                    list_tile_id.add(s_tile_id);
+                    if (!s_url_source.equals(""))
+                    { // We are adding from an existing set of tiles, the tile must exist
+                     String s_file=s_url_source;
+                     int[] zxy_osm_tms = get_zxy_from_tile_id(s_tile_id);
+                     if ((zxy_osm_tms != null) && (zxy_osm_tms.length == 4))
+                     {
+                      int i_z = zxy_osm_tms[0];
+                      int i_x = zxy_osm_tms[1];
+                      int i_y_osm = zxy_osm_tms[2];
+                      int i_y_tms = zxy_osm_tms[3];
+                      int i_y = i_y_osm;
+                      if (s_request_y_type.equals("tms"))
+                      {
+                       i_y = i_y_tms;
+                      }
+                      int indexOfZ = s_url_source.indexOf("ZZZ");
+                      if (indexOfZ != -1)
+                      { // tile-server: replace ZZZ,XXX,YYY
+                       s_url_source = s_url_source.replaceFirst("ZZZ", String.valueOf(i_z)); //$NON-NLS-1$
+                       s_url_source = s_url_source.replaceFirst("XXX", String.valueOf(i_x)); //$NON-NLS-1$
+                       s_url_source = s_url_source.replaceFirst("YYY", String.valueOf(i_y)); //$NON-NLS-1$
+                       File file_tile= new File(s_url_source);
+                       if (file_tile.exists())
+                       { // if the tile-file does not exist, do not add
+                        s_tile_id="";
+                       }
+                      }
+                     }
+                    }
+                    if (!s_tile_id.equals(""))
+                    {
+                     list_tile_id.add(s_tile_id);
+                    }
                 }
             }
             if (s_request_type.equals("replace")) {

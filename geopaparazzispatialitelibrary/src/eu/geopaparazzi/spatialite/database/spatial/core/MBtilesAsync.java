@@ -558,7 +558,7 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
         int i_count_tiles_total = db_mbtiles.get_request_url_count(1);
         int i_count_tiles_level = 0;
         mbtiles_request_url = new LinkedHashMap<String, String>();
-        s_message = "-I-> on_request_create[" + s_request_type + "][" + db_mbtiles.getName() + "]: zoom_levels["
+        s_message = "-I-> on_request_create[" + s_request_type + ","+s_request_protocol+"][" + db_mbtiles.getName() + "]: zoom_levels["
                 + zoom_levels.size() + "]";
         publishProgress(s_message);
         for( int i = 0; i < zoom_levels.size(); i++ ) { // for all selected zoom levels
@@ -571,7 +571,17 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
             }
             // retrieve list of missing[fill] or compleate list[replace] of tiles to retrieve
             // This is still a full list (without limit) which could cause memory problems
-            List<String> list_tile_id = db_mbtiles.build_request_list(request_bounds, i_zoom_level, s_request_type);
+            //
+            String s_url="";
+            String s_request_y="";
+            if (s_request_protocol.equals("file"))
+            { // We are adding from an existing set of tiles, the tile must exist
+             s_url=s_request_url_source;
+             s_request_y=s_request_y_type;
+            }
+            List<String> list_tile_id = db_mbtiles.build_request_list(request_bounds, i_zoom_level, s_request_type,s_url,s_request_y);
+            s_message = "-I-> on_request_create[" + s_request_type + ","+s_request_protocol+"][" + db_mbtiles.getName() + "]: list_tile_id.size["+ list_tile_id.size() + "]";
+            publishProgress(s_message);
             String s_tile_id="";
             for( int j = 0; j < list_tile_id.size(); j++ ) {
                 if (isCancelled()) {
@@ -593,11 +603,14 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
                 }
                 if (i_limit >= i_max_limit)
                 { // save reguraly to avoid excess memory usage
-                 i_count_tiles_total=db_mbtiles.insert_list_request_url(mbtiles_request_url);
-                 // clear 'mbtiles_request_url' that have been stored
-                 mbtiles_request_url.clear();
-                 // s_message = "-I-> on_request_create[" + db_mbtiles.getName() + "]: zoom_level[" + i_zoom_level + "] tiles_level["+ i_count_tiles_level + "] total[" + i_count_tiles_total + "]";
-                 // publishProgress(s_message);
+                 if ((mbtiles_request_url.size()) > 0)
+                 {
+                  i_count_tiles_total=db_mbtiles.insert_list_request_url(mbtiles_request_url);
+                  // clear 'mbtiles_request_url' that have been stored
+                  mbtiles_request_url.clear();
+                  s_message = "-I-> on_request_create[" + db_mbtiles.getName() + "]: ["+j+"] tile_id[" + s_tile_id + "] zoom_level[" + i_zoom_level + "] tiles_level["+ i_count_tiles_level + "] total[" + i_count_tiles_total + "]";
+                  publishProgress(s_message);
+                 }
                  i_limit=0;
                 }
             }
