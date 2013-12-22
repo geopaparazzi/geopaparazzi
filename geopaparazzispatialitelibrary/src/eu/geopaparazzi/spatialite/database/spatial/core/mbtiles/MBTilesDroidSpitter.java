@@ -465,8 +465,9 @@ public class MBTilesDroidSpitter {
             }
         } catch (Exception e) {
             String s_message = e.getMessage();
-            int index_of_text = s_message.indexOf("already closed");
+            int index_of_text = s_message.indexOf("closed");
             if (index_of_text != -1) {
+              // attempt to re-open an already-closed [sometimes: 'already closed']
                 return false;
             } else {
                 throw new IOException("MBTilesDroidSpitter:search_blank_image query[" + s_sql_query + "] error["
