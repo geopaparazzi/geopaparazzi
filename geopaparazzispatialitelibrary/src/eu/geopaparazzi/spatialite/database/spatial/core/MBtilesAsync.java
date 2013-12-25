@@ -450,10 +450,19 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
                  i_http_code=779;
                 }
             } catch (IOException e) {
+             if (e.getMessage().indexOf("ETIMEDOUT") != -1)
+             { // failed to connect to fbinter.stadt-berlin.de/141.15.4.15 (port 80): connect failed: ETIMEDOUT (Connection timed out)
+              i_http_code=408;
+              s_http_message=e.getMessage();
+              tile_bitmap = null;
+             }
+             else
+             {
                 s_message = "mbtiles_Async.on_download_tile: http_code[" + i_http_code + "] ["
-                        + s_http_message + "]" + e.getMessage();
+                        + s_http_message + "] " + e.getMessage();
                 GPLog.androidLog(4, s_message, e);
                 tile_bitmap = null;
+              }
             } finally { // will set values, depending on values to determin if this task should be
                         // aborted
                 get_http_result(0, i_http_code, s_http_message, i_content_length, i_image_null);
@@ -503,6 +512,7 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
             i_http_not_usable = 1;
         }
             break;
+        case HttpURLConnection.HTTP_CLIENT_TIMEOUT:
         case HttpURLConnection.HTTP_BAD_REQUEST:
         { // 400: Bad Request
         // malformed url or tiles out of range
