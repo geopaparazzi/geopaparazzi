@@ -15,7 +15,7 @@
                           ]
                       }, "type":"stringcombo"
                     },
-                    {"key":"fee", "value":"",  "type":"boolean"}
+                    {"key":"fee", "value":"",  "type":"boolean"},
                     {"key":"note", "value":"", "type":"string"},
                     {"key":"LONGITUDE", "value":"", "type":"hidden"},
                     {"key":"LATITUDE", "value":"", "type":"hidden"}
