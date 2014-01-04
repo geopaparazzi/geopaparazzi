@@ -274,10 +274,10 @@ public class SpatialiteUtilities {
      if (s_char_set.equals(""))
       s_char_set="CP1252";
      String s_table_name_work=s_table_name+"_work";
-      GPLog.androidLog(-1,"SpatialiteUtilities create_shape_table[" + s_table_name + "] srid["+i_srid+"] ["+s_table_path+"]");
+     //  GPLog.androidLog(-1,"SpatialiteUtilities create_shape_table[" + s_table_name + "] srid["+i_srid+"] ["+s_table_path+"]");
       // CREATE VIRTUAL TABLE roads using virtualshape('/sdcard/maps/roads',CP1252,3857);
      String s_sql_command="CREATE VIRTUAL TABLE "+s_table_name_work+" USING VirtualShape('"+s_table_path+"',"+s_char_set+","+i_srid+");";
-     GPLog.androidLog(-1,"SpatialiteUtilities create_shape_table[" + s_table_name + "] srid["+i_srid+"] ["+s_table_path+"]");
+     // GPLog.androidLog(-1,"SpatialiteUtilities create_shape_table[" + s_sql_command+"]");
      try
      {
       sqlite_db.exec(s_sql_command, null);
@@ -287,7 +287,7 @@ public class SpatialiteUtilities {
       // CREATE TABLE myroads AS SELECT * FROM roads;
       s_sql_command="CREATE TABLE "+s_table_name+" AS SELECT * FROM "+s_table_name_work+";";
       sqlite_db.exec(s_sql_command, null);
-      s_sql_command="SELECT geometry_type FROM vector_layers WHERE table_name='"+s_table_name;
+      s_sql_command="SELECT geometry_type FROM vector_layers WHERE table_name='"+s_table_name+"'";
       this_stmt = sqlite_db.prepare(s_sql_command);
       try
       {
@@ -298,6 +298,8 @@ public class SpatialiteUtilities {
       }
       catch (jsqlite.Exception e_stmt)
       {
+       i_rc=sqlite_db.last_error();
+       GPLog.androidLog(4, "SpatialiteUtilities: create_shape_table sql["+s_sql_command+"] rc="+i_rc+"]", e_stmt);
       }
       GeometryType geometry_type = GeometryType.forValue(i_geometry_type);
       String s_geometry_type = geometry_type.toString();
@@ -370,6 +372,7 @@ public class SpatialiteUtilities {
      int i_spatialite_version=0;
      String s_srs_wkt="srs_wkt";
      String s_shape_path="";
+     String s_shape_name="";
      for( Map.Entry<File, File> shape_list : shapes_list.entrySet() )
      {
       File file_prj = shape_list.getKey();
@@ -378,8 +381,8 @@ public class SpatialiteUtilities {
       {
        shape_dir=file_directory;
        s_shape_path = shape_dir.getParentFile().getAbsolutePath();
-       String s_shape_name = shape_dir.getName(); // .substring(0, shape_dir.getName().lastIndexOf("."));
-       shape_db= new File(s_shape_path + "/" + s_shape_name + ".db");
+       s_shape_name = shape_dir.getName(); // .substring(0, shape_dir.getName().lastIndexOf("."));
+       shape_db= new File(s_shape_path + File.separator + s_shape_name + ".db");
        // GPLog.androidLog(-1,"SpatialiteUtilities create_shape_db[" + shape_db.getAbsolutePath() + "] shape_name["+s_shape_name+"] db.exists["+shape_db.exists()+"]");
        if (shape_db.exists())
        { // A database exist - abort
@@ -413,7 +416,7 @@ public class SpatialiteUtilities {
         String s_char_set="CP1252";
         if (i_srid > 0)
         {
-         String s_table_path = s_shape_path + "/" + s_table_name;
+         String s_table_path = s_shape_path + File.separator + s_shape_name + File.separator + s_table_name;
          int i_rc=create_shape_table(sqlite_db,s_table_path,s_table_name,s_char_set,i_srid);
          // GPLog.androidLog(-1,"SpatialiteUtilities create_shape_db[" + s_table_name + "] srid["+i_srid+"]");
         }

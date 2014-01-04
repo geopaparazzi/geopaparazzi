@@ -36,11 +36,9 @@ import org.mapsforge.android.maps.Projection;
 import org.mapsforge.android.maps.mapgenerator.MapGenerator;
 import org.mapsforge.core.model.GeoPoint;
 
-import android.R;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.content.res.AssetManager;
 import android.preference.PreferenceManager;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.FileUtilities;
@@ -102,7 +100,7 @@ public class MapsDirManager {
     }
     // -----------------------------------------------
     /**
-      * Constructor MapsDirManager
+      * Singleton getter for MapsDirManager.
       *
       * <ul>
       *  <li>Administration of sdcard/maps directory</li>
@@ -110,12 +108,8 @@ public class MapsDirManager {
       *  <li>- filter information as needed [handleTileSources] </li>
       *  <li>- map selection : call from application-Activity  onMenuItemSelected</li>
       *  <li>- free resources : call from application-Activity  finish()</li>
-      *
       * </ul>
       *
-      * @param s_mbtiles_path full path to mbtiles file to open
-      * @param mbtiles_metadata list of initial metadata values to set upon creation [otherwise can be null]
-      * @return void
       */
     public static MapsDirManager getInstance() {
         if (mapsdirManager == null) {
@@ -145,11 +139,12 @@ public class MapsDirManager {
       */
     public void init( Context context, File mapsDir ) throws Exception, IOException, FileNotFoundException {
         try {
-            if ((mapsDir == null) || (!mapsDir.exists())) { // a maps directory has not been
-                                                            // supplied [default] or the given does
-                                                            // not exist:
-                                                            // - use the library logic to create a
-                                                            // usable map directory
+            if ((mapsDir == null) || (!mapsDir.exists())) {
+                // a maps directory has not been
+                // supplied [default] or the given does
+                // not exist:
+                // - use the library logic to create a
+                // usable map directory
                 mapsDir = ResourcesManager.getInstance(context).getMapsDir();
             }
         } catch (Throwable t) {
@@ -255,13 +250,8 @@ public class MapsDirManager {
                             table.getDescription(), table.getBounds_toString(), table.getCenter_toString(),
                             table.getZoom_Levels());
                     maptype_classes.add(this_mapinfo);
-                    if (table.getFileNamePath().equals(mapnikFile.getAbsolutePath())) { // if
-                                                                                        // nothing
-                                                                                        // is
-                                                                                        // selected,
-                                                                                        // this will
-                                                                                        // be the
-                                                                                        // default
+                    if (table.getFileNamePath().equals(mapnikFile.getAbsolutePath())) {
+                        // if nothing is selected, this will be the default
                         mapnik_mapinfo = this_mapinfo;
                     }
                     if ((selected_mapinfo == null) && (s_selected_map.equals(table.getFileNamePath()))) {
@@ -651,18 +641,12 @@ public class MapsDirManager {
                 // GPLog.androidLog(4, "MapsDirManager getSpatialVectorTables SpatialVectorTable[" +
                 // maps_dir.getAbsolutePath() + "]", e);
             }
-            if (this_vectorinfo.checkPositionValues(bounds_zoom, i_check_enabled) > 0) { // 0=conditions
-                                                                                         // not
-                                                                                         // fullfilled
-                                                                                         // ;
-                                                                                         // 1=compleatly
-                                                                                         // inside
-                                                                                         // valid
-                                                                                         // bounds ;
-                                                                                         // 2=partially
-                                                                                         // inside
-                                                                                         // valid
-                                                                                         // bounds
+            if (this_vectorinfo.checkPositionValues(bounds_zoom, i_check_enabled) > 0) {
+                /*
+                 *  0=conditions  not  fullfilled  ;  
+                 *  1=compleatly  inside  valid  bounds ;  
+                 *  2=partially  inside  valid  bounds
+                 */
                 /* try
                 {
                  */

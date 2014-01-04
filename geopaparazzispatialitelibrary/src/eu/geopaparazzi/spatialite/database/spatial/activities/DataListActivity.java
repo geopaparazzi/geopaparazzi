@@ -70,8 +70,8 @@ public class DataListActivity extends ListActivity {
         try {
             if (doReread)
                 spatialTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(doReread);
-                // no bounds checking, no enabled checking : all records will be returned
-                // spatialTables =  MapsDirManager.getInstance().getSpatialVectorTables(null,0,doReread);
+            // no bounds checking, no enabled checking : all records will be returned
+            // spatialTables = MapsDirManager.getInstance().getSpatialVectorTables(null,0,doReread);
         } catch (Exception e) {
             // Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
@@ -85,6 +85,8 @@ public class DataListActivity extends ListActivity {
                 final View rowView = inflater.inflate(R.layout.data_row, null);
                 final SpatialVectorTable item = spatialTables.get(position);
                 TextView nameView = (TextView) rowView.findViewById(R.id.name);
+                TextView descriptionView = (TextView) rowView.findViewById(R.id.description);
+
                 CheckBox visibleView = (CheckBox) rowView.findViewById(R.id.visible);
                 ImageButton listUpButton = (ImageButton) rowView.findViewById(R.id.upButton);
                 listUpButton.setOnClickListener(new View.OnClickListener(){
@@ -122,7 +124,7 @@ public class DataListActivity extends ListActivity {
                         Intent intent = null;
                         if (item.isLine()) {
                             intent = new Intent(DataListActivity.this, LinesDataPropertiesActivity.class);
-                        } else if (item.isPolygon())  {
+                        } else if (item.isPolygon()) {
                             intent = new Intent(DataListActivity.this, PolygonsDataPropertiesActivity.class);
                         } else if ((item.isPoint()) || (item.isGeometryCollection())) {
                             intent = new Intent(DataListActivity.this, PointsDataPropertiesActivity.class);
@@ -156,7 +158,8 @@ public class DataListActivity extends ListActivity {
                 // rowView.setBackgroundColor(ColorUtilities.toColor(item.getColor()));
                 // mj10777: some tables may have more than one column, thus the column name will
                 // also be shown item.getUniqueName()
-                nameView.setText(item.getName() + "." + item.getGeomName() + " [" + item.getMapType() + "] [" + item.getFileName() + "]");
+                nameView.setText(item.getName());
+                descriptionView.setText(item.getGeomName() + ": " + item.getMapType() + ", db: " + item.getFileName());
 
                 visibleView.setChecked(item.getStyle().enabled != 0);
                 visibleView.setOnCheckedChangeListener(new OnCheckedChangeListener(){

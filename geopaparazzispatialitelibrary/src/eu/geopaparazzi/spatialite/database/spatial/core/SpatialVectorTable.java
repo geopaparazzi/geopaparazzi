@@ -18,12 +18,15 @@
 package eu.geopaparazzi.spatialite.database.spatial.core;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import eu.geopaparazzi.library.database.GPLog;
+
+import android.content.Context;
+
+import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.spatialite.database.spatial.SpatialiteContextHolder;
 
 // https://www.gaia-gis.it/fossil/libspatialite/wiki?name=metadata-4.0
 
@@ -78,7 +81,7 @@ public class SpatialVectorTable {
         s_name_file=file_map.getName();
         this.s_table_name = s_table_name;
         this.s_geometry_column = s_geometry_column;
-        this.s_unique_name=this.s_map_file+File.separator+s_table_name+File.separator+s_geometry_column;
+        this.s_unique_name=createUniqueName();
         this.geomType = geomType;
         this.srid = srid;
         this.centerX = center[0];
@@ -95,6 +98,38 @@ public class SpatialVectorTable {
         checkType();
         String s_dump="isPoint["+isPoint+"] isLine["+isLine+"] isPolygon["+isPolygon+"] isGeometryCollection["+isGeometryCollection+"]";
         // GPLog.androidLog(-1,"SpatialVectorTable unique_name[" + this.s_unique_name + "] types["+s_dump+"]");
+    }
+    
+    /**
+     * Create a unique name for the table based on db path and geometry.
+     * 
+     * @return
+     */
+    private String createUniqueName() {
+        try {
+            Context context = SpatialiteContextHolder.INSTANCE.getContext();
+            ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
+            File mapsDir = resourcesManager.getMapsDir();
+            String mapsPath = mapsDir.getAbsolutePath();
+            if (s_map_file.startsWith(mapsPath)) {
+                String relativePath = s_map_file.substring(mapsPath.length());
+                StringBuilder sb = new StringBuilder();
+                if (relativePath.startsWith("/")) {
+                    relativePath = relativePath.substring(1);
+                }
+                sb.append(relativePath);
+                sb.append(File.separator);
+                sb.append(s_table_name);
+                sb.append(File.separator);
+                sb.append(s_geometry_column);
+                return sb.toString();
+            } else {
+                throw new RuntimeException();
+            }
+        } catch (Exception e) {
+            // ignore and use absolute path
+            return this.s_map_file + File.separator + s_table_name + File.separator + s_geometry_column;
+        }
     }
     // -----------------------------------------------
     /**

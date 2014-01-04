@@ -788,18 +788,26 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
             mbtiles_async = new MBtilesAsync(this);
             // with .execute(): this crashes
             // mbtiles_async.execute(AsyncTasks.ASYNC_PARMS);
-                  if (Build.VERSION.SDK_INT < 12) // use numbers for backwards compatibility Build.VERSION_CODES.HONEYCOMB)
-                  { // http://developer.android.com/reference/android/os/Build.VERSION_CODES.html
-                   // GPLog.androidLog(-1,"run_retrieve_url.HONEYCOMB.["+Build.VERSION.SDK_INT+"]");
-                      mbtiles_async.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,AsyncTasks.ASYNC_PARMS);
-                  }
-                  else
-                  {
-                   // GPLog.androidLog(-1,"run_retrieve_url.OTHER.["+Build.VERSION.SDK_INT+"]");
-                   mbtiles_async.execute(AsyncTasks.ASYNC_PARMS);
-                  }
-             // GPLog.androidLog(-1,"run_retrieve_url.Build.VERSION.SDK_INT.["+Build.VERSION.SDK_INT+"]"); // 20131125: 15, 2031221: 17
-           // mbtiles_async.execute(AsyncTasks.ASYNC_PARMS);
+            
+            /*
+             * moovida: THIS IS NOT 2.3.3 compatible, which is 10 and < 12
+             *          if it crashes, we need to fin out why, but we can't use
+             *          mbtiles_async.executeOnExecutor.
+             */
+            // if (Build.VERSION.SDK_INT < 12) // use numbers for backwards compatibility
+            // Build.VERSION_CODES.HONEYCOMB)
+            // { // http://developer.android.com/reference/android/os/Build.VERSION_CODES.html
+            // // GPLog.androidLog(-1,"run_retrieve_url.HONEYCOMB.["+Build.VERSION.SDK_INT+"]");
+            // mbtiles_async.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,AsyncTasks.ASYNC_PARMS);
+            // }
+            // else
+            // {
+            // GPLog.androidLog(-1,"run_retrieve_url.OTHER.["+Build.VERSION.SDK_INT+"]");
+            mbtiles_async.execute(AsyncTasks.ASYNC_PARMS);
+            // }
+            // GPLog.androidLog(-1,"run_retrieve_url.Build.VERSION.SDK_INT.["+Build.VERSION.SDK_INT+"]");
+            // // 20131125: 15, 2031221: 17
+            // mbtiles_async.execute(AsyncTasks.ASYNC_PARMS);
         }
     }
     // -----------------------------------------------
