@@ -17,6 +17,8 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -32,6 +34,9 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
+import eu.geopaparazzi.spatialite.database.spatial.core.ISpatialDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DatabaseManager;
 import eu.hydrologis.geopaparazzi.database.SqlViewActivity;
@@ -130,6 +135,23 @@ public class SecretActivity extends Activity implements CheckBox.OnCheckedChange
             SQLiteDatabase database = DatabaseManager.getInstance().getDatabase();
             GPLog.clearLogTable(database);
             Utilities.messageDialog(this, "Log cleared.", null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Utilities.messageDialog(this, "An error occurred: " + e.getLocalizedMessage(), null);
+        }
+    }
+
+    public void resetStyleTables( View view ) {
+        try {
+            SpatialDatabasesManager dbManager = SpatialDatabasesManager.getInstance();
+            List<ISpatialDatabaseHandler> spatialDatabaseHandlers = dbManager.getSpatialDatabaseHandlers();
+            for( ISpatialDatabaseHandler iSpatialDatabaseHandler : spatialDatabaseHandlers ) {
+                if (iSpatialDatabaseHandler instanceof SpatialiteDatabaseHandler) {
+                    SpatialiteDatabaseHandler sdHandler = (SpatialiteDatabaseHandler) iSpatialDatabaseHandler;
+                    sdHandler.resetStyleTable();
+                }
+            }
+            Utilities.messageDialog(this, "Style reset performed.", null);
         } catch (Exception e) {
             e.printStackTrace();
             Utilities.messageDialog(this, "An error occurred: " + e.getLocalizedMessage(), null);

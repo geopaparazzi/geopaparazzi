@@ -209,5 +209,6 @@
     <string name="no_queriable_layer_is_visible">No queriable layer is visible.</string>
     <string name="set_path_manually">Set manually the path (if set, it has precedence over combobox)</string>
     <string name="choose_from_suggested">or choose from suggested</string>
+    <string name="reset_style_tables">Reset style tables</string>
 
 </resources>
