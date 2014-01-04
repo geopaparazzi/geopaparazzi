@@ -133,7 +133,7 @@ public class ImportActivity extends Activity {
             }
         });
         if (bookmarksfileList.length == 0) {
-            Utilities.warningDialog(context, "No bookmarks file found.", null);
+            Utilities.warningDialog(context, R.string.no_bookmarks_csv, null);
             return;
         }
 
@@ -200,7 +200,7 @@ public class ImportActivity extends Activity {
                 Utilities.messageDialog(context, R.string.error_bookmarks_import, null);
             }
         } else {
-            Utilities.messageDialog(context, R.string.no_bookmarks_csv, null);
+            Utilities.warningDialog(context, R.string.no_bookmarks_csv, null);
         }
     }
 
