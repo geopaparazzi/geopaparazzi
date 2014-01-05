@@ -1,6 +1,7 @@
 package eu.geopaparazzi.mapsforge.mapsdirmanager.treeview;
 import java.io.File;
 import java.util.Comparator;
+import eu.geopaparazzi.library.database.GPLog;
 
 import com.vividsolutions.jts.geom.Envelope;
 /**
@@ -36,7 +37,7 @@ public class ClassNodeInfo<T> {
     private int minZoom = 0;
     private int maxZoom = 22;
     private int i_enabled = 0;
-    
+
     /**
      * Creates the class node information.
      *
@@ -48,7 +49,7 @@ public class ClassNodeInfo<T> {
      *            type to be retrieved [as text : file.extention]
      * @param s_class_name
      *            short text to be shown
-     * @param s_file_path [as file-name with path [vector + table and field-name]]
+     * @param s_file_path [as file-name with path [vector + table and field-name (getUniqueName())]]
      *           unique text to be shown
      * @param s_short_text [as file-name without path]
      *            short text to be shown [vector: database-file without path]
@@ -83,6 +84,7 @@ public class ClassNodeInfo<T> {
              */
             this.itemIsFile = this.file_path.getName().lastIndexOf('.') != -1;
         }
+        this.s_class_name = s_class_name;
         // set default values if empty
         if (s_type.equals("")) {
             s_type = FILE;
@@ -112,7 +114,6 @@ public class ClassNodeInfo<T> {
         }
         this.i_type = type;
         this.s_type = s_type;
-        this.s_class_name = s_class_name;
         this.s_short_text = s_short_text;
         this.s_long_text = s_long_text;
         this.s_short_description = s_short_description;
@@ -125,19 +126,19 @@ public class ClassNodeInfo<T> {
 
     /**
       * Set Position Values
-      * 
+      *
       * <p>strict checking is done, since anything could be sent
       * <p>intended for use with SpatialVectorTable
-      * 
+      *
       * @param bounds_zoom 5 values: west, south, east, north wsg84 values and zoom-level
-      * @param i_check_enabled 
+      * @param i_check_enabled
       *           <ol>
-      *                <li>0 = return all  ;</li> 
-      *                <li>1 = return only those that are enabled  ;</li> 
+      *                <li>0 = return all  ;</li>
+      *                <li>1 = return only those that are enabled  ;</li>
       *           </ol>
-      * @return i_rc 
+      * @return i_rc
       *           <ol>
-      *                <li>0 = conditions not fulfilled ;</li> 
+      *                <li>0 = conditions not fulfilled ;</li>
       *                <li>1 = completely inside valid bounds ;</li>
       *                <li>2 = partially inside valid bounds ; </li>
       *                <li>-1= zoom invalid ; </li>
@@ -182,16 +183,14 @@ public class ClassNodeInfo<T> {
             } else {
                 i_rc = -1;
             }
-            // GPLog.androidLog(-1,
-            // "ClassNodeInfo i_rc="+i_rc+" enabled["+getEnabled()+"] ["+s_parms+"] [" + toString()
-            // + "]");
+            // GPLog.androidLog(-1,"ClassNodeInfo i_rc="+i_rc+" enabled["+getEnabled()+"]  [" + toString()+ "]");
         }
         return i_rc;
     }
     // -----------------------------------------------
     /**
       * Set Position Values
-      * 
+      *
       * <p>strick checking is done, since anything could be sent
       * <p>indended for use with SpatialVectorTable
       */
@@ -258,12 +257,21 @@ public class ClassNodeInfo<T> {
     public String getFileNamePath() {
         // vector: database-file with path + / + table-name +/ + /
         // field-name
+        if (this.s_class_name.equals("SpatialVectorTable"))
+        { // this value is set with SpatialVectorTable.getUniqueName()
+         String s_UniqueName=s_file_path;
+         if (s_UniqueName.startsWith(File.separator))
+         { // FileNamePath[/berlin_grenzen/berlin_geometries.db/berlin_strassen_abschnitte/soldner_geometry]
+          s_UniqueName = s_UniqueName.substring(1);
+         }
+         return  s_UniqueName;
+        }
         if (this.file_path != null)
             return this.file_path.getAbsolutePath();
         else
             return s_file_path;
     }
-    
+
     public String getFileName() {
         if (this.file_path != null)
             return this.file_path.getName();

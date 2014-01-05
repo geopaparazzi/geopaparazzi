@@ -9,4 +9,7 @@
   <string name="point_size">Dimensione punto</string>
   <string name="decimation">Decimazione</string>
   <string name="decimation_factor_default">0.000001</string>
+  <string name="min_zoom">Zoom Minimo</string>
+  <string name="max_zoom">Zoom Massimo</string>
+  <string name="dash_pattern">Modello trattino</string>
 </resources>

@@ -566,9 +566,9 @@ public class MapsDirManager {
     // -----------------------------------------------
     /**
       * Return MapView Bounds with present Zoom-level
-      * 
+      *
       * <p>this.map_View is set in load_Map()
-      * 
+      *
       * @return bounds_zoom 7 values: west,south,east,north wsg84 values and zoom-level, meters-width,meters-height
       */
     public double[] get_bounds_zoom_meters() {
@@ -632,7 +632,7 @@ public class MapsDirManager {
             ClassNodeInfo this_vectorinfo = vector_classes.get(i);
             SpatialVectorTable vector_table = null;
             try { // until DataListActivity is incorperted into MapsDirManager, we must read the
-                  // enabled status in case it changed
+                  // enabled status in case it changed - getUniqueName()
                 vector_table = sdManager.getVectorTableByName(this_vectorinfo.getFileNamePath());
                 if (vector_table != null) {
                     this_vectorinfo.setEnabled(vector_table.IsStyle());
@@ -643,8 +643,8 @@ public class MapsDirManager {
             }
             if (this_vectorinfo.checkPositionValues(bounds_zoom, i_check_enabled) > 0) {
                 /*
-                 *  0=conditions  not  fullfilled  ;  
-                 *  1=compleatly  inside  valid  bounds ;  
+                 *  0=conditions  not  fullfilled  ;
+                 *  1=compleatly  inside  valid  bounds ;
                  *  2=partially  inside  valid  bounds
                  */
                 /* try
@@ -690,12 +690,12 @@ public class MapsDirManager {
     // -----------------------------------------------
     /**
       * Sets current Zoom
-      * 
-      * <p>Checking is done to insure that the new Zoom is 
+      *
+      * <p>Checking is done to insure that the new Zoom is
       * inside the supported min/max Zoom-levels
-      * <p>If the incoming value is invalid, the nearest max 
-      * or min values will be set.  
-      * 
+      * <p>If the incoming value is invalid, the nearest max
+      * or min values will be set.
+      *
       * @param zoomToSet the new zoom to set.
       * @return the current zoom integer vale.
       */

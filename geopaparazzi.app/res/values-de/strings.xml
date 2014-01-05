@@ -194,7 +194,6 @@
   <string name="start">Start</string>
   <string name="end">Ziel</string>
   <string name="other">andere</string>
-  <string name="base_maps">Basiskarten</string>
   <string name="maps_manager">Kartenmanager</string>
   <string name="loading_maps">Lade Karten…</string>
 </resources>

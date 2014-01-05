@@ -194,7 +194,6 @@
   <string name="start">開始</string>
   <string name="end">終了</string>
   <string name="other">その他</string>
-  <string name="base_maps">背景地図</string>
   <string name="maps_manager">地図管理</string>
   <string name="loading_maps">データを読み込んでいます...</string>
 </resources>

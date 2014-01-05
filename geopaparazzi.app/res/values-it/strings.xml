@@ -195,9 +195,13 @@
   <string name="start">inizio</string>
   <string name="end">fine</string>
   <string name="other">altro</string>
-  <string name="base_maps">Mappe di base</string>
+  <string name="base_maps">Lista dati Spatialite</string>
   <string name="maps_manager">Gestore mappe</string>
   <string name="loading_maps">Caricamento mappe...</string>
   <string name="project">Progetto</string>
   <string name="gps_status">Stato del GPS</string>
+  <string name="no_queriable_layer_is_visible">Non è visibile alcun piano interrogabile</string>
+  <string name="set_path_manually">Impostare manualmente il percorso (se inserito, ha precedenza sul menu a tendina)</string>
+  <string name="choose_from_suggested">oppure scegli fra i suggeriti</string>
+  <string name="reset_style_tables">Resetta tabelle di stile</string>
 </resources>
