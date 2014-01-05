@@ -37,6 +37,7 @@ import android.widget.SimpleCursorAdapter;
  * Demo activity showing how the tree view can be used.
  *
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class MapsDirTreeViewList extends Activity
 {
  /**
@@ -107,7 +108,7 @@ public class MapsDirTreeViewList extends Activity
    * @param maps_dir list the starting Directory
    * @return void
   */
- public static List<ClassNodeInfo> setMapTypeClasses(final List<ClassNodeInfo> maptype_classes_parm,final File maps_dir_parm)
+public static List<ClassNodeInfo> setMapTypeClasses(final List<ClassNodeInfo> maptype_classes_parm,final File maps_dir_parm)
  {
   maps_dir=maps_dir_parm;
   String s_map_file=maps_dir.getAbsolutePath();

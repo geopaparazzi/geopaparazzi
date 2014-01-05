@@ -84,6 +84,7 @@ public class ClassNodeInfo<T> {
              */
             this.itemIsFile = this.file_path.getName().lastIndexOf('.') != -1;
         }
+        this.s_class_name = s_class_name;
         // set default values if empty
         if (s_type.equals("")) {
             s_type = FILE;
@@ -113,7 +114,6 @@ public class ClassNodeInfo<T> {
         }
         this.i_type = type;
         this.s_type = s_type;
-        this.s_class_name = s_class_name;
         this.s_short_text = s_short_text;
         this.s_long_text = s_long_text;
         this.s_short_description = s_short_description;
