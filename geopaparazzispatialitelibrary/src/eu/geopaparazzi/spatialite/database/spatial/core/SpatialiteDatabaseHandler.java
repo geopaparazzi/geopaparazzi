@@ -1224,7 +1224,6 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
         HashMap<String, String> table_fields = new HashMap<String, String>();
         String s_srid = "";
         String s_gpkg = "gpkg"; // SELECT data_type,table_name,srs_id FROM gpkg_contents
-        s_gpkg = ""; //
         int i_srid = 0;
         String s_table_name = "";
         String s_tiles_field_name = "";
@@ -1248,12 +1247,12 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
             // [features] [geonames] [4326]
             // 'features' == vector ; 'tiles' = raster
             // SELECT table_name,srs_id FROM gpkg_contents WHERE data_type = 'features';
-            this_stmt = db_java.prepare(s_sql_layers);
             try {
+                this_stmt = db_java.prepare(s_sql_layers);
                 while( this_stmt.step() ) {
                     i_srid = 0;
                     s_data_type = this_stmt.column_string(0);
-                    // filter out everything we have no idea how to deal with
+                     // filter out everything we have no idea how to deal with
                     if ((s_data_type.equals("features")) || (s_data_type.equals("tiles"))) { // 'featuresWithRasters'
                                                                                              // is
                                                                                              // being
@@ -1276,7 +1275,12 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                         }
                     }
                 }
-            } finally {
+            } catch (java.lang.Exception e) {
+                // invalid gpkg file when gpkg_contents does not exist
+                 b_database_valid=false;
+                 return table_fields;
+            }
+            finally {
                 this_stmt.close();
             }
             vector_TableList = new ArrayList<SpatialVectorTable>();
@@ -1320,7 +1324,11 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                                 zoomLevels[0] = this_stmt.column_int(0);
                                 zoomLevels[1] = this_stmt.column_int(1);
                             }
-                        } finally {
+                        }
+                        catch (java.lang.Exception e) {
+                             GPLog.androidLog(4, "SpatialiteDatabaseHandler.get_tables_gpkg [tiles - min/max zoom] prepair[" + s_sql_layers + "]", e);
+                            }
+                        finally {
                             if (this_stmt != null) {
                                 this_stmt.close();
                             }
@@ -1336,7 +1344,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                                                       // srid),4326)) AS
                                                       // South_West,CastToXY(ST_Transform(MakePoint(max_x,max_y,
                                                       // srid), 4326)) AS North_East FROM
-                                                      // geopackage_contents WHERE data_type =
+                                                      // gpkg_contents WHERE data_type =
                                                       // 'features';
                                                       // srid has been properly set
                                                       // [Sample_Geopackage_Haiti.gpkg, but was 4326
@@ -1367,7 +1375,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                                  // (max_y-min_y)/2),4326)) AS
                                  // Center,CastToXY(MakePoint(min_x,min_y,4326)) AS
                                  // South_West,CastToXY(MakePoint(max_x,max_y, 4326)) AS North_East
-                                 // FROM geopackage_contents WHERE data_type = 'features';
+                                 // FROM gpkg_contents WHERE data_type = 'features';
                                  // srid has NOT been properly set - should be 4326 is: (1,2,3)
                                  // [Luciad_GeoPackage.gpkg] ; try 4326 [wsg84]
                             sb_layers.append("SELECT ST_AsBinary(CastToXY(MakePoint(");
@@ -1429,7 +1437,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                                         SpatialRasterTable table = new SpatialRasterTable(getFileNamePath(), "", s_srid,
                                                 zoomLevels[0], zoomLevels[1], centerCoordinate[0], centerCoordinate[1], null,
                                                 boundsCoordinates);
-                                        table.setMapType("gpkg");
+                                        table.setMapType(s_gpkg);
                                         table.setTableName(s_table_name);
                                         table.setColumnName(s_tiles_field_name);
                                         setDescription(s_table_name);
@@ -1438,6 +1446,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                                     }
                                 }
                             } catch (java.lang.Exception e) {
+                             GPLog.androidLog(4, "SpatialiteDatabaseHandler.get_tables_gpkg [bounds] prepair[" + s_sql_layers + "]", e);
                             } finally {
                                 if (this_stmt != null) {
                                     this_stmt.close();
@@ -1626,6 +1635,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                                 i_CheckSpatialIndex = bounds_stmt.column_int(0);
                             }
                         } catch (Exception e) {
+                         GPLog.androidLog(4, "SpatialiteDatabaseHandler.get_tables_spatialite prepair[" + s_CheckSpatialIndex + "]", e);
                         } finally {
                             if (bounds_stmt != null) {
                                 bounds_stmt.close();
@@ -1651,6 +1661,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                                 i_row_count = bounds_stmt.column_int(4);
                             }
                         } catch (Exception e) {
+                         GPLog.androidLog(4, "SpatialiteDatabaseHandler.get_tables_spatialite prepair[" + s_select_bounds + "]", e);
                         } finally {
                             if (bounds_stmt != null) {
                                 bounds_stmt.close();
@@ -1727,6 +1738,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                                         i_row_count = bounds_stmt.column_int(4);
                                     }
                                 } catch (Exception e) {
+                                 GPLog.androidLog(4, "SpatialiteDatabaseHandler.get_tables_spatialite prepair[" + s_select_bounds + "]", e);
                                 } finally {
                                     if (bounds_stmt != null) {
                                         bounds_stmt.close();
@@ -1759,6 +1771,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                     vector_TableList.add(table);
                 }
             } catch (Exception e) {
+             GPLog.androidLog(4, "SpatialiteDatabaseHandler.get_tables_spatialite prepair[" + s_sql_layers + "]", e);
             } finally {
                 if (this_stmt != null) {
                     this_stmt.close();
@@ -1836,9 +1849,11 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
         }
             break;
         }
-        switch( i_database_type ) {
-        case 3:
-        case 4: { // Spatialite Files version 2+3=3 ; version 4=4
+        if (isValid())
+        {
+         switch( i_database_type ) {
+         case 3:
+         case 4: { // Spatialite Files version 2+3=3 ; version 4=4
                   // 'table_fields' will have a unique list of geometry-fields from all tables
             for( int i = 0; i < view_list.size(); i++ ) {
                 for( Map.Entry<String, String> view_entry : view_list.entrySet() ) {
@@ -1851,10 +1866,10 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                     // TODO: create a SpatialVectorTable for the views
                 }
             }
-        }
+         }
             break;
-        }
-        if (vectorTableList != null) {
+         }
+         if (vectorTableList != null) {
             // now read styles
             checkPropertiesTable();
             // assign the styles
@@ -1873,6 +1888,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
             }
             OrderComparator orderComparator = new OrderComparator();
             Collections.sort(vectorTableList, orderComparator);
+         }
         }
         return table_fields;
     }
@@ -1893,7 +1909,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
         // tables: geometry_columns,raster_columns
         boolean b_geometry_columns = false;
         boolean b_raster_columns = false;
-        boolean b_geopackage_contents = false;
+        boolean b_gpkg_contents = false;
         HashMap<String, String> fields_list = new LinkedHashMap<String, String>();
         String s_sql_command = "";
         if (!s_table.equals("")) { // pragma table_info(geodb_geometry)
@@ -1937,8 +1953,8 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                         if (s_name.equals("geometry_columns")) {
                             b_geometry_columns = true;
                         }
-                        if (s_name.equals("geopackage_contents")) {
-                            b_geopackage_contents = true;
+                        if (s_name.equals("gpkg_contents")) {
+                            b_gpkg_contents = true;
                         }
                         if (s_name.equals("raster_columns")) {
                             b_raster_columns = true;
@@ -1966,11 +1982,11 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
             }
         }
         if (s_table.equals("")) {
-            if (b_geopackage_contents) {
+            if (b_gpkg_contents) {
                 // this is a GeoPackage, this can also have
                 // vector_layers_statistics and vector_layers
                 // - the results are empty, it does reference the table
-                // also referenced in geopackage_contents
+                // also referenced in gpkg_contents
                 i_database_type = 10;
                 b_database_valid = true;
             } else {
