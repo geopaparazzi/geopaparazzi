@@ -2,6 +2,7 @@
 <resources>
   <string name="yes">Kyllä</string>
   <string name="no">Ei</string>
+  <string name="app_name">GeoPaparazzi</string>
   <string name="notesvisibilityToggle">Näytä muistiinpanot.</string>
   <string name="kmlsaved">Tiedot onnistuneesti viety:</string>
   <string name="kmlnonsaved">Tapahtui virhe tietojen viennissä!</string>
@@ -188,10 +189,13 @@
   <string name="keep_use_imperial">Käytä imperiaalisia mittayksikköjä</string>
   <string name="keep_use_imperial_sum">Käytä imperiaalisia mittoja metristen sijasta.</string>
   <string name="satellites">satelliitit</string>
+  <string name="crash_toast_text">Ohjelma kaatui ja tietoja kerätään ongelmasta. Jos mahdollista lähetä ne kehittäjälle.</string>
   <string name="start">aloita</string>
   <string name="end">lopeta</string>
   <string name="other">muu</string>
   <string name="base_maps">Kartat</string>
   <string name="maps_manager">Karttojen hallinta</string>
   <string name="loading_maps">Ladataan karttoja...</string>
+  <string name="project">Projekti</string>
+  <string name="gps_status">GPS Status</string>
 </resources>

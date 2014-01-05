@@ -2,7 +2,8 @@
 <resources>
   <string name="yes">igen</string>
   <string name="no">nem</string>
-  <string name="notesvisibilityToggle">Jegyzet bekapcsoló.</string>
+  <string name="app_name">Geopaparazzi</string>
+  <string name="notesvisibilityToggle">Jegyzetek megjelenítése</string>
   <string name="kmlsaved">Sikeresen exportált adatok: </string>
   <string name="kmlnonsaved">Hiba történt az adatok exportálása során!</string>
   <string name="loggingoff">Minden vevő leállt.</string>
@@ -33,8 +34,8 @@
   <string name="map_zoom">Térképre nagyít</string>
   <string name="map_delete">A térkép törlése</string>
   <string name="gps_preferences">GPS beállítások</string>
-  <string name="gps_logging_distance">Legkisebb naplózott  távolság</string>
-  <string name="gps_logging_interval">Legkisebb naplózott időköz</string>
+  <string name="gps_logging_distance">Legkisebb naplózott  táv</string>
+  <string name="gps_logging_interval">Legkisebb naplózott idő</string>
   <string name="gps_use_android_level">Használat android szinten (energia takarékos, újraindítást igényel)</string>
   <string name="gps_use_android_level_summary">Ha bejelölte, akkor a gps beállítások az operációs rendszer szintjén érvényesülnek. Ez energiatakarékos, de hosszabb naplózási intervallumnál instabil jelet adhat (ha gps kapcsolati problémái akadnak ne jelölje be). A gps folyamatos áramellátású a 100 mp-nél rövidebb naplózási intervallumok esetén, ezért jobb akkumulátor teljesítményhez válasszon hosszabb intervallumot.</string>
   <string name="sms_preferences">SMS beállítások</string>
@@ -83,7 +84,7 @@
   <string name="gps_searching_fix">A gps fix pozícióra vár.</string>
   <string name="bookmarks_list_rename">Könyvjelző átnevezés</string>
   <string name="mapsactivity_menu_toggle_scalebar">Léptékvonalzó</string>
-  <string name="mapsactivity_menu_tilesource">Csempe forrás választás</string>
+  <string name="mapsactivity_menu_tilesource">Csempe források</string>
   <string name="mapsactivity_delete_bookmarks">{0} könyvjelző törlése...</string>
   <string name="mapsactivity_delete_notes">{0} jegyzet törlése...</string>
   <string name="mapsactivity_new_bookmark">Új könyvjelző</string>
@@ -92,7 +93,7 @@
   <!--added after 2.3.1-->
   <string name="mapsactivity_menu_toggle_compass">Iránytű</string>
   <!--added after 2.4.3-->
-  <string name="imagesvisibilityToggle">Képmegjelenítés kapcsoló</string>
+  <string name="imagesvisibilityToggle">Képek megjelenítése</string>
   <string name="imagefromgps">kép a célkereszthez</string>
   <string name="notefromgps">célkereszt jegyzet</string>
   <string name="quicknotes">JEGYZETEK A CÉLKERESZTHEZ</string>
@@ -106,7 +107,7 @@
   <string name="osm_server_label">Elérendő WPS szerver</string>
   <string name="osm_notes_properly_uploaded">Az OSM jegyzetek rendben feltöltődtek.\n\nEl kívánja távolítani feltöltött jegyzeteit az eszközről?</string>
   <string name="an_error_occurred_while_uploading_osm_tags">Hiba történt az OSM cimkék feltöltése során: </string>
-  <string name="enable_automatic_center_on_gps">GPS követés a térképpel</string>
+  <string name="enable_automatic_center_on_gps">GPS követő térkép</string>
   <string name="profile">útprofil</string>
   <string name="loading_data">Adatok betöltése...</string>
   <string name="profilelable_distance">távolság [m]</string>
@@ -177,7 +178,7 @@
   <string name="notes_properties">Jegyzet tulajdonságok</string>
   <string name="visibility">Láthatóság</string>
   <string name="custom_icon_properties">Egyéni ikon tulajdonságok</string>
-  <string name="use_custom">egyéni használata</string>
+  <string name="use_custom">egyéni beállítás használata</string>
   <string name="labels">Cimkék</string>
   <string name="show_labels">cimkék megjelenítése</string>
   <string name="halo">fényöv</string>
@@ -194,7 +195,9 @@
   <string name="start">indítás</string>
   <string name="end">vége</string>
   <string name="other">más</string>
-  <string name="base_maps">Alaptérképek</string>
+  <string name="base_maps">Vektoros rétegek</string>
   <string name="maps_manager">Térkép kezelő</string>
   <string name="loading_maps">Térképek betöltése...</string>
+  <string name="project">Projekt</string>
+  <string name="gps_status">GPS állapot</string>
 </resources>

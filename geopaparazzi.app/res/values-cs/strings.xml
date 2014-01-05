@@ -2,6 +2,7 @@
 <resources>
   <string name="yes">Ano</string>
   <string name="no">Ne</string>
+  <string name="app_name">Geopaparazzi</string>
   <string name="notesvisibilityToggle">Přepnout viditelnost poznámek.</string>
   <string name="kmlsaved">Data úspěšně vyvedena do: </string>
   <string name="kmlnonsaved">Během vyvádění dat se vyskytla chyba!</string>
@@ -197,4 +198,6 @@
   <string name="base_maps">Základní mapy</string>
   <string name="maps_manager">Správce map</string>
   <string name="loading_maps">Nahrávají se mapy...</string>
+  <string name="project">Projekt</string>
+  <string name="gps_status">Stav GPS</string>
 </resources>
