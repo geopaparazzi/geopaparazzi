@@ -1,6 +1,6 @@
 url=http://tile.opencyclemap.org/cycle/ZZZ/XXX/YYY.png
 minzoom=0
-maxzoom=19
+maxzoom=18
 center=11.42 46.8
 type=google
 format=jpg
