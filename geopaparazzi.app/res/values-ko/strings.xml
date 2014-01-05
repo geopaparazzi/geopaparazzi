@@ -195,7 +195,6 @@
   <string name="start">시작</string>
   <string name="end">끝</string>
   <string name="other">기타</string>
-  <string name="base_maps">기본 지도</string>
   <string name="maps_manager">지도 관리자</string>
   <string name="loading_maps">지도 불러오는 중...</string>
   <string name="project">프로젝트</string>

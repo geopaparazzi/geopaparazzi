@@ -194,7 +194,6 @@
   <string name="start">início</string>
   <string name="end">fim</string>
   <string name="other">outro</string>
-  <string name="base_maps">Mapas de base</string>
   <string name="maps_manager">Gerenciador de mapas</string>
   <string name="loading_maps">Carregando mapas...</string>
 </resources>

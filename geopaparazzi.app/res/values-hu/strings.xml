@@ -195,7 +195,6 @@
   <string name="start">indítás</string>
   <string name="end">vége</string>
   <string name="other">más</string>
-  <string name="base_maps">Vektoros rétegek</string>
   <string name="maps_manager">Térkép kezelő</string>
   <string name="loading_maps">Térképek betöltése...</string>
   <string name="project">Projekt</string>
