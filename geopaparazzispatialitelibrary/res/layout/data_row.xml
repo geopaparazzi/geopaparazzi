@@ -25,15 +25,30 @@
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:paddingLeft="10dp"
-        android:text=""
-        android:textColor="@color/main_text_color_neutral" />
+        android:text="asd"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/main_text_color" />
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/name"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/visible"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:text="asd"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/main_text_color" />
 
     <ImageButton
         android:id="@+id/propertiesButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/visible"
-        android:layout_below="@+id/visible"
+        android:layout_alignLeft="@+id/description"
+        android:layout_below="@+id/description"
+        android:layout_marginTop="10dp"
         android:src="@drawable/properties" />
 
     <ImageButton
