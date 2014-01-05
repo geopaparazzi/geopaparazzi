@@ -99,10 +99,10 @@ public class SpatialVectorTable {
         String s_dump="isPoint["+isPoint+"] isLine["+isLine+"] isPolygon["+isPolygon+"] isGeometryCollection["+isGeometryCollection+"]";
         // GPLog.androidLog(-1,"SpatialVectorTable unique_name[" + this.s_unique_name + "] types["+s_dump+"]");
     }
-    
+
     /**
      * Create a unique name for the table based on db path and geometry.
-     * 
+     *
      * @return
      */
     private String createUniqueName() {
@@ -114,7 +114,7 @@ public class SpatialVectorTable {
             if (s_map_file.startsWith(mapsPath)) {
                 String relativePath = s_map_file.substring(mapsPath.length());
                 StringBuilder sb = new StringBuilder();
-                if (relativePath.startsWith("/")) {
+                if (relativePath.startsWith(File.separator)) {
                     relativePath = relativePath.substring(1);
                 }
                 sb.append(relativePath);

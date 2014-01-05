@@ -602,7 +602,11 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                     boundsCoordinates[2] = coordinate.x;
                     boundsCoordinates[3] = coordinate.y;
                 }
-            } finally {
+            }
+            catch (java.lang.Exception e) {
+                             GPLog.androidLog(4, "SpatialiteDatabaseHandler.getSpatialVector_4326 Bounds[" + centerQuery + "]", e);
+                            }
+            finally {
                 if (centerStmt != null)
                     centerStmt.close();
             }
@@ -1213,6 +1217,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
       * - OGC 12-128r9 from 2013-11-19
       * -- older versions will not be supported
       * - With SQLite versions 3.7.17 and later : 'PRAGMA application_id' [1196437808]
+      * -- older (for us invalid)  Geopackage Files return 0
       * @param s_table name of table to read [if empty: list of tables in Database]
       * @param i_parm [for use when s_table is empty] 0=do not load table ; 1=load tables
       * @return fields_list [name of field, type of field]
@@ -1755,7 +1760,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                     // these in the views
                     if (table_fields.get(geometry_column) == null)
                         table_fields.put(geometry_column, s_geometry_type);
-                    if (!s_srid.equals("4326")) { // Transfor into wsg84 if needed
+                    if (!s_srid.equals("4326")) { // Transform into wsg84 if needed
                         getSpatialVector_4326(s_srid, centerCoordinate, boundsCoordinates, 0);
                     } else {
                         centerCoordinate[0] = boundsCoordinates[0] + (boundsCoordinates[2] - boundsCoordinates[0]) / 2;
@@ -1910,6 +1915,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
         boolean b_geometry_columns = false;
         boolean b_raster_columns = false;
         boolean b_gpkg_contents = false;
+        boolean b_geopackage_contents=false;
         HashMap<String, String> fields_list = new LinkedHashMap<String, String>();
         String s_sql_command = "";
         if (!s_table.equals("")) { // pragma table_info(geodb_geometry)
@@ -1956,6 +1962,9 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                         if (s_name.equals("gpkg_contents")) {
                             b_gpkg_contents = true;
                         }
+                        if (s_name.equals("geopackage_contents")) {
+                            b_geopackage_contents = true;
+                        }
                         if (s_name.equals("raster_columns")) {
                             b_raster_columns = true;
                         }
@@ -1982,6 +1991,11 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
             }
         }
         if (s_table.equals("")) {
+            if (b_geopackage_contents)
+            { // an old geopackage file, may look like a Spatialite Table - but invalid srid
+             b_database_valid = false;
+             return fields_list;
+            }
             if (b_gpkg_contents) {
                 // this is a GeoPackage, this can also have
                 // vector_layers_statistics and vector_layers
