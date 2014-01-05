@@ -50,7 +50,7 @@
         android:theme="@android:style/Theme.NoTitleBar" >
         <activity
             android:name=".GeoPaparazziActivity"
-            android:configChanges="orientation"
+            android:configChanges="orientation|screenSize"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

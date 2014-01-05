@@ -31,6 +31,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -128,7 +129,6 @@ public class GeoPaparazziActivity extends Activity {
         }
         checkIncomingGeosms();
         checkIncomingSmsData();
-
     }
 
     private void checkMockLocations() {
@@ -258,6 +258,12 @@ public class GeoPaparazziActivity extends Activity {
         checkActionBar();
     }
 
+    @Override
+    public void onConfigurationChanged( Configuration newConfig ) {
+        // avoid oncreate call when rotating device
+        super.onConfigurationChanged(newConfig);
+    }
+    
     public void onWindowFocusChanged( boolean hasFocus ) {
         super.onWindowFocusChanged(hasFocus);
         checkActionBar();
