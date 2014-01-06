@@ -803,9 +803,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
         // SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (hasFocus) {
-            // double[] lastCenter = PositionUtilities.getMapCenterFromPreferences(preferences,
-            // true, true);
-            // MapsDirManager.getInstance().setMapViewCenter(mapView, lastCenter, 0);
+            double[] lastCenter = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
+            MapsDirManager.getInstance().setMapViewCenter(mapView, lastCenter, 0);
             setZoomGuiText(getZoomLevel());
             // readData();
         }
