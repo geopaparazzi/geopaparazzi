@@ -227,8 +227,9 @@ public class GeoPaparazziActivity extends Activity {
                             for( SmsData smsData : sms2Data ) {
                                 String text = smsData.text.replaceAll("\\_", " "); //$NON-NLS-1$//$NON-NLS-2$
                                 if (smsData.TYPE == SmsData.NOTE) {
-                                    DaoNotes.addNote(smsData.x, smsData.y, smsData.z, new java.sql.Date(new Date().getTime()),
-                                            text, NoteType.POI.getDef(), null, NoteType.POI.getTypeNum());
+                                    String dateStr = TimeUtilities.INSTANCE.TIME_FORMATTER_SQLITE_UTC.format(new Date());
+                                    DaoNotes.addNote(smsData.x, smsData.y, smsData.z, dateStr, text, NoteType.POI.getDef(), null,
+                                            NoteType.POI.getTypeNum());
                                     notesNum++;
                                 } else if (smsData.TYPE == SmsData.BOOKMARK) {
                                     DaoBookmarks.addBookmark(smsData.x, smsData.y, text, smsData.z, -1, -1, -1, -1);
@@ -264,7 +265,7 @@ public class GeoPaparazziActivity extends Activity {
         // avoid oncreate call when rotating device
         super.onConfigurationChanged(newConfig);
     }
-    
+
     public void onWindowFocusChanged( boolean hasFocus ) {
         super.onWindowFocusChanged(hasFocus);
         checkActionBar();
@@ -700,8 +701,7 @@ public class GeoPaparazziActivity extends Activity {
                         double lon = Double.parseDouble(noteArray[0]);
                         double lat = Double.parseDouble(noteArray[1]);
                         double elev = Double.parseDouble(noteArray[2]);
-                        Date date = TimeUtilities.INSTANCE.TIME_FORMATTER_UTC.parse(noteArray[3]);
-                        DaoNotes.addNote(lon, lat, elev, new java.sql.Date(date.getTime()), noteArray[4], NoteType.POI.getDef(),
+                        DaoNotes.addNote(lon, lat, elev, noteArray[3], noteArray[4], NoteType.POI.getDef(),
                                 null, NoteType.POI.getTypeNum());
                     } catch (Exception e) {
                         e.printStackTrace();

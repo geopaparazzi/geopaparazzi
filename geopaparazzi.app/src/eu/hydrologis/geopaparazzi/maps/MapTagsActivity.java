@@ -247,8 +247,7 @@ public class MapTagsActivity extends Activity {
                     String nameStr = formArray[4];
                     String catStr = formArray[5];
                     String jsonStr = formArray[6];
-                    java.util.Date date = TimeUtilities.INSTANCE.TIME_FORMATTER_SQLITE_UTC.parse(dateStr);
-                    DaoNotes.addNote(lon, lat, elev, new Date(date.getTime()), nameStr, catStr, jsonStr,
+                    DaoNotes.addNote(lon, lat, elev, dateStr, nameStr, catStr, jsonStr,
                             NoteType.POI.getTypeNum());
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -264,8 +263,7 @@ public class MapTagsActivity extends Activity {
                     double lon = Double.parseDouble(noteArray[0]);
                     double lat = Double.parseDouble(noteArray[1]);
                     double elev = Double.parseDouble(noteArray[2]);
-                    java.util.Date date = TimeUtilities.INSTANCE.TIME_FORMATTER_UTC.parse(noteArray[3]);
-                    DaoNotes.addNote(lon, lat, elev, new Date(date.getTime()), noteArray[4], noteArray[5], noteArray[6],
+                    DaoNotes.addNote(lon, lat, elev, noteArray[3], noteArray[4], noteArray[5], noteArray[6],
                             NoteType.POI.getTypeNum());
                 } catch (Exception e) {
                     e.printStackTrace();

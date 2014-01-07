@@ -859,7 +859,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
      */
     public static double[] getGpslogLastPoint( long logId ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
-        
+
         String asColumnsToReturn[] = {COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_ALTIM, COLUMN_DATA_TS};
         String strSortOrder = COLUMN_DATA_TS + " DESC";
         String strWhere = COLUMN_LOGID + "=" + logId;
@@ -903,8 +903,9 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             try {
                 for( int i = 0; i < wayPoints.size(); i++ ) {
                     WayPoint point = wayPoints.get(i);
-                    DaoNotes.addNoteNoTransaction(point.getLongitude(), point.getLatitude(), point.getElevation(), date, gpxName,
-                            NoteType.POI.getDef(), "", NoteType.POI.getTypeNum(), sqliteDatabase);
+                    String dateStr = TimeUtilities.INSTANCE.TIME_FORMATTER_SQLITE_UTC.format(date);
+                    DaoNotes.addNoteNoTransaction(point.getLongitude(), point.getLatitude(), point.getElevation(), dateStr,
+                            gpxName, NoteType.POI.getDef(), "", NoteType.POI.getTypeNum(), sqliteDatabase);
                 }
                 sqliteDatabase.setTransactionSuccessful();
             } catch (Exception e) {

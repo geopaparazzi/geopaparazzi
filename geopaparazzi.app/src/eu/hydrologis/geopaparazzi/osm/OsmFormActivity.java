@@ -30,7 +30,6 @@ import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TYPE_STRINGCOMBO;
 import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TYPE_STRINGMULTIPLECHOICE;
 
 import java.io.File;
-import java.io.IOException;
 import java.sql.Date;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -59,6 +58,7 @@ import eu.geopaparazzi.library.forms.constraints.MandatoryConstraint;
 import eu.geopaparazzi.library.forms.constraints.RangeConstraint;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.PositionUtilities;
+import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
@@ -145,7 +145,8 @@ public class OsmFormActivity extends Activity {
                     if (result == null) {
                         endString = jsonFormObject.toString();
                         Date sqlDate = new Date(System.currentTimeMillis());
-                        DaoNotes.addNote(longitude, latitude, -1.0, sqlDate, formLongnameDefinition, NoteType.OSM.getDef(),
+                        String dateStr = TimeUtilities.INSTANCE.TIME_FORMATTER_SQLITE_UTC.format(sqlDate);
+                        DaoNotes.addNote(longitude, latitude, -1.0, dateStr, formLongnameDefinition, NoteType.OSM.getDef(),
                                 endString, NoteType.OSM.getTypeNum());
                         finish();
                     } else {
