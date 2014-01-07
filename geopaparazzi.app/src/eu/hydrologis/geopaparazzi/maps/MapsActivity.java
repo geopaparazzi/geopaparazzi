@@ -262,6 +262,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 int newZoom = currentZoom + 1;
                 setZoomGuiText(newZoom);
                 mapView.getController().setZoom(getZoomLevel());
+                saveCenterPref();
                 invalidateMap();
             }
         });
@@ -275,6 +276,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 int newZoom = currentZoom - 1;
                 setZoomGuiText(newZoom);
                 mapView.getController().setZoom(getZoomLevel());
+                saveCenterPref();
                 invalidateMap();
             }
         });
@@ -799,16 +801,14 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
     @Override
     public void onWindowFocusChanged( boolean hasFocus ) {
-        // TODO check if it was really all necessary, seems zoom gui is enough
-
-        // SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (hasFocus) {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             double[] lastCenter = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
             MapsDirManager.getInstance().setMapViewCenter(mapView, lastCenter, 0);
             setZoomGuiText(getZoomLevel());
             // readData();
+            // saveCenterPref();
         }
-        // saveCenterPref();
         super.onWindowFocusChanged(hasFocus);
     }
 
