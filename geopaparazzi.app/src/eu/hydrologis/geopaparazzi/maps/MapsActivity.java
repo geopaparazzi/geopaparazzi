@@ -570,7 +570,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         List<Overlay> overlays = mapView.getOverlays();
         overlays.clear();
         overlays.add(dataOverlay);
-        readData();
 
         super.onResume();
     }
@@ -807,7 +806,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             double[] lastCenter = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
             MapsDirManager.getInstance().setMapViewCenter(mapView, lastCenter, 0);
             setZoomGuiText(getZoomLevel());
-            // readData();
+            readData();
             // saveCenterPref();
         }
         super.onWindowFocusChanged(hasFocus);
