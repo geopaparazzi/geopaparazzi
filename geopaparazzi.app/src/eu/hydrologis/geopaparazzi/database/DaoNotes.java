@@ -33,7 +33,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.hydrologis.geopaparazzi.maps.overlays.NoteOverlayItem;
 import eu.hydrologis.geopaparazzi.util.Note;
 
@@ -69,7 +69,7 @@ public class DaoNotes {
 
     private static long LASTINSERTEDNOTE_ID = -1;
 
-    private static SimpleDateFormat dateFormatter = LibraryConstants.TIME_FORMATTER_SQLITE;
+    private static SimpleDateFormat dateFormatter = TimeUtilities.INSTANCE.TIME_FORMATTER_SQLITE_UTC;
 
     public static void addNote( double lon, double lat, double altim, Date timestamp, String text, String category, String form,
             int type ) throws IOException {

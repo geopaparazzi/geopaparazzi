@@ -17,8 +17,8 @@
  */
 package eu.hydrologis.geopaparazzi.maps;
 
-import eu.geopaparazzi.library.util.ColorUtilities;
 import android.graphics.Color;
+import eu.geopaparazzi.library.util.ColorUtilities;
 
 /**
  * Singleton that takes care of all the vector data issues.

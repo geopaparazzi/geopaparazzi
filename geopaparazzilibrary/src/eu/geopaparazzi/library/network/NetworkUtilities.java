@@ -57,7 +57,7 @@ import android.net.NetworkInfo;
 import android.util.Base64;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.TimeUtilities;
 
 /**
  * Network utils methods.
@@ -148,7 +148,7 @@ public class NetworkUtilities {
             }
             if (fileName == null) {
                 // give a name
-                fileName = "FILE_" + LibraryConstants.TIMESTAMPFORMATTER.format(new Date());
+                fileName = "FILE_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date());
             }
             file = new File(file, fileName);
         }

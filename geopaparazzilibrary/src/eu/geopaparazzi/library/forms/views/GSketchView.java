@@ -25,15 +25,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewTreeObserver;
@@ -46,9 +43,9 @@ import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.markers.MarkersUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
-import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.TimeUtilities;
 
 /**
  * A custom Sketch view.
@@ -106,7 +103,7 @@ public class GSketchView extends View implements GView {
                 double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
 
                 Date currentDate = new Date();
-                String currentDatestring = LibraryConstants.TIMESTAMPFORMATTER.format(currentDate);
+                String currentDatestring = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.format(currentDate);
                 File mediaDir = null;
                 try {
                     mediaDir = ResourcesManager.getInstance(context).getMediaDir();

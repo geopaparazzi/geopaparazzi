@@ -17,6 +17,9 @@
  */
 package eu.geopaparazzi.library.gpx;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 /**
  * Interface for objects that are able to represent themself as gpx item.
  * 

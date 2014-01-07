@@ -21,11 +21,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -40,6 +38,7 @@ import eu.geopaparazzi.library.sensors.SensorsManager;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 
 /**
@@ -119,7 +118,7 @@ public class CameraActivity extends Activity {
         mediaFolder = imageSaveFolder;
 
         currentDate = new Date();
-        currentDatestring = LibraryConstants.TIMESTAMPFORMATTER.format(currentDate);
+        currentDatestring = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.format(currentDate);
 
         if (imageName == null) {
             imageName = "IMG_" + currentDatestring + ".jpg";
@@ -171,8 +170,8 @@ public class CameraActivity extends Activity {
             String azimuthString = String.valueOf((int) azimuth);
 
             if (GPLog.LOG) {
-                GPLog.addLogEntry(this, null, null, "Exif Lat=" + exifLat + " -- Lon=" + exifLon + " -- Azim=" + azimuth + " -- Altim="
-                        + altimString);
+                GPLog.addLogEntry(this, null, null, "Exif Lat=" + exifLat + " -- Lon=" + exifLon + " -- Azim=" + azimuth
+                        + " -- Altim=" + altimString);
             }
 
             try {
@@ -186,11 +185,9 @@ public class CameraActivity extends Activity {
                 String timeOld = exif.getAttribute(ExifInterface.TAG_GPS_TIMESTAMP);
                 String dateTimeOld = exif.getAttribute(ExifInterface.TAG_DATETIME);
 
-                Date date = LibraryConstants.TIMESTAMPFORMATTER.parse(currentDatestring);
-                SimpleDateFormat exifFormatter = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss"); //$NON-NLS-1$
-                exifFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+                Date date = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.parse(currentDatestring);
 
-                String exifDate = exifFormatter.format(date);
+                String exifDate = TimeUtilities.INSTANCE.EXIFFORMATTER.format(date);
 
                 String[] dateTimeSplit = exifDate.split("\\s+");
                 if (dateTimeOld == null || dateTimeOld.trim().length() <= 0) {

@@ -21,12 +21,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
-import eu.geopaparazzi.library.GeopaparazziLibraryContextHolder;
-import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.ResourcesManager;
-
 import android.content.Context;
 import android.util.Log;
+import eu.geopaparazzi.library.GeopaparazziLibraryContextHolder;
+import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.TimeUtilities;
 
 /**
  * Trap oom to dump hprof
@@ -38,7 +37,7 @@ public class GPUncaughtExceptionHandler implements Thread.UncaughtExceptionHandl
         Log.e("GPUNCAUGHTEXCEPTIONHANDLER", ex.getLocalizedMessage());
         if (ex.getClass().equals(OutOfMemoryError.class)) {
             try {
-                String date = LibraryConstants.TIMESTAMPFORMATTER.format(new Date());
+                String date = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.format(new Date());
                 String sdcardPath = "/sdcard";
                 try {
                     Context context = GeopaparazziLibraryContextHolder.INSTANCE.getContext();

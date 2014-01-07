@@ -29,15 +29,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -50,6 +47,7 @@ import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.TimeUtilities;
 
 /**
  * A custom pictures view.
@@ -106,7 +104,7 @@ public class GPictureView extends View implements GView {
                 double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
 
                 Date currentDate = new Date();
-                String currentDatestring = LibraryConstants.TIMESTAMPFORMATTER.format(currentDate);
+                String currentDatestring = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.format(currentDate);
                 File mediaDir = null;
                 try {
                     mediaDir = ResourcesManager.getInstance(context).getMediaDir();

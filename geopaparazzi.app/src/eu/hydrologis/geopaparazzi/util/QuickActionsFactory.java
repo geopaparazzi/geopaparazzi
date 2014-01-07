@@ -17,41 +17,24 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.Date;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.media.MediaRecorder;
-import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
-import eu.geopaparazzi.library.camera.CameraActivity;
-import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gps.GpsManager;
-import eu.geopaparazzi.library.markers.MarkersUtilities;
-import eu.geopaparazzi.library.sketch.DrawingActivity;
-import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.PositionUtilities;
-import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.library.util.activities.NoteActivity;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.ActionItem;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
-import eu.hydrologis.geopaparazzi.maps.MapTagsActivity;
 
 /**
  * A factory for quick actions.
@@ -222,7 +205,7 @@ public enum QuickActionsFactory {
             public void onClick( View v ) {
                 final GpsManager gpsManager = GpsManager.getInstance(context);
                 if (gpsManager.hasFix()) {
-                    final String defaultLogName = "log_" + LibraryConstants.TIMESTAMPFORMATTER.format(new Date()); //$NON-NLS-1$
+                    final String defaultLogName = "log_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()); //$NON-NLS-1$
                     final EditText input = new EditText(context);
                     input.setText(defaultLogName);
                     new AlertDialog.Builder(context).setTitle(R.string.gps_log).setMessage(R.string.gps_log_name).setView(input)

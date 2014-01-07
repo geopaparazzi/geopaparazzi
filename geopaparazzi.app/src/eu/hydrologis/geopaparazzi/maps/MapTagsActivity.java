@@ -33,7 +33,6 @@ import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -50,6 +49,7 @@ import eu.geopaparazzi.library.markers.MarkersUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.NoteActivity;
 import eu.hydrologis.geopaparazzi.R;
@@ -144,7 +144,7 @@ public class MapTagsActivity extends Activity {
                 checkPositionCoordinates();
 
                 java.util.Date currentDate = new java.util.Date();
-                String currentDatestring = LibraryConstants.TIMESTAMPFORMATTER.format(currentDate);
+                String currentDatestring = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.format(currentDate);
                 File mediaDir = null;
                 try {
                     mediaDir = ResourcesManager.getInstance(MapTagsActivity.this).getMediaDir();
@@ -247,7 +247,7 @@ public class MapTagsActivity extends Activity {
                     String nameStr = formArray[4];
                     String catStr = formArray[5];
                     String jsonStr = formArray[6];
-                    java.util.Date date = LibraryConstants.TIME_FORMATTER_SQLITE.parse(dateStr);
+                    java.util.Date date = TimeUtilities.INSTANCE.TIME_FORMATTER_SQLITE_UTC.parse(dateStr);
                     DaoNotes.addNote(lon, lat, elev, new Date(date.getTime()), nameStr, catStr, jsonStr,
                             NoteType.POI.getTypeNum());
                 } catch (Exception e) {
@@ -264,7 +264,7 @@ public class MapTagsActivity extends Activity {
                     double lon = Double.parseDouble(noteArray[0]);
                     double lat = Double.parseDouble(noteArray[1]);
                     double elev = Double.parseDouble(noteArray[2]);
-                    java.util.Date date = LibraryConstants.TIME_FORMATTER.parse(noteArray[3]);
+                    java.util.Date date = TimeUtilities.INSTANCE.TIME_FORMATTER_UTC.parse(noteArray[3]);
                     DaoNotes.addNote(lon, lat, elev, new Date(date.getTime()), noteArray[4], noteArray[5], noteArray[6],
                             NoteType.POI.getTypeNum());
                 } catch (Exception e) {

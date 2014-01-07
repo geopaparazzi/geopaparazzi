@@ -50,8 +50,8 @@ import eu.geopaparazzi.library.kml.KmlRepresenter;
 import eu.geopaparazzi.library.kml.KmzExport;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
-import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.webproject.WebProjectManager;
 import eu.hydrologis.geopaparazzi.R;
@@ -243,7 +243,7 @@ public class ExportActivity extends Activity {
                     }
 
                     File kmlExportDir = ResourcesManager.getInstance(ExportActivity.this).getExportDir();
-                    String filename = "geopaparazzi_" + LibraryConstants.TIMESTAMPFORMATTER.format(new Date()) + ".kmz"; //$NON-NLS-1$ //$NON-NLS-2$
+                    String filename = "geopaparazzi_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()) + ".kmz"; //$NON-NLS-1$ //$NON-NLS-2$
                     File kmlOutputFile = new File(kmlExportDir, filename);
                     KmzExport export = new KmzExport(null, kmlOutputFile);
                     export.export(ExportActivity.this, kmlRepresenterList);
@@ -301,7 +301,7 @@ public class ExportActivity extends Activity {
                     }
 
                     File gpxExportDir = ResourcesManager.getInstance(ExportActivity.this).getExportDir();
-                    String filename = "geopaparazzi_" + LibraryConstants.TIMESTAMPFORMATTER.format(new Date()) + ".gpx"; //$NON-NLS-1$ //$NON-NLS-2$
+                    String filename = "geopaparazzi_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()) + ".gpx"; //$NON-NLS-1$ //$NON-NLS-2$
                     File gpxOutputFile = new File(gpxExportDir, filename);
                     GpxExport export = new GpxExport(null, gpxOutputFile);
                     export.export(ExportActivity.this, gpxRepresenterList);

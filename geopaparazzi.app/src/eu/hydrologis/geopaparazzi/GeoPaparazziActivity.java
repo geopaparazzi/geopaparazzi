@@ -62,6 +62,7 @@ import eu.geopaparazzi.library.sms.SmsUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.AboutActivity;
 import eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity;
@@ -699,7 +700,7 @@ public class GeoPaparazziActivity extends Activity {
                         double lon = Double.parseDouble(noteArray[0]);
                         double lat = Double.parseDouble(noteArray[1]);
                         double elev = Double.parseDouble(noteArray[2]);
-                        Date date = LibraryConstants.TIME_FORMATTER.parse(noteArray[3]);
+                        Date date = TimeUtilities.INSTANCE.TIME_FORMATTER_UTC.parse(noteArray[3]);
                         DaoNotes.addNote(lon, lat, elev, new java.sql.Date(date.getTime()), noteArray[4], NoteType.POI.getDef(),
                                 null, NoteType.POI.getTypeNum());
                     } catch (Exception e) {
@@ -825,7 +826,7 @@ public class GeoPaparazziActivity extends Activity {
 
         final File applicationParentDir = resourcesManager.getApplicationParentDir();
         final String newGeopaparazziDirName = Constants.GEOPAPARAZZI
-                + "_" + LibraryConstants.TIMESTAMPFORMATTER.format(new Date()); //$NON-NLS-1$
+                + "_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()); //$NON-NLS-1$
 
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(eu.geopaparazzi.library.R.layout.inputdialog);

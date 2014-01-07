@@ -36,7 +36,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.forms.FormDatePickerFragment;
-import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.TimeUtilities;
 
 /**
  * A custom date view.
@@ -80,7 +80,7 @@ public class GDateView extends View implements GView {
         button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
         button.setPadding(15, 5, 15, 5);
 
-        final SimpleDateFormat dateFormatter = LibraryConstants.DATEONLY_FORMATTER;
+        final SimpleDateFormat dateFormatter = TimeUtilities.INSTANCE.DATEONLY_FORMATTER;
         if (value == null || value.length() == 0) {
             String dateStr = dateFormatter.format(new Date());
             button.setText(dateStr);

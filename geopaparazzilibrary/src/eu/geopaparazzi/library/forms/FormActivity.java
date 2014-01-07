@@ -41,6 +41,7 @@ import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
 import eu.geopaparazzi.library.share.ShareUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 
 /**
@@ -240,7 +241,7 @@ public class FormActivity extends FragmentActivity {
         // finally store data
         String sectionObjectString = sectionObject.toString();
         Date sqlDate = new Date(System.currentTimeMillis());
-        String timestamp = LibraryConstants.TIME_FORMATTER_SQLITE.format(sqlDate);
+        String timestamp = TimeUtilities.INSTANCE.TIME_FORMATTER_SQLITE_UTC.format(sqlDate);
 
         if (label == null) {
             label = sectionName;

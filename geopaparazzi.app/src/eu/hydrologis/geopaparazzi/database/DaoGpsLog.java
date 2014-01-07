@@ -48,7 +48,7 @@ import eu.geopaparazzi.library.gpx.parser.RoutePoint;
 import eu.geopaparazzi.library.gpx.parser.TrackPoint;
 import eu.geopaparazzi.library.gpx.parser.WayPoint;
 import eu.geopaparazzi.library.util.ColorUtilities;
-import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.hydrologis.geopaparazzi.maps.LogMapItem;
 import eu.hydrologis.geopaparazzi.util.Line;
 import eu.hydrologis.geopaparazzi.util.LineArray;
@@ -78,8 +78,8 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     public static final String TABLE_DATA = "gpslog_data";
     public static final String TABLE_PROPERTIES = "gpslogsproperties";
 
-    private static SimpleDateFormat dateFormatter = LibraryConstants.TIME_FORMATTER_SQLITE;
-    private static SimpleDateFormat dateFormatterForFile = LibraryConstants.TIMESTAMPFORMATTER;
+    private static SimpleDateFormat dateFormatter = TimeUtilities.INSTANCE.TIME_FORMATTER_SQLITE_UTC;
+    private static SimpleDateFormat dateFormatterForLabelInLocalTime = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL;
 
     public SQLiteDatabase getDatabase( Context context ) throws Exception {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
@@ -107,7 +107,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             values.put(COLUMN_LOG_STARTTS, dateFormatter.format(startTs));
             values.put(COLUMN_LOG_ENDTS, dateFormatter.format(endTs));
             if (text == null) {
-                text = "log_" + dateFormatterForFile.format(startTs);
+                text = "log_" + dateFormatterForLabelInLocalTime.format(startTs);
             }
             values.put(COLUMN_LOG_TEXT, text);
             rowId = sqliteDatabase.insertOrThrow(TABLE_GPSLOGS, null, values);

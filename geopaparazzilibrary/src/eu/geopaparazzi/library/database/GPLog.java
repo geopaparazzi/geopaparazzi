@@ -22,11 +22,10 @@ import java.util.Date;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import eu.geopaparazzi.library.util.LibraryConstants;
-
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import eu.geopaparazzi.library.util.TimeUtilities;
 
 /**
  * The class that handles logging to the database.
@@ -139,7 +138,7 @@ public class GPLog {
 
             if (LOG_ANDROID) {
                 StringBuilder sb = new StringBuilder();
-                sb.append(LibraryConstants.iso8601Format.format(date));
+                sb.append(TimeUtilities.INSTANCE.iso8601Format.format(date));
                 sb.append(": ");
                 sb.append(logMessage);
                 String string = sb.toString();
