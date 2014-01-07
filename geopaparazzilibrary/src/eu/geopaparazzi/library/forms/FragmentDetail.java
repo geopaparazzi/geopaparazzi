@@ -24,8 +24,10 @@ import static eu.geopaparazzi.library.forms.FormUtilities.TAG_TYPE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_URL;
 import static eu.geopaparazzi.library.forms.FormUtilities.TAG_VALUE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_BOOLEAN;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_CONNECTEDSTRINGCOMBO;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_DATE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_DOUBLE;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_INTEGER;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_LABEL;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_LABELWITHLINE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_MAP;
@@ -34,13 +36,12 @@ import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_PICTURES;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_SKETCH;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRING;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRINGAREA;
-import static eu.geopaparazzi.library.forms.FormUtilities.*;
+import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRINGCOMBO;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_STRINGMULTIPLECHOICE;
 import static eu.geopaparazzi.library.forms.FormUtilities.TYPE_TIME;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -55,6 +56,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,6 +71,7 @@ import eu.geopaparazzi.library.forms.views.GView;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.TimeUtilities;
 
 /**
  * The fragment detail view.
@@ -78,7 +81,7 @@ import eu.geopaparazzi.library.util.ResourcesManager;
 public class FragmentDetail extends Fragment {
 
     private HashMap<String, GView> key2WidgetMap = new HashMap<String, GView>();
-    private HashMap<Integer, GView> requestCodes2WidgetMap = new HashMap<Integer, GView>();
+    private SparseArray<GView> requestCodes2WidgetMap = new SparseArray<GView>();
     private HashMap<String, Constraints> key2ConstraintsMap = new HashMap<String, Constraints>();
     private List<String> keyList = new ArrayList<String>();
     private String selectedFormName;
@@ -216,7 +219,7 @@ public class FragmentDetail extends Fragment {
                             File tmpImage = new File(applicationDir, LibraryConstants.TMPPNGIMAGENAME);
                             if (tmpImage.exists()) {
                                 Date currentDate = new Date();
-                                String currentDatestring = LibraryConstants.TIMESTAMPFORMATTER.format(currentDate);
+                                String currentDatestring = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.format(currentDate);
                                 File newImageFile = new File(mediaDir, "IMG_" + currentDatestring + ".png"); //$NON-NLS-1$ //$NON-NLS-2$
                                 FileUtilities.copyFile(tmpImage, newImageFile);
                                 value = newImageFile.getParentFile().getName() + File.separator + newImageFile.getName();
@@ -255,11 +258,13 @@ public class FragmentDetail extends Fragment {
     public void onResume() {
         super.onResume();
 
-        Collection<GView> views = requestCodes2WidgetMap.values();
-        for( GView view : views ) {
-            if (view instanceof GMapView) {
-                view.refresh(((GMapView) view).getContext());
-            }
+        for(int i = 0; i < requestCodes2WidgetMap.size(); i++) {
+           int key = requestCodes2WidgetMap.keyAt(i);
+           // get the object by the key.
+           GView view = requestCodes2WidgetMap.get(key);
+           if (view instanceof GMapView) {
+               view.refresh(((GMapView) view).getContext());
+           }
         }
     }
 

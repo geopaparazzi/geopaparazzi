@@ -17,7 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
-import eu.geopaparazzi.library.util.Utilities;
 import android.location.Location;
 
 /**

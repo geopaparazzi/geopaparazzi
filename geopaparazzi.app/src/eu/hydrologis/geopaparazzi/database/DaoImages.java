@@ -33,7 +33,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.hydrologis.geopaparazzi.util.Image;
 
 /**
@@ -55,7 +55,7 @@ public class DaoImages {
 
     private static long LASTINSERTEDIMAGE_ID = -1;
 
-    private static SimpleDateFormat dateFormatter = LibraryConstants.TIME_FORMATTER_SQLITE;
+    private static SimpleDateFormat dateFormatter = TimeUtilities.INSTANCE.TIME_FORMATTER_SQLITE_UTC;
 
     public static void addImage( double lon, double lat, double altim, double azim, Date timestamp, String text, String path ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();

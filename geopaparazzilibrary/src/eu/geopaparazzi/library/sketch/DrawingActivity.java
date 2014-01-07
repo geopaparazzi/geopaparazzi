@@ -7,7 +7,6 @@ import java.util.Date;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.os.Bundle;
@@ -29,6 +28,7 @@ import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 
 /**
@@ -156,7 +156,7 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
 
     private void saveImage() throws Exception {
         Date currentDate = new Date();
-        String currentDatestring = LibraryConstants.TIMESTAMPFORMATTER.format(currentDate);
+        String currentDatestring = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.format(currentDate);
         String imageName = "SKETCH_" + currentDatestring + ".png";
         String imagePropertiesName = "SKETCH_" + currentDatestring + ".properties";
         File imageSaveFolder = ResourcesManager.getInstance(this).getMediaDir();

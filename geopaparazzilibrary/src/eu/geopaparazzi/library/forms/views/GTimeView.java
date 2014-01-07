@@ -36,7 +36,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.forms.FormTimePickerFragment;
-import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.TimeUtilities;
 
 /**
  * A custom time view.
@@ -80,7 +80,7 @@ public class GTimeView extends View implements GView {
         button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
         button.setPadding(15, 5, 15, 5);
 
-        final SimpleDateFormat timeFormatter = LibraryConstants.TIMEONLY_FORMATTER;
+        final SimpleDateFormat timeFormatter = TimeUtilities.INSTANCE.TIMEONLY_FORMATTER;
         if (value == null || value.length() == 0) {
             String dateStr = timeFormatter.format(new Date());
             button.setText(dateStr);

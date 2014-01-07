@@ -103,6 +103,7 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.TextRunnable;
+import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.GeocodeActivity;
 import eu.geopaparazzi.library.util.activities.InsertCoordActivity;
@@ -262,6 +263,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 int newZoom = currentZoom + 1;
                 setZoomGuiText(newZoom);
                 mapView.getController().setZoom(getZoomLevel());
+                saveCenterPref();
                 invalidateMap();
             }
         });
@@ -275,6 +277,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 int newZoom = currentZoom - 1;
                 setZoomGuiText(newZoom);
                 mapView.getController().setZoom(getZoomLevel());
+                saveCenterPref();
                 invalidateMap();
             }
         });
@@ -567,7 +570,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         List<Overlay> overlays = mapView.getOverlays();
         overlays.clear();
         overlays.add(dataOverlay);
-        readData();
 
         super.onResume();
     }
@@ -799,16 +801,14 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
     @Override
     public void onWindowFocusChanged( boolean hasFocus ) {
-        // TODO check if it was really all necessary, seems zoom gui is enough
-
-        // SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (hasFocus) {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             double[] lastCenter = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
             MapsDirManager.getInstance().setMapViewCenter(mapView, lastCenter, 0);
             setZoomGuiText(getZoomLevel());
-            // readData();
+            readData();
+            // saveCenterPref();
         }
-        // saveCenterPref();
         super.onWindowFocusChanged(hasFocus);
     }
 
@@ -1150,7 +1150,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                     try {
                         String name = data.getStringExtra(LibraryConstants.NAME);
                         if (name == null) {
-                            name = "ROUTE_" + LibraryConstants.TIME_FORMATTER_GPX.format(new Date()); //$NON-NLS-1$
+                            name = "ROUTE_" + TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date()); //$NON-NLS-1$
                         }
                         DaoGpsLog logDumper = new DaoGpsLog();
                         SQLiteDatabase sqliteDatabase = logDumper.getDatabase(this);
@@ -1297,7 +1297,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         final float centerLat = mapCenter.latitudeE6 / LibraryConstants.E6;
         final float centerLon = mapCenter.longitudeE6 / LibraryConstants.E6;
         final EditText input = new EditText(this);
-        final String newDate = LibraryConstants.TIME_FORMATTER.format(new Date());
+        final String newDate = TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date());
         final String proposedName = "bookmark " + newDate; //$NON-NLS-1$
         input.setText(proposedName);
         Builder builder = new AlertDialog.Builder(this).setTitle(R.string.mapsactivity_new_bookmark);

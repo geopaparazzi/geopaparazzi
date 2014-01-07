@@ -43,12 +43,9 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity;
-import eu.geopaparazzi.library.util.activities.GeocodeActivity;
-import eu.geopaparazzi.library.util.activities.InsertCoordActivity;
 import eu.geopaparazzi.library.webproject.WebProjectsListActivity;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
-import eu.hydrologis.geopaparazzi.maps.MapsActivity;
 
 /**
  * Activity for export tasks.

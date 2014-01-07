@@ -21,6 +21,7 @@ import java.util.Date;
 
 import android.location.Location;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.TimeUtilities;
 
 /**
  * Extends the location with some infos.
@@ -43,13 +44,19 @@ public class GpsLocation extends Location {
         this.previousLoc = previousLoc;
     }
 
+    /**
+     * @return the time string in UTC.
+     */
     public String getTimeString() {
-        String timeString = LibraryConstants.TIME_FORMATTER.format(new Date(getTime()));
+        String timeString = TimeUtilities.INSTANCE.TIME_FORMATTER_UTC.format(new Date(getTime()));
         return timeString;
     }
 
+    /**
+     * @return the sql time string in UTC.
+     */
     public String getTimeStringSql() {
-        String timeString = LibraryConstants.TIME_FORMATTER_SQLITE.format(new Date(getTime()));
+        String timeString = TimeUtilities.INSTANCE.TIME_FORMATTER_SQLITE_UTC.format(new Date(getTime()));
         return timeString;
     }
 

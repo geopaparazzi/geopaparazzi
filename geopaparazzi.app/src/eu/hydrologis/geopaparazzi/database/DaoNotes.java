@@ -33,7 +33,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.hydrologis.geopaparazzi.maps.overlays.NoteOverlayItem;
 import eu.hydrologis.geopaparazzi.util.Note;
 
@@ -69,9 +69,19 @@ public class DaoNotes {
 
     private static long LASTINSERTEDNOTE_ID = -1;
 
-    private static SimpleDateFormat dateFormatter = LibraryConstants.TIME_FORMATTER_SQLITE;
 
-    public static void addNote( double lon, double lat, double altim, Date timestamp, String text, String category, String form,
+    /**
+     * @param lon
+     * @param lat
+     * @param altim
+     * @param timestamp the UTC timestamp string.
+     * @param text
+     * @param category
+     * @param form
+     * @param type
+     * @throws IOException
+     */
+    public static void addNote( double lon, double lat, double altim, String timestamp, String text, String category, String form,
             int type ) throws IOException {
         if (category == null) {
             category = NoteType.POI.getDef();
@@ -91,7 +101,7 @@ public class DaoNotes {
         }
     }
 
-    public static void addNoteNoTransaction( double lon, double lat, double altim, Date timestamp, String text, String category,
+    public static void addNoteNoTransaction( double lon, double lat, double altim, String timestamp, String text, String category,
             String form, int type, SQLiteDatabase sqliteDatabase ) {
         if (category == null) {
             category = NoteType.POI.getDef();
@@ -101,7 +111,7 @@ public class DaoNotes {
         values.put(COLUMN_LON, lon);
         values.put(COLUMN_LAT, lat);
         values.put(COLUMN_ALTIM, altim);
-        values.put(COLUMN_TS, dateFormatter.format(timestamp));
+        values.put(COLUMN_TS, timestamp);
         values.put(COLUMN_TEXT, text);
         values.put(COLUMN_CATEGORY, category);
         values.put(COLUMN_FORM, form);

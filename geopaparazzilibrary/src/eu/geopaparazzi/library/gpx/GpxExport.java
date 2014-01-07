@@ -26,7 +26,7 @@ import java.util.List;
 
 import android.content.Context;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.TimeUtilities;
 
 /**
  * A kmz exporter for notes, logs and pics.
@@ -66,7 +66,7 @@ public class GpxExport {
             bW.write("  xmlns=\"http://www.topografix.com/GPX/1/0\"\n");
             bW.write("  xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">\n");
 
-            String formattedTime = LibraryConstants.TIME_FORMATTER_GPX.format(new Date());
+            String formattedTime = TimeUtilities.INSTANCE.TIME_FORMATTER_GPX_UTC.format(new Date());
             bW.write("<time>" + formattedTime + "</time>\n");
 
             double minLat = 0.0;

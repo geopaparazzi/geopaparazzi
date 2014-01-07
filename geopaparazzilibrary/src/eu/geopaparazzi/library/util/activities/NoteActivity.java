@@ -30,6 +30,7 @@ import android.widget.Toast;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 
 /**
@@ -85,7 +86,7 @@ public class NoteActivity extends Activity {
                     StringBuilder sB = new StringBuilder(noteText.getText());
                     String noteString = sB.toString();
 
-                    String sqlDateString = LibraryConstants.TIME_FORMATTER.format(sqlDate);
+                    String sqlDateString = TimeUtilities.INSTANCE.TIME_FORMATTER_UTC.format(sqlDate);
 
                     String[] noteArray = {//
                     String.valueOf(longitude), //

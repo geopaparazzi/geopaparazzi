@@ -17,23 +17,20 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
-
 import static java.lang.Math.abs;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
-import static eu.geopaparazzi.library.util.LibraryConstants.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import android.graphics.Color;
 import android.location.Location;
 import eu.geopaparazzi.library.gpx.GpxRepresenter;
 import eu.geopaparazzi.library.gpx.GpxUtilities;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
 import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.DynamicDoubleArray;
-import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 
 /**
@@ -44,10 +41,10 @@ import eu.geopaparazzi.library.util.Utilities;
 public class Line implements KmlRepresenter, GpxRepresenter {
 
     private String name;
-    private final DynamicDoubleArray latList;
-    private final DynamicDoubleArray lonList;
-    private final DynamicDoubleArray altimList;
-    private final List<String> dateList;
+    private DynamicDoubleArray latList;
+    private DynamicDoubleArray lonList;
+    private DynamicDoubleArray altimList;
+    private List<String> dateList;
     private boolean boundsAreDirty = true;
     private double minLat = 0.0;
     private double minLon = 0.0;
@@ -225,6 +222,7 @@ public class Line implements KmlRepresenter, GpxRepresenter {
 
     @SuppressWarnings("nls")
     public String toGpxString() throws Exception {
+
         String name = Utilities.makeXmlSafe(this.name);
         StringBuilder sb = new StringBuilder();
         sb.append(GpxUtilities.GPX_TRACK_START).append("\n");
@@ -237,7 +235,8 @@ public class Line implements KmlRepresenter, GpxRepresenter {
         for( int i = 0; i < size; i++ ) {
             String dateString = dateList.get(i);
             // TODO change this sooner or later - needs ts to be hold differently in db
-            dateString = TIME_FORMATTER_GPX.format(TIME_FORMATTER_SQLITE.parse(dateString));
+            dateString = TimeUtilities.INSTANCE.TIME_FORMATTER_GPX_UTC.format(TimeUtilities.INSTANCE.TIME_FORMATTER_SQLITE_UTC
+                    .parse(dateString));
             String trackPointString = GpxUtilities.getTrackPointString(latArray[i], lonArray[i], altimArray[i], dateString);
             sb.append(trackPointString);
         }

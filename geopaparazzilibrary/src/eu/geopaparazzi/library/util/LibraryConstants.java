@@ -30,13 +30,6 @@ public interface LibraryConstants {
     public final float E6 = 1000000f;
     public final DecimalFormat COORDINATE_FORMATTER = new DecimalFormat("#.00000000"); //$NON-NLS-1$
     public final DecimalFormat DECIMAL_FORMATTER_2 = new DecimalFormat("0.00"); //$NON-NLS-1$
-    public final SimpleDateFormat TIMESTAMPFORMATTER = new SimpleDateFormat("yyyyMMdd_HHmmss"); //$NON-NLS-1$
-    public final SimpleDateFormat DATEONLY_FORMATTER = new SimpleDateFormat("yyyy-MM-dd"); //$NON-NLS-1$
-    public final SimpleDateFormat TIMEONLY_FORMATTER = new SimpleDateFormat("HH:mm:ss"); //$NON-NLS-1$
-    public final SimpleDateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    public final SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //$NON-NLS-1$
-    public final SimpleDateFormat TIME_FORMATTER_SQLITE = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); //$NON-NLS-1$
-    public final SimpleDateFormat TIME_FORMATTER_GPX = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); //$NON-NLS-1$
 
     /**
      * Key used by the gps logger to store the lat in the prefs.
