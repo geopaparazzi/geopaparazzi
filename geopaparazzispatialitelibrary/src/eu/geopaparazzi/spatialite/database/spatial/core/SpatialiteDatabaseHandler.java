@@ -29,6 +29,7 @@ import jsqlite.Constants;
 import jsqlite.Database;
 import jsqlite.Exception;
 import jsqlite.Stmt;
+import android.content.Context;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Paint.Cap;
@@ -38,6 +39,8 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKBReader;
 
+import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.spatialite.database.spatial.SpatialiteContextHolder;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.ColorUtilities;
 
@@ -84,7 +87,8 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
     private static final String DASH = "dashpattern";
     private static final String MINZOOM = "minzoom";
     private static final String MAXZOOM = "maxzoom";
-
+    private static final int i_style_column_count=15+1; // 0-15
+    private String s_dataproperties_unique_db_name="";
     private final String PROPERTIESTABLE = "dataproperties";
 
     private Database db_java;
@@ -127,6 +131,27 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
             s_map_file = file_map.getAbsolutePath();
             s_name_file = file_map.getName();
             s_name = file_map.getName().substring(0, file_map.getName().lastIndexOf("."));
+            try
+            {
+             Context context = SpatialiteContextHolder.INSTANCE.getContext();
+             ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
+             File mapsDir = resourcesManager.getMapsDir();
+             String mapsPath = mapsDir.getAbsolutePath();
+             if (s_map_file.startsWith(mapsPath))
+             { // this should allways be true
+              String relativePath = s_map_file.substring(mapsPath.length());
+              StringBuilder sb = new StringBuilder();
+              if (relativePath.startsWith(File.separator)) {
+                     relativePath = relativePath.substring(1);
+              }
+              sb.append(relativePath);
+              sb.append(File.separator);
+              s_dataproperties_unique_db_name=sb.toString();
+             }
+            }
+            catch (java.lang.Exception e) {
+             GPLog.androidLog(4, "SpatialiteDatabaseHandler[" + file_map.getAbsolutePath() + "]", e);
+            }
             db_java = new jsqlite.Database();
             db_java.open(s_map_file, jsqlite.Constants.SQLITE_OPEN_READWRITE | jsqlite.Constants.SQLITE_OPEN_CREATE);
             get_tables(0); // 0=check if valid only ; 1=check if valid and fill
@@ -630,14 +655,18 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
      * @throws Exception
      */
     private void checkPropertiesTable() throws Exception {
-        String checkTableQuery = "SELECT name FROM sqlite_master WHERE type='table' AND name='" + PROPERTIESTABLE + "';";
+        String checkTableQuery = "SELECT name,sql FROM sqlite_master WHERE type='table' AND name='" + PROPERTIESTABLE + "';";
         Stmt stmt = db_java.prepare(checkTableQuery);
+        String s_create_sql = "";
         boolean tableExists = false;
+        int i_column_count=0;
         try {
             if (stmt.step()) {
                 String name = stmt.column_string(0);
                 if (name != null) {
                     tableExists = true;
+                    s_create_sql = stmt.column_string(1);
+                    i_column_count = (s_create_sql.length()-s_create_sql.replace(",", "").length())+1;
                 }
             }
         } finally {
@@ -699,6 +728,65 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                 String insertQuery = sbIn.toString();
                 db_java.exec(insertQuery, null);
             }
+        }
+        else
+        { // i_column_count
+        // SELECT count(name)  FROM dataproperties WHERE name LIKE 'aurina/aurina.sqlite/%'
+         int i_record_count=0; // we are assumining that if the table exists there is a least 1 record
+         checkTableQuery = "SELECT count(name)  FROM " + PROPERTIESTABLE + " WHERE name LIKE '"+s_dataproperties_unique_db_name+"%';";
+         stmt = db_java.prepare(checkTableQuery);
+         try {
+            if (stmt.step()) {
+                i_record_count = stmt.column_int(0);
+            }
+         } finally {
+            stmt.close();
+         }
+         if (i_record_count < 1)
+         {
+          for( SpatialVectorTable spatialTable : vectorTableList )
+          {
+           String s_unique_name_base=spatialTable.getUniqueNameBase();
+           checkTableQuery = "UPDATE " + PROPERTIESTABLE + "  SET  name  = '"+s_dataproperties_unique_db_name+s_unique_name_base+"' WHERE name LIKE '%"+s_unique_name_base+"';";
+           // GPLog.androidLog(-1, "SpatialiteDatabaseHandler[" + file_map.getAbsolutePath() + "] col_count["+i_column_count+"] sql[" + checkTableQuery + "]");
+           db_java.exec(checkTableQuery, null);
+          }
+         }
+         if (i_column_count != i_style_column_count)
+         { // structure of table has changed - we don't know from what version this is
+          s_create_sql=s_create_sql.replace("CREATE TABLE "+PROPERTIESTABLE+" (", "");
+          s_create_sql=s_create_sql.replace(")", "");
+          String[] sa_split = s_create_sql.split(",");
+          String[] sa_columms = new String[sa_split.length];
+          for (int i=0;i<sa_split.length;i++)
+          {
+           String[] sa_field=sa_split[i].split(" ");
+           sa_columms[i]=sa_field[0].trim();
+          }
+          // sa_columms now has the list of fields of the unknown structure
+          // this will create and copy the old table
+          checkTableQuery = "CREATE TABLE "+PROPERTIESTABLE+"_save AS SELECT * FROM "+PROPERTIESTABLE+";";
+          db_java.exec(checkTableQuery, null);
+          // this will drop and recall this function [nasty] creating the new table and filling it with default values
+          resetStyleTable();
+          // TODO: add check if all fields of old_table are in the new_table
+          // TODO: set 'sa_columms[i]="";' if it the field does not exist in the new table
+          // TODO: this portion HAS NOT been checked
+          StringBuilder sb_update = new StringBuilder();
+          sb_update.append("UPDATE "+PROPERTIESTABLE+"SET  ");
+          for (int i=0;i<sa_columms.length;i++)
+          { // assums that the old fields also exist in the new table, empty sa_columms[i] if it is
+           if (!sa_columms[i].equals(""))
+           {
+            sb_update.append(sa_columms[i]+"= (SELECT "+PROPERTIESTABLE+"_save."+sa_columms[i]+" FROM "+PROPERTIESTABLE+"_save WHERE "+PROPERTIESTABLE+"_save.name="+PROPERTIESTABLE+".name)");
+            sb_update.append(",");
+           }
+          }
+          checkTableQuery = sb_update.toString();
+          checkTableQuery = checkTableQuery.substring(0,checkTableQuery.length()-1)+";";
+          GPLog.androidLog(-1, "SpatialiteDatabaseHandler[" + file_map.getAbsolutePath() + "] col_count["+i_column_count+"] sql[" + checkTableQuery + "]");
+          db_java.exec(checkTableQuery, null);
+         }
         }
     }
 
@@ -773,7 +861,6 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
         } finally {
             stmt.close();
         }
-
         checkPropertiesTable();
     }
 
