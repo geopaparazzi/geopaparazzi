@@ -52,8 +52,9 @@
         </activity>
 
         <!-- CameraActivity -->
-        <!-- android:configChanges="orientation|screenSize" -->
-        <activity android:name="eu.geopaparazzi.library.camera.CameraActivity" >
+         <activity
+            android:name="eu.geopaparazzi.library.camera.CameraActivity"
+            android:configChanges="orientation|screenSize"  >
             <intent-filter>
                 <action android:name="eu.geopaparazzi.library.camera.CameraActivity" />
 

@@ -207,7 +207,6 @@
             android:configChanges="orientation|screenSize"  >
             <intent-filter>
                 <action android:name="eu.geopaparazzi.library.camera.CameraActivity" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
