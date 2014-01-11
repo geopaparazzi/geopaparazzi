@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="eu.hydrologis.geopaparazzi"
     android:installLocation="auto"
-    android:versionCode="51"
-    android:versionName="3.9.0" >
+    android:versionCode="52"
+    android:versionName="3.9.1RC1" >
 
     <!-- permissions -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -155,7 +155,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".maps.MapTagsActivity" >
+        <activity
+            android:name=".maps.MapTagsActivity"
+            android:configChanges="orientation|screenSize" >
             <intent-filter>
                 <action android:name="eu.hydrologis.geopaparazzi.maps.TAGS" />
 
@@ -202,7 +204,7 @@
         <activity android:name="eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.MapsDirTreeViewList" />
         <activity
             android:name="eu.geopaparazzi.library.camera.CameraActivity"
-            android:configChanges="orientation" >
+            android:configChanges="orientation|screenSize"  >
             <intent-filter>
                 <action android:name="eu.geopaparazzi.library.camera.CameraActivity" />
 

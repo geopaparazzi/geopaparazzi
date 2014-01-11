@@ -73,6 +73,7 @@ public class SpatialVectorTable {
     // list of possible primary keys - for more that one: seperated with ';'
     private String s_primary_key_fields="";
     private String s_unique_name=""; // file-name+table-name+field-name
+    private String s_unique_name_base=""; // file-name+table-name+field-name
 
     public SpatialVectorTable( String  s_map_file,String s_table_name, String s_geometry_column, int geomType, String srid, double[] center , double[] bounds,
      String s_layer_type,int i_row_count,int i_coord_dimension,int i_spatial_index_enabled,String s_last_verified ) {
@@ -118,6 +119,7 @@ public class SpatialVectorTable {
                     relativePath = relativePath.substring(1);
                 }
                 sb.append(relativePath);
+                s_unique_name_base=this.s_name_file+File.separator+s_table_name+File.separator+s_geometry_column;
                 sb.append(File.separator);
                 sb.append(s_table_name);
                 sb.append(File.separator);
@@ -309,8 +311,28 @@ public class SpatialVectorTable {
     public String getGeomName() {
         return s_geometry_column;
     }
+    /**
+      * Unique-Name of Geometry Field inside 'sdcard/maps' directory
+      * - needed to identify one specfic field inside the whole Maps-Directory
+      * -- Sample: '/storage/emulated/0/maps/aurina/aurina.sqlite/topcloud/Geometry'
+      * --- Maps-Directory:  ''/storage/emulated/0/maps/'
+      * --- Directory inside the Maps-Directory: 'aurina/'
+      * --- UniqueNameBase : 'aurina.sqlite/topcloud/Geometry'
+      * -- Result : 'aurina/aurina.sqlite/topcloud/Geometry'
+      */
     public String getUniqueName() {
         return this.s_unique_name;
+    }
+    /**
+      * Unique-Name-Base of Database inside 'sdcard/maps' directory
+      * - needed to Directory portion if the Database has been moved
+      * -- Sample: '/storage/emulated/0/maps/aurina/aurina.sqlite/topcloud/Geometry'
+      * --- Maps-Directory:  ''/storage/emulated/0/maps/'
+      * --- Directory inside the Maps-Directory: 'aurina/'
+      * -- Result : 'aurina.sqlite/topcloud/Geometry'
+      */
+    public String getUniqueNameBase() {
+        return this.s_unique_name_base;
     }
     public int getGeomType() {
         return geomType;
