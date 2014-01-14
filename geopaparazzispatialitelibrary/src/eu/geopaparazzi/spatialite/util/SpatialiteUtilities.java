@@ -94,7 +94,7 @@ public class SpatialiteUtilities {
         if (i_parm == 1) {
             // 0=not a spatialite version ; 1=until 2.3.1 ; 2=until 2.4.0 ; 3=until 3.1.0-RC2 ;
             // 4=after 4.0.0-RC1
-            int i_spatialite_version = get_table_fields(sqlite_db, "");
+            int i_spatialite_version = getSpatialiteVersion(sqlite_db, "");
             if (i_spatialite_version > 0) { // this is a spatialite Database, do not create
                 i_rc = 1;
                 if (i_spatialite_version < 3) { // TODO: logic for convertion to latest Spatialite
@@ -113,16 +113,16 @@ public class SpatialiteUtilities {
             }
             // GPLog.androidLog(2,
             // "SpatialiteUtilities: create_spatialite sql["+s_sql_command+"] rc="+i_rc+"]");
-            i_rc = get_table_fields(sqlite_db, "");
+            i_rc = getSpatialiteVersion(sqlite_db, "");
             if (i_rc < 3) { // error, should be 3 or 4
                 GPLog.androidLog(4, "SpatialiteUtilities: create_spatialite spatialite_version[" + i_rc + "]");
             }
         }
         return i_rc;
     }
-    // -----------------------------------------------
+
     /**
-      * Goal is to determin the Spatialite version of the Database being used
+      * Determine the Spatialite version of the Database being used
       * 
       * <ul> 
       * <li> - if (sqlite3_exec(this_handle_sqlite3,"SELECT InitSpatialMetadata()",NULL,NULL,NULL) == SQLITE_OK)
@@ -144,15 +144,24 @@ public class SpatialiteUtilities {
       * @param s_table name of table to read [if empty: list of tables in Database]
       * @return i_spatialite_version [0=not a spatialite version ; 1=until 2.3.1 ; 2=until 2.4.0 ; 3=until 3.1.0-RC2 ; 4=after 4.0.0-RC1]
       */
-    private static int get_table_fields( Database sqlite_db, String s_table ) throws Exception {
+    private static int getSpatialiteVersion( Database sqlite_db, String s_table ) throws Exception {
         Stmt this_stmt = null;
         // views: vector_layers_statistics,vector_layers
         boolean b_vector_layers_statistics = false;
         boolean b_vector_layers = false;
         // tables: geometry_columns,raster_columns
-        boolean b_geometry_columns = false; // false=not a spatialite Database ; true is a
-                                            // spatialite Database
-        int i_srs_wkt = 0; // 0=not found = pre 2.4.0 ; 1=2.4.0 to 3.1.0 ; 2=starting with 4.0.0
+
+        /*
+         * false = not a spatialite Database 
+         * true = a spatialite Database
+         */
+        boolean b_geometry_columns = false;
+        /*
+         * 0=not found = pre 2.4.0 ; 
+         * 1=2.4.0 to 3.1.0 ; 
+         * 2=starting with 4.0.0
+         */
+        int i_srs_wkt = 0; 
         boolean b_spatial_ref_sys = false;
         boolean b_views_geometry_columns = false;
         int i_spatialite_version = 0; // 0=not a spatialite version ; 1=until 2.3.1 ; 2=until 2.4.0
@@ -216,7 +225,7 @@ public class SpatialiteUtilities {
                     + b_geometry_columns + "] spatial_ref_sys[" + b_spatial_ref_sys + "]");
             if ((b_geometry_columns) && (b_spatial_ref_sys)) {
                 if (b_spatial_ref_sys) {
-                    i_srs_wkt = get_table_fields(sqlite_db, "spatial_ref_sys");
+                    i_srs_wkt = getSpatialiteVersion(sqlite_db, "spatial_ref_sys");
                     if (i_srs_wkt == 4) { // Spatialite 4.0
                         i_spatialite_version = 4;
                     } else {
@@ -241,7 +250,7 @@ public class SpatialiteUtilities {
         }
         return i_spatialite_version;
     }
-    // -----------------------------------------------
+
     /**
       * Create geometry Table from Shape Table.
       * 
@@ -379,7 +388,7 @@ public class SpatialiteUtilities {
                 }
                 try {
                     sqlite_db = createDb(shape_db.getAbsolutePath());
-                    i_spatialite_version = get_table_fields(sqlite_db, "");
+                    i_spatialite_version = getSpatialiteVersion(sqlite_db, "");
                 } catch (Throwable t) {
                     GPLog.androidLog(4, "SpatialiteUtilities create_shape_db[" + shape_db.getAbsolutePath()
                             + "] spatialite_version[" + i_spatialite_version + "]", t);
