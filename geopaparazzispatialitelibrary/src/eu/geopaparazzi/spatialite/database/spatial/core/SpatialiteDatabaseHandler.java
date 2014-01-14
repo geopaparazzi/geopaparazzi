@@ -790,6 +790,8 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
           checkTableQuery = checkTableQuery.substring(0,checkTableQuery.length()-1)+";";
           GPLog.androidLog(-1, "SpatialiteDatabaseHandler[" + file_map.getAbsolutePath() + "] col_count["+i_column_count+"] sql[" + checkTableQuery + "]");
           db_java.exec(checkTableQuery, null);
+          checkTableQuery = "DROP TABLE "+PROPERTIESTABLE+"_save ;";
+          db_java.exec(checkTableQuery, null);
          }
         }
     }
