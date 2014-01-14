@@ -39,11 +39,11 @@ public interface GView {
      * @param data the data returned.
      */
     public void setOnActivityResult( Intent data );
-    
+
     /**
      * A method to refresh content if necessary.
      * 
-     * @param context
+     * @param context  the context to use.
      */
     public void refresh( Context context );
 }

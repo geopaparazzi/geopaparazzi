@@ -29,8 +29,10 @@ import android.os.AsyncTask;
 public abstract class StringAsyncTask extends AsyncTask<String, Integer, String> {
     private Context context;
     private ProgressDialog progressDialog;
-    private int currentProgress = 0;
 
+    /**
+     * @param context  the context to use.
+     */
     public StringAsyncTask( Context context ) {
         this.context = context;
     }
@@ -38,9 +40,9 @@ public abstract class StringAsyncTask extends AsyncTask<String, Integer, String>
     /**
      * Also create a {@link ProgressDialog} and start it.
      * 
-     * @param title
-     * @param message
-     * @param cancelable
+     * @param title a title.
+     * @param message a message.
+     * @param cancelable if it is cancelable.
      * @param max the max progress. If <code>null</code>, indeterminate is used.
      */
     public void startProgressDialog( String title, String message, boolean cancelable, Integer max ) {
@@ -63,9 +65,8 @@ public abstract class StringAsyncTask extends AsyncTask<String, Integer, String>
     }
 
     protected void onProgressUpdate( Integer... progress ) {
-        currentProgress++;
         if (progressIsOk()) {
-            progressDialog.setProgress(currentProgress);
+            progressDialog.setProgress(progress[0]);
         }
     }
 
@@ -91,6 +92,14 @@ public abstract class StringAsyncTask extends AsyncTask<String, Integer, String>
 
     /**
      * Do the background work (non UI).
+     * 
+     * <p>To update progress:
+     * <code>
+     * publishProgress(1);
+     * // and to escape early if cancel() is called
+     * if (isCancelled())
+     *    break;
+     * </code>
      * 
      * @return the result of the work.
      */

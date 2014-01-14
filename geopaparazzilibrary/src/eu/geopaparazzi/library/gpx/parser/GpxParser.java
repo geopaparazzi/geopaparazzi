@@ -98,6 +98,7 @@ public class GpxParser {
                     mWayPoints.add(mCurrentWayPoint);
                     handleLocation(mCurrentWayPoint, attributes);
                 } else if (NODE_TRACK.equals(localName)) {
+                    // ignore
                 } else if (NODE_TRACK_SEGMENT.equals(localName)) {
                     mCurrentTrackSegment = new TrackSegment();
                     mTrackSegmentList.add(mCurrentTrackSegment);
@@ -137,6 +138,7 @@ public class GpxParser {
             if (NODE_WAYPOINT.equals(localName)) {
                 mCurrentWayPoint = null;
             } else if (NODE_TRACK.equals(localName)) {
+                // ignore
             } else if (NODE_TRACK_SEGMENT.equals(localName)) {
                 mCurrentTrackSegment = null;
             } else if (NODE_TRACK_POINT.equals(localName)) {
@@ -275,6 +277,9 @@ public class GpxParser {
             mName = name;
         }
 
+        /**
+         * @return name.
+         */
         public String getName() {
             return mName;
         }
@@ -283,7 +288,7 @@ public class GpxParser {
             mComment = comment;
         }
 
-        public String getComment() {
+        String getComment() {
             return mComment;
         }
 
@@ -291,11 +296,11 @@ public class GpxParser {
             mPoints.add(trackPoint);
         }
 
-        public List<TrackPoint> getPoints() {
+        List<TrackPoint> getPoints() {
             return mPoints;
         }
 
-        public long getFirstPointTime() {
+        long getFirstPointTime() {
             if (mPoints.size() > 0) {
                 return mPoints.get(0).getTime();
             }
@@ -303,7 +308,7 @@ public class GpxParser {
             return -1;
         }
 
-        public long getLastPointTime() {
+        long getLastPointTime() {
             if (mPoints.size() > 0) {
                 return mPoints.get(mPoints.size() - 1).getTime();
             }
@@ -311,7 +316,7 @@ public class GpxParser {
             return -1;
         }
 
-        public int getPointCount() {
+        int getPointCount() {
             return mPoints.size();
         }
     }
@@ -329,6 +334,9 @@ public class GpxParser {
             mName = name;
         }
 
+        /**
+         * @return thename.
+         */
         public String getName() {
             return mName;
         }
@@ -337,6 +345,9 @@ public class GpxParser {
             mComment = comment;
         }
 
+        /**
+         * @return comment.
+         */
         public String getComment() {
             return mComment;
         }
@@ -345,10 +356,16 @@ public class GpxParser {
             mPoints.add(routePoint);
         }
 
+        /**
+         * @return points list.
+         */
         public List<RoutePoint> getPoints() {
             return mPoints;
         }
 
+        /**
+         * @return start time.
+         */
         public long getFirstPointTime() {
             if (mPoints.size() > 0) {
                 return mPoints.get(0).getTime();
@@ -357,6 +374,9 @@ public class GpxParser {
             return -1;
         }
 
+        /**
+         * @return end time.
+         */
         public long getLastPointTime() {
             if (mPoints.size() > 0) {
                 return mPoints.get(mPoints.size() - 1).getTime();
@@ -365,6 +385,9 @@ public class GpxParser {
             return -1;
         }
 
+        /**
+         * @return points count.
+         */
         public int getPointCount() {
             return mPoints.size();
         }
@@ -401,6 +424,8 @@ public class GpxParser {
     /**
      * Returns the parsed {@link WayPoint} objects, or <code>null</code> if none were found (or
      * if the parsing failed.
+     * 
+     * @return list of waypoints.
      */
     public List<WayPoint> getWayPoints() {
         if (mHandler != null)
@@ -411,6 +436,8 @@ public class GpxParser {
     /**
      * Returns the parsed {@link TrackSegment} objects, or <code>null</code> if none were found (or
      * if the parsing failed.
+     * 
+     * @return list of tracksegments. 
      */
     public List<TrackSegment> getTracks() {
         if (mHandler != null) {
@@ -419,6 +446,9 @@ public class GpxParser {
         return null;
     }
 
+    /**
+     * @return the list of routes.
+     */
     public List<Route> getRoutes() {
         if (mHandler != null) {
             return mHandler.getRoutes();

@@ -37,14 +37,30 @@ import android.widget.TextView;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.util.LibraryConstants;
 
+/**
+ * Folder browser activity.
+ * 
+ * @author Andrea Antonello (www.hydrologis.com)
+ */
 public class DirectoryBrowserActivity extends ListActivity {
+    /**
+     */
     public static final String STARTFOLDERPATH = "STARTFOLDERPATH"; //$NON-NLS-1$
     /**
      * Key for a new intent to launch on the resulting path.
      */
     public static final String INTENT_ID = "INTENT_ID"; //$NON-NLS-1$
+    /**
+     * 
+     */
     public static final String EXTENTION = "EXTENTION"; //$NON-NLS-1$
+    /**
+     * 
+     */
     public static final String SHOWHIDDEN = "SHOWHIDDEN"; //$NON-NLS-1$
+    /**
+     * 
+     */
     public static final String FOLDER = "folder"; //$NON-NLS-1$
 
     private List<String> items = new ArrayList<String>();

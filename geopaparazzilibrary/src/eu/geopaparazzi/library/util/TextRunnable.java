@@ -25,6 +25,9 @@ package eu.geopaparazzi.library.util;
 public abstract class TextRunnable implements Runnable {
     protected String theTextToRunOn = ""; //$NON-NLS-1$
 
+    /**
+     * @param text text to set.
+     */
     public void setText( String text ) {
         theTextToRunOn = text;
     }

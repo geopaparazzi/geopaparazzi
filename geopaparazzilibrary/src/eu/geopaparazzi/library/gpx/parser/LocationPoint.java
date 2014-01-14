@@ -25,28 +25,40 @@ public class LocationPoint {
     private boolean mHasElevation = false;
     private double mElevation;
 
-    final void setLocation(double longitude, double latitude) {
+    final void setLocation( double longitude, double latitude ) {
         mLongitude = longitude;
         mLatitude = latitude;
     }
-    
+
+    /**
+     * @return lon
+     */
     public final double getLongitude() {
         return mLongitude;
     }
-    
+
+    /**
+     * @return lat
+     */
     public final double getLatitude() {
         return mLatitude;
     }
 
-    final void setElevation(double elevation) {
+    final void setElevation( double elevation ) {
         mElevation = elevation;
         mHasElevation = true;
     }
-    
+
+    /**
+     * @return if <code>true</code> it has elevation.
+     */
     public final boolean hasElevation() {
         return mHasElevation;
     }
-    
+
+    /**
+     * @return elevation.
+     */
     public final double getElevation() {
         return mElevation;
     }

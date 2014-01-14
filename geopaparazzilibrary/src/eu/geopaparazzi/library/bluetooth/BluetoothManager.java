@@ -39,6 +39,9 @@ import eu.geopaparazzi.library.database.GPLog;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public enum BluetoothManager {
+    /**
+     * 
+     */
     INSTANCE;
 
     private BluetoothAdapter _bluetooth;
@@ -64,6 +67,9 @@ public enum BluetoothManager {
         _bluetooth = BluetoothAdapter.getDefaultAdapter();
     }
 
+    /**
+     * Create dummy instance.
+     */
     public void makeDummy() {
         try {
             reset();
@@ -133,9 +139,6 @@ public enum BluetoothManager {
     /**
      * Polls te state of the bt device.
      * 
-     * <p>Use register to listen to {@link #startStateChangedListening(Context)} instead 
-     * of using this.</p> 
-     * 
      * @return the state of the bt device.
      */
     public int getState() {
@@ -167,6 +170,7 @@ public enum BluetoothManager {
      * </p>
      * 
      * @param parentActivity the {@link Activity} to use for the bt activity to start.
+     * @param requestCode the request code.
      */
     public void enable( Activity parentActivity, int requestCode ) {
         parentActivity.startActivityForResult(new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE), requestCode);
@@ -301,7 +305,7 @@ public enum BluetoothManager {
      * 
      * @param bluetoothDevice the device to use.
      * @param connect if <code>true</code>, also connect to the socket.
-     * @throws Exception 
+     * @throws Exception  if something goes wrong. 
      */
     public synchronized void setBluetoothDevice( BluetoothDevice bluetoothDevice, boolean connect ) throws Exception {
         reset();
@@ -319,7 +323,7 @@ public enum BluetoothManager {
     /**
      * Reset the current bluetooth socket and device.
      * 
-     * @throws Exception
+     * @throws Exception  if something goes wrong.
      */
     public synchronized void reset() throws Exception {
         if (_bluetoothSocket != null) {
@@ -337,7 +341,7 @@ public enum BluetoothManager {
      * <p>The socket is defined when the device is chosen.</p>
      * 
      * @return the active bt socket or <code>null</code>.
-     * @throws Exception 
+     * @throws Exception  if something goes wrong. 
      */
     public synchronized BluetoothSocket getSocket() throws Exception {
         if (isDummy)
@@ -352,6 +356,9 @@ public enum BluetoothManager {
         return _bluetoothSocket;
     }
 
+    /**
+     * @return the current bluetooth device.
+     */
     public synchronized BluetoothDevice getCurrentBluetoothDevice() {
         return _bluetoothDevice;
     }
@@ -359,8 +366,6 @@ public enum BluetoothManager {
     /**
      * Create a bluetooth (rfcomm) socket and connect to it.
      * 
-     * @param bluetoothDevice the device for which to create the socket for.
-     * @return the created socket or <code>null</code>.
      * @throws Exception
      */
     private void createSocket() throws Exception {
@@ -382,8 +387,8 @@ public enum BluetoothManager {
     /**
      * Initializes 
      * 
-     * @param iBluetoothDevice
-     * @throws IOException
+     * @param iBluetoothDevice the bt handler.
+     * @throws IOException  if something goes wrong.
      */
     public void initializeIBluetoothDeviceInternal( IBluetoothIOHandler iBluetoothDevice ) throws IOException {
         this.iBluetoothDevice = iBluetoothDevice;
@@ -396,6 +401,9 @@ public enum BluetoothManager {
         }
     }
 
+    /**
+     * @return the bt device.
+     */
     public IBluetoothIOHandler getBluetoothDevice() {
         return iBluetoothDevice;
     }

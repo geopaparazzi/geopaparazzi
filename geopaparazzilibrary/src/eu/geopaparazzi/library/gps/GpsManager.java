@@ -95,6 +95,10 @@ public class GpsManager implements LocationListener, Listener {
         isMockMode = preferences.getBoolean(LibraryConstants.PREFS_KEY_MOCKMODE, false);
     }
 
+    /**
+     * @param context  the context to use.
+     * @return the singleton instance.
+     */
     public synchronized static GpsManager getInstance( Context context ) {
         if (gpsManager == null) {
             gpsManager = new GpsManager(context);
@@ -138,10 +142,21 @@ public class GpsManager implements LocationListener, Listener {
         }
     }
 
+    /**
+     * @return the {@link LocationManager}.
+     */
     public LocationManager getLocationManager() {
         return locationManager;
     }
 
+    /**
+     * Add a proximity alert.
+     * 
+     * @param context  the context to use.
+     * @param lat lat 
+     * @param lon lon
+     * @param radius radius in meters.
+     */
     public void addProximityAlert( Context context, double lat, double lon, float radius ) {
         String PROX_ALERT_INTENT = "com.javacodegeeks.android.lbs.ProximityAlert";
         Intent intent = new Intent(PROX_ALERT_INTENT);
@@ -155,6 +170,8 @@ public class GpsManager implements LocationListener, Listener {
 
     /**
      * Disposes the GpsManager and with it all connected services.
+     * 
+     * @param context  the context to use.
      */
     public void dispose( Context context ) {
         if (isDatabaseLogging()) {
@@ -175,6 +192,9 @@ public class GpsManager implements LocationListener, Listener {
         log("GpsManager disposed.");
     }
 
+    /**
+     * @return <code>true</code> if the logger is closed.
+     */
     public boolean hasLoggerShutdown() {
         return gpsLogger.isShutdown();
     }
@@ -273,10 +293,18 @@ public class GpsManager implements LocationListener, Listener {
         return gpsLogger.isDatabaseLogging();
     }
 
+    /**
+     * @return <code>true</code> if the gps is listening.
+     */
     public boolean isGpsListening() {
         return gpsStarted;
     }
 
+    /**
+     * Check the GPS status.
+     * 
+     * @param context  the context to use.
+     */
     public void checkGps( final Context context ) {
         if (!isEnabled()) {
             String prompt = context.getResources().getString(R.string.prompt_gpsenable);
@@ -289,6 +317,9 @@ public class GpsManager implements LocationListener, Listener {
         }
     }
 
+    /**
+     * @return the location.
+     */
     public GpsLocation getLocation() {
         if (lastGpsLocation == null)
             return null;
@@ -297,10 +328,16 @@ public class GpsManager implements LocationListener, Listener {
         }
     }
 
+    /**
+     * @return current gps log points num.
+     */
     public int getCurrentRunningGpsLogPointsNum() {
         return gpsLogger.getCurrentPointsNum();
     }
 
+    /**
+     * @return current log id.
+     */
     public long getCurrentRecordedLogId() {
         if (gpsLogger == null) {
             return -1l;
@@ -308,6 +345,9 @@ public class GpsManager implements LocationListener, Listener {
         return gpsLogger.getCurrentRecordedLogId();
     }
 
+    /**
+     * @return current log distance.
+     */
     public int getCurrentRunningGpsLogDistance() {
         return gpsLogger.getCurrentDistance();
     }
@@ -330,6 +370,7 @@ public class GpsManager implements LocationListener, Listener {
     /**
      * Start gps logging.
      * 
+     * @param context  the context to use. 
      * @param logName a name for the new gps log or <code>null</code>.
      * @param dbHelper the db helper.
      */
@@ -341,6 +382,8 @@ public class GpsManager implements LocationListener, Listener {
 
     /**
      * Stop gps logging.
+     * 
+     * @param context  the context to use.
      */
     public void stopDatabaseLogging( Context context ) {
         checkLoggerExists(context);

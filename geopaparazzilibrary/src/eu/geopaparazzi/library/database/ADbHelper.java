@@ -21,6 +21,12 @@ import java.io.IOException;
 
 import android.database.sqlite.SQLiteDatabase;
 
+/**
+ * Db helper class.
+ * 
+ * @author Andrea Antonello (www.hydrologis.com)
+ *
+ */
 public class ADbHelper {
     private static ADbHelper dbHelper = null;
     private SQLiteDatabase db = null;
@@ -28,6 +34,9 @@ public class ADbHelper {
     private ADbHelper() {
     }
 
+    /**
+     * @return singleton instance.
+     */
     public static ADbHelper getInstance() {
         if (dbHelper == null) {
             dbHelper = new ADbHelper();
@@ -35,10 +44,17 @@ public class ADbHelper {
         return dbHelper;
     }
 
+    /**
+     * @return teh db.
+     * @throws IOException  if something goes wrong.
+     */
     public SQLiteDatabase getDatabase() throws IOException {
         return db;
     }
 
+    /**
+     * @param db the db to set.
+     */
     public void setDatabase( SQLiteDatabase db ) {
         this.db = db;
     }

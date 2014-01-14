@@ -76,6 +76,9 @@ public class GpsDatabaseLogger implements GpsManagerListener {
     private int currentPointsNum;
     private float currentDistance;
 
+    /**
+     * @param context  the context to use.
+     */
     public GpsDatabaseLogger( Context context ) {
         this.context = context;
     }
@@ -85,6 +88,9 @@ public class GpsDatabaseLogger implements GpsManagerListener {
     private volatile boolean gotFix;
 
     private long lastLocationupdateMillis;
+    /**
+     * @return the log id.
+     */
     public long getCurrentRecordedLogId() {
         return currentRecordedLogId;
     }
@@ -109,6 +115,7 @@ public class GpsDatabaseLogger implements GpsManagerListener {
      * Starts logging into the database.
      * 
      * @param logName a name for the new log or <code>null</code>.
+     * @param dbHelper teh db helper.
      */
     public void startDatabaseLogging( final String logName, final IGpsLogDbHelper dbHelper ) {
         if (isDatabaseLogging) {
@@ -243,6 +250,9 @@ public class GpsDatabaseLogger implements GpsManagerListener {
         Utilities.toast(context, R.string.gpsloggingon, Toast.LENGTH_SHORT);
     }
 
+    /**
+     * Stop logging.
+     */
     public void stopDatabaseLogging() {
         isDatabaseLogging = false;
         Utilities.toast(context, R.string.gpsloggingoff, Toast.LENGTH_SHORT);
@@ -261,12 +271,18 @@ public class GpsDatabaseLogger implements GpsManagerListener {
         }
     }
 
+    /**
+     * @return teh current points num of the log.
+     */
     public int getCurrentPointsNum() {
         return currentPointsNum;
     }
 
+    /**
+     * @return the current distance rounded to meters.
+     */
     public int getCurrentDistance() {
-        return (int) currentDistance;
+        return (int) Math.round(currentDistance);
     }
 
     public void onLocationChanged( Location location ) {
@@ -279,12 +295,15 @@ public class GpsDatabaseLogger implements GpsManagerListener {
     }
 
     public void onStatusChanged( String provider, int status, Bundle extras ) {
+        // ignore
     }
 
     public void onProviderEnabled( String provider ) {
+        // ignore
     }
 
     public void onProviderDisabled( String provider ) {
+        // ignore
     }
 
     public void gpsStart() {

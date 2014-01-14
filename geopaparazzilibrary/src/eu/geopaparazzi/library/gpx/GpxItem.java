@@ -40,38 +40,65 @@ public class GpxItem implements Comparable<GpxItem> {
     private List<TrackSegment> trackSegments = new ArrayList<TrackSegment>();
     private List<Route> routes = new ArrayList<Route>();
 
+    /**
+     * @return name.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * @param name name to set.
+     */
     public void setName( String name ) {
         this.name = name;
     }
 
+    /**
+     * @return width.
+     */
     public String getWidth() {
         return width;
     }
 
+    /**
+     * @param width width to set.
+     */
     public void setWidth( String width ) {
         this.width = width;
     }
 
+    /**
+     * @return color
+     */
     public String getColor() {
         return color;
     }
 
+    /**
+     * @param color color to set.
+     */
     public void setColor( String color ) {
         this.color = color;
     }
 
+    /**
+     * @return if it is line.
+     */
     public boolean isLine() {
         return isLine;
     }
 
+    /**
+     * @param isVisible set to visible.
+     */
     public void setVisible( boolean isVisible ) {
         this.isVisible = isVisible;
     }
 
+    /**
+     * @return if it is visible.
+     */
     public boolean isVisible() {
         return isVisible;
     }
@@ -80,6 +107,11 @@ public class GpxItem implements Comparable<GpxItem> {
         return 0;
     }
 
+    /**
+     * Set the data.
+     * 
+     * @param data data to set.
+     */
     @SuppressWarnings("unchecked")
     public void setData( Object data ) {
         if (data instanceof List< ? >) {
@@ -95,32 +127,25 @@ public class GpxItem implements Comparable<GpxItem> {
         }
     }
 
+    /**
+     * @return list of waypoints.
+     */
     public List<WayPoint> getWayPoints() {
         return wayPoints;
     }
 
+    /**
+     * @return list of track segments.
+     */
     public List<TrackSegment> getTrackSegments() {
         return trackSegments;
     }
 
+    /**
+     * @return list of routes.
+     */
     public List<Route> getRoutes() {
         return routes;
     }
 
-    // public int compareTo( GpxItem another ) {
-    // if (filepath.equals(another.filepath)) {
-    // return 0;
-    // } else {
-    // return filepath.compareTo(another.filepath);
-    // }
-    // }
-    //
-    // @Override
-    // public boolean equals( Object o ) {
-    // if (o instanceof GpxItem) {
-    // GpxItem other = (GpxItem) o;
-    // return filepath.equals(other.filepath);
-    // }
-    // return false;
-    // }
 }

@@ -27,14 +27,23 @@ import android.content.Context;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public enum GeopaparazziLibraryContextHolder {
+    /**
+     * Singleton instance.
+     */
     INSTANCE;
 
     private Context context;
 
+    /**
+     * @param context context to set.
+     */
     public void setContext( Context context ) {
         this.context = context;
     }
 
+    /**
+     * @return the context.
+     */
     public Context getContext() {
         if (context == null) {
             throw new IllegalArgumentException("Application context is null. Did you set it from your main Application?");

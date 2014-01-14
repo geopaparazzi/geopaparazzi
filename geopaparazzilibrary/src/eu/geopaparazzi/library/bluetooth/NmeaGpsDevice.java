@@ -39,7 +39,6 @@ import eu.geopaparazzi.library.database.GPLog;
  */
 @SuppressWarnings("nls")
 public class NmeaGpsDevice implements IBluetoothIOHandler {
-    private static final String LOG_TAG = "NmeaGpsDevice";
     /**
      * GPS bluetooth socket used for communication. 
      */
@@ -65,9 +64,6 @@ public class NmeaGpsDevice implements IBluetoothIOHandler {
     private boolean enabled;
 
     private List<IBluetoothListener> bluetoothListeners = new ArrayList<IBluetoothListener>();
-
-    public NmeaGpsDevice() {
-    }
 
     /* (non-Javadoc)
      * @see eu.geopaparazzi.library.bluetooth_tmp.IBluetoothDevice#prepare(android.bluetooth.BluetoothSocket, eu.geopaparazzi.library.bluetooth_tmp.BluetoothEnablementHandler)

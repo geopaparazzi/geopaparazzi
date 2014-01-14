@@ -46,6 +46,9 @@ import eu.geopaparazzi.library.util.Utilities;
 @SuppressWarnings("nls")
 public class SmsUtilities {
 
+    /**
+     * 
+     */
     public static String SMSHOST = "gp.eu";
 
     /**
@@ -253,7 +256,7 @@ public class SmsUtilities {
      * 
      * @param url the sms data url to convert.
      * @return the list of {@link SmsData} containing notes and bookmarks data.
-     * @throws IOException 
+     * @throws IOException   if something goes wrong.
      */
     public static List<SmsData> sms2Data( String url ) throws IOException {
         List<SmsData> smsDataList = new ArrayList<SmsData>();
@@ -304,8 +307,8 @@ public class SmsUtilities {
     /**
      * Checks if the device supports phone. 
      * 
-     * @param context
-     * @return
+     * @param context  the context to use.
+     * @return  if something goes wrong.
      */
     public static boolean hasPhone( Context context ) {
         TelephonyManager telephonyManager1 = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);

@@ -34,6 +34,11 @@ public class ScreenHelper {
         this.activity = activity;
     }
 
+    /**
+     * @param activity activity.
+     * @return the singleton instance.
+     * @throws Exception  if something goes wrong.
+     */
     public static ScreenHelper getInstance( Activity activity ) throws Exception {
         if (screenHelper == null) {
             screenHelper = new ScreenHelper(activity);

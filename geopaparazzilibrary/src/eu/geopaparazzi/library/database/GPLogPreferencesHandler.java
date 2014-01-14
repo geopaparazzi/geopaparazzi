@@ -42,6 +42,10 @@ public class GPLogPreferencesHandler {
      */
     public static String PREFS_KEY_LOG_ABSURD = "PREFS_KEY_LOG_ABSURD";
 
+    /**
+     * @param doLog log flag.
+     * @param preferences the preferences.
+     */
     public static void setLog( boolean doLog, SharedPreferences preferences ) {
         GPLog.LOG = doLog;
         Editor edit = preferences.edit();
@@ -49,6 +53,10 @@ public class GPLogPreferencesHandler {
         edit.commit();
     }
 
+    /**
+     * @param doLog log flag.
+     * @param preferences the preferences.
+     */
     public static void setLogHeavy( boolean doLog, SharedPreferences preferences ) {
         GPLog.LOG_HEAVY = doLog;
         Editor edit = preferences.edit();
@@ -56,6 +64,10 @@ public class GPLogPreferencesHandler {
         edit.commit();
     }
 
+    /**
+     * @param doLog log flag.
+     * @param preferences the preferences.
+     */
     public static void setLogAbsurd( boolean doLog, SharedPreferences preferences ) {
         GPLog.LOG_ABSURD = doLog;
         Editor edit = preferences.edit();
@@ -63,18 +75,30 @@ public class GPLogPreferencesHandler {
         edit.commit();
     }
 
+    /**
+     * @param preferences the preferences.
+     * @return if <code>true</code>, log is enabled.
+     */
     public static boolean checkLog( SharedPreferences preferences ) {
         boolean doLog = preferences.getBoolean(PREFS_KEY_LOG, false);
         GPLog.LOG = doLog;
         return doLog;
     }
 
+    /**
+     * @param preferences the preferences.
+     * @return if <code>true</code>, log is enabled.
+     */
     public static boolean checkLogHeavy( SharedPreferences preferences ) {
         boolean doLog = preferences.getBoolean(PREFS_KEY_LOG_HEAVY, false);
         GPLog.LOG_HEAVY = doLog;
         return doLog;
     }
 
+    /**
+     * @param preferences the preferences.
+     * @return if <code>true</code>, log is enabled.
+     */
     public static boolean checkLogAbsurd( SharedPreferences preferences ) {
         boolean doLog = preferences.getBoolean(PREFS_KEY_LOG_ABSURD, false);
         GPLog.LOG_ABSURD = doLog;

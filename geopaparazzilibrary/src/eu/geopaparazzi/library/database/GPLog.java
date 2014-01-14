@@ -53,11 +53,26 @@ public class GPLog {
      */
     public static boolean LOG_ABSURD = false;
 
+    /**
+     * 
+     */
     public static final String ERROR_TAG = "ERROR_GEOPAPARAZZI";
 
+    /**
+     * 
+     */
     public static final String TABLE_LOG = "log";
+    /**
+     * 
+     */
     public static final String COLUMN_ID = "_id";
+    /**
+     * 
+     */
     public static final String COLUMN_DATAORA = "dataora";
+    /**
+     * 
+     */
     public static final String COLUMN_LOGMSG = "logmsg";
 
     /**
@@ -74,7 +89,7 @@ public class GPLog {
      * Create the default log table.
      *
      * @param sqliteDatabase the db into which to create the table.
-     * @throws IOException
+     * @throws IOException  if something goes wrong.
      */
     public static void createTables( SQLiteDatabase sqliteDatabase ) throws IOException {
         StringBuilder sB = new StringBuilder();
@@ -202,6 +217,13 @@ public class GPLog {
         addLogEntry(caller, null, null, logMessage);
     }
 
+    /**
+     * Error log.
+     * 
+     * @param caller caller object.
+     * @param msg message.
+     * @param t a throwable.
+     */
     public static void error( Object caller, String msg, Throwable t ) {
         String localizedMessage = t.getLocalizedMessage();
         if (msg != null) {
@@ -252,7 +274,7 @@ public class GPLog {
      * Clear the log table.
      *
      * @param db the db to use.
-     * @throws Exception
+     * @throws Exception  if something goes wrong.
      */
     public static void clearLogTable( SQLiteDatabase db ) throws Exception {
         String deleteLogQuery = "delete from " + TABLE_LOG;

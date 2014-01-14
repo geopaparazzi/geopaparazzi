@@ -17,13 +17,11 @@
 package eu.geopaparazzi.library.gpx.parser;
 
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -39,17 +37,17 @@ import org.xml.sax.helpers.DefaultHandler;
  * It parses basic Placemark information.
  */
 public class KmlParser {
-    
-    private final static String NS_KML_2 = "http://earth.google.com/kml/2.";  //$NON-NLS-1$
-        
+
+    private final static String NS_KML_2 = "http://earth.google.com/kml/2."; //$NON-NLS-1$
+
     private final static String NODE_PLACEMARK = "Placemark"; //$NON-NLS-1$
     private final static String NODE_NAME = "name"; //$NON-NLS-1$
     private final static String NODE_COORDINATES = "coordinates"; //$NON-NLS-1$
-    
+
     private final static Pattern sLocationPattern = Pattern.compile("([^,]+),([^,]+)(?:,([^,]+))?"); //$NON-NLS-1$
-    
+
     private static SAXParserFactory sParserFactory;
-    
+
     static {
         sParserFactory = SAXParserFactory.newInstance();
         sParserFactory.setNamespaceAware(true);
@@ -58,23 +56,22 @@ public class KmlParser {
     private String mFileName;
 
     private KmlHandler mHandler;
-    
+
     /**
      * Handler for the SAX parser.
      */
     private static class KmlHandler extends DefaultHandler {
-        // --------- parsed data --------- 
+        // --------- parsed data ---------
         List<WayPoint> mWayPoints;
-        
-        // --------- state for parsing --------- 
+
+        // --------- state for parsing ---------
         WayPoint mCurrentWayPoint;
         final StringBuilder mStringAccumulator = new StringBuilder();
 
         boolean mSuccess = true;
 
         @Override
-        public void startElement(String uri, String localName, String name, Attributes attributes)
-                throws SAXException {
+        public void startElement( String uri, String localName, String name, Attributes attributes ) throws SAXException {
             // we only care about the standard GPX nodes.
             try {
                 if (uri.startsWith(NS_KML_2)) {
@@ -82,7 +79,7 @@ public class KmlParser {
                         if (mWayPoints == null) {
                             mWayPoints = new ArrayList<WayPoint>();
                         }
-                        
+
                         mWayPoints.add(mCurrentWayPoint = new WayPoint());
                     }
                 }
@@ -98,12 +95,12 @@ public class KmlParser {
          * and will be processed when {@link #endElement(String, String, String)} is called.
          */
         @Override
-        public void characters(char[] ch, int start, int length) throws SAXException {
+        public void characters( char[] ch, int start, int length ) throws SAXException {
             mStringAccumulator.append(ch, start, length);
         }
-        
+
         @Override
-        public void endElement(String uri, String localName, String name) throws SAXException {
+        public void endElement( String uri, String localName, String name ) throws SAXException {
             if (uri.startsWith(NS_KML_2)) {
                 if (NODE_PLACEMARK.equals(localName)) {
                     mCurrentWayPoint = null;
@@ -120,29 +117,29 @@ public class KmlParser {
         }
 
         @Override
-        public void error(SAXParseException e) throws SAXException {
+        public void error( SAXParseException e ) throws SAXException {
             mSuccess = false;
         }
 
         @Override
-        public void fatalError(SAXParseException e) throws SAXException {
+        public void fatalError( SAXParseException e ) throws SAXException {
             mSuccess = false;
         }
-        
+
         /**
          * Parses the location string and store the information into a {@link LocationPoint}.
          * @param locationNode the {@link LocationPoint} to receive the location data.
          * @param location The string containing the location info.
          */
-        private void parseLocation(LocationPoint locationNode, String location) {
+        private void parseLocation( LocationPoint locationNode, String location ) {
             Matcher m = sLocationPattern.matcher(location);
             if (m.matches()) {
                 try {
                     double longitude = Double.parseDouble(m.group(1));
                     double latitude = Double.parseDouble(m.group(2));
-                    
+
                     locationNode.setLocation(longitude, latitude);
-                    
+
                     if (m.groupCount() == 3) {
                         // looks like we have elevation data.
                         locationNode.setElevation(Double.parseDouble(m.group(3)));
@@ -152,7 +149,7 @@ public class KmlParser {
                 }
             }
         }
-        
+
         WayPoint[] getWayPoints() {
             if (mWayPoints != null) {
                 return mWayPoints.toArray(new WayPoint[mWayPoints.size()]);
@@ -170,12 +167,13 @@ public class KmlParser {
      * Creates a new GPX parser for a file specified by its full path.
      * @param fileName The full path of the GPX file to parse.
      */
-    public KmlParser(String fileName) {
+    public KmlParser( String fileName ) {
         mFileName = fileName;
     }
 
     /**
-     * Parses the GPX file.
+     * Parses the KML file.
+     * 
      * @return <code>true</code> if success.
      */
     public boolean parse() {
@@ -185,27 +183,25 @@ public class KmlParser {
             mHandler = new KmlHandler();
 
             parser.parse(new InputSource(new FileReader(mFileName)), mHandler);
-            
-            return mHandler.getSuccess();
-        } catch (ParserConfigurationException e) {
-        } catch (SAXException e) {
-        } catch (IOException e) {
-        } finally {
-        }
 
+            return mHandler.getSuccess();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return false;
     }
-    
+
     /**
      * Returns the parsed {@link WayPoint} objects, or <code>null</code> if none were found (or
      * if the parsing failed.
+     * 
+     * @return array of waypoints. 
      */
     public WayPoint[] getWayPoints() {
         if (mHandler != null) {
             return mHandler.getWayPoints();
         }
-        
+
         return null;
     }
 }
-

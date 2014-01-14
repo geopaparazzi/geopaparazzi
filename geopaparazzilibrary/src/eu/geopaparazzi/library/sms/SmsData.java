@@ -24,16 +24,45 @@ package eu.geopaparazzi.library.sms;
  *
  */
 public class SmsData {
+    /**
+     * 
+     */
     public static int NOTE = 0;
+    /**
+     * 
+     */
     public static int BOOKMARK = 1;
+    /**
+     * 
+     */
     public static int TRACK = 2;
 
+    /**
+     * 
+     */
     public int TYPE = 0;
+    /**
+     * 
+     */
     public float x = 0f;
+    /**
+     * 
+     */
     public float y = 0f;
+    /**
+     * 
+     */
     public float z = Float.NaN;
+    /**
+     * 
+     */
     public String text = ""; //$NON-NLS-1$
 
+    /**
+     * Convert data to sms string.
+     * 
+     * @return the data string.
+     */
     @SuppressWarnings("nls")
     public String toSmsDataString() {
         StringBuilder sb = new StringBuilder();

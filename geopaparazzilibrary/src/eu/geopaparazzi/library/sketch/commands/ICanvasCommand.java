@@ -1,6 +1,5 @@
 package eu.geopaparazzi.library.sketch.commands;
 
-
 import android.graphics.Canvas;
 
 /**
@@ -11,6 +10,12 @@ import android.graphics.Canvas;
  * To change this template use File | Settings | File Templates.
  */
 public interface ICanvasCommand {
-    public void draw(Canvas canvas);
+    /**
+     * @param canvas the canvas.
+     */
+    public void draw( Canvas canvas );
+    /**
+     * 
+     */
     public void undo();
 }

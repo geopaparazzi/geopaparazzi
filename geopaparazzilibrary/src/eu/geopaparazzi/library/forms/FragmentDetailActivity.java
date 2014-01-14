@@ -72,22 +72,37 @@ public class FragmentDetailActivity extends FragmentActivity {
         setContentView(R.layout.details_activity_layout);
     }
 
+    /**
+     * @return the form name.
+     */
     public String getFormName() {
         return formName;
     }
 
+    /**
+     * @return the section object.
+     */
     public JSONObject getSectionObject() {
         return sectionObject;
     }
 
+    /**
+     * @return the sectionname.
+     */
     public String getSectionName() {
         return sectionObjectString;
     }
 
+    /**
+     * @return the latitude.
+     */
     public double getLatitude() {
         return latitude;
     }
 
+    /**
+     * @return the longitude.
+     */
     public double getLongitude() {
         return longitude;
     }

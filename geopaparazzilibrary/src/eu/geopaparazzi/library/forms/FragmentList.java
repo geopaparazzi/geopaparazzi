@@ -20,6 +20,10 @@ import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 
+/**
+ * @author Andrea Antonello (www.hydrologis.com)
+ *
+ */
 public class FragmentList extends android.support.v4.app.ListFragment {
     private List<String> fragmentTitles;
     private String selectedItemName;
@@ -49,13 +53,11 @@ public class FragmentList extends android.support.v4.app.ListFragment {
 
         setListAdapter(adapter);
     }
-    
+
     @Override
     public void onAttach( Activity activity ) {
         super.onAttach(activity);
-        
-        
-        
+
     }
 
     @Override
@@ -106,18 +108,30 @@ public class FragmentList extends android.support.v4.app.ListFragment {
         }
     }
 
+    /**
+     * @return the selected name.
+     */
     public String getSelectedItemName() {
         return selectedItemName;
     }
 
+    /**
+     * @return the json object.
+     */
     public JSONObject getSectionObject() {
         return activity.getSectionObject();
     }
 
+    /**
+     * @return the latitude.
+     */
     public double getLatitude() {
         return activity.getLatitude();
     }
 
+    /**
+     * @return the longitude.
+     */
     public double getLongitude() {
         return activity.getLongitude();
     }

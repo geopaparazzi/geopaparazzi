@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
@@ -44,6 +43,9 @@ import eu.geopaparazzi.library.util.ResourcesManager;
  */
 @SuppressWarnings("nls")
 public enum WebProjectManager {
+    /**
+     * Singleton instance.
+     */
     INSTANCE;
 
     /**
@@ -84,9 +86,9 @@ public enum WebProjectManager {
                 }
             }
             if (addMedia) {
-                CompressionUtilities.zipFolder(appFolder.getAbsolutePath(), zipFile.getAbsolutePath(), true);
+                CompressionUtilities.zipFolder(appFolder.getAbsolutePath(), zipFile.getAbsolutePath());
             } else {
-                CompressionUtilities.zipFolder(appFolder.getAbsolutePath(), zipFile.getAbsolutePath(), true, mediaFodlerName);
+                CompressionUtilities.zipFolder(appFolder.getAbsolutePath(), zipFile.getAbsolutePath(), mediaFodlerName);
             }
 
             server = server + "/" + UPLOADPATH;
@@ -156,7 +158,7 @@ public enum WebProjectManager {
      * @param user the username for authentication.
      * @param passwd the password for authentication.
      * @return the project list.
-     * @throws Exception 
+     * @throws Exception  if something goes wrong.
      */
     public List<Webproject> downloadProjectList( Context context, String server, String user, String passwd ) throws Exception {
         String jsonString = "[]";
@@ -183,7 +185,7 @@ public enum WebProjectManager {
      * 
      * @param json the json string.
      * @return the list of {@link Webproject}.
-     * @throws JSONException 
+     * @throws Exception  if something goes wrong. 
      */
     public static List<Webproject> json2WebprojectsList( String json ) throws Exception {
         List<Webproject> wpList = new ArrayList<Webproject>();

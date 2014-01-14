@@ -25,7 +25,6 @@ import java.io.File;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -48,14 +47,31 @@ public class GMapView extends View implements GView {
     private ImageView imageView;
     private LinearLayout mainLayout;
 
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     * @param defStyle def style.
+     */
     public GMapView( Context context, AttributeSet attrs, int defStyle ) {
         super(context, attrs, defStyle);
     }
 
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     */
     public GMapView( Context context, AttributeSet attrs ) {
         super(context, attrs);
     }
 
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     * @param parentView parent
+     * @param key key
+     * @param value value
+     * @param constraintDescription constraints
+     */
     public GMapView( final Context context, AttributeSet attrs, LinearLayout parentView, String key, String value,
             String constraintDescription ) {
         super(context, attrs);
@@ -134,6 +150,7 @@ public class GMapView extends View implements GView {
 
     @Override
     public void setOnActivityResult( Intent data ) {
+        // ignore
     }
 
 }

@@ -16,18 +16,21 @@
 
 package eu.geopaparazzi.library.gpx.parser;
 
-
 /**
  * A Route Point.
- * <p/>A Route point is a point in time and space.
+ * 
+ * <p>A Route point is a point in time and space.
  */
 public class RoutePoint extends LocationPoint {
     private long mTime;
 
-    void setTime(long time) {
+    void setTime( long time ) {
         mTime = time;
     }
-    
+
+    /**
+     * @return time.
+     */
     public long getTime() {
         return mTime;
     }

@@ -45,14 +45,32 @@ public class GNfcUidView extends View implements GView {
     private EditText uidText;
     private FragmentDetail fragmentDetail;
 
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     * @param defStyle def style.
+     */
     public GNfcUidView( Context context, AttributeSet attrs, int defStyle ) {
         super(context, attrs, defStyle);
     }
 
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     */
     public GNfcUidView( Context context, AttributeSet attrs ) {
         super(context, attrs);
     }
 
+    /**
+     * @param activity activity.
+     * @param attrs attributes.
+     * @param requestCode the request code for the activity return. 
+     * @param parentView parent
+     * @param key key
+     * @param value value
+     * @param constraintDescription constraints
+     */
     public GNfcUidView( final Activity activity, AttributeSet attrs, final int requestCode, LinearLayout parentView, String key,
             String value, String constraintDescription ) {
         super(activity, attrs);
@@ -60,6 +78,15 @@ public class GNfcUidView extends View implements GView {
         handleView(activity, requestCode, parentView, key, value, constraintDescription);
     }
 
+    /**
+     * @param fragmentDetail the fragemtn.
+     * @param attrs attributes.
+     * @param requestCode the request code for the activity return. 
+     * @param parentView parent
+     * @param key key
+     * @param value value
+     * @param constraintDescription constraints
+     */
     public GNfcUidView( FragmentDetail fragmentDetail, AttributeSet attrs, final int requestCode, LinearLayout parentView,
             String key, String value, String constraintDescription ) {
         super(fragmentDetail.getActivity(), attrs);
@@ -130,7 +157,7 @@ public class GNfcUidView extends View implements GView {
     @Override
     public void refresh( Context context ) {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

@@ -18,7 +18,6 @@
 package eu.geopaparazzi.library.util;
 
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 
 /**
  * Some constants used in the lib.
@@ -27,8 +26,17 @@ import java.text.SimpleDateFormat;
  */
 public interface LibraryConstants {
 
+    /**
+     * 
+     */
     public final float E6 = 1000000f;
+    /**
+     * 
+     */
     public final DecimalFormat COORDINATE_FORMATTER = new DecimalFormat("#.00000000"); //$NON-NLS-1$
+    /**
+     * 
+     */
     public final DecimalFormat DECIMAL_FORMATTER_2 = new DecimalFormat("0.00"); //$NON-NLS-1$
 
     /**
@@ -262,11 +270,13 @@ public interface LibraryConstants {
      * Default gps logging distance.
      */
     public static final float GPS_LOGGING_DISTANCE = 1f;
-     /*
-     * MapsDirManager
-     * [MapDirManager] : PREFS_KEY_TILESOURCE,PREFS_KEY_TILESOURCE_FILE moved from Constants
+    /**
+     * Key for tilesource in preferences. 
      */
     public static final String PREFS_KEY_TILESOURCE = "PREFS_KEY_TILESOURCE";
+    /**
+     * Key for tilesource file in preferences. 
+     */
     public static final String PREFS_KEY_TILESOURCE_FILE = "PREFS_KEY_TILESOURCE_FILE";
 
 }

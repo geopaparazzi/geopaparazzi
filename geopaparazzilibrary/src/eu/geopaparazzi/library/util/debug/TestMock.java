@@ -35,11 +35,20 @@ import eu.geopaparazzi.library.gps.GpsManager;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class TestMock {
+    /**
+     * 
+     */
     public static String MOCK_PROVIDER_NAME = LocationManager.GPS_PROVIDER;
+    /**
+     * 
+     */
     public static boolean isOn = false;
     private static Method locationJellyBeanFixMethod = null;
     private static IFakeGpsLog fakeGpsLog = null;
 
+    /**
+     * @param fakeGpsLog fake gps log to use.
+     */
     public static void setFakeGpsLog( IFakeGpsLog fakeGpsLog ) {
         TestMock.fakeGpsLog = fakeGpsLog;
     }
@@ -48,7 +57,7 @@ public class TestMock {
      * Starts to trigger mock locations.
      * 
      * @param locationManager the location manager.
-     * @param gpsManager 
+     * @param gpsManager the gos manager. 
      */
     public static void startMocking( final LocationManager locationManager, GpsManager gpsManager ) {
         if (isOn) {
@@ -167,7 +176,7 @@ public class TestMock {
     /**
      * Checks if mock locations were set.
      * 
-     * @param contentResolver
+     * @param contentResolver {@link ContentResolver}.
      * @return true if they were set.
      */
     public static boolean isMockEnabled( ContentResolver contentResolver ) {

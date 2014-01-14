@@ -1,3 +1,20 @@
+/*
+ * Geopaparazzi - Digital field mapping on Android based devices
+ * Copyright (C) 2010  HydroloGIS (www.hydrologis.com)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.geopaparazzi.library.nfc;
 
 import android.app.Activity;
@@ -17,6 +34,10 @@ import eu.geopaparazzi.library.bluetooth.IBluetoothListener;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 
+/**
+ * @author moovida
+ *
+ */
 public class NfcIdReaderActivity extends Activity implements IBluetoothListener {
 
     private NfcAdapter nfcAdapter;
@@ -106,6 +127,11 @@ public class NfcIdReaderActivity extends Activity implements IBluetoothListener 
         super.onPause();
     }
 
+    /**
+     * Ok action.
+     * 
+     * @param view parent.
+     */
     public void okPushed( View view ) {
         Intent intent = getIntent();
         intent.putExtra(LibraryConstants.PREFS_KEY_TEXT, lastReadNfcMessage);
@@ -113,6 +139,11 @@ public class NfcIdReaderActivity extends Activity implements IBluetoothListener 
         finish();
     }
 
+    /**
+     * Cancel action.
+     * 
+     * @param view parent.
+     */
     public void cancelPushed( View view ) {
         finish();
     }

@@ -33,6 +33,12 @@ public class RangeConstraint implements IConstraint {
     private final double highValue;
     private final boolean includeHigh;
 
+    /**
+     * @param low low value.
+     * @param includeLow if <code>true</code>, include low.
+     * @param high high value.
+     * @param includeHigh if <code>true</code>, include high.
+     */
     public RangeConstraint( Number low, boolean includeLow, Number high, boolean includeHigh ) {
         this.includeLow = includeLow;
         this.includeHigh = includeHigh;
