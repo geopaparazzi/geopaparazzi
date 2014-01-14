@@ -187,7 +187,7 @@ public class GpxParser {
          * @param timeString the string data.
          * @return date in milliseconds.
          */
-        private long computeTime( String timeString ) {
+        private static long computeTime( String timeString ) {
             // Time looks like: 2008-04-05T19:24:50Z
             Matcher m = ISO8601_TIME.matcher(timeString);
             if (m.matches()) {
@@ -233,10 +233,11 @@ public class GpxParser {
 
         /**
          * Handles the location attributes and store them into a {@link LocationPoint}.
+         * 
          * @param locationNode the {@link LocationPoint} to receive the location data.
          * @param attributes the attributes from the XML node.
          */
-        private void handleLocation( LocationPoint locationNode, Attributes attributes ) {
+        private static void handleLocation( LocationPoint locationNode, Attributes attributes ) {
             try {
                 double longitude = Double.parseDouble(attributes.getValue(ATTR_LONGITUDE));
                 double latitude = Double.parseDouble(attributes.getValue(ATTR_LATITUDE));
@@ -296,7 +297,10 @@ public class GpxParser {
             mPoints.add(trackPoint);
         }
 
-        List<TrackPoint> getPoints() {
+        /**
+         * @return get points list.
+         */
+        public List<TrackPoint> getPoints() {
             return mPoints;
         }
 
