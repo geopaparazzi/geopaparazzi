@@ -62,9 +62,6 @@ public class SpatialVectorTable {
      */
     private String databaseFileName;
     
-    // all DatabaseHandler/Table classes should use these names
-    private String s_name;
-    // all DatabaseHandler/Table classes should use these names
     private String s_description = "";
     // all DatabaseHandler/Table classes should use these
     // names
@@ -258,39 +255,7 @@ public class SpatialVectorTable {
     public String getCenter_toString() {
         return centerX + "," + centerY + "," + defaultZoom;
     }
-    // -----------------------------------------------
-    /**
-      * Return long description of map/file
-      *
-      * <p>default: s_name with bounds and center
-      * <p>mbtiles : metadata description'
-      * <p>map : will be value of 'comment', if not null
-      *
-      * @return s_description long description of map/file
-      */
-    public String getDescription() {
-        if ((this.s_description == null) || (this.s_description.length() == 0) || (this.s_description.equals(this.s_name)))
-            setDescription(getName()); // will set default values with bounds and center if it is
-                                       // the same as 's_name' or empty
-        return this.s_description; // long comment
-    }
-    // -----------------------------------------------
-    /**
-      * Set long description of map/file
-      *
-      * <p>default: s_name with bounds and center
-      * <p>mbtiles : metadata description'
-      * <p>map : will be value of 'comment', if not null
-      *
-      * @return s_description long description of map/file
-      */
-    public void setDescription( String s_description ) {
-        if ((s_description == null) || (s_description.length() == 0) || (s_description.equals(this.s_name))) {
-            this.s_description = getName() + " bounds[" + getBounds_toString() + "] center[" + getCenter_toString() + "]";
-        } else
-            this.s_description = s_description;
-    }
-    // -----------------------------------------------
+
     /**
       * Return map-file as 'File'
       *

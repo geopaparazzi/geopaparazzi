@@ -763,12 +763,14 @@ public abstract class GeopaparazziOverlay extends Overlay {
                             }
                         } else {
                             GPLog.androidLog(-1, "GeopaparazziOverlay.drawFromSpatialite  [geom == null] description["
-                                    + spatialTable.getDescription() + "]");
+                                    + spatialTable.getName() + "]");
                         }
                     }
                     if (i_geometryIterator == 0) {
-                       // GPLog.androidLog(-1, "GeopaparazziOverlay.drawFromSpatialite  geometryIterator[" + i_geometryIterator
-                       //          + "] description[" + spatialTable.getDescription() + "]");
+                        // GPLog.androidLog(-1,
+                        // "GeopaparazziOverlay.drawFromSpatialite  geometryIterator[" +
+                        // i_geometryIterator
+                        // + "] description[" + spatialTable.getDescription() + "]");
                     }
                 } finally {
                     if (geometryIterator != null)
