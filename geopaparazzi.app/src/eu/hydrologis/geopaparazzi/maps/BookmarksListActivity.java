@@ -159,6 +159,7 @@ public class BookmarksListActivity extends ListActivity {
                         builder.setIcon(android.R.drawable.ic_dialog_info)
                                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
                                     public void onClick( DialogInterface dialog, int whichButton ) {
+                                        // ignore
                                     }
                                 }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                                     public void onClick( DialogInterface dialog, int whichButton ) {
@@ -270,9 +271,11 @@ public class BookmarksListActivity extends ListActivity {
     private TextWatcher filterTextWatcher = new TextWatcher(){
 
         public void afterTextChanged( Editable s ) {
+            // ignore
         }
 
         public void beforeTextChanged( CharSequence s, int start, int count, int after ) {
+            // ignore
         }
 
         public void onTextChanged( CharSequence s, int start, int before, int count ) {

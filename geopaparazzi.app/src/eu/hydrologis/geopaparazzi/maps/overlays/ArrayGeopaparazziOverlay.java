@@ -36,6 +36,7 @@ public class ArrayGeopaparazziOverlay extends GeopaparazziOverlay {
     private final List<OverlayItem> overlayItems;
 
     /**
+     * @param context  the context to use.
      */
     public ArrayGeopaparazziOverlay( Context context ) {
         super(context);

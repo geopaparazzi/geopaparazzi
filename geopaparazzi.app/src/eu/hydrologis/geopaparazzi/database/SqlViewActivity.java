@@ -67,6 +67,12 @@ public class SqlViewActivity extends Activity {
         customQueryText = (EditText) findViewById(R.id.ownQueryEditText);
     }
 
+    /**
+     * Launch a query.
+     * 
+     * @param view parent.
+     * @throws Exception  if something goes wrong.
+     */
     public void launchQuery( View view ) throws Exception {
         String sqlName = sqlSpinner.getSelectedItem().toString();
         Query query = queriesMap.get(sqlName);
@@ -76,6 +82,12 @@ public class SqlViewActivity extends Activity {
         startActivity(dbViewIntent);
     }
 
+    /**
+     * Launch custom query.
+     * 
+     * @param view parent.
+     * @throws Exception  if something goes wrong.
+     */
     public void launchOwnQuery( View view ) throws Exception {
         String customQuery = customQueryText.getText().toString();
 

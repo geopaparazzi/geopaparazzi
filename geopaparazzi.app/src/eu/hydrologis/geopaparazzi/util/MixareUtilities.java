@@ -53,12 +53,12 @@ public class MixareUtilities {
     /**
      * Show the points in the supplied region in Mixare.
      * 
-     * @param context
-     * @param n
-     * @param s
-     * @param w
-     * @param e
-     * @throws Exception
+     * @param context  the context to use.
+     * @param n north bound.
+     * @param s south bound.
+     * @param w west bound.
+     * @param e east bound.
+     * @throws Exception  if something goes wrong.
      */
     public static void runRegionOnMixare( Context context, float n, float s, float w, float e ) throws Exception {
         List<PointF3D> points = new ArrayList<PointF3D>();
@@ -82,7 +82,7 @@ public class MixareUtilities {
             PointF3D p = new PointF3D((float) lon, (float) lat, (float) elevation, title);
             points.add(p);
         }
-        
+
         MixareHandler handler = new MixareHandler();
         handler.runRegionOnMixare(context, points);
     }

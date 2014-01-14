@@ -45,6 +45,10 @@ public class CustomSdcardPathPreference extends DialogPreference {
     private String customPath = "";
     private Spinner guessedPathsSpinner;
     private List<String> guessedSdcardsList;
+    /**
+     * @param ctxt  the context to use.
+     * @param attrs attributes.
+     */
     public CustomSdcardPathPreference( Context ctxt, AttributeSet attrs ) {
         super(ctxt, attrs);
         this.context = ctxt;

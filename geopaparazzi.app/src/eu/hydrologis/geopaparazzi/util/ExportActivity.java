@@ -129,6 +129,7 @@ public class ExportActivity extends Activity {
                     }
                 }).setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
+                        // ignore
                     }
                 }).create();
                 alertDialog.show();
@@ -139,7 +140,7 @@ public class ExportActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        
+
         Utilities.dismissProgressDialog(kmlProgressDialog);
         Utilities.dismissProgressDialog(gpxProgressDialog);
         Utilities.dismissProgressDialog(cloudProgressDialog);
@@ -182,6 +183,7 @@ public class ExportActivity extends Activity {
                 builder.setMessage(response).setCancelable(false)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                             public void onClick( DialogInterface dialog, int id ) {
+                                // ignore
                             }
                         });
                 AlertDialog alertDialog = builder.create();
@@ -269,6 +271,7 @@ public class ExportActivity extends Activity {
                 builder.setMessage(msg).setCancelable(false)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                             public void onClick( DialogInterface dialog, int id ) {
+                                // ignore
                             }
                         });
                 AlertDialog alertDialog = builder.create();
@@ -327,6 +330,7 @@ public class ExportActivity extends Activity {
                 builder.setMessage(msg).setCancelable(false)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                             public void onClick( DialogInterface dialog, int id ) {
+                                // ignore
                             }
                         });
                 AlertDialog alertDialog = builder.create();

@@ -128,8 +128,6 @@ import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.MixareUtilities;
 import eu.hydrologis.geopaparazzi.util.Note;
-// -begin- MapsDir specific
-// -end-  MapsDir specific
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
@@ -139,6 +137,9 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     private final int ZOOM_RETURN_CODE = 667;
     private final int GPSDATAPROPERTIES_RETURN_CODE = 668;
     private final int DATAPROPERTIES_RETURN_CODE = 671;
+    /**
+     * The form update return code.
+     */
     public static final int FORMUPDATE_RETURN_CODE = 669;
     private final int CONTACT_RETURN_CODE = 670;
     private static final int MAPSDIR_FILETREE = 777;
@@ -290,7 +291,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             public void onClick( View v ) {
                 GpsLocation location = GpsManager.getInstance(MapsActivity.this).getLocation();
                 if (location != null) {
-                    setNewCenter(location.getLongitude(), location.getLatitude(), false);
+                    setNewCenter(location.getLongitude(), location.getLatitude());
                 }
             }
         });
@@ -346,6 +347,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                                 bufferedBitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
                                 out.close();
                             } catch (Exception e) {
+                                // ignore
                             }
                         }
                     }).start();
@@ -825,7 +827,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
       * Set current Zoom  [in MapsDirManager]
       * - checking is done to insure that the new Zoom is inside the supported min/max Zoom-levels
       * -- the present value will be retained if invalid
-      * @return integer currentZoom
       */
     private void setZoomGuiText( int newZoom ) {
         // checking is done to insure that the new Zoom is inside the supported min/max Zoom-levels
@@ -835,6 +836,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     // -----------------------------------------------
     /**
       * set MapView Center point [in MapsDirManager]
+      * 
       * - this should be the only function used to compleate this task
       * -- error logic has been build in use value incase the function was incorrectly called
       * <p>if (mapCenterLocation == null)
@@ -843,22 +845,32 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
       * <p>-- the default Zoom of the loaded map will be taken
       * <p>-  if (i_default_zoom == 2)
       * <p>-- the getMinZoom() of the loaded map will be taken
-      * @param map_View Map-View to set (if not null)
-      * @param mapCenterLocation [point/zoom to set]
-      * @return zoom-level
+      *
+      * @param lon center lon
+      * @param lat center lat
       */
-    public void setNewCenter( double lon, double lat, boolean drawIcon ) {
+    public void setNewCenter( double lon, double lat ) {
         double[] mapCenterLocation = new double[]{lon, lat, (double) getZoomLevel()};
         MapsDirManager.getInstance().setMapViewCenter(mapView, mapCenterLocation, 0);
         // mapView.getController().setCenter(new GeoPoint(lat, lon));
     }
 
-    public void setNewCenterAtZoom( final double centerX, final double centerY, final int zoom ) {
-        double[] mapCenterLocation = new double[]{centerX, centerY, (double) zoom};
+    /**
+     * Set new center.
+     * 
+     * @param lon center lon
+     * @param lat center lat
+     * @param zoom the zoom level to set.
+     */
+    public void setNewCenterAtZoom( double lon, double lat, int zoom ) {
+        double[] mapCenterLocation = new double[]{lon, lat, (double) zoom};
         MapsDirManager.getInstance().setMapViewCenter(mapView, mapCenterLocation, 0);
         setZoomGuiText(getZoomLevel());
     }
 
+    /**
+     * @return the center [lon, lat]
+     */
     public double[] getCenterLonLat() {
         return MapsDirManager.getInstance().getMapCenter();
     }
@@ -1044,6 +1056,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                         }
                     }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
                         public void onClick( DialogInterface dialog, int id ) {
+                            // ignore
                         }
                     });
             AlertDialog alertDialog = builder.create();
@@ -1306,6 +1319,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         builder.setIcon(android.R.drawable.ic_dialog_info)
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
+                        // ignore
                     }
                 }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
@@ -1330,6 +1344,9 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     }
     private TextView zoomLevelText;
 
+    /**
+     * Calls the mapview redraw.
+     */
     public void invalidateMap() {
         mapView.invalidateOnUiThread();
     }
@@ -1466,7 +1483,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 }
             }
             if (doCenter) {
-                setNewCenter(lon, lat, false);
+                setNewCenter(lon, lat);
                 if (GPLog.LOG_ABSURD)
                     GPLog.addLogEntry(this, "recentering triggered"); //$NON-NLS-1$
             }
@@ -1478,21 +1495,27 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     }
 
     public void onProviderDisabled( String provider ) {
+        // ignore
     }
 
     public void onProviderEnabled( String provider ) {
+        // ignore
     }
 
     public void onStatusChanged( String provider, int status, Bundle extras ) {
+        // ignore
     }
 
     public void gpsStart() {
+        // ignore
     }
 
     public void gpsStop() {
+        // ignore
     }
 
     public void onGpsStatusChanged( int event, GpsStatus status ) {
+        // ignore
     }
 
     public boolean hasFix() {

@@ -78,8 +78,6 @@ import eu.hydrologis.geopaparazzi.util.Note;
  * areas, are also supported. A way node sequence is considered as a closed polygon if the first and the last way node
  * are equal.
  *
- * @param <Generic>
- *            the type of ways handled by this overlay.
  */
 public abstract class GeopaparazziOverlay extends Overlay {
     private int crossSize = 20;
@@ -170,6 +168,8 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
     /**
      * Create a {@link OverlayWay} wrapped type.
+     * 
+     * @param context  the context to use. 
      */
     public GeopaparazziOverlay( Context context ) {
         super();
@@ -378,16 +378,22 @@ public abstract class GeopaparazziOverlay extends Overlay {
         }
     }
 
-    private void drawGpsWayPathOnCanvas( Canvas canvas, OverlayWay overlayWay ) {
+    private void drawGpsWayPathOnCanvas( Canvas canvas ) {
         canvas.drawPath(this.gpsPath, this.gpsTrackPaintBlack);
         canvas.drawPath(this.gpsPath, this.gpsTrackPaintYellow);
     }
 
-    private void drawGpsOnCanvas( Canvas canvas, GpsData gpsCircle ) {
+    private void drawGpsOnCanvas( Canvas canvas ) {
         canvas.drawPath(this.path, gpsOutline);
         canvas.drawPath(this.path, gpsFill);
     }
 
+    /**
+     * set the currtn gps position.
+     * 
+     * @param position the {@link GeoPoint}.
+     * @param accuracy the accuracy.
+     */
     @SuppressWarnings("nls")
     public void setGpsPosition( GeoPoint position, float accuracy ) {
         GpsManager gpsManager = GpsManager.getInstance(context);
@@ -574,7 +580,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                         }
 
                         assembleGpsWayPath(drawPosition, gpslogOverlay);
-                        drawGpsWayPathOnCanvas(canvas, gpslogOverlay);
+                        drawGpsWayPathOnCanvas(canvas);
                     }
                 }
             }
@@ -616,7 +622,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                         this.path.addCircle(this.circlePosition.x, this.circlePosition.y, circleRadius, Path.Direction.CCW);
 
                         if (circleRadius > 0) {
-                            drawGpsOnCanvas(canvas, overlayGps);
+                            drawGpsOnCanvas(canvas);
                         }
 
                         // get the position of the marker
@@ -782,7 +788,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
         }
     }
 
-    private void drawGeometry( Geometry geom, Canvas canvas, ShapeWriter shape_writer, Paint fill, Paint stroke ) {
+    private static void drawGeometry( Geometry geom, Canvas canvas, ShapeWriter shape_writer, Paint fill, Paint stroke ) {
         String s_geometry_type = geom.getGeometryType();
         int i_geometry_type = GeometryType.forValue(s_geometry_type);
         GeometryType geometry_type = GeometryType.forValue(i_geometry_type);
@@ -832,6 +838,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
             break;
         }
     }
+
     @Override
     protected String getThreadName() {
         return THREAD_NAME;
@@ -1020,6 +1027,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                             }
                         }
                     } catch (IOException e1) {
+                        // ignore
                     }
                 }
 

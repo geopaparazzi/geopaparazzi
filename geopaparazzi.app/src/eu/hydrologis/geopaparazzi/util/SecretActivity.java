@@ -125,11 +125,21 @@ public class SecretActivity extends Activity implements CheckBox.OnCheckedChange
             }
     }
 
+    /**
+     * Start sql view.
+     * 
+     * @param view parent.
+     */
     public void startSqlView( View view ) {
         Intent sqlViewIntent = new Intent(this, SqlViewActivity.class);
         startActivity(sqlViewIntent);
     }
 
+    /**
+     * Clear log.
+     * 
+     * @param view parent.
+     */
     public void clearLog( View view ) {
         try {
             SQLiteDatabase database = DatabaseManager.getInstance().getDatabase();
@@ -141,6 +151,11 @@ public class SecretActivity extends Activity implements CheckBox.OnCheckedChange
         }
     }
 
+    /**
+     * Reset style tables.
+     * 
+     * @param view parent.
+     */
     public void resetStyleTables( View view ) {
         try {
             SpatialDatabasesManager dbManager = SpatialDatabasesManager.getInstance();

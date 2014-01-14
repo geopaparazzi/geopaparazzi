@@ -501,6 +501,12 @@ public class GeoPaparazziActivity extends Activity {
         // MapsDirManager.load_Map(map_view,mapCenterLocation);
     }
 
+    /**
+     * Push action.
+     * 
+     * @param id the calling id.
+     * @param v parent view.
+     */
     public void push( int id, View v ) {
         switch( id ) {
         case R.id.dashboard_note_item_button: {
@@ -550,10 +556,10 @@ public class GeoPaparazziActivity extends Activity {
         case R.id.dashboard_log_item_button: {
             QuickAction qa = new QuickAction(v);
             if (gpsManager.isDatabaseLogging()) {
-                ActionItem stopLogQuickAction = QuickActionsFactory.INSTANCE.getStopLogQuickAction(actionBar, qa, this);
+                ActionItem stopLogQuickAction = QuickActionsFactory.getStopLogQuickAction(actionBar, qa, this);
                 qa.addActionItem(stopLogQuickAction);
             } else {
-                ActionItem startLogQuickAction = QuickActionsFactory.INSTANCE.getStartLogQuickAction(actionBar, qa, this);
+                ActionItem startLogQuickAction = QuickActionsFactory.getStartLogQuickAction(actionBar, qa, this);
                 qa.addActionItem(startLogQuickAction);
             }
             qa.setAnimStyle(QuickAction.ANIM_AUTO);
@@ -701,8 +707,8 @@ public class GeoPaparazziActivity extends Activity {
                         double lon = Double.parseDouble(noteArray[0]);
                         double lat = Double.parseDouble(noteArray[1]);
                         double elev = Double.parseDouble(noteArray[2]);
-                        DaoNotes.addNote(lon, lat, elev, noteArray[3], noteArray[4], NoteType.POI.getDef(),
-                                null, NoteType.POI.getTypeNum());
+                        DaoNotes.addNote(lon, lat, elev, noteArray[3], noteArray[4], NoteType.POI.getDef(), null,
+                                NoteType.POI.getTypeNum());
                     } catch (Exception e) {
                         e.printStackTrace();
                         Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
@@ -838,8 +844,10 @@ public class GeoPaparazziActivity extends Activity {
         editText.setText(newGeopaparazziDirName);
         editText.addTextChangedListener(new TextWatcher(){
             public void onTextChanged( CharSequence s, int start, int before, int count ) {
+                // ignore
             }
             public void beforeTextChanged( CharSequence s, int start, int count, int after ) {
+                // ignore
             }
             public void afterTextChanged( Editable s ) {
                 String newName = s.toString();

@@ -7,8 +7,17 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+/**
+ * Utilities.
+ * 
+ * @author Andrea Antonello (www.hydrologis.com)
+ */
 public class GpUtilities {
 
+    /**
+     * @param context  the context to use.
+     * @return the decimation factor  from the preferences.
+     */
     public static int getDecimationFactor( Context context ) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String decimationFactorStr = preferences.getString(DECIMATION_FACTOR, "5"); //$NON-NLS-1$

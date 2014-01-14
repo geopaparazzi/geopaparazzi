@@ -92,6 +92,12 @@ public class SliderDrawView extends View {
     private StringBuilder textBuilder = new StringBuilder();
     private ProgressDialog infoProgressDialog;
 
+    /**
+     * Constructor.
+     * 
+     * @param context  the context to use.
+     * @param attrs the attributes.
+     */
     public SliderDrawView( Context context, AttributeSet attrs ) {
         super(context, attrs);
 
@@ -162,7 +168,7 @@ public class SliderDrawView extends View {
             canvas.drawRect(rect, infoRectPaintStroke);
         }
     }
-    
+
     @Override
     public boolean onTouchEvent( MotionEvent event ) {
         if (mapView == null || mapView.isClickable()) {
@@ -296,7 +302,7 @@ public class SliderDrawView extends View {
             infoProgressDialog.setMax(spatialTables.size());
             infoProgressDialog.show();
 
-            new AsyncTask<String, Void, String>(){
+            new AsyncTask<String, Integer, String>(){
 
                 protected String doInBackground( String... params ) {
                     try {
@@ -331,7 +337,10 @@ public class SliderDrawView extends View {
                                 sb.append(sbTmp);
                                 sb.append("\n----------------------\n");
 
-                                onProgressUpdate(0);
+                                publishProgress(1);
+                                // Escape early if cancel() is called
+                                if (isCancelled())
+                                    break;
                             }
                         }
                         return sb.toString();
@@ -343,7 +352,7 @@ public class SliderDrawView extends View {
 
                 protected void onProgressUpdate( Integer... progress ) { // on UI thread!
                     if (infoProgressDialog != null && infoProgressDialog.isShowing())
-                        infoProgressDialog.incrementProgressBy(1);
+                        infoProgressDialog.incrementProgressBy(progress[0]);
                 }
 
                 protected void onPostExecute( String response ) { // on UI thread!
@@ -361,6 +370,10 @@ public class SliderDrawView extends View {
             ex.printStackTrace();
         }
     }
+
+    /**
+     * Disable measure mode. 
+     */
     public void disableMeasureMode() {
         doMeasureMode = false;
         this.mapView = null;
@@ -369,11 +382,19 @@ public class SliderDrawView extends View {
         invalidate();
     }
 
+    /**
+     * Enable measure mode. 
+     *
+     * @param mapView the mapview.
+     */
     public void enableMeasureMode( MapView mapView ) {
         this.mapView = mapView;
         doMeasureMode = true;
     }
 
+    /**
+     * Disable info mode.
+     */
     public void disableInfo() {
         doInfoMode = false;
         this.mapView = null;
@@ -381,6 +402,11 @@ public class SliderDrawView extends View {
         invalidate();
     }
 
+    /**
+     * Enable info mode. 
+     *
+     * @param mapView the mapview.
+     */
     public void enableInfo( MapView mapView ) {
         this.mapView = mapView;
         doInfoMode = true;

@@ -21,7 +21,7 @@ import android.graphics.Color;
 import eu.geopaparazzi.library.util.ColorUtilities;
 
 /**
- * Singleton that takes care of all the vector data issues.
+ * Singleton that takes care of all the surveyed vector data issues.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
@@ -45,53 +45,92 @@ public class DataManager {
         return dataManager;
     }
 
+    /**
+     * @return color.
+     */
     public int getNotesColor() {
         return notesColor;
     }
 
+    /**
+     * @param colorStr color
+     */
     public void setNotesColor( String colorStr ) {
         int color = ColorUtilities.toColor(colorStr);
         this.notesColor = color;
     }
 
+    /**
+     * @return the width
+     */
     public float getNotesWidth() {
         return notesWidth;
     }
 
+    /**
+     * @param notesWidth the width
+     */
     public void setNotesWidth( float notesWidth ) {
         this.notesWidth = notesWidth;
     }
 
     private boolean areNotesVisible = true;
+    /**
+     * @return <code>true</code> if notes visible.
+     */
     public boolean areNotesVisible() {
         return areNotesVisible;
     }
+
+    /**
+     * @param areNotesVisible if notes are visible.
+     */
     public void setNotesVisible( boolean areNotesVisible ) {
         this.areNotesVisible = areNotesVisible;
     }
 
     private boolean areImagesVisible = true;
+
+    /**
+     * @return  <code>true</code>, if images are visible.
+     */
     public boolean areImagesVisible() {
         return areImagesVisible;
     }
+
+    /**
+     * @param areImagesVisible if images are visible.
+     */
     public void setImagesVisible( boolean areImagesVisible ) {
         this.areImagesVisible = areImagesVisible;
     }
 
     private boolean areLogsVisible = false;
+    /**
+     * @return <code>true</code> if logs are visible.
+     */
     public boolean areLogsVisible() {
         return areLogsVisible;
     }
 
+    /**
+     * @param areLogsVisible if logs visible.
+     */
     public void setLogsVisible( boolean areLogsVisible ) {
         this.areLogsVisible = areLogsVisible;
     }
 
     private boolean areMapsVisible = false;
+    /**
+     * @return <code>true</code> if maps visible.
+     */
     public boolean areMapsVisible() {
         return areMapsVisible;
     }
 
+    /**
+     * @param areMapsVisible if maps are visible.
+     */
     public void setMapsVisible( boolean areMapsVisible ) {
         this.areMapsVisible = areMapsVisible;
     }

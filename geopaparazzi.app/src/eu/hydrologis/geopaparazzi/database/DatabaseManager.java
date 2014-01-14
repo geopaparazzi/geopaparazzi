@@ -38,10 +38,16 @@ import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 @SuppressWarnings("nls")
 public class DatabaseManager {
 
+    /**
+     * The db version.
+     */
     public static final int DATABASE_VERSION = 7;
 
-    public static final String DEBUG_TAG = "DATABASEMANAGER";
+    private static final String DEBUG_TAG = "DATABASEMANAGER";
 
+    /**
+    * Buffer for bounds expansion.
+    */
     public static final float BUFFER = 0.001f;
 
     private static DatabaseManager dbManager = null;
@@ -51,6 +57,11 @@ public class DatabaseManager {
 
     private DatabaseOpenHelper databaseHelper;
 
+    /**
+     * Singleton access.
+     * 
+     * @return the {@link DatabaseManager}.
+     */
     public static DatabaseManager getInstance() {
         if (dbManager == null) {
             dbManager = new DatabaseManager();
@@ -58,6 +69,10 @@ public class DatabaseManager {
         return dbManager;
     }
 
+    /**
+     * @return the db.
+     * @throws IOException  if something goes wrong.
+     */
     public SQLiteDatabase getDatabase() throws IOException {
         Context context = GeopaparazziApplication.getInstance().getApplicationContext();
         File databaseFile;
@@ -85,6 +100,9 @@ public class DatabaseManager {
         return databaseHelper.getWritableDatabase(context);
     }
 
+    /**
+     * Close the database.
+     */
     public void closeDatabase() {
         if (databaseHelper != null) {
             if (Debug.D)
@@ -138,8 +156,8 @@ public class DatabaseManager {
         /**
          * Create the db from scratch.
          * 
-         * @param context
-         * @throws IOException
+         * @param context  the context to use.
+         * @throws IOException  if something goes wrong.
          */
         public void create( Context context ) throws IOException {
             db.setLocale(Locale.getDefault());
@@ -157,10 +175,10 @@ public class DatabaseManager {
         /**
          * Upgrade the db if necessary.
          * 
-         * @param newDbVersion
-         * @param oldDbVersion
-         * @param context
-         * @throws IOException
+         * @param newDbVersion the new db version.
+         * @param oldDbVersion the old db version.
+         * @param context  the context to use.
+         * @throws IOException  if something goes wrong.
          */
         public void upgrade( int newDbVersion, int oldDbVersion, Context context ) throws IOException {
             if (oldDbVersion == 1) {
