@@ -17,21 +17,19 @@
  */
 package eu.geopaparazzi.spatialite.util;
 
-import android.content.Context;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import jsqlite.Database;
 import jsqlite.Exception;
 import jsqlite.Stmt;
-import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
+import android.content.Context;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.FileUtilities;
+import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
 
 /**
  * SpatialiteUtilities class.

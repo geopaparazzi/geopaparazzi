@@ -23,12 +23,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import jsqlite.Exception;
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.core.ISpatialDatabaseHandler;
@@ -55,7 +52,6 @@ public class SpatialDatabasesManager {
     private static final int i_extention_db = 1;
     private static final int i_extention_sqlite = 2;
     private static final int i_extention_gpkt = 3;
-    private Context this_context = null;
     private SpatialDatabasesManager() {
     }
 
@@ -81,7 +77,6 @@ public class SpatialDatabasesManager {
         return sa_extentions[i_extention_gpkt];
     }
     public boolean init( Context context, File mapsDir ) {
-        this_context = context;
         List<ISpatialDatabaseHandler> sdb_Handlers = new ArrayList<ISpatialDatabaseHandler>();
         boolean b_nomedia_file = false;
         File[] list_files = mapsDir.listFiles();
