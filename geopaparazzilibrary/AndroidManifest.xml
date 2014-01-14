@@ -51,7 +51,7 @@
             </intent-filter>
         </activity>
 
-        <!-- CameraActivity -->
+        <!-- CameraActivity 
          <activity
             android:name="eu.geopaparazzi.library.camera.CameraActivity"
             android:configChanges="orientation|screenSize"  >
@@ -61,6 +61,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        -->
         <activity android:name="eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity" >
             <intent-filter>
                 <action android:name="eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity" />
