@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.spatialite.database.spatial.core;
+package eu.geopaparazzi.spatialite.database.spatial.core.geometry;
 
 /**
  * Geometry types.

@@ -1,4 +1,4 @@
-package eu.geopaparazzi.spatialite.database.spatial.core;
+package eu.geopaparazzi.spatialite.database.spatial.core.mbtiles;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +19,8 @@ import android.os.AsyncTask;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteContextHolder;
-import eu.geopaparazzi.spatialite.database.spatial.core.mbtiles.MBTilesDroidSpitter;
+import eu.geopaparazzi.spatialite.database.spatial.core.MbtilesDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.MbtilesDatabaseHandler.AsyncTasks;
 
 // http://www.vogella.com/articles/AndroidBackgroundProcessing/article.html
 // - CursorLoader
@@ -28,7 +29,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.mbtiles.MBTilesDroidSpit
 // download_tiles.cancel(true);
 // executeOnExecutor(java.util.concurrent.Executor, Object[])
 // RUNNING
-class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, Integer> {
+public class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, Integer> {
     private MbtilesDatabaseHandler db_mbtiles;
     private List<MbtilesDatabaseHandler.AsyncTasks> async_parms = null;
     private HashMap<String, String> async_mbtiles_metadata=null;

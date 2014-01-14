@@ -27,6 +27,8 @@ import android.content.Context;
 
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteContextHolder;
+import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
+import eu.geopaparazzi.spatialite.util.Style;
 
 // https://www.gaia-gis.it/fossil/libspatialite/wiki?name=metadata-4.0
 

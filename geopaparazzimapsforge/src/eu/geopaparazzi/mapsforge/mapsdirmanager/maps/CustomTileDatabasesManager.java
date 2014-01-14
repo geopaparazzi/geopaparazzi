@@ -19,23 +19,15 @@ package eu.geopaparazzi.mapsforge.mapsdirmanager.maps;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import jsqlite.Exception;
 import android.content.Context;
-
+import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.CustomTileDatabaseHandler;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.CustomTileTable;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.CustomTileDownloader;
-import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.spatialite.database.spatial.core.MbtilesDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.OrderComparator;
 
 /**
  * The custom tile database manager.

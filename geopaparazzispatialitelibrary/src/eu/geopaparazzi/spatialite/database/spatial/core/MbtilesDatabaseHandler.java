@@ -40,8 +40,11 @@ import android.os.AsyncTask;
 import android.os.Build;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
+import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryIterator;
 import eu.geopaparazzi.spatialite.database.spatial.core.mbtiles.MBTilesDroidSpitter;
+import eu.geopaparazzi.spatialite.database.spatial.core.mbtiles.MBtilesAsync;
 import eu.geopaparazzi.spatialite.database.spatial.core.mbtiles.MbTilesMetadata;
+import eu.geopaparazzi.spatialite.util.Style;
 
 /**
  * An utility class to handle an mbtiles database.

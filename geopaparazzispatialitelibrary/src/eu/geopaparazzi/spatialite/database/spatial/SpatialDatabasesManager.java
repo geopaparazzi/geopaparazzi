@@ -33,10 +33,10 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.core.ISpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.MbtilesDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.OrderComparator;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler;
+import eu.geopaparazzi.spatialite.util.OrderComparator;
 
 /**
  * The spatial database manager.
@@ -50,12 +50,12 @@ public class SpatialDatabasesManager {
     private HashMap<SpatialRasterTable, ISpatialDatabaseHandler> rasterTablesMap = new HashMap<SpatialRasterTable, ISpatialDatabaseHandler>();
 
     private static SpatialDatabasesManager spatialDbManager = null;
-    private static final String[] sa_extentions = new String[]{".mbtiles",".db",".sqlite",".gpkg"};
+    private static final String[] sa_extentions = new String[]{".mbtiles", ".db", ".sqlite", ".gpkg"};
     private static final int i_extention_mbtiles = 0;
     private static final int i_extention_db = 1;
     private static final int i_extention_sqlite = 2;
     private static final int i_extention_gpkt = 3;
-    private Context this_context=null;
+    private Context this_context = null;
     private SpatialDatabasesManager() {
     }
 
@@ -81,14 +81,14 @@ public class SpatialDatabasesManager {
         return sa_extentions[i_extention_gpkt];
     }
     public boolean init( Context context, File mapsDir ) {
-        this_context=context;
+        this_context = context;
         List<ISpatialDatabaseHandler> sdb_Handlers = new ArrayList<ISpatialDatabaseHandler>();
-        boolean b_nomedia_file=false;
+        boolean b_nomedia_file = false;
         File[] list_files = mapsDir.listFiles();
-        for( File this_file : list_files )
-        { // nomedia logic: first check the files, if no '.nomedia' found: then its directories
-            if (this_file.isFile())
-            { // mj10777: collect spatialite.geometries and .mbtiles databases
+        for( File this_file : list_files ) { // nomedia logic: first check the files, if no
+                                             // '.nomedia' found: then its directories
+            if (this_file.isFile()) { // mj10777: collect spatialite.geometries and .mbtiles
+                                      // databases
                 for( int i = 0; i < sa_extentions.length; i++ ) {
                     String name = this_file.getName();
                     if (Utilities.isNameFromHiddenFile(name)) {
@@ -102,34 +102,29 @@ public class SpatialDatabasesManager {
                             sdb = new SpatialiteDatabaseHandler(this_file.getAbsolutePath());
                         }
                         // GPLog.androidLog(-1,"SpatialDatabasesManager["+i+"]["+sa_extentions[i]+"]: init["+this_file.getAbsolutePath()+"] ");
-                        if (sdb.isValid())
-                        {
-                         sdb_Handlers.add(sdb);
+                        if (sdb.isValid()) {
+                            sdb_Handlers.add(sdb);
                         }
                     }
-                    if (name.equals(".nomedia"))
-                    { // ignore all files of this directory
-                     b_nomedia_file=true;
-                     sdb_Handlers.clear();
-                     return b_nomedia_file;
+                    if (name.equals(".nomedia")) { // ignore all files of this directory
+                        b_nomedia_file = true;
+                        sdb_Handlers.clear();
+                        return b_nomedia_file;
                     }
                 }
             }
         }
-        if (!b_nomedia_file)
-        {
-         for (int i=0;i<sdb_Handlers.size();i++)
-         {
-          sdbHandlers.add(sdb_Handlers.get(i));
-         }
+        if (!b_nomedia_file) {
+            for( int i = 0; i < sdb_Handlers.size(); i++ ) {
+                sdbHandlers.add(sdb_Handlers.get(i));
+            }
         }
         sdb_Handlers.clear();
-        for( File this_file : list_files )
-        {
-         if (this_file.isDirectory())
-         { // mj10777: read recursive directories inside the sdcard/maps directory
-          init(context, this_file);
-         }
+        for( File this_file : list_files ) {
+            if (this_file.isDirectory()) { // mj10777: read recursive directories inside the
+                                           // sdcard/maps directory
+                init(context, this_file);
+            }
         }
         return b_nomedia_file;
     }
@@ -155,24 +150,20 @@ public class SpatialDatabasesManager {
     public List<SpatialVectorTable> getSpatialVectorTables( boolean forceRead ) throws Exception {
         List<SpatialVectorTable> tables = new ArrayList<SpatialVectorTable>();
         List<ISpatialDatabaseHandler> remove_Handlers = new ArrayList<ISpatialDatabaseHandler>();
-        for( ISpatialDatabaseHandler sdbHandler : sdbHandlers )
-        {
-           List<SpatialVectorTable> spatialTables = sdbHandler.getSpatialVectorTables(forceRead);
-           if (sdbHandler.isValid())
-           {
-            for( SpatialVectorTable spatialTable : spatialTables )
-            {
-               tables.add(spatialTable);
-               vectorTablesMap.put(spatialTable, sdbHandler);
+        for( ISpatialDatabaseHandler sdbHandler : sdbHandlers ) {
+            List<SpatialVectorTable> spatialTables = sdbHandler.getSpatialVectorTables(forceRead);
+            if (sdbHandler.isValid()) {
+                for( SpatialVectorTable spatialTable : spatialTables ) {
+                    tables.add(spatialTable);
+                    vectorTablesMap.put(spatialTable, sdbHandler);
+                }
             }
-           }
         }
-        for( ISpatialDatabaseHandler remove : remove_Handlers )
-        {
-         String s_remove=remove.getFileNamePath()+" ["+remove.isValid()+"]";
-         remove.close();
-         sdbHandlers.remove(remove);
-         GPLog.androidLog(-1,"SpatialDatabasesManager remove[" + s_remove + "] size["+sdbHandlers.size()+"]");
+        for( ISpatialDatabaseHandler remove : remove_Handlers ) {
+            String s_remove = remove.getFileNamePath() + " [" + remove.isValid() + "]";
+            remove.close();
+            sdbHandlers.remove(remove);
+            GPLog.androidLog(-1, "SpatialDatabasesManager remove[" + s_remove + "] size[" + sdbHandlers.size() + "]");
         }
         Collections.sort(tables, new OrderComparator());
         // set proper order index across tables
@@ -185,34 +176,30 @@ public class SpatialDatabasesManager {
     public List<SpatialRasterTable> getSpatialRasterTables( boolean forceRead ) throws Exception {
         List<SpatialRasterTable> tables = new ArrayList<SpatialRasterTable>();
         List<ISpatialDatabaseHandler> remove_Handlers = new ArrayList<ISpatialDatabaseHandler>();
-        String s_table_count="";
+        String s_table_count = "";
         for( ISpatialDatabaseHandler sdbHandler : sdbHandlers ) {
             try {
                 List<SpatialRasterTable> spatialTables = sdbHandler.getSpatialRasterTables(forceRead);
-                if (sdbHandler.isValid())
-                {
-                 for( SpatialRasterTable spatialTable : spatialTables )
-                 {
-                  tables.add(spatialTable);
-                  rasterTablesMap.put(spatialTable, sdbHandler);
-                 }
+                if (sdbHandler.isValid()) {
+                    for( SpatialRasterTable spatialTable : spatialTables ) {
+                        tables.add(spatialTable);
+                        rasterTablesMap.put(spatialTable, sdbHandler);
+                    }
                 }
             } catch (java.lang.Exception e) {
                 // ignore the handler and try to g on
             }
         }
-        for( ISpatialDatabaseHandler remove : remove_Handlers )
-        {
-         remove.close();
-         sdbHandlers.remove(remove);
+        for( ISpatialDatabaseHandler remove : remove_Handlers ) {
+            remove.close();
+            sdbHandlers.remove(remove);
         }
         // Collections.sort(tables, new OrderComparator());
         return tables;
     }
 
     public void updateStyles() throws Exception {
-        for (Map.Entry<SpatialVectorTable, ISpatialDatabaseHandler> entry : vectorTablesMap.entrySet())
-        {
+        for( Map.Entry<SpatialVectorTable, ISpatialDatabaseHandler> entry : vectorTablesMap.entrySet() ) {
             SpatialVectorTable key = entry.getKey();
             ISpatialDatabaseHandler value = entry.getValue();
             value.updateStyle(key.getStyle());
