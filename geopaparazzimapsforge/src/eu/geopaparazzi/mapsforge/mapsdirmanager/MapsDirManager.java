@@ -531,7 +531,7 @@ public class MapsDirManager {
             ClassNodeInfo this_vectorinfo = null;
             for( int i = 0; i < spatialVectorTables.size(); i++ ) {
                 SpatialVectorTable table = spatialVectorTables.get(i);
-                this_vectorinfo = new ClassNodeInfo(i_vectorinfo_count++, table.getGeomType(), table.getMapType(),
+                this_vectorinfo = new ClassNodeInfo(i_vectorinfo_count++, table.getGeomType(), table.getGeometryTypeDescription(),
                         "SpatialVectorTable", table.getUniqueName(), table.getFileName(), table.getName(), table.getGeomName(),
                         table.getName() + File.separator + table.getGeomName(), table.getBounds_toString(),
                         table.getCenter_toString(), table.getZoom_Levels());

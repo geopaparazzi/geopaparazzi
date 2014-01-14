@@ -229,15 +229,11 @@ public class SpatialVectorTable {
     }
     // -----------------------------------------------
     /**
-      * Return type of map/file
+      * Return geometryTypeDescription
       *
-      * <p>raster: can be different: mbtiles,db,sqlite,gpkg
-      * <p>mbtiles : mbtiles
-      * <p>map : map
-      *
-      * @return s_name as short name of map/file
+      * @return the geometryTypeDescription
       */
-    public String getMapType() {
+    public String getGeometryTypeDescription() {
         return this.geometryTypeDescription;
     }
     // -----------------------------------------------

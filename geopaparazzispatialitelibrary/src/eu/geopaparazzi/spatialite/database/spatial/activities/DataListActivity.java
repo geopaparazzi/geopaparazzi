@@ -159,7 +159,7 @@ public class DataListActivity extends ListActivity {
                 // mj10777: some tables may have more than one column, thus the column name will
                 // also be shown item.getUniqueName()
                 nameView.setText(item.getName());
-                descriptionView.setText(item.getGeomName() + ": " + item.getMapType() + ", db: " + item.getFileName());
+                descriptionView.setText(item.getGeomName() + ": " + item.getGeometryTypeDescription() + ", db: " + item.getFileName());
 
                 visibleView.setChecked(item.getStyle().enabled != 0);
                 visibleView.setOnCheckedChangeListener(new OnCheckedChangeListener(){
