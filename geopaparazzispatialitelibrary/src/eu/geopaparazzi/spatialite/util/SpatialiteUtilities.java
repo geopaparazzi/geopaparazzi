@@ -19,6 +19,7 @@ package eu.geopaparazzi.spatialite.util;
 
 import android.content.Context;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -161,7 +162,7 @@ public class SpatialiteUtilities {
          * 1=2.4.0 to 3.1.0 ; 
          * 2=starting with 4.0.0
          */
-        int i_srs_wkt = 0; 
+        int i_srs_wkt = 0;
         boolean b_spatial_ref_sys = false;
         boolean b_views_geometry_columns = false;
         int i_spatialite_version = 0; // 0=not a spatialite version ; 1=until 2.3.1 ; 2=until 2.4.0
@@ -263,7 +264,7 @@ public class SpatialiteUtilities {
       * @param i_srid srid of Shape-Table
       * @return i_rc 0 or last_error from Database
       */
-    private static int create_shape_table( Database sqlite_db, String s_table_path, String s_table_name, String s_char_set,
+    private static int createShapeTable( Database sqlite_db, String s_table_path, String s_table_name, String s_char_set,
             int i_srid ) {
         int i_rc = 0;
         Stmt this_stmt = null;
@@ -324,34 +325,68 @@ public class SpatialiteUtilities {
       * @param s_well_known_text read from the Shape .prj file
       * @return srid of  .prj file where possible
       */
-    private static int read_shape_srid( Database sqlite_db, String s_srs_wkt, String s_well_known_text ) {
+    private static int readShapeSrid( Database sqlite_db, String s_srs_wkt, String s_well_known_text ) {
         int i_srid = 0;
         if ((s_well_known_text.indexOf("GCS_WGS_1984") != -1) && (s_well_known_text.indexOf("D_WGS_1984") != -1)
-                && (s_well_known_text.indexOf("Greenwich") != -1) && (s_well_known_text.indexOf("Degree") != -1)) { // //
-                                                                                                                    // GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.017453292519943295]]
+                && (s_well_known_text.indexOf("Greenwich") != -1) && (s_well_known_text.indexOf("Degree") != -1)) {
+            /*
+             * GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",
+             * SPHEROID["WGS_1984",6378137.0,298.257223563]],
+             * PRIMEM["Greenwich",0.0],
+             * UNIT["Degree",0.017453292519943295]]
+             */
             i_srid = 4326;
         }
         if ((s_well_known_text.indexOf("GCS_DHDN") != -1) && (s_well_known_text.indexOf("D_Deutsches_Hauptdreiecksnetz") != -1)
                 && (s_well_known_text.indexOf("Bessel_1841") != -1) && (s_well_known_text.indexOf("Greenwich") != -1)
-                && (s_well_known_text.indexOf("Degree") != -1)) { // //
-                                                                  // PROJCS["Cassini",GEOGCS["GCS_DHDN",DATUM["D_Deutsches_Hauptdreiecksnetz",SPHEROID["Bessel_1841",6377397.155,299.1528128]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]]
+                && (s_well_known_text.indexOf("Degree") != -1)) {
+            /* 
+             * PROJCS["Cassini",GEOGCS["GCS_DHDN",
+             * DATUM["D_Deutsches_Hauptdreiecksnetz",
+             * SPHEROID["Bessel_1841",6377397.155,299.1528128]],
+             * PRIMEM["Greenwich",0],
+             * UNIT["Degree",0.017453292519943295]]
+             */
             if ((s_well_known_text.indexOf("Cassini") != -1) && (s_well_known_text.indexOf("52.4186482") != -1)
-                    && (s_well_known_text.indexOf("13.62720") != -1)) { // ,PROJECTION["Cassini"],PARAMETER["latitude_of_origin",52.41864827777778],PARAMETER["central_meridian",13.62720366666667],
+                    && (s_well_known_text.indexOf("13.62720") != -1)) {
+                /*
+                 * ,PROJECTION["Cassini"],
+                 * PARAMETER["latitude_of_origin",52.41864827777778],
+                 * PARAMETER["central_meridian",13.62720366666667],
+                 */
                 if ((s_well_known_text.indexOf("40000") != -1) && (s_well_known_text.indexOf("10000") != -1)) { // PARAMETER["false_easting",40000],PARAMETER["false_northing",10000],UNIT["Meter",1],PARAMETER["scale_factor",1.0]]
                     i_srid = 3068;
                 }
             }
         }
-        if (i_srid == 0) { // TODO: do a lot of guessing
-                           // PROJCS["DHDN / Soldner Berlin",GEOGCS["DHDN",DATUM["Deutsches_Hauptdreiecksnetz",SPHEROID["Bessel 1841",6377397.155,299.1528128,AUTHORITY["EPSG","7004"]],AUTHORITY["EPSG","6314"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4314"]],UNIT["metre",1,AUTHORITY["EPSG","9001"]],PROJECTION["Cassini_Soldner"],PARAMETER["latitude_of_origin",52.41864827777778],PARAMETER["central_meridian",13.62720366666667],PARAMETER["false_easting",40000],PARAMETER["false_northing",10000],AUTHORITY["EPSG","3068"],AXIS["x",NORTH],AXIS["y",EAST]]
-                           // SELECT srid FROM spatial_ref_sys WHERE (srs_wkt LIKE
-                           // 'GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.017453292519943295]]')
+        if (i_srid == 0) {
+            /* 
+             * TODO: do a lot of guessing
+             * PROJCS["DHDN / Soldner Berlin",
+             * GEOGCS["DHDN",DATUM["Deutsches_Hauptdreiecksnetz",
+             * SPHEROID["Bessel 1841",6377397.155,299.1528128,
+             * AUTHORITY["EPSG","7004"]],AUTHORITY["EPSG","6314"]],
+             * PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],
+             * UNIT["degree",0.01745329251994328,
+             * AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4314"]],
+             * UNIT["metre",1,AUTHORITY["EPSG","9001"]],
+             * PROJECTION["Cassini_Soldner"],
+             * PARAMETER["latitude_of_origin",52.41864827777778],
+             * PARAMETER["central_meridian",13.62720366666667],
+             * PARAMETER["false_easting",40000],
+             * PARAMETER["false_northing",10000],
+             * AUTHORITY["EPSG","3068"],AXIS["x",NORTH],AXIS["y",EAST]]
+             * SELECT srid FROM spatial_ref_sys WHERE (srs_wkt LIKE
+             * 'GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",
+             * SPHEROID["WGS_1984",6378137.0,298.257223563]],
+             * PRIMEM["Greenwich",0.0],UNIT["Degree",0.017453292519943295]]')
+             */
         }
         return i_srid;
     }
-    // -----------------------------------------------
+
     /**
-      * General Function to surch for Shape files
+      * General Function to search for Shape files
       * 
       * <p>
       * - A Shape-File(s) resides in a directory<br>
@@ -360,12 +395,10 @@ public class SpatialiteUtilities {
       * - the name with extention is the Table-Name<br>
       * 
       * @param shapes_list: File as found '.prj' files, File as directory
-      * @return nothing
       */
-    private static void create_shape_db( HashMap<File, File> shapes_list ) {
+    private static void createDbForShapefile( HashMap<File, File> shapes_list ) {
         File shape_db = null;
         File shape_dir = null;
-        List<String> table_list = new ArrayList<String>();
         Database sqlite_db = null;
         int i_spatialite_version = 0;
         String s_srs_wkt = "srs_wkt";
@@ -404,11 +437,11 @@ public class SpatialiteUtilities {
                 String s_well_known_text = "";
                 try { // GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.017453292519943295]]
                     s_well_known_text = FileUtilities.readfile(file_prj);
-                    int i_srid = read_shape_srid(sqlite_db, s_srs_wkt, s_well_known_text);
+                    int i_srid = readShapeSrid(sqlite_db, s_srs_wkt, s_well_known_text);
                     String s_char_set = "CP1252";
                     if (i_srid > 0) {
                         String s_table_path = s_shape_path + File.separator + s_shape_name + File.separator + s_table_name;
-                        int i_rc = create_shape_table(sqlite_db, s_table_path, s_table_name, s_char_set, i_srid);
+                        int i_rc = createShapeTable(sqlite_db, s_table_path, s_table_name, s_char_set, i_srid);
                         // GPLog.androidLog(-1,"SpatialiteUtilities create_shape_db[" + s_table_name
                         // + "] srid["+i_srid+"]");
                     }
@@ -425,43 +458,45 @@ public class SpatialiteUtilities {
             sqlite_db = null;
         }
     }
-    // -----------------------------------------------
+
     /**
-      * General Function to surch for Shape files
+      * Collects a {@link HashMap} of prj files of shapefiles.
       * 
       * <p>
       * - A Shape-File(s) resides in a directory<br>
       * - - the Directory name is the Database-Name<br>
       * - each Shape-Table must have a '.shp','.prj','.shx' and '.dbf'<br>
-      * - the name with extention is the Table-Name<br>
+      * - the name with extension is the Table-Name<br>
       * 
       * @param context 'this' of Application Activity class
       * @param mapsDir Directory to search [ResourcesManager.getInstance(this).getMapsDir();]
-      * @return shapes_list: File as found '.prj' files, File as directory
+      * @return shapes_list: a {@link HashMap} that maps the prj file to the parent folder file.
       */
-    public static HashMap<File, File> find_shapes( Context context, File mapsDir ) {
-        File[] list_files = mapsDir.listFiles();
+    public static HashMap<File, File> findShapefilePrjFiles( Context context, File mapsDir ) {
+        final String s_extention = ".prj";
+        File[] list_files = mapsDir.listFiles(new FilenameFilter(){
+            public boolean accept( File dir, String filename ) {
+                return filename.endsWith(s_extention);
+            }
+        });
         // each shape file must have a prj file, we will read the prj file later
         HashMap<File, File> shapes_list = new HashMap<File, File>();
-        String s_extention = ".prj";
-        String s_directory = "";
         File this_directoy = mapsDir;
         for( File this_file : list_files ) {
-            if (this_file.isDirectory()) {// mj10777: read recursive directories inside the
-                                          // sdcard/maps directory
-                shapes_list = find_shapes(context, this_file);
-                if (shapes_list.size() > 0) { // shape file Directory has been found: do something
-                                              // with it
-                                              // GPLog.androidLog(-1,"SpatialiteUtilities find_shapes["
-                                              // + this_file.getAbsolutePath() + "] shapes[" +
-                                              // shapes_list.size() + "]");
-                    create_shape_db(shapes_list);
+            if (this_file.isDirectory()) {
+                // read recursive directories inside the sdcard/maps directory
+                shapes_list = findShapefilePrjFiles(context, this_file);
+                if (shapes_list.size() > 0) {
+                    // shape file Directory has been found: do something
+                    // with it
+                    // GPLog.androidLog(-1,"SpatialiteUtilities find_shapes["
+                    // + this_file.getAbsolutePath() + "] shapes[" +
+                    // shapes_list.size() + "]");
+                    createDbForShapefile(shapes_list);
                 }
             } else {
-                String name = this_file.getName();
-                if (name.endsWith(s_extention)) { // store each prj file and the directory found
-                    shapes_list.put(this_file, this_directoy);
-                }
+                // store each prj file and the directory found
+                shapes_list.put(this_file, this_directoy);
             }
         }
         // GPLog.androidLog(-1,"SpatialiteUtilities find_shapes[" + mapsDir.getName() +
