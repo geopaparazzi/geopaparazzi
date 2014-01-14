@@ -39,28 +39,36 @@ import eu.geopaparazzi.spatialite.util.Style;
  */
 public class SpatialVectorTable {
 
-    private final String s_table_name;
-    private final String s_geometry_column;
+    private final String tableName;
+    private final String geometryColumn;
     private final int geomType;
     private final String srid;
     private Style style;
 
-    private File file_map;
-    
+    private File databaseFile;
+
     /**
-     * [with path] all DatabaseHandler/Table classes should use these names
+     * The database path. 
+     * 
+     * <p>all DatabaseHandler/Table classes should use these names
      */
-    private String s_map_file;
-    // [without path] all DatabaseHandler/Table classes should use these
-    // names
-    private String s_name_file;
+    private String databasePath;
+
+    /**
+     * The database file name.
+     * 
+     * <p>all DatabaseHandler/Table classes should use these
+     *   names
+     */
+    private String databaseFileName;
+    
     // all DatabaseHandler/Table classes should use these names
     private String s_name;
     // all DatabaseHandler/Table classes should use these names
     private String s_description = "";
     // all DatabaseHandler/Table classes should use these
     // names
-    private String s_map_type = "geometry";
+    private String geometryTypeDescription = "geometry";
     private double centerX; // wsg84
     private double centerY; // wsg84
     private double bounds_west; // wsg84
@@ -70,10 +78,6 @@ public class SpatialVectorTable {
     private int minZoom = 0;
     private int maxZoom = 22;
     private int defaultZoom = 17;
-    private int i_row_count = 0;
-    private int i_coord_dimension = 0;
-    private int i_spatial_index_enabled = 0;
-    private String s_last_verified = "";
     private boolean checkDone = false;
     private boolean isPolygon = false;
     private boolean isLine = false;
@@ -95,35 +99,38 @@ public class SpatialVectorTable {
     private String s_label_field = "";
     // list of possible primary keys - for more that one: seperated with ';'
     private String s_primary_key_fields = "";
-    private String s_unique_name = ""; // file-name+table-name+field-name
+    private String uniqueName = ""; // file-name+table-name+field-name
     private String s_unique_name_base = ""; // file-name+table-name+field-name
 
     /**
      * Constructor.
      * 
-     * @param databaseFile the database file the table belongs to.
-     * @param tableName
-     * @param geometryColumn
-     * @param geomType
-     * @param srid
-     * @param center
-     * @param bounds
-     * @param layerType
-     * @param i_row_count
-     * @param i_coord_dimension
-     * @param i_spatial_index_enabled
-     * @param lastVerified
+     * @param databasePath the database file the table belongs to.
+     * @param tableName the name of the table to use. 
+     * @param geometryColumn the name of the geometry column.
+     * @param geomType the geometry type as off {@link GeometryType}.
+     * @param srid the srid code.
+     * @param center the wgs84 center coordinates.
+     * @param bounds the table bounds in wgs84.
+     * @param geometryTypeDescription 
+     * @param i_row_count TODO Mark, is this necessary, it seems to be unused.
+     * @param i_coord_dimension TODO Mark, is this necessary, it seems to be unused.
+     * @param i_spatial_index_enabled TODO Mark, is this necessary, it seems to be unused.
+     * @param lastVerified TODO Mark, is this necessary, it seems to be unused.
      */
-    public SpatialVectorTable( String databaseFile, String tableName, String geometryColumn, int geomType, String srid,
-            double[] center, double[] bounds, String layerType, int i_row_count, int i_coord_dimension,
+    public SpatialVectorTable( String databasePath, String tableName, String geometryColumn, int geomType, String srid,
+            double[] center, double[] bounds, String geometryTypeDescription, int i_row_count, int i_coord_dimension,
             int i_spatial_index_enabled, String lastVerified ) {
-        this.s_map_file = databaseFile;
-        this.file_map = new File(databaseFile);
-        s_name_file = file_map.getName();
-        this.s_table_name = tableName;
-        this.s_geometry_column = geometryColumn;
-        this.s_unique_name = createUniqueName();
+        this.databasePath = databasePath;
+        this.databaseFile = new File(databasePath);
+        databaseFileName = databaseFile.getName();
+        this.tableName = tableName;
+        this.geometryColumn = geometryColumn;
+        this.uniqueName = createUniqueName();
+
         this.geomType = geomType;
+        this.geometryTypeDescription = geometryTypeDescription;
+
         this.srid = srid;
         this.centerX = center[0];
         this.centerY = center[1];
@@ -131,14 +138,10 @@ public class SpatialVectorTable {
         this.bounds_south = bounds[1];
         this.bounds_east = bounds[2];
         this.bounds_north = bounds[3];
-        this.s_map_type = layerType;
-        this.i_row_count = i_row_count;
-        this.i_coord_dimension = i_coord_dimension;
-        this.i_spatial_index_enabled = i_coord_dimension;
-        this.s_last_verified = lastVerified;
         checkType();
-        String s_dump = "isPoint[" + isPoint + "] isLine[" + isLine + "] isPolygon[" + isPolygon + "] isGeometryCollection["
-                + isGeometryCollection + "]";
+        // String s_dump = "isPoint[" + isPoint + "] isLine[" + isLine + "] isPolygon[" + isPolygon
+        // + "] isGeometryCollection["
+        // + isGeometryCollection + "]";
         // GPLog.androidLog(-1,"SpatialVectorTable unique_name[" + this.s_unique_name +
         // "] types["+s_dump+"]");
     }
@@ -154,25 +157,25 @@ public class SpatialVectorTable {
             ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
             File mapsDir = resourcesManager.getMapsDir();
             String mapsPath = mapsDir.getAbsolutePath();
-            if (s_map_file.startsWith(mapsPath)) {
-                String relativePath = s_map_file.substring(mapsPath.length());
+            if (databasePath.startsWith(mapsPath)) {
+                String relativePath = databasePath.substring(mapsPath.length());
                 StringBuilder sb = new StringBuilder();
                 if (relativePath.startsWith(File.separator)) {
                     relativePath = relativePath.substring(1);
                 }
                 sb.append(relativePath);
-                s_unique_name_base = this.s_name_file + File.separator + s_table_name + File.separator + s_geometry_column;
+                s_unique_name_base = this.databaseFileName + File.separator + tableName + File.separator + geometryColumn;
                 sb.append(File.separator);
-                sb.append(s_table_name);
+                sb.append(tableName);
                 sb.append(File.separator);
-                sb.append(s_geometry_column);
+                sb.append(geometryColumn);
                 return sb.toString();
             } else {
                 throw new RuntimeException();
             }
         } catch (Exception e) {
             // ignore and use absolute path
-            return this.s_map_file + File.separator + s_table_name + File.separator + s_geometry_column;
+            return this.databasePath + File.separator + tableName + File.separator + geometryColumn;
         }
     }
     // -----------------------------------------------
@@ -211,7 +214,7 @@ public class SpatialVectorTable {
       * @return file_map as File
       */
     public String getFileNamePath() {
-        return this.s_map_file; // file_map.getAbsolutePath();
+        return this.databasePath; // file_map.getAbsolutePath();
     }
     // -----------------------------------------------
     /**
@@ -222,7 +225,7 @@ public class SpatialVectorTable {
       * @return file_map.getAbsolutePath();
       */
     public String getFileName() {
-        return this.s_name_file; // file_map.getName();
+        return this.databaseFileName; // file_map.getName();
     }
     // -----------------------------------------------
     /**
@@ -235,7 +238,7 @@ public class SpatialVectorTable {
       * @return s_name as short name of map/file
       */
     public String getMapType() {
-        return this.s_map_type;
+        return this.geometryTypeDescription;
     }
     // -----------------------------------------------
     /**
@@ -302,7 +305,7 @@ public class SpatialVectorTable {
       * @return file_map as File
       */
     public File getFile() {
-        return this.file_map;
+        return this.databaseFile;
     }
     // -----------------------------------------------
     /**
@@ -343,31 +346,37 @@ public class SpatialVectorTable {
         return getMinZoom() + "-" + getMaxZoom();
     }
     public String getName() {
-        return s_table_name; // table_name
+        return tableName; // table_name
     }
 
     public String getGeomName() {
-        return s_geometry_column;
+        return geometryColumn;
     }
     /**
       * Unique-Name of Geometry Field inside 'sdcard/maps' directory
-      * - needed to identify one specfic field inside the whole Maps-Directory
-      * -- Sample: '/storage/emulated/0/maps/aurina/aurina.sqlite/topcloud/Geometry'
-      * --- Maps-Directory:  ''/storage/emulated/0/maps/'
-      * --- Directory inside the Maps-Directory: 'aurina/'
-      * --- UniqueNameBase : 'aurina.sqlite/topcloud/Geometry'
-      * -- Result : 'aurina/aurina.sqlite/topcloud/Geometry'
+      * 
+      * <ul>
+      * <li>- needed to identify one specfic field inside the whole Maps-Directory
+      * <li>-- Sample: '/storage/emulated/0/maps/aurina/aurina.sqlite/topcloud/Geometry'
+      * <li>--- Maps-Directory:  ''/storage/emulated/0/maps/'
+      * <li>--- Directory inside the Maps-Directory: 'aurina/'
+      * <li>--- UniqueNameBase : 'aurina.sqlite/topcloud/Geometry'
+      * <li>-- Result : 'aurina/aurina.sqlite/topcloud/Geometry'
+      * </ul>
       */
     public String getUniqueName() {
-        return this.s_unique_name;
+        return this.uniqueName;
     }
     /**
       * Unique-Name-Base of Database inside 'sdcard/maps' directory
-      * - needed to Directory portion if the Database has been moved
-      * -- Sample: '/storage/emulated/0/maps/aurina/aurina.sqlite/topcloud/Geometry'
-      * --- Maps-Directory:  ''/storage/emulated/0/maps/'
-      * --- Directory inside the Maps-Directory: 'aurina/'
-      * -- Result : 'aurina.sqlite/topcloud/Geometry'
+      * 
+      * <ul>
+      * <li>- needed to Directory portion if the Database has been moved
+      * <li>-- Sample: '/storage/emulated/0/maps/aurina/aurina.sqlite/topcloud/Geometry'
+      * <li>--- Maps-Directory:  ''/storage/emulated/0/maps/'
+      * <li>--- Directory inside the Maps-Directory: 'aurina/'
+      * <li>-- Result : 'aurina.sqlite/topcloud/Geometry'
+      * </ul>
       */
     public String getUniqueNameBase() {
         return this.s_unique_name_base;
@@ -384,10 +393,11 @@ public class SpatialVectorTable {
     public Style getStyle() {
         return style;
     }
-    // -----------------------------------------------
+
     /**
       * Returns a list of non-vector fields of this table
-      * - to fill a ComboBox
+      * 
+      * <p>to fill a ComboBox
       */
     public List<String> getLabelList() {
         return label_list;
@@ -396,7 +406,8 @@ public class SpatialVectorTable {
     // -----------------------------------------------
     /**
       * Returns Primary Key Fields
-      * - seperated with ';' when more than one
+      * 
+      * <p>- seperated with ';' when more than one
       */
     public String getPrimaryKeyFields() {
         return s_primary_key_fields;
@@ -404,7 +415,8 @@ public class SpatialVectorTable {
     // -----------------------------------------------
     /**
       * Returns selected label field of this table
-      * - to help retrieve the value for a label
+      * 
+      * <p>- to help retrieve the value for a label
       */
     public String getLabelField() {
         return s_label_field;
@@ -412,8 +424,9 @@ public class SpatialVectorTable {
     // -----------------------------------------------
     /**
       * Set selected label field of this table
-      * - as a result of a ComboBox selection
-      * - to help retrieve the value for a label
+      * 
+      * <p>- as a result of a ComboBox selection
+      * <p>- to help retrieve the value for a label
       */
     public void setLabelField( String s_label_field ) {
         this.s_label_field = s_label_field;
@@ -421,11 +434,14 @@ public class SpatialVectorTable {
     // -----------------------------------------------
     /**
       * Set Fields list of table
-      * - a second fields list will be created from non-vector Fields
-      * -- fields_list_non_vector [with name,type]
-      * -- label_list [with name]
-      * - sets selected field from fir charater field
-      * -- if none are found, first field
+      * 
+      * <ul>
+      * <li>- a second fields list will be created from non-vector Fields
+      * <li>-- fields_list_non_vector [with name,type]
+      * <li>-- label_list [with name]
+      * <li>- sets selected field from fir charater field
+      * <li>-- if none are found, first field
+      * </ul>
       */
     public void setFieldsList( HashMap<String, String> fields_list ) {
         this.fields_list = fields_list;
@@ -464,18 +480,14 @@ public class SpatialVectorTable {
                             s_primary_key_fields += ";";
                         s_primary_key_fields += s_field_name;
                     }
-                    if ((s_field_type.indexOf("TEXT") != -1) && (s_label_field.equals(""))) { // set
-                                                                                              // a
-                                                                                              // charater
-                                                                                              // field
-                                                                                              // as
-                                                                                              // default
+                    if ((s_field_type.indexOf("TEXT") != -1) && (s_label_field.equals(""))) {
+                        // set a charater field as default
                         s_label_field = s_field_name;
                     }
                 }
             }
-            if (s_label_field.equals("")) { // if no charater field was found, set first field as
-                                            // default
+            if (s_label_field.equals("")) {
+                // if no charater field was found, set first field as default
                 s_label_field = s_label_field_alt;
             }
             // GPLog.androidLog(-1,"SpatialVectorTable.setFieldsList["+getName()+"] label_list["+label_list.size()+"] fields_list_non_vector["+fields_list_non_vector.size()+"] fields_list["+this.fields_list.size()+"]  selected_name["+s_label_field+"] field_type["+s_primary_key_fields+"]");
@@ -487,15 +499,30 @@ public class SpatialVectorTable {
         minZoom = style.minZoom;
     }
 
+    /**
+     * @return <code>true</code> if it is polygon or multipolygon.
+     */
     public boolean isPolygon() {
         return isPolygon;
     }
+
+    /**
+     * @return <code>true</code> if it is line or multiline.
+     */
     public boolean isLine() {
         return isLine;
     }
+
+    /**
+     * @return <code>true</code> if it is point or multipoint.
+     */
     public boolean isPoint() {
         return isPoint;
     }
+
+    /**
+     * @return <code>true</code> if it is a geometrycollection.
+     */
     public boolean isGeometryCollection() {
         return isGeometryCollection;
     }
@@ -515,7 +542,6 @@ public class SpatialVectorTable {
         case MULTIPOLYGON_XYZ:
         case MULTIPOLYGON_XYZM:
             isPolygon = true;
-            s_map_type = "polygon";
             break;
         case POINT_XY:
         case POINT_XYM:
@@ -526,7 +552,6 @@ public class SpatialVectorTable {
         case MULTIPOINT_XYZ:
         case MULTIPOINT_XYZM:
             isPoint = true;
-            s_map_type = "point";
             break;
         case LINESTRING_XY:
         case LINESTRING_XYM:
@@ -537,19 +562,18 @@ public class SpatialVectorTable {
         case MULTILINESTRING_XYZ:
         case MULTILINESTRING_XYZM:
             isLine = true;
-            s_map_type = "linestring";
             break;
         case GEOMETRYCOLLECTION_XY:
         case GEOMETRYCOLLECTION_XYM:
         case GEOMETRYCOLLECTION_XYZ:
         case GEOMETRYCOLLECTION_XYZM:
             isGeometryCollection = true;
-            s_map_type = "GeometryCollection";
             break;
         default:
             throw new IllegalArgumentException("No geom type for: " + TYPE + " isGeometryCollection[" + isGeometryCollection
                     + "]");
         }
+        geometryTypeDescription = TYPE.getDescription();
         checkDone = true;
     }
 
