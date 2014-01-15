@@ -1,6 +1,5 @@
 package eu.geopaparazzi.mapsforge.mapsdirmanager.treeview;
 
-import eu.geopaparazzi.library.database.GPLog;
 
 /**
  * Allows to build tree easily in sequential mode (you have to know levels of
@@ -14,14 +13,13 @@ import eu.geopaparazzi.library.database.GPLog;
  * @param <T>
  */
 public class TreeBuilder<T> {
-    private static final String TAG = TreeBuilder.class.getSimpleName();
 
     private final TreeStateManager<T> manager;
 
     private T lastAddedId = null;
     private int lastLevel = -1;
 
-    public TreeBuilder(final TreeStateManager<T> manager) {
+    public TreeBuilder( final TreeStateManager<T> manager ) {
         this.manager = manager;
     }
 
@@ -43,9 +41,10 @@ public class TreeBuilder<T> {
      * @param child
      *            child id
      */
-    public synchronized void addRelation(final T parent, final T child,ClassNodeInfo this_classinfo) {
-        // GPLog.androidLog(-1,TAG+" addRelation[Adding relation parent:" + parent + " -> child: " + child+"]");
-        manager.addAfterChild(parent, child, null,this_classinfo);
+    public synchronized void addRelation( final T parent, final T child, ClassNodeInfo this_classinfo ) {
+        // GPLog.androidLog(-1,TAG+" addRelation[Adding relation parent:" + parent + " -> child: " +
+        // child+"]");
+        manager.addAfterChild(parent, child, null, this_classinfo);
         lastAddedId = child;
         lastLevel = manager.getLevel(child);
     }
@@ -63,16 +62,17 @@ public class TreeBuilder<T> {
      * @param level
      *            its level
      */
-    public synchronized void sequentiallyAddNextNode(final T id, final int level,ClassNodeInfo this_classinfo) {
-        // GPLog.androidLog(-1,TAG+" sequentiallyAddNextNode[Adding sequentiall node " + id + " at level " + level+"] classinfo[" + this_classinfo.toString()+ "]");
+    public synchronized void sequentiallyAddNextNode( final T id, final int level, ClassNodeInfo this_classinfo ) {
+        // GPLog.androidLog(-1,TAG+" sequentiallyAddNextNode[Adding sequentiall node " + id +
+        // " at level " + level+"] classinfo[" + this_classinfo.toString()+ "]");
         if (lastAddedId == null) {
-            addNodeToParentOneLevelDown(null, id, level,this_classinfo);
+            addNodeToParentOneLevelDown(null, id, level, this_classinfo);
         } else {
             if (level <= lastLevel) {
                 final T parent = findParentAtLevel(lastAddedId, level - 1);
-                addNodeToParentOneLevelDown(parent, id, level,this_classinfo);
+                addNodeToParentOneLevelDown(parent, id, level, this_classinfo);
             } else {
-                addNodeToParentOneLevelDown(lastAddedId, id, level,this_classinfo);
+                addNodeToParentOneLevelDown(lastAddedId, id, level, this_classinfo);
             }
         }
     }
@@ -86,9 +86,9 @@ public class TreeBuilder<T> {
      *            level which we are looking for
      * @return the node found (null if it is topmost node).
      */
-    private T findParentAtLevel(final T node, final int levelToFind) {
+    private T findParentAtLevel( final T node, final int levelToFind ) {
         T parent = manager.getParent(node);
-        while (parent != null) {
+        while( parent != null ) {
             if (manager.getLevel(parent) == levelToFind) {
                 break;
             }
@@ -108,23 +108,19 @@ public class TreeBuilder<T> {
      * @param level
      *            should always be parent's level + 1
      */
-    private void addNodeToParentOneLevelDown(final T parent, final T id,
-            final int level,ClassNodeInfo this_classinfo) {
+    private void addNodeToParentOneLevelDown( final T parent, final T id, final int level, ClassNodeInfo this_classinfo ) {
         if (parent == null && level != 0) {
-            throw new TreeConfigurationException("Trying to add new id " + id
-                    + " to top level with level != 0 (" + level + ")");
+            throw new TreeConfigurationException("Trying to add new id " + id + " to top level with level != 0 (" + level + ")");
         }
         if (parent != null && manager.getLevel(parent) != level - 1) {
-            throw new TreeConfigurationException("Trying to add new id " + id
-                    + " <" + level + "> to " + parent + " <"
-                    + manager.getLevel(parent)
-                    + ">. The difference in levels up is bigger than 1.");
+            throw new TreeConfigurationException("Trying to add new id " + id + " <" + level + "> to " + parent + " <"
+                    + manager.getLevel(parent) + ">. The difference in levels up is bigger than 1.");
         }
-        manager.addAfterChild(parent, id, null,this_classinfo);
+        manager.addAfterChild(parent, id, null, this_classinfo);
         setLastAdded(id, level);
     }
 
-    private void setLastAdded(final T id, final int level) {
+    private void setLastAdded( final T id, final int level ) {
         lastAddedId = id;
         lastLevel = level;
     }

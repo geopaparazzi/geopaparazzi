@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.Set;
 
 import android.database.DataSetObserver;
-import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.ClassNodeInfo;
 
 /**
  * In-memory manager of tree state.
@@ -20,12 +18,9 @@ import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.ClassNodeInfo;
  *            type of identifier
  */
 public class InMemoryTreeStateManager<T> implements TreeStateManager<T> {
-    private static final String TAG = InMemoryTreeStateManager.class
-            .getSimpleName();
     private static final long serialVersionUID = 1L;
     private final Map<T, InMemoryTreeNode<T>> allNodes = new HashMap<T, InMemoryTreeNode<T>>();
-    private final InMemoryTreeNode<T> topSentinel = new InMemoryTreeNode<T>(
-            null, null, -1, true,null);
+    private final InMemoryTreeNode<T> topSentinel = new InMemoryTreeNode<T>(null, null, -1, true, null);
     private transient List<T> visibleListCache = null; // lasy initialised
     private transient List<T> unmodifiableVisibleList = null;
     private boolean visibleByDefault = true;
@@ -34,7 +29,7 @@ public class InMemoryTreeStateManager<T> implements TreeStateManager<T> {
     private synchronized void internalDataSetChanged() {
         visibleListCache = null;
         unmodifiableVisibleList = null;
-        for (final DataSetObserver observer : observers) {
+        for( final DataSetObserver observer : observers ) {
             observer.onChanged();
         }
     }
@@ -45,11 +40,11 @@ public class InMemoryTreeStateManager<T> implements TreeStateManager<T> {
      * @param visibleByDefault
      *            if true, then newly added nodes are expanded by default
      */
-    public void setVisibleByDefault(final boolean visibleByDefault) {
+    public void setVisibleByDefault( final boolean visibleByDefault ) {
         this.visibleByDefault = visibleByDefault;
     }
 
-    private InMemoryTreeNode<T> getNodeFromTreeOrThrow(final T id) {
+    private InMemoryTreeNode<T> getNodeFromTreeOrThrow( final T id ) {
         if (id == null) {
             throw new NodeNotInTreeException("(null)");
         }
@@ -60,14 +55,14 @@ public class InMemoryTreeStateManager<T> implements TreeStateManager<T> {
         return node;
     }
 
-    private InMemoryTreeNode<T> getNodeFromTreeOrThrowAllowRoot(final T id) {
+    private InMemoryTreeNode<T> getNodeFromTreeOrThrowAllowRoot( final T id ) {
         if (id == null) {
             return topSentinel;
         }
         return getNodeFromTreeOrThrow(id);
     }
 
-    private void expectNodeNotInTreeYet(final T id) {
+    private void expectNodeNotInTreeYet( final T id ) {
         final InMemoryTreeNode<T> node = allNodes.get(id);
         if (node != null) {
             throw new NodeAlreadyInTreeException(id.toString(), node.toString());
@@ -75,29 +70,29 @@ public class InMemoryTreeStateManager<T> implements TreeStateManager<T> {
     }
 
     @Override
-    public synchronized TreeNodeInfo<T> getNodeInfo(final T id) {
+    public synchronized TreeNodeInfo<T> getNodeInfo( final T id ) {
         final InMemoryTreeNode<T> node = getNodeFromTreeOrThrow(id);
         final List<InMemoryTreeNode<T>> children = node.getChildren();
         boolean expanded = false;
         if (!children.isEmpty() && children.get(0).isVisible()) {
             expanded = true;
         }
-        return new TreeNodeInfo<T>(id, node.getLevel(), !children.isEmpty(),node.isVisible(), expanded,node.getClassNodeInfo());
+        return new TreeNodeInfo<T>(id, node.getLevel(), !children.isEmpty(), node.isVisible(), expanded, node.getClassNodeInfo());
     }
 
     @Override
-    public synchronized List<T> getChildren(final T id) {
+    public synchronized List<T> getChildren( final T id ) {
         final InMemoryTreeNode<T> node = getNodeFromTreeOrThrowAllowRoot(id);
         return node.getChildIdList();
     }
 
     @Override
-    public synchronized T getParent(final T id) {
+    public synchronized T getParent( final T id ) {
         final InMemoryTreeNode<T> node = getNodeFromTreeOrThrowAllowRoot(id);
         return node.getParent();
     }
 
-    private boolean getChildrenVisibility(final InMemoryTreeNode<T> node) {
+    private boolean getChildrenVisibility( final InMemoryTreeNode<T> node ) {
         boolean visibility;
         final List<InMemoryTreeNode<T>> children = node.getChildren();
         if (children.isEmpty()) {
@@ -109,19 +104,17 @@ public class InMemoryTreeStateManager<T> implements TreeStateManager<T> {
     }
 
     @Override
-    public synchronized void addBeforeChild(final T parent, final T newChild,
-            final T beforeChild,ClassNodeInfo this_classinfo) {
+    public synchronized void addBeforeChild( final T parent, final T newChild, final T beforeChild, ClassNodeInfo this_classinfo ) {
         expectNodeNotInTreeYet(newChild);
         final InMemoryTreeNode<T> node = getNodeFromTreeOrThrowAllowRoot(parent);
         final boolean visibility = getChildrenVisibility(node);
         // top nodes are always expanded.
         if (beforeChild == null) {
-            final InMemoryTreeNode<T> added = node.add(0, newChild, visibility,this_classinfo);
+            final InMemoryTreeNode<T> added = node.add(0, newChild, visibility, this_classinfo);
             allNodes.put(newChild, added);
         } else {
             final int index = node.indexOf(beforeChild);
-            final InMemoryTreeNode<T> added = node.add(index == -1 ? 0 : index,
-                    newChild, visibility,this_classinfo);
+            final InMemoryTreeNode<T> added = node.add(index == -1 ? 0 : index, newChild, visibility, this_classinfo);
             allNodes.put(newChild, added);
         }
         if (visibility) {
@@ -130,19 +123,17 @@ public class InMemoryTreeStateManager<T> implements TreeStateManager<T> {
     }
 
     @Override
-    public synchronized void addAfterChild(final T parent, final T newChild,
-            final T afterChild,ClassNodeInfo this_classinfo) {
+    public synchronized void addAfterChild( final T parent, final T newChild, final T afterChild, ClassNodeInfo this_classinfo ) {
         expectNodeNotInTreeYet(newChild);
         final InMemoryTreeNode<T> node = getNodeFromTreeOrThrowAllowRoot(parent);
         final boolean visibility = getChildrenVisibility(node);
         if (afterChild == null) {
-            final InMemoryTreeNode<T> added = node.add(
-                    node.getChildrenListSize(), newChild, visibility,this_classinfo);
+            final InMemoryTreeNode<T> added = node.add(node.getChildrenListSize(), newChild, visibility, this_classinfo);
             allNodes.put(newChild, added);
         } else {
             final int index = node.indexOf(afterChild);
-            final InMemoryTreeNode<T> added = node.add(
-                    index == -1 ? node.getChildrenListSize() : index + 1, newChild,visibility,this_classinfo);
+            final InMemoryTreeNode<T> added = node.add(index == -1 ? node.getChildrenListSize() : index + 1, newChild,
+                    visibility, this_classinfo);
             allNodes.put(newChild, added);
         }
         if (visibility) {
@@ -151,7 +142,7 @@ public class InMemoryTreeStateManager<T> implements TreeStateManager<T> {
     }
 
     @Override
-    public synchronized void removeNodeRecursively(final T id) {
+    public synchronized void removeNodeRecursively( final T id ) {
         final InMemoryTreeNode<T> node = getNodeFromTreeOrThrowAllowRoot(id);
         final boolean visibleNodeChanged = removeNodeRecursively(node);
         final T parent = node.getParent();
@@ -162,9 +153,9 @@ public class InMemoryTreeStateManager<T> implements TreeStateManager<T> {
         }
     }
 
-    private boolean removeNodeRecursively(final InMemoryTreeNode<T> node) {
+    private boolean removeNodeRecursively( final InMemoryTreeNode<T> node ) {
         boolean visibleNodeChanged = false;
-        for (final InMemoryTreeNode<T> child : node.getChildren()) {
+        for( final InMemoryTreeNode<T> child : node.getChildren() ) {
             if (removeNodeRecursively(child)) {
                 visibleNodeChanged = true;
             }
@@ -179,9 +170,8 @@ public class InMemoryTreeStateManager<T> implements TreeStateManager<T> {
         return visibleNodeChanged;
     }
 
-    private void setChildrenVisibility(final InMemoryTreeNode<T> node,
-            final boolean visible, final boolean recursive) {
-        for (final InMemoryTreeNode<T> child : node.getChildren()) {
+    private void setChildrenVisibility( final InMemoryTreeNode<T> node, final boolean visible, final boolean recursive ) {
+        for( final InMemoryTreeNode<T> child : node.getChildren() ) {
             child.setVisible(visible);
             if (recursive) {
                 setChildrenVisibility(child, visible, true);
@@ -190,7 +180,7 @@ public class InMemoryTreeStateManager<T> implements TreeStateManager<T> {
     }
 
     @Override
-    public synchronized void expandDirectChildren(final T id) {
+    public synchronized void expandDirectChildren( final T id ) {
         // GPLog.androidLog(-1,TAG+" expandDirectChildren[Expanding direct children of " + id+"]");
         final InMemoryTreeNode<T> node = getNodeFromTreeOrThrowAllowRoot(id);
         setChildrenVisibility(node, true, false);
@@ -198,7 +188,7 @@ public class InMemoryTreeStateManager<T> implements TreeStateManager<T> {
     }
 
     @Override
-    public synchronized void expandEverythingBelow(final T id) {
+    public synchronized void expandEverythingBelow( final T id ) {
         // GPLog.androidLog(-1,TAG+" expandEverythingBelow[Expanding all children below " + id+"]");
         final InMemoryTreeNode<T> node = getNodeFromTreeOrThrowAllowRoot(id);
         setChildrenVisibility(node, true, true);
@@ -206,10 +196,10 @@ public class InMemoryTreeStateManager<T> implements TreeStateManager<T> {
     }
 
     @Override
-    public synchronized void collapseChildren(final T id) {
+    public synchronized void collapseChildren( final T id ) {
         final InMemoryTreeNode<T> node = getNodeFromTreeOrThrowAllowRoot(id);
         if (node == topSentinel) {
-            for (final InMemoryTreeNode<T> n : topSentinel.getChildren()) {
+            for( final InMemoryTreeNode<T> n : topSentinel.getChildren() ) {
                 setChildrenVisibility(n, false, true);
             }
         } else {
@@ -219,11 +209,11 @@ public class InMemoryTreeStateManager<T> implements TreeStateManager<T> {
     }
 
     @Override
-    public synchronized T getNextSibling(final T id) {
+    public synchronized T getNextSibling( final T id ) {
         final T parent = getParent(id);
         final InMemoryTreeNode<T> parentNode = getNodeFromTreeOrThrowAllowRoot(parent);
         boolean returnNext = false;
-        for (final InMemoryTreeNode<T> child : parentNode.getChildren()) {
+        for( final InMemoryTreeNode<T> child : parentNode.getChildren() ) {
             if (returnNext) {
                 return child.getId();
             }
@@ -235,11 +225,11 @@ public class InMemoryTreeStateManager<T> implements TreeStateManager<T> {
     }
 
     @Override
-    public synchronized T getPreviousSibling(final T id) {
+    public synchronized T getPreviousSibling( final T id ) {
         final T parent = getParent(id);
         final InMemoryTreeNode<T> parentNode = getNodeFromTreeOrThrowAllowRoot(parent);
         T previousSibling = null;
-        for (final InMemoryTreeNode<T> child : parentNode.getChildren()) {
+        for( final InMemoryTreeNode<T> child : parentNode.getChildren() ) {
             if (child.getId().equals(id)) {
                 return previousSibling;
             }
@@ -249,7 +239,7 @@ public class InMemoryTreeStateManager<T> implements TreeStateManager<T> {
     }
 
     @Override
-    public synchronized boolean isInTree(final T id) {
+    public synchronized boolean isInTree( final T id ) {
         return allNodes.containsKey(id);
     }
 
@@ -270,16 +260,15 @@ public class InMemoryTreeStateManager<T> implements TreeStateManager<T> {
                 } else {
                     visibleListCache.add(currentId);
                 }
-            } while (true);
+            } while( true );
         }
         if (unmodifiableVisibleList == null) {
-            unmodifiableVisibleList = Collections
-                    .unmodifiableList(visibleListCache);
+            unmodifiableVisibleList = Collections.unmodifiableList(visibleListCache);
         }
         return unmodifiableVisibleList;
     }
 
-    public synchronized T getNextVisible(final T id) {
+    public synchronized T getNextVisible( final T id ) {
         final InMemoryTreeNode<T> node = getNodeFromTreeOrThrowAllowRoot(id);
         if (!node.isVisible()) {
             return null;
@@ -305,34 +294,32 @@ public class InMemoryTreeStateManager<T> implements TreeStateManager<T> {
                 return parentSibling;
             }
             parent = getNodeFromTreeOrThrow(parent).getParent();
-        } while (true);
+        } while( true );
     }
 
     @Override
-    public synchronized void registerDataSetObserver(
-            final DataSetObserver observer) {
+    public synchronized void registerDataSetObserver( final DataSetObserver observer ) {
         observers.add(observer);
     }
 
     @Override
-    public synchronized void unregisterDataSetObserver(
-            final DataSetObserver observer) {
+    public synchronized void unregisterDataSetObserver( final DataSetObserver observer ) {
         observers.remove(observer);
     }
 
     @Override
-    public int getLevel(final T id) {
+    public int getLevel( final T id ) {
         return getNodeFromTreeOrThrow(id).getLevel();
     }
 
     @Override
-    public Integer[] getHierarchyDescription(final T id) {
+    public Integer[] getHierarchyDescription( final T id ) {
         final int level = getLevel(id);
         final Integer[] hierarchy = new Integer[level + 1];
         int currentLevel = level;
         T currentId = id;
         T parent = getParent(currentId);
-        while (currentLevel >= 0) {
+        while( currentLevel >= 0 ) {
             hierarchy[currentLevel--] = getChildren(parent).indexOf(currentId);
             currentId = parent;
             parent = getParent(parent);
@@ -340,7 +327,7 @@ public class InMemoryTreeStateManager<T> implements TreeStateManager<T> {
         return hierarchy;
     }
 
-    private void appendToSb(final StringBuilder sb, final T id) {
+    private void appendToSb( final StringBuilder sb, final T id ) {
         if (id != null) {
             final TreeNodeInfo<T> node = getNodeInfo(id);
             final int indent = node.getLevel() * 4;
@@ -352,7 +339,7 @@ public class InMemoryTreeStateManager<T> implements TreeStateManager<T> {
             sb.append("\n");
         }
         final List<T> children = getChildren(id);
-        for (final T child : children) {
+        for( final T child : children ) {
             appendToSb(sb, child);
         }
     }

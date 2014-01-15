@@ -61,50 +61,41 @@ public class CustomTileDatabasesManager {
     public boolean init( Context context, File mapsDir ) {
         File[] list_files = mapsDir.listFiles();
         List<CustomTileDatabaseHandler> customtile_Handlers = new ArrayList<CustomTileDatabaseHandler>();
-        boolean b_nomedia_file=false;
-        for( File this_file : list_files )
-        { // nomedia logic: first check the files, if no '.nomedia' found: then its directories
-            if (this_file.isFile())
-            {   // mj10777: collect .mapurl databases
+        boolean b_nomedia_file = false;
+        for( File this_file : list_files ) { // nomedia logic: first check the files, if no
+                                             // '.nomedia' found: then its directories
+            if (this_file.isFile()) { // mj10777: collect .mapurl databases
                 String name = this_file.getName();
                 if (Utilities.isNameFromHiddenFile(name)) {
                     continue;
                 }
-                if (name.endsWith(get_mapurl_extention()) ) {
-                    CustomTileDatabaseHandler map = new CustomTileDatabaseHandler(this_file.getAbsolutePath(),MapsDirManager.getInstance().get_maps_dir().getAbsolutePath());
+                if (name.endsWith(get_mapurl_extention())) {
+                    CustomTileDatabaseHandler map = new CustomTileDatabaseHandler(this_file.getAbsolutePath(), MapsDirManager
+                            .getInstance().get_maps_dir().getAbsolutePath());
                     customtile_Handlers.add(map);
                 }
-                if (name.equals(".nomedia"))
-                { // ignore all files of this directory
-                 b_nomedia_file=true;
-                 customtile_Handlers.clear();
-                 return b_nomedia_file;
+                if (name.equals(".nomedia")) { // ignore all files of this directory
+                    b_nomedia_file = true;
+                    customtile_Handlers.clear();
+                    return b_nomedia_file;
                 }
             }
         }
-        if (!b_nomedia_file)
-        {
-         for (int i=0;i<customtile_Handlers.size();i++)
-         {
-          customtileHandlers.add(customtile_Handlers.get(i));
-         }
+        if (!b_nomedia_file) {
+            for( int i = 0; i < customtile_Handlers.size(); i++ ) {
+                customtileHandlers.add(customtile_Handlers.get(i));
+            }
         }
-       customtile_Handlers.clear();
-       for( File this_file : list_files )
-       {
-        if (this_file.isDirectory())
-        {  // mj10777: read recursive directories inside the sdcard/maps directory
-         init(context, this_file);
+        customtile_Handlers.clear();
+        for( File this_file : list_files ) {
+            if (this_file.isDirectory()) { // mj10777: read recursive directories inside the
+                                           // sdcard/maps directory
+                init(context, this_file);
+            }
         }
-       }
-        // GPLog.androidLog(-1,"CustomTileDatabasesManager init[" + mapsDir.getName() + "] size["+customtileHandlers.size()+"]");
+        // GPLog.androidLog(-1,"CustomTileDatabasesManager init[" + mapsDir.getName() +
+        // "] size["+customtileHandlers.size()+"]");
         return b_nomedia_file;
-    }
-    private boolean ignoreTileSource( String name ) {
-        if (name.startsWith("_")) {
-            return true;
-        }
-        return false;
     }
     public List<CustomTileDatabaseHandler> getCustomTileDatabaseHandlers() {
         return customtileHandlers;
@@ -138,7 +129,7 @@ public class CustomTileDatabasesManager {
     public CustomTileTable getCustomTileTableByName( String table ) throws Exception {
         List<CustomTileTable> customtileTables = getTables(false);
         for( CustomTileTable customtileTable : customtileTables ) {
-             if (customtileTable.getFileNamePath().equals(table)) {
+            if (customtileTable.getFileNamePath().equals(table)) {
                 return customtileTable;
             }
         }

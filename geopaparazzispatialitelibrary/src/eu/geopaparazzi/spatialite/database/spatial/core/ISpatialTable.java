@@ -65,6 +65,13 @@ public interface ISpatialTable {
     public String getName();
 
     /**
+     * Returns a description.
+     *
+     * @return a description.
+     */
+    public String getDescription();
+
+    /**
      * Return Min Zoom.
      *
      * @return integer minzoom.

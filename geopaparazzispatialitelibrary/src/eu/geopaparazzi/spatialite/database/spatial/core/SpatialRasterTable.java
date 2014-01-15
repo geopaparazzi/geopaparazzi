@@ -113,6 +113,10 @@ public class SpatialRasterTable implements ISpatialTable {
         return this.name;
     }
 
+    public String getDescription() {
+        return getName();
+    }
+
     /**
       * Return type of map/file
       *

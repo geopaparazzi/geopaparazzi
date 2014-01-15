@@ -213,6 +213,10 @@ public class SpatialVectorTable implements ISpatialTable {
         return tableName;
     }
 
+    public String getDescription() {
+        return getName();
+    }
+
     /**
       * Return geometryTypeDescription
       *

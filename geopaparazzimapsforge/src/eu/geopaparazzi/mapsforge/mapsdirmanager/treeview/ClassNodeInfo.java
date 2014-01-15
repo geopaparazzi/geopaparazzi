@@ -1,7 +1,6 @@
 package eu.geopaparazzi.mapsforge.mapsdirmanager.treeview;
 import java.io.File;
 import java.util.Comparator;
-import eu.geopaparazzi.library.database.GPLog;
 
 import com.vividsolutions.jts.geom.Envelope;
 /**
@@ -28,8 +27,8 @@ public class ClassNodeInfo<T> {
     private final String s_bounds;
     private final String s_center;
     private final String s_zoom_levels;
-    private double centerX = 0.0; // wsg84
-    private double centerY = 0.0; // wsg84
+    // private double centerX = 0.0; // wsg84
+    // private double centerY = 0.0; // wsg84
     private double boundsWest = 0.0; // wsg84
     private double boundsEast = 0.0; // wsg84
     private double boundsNorth = 0.0; // wsg84
@@ -183,7 +182,8 @@ public class ClassNodeInfo<T> {
             } else {
                 i_rc = -1;
             }
-            // GPLog.androidLog(-1,"ClassNodeInfo i_rc="+i_rc+" enabled["+getEnabled()+"]  [" + toString()+ "]");
+            // GPLog.androidLog(-1,"ClassNodeInfo i_rc="+i_rc+" enabled["+getEnabled()+"]  [" +
+            // toString()+ "]");
         }
         return i_rc;
     }
@@ -212,8 +212,8 @@ public class ClassNodeInfo<T> {
                         boundsEast = bounds[2]; // wsg84
                         boundsNorth = bounds[3]; // wsg84
                         boundsSouth = bounds[1]; // wsg84
-                        centerX = (bounds[0] + (bounds[2] - bounds[0]) / 2);
-                        centerY = (bounds[1] + (bounds[3] - bounds[1]) / 2);
+                        // centerX = (bounds[0] + (bounds[2] - bounds[0]) / 2);
+                        // centerY = (bounds[1] + (bounds[3] - bounds[1]) / 2);
                     }
                 }
             }
@@ -223,10 +223,11 @@ public class ClassNodeInfo<T> {
                     double[] center = new double[]{0.0, 0.0};
                     center[0] = Double.parseDouble(sa_string[0]);
                     center[1] = Double.parseDouble(sa_string[1]);
-                    if (((center[0] >= -180.0) && (center[0] <= 180.0)) && ((center[1] >= -85.05113) && (center[1] <= 85.05113))) {
-                        centerX = center[0];
-                        centerY = center[1];
-                    }
+                    // if (((center[0] >= -180.0) && (center[0] <= 180.0)) && ((center[1] >=
+                    // -85.05113) && (center[1] <= 85.05113))) {
+                    // centerX = center[0];
+                    // centerY = center[1];
+                    // }
                 }
             }
             if ((!this.s_zoom_levels.equals("")) && (this.s_zoom_levels.indexOf("-") != -1)) {
@@ -257,14 +258,13 @@ public class ClassNodeInfo<T> {
     public String getFileNamePath() {
         // vector: database-file with path + / + table-name +/ + /
         // field-name
-        if (this.s_class_name.equals("SpatialVectorTable"))
-        { // this value is set with SpatialVectorTable.getUniqueName()
-         String s_UniqueName=s_file_path;
-         if (s_UniqueName.startsWith(File.separator))
-         { // FileNamePath[/berlin_grenzen/berlin_geometries.db/berlin_strassen_abschnitte/soldner_geometry]
-          s_UniqueName = s_UniqueName.substring(1);
-         }
-         return  s_UniqueName;
+        if (this.s_class_name.equals("SpatialVectorTable")) { // this value is set with
+                                                              // SpatialVectorTable.getUniqueName()
+            String s_UniqueName = s_file_path;
+            if (s_UniqueName.startsWith(File.separator)) { // FileNamePath[/berlin_grenzen/berlin_geometries.db/berlin_strassen_abschnitte/soldner_geometry]
+                s_UniqueName = s_UniqueName.substring(1);
+            }
+            return s_UniqueName;
         }
         if (this.file_path != null)
             return this.file_path.getAbsolutePath();

@@ -25,7 +25,6 @@ import java.util.List;
 import jsqlite.Exception;
 import android.content.Context;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapDatabaseHandler;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapTable;
 
@@ -40,7 +39,7 @@ public class MapDatabasesManager {
     private List<MapDatabaseHandler> mapHandlers = new ArrayList<MapDatabaseHandler>();
     private HashMap<MapTable, MapDatabaseHandler> mapTablesMap = new HashMap<MapTable, MapDatabaseHandler>();
     private static MapDatabasesManager mapDbManager = null;
-    private final String[] sa_extentions = new String[]{".map",".xml"};
+    private final String[] sa_extentions = new String[]{".map", ".xml"};
     private final int i_extention_map = 0;
     private static final int i_extention_xml = 1;
 
@@ -57,61 +56,50 @@ public class MapDatabasesManager {
     public static void reset() {
         mapDbManager = null;
     }
-    public  String get_map_extention() {
+    public String get_map_extention() {
         return sa_extentions[i_extention_map];
     }
-    public  String get_xml_extention() {
+    public String get_xml_extention() {
         return sa_extentions[i_extention_xml];
     }
-    public boolean  init( Context context, File mapsDir ) {
+    public boolean init( Context context, File mapsDir ) {
         File[] list_files = mapsDir.listFiles();
         List<MapDatabaseHandler> map_Handlers = new ArrayList<MapDatabaseHandler>();
-        boolean b_nomedia_file=false;
-        for( File this_file : list_files )
-        { // nomedia logic: first check the files, if no '.nomedia' found: then its directories
-             if (this_file.isFile())
-             { // mj10777: collect .map databases
+        boolean b_nomedia_file = false;
+        for( File this_file : list_files ) { // nomedia logic: first check the files, if no
+                                             // '.nomedia' found: then its directories
+            if (this_file.isFile()) { // mj10777: collect .map databases
                 String name = this_file.getName();
                 if (Utilities.isNameFromHiddenFile(name)) {
                     continue;
                 }
-                if (name.endsWith(get_map_extention()) ) {
+                if (name.endsWith(get_map_extention())) {
                     MapDatabaseHandler map = new MapDatabaseHandler(this_file.getAbsolutePath());
                     map_Handlers.add(map);
 
                 }
-                if (name.equals(".nomedia"))
-                { // ignore all files of this directory
-                 b_nomedia_file=true;
-                 map_Handlers.clear();
-                 return b_nomedia_file;
+                if (name.equals(".nomedia")) { // ignore all files of this directory
+                    b_nomedia_file = true;
+                    map_Handlers.clear();
+                    return b_nomedia_file;
                 }
             }
         }
-        if (!b_nomedia_file)
-        {
-         for (int i=0;i<map_Handlers.size();i++)
-         {
-          mapHandlers.add(map_Handlers.get(i));
-         }
+        if (!b_nomedia_file) {
+            for( int i = 0; i < map_Handlers.size(); i++ ) {
+                mapHandlers.add(map_Handlers.get(i));
+            }
         }
         map_Handlers.clear();
-        for( File this_file : list_files )
-        {
-         if (this_file.isDirectory())
-         {
-          // mj10777: read recursive directories inside the sdcard/maps directory
-          init(context, this_file);
-         }
+        for( File this_file : list_files ) {
+            if (this_file.isDirectory()) {
+                // mj10777: read recursive directories inside the sdcard/maps directory
+                init(context, this_file);
+            }
         }
-        // GPLog.androidLog(-1,"MapDatabasesManager init[" + mapsDir.getName() + "] size["+mapHandlers.size()+"]");
+        // GPLog.androidLog(-1,"MapDatabasesManager init[" + mapsDir.getName() +
+        // "] size["+mapHandlers.size()+"]");
         return b_nomedia_file;
-    }
-    private boolean ignoreTileSource( String name ) {
-        if (name.startsWith("_")) {
-            return true;
-        }
-        return false;
     }
     public int size() {
         return mapHandlers.size();

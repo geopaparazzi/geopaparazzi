@@ -43,7 +43,6 @@ import android.preference.PreferenceManager;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.CustomTileDatabasesManager;
@@ -57,24 +56,27 @@ import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.MapsDirTreeViewList;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
+import eu.geopaparazzi.spatialite.util.SpatialiteTypes;
 
 /**
  * The manager of supported maps in the Application maps dir.
  *
  * @author Mark Johnson (www.mj10777.de)
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({"rawtypes", "unchecked", "nls"})
 public class MapsDirManager {
-    private static final String GPKG_STRING = "gpkg";
-    private static final String MBTILES_STRING = "mbtiles";
+    // private static final String GPKG_STRING = "gpkg";
+    // private static final String MBTILES_STRING = "mbtiles";
     private static final int MAP = 0;
     private static final int MBTILES = 1;
     private static final int GPKG = 2;
     private static final int SPATIALITE = 3;
     private static final int MAPURL = 4;
+
     private List<ClassNodeInfo> maptype_classes = new LinkedList<ClassNodeInfo>();
-    private List<ClassNodeInfo> vector_classes = new LinkedList<ClassNodeInfo>();
-    private int i_vectorinfo_count = -1;
+    private List<ClassNodeInfo> vectorClassNodeInfoList = new LinkedList<ClassNodeInfo>();
+
+    private int vectorinfoCount = -1;
     private File mapsDir = null;
     private static MapsDirManager mapsdirManager = null;
     private int i_selected_type = MBTILES;
@@ -94,13 +96,13 @@ public class MapsDirManager {
     private double centerY = 0.0;
     private double currentX = 0.0;
     private double currentY = 0.0;
-    private double[] mapCenterLocation;
     private MapView map_View = null;
     private String s_bounds_zoom = "";
     private File mapnikFile;
+
     private MapsDirManager() {
     }
-    // -----------------------------------------------
+
     /**
       * Singleton getter for MapsDirManager.
       *
@@ -138,7 +140,7 @@ public class MapsDirManager {
     public static void reset() {
         mapsdirManager = null;
     }
-    // -----------------------------------------------
+
     /**
       * Collect map-information in maps directory.
       * 
@@ -149,6 +151,7 @@ public class MapsDirManager {
       *  <li>- dependend on map-type</li>
       *  <li>call handleTileSources() to gather information to be used in application from results</li>
       * </ul>
+      * 
       * @param context 'this' of Application Activity class
       * @param mapsDir Directory to search [ResourcesManager.getInstance(this).getMapsDir();]
       * @throws java.lang.Exception  if something goes wrong.
@@ -191,7 +194,6 @@ public class MapsDirManager {
         // MapsDirTreeViewList.use_treeType=TreeType.FILEDIRECTORY; // [default]
         // MapsDirTreeViewList.use_treeType=MapsDirTreeViewList.TreeType.MAPTYPE;
         // SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        mapCenterLocation = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
         GPLog.GLOBAL_LOG_LEVEL = -1;
         SpatialDatabasesManager.reset();
         MapDatabasesManager.reset();
@@ -200,11 +202,11 @@ public class MapsDirManager {
             try {
                 SpatialDatabasesManager.getInstance().init(context, mapsDir);
                 GPLog.androidLog(-1, "MapsDirManager manager[SpatialDatabasesManager] size[" //$NON-NLS-1$
-                        + SpatialDatabasesManager.getInstance().size() + "]"); //$NON-NLS-1$
+                        + SpatialDatabasesManager.getInstance().getCount() + "]"); //$NON-NLS-1$
                 GPLog.androidLog(-1, "MapsDirManager manager[SpatialDatabasesManager] size_raster[" //$NON-NLS-1$
-                        + SpatialDatabasesManager.getInstance().size_raster() + "]"); //$NON-NLS-1$
+                        + SpatialDatabasesManager.getInstance().getRasterDbCount() + "]"); //$NON-NLS-1$
                 GPLog.androidLog(-1, "MapsDirManager manager[SpatialDatabasesManager] size_vector[" //$NON-NLS-1$
-                        + SpatialDatabasesManager.getInstance().size_vector() + "]"); //$NON-NLS-1$
+                        + SpatialDatabasesManager.getInstance().getVectorDbCount() + "]"); //$NON-NLS-1$
                 MapDatabasesManager.getInstance().init(context, mapsDir);
                 GPLog.androidLog(-1, "MapsDirManager manager[MapDatabasesManager] size[" //$NON-NLS-1$
                         + MapDatabasesManager.getInstance().size() + "]"); //$NON-NLS-1$
@@ -311,16 +313,16 @@ public class MapsDirManager {
         /*
          * collect vector tables
          */
-        load_vector_classes();
+        loadClassNodeInfoList();
         /*
          * add also mbtiles,geopackage tables
          */
         try {
             List<SpatialRasterTable> spatialRasterTables = SpatialDatabasesManager.getInstance().getSpatialRasterTables(false);
             GPLog.androidLog(-1, "MapsDirManager manager[SpatialDatabasesManager] size_raster[" //$NON-NLS-1$
-                    + SpatialDatabasesManager.getInstance().size_raster() + "]"); //$NON-NLS-1$
+                    + SpatialDatabasesManager.getInstance().getRasterDbCount() + "]"); //$NON-NLS-1$
             GPLog.androidLog(-1, "MapsDirManager manager[SpatialDatabasesManager] size_vector[" //$NON-NLS-1$
-                    + SpatialDatabasesManager.getInstance().size_vector() + "]"); //$NON-NLS-1$
+                    + SpatialDatabasesManager.getInstance().getVectorDbCount() + "]"); //$NON-NLS-1$
             // [26] [/mnt/extSdCard/maps/geopackage_files/Luciad_GeoPackage.gpkg]
             // [27] [/mnt/extSdCard/maps/geopackage_files/Luciad_GeoPackage.gpkg]
             for( SpatialRasterTable table : spatialRasterTables ) {
@@ -331,17 +333,17 @@ public class MapsDirManager {
                 if (!ignoreTileSource(name)) {
                     i_type = MBTILES;
                     String s_type = table.getMapType();
-                    if (!s_type.equals(MBTILES_STRING)) {
+                    if (!s_type.equals(SpatialiteTypes.MBTILES.getTypeName())) {
                         i_type = SPATIALITE;
-                        if (s_type.equals(GPKG_STRING))
+                        if (s_type.equals(SpatialiteTypes.GPKG.getTypeName()))
                             i_type = GPKG;
                     }
                     this_mapinfo = new ClassNodeInfo(i_count_raster++, i_type, s_type, "SpatialRasterTable",
-                            table.getFileNamePath(), table.getFileName(), table.getFileNamePath(), table.getName(),
-                            table.getDescription(), table.getBounds_toString(), table.getCenter_toString(),
-                            table.getZoom_Levels());
+                            table.getDatabasePath(), table.getFileName(), table.getDatabasePath(), table.getName(),
+                            table.getDescription(), table.getBoundsAsString(), table.getCenterAsString(),
+                            table.getMinMaxZoomLevelsAsString());
                     maptype_classes.add(this_mapinfo);
-                    if ((selected_mapinfo == null) && (s_selected_map.equals(table.getFileNamePath()))) {
+                    if ((selected_mapinfo == null) && (s_selected_map.equals(table.getDatabasePath()))) {
                         selected_mapinfo = this_mapinfo;
                         s_selected_type = selected_mapinfo.getTypeText();
                         i_selected_type = selected_mapinfo.getType();
@@ -364,33 +366,32 @@ public class MapsDirManager {
         // List will be returned sorted as Directory-File with levels set.
         maptype_classes = MapsDirTreeViewList.setMapTypeClasses(maptype_classes, get_maps_dir());
     }
-    // -----------------------------------------------
+
     /**
       * Filter out certain file-types
-      *
-      * <p>call from handleTileSources()
       *
       * @param name Filename to check
       * @return true if condition is fullfilled ; else false not fullfilled
       */
-    private boolean ignoreTileSource( String name ) {
+    private static boolean ignoreTileSource( String name ) {
         if (name.startsWith("_")) {
             return true;
         }
         return false;
     }
-    // -----------------------------------------------
+
     /**
-      * Application has selected a Map
+      * Selected a Map through its ClassNodeInfo.
       *
       * <p>call from Application or Map-Activity
-      *
+      * 
+      * @param context  the context to use.
+      * @param selected_classinfo the selected {@link ClassNodeInfo}. 
       * @param map_View Map-View to set (if not null)
       * @param mapCenterLocation [point/zoom to check]
-      * @return i_rc 0 ir correct ; else false not fullfilled
+      * @return 0 if correct else false 
       */
-    public int selected_MapClassInfo( Context context, ClassNodeInfo selected_classinfo, MapView map_View,
-            double[] mapCenterLocation ) {
+    public int selectMapClassInfo( Context context, ClassNodeInfo selected_classinfo, MapView map_View, double[] mapCenterLocation ) {
         int i_rc = -1;
         if (selected_classinfo != null) {
             selected_mapinfo = selected_classinfo;
@@ -401,24 +402,24 @@ public class MapsDirManager {
             setTileSource(context, s_selected_type, s_selected_map);
             i_rc = 0;
             if (map_View != null) {
-                i_rc = load_Map(map_View, mapCenterLocation);
+                i_rc = loadSelectedMap(map_View, mapCenterLocation);
             }
         }
         // GPLog.androidLog(-1,"MapsDirManager -I-> selected_MapClassInf mapinfo["
         // +selected_mapinfo.getShortDescription()+ "] i_rc["+i_rc+"]");
         return i_rc;
     }
-    // -----------------------------------------------
+
     /**
       * Load selected Map
       *
       * <p>call  directly from  Map-Activity
       *
-      * @param selected_classinfo Map that was selected
       * @param map_View Map-View to set (if not null)
+      * @param mapCenterLocation [point/zoom to check]
       * @return i_rc 0 if correct ; else false not fullfilled
       */
-    public int load_Map( MapView map_View, double[] mapCenterLocation ) {
+    private int loadSelectedMap( MapView map_View, double[] mapCenterLocation ) {
         int i_rc = -1;
         if ((map_View != null) && (selected_mapinfo != null)) {
             if (this.map_View == null) {
@@ -529,30 +530,30 @@ public class MapsDirManager {
         }
         return i_rc;
     }
-    // -----------------------------------------------
+
     /**
-      * Fill vector_classes with Information about found Vector-Tables
+      * Fill vectorClassNodeInfoList with Information about found Vector-Tables
       *
-      * @return i_vectorinfo_count amount of tables found
+      * @return amount of tables found
       */
-    public int load_vector_classes() {
-        if (vector_classes == null) {
-            vector_classes = new LinkedList<ClassNodeInfo>();
+    private int loadClassNodeInfoList() {
+        if (vectorClassNodeInfoList == null) {
+            vectorClassNodeInfoList = new LinkedList<ClassNodeInfo>();
         } else {
-            vector_classes.clear();
+            vectorClassNodeInfoList.clear();
         }
-        i_vectorinfo_count = vector_classes.size();
+        vectorinfoCount = vectorClassNodeInfoList.size();
         try {
             List<SpatialVectorTable> spatialVectorTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(false);
             ClassNodeInfo this_vectorinfo = null;
             for( int i = 0; i < spatialVectorTables.size(); i++ ) {
                 SpatialVectorTable table = spatialVectorTables.get(i);
-                this_vectorinfo = new ClassNodeInfo(i_vectorinfo_count++, table.getGeomType(),
-                        table.getGeometryTypeDescription(), "SpatialVectorTable", table.getUniqueName(), table.getFileName(),
-                        table.getName(), table.getGeomName(), table.getName() + File.separator + table.getGeomName(),
-                        table.getBounds_toString(), table.getCenter_toString(), table.getZoom_Levels());
-                this_vectorinfo.setEnabled(table.IsStyle());
-                vector_classes.add(this_vectorinfo);
+                this_vectorinfo = new ClassNodeInfo(vectorinfoCount++, table.getGeomType(), table.getGeometryTypeDescription(),
+                        "SpatialVectorTable", table.getUniqueName(), table.getFileName(), table.getName(), table.getGeomName(),
+                        table.getName() + File.separator + table.getGeomName(), table.getBoundsAsString(),
+                        table.getCenterAsString(), table.getMinMaxZoomLevelsAsString());
+                this_vectorinfo.setEnabled(table.isTableEnabled());
+                vectorClassNodeInfoList.add(this_vectorinfo);
                 // GPLog.androidLog(-1, "ClassNodeInfo[" + this_vectorinfo.toString() + "]");
             }
         } catch (jsqlite.Exception e) {
@@ -560,15 +561,15 @@ public class MapsDirManager {
         }
         Comparator<ClassNodeInfo> cp_directory_file = ClassNodeInfo.getComparator(ClassNodeInfo.SortParameter.SORT_ENABLED,
                 ClassNodeInfo.SortParameter.SORT_DIRECTORY, ClassNodeInfo.SortParameter.SORT_FILE);
-        Collections.sort(vector_classes, cp_directory_file);
-        return i_vectorinfo_count;
+        Collections.sort(vectorClassNodeInfoList, cp_directory_file);
+        return vectorinfoCount;
     }
-    // -----------------------------------------------
+
     /**
-      * Clear MapView TileCache
-      * - this.map_View is set in load_Map()
-      * - to be used when a new map is loaded
-      * @return nothing
+      * Clear MapView TileCache.
+      * 
+      * <br>- this.map_View is set in load_Map()
+      * <br>- to be used when a new map is loaded
       */
     private void clear_TileCache() {
         if (this.map_View != null) {
@@ -579,15 +580,13 @@ public class MapsDirManager {
             this.map_View.getFileSystemTileCache().destroy();
         }
     }
-    // -----------------------------------------------
+
     /**
       * Return MapView Bounds with present Zoom-level
       *
-      * <p>this.map_View is set in load_Map()
-      *
-      * @return bounds_zoom 7 values: west,south,east,north wsg84 values and zoom-level, meters-width,meters-height
+      * @return the bounds array containing: [west,south,east,north wsg84 values, zoom-level, meters-width,meters-height]
       */
-    public double[] get_bounds_zoom_meters() {
+    public double[] getMapViewBoundsInfo() {
         double[] bounds_zoom = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
         if (this.map_View != null) {
             Projection projection = this.map_View.getProjection();
@@ -605,27 +604,25 @@ public class MapsDirManager {
         }
         return bounds_zoom;
     }
-    // -----------------------------------------------
+
     /**
       * Return MapView Bounds with present Zoom-level as string
-      * - 0: return last set value ; 1: recalulate
+      * 
+      * @param doRecalculate 0: return last set value ; 1: recalulate 
       * @return s_bounds_zoom 5 values: west,south,east,north;zoom-level;meters-width;meters-height
       */
-    public String get_bounds_zoom_meters_toString( int i_parm ) {
-        switch( i_parm ) {
-        case 1: { // recalulate and set s_bounds_zoom
-            double[] bounds_zoom = get_bounds_zoom_meters();
-        }
-            break;
-        }
+    public String getMapViewBoundsInfoAsString( int doRecalculate ) {
+        if (doRecalculate == 1)
+            getMapViewBoundsInfo();
         return s_bounds_zoom;
     }
-    // -----------------------------------------------
+
     /**
       * Return a list of VectorTables within these bounds an zoom-level
       *
       * we must have 5 values: west,south,east,north wsg84 values and a zoom-level
       * if called with 'bounds_zoom == null': then all Tables, without checking, will be returned
+      * 
       * @param bounds_zoom 5 values: west,south,east,north wsg84 values and zoom-level
       * @param i_check_enabled 0: return all ; 1= return only those that are enabled
       * @param b_reread true: force new creation of vector-list ; false= read as is
@@ -639,19 +636,20 @@ public class MapsDirManager {
         // GPLog.androidLog(-1, "getSpatialVectorTables: bounds_zoom_sent[" + s_bounds_zoom_sent+
         // "] bounds_zoom_calc[" + s_bounds_zoom_calc+ "]");
         if (b_reread)
-            i_vectorinfo_count = -1;
-        if ((i_vectorinfo_count < 0) && (vector_classes.size() == 0)) { // if not loaded, load it
-            load_vector_classes();
+            vectorinfoCount = -1;
+        if ((vectorinfoCount < 0) && (vectorClassNodeInfoList.size() == 0)) { // if not loaded,
+                                                                              // load it
+            loadClassNodeInfoList();
         }
         SpatialDatabasesManager sdManager = SpatialDatabasesManager.getInstance();
-        for( int i = 0; i < vector_classes.size(); i++ ) {
-            ClassNodeInfo this_vectorinfo = vector_classes.get(i);
+        for( int i = 0; i < vectorClassNodeInfoList.size(); i++ ) {
+            ClassNodeInfo this_vectorinfo = vectorClassNodeInfoList.get(i);
             SpatialVectorTable vector_table = null;
             try { // until DataListActivity is incorperted into MapsDirManager, we must read the
                   // enabled status in case it changed - getUniqueName()
                 vector_table = sdManager.getVectorTableByName(this_vectorinfo.getFileNamePath());
                 if (vector_table != null) {
-                    this_vectorinfo.setEnabled(vector_table.IsStyle());
+                    this_vectorinfo.setEnabled(vector_table.isTableEnabled());
                 }
             } catch (jsqlite.Exception e) {
                 // GPLog.androidLog(4, "MapsDirManager getSpatialVectorTables SpatialVectorTable[" +
@@ -681,7 +679,7 @@ public class MapsDirManager {
         }
         return vector_TableList;
     }
-    // -----------------------------------------------
+
     /**
       * Return Min Zoom
       *
@@ -694,7 +692,7 @@ public class MapsDirManager {
     public int getMinZoom() {
         return minZoom;
     }
-    // -----------------------------------------------
+
     /**
       * Return current Zoom
       *
@@ -703,7 +701,7 @@ public class MapsDirManager {
     public int getCurrentZoom() {
         return currentZoom;
     }
-    // -----------------------------------------------
+
     /**
       * Sets current Zoom
       *
@@ -727,7 +725,7 @@ public class MapsDirManager {
         }
         return currentZoom;
     }
-    // -----------------------------------------------
+
     /**
       * Return Default Zoom
       *
@@ -809,6 +807,7 @@ public class MapsDirManager {
       * <p>-- the default Zoom of the loaded map will be taken
       * <p>-  if (i_default_zoom == 2)
       * <p>-- the getMinZoom() of the loaded map will be taken
+      * @param i_default_zoom the default zoom.
       * @return imapCenterLocation [point/zoom to set]
       */
     public double[] getMapCenterZoom( int i_default_zoom ) {
@@ -820,7 +819,7 @@ public class MapsDirManager {
         double[] mapCenterLocation = new double[]{getCenterX(), getCenterY(), d_zoom};
         return mapCenterLocation;
     }
-    // -----------------------------------------------
+
     /**
       * set MapView Center point
       * - this should be the only function used to compleate this task
@@ -849,10 +848,11 @@ public class MapsDirManager {
         int i_position_correction_type = 0;
         int i_zoom = 0;
 
-        if (mapCenterLocation == null) { // if the user has not given a desired position, retrieve
-                                         // it from the active-map
-                                         // GPLog.androidLog(-1,
-                                         // "MapsDirInfo: setMapViewCenter[mapCenterLocation == null]");
+        if (mapCenterLocation == null) {
+            // if the user has not given a desired position, retrieve
+            // it from the active-map
+            // GPLog.androidLog(-1,
+            // "MapsDirInfo: setMapViewCenter[mapCenterLocation == null]");
             mapCenterLocation = getMapCenterZoom(i_default_zoom);
             d_position_x = mapCenterLocation[0];
             d_position_y = mapCenterLocation[1];
@@ -909,41 +909,19 @@ public class MapsDirManager {
         switch( i_parm ) {
         default:
         case 0: { // correct to position inside bounds/zoom-level
-            if (((d_position_x < bounds_west) || (d_position_x > bounds_east))
-                    || ((d_position_y < bounds_south) || (d_position_y > bounds_north))) { // this
-                                                                                           // is out
-                                                                                           // of
-                                                                                           // bounds,
-                                                                                           // set
-                                                                                           // center
-                                                                                           // position
-                                                                                           // even
-                                                                                           // of
-                                                                                           // only
-                                                                                           // one of
-                                                                                           // the
-                                                                                           // values
-                                                                                           // are
-                                                                                           // incorrect:
-                                                                                           // - the
-                                                                                           // correct
-                                                                                           // value
-                                                                                           // may
-                                                                                           // not
-                                                                                           // show
-                                                                                           // someting
-                                                                                           // (.map
-                                                                                           // files),
-                                                                                           // thus
-                                                                                           // force
-                                                                                           // the
-                                                                                           // change
+            if (d_position_x < bounds_west || d_position_x > bounds_east || d_position_y < bounds_south
+                    || d_position_y > bounds_north) {
+                /* 
+                 * this is out of bounds, set center position even of
+                 * only one of the values are incorrect: - the correct value may
+                 * not show someting (.map files), thus force the change
+                 */
                 d_position_x = getCenterX();
                 d_position_y = getCenterY();
                 // GPLog.androidLog(-1,
                 // "MapsDirInfo: setMapViewCenter[correction center] ["+d_position_x+","+d_position_y+";"+i_zoom+"]");
             }
-            if ((d_position_x < bounds_west) || (d_position_x > bounds_east)) {
+            if (d_position_x < bounds_west || d_position_x > bounds_east) {
                 if (d_position_x < bounds_west)
                     d_position_x = bounds_west;
                 if (d_position_x > bounds_east)
@@ -970,6 +948,7 @@ public class MapsDirManager {
         }
         return i_rc;
     }
+
     /**
      * Function to check and correct bounds / zoom level [for 'SpatialiteDatabaseHandler']
      *
@@ -1028,6 +1007,7 @@ public class MapsDirManager {
         }
         return i_rc;
     }
+
     /**
      * Sets the tilesource.
      *
@@ -1040,14 +1020,14 @@ public class MapsDirManager {
      * @param s_selected_type map-type of file
      * @param s_selected_map absolute path of file
      */
-    private void setTileSource( Context context, String s_selected_type, String s_selected_map ) {
+    private static void setTileSource( Context context, String s_selected_type, String s_selected_map ) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         Editor editor = preferences.edit();
         editor.putString(LibraryConstants.PREFS_KEY_TILESOURCE, s_selected_type);
         editor.putString(LibraryConstants.PREFS_KEY_TILESOURCE_FILE, s_selected_map);
         editor.commit();
     }
-    // -----------------------------------------------
+
     /**
       * Close and cleanup any resourced used by this manager
       *
