@@ -19,11 +19,10 @@ package eu.geopaparazzi.spatialite.database.spatial.core;
 
 import java.util.List;
 
-import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryIterator;
-import eu.geopaparazzi.spatialite.util.Style;
-
 import jsqlite.Exception;
 import android.graphics.Paint;
+import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryIterator;
+import eu.geopaparazzi.spatialite.util.Style;
 
 /**
  * Interface for spatial database handlers.
@@ -52,13 +51,13 @@ public interface ISpatialDatabaseHandler {
       * @return <code>true</code> if the db file is valid.
       */
     public abstract boolean isValid();
-    
+
     /**
      * Get the spatial vector tables from the database.
      *
      * @param forceRead force a clean read from the db instead of using cached.
      * @return the list of {@link SpatialVectorTable}s.
-     * @throws Exception
+     * @throws Exception  if something goes wrong.
      */
     public abstract List<SpatialVectorTable> getSpatialVectorTables( boolean forceRead ) throws Exception;
 
@@ -67,7 +66,7 @@ public interface ISpatialDatabaseHandler {
      *
      * @param forceRead force a clean read from the db instead of using cached.
      * @return the list of {@link SpatialVectorTable}s.
-     * @throws Exception
+     * @throws Exception  if something goes wrong.
      */
     public abstract List<SpatialRasterTable> getSpatialRasterTables( boolean forceRead ) throws Exception;
 
@@ -85,7 +84,7 @@ public interface ISpatialDatabaseHandler {
      * @param spatialTable the table to use.
      * @param destSrid the srid to which to project to.
      * @return the bounds as [n,s,e,w].
-     * @throws Exception
+     * @throws Exception  if something goes wrong.
      */
     public float[] getTableBounds( SpatialVectorTable spatialTable, String destSrid ) throws Exception;
 
@@ -126,7 +125,7 @@ public interface ISpatialDatabaseHandler {
     /**
      * Closes the database handler, freeing its resources.
      * 
-     * @throws Exception
+     * @throws Exception  if something goes wrong.
      */
     public void close() throws Exception;
 
@@ -134,13 +133,24 @@ public interface ISpatialDatabaseHandler {
      * Update the style definition in the database with the supplied {@link Style}.
      * 
      * @param style the style to use as update.
-     * @throws Exception
+     * @throws Exception  if something goes wrong.
      */
     public void updateStyle( Style style ) throws Exception;
 
+    /**
+     * Performs an intersection query on a vector table and returns a string info version of the result.
+     * 
+     * @param boundsSrid the srid of the bounds supplied.
+     * @param spatialTable the vector table to query.
+     * @param n north bound.
+     * @param s south bound.
+     * @param e east bound.
+     * @param w west bound.
+     * @param resultStringBuilder the builder of the result.
+     * @param indentStr the indenting to use for formatting.
+     * @throws Exception  if something goes wrong.
+     */
     public void intersectionToStringBBOX( String boundsSrid, SpatialVectorTable spatialTable, double n, double s, double e,
-            double w, StringBuilder sb, String indentStr ) throws Exception;
+            double w, StringBuilder resultStringBuilder, String indentStr ) throws Exception;
 
-    public void intersectionToString4Polygon( String boundsSrid, SpatialVectorTable spatialTable, double n, double e,
-            StringBuilder sb, String indentStr ) throws Exception;
 }

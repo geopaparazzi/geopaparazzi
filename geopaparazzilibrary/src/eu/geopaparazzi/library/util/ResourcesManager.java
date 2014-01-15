@@ -49,6 +49,11 @@ public class ResourcesManager implements Serializable {
 
     private static final String PATH_MEDIA = "media"; //$NON-NLS-1$
 
+    /**
+     * The nomedia file defining folders that should not be searched for media.
+     */
+    public static final String NO_MEDIA = ".nomedia"; //$NON-NLS-1$
+
     private File applicationDir;
 
     private File databaseFile;

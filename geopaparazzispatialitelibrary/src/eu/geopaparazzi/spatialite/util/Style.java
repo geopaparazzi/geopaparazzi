@@ -22,24 +22,82 @@ package eu.geopaparazzi.spatialite.util;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("nls")
 public class Style {
+    /**
+     * 
+     */
     public String name;
+    /**
+     * 
+     */
     public float size = 5;
+    /**
+     * 
+     */
     public String fillcolor = "red";
+    /**
+     * 
+     */
     public String strokecolor = "black";
+    /**
+     * 
+     */
     public float fillalpha = 0.3f;
+    /**
+     * 
+     */
     public float strokealpha = 1.0f;
+    /**
+     * WKT shape name.
+     */
     public String shape = "square";
+    /**
+     * The stroke width.
+     */
     public float width = 3f;
+    /**
+     * The text size.
+     */
     public float textsize = 5f;
+    /**
+     * Decimation factor for geometries.
+     */
     public float decimationFactor = 0.00001f;
+    /**
+     * Field to use for labeling.
+     */
     public String textfield = "";
+    /**
+     * Defines if the layer is enabled.
+     * 
+     * <ul>
+     * <li>0 = false</li>
+     * <li>1 = true</li>
+     * </ul>
+     */
     public int enabled = 0;
+    /**
+     * Vertical order of the layer. 
+     */
     public int order = 0;
+    /**
+     * The pattern to dash lines.
+     */
     public String dashPattern = "";
+    /**
+     * Min possible zoom level.
+     */
     public int minZoom = 0;
+    /**
+     * Max possible zoom level.
+     */
     public int maxZoom = 22;
 
+    /**
+     * @return a string that can be used in a sql insert statement with 
+     *        all the values placed.
+     */
     public String insertValuesString() {
         StringBuilder sb = new StringBuilder();
         sb.append("'");

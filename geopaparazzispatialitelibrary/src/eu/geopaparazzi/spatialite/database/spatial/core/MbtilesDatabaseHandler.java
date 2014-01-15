@@ -652,10 +652,6 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
     public void intersectionToStringBBOX( String boundsSrid, SpatialVectorTable spatialTable, double n, double s, double e,
             double w, StringBuilder sb, String indentStr ) throws Exception {
     }
-    @Override
-    public void intersectionToString4Polygon( String boundsSrid, SpatialVectorTable spatialTable, double n, double e,
-            StringBuilder sb, String indentStr ) throws Exception {
-    }
     public void run_retrieve_url( HashMap<String, String> mbtiles_request_url, HashMap<String, String> async_mbtiles_metadata ) {
         int i_run_create = 0;
         int i_run_fill = 0;

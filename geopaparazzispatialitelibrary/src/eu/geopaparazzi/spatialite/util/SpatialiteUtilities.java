@@ -43,7 +43,8 @@ import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
  * @author Mark Johnson
  */
 public class SpatialiteUtilities {
-    // -----------------------------------------------
+    private static final String PRJ_EXTENSION = ".prj"; //$NON-NLS-1$
+
     /**
       * General Function to create jsqlite.Database with spatialite support.
       * <ol>
@@ -53,6 +54,7 @@ public class SpatialiteUtilities {
       * 
       * @param s_db_path name of Database file to create
       * @return sqlite_db: pointer to Database created
+      * @throws IOException  if something goes wrong.
       */
     public static Database createDb( String s_db_path ) throws IOException {
         Database sqlite_db = null;
@@ -60,7 +62,7 @@ public class SpatialiteUtilities {
         if (!file_db.getParentFile().exists()) {
             File dir_db = file_db.getParentFile();
             if (!dir_db.mkdir()) {
-                throw new IOException("SpatialiteUtilities: create_db: dir_db[" + dir_db.getAbsolutePath() + "] creation failed");
+                throw new IOException("SpatialiteUtilities: create_db: dir_db[" + dir_db.getAbsolutePath() + "] creation failed"); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
         sqlite_db = new jsqlite.Database();
@@ -70,8 +72,8 @@ public class SpatialiteUtilities {
                         | jsqlite.Constants.SQLITE_OPEN_CREATE);
                 int i_rc = createSpatialiteDb(sqlite_db, 0); // i_rc should be 4
             } catch (jsqlite.Exception e_stmt) {
-                GPLog.androidLog(4, "SpatialiteUtilities: create_spatialite[spatialite] dir_file[" + file_db.getAbsolutePath()
-                        + "]", e_stmt);
+                GPLog.androidLog(4, "SpatialiteUtilities: create_spatialite[spatialite] dir_file[" + file_db.getAbsolutePath() //$NON-NLS-1$
+                        + "]", e_stmt); //$NON-NLS-1$
             }
         }
         return sqlite_db;
@@ -84,15 +86,22 @@ public class SpatialiteUtilities {
       * <li> parent diretories will be created, if needed</li>
       * <li> needed Tables/View and default values for metdata-table will be created</li>
       * </ol>
-      * @param sqlite_db: pointer to Database
-      * @param i_parm: 0=new Database - skip checking if it a patialite Database ; check Spatialite Version
+      * @param sqlite_db pointer to Database
+      * @param i_parm 0=new Database - skip checking if it a patialite Database ; check Spatialite Version
       * @return i_rc: pointer to Database created
+      * @throws Exception  if something goes wrong.
       */
+    @SuppressWarnings("nls")
     public static int createSpatialiteDb( Database sqlite_db, int i_parm ) throws Exception {
         int i_rc = 0;
         if (i_parm == 1) {
-            // 0=not a spatialite version ; 1=until 2.3.1 ; 2=until 2.4.0 ; 3=until 3.1.0-RC2 ;
-            // 4=after 4.0.0-RC1
+            /*
+             * 0=not a spatialite version ; 
+             * 1=until 2.3.1 ; 
+             * 2=until 2.4.0 ; 
+             * 3=until 3.1.0-RC2 ;
+             * 4=after 4.0.0-RC1
+             */
             int i_spatialite_version = getSpatialiteVersion(sqlite_db, "");
             if (i_spatialite_version > 0) { // this is a spatialite Database, do not create
                 i_rc = 1;
@@ -103,18 +112,18 @@ public class SpatialiteUtilities {
             }
         }
         if (i_rc == 0) {
-            String s_sql_command = "SELECT InitSpatialMetadata();";
+            String s_sql_command = "SELECT InitSpatialMetadata();"; //$NON-NLS-1$
             try {
                 sqlite_db.exec(s_sql_command, null);
             } catch (jsqlite.Exception e_stmt) {
                 i_rc = sqlite_db.last_error();
-                GPLog.androidLog(4, "SpatialiteUtilities: create_spatialite sql[" + s_sql_command + "] rc=" + i_rc + "]", e_stmt);
+                GPLog.androidLog(4, "SpatialiteUtilities: create_spatialite sql[" + s_sql_command + "] rc=" + i_rc + "]", e_stmt); //$NON-NLS-1$ //$NON-NLS-2$
             }
             // GPLog.androidLog(2,
             // "SpatialiteUtilities: create_spatialite sql["+s_sql_command+"] rc="+i_rc+"]");
-            i_rc = getSpatialiteVersion(sqlite_db, "");
+            i_rc = getSpatialiteVersion(sqlite_db, ""); //$NON-NLS-1$
             if (i_rc < 3) { // error, should be 3 or 4
-                GPLog.androidLog(4, "SpatialiteUtilities: create_spatialite spatialite_version[" + i_rc + "]");
+                GPLog.androidLog(4, "SpatialiteUtilities: create_spatialite spatialite_version[" + i_rc + "]"); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
         return i_rc;
@@ -143,6 +152,7 @@ public class SpatialiteUtilities {
       * @param s_table name of table to read [if empty: list of tables in Database]
       * @return i_spatialite_version [0=not a spatialite version ; 1=until 2.3.1 ; 2=until 2.4.0 ; 3=until 3.1.0-RC2 ; 4=after 4.0.0-RC1]
       */
+    @SuppressWarnings("nls")
     private static int getSpatialiteVersion( Database sqlite_db, String s_table ) throws Exception {
         Stmt this_stmt = null;
         // views: vector_layers_statistics,vector_layers
@@ -200,15 +210,18 @@ public class SpatialiteUtilities {
                             b_views_geometry_columns = true;
                         }
                     }
-                    if (s_type.equals("view")) { // SELECT name,type,sql FROM sqlite_master WHERE
-                                                 // (type='view')
-                        if (s_name.equals("vector_layers_statistics")) { // An empty spatialite
-                                                                         // Database will not have
-                                                                         // this
+                    if (s_type.equals("view")) {
+                        // SELECT name,type,sql FROM sqlite_master WHERE
+                        // (type='view')
+                        if (s_name.equals("vector_layers_statistics")) {
+                            // An empty spatialite
+                            // Database will not have
+                            // this
                             b_vector_layers_statistics = true;
                         }
-                        if (s_name.equals("vector_layers")) { // An empty spatialite Database will
-                                                              // not have this
+                        if (s_name.equals("vector_layers")) {
+                            // An empty spatialite Database will
+                            // not have this
                             b_vector_layers = true;
                         }
                     }
@@ -262,6 +275,7 @@ public class SpatialiteUtilities {
       * @param i_srid srid of Shape-Table
       * @return i_rc 0 or last_error from Database
       */
+    @SuppressWarnings("nls")
     private static int createShapeTable( Database sqlite_db, String s_table_path, String s_table_name, String s_char_set,
             int i_srid ) {
         int i_rc = 0;
@@ -323,6 +337,7 @@ public class SpatialiteUtilities {
       * @param s_well_known_text read from the Shape .prj file
       * @return srid of  .prj file where possible
       */
+    @SuppressWarnings("nls")
     private static int readShapeSrid( Database sqlite_db, String s_srs_wkt, String s_well_known_text ) {
         int i_srid = 0;
         if ((s_well_known_text.indexOf("GCS_WGS_1984") != -1) && (s_well_known_text.indexOf("D_WGS_1984") != -1)
@@ -392,9 +407,10 @@ public class SpatialiteUtilities {
       * - each Shape-Table must have a '.shp','.prj','.shx' and '.dbf'<br>
       * - the name with extention is the Table-Name<br>
       * 
-      * @param shapes_list: File as found '.prj' files, File as directory
+      * @param prjFile2ParentFolderMap File as found '.prj' files, File as directory
       */
-    private static void createDbForShapefile( HashMap<File, File> shapes_list ) {
+    @SuppressWarnings("nls")
+    private static void createDbForShapefile( HashMap<File, File> prjFile2ParentFolderMap ) {
         File shape_db = null;
         File shape_dir = null;
         Database sqlite_db = null;
@@ -402,7 +418,7 @@ public class SpatialiteUtilities {
         String s_srs_wkt = "srs_wkt";
         String s_shape_path = "";
         String s_shape_name = "";
-        for( Map.Entry<File, File> shape_list : shapes_list.entrySet() ) {
+        for( Map.Entry<File, File> shape_list : prjFile2ParentFolderMap.entrySet() ) {
             File file_prj = shape_list.getKey();
             File file_directory = shape_list.getValue();
             if (sqlite_db == null) {
@@ -471,10 +487,9 @@ public class SpatialiteUtilities {
       * @return shapes_list: a {@link HashMap} that maps the prj file to the parent folder file.
       */
     public static HashMap<File, File> findShapefilePrjFiles( Context context, File mapsDir ) {
-        final String s_extention = ".prj";
         File[] list_files = mapsDir.listFiles(new FilenameFilter(){
             public boolean accept( File dir, String filename ) {
-                return filename.endsWith(s_extention);
+                return filename.endsWith(PRJ_EXTENSION);
             }
         });
         // each shape file must have a prj file, we will read the prj file later
