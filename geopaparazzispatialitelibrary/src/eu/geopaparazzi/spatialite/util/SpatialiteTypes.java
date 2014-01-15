@@ -59,7 +59,7 @@ public enum SpatialiteTypes {
     /**
      * @return the db type's name.
      */
-    public String getName() {
+    public String getTypeName() {
         return name;
     }
 

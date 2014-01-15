@@ -24,6 +24,7 @@ import android.annotation.SuppressLint;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings({"nls", "javadoc"})
 public enum GeometryType {
     /*
      * XY

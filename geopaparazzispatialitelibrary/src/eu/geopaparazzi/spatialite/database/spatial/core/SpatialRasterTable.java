@@ -17,22 +17,27 @@
  */
 package eu.geopaparazzi.spatialite.database.spatial.core;
 import java.io.File;
-import eu.geopaparazzi.library.database.GPLog;
+
+import eu.geopaparazzi.spatialite.util.SpatialiteTypes;
 /**
  * A raster table from the spatial db.
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class SpatialRasterTable {
+@SuppressWarnings("nls")
+public class SpatialRasterTable implements ISpatialTable {
 
     private final String srid;
-    private File file_map; // all DatabaseHandler/Table classes should use these names
-    private String s_map_file; // [with path] all DatabaseHandler/Table classes should use these names
-    private String s_name_file; // [without path] all DatabaseHandler/Table classes should use these names
-    private String s_name; // all DatabaseHandler/Table classes should use these names
-    private String s_description; // all DatabaseHandler/Table classes should use these names
-    private String s_map_type="db"; // all DatabaseHandler/Table classes should use these names
-    private String s_table_name;
+    private File dbFile; // all DatabaseHandler/Table classes should use these names
+    private String dbPath; // [with path] all DatabaseHandler/Table classes should use these
+                           // names
+    private String databaseFileName; // [without path] all DatabaseHandler/Table classes should use
+    // these
+    // names
+    private String name; // all DatabaseHandler/Table classes should use these
+                         // names
+    private String mapType = SpatialiteTypes.DB.getTypeName();
+    private String tableName;
     private String s_column_name;
     private String tileQuery;
     private int minZoom;
@@ -45,15 +50,27 @@ public class SpatialRasterTable {
     private double bounds_south; // wsg84
     private int defaultZoom;
 
-    public SpatialRasterTable( String s_map_file, String s_name, String srid, int minZoom, int maxZoom, double centerX,
-            double centerY, String tileQuery, double[] bounds ) {
-        this.s_map_file = s_map_file;
-        this.file_map=new File(s_map_file);
-        s_name_file=file_map.getName();
-        this.s_name = s_name;
-        this.s_table_name="";
-        this.s_column_name="";
-        this.s_description = s_name;
+    /**
+     * constructor.
+     * 
+     * @param dbPath the db path.
+     * @param name the name.
+     * @param srid srid of the table.
+     * @param minZoom min zoom.
+     * @param maxZoom max zoom.
+     * @param centerX center x.
+     * @param centerY center y.
+     * @param tileQuery query to use for tiles fetching.
+     * @param bounds the bounds as [w,s,e,n]
+     */
+    public SpatialRasterTable( String dbPath, String name, String srid, int minZoom, int maxZoom, double centerX, double centerY,
+            String tileQuery, double[] bounds ) {
+        this.dbPath = dbPath;
+        this.dbFile = new File(dbPath);
+        this.databaseFileName = dbFile.getName();
+        this.name = name;
+        this.tableName = "";
+        this.s_column_name = "";
         this.srid = srid;
         this.minZoom = minZoom;
         this.maxZoom = maxZoom;
@@ -68,58 +85,34 @@ public class SpatialRasterTable {
         if (tileQuery != null) {
             this.tileQuery = tileQuery;
         } else {
-            tileQuery = "select " + s_name + " from " + s_map_file
-                    + " where zoom_level = ? AND tile_column = ? AND tile_row = ?";
+            tileQuery = "select " + name + " from " + dbPath + " where zoom_level = ? AND tile_column = ? AND tile_row = ?";
         }
-        setDescription(getName()); // will set default values with bounds and center if it is the same as 's_name' or empty
-       // GPLog.androidLog(-1,"SpatialRasterTable[" + file_map.getAbsolutePath() + "] name["+s_name+"] s_description["+s_description+"]");
+        // setDescription(getName());
+        // will set default values with bounds and center if it is the
+        // same as 's_name' or empty
+        // GPLog.androidLog(-1,"SpatialRasterTable[" + file_map.getAbsolutePath() +
+        // "] name["+s_name+"] s_description["+s_description+"]");
     }
 
     public String getSrid() {
         return srid;
     }
-    // -----------------------------------------------
-    /**
-      * Return long name of map/file
-      *
-      * <p>default: file name with path and extention
-      * <p>mbtiles : will be a '.mbtiles' sqlite-file-name
-      * <p>map : will be a mapforge '.map' file-name
-      *
-      * @return file_map as File
-      */
-    public String getFileNamePath() {
-        return this.s_map_file; // file_map.getAbsolutePath();
+
+    public String getDatabasePath() {
+        return this.dbPath;
     }
-    // -----------------------------------------------
-    /**
-      * Return short name of map/file
-      *
-      * <p>default: file name without path but with extention
-      *
-      * @return file_map.getAbsolutePath();
-      */
+
     public String getFileName() {
-        return this.s_name_file; // file_map.getName();
+        return this.databaseFileName;
     }
-    // -----------------------------------------------
-    /**
-      * Return short name of map/file
-      *
-      * <p>default: file name without path and extention
-      * <p>mbtiles : metadata 'name'
-      * <p>map : will be value of 'comment', if not null
-      *
-      * @return s_name as short name of map/file
-      */
+
     public String getName() {
-        if ((s_name == null) || (s_name.length() == 0))
-        {
-         s_name=this.file_map.getName().substring(0,this.file_map.getName().lastIndexOf("."));
+        if ((name == null) || (name.length() == 0)) {
+            name = this.dbFile.getName().substring(0, this.dbFile.getName().lastIndexOf("."));
         }
-        return this.s_name; // comment or file-name without path and extention
+        return this.name;
     }
-    // -----------------------------------------------
+
     /**
       * Return type of map/file
       *
@@ -130,260 +123,108 @@ public class SpatialRasterTable {
       * @return s_name as short name of map/file
       */
     public String getMapType() {
-        return this.s_map_type;
+        return this.mapType;
     }
-    // -----------------------------------------------
+
     /**
       * Return String of Tablename of Geopackage
-      *
       *
       * @return Tablename of Geopackage
       */
     public String getTableName() {
-        return s_table_name;
+        return tableName;
     }
-    // -----------------------------------------------
+
     /**
       * Set String of Tablename of Geopackage
-      *
-      *
-      * @return Tablename of Geopackage
+      * 
+     * @param tableName the name to set. 
       */
-    public void setTableName(String s_table_name) {
-        this.s_table_name=s_table_name;
+    public void setTableName( String tableName ) {
+        this.tableName = tableName;
     }
-    // -----------------------------------------------
+
     /**
       * Return String of Columnname of Geopackage
-      *
       *
       * @return Columnname of Geopackage
       */
     public String getColumnName() {
-        return s_table_name;
+        return tableName;
     }
-    // -----------------------------------------------
+
     /**
       * Set String of Columnname of Geopackage
-      *
-      *
-      * @return Columnname of Geopackage
+      * 
+      * TODO mj10777, why is the name column but it sets the table name?
+      * 
+      * @param s_table_name the name to set.
       */
-    public void setColumnName(String s_table_name) {
-        this.s_table_name=s_table_name;
+    public void setColumnName( String s_table_name ) {
+        this.tableName = s_table_name;
     }
-    // -----------------------------------------------
+
     /**
-      * Set type of map/file
+      * Set type of map/file.
       *
-      * <p>raster: can be different: mbtiles,db,sqlite,gpkg
-      * <p>mbtiles : mbtiles
-      * <p>map : map
-      *
-      * @return s_name as short name of map/file
+      * @param mapType the type to set.
       */
-    public void setMapType(String s_map_type) {
-        this.s_map_type=s_map_type;
+    public void setMapType( String mapType ) {
+        this.mapType = mapType;
     }
-    // -----------------------------------------------
-    /**
-      * Return String of bounds [wms-format]
-      *
-      * <p>x_min,y_min,x_max,y_max
-      *
-      * @return bounds formatted using wms format
-      */
-    public String getBounds_toString() {
-        return bounds_west+","+bounds_south+","+bounds_east+","+bounds_north;
+
+    public String getBoundsAsString() {
+        return bounds_west + "," + bounds_south + "," + bounds_east + "," + bounds_north;
     }
-    // -----------------------------------------------
-    /**
-      * Return String of Map-Center with default Zoom
-      *
-      * <p>x_position,y_position,default_zoom
-      *
-      * @return center formatted using mbtiles format
-      */
-    public String getCenter_toString() {
-        return centerX+","+centerY+","+defaultZoom;
+
+    public String getCenterAsString() {
+        return centerX + "," + centerY + "," + defaultZoom;
     }
-    // -----------------------------------------------
-    /**
-      * Return long description of map/file
-      *
-      * <p>default: s_name with bounds and center
-      * <p>mbtiles : metadata description'
-      * <p>map : will be value of 'comment', if not null
-      *
-      * @return s_description long description of map/file
-      */
-    public String getDescription() {
-        if ((this.s_description == null) || (this.s_description.length() == 0) || (this.s_description.equals(this.s_name)))
-         setDescription(getName()); // will set default values with bounds and center if it is the same as 's_name' or empty
-        return this.s_description; // long comment
-    }
-     // -----------------------------------------------
-    /**
-      * Set long description of map/file
-      *
-      * <p>default: s_name with bounds and center
-      * <p>mbtiles : metadata description'
-      * <p>map : will be value of 'comment', if not null
-      *
-      * @return s_description long description of map/file
-      */
-    public void setDescription(String s_description) {
-        if ((s_description == null) || (s_description.length() == 0) || (s_description.equals(this.s_name)))
-        {
-         this.s_description = getName()+" bounds["+getBounds_toString()+"] center["+getCenter_toString()+"]";
-        }
-        else
-         this.s_description = s_description;
-    }
-    // -----------------------------------------------
-    /**
-      * Return map-file as 'File'
-      *
-      * <p>if the class does not fail, this file exists
-      * <p>mbtiles : will be a '.mbtiles' sqlite-file
-      * <p>map : will be a mapforge '.map' file
-      *
-      * @return file_map as File
-      */
+
     public File getFile() {
-        return this.file_map;
+        return this.dbFile;
     }
-    // -----------------------------------------------
-    /**
-      * Return Min Zoom
-      *
-      * <p>default :  0
-      * <p>mbtiles : taken from value of metadata 'minzoom'
-      * <p>map : value is given in 'StartZoomLevel'
-      *
-      * @return integer minzoom
-      */
+
     public int getMinZoom() {
         return minZoom;
     }
-    // -----------------------------------------------
-    /**
-      * Return Max Zoom
-      *
-      * <p>default :  22
-      * <p>mbtiles : taken from value of metadata 'maxzoom'
-      * <p>map : value not defined, seems to calculate bitmap from vector data [18]
-      *
-      * @return integer maxzoom
-      */
+
     public int getMaxZoom() {
         return maxZoom;
     }
-    // -----------------------------------------------
-    /**
-      * Return Min/Max Zoom as string
-      *
-      * <p>default :  1-22
-      * <p>mbtiles : taken from value of metadata 'min/maxzoom'
-      *
-      * @return String min/maxzoom
-      */
-    public String getZoom_Levels() {
-        return getMinZoom()+"-"+getMaxZoom();
+
+    public String getMinMaxZoomLevelsAsString() {
+        return getMinZoom() + "-" + getMaxZoom();
     }
-    // -----------------------------------------------
-    /**
-      * Return West X Value [Longitude]
-      *
-      * <p>default :  -180.0 [if not otherwise set]
-      * <p>mbtiles : taken from 1st value of metadata 'bounds'
-      *
-      * @return double of West X Value [Longitude]
-      */
+
     public double getMinLongitude() {
         return bounds_west;
     }
-    // -----------------------------------------------
-    /**
-      * Return South Y Value [Latitude]
-      *
-      * <p>default :  -85.05113 [if not otherwise set]
-      * <p>mbtiles : taken from 2nd value of metadata 'bounds'
-      *
-      * @return double of South Y Value [Latitude]
-      */
+
     public double getMinLatitude() {
         return bounds_south;
     }
-    // -----------------------------------------------
-    /**
-      * Return East X Value [Longitude]
-      *
-      * <p>default :  180.0 [if not otherwise set]
-      * <p>mbtiles : taken from 3th value of metadata 'bounds'
-      *
-      * @return double of East X Value [Longitude]
-      */
+
     public double getMaxLongitude() {
         return bounds_east;
     }
-    // -----------------------------------------------
-    /**
-      * Return North Y Value [Latitude]
-      *
-      * <p>default :  85.05113 [if not otherwise set]
-      * <p>mbtiles : taken from 4th value of metadata 'bounds'
-      *
-      * @return double of North Y Value [Latitude]
-      */
+
     public double getMaxLatitude() {
         return bounds_north;
     }
-    // -----------------------------------------------
-    /**
-      * Return Center X Value [Longitude]
-      *
-      * <p>default : center of bounds
-      * <p>mbtiles : taken from 1st value of metadata 'center'
-      *
-      * @return double of X Value [Longitude]
-      */
+
     public double getCenterX() {
         return centerX;
     }
-    // -----------------------------------------------
-    /**
-      * Return Center Y Value [Latitude]
-      *
-      * <p>default : center of bounds
-      * <p>mbtiles : taken from 2nd value of metadata 'center'
-      *
-      * @return double of Y Value [Latitude]
-      */
+
     public double getCenterY() {
         return centerY;
     }
-    // -----------------------------------------------
-    /**
-      * Retrieve Zoom level
-      *
-      * <p>default : minZoom
-      * <p>mbtiles : taken from 3rd value of metadata 'center'
-      *
-     * @return defaultZoom
-      */
+
     public int getDefaultZoom() {
         return defaultZoom;
     }
-    // -----------------------------------------------
-    /**
-      * Set default Zoom level
-      *
-      * <p>default : minZoom
-      * <p>mbtiles : taken from 3rd value of metadata 'center'
-      *
-      * @param i_zoom desired Zoom level
-      */
+
     public void setDefaultZoom( int i_zoom ) {
         defaultZoom = i_zoom;
     }
@@ -446,6 +287,7 @@ public class SpatialRasterTable {
         }
         return i_rc;
     }
+
     /**
      * Get the tile retrieve query with place holders for zoom, column and row.
      *

@@ -311,7 +311,7 @@ public class SpatialDatabasesManager {
     public SpatialRasterTable getRasterTableByName( String tableName ) throws Exception {
         List<SpatialRasterTable> spatialTables = getSpatialRasterTables(false);
         for( SpatialRasterTable spatialTable : spatialTables ) {
-            if (spatialTable.getFileNamePath().equals(tableName)) {
+            if (spatialTable.getDatabasePath().equals(tableName)) {
                 return spatialTable;
             }
         }

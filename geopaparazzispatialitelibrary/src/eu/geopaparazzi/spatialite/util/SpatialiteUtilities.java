@@ -57,6 +57,18 @@ public class SpatialiteUtilities {
     public static final String METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME = " vector_layers_statistics";
 
     /**
+     * The metadata table.
+     */
+    public final static String TABLE_METADATA = "metadata";
+    /**
+     * The metadata column name.
+     */
+    public final static String COL_METADATA_NAME = "name";
+    /**
+     * The metadata column value.
+     */
+    public final static String COL_METADATA_VALUE = "value";
+    /**
      * The properties table name. 
      */
     public static final String PROPERTIESTABLE = "dataproperties";
