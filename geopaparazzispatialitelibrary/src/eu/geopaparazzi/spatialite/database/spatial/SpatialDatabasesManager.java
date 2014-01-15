@@ -180,7 +180,7 @@ public class SpatialDatabasesManager {
     @SuppressWarnings("nls")
     public List<SpatialVectorTable> getSpatialVectorTables( boolean forceRead ) throws Exception {
         List<SpatialVectorTable> tables = new ArrayList<SpatialVectorTable>();
-        List<ISpatialDatabaseHandler> remove_Handlers = new ArrayList<ISpatialDatabaseHandler>();
+        List<ISpatialDatabaseHandler> removeHandlers = new ArrayList<ISpatialDatabaseHandler>();
         for( ISpatialDatabaseHandler sdbHandler : spatialDbHandlers ) {
             List<SpatialVectorTable> spatialTables = sdbHandler.getSpatialVectorTables(forceRead);
             if (sdbHandler.isValid()) {
@@ -190,10 +190,10 @@ public class SpatialDatabasesManager {
                 }
             }
         }
-        for( ISpatialDatabaseHandler remove : remove_Handlers ) {
-            String s_remove = remove.getFileNamePath() + " [" + remove.isValid() + "]";
-            remove.close();
-            spatialDbHandlers.remove(remove);
+        for( ISpatialDatabaseHandler removeHandler : removeHandlers ) {
+            String s_remove = removeHandler.getDatabasePath() + " [" + removeHandler.isValid() + "]";
+            removeHandler.close();
+            spatialDbHandlers.remove(removeHandler);
             GPLog.androidLog(-1, "SpatialDatabasesManager remove[" + s_remove + "] size[" + spatialDbHandlers.size() + "]");
         }
         Collections.sort(tables, new OrderComparator());

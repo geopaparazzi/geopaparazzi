@@ -35,15 +35,15 @@ import eu.geopaparazzi.spatialite.util.Style;
  */
 public interface ISpatialDatabaseHandler {
     /**
-      * Return long name of map/file
+      * Return the absolute path of the database.
       *
       * <p>default: file name with path and extention
       * <p>mbtiles : will be a '.mbtiles' sqlite-file-name
       * <p>map : will be a mapforge '.map' file-name
       *
-      * @return file_map.getAbsolutePath();
+      * @return the absolute database path.
       */
-    public abstract String getFileNamePath();
+    public abstract String getDatabasePath();
 
     /**
       * Is the database file considered valid.

@@ -29,6 +29,7 @@ import jsqlite.Stmt;
 import android.content.Context;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.FileUtilities;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
 
 /**
@@ -42,8 +43,87 @@ import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
  * -->  SpatialiteUtilities.find_shapes(context, maps_dir);
  * @author Mark Johnson
  */
+@SuppressWarnings("nls")
 public class SpatialiteUtilities {
     private static final String PRJ_EXTENSION = ".prj"; //$NON-NLS-1$
+
+    /**
+     * From https://www.gaia-gis.it/fossil/libspatialite/wiki?name=metadata-4.0
+     */
+    public static final String METADATA_VECTOR_LAYERS_TABLE_NAME = " vector_layers";
+    /**
+     * From https://www.gaia-gis.it/fossil/libspatialite/wiki?name=metadata-4.0
+     */
+    public static final String METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME = " vector_layers_statistics";
+
+    /**
+     * The properties table name. 
+     */
+    public static final String PROPERTIESTABLE = "dataproperties";
+    /**
+     * 
+     */
+    public static final String NAME = "name";
+    /**
+     * 
+     */
+    public static final String SIZE = "size";
+    /**
+     * 
+     */
+    public static final String FILLCOLOR = "fillcolor";
+    /**
+     * 
+     */
+    public static final String STROKECOLOR = "strokecolor";
+    /**
+     * 
+     */
+    public static final String FILLALPHA = "fillalpha";
+    /**
+     * 
+     */
+    public static final String STROKEALPHA = "strokealpha";
+    /**
+     * 
+     */
+    public static final String SHAPE = "shape";
+    /**
+     * 
+     */
+    public static final String WIDTH = "width";
+    /**
+     * 
+     */
+    public static final String TEXTSIZE = "textsize";
+    /**
+     * 
+     */
+    public static final String TEXTFIELD = "textfield";
+    /**
+     * 
+     */
+    public static final String ENABLED = "enabled";
+    /**
+     * 
+     */
+    public static final String ORDER = "layerorder";
+    /**
+     * 
+     */
+    public static final String DECIMATION = "decimationfactor";
+    /**
+     * 
+     */
+    public static final String DASH = "dashpattern";
+    /**
+     * 
+     */
+    public static final String MINZOOM = "minzoom";
+    /**
+     * 
+     */
+    public static final String MAXZOOM = "maxzoom";
 
     /**
       * General Function to create jsqlite.Database with spatialite support.
@@ -515,5 +595,77 @@ public class SpatialiteUtilities {
         // GPLog.androidLog(-1,"SpatialiteUtilities find_shapes[" + mapsDir.getName() +
         // "] size["+shapes_list+"]");
         return shapes_list;
+    }
+
+    /**
+     * Build a query to retrieve geometries from a table in a given bound.
+     * 
+     * @param destSrid the destination srid.
+     * @param table the table to use.
+     * @param n north bound.
+     * @param s south bound.
+     * @param e east bound.
+     * @param w west bound.
+     * @return the query.
+     */
+    public static String buildGeometriesInBoundsQuery( String destSrid, SpatialVectorTable table, double n, double s, double e,
+            double w ) {
+        boolean doTransform = false;
+        if (!table.getSrid().equals(destSrid)) {
+            doTransform = true;
+        }
+        StringBuilder mbrSb = new StringBuilder();
+        if (doTransform)
+            mbrSb.append("ST_Transform(");
+        mbrSb.append("BuildMBR(");
+        mbrSb.append(w);
+        mbrSb.append(",");
+        mbrSb.append(n);
+        mbrSb.append(",");
+        mbrSb.append(e);
+        mbrSb.append(",");
+        mbrSb.append(s);
+        if (doTransform) {
+            mbrSb.append(",");
+            mbrSb.append(destSrid);
+            mbrSb.append("),");
+            mbrSb.append(table.getSrid());
+        }
+        mbrSb.append(")");
+        String mbr = mbrSb.toString();
+        StringBuilder qSb = new StringBuilder();
+        qSb.append("SELECT ST_AsBinary(CastToXY(");
+        if (doTransform)
+            qSb.append("ST_Transform(");
+        qSb.append(table.getGeomName());
+        if (doTransform) {
+            qSb.append(",");
+            qSb.append(destSrid);
+            qSb.append(")");
+        }
+        qSb.append("))");
+        qSb.append(" FROM ");
+        qSb.append(table.getName());
+        // the SpatialIndex would be searching for a square, the ST_Intersects the Geometry
+        // the SpatialIndex could be fulfilled, but checking the Geometry could return the result
+        // that it is not
+        qSb.append(" WHERE ST_Intersects(");
+        qSb.append(table.getGeomName());
+        qSb.append(", ");
+        qSb.append(mbr);
+        qSb.append(") = 1");
+        qSb.append(" AND ROWID IN (");
+        qSb.append("SELECT ROWID FROM Spatialindex WHERE f_table_name ='");
+        qSb.append(table.getName());
+        qSb.append("'");
+        // if a table has more than 1 geometry, the column-name MUST be given, otherwise no results.
+        qSb.append(" AND f_geometry_column = '");
+        qSb.append(table.getGeomName());
+        qSb.append("'");
+        qSb.append(" AND search_frame = ");
+        qSb.append(mbr);
+        qSb.append(");");
+        String q = qSb.toString();
+        return q;
     }
 }

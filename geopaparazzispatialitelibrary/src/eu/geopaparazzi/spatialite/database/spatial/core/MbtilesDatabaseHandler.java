@@ -393,19 +393,10 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
         }
         return i_rc;
     }
-    // -----------------------------------------------
-    /**
-      * Return long name of map/file
-      *
-      * <p>default: file name with path and extention
-      * <p>mbtiles : will be a '.mbtiles' sqlite-file-name
-      * <p>map : will be a mapforge '.map' file-name
-      *
-      * @return file_map.getAbsolutePath();
-      */
+
     @Override
-    public String getFileNamePath() {
-        return this.s_map_file; // file_map.getAbsolutePath();
+    public String getDatabasePath() {
+        return this.s_map_file;
     }
     // -----------------------------------------------
     /**
