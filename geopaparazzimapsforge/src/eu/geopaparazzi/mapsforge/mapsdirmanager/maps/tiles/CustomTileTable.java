@@ -61,19 +61,6 @@ public class CustomTileTable extends SpatialTable {
         }
     }
 
-    // /**
-    // * Set type of map/file
-    // *
-    // * <p>raster: can be different: mbtiles,db,sqlite,gpkg
-    // * <p>mbtiles : mbtiles
-    // * <p>map : map
-    // *
-    // * @return s_name as short name of map/file
-    // */
-    // public void setMapType( String s_map_type ) {
-    // this.mapType = s_map_type;
-    // }
-
     /**
       * Retrieve CustomTileDownloader
       *

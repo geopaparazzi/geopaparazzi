@@ -59,6 +59,8 @@ import eu.hydrologis.geopaparazzi.util.Constants;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class SliderDrawView extends View {
+    private static final int TOUCH_BOX_THRES = 10;
+
     private MapView mapView;
     private final Paint measurePaint = new Paint();
     private final Paint measureTextPaint = new Paint();
@@ -213,10 +215,14 @@ public class SliderDrawView extends View {
                 break;
             case MotionEvent.ACTION_UP:
 
-                GeoPoint ul = pj.fromPixels((int) left, (int) top);
-                GeoPoint lr = pj.fromPixels((int) right, (int) bottom);
+                float deltaY = abs(top - bottom);
+                float deltaX = abs(right - left);
+                if (deltaX > TOUCH_BOX_THRES && deltaY > TOUCH_BOX_THRES) {
+                    GeoPoint ul = pj.fromPixels((int) left, (int) top);
+                    GeoPoint lr = pj.fromPixels((int) right, (int) bottom);
 
-                infoDialog(ul.getLatitude(), ul.getLongitude(), lr.getLatitude(), lr.getLongitude());
+                    infoDialog(ul.getLatitude(), ul.getLongitude(), lr.getLatitude(), lr.getLongitude());
+                }
 
                 if (GPLog.LOG_HEAVY)
                     GPLog.addLogEntry(this, "UNTOUCH: " + tmpP.x + "/" + tmpP.y); //$NON-NLS-1$//$NON-NLS-2$
