@@ -29,6 +29,7 @@ import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapDatabaseHandler;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapTable;
+import eu.geopaparazzi.spatialite.util.SpatialDataTypes;
 
 /**
  * The map database manager.
@@ -41,9 +42,6 @@ public class MapDatabasesManager {
     private List<MapDatabaseHandler> mapHandlers = new ArrayList<MapDatabaseHandler>();
     private HashMap<MapTable, MapDatabaseHandler> mapTablesMap = new HashMap<MapTable, MapDatabaseHandler>();
     private static MapDatabasesManager mapDbManager = null;
-    private final String[] sa_extentions = new String[]{".map", ".xml"};
-    private final int i_extention_map = 0;
-    private static final int i_extention_xml = 1;
 
     private MapDatabasesManager() {
     }
@@ -58,12 +56,6 @@ public class MapDatabasesManager {
     public static void reset() {
         mapDbManager = null;
     }
-    public String get_map_extention() {
-        return sa_extentions[i_extention_map];
-    }
-    public String get_xml_extention() {
-        return sa_extentions[i_extention_xml];
-    }
 
     public boolean init( Context context, File mapsDir ) throws IOException {
         File[] list_files = mapsDir.listFiles();
@@ -77,7 +69,7 @@ public class MapDatabasesManager {
                 if (Utilities.isNameFromHiddenFile(name)) {
                     continue;
                 }
-                if (name.endsWith(get_map_extention())) {
+                if (name.endsWith(SpatialDataTypes.MAP.getExtension())) {
                     MapDatabaseHandler map = new MapDatabaseHandler(this_file.getAbsolutePath());
                     tmpMapHandlers.add(map);
                 }

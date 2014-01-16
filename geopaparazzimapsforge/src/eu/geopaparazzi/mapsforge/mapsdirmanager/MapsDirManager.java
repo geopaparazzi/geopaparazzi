@@ -124,17 +124,6 @@ public class MapsDirManager {
     }
 
     /**
-     * Getter for the maps folder.
-     * 
-     * @return the maps folder file.
-     * @deprecated this is handled by {@link ResourcesManager#getMapsDir()}
-     *          and will be removed. 
-     */
-    public File get_maps_dir() {
-        return mapsDir;
-    }
-
-    /**
      * Resets the manager setting it to null.
      */
     public static void reset() {
@@ -158,14 +147,10 @@ public class MapsDirManager {
       */
     public void init( Context context, File mapsDir ) throws java.lang.Exception {
         try {
-            if ((mapsDir == null) || (!mapsDir.exists())) {
-                // a maps directory has not been
-                // supplied [default] or the given does
-                // not exist:
-                // - use the library logic to create a
-                // usable map directory
+            if (mapsDir == null || !mapsDir.exists()) {
                 mapsDir = ResourcesManager.getInstance(context).getMapsDir();
             }
+            this.mapsDir = mapsDir;
         } catch (Throwable t) {
             GPLog.androidLog(4, "MapsDirManager init[invalid maps directory]", t); //$NON-NLS-1$
         }
@@ -201,29 +186,21 @@ public class MapsDirManager {
         if (mapsDir != null && mapsDir.exists()) {
             try {
                 SpatialDatabasesManager.getInstance().init(context, mapsDir);
+                MapDatabasesManager.getInstance().init(context, mapsDir);
+                CustomTileDatabasesManager.getInstance().init(context, mapsDir);
                 GPLog.androidLog(-1, "MapsDirManager manager[SpatialDatabasesManager] size[" //$NON-NLS-1$
                         + SpatialDatabasesManager.getInstance().getCount() + "]"); //$NON-NLS-1$
                 GPLog.androidLog(-1, "MapsDirManager manager[SpatialDatabasesManager] size_raster[" //$NON-NLS-1$
                         + SpatialDatabasesManager.getInstance().getRasterDbCount() + "]"); //$NON-NLS-1$
                 GPLog.androidLog(-1, "MapsDirManager manager[SpatialDatabasesManager] size_vector[" //$NON-NLS-1$
                         + SpatialDatabasesManager.getInstance().getVectorDbCount() + "]"); //$NON-NLS-1$
-                MapDatabasesManager.getInstance().init(context, mapsDir);
                 GPLog.androidLog(-1, "MapsDirManager manager[MapDatabasesManager] size[" //$NON-NLS-1$
                         + MapDatabasesManager.getInstance().size() + "]"); //$NON-NLS-1$
-                CustomTileDatabasesManager.getInstance().init(context, mapsDir);
                 GPLog.androidLog(-1, "MapsDirManager manager[CustomTileDatabasesManager] size[" //$NON-NLS-1$
                         + CustomTileDatabasesManager.getInstance().size() + "]"); //$NON-NLS-1$
                 GPLog.GLOBAL_LOG_LEVEL = -1;
                 // GPLog.GLOBAL_LOG_TAG="mj10777";
                 GPLog.androidLog(1, "MapsDirManager init[" + mapsDir.getAbsolutePath() + "]"); //$NON-NLS-1$ //$NON-NLS-2$
-                // SpatialiteUtilities.find_shapes( context, maps_dir);
-                /*
-                List<String> list_sdcards = FileUtilities.list_sdcards();
-                for (int i=0;i<list_sdcards.size();i++)
-                {
-                 GPLog.androidLog(1, "MapsDirManager sdcards[" + list_sdcards.get(i)+ "]");
-                }
-                * */
                 handleTileSources(context);
             } catch (Exception e) {
                 GPLog.androidLog(4, "MapsDirManager init[" + mapsDir.getAbsolutePath() + "]", e); //$NON-NLS-1$ //$NON-NLS-2$
@@ -232,7 +209,7 @@ public class MapsDirManager {
     }
 
     /**
-      * Collect information found about all map-tables.
+      * Collect information found about all raster tile supporting sources.
       * 
       * <p>call from init((), where the maps-directory has been read
       * <ul>
@@ -240,7 +217,7 @@ public class MapsDirManager {
       *  <li>store in a form needed be the application</li>
       *  <li>filter out portions not desired</li>
       * </ul>
-      * <p>from GeoPaparazziActivity.java [2013-10-11]
+      * <p>
       * 
      * @param context  the context to use.
       */
@@ -364,7 +341,7 @@ public class MapsDirManager {
         GPLog.androidLog(-1, "MapsDirManager handleTileSources maptype_classes.count[" + maptype_classes.size()
                 + "] selected_map[" + s_selected_map + "]");
         // List will be returned sorted as Directory-File with levels set.
-        maptype_classes = MapsDirTreeViewList.setMapTypeClasses(maptype_classes, get_maps_dir());
+        maptype_classes = MapsDirTreeViewList.setMapTypeClasses(maptype_classes, mapsDir);
     }
 
     /**

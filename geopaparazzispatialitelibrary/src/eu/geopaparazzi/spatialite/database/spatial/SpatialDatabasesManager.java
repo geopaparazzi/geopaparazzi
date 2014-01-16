@@ -93,6 +93,9 @@ public class SpatialDatabasesManager {
                 // mj10777: collect spatialite.geometries and .mbtiles
                 // databases
                 for( SpatialDataTypes spatialiteType : SpatialDataTypes.values() ) {
+                    if (!spatialiteType.isSpatialiteBased()) {
+                        continue;
+                    }
                     String extension = spatialiteType.getExtension();
                     String name = currentFile.getName();
                     if (Utilities.isNameFromHiddenFile(name)) {

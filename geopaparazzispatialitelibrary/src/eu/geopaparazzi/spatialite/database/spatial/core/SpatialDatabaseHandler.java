@@ -18,7 +18,6 @@
 package eu.geopaparazzi.spatialite.database.spatial.core;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -110,9 +109,9 @@ public abstract class SpatialDatabaseHandler {
     public SpatialDatabaseHandler( String databasePath ) throws IOException {
         this.databasePath = databasePath;
         databaseFile = new File(databasePath);
-        if (!databaseFile.exists()) {
-            throw new FileNotFoundException("Database file not found: " + databasePath);
-        }
+        // if (!databaseFile.exists()) {
+        // throw new FileNotFoundException("Database file not found: " + databasePath);
+        // }
         databaseFileName = databaseFile.getName();
         databaseFileNameNoExtension = databaseFile.getName().substring(0, databaseFile.getName().lastIndexOf("."));
     }

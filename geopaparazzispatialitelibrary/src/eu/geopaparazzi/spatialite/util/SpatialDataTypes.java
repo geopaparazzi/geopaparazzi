@@ -27,41 +27,43 @@ public enum SpatialDataTypes {
     /**
      * Mbtiles based database.
      */
-    MBTILES("mbtiles", ".mbtiles", 0),
+    MBTILES("mbtiles", ".mbtiles", 0, true),
     /**
      * A spatialite/sqlite database.
      */
-    DB("db", ".db", 1),
+    DB("db", ".db", 1, true),
     /**
      * A spatialite/sqlite database.
      */
-    SQLITE("sqlite", ".sqlite", 2),
+    SQLITE("sqlite", ".sqlite", 2, true),
     /**
      * A geopackage database. 
      */
-    GPKG("gpkg", ".gpkg", 3),
+    GPKG("gpkg", ".gpkg", 3, true),
     /**
      * A mapsforge map file.
      */
-    MAP("map", ".map", 4),
+    MAP("map", ".map", 4, false),
     /**
      * A mapsurl definition file.
      */
-    MAPURL("mapurl", ".mapurl", 5);
+    MAPURL("mapurl", ".mapurl", 5, false);
 
     private String name;
     private String extension;
     private int code;
+    private boolean isSpatialiteBased;
 
     /**
      * @param name a name for the db type. 
      * @param extension the extension used by the db type.
      * @param code a code for the db type.
      */
-    private SpatialDataTypes( String name, String extension, int code ) {
+    private SpatialDataTypes( String name, String extension, int code, boolean isSpatialiteBased ) {
         this.name = name;
         this.extension = extension;
         this.code = code;
+        this.isSpatialiteBased = isSpatialiteBased;
     }
 
     /**
@@ -83,5 +85,12 @@ public enum SpatialDataTypes {
      */
     public int getCode() {
         return code;
+    }
+
+    /**
+     * @return <code>true</code> if the type is spatialite based. 
+     */
+    public boolean isSpatialiteBased() {
+        return isSpatialiteBased;
     }
 }
