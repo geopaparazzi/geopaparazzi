@@ -133,7 +133,7 @@ public class MapDatabasesManager {
     public MapTable getMapTableByName( String table ) throws Exception {
         List<MapTable> mapTables = getTables(false);
         for( MapTable mapTable : mapTables ) {
-            if (mapTable.getFileNamePath().equals(table)) {
+            if (mapTable.getDatabasePath().equals(table)) {
                 return mapTable;
             }
         }

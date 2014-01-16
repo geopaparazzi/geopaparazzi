@@ -62,8 +62,6 @@ public class SpatialVectorTable implements ISpatialTable {
      */
     private String databaseFileName;
 
-    // all DatabaseHandler/Table classes should use these
-    // names
     private String geometryTypeDescription = "geometry";
     private double centerX; // wsg84
     private double centerY; // wsg84
@@ -95,8 +93,8 @@ public class SpatialVectorTable implements ISpatialTable {
     private String labelField = "";
     // list of possible primary keys - for more that one: seperated with ';'
     private String primaryKeyFields = "";
-    private String uniqueName = ""; // file-name+table-name+field-name
-    private String s_unique_name_base = ""; // file-name+table-name+field-name
+    private String uniqueName = "";
+    private String s_unique_name_base = "";
 
     /**
      * Constructor.
@@ -214,7 +212,7 @@ public class SpatialVectorTable implements ISpatialTable {
     }
 
     public String getDescription() {
-        return getName();
+        return getName() + " bounds[" + getBoundsAsString() + "] center[" + getCenterAsString() + "]";
     }
 
     /**

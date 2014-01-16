@@ -25,21 +25,25 @@ package eu.geopaparazzi.spatialite.util;
 @SuppressWarnings("nls")
 public enum SpatialiteTypes {
     /**
-     * 
+     * Mbtiles based database.
      */
     MBTILES("mbtiles", ".mbtiles", 0),
     /**
-     * 
+     * A spatialite/sqlite database.
      */
     DB("db", ".db", 1),
     /**
-     * 
+     * A spatialite/sqlite database.
      */
     SQLITE("sqlite", ".sqlite", 2),
     /**
-     * 
+     * A geopackage database. 
      */
-    GPKG("gpkg", ".gpkg", 3);
+    GPKG("gpkg", ".gpkg", 3),
+    /**
+     * A mapsforge map file.
+     */
+    MAP("map", ".map", 4);
 
     private String name;
     private String extension;

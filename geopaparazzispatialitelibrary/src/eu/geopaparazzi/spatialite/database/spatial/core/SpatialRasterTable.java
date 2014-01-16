@@ -28,14 +28,10 @@ import eu.geopaparazzi.spatialite.util.SpatialiteTypes;
 public class SpatialRasterTable implements ISpatialTable {
 
     private final String srid;
-    private File dbFile; // all DatabaseHandler/Table classes should use these names
-    private String dbPath; // [with path] all DatabaseHandler/Table classes should use these
-                           // names
-    private String databaseFileName; // [without path] all DatabaseHandler/Table classes should use
-    // these
-    // names
-    private String name; // all DatabaseHandler/Table classes should use these
-                         // names
+    private File dbFile;
+    private String dbPath;
+    private String databaseFileName;
+    private String name;
     private String mapType = SpatialiteTypes.DB.getTypeName();
     private String tableName;
     private String s_column_name;
@@ -44,10 +40,10 @@ public class SpatialRasterTable implements ISpatialTable {
     private int maxZoom;
     private double centerX; // wsg84
     private double centerY; // wsg84
-    private double bounds_west; // wsg84
-    private double bounds_east; // wsg84
-    private double bounds_north; // wsg84
-    private double bounds_south; // wsg84
+    private double boundsWest; // wsg84
+    private double boundsEast; // wsg84
+    private double boundsNorth; // wsg84
+    private double boundsSouth; // wsg84
     private int defaultZoom;
 
     /**
@@ -77,21 +73,16 @@ public class SpatialRasterTable implements ISpatialTable {
         this.defaultZoom = minZoom;
         this.centerX = centerX;
         this.centerY = centerY;
-        this.bounds_west = bounds[0];
-        this.bounds_south = bounds[1];
-        this.bounds_east = bounds[2];
-        this.bounds_north = bounds[3];
+        this.boundsWest = bounds[0];
+        this.boundsSouth = bounds[1];
+        this.boundsEast = bounds[2];
+        this.boundsNorth = bounds[3];
         // todo: change this
         if (tileQuery != null) {
             this.tileQuery = tileQuery;
         } else {
             tileQuery = "select " + name + " from " + dbPath + " where zoom_level = ? AND tile_column = ? AND tile_row = ?";
         }
-        // setDescription(getName());
-        // will set default values with bounds and center if it is the
-        // same as 's_name' or empty
-        // GPLog.androidLog(-1,"SpatialRasterTable[" + file_map.getAbsolutePath() +
-        // "] name["+s_name+"] s_description["+s_description+"]");
     }
 
     public String getSrid() {
@@ -114,7 +105,7 @@ public class SpatialRasterTable implements ISpatialTable {
     }
 
     public String getDescription() {
-        return getName();
+        return getName() + " bounds[" + getBoundsAsString() + "] center[" + getCenterAsString() + "]";
     }
 
     /**
@@ -178,7 +169,7 @@ public class SpatialRasterTable implements ISpatialTable {
     }
 
     public String getBoundsAsString() {
-        return bounds_west + "," + bounds_south + "," + bounds_east + "," + bounds_north;
+        return boundsWest + "," + boundsSouth + "," + boundsEast + "," + boundsNorth;
     }
 
     public String getCenterAsString() {
@@ -202,19 +193,19 @@ public class SpatialRasterTable implements ISpatialTable {
     }
 
     public double getMinLongitude() {
-        return bounds_west;
+        return boundsWest;
     }
 
     public double getMinLatitude() {
-        return bounds_south;
+        return boundsSouth;
     }
 
     public double getMaxLongitude() {
-        return bounds_east;
+        return boundsEast;
     }
 
     public double getMaxLatitude() {
-        return bounds_north;
+        return boundsNorth;
     }
 
     public double getCenterX() {
@@ -242,11 +233,11 @@ public class SpatialRasterTable implements ISpatialTable {
      */
     public int checkCenterLocation( double[] mapCenterLocation, boolean doCorrectIfOutOfRange ) {
         int i_rc = 0; // inside area
-        if (((mapCenterLocation[0] < bounds_west) || (mapCenterLocation[0] > bounds_east))
-                || ((mapCenterLocation[1] < bounds_south) || (mapCenterLocation[1] > bounds_north))
+        if (((mapCenterLocation[0] < boundsWest) || (mapCenterLocation[0] > boundsEast))
+                || ((mapCenterLocation[1] < boundsSouth) || (mapCenterLocation[1] > boundsNorth))
                 || ((mapCenterLocation[2] < minZoom) || (mapCenterLocation[2] > maxZoom))) {
-            if (((mapCenterLocation[0] >= bounds_west) && (mapCenterLocation[0] <= bounds_east))
-                    && ((mapCenterLocation[1] >= bounds_south) && (mapCenterLocation[1] <= bounds_north))) {
+            if (((mapCenterLocation[0] >= boundsWest) && (mapCenterLocation[0] <= boundsEast))
+                    && ((mapCenterLocation[1] >= boundsSouth) && (mapCenterLocation[1] <= boundsNorth))) {
                 /*
                  *  We are inside the Map-Area, but Zoom is not correct
                  */
@@ -275,13 +266,13 @@ public class SpatialRasterTable implements ISpatialTable {
                         mapCenterLocation[2] = maxZoom;
                     }
                 }
-                if ((mapCenterLocation[0] < bounds_west) || (mapCenterLocation[0] > bounds_east)) {
+                if ((mapCenterLocation[0] < boundsWest) || (mapCenterLocation[0] > boundsEast)) {
                     i_rc = 13;
                     if (doCorrectIfOutOfRange) {
                         mapCenterLocation[0] = centerX;
                     }
                 }
-                if ((mapCenterLocation[1] < bounds_south) || (mapCenterLocation[1] > bounds_north)) {
+                if ((mapCenterLocation[1] < boundsSouth) || (mapCenterLocation[1] > boundsNorth)) {
                     i_rc = 14;
                     if (doCorrectIfOutOfRange) {
                         mapCenterLocation[1] = centerY;

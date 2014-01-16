@@ -295,12 +295,12 @@ public class MapsDirManager {
                 // "] getDescription["+table.getDescription()+"]");
                 if (!ignoreTileSource(name)) {
                     this_mapinfo = new ClassNodeInfo(i_count_raster++, i_type, table.getMapType(), "MapTable",
-                            table.getFileNamePath(), table.getFileName(), table.getFileNamePath(), table.getName(),
-                            table.getDescription(), table.getBounds_toString(), table.getCenter_toString(),
-                            table.getZoom_Levels());
+                            table.getDatabasePath(), table.getFileName(), table.getDatabasePath(), table.getName(),
+                            table.getDescription(), table.getBoundsAsString(), table.getCenterAsString(),
+                            table.getMinMaxZoomLevelsAsString());
                     maptype_classes.add(this_mapinfo);
                     // GPLog.androidLog(-1, "ClassNodeInfo[" + this_mapinfo.toString() + "]");
-                    if ((selected_mapinfo == null) && (s_selected_map.equals(table.getFileNamePath()))) {
+                    if ((selected_mapinfo == null) && (s_selected_map.equals(table.getDatabasePath()))) {
                         selected_mapinfo = this_mapinfo;
                         s_selected_type = selected_mapinfo.getTypeText();
                         i_selected_type = selected_mapinfo.getType();
