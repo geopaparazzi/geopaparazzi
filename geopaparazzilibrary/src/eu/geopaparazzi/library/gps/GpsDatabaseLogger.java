@@ -38,6 +38,7 @@ import android.preference.PreferenceManager;
 import android.widget.Toast;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 
 /**
@@ -81,6 +82,9 @@ public class GpsDatabaseLogger implements GpsManagerListener {
      */
     public GpsDatabaseLogger( Context context ) {
         this.context = context;
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        isMockMode = preferences.getBoolean(LibraryConstants.PREFS_KEY_MOCKMODE, false);
+
     }
 
     private long currentRecordedLogId = -1;
@@ -88,6 +92,8 @@ public class GpsDatabaseLogger implements GpsManagerListener {
     private volatile boolean gotFix;
 
     private long lastLocationupdateMillis;
+
+    private boolean isMockMode;
     /**
      * @return the log id.
      */
@@ -161,7 +167,7 @@ public class GpsDatabaseLogger implements GpsManagerListener {
                     currentDistance = 0;
                     previousLogLoc = null;
                     while( isDatabaseLogging ) {
-                        if (gotFix) {
+                        if (gotFix || isMockMode) {
                             if (gpsLoc == null) {
                                 waitGpsInterval(waitForSecs);
                                 continue;

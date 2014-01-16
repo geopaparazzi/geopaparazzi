@@ -165,7 +165,7 @@ public class SliderDrawView extends View {
             if (GPLog.LOG_HEAVY)
                 GPLog.addLogEntry(this, "Drawing measure path text: " + upper); //$NON-NLS-1$
         } else if (doInfoMode) {
-            GPLog.androidLog(-1, "DRAWINFOBOX: " + rect);
+            // GPLog.androidLog(-1, "DRAWINFOBOX: " + rect);
             canvas.drawRect(rect, infoRectPaintFill);
             canvas.drawRect(rect, infoRectPaintStroke);
         }

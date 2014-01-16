@@ -810,7 +810,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             MapsDirManager.getInstance().setMapViewCenter(mapView, lastCenter, 0);
             setZoomGuiText(getZoomLevel());
             readData();
-            // saveCenterPref();
+            saveCenterPref();
         }
         super.onWindowFocusChanged(hasFocus);
     }
@@ -854,6 +854,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         double[] mapCenterLocation = new double[]{lon, lat, (double) getZoomLevel()};
         MapsDirManager.getInstance().setMapViewCenter(mapView, mapCenterLocation, 0);
         // mapView.getController().setCenter(new GeoPoint(lat, lon));
+        saveCenterPref();
     }
 
     /**
