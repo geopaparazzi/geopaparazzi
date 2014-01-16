@@ -158,7 +158,7 @@ public class DataListActivity extends ListActivity {
                 // rowView.setBackgroundColor(ColorUtilities.toColor(item.getColor()));
                 // mj10777: some tables may have more than one column, thus the column name will
                 // also be shown item.getUniqueName()
-                nameView.setText(item.getName());
+                nameView.setText(item.getFileNameNoExtension());
                 descriptionView.setText(item.getGeomName() + ": " + item.getGeometryTypeDescription() + ", db: " + item.getFileName());
 
                 visibleView.setChecked(item.getStyle().enabled != 0);

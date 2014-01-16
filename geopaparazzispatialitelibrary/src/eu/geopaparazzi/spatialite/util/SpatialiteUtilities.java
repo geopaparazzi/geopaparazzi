@@ -657,7 +657,7 @@ public class SpatialiteUtilities {
         }
         qSb.append("))");
         qSb.append(" FROM ");
-        qSb.append(table.getName());
+        qSb.append(table.getFileNameNoExtension());
         // the SpatialIndex would be searching for a square, the ST_Intersects the Geometry
         // the SpatialIndex could be fulfilled, but checking the Geometry could return the result
         // that it is not
@@ -668,7 +668,7 @@ public class SpatialiteUtilities {
         qSb.append(") = 1");
         qSb.append(" AND ROWID IN (");
         qSb.append("SELECT ROWID FROM Spatialindex WHERE f_table_name ='");
-        qSb.append(table.getName());
+        qSb.append(table.getFileNameNoExtension());
         qSb.append("'");
         // if a table has more than 1 geometry, the column-name MUST be given, otherwise no results.
         qSb.append(" AND f_geometry_column = '");

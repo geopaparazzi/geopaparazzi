@@ -16,8 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package eu.geopaparazzi.spatialite.database.spatial.core;
-import java.io.File;
-
 import eu.geopaparazzi.spatialite.util.SpatialiteTypes;
 /**
  * A raster table from the spatial db.
@@ -25,26 +23,9 @@ import eu.geopaparazzi.spatialite.util.SpatialiteTypes;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public class SpatialRasterTable implements ISpatialTable {
+public class SpatialRasterTable extends SpatialTable {
 
-    private final String srid;
-    private File dbFile;
-    private String dbPath;
-    private String databaseFileName;
-    private String name;
-    private String mapType = SpatialiteTypes.DB.getTypeName();
-    private String tableName;
-    private String s_column_name;
     private String tileQuery;
-    private int minZoom;
-    private int maxZoom;
-    private double centerX; // wsg84
-    private double centerY; // wsg84
-    private double boundsWest; // wsg84
-    private double boundsEast; // wsg84
-    private double boundsNorth; // wsg84
-    private double boundsSouth; // wsg84
-    private int defaultZoom;
 
     /**
      * constructor.
@@ -61,22 +42,8 @@ public class SpatialRasterTable implements ISpatialTable {
      */
     public SpatialRasterTable( String dbPath, String name, String srid, int minZoom, int maxZoom, double centerX, double centerY,
             String tileQuery, double[] bounds ) {
-        this.dbPath = dbPath;
-        this.dbFile = new File(dbPath);
-        this.databaseFileName = dbFile.getName();
-        this.name = name;
-        this.tableName = "";
-        this.s_column_name = "";
-        this.srid = srid;
-        this.minZoom = minZoom;
-        this.maxZoom = maxZoom;
-        this.defaultZoom = minZoom;
-        this.centerX = centerX;
-        this.centerY = centerY;
-        this.boundsWest = bounds[0];
-        this.boundsSouth = bounds[1];
-        this.boundsEast = bounds[2];
-        this.boundsNorth = bounds[3];
+        super(dbPath, name, SpatialiteTypes.DB.getTypeName(), srid, minZoom, maxZoom, centerX, centerY, bounds);
+
         // todo: change this
         if (tileQuery != null) {
             this.tileQuery = tileQuery;
@@ -85,58 +52,16 @@ public class SpatialRasterTable implements ISpatialTable {
         }
     }
 
-    public String getSrid() {
-        return srid;
-    }
-
-    public String getDatabasePath() {
-        return this.dbPath;
-    }
-
-    public String getFileName() {
-        return this.databaseFileName;
-    }
-
-    public String getName() {
-        if ((name == null) || (name.length() == 0)) {
-            name = this.dbFile.getName().substring(0, this.dbFile.getName().lastIndexOf("."));
-        }
-        return this.name;
-    }
-
-    public String getDescription() {
-        return getName() + " bounds[" + getBoundsAsString() + "] center[" + getCenterAsString() + "]";
-    }
-
     /**
-      * Return type of map/file
-      *
-      * <p>raster: can be different: mbtiles,db,sqlite,gpkg
-      * <p>mbtiles : mbtiles
-      * <p>map : map
-      *
-      * @return s_name as short name of map/file
-      */
-    public String getMapType() {
-        return this.mapType;
-    }
-
-    /**
-      * Return String of Tablename of Geopackage
-      *
-      * @return Tablename of Geopackage
-      */
-    public String getTableName() {
-        return tableName;
-    }
-
-    /**
-      * Set String of Tablename of Geopackage
-      * 
-     * @param tableName the name to set. 
-      */
-    public void setTableName( String tableName ) {
-        this.tableName = tableName;
+     * Set type of map/file.
+     * 
+     * <p>For raster tables this can be necessary, due to the different db types
+     * (ex. gpk or mbtiles)
+     *
+     * @param mapType the type to set.
+     */
+    public void setMapType( String mapType ) {
+        this.mapType = mapType;
     }
 
     /**
@@ -157,71 +82,6 @@ public class SpatialRasterTable implements ISpatialTable {
       */
     public void setColumnName( String s_table_name ) {
         this.tableName = s_table_name;
-    }
-
-    /**
-      * Set type of map/file.
-      *
-      * @param mapType the type to set.
-      */
-    public void setMapType( String mapType ) {
-        this.mapType = mapType;
-    }
-
-    public String getBoundsAsString() {
-        return boundsWest + "," + boundsSouth + "," + boundsEast + "," + boundsNorth;
-    }
-
-    public String getCenterAsString() {
-        return centerX + "," + centerY + "," + defaultZoom;
-    }
-
-    public File getFile() {
-        return this.dbFile;
-    }
-
-    public int getMinZoom() {
-        return minZoom;
-    }
-
-    public int getMaxZoom() {
-        return maxZoom;
-    }
-
-    public String getMinMaxZoomLevelsAsString() {
-        return getMinZoom() + "-" + getMaxZoom();
-    }
-
-    public double getMinLongitude() {
-        return boundsWest;
-    }
-
-    public double getMinLatitude() {
-        return boundsSouth;
-    }
-
-    public double getMaxLongitude() {
-        return boundsEast;
-    }
-
-    public double getMaxLatitude() {
-        return boundsNorth;
-    }
-
-    public double getCenterX() {
-        return centerX;
-    }
-
-    public double getCenterY() {
-        return centerY;
-    }
-
-    public int getDefaultZoom() {
-        return defaultZoom;
-    }
-
-    public void setDefaultZoom( int i_zoom ) {
-        defaultZoom = i_zoom;
     }
 
     /**

@@ -934,7 +934,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
             StringBuilder sbQ = new StringBuilder();
             sbQ.append("SELECT ");
             sbQ.append("*");
-            sbQ.append(" FROM ").append(spatialTable.getName());
+            sbQ.append(" FROM ").append(spatialTable.getFileNameNoExtension());
             sbQ.append(" WHERE ST_Intersects(");
             if (doTransform)
                 sbQ.append("ST_Transform(");
@@ -1257,7 +1257,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                                                 zoomLevels[0], zoomLevels[1], centerCoordinate[0], centerCoordinate[1], null,
                                                 boundsCoordinates);
                                         table.setMapType(s_gpkg);
-                                        table.setTableName(s_table_name);
+                                        // table.setTableName(s_table_name);
                                         table.setColumnName(s_tiles_field_name);
                                         // setDescription(s_table_name);
                                         // table.setDescription(this.databaseDescription);

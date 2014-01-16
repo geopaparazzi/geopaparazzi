@@ -27,6 +27,7 @@ import android.content.Context;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteContextHolder;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
+import eu.geopaparazzi.spatialite.util.SpatialiteTypes;
 import eu.geopaparazzi.spatialite.util.Style;
 
 // https://www.gaia-gis.it/fossil/libspatialite/wiki?name=metadata-4.0
@@ -37,41 +38,15 @@ import eu.geopaparazzi.spatialite.util.Style;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public class SpatialVectorTable implements ISpatialTable {
+public class SpatialVectorTable extends SpatialTable {
 
-    private final String tableName;
     private final String geometryColumn;
     private final int geomType;
-    private final String srid;
+
     private Style style;
 
-    private File databaseFile;
-
-    /**
-     * The database path. 
-     * 
-     * <p>all DatabaseHandler/Table classes should use these names
-     */
-    private String databasePath;
-
-    /**
-     * The database file name.
-     * 
-     * <p>all DatabaseHandler/Table classes should use these
-     *   names
-     */
-    private String databaseFileName;
-
     private String geometryTypeDescription = "geometry";
-    private double centerX; // wsg84
-    private double centerY; // wsg84
-    private double bounds_west; // wsg84
-    private double bounds_east; // wsg84
-    private double bounds_north; // wsg84
-    private double bounds_south; // wsg84
-    private int minZoom = 0;
-    private int maxZoom = 22;
-    private int defaultZoom = 17;
+
     private boolean checkDone = false;
     private boolean isPolygon = false;
     private boolean isLine = false;
@@ -115,23 +90,13 @@ public class SpatialVectorTable implements ISpatialTable {
     public SpatialVectorTable( String databasePath, String tableName, String geometryColumn, int geomType, String srid,
             double[] center, double[] bounds, String geometryTypeDescription, int i_row_count, int i_coord_dimension,
             int i_spatial_index_enabled, String lastVerified ) {
-        this.databasePath = databasePath;
-        this.databaseFile = new File(databasePath);
-        databaseFileName = databaseFile.getName();
-        this.tableName = tableName;
+        super(databasePath, tableName, SpatialiteTypes.SQLITE.getTypeName(), srid, 0, 22, center[0], center[1], bounds);
+
         this.geometryColumn = geometryColumn;
         this.uniqueName = createUniqueName();
-
         this.geomType = geomType;
         this.geometryTypeDescription = geometryTypeDescription;
 
-        this.srid = srid;
-        this.centerX = center[0];
-        this.centerY = center[1];
-        this.bounds_west = bounds[0];
-        this.bounds_south = bounds[1];
-        this.bounds_east = bounds[2];
-        this.bounds_north = bounds[3];
         checkType();
     }
 
@@ -169,53 +134,6 @@ public class SpatialVectorTable implements ISpatialTable {
     }
 
     /**
-      * Check of the Bounds of all the Vector-Tables collected in this class.
-      * 
-      * Goal: when painting the Geometries: check of viewport is inside these bounds
-      * - if the Viewport is outside these Bounds: all Tables can be ignored
-      * -- this is called when the Tables are created
-      * @param boundsCoordinates [as wsg84]
-      * @return true if the given bounds are inside the bounds of the all the Tables ; otherwise false
-      */
-    public boolean checkBounds( double[] boundsCoordinates ) {
-        boolean b_rc = false;
-        if ((boundsCoordinates[0] >= this.bounds_west) && (boundsCoordinates[1] >= this.bounds_south)
-                && (boundsCoordinates[2] <= this.bounds_east) && (boundsCoordinates[3] <= this.bounds_north)) {
-            b_rc = true;
-        }
-        return b_rc;
-    }
-
-    /**
-     * Get table bounds.
-     * 
-     * @return the table bounds as [n, s, e, w].
-     */
-    public float[] getTableBounds() {
-        float w = (float) this.bounds_west;
-        float s = (float) this.bounds_south;
-        float e = (float) this.bounds_east;
-        float n = (float) this.bounds_north;
-        return new float[]{n, s, e, w};
-    }
-
-    public String getDatabasePath() {
-        return this.databasePath;
-    }
-
-    public String getFileName() {
-        return this.databaseFileName;
-    }
-
-    public String getName() {
-        return tableName;
-    }
-
-    public String getDescription() {
-        return getName() + " bounds[" + getBoundsAsString() + "] center[" + getCenterAsString() + "]";
-    }
-
-    /**
       * Return geometryTypeDescription
       *
       * @return the geometryTypeDescription
@@ -224,36 +142,13 @@ public class SpatialVectorTable implements ISpatialTable {
         return this.geometryTypeDescription;
     }
 
-    public String getBoundsAsString() {
-        return bounds_west + "," + bounds_south + "," + bounds_east + "," + bounds_north;
-    }
-
-    public String getCenterAsString() {
-        return centerX + "," + centerY + "," + defaultZoom;
-    }
-
-    public File getFile() {
-        return this.databaseFile;
-    }
-
-    public int getMinZoom() {
-        return minZoom;
-    }
-
-    public int getMaxZoom() {
-        return maxZoom;
-    }
-
-    public String getMinMaxZoomLevelsAsString() {
-        return getMinZoom() + "-" + getMaxZoom();
-    }
-
     /**
      * @return the geometry column name.
      */
     public String getGeomName() {
         return geometryColumn;
     }
+
     /**
       * Unique-Name of Geometry Field inside 'sdcard/maps' directory
       * 
@@ -290,10 +185,6 @@ public class SpatialVectorTable implements ISpatialTable {
      */
     public int getGeomType() {
         return geomType;
-    }
-
-    public String getSrid() {
-        return srid;
     }
 
     /**
@@ -515,47 +406,4 @@ public class SpatialVectorTable implements ISpatialTable {
         style = new Style();
         style.name = getUniqueName();
     }
-
-    // /// UNUSED
-
-    @Override
-    public int getDefaultZoom() {
-        throw new RuntimeException("unused");
-    }
-
-    @Override
-    public void setDefaultZoom( int defaultZoom ) {
-        throw new RuntimeException("unused");
-    }
-
-    @Override
-    public double getMinLongitude() {
-        throw new RuntimeException("unused");
-    }
-
-    @Override
-    public double getMinLatitude() {
-        throw new RuntimeException("unused");
-    }
-
-    @Override
-    public double getMaxLongitude() {
-        throw new RuntimeException("unused");
-    }
-
-    @Override
-    public double getMaxLatitude() {
-        throw new RuntimeException("unused");
-    }
-
-    @Override
-    public double getCenterX() {
-        throw new RuntimeException("unused");
-    }
-
-    @Override
-    public double getCenterY() {
-        throw new RuntimeException("unused");
-    }
-
 }

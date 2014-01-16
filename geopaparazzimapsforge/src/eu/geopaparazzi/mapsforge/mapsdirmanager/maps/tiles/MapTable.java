@@ -19,7 +19,7 @@ package eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles;
 import java.io.File;
 
 import eu.geopaparazzi.library.util.FileUtilities;
-import eu.geopaparazzi.spatialite.database.spatial.core.ISpatialTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialTable;
 import eu.geopaparazzi.spatialite.util.SpatialiteTypes;
 /**
  * A map table from the map db.
@@ -28,26 +28,10 @@ import eu.geopaparazzi.spatialite.util.SpatialiteTypes;
  *  adapted to work with map databases [mapsforge] Mark Johnson (www.mj10777.de)
  */
 @SuppressWarnings("nls")
-public class MapTable implements ISpatialTable {
+public class MapTable extends SpatialTable {
 
-    private final String srid;
-    // all DatabaseHandler/Table classes should use these names
-    private File dbFile;
     private File dbStyleFile;
-    private String dbPath;
-    private String databaseFileName;
-    private String name;
-    private String mapType = SpatialiteTypes.MAP.getTypeName();
     private String tileQuery;
-    private final int minZoom;
-    private final int maxZoom;
-    private final double centerX; // wsg84
-    private final double centerY; // wsg84
-    private final double boundsWest; // wsg84
-    private final double boundsEast; // wsg84
-    private final double boundsNorth; // wsg84
-    private final double boundsSouth; // wsg84
-    private int defaultZoom;
 
     /**
      * constructor.
@@ -64,35 +48,28 @@ public class MapTable implements ISpatialTable {
      */
     public MapTable( String dbPath, String name, String srid, int minZoom, int maxZoom, double centerX, double centerY,
             String tileQuery, double[] bounds ) {
-        this.dbPath = dbPath;
-        this.dbFile = new File(dbPath);
-        this.dbStyleFile = findXmlFile(dbFile);
-        this.databaseFileName = dbFile.getName();
-        this.name = name;
-        this.srid = srid;
-        if (minZoom > maxZoom) {
-            int i_zoom = minZoom;
-            minZoom = maxZoom;
-            maxZoom = i_zoom;
-        }
-        if ((minZoom < 0) || (minZoom > 22))
-            minZoom = 0;
-        if ((maxZoom < 0) || (maxZoom > 22))
-            maxZoom = 22;
-        this.minZoom = minZoom;
-        this.maxZoom = maxZoom;
-        this.defaultZoom = minZoom;
-        this.centerX = centerX;
-        this.centerY = centerY;
-        this.boundsWest = bounds[0];
-        this.boundsSouth = bounds[1];
-        this.boundsEast = bounds[2];
-        this.boundsNorth = bounds[3];
+        super(dbPath, name, SpatialiteTypes.MAP.getTypeName(), srid, minZoom, maxZoom, centerX, centerY, bounds);
+
+        this.dbStyleFile = findXmlFile(databaseFile);
+        checkZooms();
+
         if (tileQuery != null) {
             this.tileQuery = tileQuery;
         } else {
             tileQuery = "select " + name + " from " + dbPath + " where zoom_level = ? AND tile_column = ? AND tile_row = ?";
         }
+    }
+
+    private void checkZooms() {
+        if (this.minZoom > this.maxZoom) {
+            int i_zoom = this.minZoom;
+            this.minZoom = this.maxZoom;
+            this.maxZoom = i_zoom;
+        }
+        if (this.minZoom < 0 || this.minZoom > 22)
+            this.minZoom = 0;
+        if (this.maxZoom < 0 || this.maxZoom > 22)
+            this.maxZoom = 22;
     }
 
     private static File findXmlFile( File file ) {
@@ -105,67 +82,6 @@ public class MapTable implements ISpatialTable {
         return xmlFile;
     }
 
-    public String getSrid() {
-        return srid;
-    }
-
-    public String getDatabasePath() {
-        return this.dbPath;
-    }
-
-    public String getFileName() {
-        return this.databaseFileName; // file_map.getName();
-    }
-
-    public String getName() {
-        if ((name == null) || (name.length() == 0)) {
-            name = this.dbFile.getName().substring(0, this.dbFile.getName().lastIndexOf("."));
-        }
-        return this.name;
-    }
-
-    public String getDescription() {
-        return getName() + " bounds[" + getBoundsAsString() + "] center[" + getCenterAsString() + "]";
-    }
-
-    /**
-      * Return type of map/file
-      *
-      * <p>raster: can be different: mbtiles,db,sqlite,gpkg
-      * <p>mbtiles : mbtiles
-      * <p>map : map
-      *
-      * @return s_name as short name of map/file
-      */
-    public String getMapType() {
-        return this.mapType;
-    }
-    // // -----------------------------------------------
-    // /**
-    // * Set type of map/file
-    // *
-    // * <p>raster: can be different: mbtiles,db,sqlite,gpkg
-    // * <p>mbtiles : mbtiles
-    // * <p>map : map
-    // *
-    // * @return s_name as short name of map/file
-    // */
-    // public void setMapType( String s_map_type ) {
-    // this.mapType = s_map_type;
-    // }
-
-    public String getBoundsAsString() {
-        return boundsWest + "," + boundsSouth + "," + boundsEast + "," + boundsNorth;
-    }
-
-    public String getCenterAsString() {
-        return centerX + "," + centerY + "," + defaultZoom;
-    }
-
-    public File getFile() {
-        return this.dbFile;
-    }
-
     /**
      * Getter for the map style file.
      * 
@@ -175,50 +91,6 @@ public class MapTable implements ISpatialTable {
      */
     public File getXmlFile() {
         return this.dbStyleFile;
-    }
-
-    public int getMinZoom() {
-        return minZoom;
-    }
-
-    public int getMaxZoom() {
-        return maxZoom;
-    }
-
-    public String getMinMaxZoomLevelsAsString() {
-        return getMinZoom() + "-" + getMaxZoom();
-    }
-
-    public double getMinLongitude() {
-        return boundsWest;
-    }
-
-    public double getMinLatitude() {
-        return boundsSouth;
-    }
-
-    public double getMaxLongitude() {
-        return boundsEast;
-    }
-
-    public double getMaxLatitude() {
-        return boundsNorth;
-    }
-
-    public double getCenterX() {
-        return centerX;
-    }
-
-    public double getCenterY() {
-        return centerY;
-    }
-
-    public int getDefaultZoom() {
-        return defaultZoom;
-    }
-
-    public void setDefaultZoom( int i_zoom ) {
-        defaultZoom = i_zoom;
     }
 
     /**
