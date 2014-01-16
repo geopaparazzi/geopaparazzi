@@ -40,7 +40,6 @@ import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.util.OrderComparator;
 import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
-// import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
 
 /**
  * Data listing activity.
@@ -55,25 +54,19 @@ public class DataListActivity extends ListActivity {
         super.onCreate(icicle);
 
         setContentView(R.layout.data_list);
+        refreshList(true);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        refreshList(true);
     }
 
     private void refreshList( boolean doReread ) {
-        // if (Debug.D)
-        //            Logger.d(this, "refreshing data list"); //$NON-NLS-1$
-
         try {
             if (doReread)
                 spatialTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(doReread);
-            // no bounds checking, no enabled checking : all records will be returned
-            // spatialTables = MapsDirManager.getInstance().getSpatialVectorTables(null,0,doReread);
         } catch (Exception e) {
-            // Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
         }
 
@@ -158,7 +151,7 @@ public class DataListActivity extends ListActivity {
                 // rowView.setBackgroundColor(ColorUtilities.toColor(item.getColor()));
                 // mj10777: some tables may have more than one column, thus the column name will
                 // also be shown item.getUniqueName()
-                nameView.setText(item.getFileNameNoExtension());
+                nameView.setText(item.getTableName());
                 descriptionView.setText(item.getGeomName() + ": " + item.getGeometryTypeDescription() + ", db: "
                         + item.getFileName());
 
@@ -166,6 +159,11 @@ public class DataListActivity extends ListActivity {
                 visibleView.setOnCheckedChangeListener(new OnCheckedChangeListener(){
                     public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
                         item.getStyle().enabled = isChecked ? 1 : 0;
+                        try {
+                            SpatialDatabasesManager.getInstance().updateStyle(item);
+                        } catch (jsqlite.Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
                 return rowView;
@@ -183,7 +181,7 @@ public class DataListActivity extends ListActivity {
                 SpatialVectorTable spatialTable = spatialTables.get(i);
                 SpatialDatabasesManager.getInstance().updateStyle(spatialTable);
             }
-            SpatialDatabasesManager.getInstance().getSpatialVectorTables(true);
+            spatialTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(true);
         } catch (Exception e) {
             // Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
