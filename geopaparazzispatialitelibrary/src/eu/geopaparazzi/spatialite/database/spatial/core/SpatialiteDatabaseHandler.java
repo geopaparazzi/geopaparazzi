@@ -38,6 +38,7 @@ import static eu.geopaparazzi.spatialite.util.SpatialiteUtilities.TEXTSIZE;
 import static eu.geopaparazzi.spatialite.util.SpatialiteUtilities.WIDTH;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -107,8 +108,9 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
      * Contructor.
      * 
      * @param dbPath the path to the database this handler connects to.
+     * @throws IOException  if something goes wrong. 
      */
-    public SpatialiteDatabaseHandler( String dbPath ) {
+    public SpatialiteDatabaseHandler( String dbPath ) throws IOException {
         super(dbPath);
         try {
             try {
@@ -168,7 +170,6 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
       */
     @Override
     public boolean isValid() {
-        // b_database_valid=true;
         return isDatabaseValid;
     }
 

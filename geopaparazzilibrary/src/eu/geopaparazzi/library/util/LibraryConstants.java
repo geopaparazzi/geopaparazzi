@@ -27,6 +27,14 @@ import java.text.DecimalFormat;
 public interface LibraryConstants {
 
     /**
+     * The epsg for lat/long wgs84. 
+     */
+    public final String SRID_WGS84_4326 = "4326"; //$NON-NLS-1$
+    /**
+     * The epsg Sperical Mercator used by OSM. 
+     */
+    public final String SRID_MERCATOR_3857 = "3857"; //$NON-NLS-1$
+    /**
      * 
      */
     public final float E6 = 1000000f;

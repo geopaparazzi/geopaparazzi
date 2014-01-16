@@ -333,7 +333,7 @@ public class SliderDrawView extends View {
                                 }
                                 StringBuilder sbTmp = new StringBuilder();
                                 sdbManager.intersectionToString("4326", spatialTable, north, south, east, west, sbTmp, "\t");
-                                sb.append(spatialTable.getName()).append("\n");
+                                sb.append(spatialTable.getTableName()).append("\n");
                                 sb.append(sbTmp);
                                 sb.append("\n----------------------\n");
 

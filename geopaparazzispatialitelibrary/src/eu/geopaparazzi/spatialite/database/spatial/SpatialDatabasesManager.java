@@ -18,6 +18,7 @@
 package eu.geopaparazzi.spatialite.database.spatial;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,7 +36,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.util.OrderComparator;
-import eu.geopaparazzi.spatialite.util.SpatialiteTypes;
+import eu.geopaparazzi.spatialite.util.SpatialDataTypes;
 
 /**
  * The spatial database manager.
@@ -91,22 +92,26 @@ public class SpatialDatabasesManager {
             if (currentFile.isFile()) {
                 // mj10777: collect spatialite.geometries and .mbtiles
                 // databases
-                for( SpatialiteTypes spatialiteType : SpatialiteTypes.values() ) {
+                for( SpatialDataTypes spatialiteType : SpatialDataTypes.values() ) {
                     String extension = spatialiteType.getExtension();
                     String name = currentFile.getName();
                     if (Utilities.isNameFromHiddenFile(name)) {
                         continue;
                     }
                     if (name.endsWith(extension)) {
-                        SpatialDatabaseHandler sdb = null;
-                        if (name.endsWith(SpatialiteTypes.MBTILES.getExtension())) {
-                            sdb = new MbtilesDatabaseHandler(currentFile.getAbsolutePath(), null);
-                        } else {
-                            sdb = new SpatialiteDatabaseHandler(currentFile.getAbsolutePath());
-                        }
-                        // GPLog.androidLog(-1,"SpatialDatabasesManager["+i+"]["+sa_extentions[i]+"]: init["+this_file.getAbsolutePath()+"] ");
-                        if (sdb.isValid()) {
-                            tmpSpatialdbHandlers.add(sdb);
+                        try {
+                            SpatialDatabaseHandler sdb = null;
+                            if (name.endsWith(SpatialDataTypes.MBTILES.getExtension())) {
+                                sdb = new MbtilesDatabaseHandler(currentFile.getAbsolutePath(), null);
+                            } else {
+                                sdb = new SpatialiteDatabaseHandler(currentFile.getAbsolutePath());
+                            }
+                            // GPLog.androidLog(-1,"SpatialDatabasesManager["+i+"]["+sa_extentions[i]+"]: init["+this_file.getAbsolutePath()+"] ");
+                            if (sdb.isValid()) {
+                                tmpSpatialdbHandlers.add(sdb);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
                     }
                     if (name.equals(ResourcesManager.NO_MEDIA)) {

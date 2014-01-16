@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import jsqlite.Exception;
 import android.graphics.Bitmap;
@@ -32,7 +33,7 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.spatialite.database.spatial.core.mbtiles.MBTilesDroidSpitter;
 import eu.geopaparazzi.spatialite.database.spatial.core.mbtiles.MBtilesAsync;
 import eu.geopaparazzi.spatialite.database.spatial.core.mbtiles.MbTilesMetadata;
-import eu.geopaparazzi.spatialite.util.SpatialiteTypes;
+import eu.geopaparazzi.spatialite.util.SpatialDataTypes;
 
 /**
  * An utility class to handle an mbtiles database.
@@ -113,10 +114,10 @@ public class MbtilesDatabaseHandler extends SpatialDatabaseHandler {
      * @return
      */
     private static String dbPathCheck( String dbPath ) {
-        if (!dbPath.endsWith(SpatialiteTypes.MBTILES.getExtension())) {
+        if (!dbPath.endsWith(SpatialDataTypes.MBTILES.getExtension())) {
             // .mbtiles files must have an .mbtiles
             // extension, force this
-            dbPath = dbPath.substring(0, dbPath.lastIndexOf(".")) + SpatialiteTypes.MBTILES.getExtension();
+            dbPath = dbPath.substring(0, dbPath.lastIndexOf(".")) + SpatialDataTypes.MBTILES.getExtension();
         }
         return dbPath;
     }
@@ -155,7 +156,7 @@ public class MbtilesDatabaseHandler extends SpatialDatabaseHandler {
                     this.maxZoom, centerX, centerY, "?,?,?", d_bounds);
             table.setDefaultZoom(defaultZoom);
             // table.setDescription(getDescription());
-            table.setMapType(SpatialiteTypes.MBTILES.getTypeName());
+            table.setMapType(SpatialDataTypes.MBTILES.getTypeName());
             rasterTableList.add(table);
         }
         return rasterTableList;
@@ -244,12 +245,13 @@ public class MbtilesDatabaseHandler extends SpatialDatabaseHandler {
       * @param i_y_osm the value for tile_row field in the map,tiles Tables and part of the tile_id when image is not blank
       * @param i_z the value for zoom_level field in the map,tiles Tables and part of the tile_id when image is not blank
       * @param tile_bitmap the Bitmap to extract image-data extracted from. [Will be converted to JPG or PNG depending on metdata setting]
+      * @param forceUnique if 1, it check if image is unique in Database [may be slow if used]
       * @return 0: correct, otherwise error
-     * @throws IOException  if something goes wrong.
+      * @throws IOException  if something goes wrong.
       */
-    public int insertBitmapTile( int i_x, int i_y_osm, int i_z, Bitmap tile_bitmap ) throws IOException {
+    public int insertBitmapTile( int i_x, int i_y_osm, int i_z, Bitmap tile_bitmap, int forceUnique ) throws IOException {
         try {
-            return mbtilesSplitter.insertBitmapTile(i_x, i_y_osm, i_z, tile_bitmap, 0);
+            return mbtilesSplitter.insertBitmapTile(i_x, i_y_osm, i_z, tile_bitmap, forceUnique);
         } catch (IOException e) {
             return 1;
         }
@@ -370,145 +372,143 @@ public class MbtilesDatabaseHandler extends SpatialDatabaseHandler {
         return i_rc;
     }
 
-    // /**
-    // * Launch async retrieve url.
-    // *
-    // * @param mbtiles_request_url
-    // * @param async_mbtiles_metadata
-    // */
-    // public void run_retrieve_url( HashMap<String, String> mbtiles_request_url, HashMap<String,
-    // String> async_mbtiles_metadata ) {
-    // int i_run_create = 0;
-    // int i_run_fill = 0;
-    // int i_run_replace = 0;
-    // int i_load_url = 0;
-    // int i_delete = 0;
-    // int i_drop = 0;
-    // int i_vacuum = 0;
-    // int i_update_bounds = 0;
-    // this.async_mbtiles_metadata = async_mbtiles_metadata;
-    // for( Map.Entry<String, String> request_url : mbtiles_request_url.entrySet() ) {
-    // String s_key = request_url.getKey();
-    // String s_value = request_url.getValue();
-    // if (s_key.equals("request_type")) {
-    // if (s_value.indexOf("fill") != -1) { // will request missing tiles only
-    // i_run_fill = 1;
-    // s_request_type = "fill";
-    // }
-    // if (s_value.indexOf("replace") != -1) { // will replace existing tiles
-    // i_run_replace = 1;
-    // s_request_type = "replace";
-    // }
-    // if (s_value.indexOf("load") != -1) { // will replace existing tiles
-    // i_load_url = 1;
-    // }
-    // if (s_value.indexOf("drop") != -1) { // will delete the requested tiles, retaining
-    // // the allready downloaded tiles
-    // i_drop = 1;
-    // }
-    // if (s_value.indexOf("vacuum") != -1) { // will delete the requested tiles, retaining
-    // // the allready downloaded tiles
-    // i_vacuum = 1;
-    // }
-    // if (s_value.indexOf("update_bounds") != -1) { // will do an extensive check on
-    // // bounds and zoom-level, updating the
-    // // mbtiles.metadata table
-    // i_update_bounds = 1;
-    // }
-    // if (s_value.indexOf("delete") != -1) { // planned for future
-    // i_delete = 1;
-    // }
-    // }
-    // if (s_key.equals("request_url")) {
-    // s_request_url_source = s_value;
-    // }
-    // if (s_key.equals("request_bounds")) {
-    // s_request_bounds = s_value;
-    // }
-    // if (s_key.equals("request_bounds_url")) {
-    // s_request_bounds_url = s_value;
-    // }
-    // if (s_key.equals("request_zoom_levels")) {
-    // s_request_zoom_levels = s_value;
-    // }
-    // if (s_key.equals("request_zoom_levels_url")) {
-    // // reserved for future
-    // s_request_zoom_levels_url = s_value;
-    // }
-    // if (s_key.equals("request_y_type")) {
-    // // reserved for future
-    // s_request_y_type = s_value;
-    // }
-    // if (s_key.equals("request_protocol")) {
-    // // 'file' or 'http'
-    // s_request_protocol = s_value;
-    // }
-    //
-    // // GPLog.androidLog(-1, "run_retrieve_url: key[" + s_key + "]  value[" + s_value +
-    // // "] load[" + i_load_url + "] ");
-    // }
-    // // check if the pre-requriment for REQUEST_CREATE are fullfilled
-    // if ((i_run_fill != 0) || (i_run_replace != 1)) {
-    // if ((i_run_fill == 1) && (i_run_replace == 1)) {
-    // i_run_replace = 0;
-    // s_request_type = "fill";
-    // }
-    // if ((!s_request_url_source.equals("")) && (!s_request_bounds.equals("")) &&
-    // (!s_request_zoom_levels.equals(""))) {
-    // // run only if set, some cheding might be wise
-    // i_run_create = 1;
-    // }
-    // }
-    // // The order of adding is important
-    // if (i_update_bounds > 0) { // will do an extensive check on bounds and zoom-level, updating
-    // // the mbtiles.metadata table
-    // asyncTasksList.add(AsyncTasks.UPDATE_BOUNDS);
-    // }
-    // if (i_drop > 0) { // this should effectaly delete exiting request and reload again if
-    // // requested
-    // asyncTasksList.add(AsyncTasks.REQUEST_DROP);
-    // }
-    // if (i_delete > 0) { // planned for future [delete tiles of an area]
-    // asyncTasksList.add(AsyncTasks.REQUEST_DELETE);
-    // }
-    // if (i_vacuum > 0) { // VACUUM should run AFTER any deleting and BEFORE any inserting
-    // asyncTasksList.add(AsyncTasks.ANALYZE_VACUUM);
-    // }
-    // if (i_run_create > 0) { // REQUEST_CREATE
-    // asyncTasksList.add(AsyncTasks.REQUEST_CREATE);
-    // }
-    // if (i_load_url > 0) { // will download requested tiles
-    // asyncTasksList.add(AsyncTasks.REQUEST_URL);
-    // }
-    // if ((this.async_mbtiles_metadata != null) && (this.async_mbtiles_metadata.size() > 0)) {
-    // asyncTasksList.add(AsyncTasks.RESET_METADATA);
-    // }
-    // if (asyncTasksList.size() > 0) {
-    // mbtiles_async = new MBtilesAsync(this);
-    // // with .execute(): this crashes
-    // // mbtiles_async.execute(AsyncTasks.ASYNC_PARMS);
-    //
-    // /*
-    // * moovida: THIS IS NOT 2.3.3 compatible, which is 10 and < 12
-    // * if it crashes, we need to fin out why, but we can't use
-    // * mbtiles_async.executeOnExecutor.
-    // */
-    // // if (Build.VERSION.SDK_INT < 12) // use numbers for backwards compatibility
-    // // Build.VERSION_CODES.HONEYCOMB)
-    // // { // http://developer.android.com/reference/android/os/Build.VERSION_CODES.html
-    // // // GPLog.androidLog(-1,"run_retrieve_url.HONEYCOMB.["+Build.VERSION.SDK_INT+"]");
-    // // mbtiles_async.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,AsyncTasks.ASYNC_PARMS);
-    // // }
-    // // else
-    // // {
-    // // GPLog.androidLog(-1,"run_retrieve_url.OTHER.["+Build.VERSION.SDK_INT+"]");
-    // mbtiles_async.execute(AsyncTasks.ASYNC_PARMS);
-    // // }
-    // // GPLog.androidLog(-1,"run_retrieve_url.Build.VERSION.SDK_INT.["+Build.VERSION.SDK_INT+"]");
-    // // // 20131125: 15, 2031221: 17
-    // // mbtiles_async.execute(AsyncTasks.ASYNC_PARMS);
-    // }
-    // }
+    /**
+    * Launch async retrieve url.
+    *
+    * @param mbtiles_request_url a map of url retrival info.
+    * @param async_mbtiles_metadata a map of mbtiles metadata.
+    */
+    public void runRetrieveUrl( HashMap<String, String> mbtiles_request_url, HashMap<String, String> async_mbtiles_metadata ) {
+        int i_run_create = 0;
+        int i_run_fill = 0;
+        int i_run_replace = 0;
+        int i_load_url = 0;
+        int i_delete = 0;
+        int i_drop = 0;
+        int i_vacuum = 0;
+        int i_update_bounds = 0;
+        this.async_mbtiles_metadata = async_mbtiles_metadata;
+        for( Map.Entry<String, String> request_url : mbtiles_request_url.entrySet() ) {
+            String s_key = request_url.getKey();
+            String s_value = request_url.getValue();
+            if (s_key.equals("request_type")) {
+                if (s_value.indexOf("fill") != -1) { // will request missing tiles only
+                    i_run_fill = 1;
+                    s_request_type = "fill";
+                }
+                if (s_value.indexOf("replace") != -1) { // will replace existing tiles
+                    i_run_replace = 1;
+                    s_request_type = "replace";
+                }
+                if (s_value.indexOf("load") != -1) { // will replace existing tiles
+                    i_load_url = 1;
+                }
+                if (s_value.indexOf("drop") != -1) { // will delete the requested tiles, retaining
+                    // the allready downloaded tiles
+                    i_drop = 1;
+                }
+                if (s_value.indexOf("vacuum") != -1) { // will delete the requested tiles, retaining
+                    // the allready downloaded tiles
+                    i_vacuum = 1;
+                }
+                if (s_value.indexOf("update_bounds") != -1) { // will do an extensive check on
+                    // bounds and zoom-level, updating the
+                    // mbtiles.metadata table
+                    i_update_bounds = 1;
+                }
+                if (s_value.indexOf("delete") != -1) { // planned for future
+                    i_delete = 1;
+                }
+            }
+            if (s_key.equals("request_url")) {
+                s_request_url_source = s_value;
+            }
+            if (s_key.equals("request_bounds")) {
+                s_request_bounds = s_value;
+            }
+            if (s_key.equals("request_bounds_url")) {
+                s_request_bounds_url = s_value;
+            }
+            if (s_key.equals("request_zoom_levels")) {
+                s_request_zoom_levels = s_value;
+            }
+            if (s_key.equals("request_zoom_levels_url")) {
+                // reserved for future
+                s_request_zoom_levels_url = s_value;
+            }
+            if (s_key.equals("request_y_type")) {
+                // reserved for future
+                s_request_y_type = s_value;
+            }
+            if (s_key.equals("request_protocol")) {
+                // 'file' or 'http'
+                s_request_protocol = s_value;
+            }
+
+            // GPLog.androidLog(-1, "run_retrieve_url: key[" + s_key + "]  value[" + s_value +
+            // "] load[" + i_load_url + "] ");
+        }
+        // check if the pre-requriment for REQUEST_CREATE are fullfilled
+        if ((i_run_fill != 0) || (i_run_replace != 1)) {
+            if ((i_run_fill == 1) && (i_run_replace == 1)) {
+                i_run_replace = 0;
+                s_request_type = "fill";
+            }
+            if ((!s_request_url_source.equals("")) && (!s_request_bounds.equals("")) && (!s_request_zoom_levels.equals(""))) {
+                // run only if set, some cheding might be wise
+                i_run_create = 1;
+            }
+        }
+        // The order of adding is important
+        if (i_update_bounds > 0) { // will do an extensive check on bounds and zoom-level, updating
+            // the mbtiles.metadata table
+            asyncTasksList.add(AsyncTasks.UPDATE_BOUNDS);
+        }
+        if (i_drop > 0) { // this should effectaly delete exiting request and reload again if
+            // requested
+            asyncTasksList.add(AsyncTasks.REQUEST_DROP);
+        }
+        if (i_delete > 0) { // planned for future [delete tiles of an area]
+            asyncTasksList.add(AsyncTasks.REQUEST_DELETE);
+        }
+        if (i_vacuum > 0) { // VACUUM should run AFTER any deleting and BEFORE any inserting
+            asyncTasksList.add(AsyncTasks.ANALYZE_VACUUM);
+        }
+        if (i_run_create > 0) { // REQUEST_CREATE
+            asyncTasksList.add(AsyncTasks.REQUEST_CREATE);
+        }
+        if (i_load_url > 0) { // will download requested tiles
+            asyncTasksList.add(AsyncTasks.REQUEST_URL);
+        }
+        if ((this.async_mbtiles_metadata != null) && (this.async_mbtiles_metadata.size() > 0)) {
+            asyncTasksList.add(AsyncTasks.RESET_METADATA);
+        }
+        if (asyncTasksList.size() > 0) {
+            mbtiles_async = new MBtilesAsync(this);
+            // with .execute(): this crashes
+            // mbtiles_async.execute(AsyncTasks.ASYNC_PARMS);
+
+            /*
+            * moovida: THIS IS NOT 2.3.3 compatible, which is 10 and < 12
+            * if it crashes, we need to fin out why, but we can't use
+            * mbtiles_async.executeOnExecutor.
+            */
+            // if (Build.VERSION.SDK_INT < 12) // use numbers for backwards compatibility
+            // Build.VERSION_CODES.HONEYCOMB)
+            // { // http://developer.android.com/reference/android/os/Build.VERSION_CODES.html
+            // // GPLog.androidLog(-1,"run_retrieve_url.HONEYCOMB.["+Build.VERSION.SDK_INT+"]");
+            // mbtiles_async.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,AsyncTasks.ASYNC_PARMS);
+            // }
+            // else
+            // {
+            // GPLog.androidLog(-1,"run_retrieve_url.OTHER.["+Build.VERSION.SDK_INT+"]");
+            mbtiles_async.execute(AsyncTasks.ASYNC_PARMS);
+            // }
+            // GPLog.androidLog(-1,"run_retrieve_url.Build.VERSION.SDK_INT.["+Build.VERSION.SDK_INT+"]");
+            // // 20131125: 15, 2031221: 17
+            // mbtiles_async.execute(AsyncTasks.ASYNC_PARMS);
+        }
+    }
 
     /**
       * Returns list of collected urlmapped to their tile id. 

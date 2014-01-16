@@ -58,8 +58,9 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.ISpatialDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryIterator;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
 import eu.geopaparazzi.spatialite.util.Style;
@@ -80,6 +81,7 @@ import eu.hydrologis.geopaparazzi.util.Note;
  *
  */
 public abstract class GeopaparazziOverlay extends Overlay {
+
     private int crossSize = 20;
     private static final String THREAD_NAME = "GeopaparazziOverlay"; //$NON-NLS-1$
     private static final int ITEM_INITIAL_CAPACITY = 8;
@@ -183,16 +185,16 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
         // cross
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String crossColorStr = preferences.getString(Constants.PREFS_KEY_CROSS_COLOR, "red");
+        String crossColorStr = preferences.getString(Constants.PREFS_KEY_CROSS_COLOR, "red"); //$NON-NLS-1$
         int crossColor = ColorUtilities.toColor(crossColorStr);
-        String crossWidthStr = preferences.getString(Constants.PREFS_KEY_CROSS_WIDTH, "3");
+        String crossWidthStr = preferences.getString(Constants.PREFS_KEY_CROSS_WIDTH, "3"); //$NON-NLS-1$
         float crossWidth = 3f;
         try {
             crossWidth = (float) Double.parseDouble(crossWidthStr);
         } catch (NumberFormatException e) {
             // ignore and use default
         }
-        String crossSizeStr = preferences.getString(Constants.PREFS_KEY_CROSS_SIZE, "20");
+        String crossSizeStr = preferences.getString(Constants.PREFS_KEY_CROSS_SIZE, "20"); //$NON-NLS-1$
         try {
             crossSize = (int) Double.parseDouble(crossSizeStr);
         } catch (NumberFormatException e) {
@@ -254,7 +256,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
         isNotesTextVisible = preferences.getBoolean(Constants.PREFS_KEY_NOTES_TEXT_VISIBLE, false);
         if (isNotesTextVisible) {
-            String notesTextSizeStr = preferences.getString(Constants.PREFS_KEY_NOTES_TEXT_SIZE, "30");
+            String notesTextSizeStr = preferences.getString(Constants.PREFS_KEY_NOTES_TEXT_SIZE, "30"); //$NON-NLS-1$
             float notesTextSize = 30f;
             try {
                 notesTextSize = (float) Double.parseDouble(notesTextSizeStr);
@@ -711,16 +713,19 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     continue;
                 }
 
-                ISpatialDatabaseHandler spatialDatabaseHandler = sdManager.getVectorHandler(spatialTable);
+                SpatialDatabaseHandler spatialDatabaseHandler = sdManager.getVectorHandler(spatialTable);
+                if (!(spatialDatabaseHandler instanceof SpatialiteDatabaseHandler)) {
+                    return;
+                }
                 int i_geometryIterator = 0;
                 GeometryIterator geometryIterator = null;
                 try {
                     Paint fill = null;
                     Paint stroke = null;
                     if (style4Table.fillcolor != null && style4Table.fillcolor.trim().length() > 0)
-                        fill = spatialDatabaseHandler.getFillPaint4Style(style4Table);
+                        fill = ((SpatialiteDatabaseHandler) spatialDatabaseHandler).getFillPaint4Style(style4Table);
                     if (style4Table.strokecolor != null && style4Table.strokecolor.trim().length() > 0)
-                        stroke = spatialDatabaseHandler.getStrokePaint4Style(style4Table);
+                        stroke = ((SpatialiteDatabaseHandler) spatialDatabaseHandler).getStrokePaint4Style(style4Table);
                     PointTransformation pointTransformer = new MapsforgePointTransformation(projection, drawPosition,
                             drawZoomLevel);
                     ShapeWriter shape_writer = null;
@@ -737,7 +742,8 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     }
                     shape_writer.setRemoveDuplicatePoints(true);
                     shape_writer.setDecimation(spatialTable.getStyle().decimationFactor);
-                    geometryIterator = spatialDatabaseHandler.getGeometryIteratorInBounds("4326", spatialTable, n, s, e, w);
+                    geometryIterator = ((SpatialiteDatabaseHandler) spatialDatabaseHandler).getGeometryIteratorInBounds(
+                            LibraryConstants.SRID_WGS84_4326, spatialTable, n, s, e, w);
                     while( geometryIterator.hasNext() ) {
                         i_geometryIterator++;
                         Geometry geom = geometryIterator.next();
@@ -769,7 +775,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                             }
                         } else {
                             GPLog.androidLog(-1, "GeopaparazziOverlay.drawFromSpatialite  [geom == null] description["
-                                    + spatialTable.getName() + "]");
+                                    + spatialTable.getTableName() + "]");
                         }
                     }
                     if (i_geometryIterator == 0) {

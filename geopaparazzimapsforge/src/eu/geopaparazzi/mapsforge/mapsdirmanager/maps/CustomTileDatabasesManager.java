@@ -24,10 +24,11 @@ import java.util.List;
 
 import jsqlite.Exception;
 import android.content.Context;
+import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.CustomTileDatabaseHandler;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.CustomTileTable;
+import eu.geopaparazzi.spatialite.util.SpatialDataTypes;
 
 /**
  * The custom tile database manager.
@@ -40,11 +41,12 @@ public class CustomTileDatabasesManager {
     private List<CustomTileDatabaseHandler> customtileHandlers = new ArrayList<CustomTileDatabaseHandler>();
     private HashMap<CustomTileTable, CustomTileDatabaseHandler> customtileTablesMap = new HashMap<CustomTileTable, CustomTileDatabaseHandler>();
     private static CustomTileDatabasesManager customtileDbManager = null;
-    private static final String[] sa_extentions = new String[]{".mapurl"};
-    private static final int i_extention_mapurl = 0;
     private CustomTileDatabasesManager() {
     }
 
+    /**
+     * @return the singleton instance.
+     */
     public static CustomTileDatabasesManager getInstance() {
         if (customtileDbManager == null) {
             customtileDbManager = new CustomTileDatabasesManager();
@@ -52,29 +54,42 @@ public class CustomTileDatabasesManager {
         return customtileDbManager;
     }
 
+    /**
+     * Reset the db manager.
+     */
     public static void reset() {
         customtileDbManager = null;
     }
-    public static String get_mapurl_extention() {
-        return sa_extentions[i_extention_mapurl];
-    }
+
+    /**
+     * Initialize the {@link CustomTileDatabasesManager}.
+     * 
+     * @param context  the context to use.
+     * @param mapsDir the folder to browse for custom tile sources. 
+     * @return <code>true</code> if the current folder is marked as nomedia.
+     */
     public boolean init( Context context, File mapsDir ) {
         File[] list_files = mapsDir.listFiles();
         List<CustomTileDatabaseHandler> customtile_Handlers = new ArrayList<CustomTileDatabaseHandler>();
         boolean b_nomedia_file = false;
-        for( File this_file : list_files ) { // nomedia logic: first check the files, if no
-                                             // '.nomedia' found: then its directories
+        for( File this_file : list_files ) {
+            // nomedia logic: first check the files, if no
+            // '.nomedia' found: then its directories
             if (this_file.isFile()) { // mj10777: collect .mapurl databases
                 String name = this_file.getName();
                 if (Utilities.isNameFromHiddenFile(name)) {
                     continue;
                 }
-                if (name.endsWith(get_mapurl_extention())) {
-                    CustomTileDatabaseHandler map = new CustomTileDatabaseHandler(this_file.getAbsolutePath(), MapsDirManager
-                            .getInstance().get_maps_dir().getAbsolutePath());
-                    customtile_Handlers.add(map);
+                if (name.endsWith(SpatialDataTypes.MAPURL.getExtension())) {
+                    try {
+                        CustomTileDatabaseHandler map = new CustomTileDatabaseHandler(this_file.getAbsolutePath(),
+                                ResourcesManager.getInstance(context).getMapsDir().getAbsolutePath());
+                        customtile_Handlers.add(map);
+                    } catch (java.lang.Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-                if (name.equals(".nomedia")) { // ignore all files of this directory
+                if (name.equals(ResourcesManager.NO_MEDIA)) { // ignore all files of this directory
                     b_nomedia_file = true;
                     customtile_Handlers.clear();
                     return b_nomedia_file;
@@ -97,13 +112,28 @@ public class CustomTileDatabasesManager {
         // "] size["+customtileHandlers.size()+"]");
         return b_nomedia_file;
     }
+
+    /**
+     * @return the list of {@link CustomTileDatabaseHandler}s.
+     */
     public List<CustomTileDatabaseHandler> getCustomTileDatabaseHandlers() {
         return customtileHandlers;
     }
+
+    /**
+     * @return the number of available {@link CustomTileDatabaseHandler}s.
+     */
     public int size() {
         return customtileHandlers.size();
     }
 
+    /**
+     * Get the available tables.
+     * 
+     * @param forceRead force a re-reading of the resources.
+     * @return the list of available tables.
+     * @throws Exception  if something goes wrong.
+     */
     public List<CustomTileTable> getTables( boolean forceRead ) throws Exception {
         List<CustomTileTable> tables = new ArrayList<CustomTileTable>();
         for( CustomTileDatabaseHandler customtileHandler : customtileHandlers ) {
@@ -121,24 +151,42 @@ public class CustomTileDatabasesManager {
         return tables;
     }
 
+    /**
+     * Get the {@link CustomTileDatabaseHandler} for a given {@link CustomTileTable}.
+     * 
+     * @param customtileTable the table to use.
+     * @return the handler.
+     * @throws Exception  if something goes wrong.
+     */
     public CustomTileDatabaseHandler getCustomTileDatabaseHandler( CustomTileTable customtileTable ) throws Exception {
         CustomTileDatabaseHandler CustomTileDatabaseHandler = customtileTablesMap.get(customtileTable);
         return CustomTileDatabaseHandler;
     }
 
+    /**
+     * Get a {@link CustomTileTable} for the name.
+     * 
+     * @param table the table name.
+     * @return the table object.
+     * @throws Exception  if something goes wrong.
+     */
     public CustomTileTable getCustomTileTableByName( String table ) throws Exception {
         List<CustomTileTable> customtileTables = getTables(false);
         for( CustomTileTable customtileTable : customtileTables ) {
-            if (customtileTable.getFileNamePath().equals(table)) {
+            if (customtileTable.getDatabasePath().equals(table)) {
                 return customtileTable;
             }
         }
         return null;
     }
+
     /**
      * Close  all Databases that may be open
+     * 
      * <p>mbtiles 'MbtilesDatabaseHandler' database will be closed with '.close();' if active
      * <p>- 'update_bounds();' will be called beforhand
+     * 
+     * @throws Exception  if something goes wrong.
      */
     public void closeDatabases() throws Exception {
         for( CustomTileDatabaseHandler customtileHandler : customtileHandlers ) {

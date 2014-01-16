@@ -99,7 +99,7 @@ public abstract class SpatialDatabaseHandler {
     /**
      * Flag to define the validity of the database.
      */
-    protected boolean isDatabaseValid = true;
+    protected boolean isDatabaseValid = false;
 
     /**
      * Constructor.

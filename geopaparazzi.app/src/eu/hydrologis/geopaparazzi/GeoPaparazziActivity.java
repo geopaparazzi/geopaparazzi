@@ -675,7 +675,7 @@ public class GeoPaparazziActivity extends Activity {
                 // -- if not null : selected_MapClassInfo() will call
                 // MapsDirManager.load_Map(map_view,mapCenterLocation);
                 if (MapsDirTreeViewList.selected_classinfo != null) {
-                    MapsDirManager.getInstance().selected_MapClassInfo(this, MapsDirTreeViewList.selected_classinfo, null, null);
+                    MapsDirManager.getInstance().selectMapClassInfo(this, MapsDirTreeViewList.selected_classinfo, null, null);
                 }
             }
         }

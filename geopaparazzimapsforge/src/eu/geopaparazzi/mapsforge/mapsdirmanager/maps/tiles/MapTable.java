@@ -20,7 +20,7 @@ import java.io.File;
 
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialTable;
-import eu.geopaparazzi.spatialite.util.SpatialiteTypes;
+import eu.geopaparazzi.spatialite.util.SpatialDataTypes;
 /**
  * A map table from the map db.
  *
@@ -48,7 +48,7 @@ public class MapTable extends SpatialTable {
      */
     public MapTable( String dbPath, String name, String srid, int minZoom, int maxZoom, double centerX, double centerY,
             String tileQuery, double[] bounds ) {
-        super(dbPath, name, SpatialiteTypes.MAP.getTypeName(), srid, minZoom, maxZoom, centerX, centerY, bounds);
+        super(dbPath, name, SpatialDataTypes.MAP.getTypeName(), srid, minZoom, maxZoom, centerX, centerY, bounds);
 
         this.dbStyleFile = findXmlFile(databaseFile);
         checkZooms();

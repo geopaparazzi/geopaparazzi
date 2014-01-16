@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package eu.geopaparazzi.spatialite.database.spatial.core;
-import eu.geopaparazzi.spatialite.util.SpatialiteTypes;
+import eu.geopaparazzi.spatialite.util.SpatialDataTypes;
 /**
  * A raster table from the spatial db.
  *
@@ -42,7 +42,7 @@ public class SpatialRasterTable extends SpatialTable {
      */
     public SpatialRasterTable( String dbPath, String name, String srid, int minZoom, int maxZoom, double centerX, double centerY,
             String tileQuery, double[] bounds ) {
-        super(dbPath, name, SpatialiteTypes.DB.getTypeName(), srid, minZoom, maxZoom, centerX, centerY, bounds);
+        super(dbPath, name, SpatialDataTypes.DB.getTypeName(), srid, minZoom, maxZoom, centerX, centerY, bounds);
 
         // todo: change this
         if (tileQuery != null) {

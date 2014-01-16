@@ -58,11 +58,12 @@ public class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, S
     // -----------------------------------------------
     /**
       * Constructor
-      * - Base values will be take from MbtilesDatabaseHandler:
-      * -- an extreame amout of sanit-checks will be made
-      * --- Goal: attemt to avoid any server spins when rquesting tiles
+      * 
+      * <br>- Base values will be take from MbtilesDatabaseHandler:
+      * <br>-- an extreame amout of sanit-checks will be made
+      * <br>a--- Goal: attemt to avoid any server spins when rquesting tiles
+      * 
       * @param db_mbtiles MbtilesDatabaseHandler
-      * @return itsself
      */
     public MBtilesAsync( MbtilesDatabaseHandler db_mbtiles ) {
         this.db_mbtiles = db_mbtiles;
@@ -129,6 +130,7 @@ public class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, S
                                 + db_mbtiles.getBoundsAsString() + "] zoom_levels[" + db_mbtiles.getMinMaxZoomLevelsAsString()
                                 + "] center_parms[" + db_mbtiles.getCenterParms() + "] rc=" + i_rc);
                     } catch (Exception e) {
+                        // TODO
                     }
                 }
             }
@@ -155,28 +157,34 @@ public class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, S
             }
                 break;
             case REQUEST_URL: { // retrieve tiles found in 'request_url'
-                int i_test_downloads = 0;
-                // i_test_downloads=1;
-                if (i_test_downloads == 0) {
-                    i_rc = on_request_url();
-                    // this will update the metadata Table, if we are not being canceled
-                    on_update_bounds();
-                } else {
-                    try {
-                        Bitmap bm_test = null;
-                        // this returns a valid image
-                        String s_tile_url = "http://fbinter.stadt-berlin.de/fb/wms/senstadt/k_luftbild2011_20?LAYERS=0&FORMAT=image/jpeg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=visual&SRS=EPSG:4326&BBOX=13.293457031249988,52.562995039558004,13.315429687500005,52.57634993749886&WIDTH=256&HEIGHT=256";
-                        bm_test = on_download_tile_http(s_tile_url);
-                        // this returns blank [area not supported]
-                        s_tile_url = "http://fbinter.stadt-berlin.de/fb/wms/senstadt/k_luftbild2011_20?LAYERS=0&FORMAT=image/jpeg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=visual&SRS=EPSG:4326&BBOX=13.20556640624999,52.6430634366589,13.227539062500007,52.656393941988014&WIDTH=256&HEIGHT=256";
-                        bm_test = on_download_tile_http(s_tile_url);
-                        // this returns an error [<ServiceException code="LayerNotDefined">theme
-                        // k_luftbild1938@senstadt access denied</ServiceException>]
-                        s_tile_url = "http://fbinter.stadt-berlin.de/fb/wms/senstadt/k_luftbild1938?LAYERS=0&FORMAT=image/jpeg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=visual&SRS=EPSG:4326&BBOX=13.20556640624999,52.6430634366589,13.227539062500007,52.656393941988014&WIDTH=256&HEIGHT=256";
-                        bm_test = on_download_tile_http(s_tile_url);
-                    } catch (Exception e) {
-                    }
-                }
+
+                // TODO @mj10777 is all this debug and testing code necessary?.
+                //
+                // int i_test_downloads = 0;
+                // // i_test_downloads=1;
+                // if (i_test_downloads == 0) {
+                i_rc = on_request_url();
+                // this will update the metadata Table, if we are not being canceled
+                on_update_bounds();
+                // } else {
+                //
+                // try {
+                // // this returns a valid image
+                // String s_tile_url =
+                // "http://fbinter.stadt-berlin.de/fb/wms/senstadt/k_luftbild2011_20?LAYERS=0&FORMAT=image/jpeg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=visual&SRS=EPSG:4326&BBOX=13.293457031249988,52.562995039558004,13.315429687500005,52.57634993749886&WIDTH=256&HEIGHT=256";
+                // Bitmap bm_test = on_download_tile_http(s_tile_url);
+                // // this returns blank [area not supported]
+                // s_tile_url =
+                // "http://fbinter.stadt-berlin.de/fb/wms/senstadt/k_luftbild2011_20?LAYERS=0&FORMAT=image/jpeg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=visual&SRS=EPSG:4326&BBOX=13.20556640624999,52.6430634366589,13.227539062500007,52.656393941988014&WIDTH=256&HEIGHT=256";
+                // bm_test = on_download_tile_http(s_tile_url);
+                // // this returns an error [<ServiceException code="LayerNotDefined">theme
+                // // k_luftbild1938@senstadt access denied</ServiceException>]
+                // s_tile_url =
+                // "http://fbinter.stadt-berlin.de/fb/wms/senstadt/k_luftbild1938?LAYERS=0&FORMAT=image/jpeg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=visual&SRS=EPSG:4326&BBOX=13.20556640624999,52.6430634366589,13.227539062500007,52.656393941988014&WIDTH=256&HEIGHT=256";
+                // bm_test = on_download_tile_http(s_tile_url);
+                // } catch (Exception e) {
+                // }
+                // }
             }
                 break;
             case REQUEST_CREATE: { // create and fill 'request_url' with tile-requests
@@ -205,18 +213,21 @@ public class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, S
         s_message = "-I-> mbtiles_Async.On doInBackground[" + db_mbtiles.getName() + "] all tasks compleated rc=" + i_rc;
         return i_rc;
     }
-    // -----------------------------------------------
-    /**
-      * House-keeping tasks for Database
-      * The ANALYZE command gathers statistics about tables and indices
-      * The VACUUM command rebuilds the entire database.
-      * - A VACUUM will fail if there is an open transaction, or if there are one or more active SQL statements when it is run.
-      * @return 0=correct ; 1=ANALYSE has failed ; 2=VACUUM has failed
-      */
-    private int on_analyze_vacuum() {
-        return db_mbtiles.on_analyze_vacuum();
-    }
-    // -----------------------------------------------
+
+    // TODO @mj10777 this seems to be unused.
+    //
+    // /**
+    // * House-keeping tasks for Database
+    // * The ANALYZE command gathers statistics about tables and indices
+    // * The VACUUM command rebuilds the entire database.
+    // * - A VACUUM will fail if there is an open transaction, or if there are one or more active
+    // SQL statements when it is run.
+    // * @return 0=correct ; 1=ANALYSE has failed ; 2=VACUUM has failed
+    // */
+    // private int on_analyze_vacuum() {
+    // return db_mbtiles.on_analyze_vacuum();
+    // }
+
     /**
       * Extensive checking of Bounds for all Zoom-Levels
       * - results will be written to metadata-Table
@@ -363,14 +374,14 @@ public class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, S
             i_request_zoom_level = i_zoom;
             int i_tile_x = zxy_osm_tms[1];
             int i_tile_y_osm = zxy_osm_tms[2];
-            int i_tile_y_tms = zxy_osm_tms[3];
+            // int i_tile_y_tms = zxy_osm_tms[3];
             try {
                 Bitmap tile_bitmap = on_download_tile_http(s_tile_url);
                 if (tile_bitmap != null) {
                     // GPLog.androidLog(-1, "mbtiles_Async on_request_tile_id_url[" +
                     // db_mbtiles.getName() + "][" + s_tile_id + "] ["+ s_tile_url +
                     // "] i_tile_y_tms=" + i_tile_y_tms);
-                    i_rc = db_mbtiles.insertBitmapTile(i_tile_x, i_tile_y_osm, i_zoom, tile_bitmap);
+                    i_rc = db_mbtiles.insertBitmapTile(i_tile_x, i_tile_y_osm, i_zoom, tile_bitmap, 0);
                     if (i_rc == 0) {
                         i_http_bad_requests = 0;
                         db_mbtiles.deleteRequestUrl(s_tile_id);
@@ -537,24 +548,27 @@ public class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, S
         // GPLog.androidLog(-1,"mbtiles_Async.get_http_result: "+s_message);
         return this.i_http_code;
     }
-    private Bitmap on_download_tile( String s_tile_url ) throws Exception {
-        Bitmap tile_bitmap = null;
-        try {
-            URL this_url = new URL(s_tile_url);
-            InputStream input_stream = null;
-            HttpURLConnection this_http = null;
-            try {
-                input_stream = this_url.openStream();
-                tile_bitmap = BitmapFactory.decodeStream(input_stream);
-                input_stream.close();
-            } catch (IOException e) {
-                String s_message = e.getMessage();
-                tile_bitmap = null;
-            }
-        } catch (Throwable t) {
-        }
-        return tile_bitmap;
-    }
+
+    // TODO @mj10777 this seems to be unused.
+    //
+    // private Bitmap on_download_tile( String s_tile_url ) throws Exception {
+    // Bitmap tile_bitmap = null;
+    // try {
+    // URL this_url = new URL(s_tile_url);
+    // InputStream input_stream = null;
+    // HttpURLConnection this_http = null;
+    // try {
+    // input_stream = this_url.openStream();
+    // tile_bitmap = BitmapFactory.decodeStream(input_stream);
+    // input_stream.close();
+    // } catch (IOException e) {
+    // String s_message = e.getMessage();
+    // tile_bitmap = null;
+    // }
+    // } catch (Throwable t) {
+    // }
+    // return tile_bitmap;
+    // }
     // -----------------------------------------------
     /**
       * Create list of 'request_url

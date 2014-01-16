@@ -47,6 +47,10 @@ public abstract class SpatialTable {
      */
     protected String tableName;
     /**
+     * A description.
+     */
+    protected String description;
+    /**
      * The table srid.
      */
     protected String srid;
@@ -200,6 +204,9 @@ public abstract class SpatialTable {
      * @return a description.
      */
     public String getDescription() {
+        if (description != null) {
+            return description;
+        }
         return getTableName() + " bounds[" + getBoundsAsString() + "] center[" + getCenterAsString() + "]";
     }
 

@@ -18,12 +18,12 @@
 package eu.geopaparazzi.spatialite.util;
 
 /**
- * Spatialite db types.
+ * Spatial data types with extensions and codes.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public enum SpatialiteTypes {
+public enum SpatialDataTypes {
     /**
      * Mbtiles based database.
      */
@@ -43,7 +43,11 @@ public enum SpatialiteTypes {
     /**
      * A mapsforge map file.
      */
-    MAP("map", ".map", 4);
+    MAP("map", ".map", 4),
+    /**
+     * A mapsurl definition file.
+     */
+    MAPURL("mapurl", ".mapurl", 5);
 
     private String name;
     private String extension;
@@ -54,7 +58,7 @@ public enum SpatialiteTypes {
      * @param extension the extension used by the db type.
      * @param code a code for the db type.
      */
-    private SpatialiteTypes( String name, String extension, int code ) {
+    private SpatialDataTypes( String name, String extension, int code ) {
         this.name = name;
         this.extension = extension;
         this.code = code;

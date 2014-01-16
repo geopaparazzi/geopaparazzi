@@ -154,7 +154,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     private final int MENU_COMPASS_ID = 8;
     private final int MENU_SENDDATA_ID = 9;
 
-    private static final String IS_SLIDER_OPEN = "IS_SLIDER_OPEN";
+    private static final String IS_SLIDER_OPEN = "IS_SLIDER_OPEN"; //$NON-NLS-1$
     private DecimalFormat formatter = new DecimalFormat("00"); //$NON-NLS-1$
     private SlidingDrawer slidingDrawer;
     private MapView mapView;
@@ -217,9 +217,10 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         // TileCache fileSystemTileCache = this.mapView.getFileSystemTileCache();
         // fileSystemTileCache.setPersistent(persistent);
         // fileSystemTileCache.setCapacity(capacity);
-        MapsDirManager.getInstance().load_Map(mapView, mapCenterLocation);
-        minZoomLevel = MapsDirManager.getInstance().getMinZoom();
-        maxZoomLevel = MapsDirManager.getInstance().getMaxZoom();
+        MapsDirManager mapsDirManager = MapsDirManager.getInstance();
+        mapsDirManager.loadSelectedMap(mapView, mapCenterLocation);
+        minZoomLevel = mapsDirManager.getMinZoom();
+        maxZoomLevel = mapsDirManager.getMaxZoom();
 
         MapScaleBar mapScaleBar = this.mapView.getMapScaleBar();
 
@@ -913,9 +914,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             ActionBar.openCompass(this);
             return true;
         case MENU_MIXARE_ID:
-            MixareHandler mixareHandler = new MixareHandler();
-            if (!mixareHandler.isMixareInstalled(this)) {
-                mixareHandler.installMixareFromMarket(this);
+            if (!MixareHandler.isMixareInstalled(this)) {
+                MixareHandler.installMixareFromMarket(this);
                 return true;
             }
             float[] nswe = getMapWorldBounds();
@@ -1145,8 +1145,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                     // MapsDirManager.load_Map(mapView,null);
                     // GPLog.androidLog(-1,"MapsActivity -I->  onActivityResult s_selected_map["
                     // +MapsDirTreeViewList.selected_classinfo.getShortDescription()+ "] ");
-                    MapsDirManager.getInstance().selected_MapClassInfo(this, MapsDirTreeViewList.selected_classinfo, mapView,
-                            null);
+                    MapsDirManager.getInstance().selectMapClassInfo(this, MapsDirTreeViewList.selected_classinfo, mapView, null);
                     // mj10777: not sure what to do with these values ??
                     minZoomLevel = MapsDirManager.getInstance().getMinZoom();
                     maxZoomLevel = MapsDirManager.getInstance().getMaxZoom();

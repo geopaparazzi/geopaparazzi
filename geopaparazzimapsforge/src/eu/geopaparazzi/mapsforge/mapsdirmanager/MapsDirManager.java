@@ -56,7 +56,7 @@ import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.MapsDirTreeViewList;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
-import eu.geopaparazzi.spatialite.util.SpatialiteTypes;
+import eu.geopaparazzi.spatialite.util.SpatialDataTypes;
 
 /**
  * The manager of supported maps in the Application maps dir.
@@ -258,21 +258,21 @@ public class MapsDirManager {
         try {
             List<CustomTileTable> customtileTables = CustomTileDatabasesManager.getInstance().getTables(false);
             for( CustomTileTable table : customtileTables ) {
-                String name = "[" + table.getMapType() + "] " + table.getName(); //$NON-NLS-1$//$NON-NLS-2$
+                String name = "[" + table.getMapType() + "] " + table.getTableName(); //$NON-NLS-1$//$NON-NLS-2$
                 // GPLog.androidLog(-1,"MapsDirManager CustomTileTable name[" + name+
                 // "] getFileName[" + table.getFileNamePath()+ "] getName[" + table.getName()+
                 // "] getDescription["+table.getDescription()+"]");
                 if (!ignoreTileSource(name)) {
                     this_mapinfo = new ClassNodeInfo(i_count_raster++, i_type, table.getMapType(), "CustomTileTable",
-                            table.getFileNamePath(), table.getFileName(), table.getFileNamePath(), table.getName(),
-                            table.getDescription(), table.getBounds_toString(), table.getCenter_toString(),
-                            table.getZoom_Levels());
+                            table.getDatabasePath(), table.getFileName(), table.getDatabasePath(), table.getTableName(),
+                            table.getDescription(), table.getBoundsAsString(), table.getCenterAsString(),
+                            table.getMinMaxZoomLevelsAsString());
                     maptype_classes.add(this_mapinfo);
-                    if (table.getFileNamePath().equals(mapnikFile.getAbsolutePath())) {
+                    if (table.getDatabasePath().equals(mapnikFile.getAbsolutePath())) {
                         // if nothing is selected, this will be the default
                         mapnik_mapinfo = this_mapinfo;
                     }
-                    if ((selected_mapinfo == null) && (s_selected_map.equals(table.getFileNamePath()))) {
+                    if ((selected_mapinfo == null) && (s_selected_map.equals(table.getDatabasePath()))) {
                         selected_mapinfo = this_mapinfo;
                         s_selected_type = selected_mapinfo.getTypeText();
                         i_selected_type = selected_mapinfo.getType();
@@ -333,9 +333,9 @@ public class MapsDirManager {
                 if (!ignoreTileSource(name)) {
                     i_type = MBTILES;
                     String s_type = table.getMapType();
-                    if (!s_type.equals(SpatialiteTypes.MBTILES.getTypeName())) {
+                    if (!s_type.equals(SpatialDataTypes.MBTILES.getTypeName())) {
                         i_type = SPATIALITE;
-                        if (s_type.equals(SpatialiteTypes.GPKG.getTypeName()))
+                        if (s_type.equals(SpatialDataTypes.GPKG.getTypeName()))
                             i_type = GPKG;
                     }
                     this_mapinfo = new ClassNodeInfo(i_count_raster++, i_type, s_type, "SpatialRasterTable",
@@ -419,7 +419,7 @@ public class MapsDirManager {
       * @param mapCenterLocation [point/zoom to check]
       * @return i_rc 0 if correct ; else false not fullfilled
       */
-    private int loadSelectedMap( MapView map_View, double[] mapCenterLocation ) {
+    public int loadSelectedMap( MapView map_View, double[] mapCenterLocation ) {
         int i_rc = -1;
         if ((map_View != null) && (selected_mapinfo != null)) {
             if (this.map_View == null) {

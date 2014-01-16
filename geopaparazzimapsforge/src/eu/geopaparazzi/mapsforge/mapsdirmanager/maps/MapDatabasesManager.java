@@ -18,12 +18,14 @@
 package eu.geopaparazzi.mapsforge.mapsdirmanager.maps;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import jsqlite.Exception;
 import android.content.Context;
+import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapDatabaseHandler;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapTable;
@@ -62,12 +64,14 @@ public class MapDatabasesManager {
     public String get_xml_extention() {
         return sa_extentions[i_extention_xml];
     }
-    public boolean init( Context context, File mapsDir ) {
+
+    public boolean init( Context context, File mapsDir ) throws IOException {
         File[] list_files = mapsDir.listFiles();
-        List<MapDatabaseHandler> map_Handlers = new ArrayList<MapDatabaseHandler>();
+        List<MapDatabaseHandler> tmpMapHandlers = new ArrayList<MapDatabaseHandler>();
         boolean b_nomedia_file = false;
-        for( File this_file : list_files ) { // nomedia logic: first check the files, if no
-                                             // '.nomedia' found: then its directories
+        for( File this_file : list_files ) {
+            // nomedia logic: first check the files, if no
+            // '.nomedia' found: then its directories
             if (this_file.isFile()) { // mj10777: collect .map databases
                 String name = this_file.getName();
                 if (Utilities.isNameFromHiddenFile(name)) {
@@ -75,22 +79,20 @@ public class MapDatabasesManager {
                 }
                 if (name.endsWith(get_map_extention())) {
                     MapDatabaseHandler map = new MapDatabaseHandler(this_file.getAbsolutePath());
-                    map_Handlers.add(map);
-
+                    tmpMapHandlers.add(map);
                 }
-                if (name.equals(".nomedia")) { // ignore all files of this directory
+                if (name.equals(ResourcesManager.NO_MEDIA)) {
+                    // ignore all files of this directory
                     b_nomedia_file = true;
-                    map_Handlers.clear();
+                    tmpMapHandlers.clear();
                     return b_nomedia_file;
                 }
             }
         }
         if (!b_nomedia_file) {
-            for( int i = 0; i < map_Handlers.size(); i++ ) {
-                mapHandlers.add(map_Handlers.get(i));
-            }
+            mapHandlers.addAll(tmpMapHandlers);
         }
-        map_Handlers.clear();
+        tmpMapHandlers.clear();
         for( File this_file : list_files ) {
             if (this_file.isDirectory()) {
                 // mj10777: read recursive directories inside the sdcard/maps directory
@@ -101,13 +103,22 @@ public class MapDatabasesManager {
         // "] size["+mapHandlers.size()+"]");
         return b_nomedia_file;
     }
+
     public int size() {
         return mapHandlers.size();
     }
+
     public List<MapDatabaseHandler> getMapDatabaseHandlers() {
         return mapHandlers;
     }
 
+    /**
+     * Get the available tables.
+     * 
+     * @param forceRead force a re-reading of the resources.
+     * @return the list of available tables.
+     * @throws Exception  if something goes wrong.
+     */
     public List<MapTable> getTables( boolean forceRead ) throws Exception {
         List<MapTable> tables = new ArrayList<MapTable>();
         for( MapDatabaseHandler mapHandler : mapHandlers ) {
@@ -118,7 +129,7 @@ public class MapDatabasesManager {
                     mapTablesMap.put(mapTable, mapHandler);
                 }
             } catch (java.lang.Exception e) {
-                // ignore the handler and try to g on
+                // ignore the handler and try to go on
             }
         }
         // Collections.sort(tables, new OrderComparator());

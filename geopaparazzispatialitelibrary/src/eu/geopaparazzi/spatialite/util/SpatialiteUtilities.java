@@ -183,7 +183,6 @@ public class SpatialiteUtilities {
       * @return i_rc: pointer to Database created
       * @throws Exception  if something goes wrong.
       */
-    @SuppressWarnings("nls")
     public static int createSpatialiteDb( Database sqlite_db, int i_parm ) throws Exception {
         int i_rc = 0;
         if (i_parm == 1) {
@@ -244,7 +243,6 @@ public class SpatialiteUtilities {
       * @param s_table name of table to read [if empty: list of tables in Database]
       * @return i_spatialite_version [0=not a spatialite version ; 1=until 2.3.1 ; 2=until 2.4.0 ; 3=until 3.1.0-RC2 ; 4=after 4.0.0-RC1]
       */
-    @SuppressWarnings("nls")
     private static int getSpatialiteVersion( Database sqlite_db, String s_table ) throws Exception {
         Stmt this_stmt = null;
         // views: vector_layers_statistics,vector_layers
@@ -367,7 +365,6 @@ public class SpatialiteUtilities {
       * @param i_srid srid of Shape-Table
       * @return i_rc 0 or last_error from Database
       */
-    @SuppressWarnings("nls")
     private static int createShapeTable( Database sqlite_db, String s_table_path, String s_table_name, String s_char_set,
             int i_srid ) {
         int i_rc = 0;
@@ -429,7 +426,6 @@ public class SpatialiteUtilities {
       * @param s_well_known_text read from the Shape .prj file
       * @return srid of  .prj file where possible
       */
-    @SuppressWarnings("nls")
     private static int readShapeSrid( Database sqlite_db, String s_srs_wkt, String s_well_known_text ) {
         int i_srid = 0;
         if ((s_well_known_text.indexOf("GCS_WGS_1984") != -1) && (s_well_known_text.indexOf("D_WGS_1984") != -1)
@@ -501,7 +497,6 @@ public class SpatialiteUtilities {
       * 
       * @param prjFile2ParentFolderMap File as found '.prj' files, File as directory
       */
-    @SuppressWarnings("nls")
     private static void createDbForShapefile( HashMap<File, File> prjFile2ParentFolderMap ) {
         File shape_db = null;
         File shape_dir = null;
@@ -552,6 +547,7 @@ public class SpatialiteUtilities {
                         // + "] srid["+i_srid+"]");
                     }
                 } catch (IOException e) {
+                    // TODO
                 }
             }
         }
