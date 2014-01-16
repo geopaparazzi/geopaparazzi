@@ -36,11 +36,11 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import eu.geopaparazzi.spatialite.R;
-// import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.util.OrderComparator;
 import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
+// import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
 
 /**
  * Data listing activity.
@@ -140,7 +140,7 @@ public class DataListActivity extends ListActivity {
                     public void onClick( View v ) {
                         try {
                             float[] tableBounds = SpatialDatabasesManager.getInstance().getVectorHandler(item)
-                                    .getTableBounds(item, "4326");
+                                    .getTableBounds(item);
                             double lat = tableBounds[1] + (tableBounds[0] - tableBounds[1]) / 2.0;
                             double lon = tableBounds[3] + (tableBounds[2] - tableBounds[3]) / 2.0;
 
@@ -159,7 +159,8 @@ public class DataListActivity extends ListActivity {
                 // mj10777: some tables may have more than one column, thus the column name will
                 // also be shown item.getUniqueName()
                 nameView.setText(item.getFileNameNoExtension());
-                descriptionView.setText(item.getGeomName() + ": " + item.getGeometryTypeDescription() + ", db: " + item.getFileName());
+                descriptionView.setText(item.getGeomName() + ": " + item.getGeometryTypeDescription() + ", db: "
+                        + item.getFileName());
 
                 visibleView.setChecked(item.getStyle().enabled != 0);
                 visibleView.setOnCheckedChangeListener(new OnCheckedChangeListener(){

@@ -29,8 +29,8 @@ import android.content.Context;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.spatialite.database.spatial.core.ISpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.MbtilesDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler;
@@ -47,9 +47,9 @@ import eu.geopaparazzi.spatialite.util.SpatialiteTypes;
  */
 public class SpatialDatabasesManager {
 
-    private List<ISpatialDatabaseHandler> spatialDbHandlers = new ArrayList<ISpatialDatabaseHandler>();
-    private HashMap<SpatialVectorTable, ISpatialDatabaseHandler> vectorTablesMap = new HashMap<SpatialVectorTable, ISpatialDatabaseHandler>();
-    private HashMap<SpatialRasterTable, ISpatialDatabaseHandler> rasterTablesMap = new HashMap<SpatialRasterTable, ISpatialDatabaseHandler>();
+    private List<SpatialDatabaseHandler> spatialDbHandlers = new ArrayList<SpatialDatabaseHandler>();
+    private HashMap<SpatialVectorTable, SpatialDatabaseHandler> vectorTablesMap = new HashMap<SpatialVectorTable, SpatialDatabaseHandler>();
+    private HashMap<SpatialRasterTable, SpatialDatabaseHandler> rasterTablesMap = new HashMap<SpatialRasterTable, SpatialDatabaseHandler>();
 
     private static SpatialDatabasesManager spatialDbManager = null;
     private SpatialDatabasesManager() {
@@ -82,7 +82,7 @@ public class SpatialDatabasesManager {
      * @return <code>true</code>, when recursing a nomedia folder has been hit.
      */
     public boolean init( Context context, File mapsDir ) {
-        List<ISpatialDatabaseHandler> tmpSpatialdbHandlers = new ArrayList<ISpatialDatabaseHandler>();
+        List<SpatialDatabaseHandler> tmpSpatialdbHandlers = new ArrayList<SpatialDatabaseHandler>();
         boolean b_nomedia_file = false;
         File[] filesInFolder = mapsDir.listFiles();
         for( File currentFile : filesInFolder ) {
@@ -98,7 +98,7 @@ public class SpatialDatabasesManager {
                         continue;
                     }
                     if (name.endsWith(extension)) {
-                        ISpatialDatabaseHandler sdb = null;
+                        SpatialDatabaseHandler sdb = null;
                         if (name.endsWith(SpatialiteTypes.MBTILES.getExtension())) {
                             sdb = new MbtilesDatabaseHandler(currentFile.getAbsolutePath(), null);
                         } else {
@@ -162,11 +162,11 @@ public class SpatialDatabasesManager {
     }
 
     /**
-     * Get the list of available {@link ISpatialDatabaseHandler}.
+     * Get the list of available {@link SpatialDatabaseHandler}.
      * 
      * @return the list of spatial db handlers.
      */
-    public List<ISpatialDatabaseHandler> getSpatialDatabaseHandlers() {
+    public List<SpatialDatabaseHandler> getSpatialDatabaseHandlers() {
         return spatialDbHandlers;
     }
 
@@ -180,8 +180,8 @@ public class SpatialDatabasesManager {
     @SuppressWarnings("nls")
     public List<SpatialVectorTable> getSpatialVectorTables( boolean forceRead ) throws Exception {
         List<SpatialVectorTable> tables = new ArrayList<SpatialVectorTable>();
-        List<ISpatialDatabaseHandler> removeHandlers = new ArrayList<ISpatialDatabaseHandler>();
-        for( ISpatialDatabaseHandler sdbHandler : spatialDbHandlers ) {
+        List<SpatialDatabaseHandler> removeHandlers = new ArrayList<SpatialDatabaseHandler>();
+        for( SpatialDatabaseHandler sdbHandler : spatialDbHandlers ) {
             List<SpatialVectorTable> spatialTables = sdbHandler.getSpatialVectorTables(forceRead);
             if (sdbHandler.isValid()) {
                 for( SpatialVectorTable spatialTable : spatialTables ) {
@@ -190,7 +190,7 @@ public class SpatialDatabasesManager {
                 }
             }
         }
-        for( ISpatialDatabaseHandler removeHandler : removeHandlers ) {
+        for( SpatialDatabaseHandler removeHandler : removeHandlers ) {
             String s_remove = removeHandler.getDatabasePath() + " [" + removeHandler.isValid() + "]";
             removeHandler.close();
             spatialDbHandlers.remove(removeHandler);
@@ -213,8 +213,8 @@ public class SpatialDatabasesManager {
      */
     public List<SpatialRasterTable> getSpatialRasterTables( boolean forceRead ) throws Exception {
         List<SpatialRasterTable> tables = new ArrayList<SpatialRasterTable>();
-        List<ISpatialDatabaseHandler> remove_Handlers = new ArrayList<ISpatialDatabaseHandler>();
-        for( ISpatialDatabaseHandler sdbHandler : spatialDbHandlers ) {
+        List<SpatialDatabaseHandler> remove_Handlers = new ArrayList<SpatialDatabaseHandler>();
+        for( SpatialDatabaseHandler sdbHandler : spatialDbHandlers ) {
             try {
                 List<SpatialRasterTable> spatialTables = sdbHandler.getSpatialRasterTables(forceRead);
                 if (sdbHandler.isValid()) {
@@ -227,7 +227,7 @@ public class SpatialDatabasesManager {
                 // ignore the handler and try to go on
             }
         }
-        for( ISpatialDatabaseHandler remove : remove_Handlers ) {
+        for( SpatialDatabaseHandler remove : remove_Handlers ) {
             remove.close();
             spatialDbHandlers.remove(remove);
         }
@@ -240,10 +240,12 @@ public class SpatialDatabasesManager {
      * @throws Exception  if something goes wrong.
      */
     public void updateStyles() throws Exception {
-        for( Map.Entry<SpatialVectorTable, ISpatialDatabaseHandler> entry : vectorTablesMap.entrySet() ) {
+        for( Map.Entry<SpatialVectorTable, SpatialDatabaseHandler> entry : vectorTablesMap.entrySet() ) {
             SpatialVectorTable key = entry.getKey();
-            ISpatialDatabaseHandler value = entry.getValue();
-            value.updateStyle(key.getStyle());
+            SpatialDatabaseHandler spatialiteDatabaseHandler = entry.getValue();
+            if (spatialiteDatabaseHandler instanceof SpatialiteDatabaseHandler) {
+                ((SpatialiteDatabaseHandler) spatialiteDatabaseHandler).updateStyle(key.getStyle());
+            }
         }
     }
 
@@ -254,33 +256,33 @@ public class SpatialDatabasesManager {
      * @throws Exception  if something goes wrong.
      */
     public void updateStyle( SpatialVectorTable spatialTable ) throws Exception {
-        ISpatialDatabaseHandler spatialDatabaseHandler = vectorTablesMap.get(spatialTable);
-        if (spatialDatabaseHandler != null) {
-            spatialDatabaseHandler.updateStyle(spatialTable.getStyle());
+        SpatialDatabaseHandler spatialDatabaseHandler = vectorTablesMap.get(spatialTable);
+        if (spatialDatabaseHandler instanceof SpatialiteDatabaseHandler) {
+            ((SpatialiteDatabaseHandler) spatialDatabaseHandler).updateStyle(spatialTable.getStyle());
         }
     }
 
     /**
-     * Get the {@link ISpatialDatabaseHandler} that contains a given vector table.
+     * Get the {@link SpatialDatabaseHandler} that contains a given vector table.
      * 
      * @param spatialTable the vector table.
      * @return the db handler.
      * @throws Exception  if something goes wrong.
      */
-    public ISpatialDatabaseHandler getVectorHandler( SpatialVectorTable spatialTable ) throws Exception {
-        ISpatialDatabaseHandler spatialDatabaseHandler = vectorTablesMap.get(spatialTable);
+    public SpatialDatabaseHandler getVectorHandler( SpatialVectorTable spatialTable ) throws Exception {
+        SpatialDatabaseHandler spatialDatabaseHandler = vectorTablesMap.get(spatialTable);
         return spatialDatabaseHandler;
     }
 
     /**
-     * Get the {@link ISpatialDatabaseHandler} that contains a given raster table.
+     * Get the {@link SpatialDatabaseHandler} that contains a given raster table.
      * 
      * @param spatialTable the raster table.
      * @return the db handler.
      * @throws Exception  if something goes wrong.
      */
-    public ISpatialDatabaseHandler getRasterHandler( SpatialRasterTable spatialTable ) throws Exception {
-        ISpatialDatabaseHandler spatialDatabaseHandler = rasterTablesMap.get(spatialTable);
+    public SpatialDatabaseHandler getRasterHandler( SpatialRasterTable spatialTable ) throws Exception {
+        SpatialDatabaseHandler spatialDatabaseHandler = rasterTablesMap.get(spatialTable);
         return spatialDatabaseHandler;
     }
 
@@ -333,8 +335,11 @@ public class SpatialDatabasesManager {
      */
     public void intersectionToString( String boundsSrid, SpatialVectorTable spatialTable, double n, double s, double e, double w,
             StringBuilder resultStringBuilder, String indentStr ) throws Exception {
-        ISpatialDatabaseHandler spatialDatabaseHandler = vectorTablesMap.get(spatialTable);
-        spatialDatabaseHandler.intersectionToStringBBOX(boundsSrid, spatialTable, n, s, e, w, resultStringBuilder, indentStr);
+        SpatialDatabaseHandler spatialDatabaseHandler = vectorTablesMap.get(spatialTable);
+        if (spatialDatabaseHandler instanceof SpatialiteDatabaseHandler) {
+            ((SpatialiteDatabaseHandler) spatialDatabaseHandler).intersectionToStringBBOX(boundsSrid, spatialTable, n, s, e, w,
+                    resultStringBuilder, indentStr);
+        }
     }
 
     /**
@@ -343,7 +348,7 @@ public class SpatialDatabasesManager {
      * @throws Exception  if something goes wrong.
      */
     public void closeDatabases() throws Exception {
-        for( ISpatialDatabaseHandler sdbHandler : spatialDbHandlers ) {
+        for( SpatialDatabaseHandler sdbHandler : spatialDbHandlers ) {
             sdbHandler.close();
         }
     }

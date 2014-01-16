@@ -124,7 +124,7 @@ public class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, S
                 if ((this.async_mbtiles_metadata != null) && (this.async_mbtiles_metadata.size() > 0)) {
                     // i_reload_metadata 1: reload values after update
                     try {
-                        db_mbtiles.update_metadata(this.async_mbtiles_metadata, 1);
+                        db_mbtiles.updateMetadata(this.async_mbtiles_metadata, 1);
                         publishProgress("-I-> update_metadata[" + db_mbtiles.getName() + "]: bounds["
                                 + db_mbtiles.getBoundsAsString() + "] zoom_levels[" + db_mbtiles.getMinMaxZoomLevelsAsString()
                                 + "] center_parms[" + db_mbtiles.getCenterParms() + "] rc=" + i_rc);
@@ -224,7 +224,7 @@ public class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, S
      */
     private int on_update_bounds() {
         if (!isCancelled())
-            return db_mbtiles.update_bounds(1);
+            return db_mbtiles.updateBounds(1);
         else
             return 2;
     }

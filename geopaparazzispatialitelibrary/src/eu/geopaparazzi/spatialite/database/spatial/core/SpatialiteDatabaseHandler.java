@@ -76,7 +76,7 @@ import eu.geopaparazzi.spatialite.util.Style;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
+public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
 
     private static final int i_style_column_count = 15 + 1; // 0-15
     private String uniqueDbName4DataProperties = "";
@@ -88,32 +88,6 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
 
     private List<SpatialVectorTable> vectorTableList;
     private List<SpatialRasterTable> rasterTableList;
-    // all DatabaseHandler/Table classes should use these names
-    private File dbFile;
-    // [with path] all DatabaseHandler/Table classes should use these
-    // names
-    private String databasePath;
-    // [without path] all DatabaseHandler/Table classes should use
-    // these
-    // names
-    private String databaseFileName;
-    // all DatabaseHandler/Table classes should use these
-    // names
-    private String databaseFileNameNoExt;
-
-    // will be set in class_bounds - values of all Rasters-Datasets
-    private int minZoom = 0;
-    private int maxZoom = 0;
-    // will be set in class_bounds - values of all V-Datactorsets
-    private double centerX = 0.0; // wsg84
-    private double centerY = 0.0; // wsg84
-    private double boundsWest = 0.0; // wsg84
-    private double boundsEast = 0.0; // wsg84
-    private double boundsNorth = 0.0; // wsg84
-    private double boundsSouth = 0.0; // wsg84
-    // -----------------------------------------------------
-    private int defaultZoom;
-    private boolean isDatabaseValid = true;
 
     /**
      * The database type.
@@ -135,14 +109,8 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
      * @param dbPath the path to the database this handler connects to.
      */
     public SpatialiteDatabaseHandler( String dbPath ) {
+        super(dbPath);
         try {
-            dbFile = new File(dbPath);
-            if (!dbFile.getParentFile().exists()) {
-                throw new RuntimeException();
-            }
-            databasePath = dbFile.getAbsolutePath();
-            databaseFileName = dbFile.getName();
-            databaseFileNameNoExt = dbFile.getName().substring(0, dbFile.getName().lastIndexOf("."));
             try {
                 Context context = SpatialiteContextHolder.INSTANCE.getContext();
                 ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
@@ -160,7 +128,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                     uniqueDbName4DataProperties = sb.toString();
                 }
             } catch (java.lang.Exception e) {
-                GPLog.androidLog(4, "SpatialiteDatabaseHandler[" + dbFile.getAbsolutePath() + "]", e);
+                GPLog.androidLog(4, "SpatialiteDatabaseHandler[" + databaseFile.getAbsolutePath() + "]", e);
             }
             db_java = new jsqlite.Database();
             db_java.open(databasePath, jsqlite.Constants.SQLITE_OPEN_READWRITE | jsqlite.Constants.SQLITE_OPEN_CREATE);
@@ -173,7 +141,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                 close();
             }
         } catch (Exception e) {
-            GPLog.androidLog(4, "SpatialiteDatabaseHandler[" + dbFile.getAbsolutePath() + "]", e);
+            GPLog.androidLog(4, "SpatialiteDatabaseHandler[" + databaseFile.getAbsolutePath() + "]", e);
         }
         // if (isValid()) {
         // setDescription(databaseFileNameNoExt);
@@ -182,7 +150,14 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
         // GPLog.androidLog(-1,"SpatialiteDatabaseHandler[" + file_map.getAbsolutePath() +
         // "] name["+s_name+"] s_description["+s_description+"]");
     }
-    // -----------------------------------------------
+
+    @Override
+    public void open() {
+        /*
+         * TODO @mj10777 shouldn't the db be opened here instead of the constructor?
+         */
+    }
+
     /**
       * Is the database file considered valid
       * - metadata table exists and has data
@@ -195,75 +170,6 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
     public boolean isValid() {
         // b_database_valid=true;
         return isDatabaseValid;
-    }
-
-    @Override
-    public String getDatabasePath() {
-        return this.databasePath;
-    }
-
-    public String getFileName() {
-        return databaseFileName;
-    }
-
-    public String getName() {
-        return this.databaseFileNameNoExt;
-    }
-
-    public String getBoundsAsString() {
-        return boundsWest + "," + boundsSouth + "," + boundsEast + "," + boundsNorth;
-    }
-
-    public String getCenterAsString() {
-        return centerX + "," + centerY + "," + defaultZoom;
-    }
-
-    public String getMinMaxZoomLevelsAsString() {
-        return getMinZoom() + "-" + getMaxZoom();
-    }
-
-    public File getFile() {
-        return this.dbFile;
-    }
-
-    public int getMinZoom() {
-        return minZoom;
-    }
-
-    public int getMaxZoom() {
-        return maxZoom;
-    }
-
-    public double getMinLongitude() {
-        return boundsWest;
-    }
-
-    public double getMinLatitude() {
-        return boundsSouth;
-    }
-
-    public double getMaxLongitude() {
-        return boundsEast;
-    }
-
-    public double getMaxLatitude() {
-        return boundsNorth;
-    }
-
-    public double getCenterX() {
-        return centerX;
-    }
-
-    public double getCenterY() {
-        return centerY;
-    }
-
-    public int getDefaultZoom() {
-        return defaultZoom;
-    }
-
-    public void setDefaultZoom( int defaultZoom ) {
-        this.defaultZoom = defaultZoom;
     }
 
     /**
@@ -288,7 +194,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
             s_javasqlite_description += "spatialite_properties[" + getSpatialiteProperties() + "]]";
         } catch (Exception e) {
             s_javasqlite_description += "exception[? not a spatialite database, or spatialite < 4 ?]]";
-            GPLog.androidLog(4, "SpatialiteDatabaseHandler[" + databaseFileNameNoExt + "].getJavaSqliteDescription["
+            GPLog.androidLog(4, "SpatialiteDatabaseHandler[" + databaseFileNameNoExtension + "].getJavaSqliteDescription["
                     + s_javasqlite_description + "]", e);
         }
         return s_javasqlite_description;
@@ -472,7 +378,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                     centerStmt.close();
             }
         } catch (java.lang.Exception e) {
-            GPLog.androidLog(4, "SpatialiteDatabaseHandler[" + dbFile.getAbsolutePath() + "] sql[" + centerQuery + "]", e);
+            GPLog.androidLog(4, "SpatialiteDatabaseHandler[" + databasePath + "] sql[" + centerQuery + "]", e);
         }
     }
 
@@ -629,8 +535,8 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                 }
                 checkTableQuery = sb_update.toString();
                 checkTableQuery = checkTableQuery.substring(0, checkTableQuery.length() - 1) + ";";
-                GPLog.androidLog(-1, "SpatialiteDatabaseHandler[" + dbFile.getAbsolutePath() + "] col_count[" + i_column_count
-                        + "] sql[" + checkTableQuery + "]");
+                GPLog.androidLog(-1, "SpatialiteDatabaseHandler[" + databasePath + "] col_count[" + i_column_count + "] sql["
+                        + checkTableQuery + "]");
                 db_java.exec(checkTableQuery, null);
                 checkTableQuery = "DROP TABLE " + PROPERTIESTABLE + "_save ;";
                 db_java.exec(checkTableQuery, null);
@@ -751,16 +657,7 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
     // return b_rc;
     // }
 
-    /**
-      * Retrieve Bounds of a Vector-Tables (as float array)
-      * 
-      * <p>this is calculated when the Tables are created and stored as wsg84
-      * 
-      * @param spatialTable The table to check
-      * @param destSrid The table to check
-      * @return bounds as wsg84 [n, s, e, w]
-      */
-    public float[] getTableBounds( SpatialVectorTable spatialTable, String destSrid ) throws Exception {
+    public float[] getTableBounds( SpatialTable spatialTable ) throws Exception {
         return spatialTable.getTableBounds();
     }
 
@@ -800,7 +697,14 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
         db_java.exec(updateQuery, null);
     }
 
-    @Override
+    /**
+    * Get the fill {@link Paint} for a given style.
+    *
+    * <p>Paints are cached and reused.</p>
+    *
+    * @param style the {@link Style} to use.
+    * @return the paint.
+    */
     public Paint getFillPaint4Style( Style style ) {
         Paint paint = fillPaints.get(style.name);
         if (paint == null) {
@@ -815,7 +719,14 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
         return paint;
     }
 
-    @Override
+    /**
+    * Get the stroke {@link Paint} for a given style.
+    *
+    * <p>Paints are cached and reused.</p>
+    *
+    * @param style the {@link Style} to use.
+    * @return the paint.
+    */
     public Paint getStrokePaint4Style( Style style ) {
         Paint paint = strokePaints.get(style.name);
         if (paint == null) {
@@ -904,27 +815,44 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
         return null;
     }
 
-    @Override
+    /**
+    * Get the {@link GeometryIterator} of a table in a given bound.
+    *
+    * @param destSrid the srid to which to transform to.
+    * @param table the table to use.
+    * @param n north bound.
+    * @param s south bound.
+    * @param e east bound.
+    * @param w west bound.
+    * @return the geometries iterator.
+    */
     public GeometryIterator getGeometryIteratorInBounds( String destSrid, SpatialVectorTable table, double n, double s, double e,
             double w ) {
         String query = SpatialiteUtilities.buildGeometriesInBoundsQuery(destSrid, table, n, s, e, w);
-        // GPLog.androidLog(-1, "SpatialiteDatabaseHandler.getGeometryIteratorInBounds[" +
-        // table.getUniqueName() + "]: query["
-        // + query + "]");
         return new GeometryIterator(db_java, query);
     }
 
-    /**
-     * Close the database.
-     */
     public void close() throws Exception {
         if (db_java != null) {
             db_java.close();
         }
     }
 
+    /**
+    * Performs an intersection query on a vector table and returns a string info version of the result.
+    *
+    * @param boundsSrid the srid of the bounds supplied.
+    * @param spatialTable the vector table to query.
+    * @param n north bound.
+    * @param s south bound.
+    * @param e east bound.
+    * @param w west bound.
+    * @param resultStringBuilder the builder of the result.
+    * @param indentStr the indenting to use for formatting.
+    * @throws Exception if something goes wrong.
+    */
     public void intersectionToStringBBOX( String boundsSrid, SpatialVectorTable spatialTable, double n, double s, double e,
-            double w, StringBuilder sb, String indentStr ) throws Exception {
+            double w, StringBuilder resultStringBuilder, String indentStr ) throws Exception {
         boolean doTransform = false;
         if (!spatialTable.getSrid().equals(boundsSrid)) {
             doTransform = true;
@@ -970,9 +898,9 @@ public class SpatialiteDatabaseHandler implements ISpatialDatabaseHandler {
                     }
 
                     String value = stmt.column_string(i);
-                    sb.append(indentStr).append(cName).append(": ").append(value).append("\n");
+                    resultStringBuilder.append(indentStr).append(cName).append(": ").append(value).append("\n");
                 }
-                sb.append("\n");
+                resultStringBuilder.append("\n");
             }
         } finally {
             stmt.close();

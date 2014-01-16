@@ -289,13 +289,13 @@ public class MapsDirManager {
         try {
             List<MapTable> mapTables = MapDatabasesManager.getInstance().getTables(false);
             for( MapTable table : mapTables ) {
-                String name = "[" + table.getMapType() + "] " + table.getName(); //$NON-NLS-1$ //$NON-NLS-2$
+                String name = "[" + table.getMapType() + "] " + table.getTableName(); //$NON-NLS-1$ //$NON-NLS-2$
                 // GPLog.androidLog(-1,"MapsDirManager MapTable name[" + name+ "] getFileName[" +
                 // table.getFileNamePath()+ "] getName[" + table.getName()+
                 // "] getDescription["+table.getDescription()+"]");
                 if (!ignoreTileSource(name)) {
                     this_mapinfo = new ClassNodeInfo(i_count_raster++, i_type, table.getMapType(), "MapTable",
-                            table.getDatabasePath(), table.getFileName(), table.getDatabasePath(), table.getName(),
+                            table.getDatabasePath(), table.getFileName(), table.getDatabasePath(), table.getTableName(),
                             table.getDescription(), table.getBoundsAsString(), table.getCenterAsString(),
                             table.getMinMaxZoomLevelsAsString());
                     maptype_classes.add(this_mapinfo);
@@ -326,7 +326,7 @@ public class MapsDirManager {
             // [26] [/mnt/extSdCard/maps/geopackage_files/Luciad_GeoPackage.gpkg]
             // [27] [/mnt/extSdCard/maps/geopackage_files/Luciad_GeoPackage.gpkg]
             for( SpatialRasterTable table : spatialRasterTables ) {
-                String name = "[" + table.getMapType() + "] " + table.getName(); //$NON-NLS-1$//$NON-NLS-2$
+                String name = "[" + table.getMapType() + "] " + table.getTableName(); //$NON-NLS-1$//$NON-NLS-2$
                 // GPLog.androidLog(-1,"MapsDirManager SpatialRasterTable name[" + name+
                 // "] getFileName[" + table.getFileNamePath()+ "] getName[" + table.getName()+
                 // "] getDescription["+table.getDescription()+"]");
@@ -339,7 +339,7 @@ public class MapsDirManager {
                             i_type = GPKG;
                     }
                     this_mapinfo = new ClassNodeInfo(i_count_raster++, i_type, s_type, "SpatialRasterTable",
-                            table.getDatabasePath(), table.getFileName(), table.getDatabasePath(), table.getName(),
+                            table.getDatabasePath(), table.getFileName(), table.getDatabasePath(), table.getTableName(),
                             table.getDescription(), table.getBoundsAsString(), table.getCenterAsString(),
                             table.getMinMaxZoomLevelsAsString());
                     maptype_classes.add(this_mapinfo);
@@ -549,9 +549,9 @@ public class MapsDirManager {
             for( int i = 0; i < spatialVectorTables.size(); i++ ) {
                 SpatialVectorTable table = spatialVectorTables.get(i);
                 this_vectorinfo = new ClassNodeInfo(vectorinfoCount++, table.getGeomType(), table.getGeometryTypeDescription(),
-                        "SpatialVectorTable", table.getUniqueName(), table.getFileName(), table.getName(), table.getGeomName(),
-                        table.getName() + File.separator + table.getGeomName(), table.getBoundsAsString(),
-                        table.getCenterAsString(), table.getMinMaxZoomLevelsAsString());
+                        "SpatialVectorTable", table.getUniqueName(), table.getFileName(), table.getTableName(),
+                        table.getGeomName(), table.getTableName() + File.separator + table.getGeomName(),
+                        table.getBoundsAsString(), table.getCenterAsString(), table.getMinMaxZoomLevelsAsString());
                 this_vectorinfo.setEnabled(table.isTableEnabled());
                 vectorClassNodeInfoList.add(this_vectorinfo);
                 // GPLog.androidLog(-1, "ClassNodeInfo[" + this_vectorinfo.toString() + "]");

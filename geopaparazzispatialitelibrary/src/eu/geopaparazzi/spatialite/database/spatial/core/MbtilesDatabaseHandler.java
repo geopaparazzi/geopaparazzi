@@ -17,7 +17,6 @@
  */
 package eu.geopaparazzi.spatialite.database.spatial.core;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,15 +27,12 @@ import java.util.List;
 import jsqlite.Exception;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Paint;
 import android.os.AsyncTask;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryIterator;
 import eu.geopaparazzi.spatialite.database.spatial.core.mbtiles.MBTilesDroidSpitter;
 import eu.geopaparazzi.spatialite.database.spatial.core.mbtiles.MBtilesAsync;
 import eu.geopaparazzi.spatialite.database.spatial.core.mbtiles.MbTilesMetadata;
 import eu.geopaparazzi.spatialite.util.SpatialiteTypes;
-import eu.geopaparazzi.spatialite.util.Style;
 
 /**
  * An utility class to handle an mbtiles database.
@@ -45,36 +41,15 @@ import eu.geopaparazzi.spatialite.util.Style;
  * adapted to create and fill mbtiles databases Mark Johnson (www.mj10777.de)
  */
 @SuppressWarnings("nls")
-public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
+public class MbtilesDatabaseHandler extends SpatialDatabaseHandler {
 
     private List<SpatialRasterTable> rasterTableList;
-    // all DatabaseHandler/Table classes should use these names
-    private File dbFile;
-    // [with path] all DatabaseHandler/Table classes should use these
-    // names
-    private String databasePath;
-    // [without path] all DatabaseHandler/Table classes should use these
-    // names
-    private String databaseFileName;
-    // all DatabaseHandler/Table classes should use these names
-    private String databaseFileNameNoExt;
-    // all DatabaseHandler/Table classes should use these
-    // names
     private MBTilesDroidSpitter mbtilesSplitter;
     private HashMap<String, String> mbtilesMetadata = null;
     /**
      * 
      */
     public HashMap<String, String> async_mbtiles_metadata = null;
-    private int minZoom;
-    private int maxZoom;
-    private double centerX; // wsg84
-    private double centerY; // wsg84
-    private double bounds_west; // wsg84
-    private double bounds_east; // wsg84
-    private double bounds_north; // wsg84
-    private double bounds_south; // wsg84
-    private int defaultZoom;
     private MBtilesAsync mbtiles_async = null;
 
     @SuppressWarnings("javadoc")
@@ -123,23 +98,29 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
       * @param dbPath full path to mbtiles file to open.
       * @param initMetadata list of initial metadata values to set 
       *                         upon creation (can be <code>null</code>).
+     * @throws IOException  if something goes wrong. 
       */
-    public MbtilesDatabaseHandler( String dbPath, HashMap<String, String> initMetadata ) {
+    public MbtilesDatabaseHandler( String dbPath, HashMap<String, String> initMetadata ) throws IOException {
+        super(dbPathCheck(dbPath));
         this.mbtilesMetadata = initMetadata;
+        mbtilesSplitter = new MBTilesDroidSpitter(databaseFile, mbtilesMetadata);
+    }
+
+    /**
+     * @mj107777 WHY IS THIS DONE HERE? DOES THIS WORK?
+     * 
+     * @param dbPath
+     * @return
+     */
+    private static String dbPathCheck( String dbPath ) {
         if (!dbPath.endsWith(SpatialiteTypes.MBTILES.getExtension())) {
             // .mbtiles files must have an .mbtiles
             // extension, force this
             dbPath = dbPath.substring(0, dbPath.lastIndexOf(".")) + SpatialiteTypes.MBTILES.getExtension();
         }
-        this.dbFile = new File(dbPath);
-        databasePath = dbFile.getAbsolutePath();
-        databaseFileName = dbFile.getName();
-        databaseFileNameNoExt = dbFile.getName().substring(0, dbFile.getName().lastIndexOf(".")); //$NON-NLS-1$
-        mbtilesSplitter = new MBTilesDroidSpitter(dbFile, mbtilesMetadata);
-        // setDescription(databaseFileNameNoExt);
+        return dbPath;
     }
 
-    @Override
     public boolean isValid() {
         if (mbtilesSplitter.getmbtiles() == null) { // in case .'open' was forgotten
             open(); // "" : default value will be used '1.1'
@@ -169,8 +150,8 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
         if (rasterTableList == null || forceRead) {
             rasterTableList = new ArrayList<SpatialRasterTable>();
             open();
-            double[] d_bounds = {this.bounds_west, this.bounds_south, this.bounds_east, this.bounds_north};
-            SpatialRasterTable table = new SpatialRasterTable(databasePath, databaseFileNameNoExt, "3857", this.minZoom,
+            double[] d_bounds = {this.boundsWest, this.boundsSouth, this.boundsEast, this.boundsNorth};
+            SpatialRasterTable table = new SpatialRasterTable(databasePath, databaseFileNameNoExtension, "3857", this.minZoom,
                     this.maxZoom, centerX, centerY, "?,?,?", d_bounds);
             table.setDefaultZoom(defaultZoom);
             // table.setDescription(getDescription());
@@ -180,8 +161,7 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
         return rasterTableList;
     }
 
-    @Override
-    public float[] getTableBounds( SpatialVectorTable spatialTable, String destSrid ) throws Exception {
+    public float[] getTableBounds( SpatialTable spatialTable ) throws Exception {
         MbTilesMetadata metadata = mbtilesSplitter.getMetadata();
         float[] bounds = metadata.bounds;// left, bottom, right, top
         float w = bounds[0];
@@ -191,15 +171,6 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
         return new float[]{n, s, e, w};
     }
 
-    /**
-      * Function to retrieve Tile byte[] from the mbtiles Database.
-      *
-      * <p>i_y_osm must be in is Open-Street-Map 'Slippy Map'
-      * notation [will be converted to 'tms' notation if needed]
-      *
-      * @param query Format 'z,x,y_osm'
-      * @return the byte array of the tile or null if no tile matched the given parameters.
-      */
     public byte[] getRasterTile( String query ) {
         String[] split = query.split(",");
         if (split.length != 3) {
@@ -283,10 +254,7 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
             return 1;
         }
     }
-    // -----------------------------------------------
-    /**
-      * Open mbtiles Database, with all default tasks
-      */
+
     public void open() {
         if (mbtilesSplitter.getmbtiles() == null) {
             mbtilesSplitter.open(true, ""); // "" : default value will be used '1.1'
@@ -304,15 +272,15 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
         float[] bounds = metadata.bounds;// left, bottom, right, top
         double[] d_bounds = {bounds[0], bounds[1], bounds[2], bounds[3]};
         float[] center = metadata.center;// center_x,center_y,zoom
-        this.databaseFileNameNoExt = metadata.name;
+        this.databaseFileNameNoExtension = metadata.name;
         // String tableName = metadata.name;
         this.defaultZoom = metadata.maxZoom;
         this.minZoom = metadata.minZoom;
         this.maxZoom = metadata.maxZoom;
-        this.bounds_west = d_bounds[0];
-        this.bounds_south = d_bounds[1];
-        this.bounds_east = d_bounds[2];
-        this.bounds_north = d_bounds[3];
+        this.boundsWest = d_bounds[0];
+        this.boundsSouth = d_bounds[1];
+        this.boundsEast = d_bounds[2];
+        this.boundsNorth = d_bounds[3];
         if (center != null) {
             this.centerX = center[0];
             this.centerY = center[1];
@@ -370,7 +338,7 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
       * @param doReloadMetadata if 1 reload values after update [not needed upon creation, update after bounds/center/zoom changes]
       * @return o if reading was ok.
       */
-    public int update_bounds( int doReloadMetadata ) {
+    public int updateBounds( int doReloadMetadata ) {
         if (mbtilesSplitter != null) {
             mbtilesSplitter.fetch_bounds_minmax(doReloadMetadata, 1);
             loadMetadata(); // will read and reset values
@@ -385,9 +353,9 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
       * @param mbtilesMetadata list of key,values to update. [fill this with valued that need to be added/changed]
       * @param doReloadMetadata 1: reload values after update [not needed upon creation, update after bounds/center/zoom changes]
       * @return 0: no error
-     * @throws IOException  if something goes wrong.
+      * @throws IOException  if something goes wrong.
       */
-    public int update_metadata( HashMap<String, String> mbtilesMetadata, int doReloadMetadata ) throws IOException {
+    public int updateMetadata( HashMap<String, String> mbtilesMetadata, int doReloadMetadata ) throws IOException {
         int i_rc = 1;
         if (mbtilesSplitter != null) {
             try {
@@ -400,89 +368,6 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
             }
         }
         return i_rc;
-    }
-
-    @Override
-    public String getDatabasePath() {
-        return this.databasePath;
-    }
-
-    public String getFileName() {
-        return this.databaseFileName;
-    }
-
-    public String getName() {
-        return this.databaseFileNameNoExt;
-    }
-
-    public String getBoundsAsString() {
-        return bounds_west + "," + bounds_south + "," + bounds_east + "," + bounds_north;
-    }
-
-    public String getCenterAsString() {
-        return centerX + "," + centerY + "," + defaultZoom;
-    }
-
-    public File getFile() {
-        return this.dbFile;
-    }
-
-    public int getMinZoom() {
-        return minZoom;
-    }
-
-    public int getMaxZoom() {
-        return maxZoom;
-    }
-
-    public String getMinMaxZoomLevelsAsString() {
-        return getMinZoom() + "-" + getMaxZoom();
-    }
-
-    public double getMinLongitude() {
-        return bounds_west;
-    }
-    public double getMinLatitude() {
-        return bounds_south;
-    }
-    public double getMaxLongitude() {
-        return bounds_east;
-    }
-    public double getMaxLatitude() {
-        return bounds_north;
-    }
-    public double getCenterX() {
-        return centerX;
-    }
-    public double getCenterY() {
-        return centerY;
-    }
-    public int getDefaultZoom() {
-        return defaultZoom;
-    }
-
-    public void setDefaultZoom( int i_zoom ) {
-        defaultZoom = i_zoom;
-    }
-
-    public GeometryIterator getGeometryIteratorInBounds( String destSrid, SpatialVectorTable table, double n, double s, double e,
-            double w ) {
-        return null;
-    }
-    public Paint getFillPaint4Style( Style style ) {
-        return null;
-    }
-    public Paint getStrokePaint4Style( Style style ) {
-        return null;
-    }
-    @Override
-    public void updateStyle( Style style ) throws Exception {
-        // ignore
-    }
-    @Override
-    public void intersectionToStringBBOX( String boundsSrid, SpatialVectorTable spatialTable, double n, double s, double e,
-            double w, StringBuilder sb, String indentStr ) throws Exception {
-        // ignore
     }
 
     // /**
@@ -700,8 +585,8 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
       * @param request_bounds bounds of request area
       * @param i_zoom_level zoom level of tiles
       * @param s_request_type request type ['fill','replace','exists']
-      * @param s_url_source 
-      * @param s_request_y_type 
+      * @param s_url_source TODO
+      * @param s_request_y_type TODO 
       * @return list of 'tile_id' needed
       */
     public List<String> buildRequestList( double[] request_bounds, int i_zoom_level, String s_request_type, String s_url_source,
@@ -712,7 +597,7 @@ public class MbtilesDatabaseHandler implements ISpatialDatabaseHandler {
         }
         return new ArrayList<String>();
     }
-    // -----------------------------------------------
+
     /**
       * House-keeping tasks for Database.
       * 
