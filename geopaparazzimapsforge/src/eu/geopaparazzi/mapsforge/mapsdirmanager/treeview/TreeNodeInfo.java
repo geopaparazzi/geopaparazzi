@@ -101,26 +101,6 @@ public class TreeNodeInfo<T> {
     }
 
     /**
-     * @return a short name for the node.
-     */
-    public String getShortName() {
-        if (treeNode == null) {
-            return "";
-        }
-        return treeNode.getShortName();
-    }
-
-    /**
-     * @return a long name fo rthe node.
-     */
-    public String getLongName() {
-        if (treeNode == null) {
-            return "";
-        }
-        return treeNode.getLongName();
-    }
-
-    /**
      * @return The type description.
      */
     public String getTypeDescriptionText() {

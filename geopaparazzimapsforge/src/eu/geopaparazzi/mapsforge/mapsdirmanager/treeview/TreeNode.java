@@ -122,6 +122,9 @@ public class TreeNode<T> {
         return id;
     }
 
+    /**
+     * @return get the {@link SpatialTable} that is backed by the node.
+     */
     public SpatialTable getSpatialTable() {
         return spatialTable;
     }
@@ -147,43 +150,13 @@ public class TreeNode<T> {
     }
 
     /**
-     * @return a short name for the node.
-     */
-    public String getShortName() {
-        if (folder != null) {
-            return folder;
-        }
-        return spatialTable.getTableName();
-    }
-
-    /** 
-     * @return a long name for the node.
-     */
-    public String getLongName() {
-        if (folder != null) {
-            return folder;
-        }
-        return spatialTable.getFileName();
-    }
-
-    /**
-     * @return the name of the file that backs the node.
-     */
+    * @return the name of the file that backs the node.
+    */
     public String getFileName() {
         if (folder != null) {
             return new File(folder).getName();
         }
         return spatialTable.getFileName();
-    }
-
-    /**
-     * @return the name of the file (without extension) that backs the node.
-     */
-    public String getNameNoExtension() {
-        if (folder != null) {
-            return new File(folder).getName();
-        }
-        return spatialTable.getFileNameNoExtension();
     }
 
     /**
@@ -225,6 +198,9 @@ public class TreeNode<T> {
         return spatialTable.getMinMaxZoomLevelsAsString();
     }
 
+    /**
+     * @return the map data type.
+     */
     public int getType() {
         return type;
     }

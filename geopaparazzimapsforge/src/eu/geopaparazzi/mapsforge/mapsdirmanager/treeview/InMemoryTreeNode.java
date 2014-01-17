@@ -26,8 +26,6 @@ class InMemoryTreeNode<T> implements Serializable {
     private final String s_file_path;
     private final String s_type;
     private final int i_type;
-    private final String s_short_text;
-    private final String s_long_text;
     private final String s_bounds;
     private final String s_center;
     private final String s_zoom_levels;
@@ -45,8 +43,6 @@ class InMemoryTreeNode<T> implements Serializable {
             // this.id_classinfo=this_classinfo.getId();
             this.s_file_path = treeNode.getFilePath();
             this.s_type = treeNode.getTypeText();
-            this.s_short_text = treeNode.getShortName();
-            this.s_long_text = treeNode.getLongName();
             this.i_type = treeNode.getType();
             this.s_bounds = treeNode.getBounds();
             this.s_center = treeNode.getCenter();
@@ -59,9 +55,7 @@ class InMemoryTreeNode<T> implements Serializable {
         } else {
             // this.id_classinfo=0;
             this.s_file_path = "";
-            this.s_type = "";
-            this.s_short_text = "this_classinfo == null";
-            this.s_long_text = "";
+            this.s_type = "this_classinfo == null";
             this.i_type = -1;
             this.s_bounds = "";
             this.s_center = "";
@@ -165,12 +159,6 @@ class InMemoryTreeNode<T> implements Serializable {
 
     public String getFileNamePath() {
         return s_file_path;
-    }
-    public String getShortText() {
-        return s_short_text;
-    }
-    public String getLongText() {
-        return s_long_text;
     }
     public String getBounds() {
         return s_bounds;

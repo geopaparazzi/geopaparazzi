@@ -385,7 +385,7 @@ public class MapsDirTreeViewList extends Activity {
                     node_info = treeStateManagerFiledirectory.getNodeInfo(id_node);
                     break;
                 }
-                GPLog.androidLog(-1, TAG + " onItemClick[" + currentTreeType + "] [" + node_info.getLongName() + "] id_node["
+                GPLog.androidLog(-1, TAG + " onItemClick[" + currentTreeType + "] [" + node_info.getFilePath() + "] id_node["
                         + id_node + "]");
                 if ((node_info != null) && (!node_info.isWithChildren())) {
                     loadNodeAndFinish(id_node);
