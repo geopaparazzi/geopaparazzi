@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.NodeObjectInfo;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialTable;
 
 /**
  * Node. It is package protected so that it cannot be used outside.
@@ -12,6 +12,7 @@ import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.NodeObjectInfo;
  * @param <T>
  *            type of the identifier used by the tree
  */
+@SuppressWarnings("nls")
 class InMemoryTreeNode<T> implements Serializable {
     private static final long serialVersionUID = 1L;
     private final T id;
@@ -21,59 +22,54 @@ class InMemoryTreeNode<T> implements Serializable {
     private boolean visible = true;
     private final List<InMemoryTreeNode<T>> children = new LinkedList<InMemoryTreeNode<T>>();
     private List<T> childIdListCache = null;
-    // note: adding NodeObjectInfo caused Serialization problems
+    // note: adding TreeNode caused Serialization problems
     private final String s_file_path;
     private final String s_type;
     private final int i_type;
     private final String s_short_text;
     private final String s_long_text;
-    private final String s_short_description;
-    private final String s_long_description;
-    private final String s_class_name;
     private final String s_bounds;
     private final String s_center;
     private final String s_zoom_levels;
+    private SpatialTable spatialTable;
+    private boolean nodeIsDirectory;
 
-    public InMemoryTreeNode(final T id, final T parent, final int level,
-            final boolean visible, NodeObjectInfo this_classinfo) {
+    public InMemoryTreeNode( final T id, final T parent, final int level, final boolean visible, TreeNode< ? > treeNode ) {
         super();
         this.id = id;
         this.parent = parent;
         this.level = level;
         this.visible = visible;
-        if (this_classinfo != null)
-        { // note: the getId() is lost. [why can't this be stored?]
-         // this.id_classinfo=this_classinfo.getId();
-         this.s_file_path=this_classinfo.getFileNamePath();
-         this.s_type=this_classinfo.getTypeText();
-         this.s_short_text=this_classinfo.getShortText();
-         this.s_long_text=this_classinfo.getLongText();
-         this.s_short_description=this_classinfo.getShortDescription();
-         this.s_long_description=this_classinfo.getLongDescription();
-         this.s_class_name=this_classinfo.getClassName();
-         this.i_type=this_classinfo.getType();
-         this.s_bounds=this_classinfo.getBounds();
-         this.s_center=this_classinfo.getCenter();
-         this.s_zoom_levels=this_classinfo.getZoom_Levels();
-        }
-        else
-        {
-         // this.id_classinfo=0;
-         this.s_file_path="";
-         this.s_type="";
-         this.s_short_text="this_classinfo == null";
-         this.s_long_text="";
-         this.s_short_description="";
-         this.s_long_description="";
-         this.s_class_name="";
-         this.i_type=-1;
-         this.s_bounds="";
-         this.s_center="";
-         this.s_zoom_levels="";
+        if (treeNode != null) {
+            // note: the getId() is lost. [why can't this be stored?]
+            // this.id_classinfo=this_classinfo.getId();
+            this.s_file_path = treeNode.getFilePath();
+            this.s_type = treeNode.getTypeText();
+            this.s_short_text = treeNode.getShortName();
+            this.s_long_text = treeNode.getLongName();
+            this.i_type = treeNode.getType();
+            this.s_bounds = treeNode.getBounds();
+            this.s_center = treeNode.getCenter();
+            this.s_zoom_levels = treeNode.getZoomLevels();
+
+            spatialTable = treeNode.getSpatialTable();
+            if (treeNode.getTypeText().equals(TreeNode.DIRECTORY)) {
+                nodeIsDirectory = true;
+            }
+        } else {
+            // this.id_classinfo=0;
+            this.s_file_path = "";
+            this.s_type = "";
+            this.s_short_text = "this_classinfo == null";
+            this.s_long_text = "";
+            this.i_type = -1;
+            this.s_bounds = "";
+            this.s_center = "";
+            this.s_zoom_levels = "";
         }
     }
 
-    public int indexOf(final T id) {
+    public int indexOf( final T id ) {
         return getChildIdList().indexOf(id);
     }
 
@@ -86,7 +82,7 @@ class InMemoryTreeNode<T> implements Serializable {
     public synchronized List<T> getChildIdList() {
         if (childIdListCache == null) {
             childIdListCache = new LinkedList<T>();
-            for (final InMemoryTreeNode<T> n : children) {
+            for( final InMemoryTreeNode<T> n : children ) {
                 childIdListCache.add(n.getId());
             }
         }
@@ -97,7 +93,7 @@ class InMemoryTreeNode<T> implements Serializable {
         return visible;
     }
 
-    public void setVisible(final boolean visible) {
+    public void setVisible( final boolean visible ) {
         this.visible = visible;
     }
 
@@ -105,12 +101,12 @@ class InMemoryTreeNode<T> implements Serializable {
         return children.size();
     }
 
-    public synchronized InMemoryTreeNode<T> add(final int index, final T child,
-            final boolean visible, NodeObjectInfo this_classinfo) {
+    public synchronized InMemoryTreeNode<T> add( final int index, final T child, final boolean visible, TreeNode< ? > treeNode ) {
         childIdListCache = null;
         // Note! top levell children are always visible (!)
-        final InMemoryTreeNode<T> newNode = new InMemoryTreeNode<T>(child,
-                getId(), getLevel() + 1, getId() == null ? true : visible,this_classinfo);
+        final InMemoryTreeNode<T> newNode = new InMemoryTreeNode<T>(child, getId(), getLevel() + 1, getId() == null
+                ? true
+                : visible, treeNode);
         children.add(index, newNode);
         return newNode;
     }
@@ -130,7 +126,7 @@ class InMemoryTreeNode<T> implements Serializable {
         childIdListCache = null;
     }
 
-    public synchronized void removeChild(final T child) {
+    public synchronized void removeChild( final T child ) {
         final int childIndex = indexOf(child);
         if (childIndex != -1) {
             children.remove(childIndex);
@@ -140,11 +136,8 @@ class InMemoryTreeNode<T> implements Serializable {
 
     @Override
     public String toString() {
-        return "InMemoryTreeNode [id=" + getId() + ", parent=" + getParent()
-                + ", level=" + getLevel() + ", visible=" + visible
-                + ", children=" + children + ", childIdListCache="
-                + childIdListCache
-                + ", file_path=" + getFileNamePath();
+        return "InMemoryTreeNode [id=" + getId() + ", parent=" + getParent() + ", level=" + getLevel() + ", visible=" + visible
+                + ", children=" + children + ", childIdListCache=" + childIdListCache + ", file_path=" + getFileNamePath();
     }
 
     T getId() {
@@ -158,18 +151,20 @@ class InMemoryTreeNode<T> implements Serializable {
     int getLevel() {
         return level;
     }
-    public NodeObjectInfo getClassNodeInfo()
-    {
-      return new NodeObjectInfo(getId(),getType(),getTypeText(),getClassName(),getFileNamePath(),
-      getShortText(),getLongText(),getShortDescription(),getLongDescription(),getBounds(),getCenter(),getZoom_Levels());
+
+    public TreeNode< ? > getClassNodeInfo() {
+        if (spatialTable == null) {
+            return null;
+        }
+        if (nodeIsDirectory) {
+            return new TreeNode(getId(), null, spatialTable.getDatabasePath());
+        } else {
+            return new TreeNode(getId(), spatialTable, null);
+        }
     }
 
-    public String getFileNamePath()
-    {
-      return s_file_path;
-    }
-    public String getClassName() {
-        return s_class_name;
+    public String getFileNamePath() {
+        return s_file_path;
     }
     public String getShortText() {
         return s_short_text;
@@ -177,24 +172,15 @@ class InMemoryTreeNode<T> implements Serializable {
     public String getLongText() {
         return s_long_text;
     }
-    public String getShortDescription() {
-        return s_short_description;
+    public String getBounds() {
+        return s_bounds;
     }
-    public String getLongDescription() {
-        return s_long_description;
+    public String getCenter() {
+        return s_center;
     }
-    public String getBounds()
-   {
-    return s_bounds;
-   }
-   public String getCenter()
-   {
-    return s_center;
-   }
-    public String getZoom_Levels()
-   {
-    return s_zoom_levels;
-   }
+    public String getZoom_Levels() {
+        return s_zoom_levels;
+    }
     public String getTypeText() {
         return s_type;
     }

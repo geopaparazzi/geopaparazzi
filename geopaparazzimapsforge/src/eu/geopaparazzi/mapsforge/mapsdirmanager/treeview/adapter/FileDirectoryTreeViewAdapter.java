@@ -30,15 +30,15 @@ public class FileDirectoryTreeViewAdapter extends AbstractTreeViewAdapter<Long> 
     }
 
     @Override
-    public LinearLayout updateView( final View view, final TreeNodeInfo<Long> node_info ) {
+    public LinearLayout updateView( final View view, final TreeNodeInfo<Long> treeNodeInfo ) {
         final LinearLayout viewLayout = (LinearLayout) view;
         final TextView descriptionView = (TextView) viewLayout.findViewById(R.id.mapsdir_treeview_item_fields_short_text);
         final TextView typeView = (TextView) viewLayout.findViewById(R.id.mapsdir_treeview_item_fields_type);
-        descriptionView.setText(node_info.getShortText());
-        if (node_info.isWithChildren()) {
+        descriptionView.setText(treeNodeInfo.getFileName());
+        if (treeNodeInfo.isWithChildren()) {
             typeView.setText("");
         } else {
-            typeView.setText("[" + node_info.getTypeText() + "]");
+            typeView.setText("[" + treeNodeInfo.getTypeDescriptionText() + "]");
         }
         return viewLayout;
     }

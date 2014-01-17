@@ -9,10 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import android.database.DataSetObserver;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.exceptions.NodeAlreadyInTreeException;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.exceptions.NodeNotInTreeException;
-
-import android.database.DataSetObserver;
 
 /**
  * In-memory manager of tree state.
@@ -107,7 +106,7 @@ public class InMemoryTreeStateManager<T> implements TreeStateManager<T> {
     }
 
     @Override
-    public synchronized void addBeforeChild( final T parent, final T newChild, final T beforeChild, NodeObjectInfo this_classinfo ) {
+    public synchronized void addBeforeChild( final T parent, final T newChild, final T beforeChild, TreeNode this_classinfo ) {
         expectNodeNotInTreeYet(newChild);
         final InMemoryTreeNode<T> node = getNodeFromTreeOrThrowAllowRoot(parent);
         final boolean visibility = getChildrenVisibility(node);
@@ -126,7 +125,7 @@ public class InMemoryTreeStateManager<T> implements TreeStateManager<T> {
     }
 
     @Override
-    public synchronized void addAfterChild( final T parent, final T newChild, final T afterChild, NodeObjectInfo this_classinfo ) {
+    public synchronized void addAfterChild( final T parent, final T newChild, final T afterChild, TreeNode this_classinfo ) {
         expectNodeNotInTreeYet(newChild);
         final InMemoryTreeNode<T> node = getNodeFromTreeOrThrowAllowRoot(parent);
         final boolean visibility = getChildrenVisibility(node);

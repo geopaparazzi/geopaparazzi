@@ -52,11 +52,11 @@ import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.GeopackageTileDownloa
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapGeneratorInternal;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapTable;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.MapsDirTreeViewList;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.NodeObjectInfo;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.TreeNode;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.util.NodeSortParameter;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
-import eu.geopaparazzi.spatialite.util.SpatialDataTypes;
 
 /**
  * The manager of supported maps in the Application maps dir.
@@ -71,8 +71,8 @@ public class MapsDirManager {
     private static final int SPATIALITE = 3;
     private static final int MAPURL = 4;
 
-    private List<NodeObjectInfo> tileBasedNodesList = new LinkedList<NodeObjectInfo>();
-    private List<NodeObjectInfo> vectorNodesList = new LinkedList<NodeObjectInfo>();
+    private List<TreeNode< ? >> tileBasedNodesList = new LinkedList<TreeNode< ? >>();
+    private List<TreeNode< ? >> vectorNodesList = new LinkedList<TreeNode< ? >>();
 
     private int vectorinfoCount = -1;
     private File mapsDir = null;
@@ -80,7 +80,7 @@ public class MapsDirManager {
     private int i_selected_type = MBTILES;
     private String s_selected_type = "";
     private String s_selected_map = "";
-    private NodeObjectInfo selectedNode = null;
+    private TreeNode< ? > selectedNode = null;
     private MapGenerator selected_mapGenerator;
     private double bounds_west = 180.0;
     private double bounds_south = -85.05113;
@@ -221,9 +221,9 @@ public class MapsDirManager {
       */
     private void handleTileSources( Context context ) throws Exception, IOException, FileNotFoundException {
         int i_count_raster = 0;
-        int i_type = MAPURL;
-        NodeObjectInfo this_mapinfo = null;
-        NodeObjectInfo mapnik_mapinfo = null;
+        // int i_type = MAPURL;
+        TreeNode this_mapinfo = null;
+        TreeNode mapnik_mapinfo = null;
 
         // GPLog.androidLog(-1, "MapsDirManager handleTileSources  selected_map[" + s_selected_map +
         // "]");
@@ -238,10 +238,7 @@ public class MapsDirManager {
                 // "] getFileName[" + table.getFileNamePath()+ "] getName[" + table.getName()+
                 // "] getDescription["+table.getDescription()+"]");
                 if (!ignoreTileSource(name)) {
-                    this_mapinfo = new NodeObjectInfo(i_count_raster++, i_type, table.getMapType(), "CustomTileTable",
-                            table.getDatabasePath(), table.getFileName(), table.getDatabasePath(), table.getTableName(),
-                            table.getDescription(), table.getBoundsAsString(), table.getCenterAsString(),
-                            table.getMinMaxZoomLevelsAsString());
+                    this_mapinfo = new TreeNode(i_count_raster++, table, null);
                     tileBasedNodesList.add(this_mapinfo);
                     if (table.getDatabasePath().equals(mapnikFile.getAbsolutePath())) {
                         // if nothing is selected, this will be the default
@@ -260,7 +257,7 @@ public class MapsDirManager {
         /*
           * add also map tables
           */
-        i_type = MAP;
+        // i_type = MAP;
         try {
             List<MapTable> mapTables = MapDatabasesManager.getInstance().getTables(false);
             for( MapTable table : mapTables ) {
@@ -269,12 +266,9 @@ public class MapsDirManager {
                 // table.getFileNamePath()+ "] getName[" + table.getName()+
                 // "] getDescription["+table.getDescription()+"]");
                 if (!ignoreTileSource(name)) {
-                    this_mapinfo = new NodeObjectInfo(i_count_raster++, i_type, table.getMapType(), "MapTable",
-                            table.getDatabasePath(), table.getFileName(), table.getDatabasePath(), table.getTableName(),
-                            table.getDescription(), table.getBoundsAsString(), table.getCenterAsString(),
-                            table.getMinMaxZoomLevelsAsString());
+                    this_mapinfo = new TreeNode(i_count_raster++, table, null);
                     tileBasedNodesList.add(this_mapinfo);
-                    // GPLog.androidLog(-1, "NodeObjectInfo[" + this_mapinfo.toString() + "]");
+                    // GPLog.androidLog(-1, "TreeNode[" + this_mapinfo.toString() + "]");
                     if ((selectedNode == null) && (s_selected_map.equals(table.getDatabasePath()))) {
                         selectedNode = this_mapinfo;
                         s_selected_type = selectedNode.getTypeText();
@@ -288,7 +282,7 @@ public class MapsDirManager {
         /*
          * collect vector tables
          */
-        loadClassNodeInfoList();
+        loadTreeNodesList();
         /*
          * add also mbtiles,geopackage tables
          */
@@ -306,17 +300,14 @@ public class MapsDirManager {
                 // "] getFileName[" + table.getFileNamePath()+ "] getName[" + table.getName()+
                 // "] getDescription["+table.getDescription()+"]");
                 if (!ignoreTileSource(name)) {
-                    i_type = MBTILES;
-                    String s_type = table.getMapType();
-                    if (!s_type.equals(SpatialDataTypes.MBTILES.getTypeName())) {
-                        i_type = SPATIALITE;
-                        if (s_type.equals(SpatialDataTypes.GPKG.getTypeName()))
-                            i_type = GPKG;
-                    }
-                    this_mapinfo = new NodeObjectInfo(i_count_raster++, i_type, s_type, "SpatialRasterTable",
-                            table.getDatabasePath(), table.getFileName(), table.getDatabasePath(), table.getTableName(),
-                            table.getDescription(), table.getBoundsAsString(), table.getCenterAsString(),
-                            table.getMinMaxZoomLevelsAsString());
+                    // i_type = MBTILES;
+                    // String s_type = table.getMapType();
+                    // if (!s_type.equals(SpatialDataTypes.MBTILES.getTypeName())) {
+                    // i_type = SPATIALITE;
+                    // if (s_type.equals(SpatialDataTypes.GPKG.getTypeName()))
+                    // i_type = GPKG;
+                    // }
+                    this_mapinfo = new TreeNode(i_count_raster++, table, null);
                     tileBasedNodesList.add(this_mapinfo);
                     if ((selectedNode == null) && (s_selected_map.equals(table.getDatabasePath()))) {
                         selectedNode = this_mapinfo;
@@ -334,14 +325,14 @@ public class MapsDirManager {
             selectedNode = mapnik_mapinfo;
             s_selected_type = selectedNode.getTypeText();
             i_selected_type = selectedNode.getType();
-            s_selected_map = selectedNode.getFileNamePath();
+            s_selected_map = selectedNode.getFilePath();
         }
         GPLog.androidLog(-1, "MapsDirManager handleTileSources maptype_classes.count[" + tileBasedNodesList.size()
                 + "] selected_map[" + s_selected_map + "]");
-        // List will be returned sorted as Directory-File with levels set.
-        tileBasedNodesList = MapsDirTreeViewList.setMapTypeClasses(tileBasedNodesList, mapsDir);
-    }
 
+        // List will be returned sorted as Directory-File with levels set.
+        tileBasedNodesList = MapsDirTreeViewList.getTileBasedNodesList(tileBasedNodesList, mapsDir);
+    }
     /**
       * Filter out certain file-types
       *
@@ -356,24 +347,23 @@ public class MapsDirManager {
     }
 
     /**
-      * Selected a Map through its NodeObjectInfo.
+      * Selected a Map through its TreeNode.
       *
       * <p>call from Application or Map-Activity
       * 
       * @param context  the context to use.
-      * @param selected_classinfo the selected {@link NodeObjectInfo}. 
+      * @param selected_classinfo the selected {@link TreeNode}. 
       * @param map_View Map-View to set (if not null)
       * @param mapCenterLocation [point/zoom to check]
       * @return 0 if correct else false 
       */
-    public int selectMapClassInfo( Context context, NodeObjectInfo selected_classinfo, MapView map_View,
-            double[] mapCenterLocation ) {
+    public int selectMapClassInfo( Context context, TreeNode selected_classinfo, MapView map_View, double[] mapCenterLocation ) {
         int i_rc = -1;
         if (selected_classinfo != null) {
             selectedNode = selected_classinfo;
             s_selected_type = selectedNode.getTypeText();
             i_selected_type = selectedNode.getType();
-            s_selected_map = selectedNode.getFileNamePath();
+            s_selected_map = selectedNode.getFilePath();
             // This will save the values to the user-proverences
             setTileSource(context, s_selected_type, s_selected_map);
             i_rc = 0;
@@ -391,20 +381,17 @@ public class MapsDirManager {
       *
       * <p>call  directly from  Map-Activity
       *
-      * @param map_View Map-View to set (if not null)
+      * @param mapView Map-View to set (if not null)
       * @param mapCenterLocation [point/zoom to check]
       * @return i_rc 0 if correct ; else false not fullfilled
       */
-    public int loadSelectedMap( MapView map_View, double[] mapCenterLocation ) {
+    public int loadSelectedMap( MapView mapView, double[] mapCenterLocation ) {
         int i_rc = -1;
-        if ((map_View != null) && (selectedNode != null)) {
+        if ((mapView != null) && (selectedNode != null)) {
             if (this.map_View == null) {
-                this.map_View = map_View;
+                this.map_View = mapView;
             }
             try {
-                GPLog.androidLog(-1,
-                        "MapsDirManager -I-> load_Map[" + s_selected_type + "] mapinfo[" + selectedNode.getShortDescription()
-                                + "]");
                 selected_mapGenerator = null;
                 minZoom = 0;
                 maxZoom = 18;
@@ -429,14 +416,14 @@ public class MapsDirManager {
                         centerX = selected_table.getCenterX();
                         centerY = selected_table.getCenterY();
                         clear_TileCache();
-                        map_View.setMapFile(selected_table.getFile());
+                        mapView.setMapFile(selected_table.getDatabaseFile());
                         if (selected_table.getXmlFile().exists()) {
                             try {
-                                map_View.setRenderTheme(selected_table.getXmlFile());
+                                mapView.setRenderTheme(selected_table.getXmlFile());
                             } catch (FileNotFoundException e) { // ignore the theme
                             }
                         }
-                        selected_mapGenerator = map_View.getMapGenerator();
+                        selected_mapGenerator = mapView.getMapGenerator();
                     }
                 }
                     break;
@@ -457,7 +444,7 @@ public class MapsDirManager {
                         centerY = selected_table.getCenterY();
                         selected_mapGenerator = new GeopackageTileDownloader(selected_table);
                         clear_TileCache();
-                        map_View.setMapGenerator(selected_mapGenerator);
+                        mapView.setMapGenerator(selected_mapGenerator);
                     }
                 }
                     break;
@@ -477,7 +464,7 @@ public class MapsDirManager {
                         selected_mapGenerator = selected_table.getCustomTileDownloader();
                         try {
                             clear_TileCache();
-                            map_View.setMapGenerator(selected_mapGenerator);
+                            mapView.setMapGenerator(selected_mapGenerator);
                             GPLog.androidLog(1, "MapsDirManager -I-> MAPURL setMapGenerator[" + s_selected_type
                                     + "] selected_map[" + s_selected_map + "]");
                         } catch (java.lang.NullPointerException e_mapurl) {
@@ -493,15 +480,12 @@ public class MapsDirManager {
                 }
             } catch (jsqlite.Exception e) {
                 selected_mapGenerator = MapGeneratorInternal.createMapGenerator(MapGeneratorInternal.mapnik);
-                map_View.setMapGenerator(selected_mapGenerator);
-                GPLog.androidLog(4,
-                        "MapsDirManager -E-> load_Map[" + s_selected_type + "] mapinfo[" + selectedNode.getShortDescription()
-                                + "]", e);
+                mapView.setMapGenerator(selected_mapGenerator);
             }
             if (selected_mapGenerator != null) {
                 i_rc = 0;
                 // if mapCenterLocation == null, default values from seleted map will be used
-                setMapViewCenter(map_View, mapCenterLocation, 1);
+                setMapViewCenter(mapView, mapCenterLocation, 1);
             }
         }
         return i_rc;
@@ -512,31 +496,28 @@ public class MapsDirManager {
       *
       * @return amount of tables found
       */
-    private int loadClassNodeInfoList() {
+    private int loadTreeNodesList() {
         if (vectorNodesList == null) {
-            vectorNodesList = new LinkedList<NodeObjectInfo>();
+            vectorNodesList = new LinkedList<TreeNode< ? >>();
         } else {
             vectorNodesList.clear();
         }
         vectorinfoCount = vectorNodesList.size();
         try {
             List<SpatialVectorTable> spatialVectorTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(false);
-            NodeObjectInfo this_vectorinfo = null;
+            TreeNode this_vectorinfo = null;
             for( int i = 0; i < spatialVectorTables.size(); i++ ) {
                 SpatialVectorTable table = spatialVectorTables.get(i);
-                this_vectorinfo = new NodeObjectInfo(vectorinfoCount++, table.getGeomType(), table.getGeometryTypeDescription(),
-                        "SpatialVectorTable", table.getUniqueName(), table.getFileName(), table.getTableName(),
-                        table.getGeomName(), table.getTableName() + File.separator + table.getGeomName(),
-                        table.getBoundsAsString(), table.getCenterAsString(), table.getMinMaxZoomLevelsAsString());
-                this_vectorinfo.setEnabled(table.isTableEnabled());
+                this_vectorinfo = new TreeNode(vectorinfoCount++, table, null);
+                this_vectorinfo.setEnabled(table.isTableEnabled() == 1);
                 vectorNodesList.add(this_vectorinfo);
-                // GPLog.androidLog(-1, "NodeObjectInfo[" + this_vectorinfo.toString() + "]");
+                // GPLog.androidLog(-1, "TreeNode[" + this_vectorinfo.toString() + "]");
             }
         } catch (jsqlite.Exception e) {
             GPLog.androidLog(4, "MapsDirManager load_vector_classes() SpatialVectorTable[" + mapsDir.getAbsolutePath() + "]", e);
         }
-        Comparator<NodeObjectInfo> cp_directory_file = NodeObjectInfo.getComparator(NodeObjectInfo.SortParameter.SORT_ENABLED,
-                NodeObjectInfo.SortParameter.SORT_DIRECTORY, NodeObjectInfo.SortParameter.SORT_FILE);
+        Comparator<TreeNode< ? >> cp_directory_file = TreeNode.getComparator(NodeSortParameter.SORT_ENABLED,
+                NodeSortParameter.SORT_DIRECTORY, NodeSortParameter.SORT_FILE_NAME);
         Collections.sort(vectorNodesList, cp_directory_file);
         return vectorinfoCount;
     }
@@ -613,19 +594,20 @@ public class MapsDirManager {
         // "] bounds_zoom_calc[" + s_bounds_zoom_calc+ "]");
         if (b_reread)
             vectorinfoCount = -1;
-        if ((vectorinfoCount < 0) && (vectorNodesList.size() == 0)) { // if not loaded,
-                                                                      // load it
-            loadClassNodeInfoList();
+        if ((vectorinfoCount < 0) && (vectorNodesList.size() == 0)) {
+            // if not loaded,
+            // load it
+            loadTreeNodesList();
         }
         SpatialDatabasesManager sdManager = SpatialDatabasesManager.getInstance();
         for( int i = 0; i < vectorNodesList.size(); i++ ) {
-            NodeObjectInfo this_vectorinfo = vectorNodesList.get(i);
+            TreeNode this_vectorinfo = vectorNodesList.get(i);
             SpatialVectorTable vector_table = null;
             try { // until DataListActivity is incorperted into MapsDirManager, we must read the
                   // enabled status in case it changed - getUniqueName()
-                vector_table = sdManager.getVectorTableByName(this_vectorinfo.getFileNamePath());
+                vector_table = sdManager.getVectorTableByName(this_vectorinfo.getFilePath());
                 if (vector_table != null) {
-                    this_vectorinfo.setEnabled(vector_table.isTableEnabled());
+                    this_vectorinfo.setEnabled(vector_table.isTableEnabled() == 1);
                 }
             } catch (jsqlite.Exception e) {
                 // GPLog.androidLog(4, "MapsDirManager getSpatialVectorTables SpatialVectorTable[" +
@@ -643,7 +625,7 @@ public class MapsDirManager {
                 // vector_table=sdManager.getVectorTableByName(this_vectorinfo.getFileNamePath());
                 if (vector_table != null) {
                     vector_TableList.add(vector_table);
-                    // GPLog.androidLog(-1, "NodeObjectInfo[" + this_vectorinfo.toString() + "]");
+                    // GPLog.androidLog(-1, "TreeNode[" + this_vectorinfo.toString() + "]");
                 }
                 /*
                 }

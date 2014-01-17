@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package eu.geopaparazzi.spatialite.database.spatial.core;
+import java.io.Serializable;
+
 import eu.geopaparazzi.spatialite.util.SpatialDataTypes;
 /**
  * A raster table from the spatial db.
@@ -23,8 +25,8 @@ import eu.geopaparazzi.spatialite.util.SpatialDataTypes;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public class SpatialRasterTable extends SpatialTable {
-
+public class SpatialRasterTable extends SpatialTable implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String tileQuery;
 
     /**

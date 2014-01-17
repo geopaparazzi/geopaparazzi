@@ -17,6 +17,7 @@
  */
 package eu.geopaparazzi.spatialite.database.spatial.core;
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -39,7 +40,8 @@ import eu.geopaparazzi.spatialite.util.Style;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public class SpatialVectorTable extends SpatialTable {
+public class SpatialVectorTable extends SpatialTable implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     private final String geometryColumn;
     private final int geomType;

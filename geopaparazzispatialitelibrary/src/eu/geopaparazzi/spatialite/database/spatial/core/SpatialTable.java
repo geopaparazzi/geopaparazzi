@@ -18,6 +18,7 @@
 package eu.geopaparazzi.spatialite.database.spatial.core;
 
 import java.io.File;
+import java.io.Serializable;
 
 /**
  * Spatial table interface.
@@ -25,7 +26,8 @@ import java.io.File;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public abstract class SpatialTable {
+public abstract class SpatialTable implements Serializable {
+    private static final long serialVersionUID = 1L;
     /**
      * Table type description. 
      */
@@ -145,6 +147,16 @@ public abstract class SpatialTable {
     public String getDatabasePath() {
         return databasePath;
     }
+
+    /**
+     * Return database {@link File}.
+     *
+     * @return the database file.
+     */
+    public File getDatabaseFile() {
+        return databaseFile;
+    }
+
     /**
      * Getter for the table's srid.
      * 
@@ -152,15 +164,6 @@ public abstract class SpatialTable {
      */
     public String getSrid() {
         return srid;
-    }
-
-    /**
-     * Return database {@link File}.
-     *
-     * @return the database file.
-     */
-    public File getFile() {
-        return databaseFile;
     }
 
     /**
