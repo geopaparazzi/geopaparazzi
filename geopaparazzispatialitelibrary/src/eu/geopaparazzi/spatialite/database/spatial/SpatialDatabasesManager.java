@@ -40,9 +40,9 @@ import eu.geopaparazzi.spatialite.util.SpatialDataTypes;
 
 /**
  * The spatial database manager.
- * 
+ *
  * <p>This manager is the entry point to all available
- * spatial databases. 
+ * spatial databases.
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
@@ -68,7 +68,7 @@ public class SpatialDatabasesManager {
 
     /**
      * Reset the manager.
-     * 
+     *
      * TODO check with mj10777 if this should call also close first.
      */
     public static void reset() {
@@ -77,7 +77,7 @@ public class SpatialDatabasesManager {
 
     /**
      * Initialie the manager on a given maps folder.
-     * 
+     *
      * @param context  the context to use.
      * @param mapsDir the maps folder.
      * @return <code>true</code>, when recursing a nomedia folder has been hit.
@@ -144,7 +144,7 @@ public class SpatialDatabasesManager {
 
     /**
      * Get all available database count.
-     *  
+     *
      * @return the number of available databases.
      */
     public int getCount() {
@@ -153,7 +153,7 @@ public class SpatialDatabasesManager {
 
     /**
      * Get the count of raster dbs.
-     * 
+     *
      * @return the number of available raster dbs.
      */
     public int getRasterDbCount() {
@@ -162,7 +162,7 @@ public class SpatialDatabasesManager {
 
     /**
      * Get the count of vector dbs.
-     * 
+     *
      * @return the number of available vector dbs.
      */
     public int getVectorDbCount() {
@@ -171,7 +171,7 @@ public class SpatialDatabasesManager {
 
     /**
      * Get the list of available {@link SpatialDatabaseHandler}.
-     * 
+     *
      * @return the list of spatial db handlers.
      */
     public List<SpatialDatabaseHandler> getSpatialDatabaseHandlers() {
@@ -180,7 +180,7 @@ public class SpatialDatabasesManager {
 
     /**
      * Get the list of all available spatial vector tables.
-     * 
+     *
      * @param forceRead if <code>true</code>, a re-reading of the dbs is forced.
      * @return the list of spatial vector tables.
      * @throws Exception  if something goes wrong.
@@ -188,7 +188,6 @@ public class SpatialDatabasesManager {
     @SuppressWarnings("nls")
     public List<SpatialVectorTable> getSpatialVectorTables( boolean forceRead ) throws Exception {
         List<SpatialVectorTable> tables = new ArrayList<SpatialVectorTable>();
-        List<SpatialDatabaseHandler> removeHandlers = new ArrayList<SpatialDatabaseHandler>();
         for( SpatialDatabaseHandler sdbHandler : spatialDbHandlers ) {
             List<SpatialVectorTable> spatialTables = sdbHandler.getSpatialVectorTables(forceRead);
             if (sdbHandler.isValid()) {
@@ -197,12 +196,6 @@ public class SpatialDatabasesManager {
                     vectorTablesMap.put(spatialTable, sdbHandler);
                 }
             }
-        }
-        for( SpatialDatabaseHandler removeHandler : removeHandlers ) {
-            String s_remove = removeHandler.getDatabasePath() + " [" + removeHandler.isValid() + "]";
-            removeHandler.close();
-            spatialDbHandlers.remove(removeHandler);
-            GPLog.androidLog(-1, "SpatialDatabasesManager remove[" + s_remove + "] size[" + spatialDbHandlers.size() + "]");
         }
         Collections.sort(tables, new OrderComparator());
         // set proper order index across tables
@@ -214,14 +207,13 @@ public class SpatialDatabasesManager {
 
     /**
      * Get the list of all available spatial raster tables.
-     * 
+     *
      * @param forceRead if <code>true</code>, a re-reading of the dbs is forced.
      * @return the list of spatial raster tables.
      * @throws Exception  if something goes wrong.
      */
     public List<SpatialRasterTable> getSpatialRasterTables( boolean forceRead ) throws Exception {
         List<SpatialRasterTable> tables = new ArrayList<SpatialRasterTable>();
-        List<SpatialDatabaseHandler> remove_Handlers = new ArrayList<SpatialDatabaseHandler>();
         for( SpatialDatabaseHandler sdbHandler : spatialDbHandlers ) {
             try {
                 List<SpatialRasterTable> spatialTables = sdbHandler.getSpatialRasterTables(forceRead);
@@ -235,16 +227,12 @@ public class SpatialDatabasesManager {
                 // ignore the handler and try to go on
             }
         }
-        for( SpatialDatabaseHandler remove : remove_Handlers ) {
-            remove.close();
-            spatialDbHandlers.remove(remove);
-        }
         return tables;
     }
 
     /**
      * Update all styles in the dbs with the current layers values.
-     * 
+     *
      * @throws Exception  if something goes wrong.
      */
     public void updateStyles() throws Exception {
@@ -259,7 +247,7 @@ public class SpatialDatabasesManager {
 
     /**
      * Update the style in the dbs with the given layer values.
-     * 
+     *
      * @param spatialTable the current table to update.
      * @throws Exception  if something goes wrong.
      */
@@ -272,7 +260,7 @@ public class SpatialDatabasesManager {
 
     /**
      * Get the {@link SpatialDatabaseHandler} that contains a given vector table.
-     * 
+     *
      * @param spatialTable the vector table.
      * @return the db handler.
      * @throws Exception  if something goes wrong.
@@ -284,7 +272,7 @@ public class SpatialDatabasesManager {
 
     /**
      * Get the {@link SpatialDatabaseHandler} that contains a given raster table.
-     * 
+     *
      * @param spatialTable the raster table.
      * @return the db handler.
      * @throws Exception  if something goes wrong.
@@ -296,7 +284,7 @@ public class SpatialDatabasesManager {
 
     /**
      * Get a {@link SpatialVectorTable} by its name.
-     * 
+     *
      * @param tableName the table name.
      * @return the vector table or <code>null</code>.
      * @throws Exception  if something goes wrong.
@@ -313,7 +301,7 @@ public class SpatialDatabasesManager {
 
     /**
      * Get a {@link SpatialRasterTable} by its name.
-     * 
+     *
      * @param tableName the table name.
      * @return the raster table or <code>null</code>.
      * @throws Exception  if something goes wrong.
@@ -330,7 +318,7 @@ public class SpatialDatabasesManager {
 
     /**
      * Performs an intersection query on a vector table and returns a string info version of the result.
-     * 
+     *
      * @param boundsSrid the srid of the bounds supplied.
      * @param spatialTable the vector table to query.
      * @param n north bound.
@@ -352,7 +340,7 @@ public class SpatialDatabasesManager {
 
     /**
      * Close all available databases.
-     * 
+     *
      * @throws Exception  if something goes wrong.
      */
     public void closeDatabases() throws Exception {
