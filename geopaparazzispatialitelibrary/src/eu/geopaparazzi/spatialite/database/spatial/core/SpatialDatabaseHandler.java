@@ -300,24 +300,6 @@ public abstract class SpatialDatabaseHandler {
         return centerX + "," + centerY + "," + defaultZoom;
     }
 
-    // /**
-    // * Return long description for the database handler.
-    // *
-    // * <p>default: s_name with bounds and center
-    // * <p>mbtiles : metadata description
-    // * <p>map : will be value of 'comment', if not null
-    // *
-    // * @return long description for the database handler.
-    // */
-    // public String getDescription();
-    //
-    // /**
-    // * Set long description for the database.
-    // *
-    // * @param databaseDescription a description for the database.
-    // */
-    // public void setDescription( String databaseDescription );
-
     /**
       * Is the database file considered valid.
       * 
@@ -360,72 +342,11 @@ public abstract class SpatialDatabaseHandler {
      */
     public abstract float[] getTableBounds( SpatialTable spatialTable ) throws Exception;
 
-    // /**
-    // * Get the {@link GeometryIterator} of a table in a given bound.
-    // *
-    // * @param destSrid the srid to which to transform to.
-    // * @param table the table to use.
-    // * @param n north bound.
-    // * @param s south bound.
-    // * @param e east bound.
-    // * @param w west bound.
-    // * @return the geometries iterator.
-    // */
-    // public abstract GeometryIterator getGeometryIteratorInBounds( String destSrid,
-    // SpatialVectorTable table, double n, double s,
-    // double e, double w );
-    //
-    // /**
-    // * Get the stroke {@link Paint} for a given style.
-    // *
-    // * <p>Paints are cached and reused.</p>
-    // *
-    // * @param style the {@link Style} to use.
-    // * @return the paint.
-    // */
-    // public abstract Paint getStrokePaint4Style( Style style );
-    //
-    // /**
-    // * Get the fill {@link Paint} for a given style.
-    // *
-    // * <p>Paints are cached and reused.</p>
-    // *
-    // * @param style the {@link Style} to use.
-    // * @return the paint.
-    // */
-    // public abstract Paint getFillPaint4Style( Style style );
-
     /**
     * Closes the database handler, freeing its resources.
     *
     * @throws Exception if something goes wrong.
     */
     public abstract void close() throws Exception;
-
-    // /**
-    // * Update the style definition in the database with the supplied {@link Style}.
-    // *
-    // * @param style the style to use as update.
-    // * @throws Exception if something goes wrong.
-    // */
-    // public abstract void updateStyle( Style style ) throws Exception;
-    //
-    // /**
-    // * Performs an intersection query on a vector table and returns a string info version of the
-    // result.
-    // *
-    // * @param boundsSrid the srid of the bounds supplied.
-    // * @param spatialTable the vector table to query.
-    // * @param n north bound.
-    // * @param s south bound.
-    // * @param e east bound.
-    // * @param w west bound.
-    // * @param resultStringBuilder the builder of the result.
-    // * @param indentStr the indenting to use for formatting.
-    // * @throws Exception if something goes wrong.
-    // */
-    // public abstract void intersectionToStringBBOX( String boundsSrid, SpatialVectorTable
-    // spatialTable, double n, double s,
-    // double e, double w, StringBuilder resultStringBuilder, String indentStr ) throws Exception;
 
 }

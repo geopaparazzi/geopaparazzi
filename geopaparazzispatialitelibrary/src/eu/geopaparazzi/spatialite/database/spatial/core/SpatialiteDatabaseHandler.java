@@ -367,8 +367,9 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                 }
                 checkTableQuery = sb_update.toString();
                 checkTableQuery = checkTableQuery.substring(0, checkTableQuery.length() - 1) + ";";
-                GPLog.androidLog(-1, "SpatialiteDatabaseHandler[" + databasePath + "] col_count[" + i_column_count + "] sql["
-                        + checkTableQuery + "]");
+                // GPLog.androidLog(-1, "SpatialiteDatabaseHandler[" + databasePath + "] col_count["
+                // + i_column_count + "] sql["
+                // + checkTableQuery + "]");
                 db_java.exec(checkTableQuery, null);
                 checkTableQuery = "DROP TABLE " + PROPERTIESTABLE + "_save ;";
                 db_java.exec(checkTableQuery, null);
