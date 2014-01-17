@@ -22,6 +22,8 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.mapsforge.R;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.adapter.FileDirectoryTreeViewAdapter;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.adapter.MapTypeTreeViewAdapter;
 
 /**
  * Demo activity showing how the tree view can be used.
@@ -38,8 +40,8 @@ public class MapsDirTreeViewList extends Activity {
     public enum TreeType implements Serializable {
         FILEDIRECTORY, MAPTYPE
     }
-    private static List<ClassNodeInfo> maptype_classes = null;
-    private static List<ClassNodeInfo> filedirectory_classes = null;
+    private static List<NodeObjectInfo> maptype_classes = null;
+    private static List<NodeObjectInfo> filedirectory_classes = null;
     private static File maps_dir = null;
     private final Set<Long> selected_nodes = new HashSet<Long>();
     private static final String TAG = MapsDirTreeViewList.class.getSimpleName();
@@ -57,15 +59,15 @@ public class MapsDirTreeViewList extends Activity {
     public static boolean b_delete_file = false;
     public static boolean b_edit_file = false;
     public static boolean b_properties_file = true;
-    public static ClassNodeInfo selected_classinfo = null;
-    public static ClassNodeInfo mapsdir_classinfo = null;
+    public static NodeObjectInfo selected_classinfo = null;
+    public static NodeObjectInfo mapsdir_classinfo = null;
     // Sort the files, sorted by Directory-File
-    private static Comparator<ClassNodeInfo> cp_directory_file = ClassNodeInfo.getComparator(
-            ClassNodeInfo.SortParameter.SORT_DIRECTORY, ClassNodeInfo.SortParameter.SORT_FILE);
+    private static Comparator<NodeObjectInfo> cp_directory_file = NodeObjectInfo.getComparator(
+            NodeObjectInfo.SortParameter.SORT_DIRECTORY, NodeObjectInfo.SortParameter.SORT_FILE);
     // Sort the files, sorted by Meta-type-Directory-File
-    private static Comparator<ClassNodeInfo> cp_meta_directory_file = ClassNodeInfo.getComparator(
-            ClassNodeInfo.SortParameter.SORT_TYPE_TEXT, ClassNodeInfo.SortParameter.SORT_DIRECTORY,
-            ClassNodeInfo.SortParameter.SORT_FILE);
+    private static Comparator<NodeObjectInfo> cp_meta_directory_file = NodeObjectInfo.getComparator(
+            NodeObjectInfo.SortParameter.SORT_TYPE_TEXT, NodeObjectInfo.SortParameter.SORT_DIRECTORY,
+            NodeObjectInfo.SortParameter.SORT_FILE);
     // private SimpleCursorAdapter this_treeViewList_row_Adapter;
     // For popup Context-Menu [in a library 'case id_' cannot be used, there are not final]
     private final int id_mapsdir_context_menu_load = 0;
@@ -98,17 +100,17 @@ public class MapsDirTreeViewList extends Activity {
       * @param maps_dir list the starting Directory
       * @return void
      */
-    public static List<ClassNodeInfo> setMapTypeClasses( final List<ClassNodeInfo> maptype_classes_parm, final File maps_dir_parm ) {
+    public static List<NodeObjectInfo> setMapTypeClasses( final List<NodeObjectInfo> maptype_classes_parm, final File maps_dir_parm ) {
         maps_dir = maps_dir_parm;
         String s_map_file = maps_dir.getAbsolutePath();
         int i_level_filedirectory = 0;
-        mapsdir_classinfo = new ClassNodeInfo(0, 100, "", "directory", s_map_file, s_map_file, s_map_file, s_map_file,
+        mapsdir_classinfo = new NodeObjectInfo(0, 100, "", "directory", s_map_file, s_map_file, s_map_file, s_map_file,
                 s_map_file, "", "", "");
         mapsdir_classinfo.setLevel(i_level_filedirectory);
         // '/mnt/sdcard/maps' or '/mnt/extSdCard/maps' = level[0]
         MAPDIR_LEVEL_NUMBER = (s_map_file.length() - s_map_file.replaceAll(File.separator, "").length());
-        ClassNodeInfo this_classinfo = null;
-        filedirectory_classes = new LinkedList<ClassNodeInfo>();
+        NodeObjectInfo this_classinfo = null;
+        filedirectory_classes = new LinkedList<NodeObjectInfo>();
         GPLog.androidLog(-1, TAG + " setMapTypeClasses[" + maptype_classes_parm.size() + "] [" + MAPDIR_LEVEL_NUMBER + "]");
         for( int i = 0; i < maptype_classes_parm.size(); i++ ) {
             this_classinfo = maptype_classes_parm.get(i);
@@ -164,7 +166,7 @@ public class MapsDirTreeViewList extends Activity {
             tree_manager_maptype = new InMemoryTreeStateManager<Long>();
             final TreeBuilder<Long> tree_builder_filedirectory = new TreeBuilder<Long>(tree_manager_filedirectory);
             final TreeBuilder<Long> tree_builder_maptype = new TreeBuilder<Long>(tree_manager_maptype);
-            ClassNodeInfo this_classinfo = null;
+            NodeObjectInfo this_classinfo = null;
             int i_level_filedirectory = 0;
             int i_level_maptype = 0;
             int i_parent_dir_filedirectory = 0;
@@ -194,7 +196,7 @@ public class MapsDirTreeViewList extends Activity {
                         String s_directory_prev = "";
                         if (!s_maptype_new.equals(s_maptype_prev)) {
                             i_level_maptype = 0;
-                            ClassNodeInfo dir_classinfo = new ClassNodeInfo((l_position_maptype + 10000), 100, "", "directory",
+                            NodeObjectInfo dir_classinfo = new NodeObjectInfo((l_position_maptype + 10000), 100, "", "directory",
                                     mapsdir_classinfo.getFileNamePath(), s_maptype_new, "", "", "", "", "", "");
                             dir_classinfo.setLevel(i_level_maptype);
                             s_maptype_prev = s_maptype_new; // "mbtiles [/mnt/extSdCard/maps]";
@@ -204,7 +206,7 @@ public class MapsDirTreeViewList extends Activity {
                         }
                         // GPLog.androidLog(-1,TAG+" onCreate[" + this_classinfo.toString()+ "]");
                         // String
-                        // s_directory_new=ClassNodeInfo.getSubDirectory(this_classinfo,i_level_filedirectory,mapsdir_classinfo.getFileNamePath(),s_directory_prev_filedirectory);
+                        // s_directory_new=NodeObjectInfo.getSubDirectory(this_classinfo,i_level_filedirectory,mapsdir_classinfo.getFileNamePath(),s_directory_prev_filedirectory);
                         s_directory_new = "";
                         if (this_classinfo.getLevel() > 1) { // level[1] is a file in the
                                                              // root-map-directory
@@ -242,7 +244,7 @@ public class MapsDirTreeViewList extends Activity {
                                         // First parm must have an absolute path, -
                                         // - second parm 's_directory' : only this will be shown
                                         // 'getShortText()'
-                                        ClassNodeInfo dir_classinfo = new ClassNodeInfo((l_position_maptype + 10000), 100, "",
+                                        NodeObjectInfo dir_classinfo = new NodeObjectInfo((l_position_maptype + 10000), 100, "",
                                                 "directory", s_directory_path + s_directory, s_directory, "", "", "", "", "", "");
                                         dir_classinfo.setLevel(i_level_maptype);
                                         // todo search if exists, add only if it does not
@@ -279,7 +281,7 @@ public class MapsDirTreeViewList extends Activity {
                         }
                         // GPLog.androidLog(-1,TAG+" onCreate[" + this_classinfo.toString()+ "]");
                         // String
-                        // s_directory_new=ClassNodeInfo.getSubDirectory(this_classinfo,i_level_filedirectory,mapsdir_classinfo.getFileNamePath(),s_directory_prev_filedirectory);
+                        // s_directory_new=NodeObjectInfo.getSubDirectory(this_classinfo,i_level_filedirectory,mapsdir_classinfo.getFileNamePath(),s_directory_prev_filedirectory);
                         s_directory_new = "";
                         if (this_classinfo.getLevel() > 1) { // level[1] is a file in the
                                                              // root-map-directory
@@ -317,7 +319,7 @@ public class MapsDirTreeViewList extends Activity {
                                         // First parm must have an absolute path, -
                                         // - second parm 's_directory' : only this will be shown
                                         // 'getShortText()'
-                                        ClassNodeInfo dir_classinfo = new ClassNodeInfo((l_position_filedirectory + 10000), 100,
+                                        NodeObjectInfo dir_classinfo = new NodeObjectInfo((l_position_filedirectory + 10000), 100,
                                                 "", "directory", s_directory_path + s_directory, s_directory, "", "", "", "", "",
                                                 "");
                                         dir_classinfo.setLevel(i_level_filedirectory);

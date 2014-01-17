@@ -1,14 +1,14 @@
 package eu.geopaparazzi.mapsforge.mapsdirmanager.treeview;
 import java.util.Comparator;
 // Collections.sort(list, decending(getComparator(SORT_DIRECTORY, SORT_FILE)));
-public class ClassNodeInfoSort implements Comparator<ClassNodeInfo> {
-    private ClassNodeInfo.SortParameter[] parameters;
-    public ClassNodeInfoSort( ClassNodeInfo.SortParameter[] parameters ) {
+public class NodeObjectInfoComparator implements Comparator<NodeObjectInfo> {
+    private NodeObjectInfo.SortParameter[] parameters;
+    public NodeObjectInfoComparator( NodeObjectInfo.SortParameter[] parameters ) {
         this.parameters = parameters;
     }
-    public int compare( ClassNodeInfo one, ClassNodeInfo another ) {
+    public int compare( NodeObjectInfo one, NodeObjectInfo another ) {
         int comparison;
-        for( ClassNodeInfo.SortParameter parameter : parameters ) {
+        for( NodeObjectInfo.SortParameter parameter : parameters ) {
             switch( parameter ) {
             case SORT_TYPE_TEXT:
                 comparison = one.getTypeText().toLowerCase().compareTo(another.getTypeText().toLowerCase());

@@ -27,6 +27,11 @@ import java.io.File;
 @SuppressWarnings("nls")
 public abstract class SpatialTable {
     /**
+     * Table type description. 
+     */
+    protected String tableTypeDescription;
+
+    /**
      * The database path. 
      */
     protected String databasePath;

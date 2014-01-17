@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import android.database.DataSetObserver;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.ClassNodeInfo;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.NodeObjectInfo;
 
 /**
  * Manages information about state of the tree. It only keeps information about
@@ -73,7 +73,7 @@ public interface TreeStateManager<T> extends Serializable {
      * @param beforeChild
      *            child before which to add the new child
      */
-    void addBeforeChild(T parent, T newChild, T beforeChild,ClassNodeInfo this_classinfo);
+    void addBeforeChild(T parent, T newChild, T beforeChild,NodeObjectInfo this_classinfo);
 
     /**
      * Adds the node after child or at the end.
@@ -85,7 +85,7 @@ public interface TreeStateManager<T> extends Serializable {
      * @param afterChild
      *            child after which to add the new child
      */
-    void addAfterChild(T parent, T newChild, T afterChild,ClassNodeInfo this_classinfo);
+    void addAfterChild(T parent, T newChild, T afterChild,NodeObjectInfo this_classinfo);
 
     /**
      * Removes the node and all children from the tree.

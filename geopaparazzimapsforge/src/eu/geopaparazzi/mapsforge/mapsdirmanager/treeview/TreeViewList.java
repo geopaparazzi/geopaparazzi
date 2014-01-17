@@ -10,6 +10,8 @@ import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import eu.geopaparazzi.mapsforge.R;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.adapter.AbstractTreeViewAdapter;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.exceptions.TreeConfigurationException;
 
 /**
  * Tree view, expandable multi-level.

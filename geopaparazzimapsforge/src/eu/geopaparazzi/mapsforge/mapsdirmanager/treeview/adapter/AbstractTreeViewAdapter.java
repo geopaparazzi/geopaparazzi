@@ -1,4 +1,4 @@
-package eu.geopaparazzi.mapsforge.mapsdirmanager.treeview;
+package eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.adapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -16,6 +16,8 @@ import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import eu.geopaparazzi.mapsforge.R;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.TreeNodeInfo;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.TreeStateManager;
 
 /**
  * Adapter used to feed the table view.

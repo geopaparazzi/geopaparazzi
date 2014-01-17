@@ -1,4 +1,4 @@
-package eu.geopaparazzi.mapsforge.mapsdirmanager.treeview;
+package eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.exceptions;
 
 /**
  * Exception thrown when there is a problem with configuring tree.

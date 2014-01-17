@@ -8,7 +8,8 @@ import com.vividsolutions.jts.geom.Envelope;
  *
  * @param <T> type of the id for the tree
  */
-public class ClassNodeInfo<T> {
+@SuppressWarnings("nls")
+public class NodeObjectInfo<T> {
     private static final String FILE = "file";
     private static final String DIRECTORY = "directory";
 
@@ -40,8 +41,7 @@ public class ClassNodeInfo<T> {
     /**
      * Creates the class node information.
      *
-     * @param id
-     *            id of the node
+     * @param id id of the node
      * @param type
      *            type of class
      * @param s_type
@@ -60,11 +60,18 @@ public class ClassNodeInfo<T> {
      *            long discription to be retrieved [vector-table=table-name]
      *
      */
-    public ClassNodeInfo( final T id, int type, String s_type, String s_class_name, String s_file_path, String s_short_text,
+    public NodeObjectInfo( final T id, int type, String s_type, String s_class_name, String s_file_path, String s_short_text,
             String s_long_text, String s_short_description, String s_long_description, String s_bounds, String s_center,
             String s_zoom_levels ) {
+
+        // i_count_raster++, i_type, table.getMapType(), "CustomTileTable",
+        // table.getDatabasePath(), table.getFileName(), table.getDatabasePath(),
+        // table.getTableName(),
+        // table.getDescription(), table.getBoundsAsString(), table.getCenterAsString(),
+        // table.getMinMaxZoomLevelsAsString()
+
         // mapsdir_classinfo=new
-        // ClassNodeInfo(0,-1,"directory","",s_map_file,s_map_file,s_map_file,s_map_file,s_map_file);
+        // NodeObjectInfo(0,-1,"directory","",s_map_file,s_map_file,s_map_file,s_map_file,s_map_file);
         super();
         this.id = id;
         this.file_path = new File(s_file_path);
@@ -182,7 +189,7 @@ public class ClassNodeInfo<T> {
             } else {
                 i_rc = -1;
             }
-            // GPLog.androidLog(-1,"ClassNodeInfo i_rc="+i_rc+" enabled["+getEnabled()+"]  [" +
+            // GPLog.androidLog(-1,"NodeObjectInfo i_rc="+i_rc+" enabled["+getEnabled()+"]  [" +
             // toString()+ "]");
         }
         return i_rc;
@@ -259,9 +266,10 @@ public class ClassNodeInfo<T> {
         // vector: database-file with path + / + table-name +/ + /
         // field-name
         if (this.s_class_name.equals("SpatialVectorTable")) { // this value is set with
-                                                              // SpatialVectorTable.getUniqueName()
+            // SpatialVectorTable.getUniqueName()
             String s_UniqueName = s_file_path;
-            if (s_UniqueName.startsWith(File.separator)) { // FileNamePath[/berlin_grenzen/berlin_geometries.db/berlin_strassen_abschnitte/soldner_geometry]
+            if (s_UniqueName.startsWith(File.separator)) {
+                // FileNamePath[/berlin_grenzen/berlin_geometries.db/berlin_strassen_abschnitte/soldner_geometry]
                 s_UniqueName = s_UniqueName.substring(1);
             }
             return s_UniqueName;
@@ -271,7 +279,6 @@ public class ClassNodeInfo<T> {
         else
             return s_file_path;
     }
-
     public String getFileName() {
         if (this.file_path != null)
             return this.file_path.getName();
@@ -331,15 +338,17 @@ public class ClassNodeInfo<T> {
     }
     @Override
     public String toString() {
-        return "ClassNodeInfo [id=" + id + ", type=" + i_type + ", level=" + i_level + ", enabled=" + i_enabled + ", ClassName="
+        return "NodeObjectInfo [id=" + id + ", type=" + i_type + ", level=" + i_level + ", enabled=" + i_enabled + ", ClassName="
                 + s_class_name + " FileNamePath[" + getFileNamePath() + "] " + ", type=" + s_type + " short_text[" + s_short_text
                 + "] long_text[" + s_long_text + "]" + " short_description[" + s_short_description + "] long_description["
                 + s_long_description + "]" + ", bounds[" + s_bounds + "]" + " center[" + s_center + "] zoom_levels["
                 + s_zoom_levels + "]";
     }
-    public static Comparator<ClassNodeInfo> getComparator( SortParameter... sortParameters ) {
-        return new ClassNodeInfoSort(sortParameters);
+
+    public static Comparator<NodeObjectInfo> getComparator( SortParameter... sortParameters ) {
+        return new NodeObjectInfoComparator(sortParameters);
     }
+
     public static enum SortParameter {
         SORT_TYPE_TEXT, SORT_DIRECTORY, SORT_FILE, SORT_FILENAME_PATH, SORT_ENABLED
     }

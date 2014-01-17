@@ -1,5 +1,7 @@
 package eu.geopaparazzi.mapsforge.mapsdirmanager.treeview;
 
+import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.exceptions.TreeConfigurationException;
+
 
 /**
  * Allows to build tree easily in sequential mode (you have to know levels of
@@ -41,7 +43,7 @@ public class TreeBuilder<T> {
      * @param child
      *            child id
      */
-    public synchronized void addRelation( final T parent, final T child, ClassNodeInfo this_classinfo ) {
+    public synchronized void addRelation( final T parent, final T child, NodeObjectInfo this_classinfo ) {
         // GPLog.androidLog(-1,TAG+" addRelation[Adding relation parent:" + parent + " -> child: " +
         // child+"]");
         manager.addAfterChild(parent, child, null, this_classinfo);
@@ -62,7 +64,7 @@ public class TreeBuilder<T> {
      * @param level
      *            its level
      */
-    public synchronized void sequentiallyAddNextNode( final T id, final int level, ClassNodeInfo this_classinfo ) {
+    public synchronized void sequentiallyAddNextNode( final T id, final int level, NodeObjectInfo this_classinfo ) {
         // GPLog.androidLog(-1,TAG+" sequentiallyAddNextNode[Adding sequentiall node " + id +
         // " at level " + level+"] classinfo[" + this_classinfo.toString()+ "]");
         if (lastAddedId == null) {
@@ -108,7 +110,7 @@ public class TreeBuilder<T> {
      * @param level
      *            should always be parent's level + 1
      */
-    private void addNodeToParentOneLevelDown( final T parent, final T id, final int level, ClassNodeInfo this_classinfo ) {
+    private void addNodeToParentOneLevelDown( final T parent, final T id, final int level, NodeObjectInfo this_classinfo ) {
         if (parent == null && level != 0) {
             throw new TreeConfigurationException("Trying to add new id " + id + " to top level with level != 0 (" + level + ")");
         }

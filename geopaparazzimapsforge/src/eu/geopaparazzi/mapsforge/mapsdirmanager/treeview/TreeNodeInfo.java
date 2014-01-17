@@ -1,5 +1,4 @@
 package eu.geopaparazzi.mapsforge.mapsdirmanager.treeview;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.ClassNodeInfo;
 /**
  * Information about the node.
  *
@@ -12,7 +11,7 @@ public class TreeNodeInfo<T> {
     private final boolean withChildren;
     private final boolean visible;
     private final boolean expanded;
-    private final ClassNodeInfo this_classinfo;
+    private final NodeObjectInfo this_classinfo;
 
     /**
      * Creates the node information.
@@ -35,17 +34,15 @@ public class TreeNodeInfo<T> {
      *            type to be retrieved
      *
      */
-    public TreeNodeInfo(final T id, final int level,
-            final boolean withChildren, final boolean visible,
-            final boolean expanded,
-            final ClassNodeInfo this_classinfo) {
+    public TreeNodeInfo( final T id, final int level, final boolean withChildren, final boolean visible, final boolean expanded,
+            final NodeObjectInfo this_classinfo ) {
         super();
         this.id = id;
         this.level = level;
         this.withChildren = withChildren;
         this.visible = visible;
         this.expanded = expanded;
-        this.this_classinfo=this_classinfo;
+        this.this_classinfo = this_classinfo;
     }
 
     public T getId() {
@@ -67,7 +64,7 @@ public class TreeNodeInfo<T> {
         return level;
     }
 
-    public ClassNodeInfo getClassNodeInfo() {
+    public NodeObjectInfo getClassNodeInfo() {
         return this_classinfo;
     }
     public String getClassName() {
@@ -93,10 +90,8 @@ public class TreeNodeInfo<T> {
     }
     @Override
     public String toString() {
-        return "TreeNodeInfo [id=" + id + ", level=" + level
-                + ", withChildren=" + withChildren + ", visible=" + visible + ", expanded=" + expanded
-                + ", ClassNodeInfo=" + getClassNodeInfo().toString()
-                + "]";
+        return "TreeNodeInfo [id=" + id + ", level=" + level + ", withChildren=" + withChildren + ", visible=" + visible
+                + ", expanded=" + expanded + ", NodeObjectInfo=" + getClassNodeInfo().toString() + "]";
     }
 
 }

@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.ClassNodeInfo;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.NodeObjectInfo;
 
 /**
  * Node. It is package protected so that it cannot be used outside.
@@ -21,7 +21,7 @@ class InMemoryTreeNode<T> implements Serializable {
     private boolean visible = true;
     private final List<InMemoryTreeNode<T>> children = new LinkedList<InMemoryTreeNode<T>>();
     private List<T> childIdListCache = null;
-    // note: adding ClassNodeInfo caused Serialization problems
+    // note: adding NodeObjectInfo caused Serialization problems
     private final String s_file_path;
     private final String s_type;
     private final int i_type;
@@ -35,7 +35,7 @@ class InMemoryTreeNode<T> implements Serializable {
     private final String s_zoom_levels;
 
     public InMemoryTreeNode(final T id, final T parent, final int level,
-            final boolean visible, ClassNodeInfo this_classinfo) {
+            final boolean visible, NodeObjectInfo this_classinfo) {
         super();
         this.id = id;
         this.parent = parent;
@@ -106,7 +106,7 @@ class InMemoryTreeNode<T> implements Serializable {
     }
 
     public synchronized InMemoryTreeNode<T> add(final int index, final T child,
-            final boolean visible, ClassNodeInfo this_classinfo) {
+            final boolean visible, NodeObjectInfo this_classinfo) {
         childIdListCache = null;
         // Note! top levell children are always visible (!)
         final InMemoryTreeNode<T> newNode = new InMemoryTreeNode<T>(child,
@@ -158,9 +158,9 @@ class InMemoryTreeNode<T> implements Serializable {
     int getLevel() {
         return level;
     }
-    public ClassNodeInfo getClassNodeInfo()
+    public NodeObjectInfo getClassNodeInfo()
     {
-      return new ClassNodeInfo(getId(),getType(),getTypeText(),getClassName(),getFileNamePath(),
+      return new NodeObjectInfo(getId(),getType(),getTypeText(),getClassName(),getFileNamePath(),
       getShortText(),getLongText(),getShortDescription(),getLongDescription(),getBounds(),getCenter(),getZoom_Levels());
     }
 
