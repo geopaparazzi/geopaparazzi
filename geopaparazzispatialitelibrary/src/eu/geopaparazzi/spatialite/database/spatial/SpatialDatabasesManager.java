@@ -36,7 +36,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.util.OrderComparator;
-import eu.geopaparazzi.spatialite.util.SpatialDataTypes;
+import eu.geopaparazzi.spatialite.util.SpatialDataType;
 
 /**
  * The spatial database manager.
@@ -92,7 +92,7 @@ public class SpatialDatabasesManager {
             if (currentFile.isFile()) {
                 // mj10777: collect spatialite.geometries and .mbtiles
                 // databases
-                for( SpatialDataTypes spatialiteType : SpatialDataTypes.values() ) {
+                for( SpatialDataType spatialiteType : SpatialDataType.values() ) {
                     if (!spatialiteType.isSpatialiteBased()) {
                         continue;
                     }
@@ -104,7 +104,7 @@ public class SpatialDatabasesManager {
                     if (name.endsWith(extension)) {
                         try {
                             SpatialDatabaseHandler sdb = null;
-                            if (name.endsWith(SpatialDataTypes.MBTILES.getExtension())) {
+                            if (name.endsWith(SpatialDataType.MBTILES.getExtension())) {
                                 sdb = new MbtilesDatabaseHandler(currentFile.getAbsolutePath(), null);
                             } else {
                                 sdb = new SpatialiteDatabaseHandler(currentFile.getAbsolutePath());

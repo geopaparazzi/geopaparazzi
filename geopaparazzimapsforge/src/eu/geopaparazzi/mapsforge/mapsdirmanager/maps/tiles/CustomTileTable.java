@@ -17,7 +17,7 @@
  */
 package eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialTable;
-import eu.geopaparazzi.spatialite.util.SpatialDataTypes;
+import eu.geopaparazzi.spatialite.util.SpatialDataType;
 /**
  * A cutom tiles producer table.
  *
@@ -27,6 +27,7 @@ import eu.geopaparazzi.spatialite.util.SpatialDataTypes;
 @SuppressWarnings("nls")
 public class CustomTileTable extends SpatialTable {
 
+    private static final long serialVersionUID = 1L;
     private String tileQuery;
     private CustomTileDownloader customTileDownloader = null;
 
@@ -46,7 +47,7 @@ public class CustomTileTable extends SpatialTable {
      */
     public CustomTileTable( String dbPath, String name, String srid, int minZoom, int maxZoom, double centerX, double centerY,
             String tileQuery, double[] bounds, CustomTileDownloader customTileDownloader ) {
-        super(dbPath, name, SpatialDataTypes.MAPURL.getTypeName(), srid, minZoom, maxZoom, centerX, centerY, bounds);
+        super(dbPath, name, SpatialDataType.MAPURL.getTypeName(), srid, minZoom, maxZoom, centerX, centerY, bounds);
 
         this.customTileDownloader = customTileDownloader;
         if (this.customTileDownloader != null) { // avoid crash, but loading the map will fail

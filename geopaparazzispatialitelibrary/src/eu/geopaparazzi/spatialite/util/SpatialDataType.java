@@ -23,7 +23,7 @@ package eu.geopaparazzi.spatialite.util;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public enum SpatialDataTypes {
+public enum SpatialDataType {
     /**
      * Mbtiles based database.
      */
@@ -59,11 +59,56 @@ public enum SpatialDataTypes {
      * @param extension the extension used by the db type.
      * @param code a code for the db type.
      */
-    private SpatialDataTypes( String name, String extension, int code, boolean isSpatialiteBased ) {
+    private SpatialDataType( String name, String extension, int code, boolean isSpatialiteBased ) {
         this.name = name;
         this.extension = extension;
         this.code = code;
         this.isSpatialiteBased = isSpatialiteBased;
+    }
+
+    /**
+     * Get the type for a given code.
+     * 
+     * @param code the code.
+     * @return the data type.
+     */
+    public static SpatialDataType getType4Code( int code ) {
+        for( SpatialDataType type : values() ) {
+            if (type.getCode() == code) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("No such type known: " + code);
+    }
+
+    /**
+     * Get the type for a given name.
+     * 
+     * @param name the name.
+     * @return the data type.
+     */
+    public static SpatialDataType getType4Name( String name ) {
+        for( SpatialDataType type : values() ) {
+            if (type.getTypeName().equals(name)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("No such type known: " + name);
+    }
+
+    /**
+     * Get the code for a given name.
+     * 
+     * @param name the name.
+     * @return the code.
+     */
+    public static int getCode4Name( String name ) {
+        for( SpatialDataType type : values() ) {
+            if (type.getTypeName().equals(name)) {
+                return type.getCode();
+            }
+        }
+        throw new IllegalArgumentException("No such type known: " + name);
     }
 
     /**

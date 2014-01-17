@@ -76,7 +76,7 @@ public class TreeNodeInfo<T> {
     /**
      * @return the node object.
      */
-    public TreeNode< ? > getClassNodeInfo() {
+    public TreeNode< ? > getTreeNode() {
         return treeNode;
     }
 
@@ -133,7 +133,7 @@ public class TreeNodeInfo<T> {
     @Override
     public String toString() {
         return "TreeNodeInfo [id=" + id + ", level=" + level + ", withChildren=" + withChildren + ", visible=" + visible
-                + ", expanded=" + expanded + ", TreeNode=" + getClassNodeInfo().toString() + "]";
+                + ", expanded=" + expanded + ", TreeNode=" + getTreeNode().toString() + "]";
     }
 
 }

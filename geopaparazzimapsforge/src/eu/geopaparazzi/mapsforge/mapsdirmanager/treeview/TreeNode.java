@@ -6,6 +6,7 @@ import com.vividsolutions.jts.geom.Envelope;
 
 import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.util.NodeSortParameter;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialTable;
+import eu.geopaparazzi.spatialite.util.SpatialDataType;
 /**
  * The tree node object.
  *
@@ -44,13 +45,8 @@ public class TreeNode<T> {
         if (folder != null) {
             type = 100;
         } else {
-            // type = 1000; // unknown
-            // if (spatialDataType.equals(DIRECTORY)) {
-            // type = 10;
-            // }
-            // if (spatialDataType.equals(FILE)) {
-            type = 101;
-            // }
+            String mapType = spatialTable.getMapType();
+            type = SpatialDataType.getCode4Name(mapType);
         }
     }
 

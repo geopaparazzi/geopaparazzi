@@ -28,7 +28,7 @@ import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.CustomTileDatabaseHandler;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.CustomTileTable;
-import eu.geopaparazzi.spatialite.util.SpatialDataTypes;
+import eu.geopaparazzi.spatialite.util.SpatialDataType;
 
 /**
  * The custom tile database manager.
@@ -80,7 +80,7 @@ public class CustomTileDatabasesManager {
                 if (Utilities.isNameFromHiddenFile(name)) {
                     continue;
                 }
-                if (name.endsWith(SpatialDataTypes.MAPURL.getExtension())) {
+                if (name.endsWith(SpatialDataType.MAPURL.getExtension())) {
                     try {
                         CustomTileDatabaseHandler map = new CustomTileDatabaseHandler(this_file.getAbsolutePath(),
                                 ResourcesManager.getInstance(context).getMapsDir().getAbsolutePath());

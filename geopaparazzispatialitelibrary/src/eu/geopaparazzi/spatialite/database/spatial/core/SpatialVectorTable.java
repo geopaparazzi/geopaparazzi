@@ -28,7 +28,7 @@ import android.content.Context;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteContextHolder;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
-import eu.geopaparazzi.spatialite.util.SpatialDataTypes;
+import eu.geopaparazzi.spatialite.util.SpatialDataType;
 import eu.geopaparazzi.spatialite.util.SpatialiteUtilities;
 import eu.geopaparazzi.spatialite.util.Style;
 
@@ -93,7 +93,7 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
     public SpatialVectorTable( String databasePath, String tableName, String geometryColumn, int geomType, String srid,
             double[] center, double[] bounds, String geometryTypeDescription, int i_row_count, int i_coord_dimension,
             int i_spatial_index_enabled, String lastVerified ) {
-        super(databasePath, tableName, SpatialDataTypes.SQLITE.getTypeName(), srid, 0, 22, center[0], center[1], bounds);
+        super(databasePath, tableName, SpatialDataType.SQLITE.getTypeName(), srid, 0, 22, center[0], center[1], bounds);
 
         this.geometryColumn = geometryColumn;
         this.uniqueName = createUniqueName();

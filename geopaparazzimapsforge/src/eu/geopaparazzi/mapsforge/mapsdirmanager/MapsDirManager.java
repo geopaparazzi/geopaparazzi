@@ -57,6 +57,7 @@ import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.util.NodeSortParameter;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
+import eu.geopaparazzi.spatialite.util.SpatialDataType;
 
 /**
  * The manager of supported maps in the Application maps dir.
@@ -65,11 +66,6 @@ import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
  */
 @SuppressWarnings({"rawtypes", "unchecked", "nls"})
 public class MapsDirManager {
-    private static final int MAP = 0;
-    private static final int MBTILES = 1;
-    private static final int GPKG = 2;
-    private static final int SPATIALITE = 3;
-    private static final int MAPURL = 4;
 
     private List<TreeNode< ? >> tileBasedNodesList = new LinkedList<TreeNode< ? >>();
     private List<TreeNode< ? >> vectorNodesList = new LinkedList<TreeNode< ? >>();
@@ -77,7 +73,7 @@ public class MapsDirManager {
     private int vectorinfoCount = -1;
     private File mapsDir = null;
     private static MapsDirManager mapsdirManager = null;
-    private int i_selected_type = MBTILES;
+    private int selectedSpatialDataTypeCode = SpatialDataType.MBTILES.getCode();
     private String s_selected_type = "";
     private String s_selected_map = "";
     private TreeNode< ? > selectedNode = null;
@@ -247,7 +243,7 @@ public class MapsDirManager {
                     if ((selectedNode == null) && (s_selected_map.equals(table.getDatabasePath()))) {
                         selectedNode = this_mapinfo;
                         s_selected_type = selectedNode.getTypeText();
-                        i_selected_type = selectedNode.getType();
+                        selectedSpatialDataTypeCode = selectedNode.getType();
                     }
                 }
             }
@@ -272,7 +268,7 @@ public class MapsDirManager {
                     if ((selectedNode == null) && (s_selected_map.equals(table.getDatabasePath()))) {
                         selectedNode = this_mapinfo;
                         s_selected_type = selectedNode.getTypeText();
-                        i_selected_type = selectedNode.getType();
+                        selectedSpatialDataTypeCode = selectedNode.getType();
                     }
                 }
             }
@@ -312,7 +308,7 @@ public class MapsDirManager {
                     if ((selectedNode == null) && (s_selected_map.equals(table.getDatabasePath()))) {
                         selectedNode = this_mapinfo;
                         s_selected_type = selectedNode.getTypeText();
-                        i_selected_type = selectedNode.getType();
+                        selectedSpatialDataTypeCode = selectedNode.getType();
                     }
                 }
             }
@@ -324,7 +320,7 @@ public class MapsDirManager {
             // 'mapnik' as default [this should always exist]
             selectedNode = mapnik_mapinfo;
             s_selected_type = selectedNode.getTypeText();
-            i_selected_type = selectedNode.getType();
+            selectedSpatialDataTypeCode = selectedNode.getType();
             s_selected_map = selectedNode.getFilePath();
         }
         GPLog.androidLog(-1, "MapsDirManager handleTileSources maptype_classes.count[" + tileBasedNodesList.size()
@@ -362,7 +358,7 @@ public class MapsDirManager {
         if (selected_classinfo != null) {
             selectedNode = selected_classinfo;
             s_selected_type = selectedNode.getTypeText();
-            i_selected_type = selectedNode.getType();
+            selectedSpatialDataTypeCode = selectedNode.getType();
             s_selected_map = selectedNode.getFilePath();
             // This will save the values to the user-proverences
             setTileSource(context, s_selected_type, s_selected_map);
@@ -402,7 +398,8 @@ public class MapsDirManager {
                 bounds_north = 85.05113;
                 centerX = 0.0;
                 centerY = 0.0;
-                switch( i_selected_type ) {
+                SpatialDataType selectedSpatialDataType = SpatialDataType.getType4Code(selectedSpatialDataTypeCode);
+                switch( selectedSpatialDataType ) {
                 case MAP: {
                     MapTable selected_table = MapDatabasesManager.getInstance().getMapTableByName(s_selected_map);
                     if (selected_table != null) {
@@ -429,7 +426,7 @@ public class MapsDirManager {
                     break;
                 case MBTILES:
                 case GPKG:
-                case SPATIALITE: {
+                case SQLITE: {
                     SpatialRasterTable selected_table = SpatialDatabasesManager.getInstance()
                             .getRasterTableByName(s_selected_map);
                     if (selected_table != null) {
@@ -475,7 +472,7 @@ public class MapsDirManager {
                 }
                     break;
                 default:
-                    i_selected_type = i_rc;
+                    selectedSpatialDataTypeCode = i_rc;
                     break;
                 }
             } catch (jsqlite.Exception e) {

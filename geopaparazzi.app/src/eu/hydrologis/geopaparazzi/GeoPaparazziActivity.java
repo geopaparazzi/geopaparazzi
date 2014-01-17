@@ -452,11 +452,11 @@ public class GeoPaparazziActivity extends Activity {
         // define in MapsDirTreeViewList, which Context-Menues should be suppoted for
         // this Application
         // Should the Properties-Menu be supported/shown?
-        MapsDirTreeViewList.b_properties_file = true;
+        MapsDirTreeViewList.ENABLE_MENU_PROPERTIES_FILE = true;
         // Should the Edit-Menu be supported/shown?
-        MapsDirTreeViewList.b_edit_file = false;
+        MapsDirTreeViewList.ENABLE_MENU_EDIT_FILE = false;
         // Should the Delete-Menu be supported/shown?
-        MapsDirTreeViewList.b_delete_file = false;
+        MapsDirTreeViewList.ENABLE_MENU_DELETE_FILE = false;
         MapsDirManager.reset();
         // if the 'maps_dir' parameter is null, then MapsDirManager will call:
         // - ResourcesManager.getInstance(this).getMapsDir();
@@ -674,9 +674,11 @@ public class GeoPaparazziActivity extends Activity {
                 // map_view
                 // -- if not null : selected_MapClassInfo() will call
                 // MapsDirManager.load_Map(map_view,mapCenterLocation);
-                if (MapsDirTreeViewList.selected_classinfo != null) {
-                    MapsDirManager.getInstance().selectMapClassInfo(this, MapsDirTreeViewList.selected_classinfo, null, null);
-                }
+
+                // if (MapsDirTreeViewList.selected_classinfo != null) {
+                // MapsDirManager.getInstance().selectMapClassInfo(this,
+                // MapsDirTreeViewList.selected_classinfo, null, null);
+                // }
             }
         }
             break;

@@ -18,7 +18,7 @@
 package eu.geopaparazzi.spatialite.database.spatial.core;
 import java.io.Serializable;
 
-import eu.geopaparazzi.spatialite.util.SpatialDataTypes;
+import eu.geopaparazzi.spatialite.util.SpatialDataType;
 /**
  * A raster table from the spatial db.
  *
@@ -44,7 +44,7 @@ public class SpatialRasterTable extends SpatialTable implements Serializable {
      */
     public SpatialRasterTable( String dbPath, String name, String srid, int minZoom, int maxZoom, double centerX, double centerY,
             String tileQuery, double[] bounds ) {
-        super(dbPath, name, SpatialDataTypes.DB.getTypeName(), srid, minZoom, maxZoom, centerX, centerY, bounds);
+        super(dbPath, name, SpatialDataType.DB.getTypeName(), srid, minZoom, maxZoom, centerX, centerY, bounds);
 
         // todo: change this
         if (tileQuery != null) {

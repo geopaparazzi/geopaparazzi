@@ -22,7 +22,9 @@ import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.exceptions.NodeNotInTre
 public class InMemoryTreeStateManager<T> implements TreeStateManager<T> {
     private static final long serialVersionUID = 1L;
     private final Map<T, InMemoryTreeNode<T>> allNodes = new HashMap<T, InMemoryTreeNode<T>>();
+
     private final InMemoryTreeNode<T> topSentinel = new InMemoryTreeNode<T>(null, null, -1, true, null);
+
     private transient List<T> visibleListCache = null; // lasy initialised
     private transient List<T> unmodifiableVisibleList = null;
     private boolean visibleByDefault = true;
@@ -48,7 +50,7 @@ public class InMemoryTreeStateManager<T> implements TreeStateManager<T> {
 
     private InMemoryTreeNode<T> getNodeFromTreeOrThrow( final T id ) {
         if (id == null) {
-            throw new NodeNotInTreeException("(null)");
+            throw new NodeNotInTreeException("InMemoryTreeNode<T> getNodeFromTreeOrThrow(null)");
         }
         final InMemoryTreeNode<T> node = allNodes.get(id);
         if (node == null) {

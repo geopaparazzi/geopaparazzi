@@ -29,7 +29,7 @@ import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapDatabaseHandler;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapTable;
-import eu.geopaparazzi.spatialite.util.SpatialDataTypes;
+import eu.geopaparazzi.spatialite.util.SpatialDataType;
 
 /**
  * The map database manager.
@@ -46,6 +46,9 @@ public class MapDatabasesManager {
     private MapDatabasesManager() {
     }
 
+    /**
+     * @return the singleton instance.
+     */
     public static MapDatabasesManager getInstance() {
         if (mapDbManager == null) {
             mapDbManager = new MapDatabasesManager();
@@ -53,10 +56,21 @@ public class MapDatabasesManager {
         return mapDbManager;
     }
 
+    /**
+     * Reset the manager.
+     */
     public static void reset() {
         mapDbManager = null;
     }
 
+    /**
+     * Initialize the manager.
+     * 
+     * @param context the contect to use.
+     * @param mapsDir the folder to initialize on.
+     * @return <code>true</code> if a nomedia folder was hit.
+     * @throws IOException if something went wrong.
+     */
     public boolean init( Context context, File mapsDir ) throws IOException {
         File[] list_files = mapsDir.listFiles();
         List<MapDatabaseHandler> tmpMapHandlers = new ArrayList<MapDatabaseHandler>();
@@ -69,7 +83,7 @@ public class MapDatabasesManager {
                 if (Utilities.isNameFromHiddenFile(name)) {
                     continue;
                 }
-                if (name.endsWith(SpatialDataTypes.MAP.getExtension())) {
+                if (name.endsWith(SpatialDataType.MAP.getExtension())) {
                     MapDatabaseHandler map = new MapDatabaseHandler(this_file.getAbsolutePath());
                     tmpMapHandlers.add(map);
                 }
@@ -96,10 +110,16 @@ public class MapDatabasesManager {
         return b_nomedia_file;
     }
 
+    /**
+     * @return the count of map handlers.
+     */
     public int size() {
         return mapHandlers.size();
     }
 
+    /**
+     * @return the list of manhandlers.
+     */
     public List<MapDatabaseHandler> getMapDatabaseHandlers() {
         return mapHandlers;
     }
@@ -128,11 +148,25 @@ public class MapDatabasesManager {
         return tables;
     }
 
+    /**
+     * Get the {@link MapDatabaseHandler} for a given {@link MapTable}.
+     * 
+     * @param mapTable the table.
+     * @return the handler.
+     * @throws Exception if something went wrong.
+     */
     public MapDatabaseHandler getMapHandler( MapTable mapTable ) throws Exception {
         MapDatabaseHandler mapDatabaseHandler = mapTablesMap.get(mapTable);
         return mapDatabaseHandler;
     }
 
+    /**
+     * Get the {@link MapTable} for a given name.
+     * 
+     * @param table the tablename.
+     * @return the table object.
+     * @throws Exception if something goes wrong.
+     */
     public MapTable getMapTableByName( String table ) throws Exception {
         List<MapTable> mapTables = getTables(false);
         for( MapTable mapTable : mapTables ) {
@@ -144,7 +178,10 @@ public class MapDatabasesManager {
     }
     /**
      * Close  all Databases that may be open
+     * 
      * <p>mapforge 'MapDatabase' file will be closed with '.closeFile();' if active
+     * 
+     * @throws Exception if something goes wrong.
      */
     public void closeDatabases() throws Exception {
         for( MapDatabaseHandler mapHandler : mapHandlers ) {
