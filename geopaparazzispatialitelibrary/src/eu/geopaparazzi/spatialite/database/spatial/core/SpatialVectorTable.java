@@ -28,6 +28,7 @@ import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteContextHolder;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
 import eu.geopaparazzi.spatialite.util.SpatialDataTypes;
+import eu.geopaparazzi.spatialite.util.SpatialiteUtilities;
 import eu.geopaparazzi.spatialite.util.Style;
 
 // https://www.gaia-gis.it/fossil/libspatialite/wiki?name=metadata-4.0
@@ -119,9 +120,9 @@ public class SpatialVectorTable extends SpatialTable {
                 }
                 sb.append(relativePath);
                 s_unique_name_base = this.databaseFileName + File.separator + tableName + File.separator + geometryColumn;
-                sb.append(File.separator);
+                sb.append(SpatialiteUtilities.UNIQUENAME_SEPARATOR);
                 sb.append(tableName);
-                sb.append(File.separator);
+                sb.append(SpatialiteUtilities.UNIQUENAME_SEPARATOR);
                 sb.append(geometryColumn);
                 return sb.toString();
             } else {

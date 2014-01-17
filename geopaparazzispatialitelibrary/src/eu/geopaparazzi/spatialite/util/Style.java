@@ -27,6 +27,10 @@ public class Style {
     /**
      * 
      */
+    public long id;
+    /**
+     * 
+     */
     public String name;
     /**
      * 
@@ -59,15 +63,22 @@ public class Style {
     /**
      * The text size.
      */
-    public float textsize = 5f;
-    /**
-     * Decimation factor for geometries.
-     */
-    public float decimationFactor = 0.00001f;
+    public float labelsize = 5f;
+
     /**
      * Field to use for labeling.
      */
-    public String textfield = "";
+    public String labelfield = "";
+    /**
+     * Defines if the labeling is enabled.
+     * 
+     * <ul>
+     * <li>0 = false</li>
+     * <li>1 = true</li>
+     * </ul>
+     */
+    public int labelvisible = 0;
+
     /**
      * Defines if the layer is enabled.
      * 
@@ -93,6 +104,10 @@ public class Style {
      * Max possible zoom level.
      */
     public int maxZoom = 22;
+    /**
+     * Decimation factor for geometries.
+     */
+    public float decimationFactor = 0.00001f;
 
     /**
      * @return a string that can be used in a sql insert statement with 
@@ -117,10 +132,12 @@ public class Style {
         sb.append("', ");
         sb.append(width);
         sb.append(", ");
-        sb.append(textsize);
+        sb.append(labelsize);
         sb.append(", '");
-        sb.append(textfield);
+        sb.append(labelfield);
         sb.append("', ");
+        sb.append(labelvisible);
+        sb.append(", ");
         sb.append(enabled);
         sb.append(", ");
         sb.append(order);

@@ -17,25 +17,9 @@
  */
 package eu.geopaparazzi.spatialite.database.spatial.core;
 
-import static eu.geopaparazzi.spatialite.util.SpatialiteUtilities.DASH;
-import static eu.geopaparazzi.spatialite.util.SpatialiteUtilities.DECIMATION;
-import static eu.geopaparazzi.spatialite.util.SpatialiteUtilities.ENABLED;
-import static eu.geopaparazzi.spatialite.util.SpatialiteUtilities.FILLALPHA;
-import static eu.geopaparazzi.spatialite.util.SpatialiteUtilities.FILLCOLOR;
-import static eu.geopaparazzi.spatialite.util.SpatialiteUtilities.MAXZOOM;
-import static eu.geopaparazzi.spatialite.util.SpatialiteUtilities.METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME;
-import static eu.geopaparazzi.spatialite.util.SpatialiteUtilities.METADATA_VECTOR_LAYERS_TABLE_NAME;
-import static eu.geopaparazzi.spatialite.util.SpatialiteUtilities.MINZOOM;
-import static eu.geopaparazzi.spatialite.util.SpatialiteUtilities.NAME;
-import static eu.geopaparazzi.spatialite.util.SpatialiteUtilities.ORDER;
-import static eu.geopaparazzi.spatialite.util.SpatialiteUtilities.PROPERTIESTABLE;
-import static eu.geopaparazzi.spatialite.util.SpatialiteUtilities.SHAPE;
-import static eu.geopaparazzi.spatialite.util.SpatialiteUtilities.SIZE;
-import static eu.geopaparazzi.spatialite.util.SpatialiteUtilities.STROKEALPHA;
-import static eu.geopaparazzi.spatialite.util.SpatialiteUtilities.STROKECOLOR;
-import static eu.geopaparazzi.spatialite.util.SpatialiteUtilities.TEXTFIELD;
-import static eu.geopaparazzi.spatialite.util.SpatialiteUtilities.TEXTSIZE;
-import static eu.geopaparazzi.spatialite.util.SpatialiteUtilities.WIDTH;
+import static eu.geopaparazzi.spatialite.util.DaoSpatialite.METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME;
+import static eu.geopaparazzi.spatialite.util.DaoSpatialite.METADATA_VECTOR_LAYERS_TABLE_NAME;
+import static eu.geopaparazzi.spatialite.util.DaoSpatialite.PROPERTIESTABLE;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,7 +31,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import jsqlite.Constants;
 import jsqlite.Database;
 import jsqlite.Exception;
 import jsqlite.Stmt;
@@ -67,6 +50,7 @@ import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteContextHolder;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryIterator;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
+import eu.geopaparazzi.spatialite.util.DaoSpatialite;
 import eu.geopaparazzi.spatialite.util.OrderComparator;
 import eu.geopaparazzi.spatialite.util.SpatialiteUtilities;
 import eu.geopaparazzi.spatialite.util.Style;
@@ -79,7 +63,7 @@ import eu.geopaparazzi.spatialite.util.Style;
 @SuppressWarnings("nls")
 public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
 
-    private static final int i_style_column_count = 15 + 1; // 0-15
+    private static final int i_style_column_count = 18 + 1; // 0-15
     private String uniqueDbName4DataProperties = "";
 
     private Database db_java;
@@ -126,7 +110,6 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                         relativePath = relativePath.substring(1);
                     }
                     sb.append(relativePath);
-                    sb.append(File.separator);
                     uniqueDbName4DataProperties = sb.toString();
                 }
             } catch (java.lang.Exception e) {
@@ -134,11 +117,13 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             }
             db_java = new jsqlite.Database();
             db_java.open(databasePath, jsqlite.Constants.SQLITE_OPEN_READWRITE | jsqlite.Constants.SQLITE_OPEN_CREATE);
+
             /*
              * 0=check if valid only ; 
              * 1=check if valid and fill vectorTableList,rasterTableList
              */
             checkAndCollectTables(0);
+
             if (!isValid()) {
                 close();
             }
@@ -151,6 +136,22 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
         // }
         // GPLog.androidLog(-1,"SpatialiteDatabaseHandler[" + file_map.getAbsolutePath() +
         // "] name["+s_name+"] s_description["+s_description+"]");
+    }
+
+    private void checkAndUpdateNames() throws Exception {
+        for( SpatialVectorTable table : vectorTableList ) {
+            Style style = table.getStyle();
+            if (!style.name.startsWith(uniqueDbName4DataProperties + SpatialiteUtilities.UNIQUENAME_SEPARATOR)) {
+                // need to update the name in the style and also in the database
+                String[] split = style.name.split(SpatialiteUtilities.UNIQUENAME_SEPARATOR);
+                if (split.length == 3) {
+                    String newName = uniqueDbName4DataProperties + SpatialiteUtilities.UNIQUENAME_SEPARATOR + split[1]
+                            + SpatialiteUtilities.UNIQUENAME_SEPARATOR + split[2];
+                    style.name = newName;
+                    DaoSpatialite.updateStyleName(db_java, newName, style.id);
+                }
+            }
+        }
     }
 
     @Override
@@ -173,131 +174,6 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
         return isDatabaseValid;
     }
 
-    /**
-      * Return info of supported versions in JavaSqlite.
-      * 
-      * <br>- JavaSqlite
-      * <br>- Spatialite
-      * <br>- Proj4
-      * <br>- Geos
-      * <br>-- there is no Spatialite function to retrieve the Sqlite version
-      * <br>-- the Has() functions to not eork with spatialite 3.0.1
-      * 
-      * @return info of supported versions in JavaSqlite.
-      */
-    public String getJavaSqliteDescription() {
-        String s_javasqlite_description = "";
-        try {
-            s_javasqlite_description = "javasqlite[" + getJavaSqliteVersion() + "],";
-            s_javasqlite_description += "spatialite[" + getSpatialiteVersion() + "],";
-            s_javasqlite_description += "proj4[" + getProj4Version() + "],";
-            s_javasqlite_description += "geos[" + getGeosVersion() + "],";
-            s_javasqlite_description += "spatialite_properties[" + getSpatialiteProperties() + "]]";
-        } catch (Exception e) {
-            s_javasqlite_description += "exception[? not a spatialite database, or spatialite < 4 ?]]";
-            GPLog.androidLog(4, "SpatialiteDatabaseHandler[" + databaseFileNameNoExtension + "].getJavaSqliteDescription["
-                    + s_javasqlite_description + "]", e);
-        }
-        return s_javasqlite_description;
-    }
-
-    /**
-     * Get the version of JavaSqlite.
-     * 
-     * <p>known values: 20120209,20131124 as int
-     * 
-     * @return the version of JavaSqlite in 'Constants.drv_minor'.
-     */
-    public static String getJavaSqliteVersion() {
-        return "" + Constants.drv_minor;
-    }
-    // -----------------------------------------------
-    /**
-     * Get the version of Spatialite.
-     *
-     * @return the version of Spatialite.
-     * @throws Exception  if something goes wrong.
-     */
-    public String getSpatialiteVersion() throws Exception {
-        Stmt stmt = db_java.prepare("SELECT spatialite_version();");
-        try {
-            if (stmt.step()) {
-                String value = stmt.column_string(0);
-                return value;
-            }
-        } finally {
-            stmt.close();
-        }
-        return "-";
-    }
-    // -----------------------------------------------
-    /**
-     * Get the properties of Spatialite.
-     * 
-     * - use the known 'SELECT Has..' functions
-     * - when HasIconv=0: no VirtualShapes,VirtualXL
-     * 
-     * @return the properties of Spatialite.
-     * @throws Exception  if something goes wrong.
-     */
-    public String getSpatialiteProperties() throws Exception {
-        String s_value = "-";
-        Stmt stmt = db_java
-                .prepare("SELECT HasIconv(),HasMathSql(),HasGeoCallbacks(),HasProj(),HasGeos(),HasGeosAdvanced(),HasGeosTrunk(),HasLwGeom(),HasLibXML2(),HasEpsg(),HasFreeXL();");
-        try {
-            if (stmt.step()) {
-                s_value = "HasIconv[" + stmt.column_int(0) + "],HasMathSql[" + stmt.column_int(1) + "],HasGeoCallbacks["
-                        + stmt.column_int(2) + "],";
-                s_value += "HasProj[" + stmt.column_int(3) + "],HasGeos[" + stmt.column_int(4) + "],HasGeosAdvanced["
-                        + stmt.column_int(5) + "],";
-                s_value += "HasGeosTrunk[" + stmt.column_int(6) + "],HasLwGeom[" + stmt.column_int(7) + "],HasLibXML2["
-                        + stmt.column_int(8) + "],";
-                s_value += "HasEpsg[" + stmt.column_int(9) + "],HasFreeXL[" + stmt.column_int(10) + "]";
-            }
-        } finally {
-            stmt.close();
-        }
-        return s_value;
-    }
-    // -----------------------------------------------
-    /**
-     * Get the version of proj.
-     *
-     * @return the version of proj.
-     * @throws Exception  if something goes wrong.
-     */
-    public String getProj4Version() throws Exception {
-        Stmt stmt = db_java.prepare("SELECT proj4_version();");
-        try {
-            if (stmt.step()) {
-                String value = stmt.column_string(0);
-                return value;
-            }
-        } finally {
-            stmt.close();
-        }
-        return "-";
-    }
-    // -----------------------------------------------
-    /**
-     * Get the version of geos.
-     *
-     * @return the version of geos.
-     * @throws Exception  if something goes wrong.
-     */
-    public String getGeosVersion() throws Exception {
-        Stmt stmt = db_java.prepare("SELECT geos_version();");
-        try {
-            if (stmt.step()) {
-                String value = stmt.column_string(0);
-                return value;
-            }
-        } finally {
-            stmt.close();
-        }
-        return "-";
-    }
-
     @Override
     public List<SpatialVectorTable> getSpatialVectorTables( boolean forceRead ) throws Exception {
         if (vectorTableList == null || forceRead) {
@@ -305,6 +181,8 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             // 0=check if valid only ; 1=check if valid and fill
             // vectorTableList,rasterTableList
             checkAndCollectTables(1);
+
+            checkAndUpdateNames();
         }
         return vectorTableList;
     }
@@ -418,60 +296,10 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             stmt.close();
         }
         if (!tableExists) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("CREATE TABLE ");
-            sb.append(PROPERTIESTABLE);
-            sb.append(" (");
-            sb.append(NAME).append(" TEXT, ");
-            sb.append(SIZE).append(" REAL, ");
-            sb.append(FILLCOLOR).append(" TEXT, ");
-            sb.append(STROKECOLOR).append(" TEXT, ");
-            sb.append(FILLALPHA).append(" REAL, ");
-            sb.append(STROKEALPHA).append(" REAL, ");
-            sb.append(SHAPE).append(" TEXT, ");
-            sb.append(WIDTH).append(" REAL, ");
-            sb.append(TEXTSIZE).append(" REAL, ");
-            sb.append(TEXTFIELD).append(" TEXT, ");
-            sb.append(ENABLED).append(" INTEGER, ");
-            sb.append(ORDER).append(" INTEGER,");
-            sb.append(DASH).append(" TEXT,");
-            sb.append(MINZOOM).append(" INTEGER,");
-            sb.append(MAXZOOM).append(" INTEGER,");
-            sb.append(DECIMATION).append(" REAL");
-            sb.append(" );");
-            String query = sb.toString();
-            db_java.exec(query, null);
+            DaoSpatialite.createPropertiesTable(db_java);
 
             for( SpatialVectorTable spatialTable : vectorTableList ) {
-                StringBuilder sbIn = new StringBuilder();
-                sbIn.append("insert into ").append(PROPERTIESTABLE);
-                sbIn.append(" ( ");
-                sbIn.append(NAME).append(" , ");
-                sbIn.append(SIZE).append(" , ");
-                sbIn.append(FILLCOLOR).append(" , ");
-                sbIn.append(STROKECOLOR).append(" , ");
-                sbIn.append(FILLALPHA).append(" , ");
-                sbIn.append(STROKEALPHA).append(" , ");
-                sbIn.append(SHAPE).append(" , ");
-                sbIn.append(WIDTH).append(" , ");
-                sbIn.append(TEXTSIZE).append(" , ");
-                sbIn.append(TEXTFIELD).append(" , ");
-                sbIn.append(ENABLED).append(" , ");
-                sbIn.append(ORDER).append(" , ");
-                sbIn.append(DASH).append(" ,");
-                sbIn.append(MINZOOM).append(" ,");
-                sbIn.append(MAXZOOM).append(" ,");
-                sbIn.append(DECIMATION);
-                sbIn.append(" ) ");
-                sbIn.append(" values ");
-                sbIn.append(" ( ");
-                Style style = new Style();
-                style.name = spatialTable.getUniqueName();
-                sbIn.append(style.insertValuesString());
-                sbIn.append(" );");
-
-                String insertQuery = sbIn.toString();
-                db_java.exec(insertQuery, null);
+                DaoSpatialite.createDefaultPropertiesForTable(db_java, spatialTable);
             }
         } else {
             // i_column_count
@@ -513,19 +341,22 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                 }
                 // sa_columms now has the list of fields of the unknown structure
                 // this will create and copy the old table
+                checkTableQuery = "DROP TABLE IF EXISTS " + PROPERTIESTABLE + "_save ;";
+                db_java.exec(checkTableQuery, null);
                 checkTableQuery = "CREATE TABLE " + PROPERTIESTABLE + "_save AS SELECT * FROM " + PROPERTIESTABLE + ";";
                 db_java.exec(checkTableQuery, null);
                 // this will drop and recall this function [nasty] creating the new table and
                 // filling it with default values
-                resetStyleTable();
+                // resetStyleTable();
                 // TODO: add check if all fields of old_table are in the new_table
                 // TODO: set 'sa_columms[i]="";' if it the field does not exist in the new table
                 // TODO: this portion HAS NOT been checked
                 StringBuilder sb_update = new StringBuilder();
-                sb_update.append("UPDATE " + PROPERTIESTABLE + "SET  ");
-                for( int i = 0; i < sa_columms.length; i++ ) { // assums that the old fields also
-                                                               // exist in the new table, empty
-                                                               // sa_columms[i] if it is
+                sb_update.append("UPDATE " + PROPERTIESTABLE + " SET  ");
+                for( int i = 0; i < sa_columms.length; i++ ) {
+                    // assums that the old fields also
+                    // exist in the new table, empty
+                    // sa_columms[i] if it is
                     if (!sa_columms[i].equals("")) {
                         sb_update
                                 .append(sa_columms[i] + "= (SELECT " + PROPERTIESTABLE + "_save." + sa_columms[i] + " FROM "
@@ -543,85 +374,6 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                 db_java.exec(checkTableQuery, null);
             }
         }
-    }
-
-    /**
-     * Retrieve the {@link Style} for a given table.
-     *
-     * @param tableName the table name.
-     * @return the style.
-     * @throws Exception  if something goes wrong.
-     */
-    public Style getStyle4Table( String tableName ) throws Exception {
-        Style style = new Style();
-        style.name = tableName;
-
-        StringBuilder sbSel = new StringBuilder();
-        sbSel.append("select ");
-        sbSel.append(SIZE).append(" , ");
-        sbSel.append(FILLCOLOR).append(" , ");
-        sbSel.append(STROKECOLOR).append(" , ");
-        sbSel.append(FILLALPHA).append(" , ");
-        sbSel.append(STROKEALPHA).append(" , ");
-        sbSel.append(SHAPE).append(" , ");
-        sbSel.append(WIDTH).append(" , ");
-        sbSel.append(TEXTSIZE).append(" , ");
-        sbSel.append(TEXTFIELD).append(" , ");
-        sbSel.append(ENABLED).append(" , ");
-        sbSel.append(ORDER).append(" , ");
-        sbSel.append(DASH).append(" , ");
-        sbSel.append(MINZOOM).append(" , ");
-        sbSel.append(MAXZOOM).append(" , ");
-        sbSel.append(DECIMATION);
-        sbSel.append(" from ");
-        sbSel.append(PROPERTIESTABLE);
-        sbSel.append(" where ");
-        sbSel.append(NAME).append(" ='").append(tableName).append("';");
-
-        String selectQuery = sbSel.toString();
-        Stmt stmt = db_java.prepare(selectQuery);
-        try {
-            if (stmt.step()) {
-                style.size = (float) stmt.column_double(0);
-                style.fillcolor = stmt.column_string(1);
-                style.strokecolor = stmt.column_string(2);
-                style.fillalpha = (float) stmt.column_double(3);
-                style.strokealpha = (float) stmt.column_double(4);
-                style.shape = stmt.column_string(5);
-                style.width = (float) stmt.column_double(6);
-                style.textsize = (float) stmt.column_double(7);
-                style.textfield = stmt.column_string(8);
-                style.enabled = stmt.column_int(9);
-                style.order = stmt.column_int(10);
-                style.dashPattern = stmt.column_string(11);
-                style.minZoom = stmt.column_int(12);
-                style.maxZoom = stmt.column_int(13);
-                style.decimationFactor = (float) stmt.column_double(14);
-            }
-        } finally {
-            stmt.close();
-        }
-        return style;
-    }
-
-    /**
-     * Resets the style properties table through removal and default recreation.
-     * 
-     * @throws Exception  if something goes wrong.
-     */
-    public void resetStyleTable() throws Exception {
-        GPLog.androidLog(-1, "Resetting style table.");
-        StringBuilder sbSel = new StringBuilder();
-        sbSel.append("drop table " + PROPERTIESTABLE + ";");
-
-        String selectQuery = sbSel.toString();
-        Stmt stmt = db_java.prepare(selectQuery);
-        try {
-            stmt.step();
-        } finally {
-            stmt.close();
-        }
-        checkPropertiesTable();
     }
 
     // -----------------------------------------------
@@ -660,42 +412,6 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
 
     public float[] getTableBounds( SpatialTable spatialTable ) throws Exception {
         return spatialTable.getTableBounds();
-    }
-
-    /**
-     * Update a style definition.
-     *
-     * @param style the {@link Style} to set.
-     * @throws Exception  if something goes wrong.
-     */
-    public void updateStyle( Style style ) throws Exception {
-        StringBuilder sbIn = new StringBuilder();
-        sbIn.append("update ").append(PROPERTIESTABLE);
-        sbIn.append(" set ");
-        // sbIn.append(NAME).append("='").append(style.name).append("' , ");
-        sbIn.append(SIZE).append("=").append(style.size).append(" , ");
-        sbIn.append(FILLCOLOR).append("='").append(style.fillcolor).append("' , ");
-        sbIn.append(STROKECOLOR).append("='").append(style.strokecolor).append("' , ");
-        sbIn.append(FILLALPHA).append("=").append(style.fillalpha).append(" , ");
-        sbIn.append(STROKEALPHA).append("=").append(style.strokealpha).append(" , ");
-        sbIn.append(SHAPE).append("='").append(style.shape).append("' , ");
-        sbIn.append(WIDTH).append("=").append(style.width).append(" , ");
-        sbIn.append(TEXTSIZE).append("=").append(style.textsize).append(" , ");
-        sbIn.append(TEXTFIELD).append("='").append(style.textfield).append("' , ");
-        sbIn.append(ENABLED).append("=").append(style.enabled).append(" , ");
-        sbIn.append(ORDER).append("=").append(style.order).append(" , ");
-        sbIn.append(DASH).append("='").append(style.dashPattern).append("' , ");
-        sbIn.append(MINZOOM).append("=").append(style.minZoom).append(" , ");
-        sbIn.append(MAXZOOM).append("=").append(style.maxZoom).append(" , ");
-        sbIn.append(DECIMATION).append("=").append(style.decimationFactor);
-        sbIn.append(" where ");
-        sbIn.append(NAME);
-        sbIn.append("='");
-        sbIn.append(style.name);
-        sbIn.append("';");
-
-        String updateQuery = sbIn.toString();
-        db_java.exec(updateQuery, null);
     }
 
     /**
@@ -1589,9 +1305,10 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                 for( SpatialVectorTable spatialTable : vectorTableList ) {
                     Style style4Table = null;
                     try {
-                        style4Table = getStyle4Table(spatialTable.getUniqueName());
+                        style4Table = DaoSpatialite.getStyle4Table(db_java, spatialTable.getUniqueName());
                     } catch (java.lang.Exception e) {
-                        resetStyleTable();
+                        DaoSpatialite.deleteStyleTable(db_java);
+                        checkPropertiesTable();
                     }
                     if (style4Table == null) {
                         spatialTable.makeDefaultStyle();
@@ -1605,7 +1322,6 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
         }
         return tableFields;
     }
-
     /**
       * Collects the fields of a table, also checking the database type.
       * 
@@ -1727,6 +1443,26 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
         // GPLog.androidLog(-1,"SpatialiteDatabaseHandler.get_table_fields["+s_table+"] ["+getFileNamePath()+"] valid["+b_database_valid+"] database_type["+i_database_type+"] sql["
         // + s_sql_command+ "] ");
         return fieldNamesToTypeMap;
+    }
+
+    /**
+     * Update a style definiton in the db.
+     * 
+     * @param style the {@link Style} to update.
+     * @throws Exception if something goes wrong.
+     */
+    public void updateStyle( Style style ) throws Exception {
+        DaoSpatialite.updateStyle(db_java, style);
+    }
+
+    /**
+     * Delete and recreate a default properties table.
+     * 
+     * @throws Exception if something goes wrong.
+     */
+    public void resetStyleTable() throws Exception {
+        DaoSpatialite.deleteStyleTable(db_java);
+        checkPropertiesTable();
     }
 
 }

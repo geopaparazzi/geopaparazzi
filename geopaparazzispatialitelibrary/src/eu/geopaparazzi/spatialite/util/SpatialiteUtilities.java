@@ -34,108 +34,20 @@ import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
 
 /**
  * SpatialiteUtilities class.
- * Goal is to:
- * - determine which Spatialite Database version is being read
- * - create a new Spatialite Database
- * - convert a sqlite3 Database to a Spatialite Database
- * - convert older spatialite Database to present version
- * -- these spatialite function may not be accessible from sql
- * -->  SpatialiteUtilities.find_shapes(context, maps_dir);
+
  * @author Mark Johnson
  */
 @SuppressWarnings("nls")
 public class SpatialiteUtilities {
-    private static final String PRJ_EXTENSION = ".prj"; //$NON-NLS-1$
+    /**
+     * Name/path separator for spatialite table names.
+     */
+    public static final String UNIQUENAME_SEPARATOR = "#"; //$NON-NLS-1$
 
     /**
-     * From https://www.gaia-gis.it/fossil/libspatialite/wiki?name=metadata-4.0
+     * Extension for shapefiles prjs.
      */
-    public static final String METADATA_VECTOR_LAYERS_TABLE_NAME = " vector_layers";
-    /**
-     * From https://www.gaia-gis.it/fossil/libspatialite/wiki?name=metadata-4.0
-     */
-    public static final String METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME = " vector_layers_statistics";
-
-    /**
-     * The metadata table.
-     */
-    public final static String TABLE_METADATA = "metadata";
-    /**
-     * The metadata column name.
-     */
-    public final static String COL_METADATA_NAME = "name";
-    /**
-     * The metadata column value.
-     */
-    public final static String COL_METADATA_VALUE = "value";
-    /**
-     * The properties table name. 
-     */
-    public static final String PROPERTIESTABLE = "dataproperties";
-    /**
-     * 
-     */
-    public static final String NAME = "name";
-    /**
-     * 
-     */
-    public static final String SIZE = "size";
-    /**
-     * 
-     */
-    public static final String FILLCOLOR = "fillcolor";
-    /**
-     * 
-     */
-    public static final String STROKECOLOR = "strokecolor";
-    /**
-     * 
-     */
-    public static final String FILLALPHA = "fillalpha";
-    /**
-     * 
-     */
-    public static final String STROKEALPHA = "strokealpha";
-    /**
-     * 
-     */
-    public static final String SHAPE = "shape";
-    /**
-     * 
-     */
-    public static final String WIDTH = "width";
-    /**
-     * 
-     */
-    public static final String TEXTSIZE = "textsize";
-    /**
-     * 
-     */
-    public static final String TEXTFIELD = "textfield";
-    /**
-     * 
-     */
-    public static final String ENABLED = "enabled";
-    /**
-     * 
-     */
-    public static final String ORDER = "layerorder";
-    /**
-     * 
-     */
-    public static final String DECIMATION = "decimationfactor";
-    /**
-     * 
-     */
-    public static final String DASH = "dashpattern";
-    /**
-     * 
-     */
-    public static final String MINZOOM = "minzoom";
-    /**
-     * 
-     */
-    public static final String MAXZOOM = "maxzoom";
+    public static final String PRJ_EXTENSION = ".prj"; //$NON-NLS-1$
 
     /**
       * General Function to create jsqlite.Database with spatialite support.
