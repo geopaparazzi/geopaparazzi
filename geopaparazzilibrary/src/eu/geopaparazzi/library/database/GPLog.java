@@ -165,6 +165,9 @@ public class GPLog {
     }
 
     private static int log( String tag, String string ) {
+        if (string == null || string.length() == 0) {
+            string = "no message passed to the log";
+        }
         return Log.i(tag, string);
     }
 
