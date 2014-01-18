@@ -46,6 +46,7 @@ import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.CustomTileDatabasesManager;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.MapDatabasesManager;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.CustomTileDatabaseHandler;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.CustomTileTable;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.GeopackageTileDownloader;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapGeneratorInternal;
@@ -74,7 +75,7 @@ public class MapsDirManager {
     private static MapsDirManager mapsdirManager = null;
     private int selectedSpatialDataTypeCode = SpatialDataType.MBTILES.getCode();
     private String s_selected_type = "";
-    private String s_selected_map = "";
+    private String selectedTableName = "";
     private TreeNode< ? > selectedNode = null;
     private MapGenerator selected_mapGenerator;
     private double bounds_west = 180.0;
@@ -167,7 +168,7 @@ public class MapsDirManager {
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         s_selected_type = preferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE, ""); //$NON-NLS-1$
-        s_selected_map = preferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE_FILE, ""); //$NON-NLS-1$
+        selectedTableName = preferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE_FILE, ""); //$NON-NLS-1$
         // The TreeView type can be set here - depending on user/application preference
         // MapsDirTreeViewList.use_treeType=TreeType.FILEDIRECTORY; // [default]
         // MapsDirTreeViewList.use_treeType=MapsDirTreeViewList.TreeType.MAPTYPE;
@@ -239,7 +240,7 @@ public class MapsDirManager {
                         // if nothing is selected, this will be the default
                         mapnik_mapinfo = this_mapinfo;
                     }
-                    if ((selectedNode == null) && (s_selected_map.equals(table.getDatabasePath()))) {
+                    if ((selectedNode == null) && (selectedTableName.equals(table.getDatabasePath()))) {
                         selectedNode = this_mapinfo;
                         s_selected_type = selectedNode.getTypeText();
                         selectedSpatialDataTypeCode = selectedNode.getType();
@@ -264,7 +265,7 @@ public class MapsDirManager {
                     this_mapinfo = new TreeNode(i_count_raster++, table, null);
                     tileBasedNodesList.add(this_mapinfo);
                     // GPLog.androidLog(-1, "TreeNode[" + this_mapinfo.toString() + "]");
-                    if ((selectedNode == null) && (s_selected_map.equals(table.getDatabasePath()))) {
+                    if ((selectedNode == null) && (selectedTableName.equals(table.getDatabasePath()))) {
                         selectedNode = this_mapinfo;
                         s_selected_type = selectedNode.getTypeText();
                         selectedSpatialDataTypeCode = selectedNode.getType();
@@ -304,7 +305,7 @@ public class MapsDirManager {
                     // }
                     this_mapinfo = new TreeNode(i_count_raster++, table, null);
                     tileBasedNodesList.add(this_mapinfo);
-                    if ((selectedNode == null) && (s_selected_map.equals(table.getDatabasePath()))) {
+                    if ((selectedNode == null) && (selectedTableName.equals(table.getDatabasePath()))) {
                         selectedNode = this_mapinfo;
                         s_selected_type = selectedNode.getTypeText();
                         selectedSpatialDataTypeCode = selectedNode.getType();
@@ -320,10 +321,10 @@ public class MapsDirManager {
             selectedNode = mapnik_mapinfo;
             s_selected_type = selectedNode.getTypeText();
             selectedSpatialDataTypeCode = selectedNode.getType();
-            s_selected_map = selectedNode.getFilePath();
+            selectedTableName = selectedNode.getFilePath();
         }
         GPLog.androidLog(-1, "MapsDirManager handleTileSources maptype_classes.count[" + tileBasedNodesList.size()
-                + "] selected_map[" + s_selected_map + "]");
+                + "] selected_map[" + selectedTableName + "]");
 
         // List will be returned sorted as Directory-File with levels set.
         tileBasedNodesList = MapsDirTreeViewList.getTileBasedNodesList(tileBasedNodesList, mapsDir);
@@ -358,9 +359,9 @@ public class MapsDirManager {
             selectedNode = selected_classinfo;
             s_selected_type = selectedNode.getTypeText();
             selectedSpatialDataTypeCode = selectedNode.getType();
-            s_selected_map = selectedNode.getFilePath();
+            selectedTableName = selectedNode.getFilePath();
             // This will save the values to the user-proverences
-            setTileSource(context, s_selected_type, s_selected_map);
+            setTileSource(context, s_selected_type, selectedTableName);
             i_rc = 0;
             if (map_View != null) {
                 i_rc = loadSelectedMap(map_View, mapCenterLocation);
@@ -400,7 +401,7 @@ public class MapsDirManager {
                 SpatialDataType selectedSpatialDataType = SpatialDataType.getType4Code(selectedSpatialDataTypeCode);
                 switch( selectedSpatialDataType ) {
                 case MAP: {
-                    MapTable selected_table = MapDatabasesManager.getInstance().getMapTableByName(s_selected_map);
+                    MapTable selected_table = MapDatabasesManager.getInstance().getMapTableByName(selectedTableName);
                     if (selected_table != null) {
                         minZoom = selected_table.getMinZoom();
                         maxZoom = selected_table.getMaxZoom();
@@ -426,8 +427,8 @@ public class MapsDirManager {
                 case MBTILES:
                 case GPKG:
                 case SQLITE: {
-                    SpatialRasterTable selected_table = SpatialDatabasesManager.getInstance()
-                            .getRasterTableByName(s_selected_map);
+                    SpatialRasterTable selected_table = SpatialDatabasesManager.getInstance().getRasterTableByName(
+                            selectedTableName);
                     if (selected_table != null) {
                         minZoom = selected_table.getMinZoom();
                         maxZoom = selected_table.getMaxZoom();
@@ -446,7 +447,9 @@ public class MapsDirManager {
                     break;
                 case MAPURL: {
                     CustomTileTable selected_table = CustomTileDatabasesManager.getInstance().getCustomTileTableByName(
-                            s_selected_map);
+                            selectedTableName);
+                    CustomTileDatabaseHandler customTileDatabaseHandler = CustomTileDatabasesManager.getInstance()
+                            .getCustomTileDatabaseHandler(selected_table);
                     if (selected_table != null) {
                         minZoom = selected_table.getMinZoom();
                         maxZoom = selected_table.getMaxZoom();
@@ -457,15 +460,15 @@ public class MapsDirManager {
                         bounds_north = selected_table.getMaxLatitude();
                         centerX = selected_table.getCenterX();
                         centerY = selected_table.getCenterY();
-                        selected_mapGenerator = selected_table.getCustomTileDownloader();
+                        selected_mapGenerator = customTileDatabaseHandler.getCustomTileDownloader();
                         try {
                             clear_TileCache();
                             mapView.setMapGenerator(selected_mapGenerator);
                             GPLog.androidLog(1, "MapsDirManager -I-> MAPURL setMapGenerator[" + s_selected_type
-                                    + "] selected_map[" + s_selected_map + "]");
+                                    + "] selected_map[" + selectedTableName + "]");
                         } catch (java.lang.NullPointerException e_mapurl) {
                             GPLog.androidLog(4, "MapsDirManager -E-> MAPURL setMapGenerator[" + s_selected_type
-                                    + "] selected_map[" + s_selected_map + "]", e_mapurl);
+                                    + "] selected_map[" + selectedTableName + "]", e_mapurl);
                         }
                     }
                 }

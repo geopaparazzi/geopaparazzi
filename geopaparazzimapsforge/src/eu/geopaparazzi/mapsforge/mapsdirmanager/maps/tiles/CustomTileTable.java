@@ -29,7 +29,6 @@ public class CustomTileTable extends SpatialTable {
 
     private static final long serialVersionUID = 1L;
     private String tileQuery;
-    private CustomTileDownloader customTileDownloader = null;
 
     /**
      * constructor.
@@ -43,16 +42,11 @@ public class CustomTileTable extends SpatialTable {
      * @param centerY center y.
      * @param tileQuery query to use for tiles fetching.
      * @param bounds the bounds as [w,s,e,n]
-     * @param customTileDownloader the tile downloader.
      */
     public CustomTileTable( String dbPath, String name, String srid, int minZoom, int maxZoom, double centerX, double centerY,
-            String tileQuery, double[] bounds, CustomTileDownloader customTileDownloader ) {
+            String tileQuery, double[] bounds ) {
         super(dbPath, name, SpatialDataType.MAPURL.getTypeName(), srid, minZoom, maxZoom, centerX, centerY, bounds);
 
-        this.customTileDownloader = customTileDownloader;
-        if (this.customTileDownloader != null) { // avoid crash, but loading the map will fail
-            description = customTileDownloader.getDescription();
-        }
         // todo: change this
         if (tileQuery != null) {
             this.tileQuery = tileQuery;
@@ -62,16 +56,16 @@ public class CustomTileTable extends SpatialTable {
         }
     }
 
-    /**
-      * Retrieve CustomTileDownloader
-      *
-      * <p>dcreated during CustomTileDatabasesManager
-      *
-     * @return customTileDownloader
-      */
-    public CustomTileDownloader getCustomTileDownloader() {
-        return customTileDownloader;
-    }
+    // /**
+    // * Retrieve CustomTileDownloader
+    // *
+    // * <p>created during CustomTileDatabasesManager
+    // *
+    // * @return customTileDownloader
+    // */
+    // public CustomTileDownloader getCustomTileDownloader() {
+    // return customTileDownloader;
+    // }
 
     /**
      * Function to check and correct bounds / zoom level [for 'SpatialiteDatabaseHandler']

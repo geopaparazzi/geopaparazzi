@@ -72,6 +72,15 @@ public class CustomTileDatabaseHandler extends SpatialDatabaseHandler {
     }
 
     /**
+     * Getter for the {@link CustomTileDownloader}.
+     * 
+     * @return the tile downloader.
+     */
+    public CustomTileDownloader getCustomTileDownloader() {
+        return customTileDownloader;
+    }
+
+    /**
      * Get the available tables.
      * 
      * <p>Currently this is a list with a single table.
@@ -86,7 +95,7 @@ public class CustomTileDatabaseHandler extends SpatialDatabaseHandler {
             double[] d_bounds = {boundsWest, boundsSouth, boundsEast, boundsNorth};
             // String tableName = metadata.name;
             CustomTileTable table = new CustomTileTable(databasePath, tableName, "3857", minZoom, maxZoom, centerX, centerY,
-                    "?,?,?", d_bounds, customTileDownloader);
+                    "?,?,?", d_bounds);
             if (table != null) {
                 table.setDefaultZoom(defaultZoom);
                 // setDescription(table.getDescription());
