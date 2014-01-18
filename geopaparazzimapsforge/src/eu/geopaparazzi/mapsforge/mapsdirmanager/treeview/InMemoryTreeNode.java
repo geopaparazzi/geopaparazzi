@@ -23,14 +23,13 @@ class InMemoryTreeNode<T> implements Serializable {
     private final List<InMemoryTreeNode<T>> children = new LinkedList<InMemoryTreeNode<T>>();
     private List<T> childIdListCache = null;
     // note: adding TreeNode caused Serialization problems
-    private final String s_file_path;
-    private final String s_type;
-    private final int i_type;
-    private final String s_bounds;
-    private final String s_center;
-    private final String s_zoom_levels;
+    private final String filePath;
+    private final String typeText;
+    private final int type;
+    private final String bounds;
+    private final String center;
+    private final String zoom_levels;
     private SpatialTable spatialTable;
-    private boolean nodeIsDirectory;
 
     public InMemoryTreeNode( final T id, final T parent, final int level, final boolean visible, TreeNode< ? > treeNode ) {
         super();
@@ -41,25 +40,22 @@ class InMemoryTreeNode<T> implements Serializable {
         if (treeNode != null) {
             // note: the getId() is lost. [why can't this be stored?]
             // this.id_classinfo=this_classinfo.getId();
-            this.s_file_path = treeNode.getFilePath();
-            this.s_type = treeNode.getTypeText();
-            this.i_type = treeNode.getType();
-            this.s_bounds = treeNode.getBounds();
-            this.s_center = treeNode.getCenter();
-            this.s_zoom_levels = treeNode.getZoomLevels();
+            this.filePath = treeNode.getFilePath();
+            this.typeText = treeNode.getTypeText();
+            this.type = treeNode.getType();
+            this.bounds = treeNode.getBounds();
+            this.center = treeNode.getCenter();
+            this.zoom_levels = treeNode.getZoomLevels();
 
             spatialTable = treeNode.getSpatialTable();
-            if (treeNode.getTypeText().equals(TreeNode.DIRECTORY)) {
-                nodeIsDirectory = true;
-            }
         } else {
             // this.id_classinfo=0;
-            this.s_file_path = "";
-            this.s_type = "this_classinfo == null";
-            this.i_type = -1;
-            this.s_bounds = "";
-            this.s_center = "";
-            this.s_zoom_levels = "";
+            this.filePath = "";
+            this.typeText = "this_classinfo == null";
+            this.type = -1;
+            this.bounds = "";
+            this.center = "";
+            this.zoom_levels = "";
         }
     }
 
@@ -131,7 +127,8 @@ class InMemoryTreeNode<T> implements Serializable {
     @Override
     public String toString() {
         return "InMemoryTreeNode [id=" + getId() + ", parent=" + getParent() + ", level=" + getLevel() + ", visible=" + visible
-                + ", children=" + children + ", childIdListCache=" + childIdListCache + ", file_path=" + getFileNamePath();
+                + ", file_path[" + getFilePath() + "], typeText[" + getTypeText() + "],  type[" + getType() + "], bounds["
+                + getBounds() + "]  center[" + getCenter() + "], zoom_levels[" + getZoomLevels() + "]";
     }
 
     T getId() {
@@ -146,33 +143,30 @@ class InMemoryTreeNode<T> implements Serializable {
         return level;
     }
 
-    public TreeNode< ? > getClassNodeInfo() {
+    public TreeNode<T> getTreeNode() {
         if (spatialTable == null) {
-            return null;
-        }
-        if (nodeIsDirectory) {
-            return new TreeNode(getId(), null, spatialTable.getDatabasePath());
+            return new TreeNode<T>(getId(), null, getFilePath());
         } else {
-            return new TreeNode(getId(), spatialTable, null);
+            return new TreeNode<T>(getId(), spatialTable, null);
         }
     }
 
-    public String getFileNamePath() {
-        return s_file_path;
+    public String getFilePath() {
+        return filePath;
     }
     public String getBounds() {
-        return s_bounds;
+        return bounds;
     }
     public String getCenter() {
-        return s_center;
+        return center;
     }
-    public String getZoom_Levels() {
-        return s_zoom_levels;
+    public String getZoomLevels() {
+        return zoom_levels;
     }
     public String getTypeText() {
-        return s_type;
+        return typeText;
     }
     public int getType() {
-        return i_type;
+        return type;
     }
 }

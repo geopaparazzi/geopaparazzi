@@ -81,7 +81,7 @@ public class InMemoryTreeStateManager<T> implements TreeStateManager<T> {
         if (!children.isEmpty() && children.get(0).isVisible()) {
             expanded = true;
         }
-        return new TreeNodeInfo<T>(id, node.getLevel(), !children.isEmpty(), node.isVisible(), expanded, node.getClassNodeInfo());
+        return new TreeNodeInfo<T>(id, node.getLevel(), !children.isEmpty(), node.isVisible(), expanded, node.getTreeNode());
     }
 
     @Override
