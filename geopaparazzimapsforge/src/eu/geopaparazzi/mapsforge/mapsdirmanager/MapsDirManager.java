@@ -23,7 +23,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -571,69 +570,76 @@ public class MapsDirManager {
         return s_bounds_zoom;
     }
 
-    /**
-      * Return a list of VectorTables within these bounds an zoom-level
-      *
-      * we must have 5 values: west,south,east,north wsg84 values and a zoom-level
-      * if called with 'bounds_zoom == null': then all Tables, without checking, will be returned
-      * 
-      * @param bounds_zoom 5 values: west,south,east,north wsg84 values and zoom-level
-      * @param i_check_enabled 0: return all ; 1= return only those that are enabled
-      * @param b_reread true: force new creation of vector-list ; false= read as is
-      * @return List<SpatialVectorTable> vector_TableList
-      */
-    public List<SpatialVectorTable> getSpatialVectorTables( double[] bounds_zoom, int i_check_enabled, boolean b_reread ) {
-        List<SpatialVectorTable> vector_TableList = new ArrayList<SpatialVectorTable>();
-        // String
-        // s_bounds_zoom_sent=bounds_zoom[0]+","+bounds_zoom[1]+","+bounds_zoom[2]+","+bounds_zoom[3]+";"+(int)bounds_zoom[4];
-        // String s_bounds_zoom_calc=get_bounds_zoom_meters_toString(1);
-        // GPLog.androidLog(-1, "getSpatialVectorTables: bounds_zoom_sent[" + s_bounds_zoom_sent+
-        // "] bounds_zoom_calc[" + s_bounds_zoom_calc+ "]");
-        if (b_reread)
-            vectorinfoCount = -1;
-        if ((vectorinfoCount < 0) && (vectorNodesList.size() == 0)) {
-            // if not loaded,
-            // load it
-            loadTreeNodesList();
-        }
-        SpatialDatabasesManager sdManager = SpatialDatabasesManager.getInstance();
-        for( int i = 0; i < vectorNodesList.size(); i++ ) {
-            TreeNode this_vectorinfo = vectorNodesList.get(i);
-            SpatialVectorTable vector_table = null;
-            try { // until DataListActivity is incorperted into MapsDirManager, we must read the
-                  // enabled status in case it changed - getUniqueName()
-                vector_table = sdManager.getVectorTableByName(this_vectorinfo.getFilePath());
-                if (vector_table != null) {
-                    this_vectorinfo.setEnabled(vector_table.isTableEnabled() == 1);
-                }
-            } catch (jsqlite.Exception e) {
-                // GPLog.androidLog(4, "MapsDirManager getSpatialVectorTables SpatialVectorTable[" +
-                // maps_dir.getAbsolutePath() + "]", e);
-            }
-            if (this_vectorinfo.checkPositionValues(bounds_zoom, i_check_enabled) > 0) {
-                /*
-                 *  0=conditions  not  fullfilled  ;
-                 *  1=compleatly  inside  valid  bounds ;
-                 *  2=partially  inside  valid  bounds
-                 */
-                /* try
-                {
-                 */
-                // vector_table=sdManager.getVectorTableByName(this_vectorinfo.getFileNamePath());
-                if (vector_table != null) {
-                    vector_TableList.add(vector_table);
-                    // GPLog.androidLog(-1, "TreeNode[" + this_vectorinfo.toString() + "]");
-                }
-                /*
-                }
-                catch (jsqlite.Exception e) {
-                    GPLog.androidLog(4, "MapsDirManager getSpatialVectorTables SpatialVectorTable[" + maps_dir.getAbsolutePath() + "]", e);
-                }
-                */
-            }
-        }
-        return vector_TableList;
-    }
+    // TODO @mj10777 I really do not like to have this here.
+    // this is a responsibility of the SpatialDatabasesManager,
+    // which already has the method to do so.
+    //
+    // /**
+    // * Return a list of VectorTables within these bounds an zoom-level
+    // *
+    // * we must have 5 values: west,south,east,north wsg84 values and a zoom-level
+    // * if called with 'bounds_zoom == null': then all Tables, without checking, will be returned
+    // *
+    // * @param bounds_zoom 5 values: west,south,east,north wsg84 values and zoom-level
+    // * @param i_check_enabled 0: return all ; 1= return only those that are enabled
+    // * @param b_reread true: force new creation of vector-list ; false= read as is
+    // * @return List<SpatialVectorTable> vector_TableList
+    // */
+    // public List<SpatialVectorTable> getSpatialVectorTables( double[] bounds_zoom, int
+    // i_check_enabled, boolean b_reread ) {
+    // List<SpatialVectorTable> vector_TableList = new ArrayList<SpatialVectorTable>();
+    // // String
+    // //
+    // s_bounds_zoom_sent=bounds_zoom[0]+","+bounds_zoom[1]+","+bounds_zoom[2]+","+bounds_zoom[3]+";"+(int)bounds_zoom[4];
+    // // String s_bounds_zoom_calc=get_bounds_zoom_meters_toString(1);
+    // // GPLog.androidLog(-1, "getSpatialVectorTables: bounds_zoom_sent[" + s_bounds_zoom_sent+
+    // // "] bounds_zoom_calc[" + s_bounds_zoom_calc+ "]");
+    // if (b_reread)
+    // vectorinfoCount = -1;
+    // if ((vectorinfoCount < 0) && (vectorNodesList.size() == 0)) {
+    // // if not loaded,
+    // // load it
+    // loadTreeNodesList();
+    // }
+    // SpatialDatabasesManager sdManager = SpatialDatabasesManager.getInstance();
+    // for( int i = 0; i < vectorNodesList.size(); i++ ) {
+    // TreeNode this_vectorinfo = vectorNodesList.get(i);
+    // SpatialVectorTable vector_table = null;
+    // try { // until DataListActivity is incorperted into MapsDirManager, we must read the
+    // // enabled status in case it changed - getUniqueName()
+    // vector_table = sdManager.getVectorTableByName(this_vectorinfo.getFilePath());
+    // if (vector_table != null) {
+    // this_vectorinfo.setEnabled(vector_table.isTableEnabled() == 1);
+    // }
+    // } catch (jsqlite.Exception e) {
+    // // GPLog.androidLog(4, "MapsDirManager getSpatialVectorTables SpatialVectorTable[" +
+    // // maps_dir.getAbsolutePath() + "]", e);
+    // }
+    // if (this_vectorinfo.checkPositionValues(bounds_zoom, i_check_enabled) > 0) {
+    // /*
+    // * 0=conditions not fullfilled ;
+    // * 1=compleatly inside valid bounds ;
+    // * 2=partially inside valid bounds
+    // */
+    // /* try
+    // {
+    // */
+    // // vector_table=sdManager.getVectorTableByName(this_vectorinfo.getFileNamePath());
+    // if (vector_table != null) {
+    // vector_TableList.add(vector_table);
+    // // GPLog.androidLog(-1, "TreeNode[" + this_vectorinfo.toString() + "]");
+    // }
+    // /*
+    // }
+    // catch (jsqlite.Exception e) {
+    // GPLog.androidLog(4, "MapsDirManager getSpatialVectorTables SpatialVectorTable[" +
+    // maps_dir.getAbsolutePath() + "]", e);
+    // }
+    // */
+    // }
+    // }
+    // return vector_TableList;
+    // }
 
     /**
       * Return Min Zoom

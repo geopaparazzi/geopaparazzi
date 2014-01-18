@@ -27,7 +27,6 @@ import java.util.Map;
 
 import jsqlite.Exception;
 import android.content.Context;
-import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.core.MbtilesDatabaseHandler;
@@ -185,7 +184,6 @@ public class SpatialDatabasesManager {
      * @return the list of spatial vector tables.
      * @throws Exception  if something goes wrong.
      */
-    @SuppressWarnings("nls")
     public List<SpatialVectorTable> getSpatialVectorTables( boolean forceRead ) throws Exception {
         List<SpatialVectorTable> tables = new ArrayList<SpatialVectorTable>();
         for( SpatialDatabaseHandler sdbHandler : spatialDbHandlers ) {

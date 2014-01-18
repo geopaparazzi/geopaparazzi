@@ -118,6 +118,8 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             db_java = new jsqlite.Database();
             db_java.open(databasePath, jsqlite.Constants.SQLITE_OPEN_READWRITE | jsqlite.Constants.SQLITE_OPEN_CREATE);
 
+            checkAndUpdatePropertiesUniqueNames();
+
             /*
              * 0=check if valid only ; 
              * 1=check if valid and fill vectorTableList,rasterTableList
@@ -136,22 +138,6 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
         // }
         // GPLog.androidLog(-1,"SpatialiteDatabaseHandler[" + file_map.getAbsolutePath() +
         // "] name["+s_name+"] s_description["+s_description+"]");
-    }
-
-    private void checkAndUpdateNames() throws Exception {
-        for( SpatialVectorTable table : vectorTableList ) {
-            Style style = table.getStyle();
-            if (!style.name.startsWith(uniqueDbName4DataProperties + SpatialiteUtilities.UNIQUENAME_SEPARATOR)) {
-                // need to update the name in the style and also in the database
-                String[] split = style.name.split(SpatialiteUtilities.UNIQUENAME_SEPARATOR);
-                if (split.length == 3) {
-                    String newName = uniqueDbName4DataProperties + SpatialiteUtilities.UNIQUENAME_SEPARATOR + split[1]
-                            + SpatialiteUtilities.UNIQUENAME_SEPARATOR + split[2];
-                    style.name = newName;
-                    DaoSpatialite.updateStyleName(db_java, newName, style.id);
-                }
-            }
-        }
     }
 
     @Override
@@ -181,8 +167,6 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             // 0=check if valid only ; 1=check if valid and fill
             // vectorTableList,rasterTableList
             checkAndCollectTables(1);
-
-            checkAndUpdateNames();
         }
         return vectorTableList;
     }
@@ -273,108 +257,127 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
     }
 
     /**
+     * Checks if the table names in the properties table are defined properly.
+     * 
+     * <p>The unique table name is a concatenation of:<br>
+     * <b>dbPath#tablename#geometrytype</b>
+     * <p>If the name doesn't start with the database path, it needs to 
+     * be updated. The rest is anyways unique inside the database.
+     * 
+     * @throws Exception if something went wrong.
+     */
+    private void checkAndUpdatePropertiesUniqueNames() throws Exception {
+        List<Style> allStyles = DaoSpatialite.getAllStyles(db_java);
+        for( Style style : allStyles ) {
+            if (!style.name.startsWith(uniqueDbName4DataProperties + SpatialiteUtilities.UNIQUENAME_SEPARATOR)) {
+                // need to update the name in the style and also in the database
+                String[] split = style.name.split(SpatialiteUtilities.UNIQUENAME_SEPARATOR);
+                if (split.length == 3) {
+                    String newName = uniqueDbName4DataProperties + SpatialiteUtilities.UNIQUENAME_SEPARATOR + split[1]
+                            + SpatialiteUtilities.UNIQUENAME_SEPARATOR + split[2];
+                    style.name = newName;
+                    DaoSpatialite.updateStyleName(db_java, newName, style.id);
+                }
+            }
+        }
+    }
+
+    /**
      * Check availability of style for the tables.
      *
      * @throws Exception
      */
     private void checkPropertiesTable() throws Exception {
-        String checkTableQuery = "SELECT name,sql FROM sqlite_master WHERE type='table' AND name='" + PROPERTIESTABLE + "';";
-        Stmt stmt = db_java.prepare(checkTableQuery);
-        String s_create_sql = "";
-        boolean tableExists = false;
-        int i_column_count = 0;
-        try {
-            if (stmt.step()) {
-                String name = stmt.column_string(0);
-                if (name != null) {
-                    tableExists = true;
-                    s_create_sql = stmt.column_string(1);
-                    i_column_count = (s_create_sql.length() - s_create_sql.replace(",", "").length()) + 1;
-                }
-            }
-        } finally {
-            stmt.close();
-        }
+        boolean tableExists = DaoSpatialite.doesTableExist(db_java, PROPERTIESTABLE);
         if (!tableExists) {
             DaoSpatialite.createPropertiesTable(db_java);
-
             for( SpatialVectorTable spatialTable : vectorTableList ) {
-                DaoSpatialite.createDefaultPropertiesForTable(db_java, spatialTable);
-            }
-        } else {
-            // i_column_count
-            // SELECT count(name) FROM dataproperties WHERE name LIKE 'aurina/aurina.sqlite/%'
-            int i_record_count = 0;
-            // we are assumining that if the table exists there is a least 1
-            // record
-            checkTableQuery = "SELECT count(name)  FROM " + PROPERTIESTABLE + " WHERE name LIKE '" + uniqueDbName4DataProperties
-                    + "%';";
-            stmt = db_java.prepare(checkTableQuery);
-            try {
-                if (stmt.step()) {
-                    i_record_count = stmt.column_int(0);
-                }
-            } finally {
-                stmt.close();
-            }
-            if (i_record_count < 1) {
-                for( SpatialVectorTable spatialTable : vectorTableList ) {
-                    String s_unique_name_base = spatialTable.getUniqueNameBase();
-                    checkTableQuery = "UPDATE " + PROPERTIESTABLE + "  SET  name  = '" + uniqueDbName4DataProperties
-                            + s_unique_name_base + "' WHERE name LIKE '%" + s_unique_name_base + "';";
-                    // GPLog.androidLog(-1, "SpatialiteDatabaseHandler[" +
-                    // file_map.getAbsolutePath() + "] col_count["+i_column_count+"] sql[" +
-                    // checkTableQuery + "]");
-                    db_java.exec(checkTableQuery, null);
-                }
-            }
-            if (i_column_count != i_style_column_count) {
-                // structure of table has changed - we
-                // don't know from what version this is
-                s_create_sql = s_create_sql.replace("CREATE TABLE " + PROPERTIESTABLE + " (", "");
-                s_create_sql = s_create_sql.replace(")", "");
-                String[] sa_split = s_create_sql.split(",");
-                String[] sa_columms = new String[sa_split.length];
-                for( int i = 0; i < sa_split.length; i++ ) {
-                    String[] sa_field = sa_split[i].split(" ");
-                    sa_columms[i] = sa_field[0].trim();
-                }
-                // sa_columms now has the list of fields of the unknown structure
-                // this will create and copy the old table
-                checkTableQuery = "DROP TABLE IF EXISTS " + PROPERTIESTABLE + "_save ;";
-                db_java.exec(checkTableQuery, null);
-                checkTableQuery = "CREATE TABLE " + PROPERTIESTABLE + "_save AS SELECT * FROM " + PROPERTIESTABLE + ";";
-                db_java.exec(checkTableQuery, null);
-                // this will drop and recall this function [nasty] creating the new table and
-                // filling it with default values
-                // resetStyleTable();
-                // TODO: add check if all fields of old_table are in the new_table
-                // TODO: set 'sa_columms[i]="";' if it the field does not exist in the new table
-                // TODO: this portion HAS NOT been checked
-                StringBuilder sb_update = new StringBuilder();
-                sb_update.append("UPDATE " + PROPERTIESTABLE + " SET  ");
-                for( int i = 0; i < sa_columms.length; i++ ) {
-                    // assums that the old fields also
-                    // exist in the new table, empty
-                    // sa_columms[i] if it is
-                    if (!sa_columms[i].equals("")) {
-                        sb_update
-                                .append(sa_columms[i] + "= (SELECT " + PROPERTIESTABLE + "_save." + sa_columms[i] + " FROM "
-                                        + PROPERTIESTABLE + "_save WHERE " + PROPERTIESTABLE + "_save.name=" + PROPERTIESTABLE
-                                        + ".name)");
-                        sb_update.append(",");
-                    }
-                }
-                checkTableQuery = sb_update.toString();
-                checkTableQuery = checkTableQuery.substring(0, checkTableQuery.length() - 1) + ";";
-                // GPLog.androidLog(-1, "SpatialiteDatabaseHandler[" + databasePath + "] col_count["
-                // + i_column_count + "] sql["
-                // + checkTableQuery + "]");
-                db_java.exec(checkTableQuery, null);
-                checkTableQuery = "DROP TABLE " + PROPERTIESTABLE + "_save ;";
-                db_java.exec(checkTableQuery, null);
+                DaoSpatialite.createDefaultPropertiesForTable(db_java, spatialTable.getUniqueName());
             }
         }
+
+        // TODO @mj10777 the below is taken care off in the
+        // checkAndUpdatePropertiesUniqueNames. Please
+        // let me know if that is indeed ok.
+        //
+        // else {
+        // // i_column_count
+        // // SELECT count(name) FROM dataproperties WHERE name LIKE 'aurina/aurina.sqlite/%'
+        // int i_record_count = 0;
+        // // we are assumining that if the table exists there is a least 1
+        // // record
+        // checkTableQuery = "SELECT count(name)  FROM " + PROPERTIESTABLE + " WHERE name LIKE '" +
+        // uniqueDbName4DataProperties
+        // + "%';";
+        // stmt = db_java.prepare(checkTableQuery);
+        // try {
+        // if (stmt.step()) {
+        // i_record_count = stmt.column_int(0);
+        // }
+        // } finally {
+        // stmt.close();
+        // }
+        // if (i_record_count < 1) {
+        // for( SpatialVectorTable spatialTable : vectorTableList ) {
+        // String s_unique_name_base = spatialTable.getUniqueNameBase();
+        // checkTableQuery = "UPDATE " + PROPERTIESTABLE + "  SET  name  = '" +
+        // uniqueDbName4DataProperties
+        // + s_unique_name_base + "' WHERE name LIKE '%" + s_unique_name_base + "';";
+        // // GPLog.androidLog(-1, "SpatialiteDatabaseHandler[" +
+        // // file_map.getAbsolutePath() + "] col_count["+i_column_count+"] sql[" +
+        // // checkTableQuery + "]");
+        // db_java.exec(checkTableQuery, null);
+        // }
+        // }
+        // if (i_column_count != i_style_column_count) {
+        // // structure of table has changed - we
+        // // don't know from what version this is
+        // s_create_sql = s_create_sql.replace("CREATE TABLE " + PROPERTIESTABLE + " (", "");
+        // s_create_sql = s_create_sql.replace(")", "");
+        // String[] sa_split = s_create_sql.split(",");
+        // String[] sa_columms = new String[sa_split.length];
+        // for( int i = 0; i < sa_split.length; i++ ) {
+        // String[] sa_field = sa_split[i].split(" ");
+        // sa_columms[i] = sa_field[0].trim();
+        // }
+        // // sa_columms now has the list of fields of the unknown structure
+        // // this will create and copy the old table
+        // checkTableQuery = "DROP TABLE IF EXISTS " + PROPERTIESTABLE + "_save ;";
+        // db_java.exec(checkTableQuery, null);
+        // checkTableQuery = "CREATE TABLE " + PROPERTIESTABLE + "_save AS SELECT * FROM " +
+        // PROPERTIESTABLE + ";";
+        // db_java.exec(checkTableQuery, null);
+        // // this will drop and recall this function [nasty] creating the new table and
+        // // filling it with default values
+        // // resetStyleTable();
+        // // TODO: add check if all fields of old_table are in the new_table
+        // // TODO: set 'sa_columms[i]="";' if it the field does not exist in the new table
+        // // TODO: this portion HAS NOT been checked
+        // StringBuilder sb_update = new StringBuilder();
+        // sb_update.append("UPDATE " + PROPERTIESTABLE + " SET  ");
+        // for( int i = 0; i < sa_columms.length; i++ ) {
+        // // assums that the old fields also
+        // // exist in the new table, empty
+        // // sa_columms[i] if it is
+        // if (!sa_columms[i].equals("")) {
+        // sb_update
+        // .append(sa_columms[i] + "= (SELECT " + PROPERTIESTABLE + "_save." + sa_columms[i] +
+        // " FROM "
+        // + PROPERTIESTABLE + "_save WHERE " + PROPERTIESTABLE + "_save.name=" + PROPERTIESTABLE
+        // + ".name)");
+        // sb_update.append(",");
+        // }
+        // }
+        // checkTableQuery = sb_update.toString();
+        // checkTableQuery = checkTableQuery.substring(0, checkTableQuery.length() - 1) + ";";
+        // // GPLog.androidLog(-1, "SpatialiteDatabaseHandler[" + databasePath + "] col_count["
+        // // + i_column_count + "] sql["
+        // // + checkTableQuery + "]");
+        // db_java.exec(checkTableQuery, null);
+        // checkTableQuery = "DROP TABLE " + PROPERTIESTABLE + "_save ;";
+        // db_java.exec(checkTableQuery, null);
+        // }
+        // }
     }
 
     // -----------------------------------------------

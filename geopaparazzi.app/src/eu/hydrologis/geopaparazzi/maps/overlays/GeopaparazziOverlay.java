@@ -48,6 +48,7 @@ import android.preference.PreferenceManager;
 import com.vividsolutions.jts.android.PointTransformation;
 import com.vividsolutions.jts.android.ShapeWriter;
 import com.vividsolutions.jts.android.geom.DrawableShape;
+import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 
 import eu.geopaparazzi.library.database.GPLog;
@@ -56,7 +57,6 @@ import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
@@ -696,23 +696,28 @@ public abstract class GeopaparazziOverlay extends Overlay {
         double w = zeroPoint.getLongitude();
         double s = whPoint.getLatitude();
         double e = whPoint.getLongitude();
+        Envelope envelope = new Envelope(w, e, s, n);
         try {
             SpatialDatabasesManager sdManager = SpatialDatabasesManager.getInstance();
-            double[] bounds_zoom = new double[]{w, s, e, n, (double) drawZoomLevel};
-            List<SpatialVectorTable> spatialTables = MapsDirManager.getInstance().getSpatialVectorTables(bounds_zoom, 1, false);
+            List<SpatialVectorTable> spatialVectorTables = sdManager.getSpatialVectorTables(false);
             // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite size["+spatialTables.size()+"]: ["+drawZoomLevel+"]");
-            for( int i = 0; i < spatialTables.size(); i++ ) {
-                SpatialVectorTable spatialTable = spatialTables.get(i);
+            for( int i = 0; i < spatialVectorTables.size(); i++ ) {
+                SpatialVectorTable spatialTable = spatialVectorTables.get(i);
                 if (isInterrupted() || sizeHasChanged()) {
                     // stop working
                     return;
                 }
                 Style style4Table = spatialTable.getStyle();
+                if (style4Table.enabled == 0) {
+                    continue;
+                }
+                if (!envelope.intersects(spatialTable.getTableEnvelope())) {
+                    continue;
+                }
                 if (drawZoomLevel < style4Table.minZoom || drawZoomLevel > style4Table.maxZoom) {
                     // we do not draw outside of the zoom levels
                     continue;
                 }
-
                 SpatialDatabaseHandler spatialDatabaseHandler = sdManager.getVectorHandler(spatialTable);
                 if (!(spatialDatabaseHandler instanceof SpatialiteDatabaseHandler)) {
                     return;

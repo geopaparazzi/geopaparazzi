@@ -17,12 +17,14 @@
  */
 package eu.geopaparazzi.spatialite.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jsqlite.Constants;
 import jsqlite.Database;
 import jsqlite.Exception;
 import jsqlite.Stmt;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 
 /**
  * Spatialite support methods.
@@ -170,10 +172,11 @@ public class DaoSpatialite {
      * Create a default properties table for a spatial table.
      * 
      * @param database the db to use.
-     * @param spatialTable the spatial table to create the property record for.
+     * @param spatialTableUniqueName the spatial table's unique name to create the property record for.
+     * @return teh created style object.
      * @throws Exception  if something goes wrong.
      */
-    public static void createDefaultPropertiesForTable( Database database, SpatialVectorTable spatialTable ) throws Exception {
+    public static Style createDefaultPropertiesForTable( Database database, String spatialTableUniqueName ) throws Exception {
         StringBuilder sbIn = new StringBuilder();
         sbIn.append("insert into ").append(PROPERTIESTABLE);
         sbIn.append(" ( ");
@@ -198,12 +201,14 @@ public class DaoSpatialite {
         sbIn.append(" values ");
         sbIn.append(" ( ");
         Style style = new Style();
-        style.name = spatialTable.getUniqueName();
+        style.name = spatialTableUniqueName;
         sbIn.append(style.insertValuesString());
         sbIn.append(" );");
 
         String insertQuery = sbIn.toString();
         database.exec(insertQuery, null);
+
+        return style;
     }
 
     /**
@@ -290,14 +295,11 @@ public class DaoSpatialite {
      * Retrieve the {@link Style} for a given table.
      *
      * @param database the db to use.
-     * @param tableName the table name.
+     * @param spatialTableUniqueName the table name.
      * @return the style.
      * @throws Exception  if something goes wrong.
      */
-    public static Style getStyle4Table( Database database, String tableName ) throws Exception {
-        Style style = new Style();
-        style.name = tableName;
-
+    public static Style getStyle4Table( Database database, String spatialTableUniqueName ) throws Exception {
         StringBuilder sbSel = new StringBuilder();
         sbSel.append("select ");
         sbSel.append(ID).append(" , ");
@@ -320,12 +322,15 @@ public class DaoSpatialite {
         sbSel.append(" from ");
         sbSel.append(PROPERTIESTABLE);
         sbSel.append(" where ");
-        sbSel.append(NAME).append(" ='").append(tableName).append("';");
+        sbSel.append(NAME).append(" ='").append(spatialTableUniqueName).append("';");
 
         String selectQuery = sbSel.toString();
         Stmt stmt = database.prepare(selectQuery);
+        Style style = null;
         try {
             if (stmt.step()) {
+                style = new Style();
+                style.name = spatialTableUniqueName;
                 style.id = stmt.column_long(0);
                 style.size = (float) stmt.column_double(1);
                 style.fillcolor = stmt.column_string(2);
@@ -347,7 +352,74 @@ public class DaoSpatialite {
         } finally {
             stmt.close();
         }
+
+        if (style == null) {
+            style = createDefaultPropertiesForTable(database, spatialTableUniqueName);
+        }
+
         return style;
+    }
+    /**
+     * Retrieve the {@link Style} for all tables of a db.
+     *
+     * @param database the db to use.
+     * @return the list of  styles.
+     * @throws Exception  if something goes wrong.
+     */
+    public static List<Style> getAllStyles( Database database ) throws Exception {
+        StringBuilder sbSel = new StringBuilder();
+        sbSel.append("select ");
+        sbSel.append(ID).append(" , ");
+        sbSel.append(NAME).append(" , ");
+        sbSel.append(SIZE).append(" , ");
+        sbSel.append(FILLCOLOR).append(" , ");
+        sbSel.append(STROKECOLOR).append(" , ");
+        sbSel.append(FILLALPHA).append(" , ");
+        sbSel.append(STROKEALPHA).append(" , ");
+        sbSel.append(SHAPE).append(" , ");
+        sbSel.append(WIDTH).append(" , ");
+        sbSel.append(LABELSIZE).append(" , ");
+        sbSel.append(LABELFIELD).append(" , ");
+        sbSel.append(LABELVISIBLE).append(" , ");
+        sbSel.append(ENABLED).append(" , ");
+        sbSel.append(ORDER).append(" , ");
+        sbSel.append(DASH).append(" , ");
+        sbSel.append(MINZOOM).append(" , ");
+        sbSel.append(MAXZOOM).append(" , ");
+        sbSel.append(DECIMATION);
+        sbSel.append(" from ");
+        sbSel.append(PROPERTIESTABLE);
+
+        String selectQuery = sbSel.toString();
+        Stmt stmt = database.prepare(selectQuery);
+        try {
+            List<Style> stylesList = new ArrayList<Style>();
+            while( stmt.step() ) {
+                Style style = new Style();
+                style.id = stmt.column_long(0);
+                style.name = stmt.column_string(1);
+                style.size = (float) stmt.column_double(2);
+                style.fillcolor = stmt.column_string(3);
+                style.strokecolor = stmt.column_string(4);
+                style.fillalpha = (float) stmt.column_double(5);
+                style.strokealpha = (float) stmt.column_double(6);
+                style.shape = stmt.column_string(7);
+                style.width = (float) stmt.column_double(8);
+                style.labelsize = (float) stmt.column_double(9);
+                style.labelfield = stmt.column_string(10);
+                style.labelvisible = stmt.column_int(11);
+                style.enabled = stmt.column_int(12);
+                style.order = stmt.column_int(13);
+                style.dashPattern = stmt.column_string(14);
+                style.minZoom = stmt.column_int(15);
+                style.maxZoom = stmt.column_int(16);
+                style.decimationFactor = (float) stmt.column_double(17);
+                stylesList.add(style);
+            }
+            return stylesList;
+        } finally {
+            stmt.close();
+        }
     }
 
     /**
@@ -479,6 +551,30 @@ public class DaoSpatialite {
             stmt.close();
         }
         return "-";
+    }
+
+    /**
+     * Checks if a table exists.
+     * 
+     * @param database the db to use. 
+     * @param name the table name to check.
+     * @return <code>true</code> if the table exists.
+     * @throws Exception if something goes wrong.
+     */
+    public static boolean doesTableExist( Database database, String name ) throws Exception {
+        String checkTableQuery = "SELECT name FROM sqlite_master WHERE type='table' AND name='" + name + "';";
+        Stmt stmt = database.prepare(checkTableQuery);
+        try {
+            if (stmt.step()) {
+                String tmpName = stmt.column_string(0);
+                if (tmpName != null) {
+                    return true;
+                }
+            }
+            return false;
+        } finally {
+            stmt.close();
+        }
     }
 
 }

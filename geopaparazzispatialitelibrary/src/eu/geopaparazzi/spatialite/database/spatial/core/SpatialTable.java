@@ -20,6 +20,8 @@ package eu.geopaparazzi.spatialite.database.spatial.core;
 import java.io.File;
 import java.io.Serializable;
 
+import com.vividsolutions.jts.geom.Envelope;
+
 /**
  * Spatial table interface.
  * 
@@ -346,6 +348,19 @@ public abstract class SpatialTable implements Serializable {
         float e = (float) boundsEast;
         float n = (float) boundsNorth;
         return new float[]{n, s, e, w};
+    }
+
+    /**
+     * Get table envelope.
+     * 
+     * @return the {@link Envelope}.
+     */
+    public Envelope getTableEnvelope() {
+        float w = (float) boundsWest;
+        float s = (float) boundsSouth;
+        float e = (float) boundsEast;
+        float n = (float) boundsNorth;
+        return new Envelope(w, e, s, n);
     }
 
     /**
