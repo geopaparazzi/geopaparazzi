@@ -149,6 +149,8 @@ public class DaoSpatialite {
         fieldsList.add(SIZE);
         fieldsList.add(FILLCOLOR);
         fieldsList.add(STROKECOLOR);
+        fieldsList.add(FILLALPHA);
+        fieldsList.add(STROKEALPHA);
         fieldsList.add(SHAPE);
         fieldsList.add(WIDTH);
         fieldsList.add(LABELSIZE);
@@ -262,8 +264,14 @@ public class DaoSpatialite {
             if (stmt.step()) {
                 String creationSql = stmt.column_string(0);
                 if (creationSql != null) {
-                    int tmpCount = creationSql.length() - creationSql.replace(",", "").length();
-                    return tmpCount + 1;
+                    String[] split = creationSql.trim().split("\\(|\\)");
+                    if (split.length != 2) {
+                        throw new RuntimeException("Can't parse creation sql: " + creationSql);
+                    }
+
+                    String fieldsString = split[1];
+                    String[] fields = fieldsString.split(",");
+                    return fields.length;
                 }
             }
             return 0;
