@@ -63,7 +63,6 @@ import eu.geopaparazzi.spatialite.util.Style;
 @SuppressWarnings("nls")
 public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
 
-    private static final int i_style_column_count = 18 + 1; // 0-15
     private String uniqueDbName4DataProperties = "";
 
     private Database db_java;
@@ -76,7 +75,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
 
     /**
      * The database type.
-     * 
+     *
      * <ul>
      * <li>10 == GeoPackage
      * <li>3  == spatialite 3
@@ -90,9 +89,9 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
 
     /**
      * Contructor.
-     * 
+     *
      * @param dbPath the path to the database this handler connects to.
-     * @throws IOException  if something goes wrong. 
+     * @throws IOException  if something goes wrong.
      */
     public SpatialiteDatabaseHandler( String dbPath ) throws IOException {
         super(dbPath);
@@ -118,10 +117,8 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             db_java = new jsqlite.Database();
             db_java.open(databasePath, jsqlite.Constants.SQLITE_OPEN_READWRITE | jsqlite.Constants.SQLITE_OPEN_CREATE);
 
-            checkAndUpdatePropertiesUniqueNames();
-
             /*
-             * 0=check if valid only ; 
+             * 0=check if valid only ;
              * 1=check if valid and fill vectorTableList,rasterTableList
              */
             checkAndCollectTables(0);
@@ -258,20 +255,23 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
 
     /**
      * Checks if the table names in the properties table are defined properly.
-     * 
+     *
      * <p>The unique table name is a concatenation of:<br>
      * <b>dbPath#tablename#geometrytype</b>
-     * <p>If the name doesn't start with the database path, it needs to 
+     * <p>If the name doesn't start with the database path, it needs to
      * be updated. The rest is anyways unique inside the database.
-     * 
+     *
      * @throws Exception if something went wrong.
      */
     private void checkAndUpdatePropertiesUniqueNames() throws Exception {
+     // this is no nonger needed
         List<Style> allStyles = DaoSpatialite.getAllStyles(db_java);
+        GPLog.androidLog(-1, "SpatialiteDatabaseHandler[" + databasePath + "] allStyles.length["+allStyles.size()+"] ");
         for( Style style : allStyles ) {
             if (!style.name.startsWith(uniqueDbName4DataProperties + SpatialiteUtilities.UNIQUENAME_SEPARATOR)) {
                 // need to update the name in the style and also in the database
                 String[] split = style.name.split(SpatialiteUtilities.UNIQUENAME_SEPARATOR);
+                GPLog.androidLog(-1, "SpatialiteDatabaseHandler[" + databasePath + "] split.length["+split.length+"] style.name[" + style.name + "]");
                 if (split.length == 3) {
                     String newName = uniqueDbName4DataProperties + SpatialiteUtilities.UNIQUENAME_SEPARATOR + split[1]
                             + SpatialiteUtilities.UNIQUENAME_SEPARATOR + split[2];
@@ -288,96 +288,90 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
      * @throws Exception
      */
     private void checkPropertiesTable() throws Exception {
-        boolean tableExists = DaoSpatialite.doesTableExist(db_java, PROPERTIESTABLE);
-        if (!tableExists) {
+        int i_column_count = DaoSpatialite.doesTableExist(db_java, PROPERTIESTABLE);
+         if (i_column_count == 0) {
             DaoSpatialite.createPropertiesTable(db_java);
             for( SpatialVectorTable spatialTable : vectorTableList ) {
                 DaoSpatialite.createDefaultPropertiesForTable(db_java, spatialTable.getUniqueName());
             }
         }
-
-        // TODO @mj10777 the below is taken care off in the
-        // checkAndUpdatePropertiesUniqueNames. Please
-        // let me know if that is indeed ok.
-        //
-        // else {
-        // // i_column_count
-        // // SELECT count(name) FROM dataproperties WHERE name LIKE 'aurina/aurina.sqlite/%'
-        // int i_record_count = 0;
-        // // we are assumining that if the table exists there is a least 1
-        // // record
-        // checkTableQuery = "SELECT count(name)  FROM " + PROPERTIESTABLE + " WHERE name LIKE '" +
-        // uniqueDbName4DataProperties
-        // + "%';";
-        // stmt = db_java.prepare(checkTableQuery);
-        // try {
-        // if (stmt.step()) {
-        // i_record_count = stmt.column_int(0);
-        // }
-        // } finally {
-        // stmt.close();
-        // }
-        // if (i_record_count < 1) {
-        // for( SpatialVectorTable spatialTable : vectorTableList ) {
-        // String s_unique_name_base = spatialTable.getUniqueNameBase();
-        // checkTableQuery = "UPDATE " + PROPERTIESTABLE + "  SET  name  = '" +
-        // uniqueDbName4DataProperties
-        // + s_unique_name_base + "' WHERE name LIKE '%" + s_unique_name_base + "';";
-        // // GPLog.androidLog(-1, "SpatialiteDatabaseHandler[" +
-        // // file_map.getAbsolutePath() + "] col_count["+i_column_count+"] sql[" +
-        // // checkTableQuery + "]");
-        // db_java.exec(checkTableQuery, null);
-        // }
-        // }
-        // if (i_column_count != i_style_column_count) {
-        // // structure of table has changed - we
-        // // don't know from what version this is
-        // s_create_sql = s_create_sql.replace("CREATE TABLE " + PROPERTIESTABLE + " (", "");
-        // s_create_sql = s_create_sql.replace(")", "");
-        // String[] sa_split = s_create_sql.split(",");
-        // String[] sa_columms = new String[sa_split.length];
-        // for( int i = 0; i < sa_split.length; i++ ) {
-        // String[] sa_field = sa_split[i].split(" ");
-        // sa_columms[i] = sa_field[0].trim();
-        // }
-        // // sa_columms now has the list of fields of the unknown structure
-        // // this will create and copy the old table
-        // checkTableQuery = "DROP TABLE IF EXISTS " + PROPERTIESTABLE + "_save ;";
-        // db_java.exec(checkTableQuery, null);
-        // checkTableQuery = "CREATE TABLE " + PROPERTIESTABLE + "_save AS SELECT * FROM " +
-        // PROPERTIESTABLE + ";";
-        // db_java.exec(checkTableQuery, null);
-        // // this will drop and recall this function [nasty] creating the new table and
-        // // filling it with default values
-        // // resetStyleTable();
-        // // TODO: add check if all fields of old_table are in the new_table
-        // // TODO: set 'sa_columms[i]="";' if it the field does not exist in the new table
-        // // TODO: this portion HAS NOT been checked
-        // StringBuilder sb_update = new StringBuilder();
-        // sb_update.append("UPDATE " + PROPERTIESTABLE + " SET  ");
-        // for( int i = 0; i < sa_columms.length; i++ ) {
-        // // assums that the old fields also
-        // // exist in the new table, empty
-        // // sa_columms[i] if it is
-        // if (!sa_columms[i].equals("")) {
-        // sb_update
-        // .append(sa_columms[i] + "= (SELECT " + PROPERTIESTABLE + "_save." + sa_columms[i] +
-        // " FROM "
-        // + PROPERTIESTABLE + "_save WHERE " + PROPERTIESTABLE + "_save.name=" + PROPERTIESTABLE
-        // + ".name)");
-        // sb_update.append(",");
-        // }
-        // }
-        // checkTableQuery = sb_update.toString();
-        // checkTableQuery = checkTableQuery.substring(0, checkTableQuery.length() - 1) + ";";
-        // // GPLog.androidLog(-1, "SpatialiteDatabaseHandler[" + databasePath + "] col_count["
-        // // + i_column_count + "] sql["
-        // // + checkTableQuery + "]");
-        // db_java.exec(checkTableQuery, null);
-        // checkTableQuery = "DROP TABLE " + PROPERTIESTABLE + "_save ;";
-        // db_java.exec(checkTableQuery, null);
-        // }
-        // }
+        else
+        { // the table exists, check for correct 'name' fields
+         int i_record_count = 0;
+         // we are assumining that if the table exists there is a least 1 record
+         String checkTableQuery = "SELECT count(name)  FROM " + PROPERTIESTABLE + " WHERE name LIKE '" + uniqueDbName4DataProperties
+                    +SpatialiteUtilities.UNIQUENAME_SEPARATOR+ "%';";
+         Stmt stmt = db_java.prepare(checkTableQuery);
+         try {
+            if (stmt.step()) {
+                i_record_count = stmt.column_int(0);
+            }
+         } finally {
+            stmt.close();
+         }
+         if (i_record_count < 1) {
+          for( SpatialVectorTable spatialTable : vectorTableList ) {
+           String s_unique_name_base = spatialTable.getUniqueNameBase();
+           checkTableQuery = "UPDATE " + PROPERTIESTABLE + "  SET  name  = '" + spatialTable.getUniqueName() + "' WHERE (name LIKE '%" + s_unique_name_base + "' );";
+           // GPLog.androidLog(-1, "SpatialiteDatabaseHandler[" + databasePath  + "] col_count["+i_column_count+"] sql[" + checkTableQuery + "]");
+           db_java.exec(checkTableQuery, null);
+          }
+         }
+         // At this point any renaming due to new syntax '#' instead of '/'
+         //  or that the database has been moved
+         //  (directory portion of name does not match the present directory)
+         // - has been resolved
+         if (i_column_count != DaoSpatialite.i_style_column_count)
+         { // the table structure has changed
+            // - we don't know from what version this is
+            checkTableQuery = "pragma table_info(" + PROPERTIESTABLE + ");";
+            stmt = db_java.prepare(checkTableQuery);
+            String[] sa_columms = new String[i_column_count];
+            int j=0;
+            try {
+             while (stmt.step()) {
+              sa_columms[j++] = stmt.column_string(1);
+             }
+            } finally {
+                stmt.close();
+            }
+            // sa_columms now has the list of fields of the unknown structure
+            // this will create and copy the old table
+            checkTableQuery = "DROP TABLE IF EXISTS " + PROPERTIESTABLE + "_save ;";
+            db_java.exec(checkTableQuery, null);
+            checkTableQuery = "CREATE TABLE " + PROPERTIESTABLE + "_save AS SELECT * FROM " + PROPERTIESTABLE + ";";
+            db_java.exec(checkTableQuery, null);
+            // this will drop and recall this function [nasty] creating the new table and
+            // filling it with default values
+            // this will drop to old table
+            DaoSpatialite.deleteStyleTable(db_java);
+            // this will create the new table and return a list of the present fields
+            List<String> fieldsList = DaoSpatialite.createPropertiesTable(db_java);
+            // fill the new table with default values
+            for( SpatialVectorTable spatialTable : vectorTableList ) {
+                DaoSpatialite.createDefaultPropertiesForTable(db_java, spatialTable.getUniqueName());
+            }
+            StringBuilder sb_update = new StringBuilder();
+            sb_update.append("UPDATE " + PROPERTIESTABLE + " SET  ");
+            for( int i = 0; i < sa_columms.length; i++ ) {
+              // check if field of old_table exsits in the new_table
+              if (fieldsList.indexOf(sa_columms[i]) >= 0)
+              { // data of a renamed or removed field will be lost
+               sb_update.append(sa_columms[i] + "=(SELECT " + PROPERTIESTABLE + "_save." + sa_columms[i] + " FROM "
+                 + PROPERTIESTABLE + "_save WHERE " + PROPERTIESTABLE + "_save.name=" + PROPERTIESTABLE  + ".name)");
+               sb_update.append(",");
+              }
+             }
+             checkTableQuery = sb_update.toString();
+             // get rid of last ','
+             checkTableQuery = checkTableQuery.substring(0, checkTableQuery.length() - 1) + ";";
+             GPLog.androidLog(-1, "SpatialiteDatabaseHandler[" + databasePath + "] col_count["+ i_column_count + "] sql["+ checkTableQuery + "]");
+             db_java.exec(checkTableQuery, null);
+             checkTableQuery = "DROP TABLE " + PROPERTIESTABLE + "_save ;";
+             db_java.exec(checkTableQuery, null);
+         }
+        }
+        // checkAndUpdatePropertiesUniqueNames();
     }
 
     // -----------------------------------------------
@@ -487,7 +481,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
 
     /**
       * Retrieve list of WKB geometries from the given table in the given bounds.
-      *  
+      *
      * @param destSrid the destination srid.
      * @param table the vector table.
      * @param n north bound.
@@ -701,18 +695,18 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
 
     /**
       * Load list of Table [Vector/Raster] for GeoPackage Files [gpkg]
-      * 
+      *
       * <b>THIS METHOD IS VERY EXPERIMENTAL AND A WORK IN PROGRESS</b>
-      * 
+      *
       * <br>- name of Field
       * <br> - type of field as defined in Database
       * <br>- OGC 12-128r9 from 2013-11-19
       * <br>-- older versions will not be supported
       * <br>- With SQLite versions 3.7.17 and later : 'PRAGMA application_id' [1196437808]
       * <br>-- older (for us invalid)  Geopackage Files return 0
-      * 
+      *
       * @param doLoadTable [for use when s_table is empty] 0=do not load table ; 1=load tables
-      * @return the {@link HashMap} of field name to its type. 
+      * @return the {@link HashMap} of field name to its type.
       */
     private HashMap<String, String> collectGpkgTables( int doLoadTable ) throws Exception {
         Stmt this_stmt = null;
@@ -937,14 +931,14 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
 
     /**
       * Load list of Table [Vector] for Spatialite Files
-      * 
+      *
       * <br>- name of Field
       * <br>- type of field as defined in Database
-      * 
-      * @param doLoadTable [for use when s_table is empty] 
+      *
+      * @param doLoadTable [for use when s_table is empty]
       *                 <br>0=do not load table
       *                 <br>1=load tables
-      * @return the {@link HashMap} of field name to its type. 
+      * @return the {@link HashMap} of field name to its type.
       */
     private HashMap<String, String> collectSpatialiteTables( int doLoadTable ) throws Exception {
         Stmt this_stmt = null;
@@ -1210,11 +1204,11 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
 
     /**
       * Checks (and adapts) the overall database bounds based on the passed coordinates.
-      * 
+      *
       * <p>Goal: when painting the Geometries: check of viewport is inside these bounds.
       * <br>- if the Viewport is outside these Bounds: all Tables can be ignored
       * <br>-- this is called when the Tables are created
-      * 
+      *
       * @param boundsCoordinates bounds to check against the overall.
       */
     private void checkAndAdaptDatabaseBounds( double[] boundsCoordinates, int[] zoomLevels ) {
@@ -1250,12 +1244,12 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
 
     /**
       * Collects tables.
-      * 
+      *
       * <ul>
       * <li>name of Field
       * <li>type of field as defined in Database
       * </ul>
-      * 
+      *
       * @param doLoadTables 0 = do not load table; 1=load tables
       * @return fields_list [name of field, type of field]
       */
@@ -1328,14 +1322,14 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
     }
     /**
       * Collects the fields of a table, also checking the database type.
-      * 
+      *
       * <br>- name of Field
       * <br>- type of field as defined in Database
-      * 
-      * @param tableName name of table to read. 
+      *
+      * @param tableName name of table to read.
       *             If <code>null</code>: list of all tables in Database.
-      * @param doLoadTable [for use when table is empty] 
-      *             <br>0=do not load table 
+      * @param doLoadTable [for use when table is empty]
+      *             <br>0=do not load table
       *             <br>1=load tables
       * @return the {@link HashMap} of fields: [name of field, type of field]
       */
@@ -1451,7 +1445,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
 
     /**
      * Update a style definiton in the db.
-     * 
+     *
      * @param style the {@link Style} to update.
      * @throws Exception if something goes wrong.
      */
@@ -1461,7 +1455,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
 
     /**
      * Delete and recreate a default properties table.
-     * 
+     *
      * @throws Exception if something goes wrong.
      */
     public void resetStyleTable() throws Exception {

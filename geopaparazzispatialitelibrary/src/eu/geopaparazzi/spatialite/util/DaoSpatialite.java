@@ -28,7 +28,7 @@ import eu.geopaparazzi.library.database.GPLog;
 
 /**
  * Spatialite support methods.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
@@ -55,90 +55,144 @@ public class DaoSpatialite {
      */
     public final static String COL_METADATA_VALUE = "value";
     /**
-     * The properties table name. 
+     * The properties table name.
      */
     public static final String PROPERTIESTABLE = "dataproperties";
     /**
-     * The properties table id field. 
+     * The properties table id field.
      */
     public static final String ID = "_id";
     /**
-     * 
+     *
      */
     public static final String NAME = "name";
     /**
-     * 
+     *
      */
     public static final String SIZE = "size";
     /**
-     * 
+     *
      */
     public static final String FILLCOLOR = "fillcolor";
     /**
-     * 
+     *
      */
     public static final String STROKECOLOR = "strokecolor";
     /**
-     * 
+     *
      */
     public static final String FILLALPHA = "fillalpha";
     /**
-     * 
+     *
      */
     public static final String STROKEALPHA = "strokealpha";
     /**
-     * 
+     *
      */
     public static final String SHAPE = "shape";
     /**
-     * 
+     *
      */
     public static final String WIDTH = "width";
     /**
-     * 
+     *
      */
     public static final String ENABLED = "enabled";
     /**
-     * 
+     *
      */
     public static final String ORDER = "layerorder";
     /**
-     * 
+     *
      */
     public static final String DECIMATION = "decimationfactor";
     /**
-     * 
+     *
      */
     public static final String DASH = "dashpattern";
     /**
-     * 
+     *
      */
     public static final String MINZOOM = "minzoom";
     /**
-     * 
+     *
      */
     public static final String MAXZOOM = "maxzoom";
 
     /**
-     * 
+     *
      */
     public static final String LABELFIELD = "labelfield";
     /**
-     * 
+     *
      */
     public static final String LABELSIZE = "labelsize";
     /**
-     * 
+     *
      */
     public static final String LABELVISIBLE = "labelvisible";
-
+    /**
+     * The properties table column count.
+     *  - value is set when doesTableExist is called
+     */
+    public static int i_style_column_count = -1; // 0-18
+        /**
+     * Checks if a table exists.
+     *
+     * @param database the db to use.
+     * @param name the table name to check.
+     * @return <code>number of columns</code> if the table exists.
+     * @throws Exception if something goes wrong.
+     */
+    public static int doesTableExist( Database database, String name ) throws Exception {
+        if (i_style_column_count < 0)
+        {
+         createPropertiesTable(null);
+        }
+        String checkTableQuery = "SELECT sql  FROM sqlite_master WHERE type='table' AND name='" + name + "';";
+        Stmt stmt = database.prepare(checkTableQuery);
+        try {
+            if (stmt.step()) {
+                String create_sql = stmt.column_string(0);
+                if (create_sql != null) {
+                    return (create_sql.length() - create_sql.replace(",", "").length()) + 1;
+                }
+            }
+            return 0;
+        } finally {
+            stmt.close(); // mj10777: this will never run
+        }
+    }
     /**
      * Create the properties table.
-     * 
+     *
      * @param database the db to use.
      * @throws Exception  if something goes wrong.
      */
-    public static void createPropertiesTable( Database database ) throws Exception {
+    public static List<String> createPropertiesTable( Database database) throws Exception {
+        // posibly make fieldsList 'public static' and move to 'doesTableExist'
+        List<String> fieldsList = new ArrayList<String>();
+        fieldsList.add(ID);
+        fieldsList.add(NAME);
+        fieldsList.add(SIZE);
+        fieldsList.add(FILLCOLOR);
+        fieldsList.add(STROKECOLOR);
+        fieldsList.add(SHAPE);
+        fieldsList.add(WIDTH);
+        fieldsList.add(LABELSIZE);
+        fieldsList.add(LABELFIELD);
+        fieldsList.add(LABELVISIBLE);
+        fieldsList.add(ENABLED);
+        fieldsList.add(ORDER);
+        fieldsList.add(DASH);
+        fieldsList.add(MINZOOM);
+        fieldsList.add(MAXZOOM);
+        fieldsList.add(DECIMATION);
+        if (database == null)
+        { // called by doesTableExist only
+         i_style_column_count=fieldsList.size();
+         return fieldsList;
+        }
         StringBuilder sb = new StringBuilder();
         sb.append("CREATE TABLE ");
         sb.append(PROPERTIESTABLE);
@@ -165,12 +219,12 @@ public class DaoSpatialite {
         sb.append(" );");
         String query = sb.toString();
         database.exec(query, null);
-
+        return fieldsList;
     }
 
     /**
      * Create a default properties table for a spatial table.
-     * 
+     *
      * @param database the db to use.
      * @param spatialTableUniqueName the spatial table's unique name to create the property record for.
      * @return teh created style object.
@@ -213,7 +267,7 @@ public class DaoSpatialite {
 
     /**
      * Deletes the style properties table.
-     * 
+     *
      * @param database the db to use.
      * @throws Exception  if something goes wrong.
      */
@@ -233,7 +287,7 @@ public class DaoSpatialite {
 
     /**
      * Update the style name in the properties table.
-     * 
+     *
      * @param database the db to use.
      * @param name the new name.
      * @param id the record id of the style.
@@ -255,7 +309,7 @@ public class DaoSpatialite {
 
     /**
      * Update a style definition.
-     * 
+     *
      * @param database the db to use.
      * @param style the {@link Style} to set.
      * @throws Exception  if something goes wrong.
@@ -391,8 +445,9 @@ public class DaoSpatialite {
         sbSel.append(PROPERTIESTABLE);
 
         String selectQuery = sbSel.toString();
-        Stmt stmt = database.prepare(selectQuery);
+        Stmt stmt = null;
         try {
+            stmt = database.prepare(selectQuery);
             List<Style> stylesList = new ArrayList<Style>();
             while( stmt.step() ) {
                 Style style = new Style();
@@ -424,14 +479,14 @@ public class DaoSpatialite {
 
     /**
      * Return info of supported versions in JavaSqlite.
-     * 
+     *
      * <br>- JavaSqlite
      * <br>- Spatialite
      * <br>- Proj4
      * <br>- Geos
      * <br>-- there is no Spatialite function to retrieve the Sqlite version
      * <br>-- the Has() functions to not eork with spatialite 3.0.1
-     * 
+     *
      * @param database the db to use.
      * @param name a name for the log.
      * @return info of supported versions in JavaSqlite.
@@ -454,9 +509,9 @@ public class DaoSpatialite {
 
     /**
      * Get the version of JavaSqlite.
-     * 
+     *
      * <p>known values: 20120209,20131124 as int
-     * 
+     *
      * @return the version of JavaSqlite in 'Constants.drv_minor'.
      */
     public static String getJavaSqliteVersion() {
@@ -485,10 +540,10 @@ public class DaoSpatialite {
 
     /**
      * Get the properties of Spatialite.
-     * 
+     *
      * <br>- use the known 'SELECT Has..' functions
      * <br>- when HasIconv=0: no VirtualShapes,VirtualXL
-     * 
+     *
      * @param database the db to use.
      * @return the properties of Spatialite.
      * @throws Exception  if something goes wrong.
@@ -515,7 +570,7 @@ public class DaoSpatialite {
 
     /**
      * Get the version of proj.
-     * 
+     *
      * @param database the db to use.
      * @return the version of proj.
      * @throws Exception  if something goes wrong.
@@ -535,7 +590,7 @@ public class DaoSpatialite {
 
     /**
      * Get the version of geos.
-     * 
+     *
      * @param database the db to use.
      * @return the version of geos.
      * @throws Exception  if something goes wrong.
@@ -552,29 +607,4 @@ public class DaoSpatialite {
         }
         return "-";
     }
-
-    /**
-     * Checks if a table exists.
-     * 
-     * @param database the db to use. 
-     * @param name the table name to check.
-     * @return <code>true</code> if the table exists.
-     * @throws Exception if something goes wrong.
-     */
-    public static boolean doesTableExist( Database database, String name ) throws Exception {
-        String checkTableQuery = "SELECT name FROM sqlite_master WHERE type='table' AND name='" + name + "';";
-        Stmt stmt = database.prepare(checkTableQuery);
-        try {
-            if (stmt.step()) {
-                String tmpName = stmt.column_string(0);
-                if (tmpName != null) {
-                    return true;
-                }
-            }
-            return false;
-        } finally {
-            stmt.close();
-        }
-    }
-
 }
