@@ -71,8 +71,8 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
     private String labelField = "";
     // list of possible primary keys - for more that one: seperated with ';'
     private String primaryKeyFields = "";
-    private String uniqueName = "";
-    private String s_unique_name_base = "";
+    private String uniqueNameBasedOnDbFilePath = "";
+    private String uniqueNameBasedOnDbFileName = "";
 
     /**
      * Constructor.
@@ -85,31 +85,27 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
      * @param center the wgs84 center coordinates.
      * @param bounds the table bounds in wgs84.
      * @param geometryTypeDescription the geometry description.
-     * @param i_row_count TODO Mark, is this necessary, it seems to be unused.
-     * @param i_coord_dimension TODO Mark, is this necessary, it seems to be unused.
-     * @param i_spatial_index_enabled TODO Mark, is this necessary, it seems to be unused.
-     * @param lastVerified TODO Mark, is this necessary, it seems to be unused.
      */
     public SpatialVectorTable( String databasePath, String tableName, String geometryColumn, int geomType, String srid,
-            double[] center, double[] bounds, String geometryTypeDescription, int i_row_count, int i_coord_dimension,
-            int i_spatial_index_enabled, String lastVerified ) {
+            double[] center, double[] bounds, String geometryTypeDescription ) {
         super(databasePath, tableName, SpatialDataType.SQLITE.getTypeName(), srid, 0, 22, center[0], center[1], bounds);
 
         this.geometryColumn = geometryColumn;
-        this.uniqueName = createUniqueName();
         this.geomType = geomType;
         this.geometryTypeDescription = geometryTypeDescription;
+
+        createUniqueNames();
 
         checkType();
     }
 
     /**
-     * Create a unique name for the table based on db path and geometry.
-     *
-     * @return the unique name.
+     * Create a unique names for the table based on db path/name, table and geometry.
      */
-    private String createUniqueName() {
+    private void createUniqueNames() {
+        String SEP = SpatialiteUtilities.UNIQUENAME_SEPARATOR;
         try {
+            uniqueNameBasedOnDbFileName = this.databaseFileName + SEP + tableName + SEP + geometryColumn;
             Context context = SpatialiteContextHolder.INSTANCE.getContext();
             ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
             File mapsDir = resourcesManager.getMapsDir();
@@ -121,18 +117,18 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
                     relativePath = relativePath.substring(1);
                 }
                 sb.append(relativePath);
-                s_unique_name_base = this.databaseFileName + File.separator + tableName + File.separator + geometryColumn;
-                sb.append(SpatialiteUtilities.UNIQUENAME_SEPARATOR);
+                sb.append(SEP);
                 sb.append(tableName);
-                sb.append(SpatialiteUtilities.UNIQUENAME_SEPARATOR);
+                sb.append(SEP);
                 sb.append(geometryColumn);
-                return sb.toString();
+                uniqueNameBasedOnDbFilePath = sb.toString();
+
             } else {
                 throw new RuntimeException();
             }
         } catch (Exception e) {
             // ignore and use absolute path
-            return this.databasePath + File.separator + tableName + File.separator + geometryColumn;
+            uniqueNameBasedOnDbFilePath = databasePath + SEP + tableName + SEP + geometryColumn;
         }
     }
 
@@ -157,32 +153,31 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
       * 
       * <ul>
       * <li>- needed to identify one specfic field inside the whole Maps-Directory
-      * <li>-- Sample: '/storage/emulated/0/maps/aurina/aurina.sqlite/topcloud/Geometry'
-      * <li>--- Maps-Directory:  ''/storage/emulated/0/maps/'
+      * <li>--- Maps-Directory:  '/storage/emulated/0/maps/'
       * <li>--- Directory inside the Maps-Directory: 'aurina/'
-      * <li>--- UniqueNameBase : 'aurina.sqlite/topcloud/Geometry'
-      * <li>-- Result : 'aurina/aurina.sqlite/topcloud/Geometry'
+      * <li>-- Result : 'aurina/aurina.sqlite#topcloud#Geometry'
       * </ul>
      * @return the unique name.
       */
-    public String getUniqueName() {
-        return this.uniqueName;
+    public String getUniqueNameBasedOnDbFilePath() {
+        return uniqueNameBasedOnDbFilePath;
     }
+
     /**
       * Unique-Name-Base of Database inside 'sdcard/maps' directory
       * 
       * <ul>
       * <li>- needed to Directory portion if the Database has been moved
-      * <li>-- Sample: '/storage/emulated/0/maps/aurina/aurina.sqlite/topcloud/Geometry'
       * <li>--- Maps-Directory:  ''/storage/emulated/0/maps/'
       * <li>--- Directory inside the Maps-Directory: 'aurina/'
-      * <li>-- Result : 'aurina.sqlite/topcloud/Geometry'
+      * <li>-- Result : 'aurina.sqlite#topcloud#Geometry'
       * </ul>
      * @return the unique name base.
       */
-    public String getUniqueNameBase() {
-        return this.s_unique_name_base;
+    public String getUniqueNameBasedOnDbFileName() {
+        return uniqueNameBasedOnDbFileName;
     }
+
     /**
      * @return the geometry type.
      */
@@ -217,7 +212,6 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
         return labelList;
     }
 
-    // -----------------------------------------------
     /**
       * Returns Primary Key Fields
       * 
@@ -407,6 +401,6 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
      */
     public void makeDefaultStyle() {
         style = new Style();
-        style.name = getUniqueName();
+        style.name = getUniqueNameBasedOnDbFilePath();
     }
 }

@@ -122,7 +122,7 @@ public class DataListActivity extends ListActivity {
                         } else if ((item.isPoint()) || (item.isGeometryCollection())) {
                             intent = new Intent(DataListActivity.this, PointsDataPropertiesActivity.class);
                         }
-                        intent.putExtra(SpatialiteLibraryConstants.PREFS_KEY_TEXT, item.getUniqueName());
+                        intent.putExtra(SpatialiteLibraryConstants.PREFS_KEY_TEXT, item.getUniqueNameBasedOnDbFilePath());
                         startActivity(intent);
 
                     }

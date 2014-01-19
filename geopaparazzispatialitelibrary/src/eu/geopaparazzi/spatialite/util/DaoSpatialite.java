@@ -18,6 +18,7 @@
 package eu.geopaparazzi.spatialite.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import jsqlite.Constants;
@@ -131,46 +132,12 @@ public class DaoSpatialite {
      *
      */
     public static final String LABELVISIBLE = "labelvisible";
+
     /**
-     * The properties table column count.
-     *  - value is set when doesTableExist is called
+     * The complete list of fields in the properties table.
      */
-    public static int i_style_column_count = -1; // 0-18
-        /**
-     * Checks if a table exists.
-     *
-     * @param database the db to use.
-     * @param name the table name to check.
-     * @return <code>number of columns</code> if the table exists.
-     * @throws Exception if something goes wrong.
-     */
-    public static int doesTableExist( Database database, String name ) throws Exception {
-        if (i_style_column_count < 0)
-        {
-         createPropertiesTable(null);
-        }
-        String checkTableQuery = "SELECT sql  FROM sqlite_master WHERE type='table' AND name='" + name + "';";
-        Stmt stmt = database.prepare(checkTableQuery);
-        try {
-            if (stmt.step()) {
-                String create_sql = stmt.column_string(0);
-                if (create_sql != null) {
-                    return (create_sql.length() - create_sql.replace(",", "").length()) + 1;
-                }
-            }
-            return 0;
-        } finally {
-            stmt.close(); // mj10777: this will never run
-        }
-    }
-    /**
-     * Create the properties table.
-     *
-     * @param database the db to use.
-     * @throws Exception  if something goes wrong.
-     */
-    public static List<String> createPropertiesTable( Database database) throws Exception {
-        // posibly make fieldsList 'public static' and move to 'doesTableExist'
+    public static List<String> PROPERTIESTABLE_FIELDS_LIST;
+    static {
         List<String> fieldsList = new ArrayList<String>();
         fieldsList.add(ID);
         fieldsList.add(NAME);
@@ -188,11 +155,41 @@ public class DaoSpatialite {
         fieldsList.add(MINZOOM);
         fieldsList.add(MAXZOOM);
         fieldsList.add(DECIMATION);
-        if (database == null)
-        { // called by doesTableExist only
-         i_style_column_count=fieldsList.size();
-         return fieldsList;
+        PROPERTIESTABLE_FIELDS_LIST = Collections.unmodifiableList(fieldsList);
+    }
+
+    /**
+    * Checks if a table exists.
+    *
+    * @param database the db to use.
+    * @param name the table name to check.
+    * @return the number of columns, if the table exists or 0 if the table doesn't exis.
+    * @throws Exception if something goes wrong.
+    */
+    public static int checkTableExistence( Database database, String name ) throws Exception {
+        String checkTableQuery = "SELECT sql  FROM sqlite_master WHERE type='table' AND name='" + name + "';";
+        Stmt stmt = database.prepare(checkTableQuery);
+        try {
+            if (stmt.step()) {
+                String creationSql = stmt.column_string(0);
+                if (creationSql != null) {
+                    int tmpCount = creationSql.length() - creationSql.replace(",", "").length();
+                    return tmpCount + 1;
+                }
+            }
+            return 0;
+        } finally {
+            stmt.close();
         }
+    }
+
+    /**
+     * Create the properties table.
+     *
+     * @param database the db to use.
+     * @throws Exception  if something goes wrong.
+     */
+    public static void createPropertiesTable( Database database ) throws Exception {
         StringBuilder sb = new StringBuilder();
         sb.append("CREATE TABLE ");
         sb.append(PROPERTIESTABLE);
@@ -219,7 +216,6 @@ public class DaoSpatialite {
         sb.append(" );");
         String query = sb.toString();
         database.exec(query, null);
-        return fieldsList;
     }
 
     /**
@@ -272,7 +268,7 @@ public class DaoSpatialite {
      * @throws Exception  if something goes wrong.
      */
     public static void deleteStyleTable( Database database ) throws Exception {
-        GPLog.androidLog(-1, "Resetting style table.");
+        GPLog.androidLog(-1, "Resetting style table for: " + database.getFilename());
         StringBuilder sbSel = new StringBuilder();
         sbSel.append("drop table if exists " + PROPERTIESTABLE + ";");
 

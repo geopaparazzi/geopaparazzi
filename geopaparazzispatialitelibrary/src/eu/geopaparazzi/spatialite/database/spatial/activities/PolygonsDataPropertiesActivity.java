@@ -62,7 +62,7 @@ public class PolygonsDataPropertiesActivity extends Activity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        GPLog.androidLog(-1, "PolygonsDataPropertiesActivity.onCreate[" + spatialTable.getUniqueName() + "] label_list.size["
+        GPLog.androidLog(-1, "PolygonsDataPropertiesActivity.onCreate[" + spatialTable.getUniqueNameBasedOnDbFilePath() + "] label_list.size["
                 + spatialTable.getLabelList().size() + "] selected_label[" + spatialTable.getLabelField() + "] PrimaryKeys["
                 + spatialTable.getPrimaryKeyFields() + "] ");
         colorSpinner = (Spinner) findViewById(R.id.color_spinner);

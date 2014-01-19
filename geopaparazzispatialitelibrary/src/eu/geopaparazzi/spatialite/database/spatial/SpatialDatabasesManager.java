@@ -290,7 +290,7 @@ public class SpatialDatabasesManager {
     public SpatialVectorTable getVectorTableByName( String tableName ) throws Exception {
         List<SpatialVectorTable> spatialTables = getSpatialVectorTables(false);
         for( SpatialVectorTable spatialTable : spatialTables ) {
-            if (spatialTable.getUniqueName().equals(tableName)) {
+            if (spatialTable.getUniqueNameBasedOnDbFilePath().equals(tableName)) {
                 return spatialTable;
             }
         }
