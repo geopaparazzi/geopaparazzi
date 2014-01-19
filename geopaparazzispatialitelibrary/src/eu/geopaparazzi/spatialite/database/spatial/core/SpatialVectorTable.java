@@ -149,7 +149,9 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
     }
 
     /**
-      * Unique-Name of Geometry Field inside 'sdcard/maps' directory
+      * Unique name for the spatial table.
+      * 
+      * <p><b>This is the one that should be used for the properties table (name).</b>
       * 
       * <ul>
       * <li>- needed to identify one specfic field inside the whole Maps-Directory
@@ -164,7 +166,7 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
     }
 
     /**
-      * Unique-Name-Base of Database inside 'sdcard/maps' directory
+      * Unique name for the spatial table based on the db file name..
       * 
       * <ul>
       * <li>- needed to Directory portion if the Database has been moved
