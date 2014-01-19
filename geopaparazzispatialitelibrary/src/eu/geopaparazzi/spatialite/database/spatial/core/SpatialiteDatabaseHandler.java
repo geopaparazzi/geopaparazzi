@@ -26,9 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import jsqlite.Database;
@@ -52,6 +50,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryIterato
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
 import eu.geopaparazzi.spatialite.util.DaoSpatialite;
 import eu.geopaparazzi.spatialite.util.OrderComparator;
+import eu.geopaparazzi.spatialite.util.SpatialiteDatabaseType;
 import eu.geopaparazzi.spatialite.util.SpatialiteUtilities;
 import eu.geopaparazzi.spatialite.util.Style;
 
@@ -73,19 +72,10 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
     private List<SpatialVectorTable> vectorTableList;
     private List<SpatialRasterTable> rasterTableList;
 
-    /**
-     * The database type.
-     *
-     * <ul>
-     * <li>10 == GeoPackage
-     * <li>3  == spatialite 3
-     * <li>4  == spatialite 4
-     * </ul>
-     */
-    private int databaseType = 0;
+    private SpatialiteDatabaseType databaseType = null;
 
     // List of all View of Database [name,sql_create] - search sql for geometry columns
-    private HashMap<String, String> view_list;
+    private HashMap<String, String> databaseViewsList = new HashMap<String, String>();
 
     /**
      * Constructor.
@@ -117,7 +107,8 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             db_java = new jsqlite.Database();
             db_java.open(databasePath, jsqlite.Constants.SQLITE_OPEN_READWRITE | jsqlite.Constants.SQLITE_OPEN_CREATE);
 
-            checkAndCollectTables(false);
+            // check database and collect the views list
+            databaseType = DaoSpatialite.checkDatabaseTypeAndValidity(db_java, databaseViewsList);
 
             if (!isValid()) {
                 close();
@@ -159,7 +150,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
     public List<SpatialVectorTable> getSpatialVectorTables( boolean forceRead ) throws Exception {
         if (vectorTableList == null || forceRead) {
             vectorTableList = new ArrayList<SpatialVectorTable>();
-            checkAndCollectTables(true);
+            checkAndCollectTables();
         }
         return vectorTableList;
     }
@@ -242,7 +233,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
     public List<SpatialRasterTable> getSpatialRasterTables( boolean forceRead ) throws Exception {
         if (rasterTableList == null || forceRead) {
             rasterTableList = new ArrayList<SpatialRasterTable>();
-            checkAndCollectTables(true);
+            checkAndCollectTables();
         }
         return rasterTableList;
     }
@@ -313,8 +304,9 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             if (recordCount < 1) {
                 for( SpatialVectorTable spatialTable : vectorTableList ) {
                     String s_unique_name_base = spatialTable.getUniqueNameBasedOnDbFileName();
-                    checkTableQuery = "UPDATE " + PROPERTIESTABLE + "  SET  name  = '" + spatialTable.getUniqueNameBasedOnDbFilePath()
-                            + "' WHERE (name LIKE '%" + s_unique_name_base + "' );";
+                    checkTableQuery = "UPDATE " + PROPERTIESTABLE + "  SET  name  = '"
+                            + spatialTable.getUniqueNameBasedOnDbFilePath() + "' WHERE (name LIKE '%" + s_unique_name_base
+                            + "' );";
                     // GPLog.androidLog(-1, "SpatialiteDatabaseHandler[" + databasePath +
                     // "] col_count["+i_column_count+"] sql[" + checkTableQuery + "]");
                     db_java.exec(checkTableQuery, null);
@@ -679,10 +671,9 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
       * <br>- With SQLite versions 3.7.17 and later : 'PRAGMA application_id' [1196437808]
       * <br>-- older (for us invalid)  Geopackage Files return 0
       *
-      * @param doLoadTable [for use when s_table is empty] 0=do not load table ; 1=load tables
       * @return the {@link HashMap} of field name to its type.
       */
-    private HashMap<String, String> collectGpkgTables( boolean doLoadTable ) throws Exception {
+    private HashMap<String, String> collectGpkgTables() throws Exception {
         Stmt this_stmt = null;
         HashMap<String, String> fieldName2TypeMap = new HashMap<String, String>();
         String s_srid = "";
@@ -694,7 +685,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
         String s_sql_layers = "";
         int[] zoomLevels = {0, 22};
         switch( databaseType ) {
-        case 10: { // GeoPackage Files [gpkg]
+        case GEOPACKAGE: { // GeoPackage Files [gpkg]
             StringBuilder sb_layers = new StringBuilder();
             s_sql_layers = "SELECT data_type,table_name,srs_id FROM " + s_gpkg + "_contents";
             // 20140101.world_Haiti.gpkg
@@ -921,7 +912,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
         String table_name = "";
         String s_sql_layers = "";
         switch( databaseType ) {
-        case 3: { // Spatialite Files version 2+3=3
+        case SPATIALITE3: { // Spatialite Files version 2+3=3
             sb_layers.append("SELECT ");
             sb_layers.append("f_table_name");
             sb_layers.append(", ");
@@ -940,7 +931,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             s_sql_layers = sb_layers.toString();
             break;
         }
-        case 4: { // Spatialite Files version 4=4
+        case SPATIALITE4: { // Spatialite Files version 4=4
             sb_layers.append("SELECT ");
             sb_layers.append(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".table_name"); // 0
             sb_layers.append(", " + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".geometry_column"); // 1
@@ -1036,7 +1027,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                             }
                         }
                     }
-                    if (databaseType == 3) {
+                    if (databaseType == SpatialiteDatabaseType.SPATIALITE3) {
                         // for older spatialite v2+3 : Query extent of table
                         // and fill boundsCoordinates
                         s_geometry_type = this_stmt.column_string(2);
@@ -1058,7 +1049,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                                 bounds_stmt.close();
                             }
                         }
-                    } else if (databaseType == 4) {
+                    } else if (databaseType == SpatialiteDatabaseType.SPATIALITE4) {
                         // for older spatialite v4 : Retrieve extent of
                         // table from Query result and fill
                         // boundsCoordinates
@@ -1153,7 +1144,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                             i_geometry_type, s_srid, centerCoordinate, boundsCoordinates, s_layer_type);
                     // compleate list of fields of
                     // this table
-                    fields_list = collectFields(table_name, 0);
+                    fields_list = DaoSpatialite.collectTableFields(db_java, table_name);
                     table.setFieldsList(fields_list);
                     vectorTableList.add(table);
                 }
@@ -1221,24 +1212,16 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
       * @param doLoadTables 0 = do not load table, check if valid only; 1=load tables
       * @return fields_list [name of field, type of field]
       */
-    private HashMap<String, String> checkAndCollectTables( boolean doLoadTables ) throws Exception {
+    private HashMap<String, String> checkAndCollectTables() throws Exception {
         HashMap<String, String> tableFields = new HashMap<String, String>();
-        if (view_list == null) {
-            // guess what we forgot on the first attempt!
-            tableFields = collectFields(null, 0);
-        }
-        if (!doLoadTables) {
-            return tableFields;
-        }
         switch( databaseType ) {
-        case 10: {
+        case GEOPACKAGE: {
             // GeoPackage Files [gpkg]
-            // b_database_valid=false;
-            tableFields = collectGpkgTables(doLoadTables);
+            tableFields = collectGpkgTables();
         }
             break;
-        case 3:
-        case 4: {
+        case SPATIALITE3:
+        case SPATIALITE4: {
             // Spatialite Files version 2+3=3 ; version 4=4
             // this will return a unique list of geometry-fields from all tables
             tableFields = collectSpatialiteTables();
@@ -1247,11 +1230,12 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
         }
         if (isValid()) {
             switch( databaseType ) {
-            case 3:
-            case 4: { // Spatialite Files version 2+3=3 ; version 4=4
-                      // 'table_fields' will have a unique list of geometry-fields from all tables
-                for( int i = 0; i < view_list.size(); i++ ) {
-                    for( Map.Entry<String, String> view_entry : view_list.entrySet() ) {
+            case SPATIALITE3:
+            case SPATIALITE4: {
+                // Spatialite Files version 2+3=3 ; version 4=4
+                // 'table_fields' will have a unique list of geometry-fields from all tables
+                for( int i = 0; i < databaseViewsList.size(); i++ ) {
+                    for( Map.Entry<String, String> view_entry : databaseViewsList.entrySet() ) {
                         String s_view_name = view_entry.getKey();
                         // String s_view_data = view_entry.getValue(); // TODO remove newlines
                         // GPLog.androidLog(-1, "SpatialiteDatabaseHandler[" + getDatabasePath() +
@@ -1289,128 +1273,6 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
         }
         return tableFields;
     }
-    /**
-      * Collects the fields of a table, also checking the database type.
-      *
-      * <br>- name of Field
-      * <br>- type of field as defined in Database
-      *
-      * @param tableName name of table to read.
-      *             If <code>null</code>: list of all tables in Database.
-      * @param doLoadTable [for use when table is empty]
-      *             <br>0=do not load table
-      *             <br>1=load tables
-      * @return the {@link HashMap} of fields: [name of field, type of field]
-      */
-    private HashMap<String, String> collectFields( String tableName, int doLoadTable ) throws Exception {
-
-        // views: vector_layers_statistics,vector_layers
-        boolean b_vector_layers_statistics = false;
-        boolean b_vector_layers = false;
-
-        // tables: geometry_columns,raster_columns
-        boolean b_geometry_columns = false;
-        // boolean b_raster_columns = false;
-        boolean b_gpkg_contents = false;
-        boolean b_geopackage_contents = false;
-
-        HashMap<String, String> fieldNamesToTypeMap = new LinkedHashMap<String, String>();
-        String s_sql_command = "";
-        if (tableName != null) {
-            s_sql_command = "pragma table_info(" + tableName + ")";
-        } else {
-            s_sql_command = "SELECT name,type,sql FROM sqlite_master WHERE ((type='table') OR (type='view')) ORDER BY type DESC,name ASC";
-            if (view_list == null) {
-                view_list = new HashMap<String, String>();
-            } else {
-                view_list.clear();
-            }
-            databaseType = 0;
-            isDatabaseValid = false;
-        }
-        String tableType = "";
-        String sqlCreationString = "";
-        String name = "";
-        Stmt statement = db_java.prepare(s_sql_command);
-        try {
-            while( statement.step() ) {
-                if (tableName != null) {
-                    name = statement.column_string(1);
-                    tableType = statement.column_string(2);
-                    sqlCreationString = statement.column_string(5); // pk
-                    // try to unify the data-types: varchar(??),int(11) mysql-syntax
-                    if (tableType.indexOf("int(") != -1)
-                        tableType = "INTEGER";
-                    if (tableType.indexOf("varchar(") != -1)
-                        tableType = "TEXT";
-                    // pk: 0 || 1;Data-TypeTEXT || DOUBLE || INTEGER || REAL || DATE || BLOB ||
-                    // geometry-types
-                    fieldNamesToTypeMap.put(name, sqlCreationString + ";" + tableType.toUpperCase(Locale.US));
-                } else {
-                    name = statement.column_string(0);
-                    tableType = statement.column_string(1);
-                    sqlCreationString = statement.column_string(2);
-                    // GPLog.androidLog(-1,"SpatialiteDatabaseHandler.get_table_fields["+s_table+"] tablename["+s_name+"] type["+s_type+"] sql["
-                    // + s_sql_create+ "] ");
-                    if (tableType.equals("table")) {
-                        if (name.equals("geometry_columns")) {
-                            b_geometry_columns = true;
-                        } else if (name.equals("gpkg_contents")) {
-                            b_gpkg_contents = true;
-                        } else if (name.equals("geopackage_contents")) {
-                            b_geopackage_contents = true;
-                        }
-                        // if (name.equals("raster_columns")) {
-                        // b_raster_columns = true;
-                        // }
-                    } else if (tableType.equals("view")) {
-                        // we are looking for user-defined views only,
-                        // filter out system known views.
-                        if ((!name.equals("geom_cols_ref_sys")) && (!name.startsWith("vector_layers"))) {
-                            view_list.put(name, sqlCreationString);
-                        } else if (name.equals("vector_layers_statistics")) {
-                            b_vector_layers_statistics = true;
-                        } else if (name.equals("vector_layers")) {
-                            b_vector_layers = true;
-                        }
-                    }
-                }
-            }
-        } finally {
-            if (statement != null) {
-                statement.close();
-            }
-        }
-        if (tableName == null) {
-            if (b_geopackage_contents) {
-                // an old geopackage file, may look like a Spatialite Table
-                // - but invalid srid
-                isDatabaseValid = false;
-                return fieldNamesToTypeMap;
-            }
-            if (b_gpkg_contents) {
-                // this is a GeoPackage, this can also have
-                // vector_layers_statistics and vector_layers
-                // - the results are empty, it does reference the table
-                // also referenced in gpkg_contents
-                databaseType = 10;
-                isDatabaseValid = true;
-            } else {
-                if ((b_vector_layers_statistics) && (b_vector_layers)) { // Spatialite 4.0
-                    databaseType = 4;
-                    isDatabaseValid = true;
-                } else {
-                    if (b_geometry_columns) { // Spatialite before 4.0
-                        databaseType = 3;
-                        isDatabaseValid = true;
-                    }
-                }
-            }
-        }
-        // GPLog.androidLog(-1,"SpatialiteDatabaseHandler.get_table_fields["+s_table+"] ["+getFileNamePath()+"] valid["+b_database_valid+"] database_type["+i_database_type+"] sql["
-        // + s_sql_command+ "] ");
-        return fieldNamesToTypeMap;
-    }
 
     /**
      * Update a style definiton in the db.
@@ -1423,13 +1285,16 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
     }
 
     /**
-     * Delete and recreate a default properties table.
-     *
-     * @throws Exception if something goes wrong.
-     */
+    * Delete and recreate a default properties table for this database.
+    *
+    * @throws Exception if something goes wrong.
+    */
     public void resetStyleTable() throws Exception {
         DaoSpatialite.deleteStyleTable(db_java);
-        checkPropertiesTable();
+        DaoSpatialite.createPropertiesTable(db_java);
+        for( SpatialVectorTable spatialTable : vectorTableList ) {
+            DaoSpatialite.createDefaultPropertiesForTable(db_java, spatialTable.getUniqueNameBasedOnDbFilePath());
+        }
     }
 
 }

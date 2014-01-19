@@ -17,9 +17,14 @@
  */
 package eu.geopaparazzi.spatialite.util;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 
 import jsqlite.Constants;
 import jsqlite.Database;
@@ -156,6 +161,90 @@ public class DaoSpatialite {
         fieldsList.add(MAXZOOM);
         fieldsList.add(DECIMATION);
         PROPERTIESTABLE_FIELDS_LIST = Collections.unmodifiableList(fieldsList);
+    }
+
+    /**
+     * General Function to create jsqlite.Database with spatialite support.
+     * <ol>
+     * <li> parent diretories will be created, if needed</li>
+     * <li> needed Tables/View and default values for metdata-table will be created</li>
+     * </ol>
+     * 
+     * @param databasePath name of Database file to create
+     * @return sqlite_db: pointer to Database created
+     * @throws IOException  if something goes wrong.
+     */
+    public static Database createDb( String databasePath ) throws IOException {
+        Database spatialiteDatabase = null;
+        File file_db = new File(databasePath);
+        if (!file_db.getParentFile().exists()) {
+            File dir_db = file_db.getParentFile();
+            if (!dir_db.mkdir()) {
+                throw new IOException("SpatialiteUtilities: create_db: dir_db[" + dir_db.getAbsolutePath() + "] creation failed"); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+        }
+        spatialiteDatabase = new jsqlite.Database();
+        if (spatialiteDatabase != null) {
+            try {
+                spatialiteDatabase.open(file_db.getAbsolutePath(), jsqlite.Constants.SQLITE_OPEN_READWRITE
+                        | jsqlite.Constants.SQLITE_OPEN_CREATE);
+                createSpatialiteDb(spatialiteDatabase, 0); // i_rc should be 4
+            } catch (jsqlite.Exception e_stmt) {
+                GPLog.androidLog(4, "SpatialiteUtilities: create_spatialite[spatialite] dir_file[" + file_db.getAbsolutePath() //$NON-NLS-1$
+                        + "]", e_stmt); //$NON-NLS-1$
+            }
+        }
+        return spatialiteDatabase;
+    }
+
+    /**
+     * General Function to create jsqlite.Database with spatialite support.
+     * 
+     * <ol> 
+     * <li> parent directories will be created, if needed</li>
+     * <li> needed Tables/View and default values for metdata-table will be created</li>
+     * </ol>
+     * @param sqliteDatabase pointer to Database
+     * @param i_parm 0=new Database - skip checking if it a patialite Database ; check Spatialite Version
+     * @return i_rc: pointer to Database created
+     * @throws Exception  if something goes wrong.
+     */
+    public static int createSpatialiteDb( Database sqliteDatabase, int i_parm ) throws Exception {
+        int i_rc = 0;
+        if (i_parm == 1) {
+            /*
+             * 0=not a spatialite version ; 
+             * 1=until 2.3.1 ; 
+             * 2=until 2.4.0 ; 
+             * 3=until 3.1.0-RC2 ;
+             * 4=after 4.0.0-RC1
+             */
+            int i_spatialite_version = getSpatialiteDatabaseVersion(sqliteDatabase, "");
+            if (i_spatialite_version > 0) { // this is a spatialite Database, do not create
+                i_rc = 1;
+                if (i_spatialite_version < 3) {
+                    // TODO: logic for convertion to latest Spatialite
+                    // Version [open]
+                    throw new Exception("Spatialite version < 3 not supported.");
+                }
+            }
+        }
+        if (i_rc == 0) {
+            String s_sql_command = "SELECT InitSpatialMetadata();"; //$NON-NLS-1$
+            try {
+                sqliteDatabase.exec(s_sql_command, null);
+            } catch (jsqlite.Exception e_stmt) {
+                i_rc = sqliteDatabase.last_error();
+                GPLog.androidLog(4, "SpatialiteUtilities: create_spatialite sql[" + s_sql_command + "] rc=" + i_rc + "]", e_stmt); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+            // GPLog.androidLog(2,
+            // "SpatialiteUtilities: create_spatialite sql["+s_sql_command+"] rc="+i_rc+"]");
+            i_rc = getSpatialiteDatabaseVersion(sqliteDatabase, ""); //$NON-NLS-1$
+            if (i_rc < 3) { // error, should be 3 or 4
+                GPLog.androidLog(4, "SpatialiteUtilities: create_spatialite spatialite_version[" + i_rc + "]"); //$NON-NLS-1$ //$NON-NLS-2$
+            }
+        }
+        return i_rc;
     }
 
     /**
@@ -602,5 +691,271 @@ public class DaoSpatialite {
             stmt.close();
         }
         return "-";
+    }
+
+    /**
+     * Checks the database type and its validity.
+     * 
+     * @param database the database to check.
+     * @param databaseViewsMap the {@link HashMap} of database views data to clear and repopulate.
+     * @return the {@link SpatialiteDatabaseType}.
+     * @throws Exception if something goes wrong.
+     */
+    public static SpatialiteDatabaseType checkDatabaseTypeAndValidity( Database database, HashMap<String, String> databaseViewsMap )
+            throws Exception {
+
+        // clear views
+        databaseViewsMap.clear();
+
+        // views: vector_layers_statistics,vector_layers
+        boolean b_vector_layers_statistics = false;
+        boolean b_vector_layers = false;
+
+        // tables: geometry_columns,raster_columns
+        boolean b_geometry_columns = false;
+        // boolean b_raster_columns = false;
+        boolean b_gpkg_contents = false;
+        boolean b_geopackage_contents = false;
+
+        String sqlCommand = "SELECT name,type,sql FROM sqlite_master WHERE ((type='table') OR (type='view')) ORDER BY type DESC,name ASC";
+        String tableType = "";
+        String sqlCreationString = "";
+        String name = "";
+        Stmt statement = database.prepare(sqlCommand);
+        try {
+            while( statement.step() ) {
+                name = statement.column_string(0);
+                tableType = statement.column_string(1);
+                sqlCreationString = statement.column_string(2);
+                // GPLog.androidLog(-1,"SpatialiteDatabaseHandler.get_table_fields["+s_table+"] tablename["+s_name+"] type["+s_type+"] sql["
+                // + s_sql_create+ "] ");
+                if (tableType.equals("table")) {
+                    if (name.equals("geometry_columns")) {
+                        b_geometry_columns = true;
+                    } else if (name.equals("gpkg_contents")) {
+                        b_gpkg_contents = true;
+                    } else if (name.equals("geopackage_contents")) {
+                        b_geopackage_contents = true;
+                    }
+                    // if (name.equals("raster_columns")) {
+                    // b_raster_columns = true;
+                    // }
+                } else if (tableType.equals("view")) {
+                    // we are looking for user-defined views only,
+                    // filter out system known views.
+                    if ((!name.equals("geom_cols_ref_sys")) && (!name.startsWith("vector_layers"))) {
+                        databaseViewsMap.put(name, sqlCreationString);
+                    } else if (name.equals("vector_layers_statistics")) {
+                        b_vector_layers_statistics = true;
+                    } else if (name.equals("vector_layers")) {
+                        b_vector_layers = true;
+                    }
+                }
+            }
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+        }
+        if (b_geopackage_contents) {
+            // an old geopackage file, may look like a Spatialite Table
+            // - but invalid srid
+            // isDatabaseValid = false;
+            throw new Exception("Database not valid!");
+        }
+        if (b_gpkg_contents) {
+            // this is a GeoPackage, this can also have
+            // vector_layers_statistics and vector_layers
+            // - the results are empty, it does reference the table
+            // also referenced in gpkg_contents
+            return SpatialiteDatabaseType.GEOPACKAGE;
+        } else {
+            if ((b_vector_layers_statistics) && (b_vector_layers)) { // Spatialite 4.0
+                return SpatialiteDatabaseType.SPATIALITE4;
+            } else {
+                if (b_geometry_columns) { // Spatialite before 4.0
+                    return SpatialiteDatabaseType.SPATIALITE3;
+                }
+            }
+        }
+
+        // try with spatialite 3
+        return SpatialiteDatabaseType.SPATIALITE3;
+    }
+
+    /**
+     * Determine the Spatialite version of the Database being used.
+     * 
+     * <ul> 
+     * <li> - if (sqlite3_exec(this_handle_sqlite3,"SELECT InitSpatialMetadata()",NULL,NULL,NULL) == SQLITE_OK)
+     * <li>  - 'geometry_columns'
+     * <li>-- SpatiaLite 2.0 until present version
+     * <li>- 'spatial_ref_sys'
+     * <li>-- SpatiaLite 2.0 until present version
+     * <li>-- SpatiaLite 2.3.1 has no field 'srs_wkt' or 'srtext' field,only 'proj4text' and
+     * <li>-- SpatiaLite 2.4.0 first version with 'srs_wkt' and 'views_geometry_columns'
+     * <li>-- SpatiaLite 3.1.0-RC2 last version with 'srs_wkt'
+     * <li>-- SpatiaLite 4.0.0-RC1 : based on ISO SQL/MM standard 'srtext'
+     * <li>-- views: vector_layers_statistics,vector_layers
+     * <li>-- SpatiaLite 4.0.0 : introduced
+     * </ul>
+     * 
+     * <p>20131129: at the moment not possible to distinguish beteewn 2.4.0 and 3.0.0 [no '2']
+     * 
+     * @param database Database connection to use
+     * @param table name of table to read [if empty: list of tables in Database]
+     * @return i_spatialite_version [0=not a spatialite version ; 1=until 2.3.1 ; 2=until 2.4.0 ; 3=until 3.1.0-RC2 ; 4=after 4.0.0-RC1]
+     * @throws Exception if something goes wrong.
+     */
+    public static int getSpatialiteDatabaseVersion( Database database, String table ) throws Exception {
+        Stmt this_stmt = null;
+        // views: vector_layers_statistics,vector_layers
+        // boolean b_vector_layers_statistics = false;
+        // boolean b_vector_layers = false;
+        // tables: geometry_columns,raster_columns
+
+        /*
+         * false = not a spatialite Database 
+         * true = a spatialite Database
+         */
+        boolean b_geometry_columns = false;
+        /*
+         * 0=not found = pre 2.4.0 ; 
+         * 1=2.4.0 to 3.1.0 ; 
+         * 2=starting with 4.0.0
+         */
+        int i_srs_wkt = 0;
+        boolean b_spatial_ref_sys = false;
+        // boolean b_views_geometry_columns = false;
+        int i_spatialite_version = 0;
+        // 0=not a spatialite version ; 1=until 2.3.1 ; 2=until 2.4.0
+        // ; 3=until 3.1.0-RC2 ; 4=after 4.0.0-RC1
+        String s_sql_command = "";
+        if (!table.equals("")) { // pragma table_info(geodb_geometry)
+            s_sql_command = "pragma table_info(" + table + ")";
+        } else {
+            s_sql_command = "SELECT name,type FROM sqlite_master WHERE ((type='table') OR (type='view')) ORDER BY type DESC,name ASC";
+        }
+        String s_type = "";
+        String s_name = "";
+        this_stmt = database.prepare(s_sql_command);
+        try {
+            while( this_stmt.step() ) {
+                if (!table.equals("")) { // pragma table_info(berlin_strassen_geometry)
+                    s_name = this_stmt.column_string(1);
+                    // 'proj4text' must always exist - otherwise invalid
+                    if (s_name.equals("proj4text"))
+                        b_spatial_ref_sys = true;
+                    if (s_name.equals("srs_wkt"))
+                        i_srs_wkt = 1;
+                    if (s_name.equals("srtext"))
+                        i_srs_wkt = 2;
+                }
+                if (table.equals("")) {
+                    s_name = this_stmt.column_string(0);
+                    s_type = this_stmt.column_string(1);
+                    if (s_type.equals("table")) {
+                        // if (s_name.equals("geometry_columns")) {
+                        // b_geometry_columns = true;
+                        // }
+                        if (s_name.equals("spatial_ref_sys")) {
+                            b_spatial_ref_sys = true;
+                        }
+                        // if (s_name.equals("views_geometry_columns")) {
+                        // b_views_geometry_columns = true;
+                        // }
+                    }
+                    // if (s_type.equals("view")) {
+                    // // SELECT name,type,sql FROM sqlite_master WHERE
+                    // // (type='view')
+                    // if (s_name.equals("vector_layers_statistics")) {
+                    // // An empty spatialite
+                    // // Database will not have
+                    // // this
+                    // b_vector_layers_statistics = true;
+                    // }
+                    // if (s_name.equals("vector_layers")) {
+                    // // An empty spatialite Database will
+                    // // not have this
+                    // b_vector_layers = true;
+                    // }
+                    // }
+                }
+            }
+        } finally {
+            if (this_stmt != null) {
+                this_stmt.close();
+            }
+        }
+        if (table.equals("")) {
+            GPLog.androidLog(-1, "SpatialiteUtilities: get_table_fields sql[" + s_sql_command + "] geometry_columns["
+                    + b_geometry_columns + "] spatial_ref_sys[" + b_spatial_ref_sys + "]");
+            if ((b_geometry_columns) && (b_spatial_ref_sys)) {
+                if (b_spatial_ref_sys) {
+                    i_srs_wkt = getSpatialiteDatabaseVersion(database, "spatial_ref_sys");
+                    if (i_srs_wkt == 4) { // Spatialite 4.0
+                        i_spatialite_version = 4;
+                    } else {
+                        i_spatialite_version = i_srs_wkt;
+                    }
+                }
+            }
+        } else {
+            if (b_spatial_ref_sys) { // 'proj4text' must always exist - otherwise invalid
+                switch( i_srs_wkt ) {
+                case 0:
+                    i_spatialite_version = 1; // no 'srs_wkt' or 'srtext' fields
+                    break;
+                case 1:
+                    i_spatialite_version = 3; // 'srs_wkt'
+                    break;
+                case 2:
+                    i_spatialite_version = 4; // 'srtext'
+                    break;
+                }
+            }
+        }
+        return i_spatialite_version;
+    }
+
+    /**
+     * Collects the fields of a table, also checking the database type.
+     *
+     * <br>- name of Field
+     * <br>- type of field as defined in Database
+     * 
+     * @param database the database to use.
+     * @param tableName name of table to read.
+     * @return the {@link HashMap} of fields: [name of field, type of field]
+     * @throws Exception if something goes wrong.
+     */
+    public static HashMap<String, String> collectTableFields( Database database, String tableName ) throws Exception {
+
+        HashMap<String, String> fieldNamesToTypeMap = new LinkedHashMap<String, String>();
+        String s_sql_command = "pragma table_info(" + tableName + ")";
+        String tableType = "";
+        String sqlCreationString = "";
+        String name = "";
+        Stmt statement = database.prepare(s_sql_command);
+        try {
+            while( statement.step() ) {
+                name = statement.column_string(1);
+                tableType = statement.column_string(2);
+                sqlCreationString = statement.column_string(5); // pk
+                // try to unify the data-types: varchar(??),int(11) mysql-syntax
+                if (tableType.indexOf("int(") != -1)
+                    tableType = "INTEGER";
+                if (tableType.indexOf("varchar(") != -1)
+                    tableType = "TEXT";
+                // pk: 0 || 1;Data-TypeTEXT || DOUBLE || INTEGER || REAL || DATE || BLOB ||
+                // geometry-types
+                fieldNamesToTypeMap.put(name, sqlCreationString + ";" + tableType.toUpperCase(Locale.US));
+            }
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+        }
+        return fieldNamesToTypeMap;
     }
 }
