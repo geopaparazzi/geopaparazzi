@@ -70,6 +70,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
 
     private static final String COLUMN_LOG_STARTTS = "startts";
     private static final String COLUMN_LOG_ENDTS = "endts";
+    private static final String COLUMN_LOG_LENGTHM = "lengthm";
     private static final String COLUMN_LOG_TEXT = "text";
 
     private static final String COLUMN_LOGID = "logid";
@@ -91,12 +92,13 @@ public class DaoGpsLog implements IGpsLogDbHelper {
      * 
      * @param startTs the start timestamp.
      * @param endTs the end timestamp.
+     * @param lengthm the length of the track log in meters
      * @return the id of the gpslog.
      * @param text a description or null.
      * @return the id of the new created log.
      * @throws IOException 
      */
-    public long addGpsLog( Context context, Date startTs, Date endTs, String text, float width, String color, boolean visible )
+    public long addGpsLog( Context context, Date startTs, Date endTs, float lengthm, String text, float width, String color, boolean visible )
             throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
@@ -109,6 +111,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             if (text == null) {
                 text = "log_" + dateFormatterForLabelInLocalTime.format(startTs);
             }
+            values.put(COLUMN_LOG_LENGTHM, lengthm);
             values.put(COLUMN_LOG_TEXT, text);
             rowId = sqliteDatabase.insertOrThrow(TABLE_GPSLOGS, null, values);
 
@@ -172,7 +175,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         }
     }
 
-    public void setEndTs( Context context, long logid, Date end ) throws IOException {
+    public void setEndTs( Context context, long logid, Date end, float lengthm ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         try {
             sqliteDatabase.beginTransaction();
@@ -182,7 +185,8 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             sb.append("UPDATE ");
             sb.append(TABLE_GPSLOGS);
             sb.append(" SET ");
-            sb.append(COLUMN_LOG_ENDTS).append("='").append(dateFormatter.format(end)).append("' ");
+            sb.append(COLUMN_LOG_ENDTS).append("='").append(dateFormatter.format(end)).append("' ,");
+            sb.append(COLUMN_LOG_LENGTHM).append("=").append(lengthm).append(" ");
             sb.append("WHERE ").append(COLUMN_ID).append("=").append(logid);
 
             String query = sb.toString();
@@ -222,6 +226,8 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         sB.append(COLUMN_LOG_STARTTS);
         sB.append(", l.");
         sB.append(COLUMN_LOG_ENDTS);
+        sB.append(", l.");
+        sB.append(COLUMN_LOG_LENGTHM);
         sB.append(", p.");
         sB.append(COLUMN_PROPERTIES_COLOR);
         sB.append(", p.");
@@ -249,13 +255,14 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 String text = c.getString(1);
                 String start = c.getString(2);
                 String end = c.getString(3);
-                String color = c.getString(4);
-                double width = c.getDouble(5);
-                int visible = c.getInt(6);
+                float lengthm = c.getFloat(4);
+                String color = c.getString(5);
+                double width = c.getDouble(6);
+                int visible = c.getInt(7);
                 // Logger.d(DEBUG_TAG, "Res: " + logid + "/" + color + "/" + width + "/" + visible +
                 // "/" +
                 // text);
-                LogMapItem item = new LogMapItem(logid, text, color, (float) width, visible == 1 ? true : false, start, end);
+                LogMapItem item = new LogMapItem(logid, text, color, (float) width, visible == 1 ? true : false, start, end, lengthm);
                 logsList.add(item);
                 c.moveToNext();
             }
@@ -931,7 +938,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 Date date = new Date(System.currentTimeMillis());
 
                 DaoGpsLog helper = new DaoGpsLog();
-                long logId = helper.addGpsLog(context, date, date, name, width, "blue", true);
+                long logId = helper.addGpsLog(context, date, date, 0, name, width, "blue", true);
 
                 sqliteDatabase.beginTransaction();
                 try {
@@ -980,7 +987,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 }
                 Date date = new Date(System.currentTimeMillis());
                 DaoGpsLog helper = new DaoGpsLog();
-                long logId = helper.addGpsLog(context, startDate, endDate, rName, 2f, "green", true);
+                long logId = helper.addGpsLog(context, startDate, endDate, 0, rName, 2f, "green", true);
 
                 sqliteDatabase.beginTransaction();
                 try {
@@ -1116,6 +1123,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         sB.append(COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, ");
         sB.append(COLUMN_LOG_STARTTS).append(" DATE NOT NULL,");
         sB.append(COLUMN_LOG_ENDTS).append(" DATE NOT NULL,");
+        sB.append(COLUMN_LOG_LENGTHM).append(" REAL NOT NULL, ");
         sB.append(COLUMN_LOG_TEXT).append(" TEXT NOT NULL ");
         sB.append(");");
         String CREATE_TABLE_GPSLOGS = sB.toString();

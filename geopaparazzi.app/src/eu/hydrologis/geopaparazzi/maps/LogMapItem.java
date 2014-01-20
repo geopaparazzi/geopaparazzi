@@ -29,13 +29,16 @@ public class LogMapItem extends MapItem implements Serializable {
     private static final long serialVersionUID = 1L;
     private String startTime = " - "; //$NON-NLS-1$
     private String endTime = " - "; //$NON-NLS-1$
+    private float lengthm = 0.0F;
 
-    public LogMapItem( long id, String text, String color, float width, boolean isVisible, String startTime, String endTime ) {
+    public LogMapItem( long id, String text, String color, float width, boolean isVisible, String startTime, String endTime, float lengthm ) {
         super(id, text, color, width, isVisible);
         if (startTime != null)
             this.startTime = startTime;
         if (endTime != null)
             this.endTime = endTime;
+        if (lengthm > 0)
+            this.lengthm = lengthm;
     }
 
     public String getStartTime() {
@@ -53,5 +56,12 @@ public class LogMapItem extends MapItem implements Serializable {
     public void setEndTime( String endTime ) {
         this.endTime = endTime;
     }
+   
+    public String getLengthInM() {   	
+        return String.format("%.1f", lengthm);
+    }
 
+    public void setLengthInM( float lengthm ) {
+        this.lengthm = lengthm;
+    }
 }

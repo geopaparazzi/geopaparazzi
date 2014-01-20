@@ -10,10 +10,16 @@
     <RelativeLayout
         android:id="@+id/row_container"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="480dp"
         android:background="@color/main_background"
         android:padding="5dp" >
 
+      	<View
+            android:id="@+id/strut"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_centerHorizontal="true" />
+        
         <TextView
             android:id="@+id/gpsproplabel"
             android:layout_width="fill_parent"
@@ -54,18 +60,23 @@
             android:text="@string/end_"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/main_text_color" />
-
-        <View
-            android:id="@+id/strut"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_centerHorizontal="true" />
+        
+        <TextView
+            android:id="@+id/trackLength_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/endtime_label"
+            android:padding="5dp"
+            android:text="@string/track_length"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/main_text_color" />
 
         <TextView
             android:id="@+id/widthLabel"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/endtime_label"
+            android:layout_alignRight="@id/strut"
+            android:layout_below="@+id/trackLength_label"
             android:padding="5dp"
             android:text="@string/width_label"
             android:textAppearance="?android:attr/textAppearanceMedium"
@@ -96,7 +107,7 @@
             android:id="@+id/color_spinner"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/colorLabel"
+            android:layout_alignLeft="@id/strut"
             android:layout_below="@id/colorLabel"
             android:padding="5dp"
             android:paddingBottom="30dp" />
@@ -153,10 +164,10 @@
             android:id="@+id/gpslog_chart"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/otherLabel"
-            android:layout_alignRight="@+id/gpslog_zoom_start"
+            android:layout_alignRight="@id/gpslog_zoom_start"
             android:layout_below="@+id/otherLabel"
             android:background="@drawable/button_background_drawable"
+            android:gravity="bottom|center_vertical|center_horizontal"
             android:paddingBottom="@dimen/button_indent"
             android:paddingTop="@dimen/button_indent"
             android:text="@string/gpslog_chart"
@@ -167,7 +178,7 @@
             android:id="@+id/gpslog_delete"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/gpslog_zoom_end"
+            android:layout_alignLeft="@id/gpslog_zoom_end"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/otherLabel"
             android:background="@drawable/button_background_drawable"
@@ -176,6 +187,7 @@
             android:text="@string/gpslog_delete"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/main_text_color" />
+
     </RelativeLayout>
 
 </ScrollView>

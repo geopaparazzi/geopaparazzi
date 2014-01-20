@@ -141,7 +141,7 @@ public class OpenRouteServiceHandler {
     public void dumpInDatabase( String name, Context context, IGpsLogDbHelper logDumper ) throws Exception {
         SQLiteDatabase sqliteDatabase = logDumper.getDatabase(context);
         Date now = new Date(new java.util.Date().getTime());
-        long newLogId = logDumper.addGpsLog(context, now, now, name, 1, "blue", true); //$NON-NLS-1$
+        long newLogId = logDumper.addGpsLog(context, now, now, 0, name, 1, "blue", true); //$NON-NLS-1$
 
         sqliteDatabase.beginTransaction();
         try {

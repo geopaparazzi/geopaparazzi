@@ -233,7 +233,7 @@ public class ProfileChartActivity extends Activity {
      * @param lonArray the array of longitudes.
      * @param latArray the array of latitudes.
      * @param elevArray the array of elevations.
-     * @param seriesName the name to label the serie with.
+     * @param seriesName the name to label the series with.
      * @return the {@link XYSeriesCollection dataset}.
      */
     public XYSeries createDatasetFromProfile( DynamicDoubleArray lonArray, DynamicDoubleArray latArray,

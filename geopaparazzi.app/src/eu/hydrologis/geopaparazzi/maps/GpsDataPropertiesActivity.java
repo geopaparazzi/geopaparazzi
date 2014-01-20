@@ -79,6 +79,10 @@ public class GpsDataPropertiesActivity extends Activity {
             String endTime = item.getEndTime();
             String endText = endTimeTextView.getText().toString();
             endTimeTextView.setText(endText + endTime);
+            final TextView trackLengthTextView = (TextView) findViewById(R.id.trackLength_label);
+            String lengthm = item.getLengthInM();
+            String lengthText = trackLengthTextView.getText().toString();
+            trackLengthTextView.setText(lengthText + " " + lengthm + "m");
 
             final EditText lognameTextView = (EditText) findViewById(R.id.gpslogname);
             final Spinner colorView = (Spinner) findViewById(R.id.color_spinner);

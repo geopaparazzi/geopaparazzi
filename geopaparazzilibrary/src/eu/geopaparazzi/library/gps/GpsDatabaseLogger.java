@@ -126,7 +126,7 @@ public class GpsDatabaseLogger implements GpsManagerListener {
 
                     SQLiteDatabase sqliteDatabase = dbHelper.getDatabase(context);
                     java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
-                    long gpsLogId = dbHelper.addGpsLog(context, now, now, logName, 2f, "red", true);
+                    long gpsLogId = dbHelper.addGpsLog(context, now, now, 0f, logName, 2f, "red", true);
                     currentRecordedLogId = gpsLogId;
                     logH("Starting gps logging. Logid: " + gpsLogId);
 
@@ -201,7 +201,7 @@ public class GpsDatabaseLogger implements GpsManagerListener {
                     } else {
                         // set the end timestamp
                         java.sql.Date end = new java.sql.Date(System.currentTimeMillis());
-                        dbHelper.setEndTs(context, gpsLogId, end);
+                        dbHelper.setEndTs(context, gpsLogId, end, currentDistance);
                     }
 
                     currentPointsNum = 0;
