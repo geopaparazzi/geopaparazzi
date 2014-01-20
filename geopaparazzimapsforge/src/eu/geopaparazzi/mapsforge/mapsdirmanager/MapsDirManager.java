@@ -19,10 +19,7 @@ package eu.geopaparazzi.mapsforge.mapsdirmanager;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -40,7 +37,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
@@ -54,6 +50,7 @@ import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapTable;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.MapsDirTreeViewList;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.TreeNode;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.util.NodeSortParameter;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.utils.DefaultMapurls;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
@@ -74,7 +71,7 @@ public class MapsDirManager {
     private File mapsDir = null;
     private static MapsDirManager mapsdirManager = null;
     private int selectedSpatialDataTypeCode = SpatialDataType.MBTILES.getCode();
-    private String s_selected_type = "";
+    private String selectedTileSourceType = "";
     private String selectedTableName = "";
     private TreeNode< ? > selectedNode = null;
     private MapGenerator selected_mapGenerator;
@@ -153,21 +150,11 @@ public class MapsDirManager {
          * tile sources as default ones. They will automatically
          * be backed into a mbtiles db.
         */
-        mapnikFile = new File(mapsDir, "mapnik.mapurl"); //$NON-NLS-1$
-        if (!mapnikFile.exists()) {
-            InputStream inputStream = context.getResources().openRawResource(eu.geopaparazzi.mapsforge.R.raw.mapnik);
-            OutputStream outputStream = new FileOutputStream(mapnikFile);
-            FileUtilities.copyFile(inputStream, outputStream);
-        }
-        File opencycleFile = new File(mapsDir, "opencycle.mapurl"); //$NON-NLS-1$
-        if (!opencycleFile.exists()) {
-            InputStream inputStream = context.getResources().openRawResource(eu.geopaparazzi.mapsforge.R.raw.opencycle);
-            FileOutputStream outputStream = new FileOutputStream(opencycleFile);
-            FileUtilities.copyFile(inputStream, outputStream);
-        }
+        mapnikFile = new File(mapsDir, DefaultMapurls.Mapurls.mapnik.toString() + DefaultMapurls.MAPURL_EXTENSION);
+        DefaultMapurls.checkAllSourcesExistence(context, mapsDir);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        s_selected_type = preferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE, ""); //$NON-NLS-1$
+        selectedTileSourceType = preferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE, ""); //$NON-NLS-1$
         selectedTableName = preferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE_FILE, ""); //$NON-NLS-1$
         // The TreeView type can be set here - depending on user/application preference
         // MapsDirTreeViewList.use_treeType=TreeType.FILEDIRECTORY; // [default]
@@ -242,7 +229,7 @@ public class MapsDirManager {
                     }
                     if ((selectedNode == null) && (selectedTableName.equals(table.getDatabasePath()))) {
                         selectedNode = this_mapinfo;
-                        s_selected_type = selectedNode.getTypeText();
+                        selectedTileSourceType = selectedNode.getTypeText();
                         selectedSpatialDataTypeCode = selectedNode.getType();
                     }
                 }
@@ -267,7 +254,7 @@ public class MapsDirManager {
                     // GPLog.androidLog(-1, "TreeNode[" + this_mapinfo.toString() + "]");
                     if ((selectedNode == null) && (selectedTableName.equals(table.getDatabasePath()))) {
                         selectedNode = this_mapinfo;
-                        s_selected_type = selectedNode.getTypeText();
+                        selectedTileSourceType = selectedNode.getTypeText();
                         selectedSpatialDataTypeCode = selectedNode.getType();
                     }
                 }
@@ -307,7 +294,7 @@ public class MapsDirManager {
                     tileBasedNodesList.add(this_mapinfo);
                     if ((selectedNode == null) && (selectedTableName.equals(table.getDatabasePath()))) {
                         selectedNode = this_mapinfo;
-                        s_selected_type = selectedNode.getTypeText();
+                        selectedTileSourceType = selectedNode.getTypeText();
                         selectedSpatialDataTypeCode = selectedNode.getType();
                     }
                 }
@@ -319,7 +306,7 @@ public class MapsDirManager {
             // if nothing was selected OR the selected not found then
             // 'mapnik' as default [this should always exist]
             selectedNode = mapnik_mapinfo;
-            s_selected_type = selectedNode.getTypeText();
+            selectedTileSourceType = selectedNode.getTypeText();
             selectedSpatialDataTypeCode = selectedNode.getType();
             selectedTableName = selectedNode.getFilePath();
         }
@@ -348,20 +335,20 @@ public class MapsDirManager {
       * <p>call from Application or Map-Activity
       * 
       * @param context  the context to use.
-      * @param selected_classinfo the selected {@link TreeNode}. 
+      * @param selectedTreeNode the selected {@link TreeNode}. 
       * @param map_View Map-View to set (if not null)
       * @param mapCenterLocation [point/zoom to check]
       * @return 0 if correct else false 
       */
-    public int selectMapClassInfo( Context context, TreeNode selected_classinfo, MapView map_View, double[] mapCenterLocation ) {
+    public int setSelectedTreeNode( Context context, TreeNode selectedTreeNode, MapView map_View, double[] mapCenterLocation ) {
         int i_rc = -1;
-        if (selected_classinfo != null) {
-            selectedNode = selected_classinfo;
-            s_selected_type = selectedNode.getTypeText();
+        if (selectedTreeNode != null) {
+            selectedNode = selectedTreeNode;
+            selectedTileSourceType = selectedNode.getTypeText();
             selectedSpatialDataTypeCode = selectedNode.getType();
             selectedTableName = selectedNode.getFilePath();
             // This will save the values to the user-proverences
-            setTileSource(context, s_selected_type, selectedTableName);
+            setTileSource(context, selectedTileSourceType, selectedTableName);
             i_rc = 0;
             if (map_View != null) {
                 i_rc = loadSelectedMap(map_View, mapCenterLocation);
@@ -412,7 +399,7 @@ public class MapsDirManager {
                         bounds_north = selected_table.getMaxLatitude();
                         centerX = selected_table.getCenterX();
                         centerY = selected_table.getCenterY();
-                        clear_TileCache();
+                        clearTileCache();
                         mapView.setMapFile(selected_table.getDatabaseFile());
                         if (selected_table.getXmlFile().exists()) {
                             try {
@@ -440,7 +427,7 @@ public class MapsDirManager {
                         centerX = selected_table.getCenterX();
                         centerY = selected_table.getCenterY();
                         selected_mapGenerator = new GeopackageTileDownloader(selected_table);
-                        clear_TileCache();
+                        clearTileCache();
                         mapView.setMapGenerator(selected_mapGenerator);
                     }
                 }
@@ -462,12 +449,12 @@ public class MapsDirManager {
                         centerY = selected_table.getCenterY();
                         selected_mapGenerator = customTileDatabaseHandler.getCustomTileDownloader();
                         try {
-                            clear_TileCache();
+                            clearTileCache();
                             mapView.setMapGenerator(selected_mapGenerator);
-                            GPLog.androidLog(1, "MapsDirManager -I-> MAPURL setMapGenerator[" + s_selected_type
+                            GPLog.androidLog(1, "MapsDirManager -I-> MAPURL setMapGenerator[" + selectedTileSourceType
                                     + "] selected_map[" + selectedTableName + "]");
                         } catch (java.lang.NullPointerException e_mapurl) {
-                            GPLog.androidLog(4, "MapsDirManager -E-> MAPURL setMapGenerator[" + s_selected_type
+                            GPLog.androidLog(4, "MapsDirManager -E-> MAPURL setMapGenerator[" + selectedTileSourceType
                                     + "] selected_map[" + selectedTableName + "]", e_mapurl);
                         }
                     }
@@ -527,7 +514,7 @@ public class MapsDirManager {
       * <br>- this.map_View is set in load_Map()
       * <br>- to be used when a new map is loaded
       */
-    private void clear_TileCache() {
+    private void clearTileCache() {
         if (this.map_View != null) {
             this.map_View.getInMemoryTileCache().destroy();
             if (this.map_View.getFileSystemTileCache().isPersistent()) {

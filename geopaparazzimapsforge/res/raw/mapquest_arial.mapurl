@@ -1,0 +1,9 @@
+url=http://otile1.mqcdn.com/tiles/1.0.0/sat/ZZZ/XXX/YYY.png
+minzoom=0
+maxzoom=18
+center=11.42 46.8
+type=google
+format=png
+defaultzoom=13
+mbtiles=defaulttiles/_mapquest_arial.mbtiles
+description=Data, imagery and map information provided by MapQuest, OpenStreetMap and contributors, ODbL. Note that global coverage is provided at zoom levels 0-11. Zoom Levels 12+ are provided only in the United States.

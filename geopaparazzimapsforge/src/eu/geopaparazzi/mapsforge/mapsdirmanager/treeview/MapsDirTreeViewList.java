@@ -726,7 +726,7 @@ public class MapsDirTreeViewList extends Activity {
             GPLog.androidLog(-1, TAG + " return_load_file mapsdir_context_menu_load selected_file[" + filePath + "] type["
                     + fileType + "]");
 
-            MapsDirManager.getInstance().selectMapClassInfo(this, selectedTreeNode, null, null);
+            MapsDirManager.getInstance().setSelectedTreeNode(this, selectedTreeNode, null, null);
 
             setResult(RESULT_OK, send_intent);
         }

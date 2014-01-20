@@ -159,8 +159,8 @@ public class CustomTileDatabasesManager {
      * @throws Exception  if something goes wrong.
      */
     public CustomTileDatabaseHandler getCustomTileDatabaseHandler( CustomTileTable customtileTable ) throws Exception {
-        CustomTileDatabaseHandler CustomTileDatabaseHandler = customtileTablesMap.get(customtileTable);
-        return CustomTileDatabaseHandler;
+        CustomTileDatabaseHandler customTileDatabaseHandler = customtileTablesMap.get(customtileTable);
+        return customTileDatabaseHandler;
     }
 
     /**
