@@ -19,6 +19,7 @@ package eu.geopaparazzi.spatialite.database.spatial.core.geometry;
 
 import java.util.Iterator;
 
+import jsqlite.Constants;
 import jsqlite.Database;
 import jsqlite.Exception;
 import jsqlite.Stmt;
@@ -37,10 +38,68 @@ import eu.geopaparazzi.library.database.GPLog;
 public class GeometryIterator implements Iterator<Geometry> {
     private WKBReader wkbReader = new WKBReader();
     private Stmt stmt;
-
+    private String s_label = "";
+    /**
+     * Returns Label String (if any)
+     *
+     *  <p>
+     * - if any label is being supported, will build s_label from column 1 to end<br>
+     * -- each column (after 1) will have a ', ' inserted<br>
+     * -- s_label will be empty if no label was requested<br>
+     * @param stmt statement being executed
+     * @return s_label
+    */
+    public String get_label_text() {
+        return s_label;
+    }
+    /**
+     * Builds Label String (if any)
+     *
+     *  <p>
+     * - assumes that column 0 is ALWAYS a Geometry<br>
+     * - if any label is being supported, will build s_label from column 1 to end<br>
+     * -- each column (after 1) will have a ', ' inserted<br>
+     * -- s_label will be set to blank before filling<br>
+     * @param stmt statement being executed
+     * @return nothing
+     */
+    private void set_label_text( Stmt stmt ) {
+        s_label = "";
+        int i = 1;
+        int i_column_count = 0;
+        try {
+            if ((stmt != null) && (stmt.column_count() > 1)) {
+                i_column_count = stmt.column_count();
+                for( i = 1; i < i_column_count; i++ ) {
+                    if (!s_label.equals("")) {
+                        s_label += ", ";
+                    }
+                    switch( stmt.column_type(i) ) {
+                    case Constants.SQLITE_INTEGER: {
+                        s_label = s_label + stmt.column_int(i);
+                    }
+                        break;
+                    case Constants.SQLITE_FLOAT: {
+                        s_label += String.format("%.5f", stmt.column_double(i));
+                    }
+                        break;
+                    case Constants.SQLITE_BLOB: { // not supported
+                    }
+                        break;
+                    case Constants.SQLITE3_TEXT: {
+                        s_label += stmt.column_string(i);
+                    }
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            GPLog.androidLog(4, "GeometryIterator.set_label_text column_count[" + i_column_count + "] column[" + i + "]", e);
+        }
+    }
     /**
      * Constructor.
-     * 
+     *
      * @param database the database to use.
      * @param query the query to use.
      */
@@ -74,6 +133,7 @@ public class GeometryIterator implements Iterator<Geometry> {
         try {
             byte[] geomBytes = stmt.column_bytes(0);
             Geometry geometry = wkbReader.read(geomBytes);
+            set_label_text(stmt);
             return geometry;
         } catch (java.lang.Exception e) {
             GPLog.androidLog(4, "GeometryIterator.next()[wkbReader.read() failed]", e);
@@ -88,7 +148,7 @@ public class GeometryIterator implements Iterator<Geometry> {
 
     /**
      * Reset the iterator.
-     * 
+     *
      * @throws Exception  if something goes wrong.
      */
     public void reset() throws Exception {
@@ -98,7 +158,7 @@ public class GeometryIterator implements Iterator<Geometry> {
 
     /**
      * Close the iterator.
-     * 
+     *
      * @throws Exception  if something goes wrong.
      */
     public void close() throws Exception {
