@@ -49,7 +49,7 @@ public class GeometryIterator implements Iterator<Geometry> {
      * @param stmt statement being executed
      * @return s_label
     */
-    public String get_label_text() {
+    public String getLabelText() {
         return s_label;
     }
     /**
@@ -63,7 +63,7 @@ public class GeometryIterator implements Iterator<Geometry> {
      * @param stmt statement being executed
      * @return nothing
      */
-    private void set_label_text( Stmt stmt ) {
+    private void setLabelText( Stmt stmt ) {
         s_label = "";
         int i = 1;
         int i_column_count = 0;
@@ -94,7 +94,7 @@ public class GeometryIterator implements Iterator<Geometry> {
                 }
             }
         } catch (Exception e) {
-            GPLog.androidLog(4, "GeometryIterator.set_label_text column_count[" + i_column_count + "] column[" + i + "]", e);
+            GPLog.androidLog(4, "GeometryIterator.setLabelText column_count[" + i_column_count + "] column[" + i + "]", e);
         }
     }
     /**
@@ -133,7 +133,7 @@ public class GeometryIterator implements Iterator<Geometry> {
         try {
             byte[] geomBytes = stmt.column_bytes(0);
             Geometry geometry = wkbReader.read(geomBytes);
-            set_label_text(stmt);
+            setLabelText(stmt);
             return geometry;
         } catch (java.lang.Exception e) {
             GPLog.androidLog(4, "GeometryIterator.next()[wkbReader.read() failed]", e);
