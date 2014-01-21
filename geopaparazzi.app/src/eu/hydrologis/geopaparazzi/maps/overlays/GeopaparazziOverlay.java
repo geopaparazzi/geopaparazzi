@@ -753,7 +753,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                         i_geometryIterator++;
                         Geometry geom = geometryIterator.next();
                         if (geom != null) {
-                            String s_label=geometryIterator.get_label_text();
+                            String s_label=geometryIterator.getLabelText();
                             String s_geometry_type = geom.getGeometryType();
                             if (spatialTable.isGeometryCollection()) {
                                 int i_count_geometries = geom.getNumGeometries();
