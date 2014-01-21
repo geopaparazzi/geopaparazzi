@@ -170,8 +170,8 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
     /**
      * Create a {@link OverlayWay} wrapped type.
-     * 
-     * @param context  the context to use. 
+     *
+     * @param context  the context to use.
      */
     public GeopaparazziOverlay( Context context ) {
         super();
@@ -392,7 +392,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
     /**
      * set the currtn gps position.
-     * 
+     *
      * @param position the {@link GeoPoint}.
      * @param accuracy the accuracy.
      */
@@ -753,6 +753,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                         i_geometryIterator++;
                         Geometry geom = geometryIterator.next();
                         if (geom != null) {
+                            String s_label=geometryIterator.get_label_text();
                             String s_geometry_type = geom.getGeometryType();
                             if (spatialTable.isGeometryCollection()) {
                                 int i_count_geometries = geom.getNumGeometries();
@@ -777,6 +778,9 @@ public abstract class GeopaparazziOverlay extends Overlay {
                                 if (isInterrupted() || sizeHasChanged()) { // stop working
                                     return;
                                 }
+                            }
+                            if (!s_label.equals(""))  { // Draw Label
+                             GPLog.androidLog(-1, "GeopaparazziOverlay.drawFromSpatialite label["+s_label+"] ");
                             }
                         } else {
                             GPLog.androidLog(-1, "GeopaparazziOverlay.drawFromSpatialite  [geom == null] description["
