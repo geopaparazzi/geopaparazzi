@@ -138,12 +138,12 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
 
     /**
       * Is the database file considered valid?
-      * 
+      *
       * <br>- metadata table exists and has data
       * <br>- 'tiles' is either a table or a view and the correct fields exist
       * <br>-- if a view: do the tables map and images exist with the correct fields
       * <br>checking is done once when the 'metadata' is retrieved the first time [fetchMetadata()]
-      * 
+      *
       * @return true if valid, otherwise false
       */
     @Override
@@ -309,9 +309,11 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             if (recordCount < 1) {
                 for( SpatialVectorTable spatialTable : vectorTableList ) {
                     String s_unique_name_base = spatialTable.getUniqueNameBasedOnDbFileName();
+                    String s_unique_name_file = s_unique_name_base.replace(SpatialiteUtilities.UNIQUENAME_SEPARATOR,
+                            File.separator);
                     checkTableQuery = "UPDATE " + PROPERTIESTABLE + "  SET  name  = '"
-                            + spatialTable.getUniqueNameBasedOnDbFilePath() + "' WHERE (name LIKE '%" + s_unique_name_base
-                            + "' );";
+                            + spatialTable.getUniqueNameBasedOnDbFilePath() + "' WHERE ((name LIKE '%" + s_unique_name_base
+                            + "') OR (name LIKE '%" + s_unique_name_file + "') OR (name = " + spatialTable.getGeomName() + "));";
                     // GPLog.androidLog(-1, "SpatialiteDatabaseHandler[" + databasePath +
                     // "] col_count["+i_column_count+"] sql[" + checkTableQuery + "]");
                     db_java.exec(checkTableQuery, null);
@@ -320,7 +322,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             List<String> propertiesTableFieldsList = DaoSpatialite.PROPERTIESTABLE_FIELDS_LIST;
             if (propertiesTableColumnCount != propertiesTableFieldsList.size()) {
                 /*
-                 * the table structure has changed, try to get the old valid values 
+                 * the table structure has changed, try to get the old valid values
                  */
                 checkTableQuery = "pragma table_info(" + PROPERTIESTABLE + ");";
                 stmt = db_java.prepare(checkTableQuery);
@@ -343,7 +345,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                 checkTableQuery = "CREATE TABLE " + PROPERTIESTABLE + "_save AS SELECT * FROM " + PROPERTIESTABLE + ";";
                 db_java.exec(checkTableQuery, null);
                 /*
-                 * this will drop and recall this function [nasty] 
+                 * this will drop and recall this function [nasty]
                  * creating the new table and
                  * filling it with default values
                  * this will drop to old table
