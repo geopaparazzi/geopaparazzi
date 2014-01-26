@@ -68,13 +68,22 @@ public class GpsDatabaseLogger implements GpsManagerListener {
     private boolean isDatabaseLogging = false;
     private boolean isShutdown = false;
 
+    /**
+     * A private array of the Lon and Lat coords for the current GPS log.
+     * 
+     * <p>With every new log entry, this also increases by an entry</p>
+     */
     private List<double[]> currentXY = new ArrayList<double[]>();
 
     // private MediaPlayer mMediaPlayer;
     // private boolean doPlayAlarm = false;
 
     private int currentPointsNum;
-    private float currentDistance;
+    /**
+     * The current total distance of the track from start to the current point.
+     * 
+     */
+    private double currentDistance;
 
     public GpsDatabaseLogger( Context context ) {
         this.context = context;
@@ -165,7 +174,7 @@ public class GpsDatabaseLogger implements GpsManagerListener {
                             double recLon = gpsLoc.getLongitude();
                             double recLat = gpsLoc.getLatitude();
                             double recAlt = gpsLoc.getAltitude();
-                            float lastDistance = previousLogLoc.distanceTo(gpsLoc);
+                            double lastDistance = previousLogLoc.distanceTo(gpsLoc);
                             logABS("gpsloc: " + gpsLoc.getLatitude() + "/" + gpsLoc.getLongitude());
                             logABS("previousLoc: " + previousLogLoc.getLatitude() + "/" + previousLogLoc.getLongitude());
                             logABS("distance: " + lastDistance + " - mindistance: " + minDistance);
@@ -199,13 +208,13 @@ public class GpsDatabaseLogger implements GpsManagerListener {
                         logABS("Removing gpslog, since too few points were added. Logid: " + gpsLogId);
                         dbHelper.deleteGpslog(context, gpsLogId);
                     } else {
-                        // set the end timestamp
+                        // set the end timestamp and the total distance for the track
                         java.sql.Date end = new java.sql.Date(System.currentTimeMillis());
-                        dbHelper.setEndTs(context, gpsLogId, end, currentDistance);
+                        dbHelper.setEndTs(context, gpsLogId, end, (float)currentDistance);
                     }
 
                     currentPointsNum = 0;
-                    currentDistance = 0f;
+                    currentDistance = 0;
                     currentRecordedLogId = -1;
 
                 } catch (SQLiteFullException e) {
