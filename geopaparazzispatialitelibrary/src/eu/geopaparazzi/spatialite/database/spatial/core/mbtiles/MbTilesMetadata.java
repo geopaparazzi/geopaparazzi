@@ -4,9 +4,9 @@
 package eu.geopaparazzi.spatialite.database.spatial.core.mbtiles;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.LinkedHashMap;
 
 import android.database.Cursor;
 
@@ -30,15 +30,15 @@ public class MbTilesMetadata {
       * <li>if the parent directory does not exist, it will be created</li>
       * </ul>
       *
-      * @param name: The name of the tileset.
-      * @param description: A description of the layer as plain text.
-      * @param version: The version of the tileset, as a plain number.
-      * @param format: The image file format of the tile data: png or jpg
-      * @param bounds: Should be latitude and longitude values in OpenLayers Bounds format - left, bottom, right, top.
-      * @param center:  A default position and Zoom that can be set by the MBTiles designer
-      * @param minZoom:  minimum Zoom level
-      * @param maxZoom:  maximum Zoom level
-      * @param s_tile_row_type:  how the y tile-position is to be interpreted ['tms' or 'osm']
+      * @param name The name of the tileset.
+      * @param description A description of the layer as plain text.
+      * @param version The version of the tileset, as a plain number.
+      * @param format The image file format of the tile data: png or jpg
+      * @param bounds Should be latitude and longitude values in OpenLayers Bounds format - left, bottom, right, top.
+      * @param center  A default position and Zoom that can be set by the MBTiles designer
+      * @param minZoom  minimum Zoom level
+      * @param maxZoom  maximum Zoom level
+      * @param s_tile_row_type how the y tile-position is to be interpreted ['tms' or 'osm']
       * @param extra any other values found in the metadata table
       */
     public MbTilesMetadata( String name, String description, String type, String version, String format, float[] bounds,
@@ -74,7 +74,7 @@ public class MbTilesMetadata {
         if ((s_tile_row_type != "") && ((s_tile_row_type.equals("tms")) || (s_tile_row_type.equals("osm"))))
             this.s_tile_row_type = s_tile_row_type;
         this.defaultZoom = (int) this.center[2];
-        this.s_center_parm = center[0]+","+center[1]+","+this.defaultZoom;
+        this.s_center_parm = center[0] + "," + center[1] + "," + this.defaultZoom;
     }
 
     @Override
@@ -174,10 +174,10 @@ public class MbTilesMetadata {
             if (name == null)
                 throw new MetadataParseException("No mandatory field 'name'.");
             String description = hm.remove("description");
-            if (description == null)
-            { // gdal does not fill this value [it can have empty (NULL) value]
-             description=name;
-              //   throw new MetadataParseException("No mandatory field 'description'.");
+            if (description == null) { // gdal does not fill this value [it can have empty (NULL)
+                                       // value]
+                description = name;
+                // throw new MetadataParseException("No mandatory field 'description'.");
             }
             String type = hm.remove("type");
             if (type == null || (!type.equals("overlay") && type.equals("baselayer"))) {
@@ -221,16 +221,15 @@ public class MbTilesMetadata {
             if (maxZoomStr != null) {
                 maxZoom = Integer.parseInt(maxZoomStr);
             }
-            if (minZoom > maxZoom)
-            {
-             int i_zoom=minZoom;
-             minZoom = maxZoom;
-             maxZoom=i_zoom;
+            if (minZoom > maxZoom) {
+                int i_zoom = minZoom;
+                minZoom = maxZoom;
+                maxZoom = i_zoom;
             }
             if ((minZoom < 0) || (minZoom > 22))
-             minZoom=0;
+                minZoom = 0;
             if ((maxZoom < 0) || (maxZoom > 22))
-             maxZoom=22;
+                maxZoom = 22;
             // center: tilemill specific parameter
             // - not part of the specification, but usefull when first loading and the map is out of
             // the range

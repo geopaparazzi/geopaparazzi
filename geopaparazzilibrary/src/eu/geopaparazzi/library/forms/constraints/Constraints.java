@@ -29,12 +29,22 @@ public class Constraints {
 
     private List<IConstraint> constraints = new ArrayList<IConstraint>();
 
+    /**
+     * Add a constraint.
+     * 
+     * @param constraint the constraint to add.
+     */
     public void addConstraint( IConstraint constraint ) {
         if (!constraints.contains(constraint)) {
             constraints.add(constraint);
         }
     }
 
+    /**
+     * Remove a constraint.
+     * 
+     * @param constraint the constraint to remove.
+     */
     public void removeConstraint( IConstraint constraint ) {
         if (constraints.contains(constraint)) {
             constraints.remove(constraint);
@@ -43,7 +53,6 @@ public class Constraints {
 
     /**
      * Checks if all the {@link IConstraint}s in the current set are valid.
-     * @param object 
      * 
      * @param object the object to check.
      * @return <code>true</code> if all the constraints are valid.
@@ -63,6 +72,9 @@ public class Constraints {
         return true;
     }
 
+    /**
+     * @return description.
+     */
     @SuppressWarnings("nls")
     public String getDescription() {
         StringBuilder sb = new StringBuilder();

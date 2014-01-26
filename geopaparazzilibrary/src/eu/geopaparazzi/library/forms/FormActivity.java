@@ -107,30 +107,53 @@ public class FormActivity extends FragmentActivity {
 
     }
 
+    /**
+     * @return the list of titles.
+     */
     public List<String> getFragmentTitles() {
         return formNames4Section;
     }
 
+    /**
+     * @return the section names.
+     */
     public String getSectionName() {
         return sectionName;
     }
 
+    /**
+     * @return the section object.
+     */
     public JSONObject getSectionObject() {
         return sectionObject;
     }
 
+    /**
+     * @param sectionObject teh object to set.
+     */
     public void setSectionObject( JSONObject sectionObject ) {
         this.sectionObject = sectionObject;
     }
 
+    /**
+     * @return the lat
+     */
     public double getLatitude() {
         return latitude;
     }
 
+    /**
+     * @return the lon
+     */
     public double getLongitude() {
         return longitude;
     }
 
+    /**
+     * Save action.
+     * 
+     * @param view parent.
+     */
     public void saveClicked( View view ) {
         try {
             saveAction();
@@ -140,6 +163,11 @@ public class FormActivity extends FragmentActivity {
         }
     }
 
+    /**
+     * Share action.
+     * 
+     * @param view parent.
+     */
     public void shareClicked( View view ) {
         try {
             shareAction();
@@ -148,6 +176,11 @@ public class FormActivity extends FragmentActivity {
             Utilities.messageDialog(this, e.getLocalizedMessage(), null);
         }
     }
+    /**
+     * Cancel action.
+     * 
+     * @param view parent.
+     */
     public void cancelClicked( View view ) {
         finish();
     }

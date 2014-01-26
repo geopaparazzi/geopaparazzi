@@ -51,6 +51,13 @@ public class KmzExport {
         this.outputFile = outputFile;
     }
 
+    /**
+     * Export.
+     * 
+     * @param context  the context to use.
+     * @param kmlRepresenters the list of data representers.
+     * @throws Exception  if something goes wrong.
+     */
     public void export( Context context, List<KmlRepresenter> kmlRepresenters ) throws Exception {
         if (name == null) {
             name = "Geopaparazzi Export";

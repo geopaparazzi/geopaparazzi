@@ -20,7 +20,6 @@ package eu.geopaparazzi.library.gps;
 import java.util.Date;
 
 import android.location.Location;
-import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TimeUtilities;
 
 /**
@@ -32,14 +31,23 @@ public class GpsLocation extends Location {
 
     private Location previousLoc = null;
 
+    /**
+     * @param l {@link Location} object to wrap.
+     */
     public GpsLocation( Location l ) {
         super(l);
     }
 
+    /**
+     * @return the previous location reference.
+     */
     public Location getPreviousLoc() {
         return previousLoc;
     }
 
+    /**
+     * @param previousLoc sets previous location.
+     */
     public void setPreviousLoc( Location previousLoc ) {
         this.previousLoc = previousLoc;
     }
@@ -60,10 +68,16 @@ public class GpsLocation extends Location {
         return timeString;
     }
 
+    /**
+     * @return the timestamp.
+     */
     public Date getTimeDate() {
         return new Date(getTime());
     }
 
+    /**
+     * @return the sql date.
+     */
     public java.sql.Date getSqlDate() {
         return new java.sql.Date(getTime());
     }

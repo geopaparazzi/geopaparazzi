@@ -56,59 +56,167 @@ public interface Constants {
     // "eu.hydrologis.geopaparazzi.maps.OSMCATEGORYACTIVITY";
     // public final String OSMFORMACTIVITY = "eu.hydrologis.geopaparazzi.osm.OSMFORMACTIVITY";
 
+    /**
+     * 
+     */
     public final String ID = "ID";
+    /**
+     * 
+     */
     public final String ISLINE = "ISLINE";
+    /**
+     * 
+     */
     public final String MEASURECOORDSX = "MEASURECOORDSX";
+    /**
+     * 
+     */
     public final String MEASURECOORDSY = "MEASURECOORDSY";
+    /**
+     * 
+     */
     public final String MEASUREDIST = "MEASUREDIST";
+    /**
+     * 
+     */
     public final String NSEW_COORDS = "NSEW_COORDS";
 
+    /**
+     * 
+     */
     public static final String GEOPAPARAZZI = "geopaparazzi";
+    /**
+     * 
+     */
     public final String PATH_MEDIA = File.separator + "media";
+    /**
+     * 
+     */
     public final String PATH_KMLEXPORT = File.separator + "export";
 
+    /**
+     * 
+     */
     public static final String PREFS_KEY_SCREEN_ON = "PREFS_KEY_SCREEN_ON";
+    /**
+     * 
+     */
     public static final String PREFS_KEY_IMPERIAL = "PREFS_KEY_IMPERIAL";
 
+    /**
+     * 
+     */
     public static final String PREFS_KEY_NOTES_COLOR = "PREFS_KEY_NOTES_COLOR";
+    /**
+     * 
+     */
     public static final String PREFS_KEY_NOTES_WIDTH = "PREFS_KEY_NOTES_WIDTH";
+    /**
+     * 
+     */
     public static final String PREFS_KEY_GPSLOG4PROPERTIES = "PREFS_KEY_GPSLOG4PROPERTIES";
+    /**
+     * 
+     */
     public static final String PREFS_KEY_MAP4PROPERTIES = "PREFS_KEY_MAP4PROPERTIES";
 
+    /**
+     * 
+     */
     public static final String PREFS_KEY_AUTOMATIC_CENTER_GPS = "enable_automatic_center_on_gps";
 
+    /**
+     * 
+     */
     public static final String PREFS_KEY_ZOOM1 = "labels_zoom1";
+    /**
+     * 
+     */
     public static final String PREFS_KEY_ZOOM1_LABELLENGTH = "labels_length_zoom1";
+    /**
+     * 
+     */
     public static final String PREFS_KEY_ZOOM2 = "labels_zoom2";
+    /**
+     * 
+     */
     public static final String PREFS_KEY_ZOOM2_LABELLENGTH = "labels_length_zoom2";
+    /**
+     * 
+     */
     public static final String PREFS_KEY_MINIMAPON = "PREFS_KEY_MINIMAPON";
+    /**
+     * 
+     */
     public static final String PREFS_KEY_SCALEBARON = "PREFS_KEY_SCALEBARON";
+    /**
+     * 
+     */
     public static final String PREFS_KEY_COMPASSON = "PREFS_KEY_COMPASSON";
 
+    /**
+     * 
+     */
     public static final int MAP_TYPE_POINT = 0;
+    /**
+     * 
+     */
     public static final int MAP_TYPE_LINE = 1;
+    /**
+     * 
+     */
     public static final int MAP_TYPE_POLYGON = 2;
 
     // public static final String BASEFOLDERKEY = "geopaparazzi_basefolder_key";
+    /**
+     * 
+     */
     public static final String DECIMATION_FACTOR = "decimation_list";
     // public static final String GPSLOGGINGINTERVALKEY = "gps_logging_interval";
     // public static final String GPSLOGGINGDISTANCEKEY = "gps_logging_distance";
+    /**
+     * 
+     */
     public static final String SMSCATCHERKEY = "sms_catcher";
+    /**
+     * 
+     */
     public static final String PANICKEY = "panic_number";
 
     /*
      * OSM
      */
+    /**
+     * 
+     */
     public static final String OSM_CATEGORY_KEY = "OSM_CATEGORY_KEY";
+    /**
+     * 
+     */
     public static final String OSM_TAG_KEY = "OSM_TAG_KEY";
+    /**
+     * 
+     */
     public static final String PREFS_KEY_DOOSM = "PREFS_KEY_DOOSM";
+    /**
+     * 
+     */
     public static final String PREFS_KEY_OSMTAGSVERSION = "PREFS_KEY_OSMTAGSVERSION";
 
     /*
      * CLOUD
      */
+    /**
+     * 
+     */
     public static final String PREF_KEY_USER = "geopapcloud_user_key"; //$NON-NLS-1$
+    /**
+     * 
+     */
     public static final String PREF_KEY_PWD = "geopapcloud_pwd_key"; //$NON-NLS-1$
+    /**
+     * 
+     */
     public static final String PREF_KEY_SERVER = "geopapcloud_server_key";//$NON-NLS-1$
 
     /*
@@ -117,25 +225,58 @@ public interface Constants {
      */
     // public static final String PREFS_KEY_TILESOURCE = "PREFS_KEY_TILESOURCE";
     // public static final String PREFS_KEY_TILESOURCE_FILE = "PREFS_KEY_TILESOURCE_FILE";
+    /**
+     * 
+     */
     public static final String PREFS_KEY_MAPSVIEW_TEXTSIZE_FACTOR = "mapsview_textsize_factor";
     /*
      * cross properties
      */
+    /**
+     * 
+     */
     public static final String PREFS_KEY_CROSS_WIDTH = "PREFS_KEY_CROSS_WIDTH";
+    /**
+     * 
+     */
     public static final String PREFS_KEY_CROSS_COLOR = "PREFS_KEY_CROSS_COLOR";
+    /**
+     * 
+     */
     public static final String PREFS_KEY_CROSS_SIZE = "PREFS_KEY_CROSS_SIZE";
     /*
      * custom notes icon properties
      */
+    /**
+     * 
+     */
     public static final String PREFS_KEY_NOTES_CHECK = "PREFS_KEY_NOTES_CHECK";
+    /**
+     * 
+     */
     public static final String PREFS_KEY_NOTES_CUSTOMCOLOR = "PREFS_KEY_NOTES_CUSTOMCOLOR";
+    /**
+     * 
+     */
     public static final String PREFS_KEY_NOTES_SIZE = "PREFS_KEY_NOTES_SIZE";
+    /**
+     * 
+     */
     public static final String PREFS_KEY_NOTES_OPACITY = "PREFS_KEY_NOTES_OPACITY";
 
     /*
      * notes text properties
      */
+    /**
+     * 
+     */
     public static final String PREFS_KEY_NOTES_TEXT_VISIBLE = "PREFS_KEY_NOTES_TEXT_VISIBLE";
+    /**
+     * 
+     */
     public static final String PREFS_KEY_NOTES_TEXT_DOHALO = "PREFS_KEY_NOTES_TEXT_DOHALO";
+    /**
+     * 
+     */
     public static final String PREFS_KEY_NOTES_TEXT_SIZE = "PREFS_KEY_NOTES_TEXT_SIZE";
 }

@@ -36,10 +36,9 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import eu.geopaparazzi.spatialite.R;
-// import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.OrderComparator;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
+import eu.geopaparazzi.spatialite.util.OrderComparator;
 import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
 
 /**
@@ -55,25 +54,19 @@ public class DataListActivity extends ListActivity {
         super.onCreate(icicle);
 
         setContentView(R.layout.data_list);
+        refreshList(true);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        refreshList(true);
     }
 
     private void refreshList( boolean doReread ) {
-        // if (Debug.D)
-        //            Logger.d(this, "refreshing data list"); //$NON-NLS-1$
-
         try {
             if (doReread)
                 spatialTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(doReread);
-            // no bounds checking, no enabled checking : all records will be returned
-            // spatialTables = MapsDirManager.getInstance().getSpatialVectorTables(null,0,doReread);
         } catch (Exception e) {
-            // Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();
         }
 
@@ -129,7 +122,7 @@ public class DataListActivity extends ListActivity {
                         } else if ((item.isPoint()) || (item.isGeometryCollection())) {
                             intent = new Intent(DataListActivity.this, PointsDataPropertiesActivity.class);
                         }
-                        intent.putExtra(SpatialiteLibraryConstants.PREFS_KEY_TEXT, item.getUniqueName());
+                        intent.putExtra(SpatialiteLibraryConstants.PREFS_KEY_TEXT, item.getUniqueNameBasedOnDbFilePath());
                         startActivity(intent);
 
                     }
@@ -140,7 +133,7 @@ public class DataListActivity extends ListActivity {
                     public void onClick( View v ) {
                         try {
                             float[] tableBounds = SpatialDatabasesManager.getInstance().getVectorHandler(item)
-                                    .getTableBounds(item, "4326");
+                                    .getTableBounds(item);
                             double lat = tableBounds[1] + (tableBounds[0] - tableBounds[1]) / 2.0;
                             double lon = tableBounds[3] + (tableBounds[2] - tableBounds[3]) / 2.0;
 
@@ -158,13 +151,19 @@ public class DataListActivity extends ListActivity {
                 // rowView.setBackgroundColor(ColorUtilities.toColor(item.getColor()));
                 // mj10777: some tables may have more than one column, thus the column name will
                 // also be shown item.getUniqueName()
-                nameView.setText(item.getName());
-                descriptionView.setText(item.getGeomName() + ": " + item.getMapType() + ", db: " + item.getFileName());
+                nameView.setText(item.getTableName());
+                descriptionView.setText(item.getGeomName() + ": " + item.getGeometryTypeDescription() + ", db: "
+                        + item.getFileName());
 
                 visibleView.setChecked(item.getStyle().enabled != 0);
                 visibleView.setOnCheckedChangeListener(new OnCheckedChangeListener(){
                     public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
                         item.getStyle().enabled = isChecked ? 1 : 0;
+                        try {
+                            SpatialDatabasesManager.getInstance().updateStyle(item);
+                        } catch (jsqlite.Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
                 return rowView;
@@ -182,7 +181,7 @@ public class DataListActivity extends ListActivity {
                 SpatialVectorTable spatialTable = spatialTables.get(i);
                 SpatialDatabasesManager.getInstance().updateStyle(spatialTable);
             }
-            SpatialDatabasesManager.getInstance().getSpatialVectorTables(true);
+            spatialTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(true);
         } catch (Exception e) {
             // Logger.e(this, e.getLocalizedMessage(), e);
             e.printStackTrace();

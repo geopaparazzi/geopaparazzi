@@ -1,0 +1,9 @@
+url=http://otile1.mqcdn.com/tiles/1.0.0/map/ZZZ/XXX/YYY.png
+minzoom=0
+maxzoom=19
+center=11.42 46.8
+type=google
+format=png
+defaultzoom=13
+mbtiles=defaulttiles/_mapquest.mbtiles
+description=Data, imagery and map information provided by MapQuest, OpenStreetMap and contributors, ODbL.

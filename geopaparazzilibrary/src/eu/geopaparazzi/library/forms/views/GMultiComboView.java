@@ -40,14 +40,32 @@ public class GMultiComboView extends View implements GView {
 
     private Button button;
 
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     * @param defStyle def style.
+     */
     public GMultiComboView( Context context, AttributeSet attrs, int defStyle ) {
         super(context, attrs, defStyle);
     }
 
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     */
     public GMultiComboView( Context context, AttributeSet attrs ) {
         super(context, attrs);
     }
 
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     * @param parentView parent
+     * @param key key
+     * @param value value
+     * @param itemsArray the items.
+     * @param constraintDescription constraints
+     */
     public GMultiComboView( final Context context, AttributeSet attrs, LinearLayout parentView, String key, String value,
             final String[] itemsArray, String constraintDescription ) {
         super(context, attrs);
@@ -97,12 +115,13 @@ public class GMultiComboView extends View implements GView {
 
     @Override
     public void setOnActivityResult( Intent data ) {
+        // ignore
     }
 
     @Override
     public void refresh( Context context ) {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

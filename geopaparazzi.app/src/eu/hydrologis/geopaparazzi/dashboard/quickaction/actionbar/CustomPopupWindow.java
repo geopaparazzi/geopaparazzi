@@ -14,6 +14,10 @@ import android.view.WindowManager;
 import android.widget.PopupWindow;
 import eu.hydrologis.geopaparazzi.R;
 
+/**
+ * @author londatiga
+ *
+ */
 public class CustomPopupWindow {
     protected final View anchor;
     protected final PopupWindow window;
@@ -57,12 +61,14 @@ public class CustomPopupWindow {
      * child views.
      */
     protected void onCreate() {
+        // ignore
     }
 
     /**
      * In case there is stuff to do right before displaying.
      */
     protected void onShow() {
+        // ignore
     }
 
     protected void preShow() {
@@ -92,12 +98,17 @@ public class CustomPopupWindow {
         window.setContentView(root);
     }
 
+    /**
+     * Set the background.
+     * 
+     * @param background the background to set.
+     */
     public void setBackgroundDrawable( Drawable background ) {
         this.background = background;
     }
 
     /**
-     * Sets the content view. Probably should be called from {@link onCreate}
+     * Sets the content view. Probably should be called from onCreate.
      * 
      * @param root
      *            the view the popup will display
@@ -111,7 +122,7 @@ public class CustomPopupWindow {
     /**
      * Will inflate and set the view from a resource id
      * 
-     * @param layoutResID
+     * @param layoutResID the res id to use.
      */
     public void setContentView( int layoutResID ) {
         LayoutInflater inflator = (LayoutInflater) anchor.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -120,9 +131,9 @@ public class CustomPopupWindow {
     }
 
     /**
-     * If you want to do anything when {@link dismiss} is called
+     * If you want to do anything when dismiss is called
      * 
-     * @param listener
+     * @param listener teh dismiss listener.
      */
     public void setOnDismissListener( PopupWindow.OnDismissListener listener ) {
         window.setOnDismissListener(listener);
@@ -198,6 +209,9 @@ public class CustomPopupWindow {
         window.showAtLocation(anchor, Gravity.NO_GRAVITY, xPos, yPos);
     }
 
+    /**
+     * Dismiss delegate.
+     */
     public void dismiss() {
         window.dismiss();
     }

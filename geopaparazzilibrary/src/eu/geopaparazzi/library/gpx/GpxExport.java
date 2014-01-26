@@ -50,6 +50,13 @@ public class GpxExport {
         this.outputFile = outputFile;
     }
 
+    /**
+     * Export.
+     * 
+     * @param context  the context to use.
+     * @param gpxRepresenters list of data representers.
+     * @throws IOException  if something goes wrong.
+     */
     public void export( Context context, List<GpxRepresenter> gpxRepresenters ) throws IOException {
         if (name == null) {
             name = "Geopaparazzi Gpx Export";

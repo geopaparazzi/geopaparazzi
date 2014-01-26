@@ -62,6 +62,9 @@ public class GeopaparazziApplication extends Application {
         }
     }
 
+    /**
+     * @return the singleton instance.
+     */
     public static GeopaparazziApplication getInstance() {
         return instance;
     }

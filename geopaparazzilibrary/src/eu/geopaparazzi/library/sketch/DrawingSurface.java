@@ -29,13 +29,23 @@ public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callbac
     private Boolean _run = false;
     protected DrawThread thread;
     private Bitmap mBitmap;
+    /**
+     * 
+     */
     public static boolean isDrawing = true;
+    /**
+     * 
+     */
     public DrawingPath previewPath;
 
     private CommandManager commandManager;
 
     private volatile boolean isDisposed = false;
 
+    /**
+     * @param context  the context to use.
+     * @param attrs attributes.
+     */
     public DrawingSurface( Context context, AttributeSet attrs ) {
         super(context, attrs);
 
@@ -134,25 +144,40 @@ public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callbac
         }
     }
 
+    /**
+     * @param drawingPath drawing path
+     */
     public void addDrawingPath( DrawingPath drawingPath ) {
         commandManager.addCommand(drawingPath);
     }
 
+    /**
+     * @return has more redo.
+     */
     public boolean hasMoreRedo() {
         return commandManager.hasMoreRedo();
     }
 
+    /**
+     * 
+     */
     public void redo() {
         isDrawing = true;
         commandManager.redo();
 
     }
 
+    /**
+     * 
+     */
     public void undo() {
         isDrawing = true;
         commandManager.undo();
     }
 
+    /**
+     * @return more undo
+     */
     public boolean hasMoreUndo() {
         return commandManager.hasMoreUndo();
     }
@@ -183,6 +208,9 @@ public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callbac
         }
     }
 
+    /**
+     * 
+     */
     public void dispose() {
         if (mBitmap != null) {
             isDisposed = true;
@@ -191,6 +219,12 @@ public class DrawingSurface extends SurfaceView implements SurfaceHolder.Callbac
         }
     }
 
+    /**
+     * Dump image to file.
+     * 
+     * @param imageFile the file.
+     * @throws IOException  if something goes wrong.
+     */
     public void dumpImage( File imageFile ) throws IOException {
         this.imageFile = imageFile;
         dumpToImage = true;

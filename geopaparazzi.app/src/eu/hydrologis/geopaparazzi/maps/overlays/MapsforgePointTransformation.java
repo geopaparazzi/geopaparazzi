@@ -20,6 +20,13 @@ public class MapsforgePointTransformation implements PointTransformation {
     private final Point tmpPoint = new Point();
     private Point drawPosition;
 
+    /**
+     * Constructor.
+     * 
+     * @param projection projection.
+     * @param drawPosition the position.
+     * @param drawZoom the zoom level.
+     */
     public MapsforgePointTransformation( Projection projection, Point drawPosition, byte drawZoom ) {
         this.projection = projection;
         this.drawPosition = drawPosition;

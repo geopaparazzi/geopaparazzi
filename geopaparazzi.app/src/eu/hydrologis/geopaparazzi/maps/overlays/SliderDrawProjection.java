@@ -23,6 +23,10 @@ import org.mapsforge.core.util.MercatorProjection;
 import android.graphics.Point;
 import android.view.View;
 
+/**
+ * @author mapsforge
+ *
+ */
 public class SliderDrawProjection implements Projection {
     private static final String INVALID_MAP_VIEW_DIMENSIONS = "invalid MapView dimensions";
 
@@ -30,6 +34,12 @@ public class SliderDrawProjection implements Projection {
 
     private View view;
 
+    /**
+     * Constructor.
+     * 
+     * @param mapView the map view.
+     * @param view the parent view.
+     */
     public SliderDrawProjection( MapView mapView, View view ) {
         this.mapView = mapView;
         this.view = view;

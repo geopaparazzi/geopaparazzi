@@ -40,7 +40,13 @@ import eu.geopaparazzi.library.database.GPLog;
  */
 public class CompressionUtilities {
 
+    /**
+     * 
+     */
     public static final String THE_BASE_FILE_IS_SUPPOSED_TO_BE_A_DIRECTORY = "The base file is supposed to be a directory.";
+    /**
+     * 
+     */
     public static final String FILE_EXISTS = "FILE EXISTS";
 
     /**
@@ -48,18 +54,17 @@ public class CompressionUtilities {
      * 
      * @param srcFolder path to the folder to be compressed.
      * @param destZipFile path to the final output zip file.
-     * @param addBaseFolder flag to decide whether to add also the provided base folder or not.
      * @param excludeNames names of files to exclude.
+     * @throws IOException  if something goes wrong.
      */
-    static public void zipFolder( String srcFolder, String destZipFile, boolean addBaseFolder, String... excludeNames )
-            throws IOException {
+    static public void zipFolder( String srcFolder, String destZipFile, String... excludeNames ) throws IOException {
         if (new File(srcFolder).isDirectory()) {
             ZipOutputStream zip = null;
             FileOutputStream fileWriter = null;
             try {
                 fileWriter = new FileOutputStream(destZipFile);
                 zip = new ZipOutputStream(fileWriter);
-                addFolderToZip("", srcFolder, zip, addBaseFolder, excludeNames); //$NON-NLS-1$
+                addFolderToZip("", srcFolder, zip, excludeNames); //$NON-NLS-1$
             } finally {
                 if (zip != null) {
                     zip.flush();
@@ -80,7 +85,7 @@ public class CompressionUtilities {
      * @param destFolder the folder into which unzip the zip file and create the folder structure
      * @param addTimeStamp if <code>true</code>, the timestamp is added if the base folder already exists.
      * @return the name of the internal base folder or <code>null</code>.
-     * @throws IOException 
+     * @throws IOException  if something goes wrong.
      */
     public static String unzipFolder( String zipFile, String destFolder, boolean addTimeStamp ) throws IOException {
         SimpleDateFormat dateTimeFormatter = new SimpleDateFormat("yyyyMMddHHmmss"); //$NON-NLS-1$
@@ -143,7 +148,7 @@ public class CompressionUtilities {
     static private void addToZip( String path, String srcFile, ZipOutputStream zip, String... excludeNames ) throws IOException {
         File file = new File(srcFile);
         if (file.isDirectory()) {
-            addFolderToZip(path, srcFile, zip, true, excludeNames);
+            addFolderToZip(path, srcFile, zip, excludeNames);
         } else {
             if (isInArray(file.getName(), excludeNames)) {
                 // jump if excluded
@@ -165,8 +170,8 @@ public class CompressionUtilities {
         }
     }
 
-    static private void addFolderToZip( String path, String srcFolder, ZipOutputStream zip, boolean addFolder,
-            String... excludeNames ) throws IOException {
+    static private void addFolderToZip( String path, String srcFolder, ZipOutputStream zip, String... excludeNames )
+            throws IOException {
         if (isInArray(srcFolder, excludeNames)) {
             // jump folder if excluded
             return;
@@ -198,6 +203,13 @@ public class CompressionUtilities {
         return false;
     }
 
+    /**
+     * Create zip from files.
+     * 
+     * @param destinationZip zip file.
+     * @param files array of files to add.
+     * @throws IOException  if something goes wrong.
+     */
     @SuppressWarnings("nls")
     public static void createZipFromFiles( File destinationZip, File... files ) throws IOException {
         FileOutputStream fos = new FileOutputStream(destinationZip);

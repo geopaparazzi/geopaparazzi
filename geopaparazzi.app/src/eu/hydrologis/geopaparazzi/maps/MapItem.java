@@ -37,6 +37,13 @@ public class MapItem implements Serializable {
     protected boolean isVisible;
     protected int type;
 
+    /**
+     * @param id id
+     * @param text text
+     * @param color color
+     * @param width width
+     * @param isVisible if visible.
+     */
     public MapItem( long id, String text, String color, float width, boolean isVisible ) {
         this.id = id;
         name = text;
@@ -45,54 +52,81 @@ public class MapItem implements Serializable {
         this.isVisible = isVisible;
     }
 
+    /**
+     * @return id
+     */
     public long getId() {
         return id;
     }
 
+    /**
+     * @return name
+     */
     public String getName() {
         return name;
     }
 
-    public void setName( String name ) {
-        this.name = name;
-    }
+    // public void setName( String name ) {
+    // this.name = name;
+    // }
 
+    /**
+     * @return <code>true</code> if dirty.
+     */
     public boolean isDirty() {
         return isDirty;
     }
 
+    /**
+    * @param isDirty if dirty.
+    */
     public void setDirty( boolean isDirty ) {
         this.isDirty = isDirty;
     }
 
+    /**
+     * @return width
+     */
     public float getWidth() {
         return width;
     }
 
-    public void setWidth( float width ) {
-        this.width = width;
-    }
+    // public void setWidth( float width ) {
+    // this.width = width;
+    // }
 
+    /**
+     * @return color
+     */
     public String getColor() {
         return color;
     }
 
-    public void setColor( String color ) {
-        this.color = color;
-    }
+    // public void setColor( String color ) {
+    // this.color = color;
+    // }
 
+    /**
+    * @param isVisible if visible.
+    */
     public void setVisible( boolean isVisible ) {
         this.isVisible = isVisible;
     }
 
+    /**
+     * @return <code>true</code> if visible.
+     */
     public boolean isVisible() {
         return isVisible;
     }
 
-    public void setType( int type ) {
-        this.type = type;
-    }
+    // public void setType( int type ) {
+    // this.type = type;
+    // }
 
+    /**
+     * @return the type.
+     */
     public int getType() {
         return type;
     }

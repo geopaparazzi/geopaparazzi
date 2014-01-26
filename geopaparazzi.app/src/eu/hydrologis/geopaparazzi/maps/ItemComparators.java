@@ -34,8 +34,14 @@ public class ItemComparators {
      */
     public static class MapItemNameComparator implements Comparator<MapItem> {
         private boolean doInverse = false;
+        /**
+         * 
+         */
         public MapItemNameComparator() {
         }
+        /**
+         * @param doInverse invert comparator.
+         */
         public MapItemNameComparator( boolean doInverse ) {
             this.doInverse = doInverse;
         }
@@ -57,8 +63,14 @@ public class ItemComparators {
      */
     public static class MapItemIdComparator implements Comparator<MapItem> {
         private boolean doInverse = false;
+        /**
+         * 
+         */
         public MapItemIdComparator() {
         }
+        /**
+         * @param doInverse invert comparator.
+         */
         public MapItemIdComparator( boolean doInverse ) {
             this.doInverse = doInverse;
         }
@@ -80,8 +92,14 @@ public class ItemComparators {
      */
     public static class BookmarksComparator implements Comparator<Bookmark> {
         private boolean doInverse = false;
+        /**
+         * 
+         */
         public BookmarksComparator() {
         }
+        /**
+         * @param doInverse invert comparator.
+         */
         public BookmarksComparator( boolean doInverse ) {
             this.doInverse = doInverse;
         }
@@ -101,19 +119,29 @@ public class ItemComparators {
         }
     }
 
+    /**
+     * Sort notes by id.
+     *
+     */
     public static class NotesComparator implements Comparator<INote> {
         private boolean doInverse = false;
+        /**
+         * 
+         */
         public NotesComparator() {
         }
+        /**
+         * @param doInverse invert comparator.
+         */
         public NotesComparator( boolean doInverse ) {
             this.doInverse = doInverse;
         }
         public int compare( INote m1, INote m2 ) {
             String id1 = m1.getName();
             String id2 = m2.getName();
-            
+
             int compareTo = id1.compareTo(id2);
-            
+
             if (compareTo < 0) {
                 return doInverse ? 1 : -1;
             } else if (compareTo > 0) {

@@ -33,10 +33,6 @@ import eu.geopaparazzi.library.database.GPLog;
  */
 @SuppressWarnings("nls")
 public class BytesToStringReaderDevice implements IBluetoothIOHandler {
-    /**
-     * The max buffer supported for reading of bytes.
-     */
-    private static final int BUFFER = 2048;
 
     private BluetoothSocket socket;
     private InputStream in;
@@ -49,6 +45,11 @@ public class BytesToStringReaderDevice implements IBluetoothIOHandler {
 
     private final int length;
 
+    /**
+     * Constructor.
+     * 
+     * @param length buffer length.
+     */
     public BytesToStringReaderDevice( int length ) {
         this.length = length;
     }

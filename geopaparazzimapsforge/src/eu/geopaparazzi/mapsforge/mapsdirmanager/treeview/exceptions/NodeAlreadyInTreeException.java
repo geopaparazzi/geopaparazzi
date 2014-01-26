@@ -1,4 +1,4 @@
-package eu.geopaparazzi.mapsforge.mapsdirmanager.treeview;
+package eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.exceptions;
 
 /**
  * The node being added is already in the tree.

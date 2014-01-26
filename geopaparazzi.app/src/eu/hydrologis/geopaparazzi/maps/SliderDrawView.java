@@ -59,6 +59,8 @@ import eu.hydrologis.geopaparazzi.util.Constants;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class SliderDrawView extends View {
+    private static final int TOUCH_BOX_THRES = 10;
+
     private MapView mapView;
     private final Paint measurePaint = new Paint();
     private final Paint measureTextPaint = new Paint();
@@ -92,6 +94,12 @@ public class SliderDrawView extends View {
     private StringBuilder textBuilder = new StringBuilder();
     private ProgressDialog infoProgressDialog;
 
+    /**
+     * Constructor.
+     * 
+     * @param context  the context to use.
+     * @param attrs the attributes.
+     */
     public SliderDrawView( Context context, AttributeSet attrs ) {
         super(context, attrs);
 
@@ -157,12 +165,12 @@ public class SliderDrawView extends View {
             if (GPLog.LOG_HEAVY)
                 GPLog.addLogEntry(this, "Drawing measure path text: " + upper); //$NON-NLS-1$
         } else if (doInfoMode) {
-            GPLog.androidLog(-1, "DRAWINFOBOX: " + rect);
+            // GPLog.androidLog(-1, "DRAWINFOBOX: " + rect);
             canvas.drawRect(rect, infoRectPaintFill);
             canvas.drawRect(rect, infoRectPaintStroke);
         }
     }
-    
+
     @Override
     public boolean onTouchEvent( MotionEvent event ) {
         if (mapView == null || mapView.isClickable()) {
@@ -207,10 +215,14 @@ public class SliderDrawView extends View {
                 break;
             case MotionEvent.ACTION_UP:
 
-                GeoPoint ul = pj.fromPixels((int) left, (int) top);
-                GeoPoint lr = pj.fromPixels((int) right, (int) bottom);
+                float deltaY = abs(top - bottom);
+                float deltaX = abs(right - left);
+                if (deltaX > TOUCH_BOX_THRES && deltaY > TOUCH_BOX_THRES) {
+                    GeoPoint ul = pj.fromPixels((int) left, (int) top);
+                    GeoPoint lr = pj.fromPixels((int) right, (int) bottom);
 
-                infoDialog(ul.getLatitude(), ul.getLongitude(), lr.getLatitude(), lr.getLongitude());
+                    infoDialog(ul.getLatitude(), ul.getLongitude(), lr.getLatitude(), lr.getLongitude());
+                }
 
                 if (GPLog.LOG_HEAVY)
                     GPLog.addLogEntry(this, "UNTOUCH: " + tmpP.x + "/" + tmpP.y); //$NON-NLS-1$//$NON-NLS-2$
@@ -296,7 +308,7 @@ public class SliderDrawView extends View {
             infoProgressDialog.setMax(spatialTables.size());
             infoProgressDialog.show();
 
-            new AsyncTask<String, Void, String>(){
+            new AsyncTask<String, Integer, String>(){
 
                 protected String doInBackground( String... params ) {
                     try {
@@ -327,11 +339,14 @@ public class SliderDrawView extends View {
                                 }
                                 StringBuilder sbTmp = new StringBuilder();
                                 sdbManager.intersectionToString("4326", spatialTable, north, south, east, west, sbTmp, "\t");
-                                sb.append(spatialTable.getName()).append("\n");
+                                sb.append(spatialTable.getTableName()).append("\n");
                                 sb.append(sbTmp);
                                 sb.append("\n----------------------\n");
 
-                                onProgressUpdate(0);
+                                publishProgress(1);
+                                // Escape early if cancel() is called
+                                if (isCancelled())
+                                    break;
                             }
                         }
                         return sb.toString();
@@ -343,7 +358,7 @@ public class SliderDrawView extends View {
 
                 protected void onProgressUpdate( Integer... progress ) { // on UI thread!
                     if (infoProgressDialog != null && infoProgressDialog.isShowing())
-                        infoProgressDialog.incrementProgressBy(1);
+                        infoProgressDialog.incrementProgressBy(progress[0]);
                 }
 
                 protected void onPostExecute( String response ) { // on UI thread!
@@ -361,6 +376,10 @@ public class SliderDrawView extends View {
             ex.printStackTrace();
         }
     }
+
+    /**
+     * Disable measure mode. 
+     */
     public void disableMeasureMode() {
         doMeasureMode = false;
         this.mapView = null;
@@ -369,11 +388,19 @@ public class SliderDrawView extends View {
         invalidate();
     }
 
+    /**
+     * Enable measure mode. 
+     *
+     * @param mapView the mapview.
+     */
     public void enableMeasureMode( MapView mapView ) {
         this.mapView = mapView;
         doMeasureMode = true;
     }
 
+    /**
+     * Disable info mode.
+     */
     public void disableInfo() {
         doInfoMode = false;
         this.mapView = null;
@@ -381,6 +408,11 @@ public class SliderDrawView extends View {
         invalidate();
     }
 
+    /**
+     * Enable info mode. 
+     *
+     * @param mapView the mapview.
+     */
     public void enableInfo( MapView mapView ) {
         this.mapView = mapView;
         doInfoMode = true;

@@ -74,13 +74,16 @@ public class Debug {
      * 
      * @param folder the folder to which to dump to.
      * @param id the id to add to the file name.
-     * @throws IOException 
+     * @throws IOException  if something goes wrong.
      */
     public static void dumpHProfData( File folder, int id ) throws IOException {
         String absPath = new File(folder, "heap_dump_" + id + ".dalvik-hprof").getAbsolutePath();
         android.os.Debug.dumpHprofData(absPath);
     }
 
+    /**
+     * Attach an exception handler for uncaught exceptions.
+     */
     public static void attachUncaughtExceptionHandler() {
         Thread.currentThread().setUncaughtExceptionHandler(new GPUncaughtExceptionHandler());
     }

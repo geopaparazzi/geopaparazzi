@@ -52,6 +52,12 @@ public class Utilities {
     private static double originShift = 2 * Math.PI * 6378137 / 2.0;
     private static final double METER_TO_FEET_CONVERSION_FACTOR = 3.2808399;
 
+    /**
+     * get unique device id.
+     * 
+     * @param context  the context to use.
+     * @return the unique id.
+     */
     public static String getUniqueDeviceId( Context context ) {
         // try to go for the imei
         TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -226,7 +232,14 @@ public class Utilities {
         }.execute((String) null);
     }
 
+    /**
+     * A custom dialog.
+     */
     public class CustomDialog extends Dialog {
+        /**
+         * @param context  the context to use.
+         * @param view parent view.
+         */
         public CustomDialog( Context context, View view ) {
             super(context);
             requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -329,9 +342,9 @@ public class Utilities {
      *
      * <b>NOT IMPLEMENTED YET, FOR NOW JUST CALLS {@link #messageDialog}</b>
      *
-     * @param context
-     * @param msg
-     * @param okRunnable
+     * @param context  the context to use.
+     * @param msg the message.
+     * @param okRunnable optional {@link Runnable} to trigger after ok was pressed.
      */
     public static void warningDialog( final Context context, final String msg, final Runnable okRunnable ) {
         messageDialog(context, msg, okRunnable);
@@ -341,9 +354,9 @@ public class Utilities {
      *
      * <b>NOT IMPLEMENTED YET, FOR NOW JUST CALLS {@link #messageDialog}</b>
      *
-     * @param context
-     * @param msgId
-     * @param okRunnable
+     * @param context  the context to use.
+     * @param msgId msg id.
+     * @param okRunnable optional {@link Runnable} to trigger after ok was pressed.
      */
     public static void warningDialog( final Context context, final int msgId, final Runnable okRunnable ) {
         messageDialog(context, msgId, okRunnable);
@@ -354,7 +367,7 @@ public class Utilities {
      *
      * @param context the {@link Context} to use.
      * @param msg the message to show.
-     * @param okRunnable optional {@link Runnable} to trigger after ok was pressed.
+     * @param length toast length.
      */
     public static void toast( final Context context, final String msg, final int length ) {
         new AsyncTask<String, Void, String>(){
@@ -373,7 +386,7 @@ public class Utilities {
      *
      * @param context the {@link Context} to use.
      * @param msgId the id of the message to show.
-     * @param okRunnable optional {@link Runnable} to trigger after ok was pressed.
+     * @param length toast length.
      */
     public static void toast( final Context context, final int msgId, final int length ) {
         String msg = context.getString(msgId);
@@ -423,6 +436,11 @@ public class Utilities {
 
     }
 
+    /**
+     * Ring action.
+     * 
+     * @param context  if something goes wrong.
+     */
     public static void ring( Context context ) {
         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Ringtone r = RingtoneManager.getRingtone(context, notification);
@@ -462,6 +480,10 @@ public class Utilities {
      * Converts TMS tile coordinates to Microsoft QuadTree.
      *
      * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
+     * 
+     * @param tx tile x.
+     * @param ty tile y.
+     * @param zoom zoomlevel.
      *
      * @return the quadtree key.
      */
@@ -485,10 +507,10 @@ public class Utilities {
     /**
      * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
      *
-     * @param tx
-     * @param ty
-     * @param zoom
-     * @param tileSize
+     * @param tx tile x.
+     * @param ty tile y.
+     * @param zoom zoomlevel.
+     * @param tileSize tile size.
      * @return [minx, miny, maxx, maxy]
      */
     public static double[] tileLatLonBounds( int tx, int ty, int zoom, int tileSize ) {
@@ -503,9 +525,10 @@ public class Utilities {
      *
      * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
      *
-     * @param tx
-     * @param ty
-     * @param zoom
+     * @param tx tile x.
+     * @param ty tile y.
+     * @param zoom zoomlevel.
+     * @param tileSize tile size.
      * @return [minx, miny, maxx, maxy]
      */
     public static double[] tileBounds( int tx, int ty, int zoom, int tileSize ) {
@@ -521,8 +544,10 @@ public class Utilities {
      * Datum
      *
      * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
-     *
-     * @return
+     * 
+     * @param mx x 
+     * @param my y
+     * @return lat long 
      */
     public static double[] metersToLatLon( double mx, double my ) {
 
@@ -585,8 +610,8 @@ public class Utilities {
     /**
     * Convert a east-longitude,west-longitude coordinate (in degrees) to distance in meters
     *
-    * @param east longitude in degrees
-    * @param east longitude in degrees
+    * @param east_longitude longitude in degrees
+    * @param west_longitude longitude in degrees
     * @return meters in spherical mercator projection
     */
     public static double longitudeToMeters( double east_longitude, double west_longitude ) {
@@ -595,8 +620,8 @@ public class Utilities {
     /**
     * Convert a north-latitude,south-latitude coordinate (in degrees) to distance in meters
     *
-    * @param north latitude in degrees
-    * @param south latitude in degrees
+    * @param north_latitude latitude in degrees
+    * @param south_latitude latitude in degrees
     * @return meters in spherical mercator projection
     */
     public static double latitudeToMeters( double north_latitude, double south_latitude ) {
@@ -606,8 +631,11 @@ public class Utilities {
      * Converts pixel coordinates in given zoom level of pyramid to EPSG:900913
      *
      * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
-     *
-     * @return
+     * @param px pixel x.
+     * @param py  pixel y.
+     * @param zoom zoomlevel.
+     * @param tileSize tile size.
+     * @return converted coordinate.
      */
     public static double[] pixelsToMeters( double px, double py, int zoom, int tileSize ) {
         double res = getResolution(zoom, tileSize);
@@ -620,8 +648,10 @@ public class Utilities {
      * Resolution (meters/pixel) for given zoom level (measured at Equator)
      *
      * <p>Code copied from: http://code.google.com/p/gmap-tile-generator/</p>
-     *
-     * @return
+     * 
+     * @param zoom zoomlevel.
+     * @param tileSize tile size.
+     * @return resolution.
      */
     public static double getResolution( int zoom, int tileSize ) {
         // return (2 * Math.PI * 6378137) / (this.tileSize * 2**zoom)
@@ -629,6 +659,12 @@ public class Utilities {
         return initialResolution / Math.pow(2, zoom);
     }
 
+    /**
+     * Convert unsafe chars.
+     * 
+     * @param string text to check.
+     * @return safe text.
+     */
     @SuppressWarnings("nls")
     public static String makeXmlSafe( String string ) {
         if (string == null)
@@ -715,11 +751,11 @@ public class Utilities {
     /**
      * Create an OSM url from coordinates.
      *
-     * @param lat
-     * @param lon
-     * @param withMarker
-     * @param withGeosmsParam
-     * @return
+     * @param lat lat
+     * @param lon lon
+     * @param withMarker if <code>true</code>, marker is added.
+     * @param withGeosmsParam if <code>true</code>, geosms params are added.
+     * @return url string.
      */
     public static String osmUrlFromLatLong( float lat, float lon, boolean withMarker, boolean withGeosmsParam ) {
         StringBuilder sB = new StringBuilder();

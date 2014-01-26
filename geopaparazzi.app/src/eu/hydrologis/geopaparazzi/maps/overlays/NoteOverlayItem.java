@@ -30,6 +30,14 @@ import android.graphics.drawable.Drawable;
  */
 public class NoteOverlayItem extends OverlayItem {
 
+    /**
+     * Constructor.
+     * 
+     * @param geoPoint the point.
+     * @param text a text.
+     * @param string a string.
+     * @param marker teh marker to use.
+     */
     public NoteOverlayItem( GeoPoint geoPoint, String text, String string, Drawable marker ) {
         super(geoPoint, text, string, marker);
     }

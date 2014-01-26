@@ -39,7 +39,6 @@ import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.routing.openrouteservice.OpenRouteServiceHandler;
-import eu.geopaparazzi.library.routing.openrouteservice.OpenRouteServiceHandler.Preference;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.Utilities;
@@ -71,6 +70,11 @@ public class GeocodeActivity extends ListActivity {
         super.onPause();
     }
 
+    /**
+     * Lookup action.
+     * 
+     * @param view parent.
+     */
     public void onLookupLocationClick( View view ) {
         if (!checkNetwork()) {
             return;
@@ -107,6 +111,11 @@ public class GeocodeActivity extends ListActivity {
         // }
     }
 
+    /**
+     * Ok action.
+     * 
+     * @param view parent.
+     */
     public void onOkClick( View view ) {
         if (!checkNetwork()) {
             return;
@@ -137,6 +146,11 @@ public class GeocodeActivity extends ListActivity {
         return false;
     }
 
+    /**
+     * Nav action.
+     * 
+     * @param view parent.
+     */
     public void onNavClick( View view ) {
         if (!checkNetwork()) {
             return;
@@ -164,7 +178,7 @@ public class GeocodeActivity extends ListActivity {
 
                         ListView preferenceChoiceListView = ((AlertDialog) dialog).getListView();
                         int selectedPosition = preferenceChoiceListView.getCheckedItemPosition();
-                        Preference orsPreference = OpenRouteServiceHandler.Preference.Fastest;
+                        OpenRouteServiceHandler.Preference orsPreference = OpenRouteServiceHandler.Preference.Fastest;
                         switch( selectedPosition ) {
                         case 1:
                             orsPreference = OpenRouteServiceHandler.Preference.Shortest;
@@ -177,7 +191,7 @@ public class GeocodeActivity extends ListActivity {
                             orsPreference = OpenRouteServiceHandler.Preference.Fastest;
                             break;
                         }
-                        final Preference tmpOrsPreference = orsPreference;
+                        final OpenRouteServiceHandler.Preference tmpOrsPreference = orsPreference;
 
                         ListView mainListView = getListView();
 

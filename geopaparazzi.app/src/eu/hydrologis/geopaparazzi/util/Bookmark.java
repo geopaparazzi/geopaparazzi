@@ -42,10 +42,10 @@ public class Bookmark implements KmlRepresenter {
     /**
      * A wrapper for a Bookmark.
      * 
-     * @param id 
+     * @param id the id
      * @param name the name of the Bookmark.
-     * @param lon
-     * @param lat
+     * @param lon lon
+     * @param lat lat
      */
     public Bookmark( long id, String name, double lon, double lat ) {
         this.id = id;
@@ -58,6 +58,19 @@ public class Bookmark implements KmlRepresenter {
         this.lat = lat;
     }
 
+    /**
+     * Constructor.
+     * 
+     * @param id id
+     * @param name name
+     * @param lon lon
+     * @param lat lat
+     * @param zoom zoom
+     * @param north north
+     * @param south south
+     * @param west west 
+     * @param east east
+     */
     public Bookmark( long id, String name, double lon, double lat, double zoom, double north, double south, double west,
             double east ) {
         this.id = id;
@@ -95,38 +108,65 @@ public class Bookmark implements KmlRepresenter {
         return sB.toString();
     }
 
+    /**
+     * @return the id
+     */
     public long getId() {
         return id;
     }
 
+    /**
+     * @return lat.
+     */
     public double getLat() {
         return lat;
     }
 
+    /**
+     * @return lon.
+     */
     public double getLon() {
         return lon;
     }
 
+    /**
+     * @return the name.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * @return the zoomlevel.
+     */
     public double getZoom() {
         return zoom;
     }
 
+    /**
+     * @return the north.
+     */
     public double getNorth() {
         return north;
     }
 
+    /**
+     * @return teh south.
+     */
     public double getSouth() {
         return south;
     }
 
+    /**
+     * @return the west.
+     */
     public double getWest() {
         return west;
     }
 
+    /**
+     * @return the east.
+     */
     public double getEast() {
         return east;
     }

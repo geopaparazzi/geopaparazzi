@@ -44,7 +44,13 @@ import eu.geopaparazzi.library.util.MultipleChoiceDialog;
 @SuppressWarnings("nls")
 public class FormUtilities {
 
+    /**
+     * 
+     */
     public static final String COLON = ":";
+    /**
+     * 
+     */
     public static final String UNDERSCORE = "_";
 
     /**
@@ -83,7 +89,7 @@ public class FormUtilities {
     public static final String TYPE_STRINGCOMBO = "stringcombo";
 
     /**
-     * Type for a {@link MuSpinner}.
+     * Type for a multi spinner.
      */
     public static final String TYPE_STRINGMULTIPLECHOICE = "multistringcombo";
 
@@ -133,16 +139,49 @@ public class FormUtilities {
      */
     public static final String CONSTRAINT_RANGE = "range";
 
+    /**
+     * 
+     */
     public static final String TAG_LONGNAME = "longname";
+    /**
+     * 
+     */
     public static final String TAG_SHORTNAME = "shortname";
+    /**
+     * 
+     */
     public static final String TAG_FORM = "form";
+    /**
+     * 
+     */
     public static final String TAG_FORMITEMS = "formitems";
+    /**
+     * 
+     */
     public static final String TAG_KEY = "key";
+    /**
+     * 
+     */
     public static final String TAG_VALUE = "value";
+    /**
+     * 
+     */
     public static final String TAG_VALUES = "values";
+    /**
+     * 
+     */
     public static final String TAG_ITEMS = "items";
+    /**
+     * 
+     */
     public static final String TAG_ITEM = "item";
+    /**
+     * 
+     */
     public static final String TAG_TYPE = "type";
+    /**
+     * 
+     */
     public static final String TAG_SIZE = "size";
 
     /**
@@ -159,13 +198,13 @@ public class FormUtilities {
      *             <li>2: phone</li>
      *             <li>3: date</li>
      *          </ul>
-     * @param constraintDescription 
+     * @param constraintDescription constraint.
      * @return the added view.
      */
     public static View addEditText( Context context, LinearLayout mainView, String key, String value, int type,
             String constraintDescription ) {
         LinearLayout textLayout = new LinearLayout(context);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(10, 10, 10, 10);
         textLayout.setLayoutParams(layoutParams);
@@ -174,7 +213,7 @@ public class FormUtilities {
         mainView.addView(textLayout);
 
         TextView textView = new TextView(context);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
         textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
         textView.setTextColor(context.getResources().getColor(R.color.formcolor));
@@ -182,7 +221,7 @@ public class FormUtilities {
         textLayout.addView(textView);
 
         EditText editView = new EditText(context);
-        editView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        editView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         editView.setPadding(15, 5, 15, 5);
         editView.setText(value);
 
@@ -211,13 +250,13 @@ public class FormUtilities {
      * @param mainView the main view to which to add the new widget to.
      * @param key the key identifying the widget.
      * @param value the value to put in the widget.
-     * @param constraintDescription 
+     * @param constraintDescription the constrain.
      * @return the added view.
      */
     public static View addBooleanView( Context context, LinearLayout mainView, String key, String value,
             String constraintDescription ) {
         LinearLayout textLayout = new LinearLayout(context);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(10, 10, 10, 10);
         textLayout.setLayoutParams(layoutParams);
@@ -225,7 +264,7 @@ public class FormUtilities {
         mainView.addView(textLayout);
 
         TextView textView = new TextView(context);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
         textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
         textView.setTextColor(context.getResources().getColor(R.color.formcolor));
@@ -233,7 +272,7 @@ public class FormUtilities {
         textLayout.addView(textView);
 
         CheckBox checkbox = new CheckBox(context);
-        checkbox.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        checkbox.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         checkbox.setPadding(15, 5, 15, 5);
 
         if (value != null) {
@@ -257,13 +296,13 @@ public class FormUtilities {
      * @param key the key identifying the widget.
      * @param value the value to put in the widget.
      * @param itemsArray the items to put in the spinner.
-     * @param constraintDescription 
+     * @param constraintDescription the constraint. 
      * @return the added view.
      */
     public static View addComboView( Context context, LinearLayout mainView, String key, String value, String[] itemsArray,
             String constraintDescription ) {
         LinearLayout textLayout = new LinearLayout(context);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(10, 10, 10, 10);
         textLayout.setLayoutParams(layoutParams);
@@ -271,14 +310,14 @@ public class FormUtilities {
         mainView.addView(textLayout);
 
         TextView textView = new TextView(context);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
         textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
         textView.setTextColor(context.getResources().getColor(R.color.formcolor));
         textLayout.addView(textView);
 
         Spinner spinner = new Spinner(context);
-        spinner.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        spinner.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         spinner.setPadding(15, 5, 15, 5);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, itemsArray);
@@ -305,13 +344,13 @@ public class FormUtilities {
      * @param key the key identifying the widget.
      * @param value the value to put in the widget.
      * @param itemsArray the items to put in the spinner.
-     * @param constraintDescription 
+     * @param constraintDescription the constrain. 
      * @return the added view.
      */
     public static View addMultiSelectionView( final Context context, LinearLayout mainView, String key, String value,
             final String[] itemsArray, String constraintDescription ) {
         LinearLayout textLayout = new LinearLayout(context);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(10, 10, 10, 10);
         textLayout.setLayoutParams(layoutParams);
@@ -319,14 +358,14 @@ public class FormUtilities {
         mainView.addView(textLayout);
 
         TextView textView = new TextView(context);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
         textView.setText(key.replace(UNDERSCORE, " ").replace(COLON, " ") + " " + constraintDescription);
         textView.setTextColor(context.getResources().getColor(R.color.formcolor));
         textLayout.addView(textView);
 
         final Button button = new Button(context);
-        button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         button.setPadding(15, 5, 15, 5);
         button.setText("...");
         button.setOnClickListener(new View.OnClickListener(){
@@ -346,7 +385,7 @@ public class FormUtilities {
      * @param formItemsArray the array to update.
      * @param key the key of the item to update.
      * @param value the new value to use.
-     * @throws JSONException
+     * @throws JSONException  if something goes wrong.
      */
     public static void update( JSONArray formItemsArray, String key, String value ) throws JSONException {
         int length = formItemsArray.length();
@@ -367,7 +406,7 @@ public class FormUtilities {
      * @param longitude the long value.
      * @param category the category of the tag.
      * @param tagName the tag name.
-     * @throws JSONException 
+     * @throws JSONException  if something goes wrong. 
      */
     public static void updateExtras( JSONArray formItemsArray, double latitude, double longitude, String category, String tagName )
             throws JSONException {
@@ -388,9 +427,19 @@ public class FormUtilities {
 
     }
 
+    /**
+     * Adds a text view.
+     * 
+     * @param context  the context to use.
+     * @param mainView teh main view.
+     * @param value value
+     * @param size size
+     * @param withLine width
+     * @return the view.
+     */
     public static View addTextView( Context context, LinearLayout mainView, String value, String size, boolean withLine ) {
         LinearLayout textLayout = new LinearLayout(context);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT,
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(10, 10, 10, 10);
         textLayout.setLayoutParams(layoutParams);
@@ -399,7 +448,7 @@ public class FormUtilities {
         mainView.addView(textLayout);
 
         TextView textView = new TextView(context);
-        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         textView.setPadding(2, 2, 2, 2);
         textView.setText(value);
 
@@ -419,7 +468,7 @@ public class FormUtilities {
 
         if (withLine) {
             View view = new View(context);
-            view.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, 2));
+            view.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, 2));
             view.setBackgroundColor(context.getResources().getColor(R.color.formcolor));
 
             textLayout.addView(view);

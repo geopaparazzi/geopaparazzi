@@ -17,9 +17,6 @@
  */
 package eu.geopaparazzi.library.gpx;
 
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-
 /**
  * Interface for objects that are able to represent themself as gpx item.
  * 
@@ -28,15 +25,28 @@ import java.util.Locale;
  */
 public interface GpxRepresenter {
 
+    /**
+     * @return min lat.
+     */
     public double getMinLat();
+    /**
+     * @return min lon.
+     */
     public double getMinLon();
+    /**
+     * @return max lat.
+     */
     public double getMaxLat();
+    /**
+     * @return max lon.
+     */
     public double getMaxLon();
 
     /**
      * Transforms the object in its gpx representation.
      *  
      * @return the gpx representation.
+     * @throws Exception  if something goes wrong.
      */
     public String toGpxString() throws Exception;
 }

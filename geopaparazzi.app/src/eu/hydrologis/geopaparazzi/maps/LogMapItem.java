@@ -30,6 +30,15 @@ public class LogMapItem extends MapItem implements Serializable {
     private String startTime = " - "; //$NON-NLS-1$
     private String endTime = " - "; //$NON-NLS-1$
 
+    /**
+     * @param id id
+     * @param text title.
+     * @param color color
+     * @param width width
+     * @param isVisible if visible
+     * @param startTime start time
+     * @param endTime end time
+     */
     public LogMapItem( long id, String text, String color, float width, boolean isVisible, String startTime, String endTime ) {
         super(id, text, color, width, isVisible);
         if (startTime != null)
@@ -38,20 +47,32 @@ public class LogMapItem extends MapItem implements Serializable {
             this.endTime = endTime;
     }
 
+    /**
+     * @return the start time.
+     */
     public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime( String startTime ) {
-        this.startTime = startTime;
-    }
+    // /**
+    // * @param startTime the start time.
+    // */
+    // public void setStartTime( String startTime ) {
+    // this.startTime = startTime;
+    // }
 
+    /**
+     * @return the end time.
+     */
     public String getEndTime() {
         return endTime;
     }
 
-    public void setEndTime( String endTime ) {
-        this.endTime = endTime;
-    }
+    // /**
+    // * @param endTime the end time.
+    // */
+    // public void setEndTime( String endTime ) {
+    // this.endTime = endTime;
+    // }
 
 }

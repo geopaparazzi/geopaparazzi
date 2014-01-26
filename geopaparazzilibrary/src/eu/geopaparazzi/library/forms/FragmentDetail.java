@@ -90,7 +90,7 @@ public class FragmentDetail extends Fragment {
     @Override
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
-        
+
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
@@ -202,7 +202,8 @@ public class FragmentDetail extends Fragment {
                         addedView = FormUtilities.addComboView(activity, mainView, key, value, itemsArray, constraintDescription);
                     } else if (type.equals(TYPE_CONNECTEDSTRINGCOMBO)) {
                         LinkedHashMap<String, List<String>> valuesMap = TagsManager.extractComboValuesMap(jsonObject);
-                        addedView = FormUtilities.addConnectedComboView(activity, mainView, key, value, valuesMap, constraintDescription);
+                        addedView = FormUtilities.addConnectedComboView(activity, mainView, key, value, valuesMap,
+                                constraintDescription);
                     } else if (type.equals(TYPE_STRINGMULTIPLECHOICE)) {
                         JSONArray comboItems = TagsManager.getComboItems(jsonObject);
                         String[] itemsArray = TagsManager.comboItems2StringArray(comboItems);
@@ -258,20 +259,29 @@ public class FragmentDetail extends Fragment {
     public void onResume() {
         super.onResume();
 
-        for(int i = 0; i < requestCodes2WidgetMap.size(); i++) {
-           int key = requestCodes2WidgetMap.keyAt(i);
-           // get the object by the key.
-           GView view = requestCodes2WidgetMap.get(key);
-           if (view instanceof GMapView) {
-               view.refresh(((GMapView) view).getContext());
-           }
+        for( int i = 0; i < requestCodes2WidgetMap.size(); i++ ) {
+            int key = requestCodes2WidgetMap.keyAt(i);
+            // get the object by the key.
+            GView view = requestCodes2WidgetMap.get(key);
+            if (view instanceof GMapView) {
+                view.refresh(((GMapView) view).getContext());
+            }
         }
     }
 
+    /**
+     * @return the section object.
+     */
     public JSONObject getSectionObject() {
         return sectionObject;
     }
 
+    /**
+     * Setter for the form.
+     * 
+     * @param selectedItemName form name.
+     * @param sectionObject section object.
+     */
     public void setForm( String selectedItemName, JSONObject sectionObject ) {
         this.selectedFormName = selectedItemName;
         this.sectionObject = sectionObject;
@@ -283,7 +293,7 @@ public class FragmentDetail extends Fragment {
      * @param doConstraintsCheck if <code>true</code>, a check on all constraints is performed.
      * @return <code>null</code>, if everything was saved properly, the key of the items
      *              that didn't pass the constraint check.
-     * @throws Exception
+     * @throws Exception  if something goes wrong.
      */
     public String storeFormItems( boolean doConstraintsCheck ) throws Exception {
         if (selectedFormName == null) {

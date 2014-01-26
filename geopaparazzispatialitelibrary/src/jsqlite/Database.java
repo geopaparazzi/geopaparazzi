@@ -18,31 +18,38 @@ public class Database {
 
     protected int error_code = 0;
 
+    private String filename;
+
+    public String getFilename() {
+        return filename;
+    }
+
     /**
      * Open an SQLite database file.
      *
      * @param filename the name of the database file
      * @param mode open mode (e.g. SQLITE_OPEN_READONLY)
+     * @throws jsqlite.Exception 
      */
 
-    public void open(String filename, int mode) throws jsqlite.Exception {
-	if ((mode & 0200) != 0) {
-	    mode = jsqlite.Constants.SQLITE_OPEN_READWRITE |
-		   jsqlite.Constants.SQLITE_OPEN_CREATE;
-	} else if ((mode & 0400) != 0) {
-	    mode = jsqlite.Constants.SQLITE_OPEN_READONLY;
-	}
-	synchronized(this) {
-	    try {
-		_open4(filename, mode, null, false);
-	    } catch (jsqlite.Exception se) {
-		throw se;
-	    } catch (java.lang.OutOfMemoryError me) {
-		throw me;
-	    } catch (Throwable t) {
-		_open(filename, mode);
-	    }
-	}
+    public void open( String filename, int mode ) throws jsqlite.Exception {
+        this.filename = filename;
+        if ((mode & 0200) != 0) {
+            mode = jsqlite.Constants.SQLITE_OPEN_READWRITE | jsqlite.Constants.SQLITE_OPEN_CREATE;
+        } else if ((mode & 0400) != 0) {
+            mode = jsqlite.Constants.SQLITE_OPEN_READONLY;
+        }
+        synchronized (this) {
+            try {
+                _open4(filename, mode, null, false);
+            } catch (jsqlite.Exception se) {
+                throw se;
+            } catch (java.lang.OutOfMemoryError me) {
+                throw me;
+            } catch (Throwable t) {
+                _open(filename, mode);
+            }
+        }
     }
 
     /**
@@ -53,25 +60,24 @@ public class Database {
      * @param vfs VFS name (for SQLite >= 3.5)
      */
 
-    public void open(String filename, int mode, String vfs)
-	throws jsqlite.Exception {
-	if ((mode & 0200) != 0) {
-	    mode = jsqlite.Constants.SQLITE_OPEN_READWRITE |
-		   jsqlite.Constants.SQLITE_OPEN_CREATE;
-	} else if ((mode & 0400) != 0) {
-	    mode = jsqlite.Constants.SQLITE_OPEN_READONLY;
-	}
-	synchronized(this) {
-	    try {
-		_open4(filename, mode, vfs, false);
-	    } catch (jsqlite.Exception se) {
-		throw se;
-	    } catch (java.lang.OutOfMemoryError me) {
-		throw me;
-	    } catch (Throwable t) {
-		_open(filename, mode);
-	    }
-	}
+    public void open( String filename, int mode, String vfs ) throws jsqlite.Exception {
+        this.filename = filename;
+        if ((mode & 0200) != 0) {
+            mode = jsqlite.Constants.SQLITE_OPEN_READWRITE | jsqlite.Constants.SQLITE_OPEN_CREATE;
+        } else if ((mode & 0400) != 0) {
+            mode = jsqlite.Constants.SQLITE_OPEN_READONLY;
+        }
+        synchronized (this) {
+            try {
+                _open4(filename, mode, vfs, false);
+            } catch (jsqlite.Exception se) {
+                throw se;
+            } catch (java.lang.OutOfMemoryError me) {
+                throw me;
+            } catch (Throwable t) {
+                _open(filename, mode);
+            }
+        }
     }
 
     /**
@@ -83,41 +89,37 @@ public class Database {
      * @param ver2 flag to force version on create (false = SQLite3, true = SQLite2)
      */
 
-    public void open(String filename, int mode, String vfs, boolean ver2)
-	throws jsqlite.Exception {
-	if ((mode & 0200) != 0) {
-	    mode = jsqlite.Constants.SQLITE_OPEN_READWRITE |
-		   jsqlite.Constants.SQLITE_OPEN_CREATE;
-	} else if ((mode & 0400) != 0) {
-	    mode = jsqlite.Constants.SQLITE_OPEN_READONLY;
-	}
-	synchronized(this) {
-	    try {
-		_open4(filename, mode, vfs, ver2);
-	    } catch (jsqlite.Exception se) {
-		throw se;
-	    } catch (java.lang.OutOfMemoryError me) {
-		throw me;
-	    } catch (Throwable t) {
-		_open(filename, mode);
-	    }
-	}
+    public void open( String filename, int mode, String vfs, boolean ver2 ) throws jsqlite.Exception {
+        this.filename = filename;
+        if ((mode & 0200) != 0) {
+            mode = jsqlite.Constants.SQLITE_OPEN_READWRITE | jsqlite.Constants.SQLITE_OPEN_CREATE;
+        } else if ((mode & 0400) != 0) {
+            mode = jsqlite.Constants.SQLITE_OPEN_READONLY;
+        }
+        synchronized (this) {
+            try {
+                _open4(filename, mode, vfs, ver2);
+            } catch (jsqlite.Exception se) {
+                throw se;
+            } catch (java.lang.OutOfMemoryError me) {
+                throw me;
+            } catch (Throwable t) {
+                _open(filename, mode);
+            }
+        }
     }
 
     /*
      * For backward compatibility to older sqlite.jar, sqlite_jni
      */
 
-    private native void _open(String filename, int mode)
-	throws jsqlite.Exception;
+    private native void _open( String filename, int mode ) throws jsqlite.Exception;
 
     /*
      * Newer full interface
      */
 
-    private native void _open4(String filename, int mode, String vfs,
-			       boolean ver2)
-	throws jsqlite.Exception;
+    private native void _open4( String filename, int mode, String vfs, boolean ver2 ) throws jsqlite.Exception;
 
     /**
      * Open SQLite auxiliary database file for temporary
@@ -126,23 +128,22 @@ public class Database {
      * @param filename the name of the auxiliary file or null
      */
 
-    public void open_aux_file(String filename) throws jsqlite.Exception {
-	synchronized(this) {
-	    _open_aux_file(filename);
-	}
+    public void open_aux_file( String filename ) throws jsqlite.Exception {
+        synchronized (this) {
+            _open_aux_file(filename);
+        }
     }
 
-    private native void _open_aux_file(String filename)
-	throws jsqlite.Exception;
+    private native void _open_aux_file( String filename ) throws jsqlite.Exception;
 
     /**
      * Destructor for object.
      */
 
     protected void finalize() {
-	synchronized(this) {
-	    _finalize();
-	}
+        synchronized (this) {
+            _finalize();
+        }
     }
 
     private native void _finalize();
@@ -151,14 +152,13 @@ public class Database {
      * Close the underlying SQLite database file.
      */
 
-    public void close()	throws jsqlite.Exception {
-	synchronized(this) {
-	    _close();
-	}
+    public void close() throws jsqlite.Exception {
+        synchronized (this) {
+            _close();
+        }
     }
 
-    private native void _close()
-	throws jsqlite.Exception;
+    private native void _close() throws jsqlite.Exception;
 
     /**
      * Execute an SQL statement and invoke callback methods
@@ -172,14 +172,13 @@ public class Database {
      * @param cb the object implementing the callback methods
      */
 
-    public void exec(String sql, jsqlite.Callback cb) throws jsqlite.Exception {
-	synchronized(this) {
-	    _exec(sql, cb);
-	}
+    public void exec( String sql, jsqlite.Callback cb ) throws jsqlite.Exception {
+        synchronized (this) {
+            _exec(sql, cb);
+        }
     }
 
-    private native void _exec(String sql, jsqlite.Callback cb)
-	throws jsqlite.Exception;
+    private native void _exec( String sql, jsqlite.Callback cb ) throws jsqlite.Exception;
 
     /**
      * Execute an SQL statement and invoke callback methods
@@ -204,15 +203,13 @@ public class Database {
      * @param args arguments for the SQL statement, '%q' substitution
      */
 
-    public void exec(String sql, jsqlite.Callback cb,
-		     String args[]) throws jsqlite.Exception {
-	synchronized(this) {
-	    _exec(sql, cb, args);
-	}
+    public void exec( String sql, jsqlite.Callback cb, String args[] ) throws jsqlite.Exception {
+        synchronized (this) {
+            _exec(sql, cb, args);
+        }
     }
 
-    private native void _exec(String sql, jsqlite.Callback cb, String args[])
-	throws jsqlite.Exception;
+    private native void _exec( String sql, jsqlite.Callback cb, String args[] ) throws jsqlite.Exception;
 
     /**
      * Return the row identifier of the last inserted
@@ -220,9 +217,9 @@ public class Database {
      */
 
     public long last_insert_rowid() {
-	synchronized(this) {
-	    return _last_insert_rowid();
-	}
+        synchronized (this) {
+            return _last_insert_rowid();
+        }
     }
 
     private native long _last_insert_rowid();
@@ -232,9 +229,9 @@ public class Database {
      */
 
     public void interrupt() {
-	synchronized(this) {
-	    _interrupt();
-	}
+        synchronized (this) {
+            _interrupt();
+        }
     }
 
     private native void _interrupt();
@@ -244,9 +241,9 @@ public class Database {
      */
 
     public long changes() {
-	synchronized(this) {
-	    return _changes();
-	}
+        synchronized (this) {
+            return _changes();
+        }
     }
 
     private native long _changes();
@@ -258,13 +255,13 @@ public class Database {
      * @param bh the object implementing the busy callback method
      */
 
-    public void busy_handler(jsqlite.BusyHandler bh) {
-	synchronized(this) {
-	    _busy_handler(bh);
-	}
+    public void busy_handler( jsqlite.BusyHandler bh ) {
+        synchronized (this) {
+            _busy_handler(bh);
+        }
     }
 
-    private native void _busy_handler(jsqlite.BusyHandler bh);
+    private native void _busy_handler( jsqlite.BusyHandler bh );
 
     /**
      * Set the timeout for waiting for an SQLite table to become
@@ -273,13 +270,13 @@ public class Database {
      * @param ms number of millisecond to wait
      */
 
-    public void busy_timeout(int ms) {
-	synchronized(this) {
-	    _busy_timeout(ms);
-	}
+    public void busy_timeout( int ms ) {
+        synchronized (this) {
+            _busy_timeout(ms);
+        }
     }
 
-    private native void _busy_timeout(int ms);
+    private native void _busy_timeout( int ms );
 
     /**
      * Convenience method to retrieve an entire result
@@ -290,35 +287,34 @@ public class Database {
      * @return result set
      */
 
-    public TableResult get_table(String sql, int maxrows)
-	throws jsqlite.Exception {
-	TableResult ret = new TableResult(maxrows);
-	if (!is3()) {
-	    try {
-		exec(sql, ret);
-	    } catch (jsqlite.Exception e) {
-		if (maxrows <= 0 || !ret.atmaxrows) {
-		    throw e;
-		}
-	    }
-	} else {
-	    synchronized(this) {
-		/* only one statement !!! */
-		Vm vm = compile(sql);
-		set_last_error(vm.error_code);
-		if (ret.maxrows > 0) {
-		    while (ret.nrows < ret.maxrows && vm.step(ret)) {
-			set_last_error(vm.error_code);
-		    }
-		} else {
-		    while (vm.step(ret)) {
-			set_last_error(vm.error_code);
-		    }
-		}
-		vm.finalize();
-	    }
-	}
-	return ret;
+    public TableResult get_table( String sql, int maxrows ) throws jsqlite.Exception {
+        TableResult ret = new TableResult(maxrows);
+        if (!is3()) {
+            try {
+                exec(sql, ret);
+            } catch (jsqlite.Exception e) {
+                if (maxrows <= 0 || !ret.atmaxrows) {
+                    throw e;
+                }
+            }
+        } else {
+            synchronized (this) {
+                /* only one statement !!! */
+                Vm vm = compile(sql);
+                set_last_error(vm.error_code);
+                if (ret.maxrows > 0) {
+                    while( ret.nrows < ret.maxrows && vm.step(ret) ) {
+                        set_last_error(vm.error_code);
+                    }
+                } else {
+                    while( vm.step(ret) ) {
+                        set_last_error(vm.error_code);
+                    }
+                }
+                vm.finalize();
+            }
+        }
+        return ret;
     }
 
     /**
@@ -329,8 +325,8 @@ public class Database {
      * @return result set
      */
 
-    public TableResult get_table(String sql) throws jsqlite.Exception {
-	return get_table(sql, 0);
+    public TableResult get_table( String sql ) throws jsqlite.Exception {
+        return get_table(sql, 0);
     }
 
     /**
@@ -343,35 +339,34 @@ public class Database {
      * @return result set
      */
 
-    public TableResult get_table(String sql, int maxrows, String args[])
-	throws jsqlite.Exception {
-	TableResult ret = new TableResult(maxrows);
-	if (!is3()) {
-	    try {
-		exec(sql, ret, args);
-	    } catch (jsqlite.Exception e) {
-		if (maxrows <= 0 || !ret.atmaxrows) {
-		    throw e;
-		}
-	    }
-	} else {
-	    synchronized(this) {
-		/* only one statement !!! */
-		Vm vm = compile(sql, args);
-		set_last_error(vm.error_code);
-		if (ret.maxrows > 0) {
-		    while (ret.nrows < ret.maxrows && vm.step(ret)) {
-			set_last_error(vm.error_code);
-		    }
-		} else {
-		    while (vm.step(ret)) {
-			set_last_error(vm.error_code);
-		    }
-		}
-		vm.finalize();
-	    }
-	}
-	return ret;
+    public TableResult get_table( String sql, int maxrows, String args[] ) throws jsqlite.Exception {
+        TableResult ret = new TableResult(maxrows);
+        if (!is3()) {
+            try {
+                exec(sql, ret, args);
+            } catch (jsqlite.Exception e) {
+                if (maxrows <= 0 || !ret.atmaxrows) {
+                    throw e;
+                }
+            }
+        } else {
+            synchronized (this) {
+                /* only one statement !!! */
+                Vm vm = compile(sql, args);
+                set_last_error(vm.error_code);
+                if (ret.maxrows > 0) {
+                    while( ret.nrows < ret.maxrows && vm.step(ret) ) {
+                        set_last_error(vm.error_code);
+                    }
+                } else {
+                    while( vm.step(ret) ) {
+                        set_last_error(vm.error_code);
+                    }
+                }
+                vm.finalize();
+            }
+        }
+        return ret;
     }
 
     /**
@@ -383,9 +378,8 @@ public class Database {
      * @return result set
      */
 
-    public TableResult get_table(String sql, String args[])
-	throws jsqlite.Exception {
-	return get_table(sql, 0, args);
+    public TableResult get_table( String sql, String args[] ) throws jsqlite.Exception {
+        return get_table(sql, 0, args);
     }
 
     /**
@@ -397,33 +391,32 @@ public class Database {
      * @param tbl TableResult to receive result set
      */
 
-    public void get_table(String sql, String args[], TableResult tbl)
-	throws jsqlite.Exception {
-	tbl.clear();
-	if (!is3()) {
-	    try {
-		exec(sql, tbl, args);
-	    } catch (jsqlite.Exception e) {
-		if (tbl.maxrows <= 0 || !tbl.atmaxrows) {
-		    throw e;
-		}
-	    }
-	} else {
-	    synchronized(this) {
-		/* only one statement !!! */
-		Vm vm = compile(sql, args);
-		if (tbl.maxrows > 0) {
-		    while (tbl.nrows < tbl.maxrows && vm.step(tbl)) {
-			set_last_error(vm.error_code);
-		    }
-		} else {
-		    while (vm.step(tbl)) {
-			set_last_error(vm.error_code);
-		    }
-		}
-		vm.finalize();
-	    }
-	}
+    public void get_table( String sql, String args[], TableResult tbl ) throws jsqlite.Exception {
+        tbl.clear();
+        if (!is3()) {
+            try {
+                exec(sql, tbl, args);
+            } catch (jsqlite.Exception e) {
+                if (tbl.maxrows <= 0 || !tbl.atmaxrows) {
+                    throw e;
+                }
+            }
+        } else {
+            synchronized (this) {
+                /* only one statement !!! */
+                Vm vm = compile(sql, args);
+                if (tbl.maxrows > 0) {
+                    while( tbl.nrows < tbl.maxrows && vm.step(tbl) ) {
+                        set_last_error(vm.error_code);
+                    }
+                } else {
+                    while( vm.step(tbl) ) {
+                        set_last_error(vm.error_code);
+                    }
+                }
+                vm.finalize();
+            }
+        }
     }
 
     /**
@@ -434,11 +427,11 @@ public class Database {
      * @param sql the SQL statement to be checked
      */
 
-    public synchronized static boolean complete(String sql) {
-	return _complete(sql);
+    public synchronized static boolean complete( String sql ) {
+        return _complete(sql);
     }
 
-    private native static boolean _complete(String sql);
+    private native static boolean _complete( String sql );
 
     /**
      * Return SQLite version number as string.
@@ -463,13 +456,13 @@ public class Database {
      * @param f interface of function
      */
 
-    public void create_function(String name, int nargs, Function f) {
-	synchronized(this) {
-	    _create_function(name, nargs, f);
-	}
+    public void create_function( String name, int nargs, Function f ) {
+        synchronized (this) {
+            _create_function(name, nargs, f);
+        }
     }
 
-    private native void _create_function(String name, int nargs, Function f);
+    private native void _create_function( String name, int nargs, Function f );
 
     /**
      * Create aggregate function.
@@ -479,13 +472,13 @@ public class Database {
      * @param f interface of function
      */
 
-    public void create_aggregate(String name, int nargs, Function f) {
-	synchronized(this) {
-	    _create_aggregate(name, nargs, f);
-	}
+    public void create_aggregate( String name, int nargs, Function f ) {
+        synchronized (this) {
+            _create_aggregate(name, nargs, f);
+        }
     }
 
-    private native void _create_aggregate(String name, int nargs, Function f);
+    private native void _create_aggregate( String name, int nargs, Function f );
 
     /**
      * Set function return type. Only available in SQLite 2.6.0 and
@@ -495,13 +488,13 @@ public class Database {
      * @param type return type code, e.g. jsqlite.Constants.SQLITE_NUMERIC
      */
 
-    public void function_type(String name, int type) {
-	synchronized(this) {
-	    _function_type(name, type);
-	}
+    public void function_type( String name, int type ) {
+        synchronized (this) {
+            _function_type(name, type);
+        }
     }
 
-    private native void _function_type(String name, int type);
+    private native void _function_type( String name, int type );
 
     /**
      * Return the code of the last error occured in
@@ -514,7 +507,7 @@ public class Database {
      */
 
     public int last_error() {
-	return error_code;
+        return error_code;
     }
 
     /**
@@ -522,8 +515,8 @@ public class Database {
      * @param error_code new error code
      */
 
-    protected void set_last_error(int error_code) {
-	this.error_code = error_code;
+    protected void set_last_error( int error_code ) {
+        this.error_code = error_code;
     }
 
     /**
@@ -533,9 +526,9 @@ public class Database {
      */
 
     public String error_message() {
-	synchronized(this) {
-	    return _errmsg();
-	}
+        synchronized (this) {
+            return _errmsg();
+        }
     }
 
     private native String _errmsg();
@@ -547,21 +540,20 @@ public class Database {
      * @return error string
      */
 
-    public static native String error_string(int error_code);
+    public static native String error_string( int error_code );
 
     /**
      * Set character encoding.
      * @param enc name of encoding
      */
 
-    public void set_encoding(String enc) throws jsqlite.Exception {
-	synchronized(this) {
-	    _set_encoding(enc);
-	}
+    public void set_encoding( String enc ) throws jsqlite.Exception {
+        synchronized (this) {
+            _set_encoding(enc);
+        }
     }
 
-    private native void _set_encoding(String enc)
-	throws jsqlite.Exception;
+    private native void _set_encoding( String enc ) throws jsqlite.Exception;
 
     /**
      * Set authorizer function. Only available in SQLite 2.7.6 and
@@ -570,13 +562,13 @@ public class Database {
      * @param auth the authorizer function
      */
 
-    public void set_authorizer(Authorizer auth) {
-	synchronized(this) {
-	    _set_authorizer(auth);
-	}
+    public void set_authorizer( Authorizer auth ) {
+        synchronized (this) {
+            _set_authorizer(auth);
+        }
     }
 
-    private native void _set_authorizer(Authorizer auth);
+    private native void _set_authorizer( Authorizer auth );
 
     /**
      * Set trace function. Only available in SQLite 2.7.6 and above,
@@ -585,13 +577,13 @@ public class Database {
      * @param tr the trace function
      */
 
-    public void trace(Trace tr) {
-	synchronized(this) {
-	    _trace(tr);
-	}
+    public void trace( Trace tr ) {
+        synchronized (this) {
+            _trace(tr);
+        }
     }
 
-    private native void _trace(Trace tr);
+    private native void _trace( Trace tr );
 
     /**
      * Initiate a database backup, SQLite 3.x only.
@@ -602,19 +594,16 @@ public class Database {
      * @return Backup object to perform the backup operation
      */
 
-    public Backup backup(Database dest, String destName, String srcName)
-	throws jsqlite.Exception {
-	synchronized(this) {
-	    Backup b = new Backup();
-	    _backup(b, dest, destName, this, srcName);
-	    return b;
-	}
+    public Backup backup( Database dest, String destName, String srcName ) throws jsqlite.Exception {
+        synchronized (this) {
+            Backup b = new Backup();
+            _backup(b, dest, destName, this, srcName);
+            return b;
+        }
     }
 
-    private static native void _backup(Backup b, Database dest,
-				       String destName, Database src,
-				       String srcName)
-	throws jsqlite.Exception;
+    private static native void _backup( Backup b, Database dest, String destName, Database src, String srcName )
+            throws jsqlite.Exception;
 
     /**
      * Set profile function. Only available in SQLite 3.6 and above,
@@ -623,13 +612,13 @@ public class Database {
      * @param pr the trace function
      */
 
-    public void profile(Profile pr) {
-	synchronized(this) {
-	    _profile(pr);
-	}
+    public void profile( Profile pr ) {
+        synchronized (this) {
+            _profile(pr);
+        }
     }
 
-    private native void _profile(Profile pr);
+    private native void _profile( Profile pr );
 
     /**
      * Return information on SQLite runtime status.
@@ -643,11 +632,11 @@ public class Database {
      * @return SQLite error code
      */
 
-    public synchronized static int status(int op, int info[], boolean flag) {
-	return _status(op, info, flag);
+    public synchronized static int status( int op, int info[], boolean flag ) {
+        return _status(op, info, flag);
     }
 
-    private native static int _status(int op, int info[], boolean flag);
+    private native static int _status( int op, int info[], boolean flag );
 
     /**
      * Return information on SQLite connection status.
@@ -661,13 +650,13 @@ public class Database {
      * @return SQLite error code
      */
 
-    public int db_status(int op, int info[], boolean flag) {
-	synchronized(this) {
-	    return _db_status(op, info, flag);
-	}
+    public int db_status( int op, int info[], boolean flag ) {
+        synchronized (this) {
+            return _db_status(op, info, flag);
+        }
     }
 
-    private native int _db_status(int op, int info[], boolean flag);
+    private native int _db_status( int op, int info[], boolean flag );
 
     /**
      * Compile and return SQLite VM for SQL statement. Only available
@@ -677,12 +666,12 @@ public class Database {
      * @return a Vm object
      */
 
-    public Vm compile(String sql) throws jsqlite.Exception {
-	synchronized(this) {
-	    Vm vm = new Vm();
-	    vm_compile(sql, vm);
-	    return vm;
-	}
+    public Vm compile( String sql ) throws jsqlite.Exception {
+        synchronized (this) {
+            Vm vm = new Vm();
+            vm_compile(sql, vm);
+            return vm;
+        }
     }
 
     /**
@@ -694,12 +683,12 @@ public class Database {
      * @return a Vm object
      */
 
-    public Vm compile(String sql, String args[]) throws jsqlite.Exception {
-	synchronized(this) {
-	    Vm vm = new Vm();
-	    vm_compile_args(sql, vm, args);
-	    return vm;
-	}
+    public Vm compile( String sql, String args[] ) throws jsqlite.Exception {
+        synchronized (this) {
+            Vm vm = new Vm();
+            vm_compile_args(sql, vm, args);
+            return vm;
+        }
     }
 
     /**
@@ -710,12 +699,12 @@ public class Database {
      * @return a Stmt object
      */
 
-    public Stmt prepare(String sql) throws jsqlite.Exception {
-	synchronized(this) {
-	    Stmt stmt = new Stmt();
-	    stmt_prepare(sql, stmt);
-	    return stmt;
-	}
+    public Stmt prepare( String sql ) throws jsqlite.Exception {
+        synchronized (this) {
+            Stmt stmt = new Stmt();
+            stmt_prepare(sql, stmt);
+            return stmt;
+        }
     }
 
     /**
@@ -728,13 +717,12 @@ public class Database {
      * @return a Blob object
      */
 
-    public Blob open_blob(String db, String table, String column,
-			  long row, boolean rw) throws jsqlite.Exception {
-	synchronized(this) {
-	    Blob blob = new Blob();
-	    _open_blob(db, table, column, row, rw, blob);
-	    return blob;
-	}
+    public Blob open_blob( String db, String table, String column, long row, boolean rw ) throws jsqlite.Exception {
+        synchronized (this) {
+            Blob blob = new Blob();
+            _open_blob(db, table, column, row, rw, blob);
+            return blob;
+        }
     }
 
     /**
@@ -750,8 +738,7 @@ public class Database {
      * @param vm Vm object
      */
 
-    private native void vm_compile(String sql, Vm vm)
-	throws jsqlite.Exception;
+    private native void vm_compile( String sql, Vm vm ) throws jsqlite.Exception;
 
     /**
      * Internal compile method, SQLite 3.0 only.
@@ -760,8 +747,7 @@ public class Database {
      * @param vm Vm object
      */
 
-    private native void vm_compile_args(String sql, Vm vm, String args[])
-	throws jsqlite.Exception;
+    private native void vm_compile_args( String sql, Vm vm, String args[] ) throws jsqlite.Exception;
 
     /**
      * Internal SQLite3 prepare method.
@@ -769,8 +755,7 @@ public class Database {
      * @param stmt Stmt object
      */
 
-    private native void stmt_prepare(String sql, Stmt stmt)
-	throws jsqlite.Exception;
+    private native void stmt_prepare( String sql, Stmt stmt ) throws jsqlite.Exception;
 
     /**
      * Internal SQLite open blob method.
@@ -782,9 +767,8 @@ public class Database {
      * @param blob Blob object
      */
 
-    private native void _open_blob(String db, String table, String column,
-				   long row, boolean rw, Blob blob)
-	throws jsqlite.Exception;
+    private native void _open_blob( String db, String table, String column, long row, boolean rw, Blob blob )
+            throws jsqlite.Exception;
 
     /**
      * Establish a progress callback method which gets called after
@@ -794,13 +778,13 @@ public class Database {
      * @param p the object implementing the progress callback method
      */
 
-    public void progress_handler(int n, jsqlite.ProgressHandler p) {
-	synchronized(this) {
-	    _progress_handler(n, p);
-	}
+    public void progress_handler( int n, jsqlite.ProgressHandler p ) {
+        synchronized (this) {
+            _progress_handler(n, p);
+        }
     }
 
-    private native void _progress_handler(int n, jsqlite.ProgressHandler p);
+    private native void _progress_handler( int n, jsqlite.ProgressHandler p );
 
     /**
      * Specify key for encrypted database. To be called
@@ -810,10 +794,10 @@ public class Database {
      * @param ekey the key as byte array
      */
 
-    public void key(byte[] ekey) throws jsqlite.Exception {
-	synchronized(this) {
-	    _key(ekey);
-	}
+    public void key( byte[] ekey ) throws jsqlite.Exception {
+        synchronized (this) {
+            _key(ekey);
+        }
     }
 
     /**
@@ -824,21 +808,21 @@ public class Database {
      * @param skey the key as String
      */
 
-    public void key(String skey) throws jsqlite.Exception {
-	synchronized(this) {
-	    byte ekey[] = null;
-	    if (skey != null && skey.length() > 0) {
-		ekey = new byte[skey.length()];
-		for (int i = 0; i< skey.length(); i++) {
-		    char c = skey.charAt(i);
-		    ekey[i] = (byte) ((c & 0xff) ^ (c >> 8));
-		}
-	    }
-	    _key(ekey);
-	}
+    public void key( String skey ) throws jsqlite.Exception {
+        synchronized (this) {
+            byte ekey[] = null;
+            if (skey != null && skey.length() > 0) {
+                ekey = new byte[skey.length()];
+                for( int i = 0; i < skey.length(); i++ ) {
+                    char c = skey.charAt(i);
+                    ekey[i] = (byte) ((c & 0xff) ^ (c >> 8));
+                }
+            }
+            _key(ekey);
+        }
     }
 
-    private native void _key(byte[] ekey);
+    private native void _key( byte[] ekey );
 
     /**
      * Change the key of a encrypted database. The
@@ -848,10 +832,10 @@ public class Database {
      * @param ekey the key as byte array
      */
 
-    public void rekey(byte[] ekey) throws jsqlite.Exception {
-	synchronized(this) {
-	    _rekey(ekey);
-	}
+    public void rekey( byte[] ekey ) throws jsqlite.Exception {
+        synchronized (this) {
+            _rekey(ekey);
+        }
     }
 
     /**
@@ -862,21 +846,21 @@ public class Database {
      * @param skey the key as String
      */
 
-    public void rekey(String skey) throws jsqlite.Exception {
-	synchronized(this) {
-	    byte ekey[] = null;
-	    if (skey != null && skey.length() > 0) {
-		ekey = new byte[skey.length()];
-		for (int i = 0; i< skey.length(); i++) {
-		    char c = skey.charAt(i);
-		    ekey[i] = (byte) ((c & 0xff) ^ (c >> 8));
-		}
-	    }
-	    _rekey(ekey);
-	}
+    public void rekey( String skey ) throws jsqlite.Exception {
+        synchronized (this) {
+            byte ekey[] = null;
+            if (skey != null && skey.length() > 0) {
+                ekey = new byte[skey.length()];
+                for( int i = 0; i < skey.length(); i++ ) {
+                    char c = skey.charAt(i);
+                    ekey[i] = (byte) ((c & 0xff) ^ (c >> 8));
+                }
+            }
+            _rekey(ekey);
+        }
     }
 
-    private native void _rekey(byte[] ekey);
+    private native void _rekey( byte[] ekey );
 
     /**
      * Enable/disable shared cache mode (SQLite 3.x only).
@@ -885,7 +869,7 @@ public class Database {
      * @return boolean when true, function supported/succeeded
      */
 
-    protected static native boolean _enable_shared_cache(boolean onoff);
+    protected static native boolean _enable_shared_cache( boolean onoff );
 
     /**
      * Internal native initializer.
@@ -900,10 +884,10 @@ public class Database {
      * @return long
      */
 
-    public static long long_from_julian(double d) {
-	d -= 2440587.5;
-	d *= 86400000.0;
-	return (long) d;
+    public static long long_from_julian( double d ) {
+        d -= 2440587.5;
+        d *= 86400000.0;
+        return (long) d;
     }
 
     /**
@@ -913,13 +897,13 @@ public class Database {
      * @return long
      */
 
-    public static long long_from_julian(String s) throws jsqlite.Exception {
-	try {
-	    double d = Double.valueOf(s).doubleValue();
-	    return long_from_julian(d);
-	} catch (java.lang.Exception ee) {
-	    throw new jsqlite.Exception("not a julian date: " + s + ": " + ee);
-	}
+    public static long long_from_julian( String s ) throws jsqlite.Exception {
+        try {
+            double d = Double.valueOf(s).doubleValue();
+            return long_from_julian(d);
+        } catch (java.lang.Exception ee) {
+            throw new jsqlite.Exception("not a julian date: " + s + ": " + ee);
+        }
     }
 
     /**
@@ -929,34 +913,33 @@ public class Database {
      * @return double
      */
 
-    public static double julian_from_long(long ms) {
-	double adj = (ms < 0) ? 0 : 0.5;
-	double d = (ms + adj) / 86400000.0 + 2440587.5;
-	return d;
+    public static double julian_from_long( long ms ) {
+        double adj = (ms < 0) ? 0 : 0.5;
+        double d = (ms + adj) / 86400000.0 + 2440587.5;
+        return d;
     }
 
     public native void spatialite_create();
-    
+
     /**
      * Static initializer to load the native part.
      */
 
     static {
-	try {
-		System.loadLibrary("jsqlite");
-	} catch (Throwable t) {
-	    System.err.println("Unable to load sqlite_jni: " + t);
-	}
-	/*
-	 * Call native initializer functions now, since the
-	 * native part could have been linked statically, i.e.
-	 * the try/catch above would have failed in that case.
-	 */
-	try {
-	    internal_init();
-	    new FunctionContext();
-	} catch (java.lang.Exception e) {
-	}
+        try {
+            System.loadLibrary("jsqlite");
+        } catch (Throwable t) {
+            System.err.println("Unable to load sqlite_jni: " + t);
+        }
+        /*
+         * Call native initializer functions now, since the
+         * native part could have been linked statically, i.e.
+         * the try/catch above would have failed in that case.
+         */
+        try {
+            internal_init();
+            new FunctionContext();
+        } catch (java.lang.Exception e) {
+        }
     }
 }
-

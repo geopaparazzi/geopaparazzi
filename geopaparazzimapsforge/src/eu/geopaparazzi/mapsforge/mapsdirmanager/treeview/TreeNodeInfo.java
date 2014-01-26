@@ -1,102 +1,119 @@
 package eu.geopaparazzi.mapsforge.mapsdirmanager.treeview;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.ClassNodeInfo;
 /**
  * Information about the node.
  *
- * @param <T>
- *            type of the id for the tree
+ * @param <T> type of the id for the tree
  */
+@SuppressWarnings("nls")
 public class TreeNodeInfo<T> {
     private final T id;
     private final int level;
     private final boolean withChildren;
     private final boolean visible;
     private final boolean expanded;
-    private final ClassNodeInfo this_classinfo;
+    private final TreeNode< ? > treeNode;
 
     /**
      * Creates the node information.
      *
-     * @param id
-     *            id of the node
-     * @param level
-     *            level of the node
-     * @param withChildren
-     *            whether the node has children.
-     * @param visible
-     *            whether the tree node is visible.
-     * @param expanded
-     *            whether the tree node is expanded
-     * @param s_short_text
-     *            short text to be shown
-     * @param s_long_text
-     *            long text to be retrieved
-     * @param s_type
-     *            type to be retrieved
+     * @param id  id of the node.
+     * @param level  level of the node.
+     * @param withChildren  whether the node has children.
+     * @param visible  whether the tree node is visible.
+     * @param expanded   whether the tree node is expanded.
+     * @param treeNode the node object.
      *
      */
-    public TreeNodeInfo(final T id, final int level,
-            final boolean withChildren, final boolean visible,
-            final boolean expanded,
-            final ClassNodeInfo this_classinfo) {
+    public TreeNodeInfo( final T id, final int level, final boolean withChildren, final boolean visible, final boolean expanded,
+            final TreeNode< ? > treeNode ) {
         super();
         this.id = id;
         this.level = level;
         this.withChildren = withChildren;
         this.visible = visible;
         this.expanded = expanded;
-        this.this_classinfo=this_classinfo;
+        this.treeNode = treeNode;
+
+        if (treeNode == null) {
+            System.out.println();
+        }
     }
 
+    /**
+     * @return the id.
+     */
     public T getId() {
         return id;
     }
 
+    /**
+     * @return <code>true</code> if it has children.
+     */
     public boolean isWithChildren() {
         return withChildren;
     }
 
+    /**
+     * @return <code>true</code> if it is visible.
+     */
     public boolean isVisible() {
         return visible;
     }
 
+    /**
+     * @return <code>true</code> if it is expanded.
+     */
     public boolean isExpanded() {
         return expanded;
     }
+    /**
+     * @return order level of the node.
+     */
     public int getLevel() {
         return level;
     }
 
-    public ClassNodeInfo getClassNodeInfo() {
-        return this_classinfo;
+    /**
+     * @return the node object.
+     */
+    public TreeNode< ? > getTreeNode() {
+        return treeNode;
     }
-    public String getClassName() {
-        return this_classinfo.getClassName();
+
+    /**
+     * @return the file name for the node.
+     */
+    public String getFileName() {
+        if (treeNode == null) {
+            return "";
+        }
+        return treeNode.getFileName();
     }
-    public String getShortText() {
-        return this_classinfo.getShortText();
+
+    /**
+     * @return the file path for the node.
+     */
+    public String getFilePath() {
+        if (treeNode == null) {
+            return "";
+        }
+        return treeNode.getFilePath();
     }
-    public String getLongText() {
-        return this_classinfo.getLongText();
+
+    /**
+     * @return The type description.
+     */
+    public String getTypeDescriptionText() {
+        if (treeNode == null) {
+            return "";
+        }
+        return treeNode.getTypeText();
     }
-    public String getShortDescription() {
-        return this_classinfo.getShortDescription();
-    }
-    public String getLongDescription() {
-        return this_classinfo.getLongDescription();
-    }
-    public String getTypeText() {
-        return this_classinfo.getTypeText();
-    }
-    public int getType() {
-        return this_classinfo.getType();
-    }
+
     @Override
     public String toString() {
-        return "TreeNodeInfo [id=" + id + ", level=" + level
-                + ", withChildren=" + withChildren + ", visible=" + visible + ", expanded=" + expanded
-                + ", ClassNodeInfo=" + getClassNodeInfo().toString()
-                + "]";
+        return "TreeNodeInfo [id=" + id + ", level=" + level + ", withChildren=" + withChildren + ", visible=" + visible
+                + ", expanded=" + expanded + ", TreeNode=" + getTreeNode().toString() + "]";
     }
 
 }

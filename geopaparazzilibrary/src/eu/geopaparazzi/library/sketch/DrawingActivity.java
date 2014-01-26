@@ -99,6 +99,7 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
                 onClick(colorSpinner);
             }
             public void onNothingSelected( AdapterView< ? > arg0 ) {
+                // ignore
             }
         });
 
@@ -113,6 +114,7 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
                 onClick(widthSpinner);
             }
             public void onNothingSelected( AdapterView< ? > arg0 ) {
+                // ignore
             }
         });
 
@@ -142,8 +144,6 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
         case MENU_CANCEL:
             doFinish();
             return true;
-        default: {
-        }
         }
         return super.onMenuItemSelected(featureId, item);
     }
@@ -278,6 +278,11 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
         return true;
     }
 
+    /**
+     * Click action.
+     * 
+     * @param view parent.
+     */
     public void onClick( View view ) {
         int id = view.getId();
         if (id == R.id.colorspinner || id == R.id.widthspinner) {
@@ -298,7 +303,7 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
             undoBtn.setEnabled(true);
         }
     }
-    
+
     public boolean onKeyDown( int keyCode, KeyEvent event ) {
         // force to exit through the exit button
         switch( keyCode ) {

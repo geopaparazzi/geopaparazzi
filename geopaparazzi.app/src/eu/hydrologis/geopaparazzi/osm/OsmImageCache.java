@@ -7,6 +7,11 @@ import java.util.LinkedHashMap;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 
+/**
+ * Image cache.
+ * 
+ * @author Andrea Antonello (www.hydrologis.com)
+ */
 public class OsmImageCache {
 
     private static OsmImageCache osmImageCache = null;
@@ -30,6 +35,10 @@ public class OsmImageCache {
     // }
     // }
 
+    /**
+     * @param context  the context to use.
+     * @return teh image cache.
+     */
     public static OsmImageCache getInstance( Context context ) {
         if (osmImageCache == null) {
             osmImageCache = new OsmImageCache(context);
@@ -37,6 +46,13 @@ public class OsmImageCache {
         return osmImageCache;
     }
 
+    /**
+     * Get image for tag and category.
+     * 
+     * @param tagName  the tag
+     * @param category the category.
+     * @return the {@link Drawable}.
+     */
     public Drawable getImageForTag( String tagName, String category ) {
         StringBuilder sb = new StringBuilder();
         sb.append(category);

@@ -21,6 +21,12 @@ import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import eu.hydrologis.geopaparazzi.R;
 
+/**
+ * Prefs activity.
+ * 
+ * @author Andrea Antonello (www.hydrologis.com)
+ *
+ */
 public class PreferencesActivity extends PreferenceActivity {
 
     /** Called when the activity is first created. */

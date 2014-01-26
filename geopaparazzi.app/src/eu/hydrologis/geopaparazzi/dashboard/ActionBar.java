@@ -127,14 +127,23 @@ public class ActionBar implements GpsManagerListener {
         checkLogging();
     }
 
+    /**
+     * Remove listener.
+     */
     public void cleanup() {
         gpsManager.removeListener(this);
     }
 
+    /**
+     * @return the menu button.
+     */
     public ImageButton getMenuButton() {
         return menuButton;
     }
 
+    /**
+     * @return the action bar view.
+     */
     public View getActionBarView() {
         return actionBarView;
     }
@@ -155,11 +164,26 @@ public class ActionBar implements GpsManagerListener {
         gpsStatusString = context.getString(R.string.gps_status);
     }
 
+    /**
+     * Build the action bar.
+     * 
+     * @param activity the parent activity.
+     * @param activityId the activity id.
+     * @param gpsManager the {@link GpsManager}.
+     * @param sensorsManager teh sensor manager.
+     * @return the actionbar.
+     */
     public static ActionBar getActionBar( Activity activity, int activityId, GpsManager gpsManager, SensorsManager sensorsManager ) {
         View view = activity.findViewById(activityId);
         return new ActionBar(view, gpsManager, sensorsManager);
     }
 
+    /**
+     * Set the title.
+     * 
+     * @param titleResourceId the id of the text to set. 
+     * @param titleViewId the view id.
+     */
     public void setTitle( int titleResourceId, int titleViewId ) {
         TextView textView = (TextView) actionBarView.findViewById(titleViewId);
         if (textView != null) {
@@ -167,6 +191,12 @@ public class ActionBar implements GpsManagerListener {
         }
     }
 
+    /**
+     * Push action.
+     * 
+     * @param id id.
+     * @param v view.
+     */
     public void push( int id, View v ) {
         switch( id ) {
         case R.id.action_bar_info: {
@@ -188,6 +218,11 @@ public class ActionBar implements GpsManagerListener {
         }
     }
 
+    /**
+     * Opens the comapss app.
+     * 
+     * @param context the context to use.
+     */
     public static void openCompass( final Context context ) {
         String gpsStatusAction = "com.eclipsim.gpsstatus.VIEW";
         String gpsStatusPackage = "com.eclipsim.gpsstatus";
@@ -238,6 +273,7 @@ public class ActionBar implements GpsManagerListener {
                     .setMessage(context.getString(R.string.installgpsstatus_message)).setIcon(android.R.drawable.ic_dialog_info)
                     .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
                         public void onClick( DialogInterface dialog, int whichButton ) {
+                            // ignore
                         }
                     }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                         public void onClick( DialogInterface dialog, int whichButton ) {
@@ -323,6 +359,9 @@ public class ActionBar implements GpsManagerListener {
         }
     }
 
+    /**
+     * Checks gps logging status.
+     */
     public void checkLogging() {
         Button gpsOnOffView = (Button) actionBarView.findViewById(R.id.gpsOnOff);
         gpsOnOffView.setOnClickListener(new View.OnClickListener(){
@@ -416,6 +455,7 @@ public class ActionBar implements GpsManagerListener {
     }
 
     public void gpsStop() {
+        // ignore
     }
 
     public void onGpsStatusChanged( int event, GpsStatus status ) {

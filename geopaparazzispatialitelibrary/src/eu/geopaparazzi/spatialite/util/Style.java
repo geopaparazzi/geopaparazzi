@@ -15,31 +15,104 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.spatialite.database.spatial.core;
+package eu.geopaparazzi.spatialite.util;
 
 /**
  * Simple style for shapes.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("nls")
 public class Style {
+    /**
+     * 
+     */
+    public long id;
+    /**
+     * 
+     */
     public String name;
+    /**
+     * 
+     */
     public float size = 5;
+    /**
+     * 
+     */
     public String fillcolor = "red";
+    /**
+     * 
+     */
     public String strokecolor = "black";
+    /**
+     * 
+     */
     public float fillalpha = 0.3f;
+    /**
+     * 
+     */
     public float strokealpha = 1.0f;
+    /**
+     * WKT shape name.
+     */
     public String shape = "square";
+    /**
+     * The stroke width.
+     */
     public float width = 3f;
-    public float textsize = 5f;
-    public float decimationFactor = 0.00001f;
-    public String textfield = "";
-    public int enabled = 0;
-    public int order = 0;
-    public String dashPattern = "";
-    public int minZoom = 0;
-    public int maxZoom = 22;
+    /**
+     * The text size.
+     */
+    public float labelsize = 5f;
 
+    /**
+     * Field to use for labeling.
+     */
+    public String labelfield = "";
+    /**
+     * Defines if the labeling is enabled.
+     * 
+     * <ul>
+     * <li>0 = false</li>
+     * <li>1 = true</li>
+     * </ul>
+     */
+    public int labelvisible = 0;
+
+    /**
+     * Defines if the layer is enabled.
+     * 
+     * <ul>
+     * <li>0 = false</li>
+     * <li>1 = true</li>
+     * </ul>
+     */
+    public int enabled = 0;
+    /**
+     * Vertical order of the layer. 
+     */
+    public int order = 0;
+    /**
+     * The pattern to dash lines.
+     */
+    public String dashPattern = "";
+    /**
+     * Min possible zoom level.
+     */
+    public int minZoom = 0;
+    /**
+     * Max possible zoom level.
+     */
+    public int maxZoom = 22;
+    /**
+     * Decimation factor for geometries.
+     */
+    public float decimationFactor = 0.00001f;
+
+    /**
+     * @return a string that can be used in a sql insert statement with 
+     *        all the values placed.
+     */
     public String insertValuesString() {
         StringBuilder sb = new StringBuilder();
         sb.append("'");
@@ -59,10 +132,12 @@ public class Style {
         sb.append("', ");
         sb.append(width);
         sb.append(", ");
-        sb.append(textsize);
+        sb.append(labelsize);
         sb.append(", '");
-        sb.append(textfield);
+        sb.append(labelfield);
         sb.append("', ");
+        sb.append(labelvisible);
+        sb.append(", ");
         sb.append(enabled);
         sb.append(", ");
         sb.append(order);

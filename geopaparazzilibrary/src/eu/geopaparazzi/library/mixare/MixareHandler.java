@@ -59,9 +59,9 @@ public class MixareHandler {
      * 
      * @param context the {@link Context} to use.
      * @param points the {@link PointF3D} to display.
-     * @throws Exception
+     * @throws Exception  if something goes wrong.
      */
-    public void runRegionOnMixare( Context context, List<PointF3D> points ) throws Exception {
+    public static void runRegionOnMixare( Context context, List<PointF3D> points ) throws Exception {
         String mixareJson = generateMixareData(context, points);
         File applicationDir = ResourcesManager.getInstance(context).getApplicationDir();
         File mixarefile = new File(applicationDir, "mixare.json");
@@ -84,7 +84,7 @@ public class MixareHandler {
      * @param points the {@link PointF3D} to display.
      * @throws Exception
      */
-    private String generateMixareData( Context context, List<PointF3D> points ) throws Exception {
+    private static String generateMixareData( Context context, List<PointF3D> points ) throws Exception {
         StringBuilder sb = new StringBuilder();
 
         int size = points.size();
@@ -110,13 +110,13 @@ public class MixareHandler {
         return finalSb.toString();
     }
 
-    private String dataToString( int id, double lat, double lon, double elev, String title ) {
+    private static String dataToString( int id, double lat, double lon, double elev, String title ) {
         StringBuilder sb = new StringBuilder();
         sb.append("{\n");
         sb.append("\"id\": \"").append(id).append("\",").append("\n");
         sb.append("\"lat\": \"").append(lat).append("\",").append("\n");
         sb.append("\"lng\": \"").append(lon).append("\",").append("\n");
-        sb.append("\"elevation\": \"").append(0).append("\",").append("\n");
+        sb.append("\"elevation\": \"").append(elev).append("\",").append("\n");
         sb.append("\"title\": \"").append(title).append("\"").append("\n");
         sb.append("}\n");
         return sb.toString();
@@ -128,7 +128,7 @@ public class MixareHandler {
      * @param context the {@link Context} to use.
      * @return <code>true</code> if mixare is installed.
      */
-    public boolean isMixareInstalled( Context context ) {
+    public static boolean isMixareInstalled( Context context ) {
         // We try to locate mixare on the phone
         try {
             PackageInfo pi = context.getPackageManager().getPackageInfo("org.mixare", 0);
@@ -146,7 +146,7 @@ public class MixareHandler {
      * 
      * @param context the {@link Context} to use.
      */
-    public void installMixareFromMarket( Context context ) {
+    public static void installMixareFromMarket( Context context ) {
         Intent i = new Intent();
         i.setAction(Intent.ACTION_VIEW);
         i.setData(Uri.parse("market://search?q=pname:org.mixare"));

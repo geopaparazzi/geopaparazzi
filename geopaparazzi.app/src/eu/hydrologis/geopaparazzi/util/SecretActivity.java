@@ -35,7 +35,7 @@ import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.ISpatialDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DatabaseManager;
@@ -125,11 +125,21 @@ public class SecretActivity extends Activity implements CheckBox.OnCheckedChange
             }
     }
 
+    /**
+     * Start sql view.
+     * 
+     * @param view parent.
+     */
     public void startSqlView( View view ) {
         Intent sqlViewIntent = new Intent(this, SqlViewActivity.class);
         startActivity(sqlViewIntent);
     }
 
+    /**
+     * Clear log.
+     * 
+     * @param view parent.
+     */
     public void clearLog( View view ) {
         try {
             SQLiteDatabase database = DatabaseManager.getInstance().getDatabase();
@@ -141,11 +151,16 @@ public class SecretActivity extends Activity implements CheckBox.OnCheckedChange
         }
     }
 
+    /**
+     * Reset style tables.
+     * 
+     * @param view parent.
+     */
     public void resetStyleTables( View view ) {
         try {
             SpatialDatabasesManager dbManager = SpatialDatabasesManager.getInstance();
-            List<ISpatialDatabaseHandler> spatialDatabaseHandlers = dbManager.getSpatialDatabaseHandlers();
-            for( ISpatialDatabaseHandler iSpatialDatabaseHandler : spatialDatabaseHandlers ) {
+            List<SpatialDatabaseHandler> spatialDatabaseHandlers = dbManager.getSpatialDatabaseHandlers();
+            for( SpatialDatabaseHandler iSpatialDatabaseHandler : spatialDatabaseHandlers ) {
                 if (iSpatialDatabaseHandler instanceof SpatialiteDatabaseHandler) {
                     SpatialiteDatabaseHandler sdHandler = (SpatialiteDatabaseHandler) iSpatialDatabaseHandler;
                     sdHandler.resetStyleTable();
