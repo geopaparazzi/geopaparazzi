@@ -787,8 +787,7 @@ public class DaoSpatialite {
             }
         }
 
-        // try with spatialite 3
-        return SpatialiteDatabaseType.SPATIALITE3;
+        throw new IllegalArgumentException("No supported database version/type found.");
     }
 
     /**
