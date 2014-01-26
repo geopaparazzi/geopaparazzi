@@ -195,8 +195,13 @@
   <string name="start">Začátek</string>
   <string name="end">Konec</string>
   <string name="other">Jiné</string>
+  <string name="base_maps">Seznam prostorových dat</string>
   <string name="maps_manager">Správce map</string>
   <string name="loading_maps">Nahrávají se mapy...</string>
   <string name="project">Projekt</string>
   <string name="gps_status">Stav GPS</string>
+  <string name="no_queriable_layer_is_visible">Žádná dotazovatelná vrstva není viditelná</string>
+  <string name="set_path_manually">Nastavte cestu ručně (pokud je nastavena, má přednost před smíšeným polem se seznamem)</string>
+  <string name="choose_from_suggested">nebo vyberte z navrhovaného</string>
+  <string name="reset_style_tables">Nastavit stylové tabulky znovu</string>
 </resources>

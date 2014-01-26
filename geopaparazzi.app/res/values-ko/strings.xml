@@ -195,8 +195,13 @@
   <string name="start">시작</string>
   <string name="end">끝</string>
   <string name="other">기타</string>
+  <string name="base_maps">Spatialite 데이터 목록</string>
   <string name="maps_manager">지도 관리자</string>
   <string name="loading_maps">지도 불러오는 중...</string>
   <string name="project">프로젝트</string>
   <string name="gps_status">GPS 상태</string>
+  <string name="no_queriable_layer_is_visible">쿼리가능한 레이어가 없습니다.</string>
+  <string name="set_path_manually">수동으로 경로를 설정(설정하면 콤보박스에 우선순위로 표시)</string>
+  <string name="choose_from_suggested">또는 제안된 목록에서 선택</string>
+  <string name="reset_style_tables">스타일 테이블 초기화</string>
 </resources>

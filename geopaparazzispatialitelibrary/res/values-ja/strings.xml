@@ -9,4 +9,7 @@
   <string name="point_size">ポイントサイズ</string>
   <string name="decimation">デシメーション</string>
   <string name="decimation_factor_default">0.000001</string>
+  <string name="min_zoom">最小ズーム</string>
+  <string name="max_zoom">最大ズーム</string>
+  <string name="dash_pattern">破線パターン</string>
 </resources>
