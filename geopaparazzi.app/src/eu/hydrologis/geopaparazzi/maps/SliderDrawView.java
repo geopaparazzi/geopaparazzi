@@ -20,6 +20,7 @@ package eu.hydrologis.geopaparazzi.maps;
 import static java.lang.Math.abs;
 import static java.lang.Math.round;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jsqlite.Exception;
@@ -295,7 +296,15 @@ public class SliderDrawView extends View {
     private void infoDialog( final double n, final double w, final double s, final double e ) {
         try {
             final SpatialDatabasesManager sdbManager = SpatialDatabasesManager.getInstance();
-            final List<SpatialVectorTable> spatialTables = sdbManager.getSpatialVectorTables(false);
+            List<SpatialVectorTable> spatialTables = sdbManager.getSpatialVectorTables(false);
+
+            final List<SpatialVectorTable> visibleTables = new ArrayList<SpatialVectorTable>();
+            for( SpatialVectorTable spatialTable : spatialTables ) {
+                if (spatialTable.getStyle().enabled == 0) {
+                    continue;
+                }
+                visibleTables.add(spatialTable);
+            }
 
             final Context context = getContext();
             infoProgressDialog = new ProgressDialog(context);
@@ -305,21 +314,14 @@ public class SliderDrawView extends View {
             infoProgressDialog.setCancelable(true);
             infoProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             infoProgressDialog.setProgress(0);
-            infoProgressDialog.setMax(spatialTables.size());
+            infoProgressDialog.setMax(visibleTables.size());
             infoProgressDialog.show();
 
             new AsyncTask<String, Integer, String>(){
 
                 protected String doInBackground( String... params ) {
                     try {
-                        boolean oneEnabled = false;
-                        for( SpatialVectorTable spatialTable : spatialTables ) {
-                            if (spatialTable.getStyle().enabled == 0) {
-                                continue;
-                            }
-                            oneEnabled = true;
-                            break;
-                        }
+                        boolean oneEnabled = visibleTables.size() > 0;
                         StringBuilder sb = new StringBuilder();
                         if (oneEnabled) {
                             double north = n;
@@ -333,10 +335,7 @@ public class SliderDrawView extends View {
                                 west = e - 1;
                             }
 
-                            for( SpatialVectorTable spatialTable : spatialTables ) {
-                                if (spatialTable.getStyle().enabled == 0) {
-                                    continue;
-                                }
+                            for( SpatialVectorTable spatialTable : visibleTables ) {
                                 StringBuilder sbTmp = new StringBuilder();
                                 sdbManager.intersectionToString("4326", spatialTable, north, south, east, west, sbTmp, "\t");
                                 sb.append(spatialTable.getTableName()).append("\n");
