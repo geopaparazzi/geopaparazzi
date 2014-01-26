@@ -18,6 +18,7 @@
 package eu.hydrologis.geopaparazzi.maps;
 
 import java.io.Serializable;
+import java.util.Locale; //for string formatting the track length
 
 /**
  * Item representing a gps log.
@@ -58,7 +59,7 @@ public class LogMapItem extends MapItem implements Serializable {
     }
    
     public String getLengthInM() {   	
-        return String.format("%.1f", lengthm);
+        return String.format(Locale.getDefault(), "%.1f", lengthm);
     }
 
     public void setLengthInM( float lengthm ) {

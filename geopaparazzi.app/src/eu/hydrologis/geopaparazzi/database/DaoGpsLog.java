@@ -132,7 +132,16 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         }
         return rowId;
     }
-
+ 
+    /**
+     * Adds a new XY entry to the gps table.
+     * 
+     * @param gpslogId the ID from the GPS log table.
+     * @param lon longitude.
+     * @param lat latitude
+     * @return altim alititude/elevation
+     * @throws IOException 
+     */
     public void addGpsLogDataPoint( SQLiteDatabase sqliteDatabase, long gpslogId, double lon, double lat, double altim,
             Date timestamp ) throws IOException {
         ContentValues values = new ContentValues();
@@ -144,6 +153,13 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         sqliteDatabase.insertOrThrow(TABLE_DATA, null, values);
     }
 
+    /**
+     * Deletes the entirety of a GPS log, including data from 
+     * log table, data table, properties table
+     * 
+     * @param id the gps log id
+     * @throws IOException 
+     */
     public void deleteGpslog( Context context, long id ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
@@ -174,7 +190,15 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             sqliteDatabase.endTransaction();
         }
     }
-
+    
+    /**
+     * Resets the end time AND the track length when a GPSlog is updated
+     * 
+     * @param logId the ID from the GPS log table.
+     * @param end the new end time stamp
+     * @param lengthm the new track length
+     * @throws IOException 
+     */
     public void setEndTs( Context context, long logid, Date end, float lengthm ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         try {
