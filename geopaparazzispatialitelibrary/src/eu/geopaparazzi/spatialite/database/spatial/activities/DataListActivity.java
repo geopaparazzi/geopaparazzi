@@ -17,6 +17,7 @@
  */
 package eu.geopaparazzi.spatialite.database.spatial.activities;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -35,8 +36,10 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.spatialite.R;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.util.OrderComparator;
 import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
@@ -49,11 +52,19 @@ import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
 public class DataListActivity extends ListActivity {
 
     private List<SpatialVectorTable> spatialTables = new ArrayList<SpatialVectorTable>();
+    private String mapsDirPath;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
 
         setContentView(R.layout.data_list);
+
+        try {
+            mapsDirPath = ResourcesManager.getInstance(this).getMapsDir().getPath();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         refreshList(true);
     }
 
@@ -72,11 +83,19 @@ public class DataListActivity extends ListActivity {
 
         ArrayAdapter<SpatialVectorTable> arrayAdapter = new ArrayAdapter<SpatialVectorTable>(this, R.layout.data_row,
                 spatialTables){
+            @SuppressWarnings("nls")
             @Override
             public View getView( final int position, View cView, ViewGroup parent ) {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View rowView = inflater.inflate(R.layout.data_row, null);
                 final SpatialVectorTable item = spatialTables.get(position);
+                SpatialDatabaseHandler tableHandler = null;
+                try {
+                    tableHandler = SpatialDatabasesManager.getInstance().getVectorHandler(item);
+                } catch (jsqlite.Exception e1) {
+                    e1.printStackTrace();
+                }
+
                 TextView nameView = (TextView) rowView.findViewById(R.id.name);
                 TextView descriptionView = (TextView) rowView.findViewById(R.id.description);
 
@@ -152,8 +171,20 @@ public class DataListActivity extends ListActivity {
                 // mj10777: some tables may have more than one column, thus the column name will
                 // also be shown item.getUniqueName()
                 nameView.setText(item.getTableName());
-                descriptionView.setText(item.getGeomName() + ": " + item.getGeometryTypeDescription() + ", db: "
-                        + item.getFileName());
+
+                String dbName = item.getFileName();
+
+                if (mapsDirPath != null && tableHandler != null) {
+                    String databasePath = tableHandler.getFile().getAbsolutePath();
+                    if (databasePath.startsWith(mapsDirPath)) {
+                        dbName = databasePath.replaceFirst(mapsDirPath, "");
+                        if (dbName.startsWith(File.separator)) {
+                            dbName = dbName.substring(1);
+                        }
+                    }
+                }
+
+                descriptionView.setText(item.getGeomName() + ": " + item.getGeometryTypeDescription() + ", db: " + dbName);
 
                 visibleView.setChecked(item.getStyle().enabled != 0);
                 visibleView.setOnCheckedChangeListener(new OnCheckedChangeListener(){

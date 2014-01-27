@@ -72,7 +72,7 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
     // list of possible primary keys - for more that one: seperated with ';'
     private String primaryKeyFields = "";
     private String uniqueNameBasedOnDbFilePath = "";
-    private String uniqueNameBasedOnDbFileName = "";
+    // private String uniqueNameBasedOnDbFileName = "";
 
     /**
      * Constructor.
@@ -105,7 +105,8 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
     private void createUniqueNames() {
         String SEP = SpatialiteUtilities.UNIQUENAME_SEPARATOR;
         try {
-            uniqueNameBasedOnDbFileName = this.databaseFileName + SEP + tableName + SEP + geometryColumn;
+            // uniqueNameBasedOnDbFileName = this.databaseFileName + SEP + tableName + SEP +
+            // geometryColumn;
             Context context = SpatialiteContextHolder.INSTANCE.getContext();
             ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
             File mapsDir = resourcesManager.getMapsDir();
@@ -165,20 +166,20 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
         return uniqueNameBasedOnDbFilePath;
     }
 
-    /**
-      * Unique name for the spatial table based on the db file name..
-      * 
-      * <ul>
-      * <li>- needed to Directory portion if the Database has been moved
-      * <li>--- Maps-Directory:  ''/storage/emulated/0/maps/'
-      * <li>--- Directory inside the Maps-Directory: 'aurina/'
-      * <li>-- Result : 'aurina.sqlite#topcloud#Geometry'
-      * </ul>
-     * @return the unique name base.
-      */
-    public String getUniqueNameBasedOnDbFileName() {
-        return uniqueNameBasedOnDbFileName;
-    }
+    // /**
+    // * Unique name for the spatial table based on the db file name..
+    // *
+    // * <ul>
+    // * <li>- needed to Directory portion if the Database has been moved
+    // * <li>--- Maps-Directory: ''/storage/emulated/0/maps/'
+    // * <li>--- Directory inside the Maps-Directory: 'aurina/'
+    // * <li>-- Result : 'aurina.sqlite#topcloud#Geometry'
+    // * </ul>
+    // * @return the unique name base.
+    // */
+    // public String getUniqueNameBasedOnDbFileName() {
+    // return uniqueNameBasedOnDbFileName;
+    // }
 
     /**
      * @return the geometry type.

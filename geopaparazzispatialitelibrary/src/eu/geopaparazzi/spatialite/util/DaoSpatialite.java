@@ -510,10 +510,9 @@ public class DaoSpatialite {
      * Retrieve the {@link Style} for all tables of a db.
      *
      * @param database the db to use.
-     * @return the list of  styles.
-     * @throws Exception  if something goes wrong.
+     * @return the list of styles or <code>null</code> if something went wrong.
      */
-    public static List<Style> getAllStyles( Database database ) throws Exception {
+    public static List<Style> getAllStyles( Database database ) {
         StringBuilder sbSel = new StringBuilder();
         sbSel.append("select ");
         sbSel.append(ID).append(" , ");
@@ -565,8 +564,17 @@ public class DaoSpatialite {
                 stylesList.add(style);
             }
             return stylesList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         } finally {
-            stmt.close();
+            try {
+                if (stmt != null)
+                    stmt.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
         }
     }
 

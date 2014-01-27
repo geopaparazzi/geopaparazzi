@@ -107,6 +107,8 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             db_java = new jsqlite.Database();
             db_java.open(databasePath, jsqlite.Constants.SQLITE_OPEN_READWRITE | jsqlite.Constants.SQLITE_OPEN_CREATE);
 
+            checkAndUpdatePropertiesUniqueNames();
+
             // check database and collect the views list
             try {
                 databaseType = DaoSpatialite.checkDatabaseTypeAndValidity(db_java, databaseViewsList);
@@ -121,12 +123,6 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
         } catch (Exception e) {
             GPLog.androidLog(4, "SpatialiteDatabaseHandler[" + databaseFile.getAbsolutePath() + "]", e);
         }
-        // if (isValid()) {
-        // setDescription(databaseFileNameNoExt);
-        // GPLog.androidLog(-1,"SpatialiteDatabaseHandler["+s_name+"]["+getJavaSqliteDescription()+"]");
-        // }
-        // GPLog.androidLog(-1,"SpatialiteDatabaseHandler[" + file_map.getAbsolutePath() +
-        // "] name["+s_name+"] s_description["+s_description+"]");
     }
 
     @Override
@@ -243,42 +239,41 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
         return rasterTableList;
     }
 
-    // TODO remove this once it is made sure that the updating of
-    // properties works properly.
-    //
-    // /**
-    // * Checks if the table names in the properties table are defined properly.
-    // *
-    // * <p>The unique table name is a concatenation of:<br>
-    // * <b>dbPath#tablename#geometrytype</b>
-    // * <p>If the name doesn't start with the database path, it needs to
-    // * be updated. The rest is anyways unique inside the database.
-    // *
-    // * @throws Exception if something went wrong.
-    // */
-    // private void checkAndUpdatePropertiesUniqueNames() throws Exception {
-    // // this is no nonger needed
-    // List<Style> allStyles = DaoSpatialite.getAllStyles(db_java);
-    // GPLog.androidLog(-1, "SpatialiteDatabaseHandler[" + databasePath + "] allStyles.length[" +
-    // allStyles.size() + "] ");
-    // for( Style style : allStyles ) {
-    // if (!style.name.startsWith(uniqueDbName4DataProperties +
-    // SpatialiteUtilities.UNIQUENAME_SEPARATOR)) {
-    // // need to update the name in the style and also in the database
-    // String[] split = style.name.split(SpatialiteUtilities.UNIQUENAME_SEPARATOR);
-    // GPLog.androidLog(-1, "SpatialiteDatabaseHandler[" + databasePath + "] split.length[" +
-    // split.length
-    // + "] style.name[" + style.name + "]");
-    // if (split.length == 3) {
-    // String newName = uniqueDbName4DataProperties + SpatialiteUtilities.UNIQUENAME_SEPARATOR +
-    // split[1]
-    // + SpatialiteUtilities.UNIQUENAME_SEPARATOR + split[2];
-    // style.name = newName;
-    // DaoSpatialite.updateStyleName(db_java, newName, style.id);
-    // }
-    // }
-    // }
-    // }
+    /**
+    * Checks if the table names in the properties table are defined properly.
+    *
+    * <p>The unique table name is a concatenation of:<br>
+    * <b>dbPath#tablename#geometrytype</b>
+    * <p>If the name doesn't start with the database path, it needs to
+    * be updated. The rest is anyways unique inside the database.
+    *
+    * @throws Exception if something went wrong.
+    */
+    private void checkAndUpdatePropertiesUniqueNames() throws Exception {
+        List<Style> allStyles = DaoSpatialite.getAllStyles(db_java);
+        if (allStyles == null) {
+            /*
+             * something went wrong in the reading of the table,
+             * which might be due to an upgrade of table structure.
+             * Remove and recreate the table.
+             */
+            DaoSpatialite.deleteStyleTable(db_java);
+            DaoSpatialite.createPropertiesTable(db_java);
+        } else {
+            for( Style style : allStyles ) {
+                if (!style.name.startsWith(uniqueDbName4DataProperties + SpatialiteUtilities.UNIQUENAME_SEPARATOR)) {
+                    // need to update the name in the style and also in the database
+                    String[] split = style.name.split(SpatialiteUtilities.UNIQUENAME_SEPARATOR);
+                    if (split.length == 3) {
+                        String newName = uniqueDbName4DataProperties + SpatialiteUtilities.UNIQUENAME_SEPARATOR + split[1]
+                                + SpatialiteUtilities.UNIQUENAME_SEPARATOR + split[2];
+                        style.name = newName;
+                        DaoSpatialite.updateStyleName(db_java, newName, style.id);
+                    }
+                }
+            }
+        }
+    }
 
     /**
      * Check availability of style for the tables.
@@ -292,96 +287,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             for( SpatialVectorTable spatialTable : vectorTableList ) {
                 DaoSpatialite.createDefaultPropertiesForTable(db_java, spatialTable.getUniqueNameBasedOnDbFilePath());
             }
-        } else {
-            // the table exists, check for correct 'name' fields
-            int recordCount = 0;
-            // we are assuming that if the table exists there is a least 1 record
-            String checkTableQuery = "SELECT count(name)  FROM " + PROPERTIESTABLE + " WHERE name LIKE '"
-                    + uniqueDbName4DataProperties + SpatialiteUtilities.UNIQUENAME_SEPARATOR + "%';";
-            Stmt stmt = db_java.prepare(checkTableQuery);
-            try {
-                if (stmt.step()) {
-                    recordCount = stmt.column_int(0);
-                }
-            } finally {
-                stmt.close();
-            }
-            if (recordCount < 1) {
-                for( SpatialVectorTable spatialTable : vectorTableList ) {
-                    String s_unique_name_base = spatialTable.getUniqueNameBasedOnDbFileName();
-                    String s_unique_name_file = s_unique_name_base.replace(SpatialiteUtilities.UNIQUENAME_SEPARATOR,
-                            File.separator);
-                    checkTableQuery = "UPDATE " + PROPERTIESTABLE + "  SET  name  = '"
-                            + spatialTable.getUniqueNameBasedOnDbFilePath() + "' WHERE ((name LIKE '%" + s_unique_name_base
-                            + "') OR (name LIKE '%" + s_unique_name_file + "') OR (name = " + spatialTable.getGeomName() + "));";
-                    // GPLog.androidLog(-1, "SpatialiteDatabaseHandler[" + databasePath +
-                    // "] col_count["+i_column_count+"] sql[" + checkTableQuery + "]");
-                    db_java.exec(checkTableQuery, null);
-                }
-            }
-            List<String> propertiesTableFieldsList = DaoSpatialite.PROPERTIESTABLE_FIELDS_LIST;
-            if (propertiesTableColumnCount != propertiesTableFieldsList.size()) {
-                /*
-                 * the table structure has changed, try to get the old valid values
-                 */
-                checkTableQuery = "pragma table_info(" + PROPERTIESTABLE + ");";
-                stmt = db_java.prepare(checkTableQuery);
-                String[] oldTableFieldsList = new String[propertiesTableColumnCount];
-                int j = 0;
-                try {
-                    while( stmt.step() ) {
-                        oldTableFieldsList[j++] = stmt.column_string(1);
-                    }
-                } finally {
-                    stmt.close();
-                }
-
-                /*
-                 * oldTableFieldsList now has the list of fields of the unknown structure
-                 * this will create and copy the old table
-                 */
-                checkTableQuery = "DROP TABLE IF EXISTS " + PROPERTIESTABLE + "_save ;";
-                db_java.exec(checkTableQuery, null);
-                checkTableQuery = "CREATE TABLE " + PROPERTIESTABLE + "_save AS SELECT * FROM " + PROPERTIESTABLE + ";";
-                db_java.exec(checkTableQuery, null);
-                /*
-                 * this will drop and recall this function [nasty]
-                 * creating the new table and
-                 * filling it with default values
-                 * this will drop to old table
-                 */
-                DaoSpatialite.deleteStyleTable(db_java);
-                // this will create the new table and return a list of the present fields
-                DaoSpatialite.createPropertiesTable(db_java);
-                // fill the new table with default values
-                for( SpatialVectorTable spatialTable : vectorTableList ) {
-                    DaoSpatialite.createDefaultPropertiesForTable(db_java, spatialTable.getUniqueNameBasedOnDbFilePath());
-                }
-                StringBuilder updateQueryBuilder = new StringBuilder();
-                updateQueryBuilder.append("UPDATE " + PROPERTIESTABLE + " SET  ");
-                for( int i = 0; i < oldTableFieldsList.length; i++ ) {
-                    // check if field of old_table exsits in the new_table
-                    if (propertiesTableFieldsList.indexOf(oldTableFieldsList[i]) >= 0) {
-                        // data of a renamed or removed
-                        // field will be lost
-                        updateQueryBuilder.append(oldTableFieldsList[i] + "=(SELECT " + PROPERTIESTABLE + "_save."
-                                + oldTableFieldsList[i] + " FROM " + PROPERTIESTABLE + "_save WHERE " + PROPERTIESTABLE
-                                + "_save.name=" + PROPERTIESTABLE + ".name)");
-                        updateQueryBuilder.append(",");
-                    }
-                }
-                checkTableQuery = updateQueryBuilder.toString();
-                // get rid of last ','
-                checkTableQuery = checkTableQuery.substring(0, checkTableQuery.length() - 1) + ";";
-                if (GPLog.LOG_HEAVY)
-                    GPLog.androidLog(-1, "SpatialiteDatabaseHandler[" + databasePath + "] col_count["
-                            + propertiesTableColumnCount + "] sql[" + checkTableQuery + "]");
-                db_java.exec(checkTableQuery, null);
-                checkTableQuery = "DROP TABLE " + PROPERTIESTABLE + "_save ;";
-                db_java.exec(checkTableQuery, null);
-            }
         }
-        // checkAndUpdatePropertiesUniqueNames();
     }
 
     public float[] getTableBounds( SpatialTable spatialTable ) throws Exception {
