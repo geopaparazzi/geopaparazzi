@@ -33,15 +33,20 @@ import android.widget.TimePicker;
  */
 public class FormTimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 
-    private final TextView timeView;
-    private final int hourOfDay;
-    private final int minute;
-    private final boolean is24;
+    private TextView timeView;
+    private int hourOfDay;
+    private int minute;
+    private boolean is24;
 
     /**
-     * constructor
+     * Set attributes.
+     *
+     * @param hourOfDay hour
+     * @param minute minute
+     * @param is24 format
+     * @param timeView view
      */
-    public FormTimePickerFragment( int hourOfDay, int minute, boolean is24, TextView timeView ) {
+    public void setAttributes( int hourOfDay, int minute, boolean is24, TextView timeView ) {
         this.hourOfDay = hourOfDay;
         this.minute = minute;
         this.is24 = is24;

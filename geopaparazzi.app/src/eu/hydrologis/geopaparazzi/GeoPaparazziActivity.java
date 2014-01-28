@@ -452,11 +452,11 @@ public class GeoPaparazziActivity extends Activity {
         // define in MapsDirTreeViewList, which Context-Menues should be suppoted for
         // this Application
         // Should the Properties-Menu be supported/shown?
-        MapsDirTreeViewList.b_properties_file = true;
+        MapsDirTreeViewList.ENABLE_MENU_PROPERTIES_FILE = true;
         // Should the Edit-Menu be supported/shown?
-        MapsDirTreeViewList.b_edit_file = false;
+        MapsDirTreeViewList.ENABLE_MENU_EDIT_FILE = false;
         // Should the Delete-Menu be supported/shown?
-        MapsDirTreeViewList.b_delete_file = false;
+        MapsDirTreeViewList.ENABLE_MENU_DELETE_FILE = false;
         MapsDirManager.reset();
         // if the 'maps_dir' parameter is null, then MapsDirManager will call:
         // - ResourcesManager.getInstance(this).getMapsDir();
@@ -501,6 +501,12 @@ public class GeoPaparazziActivity extends Activity {
         // MapsDirManager.load_Map(map_view,mapCenterLocation);
     }
 
+    /**
+     * Push action.
+     * 
+     * @param id the calling id.
+     * @param v parent view.
+     */
     public void push( int id, View v ) {
         switch( id ) {
         case R.id.dashboard_note_item_button: {
@@ -550,10 +556,10 @@ public class GeoPaparazziActivity extends Activity {
         case R.id.dashboard_log_item_button: {
             QuickAction qa = new QuickAction(v);
             if (gpsManager.isDatabaseLogging()) {
-                ActionItem stopLogQuickAction = QuickActionsFactory.INSTANCE.getStopLogQuickAction(actionBar, qa, this);
+                ActionItem stopLogQuickAction = QuickActionsFactory.getStopLogQuickAction(actionBar, qa, this);
                 qa.addActionItem(stopLogQuickAction);
             } else {
-                ActionItem startLogQuickAction = QuickActionsFactory.INSTANCE.getStartLogQuickAction(actionBar, qa, this);
+                ActionItem startLogQuickAction = QuickActionsFactory.getStartLogQuickAction(actionBar, qa, this);
                 qa.addActionItem(startLogQuickAction);
             }
             qa.setAnimStyle(QuickAction.ANIM_AUTO);
@@ -668,9 +674,11 @@ public class GeoPaparazziActivity extends Activity {
                 // map_view
                 // -- if not null : selected_MapClassInfo() will call
                 // MapsDirManager.load_Map(map_view,mapCenterLocation);
-                if (MapsDirTreeViewList.selected_classinfo != null) {
-                    MapsDirManager.getInstance().selected_MapClassInfo(this, MapsDirTreeViewList.selected_classinfo, null, null);
-                }
+
+                // if (MapsDirTreeViewList.selected_classinfo != null) {
+                // MapsDirManager.getInstance().selectMapClassInfo(this,
+                // MapsDirTreeViewList.selected_classinfo, null, null);
+                // }
             }
         }
             break;
@@ -701,8 +709,8 @@ public class GeoPaparazziActivity extends Activity {
                         double lon = Double.parseDouble(noteArray[0]);
                         double lat = Double.parseDouble(noteArray[1]);
                         double elev = Double.parseDouble(noteArray[2]);
-                        DaoNotes.addNote(lon, lat, elev, noteArray[3], noteArray[4], NoteType.POI.getDef(),
-                                null, NoteType.POI.getTypeNum());
+                        DaoNotes.addNote(lon, lat, elev, noteArray[3], noteArray[4], NoteType.POI.getDef(), null,
+                                NoteType.POI.getTypeNum());
                     } catch (Exception e) {
                         e.printStackTrace();
                         Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
@@ -838,8 +846,10 @@ public class GeoPaparazziActivity extends Activity {
         editText.setText(newGeopaparazziDirName);
         editText.addTextChangedListener(new TextWatcher(){
             public void onTextChanged( CharSequence s, int start, int before, int count ) {
+                // ignore
             }
             public void beforeTextChanged( CharSequence s, int start, int count, int after ) {
+                // ignore
             }
             public void afterTextChanged( Editable s ) {
                 String newName = s.toString();

@@ -19,11 +19,10 @@ package eu.geopaparazzi.library.gps;
 
 import java.util.Iterator;
 
-import eu.geopaparazzi.library.database.GPLog;
-
 import android.location.GpsSatellite;
 import android.location.GpsStatus;
 import android.os.SystemClock;
+import eu.geopaparazzi.library.database.GPLog;
 
 /**
  * Class to get info from {@link GpsStatus}.
@@ -46,6 +45,9 @@ public class GpsStatusInfo {
     private int satUsedInFixCount;
     private Iterator<GpsSatellite> satellites;
 
+    /**
+     * @param status the status.
+     */
     public GpsStatusInfo( GpsStatus status ) {
         this.status = status;
     }
@@ -68,16 +70,25 @@ public class GpsStatusInfo {
         }
     }
 
+    /**
+     * @return max satellites num.
+     */
     public int getMaxSatellites() {
         analyze();
         return maxSatellites;
     }
 
+    /**
+     * @return sat count.
+     */
     public int getSatCount() {
         analyze();
         return satCount;
     }
 
+    /**
+     * @return sat used in fix count.
+     */
     public int getSatUsedInFixCount() {
         analyze();
         return satUsedInFixCount;

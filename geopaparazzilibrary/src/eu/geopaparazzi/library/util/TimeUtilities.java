@@ -27,20 +27,56 @@ import java.util.TimeZone;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public enum TimeUtilities {
+    /**
+     * singleton instance.
+     */
     INSTANCE;
 
+    /**
+     * 
+     */
     public final Locale dateLocale = Locale.US;
+    /**
+     * 
+     */
     public final SimpleDateFormat TIMESTAMPFORMATTER_LOCAL = new SimpleDateFormat("yyyyMMdd_HHmmss", dateLocale); //$NON-NLS-1$
+    /**
+     * 
+     */
     public final SimpleDateFormat TIMESTAMPFORMATTER_UTC = new SimpleDateFormat("yyyyMMdd_HHmmss", dateLocale); //$NON-NLS-1$
+    /**
+     * 
+     */
     public final SimpleDateFormat DATEONLY_FORMATTER = new SimpleDateFormat("yyyy-MM-dd", dateLocale); //$NON-NLS-1$
+    /**
+     * 
+     */
     public final SimpleDateFormat TIMEONLY_FORMATTER = new SimpleDateFormat("HH:mm:ss", dateLocale); //$NON-NLS-1$
+    /**
+     * 
+     */
     public final SimpleDateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", dateLocale);
-    
+
+    /**
+     * 
+     */
     public final SimpleDateFormat TIME_FORMATTER_UTC = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", dateLocale); //$NON-NLS-1$
+    /**
+     * 
+     */
     public final SimpleDateFormat TIME_FORMATTER_LOCAL = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", dateLocale); //$NON-NLS-1$
-    
+
+    /**
+     * 
+     */
     public final SimpleDateFormat TIME_FORMATTER_SQLITE_UTC = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", dateLocale); //$NON-NLS-1$
+    /**
+     * 
+     */
     public final SimpleDateFormat TIME_FORMATTER_GPX_UTC = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", dateLocale); //$NON-NLS-1$
+    /**
+     * 
+     */
     public final SimpleDateFormat EXIFFORMATTER = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss", dateLocale); //$NON-NLS-1$
 
     private TimeUtilities() {

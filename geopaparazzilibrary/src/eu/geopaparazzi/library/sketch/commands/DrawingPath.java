@@ -12,7 +12,13 @@ import android.graphics.Path;
  * Link: http://www.tutorialforandroid.com/
  */
 public class DrawingPath implements ICanvasCommand {
+    /**
+     * 
+     */
     public Path path;
+    /**
+     * 
+     */
     public Paint paint;
 
     public void draw( Canvas canvas ) {

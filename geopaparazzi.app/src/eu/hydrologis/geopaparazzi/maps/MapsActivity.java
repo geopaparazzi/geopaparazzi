@@ -109,7 +109,6 @@ import eu.geopaparazzi.library.util.activities.GeocodeActivity;
 import eu.geopaparazzi.library.util.activities.InsertCoordActivity;
 import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.MapsDirTreeViewList;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.activities.DataListActivity;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
@@ -128,8 +127,6 @@ import eu.hydrologis.geopaparazzi.util.Bookmark;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.MixareUtilities;
 import eu.hydrologis.geopaparazzi.util.Note;
-// -begin- MapsDir specific
-// -end-  MapsDir specific
 
 /**
  * @author Andrea Antonello (www.hydrologis.com)
@@ -139,13 +136,16 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     private final int ZOOM_RETURN_CODE = 667;
     private final int GPSDATAPROPERTIES_RETURN_CODE = 668;
     private final int DATAPROPERTIES_RETURN_CODE = 671;
+    /**
+     * The form update return code.
+     */
     public static final int FORMUPDATE_RETURN_CODE = 669;
     private final int CONTACT_RETURN_CODE = 670;
-    private static final int MAPSDIR_FILETREE = 777;
+    // private static final int MAPSDIR_FILETREE = 777;
 
     private final int MENU_GPSDATA = 1;
     private final int MENU_DATA = 2;
-    private final int MENU_TILE_SOURCE_ID = 3;
+    // private final int MENU_TILE_SOURCE_ID = 3;
     private final int MENU_SCALE_ID = 4;
     private final int MENU_MIXARE_ID = 5;
     private final int GO_TO = 6;
@@ -153,7 +153,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     private final int MENU_COMPASS_ID = 8;
     private final int MENU_SENDDATA_ID = 9;
 
-    private static final String IS_SLIDER_OPEN = "IS_SLIDER_OPEN";
+    private static final String IS_SLIDER_OPEN = "IS_SLIDER_OPEN"; //$NON-NLS-1$
     private DecimalFormat formatter = new DecimalFormat("00"); //$NON-NLS-1$
     private SlidingDrawer slidingDrawer;
     private MapView mapView;
@@ -216,9 +216,10 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         // TileCache fileSystemTileCache = this.mapView.getFileSystemTileCache();
         // fileSystemTileCache.setPersistent(persistent);
         // fileSystemTileCache.setCapacity(capacity);
-        MapsDirManager.getInstance().load_Map(mapView, mapCenterLocation);
-        minZoomLevel = MapsDirManager.getInstance().getMinZoom();
-        maxZoomLevel = MapsDirManager.getInstance().getMaxZoom();
+        MapsDirManager mapsDirManager = MapsDirManager.getInstance();
+        mapsDirManager.loadSelectedMap(mapView, mapCenterLocation);
+        minZoomLevel = mapsDirManager.getMinZoom();
+        maxZoomLevel = mapsDirManager.getMaxZoom();
 
         MapScaleBar mapScaleBar = this.mapView.getMapScaleBar();
 
@@ -290,7 +291,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             public void onClick( View v ) {
                 GpsLocation location = GpsManager.getInstance(MapsActivity.this).getLocation();
                 if (location != null) {
-                    setNewCenter(location.getLongitude(), location.getLatitude(), false);
+                    setNewCenter(location.getLongitude(), location.getLatitude());
                 }
             }
         });
@@ -346,6 +347,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                                 bufferedBitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
                                 out.close();
                             } catch (Exception e) {
+                                // ignore
                             }
                         }
                     }).start();
@@ -807,7 +809,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             MapsDirManager.getInstance().setMapViewCenter(mapView, lastCenter, 0);
             setZoomGuiText(getZoomLevel());
             readData();
-            // saveCenterPref();
+            saveCenterPref();
         }
         super.onWindowFocusChanged(hasFocus);
     }
@@ -825,7 +827,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
       * Set current Zoom  [in MapsDirManager]
       * - checking is done to insure that the new Zoom is inside the supported min/max Zoom-levels
       * -- the present value will be retained if invalid
-      * @return integer currentZoom
       */
     private void setZoomGuiText( int newZoom ) {
         // checking is done to insure that the new Zoom is inside the supported min/max Zoom-levels
@@ -835,6 +836,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     // -----------------------------------------------
     /**
       * set MapView Center point [in MapsDirManager]
+      * 
       * - this should be the only function used to compleate this task
       * -- error logic has been build in use value incase the function was incorrectly called
       * <p>if (mapCenterLocation == null)
@@ -843,22 +845,33 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
       * <p>-- the default Zoom of the loaded map will be taken
       * <p>-  if (i_default_zoom == 2)
       * <p>-- the getMinZoom() of the loaded map will be taken
-      * @param map_View Map-View to set (if not null)
-      * @param mapCenterLocation [point/zoom to set]
-      * @return zoom-level
+      *
+      * @param lon center lon
+      * @param lat center lat
       */
-    public void setNewCenter( double lon, double lat, boolean drawIcon ) {
+    public void setNewCenter( double lon, double lat ) {
         double[] mapCenterLocation = new double[]{lon, lat, (double) getZoomLevel()};
         MapsDirManager.getInstance().setMapViewCenter(mapView, mapCenterLocation, 0);
         // mapView.getController().setCenter(new GeoPoint(lat, lon));
+        saveCenterPref();
     }
 
-    public void setNewCenterAtZoom( final double centerX, final double centerY, final int zoom ) {
-        double[] mapCenterLocation = new double[]{centerX, centerY, (double) zoom};
+    /**
+     * Set new center.
+     * 
+     * @param lon center lon
+     * @param lat center lat
+     * @param zoom the zoom level to set.
+     */
+    public void setNewCenterAtZoom( double lon, double lat, int zoom ) {
+        double[] mapCenterLocation = new double[]{lon, lat, (double) zoom};
         MapsDirManager.getInstance().setMapViewCenter(mapView, mapCenterLocation, 0);
         setZoomGuiText(getZoomLevel());
     }
 
+    /**
+     * @return the center [lon, lat]
+     */
     public double[] getCenterLonLat() {
         return MapsDirManager.getInstance().getMapCenter();
     }
@@ -881,9 +894,11 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
     public boolean onContextItemSelected( MenuItem item ) {
         switch( item.getItemId() ) {
-        case MENU_TILE_SOURCE_ID:
-            startMapsDirTreeViewList();
-            return true;
+        // THIS IS CURRENTLY DISABLED
+        //
+        // case MENU_TILE_SOURCE_ID:
+        // startMapsDirTreeViewList();
+        // return true;
         case MENU_GPSDATA:
             Intent gpsDatalistIntent = new Intent(this, GpsDataListActivity.class);
             startActivityForResult(gpsDatalistIntent, GPSDATAPROPERTIES_RETURN_CODE);
@@ -901,9 +916,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             ActionBar.openCompass(this);
             return true;
         case MENU_MIXARE_ID:
-            MixareHandler mixareHandler = new MixareHandler();
-            if (!mixareHandler.isMixareInstalled(this)) {
-                mixareHandler.installMixareFromMarket(this);
+            if (!MixareHandler.isMixareInstalled(this)) {
+                MixareHandler.installMixareFromMarket(this);
                 return true;
             }
             float[] nswe = getMapWorldBounds();
@@ -954,25 +968,32 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         }
         return super.onContextItemSelected(item);
     }
-    /**
-     * Start the Dialog to select a map
-     *
-     * <p>
-     * MapDirManager creates a static-list of maps and sends it to the MapsDirTreeViewList class
-     * - when first called this list will build a diretory/file list AND a map-type/Diretory/File list
-     * - once created, this list will be retained during the Application
-     * - the user can switch from a sorted list as Directory/File OR Map-Type/Diretory/File view
-     * </p>
-     *  result will be sent to MapDirManager and saved there and stored to preferences
-     *  - when the MapView is created, this stroed value will be read and loaded
-     */
-    private void startMapsDirTreeViewList() {
-        try {
-            startActivityForResult(new Intent(this, MapsDirTreeViewList.class), MAPSDIR_FILETREE);
-        } catch (Exception e) {
-            GPLog.androidLog(4, "GeoPaparazziActivity -E-> failed[startActivity(new Intent(this,MapsDirTreeViewList.class));]", e);
-        }
-    }
+
+    // THIS IS CURRENTLY DISABLED
+    //
+    // /**
+    // * Start the Dialog to select a map
+    // *
+    // * <p>
+    // * MapDirManager creates a static-list of maps and sends it to the MapsDirTreeViewList class
+    // * - when first called this list will build a diretory/file list AND a map-type/Diretory/File
+    // list
+    // * - once created, this list will be retained during the Application
+    // * - the user can switch from a sorted list as Directory/File OR Map-Type/Diretory/File view
+    // * </p>
+    // * result will be sent to MapDirManager and saved there and stored to preferences
+    // * - when the MapView is created, this stroed value will be read and loaded
+    // */
+    // private void startMapsDirTreeViewList() {
+    // try {
+    // startActivityForResult(new Intent(this, MapsDirTreeViewList.class), MAPSDIR_FILETREE);
+    // } catch (Exception e) {
+    // GPLog.androidLog(4,
+    // "GeoPaparazziActivity -E-> failed[startActivity(new Intent(this,MapsDirTreeViewList.class));]",
+    // e);
+    // }
+    // }
+
     private void sendData() throws IOException {
         float[] nswe = getMapWorldBounds();
         List<SmsData> smsData = new ArrayList<SmsData>();
@@ -1044,6 +1065,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                         }
                     }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
                         public void onClick( DialogInterface dialog, int id ) {
+                            // ignore
                         }
                     });
             AlertDialog alertDialog = builder.create();
@@ -1114,33 +1136,37 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             GPLog.addLogEntry(this, "Activity returned"); //$NON-NLS-1$
         super.onActivityResult(requestCode, resultCode, data);
         switch( requestCode ) {
-        case MAPSDIR_FILETREE: {
-            if (resultCode == Activity.RESULT_OK) {
-                // String s_SELECTED_FILE=data.getStringExtra(MapsDirTreeViewList.SELECTED_FILE);
-                // String s_SELECTED_TYPE=data.getStringExtra(MapsDirTreeViewList.SELECTED_TYPE);
-                // selected_classinfo will contain all information about the map
-                // MapsDirManager will store this internaly and store the values to preferences
-                // - if this is called from a non-Map-Activity:
-                // -- the map_view parameter und the position parameter MUST be null
-                // - if this is called from a Map-Activity:
-                // -- the map_view parameter and the position parameter should be given
-                // --- the position parameter is not given [null], it will use the position of the
-                // map_view
-                // -- if not null : selected_MapClassInfo() will call
-                // MapsDirManager.load_Map(map_view,mapCenterLocation);
-                if (MapsDirTreeViewList.selected_classinfo != null) {
-                    // MapsDirManager.load_Map(mapView,null);
-                    // GPLog.androidLog(-1,"MapsActivity -I->  onActivityResult s_selected_map["
-                    // +MapsDirTreeViewList.selected_classinfo.getShortDescription()+ "] ");
-                    MapsDirManager.getInstance().selected_MapClassInfo(this, MapsDirTreeViewList.selected_classinfo, mapView,
-                            null);
-                    // mj10777: not sure what to do with these values ??
-                    minZoomLevel = MapsDirManager.getInstance().getMinZoom();
-                    maxZoomLevel = MapsDirManager.getInstance().getMaxZoom();
-                }
-            }
-        }
-            break;
+
+        // THIS IS CURRENTLY DISABLED
+        //
+        // case MAPSDIR_FILETREE: {
+        // if (resultCode == Activity.RESULT_OK) {
+        // // String s_SELECTED_FILE=data.getStringExtra(MapsDirTreeViewList.SELECTED_FILE);
+        // // String s_SELECTED_TYPE=data.getStringExtra(MapsDirTreeViewList.SELECTED_TYPE);
+        // // selected_classinfo will contain all information about the map
+        // // MapsDirManager will store this internaly and store the values to preferences
+        // // - if this is called from a non-Map-Activity:
+        // // -- the map_view parameter und the position parameter MUST be null
+        // // - if this is called from a Map-Activity:
+        // // -- the map_view parameter and the position parameter should be given
+        // // --- the position parameter is not given [null], it will use the position of the
+        // // map_view
+        // // -- if not null : selected_MapClassInfo() will call
+        // // MapsDirManager.load_Map(map_view,mapCenterLocation);
+        //
+        // if (MapsDirTreeViewList.selected_classinfo != null) {
+        // // MapsDirManager.load_Map(mapView,null);
+        // // GPLog.androidLog(-1,"MapsActivity -I->  onActivityResult s_selected_map["
+        // // +MapsDirTreeViewList.selected_classinfo.getShortDescription()+ "] ");
+        // MapsDirManager.getInstance().selectMapClassInfo(this,
+        // MapsDirTreeViewList.selected_classinfo, mapView, null);
+        // // mj10777: not sure what to do with these values ??
+        // minZoomLevel = MapsDirManager.getInstance().getMinZoom();
+        // maxZoomLevel = MapsDirManager.getInstance().getMaxZoom();
+        // }
+        // }
+        // }
+        // break;
         case (INSERTCOORD_RETURN_CODE): {
             if (resultCode == Activity.RESULT_OK) {
 
@@ -1306,6 +1332,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         builder.setIcon(android.R.drawable.ic_dialog_info)
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
+                        // ignore
                     }
                 }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
@@ -1330,6 +1357,9 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     }
     private TextView zoomLevelText;
 
+    /**
+     * Calls the mapview redraw.
+     */
     public void invalidateMap() {
         mapView.invalidateOnUiThread();
     }
@@ -1466,7 +1496,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 }
             }
             if (doCenter) {
-                setNewCenter(lon, lat, false);
+                setNewCenter(lon, lat);
                 if (GPLog.LOG_ABSURD)
                     GPLog.addLogEntry(this, "recentering triggered"); //$NON-NLS-1$
             }
@@ -1478,21 +1508,27 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     }
 
     public void onProviderDisabled( String provider ) {
+        // ignore
     }
 
     public void onProviderEnabled( String provider ) {
+        // ignore
     }
 
     public void onStatusChanged( String provider, int status, Bundle extras ) {
+        // ignore
     }
 
     public void gpsStart() {
+        // ignore
     }
 
     public void gpsStop() {
+        // ignore
     }
 
     public void onGpsStatusChanged( int event, GpsStatus status ) {
+        // ignore
     }
 
     public boolean hasFix() {

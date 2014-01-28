@@ -181,9 +181,11 @@ public class WebProjectsListActivity extends ListActivity {
     private TextWatcher filterTextWatcher = new TextWatcher(){
 
         public void afterTextChanged( Editable s ) {
+            // ignore
         }
 
         public void beforeTextChanged( CharSequence s, int start, int count, int after ) {
+            // ignore
         }
 
         public void onTextChanged( CharSequence s, int start, int before, int count ) {
@@ -218,6 +220,7 @@ public class WebProjectsListActivity extends ListActivity {
                     builder.setMessage(response).setCancelable(false)
                             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                                 public void onClick( DialogInterface dialog, int id ) {
+                                    // ignore
                                 }
                             });
                     AlertDialog alertDialog = builder.create();

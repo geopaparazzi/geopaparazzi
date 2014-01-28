@@ -19,7 +19,6 @@ package eu.geopaparazzi.library.util;
 
 import java.util.HashMap;
 
-import android.annotation.SuppressLint;
 import android.graphics.Color;
 
 /**
@@ -28,22 +27,39 @@ import android.graphics.Color;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public enum ColorUtilities {
+    /** */
     black("#000000"), //
+    /** */
     blue("#0000ff"), //
+    /** */
     cyan("#00ffff"), //
+    /** */
     darkgray("#444444"), //
+    /** */
     gray("#888888"), //
+    /** */
     green("#00ff00"), //
+    /** */
     lightgray("#cccccc"), //
+    /** */
     magenta("#ff00ff"), //
+    /** */
     red("#ff0000"), //
+    /** */
     white("#ffffff"), //
+    /** */
     yellow("#ffff00"), //
+    /** */
     purple("#800080"), //
+    /** */
     violet("#ee82ee"), //
+    /** */
     turquoise("#40e0d0"), //
+    /** */
     plum("#dda0dd"), //
+    /** */
     tomato("#ff6347"), //
+    /** */
     salmon("#fa8072"); //
 
     private static HashMap<String, Integer> colorMap = new HashMap<String, Integer>();

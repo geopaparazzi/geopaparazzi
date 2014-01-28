@@ -1,3 +1,20 @@
+/*
+ * Geopaparazzi - Digital field mapping on Android based devices
+ * Copyright (C) 2010  HydroloGIS (www.hydrologis.com)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package eu.geopaparazzi.library.routing.openrouteservice;
 
 import java.io.IOException;
@@ -20,14 +37,56 @@ import android.database.sqlite.SQLiteDatabase;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gps.IGpsLogDbHelper;
 
+/**
+ * Open route service class. 
+ * 
+ * @author Andrea Antonello (www.hydrologis.com)
+ */
 @SuppressWarnings("nls")
 public class OpenRouteServiceHandler {
 
+    /**
+     * preference option for routing.
+     *
+     */
     public static enum Preference {
-        Fastest, Shortest, Bicycle // shortest == pedestrian
+        /**
+         * 
+         */
+        Fastest,
+        /**
+         * 
+         */
+        Shortest,
+        /**
+          * 
+          */
+        Bicycle // shortest == pedestrian
     }
+    /**
+     *
+     */
     public static enum Language {
-        en, it, de, fr, es
+        /**
+         * 
+         */
+        en,
+        /**
+         * 
+         */
+        it,
+        /**
+         * 
+         */
+        de,
+        /**
+         * 
+         */
+        fr,
+        /**
+         * 
+         */
+        es
     }
 
     private float[] routePoints = null;
@@ -37,6 +96,15 @@ public class OpenRouteServiceHandler {
     private String errorMessage = null;
     private String urlString;
 
+    /**
+     * @param fromLat from lat
+     * @param fromLon from lon
+     * @param toLat to lat
+     * @param toLon to lon
+     * @param pref preference
+     * @param lang language
+     * @throws Exception  if something goes wrong.
+     */
     public OpenRouteServiceHandler( double fromLat, double fromLon, double toLat, double toLon, Preference pref, Language lang )
             throws Exception {
         StringBuilder urlSB = new StringBuilder();
@@ -103,6 +171,7 @@ public class OpenRouteServiceHandler {
                     routePoints[index++] = (float) lon;
                     routePoints[index++] = (float) lat;
                 } catch (NumberFormatException nfe) {
+                    // ignore
                 }
             }
         }
@@ -118,26 +187,49 @@ public class OpenRouteServiceHandler {
         }
     }
 
+    /**
+     * @return error message.
+     */
     public String getErrorMessage() {
         return errorMessage;
     }
 
+    /**
+     * @return used url string.
+     */
     public String getUsedUrlString() {
         return urlString;
     }
 
+    /**
+     * @return route points.
+     */
     public float[] getRoutePoints() {
         return routePoints;
     }
 
+    /**
+     * @return distance.
+     */
     public String getDistance() {
         return distance;
     }
 
+    /**
+     * @return unit of measure.
+     */
     public String getUom() {
         return uom;
     }
 
+    /**
+     * Dump route into teh db.
+     * 
+     * @param name name.
+     * @param context  the context to use.
+     * @param logDumper log db helper.
+     * @throws Exception  if something goes wrong.
+     */
     public void dumpInDatabase( String name, Context context, IGpsLogDbHelper logDumper ) throws Exception {
         SQLiteDatabase sqliteDatabase = logDumper.getDatabase(context);
         Date now = new Date(new java.util.Date().getTime());

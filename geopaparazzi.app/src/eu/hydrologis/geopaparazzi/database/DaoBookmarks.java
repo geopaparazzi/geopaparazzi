@@ -49,8 +49,24 @@ public class DaoBookmarks {
     private static final String COLUMN_WESTBOUND = "bwest";
     private static final String COLUMN_EASTBOUND = "beast";
 
+    /**
+     * Bookmarks table name.
+     */
     public static final String TABLE_BOOKMARKS = "bookmarks";
 
+    /**
+     * Add a bookmark.
+     * 
+     * @param lon lon
+     * @param lat lat
+     * @param text a text 
+     * @param zoom zoom level
+     * @param north north
+     * @param south south
+     * @param west west
+     * @param east east
+     * @throws IOException if something goes wrong.
+     */
     public static void addBookmark( double lon, double lat, String text, double zoom, double north, double south, double west,
             double east ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
@@ -76,6 +92,12 @@ public class DaoBookmarks {
         }
     }
 
+    /**
+     * Delete bookmark.
+     * 
+     * @param id the id of the bookmark to delete.
+     * @throws IOException  if something goes wrong.
+     */
     public static void deleteBookmark( long id ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
@@ -94,6 +116,13 @@ public class DaoBookmarks {
         }
     }
 
+    /**
+     * Chaneg bm name.
+     * 
+     * @param id id of bm to change.
+     * @param newName new name.
+     * @throws IOException  if something goes wrong.
+     */
     public static void updateBookmarkName( long id, String newName ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
@@ -123,13 +152,14 @@ public class DaoBookmarks {
 
     /**
      * Get the collected notes from the database inside a given bound.
-     * @param n
-     * @param s
-     * @param w
-     * @param e
+     * 
+     * @param n north 
+     * @param s south
+     * @param w west 
+     * @param e east
      * 
      * @return the list of notes inside the bounds.
-     * @throws IOException
+     * @throws IOException  if something goes wrong.
      */
     public static List<Bookmark> getBookmarksInWorldBounds( float n, float s, float w, float e ) throws IOException {
 
@@ -163,6 +193,11 @@ public class DaoBookmarks {
         return bookmarks;
     }
 
+    /**
+     * 
+     * @return all bookmarks.
+     * @throws IOException  if something goes wrong.
+     */
     public static List<Bookmark> getAllBookmarks() throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         String query = "SELECT _id, lon, lat, text, zoom, bnorth, bsouth, bwest, beast FROM " + TABLE_BOOKMARKS;
@@ -191,6 +226,11 @@ public class DaoBookmarks {
         return bookmarks;
     }
 
+    /**
+     * @param marker the marker to use.
+     * @return the list of {@link OverlayItem}s
+     * @throws IOException  if something goes wrong.
+     */
     public static List<OverlayItem> getBookmarksOverlays( Drawable marker ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         String query = "SELECT lon, lat, text FROM " + TABLE_BOOKMARKS;
@@ -216,6 +256,11 @@ public class DaoBookmarks {
         }
     }
 
+    /**
+     * Create bookmarks tables.
+     * 
+     * @throws IOException  if something goes wrong.
+     */
     public static void createTables() throws IOException {
         StringBuilder sB = new StringBuilder();
 

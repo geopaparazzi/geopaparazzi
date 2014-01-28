@@ -41,9 +41,21 @@ import eu.geopaparazzi.library.util.LibraryConstants;
  */
 public class MarkersUtilities {
     private static final boolean LOG_HOW = GPLog.LOG_ABSURD;
+    /**
+     * 
+     */
     public static final String ACTION_EDIT = "android.intent.action.EDIT";
+    /**
+     * 
+     */
     public static final String APP_PACKAGE = "org.dsandler.apps.markers";
+    /**
+     * 
+     */
     public static final String APP_MAIN_ACTIVITY = "com.google.android.apps.markers.MarkersActivity";
+    /**
+     * 
+     */
     public static final String EXTRA_KEY = MediaStore.EXTRA_OUTPUT;
     private static boolean hasApp = false;
 
@@ -52,6 +64,12 @@ public class MarkersUtilities {
      */
     private static boolean MARKERS_IS_INTEGRATED = true;
 
+    /**
+     * Check if the app is installed.
+     * 
+     * @param context  the context to use.
+     * @return <code>true</code> if the app is installed.
+     */
     public static boolean appInstalled( final Context context ) {
         if (MARKERS_IS_INTEGRATED) {
             return true;
@@ -97,12 +115,18 @@ public class MarkersUtilities {
         return hasApp;
     }
 
+    /**
+     * Open the marlet to install the app.
+     * 
+     * @param context  the context to use.
+     */
     public static void openMarketToInstall( final Context context ) {
         new AlertDialog.Builder(context).setTitle("Install Markers")
                 .setMessage("Select ok to install the sketch application from google play.")
                 .setIcon(android.R.drawable.ic_dialog_info)
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
+                        // ignore
                     }
                 }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
@@ -116,7 +140,7 @@ public class MarkersUtilities {
     /**
      * Launches Marker in edit mode on a given image, saving over the same image.
      * 
-     * @param context
+     * @param context  the context to use.
      * @param image the image to edit and save to.
      */
     public static void launchOnImage( final Context context, File image ) {
@@ -145,7 +169,7 @@ public class MarkersUtilities {
      * 
      * <p>If position data are supplied, they should be used to create a properties file.
      * 
-     * @param context
+     * @param context  the context to use.
      * @param image the image file to save to. 
      * @param gpsLocation the position of the sketch or <code>null</code>.
      */
@@ -179,6 +203,14 @@ public class MarkersUtilities {
         return sketchIntent;
     }
 
+    /**
+     * Launch intend for result.
+     * 
+     * @param activity the parent activiuty.
+     * @param image the image to use.
+     * @param gpsLocation the position.
+     * @param requestCode the return code.
+     */
     public static void launchForResult( Activity activity, File image, double[] gpsLocation, int requestCode ) {
         if (MarkersUtilities.appInstalled(activity)) {
             Intent sketchIntent = prepareIntent(activity, image, gpsLocation);

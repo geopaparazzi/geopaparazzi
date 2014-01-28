@@ -55,11 +55,13 @@ public class Note implements INote, KmlRepresenter, GpxRepresenter {
      * @param id the note's id.
      * @param name the text of the note.
      * @param description a description or the date if available.
-     * @param lon
-     * @param lat
-     * @param altim
+     * @param timeStamp the timestamp.
+     * @param lon lon
+     * @param lat lat
+     * @param altim elevation
+     * @param category the category.
      * @param section the section .
-     * @param type 
+     * @param type teh type.
      */
     public Note( long id, String name, String description, String timeStamp, double lon, double lat, double altim,
             String category, String section, int type ) {
@@ -103,6 +105,9 @@ public class Note implements INote, KmlRepresenter, GpxRepresenter {
         return lon;
     }
 
+    /**
+     * @return the elevation.
+     */
     public double getAltim() {
         return altim;
     }
@@ -111,18 +116,30 @@ public class Note implements INote, KmlRepresenter, GpxRepresenter {
         return name;
     }
 
+    /**
+     * @return description.
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * @return form json.
+     */
     public String getForm() {
         return section;
     }
 
+    /**
+     * @return category.
+     */
     public String getCategory() {
         return category;
     }
 
+    /**
+     * @return the type.
+     */
     public int getType() {
         return type;
     }

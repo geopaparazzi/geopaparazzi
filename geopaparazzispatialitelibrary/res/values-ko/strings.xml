@@ -9,4 +9,7 @@
   <string name="point_size">점 크기</string>
   <string name="decimation">데시메이션</string>
   <string name="decimation_factor_default">0.000001</string>
+  <string name="min_zoom">최소 확대</string>
+  <string name="max_zoom">최대 확대</string>
+  <string name="dash_pattern">대시 패턴</string>
 </resources>

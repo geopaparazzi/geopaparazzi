@@ -9,4 +9,7 @@
   <string name="point_size">Tamanho do ponto</string>
   <string name="decimation">Eliminação</string>
   <string name="decimation_factor_default">0.000001</string>
+  <string name="min_zoom">Ampliação mínima</string>
+  <string name="max_zoom">Ampliação máxima</string>
+  <string name="dash_pattern">Textura do tracejado</string>
 </resources>

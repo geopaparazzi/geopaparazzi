@@ -25,7 +25,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
@@ -39,7 +38,6 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -68,8 +66,18 @@ import eu.geopaparazzi.library.util.TimeUtilities;
 public class NetworkUtilities {
 
     private static final String TAG = "NETWORKUTILITIES";
+    /**
+     * 
+     */
     public static final long maxBufferSize = 4096;
 
+    /**
+     * Read url to string.
+     * 
+     * @param urlString the url.
+     * @return the fetched text.
+     * @throws Exception  if something goes wrong.
+     */
     public static String readUrl( String urlString ) throws Exception {
         URL url = new URL(urlString);
         InputStream inputStream = url.openStream();
@@ -110,10 +118,10 @@ public class NetworkUtilities {
      * @param requestParameters - all the request parameters (Example: "param1=val1&param2=val2"). 
      *           Note: This method will add the question mark (?) to the request - 
      *           DO NOT add it yourself
-     * @param user
-     * @param password
+     * @param user user.
+     * @param password password.
      * @return the file written. 
-     * @throws Exception 
+     * @throws Exception  if something goes wrong. 
      */
     public static File sendGetRequest4File( String urlStr, File file, String requestParameters, String user, String password )
             throws Exception {
@@ -180,14 +188,14 @@ public class NetworkUtilities {
     /**
      * Sends a string via POST to a given url.
      * 
-     * @param context 
+     * @param context  the context to use.
      * @param urlStr the url to which to send to.
      * @param string the string to send as post body.
      * @param user the user or <code>null</code>.
      * @param password the password or <code>null</code>.
      * @param readResponse if <code>true</code>, the response from the server is read and parsed as return message.
      * @return the response.
-     * @throws Exception
+     * @throws Exception  if something goes wrong.
      */
     public static String sendPost( Context context, String urlStr, String string, String user, String password,
             boolean readResponse ) throws Exception {
@@ -242,13 +250,13 @@ public class NetworkUtilities {
     /**
      * Send a file via HTTP POST with basic authentication.
      * 
-     * @param context 
+     * @param context  the context to use.
      * @param urlStr the server url to POST to.
      * @param file the file to send.
      * @param user the user or <code>null</code>.
      * @param password the password or <code>null</code>.
      * @return the return string from the POST.
-     * @throws Exception
+     * @throws Exception  if something goes wrong.
      */
     public static String sendFilePost( Context context, String urlStr, File file, String user, String password ) throws Exception {
         BufferedOutputStream wr = null;
@@ -353,12 +361,10 @@ public class NetworkUtilities {
      * @param stringsMap the {@link HashMap} containing the key and string pairs to send.
      * @param filesMap the {@link HashMap} containing the key and image file paths 
      *                  (jpg, png supported) pairs to send.
-     * @throws UnsupportedEncodingException
-     * @throws IOException
-     * @throws ClientProtocolException
+     * @throws Exception  if something goes wrong.
      */
     public static void sentMultiPartPost( String url, String user, String pwd, HashMap<String, String> stringsMap,
-            HashMap<String, File> filesMap ) throws UnsupportedEncodingException, IOException, ClientProtocolException {
+            HashMap<String, File> filesMap ) throws Exception {
         HttpClient httpclient = new DefaultHttpClient();
         httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
         HttpPost httppost = new HttpPost(url);
@@ -419,6 +425,16 @@ public class NetworkUtilities {
         }
     }
 
+    /**
+     * Send a GET request.
+     * 
+     * @param urlStr the url.
+     * @param requestParameters request parameters or <code>null</code>.
+     * @param user user or <code>null</code>.
+     * @param password password or <code>null</code>.
+     * @return the fetched text.
+     * @throws Exception  if something goes wrong.
+     */
     public static String sendGetRequest( String urlStr, String requestParameters, String user, String password ) throws Exception {
         if (requestParameters != null && requestParameters.length() > 0) {
             urlStr += "?" + requestParameters;

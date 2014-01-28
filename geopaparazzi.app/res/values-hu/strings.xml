@@ -23,7 +23,7 @@
   <string name="color_label">szín</string>
   <string name="mainmenu_kmlexport">export</string>
   <string name="mainmenu_import">import</string>
-  <string name="mainmenu_gpsdataselect">Gps adat lista</string>
+  <string name="mainmenu_gpsdataselect">Gps adatok</string>
   <string name="mainmenu_preferences">Beállítások</string>
   <string name="mainmenu_merge">megadott naplók egyesítése</string>
   <string name="gpslogproperty">Tulajdonságok: </string>
@@ -173,7 +173,7 @@
   <string name="launch_query">Lekérdezés indítás</string>
   <string name="use_custom_sdcard_summary">Egyéni SD-kártya útvonal (hasznos több tároló esetén). HASZNÁLAT CSAK SAJÁT FELELŐSSÉGRE!</string>
   <string name="custom_sdcard_path">Egyéni SD-kártya útvonal</string>
-  <string name="opacity">opacitás</string>
+  <string name="opacity">átlátszatlanság</string>
   <string name="size">Méret</string>
   <string name="notes_properties">Jegyzet tulajdonságok</string>
   <string name="visibility">Láthatóság</string>
@@ -195,8 +195,13 @@
   <string name="start">indítás</string>
   <string name="end">vége</string>
   <string name="other">más</string>
+  <string name="base_maps">Spatialite adatok</string>
   <string name="maps_manager">Térkép kezelő</string>
   <string name="loading_maps">Térképek betöltése...</string>
   <string name="project">Projekt</string>
   <string name="gps_status">GPS állapot</string>
+  <string name="no_queriable_layer_is_visible">Nem lekérdezhető réteg látható</string>
+  <string name="set_path_manually">Add meg az elérési utat (megadás után elsőbbséget élvez a listához képest)</string>
+  <string name="choose_from_suggested">vagy válassz a javaslatok közül</string>
+  <string name="reset_style_tables">Stílustáblák visszaállítása</string>
 </resources>

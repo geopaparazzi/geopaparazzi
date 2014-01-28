@@ -33,18 +33,36 @@ import eu.geopaparazzi.library.R;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class GTextView extends View implements GView{
+public class GTextView extends View implements GView {
 
     private TextView textView;
 
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     * @param defStyle def style.
+     */
     public GTextView( Context context, AttributeSet attrs, int defStyle ) {
         super(context, attrs, defStyle);
     }
 
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     */
     public GTextView( Context context, AttributeSet attrs ) {
         super(context, attrs);
     }
 
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     * @param mainView parent
+     * @param value value
+     * @param size size
+     * @param withLine with line.
+     * @param url url support.
+     */
     public GTextView( final Context context, AttributeSet attrs, LinearLayout mainView, String value, String size,
             boolean withLine, final String url ) {
         super(context, attrs);
@@ -103,12 +121,13 @@ public class GTextView extends View implements GView{
 
     @Override
     public void setOnActivityResult( Intent data ) {
+        // ignore
     }
 
     @Override
     public void refresh( Context context ) {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

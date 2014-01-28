@@ -22,13 +22,37 @@ package eu.geopaparazzi.library.util;
  * A bounding box that keeps both world and screen space.
  */
 public class BoundingBox {
+    /**
+     * 
+     */
     public float north;
+    /**
+     * 
+     */
     public float south;
+    /**
+     * 
+     */
     public float east;
+    /**
+     * 
+     */
     public float west;
+    /**
+     * 
+     */
     public int left;
+    /**
+     * 
+     */
     public int bottom;
+    /**
+     * 
+     */
     public int right;
+    /**
+     * 
+     */
     public int top;
 
     @SuppressWarnings("nls")

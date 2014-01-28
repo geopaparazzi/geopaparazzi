@@ -58,8 +58,17 @@ public class OsmUtilities {
      */
     private static final String SERVER = "http://lucadelu.org/cgi-bin/zoo_loader.cgi";
 
+    /**
+     * 
+     */
     public static final String PREF_KEY_USER = "osm_user_key";
+    /**
+     * 
+     */
     public static final String PREF_KEY_PWD = "osm_pwd_key";
+    /**
+     * 
+     */
     public static final String PREF_KEY_SERVER = "osm_server_key";
 
     /**
@@ -81,7 +90,7 @@ public class OsmUtilities {
      * @param context the context.
      * @param description the changeset description.
      * @return the server response.
-     * @throws Exception
+     * @throws Exception  if something goes wrong.
      */
     public static String sendOsmNotes( Context context, String description ) throws Exception {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -152,9 +161,9 @@ public class OsmUtilities {
      * Read from an inputstream and convert the read stuff to a String. Useful for text files
      * that are available as streams.
      * 
-     * @param inputStream
-     * @return the read string
-     * @throws IOException 
+     * @param inputStream the input stream.
+     * @return the read string 
+     * @throws IOException  if something goes wrong.
      */
     public static String readInputStreamToString( InputStream inputStream ) throws IOException {
         // Create the byte list to hold the data
@@ -182,7 +191,7 @@ public class OsmUtilities {
     /**
      * Download the osm tags archive if necessary and if network is available.
      * 
-     * @param activity
+     * @param activity parent activity.
      */
     public static void handleOsmTagsDownload( final Activity activity ) {
 
@@ -224,6 +233,7 @@ public class OsmUtilities {
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
+                        // ignore
                     }
                 }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                     private File parentFile;

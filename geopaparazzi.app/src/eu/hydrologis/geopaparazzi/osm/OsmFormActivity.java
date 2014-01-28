@@ -155,6 +155,7 @@ public class OsmFormActivity extends Activity {
                         builder.setMessage(msg).setCancelable(false)
                                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                                     public void onClick( DialogInterface dialog, int id ) {
+                                        // ignore
                                     }
                                 });
                         AlertDialog alertDialog = builder.create();
@@ -167,6 +168,7 @@ public class OsmFormActivity extends Activity {
                     builder.setMessage("An error occurred while saving:\n" + endString).setCancelable(false)
                             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                                 public void onClick( DialogInterface dialog, int id ) {
+                                    // ignore
                                 }
                             });
                     AlertDialog alertDialog = builder.create();

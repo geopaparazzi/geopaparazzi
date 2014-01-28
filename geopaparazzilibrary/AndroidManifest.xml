@@ -21,7 +21,13 @@
         <uses-permission android:name="android.permission.RECEIVE_SMS" />
         <uses-permission android:name="android.permission.SEND_SMS" />
         <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-        <uses-permission android:name="android.permission.RECORD_AUDIO" />        <uses-permission android:name="android.permission.READ_CONTACTS" />        <uses-permission android:name="android.permission.VIBRATE" />
+        <uses-permission android:name="android.permission.RECORD_AUDIO" />
+        <uses-permission android:name="android.permission.READ_CONTACTS" />
+        <uses-permission android:name="android.permission.VIBRATE" />
+
+
+
+
     -->
 
     <uses-feature
@@ -51,7 +57,7 @@
             </intent-filter>
         </activity>
 
-        <!-- CameraActivity -->
+        <!-- CameraActivity 
          <activity
             android:name="eu.geopaparazzi.library.camera.CameraActivity"
             android:configChanges="orientation|screenSize"  >
@@ -61,6 +67,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        -->
         <activity android:name="eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity" >
             <intent-filter>
                 <action android:name="eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity" />

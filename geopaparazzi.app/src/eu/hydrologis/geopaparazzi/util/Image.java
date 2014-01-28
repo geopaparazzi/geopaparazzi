@@ -30,6 +30,9 @@ import eu.geopaparazzi.library.util.Utilities;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class Image implements INote, KmlRepresenter {
+    /**
+     * 
+     */
     public static final String IMAGE_NOTE = "image note";
     private String name;
     private final long id;
@@ -45,13 +48,12 @@ public class Image implements INote, KmlRepresenter {
      * 
      * @param id the image id.
      * @param name the text of the note.
-     * @param description a description or the date if available.
-     * @param lon
-     * @param lat
-     * @param altim
-     * @param azim
-     * @param path 
-     * @param ts 
+     * @param lon lon
+     * @param lat lat
+     * @param altim elevation
+     * @param azim azimuth
+     * @param path image path.
+     * @param ts the timestamp.
      */
     public Image( long id, String name, double lon, double lat, double altim, double azim, String path, String ts ) {
         this.id = id;
@@ -80,10 +82,16 @@ public class Image implements INote, KmlRepresenter {
         return lon;
     }
 
+    /**
+     * @return teh elevation.
+     */
     public double getAltim() {
         return altim;
     }
 
+    /**
+     * @return the azimuth.
+     */
     public double getAzim() {
         return azim;
     }
@@ -95,10 +103,16 @@ public class Image implements INote, KmlRepresenter {
         return name;
     }
 
+    /**
+     * @return the image path.
+     */
     public String getPath() {
         return path;
     }
 
+    /**
+     * @return the timestamp.
+     */
     public String getTs() {
         return ts;
     }

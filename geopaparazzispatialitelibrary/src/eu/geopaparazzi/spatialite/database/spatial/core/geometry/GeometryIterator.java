@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.spatialite.database.spatial.core;
+package eu.geopaparazzi.spatialite.database.spatial.core.geometry;
 
 import java.util.Iterator;
 
@@ -25,6 +25,7 @@ import jsqlite.Stmt;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKBReader;
+
 import eu.geopaparazzi.library.database.GPLog;
 
 /**
@@ -32,56 +33,50 @@ import eu.geopaparazzi.library.database.GPLog;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("nls")
 public class GeometryIterator implements Iterator<Geometry> {
     private WKBReader wkbReader = new WKBReader();
-    // private WKTReader wktReader = new WKTReader();
     private Stmt stmt;
 
+    /**
+     * Constructor.
+     * 
+     * @param database the database to use.
+     * @param query the query to use.
+     */
     public GeometryIterator( Database database, String query ) {
         try {
             stmt = database.prepare(query);
         } catch (Exception e) {
-            GPLog.androidLog(4,"GeometryIterator.creation sql["+query+"]",e);
+            GPLog.androidLog(4, "GeometryIterator.creation sql[" + query + "]", e);
         }
     }
 
     @Override
     public boolean hasNext() {
-        if (stmt == null)
-        {
-         return false;
+        if (stmt == null) {
+            return false;
         }
-        try
-        { // sqlite-amalgamation-3080100 allways returns false with BLOBS
+        try { // sqlite-amalgamation-3080100 allways returns false with BLOBS
             return stmt.step();
         } catch (Exception e) {
-         GPLog.androidLog(4,"GeometryIterator.hasNext()[stmt.step() failed]",e);
+            GPLog.androidLog(4, "GeometryIterator.hasNext()[stmt.step() failed]", e);
             return false;
         }
     }
 
     @Override
     public Geometry next() {
-        if (stmt == null)
-        {
-          GPLog.androidLog(4,"GeometryIterator.next() [stmt=null]");
+        if (stmt == null) {
+            GPLog.androidLog(4, "GeometryIterator.next() [stmt=null]");
             return null;
-         }
+        }
         try {
             byte[] geomBytes = stmt.column_bytes(0);
             Geometry geometry = wkbReader.read(geomBytes);
             return geometry;
         } catch (java.lang.Exception e) {
-            GPLog.androidLog(4,"GeometryIterator.next()[wkbReader.read() failed]",e);
-            // String geomWKT = "";
-            // try {
-            // geomWKT = stmt.column_string(1);
-            // Geometry geometry = wktReader.read(geomWKT);
-            // return geometry;
-            // } catch (java.lang.Exception e1) {
-            // e1.printStackTrace();
-            // Logger.i(this, "GEOM: " + geomWKT);
-            // }
+            GPLog.androidLog(4, "GeometryIterator.next()[wkbReader.read() failed]", e);
         }
         return null;
     }
@@ -91,11 +86,21 @@ public class GeometryIterator implements Iterator<Geometry> {
         throw new UnsupportedOperationException();
     }
 
+    /**
+     * Reset the iterator.
+     * 
+     * @throws Exception  if something goes wrong.
+     */
     public void reset() throws Exception {
         if (stmt != null)
             stmt.reset();
     }
 
+    /**
+     * Close the iterator.
+     * 
+     * @throws Exception  if something goes wrong.
+     */
     public void close() throws Exception {
         if (stmt != null)
             stmt.close();

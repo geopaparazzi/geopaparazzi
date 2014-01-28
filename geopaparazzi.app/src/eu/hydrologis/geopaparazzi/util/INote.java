@@ -24,12 +24,24 @@ package eu.hydrologis.geopaparazzi.util;
  */
 public interface INote {
 
+    /**
+     * @return the note id.
+     */
     public long getId();
 
+    /**
+     * @return the note name.
+     */
     public String getName();
 
+    /**
+     * @return the note latitude.
+     */
     public double getLat();
 
+    /**
+     * @return the note longitude.
+     */
     public double getLon();
 
 }

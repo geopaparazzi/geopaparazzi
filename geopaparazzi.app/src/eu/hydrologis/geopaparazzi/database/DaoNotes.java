@@ -18,8 +18,6 @@
 package eu.hydrologis.geopaparazzi.database;
 
 import java.io.IOException;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +31,6 @@ import android.database.sqlite.SQLiteStatement;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.hydrologis.geopaparazzi.maps.overlays.NoteOverlayItem;
 import eu.hydrologis.geopaparazzi.util.Note;
 
@@ -65,24 +62,26 @@ public class DaoNotes {
      */
     private static final String COLUMN_TYPE = "type";
 
+    /**
+     * The notes table name.
+     */
     public static final String TABLE_NOTES = "notes";
 
     private static long LASTINSERTEDNOTE_ID = -1;
 
-
     /**
-     * @param lon
-     * @param lat
-     * @param altim
+     * @param lon lon
+     * @param lat lat 
+     * @param altim elevation
      * @param timestamp the UTC timestamp string.
-     * @param text
-     * @param category
-     * @param form
-     * @param type
-     * @throws IOException
+     * @param text a text
+     * @param category a category
+     * @param form the json form.
+     * @param type the note type.
+     * @throws IOException  if something goes wrong.
      */
-    public static void addNote( double lon, double lat, double altim, String timestamp, String text, String category, String form,
-            int type ) throws IOException {
+    public static void addNote( double lon, double lat, double altim, String timestamp, String text, String category,
+            String form, int type ) throws IOException {
         if (category == null) {
             category = NoteType.POI.getDef();
         }
@@ -101,8 +100,21 @@ public class DaoNotes {
         }
     }
 
-    public static void addNoteNoTransaction( double lon, double lat, double altim, String timestamp, String text, String category,
-            String form, int type, SQLiteDatabase sqliteDatabase ) {
+    /**
+     * Add a note without transaction (for fast insert of many).
+     * 
+     * @param lon lon
+     * @param lat lat
+     * @param altim elevation
+     * @param timestamp the UTC timestamp.
+     * @param text the text
+     * @param category a category.
+     * @param form the json form or null
+     * @param type the note type.
+     * @param sqliteDatabase the database reference.
+     */
+    public static void addNoteNoTransaction( double lon, double lat, double altim, String timestamp, String text,
+            String category, String form, int type, SQLiteDatabase sqliteDatabase ) {
         if (category == null) {
             category = NoteType.POI.getDef();
         }
@@ -119,6 +131,12 @@ public class DaoNotes {
         LASTINSERTEDNOTE_ID = sqliteDatabase.insertOrThrow(TABLE_NOTES, null, values);
     }
 
+    /**
+     * Delete a note.
+     * 
+     * @param id the note id.
+     * @throws IOException  if something goes wrong.
+     */
     public static void deleteNote( long id ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
@@ -137,6 +155,14 @@ public class DaoNotes {
         }
     }
 
+    /**
+     * Update the form of a note. 
+     * 
+     * @param id the note id.
+     * @param noteText the note text.
+     * @param jsonStr the form data.
+     * @throws IOException  if something goes wrong.
+     */
     public static void updateForm( long id, String noteText, String jsonStr ) throws IOException {
         ContentValues updatedValues = new ContentValues();
         updatedValues.put(COLUMN_FORM, jsonStr);
@@ -152,6 +178,12 @@ public class DaoNotes {
         sqliteDatabase.update(TABLE_NOTES, updatedValues, where, whereArgs);
     }
 
+    /**
+     * Delet notes by type.
+     * 
+     * @param noteType the type to remove.
+     * @throws IOException  if something goes wrong.
+     */
     public static void deleteNotesByType( NoteType noteType ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
@@ -170,56 +202,32 @@ public class DaoNotes {
         }
     }
 
+    /**
+     * Remove last note.
+     * 
+     * @throws IOException  if something goes wrong.
+     */
     public static void deleteLastInsertedNote() throws IOException {
         if (LASTINSERTEDNOTE_ID != -1) {
             deleteNote(LASTINSERTEDNOTE_ID);
         }
     }
 
-    // public static void importGpxToNotes( Context context, GpxItem gpxItem ) throws IOException {
-    // SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
-    // sqliteDatabase.beginTransaction();
-    // try {
-    // List<PointF3D> points = gpxItem.read();
-    // List<String> names = gpxItem.getNames();
-    // for( int i = 0; i < points.size(); i++ ) {
-    // Date date = new Date(System.currentTimeMillis());
-    // String dateStrs = Constants.TIME_FORMATTER_SQLITE.format(date);
-    // PointF3D point = points.get(i);
-    // String name = names.get(i);
-    // ContentValues values = new ContentValues();
-    // values.put(COLUMN_LON, point.x);
-    // values.put(COLUMN_LAT, point.y);
-    // values.put(COLUMN_ALTIM, point.getZ());
-    // values.put(COLUMN_TS, dateStrs);
-    // values.put(COLUMN_TEXT, name);
-    // sqliteDatabase.insertOrThrow(TABLE_NOTES, null, values);
-    // }
-    // sqliteDatabase.setTransactionSuccessful();
-    // } catch (Exception e) {
-    // throw new IOException(e.getLocalizedMessage());
-    // } finally {
-    // sqliteDatabase.endTransaction();
-    // }
-    // }
-
     /**
      * Get the collected notes from the database inside a given bound.
-     * @param n
-     * @param s
-     * @param w
-     * @param e
+     * 
+     * @param n north bound.
+     * @param s south bound.
+     * @param w west bound.
+     * @param e east bound.
      * 
      * @return the list of notes inside the bounds.
-     * @throws IOException
+     * @throws IOException  if something goes wrong.
      */
     public static List<Note> getNotesInWorldBounds( float n, float s, float w, float e ) throws IOException {
 
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         String query = "SELECT _id, lon, lat, altim, text, cat, ts, type, form FROM XXX WHERE (lon BETWEEN XXX AND XXX) AND (lat BETWEEN XXX AND XXX)";
-        // String[] args = new String[]{TABLE_NOTES, String.valueOf(w), String.valueOf(e),
-        // String.valueOf(s), String.valueOf(n)};
-
         query = query.replaceFirst("XXX", TABLE_NOTES);
         query = query.replaceFirst("XXX", String.valueOf(w));
         query = query.replaceFirst("XXX", String.valueOf(e));
@@ -254,7 +262,7 @@ public class DaoNotes {
      * Get the list of notes from the db.
      * 
      * @return list of notes.
-     * @throws IOException
+     * @throws IOException  if something goes wrong.
      */
     public static List<Note> getNotesList() throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
@@ -285,9 +293,10 @@ public class DaoNotes {
 
     /**
      * Get the list of notes from the db as OverlayItems.
-     * @param marker 
+     * 
+     * @param marker teh marker to use. 
      * @return list of notes.
-     * @throws IOException
+     * @throws IOException  if something goes wrong.
      */
     public static List<OverlayItem> getNoteOverlaysList( Drawable marker ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
@@ -318,6 +327,12 @@ public class DaoNotes {
         return notesList;
     }
 
+    /**
+     * Update the notes table from 1 -> 2
+     * 
+     * @param db the db
+     * @throws IOException  if something goes wrong.
+     */
     public static void upgradeNotesFromDB1ToDB2( SQLiteDatabase db ) throws IOException {
 
         StringBuilder sB = new StringBuilder();
@@ -363,6 +378,12 @@ public class DaoNotes {
         }
     }
 
+    /**
+     * Update the notes table from 4 -> 5
+     * 
+     * @param db the db
+     * @throws IOException  if something goes wrong.
+     */
     public static void upgradeNotesFromDB4ToDB5( SQLiteDatabase db ) throws IOException {
         StringBuilder sB = new StringBuilder();
         // make sure the form column doesn't exist
@@ -407,6 +428,12 @@ public class DaoNotes {
         }
     }
 
+    /**
+     * Update the notes table from 5 -> 6
+     * 
+     * @param db the db
+     * @throws IOException  if something goes wrong.
+     */
     public static void upgradeNotesFromDB5ToDB6( SQLiteDatabase db ) throws IOException {
         StringBuilder sB = new StringBuilder();
         // make sure the form column doesn't exist
@@ -451,6 +478,11 @@ public class DaoNotes {
         }
     }
 
+    /**
+     * Create the notes tables.
+     * 
+     * @throws IOException  if something goes wrong.
+     */
     public static void createTables() throws IOException {
         StringBuilder sB = new StringBuilder();
 

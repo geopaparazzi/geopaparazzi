@@ -1,10 +1,9 @@
-package eu.geopaparazzi.mapsforge.mapsdirmanager.treeview;
+package eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.adapter;
 
 import android.app.Activity;
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.drawable.Drawable;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,7 +16,8 @@ import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import eu.geopaparazzi.mapsforge.R;
-import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.TreeNodeInfo;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.TreeStateManager;
 
 /**
  * Adapter used to feed the table view.
@@ -25,10 +25,7 @@ import eu.geopaparazzi.library.database.GPLog;
  * @param <T>
  *            class for ID of the tree
  */
-public abstract class AbstractTreeViewAdapter<T> extends BaseAdapter implements
-        ListAdapter {
-    private static final String TAG = AbstractTreeViewAdapter.class
-            .getSimpleName();
+public abstract class AbstractTreeViewAdapter<T> extends BaseAdapter implements ListAdapter {
     private final TreeStateManager<T> treeStateManager;
     private final int numberOfLevels;
     private final LayoutInflater layoutInflater;
@@ -40,9 +37,9 @@ public abstract class AbstractTreeViewAdapter<T> extends BaseAdapter implements
     private Drawable indicatorBackgroundDrawable;
     private Drawable rowBackgroundDrawable;
 
-    private final OnClickListener indicatorClickListener = new OnClickListener() {
+    private final OnClickListener indicatorClickListener = new OnClickListener(){
         @Override
-        public void onClick(final View v) {
+        public void onClick( final View v ) {
             @SuppressWarnings("unchecked")
             final T id = (T) v.getTag();
             expandCollapse(id);
@@ -60,7 +57,7 @@ public abstract class AbstractTreeViewAdapter<T> extends BaseAdapter implements
         return treeStateManager;
     }
 
-    protected void expandCollapse(final T id) {
+    protected void expandCollapse( final T id ) {
         final TreeNodeInfo<T> info = treeStateManager.getNodeInfo(id);
         if (!info.isWithChildren()) {
             // ignore - no default action
@@ -75,21 +72,17 @@ public abstract class AbstractTreeViewAdapter<T> extends BaseAdapter implements
 
     private void calculateIndentWidth() {
         if (expandedDrawable != null) {
-            indentWidth = Math.max(getIndentWidth(),
-                    expandedDrawable.getIntrinsicWidth());
+            indentWidth = Math.max(getIndentWidth(), expandedDrawable.getIntrinsicWidth());
         }
         if (collapsedDrawable != null) {
-            indentWidth = Math.max(getIndentWidth(),
-                    collapsedDrawable.getIntrinsicWidth());
+            indentWidth = Math.max(getIndentWidth(), collapsedDrawable.getIntrinsicWidth());
         }
     }
 
-    public AbstractTreeViewAdapter(final Activity activity,
-            final TreeStateManager<T> treeStateManager, final int numberOfLevels) {
+    public AbstractTreeViewAdapter( final Activity activity, final TreeStateManager<T> treeStateManager, final int numberOfLevels ) {
         this.activity = activity;
         this.treeStateManager = treeStateManager;
-        this.layoutInflater = (LayoutInflater) activity
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.layoutInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.numberOfLevels = numberOfLevels;
         this.collapsedDrawable = null;
         this.expandedDrawable = null;
@@ -98,12 +91,12 @@ public abstract class AbstractTreeViewAdapter<T> extends BaseAdapter implements
     }
 
     @Override
-    public void registerDataSetObserver(final DataSetObserver observer) {
+    public void registerDataSetObserver( final DataSetObserver observer ) {
         treeStateManager.registerDataSetObserver(observer);
     }
 
     @Override
-    public void unregisterDataSetObserver(final DataSetObserver observer) {
+    public void unregisterDataSetObserver( final DataSetObserver observer ) {
         treeStateManager.unregisterDataSetObserver(observer);
     }
 
@@ -113,15 +106,15 @@ public abstract class AbstractTreeViewAdapter<T> extends BaseAdapter implements
     }
 
     @Override
-    public Object getItem(final int position) {
+    public Object getItem( final int position ) {
         return getTreeId(position);
     }
 
-    public T getTreeId(final int position) {
+    public T getTreeId( final int position ) {
         return treeStateManager.getVisibleList().get(position);
     }
 
-    public TreeNodeInfo<T> getTreeNodeInfo(final int position) {
+    public TreeNodeInfo<T> getTreeNodeInfo( final int position ) {
         return treeStateManager.getNodeInfo(getTreeId(position));
     }
 
@@ -131,7 +124,7 @@ public abstract class AbstractTreeViewAdapter<T> extends BaseAdapter implements
     }
 
     @Override
-    public int getItemViewType(final int position) {
+    public int getItemViewType( final int position ) {
         return getTreeNodeInfo(position).getLevel();
     }
 
@@ -151,7 +144,7 @@ public abstract class AbstractTreeViewAdapter<T> extends BaseAdapter implements
     }
 
     @Override
-    public boolean isEnabled(final int position) { // NOPMD
+    public boolean isEnabled( final int position ) { // NOPMD
         return true;
     }
 
@@ -160,20 +153,18 @@ public abstract class AbstractTreeViewAdapter<T> extends BaseAdapter implements
     }
 
     @Override
-    public final View getView(final int position, final View convertView, final ViewGroup parent) {
-        // GPLog.androidLog(-1,TAG+" getView[Creating a view based on "+convertView+" with position " + position+ "]");
+    public final View getView( final int position, final View convertView, final ViewGroup parent ) {
+        // GPLog.androidLog(-1,TAG+" getView[Creating a view based on "+convertView+" with position "
+        // + position+ "]");
         final TreeNodeInfo<T> nodeInfo = getTreeNodeInfo(position);
         if (convertView == null) {
             // GPLog.androidLog(-1,TAG+" getView[Creating the view a new]");
-            final LinearLayout layout = (LinearLayout) layoutInflater.inflate(
-                    getTreeListItemWrapperId(), null);
-            return populateTreeItem(layout, getNewChildView(nodeInfo),
-                    nodeInfo, true);
+            final LinearLayout layout = (LinearLayout) layoutInflater.inflate(getTreeListItemWrapperId(), null);
+            return populateTreeItem(layout, getNewChildView(nodeInfo), nodeInfo, true);
         } else {
             // GPLog.androidLog(-1,TAG+" getView[Reusing the view]");
             final LinearLayout linear = (LinearLayout) convertView;
-            final FrameLayout frameLayout = (FrameLayout) linear
-                    .findViewById(R.id.mapsdir_treeview_item_frame);
+            final FrameLayout frameLayout = (FrameLayout) linear.findViewById(R.id.mapsdir_treeview_item_frame);
             final View childView = frameLayout.getChildAt(0);
             updateView(childView, nodeInfo);
             return populateTreeItem(linear, childView, nodeInfo, false);
@@ -187,7 +178,7 @@ public abstract class AbstractTreeViewAdapter<T> extends BaseAdapter implements
      *            node info
      * @return view that should be displayed as tree content
      */
-    public abstract View getNewChildView(TreeNodeInfo<T> treeNodeInfo);
+    public abstract View getNewChildView( TreeNodeInfo<T> treeNodeInfo );
 
     /**
      * Called when new view is going to be reused. You should update the view
@@ -201,7 +192,7 @@ public abstract class AbstractTreeViewAdapter<T> extends BaseAdapter implements
      *            node info used to populate the view
      * @return view to used as row indented content
      */
-    public abstract View updateView(View view, TreeNodeInfo<T> treeNodeInfo);
+    public abstract View updateView( View view, TreeNodeInfo<T> treeNodeInfo );
 
     /**
      * Retrieves background drawable for the node.
@@ -211,33 +202,30 @@ public abstract class AbstractTreeViewAdapter<T> extends BaseAdapter implements
      * @return drawable returned as background for the whole row. Might be null,
      *         then default background is used
      */
-    public Drawable getBackgroundDrawable(final TreeNodeInfo<T> treeNodeInfo) { // NOPMD
+    public Drawable getBackgroundDrawable( final TreeNodeInfo<T> treeNodeInfo ) { // NOPMD
         return null;
     }
 
-    private Drawable getDrawableOrDefaultBackground(final Drawable r) {
+    private Drawable getDrawableOrDefaultBackground( final Drawable r ) {
         if (r == null) {
-            return activity.getResources()
-                    .getDrawable(R.drawable.mapsdir_treeview_bkgnd_transparent).mutate();
+            return activity.getResources().getDrawable(R.drawable.mapsdir_treeview_bkgnd_transparent).mutate();
         } else {
             return r;
         }
     }
 
-    public final LinearLayout populateTreeItem(final LinearLayout layout,
-            final View childView, final TreeNodeInfo<T> nodeInfo,
-            final boolean newChildView) {
+    public final LinearLayout populateTreeItem( final LinearLayout layout, final View childView, final TreeNodeInfo<T> nodeInfo,
+            final boolean newChildView ) {
         final Drawable individualRowDrawable = getBackgroundDrawable(nodeInfo);
-        layout.setBackgroundDrawable(individualRowDrawable == null ? getDrawableOrDefaultBackground(rowBackgroundDrawable)
+        layout.setBackgroundDrawable(individualRowDrawable == null
+                ? getDrawableOrDefaultBackground(rowBackgroundDrawable)
                 : individualRowDrawable);
-        final LinearLayout.LayoutParams indicatorLayoutParams = new LinearLayout.LayoutParams(
-                calculateIndentation(nodeInfo), LayoutParams.FILL_PARENT);
-        final LinearLayout indicatorLayout = (LinearLayout) layout
-                .findViewById(R.id.mapsdir_treeview_item_image_layout);
+        final LinearLayout.LayoutParams indicatorLayoutParams = new LinearLayout.LayoutParams(calculateIndentation(nodeInfo),
+                LayoutParams.FILL_PARENT);
+        final LinearLayout indicatorLayout = (LinearLayout) layout.findViewById(R.id.mapsdir_treeview_item_image_layout);
         indicatorLayout.setGravity(indicatorGravity);
         indicatorLayout.setLayoutParams(indicatorLayoutParams);
-        final ImageView image = (ImageView) layout
-                .findViewById(R.id.mapsdir_treeview_item_image);
+        final ImageView image = (ImageView) layout.findViewById(R.id.mapsdir_treeview_item_image);
         image.setImageDrawable(getDrawable(nodeInfo));
         image.setBackgroundDrawable(getDrawableOrDefaultBackground(indicatorBackgroundDrawable));
         image.setScaleType(ScaleType.CENTER);
@@ -248,10 +236,9 @@ public abstract class AbstractTreeViewAdapter<T> extends BaseAdapter implements
             image.setOnClickListener(null);
         }
         layout.setTag(nodeInfo.getId());
-        final FrameLayout frameLayout = (FrameLayout) layout
-                .findViewById(R.id.mapsdir_treeview_item_frame);
-        final FrameLayout.LayoutParams childParams = new FrameLayout.LayoutParams(
-                LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+        final FrameLayout frameLayout = (FrameLayout) layout.findViewById(R.id.mapsdir_treeview_item_frame);
+        final FrameLayout.LayoutParams childParams = new FrameLayout.LayoutParams(LayoutParams.FILL_PARENT,
+                LayoutParams.FILL_PARENT);
         if (newChildView) {
             frameLayout.addView(childView, childParams);
         }
@@ -259,11 +246,11 @@ public abstract class AbstractTreeViewAdapter<T> extends BaseAdapter implements
         return layout;
     }
 
-    protected int calculateIndentation(final TreeNodeInfo<T> nodeInfo) {
+    protected int calculateIndentation( final TreeNodeInfo<T> nodeInfo ) {
         return getIndentWidth() * (nodeInfo.getLevel() + (collapsible ? 1 : 0));
     }
 
-    protected Drawable getDrawable(final TreeNodeInfo<T> nodeInfo) {
+    protected Drawable getDrawable( final TreeNodeInfo<T> nodeInfo ) {
         if (!nodeInfo.isWithChildren() || !collapsible) {
             return getDrawableOrDefaultBackground(indicatorBackgroundDrawable);
         }
@@ -274,35 +261,34 @@ public abstract class AbstractTreeViewAdapter<T> extends BaseAdapter implements
         }
     }
 
-    public void setIndicatorGravity(final int indicatorGravity) {
+    public void setIndicatorGravity( final int indicatorGravity ) {
         this.indicatorGravity = indicatorGravity;
     }
 
-    public void setCollapsedDrawable(final Drawable collapsedDrawable) {
+    public void setCollapsedDrawable( final Drawable collapsedDrawable ) {
         this.collapsedDrawable = collapsedDrawable;
         calculateIndentWidth();
     }
 
-    public void setExpandedDrawable(final Drawable expandedDrawable) {
+    public void setExpandedDrawable( final Drawable expandedDrawable ) {
         this.expandedDrawable = expandedDrawable;
         calculateIndentWidth();
     }
 
-    public void setIndentWidth(final int indentWidth) {
+    public void setIndentWidth( final int indentWidth ) {
         this.indentWidth = indentWidth;
         calculateIndentWidth();
     }
 
-    public void setRowBackgroundDrawable(final Drawable rowBackgroundDrawable) {
+    public void setRowBackgroundDrawable( final Drawable rowBackgroundDrawable ) {
         this.rowBackgroundDrawable = rowBackgroundDrawable;
     }
 
-    public void setIndicatorBackgroundDrawable(
-            final Drawable indicatorBackgroundDrawable) {
+    public void setIndicatorBackgroundDrawable( final Drawable indicatorBackgroundDrawable ) {
         this.indicatorBackgroundDrawable = indicatorBackgroundDrawable;
     }
 
-    public void setCollapsible(final boolean collapsible) {
+    public void setCollapsible( final boolean collapsible ) {
         this.collapsible = collapsible;
     }
 
@@ -315,7 +301,7 @@ public abstract class AbstractTreeViewAdapter<T> extends BaseAdapter implements
     }
 
     @SuppressWarnings("unchecked")
-    public void handleItemClick(final View view, final Object id) {
+    public void handleItemClick( final View view, final Object id ) {
         expandCollapse((T) id);
     }
 
