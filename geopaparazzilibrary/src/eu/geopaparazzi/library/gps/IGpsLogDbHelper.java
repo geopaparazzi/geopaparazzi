@@ -53,8 +53,8 @@ public interface IGpsLogDbHelper {
      * @return the id of the new created log.
      * @throws IOException  if something goes wrong. 
      */
-    public long addGpsLog( Context context, Date startTs, Date endTs, float lengthm, String text, float width, String color, boolean visible )
-            throws IOException;
+    public long addGpsLog( Context context, Date startTs, Date endTs, double lengthm, String text, float width, String color,
+            boolean visible ) throws IOException;
 
     /**
      * Adds a single gps log point to a log.
@@ -87,12 +87,18 @@ public interface IGpsLogDbHelper {
      * @param context the {@link Context} to use.
      * @param logid the log to change. 
      * @param end the end timestamp.
-<<<<<<< HEAD
-     * @param length the length of the track log
-     * @throws IOException
-=======
      * @throws IOException  if something goes wrong.
->>>>>>> refs/heads/master
      */
-    public void setEndTs( Context context, long logid, Date end, float length) throws IOException;
+    public void setEndTs( Context context, long logid, Date end ) throws IOException;
+
+    /**
+     * Re-sets the end length, in case it changed because points were added.
+     * 
+     * @param context the {@link Context} to use.
+     * @param logid the log to change. 
+     * @param length the length of the track log
+     * @throws IOException  if something goes wrong.
+     */
+    public void setTrackLengthm( Context context, long logid, double length ) throws IOException;
+
 }

@@ -130,7 +130,7 @@ public class GpsDatabaseLogger implements GpsManagerListener {
      * Starts logging into the database.
      * 
      * @param logName a name for the new log or <code>null</code>.
-     * @param dbHelper teh db helper.
+     * @param dbHelper the db helper.
      */
     public void startDatabaseLogging( final String logName, final IGpsLogDbHelper dbHelper ) {
         if (isDatabaseLogging) {
@@ -223,7 +223,8 @@ public class GpsDatabaseLogger implements GpsManagerListener {
                     } else {
                         // set the end timestamp and the total distance for the track
                         java.sql.Date end = new java.sql.Date(System.currentTimeMillis());
-                        dbHelper.setEndTs(context, gpsLogId, end, (float)currentDistance);
+                        dbHelper.setEndTs(context, gpsLogId, end);
+                        dbHelper.setTrackLengthm(context, gpsLogId, (double) currentDistance);
                     }
 
                     currentPointsNum = 0;
@@ -264,7 +265,6 @@ public class GpsDatabaseLogger implements GpsManagerListener {
 
         Utilities.toast(context, R.string.gpsloggingon, Toast.LENGTH_SHORT);
     }
-
     /**
      * Stop logging.
      */

@@ -105,7 +105,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
      * @return the id of the new created log.
      * @throws IOException  if something goes wrong. 
      */
-    public long addGpsLog( Context context, Date startTs, Date endTs, float lengthm, String text, float width, String color,
+    public long addGpsLog( Context context, Date startTs, Date endTs, double lengthm, String text, float width, String color,
             boolean visible ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
@@ -203,10 +203,9 @@ public class DaoGpsLog implements IGpsLogDbHelper {
      * 
      * @param logid the ID from the GPS log table.
      * @param end the new end time stamp
-     * @param lengthm the new track length
      * @throws IOException if a problem
      */
-    public void setEndTs( Context context, long logid, Date end, float lengthm ) throws IOException {
+    public void setEndTs( Context context, long logid, Date end ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         try {
             sqliteDatabase.beginTransaction();
@@ -217,6 +216,41 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             sb.append(TABLE_GPSLOGS);
             sb.append(" SET ");
             sb.append(COLUMN_LOG_ENDTS).append("='").append(dateFormatter.format(end)).append("' ,");
+            sb.append("WHERE ").append(COLUMN_ID).append("=").append(logid);
+
+            String query = sb.toString();
+            if (GPLog.LOG_HEAVY)
+                GPLog.addLogEntry("DAOGPSLOG", query);
+            SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
+            sqlUpdate.execute();
+            sqlUpdate.close();
+
+            sqliteDatabase.setTransactionSuccessful();
+        } catch (Exception e) {
+            GPLog.error("DAOGPSLOG", e.getLocalizedMessage(), e);
+            throw new IOException(e.getLocalizedMessage());
+        } finally {
+            sqliteDatabase.endTransaction();
+        }
+    }
+
+    /**
+     * Resets the track length when a GPSlog is updated
+     * 
+     * @param logid the ID from the GPS log table.
+     * @param lengthm the new track length
+     * @throws IOException if a problem
+     */
+    public void setTrackLengthm( Context context, long logid, double lengthm ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+        try {
+            sqliteDatabase.beginTransaction();
+
+            StringBuilder sb = new StringBuilder();
+            sb = new StringBuilder();
+            sb.append("UPDATE ");
+            sb.append(TABLE_GPSLOGS);
+            sb.append(" SET ");
             sb.append(COLUMN_LOG_LENGTHM).append("=").append(lengthm).append(" ");
             sb.append("WHERE ").append(COLUMN_ID).append("=").append(logid);
 
@@ -286,7 +320,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 String text = c.getString(1);
                 String start = c.getString(2);
                 String end = c.getString(3);
-                float lengthm = c.getFloat(4);
+                double lengthm = c.getDouble(4);
                 String color = c.getString(5);
                 double width = c.getDouble(6);
                 int visible = c.getInt(7);
@@ -294,7 +328,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 // "/" +
                 // text);
                 LogMapItem item = new LogMapItem(logid, text, color, (float) width, visible == 1 ? true : false, start, end,
-                        lengthm);
+                        (double) lengthm);
                 logsList.add(item);
                 c.moveToNext();
             }

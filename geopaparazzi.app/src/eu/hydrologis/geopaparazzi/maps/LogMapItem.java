@@ -31,7 +31,7 @@ public class LogMapItem extends MapItem implements Serializable {
     private static final long serialVersionUID = 1L;
     private String startTime = " - "; //$NON-NLS-1$
     private String endTime = " - "; //$NON-NLS-1$
-    private float lengthm = 0.0F;
+    private double lengthm = 0.0;
 
     /**
      * @param id id
@@ -44,7 +44,7 @@ public class LogMapItem extends MapItem implements Serializable {
      * @param lengthm the track length in meters
      */
     public LogMapItem( long id, String text, String color, float width, boolean isVisible, String startTime, String endTime,
-            float lengthm ) {
+            double lengthm ) {
         super(id, text, color, width, isVisible);
         if (startTime != null)
             this.startTime = startTime;
@@ -79,18 +79,16 @@ public class LogMapItem extends MapItem implements Serializable {
     // this.endTime = endTime;
     // }
     /**
-     * 
      * @return returns length of track in meters
      */
     public String getLengthInM() {
-        return String.format(Locale.getDefault(), "%.0f", lengthm); //$NON-NLS-1$
+        return String.format(Locale.getDefault(), "%.0", lengthm); //$NON-NLS-1$
     }
 
     /**
-     * 
      * @param lengthm the track length in meters
      */
-    public void setLengthInM( float lengthm ) {
+    public void setLengthInM( double lengthm ) {
         this.lengthm = lengthm;
     }
 }
