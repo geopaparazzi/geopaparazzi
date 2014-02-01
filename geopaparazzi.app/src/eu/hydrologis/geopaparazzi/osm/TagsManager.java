@@ -17,11 +17,16 @@
  */
 package eu.hydrologis.geopaparazzi.osm;
 
-import static eu.hydrologis.geopaparazzi.osm.FormUtilities.*;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_FORM;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_FORMITEMS;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_ITEM;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_ITEMS;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_LONGNAME;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_SHORTNAME;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_VALUES;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -55,6 +60,9 @@ import eu.geopaparazzi.library.util.debug.Debug;
 @SuppressWarnings("nls")
 public class TagsManager {
 
+    /**
+     * The name of the tags file.
+     */
     public static String TAGSFILENAME = "tags.json";
 
     private static HashMap<String, TagObject> tagsMap = new HashMap<String, TagObject>();
@@ -64,10 +72,12 @@ public class TagsManager {
     private static String[] tagsArrays = new String[0];
 
     /**
-     * Gets the manager singleton. 
+     * Gets the manager singleton.
+     *  
+     * @param context  the context to use.
      * 
      * @return the {@link TagsManager} singleton.
-     * @throws IOException 
+     * @throws Exception  if something goes wrong. 
      */
     public static synchronized TagsManager getInstance( Context context ) throws Exception {
         if (tagsManager == null) {
@@ -105,14 +115,30 @@ public class TagsManager {
         }
     }
 
+    /**
+     * @return the array of tag names.
+     */
     public String[] getTagsArrays() {
         return tagsArrays;
     }
 
+    /**
+     * get tag for its name.
+     * 
+     * @param name the name
+     * @return the tag.
+     */
     public TagObject getTagFromName( String name ) {
         return tagsMap.get(name);
     }
 
+    /**
+     * Convert string to tag object.
+     * 
+     * @param jsonString teh string.
+     * @return the object.
+     * @throws JSONException  if something goes wrong.
+     */
     public static TagObject stringToTagObject( String jsonString ) throws JSONException {
         JSONObject jsonObject = new JSONObject(jsonString);
         String shortname = jsonObject.getString(TAG_SHORTNAME);
@@ -138,7 +164,7 @@ public class TagsManager {
      * @param jsonObj the single object.
      * @return the array of items of the contained form or <code>null</code> if 
      *          no form is contained.
-     * @throws JSONException
+     * @throws JSONException  if something goes wrong.
      */
     public static JSONArray getFormItems( JSONObject jsonObj ) throws JSONException {
         if (jsonObj.has(TAG_FORM)) {
@@ -156,7 +182,7 @@ public class TagsManager {
      * 
      * @param formItem the json form <b>item</b>.
      * @return the array of items.
-     * @throws JSONException
+     * @throws JSONException  if something goes wrong.
      */
     public static JSONArray getComboItems( JSONObject formItem ) throws JSONException {
         if (formItem.has(TAG_VALUES)) {
@@ -169,6 +195,13 @@ public class TagsManager {
         return null;
     }
 
+    /**
+     * Convert json combo array to string. 
+     * 
+     * @param comboItems the combo json.
+     * @return the strings.
+     * @throws JSONException  if something goes wrong.
+     */
     public static String[] comboItems2StringArray( JSONArray comboItems ) throws JSONException {
         int length = comboItems.length();
         String[] itemsArray = new String[length];
@@ -183,10 +216,25 @@ public class TagsManager {
         return itemsArray;
     }
 
+    /**
+     * The tag object.
+     */
     public static class TagObject {
+        /**
+         * 
+         */
         public String shortName;
+        /**
+         * 
+         */
         public String longName;
+        /**
+         * 
+         */
         public boolean hasForm;
+        /**
+         * 
+         */
         public String jsonString;
     }
 }

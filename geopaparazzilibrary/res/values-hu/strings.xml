@@ -71,9 +71,9 @@
   <string name="unable_to_read_tag_id">Nem kiolvasható cimke azonosító</string>
   <string name="stroke_color">Vonal színe        </string>
   <string name="width">Vonal szélesség</string>
-  <string name="alpha">Vonal opacitás</string>
+  <string name="alpha">Vonal átlátszatlanság</string>
   <string name="fill_color">Kitöltő szín</string>
-  <string name="fill_alpha">Kitöltés opacitás</string>
+  <string name="fill_alpha">Kitöltés átlátszatlanság</string>
   <string name="point_shape_">Pont alakzat </string>
   <string name="point_size">Pont méret</string>
   <string name="decimation">Méretezés</string>

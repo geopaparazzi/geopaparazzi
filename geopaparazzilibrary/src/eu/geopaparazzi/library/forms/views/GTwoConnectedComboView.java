@@ -52,14 +52,32 @@ public class GTwoConnectedComboView extends View implements GView, OnItemSelecte
     private LinearLayout textLayout;
     private String value;
 
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     * @param defStyle def style.
+     */
     public GTwoConnectedComboView( Context context, AttributeSet attrs, int defStyle ) {
         super(context, attrs, defStyle);
     }
 
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     */
     public GTwoConnectedComboView( Context context, AttributeSet attrs ) {
         super(context, attrs);
     }
 
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     * @param parentView parent
+     * @param key key
+     * @param value value
+     * @param dataMap the map of the data.
+     * @param constraintDescription constraints
+     */
     public GTwoConnectedComboView( Context context, AttributeSet attrs, LinearLayout parentView, String key, String value,
             LinkedHashMap<String, List<String>> dataMap, String constraintDescription ) {
         super(context, attrs);
@@ -159,10 +177,12 @@ public class GTwoConnectedComboView extends View implements GView, OnItemSelecte
 
     @Override
     public void setOnActivityResult( Intent data ) {
+        // ignore
     }
 
     @Override
     public void refresh( Context context ) {
+        // ignore
     }
 
     @Override
@@ -186,6 +206,7 @@ public class GTwoConnectedComboView extends View implements GView, OnItemSelecte
 
     @Override
     public void onNothingSelected( AdapterView< ? > arg0 ) {
+        // ignore
     }
 
 }

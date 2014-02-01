@@ -51,13 +51,29 @@ public class DaoImages {
     private static final String COLUMN_TS = "ts";
     private static final String COLUMN_TEXT = "text";
 
+    /**
+     * Image table name.
+     */
     public static final String TABLE_IMAGES = "images";
 
     private static long LASTINSERTEDIMAGE_ID = -1;
 
     private static SimpleDateFormat dateFormatter = TimeUtilities.INSTANCE.TIME_FORMATTER_SQLITE_UTC;
 
-    public static void addImage( double lon, double lat, double altim, double azim, Date timestamp, String text, String path ) throws IOException {
+    /**
+     * Add an image to the db.
+     * 
+     * @param lon lon
+     * @param lat lat
+     * @param altim elevation
+     * @param azim azimuth
+     * @param timestamp the timestamp
+     * @param text a text
+     * @param path the image path.
+     * @throws IOException  if something goes wrong.
+     */
+    public static void addImage( double lon, double lat, double altim, double azim, Date timestamp, String text, String path )
+            throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
@@ -81,10 +97,10 @@ public class DaoImages {
     }
 
     /**
-     * Deletes the image reference without actually deleting teh image from disk.
+     * Deletes the image reference without actually deleting the image from disk.
      * 
-     * @param id
-     * @throws IOException
+     * @param id the id of the image note.
+     * @throws IOException  if something goes wrong.
      */
     public static void deleteImage( long id ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
@@ -104,6 +120,11 @@ public class DaoImages {
         }
     }
 
+    /**
+     * Removes last image.
+     * 
+     * @throws IOException  if something goes wrong.
+     */
     public static void deleteLastInsertedImage() throws IOException {
         if (LASTINSERTEDIMAGE_ID != -1) {
             deleteImage(LASTINSERTEDIMAGE_ID);
@@ -112,13 +133,13 @@ public class DaoImages {
 
     /**
      * Get the collected notes from the database inside a given bound.
-     * @param n
-     * @param s
-     * @param w
-     * @param e
+     * @param n north
+     * @param s south
+     * @param w west
+     * @param e east
      * 
      * @return the list of notes inside the bounds.
-     * @throws IOException
+     * @throws IOException  if something goes wrong.
      */
     public static List<Image> getImagesInWorldBounds( float n, float s, float w, float e ) throws IOException {
 
@@ -160,9 +181,9 @@ public class DaoImages {
      * Get the list of notes from the db.
      * 
      * @return list of notes.
-     * @throws IOException
+     * @throws IOException  if something goes wrong.
      */
-    public static List<Image> getImagesList( ) throws IOException {
+    public static List<Image> getImagesList() throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         List<Image> images = new ArrayList<Image>();
         String asColumnsToReturn[] = {COLUMN_ID, COLUMN_LON, COLUMN_LAT, COLUMN_ALTIM, COLUMN_AZIM, COLUMN_PATH, COLUMN_TS,
@@ -188,6 +209,13 @@ public class DaoImages {
         return images;
     }
 
+    /**
+     * Get all image overlays.
+     * 
+     * @param marker the marker to use.
+     * @return the list of {@link OverlayItem}s.
+     * @throws IOException  if something goes wrong.
+     */
     public static List<OverlayItem> getImagesOverlayList( Drawable marker ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         List<OverlayItem> images = new ArrayList<OverlayItem>();
@@ -209,7 +237,12 @@ public class DaoImages {
         return images;
     }
 
-    public static void createTables( ) throws IOException {
+    /**
+     * Create the image tables.
+     * 
+     * @throws IOException  if something goes wrong.
+     */
+    public static void createTables() throws IOException {
         StringBuilder sB = new StringBuilder();
 
         sB = new StringBuilder();

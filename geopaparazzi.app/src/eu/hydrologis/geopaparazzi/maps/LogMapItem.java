@@ -18,7 +18,8 @@
 package eu.hydrologis.geopaparazzi.maps;
 
 import java.io.Serializable;
-import java.util.Locale; //for string formatting the track length
+import java.util.Locale;
+//for string formatting the track length
 
 /**
  * Item representing a gps log.
@@ -32,7 +33,18 @@ public class LogMapItem extends MapItem implements Serializable {
     private String endTime = " - "; //$NON-NLS-1$
     private float lengthm = 0.0F;
 
-    public LogMapItem( long id, String text, String color, float width, boolean isVisible, String startTime, String endTime, float lengthm ) {
+    /**
+     * @param id id
+     * @param text title.
+     * @param color color
+     * @param width width
+     * @param isVisible if visible
+     * @param startTime start time
+     * @param endTime end time
+     * @param lengthm the track length in meters
+     */
+    public LogMapItem( long id, String text, String color, float width, boolean isVisible, String startTime, String endTime,
+            float lengthm ) {
         super(id, text, color, width, isVisible);
         if (startTime != null)
             this.startTime = startTime;
@@ -42,26 +54,42 @@ public class LogMapItem extends MapItem implements Serializable {
             this.lengthm = lengthm;
     }
 
+    /**
+     * @return the start time.
+     */
     public String getStartTime() {
         return startTime;
     }
 
-    public void setStartTime( String startTime ) {
-        this.startTime = startTime;
-    }
+    // /**
+    // * @param startTime the start time.
+    // */
+    // public void setStartTime( String startTime ) {
+    // this.startTime = startTime;
+    // }
 
+    /**
+     * @return the end time.
+     */
     public String getEndTime() {
         return endTime;
     }
 
-    public void setEndTime( String endTime ) {
-        this.endTime = endTime;
-    }
-   
-    public String getLengthInM() {   	
-        return String.format(Locale.getDefault(), "%.1f", lengthm);
+    // public void setEndTime( String endTime ) {
+    // this.endTime = endTime;
+    // }
+    /**
+     * 
+     * @return returns length of track in meters
+     */
+    public String getLengthInM() {
+        return String.format(Locale.getDefault(), "%.0f", lengthm); //$NON-NLS-1$
     }
 
+    /**
+     * 
+     * @param lengthm the track length in meters
+     */
     public void setLengthInM( float lengthm ) {
         this.lengthm = lengthm;
     }

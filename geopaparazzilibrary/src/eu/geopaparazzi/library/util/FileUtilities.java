@@ -40,37 +40,62 @@ import eu.geopaparazzi.library.database.GPLog;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class FileUtilities {
-     public static List<String> list_sdcards()  {
+    /**
+     * Get sdcards list. 
+     * 
+     * @return the list of possible sdcard paths.
+     */
+    public static List<String> getPossibleSdcardsList() {
         List<String> list_sdcards = new ArrayList<String>();
-        File dir_mnt=new File("/mnt");
-        if ((dir_mnt != null) && (dir_mnt.exists()) && (dir_mnt.canRead()))
-        { // '/mnt' will list the mounted directories accessable and can be soft-link's
-         File[] list_files = dir_mnt.listFiles();
-         for( File this_file : list_files )
-         {
-          if (this_file.isDirectory())
-          {
-           if (this_file.getAbsolutePath().toLowerCase().indexOf("sd") != -1)
-           { // 'sdcard' (now shown as '/storage/emulated/0') ; 'extSdCard'
-            list_sdcards.add(this_file.getAbsolutePath().trim());
-           }
-          }
-         }
+        File dir_mnt = new File("/mnt");
+        if ((dir_mnt != null) && (dir_mnt.exists()) && (dir_mnt.canRead())) {
+            // '/mnt' will list the mounted directories accessable and can be soft-link's
+            File[] list_files = dir_mnt.listFiles();
+            for( File this_file : list_files ) {
+                if (this_file.isDirectory()) {
+                    if (this_file.getAbsolutePath().toLowerCase().indexOf("sd") != -1) {
+                        // 'sdcard' (now shown as '/storage/emulated/0') ; 'extSdCard'
+                        list_sdcards.add(this_file.getAbsolutePath().trim());
+                    }
+                }
+            }
         }
         return list_sdcards;
     }
+
+    /**
+     * Copy a file.
+     * 
+     * @param fromFile source file.
+     * @param toFile dest file.
+     * @throws IOException  if something goes wrong. 
+     */
     public static void copyFile( String fromFile, String toFile ) throws IOException {
         File in = new File(fromFile);
         File out = new File(toFile);
         copyFile(in, out);
     }
 
+    /**
+     * Copy a file.
+     * 
+     * @param in source file.
+     * @param out dest file.
+     * @throws IOException  if something goes wrong. 
+     */
     public static void copyFile( File in, File out ) throws IOException {
         FileInputStream fis = new FileInputStream(in);
         FileOutputStream fos = new FileOutputStream(out);
         copyFile(fis, fos);
     }
 
+    /**
+     * Copy a file.
+     * 
+     * @param fis source file.
+     * @param fos dest file.
+     * @throws IOException  if something goes wrong. 
+     */
     public static void copyFile( InputStream fis, OutputStream fos ) throws IOException {
         try {
             byte[] buf = new byte[1024];
@@ -86,6 +111,12 @@ public class FileUtilities {
         }
     }
 
+    /**
+     * Get the file name without extension.
+     * 
+     * @param file the file.
+     * @return the name.
+     */
     public static String getNameWithoutExtention( File file ) {
         String name = file.getName();
         int lastDot = name.lastIndexOf("."); //$NON-NLS-1$
@@ -93,6 +124,13 @@ public class FileUtilities {
         return name;
     }
 
+    /** 
+     * Read a file to string.
+     * 
+     * @param file file to read.
+     * @return the read string.
+     * @throws IOException  if something goes wrong.
+     */
     public static String readfile( File file ) throws IOException {
         StringBuilder sb = new StringBuilder();
         BufferedReader br = null;
@@ -118,6 +156,13 @@ public class FileUtilities {
         }
     }
 
+    /** 
+     * Read a file to a list of line strings.
+     * 
+     * @param file file to read.
+     * @return the read lines list.
+     * @throws IOException  if something goes wrong.
+     */
     public static List<String> readfileToList( File file ) throws IOException {
         BufferedReader br = null;
         List<String> linesList = new ArrayList<String>();
@@ -143,6 +188,13 @@ public class FileUtilities {
         }
     }
 
+    /**
+     * Write a string to file.
+     * 
+     * @param text the string.
+     * @param file the file.
+     * @throws IOException  if something goes wrong.
+     */
     public static void writefile( String text, File file ) throws IOException {
         BufferedWriter bw = null;
         try {
@@ -164,7 +216,7 @@ public class FileUtilities {
      * Returns true if all deletions were successful. If a deletion fails, the method stops
      * attempting to delete and returns false.
      *
-     * @param filehandle
+     * @param filehandle file to remove.
      * @return true if all deletions were successful
      */
     public static boolean deleteFileOrDir( File filehandle ) {
@@ -193,7 +245,7 @@ public class FileUtilities {
     /**
      * Delete file or folder recursively on exit of the program
      *
-     * @param filehandle
+     * @param filehandle file to remove.
      * @return true if all went well
      */
     public static boolean deleteFileOrDirOnExit( File filehandle ) {
@@ -254,7 +306,7 @@ public class FileUtilities {
      *
      * @param file the file to read.
      * @return the read byte array.
-     * @throws IOException
+     * @throws IOException  if something goes wrong.
      */
     public static byte[] readFileToByte( File file ) throws IOException {
         RandomAccessFile f = new RandomAccessFile(file, "r");
@@ -279,9 +331,11 @@ public class FileUtilities {
      */
     public static int searchDirectoryRecursive( File searchDir, String searchExtention, List<File> returnFiles ) {
         File[] listFiles = searchDir.listFiles();
-        for( File thisFile : listFiles ) { // mj10777: collect desired extension
-            if (thisFile.isDirectory()) { // mj10777: read recursive directories inside the
-                                           // sdcard/maps directory
+        for( File thisFile : listFiles ) {
+            // mj10777: collect desired extension
+            if (thisFile.isDirectory()) {
+                // mj10777: read recursive directories inside the
+                // sdcard/maps directory
                 searchDirectoryRecursive(thisFile, searchExtention, returnFiles);
             } else {
                 if (thisFile.getName().endsWith(searchExtention)) {

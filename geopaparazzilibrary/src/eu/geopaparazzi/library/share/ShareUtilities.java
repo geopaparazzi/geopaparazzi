@@ -31,8 +31,14 @@ import android.net.Uri;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class ShareUtilities {
-    // private static final boolean LOG_HOW = GPLog.LOG_ABSURD;
 
+    /**
+     * Share text. 
+     * 
+     * @param context  the context to use.
+     * @param titleMessage title.
+     * @param textToShare text.
+     */
     public static void shareText( Context context, String titleMessage, String textToShare ) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
@@ -40,6 +46,15 @@ public class ShareUtilities {
         context.startActivity(Intent.createChooser(intent, titleMessage));
     }
 
+    /**
+     * Share text by email. 
+     * 
+     * @param context  the context to use.
+     * @param titleMessage title.
+     * @param emailSubject email subject.
+     * @param textToShare text.
+     * @param email email address.
+     */
     public static void shareTextByEmail( Context context, String titleMessage, String emailSubject, String textToShare,
             String email ) {
         Intent intent = new Intent(Intent.ACTION_SEND);
@@ -50,6 +65,13 @@ public class ShareUtilities {
         context.startActivity(Intent.createChooser(intent, titleMessage));
     }
 
+    /**
+     * Share image. 
+     * 
+     * @param context  the context to use.
+     * @param titleMessage title.
+     * @param imageFile the image file. 
+     */
     public static void shareImage( Context context, String titleMessage, File imageFile ) {
         String mimeType = "image/png";
         if (imageFile.getName().toLowerCase().endsWith("jpg")) {
@@ -58,6 +80,14 @@ public class ShareUtilities {
         shareFile(context, titleMessage, imageFile, mimeType);
     }
 
+    /**
+     * Share text and image. 
+     * 
+     * @param context  the context to use.
+     * @param titleMessage title.
+     * @param textToShare text.
+     * @param imageFile the image file.
+     */
     public static void shareTextAndImage( Context context, String titleMessage, String textToShare, File imageFile ) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
@@ -67,11 +97,25 @@ public class ShareUtilities {
         context.startActivity(Intent.createChooser(intent, titleMessage));
     }
 
+    /**
+     * Share audio. 
+     * 
+     * @param context  the context to use.
+     * @param titleMessage title.
+     * @param audioFile the audio file. 
+     */
     public static void shareAudio( Context context, String titleMessage, File audioFile ) {
         String mimeType = "audio/amr";
         shareFile(context, titleMessage, audioFile, mimeType);
     }
 
+    /**
+     * Share video. 
+     * 
+     * @param context  the context to use.
+     * @param titleMessage title.
+     * @param videoFile the video file. 
+     */
     public static void shareVideo( Context context, String titleMessage, File videoFile ) {
         String mimeType = "video/mp4";
         shareFile(context, titleMessage, videoFile, mimeType);

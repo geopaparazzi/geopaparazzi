@@ -65,7 +65,13 @@ import eu.geopaparazzi.library.util.Utilities;
 @SuppressWarnings("nls")
 public class FormUtilities {
 
+    /**
+     * 
+     */
     public static final String COLON = ":";
+    /**
+     * 
+     */
     public static final String UNDERSCORE = "_";
 
     /**
@@ -124,7 +130,7 @@ public class FormUtilities {
     public static final String TYPE_CONNECTEDSTRINGCOMBO = "connectedstringcombo";
 
     /**
-     * Type for a {@link MuSpinner}.
+     * Type for a multi combo.
      */
     public static final String TYPE_STRINGMULTIPLECHOICE = "multistringcombo";
 
@@ -187,30 +193,84 @@ public class FormUtilities {
      */
     public static final String CONSTRAINT_RANGE = "range";
 
+    /**
+     * 
+     */
     public static final String ATTR_SECTIONNAME = "sectionname";
+    /**
+     * 
+     */
     public static final String ATTR_SECTIONOBJECTSTR = "sectionobjectstr";
+    /**
+     * 
+     */
     public static final String ATTR_FORMS = "forms";
+    /**
+     * 
+     */
     public static final String ATTR_FORMNAME = "formname";
 
+    /**
+     * 
+     */
     public static final String TAG_LONGNAME = "longname";
+    /**
+     * 
+     */
     public static final String TAG_SHORTNAME = "shortname";
+    /**
+     * 
+     */
     public static final String TAG_FORMS = "forms";
+    /**
+     * 
+     */
     public static final String TAG_FORMITEMS = "formitems";
+    /**
+     * 
+     */
     public static final String TAG_KEY = "key";
+    /**
+     * 
+     */
     public static final String TAG_VALUE = "value";
+    /**
+     * 
+     */
     public static final String TAG_ISLABEL = "islabel";
+    /**
+     * 
+     */
     public static final String TAG_VALUES = "values";
+    /**
+     * 
+     */
     public static final String TAG_ITEMS = "items";
+    /**
+     * 
+     */
     public static final String TAG_ITEM = "item";
+    /**
+     * 
+     */
     public static final String TAG_TYPE = "type";
+    /**
+     * 
+     */
     public static final String TAG_READONLY = "readonly";
+    /**
+     * 
+     */
     public static final String TAG_SIZE = "size";
+    /**
+     * 
+     */
     public static final String TAG_URL = "url";
 
     /**
      * Checks if the type is a special one.
      * 
-     * @param typethe type string from the form.
+     * @param type the type string from the form.
      * @return <code>true</code> if the type is special.
      */
     public static boolean isTypeSpecial( String type ) {
@@ -238,8 +298,8 @@ public class FormUtilities {
      *             <li>4: integer number</li>
      *          </ul>
      * @param lines lines or 0 
-     * @param constraintDescription 
-     * @param readonly 
+     * @param constraintDescription constraint
+     * @param readonly if <code>true</code>, it is disabled for editing.
      * @return the added view.
      */
     public static GView addEditText( Context context, LinearLayout mainView, String key, String value, int type, int lines,
@@ -249,6 +309,17 @@ public class FormUtilities {
         return editText;
     }
 
+    /**
+     * Adds a {@link GTextView} to the supplied mainView.
+     * 
+     * @param context the context.
+     * @param mainView the main view to which to add the new widget to.
+     * @param value the value to put in the widget.
+     * @param size the size.
+     * @param withLine if it should have a line.
+     * @param url the url.
+     * @return the added view.
+     */
     public static GView addTextView( final Context context, LinearLayout mainView, String value, String size, boolean withLine,
             final String url ) {
         GTextView textView = new GTextView(context, null, mainView, value, size, withLine, url);
@@ -262,8 +333,8 @@ public class FormUtilities {
      * @param mainView the main view to which to add the new widget to.
      * @param key the key identifying the widget.
      * @param value the value to put in the widget.
-     * @param constraintDescription 
-     * @param readonly 
+     * @param constraintDescription constraint
+     * @param readonly if <code>true</code>, it is disabled for editing.
      * @return the added view.
      */
     public static GView addBooleanView( Context context, LinearLayout mainView, String key, String value,
@@ -280,7 +351,7 @@ public class FormUtilities {
      * @param key the key identifying the widget.
      * @param value the value to put in the widget.
      * @param itemsArray the items to put in the spinner.
-     * @param constraintDescription 
+     * @param constraintDescription constraint
      * @return the added view.
      */
     public static GView addComboView( Context context, LinearLayout mainView, String key, String value, String[] itemsArray,
@@ -297,7 +368,7 @@ public class FormUtilities {
      * @param key the key identifying the widget.
      * @param value the value to put in the widget.
      * @param valuesMap the map of connected strings to put in the spinners.
-     * @param constraintDescription 
+     * @param constraintDescription constraint
      * @return the added view.
      */
     public static GView addConnectedComboView( Context context, LinearLayout mainView, String key, String value,
@@ -315,7 +386,7 @@ public class FormUtilities {
      * @param key the key identifying the widget.
      * @param value the value to put in the widget.
      * @param itemsArray the items to put in the spinner.
-     * @param constraintDescription 
+     * @param constraintDescription constraint
      * @return the added view.
      */
     public static GView addMultiSelectionView( final Context context, LinearLayout mainView, String key, String value,
@@ -324,12 +395,32 @@ public class FormUtilities {
         return comboView;
     }
 
+    /**
+     * Adds a {@link GPictureView} to the supplied mainView.
+     * 
+     * @param context the context.
+     * @param mainView the main view to which to add the new widget to.
+     * @param key the key identifying the widget.
+     * @param value the value to put in the widget.
+     * @param constraintDescription constraint
+     * @return the added view.
+     */
     public static GView addPictureView( final Context context, LinearLayout mainView, String key, String value,
             String constraintDescription ) {
         GPictureView pictureView = new GPictureView(context, null, mainView, key, value, constraintDescription);
         return pictureView;
     }
 
+    /**
+     * Adds a {@link GSketchView} to the supplied mainView.
+     * 
+     * @param context the context.
+     * @param mainView the main view to which to add the new widget to.
+     * @param key the key identifying the widget.
+     * @param value the value to put in the widget.
+     * @param constraintDescription constraint
+     * @return the added view.
+     */
     public static GView addSketchView( final Context context, LinearLayout mainView, String key, String value,
             String constraintDescription ) {
         GSketchView sketch = new GSketchView(context, null, mainView, key, value, constraintDescription);
@@ -337,12 +428,14 @@ public class FormUtilities {
     }
 
     /**
-     * @param context
-     * @param mainView
-     * @param key
-     * @param value needs to be a relative path to the media image (ex. media/IMG_20120202.png)
-     * @param constraintDescription
-     * @return
+     * Adds a {@link GMapView} to the supplied mainView.
+     * 
+     * @param context the context.
+     * @param mainView the main view to which to add the new widget to.
+     * @param key the key identifying the widget.
+     * @param value the value to put in the widget.
+     * @param constraintDescription constraint
+     * @return the added view.
      */
     public static GView addMapView( final Context context, LinearLayout mainView, String key, String value,
             String constraintDescription ) {
@@ -357,9 +450,8 @@ public class FormUtilities {
      * @param mainView the main view to which to add the new widget to.
      * @param key the key identifying the widget.
      * @param value the value to put in the widget.
-     * @param itemsArray the items to put in the spinner.
-     * @param constraintDescription 
-     * @param readonly 
+     * @param constraintDescription constraint
+     * @param readonly if <code>true</code>, it is disabled for editing.
      * @return the added view.
      */
     public static GView addDateView( final Fragment fragment, LinearLayout mainView, String key, String value,
@@ -375,9 +467,8 @@ public class FormUtilities {
      * @param mainView the main view to which to add the new widget to.
      * @param key the key identifying the widget.
      * @param value the value to put in the widget.
-     * @param itemsArray the items to put in the spinner.
-     * @param constraintDescription 
-     * @param readonly 
+     * @param constraintDescription constraint
+     * @param readonly if <code>true</code>, it is disabled for editing.
      * @return the added view.
      */
     public static GView addTimeView( final Fragment fragment, LinearLayout mainView, String key, String value,
@@ -386,6 +477,17 @@ public class FormUtilities {
         return timeView;
     }
 
+    /**
+     * Adds a {@link GNfcUidView} to the supplied mainView.
+     * 
+     * @param activity the activity 
+     * @param requestCode teh requestcode for activity return.
+     * @param mainView the main view to which to add the new widget to.
+     * @param key the key identifying the widget.
+     * @param value the value to put in the widget.
+     * @param constraintDescription constraint
+     * @return the added view.
+     */
     public static GView addNfcUIDView( Activity activity, int requestCode, LinearLayout mainView, String key, String value,
             String constraintDescription ) {
         GNfcUidView nfcuidView = new GNfcUidView(activity, null, requestCode, mainView, key, value, constraintDescription);
@@ -398,7 +500,7 @@ public class FormUtilities {
      * @param jsonObject the object to check.
      * @param constraints the {@link Constraints} object to use or <code>null</code>.
      * @return the original {@link Constraints} object or a new created.
-     * @throws Exception
+     * @throws Exception  if something goes wrong.
      */
     public static Constraints handleConstraints( JSONObject jsonObject, Constraints constraints ) throws Exception {
         if (constraints == null)
@@ -431,7 +533,7 @@ public class FormUtilities {
      * @param formItemsArray the array to update.
      * @param key the key of the item to update.
      * @param value the new value to use.
-     * @throws JSONException
+     * @throws JSONException  if something goes wrong.
      */
     public static void update( JSONArray formItemsArray, String key, String value ) throws JSONException {
         int length = formItemsArray.length();
@@ -452,7 +554,7 @@ public class FormUtilities {
      * @param formItemsArray the items array.
      * @param latitude the lat value.
      * @param longitude the long value.
-     * @throws JSONException 
+     * @throws JSONException  if something goes wrong.
      */
     public static void updateExtras( JSONArray formItemsArray, double latitude, double longitude ) throws JSONException {
         int length = formItemsArray.length();
@@ -477,7 +579,7 @@ public class FormUtilities {
      * @param section the json form.
      * @param withTitles if <code>true</code>, all the section titles are added.
      * @return the plain text representation of the form.
-     * @throws Exception 
+     * @throws Exception  if something goes wrong.
      */
     public static String formToPlainText( String section, boolean withTitles ) throws Exception {
 
@@ -543,7 +645,7 @@ public class FormUtilities {
      * 
      * @param formString the form.
      * @return the list of images paths.
-     * @throws Exception
+     * @throws Exception  if something goes wrong.
      */
     public static List<String> getImages( String formString ) throws Exception {
         List<String> images = new ArrayList<String>();

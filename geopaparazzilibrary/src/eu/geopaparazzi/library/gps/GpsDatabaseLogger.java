@@ -38,6 +38,7 @@ import android.preference.PreferenceManager;
 import android.widget.Toast;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 
 /**
@@ -85,8 +86,14 @@ public class GpsDatabaseLogger implements GpsManagerListener {
      */
     private double currentDistance;
 
+    /**
+     * @param context  the context to use.
+     */
     public GpsDatabaseLogger( Context context ) {
         this.context = context;
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        isMockMode = preferences.getBoolean(LibraryConstants.PREFS_KEY_MOCKMODE, false);
+
     }
 
     private long currentRecordedLogId = -1;
@@ -94,6 +101,11 @@ public class GpsDatabaseLogger implements GpsManagerListener {
     private volatile boolean gotFix;
 
     private long lastLocationupdateMillis;
+
+    private boolean isMockMode;
+    /**
+     * @return the log id.
+     */
     public long getCurrentRecordedLogId() {
         return currentRecordedLogId;
     }
@@ -118,6 +130,7 @@ public class GpsDatabaseLogger implements GpsManagerListener {
      * Starts logging into the database.
      * 
      * @param logName a name for the new log or <code>null</code>.
+     * @param dbHelper teh db helper.
      */
     public void startDatabaseLogging( final String logName, final IGpsLogDbHelper dbHelper ) {
         if (isDatabaseLogging) {
@@ -163,7 +176,7 @@ public class GpsDatabaseLogger implements GpsManagerListener {
                     currentDistance = 0;
                     previousLogLoc = null;
                     while( isDatabaseLogging ) {
-                        if (gotFix) {
+                        if (gotFix || isMockMode) {
                             if (gpsLoc == null) {
                                 waitGpsInterval(waitForSecs);
                                 continue;
@@ -252,6 +265,9 @@ public class GpsDatabaseLogger implements GpsManagerListener {
         Utilities.toast(context, R.string.gpsloggingon, Toast.LENGTH_SHORT);
     }
 
+    /**
+     * Stop logging.
+     */
     public void stopDatabaseLogging() {
         isDatabaseLogging = false;
         Utilities.toast(context, R.string.gpsloggingoff, Toast.LENGTH_SHORT);
@@ -270,12 +286,18 @@ public class GpsDatabaseLogger implements GpsManagerListener {
         }
     }
 
+    /**
+     * @return teh current points num of the log.
+     */
     public int getCurrentPointsNum() {
         return currentPointsNum;
     }
 
+    /**
+     * @return the current distance rounded to meters.
+     */
     public int getCurrentDistance() {
-        return (int) currentDistance;
+        return (int) Math.round(currentDistance);
     }
 
     public void onLocationChanged( Location location ) {
@@ -288,12 +310,15 @@ public class GpsDatabaseLogger implements GpsManagerListener {
     }
 
     public void onStatusChanged( String provider, int status, Bundle extras ) {
+        // ignore
     }
 
     public void onProviderEnabled( String provider ) {
+        // ignore
     }
 
     public void onProviderDisabled( String provider ) {
+        // ignore
     }
 
     public void gpsStart() {

@@ -54,6 +54,13 @@ public class Line implements KmlRepresenter, GpxRepresenter {
     private float width = 1f;
     private String color = "#ff0000ff"; //$NON-NLS-1$
 
+    /**
+     * @param name line name.
+     * @param lonList lon coords.
+     * @param latList lat coords.
+     * @param altimList elevation list.
+     * @param dateList date list.
+     */
     public Line( String name, DynamicDoubleArray lonList, DynamicDoubleArray latList, DynamicDoubleArray altimList,
             List<String> dateList ) {
         this.name = name;
@@ -63,6 +70,11 @@ public class Line implements KmlRepresenter, GpxRepresenter {
         this.dateList = dateList;
     }
 
+    /**
+     * Empty line constructor.
+     * 
+     * @param logid log id.
+     */
     public Line( String logid ) {
         this.name = logid;
         this.lonList = new DynamicDoubleArray();
@@ -71,6 +83,12 @@ public class Line implements KmlRepresenter, GpxRepresenter {
         this.dateList = new ArrayList<String>();
     }
 
+    /**
+     * @param lon lon
+     * @param lat lat
+     * @param altim elevation.
+     * @param date date.
+     */
     public void addPoint( double lon, double lat, double altim, String date ) {
         if (lat < 0.0001 && lon < 0.0001) {
             // don't add points in 0,0
@@ -83,6 +101,12 @@ public class Line implements KmlRepresenter, GpxRepresenter {
         this.dateList.add(date);
     }
 
+    /**
+     * Set the style.
+     * 
+     * @param width width.
+     * @param color color.
+     */
     public void setStyle( float width, String color ) {
         if (width > 0)
             this.width = width;
@@ -90,26 +114,46 @@ public class Line implements KmlRepresenter, GpxRepresenter {
             this.color = color;
     }
 
+    /**
+     * Set the name.
+     * 
+     * @param name the name.
+     */
     public void setName( String name ) {
         this.name = name;
     }
 
-    public String getfileName() {
+    /**
+     * @return line name.
+     */
+    public String getName() {
         return name;
     }
 
+    /**
+     * @return lat list
+     */
     public DynamicDoubleArray getLatList() {
         return latList;
     }
 
+    /**
+     * @return lon list
+     */
     public DynamicDoubleArray getLonList() {
         return lonList;
     }
 
+    /**
+     * @return elevations list.
+     */
     public DynamicDoubleArray getAltimList() {
         return altimList;
     }
 
+    /**
+     * @return dates list.
+     */
     public List<String> getDateList() {
         return dateList;
     }

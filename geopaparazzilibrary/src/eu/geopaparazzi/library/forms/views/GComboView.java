@@ -39,14 +39,32 @@ public class GComboView extends View implements GView {
 
     private Spinner spinner;
 
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     * @param defStyle def style.
+     */
     public GComboView( Context context, AttributeSet attrs, int defStyle ) {
         super(context, attrs, defStyle);
     }
 
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     */
     public GComboView( Context context, AttributeSet attrs ) {
         super(context, attrs);
     }
 
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     * @param parentView parent
+     * @param key key
+     * @param value value
+     * @param itemsArray the items.
+     * @param constraintDescription constraints
+     */
     public GComboView( Context context, AttributeSet attrs, LinearLayout parentView, String key, String value,
             String[] itemsArray, String constraintDescription ) {
         super(context, attrs);
@@ -91,12 +109,13 @@ public class GComboView extends View implements GView {
 
     @Override
     public void setOnActivityResult( Intent data ) {
+        // ignore
     }
 
     @Override
     public void refresh( Context context ) {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

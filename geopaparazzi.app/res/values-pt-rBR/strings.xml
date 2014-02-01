@@ -2,6 +2,7 @@
 <resources>
   <string name="yes">sim</string>
   <string name="no">não</string>
+  <string name="app_name">Geopaparazzi</string>
   <string name="notesvisibilityToggle">Alternar visibilidade de notas.</string>
   <string name="kmlsaved">Os dados foram exportados com sucesso para: </string>
   <string name="kmlnonsaved">Ocorreu um erro durante a exportação de dados!</string>
@@ -194,6 +195,13 @@
   <string name="start">início</string>
   <string name="end">fim</string>
   <string name="other">outro</string>
+  <string name="base_maps">Lista de dados Spatialite</string>
   <string name="maps_manager">Gerenciador de mapas</string>
   <string name="loading_maps">Carregando mapas...</string>
+  <string name="project">Projeto</string>
+  <string name="gps_status">Estado do GPS</string>
+  <string name="no_queriable_layer_is_visible">Nenhuma camada consultável está visível.</string>
+  <string name="set_path_manually">Definir manualmente o caminho (se definido, isto terá precedência em relação a caixa de combinação)</string>
+  <string name="choose_from_suggested">ou escolha o sugerido</string>
+  <string name="reset_style_tables">Reiniciar tabelas de estilo</string>
 </resources>

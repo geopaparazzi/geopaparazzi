@@ -38,14 +38,32 @@ public class GBooleanView extends View implements GView {
 
     private CheckBox checkbox;
 
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     * @param defStyle def style.
+     */
     public GBooleanView( Context context, AttributeSet attrs, int defStyle ) {
         super(context, attrs, defStyle);
     }
 
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     */
     public GBooleanView( Context context, AttributeSet attrs ) {
         super(context, attrs);
     }
 
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     * @param parentView parent
+     * @param key key
+     * @param value value
+     * @param constraintDescription constraints
+     * @param readonly if <code>false</code>, the item is disabled for editing.
+     */
     public GBooleanView( Context context, AttributeSet attrs, LinearLayout parentView, String key, String value,
             String constraintDescription, boolean readonly ) {
         super(context, attrs);
@@ -88,12 +106,13 @@ public class GBooleanView extends View implements GView {
 
     @Override
     public void setOnActivityResult( Intent data ) {
+        // ignore
     }
 
     @Override
     public void refresh( Context context ) {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

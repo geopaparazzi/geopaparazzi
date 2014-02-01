@@ -44,7 +44,15 @@ import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Line;
 
+/**
+ * Profile chart class.
+ * 
+ * @author 4ViewSoft
+ */
 public class ProfileChartActivity extends Activity {
+    /**
+     * 
+     */
     public static final String TYPE = "type";
 
     private XYMultipleSeriesDataset mDataset = new XYMultipleSeriesDataset();
@@ -59,25 +67,11 @@ public class ProfileChartActivity extends Activity {
 
     private GraphicalView mChartView;
 
-    private int index = 0;
-
     private Line line;
-
-    private double xMin;
-
-    private double xMax;
 
     private double yMin;
 
     private double yMax;
-
-    private double xMaxAll;
-
-    private double xMinAll;
-
-    private double yMaxAll;
-
-    private double yMinAll;
 
     private ProgressDialog progressDialog;
 
@@ -176,7 +170,7 @@ public class ProfileChartActivity extends Activity {
                     return true;
                 }
             });
-            layout.addView(mChartView, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+            layout.addView(mChartView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
             progressDialog = ProgressDialog.show(this, "", getString(R.string.loading_data));
 
@@ -234,14 +228,12 @@ public class ProfileChartActivity extends Activity {
      * @param latArray the array of latitudes.
      * @param elevArray the array of elevations.
      * @param seriesName the name to label the series with.
-     * @return the {@link XYSeriesCollection dataset}.
+     * @return the {@link XYSeries dataset}.
      */
     public XYSeries createDatasetFromProfile( DynamicDoubleArray lonArray, DynamicDoubleArray latArray,
             DynamicDoubleArray elevArray, String seriesName ) {
         XYSeries xyS = new XYSeries(seriesName);
 
-        xMin = 0;
-        xMax = 1; // just in case no points are in
         yMin = Double.POSITIVE_INFINITY;
         yMax = Double.NEGATIVE_INFINITY;
 
@@ -272,13 +264,6 @@ public class ProfileChartActivity extends Activity {
 
             xyS.add(summedDistance, (int) elev);
         }
-        xMax = summedDistance;
-
-        xMaxAll = xMax;
-        xMinAll = xMin;
-        yMaxAll = yMax;
-        yMinAll = yMin;
-
         return xyS;
     }
 

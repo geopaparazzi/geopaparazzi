@@ -129,6 +129,7 @@ public class ExportActivity extends Activity {
                     }
                 }).setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener(){
                     public void onClick( DialogInterface dialog, int whichButton ) {
+                        // ignore
                     }
                 }).create();
                 alertDialog.show();
@@ -139,7 +140,7 @@ public class ExportActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        
+
         Utilities.dismissProgressDialog(kmlProgressDialog);
         Utilities.dismissProgressDialog(gpxProgressDialog);
         Utilities.dismissProgressDialog(cloudProgressDialog);
@@ -182,6 +183,7 @@ public class ExportActivity extends Activity {
                 builder.setMessage(response).setCancelable(false)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                             public void onClick( DialogInterface dialog, int id ) {
+                                // ignore
                             }
                         });
                 AlertDialog alertDialog = builder.create();
@@ -196,6 +198,7 @@ public class ExportActivity extends Activity {
                 getString(R.string.exporting_data_to_kmz), true, true);
         new AsyncTask<String, Void, String>(){
             protected String doInBackground( String... params ) {
+                File kmlOutputFile = null;
                 try {
                     List<KmlRepresenter> kmlRepresenterList = new ArrayList<KmlRepresenter>();
                     /*
@@ -244,15 +247,19 @@ public class ExportActivity extends Activity {
 
                     File kmlExportDir = ResourcesManager.getInstance(ExportActivity.this).getExportDir();
                     String filename = "geopaparazzi_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()) + ".kmz"; //$NON-NLS-1$ //$NON-NLS-2$
-                    File kmlOutputFile = new File(kmlExportDir, filename);
+                    kmlOutputFile = new File(kmlExportDir, filename);
                     KmzExport export = new KmzExport(null, kmlOutputFile);
                     export.export(ExportActivity.this, kmlRepresenterList);
 
                     return kmlOutputFile.getAbsolutePath();
                 } catch (Exception e) {
+                    // cleanup as it might be inconsistent
+                    if (kmlOutputFile != null && kmlOutputFile.exists()) {
+                        kmlOutputFile.delete();
+                    }
                     GPLog.error(this, e.getLocalizedMessage(), e);
                     e.printStackTrace();
-                    return null;
+                    return ""; //$NON-NLS-1$
                 }
             }
 
@@ -269,6 +276,7 @@ public class ExportActivity extends Activity {
                 builder.setMessage(msg).setCancelable(false)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                             public void onClick( DialogInterface dialog, int id ) {
+                                // ignore
                             }
                         });
                 AlertDialog alertDialog = builder.create();
@@ -327,6 +335,7 @@ public class ExportActivity extends Activity {
                 builder.setMessage(msg).setCancelable(false)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
                             public void onClick( DialogInterface dialog, int id ) {
+                                // ignore
                             }
                         });
                 AlertDialog alertDialog = builder.create();

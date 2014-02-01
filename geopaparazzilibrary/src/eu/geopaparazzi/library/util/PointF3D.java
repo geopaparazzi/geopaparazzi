@@ -33,17 +33,32 @@ public class PointF3D extends PointF {
 
     private String description = ""; //$NON-NLS-1$
 
+    /**
+     * @param x x
+     * @param y y
+     */
     public PointF3D( float x, float y ) {
         super(x, y);
         hasZ = false;
     }
 
+    /**
+     * @param x x
+     * @param y y
+     * @param z z 
+     */
     public PointF3D( float x, float y, float z ) {
         super(x, y);
         this.z = z;
         hasZ = true;
     }
 
+    /**
+     * @param x x
+     * @param y y
+     * @param z z 
+     * @param description description.
+     */
     public PointF3D( float x, float y, float z, String description ) {
         this(x, y, z);
         this.z = z;
@@ -52,23 +67,38 @@ public class PointF3D extends PointF {
         hasZ = true;
     }
 
+    /**
+     * @param z z to set.
+     */
     public void setZ( float z ) {
         this.z = z;
         hasZ = true;
     }
 
+    /**
+     * @return z.
+     */
     public float getZ() {
         return z;
     }
 
+    /**
+     * @return <code>true</code> if it has z.
+     */
     public boolean hasZ() {
         return hasZ;
     }
 
+    /**
+     * @return description.
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * @param description description to set.
+     */
     public void setDescription( String description ) {
         this.description = description;
     }

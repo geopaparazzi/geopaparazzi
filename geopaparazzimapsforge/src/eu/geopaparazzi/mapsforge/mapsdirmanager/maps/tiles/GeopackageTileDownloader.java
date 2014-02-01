@@ -27,12 +27,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.ISpatialDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
 
 /**
  * A MapGenerator that downloads tiles from geopackage databases.
  */
+@SuppressWarnings("nls")
 public class GeopackageTileDownloader extends TileDownloader {
 
     private byte ZOOM_MIN = 0;
@@ -41,9 +42,8 @@ public class GeopackageTileDownloader extends TileDownloader {
     private GeoPoint centerPoint = new GeoPoint(0, 0);
 
     private String tilePart;
-    private ISpatialDatabaseHandler spatialDatabaseHandler;
+    private SpatialDatabaseHandler spatialDatabaseHandler;
 
-    @SuppressWarnings("nls")
     public GeopackageTileDownloader( SpatialRasterTable table ) throws jsqlite.Exception {
         super();
         SpatialDatabasesManager sdManager = SpatialDatabasesManager.getInstance();
@@ -116,7 +116,7 @@ public class GeopackageTileDownloader extends TileDownloader {
             bitmap.setPixels(this.pixels, 0, Tile.TILE_SIZE, 0, 0, Tile.TILE_SIZE, Tile.TILE_SIZE);
             return true;
         } catch (Exception e) {
-           GPLog.androidLog(4,"GeopackageTileDownloader.executeJob]", e);
+            GPLog.androidLog(4, "GeopackageTileDownloader.executeJob]", e);
             return false;
         }
     }

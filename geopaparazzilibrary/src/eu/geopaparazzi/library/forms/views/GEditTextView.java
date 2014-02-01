@@ -39,15 +39,34 @@ import eu.geopaparazzi.library.R;
 public class GEditTextView extends View implements GView {
 
     private EditText editView;
-
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     * @param defStyle def style.
+     */
     public GEditTextView( Context context, AttributeSet attrs, int defStyle ) {
         super(context, attrs, defStyle);
     }
 
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     */
     public GEditTextView( Context context, AttributeSet attrs ) {
         super(context, attrs);
     }
 
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     * @param parentView parent
+     * @param key key
+     * @param value value
+     * @param type the text type.
+     * @param lines the lines num.
+     * @param constraintDescription constraints
+     * @param readonly if <code>false</code>, the item is disabled for editing.
+     */
     public GEditTextView( Context context, AttributeSet attrs, LinearLayout parentView, String key, String value, int type,
             int lines, String constraintDescription, boolean readonly ) {
         super(context, attrs);
@@ -110,12 +129,13 @@ public class GEditTextView extends View implements GView {
 
     @Override
     public void setOnActivityResult( Intent data ) {
+        // ignore
     }
 
     @Override
     public void refresh( Context context ) {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

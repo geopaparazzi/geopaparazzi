@@ -35,6 +35,7 @@ public interface IGpsLogDbHelper {
      * 
      * @param context the {@link Context} to use.
      * @return a writable database.
+     * @throws Exception  if something goes wrong.
      */
     public SQLiteDatabase getDatabase( Context context ) throws Exception;
 
@@ -50,7 +51,7 @@ public interface IGpsLogDbHelper {
      * @param color the color of the rendered log.
      * @param visible if <code>true</code>, it will be visible.
      * @return the id of the new created log.
-     * @throws IOException 
+     * @throws IOException  if something goes wrong. 
      */
     public long addGpsLog( Context context, Date startTs, Date endTs, float lengthm, String text, float width, String color, boolean visible )
             throws IOException;
@@ -66,7 +67,7 @@ public interface IGpsLogDbHelper {
      * @param lat the lat coordinate.
      * @param altim the elevation of the point.
      * @param timestamp the timestamp of the point.
-     * @throws IOException
+     * @throws IOException  if something goes wrong.
      */
     public void addGpsLogDataPoint( SQLiteDatabase sqliteDatabase, long gpslogId, double lon, double lat, double altim,
             Date timestamp ) throws IOException;
@@ -76,7 +77,7 @@ public interface IGpsLogDbHelper {
      * 
      * @param context the {@link Context} to use.
      * @param id the log's id.
-     * @throws IOException
+     * @throws IOException  if something goes wrong.
      */
     public void deleteGpslog( Context context, long id ) throws IOException;
 
@@ -86,8 +87,12 @@ public interface IGpsLogDbHelper {
      * @param context the {@link Context} to use.
      * @param logid the log to change. 
      * @param end the end timestamp.
+<<<<<<< HEAD
      * @param length the length of the track log
      * @throws IOException
+=======
+     * @throws IOException  if something goes wrong.
+>>>>>>> refs/heads/master
      */
     public void setEndTs( Context context, long logid, Date end, float length) throws IOException;
 }

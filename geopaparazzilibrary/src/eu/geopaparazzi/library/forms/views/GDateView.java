@@ -47,14 +47,32 @@ public class GDateView extends View implements GView {
 
     private Button button;
 
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     * @param defStyle def style.
+     */
     public GDateView( Context context, AttributeSet attrs, int defStyle ) {
         super(context, attrs, defStyle);
     }
 
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     */
     public GDateView( Context context, AttributeSet attrs ) {
         super(context, attrs);
     }
 
+    /**
+     * @param fragment   the fragment to use.
+     * @param attrs attributes.
+     * @param parentView parent
+     * @param key key
+     * @param value value
+     * @param constraintDescription constraints
+     * @param readonly if <code>false</code>, the item is disabled for editing.
+     */
     public GDateView( final Fragment fragment, AttributeSet attrs, LinearLayout parentView, String key, String value,
             String constraintDescription, boolean readonly ) {
         super(fragment.getActivity(), attrs);
@@ -122,12 +140,13 @@ public class GDateView extends View implements GView {
 
     @Override
     public void setOnActivityResult( Intent data ) {
+        // ignore
     }
 
     @Override
     public void refresh( Context context ) {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

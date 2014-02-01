@@ -1,4 +1,4 @@
-package eu.geopaparazzi.spatialite.database.spatial.core;
+package eu.geopaparazzi.spatialite.database.spatial.core.mbtiles;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,8 +19,8 @@ import android.os.AsyncTask;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteContextHolder;
-import eu.geopaparazzi.spatialite.database.spatial.core.mbtiles.MBTilesDroidSpitter;
-
+import eu.geopaparazzi.spatialite.database.spatial.core.MbtilesDatabaseHandler;
+/**
 // http://www.vogella.com/articles/AndroidBackgroundProcessing/article.html
 // - CursorLoader
 // mbtiles_Async download_tiles= new mbtiles_Async(this);
@@ -28,20 +28,22 @@ import eu.geopaparazzi.spatialite.database.spatial.core.mbtiles.MBTilesDroidSpit
 // download_tiles.cancel(true);
 // executeOnExecutor(java.util.concurrent.Executor, Object[])
 // RUNNING
-class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, Integer> {
+ */
+@SuppressWarnings("nls")
+public class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, Integer> {
     private MbtilesDatabaseHandler db_mbtiles;
     private List<MbtilesDatabaseHandler.AsyncTasks> async_parms = null;
-    private HashMap<String, String> async_mbtiles_metadata=null;
+    private HashMap<String, String> async_mbtiles_metadata = null;
     private HashMap<String, String> mbtiles_request_url = null;
     private String s_request_url_source = "";
-    private String s_request_protocol=""; // 'file' or 'http'
+    private String s_request_protocol = ""; // 'file' or 'http'
     private int i_tile_server = 0; // if no 'SSS' is found, server logic will not be called
     private String s_request_type = ""; // 'fill','replace'
     private String s_request_bounds = "";
     private String s_request_bounds_url = "";
     private int i_request_zoom_min = 22; // will be set properly on construction
     private int i_request_zoom_max = 0; // will be set properly on construction
-    private int i_request_zoom_level=-1; // active request zoom_level
+    private int i_request_zoom_level = -1; // active request zoom_level
     private int i_url_zoom_min = 22; // will be set properly on construction
     private int i_url_zoom_max = 0; // will be set properly on construction
     private String s_request_y_type = "osm"; // 0=osm ; 1=tms ; 2=wms
@@ -56,16 +58,17 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
     // -----------------------------------------------
     /**
       * Constructor
-      * - Base values will be take from MbtilesDatabaseHandler:
-      * -- an extreame amout of sanit-checks will be made
-      * --- Goal: attemt to avoid any server spins when rquesting tiles
+      * 
+      * <br>- Base values will be take from MbtilesDatabaseHandler:
+      * <br>-- an extreame amout of sanit-checks will be made
+      * <br>a--- Goal: attemt to avoid any server spins when rquesting tiles
+      * 
       * @param db_mbtiles MbtilesDatabaseHandler
-      * @return itsself
      */
-    public MBtilesAsync(MbtilesDatabaseHandler db_mbtiles ) {
+    public MBtilesAsync( MbtilesDatabaseHandler db_mbtiles ) {
         this.db_mbtiles = db_mbtiles;
-        this.async_parms = this.db_mbtiles.getAsyncParms();
-        this.async_mbtiles_metadata=this.db_mbtiles.async_mbtiles_metadata;
+        this.async_parms = this.db_mbtiles.getAsyncTasks();
+        this.async_mbtiles_metadata = this.db_mbtiles.async_mbtiles_metadata;
         for( int i = 0; i < async_parms.size(); i++ ) {
             s_message += this.async_parms.get(i);
             if (i < (async_parms.size() - 1))
@@ -118,58 +121,70 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
             }
             MbtilesDatabaseHandler.AsyncTasks async_task = this.async_parms.get(i);
             switch( async_task ) {
-             case RESET_METADATA:
-             {
-              if ((this.async_mbtiles_metadata != null) && (this.async_mbtiles_metadata.size() > 0))
-              { // i_reload_metadata 1: reload values after update
-               try
-               {
-                db_mbtiles.update_metadata(this.async_mbtiles_metadata,1);
-                publishProgress("-I-> update_metadata[" + db_mbtiles.getName() + "]: bounds["+ db_mbtiles.getBounds_toString()+"] zoom_levels["+db_mbtiles.getZoom_Levels() + "] center_parms["+db_mbtiles.getCenterParms() + "] rc="+i_rc);
-               }
-               catch (Exception e)
-               {
-               }
-              }
-             }
-             break;
-            case ANALYZE_VACUUM: { // implemented, but not tested : 20131123: does not seem to work correctly
+            case RESET_METADATA: {
+                if ((this.async_mbtiles_metadata != null) && (this.async_mbtiles_metadata.size() > 0)) {
+                    // i_reload_metadata 1: reload values after update
+                    try {
+                        db_mbtiles.updateMetadata(this.async_mbtiles_metadata, 1);
+                        publishProgress("-I-> update_metadata[" + db_mbtiles.getName() + "]: bounds["
+                                + db_mbtiles.getBoundsAsString() + "] zoom_levels[" + db_mbtiles.getMinMaxZoomLevelsAsString()
+                                + "] center_parms[" + db_mbtiles.getCenterParms() + "] rc=" + i_rc);
+                    } catch (Exception e) {
+                        // TODO
+                    }
+                }
+            }
+                break;
+            case ANALYZE_VACUUM: { // implemented, but not tested : 20131123: does not seem to work
+                                   // correctly
                 publishProgress("-I-> on_analyze_vacuum[" + db_mbtiles.getName() + "]: support discontinued ");
-                // publishProgress("-I-> on_analyze_vacuum[" + db_mbtiles.getName() + "]: starting ");
+                // publishProgress("-I-> on_analyze_vacuum[" + db_mbtiles.getName() +
+                // "]: starting ");
                 // i_rc = on_analyze_vacuum();
-                // publishProgress("-I-> on_analyze_vacuum[" + db_mbtiles.getName() + "]:  i_rc="+i_rc);
+                // publishProgress("-I-> on_analyze_vacuum[" + db_mbtiles.getName() +
+                // "]:  i_rc="+i_rc);
             }
                 break;
             case UPDATE_BOUNDS: { // extensive checking of bounds with update of mbtiles.metadata
                                   // table
-                publishProgress("-I-> on_update_bounds[" + db_mbtiles.getName() + "]: starting: bounds["+ db_mbtiles.getBounds_toString()+"] zoom_levels["+db_mbtiles.getZoom_Levels() + "] center_parms["+db_mbtiles.getCenterParms() + "]");
+                publishProgress("-I-> on_update_bounds[" + db_mbtiles.getName() + "]: starting: bounds["
+                        + db_mbtiles.getBoundsAsString() + "] zoom_levels[" + db_mbtiles.getMinMaxZoomLevelsAsString()
+                        + "] center_parms[" + db_mbtiles.getCenterParms() + "]");
                 i_rc = on_update_bounds();
-                publishProgress("-I-> on_update_bounds[" + db_mbtiles.getName() + "]: end: bounds["+ db_mbtiles.getBounds_toString()+"] zoom_levels["+db_mbtiles.getZoom_Levels() + "] center_parms["+db_mbtiles.getCenterParms() + "] rc="+i_rc);
+                publishProgress("-I-> on_update_bounds[" + db_mbtiles.getName() + "]: end: bounds["
+                        + db_mbtiles.getBoundsAsString() + "] zoom_levels[" + db_mbtiles.getMinMaxZoomLevelsAsString()
+                        + "] center_parms[" + db_mbtiles.getCenterParms() + "] rc=" + i_rc);
             }
                 break;
             case REQUEST_URL: { // retrieve tiles found in 'request_url'
-                int i_test_downloads = 0;
-                // i_test_downloads=1;
-                if (i_test_downloads == 0) {
-                    i_rc = on_request_url();
-                    // this will update the metadata Table, if we are not being canceled
-                    on_update_bounds();
-                } else {
-                    try {
-                        Bitmap bm_test = null;
-                        // this returns a valid image
-                        String s_tile_url = "http://fbinter.stadt-berlin.de/fb/wms/senstadt/k_luftbild2011_20?LAYERS=0&FORMAT=image/jpeg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=visual&SRS=EPSG:4326&BBOX=13.293457031249988,52.562995039558004,13.315429687500005,52.57634993749886&WIDTH=256&HEIGHT=256";
-                        bm_test = on_download_tile_http(s_tile_url);
-                        // this returns blank [area not supported]
-                        s_tile_url = "http://fbinter.stadt-berlin.de/fb/wms/senstadt/k_luftbild2011_20?LAYERS=0&FORMAT=image/jpeg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=visual&SRS=EPSG:4326&BBOX=13.20556640624999,52.6430634366589,13.227539062500007,52.656393941988014&WIDTH=256&HEIGHT=256";
-                        bm_test = on_download_tile_http(s_tile_url);
-                        // this returns an error [<ServiceException code="LayerNotDefined">theme
-                        // k_luftbild1938@senstadt access denied</ServiceException>]
-                        s_tile_url = "http://fbinter.stadt-berlin.de/fb/wms/senstadt/k_luftbild1938?LAYERS=0&FORMAT=image/jpeg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=visual&SRS=EPSG:4326&BBOX=13.20556640624999,52.6430634366589,13.227539062500007,52.656393941988014&WIDTH=256&HEIGHT=256";
-                        bm_test = on_download_tile_http(s_tile_url);
-                    } catch (Exception e) {
-                    }
-                }
+
+                // TODO @mj10777 is all this debug and testing code necessary?.
+                //
+                // int i_test_downloads = 0;
+                // // i_test_downloads=1;
+                // if (i_test_downloads == 0) {
+                i_rc = on_request_url();
+                // this will update the metadata Table, if we are not being canceled
+                on_update_bounds();
+                // } else {
+                //
+                // try {
+                // // this returns a valid image
+                // String s_tile_url =
+                // "http://fbinter.stadt-berlin.de/fb/wms/senstadt/k_luftbild2011_20?LAYERS=0&FORMAT=image/jpeg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=visual&SRS=EPSG:4326&BBOX=13.293457031249988,52.562995039558004,13.315429687500005,52.57634993749886&WIDTH=256&HEIGHT=256";
+                // Bitmap bm_test = on_download_tile_http(s_tile_url);
+                // // this returns blank [area not supported]
+                // s_tile_url =
+                // "http://fbinter.stadt-berlin.de/fb/wms/senstadt/k_luftbild2011_20?LAYERS=0&FORMAT=image/jpeg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=visual&SRS=EPSG:4326&BBOX=13.20556640624999,52.6430634366589,13.227539062500007,52.656393941988014&WIDTH=256&HEIGHT=256";
+                // bm_test = on_download_tile_http(s_tile_url);
+                // // this returns an error [<ServiceException code="LayerNotDefined">theme
+                // // k_luftbild1938@senstadt access denied</ServiceException>]
+                // s_tile_url =
+                // "http://fbinter.stadt-berlin.de/fb/wms/senstadt/k_luftbild1938?LAYERS=0&FORMAT=image/jpeg&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=visual&SRS=EPSG:4326&BBOX=13.20556640624999,52.6430634366589,13.227539062500007,52.656393941988014&WIDTH=256&HEIGHT=256";
+                // bm_test = on_download_tile_http(s_tile_url);
+                // } catch (Exception e) {
+                // }
+                // }
             }
                 break;
             case REQUEST_CREATE: { // create and fill 'request_url' with tile-requests
@@ -185,7 +200,7 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
             }
                 break;
             case REQUEST_DROP: { // Drop the request table
-                i_rc = db_mbtiles.get_request_url_count(MBTilesDroidSpitter.i_request_url_count_drop);
+                i_rc = db_mbtiles.getRequestUrlCount(MBTilesDroidSpitter.i_request_url_count_drop);
             }
                 break;
             case REQUEST_PING: { // todo: check if internet is really working [i.e. a valid image
@@ -198,28 +213,31 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
         s_message = "-I-> mbtiles_Async.On doInBackground[" + db_mbtiles.getName() + "] all tasks compleated rc=" + i_rc;
         return i_rc;
     }
-    // -----------------------------------------------
-    /**
-      * House-keeping tasks for Database
-      * The ANALYZE command gathers statistics about tables and indices
-      * The VACUUM command rebuilds the entire database.
-      * - A VACUUM will fail if there is an open transaction, or if there are one or more active SQL statements when it is run.
-      * @return 0=correct ; 1=ANALYSE has failed ; 2=VACUUM has failed
-      */
-    private int on_analyze_vacuum() {
-        return db_mbtiles.on_analyze_vacuum();
-    }
-    // -----------------------------------------------
+
+    // TODO @mj10777 this seems to be unused.
+    //
+    // /**
+    // * House-keeping tasks for Database
+    // * The ANALYZE command gathers statistics about tables and indices
+    // * The VACUUM command rebuilds the entire database.
+    // * - A VACUUM will fail if there is an open transaction, or if there are one or more active
+    // SQL statements when it is run.
+    // * @return 0=correct ; 1=ANALYSE has failed ; 2=VACUUM has failed
+    // */
+    // private int on_analyze_vacuum() {
+    // return db_mbtiles.on_analyze_vacuum();
+    // }
+
     /**
       * Extensive checking of Bounds for all Zoom-Levels
       * - results will be written to metadata-Table
       * @return i_rc [ 0: task compleated; 1=task interupted ; 2: task is being canceled]
      */
     private int on_update_bounds() {
-      if (!isCancelled())
-        return db_mbtiles.update_bounds(1);
-      else
-       return 2;
+        if (!isCancelled())
+            return db_mbtiles.updateBounds(1);
+        else
+            return 2;
     }
     // -----------------------------------------------
     /**
@@ -231,11 +249,12 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
      */
     private int on_request_url() {
         int i_rc = 0;
-        int i_count_tiles_total = db_mbtiles.get_request_url_count(1); // read the table and return the amount
+        int i_count_tiles_total = db_mbtiles.getRequestUrlCount(1); // read the table and return
+                                                                    // the amount
         int i_count_tiles_count = 0;
         int i_count_tiles_left = 0;
         int i_count_rest = 1;
-        int i_request_zoom_level_prev=-1;
+        int i_request_zoom_level_prev = -1;
         if (i_count_tiles_total > 0) { // avoid divide by zero error
             i_count_rest = i_count_tiles_total / 20; // 100=1% ; 80=1.25% ; 40=2.5% ; 20=5% ; 10=10%
                                                      // ; 5=20% ; 1=100%
@@ -255,80 +274,86 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
         }
         Context context = SpatialiteContextHolder.INSTANCE.getContext();
         boolean networkAvailable = NetworkUtilities.isNetworkAvailable(context);
-        int i_limit=100; // avoid excesive memory usage
-        mbtiles_request_url = db_mbtiles.retrieve_request_url(i_limit);
-        while (mbtiles_request_url.size() > 0)
-        {
-         for( Map.Entry<String, String> request_url : mbtiles_request_url.entrySet() ) {
-            if (i_http_not_usable > 0) {
-                i_rc = 3775;
-                s_message = "-W-> on_request_url[" + s_http_result + "][" + db_mbtiles.getName() + "]: mbtiles_request_url["
-                        + i_count_tiles_total + "] rc=" + i_rc;
-                publishProgress(s_message);
-                return i_rc;
+        int i_limit = 100; // avoid excesive memory usage
+        mbtiles_request_url = db_mbtiles.getRequestUrlsMap(i_limit);
+        while( mbtiles_request_url.size() > 0 ) {
+            for( Map.Entry<String, String> request_url : mbtiles_request_url.entrySet() ) {
+                if (i_http_not_usable > 0) {
+                    i_rc = 3775;
+                    s_message = "-W-> on_request_url[" + s_http_result + "][" + db_mbtiles.getName() + "]: mbtiles_request_url["
+                            + i_count_tiles_total + "] rc=" + i_rc;
+                    publishProgress(s_message);
+                    return i_rc;
+                }
+                if (!networkAvailable) {
+                    i_rc = 3776;
+                    s_http_result = "No Internet Connection";
+                    s_message = "-W-> on_request_url[" + s_http_result + "][" + db_mbtiles.getName() + "]: mbtiles_request_url["
+                            + i_count_tiles_total + "] rc=" + i_rc;
+                    publishProgress(s_message);
+                    return i_rc;
+                }
+                if (isCancelled()) {
+                    i_rc = 3777;
+                    s_message = "-W-> on_request_url[" + s_request_type + "][" + db_mbtiles.getName() + "]: mbtiles_request_url["
+                            + i_count_tiles_total + "] rc=" + i_rc;
+                    return i_rc;
+                }
+                String s_tile_id = request_url.getKey();
+                String s_tile_url = request_url.getValue();
+                i_rc = on_request_tile_id_url(s_tile_id, s_tile_url);
+                i_count_tiles_count++;
+                i_count_tiles_left = i_count_tiles_total - i_count_tiles_count;
+                if (i_request_zoom_level > 0) { // i_request_zoom_level is set in
+                                                // 'on_request_tile_id_url'
+                    if (i_request_zoom_level_prev < 0) { // The first message when starting - list
+                                                         // the first tile that was downloaded
+                        s_message = "-I-> on_request_url[" + s_request_type + "][" + db_mbtiles.getName()
+                                + "]: mbtiles_request_url[" + i_count_tiles_total + "] tile_id[" + s_tile_id + "] open["
+                                + i_count_tiles_left + "] rc=" + i_rc;
+                        publishProgress(s_message);
+                    }
+                    if (i_request_zoom_level_prev != i_request_zoom_level) { // A new Zoom-level has
+                                                                             // been started this
+                                                                             // will update the
+                                                                             // metadata Table with
+                                                                             // true min/max
+                                                                             // zoom-levels and
+                                                                             // bounds
+                        on_update_bounds();
+                        publishProgress("-I-> on_update_bounds[" + i_request_zoom_level + "][" + db_mbtiles.getName()
+                                + "]: bounds[" + db_mbtiles.getBoundsAsString() + "] zoom_levels["
+                                + db_mbtiles.getMinMaxZoomLevelsAsString() + "] center_parms[" + db_mbtiles.getCenterParms()
+                                + "] ");
+                        i_request_zoom_level_prev = i_request_zoom_level;
+                    }
+                }
+                if ((i_count_tiles_count % i_count_rest) == 0) {
+                    double d_procent = (double) i_count_tiles_left;
+                    d_procent = 100 - ((d_procent / i_count_tiles_total) * 100);
+                    s_message = "-I-> on_request_url[" + db_mbtiles.getName() + "][" + s_request_type + "]: tile_id[" + s_tile_id
+                            + "] retrieved[" + i_count_tiles_count + "] [" + String.format("%.4f", d_procent) + " %] open["
+                            + i_count_tiles_left + "] total[" + i_count_tiles_total + "]";
+                    publishProgress(s_message);
+                }
             }
-            if (!networkAvailable) {
-                i_rc = 3776;
-                s_http_result = "No Internet Connection";
-                s_message = "-W-> on_request_url[" + s_http_result + "][" + db_mbtiles.getName() + "]: mbtiles_request_url["
-                        + i_count_tiles_total + "] rc=" + i_rc;
-                publishProgress(s_message);
-                return i_rc;
-            }
-            if (isCancelled()) {
-                i_rc = 3777;
+            int i_count_tiles_test = db_mbtiles.getRequestUrlCount(1);
+            if (i_count_tiles_test != i_count_tiles_total) {
+                // retrieve the next amount, avoiding excesive memory usage
+                mbtiles_request_url = db_mbtiles.getRequestUrlsMap(i_limit);
+            } else { // something is wrong, return to avoid loop
+                i_rc = 3778;
                 s_message = "-W-> on_request_url[" + s_request_type + "][" + db_mbtiles.getName() + "]: mbtiles_request_url["
                         + i_count_tiles_total + "] rc=" + i_rc;
                 return i_rc;
             }
-            String s_tile_id = request_url.getKey();
-            String s_tile_url = request_url.getValue();
-            i_rc = on_request_tile_id_url(s_tile_id, s_tile_url);
-            i_count_tiles_count++;
-            i_count_tiles_left = i_count_tiles_total - i_count_tiles_count;
-            if (i_request_zoom_level > 0)
-            { // i_request_zoom_level is set in 'on_request_tile_id_url'
-              if (i_request_zoom_level_prev < 0)
-              { // The first message when starting - list the first tile that was downloaded
-               s_message = "-I-> on_request_url[" + s_request_type + "][" + db_mbtiles.getName() + "]: mbtiles_request_url["
-                + i_count_tiles_total + "] tile_id[" + s_tile_id + "] open[" + i_count_tiles_left + "] rc="+i_rc;
-               publishProgress(s_message);
-              }
-              if (i_request_zoom_level_prev != i_request_zoom_level)
-              {  // A new Zoom-level has been started this will update the metadata Table with true min/max zoom-levels and bounds
-               on_update_bounds();
-               publishProgress("-I-> on_update_bounds["+i_request_zoom_level+"][" + db_mbtiles.getName() + "]: bounds["+ db_mbtiles.getBounds_toString()+"] zoom_levels["+db_mbtiles.getZoom_Levels() + "] center_parms["+db_mbtiles.getCenterParms() + "] ");
-               i_request_zoom_level_prev=i_request_zoom_level;
-              }
-            }
-            if ((i_count_tiles_count % i_count_rest) == 0) {
-                double d_procent = (double) i_count_tiles_left;
-                d_procent = 100 - ((d_procent / i_count_tiles_total) * 100);
-                s_message = "-I-> on_request_url[" + db_mbtiles.getName() + "][" + s_request_type + "]: tile_id[" + s_tile_id
-                        + "] retrieved[" + i_count_tiles_count + "] [" + String.format("%.4f",d_procent) + " %] open[" + i_count_tiles_left
-                        + "] total[" + i_count_tiles_total + "]";
-                publishProgress(s_message);
-            }
-         }
-         int i_count_tiles_test = db_mbtiles.get_request_url_count(1);
-         if (i_count_tiles_test != i_count_tiles_total)
-         {
-          // retrieve the next amount, avoiding excesive memory usage
-          mbtiles_request_url = db_mbtiles.retrieve_request_url(i_limit);
-         }
-         else
-         { // something is wrong, return to avoid loop
-          i_rc = 3778;
-          s_message = "-W-> on_request_url[" + s_request_type + "][" + db_mbtiles.getName() + "]: mbtiles_request_url["
-                        + i_count_tiles_total + "] rc=" + i_rc;
-          return i_rc;
-         }
         }
-        i_count_tiles_total = db_mbtiles.get_request_url_count(1);
-        if (i_count_tiles_total < 1)
-        { // when completed, call update_bounds
-         on_update_bounds();
-         publishProgress("-I-> on_update_bounds["+i_request_zoom_level+"][" + db_mbtiles.getName() + "]: bounds["+ db_mbtiles.getBounds_toString()+"] zoom_levels["+db_mbtiles.getZoom_Levels() + "] center_parms["+db_mbtiles.getCenterParms() + "] ");
+        i_count_tiles_total = db_mbtiles.getRequestUrlCount(1);
+        if (i_count_tiles_total < 1) { // when completed, call update_bounds
+            on_update_bounds();
+            publishProgress("-I-> on_update_bounds[" + i_request_zoom_level + "][" + db_mbtiles.getName() + "]: bounds["
+                    + db_mbtiles.getBoundsAsString() + "] zoom_levels[" + db_mbtiles.getMinMaxZoomLevelsAsString()
+                    + "] center_parms[" + db_mbtiles.getCenterParms() + "] ");
         }
         return i_rc;
     }
@@ -346,26 +371,24 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
         int[] zxy_osm_tms = MBTilesDroidSpitter.get_zxy_from_tile_id(s_tile_id);
         if ((zxy_osm_tms != null) && (zxy_osm_tms.length == 4)) {
             int i_zoom = zxy_osm_tms[0];
-            i_request_zoom_level=i_zoom;
+            i_request_zoom_level = i_zoom;
             int i_tile_x = zxy_osm_tms[1];
             int i_tile_y_osm = zxy_osm_tms[2];
-            int i_tile_y_tms = zxy_osm_tms[3];
+            // int i_tile_y_tms = zxy_osm_tms[3];
             try {
                 Bitmap tile_bitmap = on_download_tile_http(s_tile_url);
                 if (tile_bitmap != null) {
-                    int i_force_unique = 0;
-                    int i_force_bounds = 0; // after each insert, update bounds and min/max zoom
-                                            // levels
-                    // GPLog.androidLog(-1, "mbtiles_Async on_request_tile_id_url[" + db_mbtiles.getName() + "][" + s_tile_id + "] ["+ s_tile_url + "] i_tile_y_tms=" + i_tile_y_tms);
-                    i_rc = db_mbtiles.insertBitmapTile(i_tile_x, i_tile_y_osm, i_zoom, tile_bitmap, i_force_unique);
+                    // GPLog.androidLog(-1, "mbtiles_Async on_request_tile_id_url[" +
+                    // db_mbtiles.getName() + "][" + s_tile_id + "] ["+ s_tile_url +
+                    // "] i_tile_y_tms=" + i_tile_y_tms);
+                    i_rc = db_mbtiles.insertBitmapTile(i_tile_x, i_tile_y_osm, i_zoom, tile_bitmap, 0);
                     if (i_rc == 0) {
                         i_http_bad_requests = 0;
-                        db_mbtiles.delete_request_url(s_tile_id);
+                        db_mbtiles.deleteRequestUrl(s_tile_id);
                     }
                 } else {
-                    if ((i_http_bad_requests > 10) && (i_http_not_usable == 0)) { // provider is not
-                                                                                  // sending
-                                                                                  // anything
+                    if ((i_http_bad_requests > 10) && (i_http_not_usable == 0)) {
+                        // provider is not // sending // anything
                         s_http_result = "Internet Connection: recieved [" + i_http_bad_requests + "] bad requests";
                         i_http_not_usable = 1;
                     }
@@ -396,81 +419,78 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
         i_http_code = -1;
         int i_image_null = 1;
         int i_content_length = 0;
-        int i_http_code=0;
-        String s_http_message="";
+        int i_http_code = 0;
+        String s_http_message = "";
         try {
             URL this_url = new URL(s_tile_url);
-            // GPLog.androidLog(-1, "mbtiles_Async on_request_tile_id_url[" + db_mbtiles.getName() + "][" + this_url.getProtocol() + "] ["+ s_tile_url + "] toExternalForm[" + this_url.toExternalForm()+"]");
+            // GPLog.androidLog(-1, "mbtiles_Async on_request_tile_id_url[" + db_mbtiles.getName() +
+            // "][" + this_url.getProtocol() + "] ["+ s_tile_url + "] toExternalForm[" +
+            // this_url.toExternalForm()+"]");
             InputStream input_stream = null;
             HttpURLConnection this_http = null;
             try {
-               if (this_url.getProtocol().equals("file"))
-               {
-                input_stream = this_url.openStream();
-                s_http_message="File:OK";
-                i_http_code=200;
-                // GPLog.androidLog(-1, "mbtiles_Async on_request_tile_id_url[" + db_mbtiles.getName() + "][" + this_url.getProtocol() + "] ["+ s_tile_url + "] toExternalForm[" + this_url.toExternalForm()+"]");
-               }
-               else
-               {
-                this_http = (HttpURLConnection) this_url.openConnection();
-                if (this_http != null)
-                {
-                 this_http.setDoInput(true);
-                 i_content_length = this_http.getContentLength(); // the size of the gziped value
-                                                                 // returned
-                 input_stream = this_http.getInputStream();
-                 s_http_message=this_http.getResponseMessage();
-                 i_http_code=this_http.getResponseCode();
-                }
-                else
-                {
-                 s_http_message="this_url.openConnection() failed";
-                 i_http_code=778;
-                }
-               }
-               if (input_stream != null)
-               {
-                 tile_bitmap = BitmapFactory.decodeStream(input_stream);
-                 input_stream.close();
-                 if (tile_bitmap == null) { // possible 'access denied' - not a public server -should
-                                           // be considered an invalid server [returns HTTP_OK]
-                    if (i_content_length > 0) { // is probely an error text similer to:
-                                                // <ServiceException code="LayerNotDefined">theme
-                                                // k_luftbild1938@senstadt access
-                                                // denied</ServiceException>
+                if (this_url.getProtocol().equals("file")) {
+                    input_stream = this_url.openStream();
+                    s_http_message = "File:OK";
+                    i_http_code = 200;
+                    // GPLog.androidLog(-1, "mbtiles_Async on_request_tile_id_url[" +
+                    // db_mbtiles.getName() + "][" + this_url.getProtocol() + "] ["+ s_tile_url +
+                    // "] toExternalForm[" + this_url.toExternalForm()+"]");
+                } else {
+                    this_http = (HttpURLConnection) this_url.openConnection();
+                    if (this_http != null) {
+                        this_http.setDoInput(true);
+                        i_content_length = this_http.getContentLength(); // the size of the gziped
+                                                                         // value
+                                                                         // returned
+                        input_stream = this_http.getInputStream();
+                        s_http_message = this_http.getResponseMessage();
+                        i_http_code = this_http.getResponseCode();
+                    } else {
+                        s_http_message = "this_url.openConnection() failed";
+                        i_http_code = 778;
                     }
-                 } else {
-                    i_image_null = 0;
-                 }
                 }
-                else
-                {
-                 s_http_message="input_stream is null";
-                 i_http_code=779;
+                if (input_stream != null) {
+                    tile_bitmap = BitmapFactory.decodeStream(input_stream);
+                    input_stream.close();
+                    if (tile_bitmap == null) { // possible 'access denied' - not a public server
+                                               // -should
+                                               // be considered an invalid server [returns HTTP_OK]
+                        if (i_content_length > 0) { // is probely an error text similer to:
+                                                    // <ServiceException
+                                                    // code="LayerNotDefined">theme
+                                                    // k_luftbild1938@senstadt access
+                                                    // denied</ServiceException>
+                        }
+                    } else {
+                        i_image_null = 0;
+                    }
+                } else {
+                    s_http_message = "input_stream is null";
+                    i_http_code = 779;
                 }
             } catch (IOException e) {
-             if (e.getMessage().indexOf("ETIMEDOUT") != -1)
-             { // failed to connect to fbinter.stadt-berlin.de/141.15.4.15 (port 80): connect failed: ETIMEDOUT (Connection timed out)
-              i_http_code=408;
-              s_http_message=e.getMessage();
-              tile_bitmap = null;
-             }
-             else
-             {
-                s_message = "mbtiles_Async.on_download_tile: http_code[" + i_http_code + "] ["
-                        + s_http_message + "] " + e.getMessage();
-                GPLog.androidLog(4, s_message, e);
-                tile_bitmap = null;
-              }
+                if (e.getMessage().indexOf("ETIMEDOUT") != -1) { // failed to connect to
+                                                                 // fbinter.stadt-berlin.de/141.15.4.15
+                                                                 // (port 80): connect failed:
+                                                                 // ETIMEDOUT (Connection timed out)
+                    i_http_code = 408;
+                    s_http_message = e.getMessage();
+                    tile_bitmap = null;
+                } else {
+                    s_message = "mbtiles_Async.on_download_tile: http_code[" + i_http_code + "] [" + s_http_message + "] "
+                            + e.getMessage();
+                    GPLog.androidLog(4, s_message, e);
+                    tile_bitmap = null;
+                }
             } finally { // will set values, depending on values to determin if this task should be
                         // aborted
                 get_http_result(0, i_http_code, s_http_message, i_content_length, i_image_null);
             }
         } catch (Throwable t) {
-         s_message = "mbtiles_Async.on_download_tile: http_code[" + i_http_code + "] ["
-                        + s_http_message + "]";
-                GPLog.androidLog(4, s_message, t);
+            s_message = "mbtiles_Async.on_download_tile: http_code[" + i_http_code + "] [" + s_http_message + "]";
+            GPLog.androidLog(4, s_message, t);
         }
         return tile_bitmap;
     }
@@ -513,40 +533,42 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
         }
             break;
         case HttpURLConnection.HTTP_CLIENT_TIMEOUT:
-        case HttpURLConnection.HTTP_BAD_REQUEST:
-        { // 400: Bad Request
-        // malformed url or tiles out of range
-        // after 10 attempts, will abort
-        i_http_bad_requests++;
+        case HttpURLConnection.HTTP_BAD_REQUEST: { // 400: Bad Request
+                                                   // malformed url or tiles out of range
+                                                   // after 10 attempts, will abort
+            i_http_bad_requests++;
         }
-        break;
+            break;
         default:
             GPLog.androidLog(-1, "mbtiles_Async.get_http_result: " + s_http_result);
             break;
         }
         s_message = "mbtiles_Async.get_http_result: i_image_null[" + i_image_null + "] content_length[" + i_content_length
-                    + "] [" + s_http_result + "]";
+                + "] [" + s_http_result + "]";
         // GPLog.androidLog(-1,"mbtiles_Async.get_http_result: "+s_message);
         return this.i_http_code;
     }
-    private Bitmap on_download_tile( String s_tile_url ) throws Exception {
-        Bitmap tile_bitmap = null;
-        try {
-            URL this_url = new URL(s_tile_url);
-            InputStream input_stream = null;
-            HttpURLConnection this_http = null;
-            try {
-                input_stream = this_url.openStream();
-                tile_bitmap = BitmapFactory.decodeStream(input_stream);
-                input_stream.close();
-            } catch (IOException e) {
-                String s_message = e.getMessage();
-                tile_bitmap = null;
-            }
-        } catch (Throwable t) {
-        }
-        return tile_bitmap;
-    }
+
+    // TODO @mj10777 this seems to be unused.
+    //
+    // private Bitmap on_download_tile( String s_tile_url ) throws Exception {
+    // Bitmap tile_bitmap = null;
+    // try {
+    // URL this_url = new URL(s_tile_url);
+    // InputStream input_stream = null;
+    // HttpURLConnection this_http = null;
+    // try {
+    // input_stream = this_url.openStream();
+    // tile_bitmap = BitmapFactory.decodeStream(input_stream);
+    // input_stream.close();
+    // } catch (IOException e) {
+    // String s_message = e.getMessage();
+    // tile_bitmap = null;
+    // }
+    // } catch (Throwable t) {
+    // }
+    // return tile_bitmap;
+    // }
     // -----------------------------------------------
     /**
       * Create list of 'request_url
@@ -563,20 +585,20 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
      */
     private int on_request_create() {
         int i_rc = 0;
-        int i_max_limit=100;
-        int i_limit=0;
-        int i_count_tiles_total = db_mbtiles.get_request_url_count(1);
+        int i_max_limit = 100;
+        int i_limit = 0;
+        int i_count_tiles_total = db_mbtiles.getRequestUrlCount(1);
         int i_count_tiles_level = 0;
-        String s_url="";
-        String s_request_y="";
-        if (s_request_protocol.equals("file"))
-        { // We are adding from an existing set of tiles, the tile must exist
-         s_url=s_request_url_source;
-         s_request_y=s_request_y_type;
+        String s_url = "";
+        String s_request_y = "";
+        if (s_request_protocol.equals("file")) { // We are adding from an existing set of tiles, the
+                                                 // tile must exist
+            s_url = s_request_url_source;
+            s_request_y = s_request_y_type;
         }
         mbtiles_request_url = new LinkedHashMap<String, String>();
-        s_message = "-I-> on_request_create[" + s_request_type + ","+s_request_protocol+"][" + db_mbtiles.getName() + "]: zoom_levels["
-                + zoom_levels.size() + "] file_url["+s_url+"] file_y["+s_request_y+"]";
+        s_message = "-I-> on_request_create[" + s_request_type + "," + s_request_protocol + "][" + db_mbtiles.getName()
+                + "]: zoom_levels[" + zoom_levels.size() + "] file_url[" + s_url + "] file_y[" + s_request_y + "]";
         publishProgress(s_message);
         for( int i = 0; i < zoom_levels.size(); i++ ) { // for all selected zoom levels
             int i_zoom_level = zoom_levels.get(i);
@@ -589,67 +611,72 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
             // retrieve list of missing[fill] or compleate list[replace] of tiles to retrieve
             // This is still a full list (without limit) which could cause memory problems
             //
-            String s_tile_id="";
+            String s_tile_id = "";
             // TODO: build in better logic to avoid TimeOut situations
-            int[] tile_bounds=MBTilesDroidSpitter.LatLonBounds_to_TileBounds( request_bounds, i_zoom_level );
+            int[] tile_bounds = MBTilesDroidSpitter.LatLonBounds_to_TileBounds(request_bounds, i_zoom_level);
             int i_min_x = tile_bounds[1];
             int i_min_y_osm = tile_bounds[2];
             int i_max_x = tile_bounds[3];
             int i_max_y_osm = tile_bounds[4];
-            for( int x = i_min_x; x <= i_max_x; x++ )
-            { // collect for each y column ; we are hoping, that after each return from another thread will avoid a TimeOut
-             double[] x_request_bounds = MBTilesDroidSpitter.TileBounds_to_LatLonBounds(new int[]{x,i_min_y_osm,x+1,i_max_y_osm},i_zoom_level);
-             int i_column_left=i_max_x-x;
-             List<String> list_tile_id = db_mbtiles.build_request_list(x_request_bounds, i_zoom_level, s_request_type,s_url,s_request_y);
-             s_message = "-I-> on_request_create[" + s_request_type + ","+s_request_protocol+"][" + db_mbtiles.getName() + "]: list_tile_id.size["+ list_tile_id.size() + "] x="+x+" ; "+i_column_left+" columns left";
-             publishProgress(s_message);
-             for( int j = 0; j < list_tile_id.size(); j++ ) {
-                 if (isCancelled()) {
-                     i_rc = 2778;
-                     s_message = "-W-> on_request_create[" + db_mbtiles.getName() + "]: zoom_level[" + i_zoom_level + "] tiles["
-                             + i_count_tiles_level + "] total[" + i_count_tiles_total + "] rc=" + i_rc;
-                     return i_rc;
-                 }
-                 s_tile_id = list_tile_id.get(j);
-                 if (!s_tile_id.equals("")) { // Avoid error: code 19 constraint failed when
-                                              // inserting image more than once
-                                              // for each tile send tile_id[from which to position
-                                              // will be calculated[wms] or the tile-numbers set]
-                                              // - these values be set in the given url
-                                              // -- the tile_id and created url will be added to
-                                              // 'mbtiles_request_url'
-                     on_request_create_url(s_tile_id, s_request_url_source);
-                     i_limit++;
-                 }
-                 if (i_limit >= i_max_limit)
-                 { // save reguraly to avoid excess memory usage
-                  if ((mbtiles_request_url.size()) > 0)
-                  {
-                   i_count_tiles_total=db_mbtiles.insert_list_request_url(mbtiles_request_url);
-                   // clear 'mbtiles_request_url' that have been stored
-                   mbtiles_request_url.clear();
-                   s_message = "-I-> on_request_create[" + db_mbtiles.getName() + "]: ["+j+"] tile_id[" + s_tile_id + "] zoom_level[" + i_zoom_level + "] tiles_level["+ i_count_tiles_level + "] total[" + i_count_tiles_total + "]";
-                   publishProgress(s_message);
-                  }
-                  i_limit=0;
-                 }
-              }
-              list_tile_id.clear();
-              if ((mbtiles_request_url.size()) > 0)
-              { // nothing may have been found
-               // save 'mbtiles_request_url' to the database
-               i_count_tiles_level = db_mbtiles.get_request_url_count(0);
-               i_count_tiles_total=db_mbtiles.insert_list_request_url(mbtiles_request_url);
-               i_count_tiles_level=i_count_tiles_total-i_count_tiles_level;
-               // clear 'mbtiles_request_url' that have been stored
-               mbtiles_request_url.clear();
-               s_message = "-I-> on_request_create[" + db_mbtiles.getName() + "]: zoom_level[" + i_zoom_level + "] tile_id["
-                    + s_tile_id + "] total[" + i_count_tiles_total + "]";
-               publishProgress(s_message);
-              }
+            for( int x = i_min_x; x <= i_max_x; x++ ) { // collect for each y column ; we are
+                                                        // hoping, that after each return from
+                                                        // another thread will avoid a TimeOut
+                double[] x_request_bounds = MBTilesDroidSpitter.TileBounds_to_LatLonBounds(new int[]{x, i_min_y_osm, x + 1,
+                        i_max_y_osm}, i_zoom_level);
+                int i_column_left = i_max_x - x;
+                List<String> list_tile_id = db_mbtiles.buildRequestList(x_request_bounds, i_zoom_level, s_request_type, s_url,
+                        s_request_y);
+                s_message = "-I-> on_request_create[" + s_request_type + "," + s_request_protocol + "][" + db_mbtiles.getName()
+                        + "]: list_tile_id.size[" + list_tile_id.size() + "] x=" + x + " ; " + i_column_left + " columns left";
+                publishProgress(s_message);
+                for( int j = 0; j < list_tile_id.size(); j++ ) {
+                    if (isCancelled()) {
+                        i_rc = 2778;
+                        s_message = "-W-> on_request_create[" + db_mbtiles.getName() + "]: zoom_level[" + i_zoom_level
+                                + "] tiles[" + i_count_tiles_level + "] total[" + i_count_tiles_total + "] rc=" + i_rc;
+                        return i_rc;
+                    }
+                    s_tile_id = list_tile_id.get(j);
+                    if (!s_tile_id.equals("")) { // Avoid error: code 19 constraint failed when
+                                                 // inserting image more than once
+                                                 // for each tile send tile_id[from which to
+                                                 // position
+                                                 // will be calculated[wms] or the tile-numbers set]
+                                                 // - these values be set in the given url
+                                                 // -- the tile_id and created url will be added to
+                                                 // 'mbtiles_request_url'
+                        on_request_create_url(s_tile_id, s_request_url_source);
+                        i_limit++;
+                    }
+                    if (i_limit >= i_max_limit) { // save reguraly to avoid excess memory usage
+                        if ((mbtiles_request_url.size()) > 0) {
+                            i_count_tiles_total = db_mbtiles.bulkInsertFromUrlsTilesInTable(mbtiles_request_url);
+                            // clear 'mbtiles_request_url' that have been stored
+                            mbtiles_request_url.clear();
+                            s_message = "-I-> on_request_create[" + db_mbtiles.getName() + "]: [" + j + "] tile_id[" + s_tile_id
+                                    + "] zoom_level[" + i_zoom_level + "] tiles_level[" + i_count_tiles_level + "] total["
+                                    + i_count_tiles_total + "]";
+                            publishProgress(s_message);
+                        }
+                        i_limit = 0;
+                    }
+                }
+                list_tile_id.clear();
+                if ((mbtiles_request_url.size()) > 0) { // nothing may have been found
+                                                        // save 'mbtiles_request_url' to the
+                                                        // database
+                    i_count_tiles_level = db_mbtiles.getRequestUrlCount(0);
+                    i_count_tiles_total = db_mbtiles.bulkInsertFromUrlsTilesInTable(mbtiles_request_url);
+                    i_count_tiles_level = i_count_tiles_total - i_count_tiles_level;
+                    // clear 'mbtiles_request_url' that have been stored
+                    mbtiles_request_url.clear();
+                    s_message = "-I-> on_request_create[" + db_mbtiles.getName() + "]: zoom_level[" + i_zoom_level + "] tile_id["
+                            + s_tile_id + "] total[" + i_count_tiles_total + "]";
+                    publishProgress(s_message);
+                }
             }
         }
-        i_count_tiles_total = db_mbtiles.get_request_url_count(1);
+        i_count_tiles_total = db_mbtiles.getRequestUrlCount(1);
         s_message = "-I-> on_request_create[" + s_request_type + "][" + db_mbtiles.getName() + "]:  requested tiles["
                 + i_count_tiles_total + "] exist.";
         publishProgress(s_message);
@@ -919,21 +946,16 @@ class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, String, 
                 s_tile_url = s_tile_url.replaceFirst("XXX", String.valueOf(tileBounds[2])); //$NON-NLS-1$
                 s_tile_url = s_tile_url.replaceFirst("YYY", String.valueOf(tileBounds[3])); //$NON-NLS-1$
             }
-            if (s_request_protocol.equals("file"))
-            {
-             File file_tile= new File(s_tile_url);
-             if (file_tile.exists())
-             {
-              s_tile_url="file:"+s_tile_url;
-             }
-             else
-             {
-              s_tile_url="";
-             }
+            if (s_request_protocol.equals("file")) {
+                File file_tile = new File(s_tile_url);
+                if (file_tile.exists()) {
+                    s_tile_url = "file:" + s_tile_url;
+                } else {
+                    s_tile_url = "";
+                }
             }
-            if (!s_tile_url.equals(""))
-            {
-             mbtiles_request_url.put(s_tile_id, s_tile_url);
+            if (!s_tile_url.equals("")) {
+                mbtiles_request_url.put(s_tile_id, s_tile_url);
             }
         } else {
             i_rc = -1;

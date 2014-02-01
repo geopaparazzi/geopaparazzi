@@ -47,14 +47,32 @@ public class GTimeView extends View implements GView {
 
     private Button button;
 
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     * @param defStyle def style.
+     */
     public GTimeView( Context context, AttributeSet attrs, int defStyle ) {
         super(context, attrs, defStyle);
     }
 
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     */
     public GTimeView( Context context, AttributeSet attrs ) {
         super(context, attrs);
     }
 
+    /**
+     * @param fragment the fragment.
+     * @param attrs attributes.
+     * @param parentView parent
+     * @param key key
+     * @param value value
+     * @param constraintDescription constraints
+     * @param readonly if <code>false</code>, the item is disabled for editing.
+     */
     public GTimeView( final Fragment fragment, AttributeSet attrs, LinearLayout parentView, String key, String value,
             String constraintDescription, boolean readonly ) {
         super(fragment.getActivity(), attrs);
@@ -102,7 +120,8 @@ public class GTimeView extends View implements GView {
                 int hourOfDay = c.get(Calendar.HOUR_OF_DAY);
                 int minute = c.get(Calendar.MINUTE);
 
-                FormTimePickerFragment newFragment = new FormTimePickerFragment(hourOfDay, minute, true, button);
+                FormTimePickerFragment newFragment = new FormTimePickerFragment();
+                newFragment.setAttributes(hourOfDay, minute, true, button);
                 newFragment.show(fragment.getFragmentManager(), "timePicker");
             }
         });
@@ -121,12 +140,12 @@ public class GTimeView extends View implements GView {
 
     @Override
     public void setOnActivityResult( Intent data ) {
+        // ignore
     }
 
     @Override
     public void refresh( Context context ) {
-        // TODO Auto-generated method stub
-        
+        // ignore
     }
 
 }

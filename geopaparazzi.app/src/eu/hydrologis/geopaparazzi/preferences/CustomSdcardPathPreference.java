@@ -42,9 +42,13 @@ import eu.hydrologis.geopaparazzi.R;
 public class CustomSdcardPathPreference extends DialogPreference {
     private Context context;
     private EditText editView;
-    private String customPath = "";
+    private String customPath = ""; //$NON-NLS-1$
     private Spinner guessedPathsSpinner;
     private List<String> guessedSdcardsList;
+    /**
+     * @param ctxt  the context to use.
+     * @param attrs attributes.
+     */
     public CustomSdcardPathPreference( Context ctxt, AttributeSet attrs ) {
         super(ctxt, attrs);
         this.context = ctxt;
@@ -84,8 +88,8 @@ public class CustomSdcardPathPreference extends DialogPreference {
         guessedPathsSpinner.setPadding(15, 5, 15, 5);
         mainLayout.addView(guessedPathsSpinner);
 
-        guessedSdcardsList = FileUtilities.list_sdcards();
-        guessedSdcardsList.add(0, "");
+        guessedSdcardsList = FileUtilities.getPossibleSdcardsList();
+        guessedSdcardsList.add(0, ""); //$NON-NLS-1$
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, guessedSdcardsList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -142,7 +146,7 @@ public class CustomSdcardPathPreference extends DialogPreference {
 
         if (restoreValue) {
             if (defaultValue == null) {
-                customPath = getPersistedString("");
+                customPath = getPersistedString(""); //$NON-NLS-1$
             } else {
                 customPath = getPersistedString(defaultValue.toString());
             }

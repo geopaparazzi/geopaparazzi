@@ -61,14 +61,31 @@ public class GSketchView extends View implements GView {
     private LinearLayout imageLayout;
     private File lastImageFile;
 
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     * @param defStyle def style.
+     */
     public GSketchView( Context context, AttributeSet attrs, int defStyle ) {
         super(context, attrs, defStyle);
     }
 
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     */
     public GSketchView( Context context, AttributeSet attrs ) {
         super(context, attrs);
     }
 
+    /**
+     * @param context   the context to use.
+     * @param attrs attributes.
+     * @param parentView parent
+     * @param key key
+     * @param value value
+     * @param constraintDescription constraints
+     */
     public GSketchView( final Context context, AttributeSet attrs, LinearLayout parentView, String key, String value,
             String constraintDescription ) {
         super(context, attrs);
@@ -233,6 +250,7 @@ public class GSketchView extends View implements GView {
 
     @Override
     public void setOnActivityResult( Intent data ) {
+        // ignore
     }
 
 }

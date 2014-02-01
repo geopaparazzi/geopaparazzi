@@ -1,4 +1,4 @@
-package eu.geopaparazzi.mapsforge.mapsdirmanager.treeview;
+package eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.exceptions;
 
 /**
  * This exception is thrown when the tree does not contain node requested.

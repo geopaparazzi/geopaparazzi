@@ -27,8 +27,14 @@ import android.location.LocationListener;
  */
 public interface GpsManagerListener extends LocationListener {
 
+    /**
+     * Start the gps.
+     */
     public void gpsStart();
 
+    /**
+     * Stop the gps.
+     */
     public void gpsStop();
 
     /**
@@ -59,8 +65,8 @@ public interface GpsManagerListener extends LocationListener {
      *   lastLocationupdateMillis = SystemClock.elapsedRealtime();
      * </pre>
      * 
-     * @param event
-     * @param status
+     * @param event event id.
+     * @param status gps status.
      */
     public void onGpsStatusChanged( int event, GpsStatus status );
 

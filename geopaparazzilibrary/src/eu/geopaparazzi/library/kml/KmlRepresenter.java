@@ -30,17 +30,17 @@ public interface KmlRepresenter {
      * Transforms the object in its kml representation.
      *  
      * @return the kml representation.
+     * @throws Exception  if something goes wrong.
      */
     public String toKmlString() throws Exception;
-    
-    
+
     /**
      * Getter for image flag.
      * 
      * @return <code>true</code> if the object has also an image that needs to be embedded in the kmz.
      */
     public boolean hasImages();
-    
+
     /**
      * Getter for the relative image path against the application folder. 
      * 

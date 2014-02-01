@@ -82,7 +82,7 @@
   <string name="delete_visible_bookmarks_title">CANCELLA SEGNALIBRI</string>
   <string name="delete_visible_bookmarks_prompt">Sei sicuro di volere cancellare tutti i segnalibri visibili? Non è possibile tornare indietro.</string>
   <string name="gps_searching_fix">Il Gps sta cercando di acquisire il segnale.</string>
-  <string name="bookmarks_list_rename">Rinomina segnlibro</string>
+  <string name="bookmarks_list_rename">Rinomina segnalibro</string>
   <string name="mapsactivity_menu_toggle_scalebar">Cambia scala</string>
   <string name="mapsactivity_menu_tilesource">Seleziona sorgente tile</string>
   <string name="mapsactivity_delete_bookmarks">﻿Eliminazione di {0} favoriti…</string>

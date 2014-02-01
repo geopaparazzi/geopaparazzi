@@ -36,9 +36,21 @@ import eu.geopaparazzi.library.gpx.parser.WayPoint;
 @SuppressWarnings("nls")
 public class GpxUtilities {
 
+    /**
+     * 
+     */
     public static final String GPX_TRACK_START = "<trk>";
+    /**
+     * 
+     */
     public static final String GPX_TRACK_END = "</trk>";
+    /**
+     * 
+     */
     public static final String GPX_TRACKSEGMENT_START = "<trkseg>";
+    /**
+     * 
+     */
     public static final String GPX_TRACKSEGMENT_END = "</trkseg>";
 
     /**
@@ -92,6 +104,14 @@ public class GpxUtilities {
         return sb.toString();
     }
 
+    /**
+     * Read gpx data.
+     * 
+     * @param context  the context to use.
+     * @param path the string data.
+     * @param asLines if <code>true</code>, the data are read as lines.
+     * @return list of {@link GpxItem}s.
+     */
     public static List<GpxItem> readGpxData( Context context, String path, boolean asLines ) {
         List<GpxItem> gpxItems = new ArrayList<GpxItem>();
 

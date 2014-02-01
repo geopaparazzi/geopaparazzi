@@ -71,6 +71,10 @@ public class SensorsManager implements SensorEventListener {
 
     }
 
+    /**
+     * @param context  the context to use.
+     * @return the singleton instance.
+     */
     public synchronized static SensorsManager getInstance( Context context ) {
         if (sensorManager == null) {
             sensorManager = new SensorsManager(context);
@@ -108,19 +112,31 @@ public class SensorsManager implements SensorEventListener {
         connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
     }
 
+    /**
+     * @return <code>true</code> if internet is on.
+     */
     public boolean isInternetOn() {
         NetworkInfo info = connectivityManager.getActiveNetworkInfo();
         return (info != null && info.isConnected());
     }
 
+    /**
+     * @return accuracy.
+     */
     public int getAccuracy() {
         return accuracy;
     }
 
+    /**
+     * @return normal azimuth.
+     */
     public double getNormalAzimuth() {
         return normalAzimuth;
     }
 
+    /**
+     * @return picture azimuth.
+     */
     public double getPictureAzimuth() {
         return pictureAzimuth;
     }

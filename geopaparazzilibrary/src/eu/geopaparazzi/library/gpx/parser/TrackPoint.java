@@ -16,7 +16,6 @@
 
 package eu.geopaparazzi.library.gpx.parser;
 
-
 /**
  * A Track Point.
  * <p/>A track point is a point in time and space.
@@ -24,10 +23,13 @@ package eu.geopaparazzi.library.gpx.parser;
 public class TrackPoint extends LocationPoint {
     private long mTime;
 
-    void setTime(long time) {
+    void setTime( long time ) {
         mTime = time;
     }
-    
+
+    /**
+     * @return time.
+     */
     public long getTime() {
         return mTime;
     }

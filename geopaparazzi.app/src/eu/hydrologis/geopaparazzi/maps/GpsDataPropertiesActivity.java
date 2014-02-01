@@ -96,8 +96,10 @@ public class GpsDataPropertiesActivity extends Activity {
                     newText = lognameTextView.getText().toString();
                 }
                 public void beforeTextChanged( CharSequence s, int start, int count, int after ) {
+                    // ignore
                 }
                 public void afterTextChanged( Editable s ) {
+                    // ignore
                 }
             });
 
@@ -114,6 +116,7 @@ public class GpsDataPropertiesActivity extends Activity {
                     newWidth = Float.parseFloat(selectedItem.toString());
                 }
                 public void onNothingSelected( AdapterView< ? > arg0 ) {
+                    // ignore
                 }
             });
 
@@ -132,6 +135,7 @@ public class GpsDataPropertiesActivity extends Activity {
                     newColor = selectedItem.toString();
                 }
                 public void onNothingSelected( AdapterView< ? > arg0 ) {
+                    // ignore
                 }
             });
 
@@ -194,7 +198,7 @@ public class GpsDataPropertiesActivity extends Activity {
             });
         }
     }
-    
+
     @Override
     public void finish() {
         updateWithNewValues();

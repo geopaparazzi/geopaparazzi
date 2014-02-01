@@ -48,6 +48,7 @@ import android.preference.PreferenceManager;
 import com.vividsolutions.jts.android.PointTransformation;
 import com.vividsolutions.jts.android.ShapeWriter;
 import com.vividsolutions.jts.android.geom.DrawableShape;
+import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 
 import eu.geopaparazzi.library.database.GPLog;
@@ -56,13 +57,13 @@ import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.GeometryIterator;
-import eu.geopaparazzi.spatialite.database.spatial.core.ISpatialDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
-import eu.geopaparazzi.spatialite.database.spatial.core.GeometryType;
-import eu.geopaparazzi.spatialite.database.spatial.core.Style;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryIterator;
+import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
+import eu.geopaparazzi.spatialite.util.Style;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
@@ -78,10 +79,9 @@ import eu.hydrologis.geopaparazzi.util.Note;
  * areas, are also supported. A way node sequence is considered as a closed polygon if the first and the last way node
  * are equal.
  *
- * @param <Generic>
- *            the type of ways handled by this overlay.
  */
 public abstract class GeopaparazziOverlay extends Overlay {
+
     private int crossSize = 20;
     private static final String THREAD_NAME = "GeopaparazziOverlay"; //$NON-NLS-1$
     private static final int ITEM_INITIAL_CAPACITY = 8;
@@ -170,6 +170,8 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
     /**
      * Create a {@link OverlayWay} wrapped type.
+     * 
+     * @param context  the context to use. 
      */
     public GeopaparazziOverlay( Context context ) {
         super();
@@ -183,16 +185,16 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
         // cross
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        String crossColorStr = preferences.getString(Constants.PREFS_KEY_CROSS_COLOR, "red");
+        String crossColorStr = preferences.getString(Constants.PREFS_KEY_CROSS_COLOR, "red"); //$NON-NLS-1$
         int crossColor = ColorUtilities.toColor(crossColorStr);
-        String crossWidthStr = preferences.getString(Constants.PREFS_KEY_CROSS_WIDTH, "3");
+        String crossWidthStr = preferences.getString(Constants.PREFS_KEY_CROSS_WIDTH, "3"); //$NON-NLS-1$
         float crossWidth = 3f;
         try {
             crossWidth = (float) Double.parseDouble(crossWidthStr);
         } catch (NumberFormatException e) {
             // ignore and use default
         }
-        String crossSizeStr = preferences.getString(Constants.PREFS_KEY_CROSS_SIZE, "20");
+        String crossSizeStr = preferences.getString(Constants.PREFS_KEY_CROSS_SIZE, "20"); //$NON-NLS-1$
         try {
             crossSize = (int) Double.parseDouble(crossSizeStr);
         } catch (NumberFormatException e) {
@@ -254,7 +256,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
 
         isNotesTextVisible = preferences.getBoolean(Constants.PREFS_KEY_NOTES_TEXT_VISIBLE, false);
         if (isNotesTextVisible) {
-            String notesTextSizeStr = preferences.getString(Constants.PREFS_KEY_NOTES_TEXT_SIZE, "30");
+            String notesTextSizeStr = preferences.getString(Constants.PREFS_KEY_NOTES_TEXT_SIZE, "30"); //$NON-NLS-1$
             float notesTextSize = 30f;
             try {
                 notesTextSize = (float) Double.parseDouble(notesTextSizeStr);
@@ -378,16 +380,22 @@ public abstract class GeopaparazziOverlay extends Overlay {
         }
     }
 
-    private void drawGpsWayPathOnCanvas( Canvas canvas, OverlayWay overlayWay ) {
+    private void drawGpsWayPathOnCanvas( Canvas canvas ) {
         canvas.drawPath(this.gpsPath, this.gpsTrackPaintBlack);
         canvas.drawPath(this.gpsPath, this.gpsTrackPaintYellow);
     }
 
-    private void drawGpsOnCanvas( Canvas canvas, GpsData gpsCircle ) {
+    private void drawGpsOnCanvas( Canvas canvas ) {
         canvas.drawPath(this.path, gpsOutline);
         canvas.drawPath(this.path, gpsFill);
     }
 
+    /**
+     * set the currtn gps position.
+     * 
+     * @param position the {@link GeoPoint}.
+     * @param accuracy the accuracy.
+     */
     @SuppressWarnings("nls")
     public void setGpsPosition( GeoPoint position, float accuracy ) {
         GpsManager gpsManager = GpsManager.getInstance(context);
@@ -574,7 +582,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                         }
 
                         assembleGpsWayPath(drawPosition, gpslogOverlay);
-                        drawGpsWayPathOnCanvas(canvas, gpslogOverlay);
+                        drawGpsWayPathOnCanvas(canvas);
                     }
                 }
             }
@@ -616,7 +624,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                         this.path.addCircle(this.circlePosition.x, this.circlePosition.y, circleRadius, Path.Direction.CCW);
 
                         if (circleRadius > 0) {
-                            drawGpsOnCanvas(canvas, overlayGps);
+                            drawGpsOnCanvas(canvas);
                         }
 
                         // get the position of the marker
@@ -688,33 +696,41 @@ public abstract class GeopaparazziOverlay extends Overlay {
         double w = zeroPoint.getLongitude();
         double s = whPoint.getLatitude();
         double e = whPoint.getLongitude();
+        Envelope envelope = new Envelope(w, e, s, n);
         try {
             SpatialDatabasesManager sdManager = SpatialDatabasesManager.getInstance();
-            double[] bounds_zoom = new double[]{w, s, e, n, (double) drawZoomLevel};
-            List<SpatialVectorTable> spatialTables = MapsDirManager.getInstance().getSpatialVectorTables(bounds_zoom, 1, false);
+            List<SpatialVectorTable> spatialVectorTables = sdManager.getSpatialVectorTables(false);
             // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite size["+spatialTables.size()+"]: ["+drawZoomLevel+"]");
-            for( int i = 0; i < spatialTables.size(); i++ ) {
-                SpatialVectorTable spatialTable = spatialTables.get(i);
+            for( int i = 0; i < spatialVectorTables.size(); i++ ) {
+                SpatialVectorTable spatialTable = spatialVectorTables.get(i);
                 if (isInterrupted() || sizeHasChanged()) {
                     // stop working
                     return;
                 }
                 Style style4Table = spatialTable.getStyle();
+                if (style4Table.enabled == 0) {
+                    continue;
+                }
+                if (!envelope.intersects(spatialTable.getTableEnvelope())) {
+                    continue;
+                }
                 if (drawZoomLevel < style4Table.minZoom || drawZoomLevel > style4Table.maxZoom) {
                     // we do not draw outside of the zoom levels
                     continue;
                 }
-
-                ISpatialDatabaseHandler spatialDatabaseHandler = sdManager.getVectorHandler(spatialTable);
+                SpatialDatabaseHandler spatialDatabaseHandler = sdManager.getVectorHandler(spatialTable);
+                if (!(spatialDatabaseHandler instanceof SpatialiteDatabaseHandler)) {
+                    return;
+                }
                 int i_geometryIterator = 0;
                 GeometryIterator geometryIterator = null;
                 try {
                     Paint fill = null;
                     Paint stroke = null;
                     if (style4Table.fillcolor != null && style4Table.fillcolor.trim().length() > 0)
-                        fill = spatialDatabaseHandler.getFillPaint4Style(style4Table);
+                        fill = ((SpatialiteDatabaseHandler) spatialDatabaseHandler).getFillPaint4Style(style4Table);
                     if (style4Table.strokecolor != null && style4Table.strokecolor.trim().length() > 0)
-                        stroke = spatialDatabaseHandler.getStrokePaint4Style(style4Table);
+                        stroke = ((SpatialiteDatabaseHandler) spatialDatabaseHandler).getStrokePaint4Style(style4Table);
                     PointTransformation pointTransformer = new MapsforgePointTransformation(projection, drawPosition,
                             drawZoomLevel);
                     ShapeWriter shape_writer = null;
@@ -731,7 +747,8 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     }
                     shape_writer.setRemoveDuplicatePoints(true);
                     shape_writer.setDecimation(spatialTable.getStyle().decimationFactor);
-                    geometryIterator = spatialDatabaseHandler.getGeometryIteratorInBounds("4326", spatialTable, n, s, e, w);
+                    geometryIterator = ((SpatialiteDatabaseHandler) spatialDatabaseHandler).getGeometryIteratorInBounds(
+                            LibraryConstants.SRID_WGS84_4326, spatialTable, n, s, e, w);
                     while( geometryIterator.hasNext() ) {
                         i_geometryIterator++;
                         Geometry geom = geometryIterator.next();
@@ -763,12 +780,14 @@ public abstract class GeopaparazziOverlay extends Overlay {
                             }
                         } else {
                             GPLog.androidLog(-1, "GeopaparazziOverlay.drawFromSpatialite  [geom == null] description["
-                                    + spatialTable.getDescription() + "]");
+                                    + spatialTable.getTableName() + "]");
                         }
                     }
                     if (i_geometryIterator == 0) {
-                       // GPLog.androidLog(-1, "GeopaparazziOverlay.drawFromSpatialite  geometryIterator[" + i_geometryIterator
-                       //          + "] description[" + spatialTable.getDescription() + "]");
+                        // GPLog.androidLog(-1,
+                        // "GeopaparazziOverlay.drawFromSpatialite  geometryIterator[" +
+                        // i_geometryIterator
+                        // + "] description[" + spatialTable.getDescription() + "]");
                     }
                 } finally {
                     if (geometryIterator != null)
@@ -780,7 +799,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
         }
     }
 
-    private void drawGeometry( Geometry geom, Canvas canvas, ShapeWriter shape_writer, Paint fill, Paint stroke ) {
+    private static void drawGeometry( Geometry geom, Canvas canvas, ShapeWriter shape_writer, Paint fill, Paint stroke ) {
         String s_geometry_type = geom.getGeometryType();
         int i_geometry_type = GeometryType.forValue(s_geometry_type);
         GeometryType geometry_type = GeometryType.forValue(i_geometry_type);
@@ -830,6 +849,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
             break;
         }
     }
+
     @Override
     protected String getThreadName() {
         return THREAD_NAME;
@@ -1018,6 +1038,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                             }
                         }
                     } catch (IOException e1) {
+                        // ignore
                     }
                 }
 

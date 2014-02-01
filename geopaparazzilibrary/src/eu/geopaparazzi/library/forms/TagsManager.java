@@ -30,7 +30,6 @@ import static eu.geopaparazzi.library.forms.FormUtilities.TAG_VALUES;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -103,6 +102,9 @@ import eu.geopaparazzi.library.util.debug.Debug;
 @SuppressWarnings("nls")
 public class TagsManager {
 
+    /**
+     * The tags file name.
+     */
     public static String TAGSFILENAME = "tags.json";
 
     private LinkedHashMap<String, JSONObject> sectionsMap = null;
@@ -112,8 +114,9 @@ public class TagsManager {
     /**
      * Gets the manager singleton. 
      * 
+     * @param context  the context to use.
      * @return the {@link TagsManager} singleton.
-     * @throws IOException 
+     * @throws Exception  if something goes wrong. 
      */
     public static synchronized TagsManager getInstance( Context context ) throws Exception {
         if (tagsManager == null) {
@@ -157,14 +160,30 @@ public class TagsManager {
         }
     }
 
+    /**
+     * @return the section names.
+     */
     public Set<String> getSectionNames() {
         return sectionsMap.keySet();
     }
 
+    /**
+     * get a section obj by name.
+     * 
+     * @param name thename.
+     * @return the section object.
+     */
     public JSONObject getSectionByName( String name ) {
         return sectionsMap.get(name);
     }
 
+    /**
+     * get form name from a section obj.
+     * 
+     * @param section the section.
+     * @return the name.
+     * @throws JSONException  if something goes wrong.
+     */
     public static List<String> getFormNames4Section( JSONObject section ) throws JSONException {
         List<String> names = new ArrayList<String>();
         JSONArray jsonArray = section.getJSONArray(ATTR_FORMS);
@@ -180,6 +199,14 @@ public class TagsManager {
         return names;
     }
 
+    /**
+     * Get the form for a name.
+     * 
+     * @param formName the name.
+     * @param section the section object containing the form.
+     * @return the form object.
+     * @throws JSONException  if something goes wrong.
+     */
     public static JSONObject getForm4Name( String formName, JSONObject section ) throws JSONException {
         JSONArray jsonArray = section.getJSONArray(ATTR_FORMS);
         if (jsonArray != null && jsonArray.length() > 0) {
@@ -196,6 +223,13 @@ public class TagsManager {
         return null;
     }
 
+    /**
+     * Convert a string to a {@link TagObject}.
+     * 
+     * @param jsonString the string.
+     * @return the object.
+     * @throws JSONException  if something goes wrong.
+     */
     public static TagObject stringToTagObject( String jsonString ) throws JSONException {
         JSONObject jsonObject = new JSONObject(jsonString);
         String shortname = jsonObject.getString(TAG_SHORTNAME);
@@ -218,10 +252,10 @@ public class TagsManager {
      * object of the main array, not THE main array itself, 
      * i.e. a choice was already done.
      * 
-     * @param jsonObj the single object.
+     * @param formObj the single object.
      * @return the array of items of the contained form or <code>null</code> if 
      *          no form is contained.
-     * @throws JSONException
+     * @throws JSONException  if something goes wrong.
      */
     public static JSONArray getFormItems( JSONObject formObj ) throws JSONException {
         if (formObj.has(TAG_FORMITEMS)) {
@@ -236,7 +270,7 @@ public class TagsManager {
      * 
      * @param formItem the json form <b>item</b>.
      * @return the array of items.
-     * @throws JSONException
+     * @throws JSONException  if something goes wrong.
      */
     public static JSONArray getComboItems( JSONObject formItem ) throws JSONException {
         if (formItem.has(TAG_VALUES)) {
@@ -249,6 +283,11 @@ public class TagsManager {
         return null;
     }
 
+    /**
+     * @param comboItems combo items object.
+     * @return the string names.
+     * @throws JSONException  if something goes wrong.
+     */
     public static String[] comboItems2StringArray( JSONArray comboItems ) throws JSONException {
         int length = comboItems.length();
         String[] itemsArray = new String[length];
@@ -263,6 +302,12 @@ public class TagsManager {
         return itemsArray;
     }
 
+    /**
+     * Extract the combo values map.
+     * @param formItem the json object.
+     * @return the map of combo items.
+     * @throws JSONException  if something goes wrong.
+     */
     public static LinkedHashMap<String, List<String>> extractComboValuesMap( JSONObject formItem ) throws JSONException {
 
         LinkedHashMap<String, List<String>> valuesMap = new LinkedHashMap<String, List<String>>();
@@ -274,14 +319,14 @@ public class TagsManager {
             int length = names.length();
             for( int i = 0; i < length; i++ ) {
                 String name = names.getString(i);
-                
+
                 List<String> valuesList = new ArrayList<String>();
                 JSONArray itemsArray = valuesObj.getJSONArray(name);
                 int length2 = itemsArray.length();
                 for( int j = 0; j < length2; j++ ) {
                     JSONObject itemObj = itemsArray.getJSONObject(j);
                     if (itemObj.has(TAG_ITEM)) {
-                        valuesList.add( itemObj.getString(TAG_ITEM).trim());
+                        valuesList.add(itemObj.getString(TAG_ITEM).trim());
                     } else {
                         valuesList.add(" - ");
                     }
@@ -293,10 +338,25 @@ public class TagsManager {
 
     }
 
+    /**
+     * The tag object.
+     */
     public static class TagObject {
+        /**
+         * 
+         */
         public String shortName;
+        /**
+         * 
+         */
         public String longName;
+        /**
+         * 
+         */
         public boolean hasForm;
+        /**
+         * 
+         */
         public String jsonString;
     }
 }

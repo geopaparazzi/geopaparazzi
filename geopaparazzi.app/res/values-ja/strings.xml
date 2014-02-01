@@ -2,6 +2,7 @@
 <resources>
   <string name="yes">はい</string>
   <string name="no">いいえ</string>
+  <string name="app_name">Geopaparazzi</string>
   <string name="notesvisibilityToggle">ノートを表示する</string>
   <string name="kmlsaved">正常にエクスポートされました:</string>
   <string name="kmlnonsaved">データのエクスポート中にエラーが発生しました ！</string>
@@ -194,6 +195,13 @@
   <string name="start">開始</string>
   <string name="end">終了</string>
   <string name="other">その他</string>
+  <string name="base_maps">Spatialiteデータリスト</string>
   <string name="maps_manager">地図管理</string>
   <string name="loading_maps">データを読み込んでいます...</string>
+  <string name="project">プロジェクト</string>
+  <string name="gps_status">GPS Status</string>
+  <string name="no_queriable_layer_is_visible">クエリー可能なレイヤがありません。</string>
+  <string name="set_path_manually">パスを手動で設定（コンボボックスよりも優先されます）</string>
+  <string name="choose_from_suggested">または候補から選択する</string>
+  <string name="reset_style_tables">スタイルテーブルをリセットする</string>
 </resources>

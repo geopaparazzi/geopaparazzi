@@ -49,6 +49,11 @@ public class ResourcesManager implements Serializable {
 
     private static final String PATH_MEDIA = "media"; //$NON-NLS-1$
 
+    /**
+     * The nomedia file defining folders that should not be searched for media.
+     */
+    public static final String NO_MEDIA = ".nomedia"; //$NON-NLS-1$
+
     private File applicationDir;
 
     private File databaseFile;
@@ -68,6 +73,9 @@ public class ResourcesManager implements Serializable {
 
     private boolean createdApplicationDirOnInit = false;
 
+    /**
+     * @param useInternalMemory if <code>true</code>, internal memory is used.
+     */
     public static void setUseInternalMemory( boolean useInternalMemory ) {
         ResourcesManager.useInternalMemory = useInternalMemory;
     }
@@ -84,7 +92,7 @@ public class ResourcesManager implements Serializable {
      * 
      * @param context the context to refer to.
      * @return the {@link ResourcesManager} instance.
-     * @throws Exception 
+     * @throws Exception  if something goes wrong.
      */
     public synchronized static ResourcesManager getInstance( Context context ) throws Exception {
         if (resourcesManager == null) {
@@ -93,10 +101,18 @@ public class ResourcesManager implements Serializable {
         return resourcesManager;
     }
 
+    /**
+     * Reset the {@link ResourcesManager}.
+     */
     public static void resetManager() {
         resourcesManager = null;
     }
 
+    /**
+     * Getter for the app name.
+     * 
+     * @return the name of the app.
+     */
     public String getApplicationName() {
         return applicationLabel;
     }
@@ -362,7 +378,7 @@ public class ResourcesManager implements Serializable {
      * Update the description file of the project.
      * 
      * @param description a new description for the project.
-     * @throws IOException
+     * @throws IOException  if something goes wrong.
      */
     public void addProjectDescription( String description ) throws IOException {
         File applicationDir = getApplicationDir();

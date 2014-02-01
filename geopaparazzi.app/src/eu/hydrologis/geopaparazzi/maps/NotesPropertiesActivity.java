@@ -140,6 +140,7 @@ public class NotesPropertiesActivity extends Activity {
                 editor.commit();
             }
             public void onNothingSelected( AdapterView< ? > arg0 ) {
+                // ignore
             }
         });
     }

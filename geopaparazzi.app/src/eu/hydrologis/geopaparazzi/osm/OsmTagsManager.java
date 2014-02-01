@@ -19,7 +19,6 @@ package eu.hydrologis.geopaparazzi.osm;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.IOException;
 import java.util.Arrays;
 
 import android.content.Context;
@@ -34,28 +33,88 @@ import eu.geopaparazzi.library.util.ResourcesManager;
 public class OsmTagsManager {
 
     private static final String MAINICON_POSTFIX = ".n.48.png";
+    /**
+     * 
+     */
     public static final String ICON_POSTFIX_LOWDENSITY = ".n.32.png";
+    /**
+     * 
+     */
     public static final String ICON_POSTFIX_MEDIUMDENSITY = ".n.48.png";
+    /**
+     * 
+     */
     public static final String ICON_POSTFIX_HIGHDENSITY = ".n.64.png";
+    /**
+     * 
+     */
     public static final String ICON_POSTFIX_XLARGE = ".n.64.png";
 
+    /**
+     * 
+     */
     public static final String TAG_LONGNAME = "longname";
+    /**
+     * 
+     */
     public static final String TAG_SHORTNAME = "shortname";
+    /**
+     * 
+     */
     public static final String TAG_FORM = "form";
+    /**
+     * 
+     */
     public static final String TAG_FORMITEMS = "formitems";
+    /**
+     * 
+     */
     public static final String TAG_KEY = "key";
+    /**
+     * 
+     */
     public static final String TAG_VALUE = "value";
+    /**
+     * 
+     */
     public static final String TAG_VALUES = "values";
+    /**
+     * 
+     */
     public static final String TAG_ITEMS = "items";
+    /**
+     * 
+     */
     public static final String TAG_ITEM = "item";
+    /**
+     * 
+     */
     public static final String TAG_TYPE = "type";
 
+    /**
+     * 
+     */
     public static final String TYPE_STRING = "string";
+    /**
+     * 
+     */
     public static final String TYPE_DOUBLE = "double";
+    /**
+     * 
+     */
     public static final String TYPE_BOOLEAN = "boolean";
+    /**
+     * 
+     */
     public static final String TYPE_DOUBLECOMBO = "doublecombo";
+    /**
+     * 
+     */
     public static final String TYPE_STRINGCOMBO = "stringcombo";
 
+    /**
+     * 
+     */
     public static String TAGSFOLDERNAME = "osmtags";
 
     private static OsmTagsManager osmTagsManager;
@@ -67,7 +126,6 @@ public class OsmTagsManager {
      * Gets the manager singleton. 
      * 
      * @return the {@link OsmTagsManager} singleton.
-     * @throws IOException 
      */
     public static OsmTagsManager getInstance() {
         if (osmTagsManager == null) {
@@ -81,7 +139,7 @@ public class OsmTagsManager {
      * 
      * @param context the {@link Context}.
      * @return the root folder for OSM tags.
-     * @throws Exception 
+     * @throws Exception  if something goes wrong.
      */
     public synchronized File getTagsFolderFile( Context context ) throws Exception {
         if (tagsFolderFile == null) {
@@ -96,7 +154,7 @@ public class OsmTagsManager {
      * 
      * @param context the {@link Context}.
      * @return the names of the categories.
-     * @throws Exception
+     * @throws Exception  if something goes wrong.
      */
     public synchronized String[] getTagCategories( Context context ) throws Exception {
         if (categoriesNames == null) {
@@ -124,7 +182,7 @@ public class OsmTagsManager {
      * @param context the {@link Context}.
      * @param category the category from which to fetch the items.
      * @return the names of the items of the category. 
-     * @throws Exception 
+     * @throws Exception   if something goes wrong.
      */
     public String[] getItemsForCategory( Context context, String category ) throws Exception {
         File tagsFolderFile = getTagsFolderFile(context);

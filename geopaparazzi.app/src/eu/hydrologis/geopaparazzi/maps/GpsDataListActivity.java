@@ -218,7 +218,7 @@ public class GpsDataListActivity extends ListActivity {
             }
         }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener(){
             public void onClick( DialogInterface dialog, int id ) {
-
+                // ignore
             }
         });
         AlertDialog alertDialog = builder.create();

@@ -24,7 +24,14 @@ package eu.hydrologis.geopaparazzi.database;
  */
 @SuppressWarnings("nls")
 public enum NoteType {
-    POI(0, "POI"), OSM(1, "OSM");
+    /**
+     * default type
+     */
+    POI(0, "POI"),
+    /**
+     * osm type
+     */
+    OSM(1, "OSM");
 
     private final int num;
     private final String def;
@@ -34,10 +41,16 @@ public enum NoteType {
         this.def = def;
     }
 
+    /**
+     * @return the id of teh type.
+     */
     public int getTypeNum() {
         return num;
     }
 
+    /**
+     * @return the code of the type.
+     */
     public String getDef() {
         return def;
     }

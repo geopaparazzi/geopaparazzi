@@ -23,6 +23,12 @@ package eu.geopaparazzi.library.sensors;
  */
 public interface SensorsManagerListener {
 
+    /**
+     * On sensor changed action.
+     * 
+     * @param normalAzimuth normal azimuth.
+     * @param pictureAzimuth picture azimuth.
+     */
     public void onSensorChanged( double normalAzimuth, double pictureAzimuth );
 
 }
