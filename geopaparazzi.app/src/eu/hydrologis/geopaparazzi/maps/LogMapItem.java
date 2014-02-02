@@ -18,7 +18,6 @@
 package eu.hydrologis.geopaparazzi.maps;
 
 import java.io.Serializable;
-import java.util.Locale;
 //for string formatting the track length
 
 /**
@@ -82,7 +81,8 @@ public class LogMapItem extends MapItem implements Serializable {
      * @return returns length of track in meters
      */
     public String getLengthInM() {
-        return String.format(Locale.getDefault(), "%.0", lengthm); //$NON-NLS-1$
+        //return String.format(Locale.getDefault(), "%.1f", lengthm); //$NON-NLS-1$
+        return Long.toString(Math.round(lengthm));
     }
 
     /**
