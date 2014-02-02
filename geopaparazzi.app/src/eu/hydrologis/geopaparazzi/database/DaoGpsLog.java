@@ -215,7 +215,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             sb.append("UPDATE ");
             sb.append(TABLE_GPSLOGS);
             sb.append(" SET ");
-            sb.append(COLUMN_LOG_ENDTS).append("='").append(dateFormatter.format(end)).append("' ,");
+            sb.append(COLUMN_LOG_ENDTS).append("='").append(dateFormatter.format(end)).append("' ");
             sb.append("WHERE ").append(COLUMN_ID).append("=").append(logid);
 
             String query = sb.toString();

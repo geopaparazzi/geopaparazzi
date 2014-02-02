@@ -92,7 +92,7 @@ public interface IGpsLogDbHelper {
     public void setEndTs( Context context, long logid, Date end ) throws IOException;
 
     /**
-     * Re-sets the end length, in case it changed because points were added.
+     * Re-sets the end length.
      * 
      * @param context the {@link Context} to use.
      * @param logid the log to change. 
