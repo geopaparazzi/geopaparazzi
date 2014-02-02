@@ -110,6 +110,19 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         long rowId;
+        // first check to see if lengthm column is present
+        // to make compatible with versions of DB that don't yet have this field
+        try {
+            String query = "SELECT lengthm from " + TABLE_GPSLOGS;
+            SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
+            sqlUpdate.execute();
+            sqlUpdate.close();
+        } catch (Exception e) {
+            GPLog.error("DAOGPSLOG", e.getLocalizedMessage(), e);
+            // add the field
+            addFieldGPSTables(TABLE_GPSLOGS, "lengthm", "TEXT");
+        }
+
         try {
             // add new log
             ContentValues values = new ContentValues();
@@ -146,7 +159,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
      * @param gpslogId the ID from the GPS log table.
      * @param lon longitude.
      * @param lat latitude
-     * @param altim alititude/elevation
+     * @param altim altitude/elevation
      * @throws IOException if something goes wrong
      */
     public void addGpsLogDataPoint( SQLiteDatabase sqliteDatabase, long gpslogId, double lon, double lat, double altim,
@@ -199,7 +212,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     }
 
     /**
-     * Resets the end time AND the track length when a GPSlog is updated
+     * Resets the end time when a GPSlog is updated
      * 
      * @param logid the ID from the GPS log table.
      * @param end the new end time stamp
@@ -996,7 +1009,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     /**
      * Import a gpx in the database.
      * 
-     * TODO refactor a better design, with the new gox parser this is ugly.
+     * TODO refactor a better design, with the new gpx parser this is ugly.
      * 
      * @param context the context to use.
      * @param gpxItem the gpx wrapper.
@@ -1270,4 +1283,34 @@ public class DaoGpsLog implements IGpsLogDbHelper {
 
     }
 
+    /**
+     * Add a field to a table.
+     * 
+     * This is a very simple "add" and should not be used for cols needing indexing or for keys
+     * 
+     * @param tableName the name of the table to add the field to
+     * @param colName the name of the column
+     * @param colType the type of column to add (REAL, DATE, INTEGER, TEXT)
+     * @throws IOException  if something goes wrong.
+     */
+    public static void addFieldGPSTables( String tableName, String colName, String colType ) throws IOException {
+
+        StringBuilder sB = new StringBuilder();
+        sB.append("ALTER TABLE ");
+        sB.append(tableName);
+        sB.append(" ADD COLUMN ");
+        sB.append(colName);
+        sB.append(colType).append(" NOT NULL; ");
+
+        String ADD_FIELD_TO_TABLE = sB.toString();
+
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+        if (GPLog.LOG_ANDROID) {
+            StringBuilder sB2 = new StringBuilder();
+            sB2.append("Added ").append(colName).append(" to ").append(tableName);
+            Log.i("DAOGPSLOG", sB2.toString());
+        }
+        sqliteDatabase.execSQL(ADD_FIELD_TO_TABLE);
+
+    }
 }
