@@ -898,7 +898,15 @@ public class GeoPaparazziActivity extends Activity {
         dialog.show();
     }
 
+    // ///
+    // TGH mucking with this
+    // ///
     private void checkMapsAndLogsVisibility() throws IOException {
+        // add the field
+        boolean checkField = DaoGpsLog.existsColumnInTable("gpslogs", "lengthm");//$NON-NLS-1$
+        if (checkField == false) {
+            DaoGpsLog.addFieldGPSTables("gpslogs", "lengthm", "REAL"); //$NON-NLS-1$
+        }
         List<LogMapItem> maps = DaoGpsLog.getGpslogs();
         boolean oneVisible = false;
         for( LogMapItem item : maps ) {
@@ -907,7 +915,24 @@ public class GeoPaparazziActivity extends Activity {
             }
         }
         DataManager.getInstance().setLogsVisible(oneVisible);
+
     }
+
+    /*
+      // first check to see if lengthm column is present
+    // to make compatible with versions of DB that don't yet have this field
+    try {
+        String query = "SELECT lengthm from " + TABLE_GPSLOGS;
+        SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
+        sqlUpdate.execute();
+        sqlUpdate.close();
+    } catch (Exception e) {
+        GPLog.error("DAOGPSLOG", e.getLocalizedMessage(), e);
+        // add the field
+        addFieldGPSTables(TABLE_GPSLOGS, "lengthm", "TEXT");
+    }
+
+    */
 
     @Override
     public Object onRetainNonConfigurationInstance() {

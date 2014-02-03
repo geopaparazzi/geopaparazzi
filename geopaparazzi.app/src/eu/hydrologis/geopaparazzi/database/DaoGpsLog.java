@@ -1288,6 +1288,37 @@ public class DaoGpsLog implements IGpsLogDbHelper {
      * 
      * This is a very simple "add" and should not be used for cols needing indexing or for keys
      * 
+     * @return true or false for column presence in table
+     * @param inTable the name of the table to test
+     * @param columnToCheck the column to check for presence in table
+     * @throws IOException  if something goes wrong.
+     */
+
+    public static boolean existsColumnInTable( String inTable, String columnToCheck ) throws IOException {
+        try {
+            SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+            // query 1 row
+            Cursor mCursor = sqliteDatabase.rawQuery("SELECT * FROM " + inTable + " LIMIT 0", null);
+
+            // getColumnIndex gives us the index (0 to ...) of the column - otherwise we get a -1
+            if (mCursor.getColumnIndex(columnToCheck) != -1)
+                return true;
+            else
+                return false;
+
+        } catch (Exception Exp) {
+            // something went wrong. Missing the database? The table?
+            Log.d("... - existsColumnInTable",
+                    "When checking whether a column exists in the table, an error occurred: " + Exp.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Add a field to a table.
+     * 
+     * This is a very simple "add" and should not be used for cols needing indexing or for keys
+     * 
      * @param tableName the name of the table to add the field to
      * @param colName the name of the column
      * @param colType the type of column to add (REAL, DATE, INTEGER, TEXT)
@@ -1299,8 +1330,8 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         sB.append("ALTER TABLE ");
         sB.append(tableName);
         sB.append(" ADD COLUMN ");
-        sB.append(colName);
-        sB.append(colType).append(" NOT NULL; ");
+        sB.append(colName).append(" ");
+        sB.append(colType).append(" ; ");
 
         String ADD_FIELD_TO_TABLE = sB.toString();
 
