@@ -712,7 +712,8 @@ public class CustomTileDownloader extends TileDownloader {
             int[] tmsTiles = Utilities.googleTile2TmsTile(tileX, tileY, zoomLevel);
             tileX = tmsTiles[0];
             tileY = tmsTiles[1];
-        } else if (type == TILESCHEMA.tms || type == TILESCHEMA.google) {
+        }
+        if (type == TILESCHEMA.tms || type == TILESCHEMA.google) {
             String tmpTilePart = tilePart.replaceFirst(ZZZ_STR, String.valueOf(zoomLevel)); //$NON-NLS-1$
             tmpTilePart = tmpTilePart.replaceFirst(XXX_STR, String.valueOf(tileX)); //$NON-NLS-1$
             tmpTilePart = tmpTilePart.replaceFirst(YYY_STR, String.valueOf(tileY)); //$NON-NLS-1$
