@@ -212,4 +212,5 @@
     <string name="reset_style_tables">Reset style tables</string>
     <string name="menu_button">menu button</string>
     <string name="track_length">Track length: </string>
+    <string name="gpslog_updateLogLength">Update</string>
 </resources>

@@ -188,6 +188,20 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/main_text_color" />
 
+        <Button
+            android:id="@+id/gpslog_refreshLogLength"
+            android:padding="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/endtime_label"
+            android:background="@drawable/button_background_drawable"
+            android:paddingBottom="@dimen/button_indent"
+            android:paddingTop="@dimen/button_indent"
+            android:text="@string/gpslog_updateLogLength"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/main_text_color" />
+
     </RelativeLayout>
 
 </ScrollView>

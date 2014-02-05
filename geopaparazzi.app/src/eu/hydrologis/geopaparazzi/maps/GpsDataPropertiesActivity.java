@@ -56,6 +56,7 @@ public class GpsDataPropertiesActivity extends Activity {
     private String newText;
     private float newWidth;
     private String newColor;
+    private String newLengthm;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -79,10 +80,12 @@ public class GpsDataPropertiesActivity extends Activity {
             String endTime = item.getEndTime();
             String endText = endTimeTextView.getText().toString();
             endTimeTextView.setText(endText + endTime);
+            /* approach to use for track length without update button
             final TextView trackLengthTextView = (TextView) findViewById(R.id.trackLength_label);
             String lengthm = item.getLengthInM();
             String lengthText = trackLengthTextView.getText().toString();
             trackLengthTextView.setText(lengthText + " " + lengthm + "m"); //$NON-NLS-1$ //$NON-NLS-2$
+            */
 
             final EditText lognameTextView = (EditText) findViewById(R.id.gpslogname);
             final Spinner colorView = (Spinner) findViewById(R.id.color_spinner);
@@ -103,6 +106,30 @@ public class GpsDataPropertiesActivity extends Activity {
                 }
             });
 
+            // button to update the log (track) length field
+            final TextView trackLengthTextView = (TextView) findViewById(R.id.trackLength_label);
+            String lengthm = item.getLengthInM();
+            final String lengthText = trackLengthTextView.getText().toString();
+            trackLengthTextView.setText(lengthText + " " + lengthm + "m"); //$NON-NLS-1$ //$NON-NLS-2$
+
+            final Button refreshLogLenButton = (Button) findViewById(R.id.gpslog_refreshLogLength);
+            refreshLogLenButton.setOnClickListener(new Button.OnClickListener(){
+                public void onClick( View v ) {
+                    // newLengthm = item.getLengthInM();
+                    newLengthm = "9999";
+                    // TextView trackLengthTextView = (TextView)
+                    // findViewById(R.id.trackLength_label);
+                    // String lengthm = item.getLengthInM();
+                    // String lengthText = trackLengthTextView.getText().toString();
+                    trackLengthTextView.setText(lengthText + " " + newLengthm + "m"); //$NON-NLS-1$ //$NON-NLS-2$
+                    // Intent intent = new Intent(GpsDataPropertiesActivity.this,
+                    // ProfileChartActivity.class);
+                    // intent.putExtra(Constants.ID, item.getId());
+                    // startActivity(intent);
+                }
+            });
+
+            // line width
             newWidth = item.getWidth();
             ArrayAdapter< ? > widthSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.array_widths,
                     android.R.layout.simple_spinner_item);
