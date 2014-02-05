@@ -54,6 +54,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
+import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geopaparazzi.library.gps.GpsLocation;
 import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.sensors.SensorsManager;
@@ -802,6 +803,9 @@ public class GeoPaparazziActivity extends Activity {
                 actionBar.cleanup();
             if (GPLog.LOG)
                 Log.i("GEOPAPARAZZIACTIVITY", "Finish called!"); //$NON-NLS-1$
+
+            TagsManager.reset(this);
+
             // save last location just in case
             if (resourcesManager == null) {
                 super.finish();
@@ -823,6 +827,8 @@ public class GeoPaparazziActivity extends Activity {
             DatabaseManager.getInstance().closeDatabase();
             ResourcesManager.resetManager();
             resourcesManager = null;
+        } catch (Exception e1) {
+            e1.printStackTrace();
         } finally {
             super.finish();
         }

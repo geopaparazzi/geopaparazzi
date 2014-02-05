@@ -110,9 +110,9 @@ public class DatabaseManager {
             databaseHelper.close();
             if (Debug.D)
                 Log.i(DEBUG_TAG, "Database closed");
-            databaseHelper = null;
-            dbManager = null;
         }
+        databaseHelper = null;
+        dbManager = null;
     }
 
     private static class DatabaseOpenHelper {

@@ -127,6 +127,17 @@ public class TagsManager {
     }
 
     /**
+     * Reset the tags manager, forcing a new reread of the tags.
+     * 
+     * @param context the context to use.
+     * @throws Exception if something goes wrong.
+     */
+    public static void reset( Context context ) throws Exception {
+        tagsManager = null;
+        getInstance(context);
+    }
+
+    /**
      * Performs the first data reading. Necessary for everything else.
      * 
      * @param context
