@@ -82,7 +82,6 @@ public class GpsDatabaseLogger implements GpsManagerListener {
     private int currentPointsNum;
     /**
      * The current total distance of the track from start to the current point.
-     * 
      */
     private double currentDistance;
 
@@ -141,14 +140,19 @@ public class GpsDatabaseLogger implements GpsManagerListener {
         currentXY.clear();
 
         Thread t = new Thread(){
-
             public void run() {
                 try {
                     isShutdown = false;
 
                     SQLiteDatabase sqliteDatabase = dbHelper.getDatabase(context);
                     java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
-                    long gpsLogId = dbHelper.addGpsLog(context, now, now, 0f, logName, 2f, "red", true);
+
+                    GPLog.addLogEntry(this, null, null, "code location 1");
+
+                    long gpsLogId = dbHelper.addGpsLog(context, now, now, 0, logName, 2f, "red", true);
+
+                    GPLog.addLogEntry(this, null, null, "code location 2");
+
                     currentRecordedLogId = gpsLogId;
                     logH("Starting gps logging. Logid: " + gpsLogId);
 
@@ -221,7 +225,7 @@ public class GpsDatabaseLogger implements GpsManagerListener {
                         logABS("Removing gpslog, since too few points were added. Logid: " + gpsLogId);
                         dbHelper.deleteGpslog(context, gpsLogId);
                     } else {
-                        // set the end timestamp and the total distance for the track
+                        // set the end time stamp and the total distance for the track
                         java.sql.Date end = new java.sql.Date(System.currentTimeMillis());
                         dbHelper.setEndTs(context, gpsLogId, end);
                         dbHelper.setTrackLengthm(context, gpsLogId, (double) currentDistance);
@@ -287,7 +291,7 @@ public class GpsDatabaseLogger implements GpsManagerListener {
     }
 
     /**
-     * @return teh current points num of the log.
+     * @return the current number of points in the log.
      */
     public int getCurrentPointsNum() {
         return currentPointsNum;

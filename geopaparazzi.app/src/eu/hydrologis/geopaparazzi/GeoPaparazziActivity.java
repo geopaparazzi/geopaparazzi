@@ -449,7 +449,7 @@ public class GeoPaparazziActivity extends Activity {
 
     private void initMapsDirManager() throws jsqlite.Exception, IOException, FileNotFoundException {
         // [MapDirManager]
-        // define in MapsDirTreeViewList, which Context-Menues should be suppoted for
+        // define in MapsDirTreeViewList, which Context-Menus should be supported for
         // this Application
         // Should the Properties-Menu be supported/shown?
         MapsDirTreeViewList.ENABLE_MENU_PROPERTIES_FILE = true;
@@ -495,7 +495,7 @@ public class GeoPaparazziActivity extends Activity {
         }
         // MapsDirManager will read the preferences values for the last map
         // - it will collect all information about the maps on the sdcard/maps
-        // -- when the prefered map is found, this data will be stored
+        // -- when the preferred map is found, this data will be stored
         // --- when the Map-Activity is created:
         // --- the selected map will be loaded with
         // MapsDirManager.load_Map(map_view,mapCenterLocation);
@@ -642,12 +642,12 @@ public class GeoPaparazziActivity extends Activity {
      *
      * <p>
      * MapDirManager creates a static-list of maps and sends it to the MapsDirTreeViewList class
-     * - when first called this list will build a diretory/file list AND a map-type/Diretory/File list
+     * - when first called this list will build a directory/file list AND a map-type/Directory/File list
      * - once created, this list will be retained during the Application
-     * - the user can switch from a sorted list as Directory/File OR Map-Type/Diretory/File view
+     * - the user can switch from a sorted list as Directory/File OR Map-Type/Directory/File view
      * </p>
      *  result will be sent to MapDirManager and saved there and stored to preferences
-     *  - when the MapView is created, this stroed value will be read and loaded
+     *  - when the MapView is created, this stored value will be read and loaded
      */
     private void startMapsDirTreeViewList() {
         try {
@@ -665,9 +665,9 @@ public class GeoPaparazziActivity extends Activity {
                 // String s_SELECTED_FILE=data.getStringExtra(MapsDirTreeViewList.SELECTED_FILE);
                 // String s_SELECTED_TYPE=data.getStringExtra(MapsDirTreeViewList.SELECTED_TYPE);
                 // selected_classinfo will contain all information about the map
-                // MapsDirManager will store this internaly and store the values to preferences
+                // MapsDirManager will store this internally and store the values to preferences
                 // - if this is called from a non-Map-Activity:
-                // -- the map_view parameter und the position parameter MUST be null
+                // -- the map_view parameter and the position parameter MUST be null
                 // - if this is called from a Map-Activity:
                 // -- the map_view parameter and the position parameter should be given
                 // --- the position parameter is not given [null], it will use the position of the
@@ -801,7 +801,7 @@ public class GeoPaparazziActivity extends Activity {
             if (actionBar != null)
                 actionBar.cleanup();
             if (GPLog.LOG)
-                Log.i("GEOPAPARAZZIACTIVITY", "Finish called!"); //$NON-NLS-1$
+                Log.i("GEOPAPARAZZIACTIVITY", "Finish called!"); //$NON-NLS-1$ //$NON-NLS-2$
             // save last location just in case
             if (resourcesManager == null) {
                 super.finish();
@@ -898,14 +898,18 @@ public class GeoPaparazziActivity extends Activity {
         dialog.show();
     }
 
-    // ///
-    // TGH mucking with this
-    // ///
-    private void checkMapsAndLogsVisibility() throws IOException {
-        // add the field
-        boolean checkField = DaoGpsLog.existsColumnInTable("gpslogs", "lengthm");//$NON-NLS-1$
+    /**
+     * Check for:
+     *  length field in gpslogs (add if needed)
+     *  visibility of gpslogs (turned on or off?)
+     */
+    @SuppressWarnings("nls")
+    private static void checkMapsAndLogsVisibility() throws IOException {
+        // "static" added by tgh per instructions from Eclipse
+        // add the lengthm field if it doesn't exist to remain compatible with earlier versions
+        boolean checkField = DaoGpsLog.existsColumnInTable("gpslogs", "lengthm");
         if (checkField == false) {
-            DaoGpsLog.addFieldGPSTables("gpslogs", "lengthm", "REAL"); //$NON-NLS-1$
+            DaoGpsLog.addFieldGPSTables("gpslogs", "lengthm", "REAL");
         }
         List<LogMapItem> maps = DaoGpsLog.getGpslogs();
         boolean oneVisible = false;
@@ -917,22 +921,6 @@ public class GeoPaparazziActivity extends Activity {
         DataManager.getInstance().setLogsVisible(oneVisible);
 
     }
-
-    /*
-      // first check to see if lengthm column is present
-    // to make compatible with versions of DB that don't yet have this field
-    try {
-        String query = "SELECT lengthm from " + TABLE_GPSLOGS;
-        SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
-        sqlUpdate.execute();
-        sqlUpdate.close();
-    } catch (Exception e) {
-        GPLog.error("DAOGPSLOG", e.getLocalizedMessage(), e);
-        // add the field
-        addFieldGPSTables(TABLE_GPSLOGS, "lengthm", "TEXT");
-    }
-
-    */
 
     @Override
     public Object onRetainNonConfigurationInstance() {

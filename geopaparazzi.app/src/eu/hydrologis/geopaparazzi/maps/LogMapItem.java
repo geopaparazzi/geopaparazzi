@@ -18,7 +18,7 @@
 package eu.hydrologis.geopaparazzi.maps;
 
 import java.io.Serializable;
-//for string formatting the track length
+//for string formatting the track (log) length
 
 /**
  * Item representing a gps log.

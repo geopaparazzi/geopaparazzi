@@ -110,19 +110,6 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         long rowId;
-        // first check to see if lengthm column is present
-        // to make compatible with versions of DB that don't yet have this field
-        try {
-            String query = "SELECT lengthm from " + TABLE_GPSLOGS;
-            SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
-            sqlUpdate.execute();
-            sqlUpdate.close();
-        } catch (Exception e) {
-            GPLog.error("DAOGPSLOG", e.getLocalizedMessage(), e);
-            // add the field
-            addFieldGPSTables(TABLE_GPSLOGS, "lengthm", "TEXT");
-        }
-
         try {
             // add new log
             ContentValues values = new ContentValues();
@@ -1284,9 +1271,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     }
 
     /**
-     * Add a field to a table.
-     * 
-     * This is a very simple "add" and should not be used for cols needing indexing or for keys
+     * Check to see if a column is in a table
      * 
      * @return true or false for column presence in table
      * @param inTable the name of the table to test
@@ -1306,10 +1291,10 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             else
                 return false;
 
-        } catch (Exception Exp) {
+        } catch (Exception e) {
             // something went wrong. Missing the database? The table?
             Log.d("... - existsColumnInTable",
-                    "When checking whether a column exists in the table, an error occurred: " + Exp.getMessage());
+                    "When checking whether a column exists in the table, an error occurred: " + e.getMessage());
             return false;
         }
     }
@@ -1317,7 +1302,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     /**
      * Add a field to a table.
      * 
-     * This is a very simple "add" and should not be used for cols needing indexing or for keys
+     * This is a very simple "add" and should not be used for columns needing indexing or keys
      * 
      * @param tableName the name of the table to add the field to
      * @param colName the name of the column
