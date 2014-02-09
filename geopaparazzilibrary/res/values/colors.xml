@@ -10,6 +10,9 @@
     
     <color name="main_selection">#FF9933</color>
     <color name="main_selection_border">#993300</color>
+
+    <color name="main_disabled">#d7d7d7</color>
+    <color name="main_disabled_border">#919191</color>
     
     <!-- ok and non ok colors -->
     <color name="main_ok_color">#38ec38</color>
