@@ -38,6 +38,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.location.Location;
 import android.util.Log;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gps.IGpsLogDbHelper;
@@ -1327,6 +1328,91 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             Log.i("DAOGPSLOG", sB2.toString());
         }
         sqliteDatabase.execSQL(ADD_FIELD_TO_TABLE);
+
+    }
+
+    /**
+     * update the length of a log
+     * 
+     * @param logId the id of the log.
+     * @return log length as double
+     * @throws IOException  if something goes wrong.
+     */
+    public static double updateLogLength( long logId ) throws IOException {
+
+        try {
+            SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+            String asColumnsToReturn[] = {COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_ALTIM, COLUMN_DATA_TS};
+            String strSortOrder = COLUMN_DATA_TS + " ASC";
+            String strWhere = COLUMN_LOGID + "=" + logId;
+            Cursor c = null;
+            double summedDistance = 0.0;
+            double lon = 0.0;
+            double lat = 0.0;
+            double prevLon = 0.0;
+            double prevLat = 0.0;
+
+            if (GPLog.LOG_HEAVY)
+                GPLog.addLogEntry("DAOGPSLOG", strWhere);
+            try {
+                c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, null, null, null, strSortOrder);
+                c.moveToFirst();
+                while( !c.isAfterLast() ) {
+                    lon = c.getDouble(0);
+                    lat = c.getDouble(1);
+                    // double altim = c.getDouble(2);
+                    // String date = c.getString(3);
+                    // line.addPoint(lon, lat, altim, date);
+                    if (GPLog.LOG_HEAVY) {
+                        GPLog.addLogEntry("DAOGPSLOG", "lon: " + String.valueOf(lon));
+                        GPLog.addLogEntry("DAOGPSLOG", "lat: " + String.valueOf(lat));
+                    }
+
+                    Location thisLoc = new Location("dummy1"); //$NON-NLS-1$
+                    thisLoc.setLongitude(lon);
+                    thisLoc.setLatitude(lat);
+                    Location thatLoc = new Location("dummy2"); //$NON-NLS-1$
+
+                    if (GPLog.LOG_HEAVY) {
+                        GPLog.addLogEntry("DAOGPSLOG", "prevlon: " + String.valueOf(prevLon));
+                        GPLog.addLogEntry("DAOGPSLOG", "prevlat: " + String.valueOf(prevLat));
+                    }
+                    if (prevLon == 0.0) {
+                        prevLon = lon;
+                        prevLat = lat;
+                    }
+                    thatLoc.setLongitude(prevLon);
+                    thatLoc.setLatitude(prevLat);
+                    double lastDistance = thisLoc.distanceTo(thatLoc);
+                    if (GPLog.LOG_HEAVY) {
+                        GPLog.addLogEntry("DAOGPSLOG", "distance: " + String.valueOf(lastDistance));
+                    }
+
+                    summedDistance = summedDistance + lastDistance;
+                    prevLon = lon;
+                    prevLat = lat;
+
+                    c.moveToNext();
+                }
+            } finally {
+                if (c != null)
+                    c.close();
+            }
+
+            sqliteDatabase.beginTransaction();
+            String query = "update " + TABLE_GPSLOGS + " set lengthm = " + summedDistance + " where " + COLUMN_ID + " = " + logId;
+            SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
+            sqlUpdate.execute();
+            sqlUpdate.close();
+            sqliteDatabase.setTransactionSuccessful();
+            sqliteDatabase.endTransaction();
+
+            return (summedDistance);
+
+        } catch (IOException e) {
+            GPLog.error("DAOMAPS", e.getLocalizedMessage(), e);
+            throw new IOException(e.getLocalizedMessage());
+        }
 
     }
 }

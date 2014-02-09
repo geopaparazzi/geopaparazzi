@@ -101,4 +101,13 @@ public interface IGpsLogDbHelper {
      */
     public void setTrackLengthm( Context context, long logid, double length ) throws IOException;
 
+    /**
+     * update the length of a log
+     * 
+     * @param logId the id of the log.
+     * 
+     * @throws IOException  if something goes wrong.
+     */
+    // public void updateLogLength( long logId ) throws IOException;
+
 }

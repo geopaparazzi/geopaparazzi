@@ -31,6 +31,7 @@ public class LogMapItem extends MapItem implements Serializable {
     private String startTime = " - "; //$NON-NLS-1$
     private String endTime = " - "; //$NON-NLS-1$
     private double lengthm = 0.0;
+    private long id;
 
     /**
      * @param id id
@@ -51,6 +52,7 @@ public class LogMapItem extends MapItem implements Serializable {
             this.endTime = endTime;
         if (lengthm > 0)
             this.lengthm = lengthm;
+        this.id = id;
     }
 
     /**
@@ -90,5 +92,12 @@ public class LogMapItem extends MapItem implements Serializable {
      */
     public void setLengthInM( double lengthm ) {
         this.lengthm = lengthm;
+    }
+
+    /**
+     * @return returns the id for this record
+     */
+    public long getLogID() {
+        return id;
     }
 }

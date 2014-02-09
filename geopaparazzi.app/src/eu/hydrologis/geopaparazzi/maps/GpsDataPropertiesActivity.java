@@ -56,7 +56,7 @@ public class GpsDataPropertiesActivity extends Activity {
     private String newText;
     private float newWidth;
     private String newColor;
-    private String newLengthm;
+    private double newLengthm;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -115,17 +115,16 @@ public class GpsDataPropertiesActivity extends Activity {
             final Button refreshLogLenButton = (Button) findViewById(R.id.gpslog_refreshLogLength);
             refreshLogLenButton.setOnClickListener(new Button.OnClickListener(){
                 public void onClick( View v ) {
-                    // newLengthm = item.getLengthInM();
-                    newLengthm = "9999";
-                    // TextView trackLengthTextView = (TextView)
-                    // findViewById(R.id.trackLength_label);
-                    // String lengthm = item.getLengthInM();
-                    // String lengthText = trackLengthTextView.getText().toString();
-                    trackLengthTextView.setText(lengthText + " " + newLengthm + "m"); //$NON-NLS-1$ //$NON-NLS-2$
-                    // Intent intent = new Intent(GpsDataPropertiesActivity.this,
-                    // ProfileChartActivity.class);
-                    // intent.putExtra(Constants.ID, item.getId());
-                    // startActivity(intent);
+                    long logID = item.getLogID();
+                    // now send this logID out to calculate the total
+                    newLengthm = 9999; // testing
+                    try {
+                        newLengthm = DaoGpsLog.updateLogLength(logID);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    String newLen = Long.toString(Math.round(newLengthm));
+                    trackLengthTextView.setText(lengthText + " " + newLen + "m"); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             });
 

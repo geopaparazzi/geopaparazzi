@@ -53,28 +53,19 @@ public class ProfileChartActivity extends Activity {
     /**
      * 
      */
-    public static final String TYPE = "type";
-
+    public static final String TYPE = "type"; //$NON-NLS-1$
     private XYMultipleSeriesDataset mDataset = new XYMultipleSeriesDataset();
-
     private XYMultipleSeriesRenderer mRenderer = new XYMultipleSeriesRenderer();
-
     private XYSeries mCurrentSeries;
-
     private XYSeriesRenderer mCurrentRenderer;
-
     private String mDateFormat;
-
     private GraphicalView mChartView;
-
     private Line line;
-
     private double yMin;
-
     private double yMax;
-
     private ProgressDialog progressDialog;
 
+    @SuppressWarnings("nls")
     @Override
     protected void onRestoreInstanceState( Bundle savedState ) {
         super.onRestoreInstanceState(savedState);
@@ -85,6 +76,7 @@ public class ProfileChartActivity extends Activity {
         mDateFormat = savedState.getString("date_format");
     }
 
+    @SuppressWarnings("nls")
     @Override
     protected void onSaveInstanceState( Bundle outState ) {
         super.onSaveInstanceState(outState);

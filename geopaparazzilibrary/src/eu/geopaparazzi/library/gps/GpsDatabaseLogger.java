@@ -146,13 +146,7 @@ public class GpsDatabaseLogger implements GpsManagerListener {
 
                     SQLiteDatabase sqliteDatabase = dbHelper.getDatabase(context);
                     java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
-
-                    GPLog.addLogEntry(this, null, null, "code location 1");
-
                     long gpsLogId = dbHelper.addGpsLog(context, now, now, 0, logName, 2f, "red", true);
-
-                    GPLog.addLogEntry(this, null, null, "code location 2");
-
                     currentRecordedLogId = gpsLogId;
                     logH("Starting gps logging. Logid: " + gpsLogId);
 
