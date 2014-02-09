@@ -54,6 +54,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
+import eu.geopaparazzi.library.forms.TagsManager;
 import eu.geopaparazzi.library.gps.GpsLocation;
 import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.sensors.SensorsManager;
@@ -124,6 +125,7 @@ public class GeoPaparazziActivity extends Activity {
         super.onCreate(savedInstanceState);
         try {
             checkMockLocations();
+            // clearCacheIfneeded();
             initializeResourcesManager();
         } catch (Exception e) {
             e.printStackTrace();
@@ -802,14 +804,17 @@ public class GeoPaparazziActivity extends Activity {
                 actionBar.cleanup();
             if (GPLog.LOG)
                 Log.i("GEOPAPARAZZIACTIVITY", "Finish called!"); //$NON-NLS-1$ //$NON-NLS-2$
+
+            TagsManager.reset(this);
+
             // save last location just in case
             if (resourcesManager == null) {
                 super.finish();
                 return;
             }
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             GpsLocation loc = gpsManager.getLocation();
             if (loc != null) {
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
                 PositionUtilities.putGpsLocationInPreferences(preferences, loc.getLongitude(), loc.getLatitude(),
                         loc.getAltitude());
             }
@@ -823,10 +828,31 @@ public class GeoPaparazziActivity extends Activity {
             DatabaseManager.getInstance().closeDatabase();
             ResourcesManager.resetManager();
             resourcesManager = null;
+
+            // Editor edit = preferences.edit();
+            // edit.putBoolean("EXIT_THROUGH_FINISH", true);
+            // edit.commit();
+        } catch (Exception e1) {
+            e1.printStackTrace();
         } finally {
             super.finish();
         }
     }
+
+    // private void clearCacheIfneeded() {
+    // SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+    // boolean exitCalled = preferences.getBoolean("EXIT_THROUGH_FINISH", true);
+    // Editor edit = preferences.edit();
+    // edit.putBoolean("EXIT_THROUGH_FINISH", false);
+    // edit.commit();
+    // if (exitCalled) {
+    // File cache = getCacheDir();
+    // if (cache.exists()) {
+    // GPLog.addLogEntry(this, "Deleting cache folder: " + cache);
+    // FileUtilities.deleteFileOrDir(cache);
+    // }
+    // }
+    // }
 
     private void resetData() {
         final String enterNewProjectString = getString(eu.hydrologis.geopaparazzi.R.string.enter_a_name_for_the_new_project);
