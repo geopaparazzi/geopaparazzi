@@ -80,13 +80,6 @@ public class GpsDataPropertiesActivity extends Activity {
             String endTime = item.getEndTime();
             String endText = endTimeTextView.getText().toString();
             endTimeTextView.setText(endText + endTime);
-            /* approach to use for track length without update button
-            final TextView trackLengthTextView = (TextView) findViewById(R.id.trackLength_label);
-            String lengthm = item.getLengthInM();
-            String lengthText = trackLengthTextView.getText().toString();
-            trackLengthTextView.setText(lengthText + " " + lengthm + "m"); //$NON-NLS-1$ //$NON-NLS-2$
-            */
-
             final EditText lognameTextView = (EditText) findViewById(R.id.gpslogname);
             final Spinner colorView = (Spinner) findViewById(R.id.color_spinner);
             final Spinner widthView = (Spinner) findViewById(R.id.widthText);
@@ -106,18 +99,17 @@ public class GpsDataPropertiesActivity extends Activity {
                 }
             });
 
-            // button to update the log (track) length field
+            // log (track) length field
             final TextView trackLengthTextView = (TextView) findViewById(R.id.trackLength_label);
             String lengthm = item.getLengthInM();
             final String lengthText = trackLengthTextView.getText().toString();
             trackLengthTextView.setText(lengthText + " " + lengthm + "m"); //$NON-NLS-1$ //$NON-NLS-2$
 
+            // button to update the log (track) length field
             final Button refreshLogLenButton = (Button) findViewById(R.id.gpslog_refreshLogLength);
             refreshLogLenButton.setOnClickListener(new Button.OnClickListener(){
                 public void onClick( View v ) {
                     long logID = item.getLogID();
-                    // now send this logID out to calculate the total
-                    newLengthm = 9999; // testing
                     try {
                         newLengthm = DaoGpsLog.updateLogLength(logID);
                     } catch (IOException e) {

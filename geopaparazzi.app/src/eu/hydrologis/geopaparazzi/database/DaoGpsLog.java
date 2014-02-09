@@ -1334,6 +1334,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     /**
      * update the length of a log
      * 
+     * 
      * @param logId the id of the log.
      * @return log length as double
      * @throws IOException  if something goes wrong.
@@ -1341,8 +1342,9 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     public static double updateLogLength( long logId ) throws IOException {
 
         try {
+            // get the log data, sum up the distances
             SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
-            String asColumnsToReturn[] = {COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_ALTIM, COLUMN_DATA_TS};
+            String asColumnsToReturn[] = {COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_TS};
             String strSortOrder = COLUMN_DATA_TS + " ASC";
             String strWhere = COLUMN_LOGID + "=" + logId;
             Cursor c = null;
@@ -1352,7 +1354,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             double prevLon = 0.0;
             double prevLat = 0.0;
 
-            if (GPLog.LOG_HEAVY)
+            if (GPLog.LOG_ABSURD)
                 GPLog.addLogEntry("DAOGPSLOG", strWhere);
             try {
                 c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, null, null, null, strSortOrder);
@@ -1360,20 +1362,15 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 while( !c.isAfterLast() ) {
                     lon = c.getDouble(0);
                     lat = c.getDouble(1);
-                    // double altim = c.getDouble(2);
-                    // String date = c.getString(3);
-                    // line.addPoint(lon, lat, altim, date);
-                    if (GPLog.LOG_HEAVY) {
+
+                    Location newLoc = new Location("tempLoc1"); //$NON-NLS-1$
+                    newLoc.setLongitude(lon);
+                    newLoc.setLatitude(lat);
+                    Location prevLoc = new Location("tempLoc2"); //$NON-NLS-1$
+
+                    if (GPLog.LOG_ABSURD) {
                         GPLog.addLogEntry("DAOGPSLOG", "lon: " + String.valueOf(lon));
                         GPLog.addLogEntry("DAOGPSLOG", "lat: " + String.valueOf(lat));
-                    }
-
-                    Location thisLoc = new Location("dummy1"); //$NON-NLS-1$
-                    thisLoc.setLongitude(lon);
-                    thisLoc.setLatitude(lat);
-                    Location thatLoc = new Location("dummy2"); //$NON-NLS-1$
-
-                    if (GPLog.LOG_HEAVY) {
                         GPLog.addLogEntry("DAOGPSLOG", "prevlon: " + String.valueOf(prevLon));
                         GPLog.addLogEntry("DAOGPSLOG", "prevlat: " + String.valueOf(prevLat));
                     }
@@ -1381,13 +1378,12 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                         prevLon = lon;
                         prevLat = lat;
                     }
-                    thatLoc.setLongitude(prevLon);
-                    thatLoc.setLatitude(prevLat);
-                    double lastDistance = thisLoc.distanceTo(thatLoc);
-                    if (GPLog.LOG_HEAVY) {
+                    prevLoc.setLongitude(prevLon);
+                    prevLoc.setLatitude(prevLat);
+                    double lastDistance = newLoc.distanceTo(prevLoc);
+                    if (GPLog.LOG_ABSURD) {
                         GPLog.addLogEntry("DAOGPSLOG", "distance: " + String.valueOf(lastDistance));
                     }
-
                     summedDistance = summedDistance + lastDistance;
                     prevLon = lon;
                     prevLat = lat;
@@ -1399,6 +1395,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                     c.close();
             }
 
+            // update the gpslogs table with the summed distance
             sqliteDatabase.beginTransaction();
             String query = "update " + TABLE_GPSLOGS + " set lengthm = " + summedDistance + " where " + COLUMN_ID + " = " + logId;
             SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
@@ -1407,12 +1404,11 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             sqliteDatabase.setTransactionSuccessful();
             sqliteDatabase.endTransaction();
 
+            // send the summed distance back so we don't have to query the table again
             return (summedDistance);
-
         } catch (IOException e) {
             GPLog.error("DAOMAPS", e.getLocalizedMessage(), e);
             throw new IOException(e.getLocalizedMessage());
         }
-
     }
 }
