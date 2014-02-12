@@ -38,7 +38,7 @@ import eu.geopaparazzi.library.database.GPLog;
 public class GeometryIterator implements Iterator<Geometry> {
     private WKBReader wkbReader = new WKBReader();
     private Stmt stmt;
-    private String s_label = "";
+    private String labelText = "";
     /**
      * Returns Label String (if any)
      *
@@ -46,11 +46,10 @@ public class GeometryIterator implements Iterator<Geometry> {
      * - if any label is being supported, will build s_label from column 1 to end<br>
      * -- each column (after 1) will have a ', ' inserted<br>
      * -- s_label will be empty if no label was requested<br>
-     * @param stmt statement being executed
      * @return s_label
     */
     public String getLabelText() {
-        return s_label;
+        return labelText;
     }
     /**
      * Builds Label String (if any)
@@ -61,40 +60,38 @@ public class GeometryIterator implements Iterator<Geometry> {
      * -- each column (after 1) will have a ', ' inserted<br>
      * -- s_label will be set to blank before filling<br>
      * @param stmt statement being executed
-     * @return nothing
      */
     private void setLabelText( Stmt stmt ) {
-        s_label = "";
+        labelText = "";
         int i = 1;
-        int i_column_count = 0;
+        int columnCount = 0;
         try {
-            if ((stmt != null) && (stmt.column_count() > 1)) {
-                i_column_count = stmt.column_count();
-                for( i = 1; i < i_column_count; i++ ) {
-                    if (!s_label.equals("")) {
-                        s_label += ", ";
+            if ((stmt != null) && (columnCount = stmt.column_count()) > 1) {
+                for( i = 1; i < columnCount; i++ ) {
+                    if (!labelText.equals("")) {
+                        labelText += ", ";
                     }
                     switch( stmt.column_type(i) ) {
                     case Constants.SQLITE_INTEGER: {
-                        s_label = s_label + stmt.column_int(i);
+                        labelText = labelText + stmt.column_int(i);
                     }
                         break;
                     case Constants.SQLITE_FLOAT: {
-                        s_label += String.format("%.5f", stmt.column_double(i));
+                        labelText += String.format("%.5f", stmt.column_double(i));
                     }
                         break;
                     case Constants.SQLITE_BLOB: { // not supported
                     }
                         break;
                     case Constants.SQLITE3_TEXT: {
-                        s_label += stmt.column_string(i);
+                        labelText += stmt.column_string(i);
                     }
                         break;
                     }
                 }
             }
         } catch (Exception e) {
-            GPLog.androidLog(4, "GeometryIterator.setLabelText column_count[" + i_column_count + "] column[" + i + "]", e);
+            GPLog.androidLog(4, "GeometryIterator.setLabelText column_count[" + columnCount + "] column[" + i + "]", e);
         }
     }
     /**

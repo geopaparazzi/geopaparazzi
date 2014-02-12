@@ -348,8 +348,8 @@ public class SpatialiteUtilities {
         }
         qSb.append("))");
         if (table.getStyle().labelvisible == 1) {
-         qSb.append(",");
-        qSb.append(table.getStyle().labelfield);
+            qSb.append(",");
+            qSb.append(table.getStyle().labelfield);
         }
         qSb.append(" FROM ");
         qSb.append(table.getTableName());

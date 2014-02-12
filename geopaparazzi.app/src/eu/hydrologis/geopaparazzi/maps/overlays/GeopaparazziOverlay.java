@@ -753,17 +753,18 @@ public abstract class GeopaparazziOverlay extends Overlay {
                         i_geometryIterator++;
                         Geometry geom = geometryIterator.next();
                         if (geom != null) {
-                            String s_label=geometryIterator.getLabelText();
-                            String s_geometry_type = geom.getGeometryType();
+                            // TODO get label to draw
+                            // String labelText = geometryIterator.getLabelText();
+                            String geometryType = geom.getGeometryType();
                             if (spatialTable.isGeometryCollection()) {
-                                int i_count_geometries = geom.getNumGeometries();
+                                int geometriesCount = geom.getNumGeometries();
                                 // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite type["+s_geometry_type+"]: count_geometries["+i_count_geometries+"]: ["+drawZoomLevel+"]");
-                                for( int j = 0; j < i_count_geometries; j++ ) {
+                                for( int j = 0; j < geometriesCount; j++ ) {
                                     Geometry geom_collect = geom.getGeometryN(j);
                                     if (geom_collect != null) {
-                                        s_geometry_type = geom_collect.getGeometryType();
+                                        geometryType = geom_collect.getGeometryType();
                                         // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite type["+s_geometry_type+"]: ["+drawZoomLevel+"]");
-                                        if (s_geometry_type.toUpperCase().indexOf("POINT") != -1) {
+                                        if (geometryType.toUpperCase().indexOf("POINT") != -1) {
                                             drawGeometry(geom_collect, canvas, shape_writer_point, fill, stroke);
                                         } else {
                                             drawGeometry(geom_collect, canvas, shape_writer, fill, stroke);
@@ -779,9 +780,11 @@ public abstract class GeopaparazziOverlay extends Overlay {
                                     return;
                                 }
                             }
-                            if (!s_label.equals(""))  { // Draw Label
-                             GPLog.androidLog(-1, "GeopaparazziOverlay.drawFromSpatialite label["+s_label+"] ");
-                            }
+                            // TODO Draw Label
+                            // if (!labelText.equals("")) {
+                            // GPLog.androidLog(-1, "GeopaparazziOverlay.drawFromSpatialite label["
+                            // + labelText + "] ");
+                            // }
                         } else {
                             GPLog.androidLog(-1, "GeopaparazziOverlay.drawFromSpatialite  [geom == null] description["
                                     + spatialTable.getTableName() + "]");
