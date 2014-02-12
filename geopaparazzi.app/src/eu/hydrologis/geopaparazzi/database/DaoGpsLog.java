@@ -139,6 +139,14 @@ public class DaoGpsLog implements IGpsLogDbHelper {
 
     public void addGpsLogDataPoint( SQLiteDatabase sqliteDatabase, long gpslogId, double lon, double lat, double altim,
             Date timestamp ) throws IOException {
+
+        try {
+            new GeoPoint(lat, lon);
+        } catch (Exception e) {
+            // if the point is not valid, do not insert it
+            return;
+        }
+
         ContentValues values = new ContentValues();
         values.put(COLUMN_LOGID, (int) gpslogId);
         values.put(COLUMN_DATA_LON, lon);
@@ -395,7 +403,11 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             while( !c.isAfterLast() ) {
                 double lon = c.getDouble(0);
                 double lat = c.getDouble(1);
-                line.add(new GeoPoint(lat, lon));
+                try {
+                    line.add(new GeoPoint(lat, lon));
+                } catch (Exception e) {
+                    // ignore invalid coordinates
+                }
                 c.moveToNext();
                 for( int i = 1; i < jump; i++ ) {
                     c.moveToNext();
