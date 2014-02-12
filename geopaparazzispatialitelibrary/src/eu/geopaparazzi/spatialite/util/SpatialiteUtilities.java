@@ -50,9 +50,9 @@ public class SpatialiteUtilities {
 
     /**
       * Create geometry Table from Shape Table.
-      * 
+      *
       * <p>'RegisterVirtualGeometry' needs SpatiaLite 4.0.0
-      * 
+      *
       * @param sqlite_db Database connection to use
       * @param s_table_path full path to Shape-Table [without .shp]
       * @param s_table_name Table name of Shape-Table [without path]
@@ -113,9 +113,9 @@ public class SpatialiteUtilities {
     // -----------------------------------------------
     /**
       * Attempt to determine srid from Shape .prj file
-      * 
+      *
       * <p>Shape-WKT rarely conforms to that used in 'spatial_ref_sys'
-      * 
+      *
       * @param sqlite_db Database connection to use
       * @param s_srs_wkt name of 'spatial_ref_sys' to search [dependent on spatilite version]
       * @param s_well_known_text read from the Shape .prj file
@@ -136,7 +136,7 @@ public class SpatialiteUtilities {
         if ((s_well_known_text.indexOf("GCS_DHDN") != -1) && (s_well_known_text.indexOf("D_Deutsches_Hauptdreiecksnetz") != -1)
                 && (s_well_known_text.indexOf("Bessel_1841") != -1) && (s_well_known_text.indexOf("Greenwich") != -1)
                 && (s_well_known_text.indexOf("Degree") != -1)) {
-            /* 
+            /*
              * PROJCS["Cassini",GEOGCS["GCS_DHDN",
              * DATUM["D_Deutsches_Hauptdreiecksnetz",
              * SPHEROID["Bessel_1841",6377397.155,299.1528128]],
@@ -156,7 +156,7 @@ public class SpatialiteUtilities {
             }
         }
         if (i_srid == 0) {
-            /* 
+            /*
              * TODO: do a lot of guessing
              * PROJCS["DHDN / Soldner Berlin",
              * GEOGCS["DHDN",DATUM["Deutsches_Hauptdreiecksnetz",
@@ -183,13 +183,13 @@ public class SpatialiteUtilities {
 
     /**
       * General Function to search for Shape files
-      * 
+      *
       * <p>
       * - A Shape-File(s) resides in a directory<br>
       * - - the Directory name is the Database-Name<br>
       * - each Shape-Table must have a '.shp','.prj','.shx' and '.dbf'<br>
       * - the name with extention is the Table-Name<br>
-      * 
+      *
       * @param prjFile2ParentFolderMap File as found '.prj' files, File as directory
       */
     private static void createDbForShapefile( HashMap<File, File> prjFile2ParentFolderMap ) {
@@ -258,13 +258,13 @@ public class SpatialiteUtilities {
 
     /**
       * Collects a {@link HashMap} of prj files of shapefiles.
-      * 
+      *
       * <p>
       * - A Shape-File(s) resides in a directory<br>
       * - - the Directory name is the Database-Name<br>
       * - each Shape-Table must have a '.shp','.prj','.shx' and '.dbf'<br>
       * - the name with extension is the Table-Name<br>
-      * 
+      *
       * @param context 'this' of Application Activity class
       * @param mapsDir Directory to search [ResourcesManager.getInstance(this).getMapsDir();]
       * @return shapes_list: a {@link HashMap} that maps the prj file to the parent folder file.
@@ -302,7 +302,7 @@ public class SpatialiteUtilities {
 
     /**
      * Build a query to retrieve geometries from a table in a given bound.
-     * 
+     *
      * @param destSrid the destination srid.
      * @param table the table to use.
      * @param n north bound.
@@ -347,6 +347,10 @@ public class SpatialiteUtilities {
             qSb.append(")");
         }
         qSb.append("))");
+        if (table.getStyle().labelvisible == 1) {
+         qSb.append(",");
+        qSb.append(table.getStyle().labelfield);
+        }
         qSb.append(" FROM ");
         qSb.append(table.getTableName());
         // the SpatialIndex would be searching for a square, the ST_Intersects the Geometry
