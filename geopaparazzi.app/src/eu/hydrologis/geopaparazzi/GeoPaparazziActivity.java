@@ -926,17 +926,9 @@ public class GeoPaparazziActivity extends Activity {
 
     /**
      * Check for:
-     *  length field in gpslogs (add if needed)
      *  visibility of gpslogs (turned on or off?)
      */
-    @SuppressWarnings("nls")
     private static void checkMapsAndLogsVisibility() throws IOException {
-        // "static" added by tgh per instructions from Eclipse
-        // add the lengthm field if it doesn't exist to remain compatible with earlier versions
-        boolean checkField = DaoGpsLog.existsColumnInTable("gpslogs", "lengthm");
-        if (checkField == false) {
-            DaoGpsLog.addFieldGPSTables("gpslogs", "lengthm", "REAL");
-        }
         List<LogMapItem> maps = DaoGpsLog.getGpslogs();
         boolean oneVisible = false;
         for( LogMapItem item : maps ) {
@@ -945,7 +937,6 @@ public class GeoPaparazziActivity extends Activity {
             }
         }
         DataManager.getInstance().setLogsVisible(oneVisible);
-
     }
 
     @Override
