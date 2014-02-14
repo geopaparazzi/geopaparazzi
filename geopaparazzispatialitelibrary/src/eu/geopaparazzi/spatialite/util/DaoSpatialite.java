@@ -168,8 +168,8 @@ public class DaoSpatialite {
     /**
      * General Function to create jsqlite.Database with spatialite support.
      * <ol>
-     * <li> parent diretories will be created, if needed</li>
-     * <li> needed Tables/View and default values for metdata-table will be created</li>
+     * <li> parent directories will be created, if needed</li>
+     * <li> needed Tables/View and default values for metadata-table will be created</li>
      * </ol>
      * 
      * @param databasePath name of Database file to create
@@ -204,10 +204,10 @@ public class DaoSpatialite {
      * 
      * <ol> 
      * <li> parent directories will be created, if needed</li>
-     * <li> needed Tables/View and default values for metdata-table will be created</li>
+     * <li> needed Tables/View and default values for metadata-table will be created</li>
      * </ol>
      * @param sqliteDatabase pointer to Database
-     * @param i_parm 0=new Database - skip checking if it a patialite Database ; check Spatialite Version
+     * @param i_parm 0=new Database - skip checking if it a spatialite Database ; check Spatialite Version
      * @return i_rc: pointer to Database created
      * @throws Exception  if something goes wrong.
      */
@@ -225,7 +225,7 @@ public class DaoSpatialite {
             if (i_spatialite_version > 0) { // this is a spatialite Database, do not create
                 i_rc = 1;
                 if (i_spatialite_version < 3) {
-                    // TODO: logic for convertion to latest Spatialite
+                    // TODO: logic for conversion to latest Spatialite
                     // Version [open]
                     throw new Exception("Spatialite version < 3 not supported.");
                 }
@@ -254,7 +254,7 @@ public class DaoSpatialite {
     *
     * @param database the db to use.
     * @param name the table name to check.
-    * @return the number of columns, if the table exists or 0 if the table doesn't exis.
+    * @return the number of columns, if the table exists or 0 if the table doesn't exist.
     * @throws Exception if something goes wrong.
     */
     public static int checkTableExistence( Database database, String name ) throws Exception {
@@ -320,7 +320,7 @@ public class DaoSpatialite {
      *
      * @param database the db to use.
      * @param spatialTableUniqueName the spatial table's unique name to create the property record for.
-     * @return teh created style object.
+     * @return the created style object.
      * @throws Exception  if something goes wrong.
      */
     public static Style createDefaultPropertiesForTable( Database database, String spatialTableUniqueName ) throws Exception {
@@ -586,7 +586,7 @@ public class DaoSpatialite {
      * <br>- Proj4
      * <br>- Geos
      * <br>-- there is no Spatialite function to retrieve the Sqlite version
-     * <br>-- the Has() functions to not eork with spatialite 3.0.1
+     * <br>-- the Has() functions do not work with spatialite 3.0.1
      *
      * @param database the db to use.
      * @param name a name for the log.
@@ -815,7 +815,7 @@ public class DaoSpatialite {
      * <li>-- SpatiaLite 4.0.0 : introduced
      * </ul>
      * 
-     * <p>20131129: at the moment not possible to distinguish beteewn 2.4.0 and 3.0.0 [no '2']
+     * <p>20131129: at the moment not possible to distinguish between 2.4.0 and 3.0.0 [no '2']
      * 
      * @param database Database connection to use
      * @param table name of table to read [if empty: list of tables in Database]

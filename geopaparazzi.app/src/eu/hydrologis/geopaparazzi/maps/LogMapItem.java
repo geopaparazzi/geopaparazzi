@@ -18,6 +18,7 @@
 package eu.hydrologis.geopaparazzi.maps;
 
 import java.io.Serializable;
+//for string formatting the track (log) length
 
 /**
  * Item representing a gps log.
@@ -29,6 +30,8 @@ public class LogMapItem extends MapItem implements Serializable {
     private static final long serialVersionUID = 1L;
     private String startTime = " - "; //$NON-NLS-1$
     private String endTime = " - "; //$NON-NLS-1$
+    private double lengthm = 0.0;
+    private long id;
 
     /**
      * @param id id
@@ -38,13 +41,18 @@ public class LogMapItem extends MapItem implements Serializable {
      * @param isVisible if visible
      * @param startTime start time
      * @param endTime end time
+     * @param lengthm the track length in meters
      */
-    public LogMapItem( long id, String text, String color, float width, boolean isVisible, String startTime, String endTime ) {
+    public LogMapItem( long id, String text, String color, float width, boolean isVisible, String startTime, String endTime,
+            double lengthm ) {
         super(id, text, color, width, isVisible);
         if (startTime != null)
             this.startTime = startTime;
         if (endTime != null)
             this.endTime = endTime;
+        if (lengthm > 0)
+            this.lengthm = lengthm;
+        this.id = id;
     }
 
     /**
@@ -68,11 +76,28 @@ public class LogMapItem extends MapItem implements Serializable {
         return endTime;
     }
 
-    // /**
-    // * @param endTime the end time.
-    // */
     // public void setEndTime( String endTime ) {
     // this.endTime = endTime;
     // }
+    /**
+     * @return returns length of track in meters
+     */
+    public String getLengthInM() {
+        //return String.format(Locale.getDefault(), "%.1f", lengthm); //$NON-NLS-1$
+        return Long.toString(Math.round(lengthm));
+    }
 
+    /**
+     * @param lengthm the track length in meters
+     */
+    public void setLengthInM( double lengthm ) {
+        this.lengthm = lengthm;
+    }
+
+    /**
+     * @return returns the id for this record
+     */
+    public long getLogID() {
+        return id;
+    }
 }

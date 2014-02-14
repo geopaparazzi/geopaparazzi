@@ -45,6 +45,7 @@ public interface IGpsLogDbHelper {
      * @param context the {@link Context} to use.
      * @param startTs the start timestamp.
      * @param endTs the end timestamp.
+     * @param lengthm the length of the log in meters
      * @param text a description or null.
      * @param width the width of the rendered log. 
      * @param color the color of the rendered log.
@@ -52,8 +53,8 @@ public interface IGpsLogDbHelper {
      * @return the id of the new created log.
      * @throws IOException  if something goes wrong. 
      */
-    public long addGpsLog( Context context, Date startTs, Date endTs, String text, float width, String color, boolean visible )
-            throws IOException;
+    public long addGpsLog( Context context, Date startTs, Date endTs, double lengthm, String text, float width, String color,
+            boolean visible ) throws IOException;
 
     /**
      * Adds a single gps log point to a log.
@@ -89,4 +90,15 @@ public interface IGpsLogDbHelper {
      * @throws IOException  if something goes wrong.
      */
     public void setEndTs( Context context, long logid, Date end ) throws IOException;
+
+    /**
+     * Re-sets the log (track) length.
+     * 
+     * @param context the {@link Context} to use.
+     * @param logid the log to change. 
+     * @param length the length of the track log
+     * @throws IOException  if something goes wrong.
+     */
+    public void setTrackLengthm( Context context, long logid, double length ) throws IOException;
+
 }
