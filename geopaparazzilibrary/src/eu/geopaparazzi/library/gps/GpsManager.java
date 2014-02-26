@@ -352,15 +352,6 @@ public class GpsManager implements LocationListener, Listener {
         return gpsLogger.getCurrentDistance();
     }
 
-    /**
-     * Returns the points of the gps log, if one is being recorded or <code>null</code>. 
-     * 
-     * @return the gps log or <code>null</code>.
-     */
-    public List<double[]> getCurrentRecordedGpsLog() {
-        return gpsLogger.getCurrentRecordedLog();
-    }
-
     private void checkLoggerExists( Context context ) {
         if (gpsLogger == null) {
             gpsLogger = new GpsDatabaseLogger(context);

@@ -23,8 +23,6 @@ import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGING
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGINGINTERVAL;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -68,8 +66,6 @@ public class GpsDatabaseLogger implements GpsManagerListener {
 
     private boolean isDatabaseLogging = false;
     private boolean isShutdown = false;
-
-    private List<double[]> currentXY = new ArrayList<double[]>();
 
     // private MediaPlayer mMediaPlayer;
     // private boolean doPlayAlarm = false;
@@ -129,7 +125,6 @@ public class GpsDatabaseLogger implements GpsManagerListener {
             return;
         }
         isDatabaseLogging = true;
-        currentXY.clear();
 
         Thread t = new Thread(){
 
@@ -191,7 +186,6 @@ public class GpsDatabaseLogger implements GpsManagerListener {
                                 if (isDatabaseLogging) {
                                     dbHelper.addGpsLogDataPoint(sqliteDatabase, gpsLogId, recLon, recLat, recAlt,
                                             gpsLoc.getSqlDate());
-                                    currentXY.add(new double[]{recLon, recLat});
                                 }
                             } catch (Exception e) {
                                 GPLog.error(this, e.getLocalizedMessage(), e);
@@ -233,7 +227,6 @@ public class GpsDatabaseLogger implements GpsManagerListener {
                     Utilities.toast(context, msg, Toast.LENGTH_LONG);
                 } finally {
                     isDatabaseLogging = false;
-                    currentXY.clear();
                     isShutdown = true;
                 }
                 logABS("Exit logging...");
@@ -262,19 +255,6 @@ public class GpsDatabaseLogger implements GpsManagerListener {
     public void stopDatabaseLogging() {
         isDatabaseLogging = false;
         Utilities.toast(context, R.string.gpsloggingoff, Toast.LENGTH_SHORT);
-    }
-
-    /**
-     * Get the current recorded log.
-     * 
-     * @return the list of lon,lat.
-     */
-    public List<double[]> getCurrentRecordedLog() {
-        if (isDatabaseLogging) {
-            return currentXY;
-        } else {
-            return null;
-        }
     }
 
     /**
