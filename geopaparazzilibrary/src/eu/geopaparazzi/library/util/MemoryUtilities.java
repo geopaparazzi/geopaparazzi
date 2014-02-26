@@ -37,7 +37,7 @@ public class MemoryUtilities {
      * 
      * <p>For release = <code>false</code>.
      */
-    public final static boolean debugMemory = true;
+    public final static boolean debugMemory = false;
 
     /**
      * Dump heap data to a folder.
