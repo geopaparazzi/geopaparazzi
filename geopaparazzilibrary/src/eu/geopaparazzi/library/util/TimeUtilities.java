@@ -32,6 +32,7 @@ public enum TimeUtilities {
      */
     INSTANCE;
 
+    private static final String UTC = "UTC"; //$NON-NLS-1$
     /**
      * 
      */
@@ -55,7 +56,7 @@ public enum TimeUtilities {
     /**
      * 
      */
-    public final SimpleDateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", dateLocale);
+    public final SimpleDateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", dateLocale); //$NON-NLS-1$
 
     /**
      * 
@@ -73,6 +74,10 @@ public enum TimeUtilities {
     /**
      * 
      */
+    public final SimpleDateFormat TIME_FORMATTER_SQLITE_LOCAL = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", dateLocale); //$NON-NLS-1$
+    /**
+     * 
+     */
     public final SimpleDateFormat TIME_FORMATTER_GPX_UTC = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", dateLocale); //$NON-NLS-1$
     /**
      * 
@@ -80,11 +85,11 @@ public enum TimeUtilities {
     public final SimpleDateFormat EXIFFORMATTER = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss", dateLocale); //$NON-NLS-1$
 
     private TimeUtilities() {
-        TIME_FORMATTER_SQLITE_UTC.setTimeZone(TimeZone.getTimeZone("UTC"));
-        TIME_FORMATTER_GPX_UTC.setTimeZone(TimeZone.getTimeZone("UTC"));
-        TIME_FORMATTER_UTC.setTimeZone(TimeZone.getTimeZone("UTC"));
-        TIMESTAMPFORMATTER_UTC.setTimeZone(TimeZone.getTimeZone("UTC"));
-        EXIFFORMATTER.setTimeZone(TimeZone.getTimeZone("UTC"));
+        TIME_FORMATTER_SQLITE_UTC.setTimeZone(TimeZone.getTimeZone(UTC));
+        TIME_FORMATTER_GPX_UTC.setTimeZone(TimeZone.getTimeZone(UTC));
+        TIME_FORMATTER_UTC.setTimeZone(TimeZone.getTimeZone(UTC));
+        TIMESTAMPFORMATTER_UTC.setTimeZone(TimeZone.getTimeZone(UTC));
+        EXIFFORMATTER.setTimeZone(TimeZone.getTimeZone(UTC));
     }
 
 }
