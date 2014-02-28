@@ -47,7 +47,9 @@ public class DefaultMapurls {
         /** */
         mapquest(eu.geopaparazzi.mapsforge.R.raw.mapquest),
         /** */
-        mapquest_arial(eu.geopaparazzi.mapsforge.R.raw.mapquest_arial);
+        mapquest_arial(eu.geopaparazzi.mapsforge.R.raw.mapquest_arial),
+        /** */
+        realvista_arial(eu.geopaparazzi.mapsforge.R.raw.realvista_ortofoto_italy);
 
         private int resourceId;
 

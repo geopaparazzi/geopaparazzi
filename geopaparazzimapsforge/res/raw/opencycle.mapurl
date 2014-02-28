@@ -6,4 +6,4 @@ type=google
 format=jpg
 defaultzoom=13
 mbtiles=defaulttiles/_opencycle.mbtiles
-description=OpenCycleMap - Cycle Routes
+description=OpenCycleMap - Cycle Routes - Data, imagery and map information provided by MapQuest, OpenStreetMap and contributors, ODbL.

@@ -6,4 +6,5 @@ type=google
 format=png
 defaultzoom=13
 mbtiles=defaulttiles/_mapnik.mbtiles
-description=Mapnik - Openstreetmap Slippy Map Tileserver
+description=Mapnik - Openstreetmap Slippy Map Tileserver - Data, imagery and map information provided by MapQuest, OpenStreetMap and contributors, ODbL.
+

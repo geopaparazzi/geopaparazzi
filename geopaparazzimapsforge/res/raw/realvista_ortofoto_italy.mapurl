@@ -1,0 +1,9 @@
+url=http://213.215.135.196/reflector/open/service?REQUEST=GetMap&SERVICE=WMS&VERSION=1.1.1&LAYERS=rv1&STYLES=&FORMAT=image/png&BGCOLOR=0xFFFFFF&TRANSPARENT=TRUE&SRS=EPSG:4326&BBOX=XXX,YYY,XXX,YYY&WIDTH=256&HEIGHT=256
+minzoom=11
+maxzoom=22
+center=11.42 46.8
+type=wms
+format=jpg
+defaultzoom=17
+mbtiles=defaulttiles/_realvista_ortofot_italy.mbtiles
+description=RealVista1.0 WMS OPEN di e-GEOS SpA e' distribuito con Licenza Creative Commons Attribuzione 4.0 Internazionale. Based on a work at www.realvista.it. Registration required: http://goo.gl/ZrQJzZ﻿
