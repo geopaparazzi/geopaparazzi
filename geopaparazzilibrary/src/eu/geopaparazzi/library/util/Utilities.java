@@ -218,16 +218,20 @@ public class Utilities {
                 dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                 TextView text = (TextView) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogtext);
                 text.setText(msg);
-                Button dialogButton = (Button) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogButtonOK);
-                dialogButton.setOnClickListener(new View.OnClickListener(){
-                    public void onClick( View v ) {
-                        dialog.dismiss();
-                        if (okRunnable != null) {
-                            new Thread(okRunnable).start();
+                try {
+                    Button dialogButton = (Button) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogButtonOK);
+                    dialogButton.setOnClickListener(new View.OnClickListener(){
+                        public void onClick( View v ) {
+                            dialog.dismiss();
+                            if (okRunnable != null) {
+                                new Thread(okRunnable).start();
+                            }
                         }
-                    }
-                });
-                dialog.show();
+                    });
+                    dialog.show();
+                } catch (Exception e) {
+                    GPLog.error("UTILITIES", "Error in messageDialog#inPostExecute", e); //$NON-NLS-1$ //$NON-NLS-2$
+                }
             }
         }.execute((String) null);
     }
@@ -264,19 +268,23 @@ public class Utilities {
             }
 
             protected void onPostExecute( String response ) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder //
-                .setTitle(t.getLocalizedMessage()).setMessage(Log.getStackTraceString(t))
-                        .setIcon(android.R.drawable.ic_dialog_alert).setCancelable(false)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
-                            public void onClick( DialogInterface dialog, int id ) {
-                                if (okRunnable != null) {
-                                    new Thread(okRunnable).start();
+                try {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder //
+                    .setTitle(t.getLocalizedMessage()).setMessage(Log.getStackTraceString(t))
+                            .setIcon(android.R.drawable.ic_dialog_alert).setCancelable(false)
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
+                                public void onClick( DialogInterface dialog, int id ) {
+                                    if (okRunnable != null) {
+                                        new Thread(okRunnable).start();
+                                    }
                                 }
-                            }
-                        });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
+                            });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                } catch (Exception e) {
+                    GPLog.error("UTILITIES", "Error in errorDialog#inPostExecute", e); //$NON-NLS-1$ //$NON-NLS-2$
+                }
             }
         }.execute((String) null);
     }
@@ -297,30 +305,34 @@ public class Utilities {
             }
 
             protected void onPostExecute( String response ) {
-                final Dialog dialog = new Dialog(context);
-                dialog.setContentView(eu.geopaparazzi.library.R.layout.yesnodialog);
-                dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-                TextView text = (TextView) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogtext);
-                text.setText(msg);
-                Button yesButton = (Button) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogButtonOK);
-                yesButton.setOnClickListener(new View.OnClickListener(){
-                    public void onClick( View v ) {
-                        dialog.dismiss();
-                        if (yesRunnable != null) {
-                            new Thread(yesRunnable).start();
+                try {
+                    final Dialog dialog = new Dialog(context);
+                    dialog.setContentView(eu.geopaparazzi.library.R.layout.yesnodialog);
+                    dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                    TextView text = (TextView) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogtext);
+                    text.setText(msg);
+                    Button yesButton = (Button) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogButtonOK);
+                    yesButton.setOnClickListener(new View.OnClickListener(){
+                        public void onClick( View v ) {
+                            dialog.dismiss();
+                            if (yesRunnable != null) {
+                                new Thread(yesRunnable).start();
+                            }
                         }
-                    }
-                });
-                Button noButton = (Button) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogButtonCancel);
-                noButton.setOnClickListener(new View.OnClickListener(){
-                    public void onClick( View v ) {
-                        dialog.dismiss();
-                        if (noRunnable != null) {
-                            new Thread(noRunnable).start();
+                    });
+                    Button noButton = (Button) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogButtonCancel);
+                    noButton.setOnClickListener(new View.OnClickListener(){
+                        public void onClick( View v ) {
+                            dialog.dismiss();
+                            if (noRunnable != null) {
+                                new Thread(noRunnable).start();
+                            }
                         }
-                    }
-                });
-                dialog.show();
+                    });
+                    dialog.show();
+                } catch (Exception e) {
+                    GPLog.error("UTILITIES", "Error in yesNoMessageDialog#inPostExecute", e); //$NON-NLS-1$ //$NON-NLS-2$
+                }
             }
         }.execute((String) null);
     }
@@ -757,6 +769,7 @@ public class Utilities {
      * @param withGeosmsParam if <code>true</code>, geosms params are added.
      * @return url string.
      */
+    @SuppressWarnings("nls")
     public static String osmUrlFromLatLong( float lat, float lon, boolean withMarker, boolean withGeosmsParam ) {
         StringBuilder sB = new StringBuilder();
         sB.append("http://www.osm.org/?lat=");
@@ -785,7 +798,7 @@ public class Utilities {
      * @return <code>true</code> if the name defines a file to hide.
      */
     public static boolean isNameFromHiddenFile( String name ) {
-        return name.startsWith("_");
+        return name.startsWith("_"); //$NON-NLS-1$
     }
 
     /**
