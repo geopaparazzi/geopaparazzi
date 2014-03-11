@@ -71,7 +71,10 @@ public class GpsDatabaseLogger implements GpsManagerListener {
     // private boolean doPlayAlarm = false;
 
     private int currentPointsNum;
-    private float currentDistance;
+    /**
+     * The current total distance of the track from start to the current point.
+     */
+    private double currentDistance;
 
     /**
      * @param context  the context to use.
@@ -117,7 +120,7 @@ public class GpsDatabaseLogger implements GpsManagerListener {
      * Starts logging into the database.
      * 
      * @param logName a name for the new log or <code>null</code>.
-     * @param dbHelper teh db helper.
+     * @param dbHelper the db helper.
      */
     public void startDatabaseLogging( final String logName, final IGpsLogDbHelper dbHelper ) {
         if (isDatabaseLogging) {
@@ -127,14 +130,13 @@ public class GpsDatabaseLogger implements GpsManagerListener {
         isDatabaseLogging = true;
 
         Thread t = new Thread(){
-
             public void run() {
                 try {
                     isShutdown = false;
 
                     SQLiteDatabase sqliteDatabase = dbHelper.getDatabase(context);
                     java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
-                    long gpsLogId = dbHelper.addGpsLog(context, now, now, logName, 2f, "red", true);
+                    long gpsLogId = dbHelper.addGpsLog(context, now, now, 0, logName, 2f, "red", true);
                     currentRecordedLogId = gpsLogId;
                     logH("Starting gps logging. Logid: " + gpsLogId);
 
@@ -173,7 +175,7 @@ public class GpsDatabaseLogger implements GpsManagerListener {
                             double recLon = gpsLoc.getLongitude();
                             double recLat = gpsLoc.getLatitude();
                             double recAlt = gpsLoc.getAltitude();
-                            float lastDistance = previousLogLoc.distanceTo(gpsLoc);
+                            double lastDistance = previousLogLoc.distanceTo(gpsLoc);
                             logABS("gpsloc: " + gpsLoc.getLatitude() + "/" + gpsLoc.getLongitude());
                             logABS("previousLoc: " + previousLogLoc.getLatitude() + "/" + previousLogLoc.getLongitude());
                             logABS("distance: " + lastDistance + " - mindistance: " + minDistance);
@@ -206,13 +208,14 @@ public class GpsDatabaseLogger implements GpsManagerListener {
                         logABS("Removing gpslog, since too few points were added. Logid: " + gpsLogId);
                         dbHelper.deleteGpslog(context, gpsLogId);
                     } else {
-                        // set the end timestamp
+                        // set the end time stamp and the total distance for the track
                         java.sql.Date end = new java.sql.Date(System.currentTimeMillis());
                         dbHelper.setEndTs(context, gpsLogId, end);
+                        dbHelper.setTrackLengthm(context, gpsLogId, (double) currentDistance);
                     }
 
                     currentPointsNum = 0;
-                    currentDistance = 0f;
+                    currentDistance = 0;
                     currentRecordedLogId = -1;
 
                 } catch (SQLiteFullException e) {
@@ -248,7 +251,6 @@ public class GpsDatabaseLogger implements GpsManagerListener {
 
         Utilities.toast(context, R.string.gpsloggingon, Toast.LENGTH_SHORT);
     }
-
     /**
      * Stop logging.
      */
@@ -258,7 +260,7 @@ public class GpsDatabaseLogger implements GpsManagerListener {
     }
 
     /**
-     * @return teh current points num of the log.
+     * @return the current points num of the log.
      */
     public int getCurrentPointsNum() {
         return currentPointsNum;

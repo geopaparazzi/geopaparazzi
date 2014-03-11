@@ -38,6 +38,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.location.Location;
 import android.util.Log;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gps.IGpsLogDbHelper;
@@ -69,6 +70,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
 
     private static final String COLUMN_LOG_STARTTS = "startts";
     private static final String COLUMN_LOG_ENDTS = "endts";
+    private static final String COLUMN_LOG_LENGTHM = "lengthm";
     private static final String COLUMN_LOG_TEXT = "text";
 
     private static final String COLUMN_LOGID = "logid";
@@ -99,12 +101,13 @@ public class DaoGpsLog implements IGpsLogDbHelper {
      * 
      * @param startTs the start timestamp.
      * @param endTs the end timestamp.
+     * @param lengthm the length of the track log in meters
      * @param text a description or null.
      * @return the id of the new created log.
      * @throws IOException  if something goes wrong. 
      */
-    public long addGpsLog( Context context, Date startTs, Date endTs, String text, float width, String color, boolean visible )
-            throws IOException {
+    public long addGpsLog( Context context, Date startTs, Date endTs, double lengthm, String text, float width, String color,
+            boolean visible ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         long rowId;
@@ -116,6 +119,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             if (text == null) {
                 text = "log_" + dateFormatterForLabelInLocalTime.format(startTs);
             }
+            values.put(COLUMN_LOG_LENGTHM, lengthm);
             values.put(COLUMN_LOG_TEXT, text);
             rowId = sqliteDatabase.insertOrThrow(TABLE_GPSLOGS, null, values);
 
@@ -137,6 +141,15 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         return rowId;
     }
 
+    /**
+     * Adds a new XY entry to the gps table.
+     * 
+     * @param gpslogId the ID from the GPS log table.
+     * @param lon longitude.
+     * @param lat latitude
+     * @param altim altitude/elevation
+     * @throws IOException if something goes wrong
+     */
     public void addGpsLogDataPoint( SQLiteDatabase sqliteDatabase, long gpslogId, double lon, double lat, double altim,
             Date timestamp ) throws IOException {
 
@@ -156,6 +169,13 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         sqliteDatabase.insertOrThrow(TABLE_DATA, null, values);
     }
 
+    /**
+     * Deletes the entirety of a GPS log, including data from 
+     * log table, data table, properties table
+     * 
+     * @param id the gps log id
+     * @throws IOException in case of error
+     */
     public void deleteGpslog( Context context, long id ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
@@ -187,6 +207,13 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         }
     }
 
+    /**
+     * Resets the end time when a GPSlog is updated
+     * 
+     * @param logid the ID from the GPS log table.
+     * @param end the new end time stamp
+     * @throws IOException if a problem
+     */
     public void setEndTs( Context context, long logid, Date end ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         try {
@@ -198,6 +225,42 @@ public class DaoGpsLog implements IGpsLogDbHelper {
             sb.append(TABLE_GPSLOGS);
             sb.append(" SET ");
             sb.append(COLUMN_LOG_ENDTS).append("='").append(dateFormatter.format(end)).append("' ");
+            sb.append("WHERE ").append(COLUMN_ID).append("=").append(logid);
+
+            String query = sb.toString();
+            if (GPLog.LOG_HEAVY)
+                GPLog.addLogEntry("DAOGPSLOG", query);
+            SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
+            sqlUpdate.execute();
+            sqlUpdate.close();
+
+            sqliteDatabase.setTransactionSuccessful();
+        } catch (Exception e) {
+            GPLog.error("DAOGPSLOG", e.getLocalizedMessage(), e);
+            throw new IOException(e.getLocalizedMessage());
+        } finally {
+            sqliteDatabase.endTransaction();
+        }
+    }
+
+    /**
+     * Resets the track length when a GPSlog is updated
+     * 
+     * @param logid the ID from the GPS log table.
+     * @param lengthm the new track length
+     * @throws IOException if a problem
+     */
+    public void setTrackLengthm( Context context, long logid, double lengthm ) throws IOException {
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+        try {
+            sqliteDatabase.beginTransaction();
+
+            StringBuilder sb = new StringBuilder();
+            sb = new StringBuilder();
+            sb.append("UPDATE ");
+            sb.append(TABLE_GPSLOGS);
+            sb.append(" SET ");
+            sb.append(COLUMN_LOG_LENGTHM).append("=").append(lengthm).append(" ");
             sb.append("WHERE ").append(COLUMN_ID).append("=").append(logid);
 
             String query = sb.toString();
@@ -237,6 +300,8 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         sB.append(COLUMN_LOG_STARTTS);
         sB.append(", l.");
         sB.append(COLUMN_LOG_ENDTS);
+        sB.append(", l.");
+        sB.append(COLUMN_LOG_LENGTHM);
         sB.append(", p.");
         sB.append(COLUMN_PROPERTIES_COLOR);
         sB.append(", p.");
@@ -264,13 +329,15 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 String text = c.getString(1);
                 String start = c.getString(2);
                 String end = c.getString(3);
-                String color = c.getString(4);
-                double width = c.getDouble(5);
-                int visible = c.getInt(6);
+                double lengthm = c.getDouble(4);
+                String color = c.getString(5);
+                double width = c.getDouble(6);
+                int visible = c.getInt(7);
                 // Logger.d(DEBUG_TAG, "Res: " + logid + "/" + color + "/" + width + "/" + visible +
                 // "/" +
                 // text);
-                LogMapItem item = new LogMapItem(logid, text, color, (float) width, visible == 1 ? true : false, start, end);
+                LogMapItem item = new LogMapItem(logid, text, color, (float) width, visible == 1 ? true : false, start, end,
+                        (double) lengthm);
                 logsList.add(item);
                 c.moveToNext();
             }
@@ -942,7 +1009,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     /**
      * Import a gpx in the database.
      * 
-     * TODO refactor a better design, with the new gox parser this is ugly.
+     * TODO refactor a better design, with the new gpx parser this is ugly.
      * 
      * @param context the context to use.
      * @param gpxItem the gpx wrapper.
@@ -989,7 +1056,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 Date date = new Date(System.currentTimeMillis());
 
                 DaoGpsLog helper = new DaoGpsLog();
-                long logId = helper.addGpsLog(context, date, date, name, width, "blue", true);
+                long logId = helper.addGpsLog(context, date, date, 0, name, width, "blue", true);
 
                 sqliteDatabase.beginTransaction();
                 try {
@@ -1038,7 +1105,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 }
                 Date date = new Date(System.currentTimeMillis());
                 DaoGpsLog helper = new DaoGpsLog();
-                long logId = helper.addGpsLog(context, startDate, endDate, rName, 2f, "green", true);
+                long logId = helper.addGpsLog(context, startDate, endDate, 0, rName, 2f, "green", true);
 
                 sqliteDatabase.beginTransaction();
                 try {
@@ -1179,6 +1246,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         sB.append(COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, ");
         sB.append(COLUMN_LOG_STARTTS).append(" DATE NOT NULL,");
         sB.append(COLUMN_LOG_ENDTS).append(" DATE NOT NULL,");
+        sB.append(COLUMN_LOG_LENGTHM).append(" REAL NOT NULL, ");
         sB.append(COLUMN_LOG_TEXT).append(" TEXT NOT NULL ");
         sB.append(");");
         String CREATE_TABLE_GPSLOGS = sB.toString();
@@ -1215,4 +1283,144 @@ public class DaoGpsLog implements IGpsLogDbHelper {
 
     }
 
+    /**
+     * Check to see if a column is in a table
+     * 
+     * @return true or false for column presence in table
+     * @param inTable the name of the table to test
+     * @param columnToCheck the column to check for presence in table
+     * @throws IOException  if something goes wrong.
+     */
+
+    public static boolean existsColumnInTable( String inTable, String columnToCheck ) throws IOException {
+        try {
+            SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+            // query 1 row
+            Cursor mCursor = sqliteDatabase.rawQuery("SELECT * FROM " + inTable + " LIMIT 0", null);
+
+            // getColumnIndex gives us the index (0 to ...) of the column - otherwise we get a -1
+            if (mCursor.getColumnIndex(columnToCheck) != -1)
+                return true;
+            else
+                return false;
+
+        } catch (Exception e) {
+            // something went wrong. Missing the database? The table?
+            Log.d("... - existsColumnInTable",
+                    "When checking whether a column exists in the table, an error occurred: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Add a field to a table.
+     * 
+     * This is a very simple "add" and should not be used for columns needing indexing or keys
+     * 
+     * @param tableName the name of the table to add the field to
+     * @param colName the name of the column
+     * @param colType the type of column to add (REAL, DATE, INTEGER, TEXT)
+     * @throws IOException  if something goes wrong.
+     */
+    public static void addFieldGPSTables( String tableName, String colName, String colType ) throws IOException {
+
+        StringBuilder sB = new StringBuilder();
+        sB.append("ALTER TABLE ");
+        sB.append(tableName);
+        sB.append(" ADD COLUMN ");
+        sB.append(colName).append(" ");
+        sB.append(colType).append(" ; ");
+
+        String ADD_FIELD_TO_TABLE = sB.toString();
+
+        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+        if (GPLog.LOG_ANDROID) {
+            StringBuilder sB2 = new StringBuilder();
+            sB2.append("Added ").append(colName).append(" to ").append(tableName);
+            Log.i("DAOGPSLOG", sB2.toString());
+        }
+        sqliteDatabase.execSQL(ADD_FIELD_TO_TABLE);
+
+    }
+
+    /**
+     * update the length of a log
+     * 
+     * 
+     * @param logId the id of the log.
+     * @return log length as double
+     * @throws IOException  if something goes wrong.
+     */
+    public static double updateLogLength( long logId ) throws IOException {
+
+        try {
+            // get the log data, sum up the distances
+            SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+            String asColumnsToReturn[] = {COLUMN_DATA_LON, COLUMN_DATA_LAT, COLUMN_DATA_TS};
+            String strSortOrder = COLUMN_DATA_TS + " ASC";
+            String strWhere = COLUMN_LOGID + "=" + logId;
+            Cursor c = null;
+            double summedDistance = 0.0;
+            double lon = 0.0;
+            double lat = 0.0;
+            double prevLon = 0.0;
+            double prevLat = 0.0;
+
+            if (GPLog.LOG_ABSURD)
+                GPLog.addLogEntry("DAOGPSLOG", strWhere);
+            try {
+                c = sqliteDatabase.query(TABLE_DATA, asColumnsToReturn, strWhere, null, null, null, strSortOrder);
+                c.moveToFirst();
+                while( !c.isAfterLast() ) {
+                    lon = c.getDouble(0);
+                    lat = c.getDouble(1);
+
+                    Location newLoc = new Location("tempLoc1"); //$NON-NLS-1$
+                    newLoc.setLongitude(lon);
+                    newLoc.setLatitude(lat);
+                    Location prevLoc = new Location("tempLoc2"); //$NON-NLS-1$
+
+                    if (GPLog.LOG_ABSURD) {
+                        GPLog.addLogEntry("DAOGPSLOG", "lon: " + String.valueOf(lon));
+                        GPLog.addLogEntry("DAOGPSLOG", "lat: " + String.valueOf(lat));
+                        GPLog.addLogEntry("DAOGPSLOG", "prevlon: " + String.valueOf(prevLon));
+                        GPLog.addLogEntry("DAOGPSLOG", "prevlat: " + String.valueOf(prevLat));
+                    }
+                    if (prevLon == 0.0) {
+                        prevLon = lon;
+                        prevLat = lat;
+                    }
+                    prevLoc.setLongitude(prevLon);
+                    prevLoc.setLatitude(prevLat);
+                    double lastDistance = newLoc.distanceTo(prevLoc);
+                    if (GPLog.LOG_ABSURD) {
+                        GPLog.addLogEntry("DAOGPSLOG", "distance: " + String.valueOf(lastDistance));
+                    }
+                    summedDistance = summedDistance + lastDistance;
+                    prevLon = lon;
+                    prevLat = lat;
+
+                    c.moveToNext();
+                }
+            } finally {
+                if (c != null)
+                    c.close();
+            }
+
+            // update the gpslogs table with the summed distance
+            sqliteDatabase.beginTransaction();
+            String query = "update " + TABLE_GPSLOGS + " set lengthm = " + summedDistance + " where " + COLUMN_ID + " = " + logId;
+            SQLiteStatement sqlUpdate = sqliteDatabase.compileStatement(query);
+            sqlUpdate.execute();
+            sqlUpdate.close();
+            sqliteDatabase.setTransactionSuccessful();
+            sqliteDatabase.endTransaction();
+
+            // send the summed distance back so we don't have to query the table again
+            return (summedDistance);
+        } catch (IOException e) {
+            GPLog.error("DAOMAPS", e.getLocalizedMessage(), e);
+            throw new IOException(e.getLocalizedMessage());
+        }
+    }
 }

@@ -41,7 +41,7 @@ public class DatabaseManager {
     /**
      * The db version.
      */
-    public static final int DATABASE_VERSION = 7;
+    public static final int DATABASE_VERSION = 8;
 
     private static final String DEBUG_TAG = "DATABASEMANAGER";
 
@@ -198,6 +198,13 @@ public class DatabaseManager {
             }
             if (oldDbVersion <= 6) {
                 GPLog.createTables(db);
+            }
+            if (oldDbVersion <= 7) {
+                // probably don't need to check (could just add column), but it is safer this way
+                boolean checkField = DaoGpsLog.existsColumnInTable("gpslogs", "lengthm");
+                if (checkField == false) {
+                    DaoGpsLog.addFieldGPSTables("gpslogs", "lengthm", "REAL");
+                }
             }
             db.beginTransaction();
             try {

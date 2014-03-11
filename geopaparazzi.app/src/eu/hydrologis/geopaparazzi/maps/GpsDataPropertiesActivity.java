@@ -56,6 +56,7 @@ public class GpsDataPropertiesActivity extends Activity {
     private String newText;
     private float newWidth;
     private String newColor;
+    private double newLengthm;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -79,7 +80,6 @@ public class GpsDataPropertiesActivity extends Activity {
             String endTime = item.getEndTime();
             String endText = endTimeTextView.getText().toString();
             endTimeTextView.setText(endText + endTime);
-
             final EditText lognameTextView = (EditText) findViewById(R.id.gpslogname);
             final Spinner colorView = (Spinner) findViewById(R.id.color_spinner);
             final Spinner widthView = (Spinner) findViewById(R.id.widthText);
@@ -99,6 +99,28 @@ public class GpsDataPropertiesActivity extends Activity {
                 }
             });
 
+            // log (track) length field
+            final TextView trackLengthTextView = (TextView) findViewById(R.id.trackLength_label);
+            String lengthm = item.getLengthInM();
+            final String lengthText = trackLengthTextView.getText().toString();
+            trackLengthTextView.setText(lengthText + " " + lengthm + "m"); //$NON-NLS-1$ //$NON-NLS-2$
+
+            // button to update the log (track) length field
+            final Button refreshLogLenButton = (Button) findViewById(R.id.gpslog_refreshLogLength);
+            refreshLogLenButton.setOnClickListener(new Button.OnClickListener(){
+                public void onClick( View v ) {
+                    long logID = item.getLogID();
+                    try {
+                        newLengthm = DaoGpsLog.updateLogLength(logID);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    String newLen = Long.toString(Math.round(newLengthm));
+                    trackLengthTextView.setText(lengthText + " " + newLen + "m"); //$NON-NLS-1$ //$NON-NLS-2$
+                }
+            });
+
+            // line width
             newWidth = item.getWidth();
             ArrayAdapter< ? > widthSpinnerAdapter = ArrayAdapter.createFromResource(this, R.array.array_widths,
                     android.R.layout.simple_spinner_item);
