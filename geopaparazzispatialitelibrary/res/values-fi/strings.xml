@@ -9,4 +9,6 @@
   <string name="point_size">Pistekoko</string>
   <string name="decimation">Desimaatio</string>
   <string name="decimation_factor_default">0.000001</string>
+  <string name="min_zoom">Min zoom</string>
+  <string name="max_zoom">Max zoom</string>
 </resources>

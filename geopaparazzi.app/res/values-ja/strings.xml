@@ -65,7 +65,7 @@
   <string name="text_gpson">GPS起動</string>
   <string name="debug">デバッグ設定</string>
   <string name="enable_debug">デバッグログを有効にする</string>
-  <string name="gpslogging_only">この機能は、GPS がアクティブで、信号が利用可能な場合にのみ利用できます。</string>
+  <string name="gpslogging_only">GPS がアクティブで、信号が利用可能な場合にのみ利用できます。</string>
   <string name="remove_last_note_prompt">本当に最新のノートを削除しますか？ 削除されたデータは元に戻せません。</string>
   <string name="installgpsstatus_title">GPS Statusのインストール</string>
   <string name="installgpsstatus_message">GeoPaparazziはコンパス機能やGPS情報の閲覧にGps Statusを使います。Gps Statusをインストールしてもよろしいですか？</string>
@@ -101,23 +101,23 @@
   <!--added after 2.5.0-->
   <string name="an_error_occurred_while_creating_the_chart_">グラフの作成中にエラーが発生しました。</string>
   <string name="osm_preferences">OpenStreetMap設定</string>
-  <string name="osm_do_it">OSM ツールを有効にします。</string>
+  <string name="osm_do_it">OSM ツール有効</string>
   <string name="osm_user_label">ユーザー名</string>
   <string name="osm_password_label">パスワード</string>
   <string name="osm_server_label">接続サーバ</string>
   <string name="osm_notes_properly_uploaded">OSMノートが正しくアップロードされました\n\nアップロードされたノートをデバイスから削除しますか？</string>
   <string name="an_error_occurred_while_uploading_osm_tags">OSM タグのアップロード中にエラーが発生しました。</string>
-  <string name="enable_automatic_center_on_gps">自動で地図中心を\nGPS座標へ</string>
+  <string name="enable_automatic_center_on_gps">地図中心をGPS座標へ</string>
   <string name="profile">プロファイル</string>
   <string name="loading_data">データを読み込んでいます...</string>
   <string name="profilelable_distance">距離 [m]</string>
   <string name="profilelable_elevation">標高 [m]</string>
   <string name="error_json_osm">json の送信フォームが無効です。アイコンおよびフォームのデータを確認してください。</string>
-  <string name="available_only_with_network">この機能はネットワーク接続アクティブな場合に利用可能です。</string>
+  <string name="available_only_with_network">ネットワーク接続がアクティブな場合に利用可能です。</string>
   <string name="error_osm_server">OSM サーバーへ接続中にエラーが発生しました。ログインとパスワードを確認してください。または、OSM のサーバーが利用できない可能性があります。</string>
   <string name="check_valid_field">フィールド \"{0}\"が無効です、チェックしてください。</string>
   <string name="view_in_mixare">mixare で表示</string>
-  <string name="gps_use_coarse">GPS の代わりにネット\nワーク位置を使用する\n (再起動が必要)</string>
+  <string name="gps_use_coarse">ネットワーク位置使用(再起動が必要)</string>
   <string name="type_to_filter">フィルターの種類</string>
   <string name="geopapcloud_preferences">Geopap-Cloud設定</string>
   <string name="geopapcloud_user_label">ユーザー名</string>
