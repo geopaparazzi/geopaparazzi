@@ -1029,8 +1029,20 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 for( int i = 0; i < wayPoints.size(); i++ ) {
                     WayPoint point = wayPoints.get(i);
                     String dateStr = TimeUtilities.INSTANCE.TIME_FORMATTER_SQLITE_UTC.format(date);
+                    String nameDescr = "";
+                    String name = point.getName();
+                    if (name != null) {
+                        nameDescr = name;
+                    }
+                    String desc = point.getDescription();
+                    if (name != null && desc != null) {
+                        nameDescr = nameDescr + ":\n";
+                    }
+                    if (desc != null) {
+                        nameDescr = nameDescr + desc;
+                    }
                     DaoNotes.addNoteNoTransaction(point.getLongitude(), point.getLatitude(), point.getElevation(), dateStr,
-                            gpxName, NoteType.POI.getDef(), "", NoteType.POI.getTypeNum(), sqliteDatabase);
+                            nameDescr, NoteType.POI.getDef(), "", NoteType.POI.getTypeNum(), sqliteDatabase);
                 }
                 sqliteDatabase.setTransactionSuccessful();
             } catch (Exception e) {
