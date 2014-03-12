@@ -35,7 +35,7 @@
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/dialogButtonOK"
+            android:id="@+id/dialogButtonCancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
@@ -44,12 +44,12 @@
             android:paddingLeft="30dp"
             android:paddingRight="30dp"
             android:paddingTop="10dp"
-            android:text="@android:string/yes"
+            android:text="@android:string/cancel"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/main_text_color" />
 
         <Button
-            android:id="@+id/dialogButtonCancel"
+            android:id="@+id/dialogButtonOK"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
@@ -58,7 +58,7 @@
             android:paddingLeft="30dp"
             android:paddingRight="30dp"
             android:paddingTop="10dp"
-            android:text="@android:string/cancel"
+            android:text="@android:string/yes"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/main_text_color" />
     </LinearLayout>

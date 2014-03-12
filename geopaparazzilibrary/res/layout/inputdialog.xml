@@ -24,8 +24,10 @@
         android:layout_below="@+id/dialogtext"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:background="@drawable/edittext_background"
         android:ems="10"
         android:inputType="text" >
+
         <requestFocus />
     </EditText>
 
@@ -38,7 +40,7 @@
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/dialogButtonOK"
+            android:id="@+id/dialogButtonCancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
@@ -47,12 +49,12 @@
             android:paddingLeft="30dp"
             android:paddingRight="30dp"
             android:paddingTop="10dp"
-            android:text="@android:string/ok"
+            android:text="@android:string/cancel"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/main_text_color" />
 
         <Button
-            android:id="@+id/dialogButtonCancel"
+            android:id="@+id/dialogButtonOK"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
@@ -61,7 +63,7 @@
             android:paddingLeft="30dp"
             android:paddingRight="30dp"
             android:paddingTop="10dp"
-            android:text="@android:string/cancel"
+            android:text="@android:string/ok"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/main_text_color" />
     </LinearLayout>
