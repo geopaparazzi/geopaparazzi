@@ -770,7 +770,7 @@ public class CustomTileDownloader extends TileDownloader {
             if (context != null) {
                 isConnectedToInternet = NetworkUtilities.isNetworkAvailable(context);
             }
-            if (isConnectedToInternet) {
+            if (isConnectedToInternet || isFile) {
                 URL url = new URL(sb.toString());
                 InputStream inputStream = null;
                 try {
