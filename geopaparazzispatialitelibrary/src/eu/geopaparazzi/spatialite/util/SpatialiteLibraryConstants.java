@@ -17,7 +17,6 @@
  */
 package eu.geopaparazzi.spatialite.util;
 
-
 /**
  * Some constants used in the lib.
  * 
@@ -39,7 +38,10 @@ public interface SpatialiteLibraryConstants {
      * Key used to pass a lon temporarily through bundles. 
      */
     public static final String LONGITUDE = "LONGITUDE"; //$NON-NLS-1$
-    
 
+    /**
+     * Key used to pass a position temporarily through bundles. 
+     */
+    public static final String POSITION = "POSITION"; //$NON-NLS-1$
 
 }

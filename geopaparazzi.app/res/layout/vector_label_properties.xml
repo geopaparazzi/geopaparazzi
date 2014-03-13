@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/main_background"
+    android:orientation="vertical"
+    android:padding="5dp" >
+
+    <RelativeLayout
+        android:id="@+id/properties_container"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/main_background"
+        android:padding="5dp" >
+
+        <TextView
+            android:id="@+id/visibility_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:text="@string/visibility"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/main_text_color" />
+
+        <CheckBox
+            android:id="@+id/checkVisibility"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/visibility_title"
+            android:layout_margin="5dp"
+            android:text="@string/notesvisibilityToggle"
+            android:textColor="@color/main_text_color" />
+
+        <TextView
+            android:id="@+id/custom_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/checkVisibility"
+            android:layout_marginTop="15dp"
+            android:text="@string/custom_icon_properties"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/main_text_color" />
+
+        <CheckBox
+            android:id="@+id/checkUseCustom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/custom_title"
+            android:layout_margin="5dp"
+            android:text="@string/use_custom"
+            android:textColor="@color/main_text_color" />
+
+        <TextView
+            android:id="@+id/sizeLabel"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/checkUseCustom"
+            android:layout_margin="5dp"
+            android:text="@string/size"
+            android:textColor="@color/main_text_color" />
+
+        <Spinner
+            android:id="@+id/sizeSpinner"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/sizeLabel"
+            android:layout_margin="5dp" />
+
+        <TextView
+            android:id="@+id/colorLabel"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/sizeSpinner"
+            android:layout_margin="5dp"
+            android:text="@string/color_label"
+            android:textColor="@color/main_text_color" />
+
+        <Spinner
+            android:id="@+id/colorSpinner"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/colorLabel"
+            android:layout_margin="5dp" />
+
+        <TextView
+            android:id="@+id/alphaLabel"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/colorSpinner"
+            android:layout_margin="5dp"
+            android:text="@string/opacity"
+            android:textColor="@color/main_text_color" />
+
+        <Spinner
+            android:id="@+id/alphaSpinner"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/alphaLabel"
+            android:layout_margin="5dp" />
+
+        <TextView
+            android:id="@+id/labels_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/alphaSpinner"
+            android:layout_marginTop="15dp"
+            android:text="@string/labels"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/main_text_color" />
+
+        <CheckBox
+            android:id="@+id/checkShowLabels"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/labels_title"
+            android:layout_margin="5dp"
+            android:text="@string/show_labels"
+            android:textColor="@color/main_text_color" />
+
+        <TextView
+            android:id="@+id/fontSizeLabel"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/checkShowLabels"
+            android:layout_margin="5dp"
+            android:text="@string/size"
+            android:textColor="@color/main_text_color" />
+
+        <Spinner
+            android:id="@+id/fontSizeSpinner"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/fontSizeLabel"
+            android:layout_margin="5dp" />
+
+        <CheckBox
+            android:id="@+id/checkHalo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/fontSizeSpinner"
+            android:layout_margin="5dp"
+            android:text="@string/halo"
+            android:textColor="@color/main_text_color" />
+    </RelativeLayout>
+
+</ScrollView>

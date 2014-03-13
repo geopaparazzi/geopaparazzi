@@ -52,11 +52,19 @@
         android:src="@drawable/properties" />
 
     <ImageButton
-        android:id="@+id/zoomtoButton"
+        android:id="@+id/labelsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/propertiesButton"
         android:layout_toRightOf="@+id/propertiesButton"
+        android:src="@drawable/list_labels" />
+
+    <ImageButton
+        android:id="@+id/zoomtoButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/labelsButton"
+        android:layout_toRightOf="@+id/labelsButton"
         android:src="@drawable/list_zoomto" />
 
     <ImageButton
