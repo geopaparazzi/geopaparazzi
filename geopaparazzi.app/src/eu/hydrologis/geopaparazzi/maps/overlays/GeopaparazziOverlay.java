@@ -818,7 +818,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     return;
                 }
                 Style style4Table = spatialTable.getStyle();
-                if (style4Table.labelvisible == 0) {
+                if (style4Table.enabled == 0 || style4Table.labelvisible == 0) {
                     continue;
                 }
                 if (!envelope.intersects(spatialTable.getTableEnvelope())) {
