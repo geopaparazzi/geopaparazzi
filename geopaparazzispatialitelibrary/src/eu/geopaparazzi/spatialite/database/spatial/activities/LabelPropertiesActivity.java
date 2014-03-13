@@ -17,17 +17,22 @@
  */
 package eu.geopaparazzi.spatialite.database.spatial.activities;
 
+import java.util.List;
+
 import jsqlite.Exception;
 import android.app.Activity;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Spinner;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.R;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
@@ -54,89 +59,49 @@ public class LabelPropertiesActivity extends Activity {
             spatialTable = SpatialDatabasesManager.getInstance().getVectorTableByName(tableName);
         } catch (Exception e) {
             e.printStackTrace();
+            Utilities.errorDialog(this, e, null);
+            return;
         }
 
-        // // notes selection
-        // CheckBox notesVisibilityCheckbox = (CheckBox) findViewById(R.id.checkVisibility);
-        // notesVisibilityCheckbox.setChecked(DataManager.getInstance().areNotesVisible());
-        // notesVisibilityCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-        // public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
-        // DataManager.getInstance().setNotesVisible(isChecked);
-        // }
-        // });
-        //
-        // // use custom
-        // final CheckBox useCustomCheckbox = (CheckBox) findViewById(R.id.checkUseCustom);
-        // boolean doCustom = preferences.getBoolean(Constants.PREFS_KEY_NOTES_CHECK, false);
-        // useCustomCheckbox.setChecked(doCustom);
-        // useCustomCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-        // public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
-        // Editor editor = preferences.edit();
-        // editor.putBoolean(Constants.PREFS_KEY_NOTES_CHECK, useCustomCheckbox.isChecked());
-        // editor.commit();
-        // }
-        // });
-        //
-        // int arraySizeId = R.array.array_size;
-        // int sizespinnerId = R.id.sizeSpinner;
-        // String prefsKey = Constants.PREFS_KEY_NOTES_SIZE;
-        // String defaultStr = "15";
-        // makeSpinner(arraySizeId, sizespinnerId, prefsKey, defaultStr);
-        //
-        // int arrayColorId = R.array.array_colornames;
-        // int colorSpinnerId = R.id.colorSpinner;
-        // prefsKey = Constants.PREFS_KEY_NOTES_CUSTOMCOLOR;
-        // defaultStr = "blue";
-        // makeSpinner(arrayColorId, colorSpinnerId, prefsKey, defaultStr);
-        //
-        // int arrayOpacityId = R.array.array_alpha;
-        // int opacitySpinnerId = R.id.alphaSpinner;
-        // prefsKey = Constants.PREFS_KEY_NOTES_OPACITY;
-        // defaultStr = "100";
-        // makeSpinner(arrayOpacityId, opacitySpinnerId, prefsKey, defaultStr);
-        //
-        // // show labels
-        // final CheckBox showLabelsCheckbox = (CheckBox) findViewById(R.id.checkShowLabels);
-        // boolean showLabels = preferences.getBoolean(Constants.PREFS_KEY_NOTES_TEXT_VISIBLE,
-        // false);
-        // showLabelsCheckbox.setChecked(showLabels);
-        // showLabelsCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-        // public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
-        // Editor editor = preferences.edit();
-        // editor.putBoolean(Constants.PREFS_KEY_NOTES_TEXT_VISIBLE,
-        // showLabelsCheckbox.isChecked());
-        // editor.commit();
-        // }
-        // });
-        //
-        // int fontSizeSpinnerId = R.id.fontSizeSpinner;
-        // prefsKey = Constants.PREFS_KEY_NOTES_TEXT_SIZE;
-        // defaultStr = "30";
-        // makeSpinner(arraySizeId, fontSizeSpinnerId, prefsKey, defaultStr);
-        //
-        // final CheckBox haloCheckbox = (CheckBox) findViewById(R.id.checkHalo);
-        // boolean doHalo = preferences.getBoolean(Constants.PREFS_KEY_NOTES_TEXT_DOHALO, true);
-        // haloCheckbox.setChecked(doHalo);
-        // haloCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-        // public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
-        // Editor editor = preferences.edit();
-        // editor.putBoolean(Constants.PREFS_KEY_NOTES_TEXT_DOHALO, haloCheckbox.isChecked());
-        // editor.commit();
-        // }
-        // });
+        // notes selection
+        CheckBox notesVisibilityCheckbox = (CheckBox) findViewById(R.id.checkVisibility);
+
+        notesVisibilityCheckbox.setChecked(spatialTable.getStyle().labelvisible == 1);
+        notesVisibilityCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener(){
+            public void onCheckedChanged( CompoundButton buttonView, boolean isChecked ) {
+                spatialTable.getStyle().labelvisible = isChecked ? 1 : 0;
+            }
+        });
+
+        makeSizeSpinner();
+
+        makeFieldsSpinner();
     }
 
-    private void makeSpinner( int arraySizeId, int sizespinnerId, final String prefsKey, String defaultStr ) {
-        String sizeStr = preferences.getString(prefsKey, defaultStr);
+    @Override
+    public void finish() {
+        try {
+            SpatialDatabasesManager.getInstance().updateStyle(spatialTable);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        super.finish();
+    }
+
+    private void makeSizeSpinner() {
+        String labelsizeStr = "" + (int) spatialTable.getStyle().labelsize; //$NON-NLS-1$
+
+        int arraySizeId = R.array.array_sizes;
         String[] stringArray = getResources().getStringArray(arraySizeId);
         int index = 0;
         for( int i = 0; i < stringArray.length; i++ ) {
-            if (stringArray[i].equals(sizeStr)) {
+            if (stringArray[i].equals(labelsizeStr)) {
                 index = i;
                 break;
             }
         }
-        final Spinner sizeSpinner = (Spinner) findViewById(sizespinnerId);
+        final Spinner sizeSpinner = (Spinner) findViewById(R.id.fontSizeSpinner);
         ArrayAdapter< ? > sizeSpinnerAdapter = ArrayAdapter.createFromResource(this, arraySizeId,
                 android.R.layout.simple_spinner_item);
         sizeSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -146,9 +111,37 @@ public class LabelPropertiesActivity extends Activity {
             public void onItemSelected( AdapterView< ? > arg0, View arg1, int arg2, long arg3 ) {
                 Object selectedItem = sizeSpinner.getSelectedItem();
                 String sizeStr = selectedItem.toString();
-                Editor editor = preferences.edit();
-                editor.putString(prefsKey, sizeStr);
-                editor.commit();
+                float size = Float.parseFloat(sizeStr);
+                spatialTable.getStyle().labelsize = size;
+            }
+            public void onNothingSelected( AdapterView< ? > arg0 ) {
+                // ignore
+            }
+        });
+    }
+
+    private void makeFieldsSpinner() {
+        List<String> labelFieldsList = spatialTable.getLabelList();
+        String labelField = spatialTable.getStyle().labelfield;
+
+        int index = 0;
+        for( int i = 0; i < labelFieldsList.size(); i++ ) {
+            if (labelFieldsList.get(i).equals(labelField)) {
+                index = i;
+                break;
+            }
+        }
+        final Spinner fieldsSpinner = (Spinner) findViewById(R.id.labelFieldSpinner);
+        ArrayAdapter<String> fieldsSpinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,
+                labelFieldsList);
+        fieldsSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        fieldsSpinner.setAdapter(fieldsSpinnerAdapter);
+        fieldsSpinner.setSelection(index);
+        fieldsSpinner.setOnItemSelectedListener(new OnItemSelectedListener(){
+            public void onItemSelected( AdapterView< ? > arg0, View arg1, int arg2, long arg3 ) {
+                Object selectedItem = fieldsSpinner.getSelectedItem();
+                String fieldStr = selectedItem.toString();
+                spatialTable.getStyle().labelfield = fieldStr;
             }
             public void onNothingSelected( AdapterView< ? > arg0 ) {
                 // ignore

@@ -1210,4 +1210,8 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
         }
     }
 
+    public Database getDatabase() {
+        return db_java;
+    }
+
 }
