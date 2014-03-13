@@ -152,9 +152,9 @@ public class GpsDatabaseLogger implements GpsManagerListener {
                     }
                     String intervalStr = preferences
                             .getString(PREFS_KEY_GPSLOGGINGINTERVAL, String.valueOf(GPS_LOGGING_INTERVAL));
-                    long waitForSecs = 3;
+                    int waitForSecs = 3;
                     try {
-                        waitForSecs = Long.parseLong(intervalStr);
+                        waitForSecs = Integer.parseInt(intervalStr);
                     } catch (Exception e) {
                         // ignore and use default
                     }
@@ -166,7 +166,9 @@ public class GpsDatabaseLogger implements GpsManagerListener {
                     while( isDatabaseLogging ) {
                         if (gotFix || isMockMode) {
                             if (gpsLoc == null) {
-                                waitGpsInterval(waitForSecs);
+                                if (!holdABitAndCheckLogging(waitForSecs)) {
+                                    break;
+                                }
                                 continue;
                             }
                             if (previousLogLoc == null) {
@@ -181,7 +183,9 @@ public class GpsDatabaseLogger implements GpsManagerListener {
                             logABS("distance: " + lastDistance + " - mindistance: " + minDistance);
                             // ignore near points
                             if (lastDistance < minDistance) {
-                                waitGpsInterval(waitForSecs);
+                                if (!holdABitAndCheckLogging(waitForSecs)) {
+                                    break;
+                                }
                                 continue;
                             }
                             try {
@@ -197,11 +201,9 @@ public class GpsDatabaseLogger implements GpsManagerListener {
                             currentDistance = currentDistance + lastDistance;
                             previousLogLoc = gpsLoc;
                         }
-                        if (!isDatabaseLogging) {
+                        if (!holdABitAndCheckLogging(waitForSecs)) {
                             break;
                         }
-                        // and wait
-                        waitGpsInterval(waitForSecs);
                     }
 
                     if (currentPointsNum < 2) {
@@ -236,14 +238,26 @@ public class GpsDatabaseLogger implements GpsManagerListener {
 
             }
 
-            private void waitGpsInterval( long waitForSecs ) {
+            /**
+             * Waits a bit before next gps query.
+             * 
+             * @param waitForSecs seconds to wait.
+             * @return <code>false</code> if the gps got interrupted, <code>true</code> else.
+             */
+            private boolean holdABitAndCheckLogging( int waitForSecs ) {
                 try {
-                    // get interval and wait
-                    Thread.sleep(waitForSecs * 1000L);
+                    for( int i = 0; i < waitForSecs; i++ ) {
+                        Thread.sleep(1000L);
+                        if (!isDatabaseLogging) {
+                            return false;
+                        }
+                    }
+                    return true;
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     String msg = context.getResources().getString(R.string.cantwrite_gpslog);
                     GPLog.error(this, msg, e);
+                    return true;
                 }
             }
         };
