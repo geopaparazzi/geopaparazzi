@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="eu.hydrologis.geopaparazzi"
     android:installLocation="auto"
-    android:versionCode="53"
-    android:versionName="3.9.2" >
+    android:versionCode="54"
+    android:versionName="3.9.3" >
 
     <!-- permissions -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
