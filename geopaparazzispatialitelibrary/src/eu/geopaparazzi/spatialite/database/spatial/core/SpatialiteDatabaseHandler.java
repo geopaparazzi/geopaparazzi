@@ -74,8 +74,8 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
 
     private SpatialiteDatabaseType databaseType = null;
 
-    // List of all View of Database [name,sql_create] - search sql for geometry columns
-    private HashMap<String, String> databaseViewsList = new HashMap<String, String>();
+    // List of all SpatialView of Database [view_name,view_data] - parse for 'geometry_column;min_x,min_y,max_x,max_y'
+    private HashMap<String, String> spatialViewsMap = new HashMap<String, String>();
 
     /**
      * Constructor.
@@ -111,7 +111,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
 
             // check database and collect the views list
             try {
-                databaseType = DaoSpatialite.checkDatabaseTypeAndValidity(db_java, databaseViewsList);
+                databaseType = DaoSpatialite.checkDatabaseTypeAndValidity(db_java, spatialViewsMap);
                 isDatabaseValid = true;
             } catch (Exception e) {
                 isDatabaseValid = false;
@@ -1146,15 +1146,11 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             case SPATIALITE3:
             case SPATIALITE4: {
                 // Spatialite Files version 2+3=3 ; version 4=4
-                // 'table_fields' will have a unique list of geometry-fields from all tables
-                for( int i = 0; i < databaseViewsList.size(); i++ ) {
-                    for( Map.Entry<String, String> view_entry : databaseViewsList.entrySet() ) {
+                for( int i = 0; i < spatialViewsMap.size(); i++ ) {
+                    for( Map.Entry<String, String> view_entry : spatialViewsMap.entrySet() ) {
                         String s_view_name = view_entry.getKey();
-                        // String s_view_data = view_entry.getValue(); // TODO remove newlines
-                        // GPLog.androidLog(-1, "SpatialiteDatabaseHandler[" + getDatabasePath() +
-                        // "] view[" + s_view_name + "]   ");
-                        // GPLog.androidLog(-1,"SpatialiteDatabaseHandler["+getFileNamePath()+"] view["+s_view_name+"] sql["
-                        // + s_view_data+ "]  ");
+                        String s_view_data = view_entry.getValue(); 
+                        GPLog.androidLog(-1,"SpatialiteDatabaseHandler["+databaseFile.getAbsolutePath()+"] view["+s_view_name+"] sql[" + s_view_data+ "]  ");
                         // TODO: parse 's_view_data' for fields in 'table_fields'
                         // TODO: create a SpatialVectorTable for the views
                     }

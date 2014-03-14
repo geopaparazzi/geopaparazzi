@@ -717,11 +717,11 @@ public class DaoSpatialite {
      * @return the {@link SpatialiteDatabaseType}.
      * @throws Exception if something goes wrong.
      */
-    public static SpatialiteDatabaseType checkDatabaseTypeAndValidity( Database database, HashMap<String, String> databaseViewsMap )
+    public static SpatialiteDatabaseType checkDatabaseTypeAndValidity( Database database, HashMap<String, String> spatialViewsMap )
             throws Exception {
 
         // clear views
-        databaseViewsMap.clear();
+        spatialViewsMap.clear();
 
         // views: vector_layers_statistics,vector_layers
         boolean b_vector_layers_statistics = false;
@@ -732,8 +732,7 @@ public class DaoSpatialite {
         // boolean b_raster_columns = false;
         boolean b_gpkg_contents = false;
         boolean b_geopackage_contents = false;
-
-        String sqlCommand = "SELECT name,type,sql FROM sqlite_master WHERE ((type='table') OR (type='view')) ORDER BY type DESC,name ASC";
+        String sqlCommand = "SELECT name,type,sql FROM sqlite_master WHERE ((type='table') OR (type='view')) ORDER BY type DESC,name ASC";   
         String tableType = "";
         String sqlCreationString = "";
         String name = "";
@@ -760,7 +759,7 @@ public class DaoSpatialite {
                     // we are looking for user-defined views only,
                     // filter out system known views.
                     if ((!name.equals("geom_cols_ref_sys")) && (!name.startsWith("vector_layers"))) {
-                        databaseViewsMap.put(name, sqlCreationString);
+                    //    databaseViewsMap.put(name, sqlCreationString);
                     } else if (name.equals("vector_layers_statistics")) {
                         b_vector_layers_statistics = true;
                     } else if (name.equals("vector_layers")) {
@@ -787,6 +786,22 @@ public class DaoSpatialite {
             return SpatialiteDatabaseType.GEOPACKAGE;
         } else {
             if ((b_vector_layers_statistics) && (b_vector_layers)) { // Spatialite 4.0
+                if (b_vector_layers)
+                {
+                 sqlCommand = "SELECT table_name,geometry_column||';'||extent_min_x||','||extent_min_y||','||extent_min_x||','||extent_min_y AS view_data FROM vector_layers_statistics WHERE (layer_type='SpatialView' AND row_count NOT NULL) ";
+                 statement = database.prepare(sqlCommand);
+                 try {
+                  while( statement.step() ) {
+                   name = statement.column_string(0);
+                   sqlCreationString = statement.column_string(1);
+                   spatialViewsMap.put(name, sqlCreationString);
+                   }
+                  } finally {
+                  if (statement != null) {
+                   statement.close();
+                  }
+                 }
+                }
                 return SpatialiteDatabaseType.SPATIALITE4;
             } else {
                 if (b_geometry_columns) { // Spatialite before 4.0
