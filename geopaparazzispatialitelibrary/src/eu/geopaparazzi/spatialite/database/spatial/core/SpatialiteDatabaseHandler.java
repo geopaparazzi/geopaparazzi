@@ -1148,11 +1148,46 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                 // Spatialite Files version 2+3=3 ; version 4=4
                 for( int i = 0; i < spatialViewsMap.size(); i++ ) {
                     for( Map.Entry<String, String> view_entry : spatialViewsMap.entrySet() ) {
-                        String s_view_name = view_entry.getKey();
-                        String s_view_data = view_entry.getValue(); 
-                        GPLog.androidLog(-1,"SpatialiteDatabaseHandler["+databaseFile.getAbsolutePath()+"] view["+s_view_name+"] sql[" + s_view_data+ "]  ");
-                        // TODO: parse 's_view_data' for fields in 'table_fields'
-                        // TODO: create a SpatialVectorTable for the views
+                        String view_name = view_entry.getKey();
+                        String s_view_data = view_entry.getValue();
+                        String[] sa_string = s_view_data.split(";"); 
+                        double[] boundsCoordinates = new double[]{0.0, 0.0, 0.0, 0.0};
+                        double[] centerCoordinate = {0.0, 0.0}; 
+                        HashMap<String, String> fields_list = new HashMap<String, String>();
+                        String s_layer_type=""; 
+                        String s_srid=""; 
+                        int i_geometry_type=0;                     
+                        if (sa_string.length == 2) {
+                         String geometry_column=sa_string[0];
+                         s_view_data = sa_string[1];
+                         sa_string = s_view_data.split(","); 
+                         if (sa_string.length == 4) {
+                          try {
+                            boundsCoordinates[0] = Double.parseDouble(sa_string[0]);
+                            boundsCoordinates[1] = Double.parseDouble(sa_string[1]);
+                            boundsCoordinates[2] = Double.parseDouble(sa_string[2]);
+                            boundsCoordinates[3] = Double.parseDouble(sa_string[3]);
+                           } catch (NumberFormatException e) {
+                          }
+                          if (!s_srid.equals("4326")) { // Transform into wsg84 if needed
+                           collectBoundsAndCenter(s_srid, centerCoordinate, boundsCoordinates);
+                          } else {
+                           centerCoordinate[0] = boundsCoordinates[0] + (boundsCoordinates[2] - boundsCoordinates[0]) / 2;
+                           centerCoordinate[1] = boundsCoordinates[1] + (boundsCoordinates[3] - boundsCoordinates[1]) / 2;
+                          }
+                          checkAndAdaptDatabaseBounds(boundsCoordinates, null);
+                          GPLog.androidLog(-1,"SpatialiteDatabaseHandler["+databaseFile.getAbsolutePath()+"] view["+view_name+"] sql[" + s_view_data+ "]  ");
+                          // no Zoom levels with
+                          // vector data
+                          SpatialVectorTable table = new SpatialVectorTable(getDatabasePath(), view_name, geometry_column,
+                              i_geometry_type, s_srid, centerCoordinate, boundsCoordinates, s_layer_type);
+                          // compleate list of fields of
+                          // this table
+                          fields_list = DaoSpatialite.collectTableFields(db_java, view_name);
+                          table.setFieldsList(fields_list);
+                          vectorTableList.add(table);
+                         }
+                       }
                     }
                 }
             }
