@@ -1148,18 +1148,27 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                 // Spatialite Files version 2+3=3 ; version 4=4
                 for( int i = 0; i < spatialViewsMap.size(); i++ ) {
                     for( Map.Entry<String, String> view_entry : spatialViewsMap.entrySet() ) {
+                        // berlin_stadtteile	
                         String view_name = view_entry.getKey();
+                        // soldner_polygon;14;3;2;3068;1;20847.6171111586,18733.613614603,20847.6171111586,18733.613614603
                         String s_view_data = view_entry.getValue();
                         String[] sa_string = s_view_data.split(";"); 
                         double[] boundsCoordinates = new double[]{0.0, 0.0, 0.0, 0.0};
                         double[] centerCoordinate = {0.0, 0.0}; 
-                        HashMap<String, String> fields_list = new HashMap<String, String>();
-                        String s_layer_type=""; 
-                        String s_srid=""; 
+                        HashMap<String, String> fields_list = new HashMap<String, String>();                                                
                         int i_geometry_type=0;                     
-                        if (sa_string.length == 2) {
+                        if (sa_string.length == 8) {
                          String geometry_column=sa_string[0];
-                         s_view_data = sa_string[1];
+                         String s_layer_type=sa_string[1];
+                         String s_row_count = sa_string[2];
+                         String s_geometry_type = sa_string[3];
+                         i_geometry_type = Integer.parseInt(s_geometry_type);
+                         GeometryType geometry_type = GeometryType.forValue(i_geometry_type);
+                         s_geometry_type = geometry_type.toString();
+                         String s_coord_dimension=sa_string[4];
+                         String s_srid=sa_string[5];
+                         String s_spatial_index_enabled=sa_string[6]; // should always be 1
+                         s_view_data = sa_string[7];
                          sa_string = s_view_data.split(","); 
                          if (sa_string.length == 4) {
                           try {

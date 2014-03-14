@@ -788,7 +788,7 @@ public class DaoSpatialite {
             if ((b_vector_layers_statistics) && (b_vector_layers)) { // Spatialite 4.0
                 if (b_vector_layers)
                 {
-                 sqlCommand = "SELECT table_name,geometry_column||';'||extent_min_x||','||extent_min_y||','||extent_min_x||','||extent_min_y AS view_data FROM vector_layers_statistics WHERE (layer_type='SpatialView' AND row_count NOT NULL) ";
+                 sqlCommand = "SELECT vector_layers_statistics.table_name,vector_layers_statistics.geometry_column||';'||vector_layers_statistics.layer_type||';'||vector_layers_statistics.row_count||';'||geometry_type||';'||coord_dimension||';'||srid||';'||spatial_index_enabled||';'||extent_min_x||','||extent_min_y||','||extent_min_x||','||extent_min_y AS view_data FROM vector_layers_statistics INNER JOIN vector_layers ON vector_layers_statistics.table_name=vector_layers.table_name AND vector_layers_statistics.geometry_column=vector_layers.geometry_column WHERE (vector_layers_statistics.layer_type='SpatialView' AND row_count NOT NULL)";
                  statement = database.prepare(sqlCommand);
                  try {
                   while( statement.step() ) {
