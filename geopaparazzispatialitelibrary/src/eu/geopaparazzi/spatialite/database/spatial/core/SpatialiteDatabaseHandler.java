@@ -113,6 +113,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             try {
                 databaseType = DaoSpatialite.checkDatabaseTypeAndValidity(db_java, spatialVectorMap);
                 isDatabaseValid = true;
+                // GPLog.androidLog(-1,"GeopaparazziOverlay.getGeometryIteratorInBounds version["+DaoSpatialite.getJavaSqliteDescription(db_java,"test")+"]");
             } catch (Exception e) {
                 isDatabaseValid = false;
             }
@@ -423,6 +424,8 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
     public GeometryIterator getGeometryIteratorInBounds( String destSrid, SpatialVectorTable table, double n, double s, double e,
             double w ) {
         String query = SpatialiteUtilities.buildGeometriesInBoundsQuery(destSrid, table, n, s, e, w);
+        // GPLog.androidLog(-1,"GeopaparazziOverlay.getGeometryIteratorInBounds query["+query+"]");
+
         return new GeometryIterator(db_java, query);
     }
 
