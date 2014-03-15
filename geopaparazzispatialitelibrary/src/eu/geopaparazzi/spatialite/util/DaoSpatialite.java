@@ -166,6 +166,64 @@ public class DaoSpatialite {
     }
 
     /**
+     * General sql query to retrieve vector data of the whole Database in 1 query
+     * - this is Spatialite4+ specfic and will be called in checkDatabaseTypeAndValidity
+     * -- and will returned spatialVectorMap with the 2 Fields returned by this query
+     * -- the result will be sorted with views first and Tables second
+     * <ol>
+     * <li>2 Fields will be returned with the following structure</li>
+     * <li>table_name: berlin_stadtteile</li>
+     * <li>vector_data: Seperator: ';' 9 values</li>
+     * <li>0: geometry_column - soldner_polygon</li>
+     * <li>1: layer_type - SpatialView or SpatialTable</li>	
+     * <li>2: row_count - 14</li>	
+     * <li>3: geometry_type - 3</li>	
+     * <li>4: coord_dimension - 2</li>	
+     * <li>5: srid - 3068</li>	
+     * <li>6: spatial_index_enabled - 0 or 1</li>	
+     * <li>7: extent_min/max - Seperator ',' - 4 values
+     * <li>7.0:extent_min_x - 20847.6171111586</li>
+     * <li>7.1:extent_min_y - 18733.613614603</li>
+     * <li>7.2:extent_max_x - 20847.6171111586</li>
+     * <li>7.3:extent_max_y - 18733.613614603</li></li>	
+     * <li>8:last_verified - 2014-03-12T12:22:39.688Z</li>	
+     * </ol>
+     * Validity: s_view_data.split(";"); must return the length of 9
+     *           sa_view_data[7].split(","); must return the length of 4
+     */
+    public static String VECTOR_LAYERS_QUERY;
+    static {
+       StringBuilder sb_query = new StringBuilder();
+       sb_query.append("SELECT ");
+       sb_query.append(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".table_name"); // 1 field
+       sb_query.append("," + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".geometry_column"); // 0 of second field
+       sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + "." + "layer_type"); // 1
+       sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".row_count"); // 2
+       sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_TABLE_NAME + "." + "geometry_type"); // 3
+       sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_TABLE_NAME + ".coord_dimension"); // 4
+       sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_TABLE_NAME + "." + "srid"); // 5
+       sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_TABLE_NAME + ".spatial_index_enabled"); // 6
+       sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".extent_min_x"); // 7.0
+       sb_query.append("," + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".extent_min_y"); // 7.1
+       sb_query.append("," + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".extent_max_x"); // 7.2
+       sb_query.append("," + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".extent_max_y"); // 7.3
+       sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".last_verified"); // 8
+       sb_query.append(" AS vector_data FROM " + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + " INNER JOIN " + METADATA_VECTOR_LAYERS_TABLE_NAME);
+       sb_query.append(" ON "+ METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".table_name");
+       sb_query.append(" = "+ METADATA_VECTOR_LAYERS_TABLE_NAME + ".table_name");
+       sb_query.append(" AND "+ METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".geometry_column");
+       sb_query.append(" = "+ METADATA_VECTOR_LAYERS_TABLE_NAME + ".geometry_column");
+       // if the creation of a spatial-view fails, a record may exist with 'row_count=NULL': this is an invalid record and must be ignored
+       sb_query.append(" WHERE (" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".row_count NOT NULL)");
+       // first Views (Spatialview) then tables (SpatialTable), then Table-Name/Column
+       sb_query.append(" ORDER BY " + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + "." + "layer_type DESC");
+       sb_query.append("," + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + "." + "table_name ASC");
+       sb_query.append("," + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + "." + "geometry_column ASC");
+       VECTOR_LAYERS_QUERY = sb_query.toString();
+       /* sqlCommand = "SELECT vector_layers_statistics.table_name,vector_layers_statistics.geometry_column||';'||vector_layers_statistics.layer_type||';'||vector_layers_statistics.row_count||';'||geometry_type||';'||coord_dimension||';'||srid||';'||spatial_index_enabled||';'||extent_min_x||','||extent_min_y||','||extent_min_x||','||extent_min_y||','||vector_layers_statistics.last_verified AS view_data FROM vector_layers_statistics INNER JOIN vector_layers ON vector_layers_statistics.table_name=vector_layers.table_name AND vector_layers_statistics.geometry_column=vector_layers.geometry_column WHERE (row_count NOT NULL) ORDER BY vector_layers_statistics.layer_type DESC,vector_layers_statistics.table_name ASC,vector_layers_statistics.geometry_column ASC"; */
+    }
+
+    /**
      * General Function to create jsqlite.Database with spatialite support.
      * <ol>
      * <li> parent directories will be created, if needed</li>
@@ -713,15 +771,15 @@ public class DaoSpatialite {
      * Checks the database type and its validity.
      * 
      * @param database the database to check.
-     * @param databaseViewsMap the {@link HashMap} of database views data to clear and repopulate.
+     * @param spatialVectorMap the {@link HashMap} of Spatialite4+ Vector-data (Views/Tables Geometries) to clear and repopulate.
      * @return the {@link SpatialiteDatabaseType}.
      * @throws Exception if something goes wrong.
      */
-    public static SpatialiteDatabaseType checkDatabaseTypeAndValidity( Database database, HashMap<String, String> spatialViewsMap )
+    public static SpatialiteDatabaseType checkDatabaseTypeAndValidity( Database database, HashMap<String, String> spatialVectorMap )
             throws Exception {
 
         // clear views
-        spatialViewsMap.clear();
+        spatialVectorMap.clear();
 
         // views: vector_layers_statistics,vector_layers
         boolean b_vector_layers_statistics = false;
@@ -786,20 +844,16 @@ public class DaoSpatialite {
             return SpatialiteDatabaseType.GEOPACKAGE;
         } else {
             if ((b_vector_layers_statistics) && (b_vector_layers)) { // Spatialite 4.0
-                if (b_vector_layers)
-                {
-                 sqlCommand = "SELECT vector_layers_statistics.table_name,vector_layers_statistics.geometry_column||';'||vector_layers_statistics.layer_type||';'||vector_layers_statistics.row_count||';'||geometry_type||';'||coord_dimension||';'||srid||';'||spatial_index_enabled||';'||extent_min_x||','||extent_min_y||','||extent_min_x||','||extent_min_y AS view_data FROM vector_layers_statistics INNER JOIN vector_layers ON vector_layers_statistics.table_name=vector_layers.table_name AND vector_layers_statistics.geometry_column=vector_layers.geometry_column WHERE (vector_layers_statistics.layer_type='SpatialView' AND row_count NOT NULL)";
-                 statement = database.prepare(sqlCommand);
-                 try {
-                  while( statement.step() ) {
-                   name = statement.column_string(0);
-                   sqlCreationString = statement.column_string(1);
-                   spatialViewsMap.put(name, sqlCreationString);
-                   }
-                  } finally {
-                  if (statement != null) {
-                   statement.close();
+                statement = database.prepare(VECTOR_LAYERS_QUERY);
+                try {
+                 while( statement.step() ) {
+                  name = statement.column_string(0);
+                  sqlCreationString = statement.column_string(1);
+                  spatialVectorMap.put(name, sqlCreationString);
                   }
+                 } finally {
+                 if (statement != null) {
+                  statement.close();
                  }
                 }
                 return SpatialiteDatabaseType.SPATIALITE4;
