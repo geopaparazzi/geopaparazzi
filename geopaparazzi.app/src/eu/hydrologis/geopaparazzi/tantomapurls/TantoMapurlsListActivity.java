@@ -35,13 +35,13 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
-import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.hydrologis.geopaparazzi.R;
@@ -64,6 +64,9 @@ public class TantoMapurlsListActivity extends ListActivity {
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
         setContentView(R.layout.tanto_mapurl_list);
+
+        // avoid keyboard to popup
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         Bundle extras = getIntent().getExtras();
         String layersJson = extras.getString(TantoMapurlsActivity.RESULT_KEY);
@@ -187,10 +190,14 @@ public class TantoMapurlsListActivity extends ListActivity {
         new AsyncTask<String, Void, String>(){
             protected String doInBackground( String... params ) {
                 try {
+                    String url = TantoMapurlsActivity.BASEURL + tantoMapurl.id + "/download";
+                    // String mapurlFileNameBkp = "tanto_mapurls_" + tantoMapurl.id + ".mapurl";
+                    String mapurlFileName = "tanto_" + tantoMapurl.title + ".mapurl";
 
-                    String url = TantoMapurlsActivity.BASEURL + tantoMapurl.id;
-                    String mapurlContent = NetworkUtilities.sendGetRequest(url, null, null, null);
-                    return mapurlContent;
+                    File mapsDir = ResourcesManager.getInstance(TantoMapurlsListActivity.this).getMapsDir();
+                    File mapurlFile = new File(mapsDir, mapurlFileName);
+                    File writtenFile = NetworkUtilities.sendGetRequest4File(url, mapurlFile, null, null, null);
+                    return writtenFile.getName();
                 } catch (Exception e) {
                     GPLog.error(this, e.getLocalizedMessage(), e);
                     return "ERROR:" + e.getMessage();
@@ -202,17 +209,7 @@ public class TantoMapurlsListActivity extends ListActivity {
                 if (response.startsWith("ERROR")) {
                     Utilities.messageDialog(TantoMapurlsListActivity.this, response, null);
                 } else {
-                    try {
-                        String mapurlFileName = "tanto_mapurls_" + tantoMapurl.id + ".mapurl";
-                        File mapsDir = ResourcesManager.getInstance(TantoMapurlsListActivity.this).getMapsDir();
-                        File mapurlFile = new File(mapsDir, mapurlFileName);
-                        FileUtilities.writefile(response, mapurlFile);
-                    } catch (Exception e) {
-                        Utilities.errorDialog(TantoMapurlsListActivity.this, e, null);
-                        return;
-                    }
-
-                    String okMsg = getString(R.string.mapurl_successfully_downloaded);
+                    String okMsg = getString(R.string.mapurl_successfully_downloaded) + " (" + response + ")";
                     Utilities.messageDialog(TantoMapurlsListActivity.this, okMsg, null);
                 }
 
