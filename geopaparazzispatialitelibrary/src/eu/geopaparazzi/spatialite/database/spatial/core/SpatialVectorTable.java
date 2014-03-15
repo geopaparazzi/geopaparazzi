@@ -207,7 +207,7 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
     }
 
     /**
-      * Returns a list of non-geomatry fields of this table.
+      * Returns a list of non-geometry fields of this table.
       * 
      * @return list of field names.
       */

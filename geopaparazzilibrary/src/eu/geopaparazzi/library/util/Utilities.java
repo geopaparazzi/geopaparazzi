@@ -309,6 +309,8 @@ public class Utilities {
                     final Dialog dialog = new Dialog(context);
                     dialog.setContentView(eu.geopaparazzi.library.R.layout.yesnodialog);
                     dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                    dialog.setCanceledOnTouchOutside(false);
+                    dialog.setCancelable(false);
                     TextView text = (TextView) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogtext);
                     text.setText(msg);
                     Button yesButton = (Button) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogButtonOK);
