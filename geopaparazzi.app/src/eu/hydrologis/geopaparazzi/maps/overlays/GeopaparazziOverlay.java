@@ -38,8 +38,10 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Paint.Align;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -48,6 +50,8 @@ import android.preference.PreferenceManager;
 import com.vividsolutions.jts.android.PointTransformation;
 import com.vividsolutions.jts.android.ShapeWriter;
 import com.vividsolutions.jts.android.geom.DrawableShape;
+import com.vividsolutions.jts.android.geom.PathShape;
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 
@@ -263,11 +267,11 @@ public abstract class GeopaparazziOverlay extends Overlay {
             } catch (NumberFormatException e) {
                 // ignore and use default
             }
+            doNotesTextHalo = preferences.getBoolean(Constants.PREFS_KEY_NOTES_TEXT_DOHALO, false);
             textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             textPaint.setStyle(Paint.Style.FILL);
             textPaint.setColor(Color.BLACK);
             textPaint.setTextSize(notesTextSize);
-            doNotesTextHalo = preferences.getBoolean(Constants.PREFS_KEY_NOTES_TEXT_DOHALO, false);
             textHaloPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             textHaloPaint.setStyle(Paint.Style.STROKE);
             textHaloPaint.setStrokeWidth(3);
@@ -701,6 +705,9 @@ public abstract class GeopaparazziOverlay extends Overlay {
             SpatialDatabasesManager sdManager = SpatialDatabasesManager.getInstance();
             List<SpatialVectorTable> spatialVectorTables = sdManager.getSpatialVectorTables(false);
             // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite size["+spatialTables.size()+"]: ["+drawZoomLevel+"]");
+            /*
+             * draw geometries
+             */
             for( int i = 0; i < spatialVectorTables.size(); i++ ) {
                 SpatialVectorTable spatialTable = spatialVectorTables.get(i);
                 if (isInterrupted() || sizeHasChanged()) {
@@ -801,6 +808,115 @@ public abstract class GeopaparazziOverlay extends Overlay {
                         geometryIterator.close();
                 }
             }
+            /*
+             * draw labels
+             */
+            for( int i = 0; i < spatialVectorTables.size(); i++ ) {
+                SpatialVectorTable spatialTable = spatialVectorTables.get(i);
+                if (isInterrupted() || sizeHasChanged()) {
+                    // stop working
+                    return;
+                }
+                Style style4Table = spatialTable.getStyle();
+                if (style4Table.enabled == 0 || style4Table.labelvisible == 0) {
+                    continue;
+                }
+                if (!envelope.intersects(spatialTable.getTableEnvelope())) {
+                    continue;
+                }
+                if (drawZoomLevel < style4Table.minZoom || drawZoomLevel > style4Table.maxZoom) {
+                    // we do not draw outside of the zoom levels
+                    continue;
+                }
+
+                float delta = style4Table.size / 2f;
+                if (delta < 2) {
+                    delta = 2;
+                }
+
+                Paint dbTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+                dbTextPaint.setStyle(Paint.Style.FILL);
+                dbTextPaint.setColor(Color.BLACK);
+                dbTextPaint.setTextSize(style4Table.labelsize);
+                Paint dbTextHaloPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+                dbTextHaloPaint.setStyle(Paint.Style.STROKE);
+                dbTextHaloPaint.setStrokeWidth(3);
+                dbTextHaloPaint.setColor(Color.WHITE);
+                dbTextHaloPaint.setTextSize(style4Table.labelsize);
+
+                SpatialDatabaseHandler spatialDatabaseHandler = sdManager.getVectorHandler(spatialTable);
+                if (!(spatialDatabaseHandler instanceof SpatialiteDatabaseHandler)) {
+                    return;
+                }
+                int i_geometryIterator = 0;
+                GeometryIterator geometryIterator = null;
+                try {
+                    PointTransformation pointTransformer = new MapsforgePointTransformation(projection, drawPosition,
+                            drawZoomLevel);
+                    ShapeWriter linesWriter = null;
+                    if (spatialTable.isLine()) {
+                        linesWriter = new ShapeWriter(pointTransformer, spatialTable.getStyle().shape,
+                                spatialTable.getStyle().size);
+                        dbTextHaloPaint.setTextAlign(Align.CENTER);
+                        dbTextPaint.setTextAlign(Align.CENTER);
+                    } else {
+                        dbTextHaloPaint.setTextAlign(Align.LEFT);
+                        dbTextPaint.setTextAlign(Align.LEFT);
+                    }
+
+                    geometryIterator = ((SpatialiteDatabaseHandler) spatialDatabaseHandler).getGeometryIteratorInBounds(
+                            LibraryConstants.SRID_WGS84_4326, spatialTable, n, s, e, w);
+                    while( geometryIterator.hasNext() ) {
+                        i_geometryIterator++;
+                        Geometry geom = geometryIterator.next();
+                        if (geom != null) {
+                            // TODO get label to draw
+                            String labelText = geometryIterator.getLabelText();
+                            if (labelText == null || labelText.length() == 0) {
+                                continue;
+                            }
+                            if (spatialTable.isGeometryCollection()) {
+                                int geometriesCount = geom.getNumGeometries();
+                                // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite type["+s_geometry_type+"]: count_geometries["+i_count_geometries+"]: ["+drawZoomLevel+"]");
+                                for( int j = 0; j < geometriesCount; j++ ) {
+                                    Geometry geom_collect = geom.getGeometryN(j);
+                                    if (geom_collect != null) {
+                                        // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite type["+s_geometry_type+"]: ["+drawZoomLevel+"]");
+                                        drawLabel(pointTransformer, geom_collect, labelText, canvas, dbTextPaint,
+                                                dbTextHaloPaint, delta, linesWriter);
+                                        if (isInterrupted() || sizeHasChanged()) { // stop working
+                                            return;
+                                        }
+                                    }
+                                }
+                            } else {
+                                drawLabel(pointTransformer, geom, labelText, canvas, dbTextPaint, dbTextHaloPaint, delta,
+                                        linesWriter);
+                                if (isInterrupted() || sizeHasChanged()) { // stop working
+                                    return;
+                                }
+                            }
+                            // TODO Draw Label
+                            // if (!labelText.equals("")) {
+                            // GPLog.androidLog(-1, "GeopaparazziOverlay.drawFromSpatialite label["
+                            // + labelText + "] ");
+                            // }
+                        } else {
+                            GPLog.androidLog(-1, "GeopaparazziOverlay.drawFromSpatialite  [geom == null] description["
+                                    + spatialTable.getTableName() + "]");
+                        }
+                    }
+                    if (i_geometryIterator == 0) {
+                        // GPLog.androidLog(-1,
+                        // "GeopaparazziOverlay.drawFromSpatialite  geometryIterator[" +
+                        // i_geometryIterator
+                        // + "] description[" + spatialTable.getDescription() + "]");
+                    }
+                } finally {
+                    if (geometryIterator != null)
+                        geometryIterator.close();
+                }
+            }
         } catch (Exception e1) {
             GPLog.androidLog(4, "GeopaparazziOverlay.drawFromSpatialite [failed]", e1);
         }
@@ -854,6 +970,36 @@ public abstract class GeopaparazziOverlay extends Overlay {
             break;
         default:
             break;
+        }
+    }
+
+    private static void drawLabel( PointTransformation pointTransformer, Geometry geom, String label, Canvas canvas,
+            Paint dbTextPaint, Paint dbTextHaloPaint, float delta, ShapeWriter linesWriter ) {
+
+        if (linesWriter == null) {
+            /*
+             * for points and polygons for now just use the centroid
+             */
+            com.vividsolutions.jts.geom.Point centroid = geom.getCentroid();
+            Coordinate coordinate = centroid.getCoordinate();
+            PointF dest = new PointF();
+            pointTransformer.transform(coordinate, dest);
+            float x = (float) (dest.x + delta);
+            float y = (float) (dest.y - delta);
+            // if (doNotesTextHalo)
+            canvas.drawText(label, x, y, dbTextHaloPaint);
+            canvas.drawText(label, x, y, dbTextPaint);
+        } else {
+            DrawableShape shape = linesWriter.toShape(geom);
+            if (shape instanceof PathShape) {
+                PathShape lineShape = (PathShape) shape;
+                Path linePath = lineShape.getPath();
+                // if (doNotesTextHalo)
+                int hOffset = 15;
+                int vOffset = -5;
+                canvas.drawTextOnPath(label, linePath, hOffset, vOffset, dbTextHaloPaint);
+                canvas.drawTextOnPath(label, linePath, hOffset, vOffset, dbTextPaint);
+            }
         }
     }
 

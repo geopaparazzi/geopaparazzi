@@ -12,4 +12,8 @@
     <string name="min_zoom">Min zoom</string>
     <string name="max_zoom">Max zoom</string>
     <string name="dash_pattern">Dash pattern</string>
+    <string name="label_properties">Label properties</string>
+    <string name="toggle_visibility">toggle visibility</string>
+    <string name="label_field">label field</string>
+    <string name="label_size">label size</string>
 </resources>

@@ -39,6 +39,8 @@
         </activity>
         <activity android:name="eu.geopaparazzi.spatialite.database.spatial.activities.DataListActivity" >
         </activity>
+        <activity android:name="eu.geopaparazzi.spatialite.database.spatial.activities.LabelPropertiesActivity" >
+        </activity>
     </application>
 
 </manifest>
