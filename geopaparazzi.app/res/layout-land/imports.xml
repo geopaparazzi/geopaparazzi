@@ -6,13 +6,23 @@
     android:orientation="horizontal" >
 
     <ImageButton
+        android:id="@+id/tantoMapurlsImportButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:background="@drawable/action_bar_button_drawable"
+        android:padding="5dip"
+        android:src="@drawable/import_mapurls" />
+
+    <ImageButton
         android:id="@+id/gpxImportButton"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
         android:background="@drawable/action_bar_button_drawable"
-        android:padding="20dip"
+        android:padding="5dip"
         android:src="@drawable/export_gpx" />
 
     <ImageButton
@@ -22,7 +32,7 @@
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
         android:background="@drawable/action_bar_button_drawable"
-        android:padding="20dip"
+        android:padding="5dip"
         android:src="@drawable/export_cloud" />
 
     <ImageButton
@@ -32,7 +42,7 @@
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
         android:background="@drawable/action_bar_button_drawable"
-        android:padding="20dip"
+        android:padding="5dip"
         android:src="@drawable/export_bookmarks" />
 
 </LinearLayout>

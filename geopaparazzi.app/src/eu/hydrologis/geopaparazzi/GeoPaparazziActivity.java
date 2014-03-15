@@ -26,8 +26,11 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -71,8 +74,6 @@ import eu.geopaparazzi.library.util.debug.TestMock;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.MapsDirTreeViewList;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
-import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.ActionItem;
-import eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard.QuickAction;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
@@ -89,7 +90,6 @@ import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.ExportActivity;
 import eu.hydrologis.geopaparazzi.util.GpUtilities;
 import eu.hydrologis.geopaparazzi.util.ImportActivity;
-import eu.hydrologis.geopaparazzi.util.QuickActionsFactory;
 import eu.hydrologis.geopaparazzi.util.SecretActivity;
 
 /**
@@ -362,7 +362,7 @@ public class GeoPaparazziActivity extends Activity {
         });
 
         final int logButtonId = R.id.dashboard_log_item_button;
-        ImageButton logButton = (ImageButton) findViewById(logButtonId);
+        logButton = (ImageButton) findViewById(logButtonId);
         // isChecked = applicationManager.isGpsLogging();
         logButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
@@ -556,16 +556,42 @@ public class GeoPaparazziActivity extends Activity {
             break;
         }
         case R.id.dashboard_log_item_button: {
-            QuickAction qa = new QuickAction(v);
+            final GeopaparazziApplication appContext = GeopaparazziApplication.getInstance();
             if (gpsManager.isDatabaseLogging()) {
-                ActionItem stopLogQuickAction = QuickActionsFactory.getStopLogQuickAction(actionBar, qa, this);
-                qa.addActionItem(stopLogQuickAction);
+                // stop logging
+                if (gpsManager.isDatabaseLogging()) {
+                    gpsManager.stopDatabaseLogging(appContext);
+                    logButton.setImageResource(R.drawable.dashboard_log_item);
+                    actionBar.checkLogging();
+                }
             } else {
-                ActionItem startLogQuickAction = QuickActionsFactory.getStartLogQuickAction(actionBar, qa, this);
-                qa.addActionItem(startLogQuickAction);
+                // start logging
+                final Context context = this;
+                if (gpsManager.hasFix()) {
+                    final String defaultLogName = "log_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()); //$NON-NLS-1$
+                    final EditText input = new EditText(context);
+                    input.setText(defaultLogName);
+                    new AlertDialog.Builder(context).setTitle(R.string.gps_log).setMessage(R.string.gps_log_name).setView(input)
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
+                                public void onClick( DialogInterface dialog, int whichButton ) {
+                                    Editable value = input.getText();
+                                    String newName = value.toString();
+                                    if (newName == null || newName.length() < 1) {
+                                        newName = defaultLogName;
+                                    }
+
+                                    DaoGpsLog daoGpsLog = new DaoGpsLog();
+                                    gpsManager.startDatabaseLogging(appContext, newName, daoGpsLog);
+                                    actionBar.checkLogging();
+                                    DataManager.getInstance().setLogsVisible(true);
+                                    logButton.setImageResource(R.drawable.dashboard_stop_log_item);
+                                }
+                            }).setCancelable(false).show();
+                } else {
+                    Utilities.messageDialog(context, R.string.gpslogging_only, null);
+                }
             }
-            qa.setAnimStyle(QuickAction.ANIM_AUTO);
-            qa.show();
+
             break;
         }
         case R.id.dashboard_map_item_button: {
@@ -773,6 +799,7 @@ public class GeoPaparazziActivity extends Activity {
 
     private int backCount = 0;
     private long previousBackTime = System.currentTimeMillis();
+    private ImageButton logButton;
     public boolean onKeyDown( int keyCode, KeyEvent event ) {
         // force to exit through the exit button
         // System.out.println(keyCode + "/" + KeyEvent.KEYCODE_BACK);

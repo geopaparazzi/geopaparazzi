@@ -14,7 +14,7 @@
         android:layout_weight="1"
         android:background="@drawable/action_bar_button_drawable"
         android:padding="20dip"
-        android:src="@drawable/export_gpx" />
+        android:src="@drawable/import_mapurls" />
 
     <ImageButton
         android:id="@+id/gpxImportButton"
