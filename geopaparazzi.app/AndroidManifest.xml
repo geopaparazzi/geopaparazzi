@@ -108,6 +108,8 @@
         </activity>
         <activity android:name="eu.hydrologis.geopaparazzi.tantomapurls.TantoMapurlsActivity" >
         </activity>
+        <activity android:name="eu.hydrologis.geopaparazzi.tantomapurls.TantoMapurlsListActivity" >
+        </activity>
         <activity android:name="eu.hydrologis.geopaparazzi.maps.NotesPropertiesActivity" >
         </activity>
         <activity android:name="eu.hydrologis.geopaparazzi.database.SqlViewActivity" >

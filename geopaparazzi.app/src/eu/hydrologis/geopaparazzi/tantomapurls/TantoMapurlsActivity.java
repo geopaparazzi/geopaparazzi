@@ -47,7 +47,9 @@ import eu.hydrologis.geopaparazzi.R;
 @SuppressWarnings("nls")
 public class TantoMapurlsActivity extends Activity implements OnClickListener {
 
-    private String BASEURL = "http://muttley.spaziogis.it:8001/mapurls/";
+    public static String RESULT_KEY = "KEY_TANTO_RESULT";
+    public static String BASEURL = "http://muttley.spaziogis.it:8001/mapurls/";
+
     private CheckBox useMapcenterCheckbox;
 
     public void onCreate( Bundle icicle ) {
@@ -127,7 +129,9 @@ public class TantoMapurlsActivity extends Activity implements OnClickListener {
                 if (response.startsWith("ERROR")) {
                     Utilities.messageDialog(context, response, null);
                 } else {
-                    Utilities.messageDialog(context, response, null);
+                    Intent mapurlsIntent = new Intent(context, TantoMapurlsListActivity.class);
+                    mapurlsIntent.putExtra(RESULT_KEY, response);
+                    context.startActivity(mapurlsIntent);
                 }
             }
 
