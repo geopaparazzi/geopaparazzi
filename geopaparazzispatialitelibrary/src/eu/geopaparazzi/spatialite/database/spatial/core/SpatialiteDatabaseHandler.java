@@ -819,31 +819,34 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
         // mj10777 20140315: when a final decision NOT to support normal-views is made
         // - the 'table_fields' logic can be removed
         HashMap<String, String> table_fields = new HashMap<String, String>();
-        for( int i = 0; i < spatialVectorMap.size(); i++ ) {
-         for( Map.Entry<String, String> view_entry : spatialVectorMap.entrySet() ) {
-             // berlin_stadtteile	
-             String view_name = view_entry.getKey();
-             // soldner_polygon;14;3;2;3068;1;20847.6171111586,18733.613614603,20847.6171111586,18733.613614603
-             String s_view_data = view_entry.getValue();
-             String[] sa_string = s_view_data.split(";"); 
-             double[] boundsCoordinates = new double[]{0.0, 0.0, 0.0, 0.0};
-             double[] centerCoordinate = {0.0, 0.0}; 
-             HashMap<String, String> fields_list = new HashMap<String, String>();                                                
-             int i_geometry_type=0;                     
-             if (sa_string.length == 9) {
-              String geometry_column=sa_string[0];
-              String s_layer_type=sa_string[1];
-              String s_row_count = sa_string[2];
-              String s_geometry_type = sa_string[3];
+        for( Map.Entry<String, String> view_entry : spatialVectorMap.entrySet() ) {
+            // berlin_stadtteile	
+            String vector_fields = view_entry.getKey();
+            // soldner_polygon;14;3;2;3068;1;20847.6171111586,18733.613614603,20847.6171111586,18733.613614603
+            String vector_data = view_entry.getValue();
+            // GPLog.androidLog(-1, "SpatialiteDatabaseHandler: collectVectorTables vector_name[" + vector_name + "] vector_data["+ vector_data+ "]");
+            double[] boundsCoordinates = new double[]{0.0, 0.0, 0.0, 0.0};
+            double[] centerCoordinate = new double[]{0.0, 0.0}; 
+            HashMap<String, String> fields_list = new HashMap<String, String>(); 
+            int i_geometry_type=0;  
+            String[] sa_string = vector_fields.split(";"); 
+            if (sa_string.length == 3) {                                             
+             String vector_name=sa_string[0];
+             String geometry_column=sa_string[1];
+             String s_layer_type=sa_string[2];  
+             sa_string = vector_data.split(";");                  
+             if (sa_string.length == 7) {
+              int i_row_count = Integer.parseInt(sa_string[0]);
+              String s_geometry_type = sa_string[1];
               i_geometry_type = Integer.parseInt(s_geometry_type);
               GeometryType geometry_type = GeometryType.forValue(i_geometry_type);
               s_geometry_type = geometry_type.toString();
-              String s_coord_dimension=sa_string[4];
-              String s_srid=sa_string[5];
-              int i_spatial_index_enabled=Integer.parseInt(sa_string[6]); // should always be 1
-              s_view_data = sa_string[7];
-              String s_last_verified=sa_string[8];
-              sa_string = s_view_data.split(","); 
+              String s_coord_dimension=sa_string[2];
+              String s_srid=sa_string[3];
+              int i_spatial_index_enabled=Integer.parseInt(sa_string[4]); // should always be 1
+              String s_bounds = sa_string[5];
+              String s_last_verified=sa_string[6];
+              sa_string = s_bounds.split(","); 
               if (sa_string.length == 4) {
                try {
                 boundsCoordinates[0] = Double.parseDouble(sa_string[0]);
@@ -903,7 +906,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                             }
                             if ((boundsCoordinates[0] == 0) && (boundsCoordinates[1] == 0) && (boundsCoordinates[2] == 0)
                                     && (boundsCoordinates[3] == 0)) {
-                                // this time (after
+                               // this time (after
                                 // UpdateLayerStatistics) wel
                                 // will retrieve this
                                 // Information in an otherway
@@ -940,19 +943,19 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                 centerCoordinate[1] = boundsCoordinates[1] + (boundsCoordinates[3] - boundsCoordinates[1]) / 2;
                }
                checkAndAdaptDatabaseBounds(boundsCoordinates, null);
-               GPLog.androidLog(-1,"SpatialiteDatabaseHandler["+databaseFile.getAbsolutePath()+"] view["+view_name+"] sql[" + s_view_data+ "]  ");
+               // GPLog.androidLog(-1,"SpatialiteDatabaseHandler["+databaseFile.getAbsolutePath()+"] vector_fields["+vector_fields+"] vector_data[" + vector_data+ "]  ");
                // no Zoom levels with
                // vector data
-               SpatialVectorTable table = new SpatialVectorTable(getDatabasePath(), view_name, geometry_column,
+               SpatialVectorTable table = new SpatialVectorTable(getDatabasePath(), vector_name, geometry_column,
                i_geometry_type, s_srid, centerCoordinate, boundsCoordinates, s_layer_type);
                // compleate list of fields of
                // this table
-               fields_list = DaoSpatialite.collectTableFields(db_java, view_name);
+               fields_list = DaoSpatialite.collectTableFields(db_java, vector_name);
                table.setFieldsList(fields_list);
                vectorTableList.add(table);
-              }
-            }
-         }
+             }
+           }
+        }
       }
       return table_fields;
     }
