@@ -65,12 +65,26 @@
             android:text="use map center coordinate to filter results"
             android:textColor="@color/tanto_blue" />
 
+        <CheckBox
+            android:id="@+id/uselimitButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/useMapcenterButton"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="15dp"
+            android:paddingLeft="10dp"
+            android:text="limit results to 20 (recommended)"
+            android:textColor="@color/tanto_blue" />
+
         <TextView
             android:id="@+id/textfilterLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_below="@+id/useMapcenterButton"
+            android:layout_below="@+id/uselimitButton"
             android:layout_marginTop="15dp"
             android:paddingLeft="10dp"
             android:text="text filter"

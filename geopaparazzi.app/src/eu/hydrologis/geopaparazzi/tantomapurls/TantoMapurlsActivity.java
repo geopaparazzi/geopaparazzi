@@ -51,6 +51,7 @@ public class TantoMapurlsActivity extends Activity implements OnClickListener {
     public static String BASEURL = "http://muttley.spaziogis.it:8001/mapurls/";
 
     private CheckBox useMapcenterCheckbox;
+    private CheckBox useLimitCheckbox;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -61,6 +62,9 @@ public class TantoMapurlsActivity extends Activity implements OnClickListener {
 
         useMapcenterCheckbox = (CheckBox) findViewById(R.id.useMapcenterButton);
         useMapcenterCheckbox.setChecked(true);
+
+        useLimitCheckbox = (CheckBox) findViewById(R.id.uselimitButton);
+        useLimitCheckbox.setChecked(true);
 
         Button queryButton = (Button) findViewById(R.id.tantoQueryButton);
         queryButton.setOnClickListener(this);
@@ -90,6 +94,12 @@ public class TantoMapurlsActivity extends Activity implements OnClickListener {
             positionStr = "p=" + position[0] + "," + position[1];
         }
 
+        boolean useLimit = useLimitCheckbox.isChecked();
+        String limitStr = null;
+        if (useLimit) {
+            limitStr = "l=20";
+        }
+
         EditText filterText = (EditText) findViewById(R.id.textfilterText);
         String filterStr = filterText.getText().toString();
         boolean useTextFilter = false;
@@ -103,6 +113,9 @@ public class TantoMapurlsActivity extends Activity implements OnClickListener {
         }
         if (useTextFilter) {
             relativeUrl = relativeUrl + "&" + filterStr;
+        }
+        if (useLimit) {
+            relativeUrl = relativeUrl + "&" + limitStr;
         }
 
         if (relativeUrl.length() > 0) {
