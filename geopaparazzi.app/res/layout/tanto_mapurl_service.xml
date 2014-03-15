@@ -33,13 +33,22 @@
             android:id="@+id/tanto_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_below="@+id/tantoImage"
             android:layout_marginTop="15dp"
             android:gravity="center_horizontal"
-            android:paddingLeft="10dp"
             android:text="TANTO mapurl download service"
             android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/tanto_blue" />
+
+        <TextView
+            android:id="@+id/tanto_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tanto_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="2dp"
+            android:text="(tap on title to visit homepage)"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/tanto_blue" />
 
         <CheckBox
@@ -47,8 +56,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_below="@+id/tanto_title"
-            android:layout_margin="5dp"
+            android:layout_below="@+id/tanto_subtitle"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="15dp"
             android:paddingLeft="10dp"
             android:text="use map center coordinate to filter results"
             android:textColor="@color/tanto_blue" />

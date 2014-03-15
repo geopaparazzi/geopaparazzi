@@ -20,15 +20,19 @@ package eu.hydrologis.geopaparazzi.tantomapurls;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.StringAsyncTask;
@@ -58,6 +62,16 @@ public class TantoMapurlsActivity extends Activity implements OnClickListener {
 
         Button queryButton = (Button) findViewById(R.id.tantoQueryButton);
         queryButton.setOnClickListener(this);
+
+        TextView titleTextView = (TextView) findViewById(R.id.tanto_title);
+        titleTextView.setMovementMethod(LinkMovementMethod.getInstance());
+        titleTextView.setOnClickListener(new View.OnClickListener(){
+            public void onClick( View v ) {
+                Uri uri = Uri.parse("http://blog.spaziogis.it/");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                TantoMapurlsActivity.this.startActivity(intent);
+            }
+        });
     }
 
     public void onClick( View v ) {
