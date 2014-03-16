@@ -214,4 +214,10 @@
     <string name="track_length">Track length: </string>
     <string name="gpslog_updateLogLength">Update</string>
     <string name="do_you_want_to_stop_logging">Do you want to stop logging?</string>
+    <string name="tanto_mapurl_download_service">TANTO mapurl download service</string>
+    <string name="tap_on_title_to_visit_website">(tap on title to visit website)</string>
+    <string name="use_map_center_coordinate_to_filter_results">use map center coordinate to filter results</string>
+    <string name="limit_results_to_20_recommended">limit results to 20 (recommended)</string>
+    <string name="text_filter">text filter</string>
+    <string name="tanto_service_query">query</string>
 </resources>

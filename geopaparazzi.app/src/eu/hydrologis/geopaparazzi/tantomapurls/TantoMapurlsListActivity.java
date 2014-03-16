@@ -25,9 +25,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -197,6 +199,11 @@ public class TantoMapurlsListActivity extends ListActivity {
                     File mapsDir = ResourcesManager.getInstance(TantoMapurlsListActivity.this).getMapsDir();
                     File mapurlFile = new File(mapsDir, mapurlFileName);
                     File writtenFile = NetworkUtilities.sendGetRequest4File(url, mapurlFile, null, null, null);
+
+                    Intent intent = getIntent();
+                    intent.putExtra(TantoMapurlsActivity.KEY_DATA, true);
+                    setResult(Activity.RESULT_OK, intent);
+
                     return writtenFile.getName();
                 } catch (Exception e) {
                     GPLog.error(this, e.getLocalizedMessage(), e);

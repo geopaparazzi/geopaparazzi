@@ -37,6 +37,9 @@ import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.MapsDirTreeViewList;
+import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
 
 /**
@@ -47,11 +50,14 @@ import eu.hydrologis.geopaparazzi.R;
 @SuppressWarnings("nls")
 public class TantoMapurlsActivity extends Activity implements OnClickListener {
 
+    protected static final int CODE = 666;
+    protected static final String KEY_DATA = "ARE_MAPURLS_DIRTY";
     public static String RESULT_KEY = "KEY_TANTO_RESULT";
     public static String BASEURL = "http://muttley.spaziogis.it:8001/mapurls/";
 
     private CheckBox useMapcenterCheckbox;
     private CheckBox useLimitCheckbox;
+    private boolean oneAdded = false;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -75,7 +81,7 @@ public class TantoMapurlsActivity extends Activity implements OnClickListener {
             public void onClick( View v ) {
                 Uri uri = Uri.parse("http://blog.spaziogis.it/");
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                TantoMapurlsActivity.this.startActivity(intent);
+                startActivity(intent);
             }
         });
     }
@@ -144,7 +150,7 @@ public class TantoMapurlsActivity extends Activity implements OnClickListener {
                 } else {
                     Intent mapurlsIntent = new Intent(context, TantoMapurlsListActivity.class);
                     mapurlsIntent.putExtra(RESULT_KEY, response);
-                    context.startActivity(mapurlsIntent);
+                    startActivityForResult(mapurlsIntent, CODE);
                 }
             }
 
@@ -161,4 +167,44 @@ public class TantoMapurlsActivity extends Activity implements OnClickListener {
         };
         task.execute();
     }
+
+    protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch( requestCode ) {
+        case CODE: {
+            if (resultCode == Activity.RESULT_OK) {
+                if (!oneAdded) {
+                    oneAdded = data.getBooleanExtra(KEY_DATA, false);
+                }
+            }
+            break;
+        }
+        }
+    }
+
+    @Override
+    public void finish() {
+        /*
+         * reload mapurls if necessary
+         */
+        if (oneAdded) {
+            new Thread(new Runnable(){
+                public void run() {
+                    try {
+                        MapsDirTreeViewList.ENABLE_MENU_PROPERTIES_FILE = true;
+                        MapsDirTreeViewList.ENABLE_MENU_EDIT_FILE = false;
+                        MapsDirTreeViewList.ENABLE_MENU_DELETE_FILE = false;
+                        MapsDirManager.reset();
+                        MapsDirManager.getInstance().init(GeopaparazziApplication.getInstance(), null);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }).start();
+        }
+
+        TantoMapurlsActivity.super.finish();
+    }
+
 }

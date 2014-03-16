@@ -36,7 +36,7 @@
             android:layout_below="@+id/tantoImage"
             android:layout_marginTop="15dp"
             android:layout_centerHorizontal="true"
-            android:text="TANTO mapurl download service"
+            android:text="@string/tanto_mapurl_download_service"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/tanto_blue" />
 
@@ -47,7 +47,7 @@
             android:layout_below="@+id/tanto_title"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="2dp"
-            android:text="(tap on title to visit homepage)"
+            android:text="@string/tap_on_title_to_visit_website"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/tanto_blue" />
 
@@ -62,7 +62,7 @@
             android:layout_marginRight="5dp"
             android:layout_marginTop="15dp"
             android:paddingLeft="10dp"
-            android:text="use map center coordinate to filter results"
+            android:text="@string/use_map_center_coordinate_to_filter_results"
             android:textColor="@color/tanto_blue" />
 
         <CheckBox
@@ -76,7 +76,7 @@
             android:layout_marginRight="5dp"
             android:layout_marginTop="15dp"
             android:paddingLeft="10dp"
-            android:text="limit results to 20 (recommended)"
+            android:text="@string/limit_results_to_20_recommended"
             android:textColor="@color/tanto_blue" />
 
         <TextView
@@ -87,7 +87,7 @@
             android:layout_below="@+id/uselimitButton"
             android:layout_marginTop="15dp"
             android:paddingLeft="10dp"
-            android:text="text filter"
+            android:text="@string/text_filter"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/tanto_blue" />
 
@@ -115,7 +115,7 @@
             android:paddingLeft="30dp"
             android:paddingRight="30dp"
             android:paddingTop="10dp"
-            android:text="query"
+            android:text="@string/tanto_service_query"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/tanto_blue" />
     </RelativeLayout>
