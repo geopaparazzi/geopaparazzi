@@ -213,4 +213,5 @@
     <string name="menu_button">menu button</string>
     <string name="track_length">Track length: </string>
     <string name="gpslog_updateLogLength">Update</string>
+    <string name="do_you_want_to_stop_logging">Do you want to stop logging?</string>
 </resources>

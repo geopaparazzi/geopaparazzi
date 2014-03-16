@@ -69,6 +69,16 @@
             </intent-filter>
             <intent-filter>
                 <data
+                    android:host="www.openstreetmap.org"
+                    android:scheme="http" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+            <intent-filter>
+                <data
                     android:host="gp.eu"
                     android:scheme="http" />
 

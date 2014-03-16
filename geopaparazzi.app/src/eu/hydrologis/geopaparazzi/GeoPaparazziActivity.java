@@ -158,7 +158,9 @@ public class GeoPaparazziActivity extends Activity {
     @SuppressLint("DefaultLocale")
     /**
      * Checks if it was opened for a link of the kind:<br>
-     * http://maps.google.com/maps?q=46.068941,11.169849&GeoSMS<br>
+     * http://maps.google.com/maps?q=46.068941,11.169849&GeoSMS#usertext<br>
+     * or<br>
+     * http://www.openstreetmap.org/#map=19/46.67695/11.12605&layers=N#usertext<br>
      * in which case the point is imported as bookmark.
      */
     private void checkIncomingGeosms() {
@@ -169,34 +171,30 @@ public class GeoPaparazziActivity extends Activity {
                 if (path.toLowerCase().contains(SmsUtilities.SMSHOST)) {
                     return;
                 }
-                if (path.toLowerCase().contains("geosms") && path.toLowerCase().contains("q=")
-                        && !path.toLowerCase().contains(SmsUtilities.SMSHOST)) {
-                    String scheme = data.getScheme(); // "http"
-                    if (scheme != null && scheme.equals("http")) {
-                        String host = data.getHost();
-                        if (host.equals("maps.google.com")) {
-                            String pParameter = data.getQueryParameter("q");
-                            String[] split = pParameter.split(",");
-                            double lat = Double.parseDouble(split[0]);
-                            double lon = Double.parseDouble(split[1]);
-
-                            String msg = "GeoSMS position";
-                            String pathTrim = path.trim();
-                            int firstSPaceIndex = pathTrim.indexOf(' ');
-                            if (firstSPaceIndex != -1) {
-                                msg = pathTrim.substring(0, firstSPaceIndex);
-                            }
-
-                            DaoBookmarks.addBookmark(lon, lat, msg, 16, -1, -1, -1, -1);
-                            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-                            PositionUtilities.putMapCenterInPreferences(preferences, lon, lat, 16);
-                            Intent mapIntent = new Intent(this, MapsActivity.class);
-                            startActivity(mapIntent);
-                        }
-                    }
+                // try google
+                String[] latLonTextFromGmapUrl = Utilities.getLatLonTextFromGmapUrl(path);
+                if (latLonTextFromGmapUrl != null) {
+                    double lat = Double.parseDouble(latLonTextFromGmapUrl[0]);
+                    double lon = Double.parseDouble(latLonTextFromGmapUrl[1]);
+                    DaoBookmarks.addBookmark(lon, lat, latLonTextFromGmapUrl[2], 16, -1, -1, -1, -1);
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                    PositionUtilities.putMapCenterInPreferences(preferences, lon, lat, 16);
+                    Intent mapIntent = new Intent(this, MapsActivity.class);
+                    startActivity(mapIntent);
                 } else {
-                    throw new IOException();
+                    // try osm
+                    String[] latLonTextFromOsmUrl = Utilities.getLatLonTextFromOsmUrl(path);
+                    if (latLonTextFromOsmUrl != null) {
+                        double lat = Double.parseDouble(latLonTextFromOsmUrl[0]);
+                        double lon = Double.parseDouble(latLonTextFromOsmUrl[1]);
+                        DaoBookmarks.addBookmark(lon, lat, latLonTextFromOsmUrl[2], 16, -1, -1, -1, -1);
+                        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                        PositionUtilities.putMapCenterInPreferences(preferences, lon, lat, 16);
+                        Intent mapIntent = new Intent(this, MapsActivity.class);
+                        startActivity(mapIntent);
+                    }
                 }
+
             } catch (IOException e) {
                 Utilities
                         .messageDialog(
@@ -369,6 +367,11 @@ public class GeoPaparazziActivity extends Activity {
                 push(logButtonId, v);
             }
         });
+        if (gpsManager.isDatabaseLogging()) {
+            logButton.setImageResource(R.drawable.dashboard_stop_log_item);
+        } else {
+            logButton.setImageResource(R.drawable.dashboard_log_item);
+        }
 
         final int mapButtonId = R.id.dashboard_map_item_button;
         ImageButton mapButton = (ImageButton) findViewById(mapButtonId);
@@ -518,15 +521,7 @@ public class GeoPaparazziActivity extends Activity {
                 double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
                 if (gpsLocation != null) {
                     try {
-                        // File mediaDir = ResourcesManager.getInstance(this).getMediaDir();
-                        // final File tmpImageFile = new File(mediaDir.getParentFile(),
-                        // LibraryConstants.TMPPNGIMAGENAME);
                         Intent mapTagsIntent = new Intent(this, MapTagsActivity.class);
-                        // mapTagsIntent.putExtra(LibraryConstants.LATITUDE, gpsLocation[1]);
-                        // mapTagsIntent.putExtra(LibraryConstants.LONGITUDE, gpsLocation[0]);
-                        // mapTagsIntent.putExtra(LibraryConstants.ELEVATION, gpsLocation[2]);
-                        // mapTagsIntent.putExtra(LibraryConstants.TMPPNGIMAGENAME,
-                        // tmpImageFile.getAbsolutePath());
                         startActivity(mapTagsIntent);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -558,12 +553,20 @@ public class GeoPaparazziActivity extends Activity {
         case R.id.dashboard_log_item_button: {
             final GeopaparazziApplication appContext = GeopaparazziApplication.getInstance();
             if (gpsManager.isDatabaseLogging()) {
-                // stop logging
-                if (gpsManager.isDatabaseLogging()) {
-                    gpsManager.stopDatabaseLogging(appContext);
-                    logButton.setImageResource(R.drawable.dashboard_log_item);
-                    actionBar.checkLogging();
-                }
+                Utilities.yesNoMessageDialog(GeoPaparazziActivity.this, getString(R.string.do_you_want_to_stop_logging),
+                        new Runnable(){
+                            public void run() {
+                                runOnUiThread(new Runnable(){
+                                    public void run() {
+                                        // stop logging
+                                        gpsManager.stopDatabaseLogging(appContext);
+                                        logButton.setImageResource(R.drawable.dashboard_log_item);
+                                        actionBar.checkLogging();
+                                    }
+                                });
+                            }
+                        }, null);
+
             } else {
                 // start logging
                 final Context context = this;
