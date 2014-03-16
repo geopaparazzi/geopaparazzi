@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tantoImage"
             android:layout_marginTop="15dp"
-            android:gravity="center_horizontal"
+            android:layout_centerHorizontal="true"
             android:text="TANTO mapurl download service"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/tanto_blue" />
