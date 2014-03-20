@@ -827,16 +827,18 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             String vector_fields = view_entry.getKey();
             // soldner_polygon;14;3;2;3068;1;20847.6171111586,18733.613614603,20847.6171111586,18733.613614603
             String vector_data = view_entry.getValue();
-            // GPLog.androidLog(-1, "SpatialiteDatabaseHandler: collectVectorTables vector_name[" + vector_name + "] vector_data["+ vector_data+ "]");
+            // GPLog.androidLog(-1, "SpatialiteDatabaseHandler: collectVectorTables vector_fields[" + vector_fields + "] vector_data["+ vector_data+ "]");
             double[] boundsCoordinates = new double[]{0.0, 0.0, 0.0, 0.0};
             double[] centerCoordinate = new double[]{0.0, 0.0}; 
             HashMap<String, String> fields_list = new HashMap<String, String>(); 
             int i_geometry_type=0;  
             String[] sa_string = vector_fields.split(";"); 
-            if (sa_string.length == 3) {                                             
+            if (sa_string.length == 5) {                                             
              String vector_name=sa_string[0];
              String geometry_column=sa_string[1];
-             String s_layer_type=sa_string[2];  
+             String s_layer_type=sa_string[2]; 
+             String s_ROWID_PK=sa_string[3]; 
+             int i_view_read_only = Integer.parseInt(sa_string[4]); 
              sa_string = vector_data.split(";");                  
              if (sa_string.length == 7) {
               int i_row_count = Integer.parseInt(sa_string[0]);
@@ -954,7 +956,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                // compleate list of fields of
                // this table
                fields_list = DaoSpatialite.collectTableFields(db_java, vector_name);
-               table.setFieldsList(fields_list);
+               table.setFieldsList(fields_list,s_ROWID_PK,i_view_read_only);
                vectorTableList.add(table);
              }
            }
@@ -1114,7 +1116,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                     // compleate list of fields of
                     // this table
                     fields_list = DaoSpatialite.collectTableFields(db_java, table_name);
-                    table.setFieldsList(fields_list);
+                    table.setFieldsList(fields_list,"ROWID",-1);
                     vectorTableList.add(table);
                 }
             } catch (Exception e) {
