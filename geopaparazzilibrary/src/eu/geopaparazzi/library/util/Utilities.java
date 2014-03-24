@@ -18,6 +18,7 @@
 package eu.geopaparazzi.library.util;
 
 import java.io.File;
+import java.util.Date;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -814,4 +815,98 @@ public class Utilities {
         }
     }
 
+    /**
+     * Gets the data from a gmap url.
+     * 
+     * @param url the url to parse.
+     * @return an array with [lat, lon, text] or <code>null</code>.
+     */
+    @SuppressWarnings("nls")
+    public static String[] getLatLonTextFromGmapUrl( String url ) {
+        String googleMapsUrl = "http://maps.google.com/maps?q=";
+        if (url.startsWith(googleMapsUrl)) {
+            // google maps url
+            String relativePath = url.substring(googleMapsUrl.length());
+
+            // check if there is a dash for adding text
+            String textStr = new Date().toLocaleString();
+            int lastDashIndex = relativePath.lastIndexOf('#');
+            if (lastDashIndex != -1) {
+                // everything after a dash is taken as text
+                textStr = relativePath.substring(lastDashIndex + 1);
+                relativePath = relativePath.substring(0, lastDashIndex);
+            }
+
+            int indexOfAmp = relativePath.indexOf('&');
+            String coordsStr = null;
+            if (indexOfAmp == -1) {
+                // no other &
+                coordsStr = relativePath;
+            } else {
+                coordsStr = relativePath.substring(0, indexOfAmp);
+            }
+            String[] split = coordsStr.split(",");
+            if (split.length == 2) {
+                try {
+                    double lat = Double.parseDouble(split[0]);
+                    double lon = Double.parseDouble(split[1]);
+
+                    return new String[]{String.valueOf(lat), String.valueOf(lon), textStr};
+                } catch (NumberFormatException e) {
+                    return null;
+                }
+            }
+        } else {
+            return null;
+        }
+        return null;
+    }
+
+    /**
+     * Gets the data from a osm url.
+     * 
+     * @param url the url to parse.
+     * @return an array with [lat, lon, text] or <code>null</code>.
+     */
+    @SuppressWarnings("nls")
+    public static String[] getLatLonTextFromOsmUrl( String url ) {
+        // http://www.openstreetmap.org/#map=19/46.67695/11.12605&layers=N
+        String osmMapsUrl = "http://www.openstreetmap.org/#map=";
+        if (url.startsWith(osmMapsUrl)) {
+            // osm maps url
+            String relativePath = url.substring(osmMapsUrl.length());
+
+            // check if there is a dash for adding text
+            String textStr = new Date().toLocaleString();
+            int lastDashIndex = relativePath.lastIndexOf('#');
+            if (lastDashIndex != -1) {
+                // everything after a dash is taken as text
+                textStr = relativePath.substring(lastDashIndex + 1);
+                relativePath = relativePath.substring(0, lastDashIndex);
+            }
+
+            int indexOfAmp = relativePath.indexOf('&');
+            String coordsStr = null;
+            if (indexOfAmp == -1) {
+                // no other &
+                coordsStr = relativePath;
+            } else {
+                coordsStr = relativePath.substring(0, indexOfAmp);
+            }
+            String[] split = coordsStr.split("/");
+            if (split.length == 3) {
+                try {
+                    double lat = Double.parseDouble(split[1]);
+                    double lon = Double.parseDouble(split[2]);
+
+                    return new String[]{String.valueOf(lat), String.valueOf(lon), textStr};
+                } catch (NumberFormatException e) {
+                    return null;
+                }
+            }
+        } else {
+            return null;
+        }
+        return null;
+    }
 }
