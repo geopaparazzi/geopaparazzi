@@ -34,8 +34,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tantoImage"
-            android:layout_marginTop="15dp"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
             android:text="@string/tanto_mapurl_download_service"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/tanto_blue" />
@@ -109,7 +109,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:background="@drawable/tanto_button_drawable"
             android:paddingBottom="10dp"
             android:paddingLeft="30dp"
@@ -117,6 +117,20 @@
             android:paddingTop="10dp"
             android:text="@string/tanto_service_query"
             android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/tanto_blue" />
+
+        <TextView
+            android:id="@+id/disclaimerLabel"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/tantoQueryButton"
+            android:layout_marginTop="5dp"
+            android:paddingLeft="10dp"
+            android:gravity="center_horizontal"
+            android:paddingRight="10dp"
+            android:text="@string/tanto_disclaimer"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/tanto_blue" />
     </RelativeLayout>
 
