@@ -198,6 +198,9 @@ public class TantoMapurlsListActivity extends ListActivity {
 
                     File mapsDir = ResourcesManager.getInstance(TantoMapurlsListActivity.this).getMapsDir();
                     File mapurlFile = new File(mapsDir, mapurlFileName);
+                    if (!mapurlFile.getParentFile().exists()) {
+                        mapurlFile.getParentFile().mkdirs();
+                    }
                     File writtenFile = NetworkUtilities.sendGetRequest4File(url, mapurlFile, null, null, null);
 
                     Intent intent = getIntent();
