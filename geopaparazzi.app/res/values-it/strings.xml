@@ -197,7 +197,7 @@
   <string name="other">altro</string>
   <string name="base_maps">Lista dati Spatialite</string>
   <string name="maps_manager">Gestore mappe</string>
-  <string name="loading_maps">Caricamento mappe...</string>
+  <!--ellipsis character instead of three dots-->
   <string name="project">Progetto</string>
   <string name="gps_status">Stato del GPS</string>
   <string name="no_queriable_layer_is_visible">Non è visibile alcun piano interrogabile</string>

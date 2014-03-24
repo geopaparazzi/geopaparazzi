@@ -197,11 +197,15 @@
   <string name="other">その他</string>
   <string name="base_maps">Spatialiteデータリスト</string>
   <string name="maps_manager">地図管理</string>
-  <string name="loading_maps">データを読み込んでいます...</string>
+  <string name="loading_maps">マップを読込中...</string>
+  <!--ellipsis character instead of three dots-->
   <string name="project">プロジェクト</string>
   <string name="gps_status">GPS Status</string>
   <string name="no_queriable_layer_is_visible">クエリー可能なレイヤがありません。</string>
   <string name="set_path_manually">パスを手動で設定（コンボボックスよりも優先されます）</string>
   <string name="choose_from_suggested">または候補から選択する</string>
   <string name="reset_style_tables">スタイルテーブルをリセットする</string>
+  <string name="menu_button">メニューボタン</string>
+  <string name="track_length">トラック全長：</string>
+  <string name="gpslog_updateLogLength">更新</string>
 </resources>

@@ -197,7 +197,7 @@
   <string name="other">más</string>
   <string name="base_maps">Spatialite adatok</string>
   <string name="maps_manager">Térkép kezelő</string>
-  <string name="loading_maps">Térképek betöltése...</string>
+  <!--ellipsis character instead of three dots-->
   <string name="project">Projekt</string>
   <string name="gps_status">GPS állapot</string>
   <string name="no_queriable_layer_is_visible">Nem lekérdezhető réteg látható</string>

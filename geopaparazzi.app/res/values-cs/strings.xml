@@ -197,7 +197,7 @@
   <string name="other">Jiné</string>
   <string name="base_maps">Seznam prostorových dat</string>
   <string name="maps_manager">Správce map</string>
-  <string name="loading_maps">Nahrávají se mapy...</string>
+  <!--ellipsis character instead of three dots-->
   <string name="project">Projekt</string>
   <string name="gps_status">Stav GPS</string>
   <string name="no_queriable_layer_is_visible">Žádná dotazovatelná vrstva není viditelná</string>
