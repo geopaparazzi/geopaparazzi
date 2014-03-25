@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 import android.content.Context;
-import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialiteContextHolder;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
@@ -48,6 +47,7 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
     private final int geomType;
 
     private Style style;
+
     private String geometryTypeDescription = "geometry";
 
     private boolean checkDone = false;
@@ -71,10 +71,6 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
     private String labelField = "";
     // list of possible primary keys - for more that one: seperated with ';'
     private String primaryKeyFields = "";
-    // SpatialTable=always ROWID ; SpatialView: can also be ROWID - but something else
-    private String ROWID_PK="ROWID";
-    // SpatialTable=-1 ; SpatialView: read_only=0 ; writable=1
-    private int view_read_only=-1;
     private String uniqueNameBasedOnDbFilePath = "";
     // private String uniqueNameBasedOnDbFileName = "";
 
@@ -139,7 +135,7 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
 
     /**
       * Return geometryTypeDescription
-      * SpatialView or SpatialTable
+      *
       * @return the geometryTypeDescription
       */
     public String getGeometryTypeDescription() {
@@ -231,17 +227,6 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
     }
 
     /**
-      * Returns Primary Key Field or ROWID for tables
-      * 
-      * <p>- used in SpatialiteUtilities.buildGeometriesInBoundsQuery
-      * 
-      * @return primary key field used as ROWID.
-      */
-    public String getROWID() {
-        return ROWID_PK;
-    }
-
-    /**
       * Returns selected label field of this table
       * 
       * <p>- to help retrieve the value for a label
@@ -275,9 +260,8 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
       * <li>-- if none are found, first field
       * </ul>
      * @param fieldName2TypeMap the fields map to set.
-     * @param s_ROWID_PK the field to replace the default ROWID when SpatialView.
       */
-    public void setFieldsList( HashMap<String, String> fieldName2TypeMap, String s_ROWID_PK,int i_view_read_only ) {
+    public void setFieldsList( HashMap<String, String> fieldName2TypeMap ) {
         this.fieldName2TypeMap = fieldName2TypeMap;
         labelField = "";
         String s_label_field_alt = "";
@@ -325,13 +309,6 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
                 labelField = s_label_field_alt;
             }
             // GPLog.androidLog(-1,"SpatialVectorTable.setFieldsList["+getName()+"] label_list["+label_list.size()+"] fields_list_non_vector["+fields_list_non_vector.size()+"] fields_list["+this.fields_list.size()+"]  selected_name["+s_label_field+"] field_type["+s_primary_key_fields+"]");
-        }
-        // GPLog.androidLog(-1,"SpatialVectorTable.setFieldsList s_ROWID_PK["+s_ROWID_PK+"] view_read_only["+i_view_read_only +"] primaryKeyFields["+primaryKeyFields+"]");
-        if ((i_view_read_only == 0) || (i_view_read_only == 1))
-         view_read_only=i_view_read_only; // -1=SpatialTable otherwise SpatialView
-        if ((!s_ROWID_PK.equals("")) && (s_ROWID_PK.indexOf("ROWID") == -1)) 
-        {
-         ROWID_PK=s_ROWID_PK;         
         }
     }
 
