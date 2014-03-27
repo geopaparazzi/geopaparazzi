@@ -76,6 +76,8 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
 
     // List of all SpatialView of Database [view_name,view_data] - parse for 'geometry_column;min_x,min_y,max_x,max_y'
     private HashMap<String, String> spatialVectorMap = new HashMap<String, String>();
+    // List of all SpatialView of Database [view_name,view_data] - that have errors
+    private HashMap<String, String> spatialVectorMapErrors = new HashMap<String, String>();
 
     /**
      * Constructor.
@@ -111,7 +113,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
 
             // check database and collect the views list
             try {
-                databaseType = DaoSpatialite.checkDatabaseTypeAndValidity(db_java, spatialVectorMap);
+                databaseType = DaoSpatialite.checkDatabaseTypeAndValidity(db_java, spatialVectorMap, spatialVectorMapErrors);
                 isDatabaseValid = true;
                 // GPLog.androidLog(-1,"GeopaparazziOverlay.getGeometryIteratorInBounds version["+DaoSpatialite.getJavaSqliteDescription(db_java,"test")+"]");
             } catch (Exception e) {
@@ -818,40 +820,41 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
       *
       * @return the {@link HashMap} of field name to its type.
       */
-    private HashMap<String, String> collectVectorTables() throws Exception {       
+    private HashMap<String, String> collectVectorTables() throws Exception {
         // mj10777 20140315: when a final decision NOT to support normal-views is made
         // - the 'table_fields' logic can be removed
         HashMap<String, String> table_fields = new HashMap<String, String>();
-        for( Map.Entry<String, String> view_entry : spatialVectorMap.entrySet() ) {
-            // berlin_stadtteile	
-            String vector_fields = view_entry.getKey();
+        String vector_key=""; // term used when building the sql, used as map.key
+        String vector_value=""; // to retrieve map.value (=vector_data+vector_extent)
+        for( Map.Entry<String, String> vector_entry : spatialVectorMap.entrySet() ) {
+            // berlin_stadtteile
+            vector_key = vector_entry.getKey();
             // soldner_polygon;14;3;2;3068;1;20847.6171111586,18733.613614603,20847.6171111586,18733.613614603
-            String vector_data = view_entry.getValue();
-            // GPLog.androidLog(-1, "SpatialiteDatabaseHandler: collectVectorTables vector_fields[" + vector_fields + "] vector_data["+ vector_data+ "]");
+            vector_value = vector_entry.getValue();
             double[] boundsCoordinates = new double[]{0.0, 0.0, 0.0, 0.0};
-            double[] centerCoordinate = new double[]{0.0, 0.0}; 
-            HashMap<String, String> fields_list = new HashMap<String, String>(); 
-            int i_geometry_type=0;  
-            String[] sa_string = vector_fields.split(";"); 
-            if (sa_string.length == 5) {                                             
-             String vector_name=sa_string[0];
+            double[] centerCoordinate = new double[]{0.0, 0.0};
+            HashMap<String, String> fields_list = new HashMap<String, String>();
+            int i_geometry_type=0;
+            String[] sa_string = vector_key.split(";");
+            if (sa_string.length == 5) {
+             String table_name=sa_string[0];
              String geometry_column=sa_string[1];
-             String s_layer_type=sa_string[2]; 
-             String s_ROWID_PK=sa_string[3]; 
-             int i_view_read_only = Integer.parseInt(sa_string[4]); 
-             sa_string = vector_data.split(";");                  
+             String s_layer_type=sa_string[2];
+             String s_ROWID_PK=sa_string[3];
+             int i_view_read_only = Integer.parseInt(sa_string[4]);
+             sa_string = vector_value.split(";");
              if (sa_string.length == 7) {
-              int i_row_count = Integer.parseInt(sa_string[0]);
-              String s_geometry_type = sa_string[1];
+              String s_geometry_type = sa_string[0];
               i_geometry_type = Integer.parseInt(s_geometry_type);
               GeometryType geometry_type = GeometryType.forValue(i_geometry_type);
               s_geometry_type = geometry_type.toString();
-              String s_coord_dimension=sa_string[2];
-              String s_srid=sa_string[3];
-              int i_spatial_index_enabled=Integer.parseInt(sa_string[4]); // should always be 1
+              String s_coord_dimension=sa_string[1];
+              String s_srid=sa_string[2];
+              int i_spatial_index_enabled=Integer.parseInt(sa_string[3]); // should always be 1
+              int i_row_count = Integer.parseInt(sa_string[4]);
               String s_bounds = sa_string[5];
               String s_last_verified=sa_string[6];
-              sa_string = s_bounds.split(","); 
+              sa_string = s_bounds.split(",");
               if (sa_string.length == 4) {
                try {
                 boundsCoordinates[0] = Double.parseDouble(sa_string[0]);
@@ -862,84 +865,6 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                }
                if (i_spatial_index_enabled != 1)
                {
-                /* logic to correct a missing UpdateLayerStatistics
-                        // for older spatialite v4 : Retrieve extent of
-                        // table from Query result and fill
-                        // boundsCoordinates
-                        i_geometry_type = this_stmt.column_int(2);
-                        GeometryType geometry_type = GeometryType.forValue(i_geometry_type);
-                        s_geometry_type = geometry_type.toString();
-                        s_layer_type = this_stmt.column_string(4);
-                        i_row_count = this_stmt.column_int(5);
-                        boundsCoordinates[0] = this_stmt.column_double(6);
-                        boundsCoordinates[1] = this_stmt.column_double(7);
-                        boundsCoordinates[2] = this_stmt.column_double(8);
-                        boundsCoordinates[3] = this_stmt.column_double(9);
-                        // i_coord_dimension = this_stmt.column_int(10);
-                        // i_spatial_index_enabled = this_stmt.column_int(11);
-                        // s_last_verified = this_stmt.column_string(12);
-                        if ((boundsCoordinates[0] == 0) && (boundsCoordinates[1] == 0) && (boundsCoordinates[2] == 0)
-                                && (boundsCoordinates[3] == 0)) {
-                            if ((!s_layer_type.equals("")) && (i_row_count == 0)) {
-                                // at the moment we are reading one row of possibly many rows
-                                if (b_UpdateLayerStatistics) {
-                                    // do this only for the first row,
-                                    // the next time the application is
-                                    // run it will have a proper table
-                                    String s_UpdateLayerStatistics = "SELECT UpdateLayerStatistics();";
-                                    int i_UpdateLayerStatistics = -1;
-                                    try {
-                                        bounds_stmt = db_java.prepare(s_UpdateLayerStatistics);
-                                        if (bounds_stmt.step()) {
-                                            i_UpdateLayerStatistics = this_stmt.column_int(0);
-                                        }
-                                    } finally {
-                                        if (bounds_stmt != null) {
-                                            bounds_stmt.close();
-                                        }
-                                        // the next time this
-                                        // application reads
-                                        // this database it will
-                                        // have a proper table
-                                        if (i_UpdateLayerStatistics == 1) {
-                                            // UpdateLayerStatistics
-                                            // is not needed
-                                            b_UpdateLayerStatistics = false;
-                                        }
-                                    }
-                                }
-                            }
-                            if ((boundsCoordinates[0] == 0) && (boundsCoordinates[1] == 0) && (boundsCoordinates[2] == 0)
-                                    && (boundsCoordinates[3] == 0)) {
-                               // this time (after
-                                // UpdateLayerStatistics) wel
-                                // will retrieve this
-                                // Information in an otherway
-                                try {
-                                    bounds_stmt = db_java.prepare(s_select_bounds);
-                                    if (bounds_stmt.step()) {
-                                        boundsCoordinates[0] = bounds_stmt.column_double(0);
-                                        boundsCoordinates[1] = bounds_stmt.column_double(1);
-                                        boundsCoordinates[2] = bounds_stmt.column_double(2);
-                                        boundsCoordinates[3] = bounds_stmt.column_double(3);
-                                        i_row_count = bounds_stmt.column_int(4);
-                                    }
-                                } catch (Exception e) {
-                                    GPLog.androidLog(4, "SpatialiteDatabaseHandler.get_tables_spatialite prepair["
-                                            + s_select_bounds + "]", e);
-                                } finally {
-                                    if (bounds_stmt != null) {
-                                        bounds_stmt.close();
-                                    }
-                                }
-                            }
-                        } else {
-                            // we have found a valid record
-                            // this will prevent UpdateLayerStatistics being called on empty
-                            // tables - when they ARE not the first table
-                            b_UpdateLayerStatistics = false; // UpdateLayerStatistics is not needed
-                        }
-                      */
                }
                if (!s_srid.equals("4326")) { // Transform into wsg84 if needed
                 collectBoundsAndCenter(s_srid, centerCoordinate, boundsCoordinates);
@@ -948,14 +873,14 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                 centerCoordinate[1] = boundsCoordinates[1] + (boundsCoordinates[3] - boundsCoordinates[1]) / 2;
                }
                checkAndAdaptDatabaseBounds(boundsCoordinates, null);
-               // GPLog.androidLog(-1,"SpatialiteDatabaseHandler["+databaseFile.getAbsolutePath()+"] vector_fields["+vector_fields+"] vector_data[" + vector_data+ "]  ");
+               // GPLog.androidLog(-1,"SpatialiteDatabaseHandler["+databaseFile.getAbsolutePath()+"] vector_key["+vector_key+"] vector_data[" + vector_data+ "]  ");
                // no Zoom levels with
                // vector data
-               SpatialVectorTable table = new SpatialVectorTable(getDatabasePath(), vector_name, geometry_column,
+               SpatialVectorTable table = new SpatialVectorTable(getDatabasePath(), table_name, geometry_column,
                i_geometry_type, s_srid, centerCoordinate, boundsCoordinates, s_layer_type);
                // compleate list of fields of
                // this table
-               fields_list = DaoSpatialite.collectTableFields(db_java, vector_name);
+               fields_list = DaoSpatialite.collectTableFields(db_java, table_name);
                table.setFieldsList(fields_list,s_ROWID_PK,i_view_read_only);
                vectorTableList.add(table);
              }
@@ -994,11 +919,9 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             sb_layers.append("srid");
             sb_layers.append(" FROM ");
             sb_layers.append("geometry_columns");
-            sb_layers.append("  ORDER BY f_table_name;");
+            sb_layers.append(" ORDER BY f_table_name;");
             // version 3 ['type' instead of 'geometry_type']:
-            // SELECT f_table_name,f_geometry_column,geometry_type,srid FROM geometry_columns ORDER
-            // BY
-            // f_table_name
+            // SELECT f_table_name,f_geometry_column,geometry_type,srid FROM geometry_columns ORDER BY f_table_name
             s_sql_layers = sb_layers.toString();
             break;
         }
@@ -1023,78 +946,29 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                     table_name = this_stmt.column_string(0);
                     // GPLog.androidLog(-1,"SpatialiteDatabaseHandler["+getFileNamePath()+"] tablename["+table_name+"]");
                     geometry_column = this_stmt.column_string(1);
+                    // for older spatialite v2+3 : Query extent of table
+                    // and fill boundsCoordinates
+                    s_geometry_type = this_stmt.column_string(2);
+                    i_geometry_type = GeometryType.forValue(s_geometry_type);
                     i_srid = this_stmt.column_int(3);
                     s_srid = String.valueOf(i_srid);
-                    sb_layers = new StringBuilder();
-                    // SELECT Min(MbrMinX(coord_geometry)) AS min_x, Min(MbrMinY(coord_geometry)) AS
-                    // min_y,Max(MbrMaxX(coord_geometry)) AS max_x, Max(MbrMaxY(coord_geometry)) AS
-                    // max_y FROM geodb_geometry
-                    sb_layers.append("SELECT Min(MbrMinX(");
-                    sb_layers.append(geometry_column);
-                    sb_layers.append(")) AS min_x, Min(MbrMinY(");
-                    sb_layers.append(geometry_column);
-                    sb_layers.append(")) AS min_y,");
-                    sb_layers.append("Max(MbrMaxX(");
-                    sb_layers.append(geometry_column);
-                    sb_layers.append(")) AS max_x, Max(MbrMaxY(");
-                    sb_layers.append(geometry_column);
-                    sb_layers.append(")) AS max_y, count(");
-                    sb_layers.append(geometry_column);
-                    sb_layers.append(") AS i_row_count ");
-                    sb_layers.append(" FROM ");
-                    sb_layers.append(table_name);
-                    sb_layers.append(";");
-                    String s_select_bounds = sb_layers.toString();
-                    Stmt bounds_stmt = null;
-                    int i_test = 0;
-                    // i_CheckSpatialIndex is returning 0 all the time and can be
-                    // used
-                    if ((!table_name.equals("")) && (!geometry_column.equals("")) && (i_test > 0)) {
-                        String s_CheckSpatialIndex = "SELECT CheckSpatialIndex('" + table_name + "','" + geometry_column + "');";
-                        int i_CheckSpatialIndex = -1;
-                        try {
-                            bounds_stmt = db_java.prepare(s_CheckSpatialIndex);
-                            if (bounds_stmt.step()) {
-                                i_CheckSpatialIndex = bounds_stmt.column_int(0);
-                            }
-                        } catch (Exception e) {
-                            GPLog.androidLog(4, "SpatialiteDatabaseHandler.get_tables_spatialite prepair[" + s_CheckSpatialIndex
-                                    + "]", e);
-                        } finally {
-                            if (bounds_stmt != null) {
-                                bounds_stmt.close();
-                            }
-                            if (i_CheckSpatialIndex < 1) {
-                                GPLog.androidLog(-1, "SpatialiteDatabaseHandler[" + getDatabasePath() + "] tablename["
-                                        + table_name + "] geometry_column[" + geometry_column + "] i_CheckSpatialIndex["
-                                        + i_CheckSpatialIndex + "]");
-                            }
-                        }
-                    }
-                    if (databaseType == SpatialiteDatabaseType.SPATIALITE3) {
-                        // for older spatialite v2+3 : Query extent of table
-                        // and fill boundsCoordinates
-                        s_geometry_type = this_stmt.column_string(2);
-                        i_geometry_type = GeometryType.forValue(s_geometry_type);
-                        try {
-                            bounds_stmt = db_java.prepare(s_select_bounds);
-                            if (bounds_stmt.step()) {
-                                boundsCoordinates[0] = bounds_stmt.column_double(0);
-                                boundsCoordinates[1] = bounds_stmt.column_double(1);
-                                boundsCoordinates[2] = bounds_stmt.column_double(2);
-                                boundsCoordinates[3] = bounds_stmt.column_double(3);
-                                i_row_count = bounds_stmt.column_int(4);
-                            }
-                        } catch (Exception e) {
-                            GPLog.androidLog(4, "SpatialiteDatabaseHandler.get_tables_spatialite prepair[" + s_select_bounds
-                                    + "]", e);
-                        } finally {
-                            if (bounds_stmt != null) {
-                                bounds_stmt.close();
-                            }
-                        }
-                    } else if (databaseType == SpatialiteDatabaseType.SPATIALITE4) {
-
+                    // 'rows_count;min_x,min_y,max_x,max_y;datetimestamp_now'                        
+                    String s_vector_extent=DaoSpatialite.SpatialiteRetrieveBounds(db_java,table_name,geometry_column);
+                    String[] sa_string = s_vector_extent.split(";");
+                    if (sa_string.length == 3) {
+                     i_row_count = Integer.parseInt(sa_string[0]);
+                     String s_bounds=sa_string[1];
+                     String s_last_verified=sa_string[2];
+                     sa_string = s_bounds.split(",");
+                     if (sa_string.length == 4) {
+                      try {
+                       boundsCoordinates[0] = Double.parseDouble(sa_string[0]);
+                       boundsCoordinates[1] = Double.parseDouble(sa_string[1]);
+                       boundsCoordinates[2] = Double.parseDouble(sa_string[2]);
+                       boundsCoordinates[3] = Double.parseDouble(sa_string[3]);
+                      } catch (NumberFormatException e) {
+                      }
+                     }
                     }
                     // mj10777 20140315: when a final decision NOT to support normal-views is made
                     // - the 'table_fields' logic can be removed
@@ -1119,6 +993,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                     table.setFieldsList(fields_list,"ROWID",-1);
                     vectorTableList.add(table);
                 }
+
             } catch (Exception e) {
                 GPLog.androidLog(4, "SpatialiteDatabaseHandler.get_tables_spatialite prepair[" + s_sql_layers + "]", e);
             } finally {
@@ -1193,14 +1068,15 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             tableFields = collectGpkgTables();
         }
             break;
-        case SPATIALITE3:
+        case SPATIALITE3:{
+         // // Spatialite Files version 2+3=3 only
+         tableFields = collectSpatialiteTables();
+        }
+        break;
         case SPATIALITE4: {
-            // Spatialite Files version 2+3=3 ; version 4=4
-            // this will return a unique list of geometry-fields from all tables
-            if (spatialVectorMap.size() > 0)
+            // Spatialite Files version 4=4 only
              tableFields = collectVectorTables();
-            else
-             tableFields = collectSpatialiteTables();
+             
         }
             break;
         }
