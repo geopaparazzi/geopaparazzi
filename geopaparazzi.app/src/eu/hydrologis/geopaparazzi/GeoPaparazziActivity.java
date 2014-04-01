@@ -26,11 +26,9 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -66,6 +64,7 @@ import eu.geopaparazzi.library.sms.SmsUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.AboutActivity;
@@ -572,24 +571,27 @@ public class GeoPaparazziActivity extends Activity {
                 final Context context = this;
                 if (gpsManager.hasFix()) {
                     final String defaultLogName = "log_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()); //$NON-NLS-1$
-                    final EditText input = new EditText(context);
-                    input.setText(defaultLogName);
-                    new AlertDialog.Builder(context).setTitle(R.string.gps_log).setMessage(R.string.gps_log_name).setView(input)
-                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener(){
-                                public void onClick( DialogInterface dialog, int whichButton ) {
-                                    Editable value = input.getText();
-                                    String newName = value.toString();
-                                    if (newName == null || newName.length() < 1) {
-                                        newName = defaultLogName;
-                                    }
 
-                                    DaoGpsLog daoGpsLog = new DaoGpsLog();
-                                    gpsManager.startDatabaseLogging(appContext, newName, daoGpsLog);
-                                    actionBar.checkLogging();
-                                    DataManager.getInstance().setLogsVisible(true);
-                                    logButton.setImageResource(R.drawable.dashboard_stop_log_item);
+                    Utilities.inputMessageDialog(context, getString(R.string.gps_log), getString(R.string.gps_log_name),
+                            defaultLogName, new TextRunnable(){
+                                public void run() {
+                                    runOnUiThread(new Runnable(){
+                                        public void run() {
+                                            String newName = theTextToRunOn;
+                                            if (newName == null || newName.length() < 1) {
+                                                newName = defaultLogName;
+                                            }
+
+                                            logButton.setImageResource(R.drawable.dashboard_stop_log_item);
+                                            DaoGpsLog daoGpsLog = new DaoGpsLog();
+                                            gpsManager.startDatabaseLogging(appContext, newName, daoGpsLog);
+                                            actionBar.checkLogging();
+                                            DataManager.getInstance().setLogsVisible(true);
+                                        }
+                                    });
                                 }
-                            }).setCancelable(false).show();
+                            });
+
                 } else {
                     Utilities.messageDialog(context, R.string.gpslogging_only, null);
                 }
