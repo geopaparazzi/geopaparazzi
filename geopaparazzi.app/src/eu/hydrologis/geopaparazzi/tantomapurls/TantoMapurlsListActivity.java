@@ -45,6 +45,7 @@ import android.widget.TextView;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.hydrologis.geopaparazzi.R;
 
@@ -159,7 +160,15 @@ public class TantoMapurlsListActivity extends ListActivity {
                             Utilities.messageDialog(TantoMapurlsListActivity.this, R.string.available_only_with_network, null);
                             return;
                         }
-                        downloadProject(tantoMapurl);
+
+                        String title = getString(R.string.tanto_mapurl_download_service);
+                        Utilities.inputMessageDialog(TantoMapurlsListActivity.this, title,
+                                getString(R.string.service_name_propmt), "", new TextRunnable(){
+                                    public void run() {
+                                        downloadProject(tantoMapurl, theTextToRunOn);
+                                    }
+                                });
+
                     }
                 });
                 return rowView;
@@ -186,15 +195,24 @@ public class TantoMapurlsListActivity extends ListActivity {
         }
     };
 
-    private void downloadProject( final TantoMapurl tantoMapurl ) {
-        downloadProgressDialog = ProgressDialog.show(this, getString(R.string.downloading),
-                getString(R.string.downloading_mapurl_to_the_device), true, true);
+    private void downloadProject( final TantoMapurl tantoMapurl, final String fileName ) {
+        runOnUiThread(new Runnable(){
+            public void run() {
+                downloadProgressDialog = ProgressDialog.show(TantoMapurlsListActivity.this, getString(R.string.downloading),
+                        getString(R.string.downloading_mapurl_to_the_device), true, true);
+            }
+        });
         new AsyncTask<String, Void, String>(){
             protected String doInBackground( String... params ) {
                 try {
                     String url = TantoMapurlsActivity.BASEURL + tantoMapurl.id + "/download";
                     // String mapurlFileNameBkp = "tanto_mapurls_" + tantoMapurl.id + ".mapurl";
-                    String mapurlFileName = "tanto_" + tantoMapurl.title + ".mapurl";
+                    String mapurlFileName;
+                    if (fileName.trim().length() > 0) {
+                        mapurlFileName = fileName.trim() + ".mapurl";
+                    } else {
+                        mapurlFileName = "tanto_" + tantoMapurl.title + ".mapurl";
+                    }
 
                     File mapsDir = ResourcesManager.getInstance(TantoMapurlsListActivity.this).getMapsDir();
                     File mapurlFile = new File(mapsDir, mapurlFileName);

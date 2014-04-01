@@ -57,7 +57,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/tanto_subtitle"
-            android:layout_marginBottom="5dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="15dp"
@@ -74,7 +73,7 @@
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="5dp"
             android:paddingLeft="10dp"
             android:text="@string/limit_results_to_20_recommended"
             android:textColor="@color/tanto_blue" />

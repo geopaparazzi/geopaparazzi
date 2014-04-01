@@ -52,8 +52,14 @@ public class TantoMapurlsActivity extends Activity implements OnClickListener {
 
     protected static final int CODE = 666;
     protected static final String KEY_DATA = "ARE_MAPURLS_DIRTY";
+    /**
+     * The result key.
+     */
     public static String RESULT_KEY = "KEY_TANTO_RESULT";
-    public static String BASEURL = "http://muttley.spaziogis.it:8001/mapurls/";
+    /**
+     * The server baseurl.
+     */
+    public static String BASEURL = "http://mapurls.geopaparazzi.eu/mapurls/";
 
     private CheckBox useMapcenterCheckbox;
     private CheckBox useLimitCheckbox;
