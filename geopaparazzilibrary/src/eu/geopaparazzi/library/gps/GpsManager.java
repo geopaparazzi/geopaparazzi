@@ -102,7 +102,7 @@ public class GpsManager implements LocationListener, Listener {
     public synchronized static GpsManager getInstance( Context context ) {
         if (gpsManager == null) {
             gpsManager = new GpsManager(context);
-            gpsManager.checkLoggerExists(context);
+            checkLoggerExists(context);
             gpsManager.checkGps(context);
             gpsManager.gpsStart();
             log("STARTED LISTENING");
@@ -110,7 +110,7 @@ public class GpsManager implements LocationListener, Listener {
         // woke up from death and has the manager already but isn't listening any more
         if (!gpsManager.isGpsListening()) {
             gpsManager = new GpsManager(context);
-            gpsManager.checkLoggerExists(context);
+            checkLoggerExists(context);
             gpsManager.checkGps(context);
             gpsManager.gpsStart();
             log("STARTED LISTENING AFTER REVIEW");
@@ -195,7 +195,7 @@ public class GpsManager implements LocationListener, Listener {
     /**
      * @return <code>true</code> if the logger is closed.
      */
-    public boolean hasLoggerShutdown() {
+    public static boolean hasLoggerShutdown() {
         return gpsLogger.isShutdown();
     }
 
@@ -286,8 +286,9 @@ public class GpsManager implements LocationListener, Listener {
      * 
      * @return <code>true</code> if the GPS is currently used to record data.
      */
-    public boolean isDatabaseLogging() {
+    public static boolean isDatabaseLogging() {
         if (gpsLogger == null) {
+            log("isDatabaseLogging called with gpsLogger == null");
             return false;
         }
         return gpsLogger.isDatabaseLogging();
@@ -331,14 +332,14 @@ public class GpsManager implements LocationListener, Listener {
     /**
      * @return current gps log points num.
      */
-    public int getCurrentRunningGpsLogPointsNum() {
+    public static int getCurrentRunningGpsLogPointsNum() {
         return gpsLogger.getCurrentPointsNum();
     }
 
     /**
      * @return current log id.
      */
-    public long getCurrentRecordedLogId() {
+    public static long getCurrentRecordedLogId() {
         if (gpsLogger == null) {
             return -1l;
         }
@@ -348,11 +349,11 @@ public class GpsManager implements LocationListener, Listener {
     /**
      * @return current log distance.
      */
-    public int getCurrentRunningGpsLogDistance() {
+    public static int getCurrentRunningGpsLogDistance() {
         return gpsLogger.getCurrentDistance();
     }
 
-    private void checkLoggerExists( Context context ) {
+    private static void checkLoggerExists( Context context ) {
         if (gpsLogger == null) {
             gpsLogger = new GpsDatabaseLogger(context);
         }
@@ -377,9 +378,10 @@ public class GpsManager implements LocationListener, Listener {
      * @param context  the context to use.
      */
     public void stopDatabaseLogging( Context context ) {
-        checkLoggerExists(context);
-        gpsLogger.stopDatabaseLogging();
-        removeListener(gpsLogger);
+        if (gpsLogger != null) {
+            gpsLogger.stopDatabaseLogging();
+            removeListener(gpsLogger);
+        }
     }
 
     public void onLocationChanged( Location loc ) {
