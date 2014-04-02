@@ -37,6 +37,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.chart.ProfileChartActivity;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
@@ -74,10 +75,21 @@ public class GpsDataPropertiesActivity extends Activity {
 
             final TextView startTimeTextView = (TextView) findViewById(R.id.starttime_label);
             String startTime = item.getStartTime();
+            try {
+                startTime = TimeUtilities.utcToLocalTime(startTime);
+            } catch (Exception e1) {
+                // if something odd happens, utc is ok
+            }
             String startText = startTimeTextView.getText().toString();
             startTimeTextView.setText(startText + startTime);
             final TextView endTimeTextView = (TextView) findViewById(R.id.endtime_label);
             String endTime = item.getEndTime();
+            try {
+                endTime = TimeUtilities.utcToLocalTime(endTime);
+            } catch (Exception e1) {
+                // if something odd happens, utc is ok
+            }
+
             String endText = endTimeTextView.getText().toString();
             endTimeTextView.setText(endText + endTime);
             final EditText lognameTextView = (EditText) findViewById(R.id.gpslogname);

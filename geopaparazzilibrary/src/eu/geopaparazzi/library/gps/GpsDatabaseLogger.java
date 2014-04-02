@@ -206,8 +206,8 @@ public class GpsDatabaseLogger implements GpsManagerListener {
                         }
                     }
 
-                    if (currentPointsNum < 2) {
-                        logABS("Removing gpslog, since too few points were added. Logid: " + gpsLogId);
+                    if (currentPointsNum < 4) {
+                        logH("Removing gpslog, since too few points were added. Logid: " + gpsLogId);
                         dbHelper.deleteGpslog(context, gpsLogId);
                     } else {
                         // set the end time stamp and the total distance for the track
