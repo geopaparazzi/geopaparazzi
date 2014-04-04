@@ -18,6 +18,7 @@
 package eu.geopaparazzi.library.sms;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
@@ -169,11 +171,31 @@ public class SmsUtilities {
             msg = "";
         }
 
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + number));
-        intent.putExtra("sms_body", msg);
-        context.startActivity(intent);
+        if (Build.VERSION.SDK_INT >= 19) {
+            try {
+                Class< ? > smsClass = Class.forName("android.provider.Telephony$Sms");
+                Method getPackageMethod = smsClass.getMethod("getDefaultSmsPackage", Context.class);
+                Object defaultSmsPackageNameObj = getPackageMethod.invoke(null, context);
+                if (defaultSmsPackageNameObj instanceof String) {
+                    String defaultSmsPackageName = (String) defaultSmsPackageNameObj;
+                    // String defaultSmsPackageName = Telephony.Sms.getDefaultSmsPackage(context);
+                    Intent sendIntent = new Intent(Intent.ACTION_SEND);
+                    sendIntent.setType("text/plain");
+                    sendIntent.putExtra(Intent.EXTRA_TEXT, msg);
+                    if (defaultSmsPackageName != null) {
+                        sendIntent.setPackage(defaultSmsPackageName);
+                    }
+                    context.startActivity(sendIntent);
+                }
+            } catch (Exception e) {
+                GPLog.error("SmsUtilities", "Error sending sms in > 4.4.", e);
+            }
+        } else {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + number));
+            intent.putExtra("sms_body", msg);
+            context.startActivity(intent);
+        }
     }
-
     /**
      * Parses a GeoSMS body and tries to extract the coordinates to show them.
      * 
