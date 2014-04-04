@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="eu.hydrologis.geopaparazzi"
     android:installLocation="auto"
-    android:versionCode="54"
-    android:versionName="3.9.3" >
+    android:versionCode="55"
+    android:versionName="3.9.4" >
 
     <!-- permissions -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -115,6 +115,8 @@
             </intent-filter>
         </activity>
         <activity android:name="eu.hydrologis.geopaparazzi.util.SecretActivity" >
+        </activity>
+        <activity android:name="eu.geopaparazzi.library.util.activities.LogAnalysisActivity" >
         </activity>
         <activity android:name="eu.hydrologis.geopaparazzi.tantomapurls.TantoMapurlsActivity" >
         </activity>

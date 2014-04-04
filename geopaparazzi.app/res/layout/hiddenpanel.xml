@@ -37,12 +37,27 @@
         android:textColor="@color/main_text_color" />
 
     <Button
-        android:id="@+id/resetStyleTablesButton"
+        android:id="@+id/analyzeLogButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/sqlButton"
+        android:layout_margin="10dp"
+        android:background="@drawable/button_background_drawable"
+        android:onClick="analyzeLog"
+        android:padding="@dimen/button_indent"
+        android:text="Analyze log"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/main_text_color" />
+
+    <Button
+        android:id="@+id/resetStyleTablesButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/analyzeLogButton"
         android:layout_margin="10dp"
         android:background="@drawable/button_background_drawable"
         android:onClick="resetStyleTables"
