@@ -108,13 +108,13 @@ public class LogAnalysisActivity extends ListActivity {
         errorToggleButton = (ToggleButton) findViewById(R.id.errorToggleButton);
         errorToggleButton.setChecked(true);
         gpsToggleButton = (ToggleButton) findViewById(R.id.gpsToggleButton);
-        gpsToggleButton.setChecked(true);
+        gpsToggleButton.setChecked(false);
         infoToggleButton = (ToggleButton) findViewById(R.id.infoToggleButton);
-        infoToggleButton.setChecked(true);
+        infoToggleButton.setChecked(false);
         checkToggleButton = (ToggleButton) findViewById(R.id.checkToggleButton);
-        checkToggleButton.setChecked(true);
+        checkToggleButton.setChecked(false);
         anomalyToggleButton = (ToggleButton) findViewById(R.id.anomalieToggleButton);
-        anomalyToggleButton.setChecked(true);
+        anomalyToggleButton.setChecked(false);
         memoryToggleButton = (ToggleButton) findViewById(R.id.memoryToggleButton);
         memoryToggleButton.setChecked(false);
 

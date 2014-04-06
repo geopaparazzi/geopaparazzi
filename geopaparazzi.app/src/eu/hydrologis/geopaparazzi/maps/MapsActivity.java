@@ -145,11 +145,11 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
 
     private final int MENU_GPSDATA = 1;
     private final int MENU_DATA = 2;
-    // private final int MENU_TILE_SOURCE_ID = 3;
+    private final int MENU_CENTER_ON_GPS = 3;
     private final int MENU_SCALE_ID = 4;
     private final int MENU_MIXARE_ID = 5;
-    private final int GO_TO = 6;
-    private final int CENTER_ON_MAP = 7;
+    private final int MENU_GO_TO = 6;
+    private final int MENU_CENTER_ON_MAP = 7;
     private final int MENU_COMPASS_ID = 8;
     private final int MENU_SENDDATA_ID = 9;
 
@@ -546,9 +546,9 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         // notes type
         boolean doCustom = preferences.getBoolean(Constants.PREFS_KEY_NOTES_CHECK, false);
         if (doCustom) {
-            String opacityStr = preferences.getString(Constants.PREFS_KEY_NOTES_OPACITY, "100");
-            String sizeStr = preferences.getString(Constants.PREFS_KEY_NOTES_SIZE, "15");
-            String colorStr = preferences.getString(Constants.PREFS_KEY_NOTES_CUSTOMCOLOR, "blue");
+            String opacityStr = preferences.getString(Constants.PREFS_KEY_NOTES_OPACITY, "100"); //$NON-NLS-1$
+            String sizeStr = preferences.getString(Constants.PREFS_KEY_NOTES_SIZE, "15"); //$NON-NLS-1$
+            String colorStr = preferences.getString(Constants.PREFS_KEY_NOTES_CUSTOMCOLOR, "blue"); //$NON-NLS-1$
             int noteSize = Integer.parseInt(sizeStr);
             float opacity = Float.parseFloat(opacityStr) * 255 / 100;
 
@@ -577,7 +577,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     }
 
     private void setTextScale() {
-        String textSizeFactorStr = preferences.getString(Constants.PREFS_KEY_MAPSVIEW_TEXTSIZE_FACTOR, "1.0");
+        String textSizeFactorStr = preferences.getString(Constants.PREFS_KEY_MAPSVIEW_TEXTSIZE_FACTOR, "1.0"); //$NON-NLS-1$
         float textSizeFactor = 1f;
         try {
             textSizeFactor = Float.parseFloat(textSizeFactorStr);
@@ -819,7 +819,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
       *
       * @return integer minzoom
       */
-    private int getZoomLevel() {
+    private static int getZoomLevel() {
         return MapsDirManager.getInstance().getCurrentZoom();
     }
     // -----------------------------------------------
@@ -872,7 +872,7 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     /**
      * @return the center [lon, lat]
      */
-    public double[] getCenterLonLat() {
+    public static double[] getCenterLonLat() {
         return MapsDirManager.getInstance().getMapCenter();
     }
 
@@ -884,8 +884,17 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         menu.add(Menu.NONE, MENU_SCALE_ID, 3, R.string.mapsactivity_menu_toggle_scalebar).setIcon(R.drawable.ic_menu_scalebar);
         menu.add(Menu.NONE, MENU_COMPASS_ID, 4, R.string.mapsactivity_menu_toggle_compass).setIcon(
                 android.R.drawable.ic_menu_compass);
-        menu.add(Menu.NONE, CENTER_ON_MAP, 6, R.string.center_on_map).setIcon(android.R.drawable.ic_menu_mylocation);
-        menu.add(Menu.NONE, GO_TO, 7, R.string.go_to).setIcon(android.R.drawable.ic_menu_myplaces);
+        boolean centerOnGps = preferences.getBoolean(Constants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
+        if (centerOnGps) {
+            menu.add(Menu.NONE, MENU_CENTER_ON_GPS, 6, R.string.disable_center_on_gps).setIcon(
+                    android.R.drawable.ic_menu_mylocation);
+        } else {
+            menu.add(Menu.NONE, MENU_CENTER_ON_GPS, 6, R.string.enable_center_on_gps).setIcon(
+                    android.R.drawable.ic_menu_mylocation);
+        }
+
+        menu.add(Menu.NONE, MENU_CENTER_ON_MAP, 7, R.string.center_on_map).setIcon(android.R.drawable.ic_menu_mylocation);
+        menu.add(Menu.NONE, MENU_GO_TO, 8, R.string.go_to).setIcon(android.R.drawable.ic_menu_myplaces);
         if (SmsUtilities.hasPhone(this)) {
             menu.add(Menu.NONE, MENU_SENDDATA_ID, 8, R.string.send_data).setIcon(android.R.drawable.ic_menu_send);
         }
@@ -937,38 +946,25 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 e1.printStackTrace();
                 return false;
             }
-        case GO_TO: {
+        case MENU_GO_TO: {
             return goTo();
         }
-        case CENTER_ON_MAP: {
-            /*
-               MapGenerator mapGenerator = mapView.getMapGenerator();
-               GeoPoint mapCenter;
-               MapController controller = mapView.getController();
-               if (mapGenerator instanceof DatabaseRenderer) {
-                   mapCenter = mapView.getMapDatabase().getMapFileInfo().mapCenter;
-               } else {
-                   mapCenter = mapGenerator.getStartPoint();
-                   // Utilities.messageDialog(this,
-                   // "This operation works only for file based data maps", null);
-               }
-               controller.setCenter(mapCenter);
-               controller.setZoom(minZoomLevel);
-               * */
-            // When null is given:
-            // zoom to user defined center and axzoom-level = 2
-            // zoom to user defined center and zoom-level = 1
-            // zoom to user defined center and minzoom-level = 2
-            // zoom to user defined center and present zoom-level = 3
+        case MENU_CENTER_ON_MAP: {
             MapsDirManager.getInstance().setMapViewCenter(mapView, null, 1);
             saveCenterPref();
+            return true;
+        }
+        case MENU_CENTER_ON_GPS: {
+            boolean centerOnGps = preferences.getBoolean(Constants.PREFS_KEY_AUTOMATIC_CENTER_GPS, false);
+            Editor edit = preferences.edit();
+            edit.putBoolean(Constants.PREFS_KEY_AUTOMATIC_CENTER_GPS, !centerOnGps);
+            edit.commit();
             return true;
         }
         default:
         }
         return super.onContextItemSelected(item);
     }
-
     // THIS IS CURRENTLY DISABLED
     //
     // /**
