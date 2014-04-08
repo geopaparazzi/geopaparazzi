@@ -12,4 +12,8 @@
   <string name="min_zoom">最小ズーム</string>
   <string name="max_zoom">最大ズーム</string>
   <string name="dash_pattern">破線パターン</string>
+  <string name="label_properties">ラベルプロパティ</string>
+  <string name="toggle_visibility">表示の切替</string>
+  <string name="label_field">ラベルフィールド</string>
+  <string name="label_size">ラベルサイズ</string>
 </resources>

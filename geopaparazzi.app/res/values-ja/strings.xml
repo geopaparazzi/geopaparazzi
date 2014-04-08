@@ -208,4 +208,12 @@
   <string name="menu_button">メニューボタン</string>
   <string name="track_length">トラック全長：</string>
   <string name="gpslog_updateLogLength">更新</string>
+  <string name="do_you_want_to_stop_logging">ロギングを停止しますか？</string>
+  <string name="tanto_mapurl_download_service">TANTO mapurl ダウンロードサービス</string>
+  <string name="tap_on_title_to_visit_website">(タイトルをタップしてウェブサイトを表示)</string>
+  <string name="use_map_center_coordinate_to_filter_results">フィルター結果をマップの中心に</string>
+  <string name="limit_results_to_20_recommended">結果を20件に制限する(推奨)</string>
+  <string name="text_filter">テキストフィルタ</string>
+  <string name="tanto_service_query">クエリ</string>
+  <string name="tanto_disclaimer">よくお読みください：Geopaparazziは、ダウンロードされたデータの法的な意味のいかなる責任も負いません。任意のWMSのmapurl定義をダウンロードする前に、利用者はサービスのライセンスをチェックし、参照することが可能であることを確認する必要があります。Geopaparazzi著作者達は、決してすべてのサービスの悪用に関連するライセンス権侵害の責任を負いません。</string>
 </resources>

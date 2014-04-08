@@ -12,4 +12,8 @@
   <string name="min_zoom">Zoom Minimo</string>
   <string name="max_zoom">Zoom Massimo</string>
   <string name="dash_pattern">Modello trattino</string>
+  <string name="label_properties">Proprietà etichette</string>
+  <string name="toggle_visibility">Alterna visibilità</string>
+  <string name="label_field">campo etichetta</string>
+  <string name="label_size">dimensione etichetta</string>
 </resources>

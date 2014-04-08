@@ -86,4 +86,5 @@
   <string name="http_ok_msg">요청이 성공적으로 처리되었습니다.</string>
   <string name="the_file_exists_wont_overwrite">파일이 존재합니다. 덮어 쓰지 않습니다:</string>
   <string name="share_note_with">메모 공유...</string>
+  <string name="downloading_mapurl_to_the_device">선택한 서비스를 장치에 다운로드.</string>
 </resources>

@@ -12,4 +12,8 @@
   <string name="min_zoom">최소 확대</string>
   <string name="max_zoom">최대 확대</string>
   <string name="dash_pattern">대시 패턴</string>
+  <string name="label_properties">레이블 속성</string>
+  <string name="toggle_visibility">보이기 전환</string>
+  <string name="label_field">레이블 필드</string>
+  <string name="label_size">레이블 크기</string>
 </resources>

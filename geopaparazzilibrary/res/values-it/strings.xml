@@ -86,4 +86,6 @@
   <string name="http_ok_msg">La richiesta e\' stata elaborata con successo.</string>
   <string name="the_file_exists_wont_overwrite">Il file esiste. Non posso sovrascrivere:</string>
   <string name="share_note_with">Condividi nota con...</string>
+  <string name="downloading_mapurl_to_the_device">Scaricamento del servizio selezionato.</string>
+  <string name="mapurl_successfully_downloaded">Il mapurl e\' stato scaricato e installato. Riavviare Geopaparazzi per completare l\'operazione.</string>
 </resources>

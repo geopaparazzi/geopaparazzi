@@ -9,4 +9,11 @@
   <string name="point_size">Velikost bodu</string>
   <string name="decimation">Decimace</string>
   <string name="decimation_factor_default">0.000001</string>
+  <string name="min_zoom">Nejmenší zvětšení</string>
+  <string name="max_zoom">Největší zvětšení</string>
+  <string name="dash_pattern">Vzor čárkování</string>
+  <string name="label_properties">Vlastnosti štítků</string>
+  <string name="toggle_visibility">Přepnout viditelnost</string>
+  <string name="label_field">Pole štítku</string>
+  <string name="label_size">Velikost štítku</string>
 </resources>
