@@ -82,7 +82,7 @@ public class LogAnalysisActivity extends ListActivity {
         query = GPLog.getLogQuery();
 
         try {
-            database = ADbHelper.getInstance().getDatabase();
+            database = ADbHelper.INSTANCE.getDatabase();
             if (!database.isOpen()) {
                 database = null;
             }
