@@ -729,11 +729,11 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                 public void onClick( View v ) {
 
                     if (!NetworkUtilities.isNetworkAvailable(getApplicationContext())) {
-                        Utilities.messageDialog(getApplicationContext(), R.string.available_only_with_network, null);
+                        Utilities.messageDialog(MapsActivity.this, R.string.available_only_with_network, null);
                         return;
                     }
 
-                    Utilities.inputMessageDialog(getApplicationContext(), getString(R.string.set_description),
+                    Utilities.inputMessageDialog(MapsActivity.this, getString(R.string.set_description),
                             getString(R.string.osm_insert_a_changeset_description), "", new TextRunnable(){
                                 public void run() {
                                     sync(theTextToRunOn);
