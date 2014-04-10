@@ -25,6 +25,7 @@ import java.util.List;
 
 import jsqlite.Exception;
 import android.content.Context;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapDatabaseHandler;
@@ -72,26 +73,29 @@ public class MapDatabasesManager {
      * @throws IOException if something went wrong.
      */
     public boolean init( Context context, File mapsDir ) throws IOException {
-        File[] list_files = mapsDir.listFiles();
+        File[] filesList = mapsDir.listFiles();
         List<MapDatabaseHandler> tmpMapHandlers = new ArrayList<MapDatabaseHandler>();
         boolean b_nomedia_file = false;
-        for( File this_file : list_files ) {
+        for( File currentFile : filesList ) {
             // nomedia logic: first check the files, if no
             // '.nomedia' found: then its directories
-            if (this_file.isFile()) { // mj10777: collect .map databases
-                String name = this_file.getName();
+            if (currentFile.isFile()) { // mj10777: collect .map databases
+                String name = currentFile.getName();
                 if (Utilities.isNameFromHiddenFile(name)) {
                     continue;
                 }
                 if (name.endsWith(SpatialDataType.MAP.getExtension())) {
-                    MapDatabaseHandler map = new MapDatabaseHandler(this_file.getAbsolutePath());
+                    MapDatabaseHandler map = new MapDatabaseHandler(currentFile.getAbsolutePath());
                     tmpMapHandlers.add(map);
                 }
                 if (name.equals(ResourcesManager.NO_MEDIA)) {
-                    // ignore all files of this directory
-                    b_nomedia_file = true;
-                    tmpMapHandlers.clear();
-                    return b_nomedia_file;
+                    if (!currentFile.getParentFile().toURI().equals(mapsDir.toURI())) {
+                        // ignore all files of this directory
+                        // apart of the maps root folder
+                        b_nomedia_file = true;
+                        tmpMapHandlers.clear();
+                        return b_nomedia_file;
+                    }
                 }
             }
         }
@@ -99,7 +103,7 @@ public class MapDatabasesManager {
             mapHandlers.addAll(tmpMapHandlers);
         }
         tmpMapHandlers.clear();
-        for( File this_file : list_files ) {
+        for( File this_file : filesList ) {
             if (this_file.isDirectory()) {
                 // mj10777: read recursive directories inside the sdcard/maps directory
                 init(context, this_file);
@@ -142,6 +146,7 @@ public class MapDatabasesManager {
                 }
             } catch (java.lang.Exception e) {
                 // ignore the handler and try to go on
+                GPLog.error(this, "Error", e); //$NON-NLS-1$
             }
         }
         // Collections.sort(tables, new OrderComparator());

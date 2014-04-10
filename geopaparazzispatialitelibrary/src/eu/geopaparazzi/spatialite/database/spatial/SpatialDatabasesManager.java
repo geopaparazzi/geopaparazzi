@@ -27,6 +27,7 @@ import java.util.Map;
 
 import jsqlite.Exception;
 import android.content.Context;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.core.MbtilesDatabaseHandler;
@@ -113,14 +114,16 @@ public class SpatialDatabasesManager {
                                 tmpSpatialdbHandlers.add(sdb);
                             }
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            GPLog.error(this, "Error", e); //$NON-NLS-1$
                         }
                     }
                     if (name.equals(ResourcesManager.NO_MEDIA)) {
-                        // ignore all files of this directory
-                        b_nomedia_file = true;
-                        tmpSpatialdbHandlers.clear();
-                        return b_nomedia_file;
+                        if (!currentFile.getParentFile().toURI().equals(mapsDir.toURI())) {
+                            // ignore all files of this directory if not map root
+                            b_nomedia_file = true;
+                            tmpSpatialdbHandlers.clear();
+                            return b_nomedia_file;
+                        }
                     }
                 }
             }
@@ -223,6 +226,7 @@ public class SpatialDatabasesManager {
                 }
             } catch (java.lang.Exception e) {
                 // ignore the handler and try to go on
+                GPLog.error(this, "Error", e); //$NON-NLS-1$
             }
         }
         return tables;
