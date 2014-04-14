@@ -344,7 +344,7 @@ public class CustomTileDownloader extends TileDownloader {
         this.centerY = center[1];
         if (bounds == null) {
             double ddeg = 3.0;
-            bounds = new double[]{centerX - ddeg, centerY - ddeg, centerX + ddeg, centerY + ddeg};
+            bounds = new double[]{-180.0, -85.05113, 180, 85.05113};
         }
         this.boundsWest = bounds[0];
         this.boundsSouth = bounds[1];
