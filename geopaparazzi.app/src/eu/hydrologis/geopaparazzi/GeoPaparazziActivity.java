@@ -208,6 +208,7 @@ public class GeoPaparazziActivity extends Activity {
                 }
 
             } catch (IOException e) {
+                GPLog.error(this, "Error parsing URI", e); //$NON-NLS-1$
                 Utilities
                         .messageDialog(
                                 this,
@@ -216,7 +217,6 @@ public class GeoPaparazziActivity extends Activity {
             }
         }
     }
-
     private void checkIncomingSmsData() {
         /*
          * check if it was opened for a link of the kind
