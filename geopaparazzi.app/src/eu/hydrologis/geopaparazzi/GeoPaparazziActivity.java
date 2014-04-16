@@ -198,7 +198,8 @@ public class GeoPaparazziActivity extends Activity {
                     if (latLonTextFromOsmUrl != null) {
                         double lat = Double.parseDouble(latLonTextFromOsmUrl[0]);
                         double lon = Double.parseDouble(latLonTextFromOsmUrl[1]);
-                        DaoBookmarks.addBookmark(lon, lat, latLonTextFromOsmUrl[2], 16, -1, -1, -1, -1);
+                        int zoom = (int) Double.parseDouble(latLonTextFromOsmUrl[3]);
+                        DaoBookmarks.addBookmark(lon, lat, latLonTextFromOsmUrl[2], zoom, -1, -1, -1, -1);
                         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
                         PositionUtilities.putMapCenterInPreferences(preferences, lon, lat, 16);
                         Intent mapIntent = new Intent(this, MapsActivity.class);
