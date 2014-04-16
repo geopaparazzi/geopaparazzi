@@ -47,7 +47,7 @@ public class GpsServiceUtilities {
      * @param activity the activity to use.
      */
     public static void startGpsService( Activity activity ) {
-        Intent intent = new Intent(activity, GpsServiceUtilities.class);
+        Intent intent = new Intent(activity, GpsService.class);
         activity.startService(intent);
     }
 
@@ -57,7 +57,7 @@ public class GpsServiceUtilities {
      * @param activity the activity to use.
      */
     public static void stopGpsService( Activity activity ) {
-        Intent intent = new Intent(activity, GpsServiceUtilities.class);
+        Intent intent = new Intent(activity, GpsService.class);
         activity.stopService(intent);
     }
 
@@ -132,7 +132,7 @@ public class GpsServiceUtilities {
     }
 
     /**
-     * Register an activity for {@link GpsServiceUtilities} broadcasts.
+     * Register an activity for {@link GpsService} broadcasts.
      * 
      * @param activity the activity.
      * @param receiver the receiver.
@@ -142,7 +142,7 @@ public class GpsServiceUtilities {
     }
 
     /**
-     * Unregister an activity from {@link GpsServiceUtilities} broadcasts.
+     * Unregister an activity from {@link GpsService} broadcasts.
      * 
      * @param activity the activity.
      * @param receiver the receiver.
@@ -158,7 +158,7 @@ public class GpsServiceUtilities {
      * @param context the {@link Context} to use.
      */
     public static void triggerBroadcast( Context context ) {
-        Intent intent = new Intent(context, GpsServiceUtilities.class);
+        Intent intent = new Intent(context, GpsService.class);
         intent.putExtra(GPS_SERVICE_DO_BROADCAST, true);
         context.startService(intent);
     }
@@ -171,7 +171,7 @@ public class GpsServiceUtilities {
      * @param className the class to use as helper.
      */
     public static void startDatabaseLogging( Context context, String logName, String className ) {
-        Intent intent = new Intent(context, GpsServiceUtilities.class);
+        Intent intent = new Intent(context, GpsService.class);
         intent.putExtra(START_GPS_LOGGING, true);
         intent.putExtra(START_GPS_LOG_NAME, logName);
         intent.putExtra(START_GPS_LOG_HELPER_CLASS, className);
@@ -184,7 +184,7 @@ public class GpsServiceUtilities {
      * @param context the context to use.
      */
     public static void stopDatabaseLogging( Context context ) {
-        Intent intent = new Intent(context, GpsServiceUtilities.class);
+        Intent intent = new Intent(context, GpsService.class);
         intent.putExtra(STOP_GPS_LOGGING, true);
         context.startService(intent);
     }

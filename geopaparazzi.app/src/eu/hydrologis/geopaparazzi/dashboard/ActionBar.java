@@ -345,14 +345,16 @@ public class ActionBar {
         Button gpsOnOffView = (Button) actionBarView.findViewById(R.id.gpsOnOff);
         gpsOnOffView.setOnClickListener(new View.OnClickListener(){
             public void onClick( View v ) {
-                final Context context = v.getContext();
-                String prompt = context.getResources().getString(R.string.prompt_gpsenable);
-                Utilities.yesNoMessageDialog(context, prompt, new Runnable(){
-                    public void run() {
-                        Intent gpsOptionsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                        context.startActivity(gpsOptionsIntent);
-                    }
-                }, null);
+                if (lastGpsServiceStatus == GpsServiceStatus.GPS_OFF) {
+                    final Context context = v.getContext();
+                    String prompt = context.getResources().getString(R.string.prompt_gpsenable);
+                    Utilities.yesNoMessageDialog(context, prompt, new Runnable(){
+                        public void run() {
+                            Intent gpsOptionsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            context.startActivity(gpsOptionsIntent);
+                        }
+                    }, null);
+                }
             }
         });
 

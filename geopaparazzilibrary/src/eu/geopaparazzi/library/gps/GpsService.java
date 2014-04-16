@@ -179,6 +179,9 @@ public class GpsService extends Service implements LocationListener, Listener {
 
     @Override
     public int onStartCommand( Intent intent, int flags, int startId ) {
+
+        GPLog.addLogEntry(this, "onStartCommand called with intent: " + intent);
+
         /*
          * If startService(intent) is called while the service is running, 
          * its onStartCommand() is also called. Therefore your service needs 
