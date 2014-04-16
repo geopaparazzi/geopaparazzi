@@ -23,7 +23,7 @@ import java.sql.Date;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
- * Interface that helps making the {@link GpsDatabaseLogger} add point to external databases. 
+ * Interface that helps adding points to external databases. 
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */

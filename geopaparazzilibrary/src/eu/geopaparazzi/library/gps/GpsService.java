@@ -112,6 +112,10 @@ public class GpsService extends Service implements LocationListener, Listener {
      * Intent key to use for int array gps extra data [maxSatellites, satCount, satUsedInFixCount].
      */
     public static final String GPS_SERVICE_GPSSTATUS_EXTRAS = "GPS_SERVICE_GPSSTATUS_EXTRAS";
+    /**
+     * Intent key to use to trigger a broadcast.
+     */
+    public static final String GPS_SERVICE_DO_BROADCAST = "GPS_SERVICE_DO_BROADCAST";
 
     private SharedPreferences preferences;
     private LocationManager locationManager;
@@ -211,6 +215,12 @@ public class GpsService extends Service implements LocationListener, Listener {
                 boolean stopGpsLogging = intent.getBooleanExtra(STOP_GPS_LOGGING, false);
                 if (stopGpsLogging) {
                     stopDatabaseLogging();
+                }
+            }
+            if (intent.hasExtra(GPS_SERVICE_DO_BROADCAST)) {
+                boolean doBroadcast = intent.getBooleanExtra(GPS_SERVICE_DO_BROADCAST, false);
+                if (doBroadcast) {
+                    broadcast();
                 }
             }
 

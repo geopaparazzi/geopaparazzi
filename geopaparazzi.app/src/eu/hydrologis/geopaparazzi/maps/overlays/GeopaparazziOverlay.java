@@ -57,7 +57,6 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.FormActivity;
-import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
@@ -395,22 +394,25 @@ public abstract class GeopaparazziOverlay extends Overlay {
     }
 
     /**
-     * set the currtn gps position.
+     * Set the current gps position.
      *
      * @param position the {@link GeoPoint}.
      * @param accuracy the accuracy.
+     * @param isDatabaseLogging <code>true</code> if logging to database.
      */
     @SuppressWarnings("nls")
-    public void setGpsPosition( GeoPoint position, float accuracy ) {
-        GpsManager gpsManager = GpsManager.getInstance(context);
-        if (gpsManager.isDatabaseLogging()) {
+    public void setGpsPosition( GeoPoint position, float accuracy, boolean isDatabaseLogging ) {
+        if (isDatabaseLogging) {
             currentGpsLog.add(position);
         } else {
             currentGpsLog.clear();
         }
-        if (GPLog.LOG_ABSURD)
+        if (GPLog.LOG_ABSURD && position != null)
             GPLog.addLogEntry(this, "Set gps data: " + position.getLongitude() + "/" + position.getLatitude() + "/" + accuracy);
-        overlayGps.setCircleData(position, accuracy);
+
+        if (position != null) {
+            overlayGps.setCircleData(position, accuracy);
+        }
     }
 
     /**
