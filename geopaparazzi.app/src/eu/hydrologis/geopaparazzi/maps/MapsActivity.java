@@ -61,8 +61,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
-import android.location.GpsStatus;
-import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.BatteryManager;
@@ -91,9 +89,7 @@ import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.gps.GpsLocation;
-import eu.geopaparazzi.library.gps.GpsManager;
-import eu.geopaparazzi.library.gps.GpsManagerListener;
+import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.mixare.MixareHandler;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.sms.SmsData;
@@ -131,7 +127,7 @@ import eu.hydrologis.geopaparazzi.util.Note;
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class MapsActivity extends MapActivity implements GpsManagerListener, OnTouchListener {
+public class MapsActivity extends MapActivity implements OnTouchListener {
     private final int INSERTCOORD_RETURN_CODE = 666;
     private final int ZOOM_RETURN_CODE = 667;
     private final int GPSDATAPROPERTIES_RETURN_CODE = 668;
@@ -172,10 +168,20 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     private List<String> smsString;
     private Drawable notesDrawable;
     private ProgressDialog syncProgressDialog;
+    private BroadcastReceiver gpsServiceBroadcastReceiver;
+    private double[] lastGpsPosition;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
         setContentView(R.layout.mapsview);
+
+        gpsServiceBroadcastReceiver = new BroadcastReceiver(){
+            public void onReceive( Context context, Intent intent ) {
+                onGpsServiceUpdate(intent);
+            }
+        };
+        GpsServiceUtilities.registerForBroadcasts(this, gpsServiceBroadcastReceiver);
+        GpsServiceUtilities.triggerBroadcast(this);
 
         // register menu button
         final Button menuButton = (Button) findViewById(R.id.menu_map_btn);
@@ -247,8 +253,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         final RelativeLayout rl = (RelativeLayout) findViewById(R.id.innerlayout);
         rl.addView(mapView, new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
-        GpsManager.getInstance(this).addListener(this);
-
         int zoomInLevel = (int) mapCenterLocation[2] + 1;
         if (zoomInLevel > maxZoomLevel) {
             zoomInLevel = maxZoomLevel;
@@ -289,9 +293,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         ImageButton centerOnGps = (ImageButton) findViewById(R.id.center_on_gps_btn);
         centerOnGps.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                GpsLocation location = GpsManager.getInstance(MapsActivity.this).getLocation();
-                if (location != null) {
-                    setNewCenter(location.getLongitude(), location.getLatitude());
+                if (lastGpsPosition != null) {
+                    setNewCenter(lastGpsPosition[0], lastGpsPosition[1]);
                 }
             }
         });
@@ -593,7 +596,8 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
     @Override
     protected void onDestroy() {
         unregisterReceiver(batteryReceiver);
-        GpsManager.getInstance(this).removeListener(this);
+        if (gpsServiceBroadcastReceiver != null)
+            GpsServiceUtilities.unregisterFromBroadcasts(this, gpsServiceBroadcastReceiver);
         if (dataOverlay != null)
             dataOverlay.dispose();
 
@@ -636,10 +640,9 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             dataOverlay.addItems(bookmarksOverlays);
 
             // read last known gps position
-            GpsLocation location = GpsManager.getInstance(this).getLocation();
-            if (location != null) {
-                GeoPoint geoPoint = new GeoPoint((int) (location.getLatitude() * LibraryConstants.E6),
-                        (int) (location.getLongitude() * LibraryConstants.E6));
+            if (lastGpsPosition != null) {
+                GeoPoint geoPoint = new GeoPoint((int) (lastGpsPosition[1] * LibraryConstants.E6),
+                        (int) (lastGpsPosition[0] * LibraryConstants.E6));
                 dataOverlay.setGpsPosition(geoPoint, 0f);
             }
             // dataOverlay.requestRedraw();
@@ -1448,17 +1451,23 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
         batteryButton.setText(sb.toString());
     }
 
-    public void onLocationChanged( Location loc ) {
-        if (loc == null) {
+    private void onGpsServiceUpdate( Intent intent ) {
+        lastGpsPosition = GpsServiceUtilities.getPosition(intent);
+        if (lastGpsPosition == null) {
             return;
+        }
+        float[] lastGpsPositionExtras = GpsServiceUtilities.getPositionExtras(intent);
+        float accuracy = 0;
+        if (lastGpsPositionExtras != null) {
+            accuracy = lastGpsPositionExtras[0];
         }
 
         if (this.mapView.getWidth() <= 0 || this.mapView.getWidth() <= 0) {
             return;
         }
         try {
-            double lat = loc.getLatitude();
-            double lon = loc.getLongitude();
+            double lat = lastGpsPosition[1];
+            double lon = lastGpsPosition[0];
             float[] nsweE6 = getMapWorldBoundsE6();
             int latE6 = (int) ((float) lat * LibraryConstants.E6);
             int lonE6 = (int) ((float) lon * LibraryConstants.E6);
@@ -1472,7 +1481,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             // Rect bounds = new Rect(wE6, nE6, eE6, sE6);
             if (boundsContain(latE6, lonE6, nE6, sE6, wE6, eE6)) {
                 GeoPoint point = new GeoPoint(latE6, lonE6);
-                float accuracy = loc.getAccuracy();
                 dataOverlay.setGpsPosition(point, accuracy);
                 dataOverlay.requestRedraw();
             }
@@ -1501,34 +1509,6 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
             // finish the activity to reset
             finish();
         }
-    }
-
-    public void onProviderDisabled( String provider ) {
-        // ignore
-    }
-
-    public void onProviderEnabled( String provider ) {
-        // ignore
-    }
-
-    public void onStatusChanged( String provider, int status, Bundle extras ) {
-        // ignore
-    }
-
-    public void gpsStart() {
-        // ignore
-    }
-
-    public void gpsStop() {
-        // ignore
-    }
-
-    public void onGpsStatusChanged( int event, GpsStatus status ) {
-        // ignore
-    }
-
-    public boolean hasFix() {
-        throw new RuntimeException("Not to be called");
     }
 
 }
