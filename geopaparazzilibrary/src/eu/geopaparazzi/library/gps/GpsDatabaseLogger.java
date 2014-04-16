@@ -131,9 +131,9 @@ public class GpsDatabaseLogger implements GpsManagerListener {
                 try {
                     isShutdown = false;
 
-                    SQLiteDatabase sqliteDatabase = dbHelper.getDatabase(context);
+                    SQLiteDatabase sqliteDatabase = dbHelper.getDatabase();
                     java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
-                    long gpsLogId = dbHelper.addGpsLog(context, now, now, 0, logName, 2f, "red", true);
+                    long gpsLogId = dbHelper.addGpsLog(now, now, 0, logName, 2f, "red", true);
                     currentRecordedLogId = gpsLogId;
                     logH("Starting gps logging. Logid: " + gpsLogId);
 
@@ -205,12 +205,12 @@ public class GpsDatabaseLogger implements GpsManagerListener {
 
                     if (currentPointsNum < 4) {
                         logH("Removing gpslog, since too few points were added. Logid: " + gpsLogId);
-                        dbHelper.deleteGpslog(context, gpsLogId);
+                        dbHelper.deleteGpslog(gpsLogId);
                     } else {
                         // set the end time stamp and the total distance for the track
                         java.sql.Date end = new java.sql.Date(System.currentTimeMillis());
-                        dbHelper.setEndTs(context, gpsLogId, end);
-                        dbHelper.setTrackLengthm(context, gpsLogId, (double) currentDistance);
+                        dbHelper.setEndTs(gpsLogId, end);
+                        dbHelper.setTrackLengthm(gpsLogId, (double) currentDistance);
                     }
 
                     currentPointsNum = 0;

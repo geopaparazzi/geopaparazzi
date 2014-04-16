@@ -219,7 +219,7 @@ public class GpsDataPropertiesActivity extends Activity {
                 public void onClick( View v ) {
                     try {
                         long id = item.getId();
-                        new DaoGpsLog().deleteGpslog(GpsDataPropertiesActivity.this, id);
+                        new DaoGpsLog().deleteGpslog(id);
                         finish();
                     } catch (IOException e) {
                         e.printStackTrace();

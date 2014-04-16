@@ -1175,9 +1175,9 @@ public class MapsActivity extends MapActivity implements GpsManagerListener, OnT
                             name = "ROUTE_" + TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date()); //$NON-NLS-1$
                         }
                         DaoGpsLog logDumper = new DaoGpsLog();
-                        SQLiteDatabase sqliteDatabase = logDumper.getDatabase(this);
+                        SQLiteDatabase sqliteDatabase = logDumper.getDatabase();
                         java.sql.Date now = new java.sql.Date(new java.util.Date().getTime());
-                        long newLogId = logDumper.addGpsLog(this, now, now, 0, name, 3, "blue", true); //$NON-NLS-1$
+                        long newLogId = logDumper.addGpsLog(now, now, 0, name, 3, "blue", true); //$NON-NLS-1$
 
                         sqliteDatabase.beginTransaction();
                         try {

@@ -91,23 +91,13 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     private static SimpleDateFormat dateFormatter = TimeUtilities.INSTANCE.TIME_FORMATTER_SQLITE_UTC;
     private static SimpleDateFormat dateFormatterForLabelInLocalTime = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL;
 
-    public SQLiteDatabase getDatabase( Context context ) throws Exception {
+    public SQLiteDatabase getDatabase() throws Exception {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         return sqliteDatabase;
     }
 
-    /**
-     * Creates a new gpslog entry and returns the id.
-     * 
-     * @param startTs the start timestamp.
-     * @param endTs the end timestamp.
-     * @param lengthm the length of the track log in meters
-     * @param text a description or null.
-     * @return the id of the new created log.
-     * @throws IOException  if something goes wrong. 
-     */
-    public long addGpsLog( Context context, Date startTs, Date endTs, double lengthm, String text, float width, String color,
-            boolean visible ) throws IOException {
+    public long addGpsLog( Date startTs, Date endTs, double lengthm, String text, float width, String color, boolean visible )
+            throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         long rowId;
@@ -169,14 +159,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         sqliteDatabase.insertOrThrow(TABLE_DATA, null, values);
     }
 
-    /**
-     * Deletes the entirety of a GPS log, including data from 
-     * log table, data table, properties table
-     * 
-     * @param id the gps log id
-     * @throws IOException in case of error
-     */
-    public void deleteGpslog( Context context, long id ) throws IOException {
+    public void deleteGpslog( long id ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
@@ -207,14 +190,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         }
     }
 
-    /**
-     * Resets the end time when a GPSlog is updated
-     * 
-     * @param logid the ID from the GPS log table.
-     * @param end the new end time stamp
-     * @throws IOException if a problem
-     */
-    public void setEndTs( Context context, long logid, Date end ) throws IOException {
+    public void setEndTs( long logid, Date end ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         try {
             sqliteDatabase.beginTransaction();
@@ -243,14 +219,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
         }
     }
 
-    /**
-     * Resets the track length when a GPSlog is updated
-     * 
-     * @param logid the ID from the GPS log table.
-     * @param lengthm the new track length
-     * @throws IOException if a problem
-     */
-    public void setTrackLengthm( Context context, long logid, double lengthm ) throws IOException {
+    public void setTrackLengthm( long logid, double lengthm ) throws IOException {
         SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
         try {
             sqliteDatabase.beginTransaction();
@@ -1068,7 +1037,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 Date date = new Date(System.currentTimeMillis());
 
                 DaoGpsLog helper = new DaoGpsLog();
-                long logId = helper.addGpsLog(context, date, date, 0, name, width, "blue", true);
+                long logId = helper.addGpsLog(date, date, 0, name, width, "blue", true);
 
                 sqliteDatabase.beginTransaction();
                 try {
@@ -1117,7 +1086,7 @@ public class DaoGpsLog implements IGpsLogDbHelper {
                 }
                 Date date = new Date(System.currentTimeMillis());
                 DaoGpsLog helper = new DaoGpsLog();
-                long logId = helper.addGpsLog(context, startDate, endDate, 0, rName, 2f, "green", true);
+                long logId = helper.addGpsLog(startDate, endDate, 0, rName, 2f, "green", true);
 
                 sqliteDatabase.beginTransaction();
                 try {
