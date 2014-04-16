@@ -31,6 +31,7 @@ import jsqlite.Constants;
 import jsqlite.Database;
 import jsqlite.Exception;
 import jsqlite.Stmt;
+import eu.geopaparazzi.spatialite.util.SpatialiteDatabaseType;
 import eu.geopaparazzi.library.database.GPLog;
 
 /**
@@ -43,15 +44,15 @@ public class DaoSpatialite {
     /**
      * From https://www.gaia-gis.it/fossil/libspatialite/wiki?name=metadata-4.0
      */
-    public static final String METADATA_VECTOR_LAYERS_TABLE_NAME = " vector_layers";
+    public static final String METADATA_VECTOR_LAYERS_TABLE_NAME = "vector_layers";
     /**
      * From https://www.gaia-gis.it/fossil/libspatialite/wiki?name=metadata-4.0
      */
-    public static final String METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME = " vector_layers_statistics";
+    public static final String METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME = "vector_layers_statistics";
     /**
      * Starting from spatialite 2.4 to 3.1.0
      */
-    public static final String METADATA_LAYERS_STATISTICS_TABLE_NAME = "layers_statistics";
+    public static final String METADATA_LAYER_STATISTICS_TABLE_NAME = "layer_statistics";
     /**
      * Starting from spatialite 2.4 to present
      */
@@ -188,25 +189,26 @@ public class DaoSpatialite {
      * -- 'vector_key'   : fields often needed and used in map.key [always valid]
      * -- 'vector_data'  : fields NOT often needed and used in map.value [first portion and always valid]
      * -- 'vector_extent': fields NOT often needed and used in map.value [second portion and NOT always valid]
+     * https://github.com/mj10777/Spatialite-Tasks-with-Sql-Scripts/wiki/VECTOR_LAYERS_QUERYS-geopaparazzi-specific
      * <ol>
      * <li>3 Fields will be returned with the following structure</li>
      * <li>0 table_name: berlin_stadtteile</li>
      * <li>1: geometry_column - soldner_polygon</li>
-     * <li>2: layer_type - SpatialView or SpatialTable</li>	
-     * <li>3: ROWID - SpatialTable: default ; when SpatialView or will be replaced</li>	
-     * <li>4: view_read_only - SpatialTable: -1 ; when SpatialView: 0=read_only or 1 writable</li>	
+     * <li>2: layer_type - SpatialView or SpatialTable</li>
+     * <li>3: ROWID - SpatialTable: default ; when SpatialView or will be replaced</li>
+     * <li>4: view_read_only - SpatialTable: -1 ; when SpatialView: 0=read_only or 1 writable</li>
      * <li>vector_data: Seperator: ';' 7 values</li>
-     * <li>0: geometry_type - 3</li>	
-     * <li>1: coord_dimension - 2</li>	
-     * <li>2: srid - 3068</li>	
-     * <li>3: spatial_index_enabled - 0 or 1</li>	
+     * <li>0: geometry_type - 3</li>
+     * <li>1: coord_dimension - 2</li>
+     * <li>2: srid - 3068</li>
+     * <li>3: spatial_index_enabled - 0 or 1</li>
      * <li>4: rows 4
      * <li>5: extent_min/max - Seperator ',' - 4 values
      * <li>5.1:extent_min_x - 20847.6171111586</li>
      * <li>5.2:extent_min_y - 18733.613614603</li>
      * <li>5.3:extent_max_x - 20847.6171111586</li>
-     * <li>5.4:extent_max_y - 18733.613614603</li></li>	
-     * <li>6:last_verified - 2014-03-12T12:22:39.688Z</li>	
+     * <li>5.4:extent_max_y - 18733.613614603</li></li>
+     * <li>6:last_verified - 2014-03-12T12:22:39.688Z</li>
      * </ol>
      * Validity: s_vector_key.split(";"); must return the length of 5
      * Validity: s_vector_data.split(";"); must return the length of 7
@@ -236,11 +238,11 @@ public class DaoSpatialite {
        String LAYERS_QUERY_BASE_V3="";
        String VIEWS_QUERY_BASE_V3="";
        String VECTOR_LAYERS_QUERY_FROM="";
-       String LAYERS_QUERY_FROM="";
-       String VIEWS_QUERY_FROM="";
+       String LAYERS_QUERY_FROM_V3="";
+       String LAYERS_QUERY_FROM_V4="";
+       String VIEWS_QUERY_FROM_V3="";
        String VECTOR_LAYERS_QUERY_EXTENT_VALID="";
        String LAYERS_QUERY_EXTENT_VALID="";
-       String VIEWS_QUERY_EXTENT_VALID="";
        String VECTOR_LAYERS_QUERY_EXTENT_INVALID="";
        String LAYERS_QUERY_EXTENT_INVALID="";
        String VIEWS_QUERY_EXTENT_INVALID="";
@@ -248,26 +250,27 @@ public class DaoSpatialite {
        String LAYERS_QUERY_WHERE="";
        String VIEWS_QUERY_WHERE="";
        String VECTOR_LAYERS_QUERY_ORDER="";
-       String LAYERS_QUERY_ORDER="";
-       String VIEWS_QUERY_ORDER="";
+       String LAYERS_QUERY_ORDER_V3="";
+       String LAYERS_QUERY_ORDER_V4="";
        String VECTOR_KEY_BASE="";
        StringBuilder sb_query = new StringBuilder();
        sb_query.append("SELECT ");
        sb_query.append(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".table_name"); // 0 of 1st field
-       sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".geometry_column"); // 1 of 1st field 
+       sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".geometry_column"); // 1 of 1st field
        sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + "." + "layer_type"); //  2 of 1st field
-       sb_query.append("||';ROWID;-1'"); // 3+4 of 1st field 
+       sb_query.append("||';ROWID;-1'"); // 3+4 of 1st field
        sb_query.append(" AS vector_key," + METADATA_VECTOR_LAYERS_TABLE_NAME + "." + "geometry_type"); // 0 of second field
        sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_TABLE_NAME + ".coord_dimension"); // 2
        sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_TABLE_NAME + "." + "srid"); // 3
        sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_TABLE_NAME + ".spatial_index_enabled||';' AS vector_data,"); // 4
        VECTOR_LAYERS_QUERY_BASE = sb_query.toString();
-       LAYERS_QUERY_BASE_V4=VECTOR_LAYERS_QUERY_BASE.replace(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME,METADATA_LAYERS_STATISTICS_TABLE_NAME);
+       LAYERS_QUERY_BASE_V4=VECTOR_LAYERS_QUERY_BASE.replace(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME,METADATA_LAYER_STATISTICS_TABLE_NAME);
+       LAYERS_QUERY_BASE_V4=LAYERS_QUERY_BASE_V4.replace(METADATA_LAYER_STATISTICS_TABLE_NAME+".layer_type",METADATA_VECTOR_LAYERS_TABLE_NAME+".layer_type");
        sb_query = new StringBuilder();
        sb_query.append(" AS vector_key,CASE"); // 0 of second field
-       sb_query.append(" WHEN type = 'GEOMETRY' THEN '0'"); 
-       sb_query.append(" WHEN type = 'POINT' THEN '1'"); 
-       sb_query.append(" WHEN type = 'LINESTRING' THEN '2'"); 
+       sb_query.append(" WHEN type = 'GEOMETRY' THEN '0'");
+       sb_query.append(" WHEN type = 'POINT' THEN '1'");
+       sb_query.append(" WHEN type = 'LINESTRING' THEN '2'");
        sb_query.append(" WHEN type = 'POLYGON' THEN '3'");
        sb_query.append(" WHEN type = 'MULTIPOINT' THEN '4'");
        sb_query.append(" WHEN type = 'MULTILINESTRING' THEN '5'");
@@ -275,9 +278,9 @@ public class DaoSpatialite {
        sb_query.append(" WHEN type = 'GEOMETRYCOLLECTION' THEN '7'");
        sb_query.append(" END"); // 0
        sb_query.append("||';'||CASE"); // 2
-       sb_query.append(" WHEN ((coord_dimension = '2') OR (coord_dimension = 'XY')) THEN '2'"); 
+       sb_query.append(" WHEN ((coord_dimension = '2') OR (coord_dimension = 'XY')) THEN '2'");
        sb_query.append(" WHEN ((coord_dimension = '3') OR (coord_dimension = 'XYZ') OR (coord_dimension = 'XYM')) THEN '3'");
-       sb_query.append(" WHEN ((coord_dimension = '4') OR (coord_dimension = 'XYZM')) THEN '4'"); 
+       sb_query.append(" WHEN ((coord_dimension = '4') OR (coord_dimension = 'XYZM')) THEN '4'");
        sb_query.append(" END"); // 0
        sb_query.append("||';'||srid"); // 3
        sb_query.append("||';'||spatial_index_enabled||';' AS vector_data,"); // 4
@@ -287,17 +290,18 @@ public class DaoSpatialite {
        // SELECT f_table_name,f_geometry_column,type,coord_dimension,srid,spatial_index_enabled FROM geometry_columns
        sb_query.append("SELECT");
        sb_query.append(" f_table_name"); // 0 of 1st field
-       sb_query.append("||';'||f_geometry_column"); // 1 of 1st field 
-       sb_query.append("||';'||SpatialTable"); //  2 of 1st field
-       sb_query.append("||';ROWID;-1'"); // 3+4 of 1st field 
-       sb_query.append(VECTOR_KEY_BASE); 
+       sb_query.append("||';'||f_geometry_column"); // 1 of 1st field
+       sb_query.append("||';'||'SpatialTable'"); //  2 of 1st field
+       sb_query.append("||';ROWID;-1'"); // 3+4 of 1st field
+       sb_query.append(VECTOR_KEY_BASE);
        LAYERS_QUERY_BASE_V3 = sb_query.toString();
+       sb_query = new StringBuilder();
        sb_query.append("SELECT");
        sb_query.append(" view_name"); // 0 of 1st field
-       sb_query.append("||';'||view_geometry"); // 1 of 1st field 
-       sb_query.append("||';'||SpatialView"); //  2 of 1st field
-       sb_query.append("||';view_rowid;0'"); // 3+4 of 1st field 
-       sb_query.append(VECTOR_KEY_BASE); 
+       sb_query.append("||';'||view_geometry"); // 1 of 1st field
+       sb_query.append("||';'||'SpatialView'"); //  2 of 1st field
+       sb_query.append("||';ROWID;-1'"); // 3+4 of 1st field
+       sb_query.append(VECTOR_KEY_BASE);
        VIEWS_QUERY_BASE_V3 = sb_query.toString();
        // sb_query.append(" FROM FROM geometry_columns ORDER BY f_table_name ASC,f_geometry_column";
        sb_query = new StringBuilder();
@@ -309,16 +313,32 @@ public class DaoSpatialite {
        VECTOR_LAYERS_QUERY_FROM = sb_query.toString();
        sb_query = new StringBuilder();
        // V2.4: SELECT raster_layer,table_name,geometry_column,row_count,extent_min_x,extent_min_y,extent_max_x,extent_max_y FROM layer_statistics
-       sb_query.append(" FROM " + METADATA_GEOMETRY_COLUMNS_TABLE_NAME + " INNER JOIN " + METADATA_LAYERS_STATISTICS_TABLE_NAME);
+       sb_query.append(" FROM " + METADATA_GEOMETRY_COLUMNS_TABLE_NAME + " INNER JOIN " + METADATA_LAYER_STATISTICS_TABLE_NAME);
        sb_query.append(" ON "+ METADATA_GEOMETRY_COLUMNS_TABLE_NAME + ".f_table_name");
-       sb_query.append(" = "+ METADATA_LAYERS_STATISTICS_TABLE_NAME + ".table_name");
+       sb_query.append(" = "+ METADATA_LAYER_STATISTICS_TABLE_NAME + ".table_name");
        sb_query.append(" AND "+ METADATA_GEOMETRY_COLUMNS_TABLE_NAME + ".f_geometry_column");
-       sb_query.append(" = "+ METADATA_LAYERS_STATISTICS_TABLE_NAME + ".geometry_column");
-       LAYERS_QUERY_FROM = sb_query.toString();
-       VIEWS_QUERY_FROM = LAYERS_QUERY_FROM.replace(METADATA_LAYERS_STATISTICS_TABLE_NAME,METADATA_VIEWS_GEOMETRY_COLUMNS_TABLE_NAME);
-       VIEWS_QUERY_FROM = VIEWS_QUERY_FROM.replace(".table_name",".view_name");
-       VIEWS_QUERY_FROM = VIEWS_QUERY_FROM.replace(".geometry_column",".view_geometry");
+       sb_query.append(" = "+ METADATA_LAYER_STATISTICS_TABLE_NAME + ".geometry_column");
+       LAYERS_QUERY_FROM_V3 = sb_query.toString();
+       VIEWS_QUERY_FROM_V3 = LAYERS_QUERY_FROM_V3.replace(METADATA_GEOMETRY_COLUMNS_TABLE_NAME,METADATA_VIEWS_GEOMETRY_COLUMNS_TABLE_NAME);
+       VIEWS_QUERY_FROM_V3 = VIEWS_QUERY_FROM_V3.replace(".f_table_name",".view_name");
+       VIEWS_QUERY_FROM_V3 = VIEWS_QUERY_FROM_V3.replace(".f_geometry_column",".view_geometry");
+       // VIEWS_QUERY_FROM_V3 will be continued after finishing LAYERS_QUERY_FROM_V4
+       sb_query.append(" INNER JOIN " + METADATA_VECTOR_LAYERS_TABLE_NAME);
+       sb_query.append(" ON "+ METADATA_VECTOR_LAYERS_TABLE_NAME + ".table_name");
+       sb_query.append(" = "+ METADATA_LAYER_STATISTICS_TABLE_NAME + ".table_name");
+       sb_query.append(" AND "+ METADATA_VECTOR_LAYERS_TABLE_NAME + ".geometry_column");
+       sb_query.append(" = "+ METADATA_LAYER_STATISTICS_TABLE_NAME + ".geometry_column");
+       LAYERS_QUERY_FROM_V4 = sb_query.toString();
        sb_query = new StringBuilder();
+       sb_query.append(VIEWS_QUERY_FROM_V3);
+       sb_query.append(" INNER JOIN " + METADATA_GEOMETRY_COLUMNS_TABLE_NAME);
+       sb_query.append(" ON "+ METADATA_GEOMETRY_COLUMNS_TABLE_NAME + ".f_table_name");
+       sb_query.append(" = "+ METADATA_VIEWS_GEOMETRY_COLUMNS_TABLE_NAME + ".f_table_name");
+       sb_query.append(" AND "+ METADATA_GEOMETRY_COLUMNS_TABLE_NAME + ".f_geometry_column");
+       sb_query.append(" = "+ METADATA_VIEWS_GEOMETRY_COLUMNS_TABLE_NAME + ".f_geometry_column");
+       // VIEWS_QUERY_FROM_V3 is now compleate
+       VIEWS_QUERY_FROM_V3 = sb_query.toString();
+        sb_query = new StringBuilder();
        // if the record is invalid, only this field will be null
        // 'vector_key' and 'vector_data' will be use to attempt to recover from the error.
        sb_query.append(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".row_count"); // 0
@@ -328,61 +348,74 @@ public class DaoSpatialite {
        sb_query.append("||','||" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".extent_max_y"); // 1.3
        sb_query.append("||';'||" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".last_verified AS vector_extent"); // 2
        VECTOR_LAYERS_QUERY_EXTENT_VALID = sb_query.toString();
-       LAYERS_QUERY_EXTENT_VALID = VECTOR_LAYERS_QUERY_EXTENT_VALID.replace(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME,METADATA_LAYERS_STATISTICS_TABLE_NAME);
-       LAYERS_QUERY_EXTENT_VALID = LAYERS_QUERY_EXTENT_VALID.replace(METADATA_LAYERS_STATISTICS_TABLE_NAME + ".last_verified","strftime('%Y-%m-%dT%H:%M:%fZ','now')");
-       VIEWS_QUERY_EXTENT_VALID = LAYERS_QUERY_EXTENT_VALID.replace(METADATA_LAYERS_STATISTICS_TABLE_NAME,METADATA_VIEWS_GEOMETRY_COLUMNS_TABLE_NAME);
+       LAYERS_QUERY_EXTENT_VALID = VECTOR_LAYERS_QUERY_EXTENT_VALID.replace(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME,METADATA_LAYER_STATISTICS_TABLE_NAME);
+       LAYERS_QUERY_EXTENT_VALID = LAYERS_QUERY_EXTENT_VALID.replace(METADATA_LAYER_STATISTICS_TABLE_NAME + ".last_verified","strftime('%Y-%m-%dT%H:%M:%fZ','now')");
        sb_query = new StringBuilder();
        // if the record is invalid, only this field will what is invalid
        // - where 'field_name' is shown, that field is invalid
        sb_query.append("CASE WHEN "+METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".row_count IS NULL THEN 'row_count' ELSE "); // 0
-       sb_query.append(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".row_count END ||"); // 0
-       sb_query.append("||';'|| CASE WHEN "+METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".extent_min_x IS NULL THEN 'extent_min_x' ELSE "); // 1.0
-       sb_query.append(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".extent_min_x END ||"); // 1.0
-       sb_query.append("||','|| CASE WHEN "+METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".extent_min_y IS NULL THEN 'extent_min_y' ELSE "); // 1.1
-       sb_query.append(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".extent_min_y END ||"); // 1.1
-       sb_query.append("||','|| CASE WHEN "+METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".extent_max_x IS NULL THEN 'extent_max_x' ELSE "); // 1.2
-       sb_query.append(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".extent_max_x END ||"); // 1.2
-       sb_query.append("||','|| CASE WHEN "+METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".extent_max_y IS NULL THEN 'extent_max_y' ELSE "); // 1.3
-       sb_query.append(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".extent_max_y END ||"); // 1.3
+       sb_query.append(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".row_count END "); // 0
+       sb_query.append("||';'||CASE WHEN "+METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".extent_min_x IS NULL THEN 'extent_min_x' ELSE "); // 1.0
+       sb_query.append(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".extent_min_x END "); // 1.0
+       sb_query.append("||','||CASE WHEN "+METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".extent_min_y IS NULL THEN 'extent_min_y' ELSE "); // 1.1
+       sb_query.append(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".extent_min_y END "); // 1.1
+       sb_query.append("||','||CASE WHEN "+METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".extent_max_x IS NULL THEN 'extent_max_x' ELSE "); // 1.2
+       sb_query.append(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".extent_max_x END "); // 1.2
+       sb_query.append("||','||CASE WHEN "+METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".extent_max_y IS NULL THEN 'extent_max_y' ELSE "); // 1.3
+       sb_query.append(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".extent_max_y END "); // 1.3
+       // LAYERS_STATISTICS has no last_verified. Store result now and the continue to append
        LAYERS_QUERY_EXTENT_INVALID = sb_query.toString();
-       LAYERS_QUERY_EXTENT_INVALID = LAYERS_QUERY_EXTENT_INVALID.replace(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME,METADATA_LAYERS_STATISTICS_TABLE_NAME);
-       sb_query.append("||';'|| CASE WHEN "+METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".last_verified IS NULL THEN 'last_verified' ELSE "); // 2
+       LAYERS_QUERY_EXTENT_INVALID = LAYERS_QUERY_EXTENT_INVALID.replace(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME,METADATA_LAYER_STATISTICS_TABLE_NAME);
+       sb_query.append("||';'||CASE WHEN "+METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".last_verified IS NULL THEN 'last_verified' ELSE "); // 2
        sb_query.append(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME+".last_verified END AS vector_extent"); // 2
        VECTOR_LAYERS_QUERY_EXTENT_INVALID = sb_query.toString();
        sb_query = new StringBuilder();
        sb_query.append(LAYERS_QUERY_EXTENT_INVALID);
        sb_query.append("||';'||strftime('%Y-%m-%dT%H:%M:%fZ','now') AS vector_extent"); // 2
        LAYERS_QUERY_EXTENT_INVALID = sb_query.toString();
-       VIEWS_QUERY_EXTENT_INVALID = LAYERS_QUERY_EXTENT_INVALID.replace(METADATA_LAYERS_STATISTICS_TABLE_NAME,METADATA_VIEWS_GEOMETRY_COLUMNS_TABLE_NAME);
+       VIEWS_QUERY_EXTENT_INVALID = LAYERS_QUERY_EXTENT_INVALID.replace(METADATA_LAYER_STATISTICS_TABLE_NAME,METADATA_VIEWS_GEOMETRY_COLUMNS_TABLE_NAME);
        sb_query = new StringBuilder();
        // first Views (Spatialview) then tables (SpatialTable), then Table-Name/Column
        sb_query.append(" ORDER BY " + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + "." + "layer_type DESC");
        sb_query.append("," + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + "." + "table_name ASC");
        sb_query.append("," + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + "." + "geometry_column ASC");
        VECTOR_LAYERS_QUERY_ORDER = sb_query.toString();
-       sb_query.append(" ORDER BY " + METADATA_LAYERS_STATISTICS_TABLE_NAME + "." + "table_name ASC");
-       sb_query.append("," + METADATA_LAYERS_STATISTICS_TABLE_NAME + "." + "geometry_column ASC");
-       LAYERS_QUERY_ORDER = sb_query.toString();
-       VIEWS_QUERY_ORDER = LAYERS_QUERY_ORDER.replace(METADATA_LAYERS_STATISTICS_TABLE_NAME,METADATA_VIEWS_GEOMETRY_COLUMNS_TABLE_NAME);
+       sb_query = new StringBuilder();
+       sb_query.append(" ORDER BY " + METADATA_LAYER_STATISTICS_TABLE_NAME + "." + "table_name ASC");
+       sb_query.append("," + METADATA_LAYER_STATISTICS_TABLE_NAME + "." + "geometry_column ASC");
+       LAYERS_QUERY_ORDER_V3 = sb_query.toString();
+       sb_query = new StringBuilder();
+       sb_query.append(" ORDER BY " + METADATA_VECTOR_LAYERS_TABLE_NAME + "." + "layer_type DESC");
+       sb_query.append("," + METADATA_VECTOR_LAYERS_TABLE_NAME + "." + "table_name ASC");
+       sb_query.append("," + METADATA_VECTOR_LAYERS_TABLE_NAME + "." + "geometry_column ASC");
+       LAYERS_QUERY_ORDER_V4 = sb_query.toString();
        sb_query = new StringBuilder();
        sb_query.append(VECTOR_LAYERS_QUERY_BASE);
        sb_query.append(VECTOR_LAYERS_QUERY_FROM);
        sb_query.append(VECTOR_LAYERS_QUERY_ORDER);
        VECTOR_LAYERS_QUERY_EXTENT_LIST_V4 = sb_query.toString();
+       // remove comma - last field
+       VECTOR_LAYERS_QUERY_EXTENT_LIST_V4=VECTOR_LAYERS_QUERY_EXTENT_LIST_V4.replace("AS vector_data,","AS vector_data");
        sb_query = new StringBuilder();
        sb_query.append(LAYERS_QUERY_BASE_V3);
-       sb_query.append(LAYERS_QUERY_FROM);
-       sb_query.append(LAYERS_QUERY_ORDER);
+       sb_query.append(LAYERS_QUERY_FROM_V3);
+       sb_query.append(LAYERS_QUERY_ORDER_V3);
        LAYERS_QUERY_EXTENT_LIST_V3 = sb_query.toString();
+       // remove comma - last field
+       LAYERS_QUERY_EXTENT_LIST_V3=LAYERS_QUERY_EXTENT_LIST_V3.replace("AS vector_data,","AS vector_data");
+       sb_query = new StringBuilder();
        sb_query.append(VIEWS_QUERY_BASE_V3);
-       sb_query.append(VIEWS_QUERY_FROM);
-       sb_query.append(VIEWS_QUERY_ORDER);
+       sb_query.append(VIEWS_QUERY_FROM_V3);
+       sb_query.append(LAYERS_QUERY_ORDER_V3);
        VIEWS_QUERY_EXTENT_LIST_V3 = sb_query.toString();
+       // remove comma - last field
+       VIEWS_QUERY_EXTENT_LIST_V3=VIEWS_QUERY_EXTENT_LIST_V3.replace("AS vector_data,","AS vector_data");
        sb_query = new StringBuilder();
        sb_query.append(LAYERS_QUERY_BASE_V4);
-       sb_query.append(LAYERS_QUERY_FROM);
-       sb_query.append(LAYERS_QUERY_ORDER);
+       sb_query.append(LAYERS_QUERY_FROM_V4);
+       sb_query.append(LAYERS_QUERY_ORDER_V4);
        LAYERS_QUERY_EXTENT_LIST_V4 = sb_query.toString();
+       LAYERS_QUERY_EXTENT_LIST_V4=LAYERS_QUERY_EXTENT_LIST_V4.replace("AS vector_data,","AS vector_data"); // remove
        sb_query = new StringBuilder();
        // if the creation of a spatial-view fails, a record may exist with 'row_count=NULL': this is an invalid record and must be ignored
        sb_query.append(" WHERE (" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".row_count IS NOT NULL)");
@@ -392,39 +425,39 @@ public class DaoSpatialite {
        sb_query.append(" AND (" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".extent_max_x IS NOT NULL)");
        sb_query.append(" AND (" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".extent_max_y IS NOT NULL)");
        VECTOR_LAYERS_QUERY_WHERE = sb_query.toString();
-       LAYERS_QUERY_WHERE=VECTOR_LAYERS_QUERY_WHERE.replace(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME,METADATA_LAYERS_STATISTICS_TABLE_NAME);
-       VIEWS_QUERY_WHERE=LAYERS_QUERY_WHERE.replace(METADATA_LAYERS_STATISTICS_TABLE_NAME,METADATA_VIEWS_GEOMETRY_COLUMNS_TABLE_NAME);
+       LAYERS_QUERY_WHERE=VECTOR_LAYERS_QUERY_WHERE.replace(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME,METADATA_LAYER_STATISTICS_TABLE_NAME);
+       VIEWS_QUERY_WHERE=LAYERS_QUERY_WHERE.replace(METADATA_LAYER_STATISTICS_TABLE_NAME,METADATA_VIEWS_GEOMETRY_COLUMNS_TABLE_NAME);
        sb_query = new StringBuilder();
        sb_query.append(VECTOR_LAYERS_QUERY_BASE);
        sb_query.append(VECTOR_LAYERS_QUERY_EXTENT_VALID);
        sb_query.append(VECTOR_LAYERS_QUERY_FROM);
        sb_query.append(VECTOR_LAYERS_QUERY_WHERE);
        sb_query.append(VECTOR_LAYERS_QUERY_ORDER);
-       // priority_marks_joined_lincoln;geometry;SpatialTable;ROWID	1;2;2913;1	NULL
+       // priority_marks_joined_lincoln;geometry;SpatialTable;ROWID 1;2;2913;1 NULL
        VECTOR_LAYERS_QUERY_EXTENT_VALID_V4 = sb_query.toString();
        sb_query = new StringBuilder();
        sb_query.append(LAYERS_QUERY_BASE_V3);
        sb_query.append(LAYERS_QUERY_EXTENT_VALID);
-       sb_query.append(LAYERS_QUERY_FROM);
+       sb_query.append(LAYERS_QUERY_FROM_V3);
        sb_query.append(LAYERS_QUERY_WHERE);
-       sb_query.append(LAYERS_QUERY_ORDER);
-       // priority_marks_joined_lincoln;geometry;SpatialTable;ROWID	1;2;2913;1	NULL
+       sb_query.append(LAYERS_QUERY_ORDER_V3);
+       // priority_marks_joined_lincoln;geometry;SpatialTable;ROWID 1;2;2913;1 NULL
        LAYERS_QUERY_EXTENT_VALID_V3 = sb_query.toString();
        sb_query = new StringBuilder();
        sb_query.append(VIEWS_QUERY_BASE_V3);
-       sb_query.append(VIEWS_QUERY_EXTENT_VALID);
-       sb_query.append(VIEWS_QUERY_FROM);
-       sb_query.append(VIEWS_QUERY_WHERE);
-       sb_query.append(VIEWS_QUERY_ORDER);
-       // priority_marks_joined_lincoln;geometry;SpatialTable;ROWID	1;2;2913;1	NULL
+       sb_query.append(LAYERS_QUERY_EXTENT_VALID);
+       sb_query.append(VIEWS_QUERY_FROM_V3);
+       sb_query.append(LAYERS_QUERY_WHERE);
+       sb_query.append(LAYERS_QUERY_ORDER_V3);
+       // priority_marks_joined_lincoln;geometry;SpatialTable;ROWID 1;2;2913;1 NULL
        VIEWS_QUERY_EXTENT_VALID_V3 = sb_query.toString();
        sb_query = new StringBuilder();
        sb_query.append(LAYERS_QUERY_BASE_V4);
        sb_query.append(LAYERS_QUERY_EXTENT_VALID);
-       sb_query.append(LAYERS_QUERY_FROM);
+       sb_query.append(LAYERS_QUERY_FROM_V4);
        sb_query.append(LAYERS_QUERY_WHERE);
-       sb_query.append(LAYERS_QUERY_ORDER);
-       // priority_marks_joined_lincoln;geometry;SpatialTable;ROWID	1;2;2913;1	NULL
+       sb_query.append(LAYERS_QUERY_ORDER_V4);
+       // priority_marks_joined_lincoln;geometry;SpatialTable;ROWID 1;2;2913;1 NULL
        LAYERS_QUERY_EXTENT_VALID_V4 = sb_query.toString();
        sb_query = new StringBuilder();
        // if the creation of a spatial-view fails, a record may exist with 'row_count=NULL': this is an invalid record and must be ignored
@@ -435,8 +468,8 @@ public class DaoSpatialite {
        sb_query.append(" OR (" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".extent_max_x IS NULL)");
        sb_query.append(" OR (" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".extent_max_y IS NULL)");
        VECTOR_LAYERS_QUERY_WHERE = sb_query.toString();
-       LAYERS_QUERY_WHERE=VECTOR_LAYERS_QUERY_WHERE.replace(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME,METADATA_LAYERS_STATISTICS_TABLE_NAME);
-       VIEWS_QUERY_WHERE = LAYERS_QUERY_WHERE.replace(METADATA_LAYERS_STATISTICS_TABLE_NAME,METADATA_VIEWS_GEOMETRY_COLUMNS_TABLE_NAME);
+       LAYERS_QUERY_WHERE=VECTOR_LAYERS_QUERY_WHERE.replace(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME,METADATA_LAYER_STATISTICS_TABLE_NAME);
+       VIEWS_QUERY_WHERE = LAYERS_QUERY_WHERE.replace(METADATA_LAYER_STATISTICS_TABLE_NAME,METADATA_VIEWS_GEOMETRY_COLUMNS_TABLE_NAME);
        sb_query = new StringBuilder();
        sb_query.append(VECTOR_LAYERS_QUERY_BASE);
        sb_query.append(VECTOR_LAYERS_QUERY_EXTENT_INVALID);
@@ -447,56 +480,65 @@ public class DaoSpatialite {
        sb_query = new StringBuilder();
        sb_query.append(LAYERS_QUERY_BASE_V3);
        sb_query.append(LAYERS_QUERY_EXTENT_INVALID);
-       sb_query.append(LAYERS_QUERY_FROM);
+       sb_query.append(LAYERS_QUERY_FROM_V3);
        sb_query.append(LAYERS_QUERY_WHERE);
-       sb_query.append(VECTOR_LAYERS_QUERY_ORDER);
+       sb_query.append(LAYERS_QUERY_ORDER_V3);
        LAYERS_QUERY_EXTENT_INVALID_V3 = sb_query.toString();
        sb_query = new StringBuilder();
        sb_query.append(VIEWS_QUERY_BASE_V3);
-       sb_query.append(VIEWS_QUERY_EXTENT_INVALID);
-       sb_query.append(VIEWS_QUERY_FROM);
-       sb_query.append(VIEWS_QUERY_WHERE);
-       sb_query.append(VIEWS_QUERY_ORDER);
-       // priority_marks_joined_lincoln;geometry;SpatialTable;ROWID	1;2;2913;1	NULL
+       sb_query.append(LAYERS_QUERY_EXTENT_VALID);
+       sb_query.append(VIEWS_QUERY_FROM_V3);
+       sb_query.append(LAYERS_QUERY_WHERE);
+       sb_query.append(LAYERS_QUERY_ORDER_V3);
+       // priority_marks_joined_lincoln;geometry;SpatialTable;ROWID 1;2;2913;1 NULL
        VIEWS_QUERY_EXTENT_INVALID_V3 = sb_query.toString();
        sb_query = new StringBuilder();
        sb_query.append(LAYERS_QUERY_BASE_V4);
        sb_query.append(LAYERS_QUERY_EXTENT_INVALID);
-       sb_query.append(LAYERS_QUERY_FROM);
+       sb_query.append(LAYERS_QUERY_FROM_V4);
        sb_query.append(LAYERS_QUERY_WHERE);
-       sb_query.append(VECTOR_LAYERS_QUERY_ORDER);
+       sb_query.append(LAYERS_QUERY_ORDER_V4);
        LAYERS_QUERY_EXTENT_INVALID_V4 = sb_query.toString();
-
-       GPLog.androidLog(-1, "DaoSpatialite: checkDatabaseTypeAndValidity VECTOR_LAYERS_QUERY_EXTENT_INVALID_V4[" + VECTOR_LAYERS_QUERY_EXTENT_INVALID_V4 + "] VECTOR_LAYERS_QUERY_EXTENT_VALID_V4["+ VECTOR_LAYERS_QUERY_EXTENT_VALID_V4+"] VECTOR_LAYERS_QUERY_EXTENT_LIST_V4["+ VECTOR_LAYERS_QUERY_EXTENT_LIST_V4 + "] ");
-       GPLog.androidLog(-1, "DaoSpatialite: checkDatabaseTypeAndValidity LAYERS_QUERY_EXTENT_INVALID_V4[" + LAYERS_QUERY_EXTENT_INVALID_V4 + "] LAYERS_QUERY_EXTENT_VALID_V4["+ LAYERS_QUERY_EXTENT_VALID_V4+"] LAYERS_QUERY_EXTENT_LIST_V4["+ LAYERS_QUERY_EXTENT_LIST_V4 + "] ");
-       GPLog.androidLog(-1, "DaoSpatialite: checkDatabaseTypeAndValidity LAYERS_QUERY_EXTENT_INVALID_V3[" + LAYERS_QUERY_EXTENT_INVALID_V3 + "] LAYERS_QUERY_EXTENT_VALID_V3["+ LAYERS_QUERY_EXTENT_VALID_V3+"] LAYERS_QUERY_EXTENT_LIST_V3["+ LAYERS_QUERY_EXTENT_LIST_V3 + "] ");
-       GPLog.androidLog(-1, "DaoSpatialite: checkDatabaseTypeAndValidity VIEWS_QUERY_EXTENT_INVALID_V3[" + VIEWS_QUERY_EXTENT_INVALID_V3 + "] VIEWS_QUERY_EXTENT_VALID_V3["+ VIEWS_QUERY_EXTENT_VALID_V3+"] VIEWS_QUERY_EXTENT_LIST_V3["+ VIEWS_QUERY_EXTENT_LIST_V3 + "] ");
-
-/* 
-SELECT  
- vector_layers_statistics.table_name||';'|| vector_layers_statistics.geometry_column||';'|| 
+       // This is not someting that should be developed more than once ...
+       /*
+       GPLog.androidLog(-1, "DaoSpatialite: VECTOR_LAYERS_QUERY_EXTENT_VALID_V4["+ VECTOR_LAYERS_QUERY_EXTENT_VALID_V4+"]");
+       GPLog.androidLog(-1, "DaoSpatialite: VECTOR_LAYERS_QUERY_EXTENT_INVALID_V4[" + VECTOR_LAYERS_QUERY_EXTENT_INVALID_V4 + "] ");
+       GPLog.androidLog(-1, "DaoSpatialite: VECTOR_LAYERS_QUERY_EXTENT_LIST_V4["+ VECTOR_LAYERS_QUERY_EXTENT_LIST_V4 + "] ");
+       GPLog.androidLog(-1, "DaoSpatialite: LAYERS_QUERY_EXTENT_VALID_V4["+ LAYERS_QUERY_EXTENT_VALID_V4+"]");
+       GPLog.androidLog(-1, "DaoSpatialite: LAYERS_QUERY_EXTENT_INVALID_V4[" + LAYERS_QUERY_EXTENT_INVALID_V4 + "] ");
+       GPLog.androidLog(-1, "DaoSpatialite: LAYERS_QUERY_EXTENT_LIST_V4["+ LAYERS_QUERY_EXTENT_LIST_V4 + "] ");
+       GPLog.androidLog(-1, "DaoSpatialite: LAYERS_QUERY_EXTENT_VALID_V3["+ LAYERS_QUERY_EXTENT_VALID_V3+"] ");
+       GPLog.androidLog(-1, "DaoSpatialite: LAYERS_QUERY_EXTENT_INVALID_V3[" + LAYERS_QUERY_EXTENT_INVALID_V3 + "] ");
+       GPLog.androidLog(-1, "DaoSpatialite: LAYERS_QUERY_EXTENT_LIST_V3["+ LAYERS_QUERY_EXTENT_LIST_V3 + "] ");
+       GPLog.androidLog(-1, "DaoSpatialite: VIEWS_QUERY_EXTENT_VALID_V3["+ VIEWS_QUERY_EXTENT_VALID_V3+"]");
+       GPLog.androidLog(-1, "DaoSpatialite: VIEWS_QUERY_EXTENT_INVALID_V3[" + VIEWS_QUERY_EXTENT_INVALID_V3 + "] ");
+       GPLog.androidLog(-1, "DaoSpatialite: VIEWS_QUERY_EXTENT_LIST_V3["+ VIEWS_QUERY_EXTENT_LIST_V3 + "] ");
+       */
+/*
+SELECT
+ vector_layers_statistics.table_name||';'|| vector_layers_statistics.geometry_column||';'||
  vector_layers_statistics.layer_type||';ROWID;-1' AS vector_key,';'||vector_layers.geometry_type||';'||
  vector_layers.coord_dimension||';'|| vector_layers.srid||';'|| vector_layers.spatial_index_enabled AS vector_data,
  ';'||vector_layers_statistics.row_count||';'||vector_layers_statistics.extent_min_x||','||
  vector_layers_statistics.extent_min_y||','|| vector_layers_statistics.extent_max_x||','||
- vector_layers_statistics.extent_max_y||';'|| vector_layers_statistics.last_verified AS vector_extent 
-FROM 
- vector_layers_statistics INNER JOIN  
+ vector_layers_statistics.extent_max_y||';'|| vector_layers_statistics.last_verified AS vector_extent
+FROM
+ vector_layers_statistics INNER JOIN
  vector_layers ON vector_layers_statistics.table_name =  vector_layers.table_name AND
- vector_layers_statistics.geometry_column =  vector_layers.geometry_column 
-WHERE 
+ vector_layers_statistics.geometry_column =  vector_layers.geometry_column
+WHERE
  -- STRICT
  (vector_layers_statistics.row_count NOT NULL) AND (vector_layers_statistics.row_count > 0) AND
  (vector_layers_statistics.extent_min_x NOT NULL) AND (vector_layers_statistics.extent_min_y NOT NULL) AND
- (vector_layers_statistics.extent_max_x NOT NULL) AND (vector_layers_statistics.extent_max_y NOT NULL) 
-ORDER BY 
- vector_layers_statistics.layer_type DESC, 
- vector_layers_statistics.table_name ASC, 
- vector_layers_statistics.geometry_column ASC; 
+ (vector_layers_statistics.extent_max_x NOT NULL) AND (vector_layers_statistics.extent_max_y NOT NULL)
+ORDER BY
+ vector_layers_statistics.layer_type DESC,
+ vector_layers_statistics.table_name ASC,
+ vector_layers_statistics.geometry_column ASC;
 
 Results: 3 fields
- geometries_berlin_1920;soldner_segments;SpatialView;ROWID;-1	
- ;5;2;3068;1	
+ geometries_berlin_1920;soldner_segments;SpatialView;ROWID;-1
+ ;5;2;3068;1
  ;103;3460.4114405802,1208.43017876675,49230.1528101726,38747.9589061869;2014-03-25T17:01:16.534Z
 */
 /*
@@ -512,7 +554,7 @@ SELECT view_rowid,read_only FROM views_geometry_columns;
      * <li> parent directories will be created, if needed</li>
      * <li> needed Tables/View and default values for metadata-table will be created</li>
      * </ol>
-     * 
+     *
      * @param databasePath name of Database file to create
      * @return sqlite_db: pointer to Database created
      * @throws IOException  if something goes wrong.
@@ -542,8 +584,8 @@ SELECT view_rowid,read_only FROM views_geometry_columns;
 
     /**
      * General Function to create jsqlite.Database with spatialite support.
-     * 
-     * <ol> 
+     *
+     * <ol>
      * <li> parent directories will be created, if needed</li>
      * <li> needed Tables/View and default values for metadata-table will be created</li>
      * </ol>
@@ -556,9 +598,9 @@ SELECT view_rowid,read_only FROM views_geometry_columns;
         int i_rc = 0;
         if (i_parm == 1) {
             /*
-             * 0=not a spatialite version ; 
-             * 1=until 2.3.1 ; 
-             * 2=until 2.4.0 ; 
+             * 0=not a spatialite version ;
+             * 1=until 2.3.1 ;
+             * 2=until 2.4.0 ;
              * 3=until 3.1.0-RC2 ;
              * 4=after 4.0.0-RC1
              */
@@ -1055,29 +1097,34 @@ SELECT view_rowid,read_only FROM views_geometry_columns;
      *
      * @param database the db to use.
      * @param table_name the view of the db to use.
+     * @param i_version 1 for version of sptialite that have a 'read_only' field.
      * @return formatted version for map.key
      * @throws Exception  if something goes wrong.
      */
-    public static String getViewRowid( Database database , String table_name) throws Exception {
-        String s_sql = "SELECT view_rowid,read_only FROM views_geometry_columns WHERE (view_name='"+table_name+"')"; 
+    public static String getViewRowid( Database database , String table_name, int i_version) throws Exception {
+        String s_sql = "SELECT view_rowid,read_only FROM views_geometry_columns WHERE (view_name='"+table_name+"')";
+        if (i_version != 1)
+         s_sql = "SELECT view_rowid FROM views_geometry_columns WHERE (view_name='"+table_name+"')";
         String ROWID_PK="";
         Stmt stmt = database.prepare(s_sql);
         try {
          if (stmt.step()) {
           ROWID_PK = stmt.column_string(0);
-          String read_only = stmt.column_string(1);
+          String read_only = "0";
+          if (i_version == 1)
+           read_only = stmt.column_string(1);
           ROWID_PK=ROWID_PK+";"+read_only;
          }
         } finally {
          stmt.close();
-        } 
+        }
         return ROWID_PK;
     }
 
     /**
      * Attemt to retrieve row-count and bounds for this geometry field.
      * returned result:
-     * - 'rows_count;min_x,min_y,max_x,max_y;datetimestamp_now'   
+     * - 'rows_count;min_x,min_y,max_x,max_y;datetimestamp_now'
      * -- sa_string=split(";") == 3 ; sa_string[1].split(',') == 4
      * @param database the db to use.
      * @param table_name the table of the db to use.
@@ -1089,13 +1136,13 @@ SELECT view_rowid,read_only FROM views_geometry_columns;
         StringBuilder sb_query = new StringBuilder();
         String s_vector_extent="";
         // return the format used in DaoSpatialite.checkDatabaseTypeAndValidity()
-        sb_query.append("SELECT count("); 
+        sb_query.append("SELECT count(");
         sb_query.append(geometry_column);
-        sb_query.append(")||';'||Min(MbrMinX("); 
+        sb_query.append(")||';'||Min(MbrMinX(");
         sb_query.append(geometry_column);
         sb_query.append("))||','||Min(MbrMinY(");
         sb_query.append(geometry_column);
-        sb_query.append("))||','||Max(MbrMaxX("); 
+        sb_query.append("))||','||Max(MbrMaxX(");
         sb_query.append(geometry_column);
         sb_query.append("))||','||Max(MbrMaxY(");
         sb_query.append(geometry_column);
@@ -1111,7 +1158,6 @@ SELECT view_rowid,read_only FROM views_geometry_columns;
                 s_vector_extent = stmt.column_string(0);
         GPLog.androidLog(-1,"DaoSpatialite: SpatialiteRetrieveBounds sql["+s_select_bounds+"]  vector_extent["+s_vector_extent+"]");
                 return s_vector_extent;
-                
             }
         } finally {
             stmt.close();
@@ -1137,7 +1183,7 @@ SELECT view_rowid,read_only FROM views_geometry_columns;
             if (stmt.step()) {
                 i_spatialindex = stmt.column_int(0);
                 return i_spatialindex;
-                
+
             }
         } finally {
             stmt.close();
@@ -1151,11 +1197,11 @@ SELECT view_rowid,read_only FROM views_geometry_columns;
      * @param database the db to use.
      * @param table_name the table of the db to use.
      * @param geometry_column the geometry field of the table to use.
-     * @param i_spatialindex check and try to recover the Spatial Index [0=n0, 1=yes [default]].
+     * @param i_spatialindex check and try to recover the Spatial Index [0=no, 1=yes [default]].
      * @return the retrieved bounds data, if possible (vector_extent).
      * @throws Exception  if something goes wrong.
      */
-    public static String SpatialiteUpdateLayerStatistics( Database database, String table_name, String geometry_column, int i_spatialindex ) throws Exception {
+    public static String SpatialiteUpdateLayerStatistics( Database database, String table_name, String geometry_column, int i_spatialindex, SpatialiteDatabaseType databaseType ) throws Exception {
         String s_vector_extent="";
         if (i_spatialindex == 1)
         {
@@ -1167,52 +1213,242 @@ SELECT view_rowid,read_only FROM views_geometry_columns;
           return s_vector_extent; // Invalid for use with geopaparazzi
         }
         i_spatialindex=0;
-        String s_UpdateLayerStatistics = "SELECT UpdateLayerStatistics('" + table_name + "','" + geometry_column + "');";
+        String s_UpdateLayerStatistics = "SELECT UpdateLayerStatistics(');";
+        if ((!table_name.equals("")) &&  (!geometry_column.equals("")))
+         s_UpdateLayerStatistics = "SELECT UpdateLayerStatistics('" + table_name + "','" + geometry_column + "');";
         Stmt stmt = database.prepare(s_UpdateLayerStatistics);
         s_UpdateLayerStatistics="";
         String VECTOR_LAYERS_QUERY_BASE="";
         try {
             if (stmt.step()) {
-                i_spatialindex = stmt.column_int(0);                
+                i_spatialindex = stmt.column_int(0);
             }
         } finally {
             stmt.close();
         }
-        if (i_spatialindex == 1)
-        { // try to retrieve the needed bounds again         
-         StringBuilder sb_query = new StringBuilder();
-         sb_query.append(VECTOR_LAYERS_QUERY_EXTENT_VALID_V4);
-         sb_query.append(" AND ((");
-         sb_query.append(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".table_name='"); 
-         sb_query.append(table_name);
-         sb_query.append("') AND (" + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".geometry_column='"); 
-         sb_query.append(geometry_column);
-         sb_query.append("'))");
-         VECTOR_LAYERS_QUERY_BASE = sb_query.toString();
-         stmt = database.prepare(VECTOR_LAYERS_QUERY_BASE);
-         try {
-            if (stmt.step()) {
-               if (stmt.column_string(2) != null)
-               { // without further checking, consider this valid
-                s_vector_extent=stmt.column_string(2);
-               }              
-            }
-         } finally {
-            stmt.close();
-        }
-        }
-        GPLog.androidLog(-1,"DaoSpatialite: SpatialiteUpdateLayerStatistics sql["+VECTOR_LAYERS_QUERY_BASE+"] i_spatialindex["+i_spatialindex+"] vector_extent["+s_vector_extent+"]");
-        if (s_vector_extent.equals(""))
-        { // Last attempt, if this does not work - then the geometry must be considered invalid
-         s_vector_extent=SpatialiteRetrieveBounds(database,table_name,geometry_column);
+        if ((!table_name.equals("")) &&  (!geometry_column.equals("")))
+        {
+         if (i_spatialindex == 1)
+         { // try to retrieve the needed bounds again
+          StringBuilder sb_query = new StringBuilder();
+          String s_LAYERS_QUERY_EXTENT_VALID=VECTOR_LAYERS_QUERY_EXTENT_VALID_V4;
+          String s_METADATA_LAYERS_STATISTICS_TABLE_NAME=METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME;
+          if (databaseType == SpatialiteDatabaseType.SPATIALITE3)
+          {
+           s_LAYERS_QUERY_EXTENT_VALID=LAYERS_QUERY_EXTENT_VALID_V3;
+           s_METADATA_LAYERS_STATISTICS_TABLE_NAME=METADATA_LAYER_STATISTICS_TABLE_NAME;
+          }
+          sb_query.append(s_LAYERS_QUERY_EXTENT_VALID);
+          sb_query.append(" AND ((");
+          sb_query.append(s_METADATA_LAYERS_STATISTICS_TABLE_NAME + ".table_name='");
+          sb_query.append(table_name);
+          sb_query.append("') AND (" + s_METADATA_LAYERS_STATISTICS_TABLE_NAME + ".geometry_column='");
+          sb_query.append(geometry_column);
+          sb_query.append("'))");
+          VECTOR_LAYERS_QUERY_BASE = sb_query.toString();
+          stmt = database.prepare(VECTOR_LAYERS_QUERY_BASE);
+          try {
+             if (stmt.step()) {
+                if (stmt.column_string(2) != null)
+                { // without further checking, consider this valid
+                 s_vector_extent=stmt.column_string(2);
+                }
+             }
+          } finally {
+             stmt.close();
+         }
+         }
+         GPLog.androidLog(-1,"DaoSpatialite: SpatialiteUpdateLayerStatistics sql["+VECTOR_LAYERS_QUERY_BASE+"] i_spatialindex["+i_spatialindex+"]  vector_extent["+s_vector_extent+"]");
+         if (s_vector_extent.equals(""))
+         { // Last attempt, if this does not work - then the geometry must be considered invalid
+          s_vector_extent=SpatialiteRetrieveBounds(database,table_name,geometry_column);
+         }
         }
         return s_vector_extent;
     }
 
+    /**
+     * Read Spatial-Geometries for pre-Spatialite 4.* specific Databases (2.4.0-3.1.0)
+     *
+     * @param database the database to check.
+     * @param spatialVectorMap the {@link HashMap} of Spatialite4+ Vector-data (Views/Tables Geometries) to clear and repopulate.
+     * @throws Exception if something goes wrong.
+     * @return nothing
+     * @throws Exception  if something goes wrong.
+     */
+    public static void getspatialVectorMap_V3( Database database, HashMap<String, String> spatialVectorMap , HashMap<String, String> spatialVectorMapErrors, boolean b_layers_statistics ) throws Exception {
+        int i_spatialindex=1;
+        Stmt statement = null;
+        GPLog.androidLog(-1,"DaoSpatialite: getspatialVectorMap_V3 b_layers_statistics["+b_layers_statistics+"] ");
+        if (!b_layers_statistics)
+        { // if layers_statistics does not exist a UpdateLayerStatistics() is needed for the whole Database
+         SpatialiteUpdateLayerStatistics(database,"","",0,SpatialiteDatabaseType.SPATIALITE3);
+         i_spatialindex=0;
+         String s_UpdateLayerStatistics = "SELECT UpdateLayerStatistics();";
+         statement = database.prepare(s_UpdateLayerStatistics);
+         s_UpdateLayerStatistics="";
+         String VECTOR_LAYERS_QUERY_BASE="";
+         try {
+             if (statement.step()) {
+                 i_spatialindex = statement.column_int(0);
+             }
+         } finally {
+             statement.close();
+         }
+        }
+    }
+
+    /**
+     * Read Spatial-Geometries for Spatialite 4.* specific Databases
+     *
+     * @param database the database to check.
+     * @param spatialVectorMap the {@link HashMap} of Spatialite4+ Vector-data (Views/Tables Geometries) to clear and repopulate.
+     * @return the {@link SpatialiteDatabaseType}.
+     * @throws Exception if something goes wrong.
+     * @return nothing
+     * @throws Exception  if something goes wrong.
+     */
+    public static void getspatialVectorMap_V4( Database database, HashMap<String, String> spatialVectorMap , HashMap<String, String> spatialVectorMapErrors ) throws Exception {
+        int i_spatialindex=1;
+        String vector_key=""; // term used when building the sql, used as map.key
+        String vector_data=""; // term used when building the sql
+        String vector_extent=""; // term used when building the sql
+        String vector_value=""; // to retrieve map.value (=vector_data+vector_extent)
+        String table_name="";
+        String geometry_column="";
+        Stmt statement = database.prepare(VECTOR_LAYERS_QUERY_EXTENT_INVALID_V4);
+        try
+        {
+         while( statement.step() )
+         {
+          vector_key = statement.column_string(0);
+          vector_data = statement.column_string(1);
+          vector_extent = statement.column_string(2);
+          spatialVectorMapErrors.put(vector_key,vector_data+vector_extent);
+         }
+        }
+        finally {
+         if (statement != null) {
+          statement.close();
+         }
+        }
+        statement = database.prepare(VECTOR_LAYERS_QUERY_EXTENT_VALID_V4);
+        try {
+         while( statement.step() ) {
+          i_spatialindex=1;
+          vector_key = statement.column_string(0);
+          vector_data = statement.column_string(1);
+          vector_extent="";
+          if (vector_key.indexOf("SpatialView") != -1)
+          { // berlin_1000;map_linestring;SpatialView;ROWID
+           //Do not call RecoverSpatialIndex for SpatialViews
+           i_spatialindex=0;
+           String[] sa_string = vector_key.split(";");
+           // GPLog.androidLog(-1, "DaoSpatialite: checkDatabaseTypeAndValidity vector_key[" + vector_key + "] length["+ sa_string.length + "]");
+           if (sa_string.length == 4) {
+            table_name=sa_string[0];
+            try { // replace placeholder with used primary-key and read_only parameter of SpatialView
+             String ROWID_PK=getViewRowid(database,table_name,1);
+              vector_key = vector_key.replace("ROWID;-1",ROWID_PK);
+             } finally {
+            }
+           }
+          }
+          vector_extent = statement.column_string(2);
+          if (vector_extent != null)
+          {
+           spatialVectorMap.put(vector_key,vector_data+vector_extent);
+          }
+          else
+          { //should never happen
+            // GPLog.androidLog(-1, "DaoSpatialite: checkDatabaseTypeAndValidity vector_key[" + vector_key + "] vector_data["+ vector_data+"] vector_extent["+  vector_extent + "] VECTOR_LAYERS_QUERY["+ VECTOR_LAYERS_QUERY_EXTENT_VALID + "]");
+          }
+         }
+        } finally {
+         if (statement != null) {
+          statement.close();
+         }
+        }
+        if ((VECTOR_LAYERS_QUERY_MODE > 0) && (spatialVectorMapErrors.size() > 0))
+        { // if empty: there are nothing to correct
+         for( Map.Entry<String, String> vector_entry : spatialVectorMapErrors.entrySet() )
+         {
+          vector_key = vector_entry.getKey();
+          // soldner_polygon;14;3;2;3068;1;20847.6171111586,18733.613614603,20847.6171111586,18733.613614603
+          vector_value = vector_entry.getValue();
+          vector_data="";
+          String[] sa_string = vector_key.split(";");
+          if (sa_string.length == 5)
+          {
+           table_name=sa_string[0];
+           geometry_column=sa_string[1];
+           String s_layer_type=sa_string[2];
+           String s_ROWID_PK=sa_string[3];
+           int i_view_read_only = Integer.parseInt(sa_string[4]);
+           i_spatialindex=1;
+           sa_string = vector_data.split(";");
+           if (sa_string.length == 7)
+           {
+            String s_geometry_type = sa_string[0];
+            String s_coord_dimension=sa_string[1];
+            String s_srid=sa_string[2];
+            int i_spatial_index_enabled=Integer.parseInt(sa_string[3]); // should always be 1
+            vector_data=s_geometry_type+";"+s_coord_dimension+";"+s_srid+";"+sa_string[3]+";";
+            int i_row_count = Integer.parseInt(sa_string[4]);
+            String s_bounds = sa_string[5];
+            String s_last_verified=sa_string[6];
+            if (vector_key.indexOf("SpatialView") == -1)
+            {
+             i_spatialindex=0;
+            }
+            if ((VECTOR_LAYERS_QUERY_MODE == 1) && (i_spatialindex == 1))
+            { // we do not try to query the dementions of faulty SpatialView's
+             vector_extent=SpatialiteRetrieveBounds(database,table_name,geometry_column);
+            }
+            if (VECTOR_LAYERS_QUERY_MODE == 2)
+            {
+             try
+             {
+               /* RecoverSpatialIndex will be done if needed
+                UpdateLayerStatistics will then be called
+                afterwhich 2 attemts will be made to return valid result
+                - if empty: geometry is to be considered invalid
+               */
+               vector_extent=SpatialiteUpdateLayerStatistics(database,table_name,geometry_column,i_spatialindex,SpatialiteDatabaseType.SPATIALITE4);
+             }
+             finally
+             {
+             }
+            }
+            if (!vector_extent.equals(""))
+            {
+             if (vector_key.indexOf("SpatialView") != -1)
+             {
+              try { // replace placeholder with used primary-key and read_only parameter of SpatialView
+               String ROWID_PK=getViewRowid(database,table_name,1);
+               vector_key = vector_key.replace("ROWID;-1",ROWID_PK);
+              } finally {
+             }
+            }
+            // one way or another, we have resolved the faulty geometry, add to the valid list
+            spatialVectorMap.put(vector_key,vector_data+vector_extent);
+            if (VECTOR_LAYERS_QUERY_MODE == 2)
+            { // remove from the errors, since they may have been permanently resolved
+             spatialVectorMapErrors.remove(vector_entry.getKey());
+            }
+           }
+          }
+         }
+        }
+       }
+    }
+
+
+
 
     /**
      * Checks the database type and its validity.
-     * 
+     *
      * @param database the database to check.
      * @param spatialVectorMap the {@link HashMap} of Spatialite4+ Vector-data (Views/Tables Geometries) to clear and repopulate.
      * @return the {@link SpatialiteDatabaseType}.
@@ -1236,7 +1472,7 @@ SELECT view_rowid,read_only FROM views_geometry_columns;
         // boolean b_raster_columns = false;
         boolean b_gpkg_contents = false;
         boolean b_geopackage_contents = false;
-        String sqlCommand = "SELECT name,type,sql FROM sqlite_master WHERE ((type='table') OR (type='view')) ORDER BY type DESC,name ASC";   
+        String sqlCommand = "SELECT name,type,sql FROM sqlite_master WHERE ((type='table') OR (type='view')) ORDER BY type DESC,name ASC";
         String tableType = "";
         String sqlCreationString = "";
         String name = "";
@@ -1292,141 +1528,11 @@ SELECT view_rowid,read_only FROM views_geometry_columns;
             return SpatialiteDatabaseType.GEOPACKAGE;
         } else {
             if ((b_vector_layers_statistics) && (b_vector_layers)) { // Spatialite 4.0
-                int i_spatialindex=1;
-                String vector_key=""; // term used when building the sql, used as map.key
-                String vector_data=""; // term used when building the sql
-                String vector_extent=""; // term used when building the sql
-                String vector_value=""; // to retrieve map.value (=vector_data+vector_extent)
-                String table_name="";
-                String geometry_column="";
-                statement = database.prepare(VECTOR_LAYERS_QUERY_EXTENT_INVALID_V4);
-                try 
-                {
-                 while( statement.step() ) 
-                 {
-                  vector_key = statement.column_string(0);
-                  vector_data = statement.column_string(1);
-                  vector_extent = statement.column_string(2);
-                  spatialVectorMapErrors.put(vector_key,vector_data+vector_extent);
-                 }
-                }
-                finally {
-                 if (statement != null) {
-                  statement.close();
-                 }
-                }
-                statement = database.prepare(VECTOR_LAYERS_QUERY_EXTENT_VALID_V4);                 
-                try {
-                 while( statement.step() ) {
-                  i_spatialindex=1;
-                  vector_key = statement.column_string(0);
-                  vector_data = statement.column_string(1);
-                  vector_extent="";
-                  if (vector_key.indexOf("SpatialView") != -1)
-                  { // berlin_1000;map_linestring;SpatialView;ROWID
-                   //Do not call RecoverSpatialIndex for SpatialViews
-                   i_spatialindex=0;
-                   String[] sa_string = name.split(";"); 
-                   // GPLog.androidLog(-1, "DaoSpatialite: checkDatabaseTypeAndValidity vector_key[" + vector_key + "] length["+ sa_string.length + "]");
-                   if (sa_string.length == 4) {                                             
-                    table_name=sa_string[0];
-                    try { // replace placeholder with used primary-key and read_only parameter of SpatialView
-                     String ROWID_PK=getViewRowid(database,table_name);
-                     vector_key = vector_key.replace("ROWID;-1",ROWID_PK);
-                    } finally {
-                    }
-                   }
-                  }
-                  vector_extent = statement.column_string(2);
-                  if (vector_extent != null)
-                  {
-                   spatialVectorMap.put(vector_key,vector_data+vector_extent);
-                  }
-                  else
-                  { //should never happen 
-                    // GPLog.androidLog(-1, "DaoSpatialite: checkDatabaseTypeAndValidity vector_key[" + vector_key + "] vector_data["+ vector_data+"] vector_extent["+ vector_extent + "] VECTOR_LAYERS_QUERY["+ VECTOR_LAYERS_QUERY_EXTENT_VALID + "]");
-                   }
-                 }
-                } finally {
-                if (statement != null) {
-                 statement.close();
-                }
-               }
-               if ((VECTOR_LAYERS_QUERY_MODE > 0) && (spatialVectorMapErrors.size() > 0))
-               { // if empty: there are nothing to correct
-                for( Map.Entry<String, String> vector_entry : spatialVectorMapErrors.entrySet() ) 
-                {
-                 vector_key = vector_entry.getKey();
-                 // soldner_polygon;14;3;2;3068;1;20847.6171111586,18733.613614603,20847.6171111586,18733.613614603
-                 vector_value = vector_entry.getValue();
-                 vector_data="";
-                 String[] sa_string = vector_key.split(";");
-                 if (sa_string.length == 5) 
-                 {
-                  table_name=sa_string[0];
-                  geometry_column=sa_string[1];
-                  String s_layer_type=sa_string[2];
-                  String s_ROWID_PK=sa_string[3];
-                  int i_view_read_only = Integer.parseInt(sa_string[4]);
-                  i_spatialindex=1;
-                  sa_string = vector_data.split(";");
-                  if (sa_string.length == 7) 
-                  {
-                   String s_geometry_type = sa_string[0];
-                   String s_coord_dimension=sa_string[1];
-                   String s_srid=sa_string[2];
-                   int i_spatial_index_enabled=Integer.parseInt(sa_string[3]); // should always be 1                    
-                   vector_data=s_geometry_type+";"+s_coord_dimension+";"+s_srid+";"+sa_string[3]+";"; 
-                   int i_row_count = Integer.parseInt(sa_string[4]);
-                   String s_bounds = sa_string[5];
-                   String s_last_verified=sa_string[6];
-                   if (vector_key.indexOf("SpatialView") == -1)
-                   {
-                    i_spatialindex=0;
-                   }
-                   if ((VECTOR_LAYERS_QUERY_MODE == 1) && (i_spatialindex == 1))
-                   { // we do not try to query the dementions of faulty SpatialView's
-                    vector_extent=SpatialiteRetrieveBounds(database,table_name,geometry_column);                    
-                   }
-                   if (VECTOR_LAYERS_QUERY_MODE == 2)
-                   {
-                    try 
-                    {
-                     /* RecoverSpatialIndex will be done if needed
-                      UpdateLayerStatistics will then be called
-                      afterwhich 2 attemts will be made to return valid result
-                      - if empty: geometry is to be considered invalid 
-                     */
-                     vector_extent=SpatialiteUpdateLayerStatistics(database,table_name,geometry_column,i_spatialindex);
-                    } 
-                    finally 
-                    {
-                    }
-                   }
-                   if (!vector_extent.equals(""))
-                   {
-                    if (vector_key.indexOf("SpatialView") != -1)
-                    {
-                     try { // replace placeholder with used primary-key and read_only parameter of SpatialView
-                     String ROWID_PK=getViewRowid(database,table_name);
-                     vector_key = vector_key.replace("ROWID;-1",ROWID_PK);
-                     } finally {
-                     }
-                    }
-                    // one way or another, we have resolved the faulty geometry, add to the valid list 
-                    spatialVectorMap.put(vector_key,vector_data+vector_extent);
-                    if (VECTOR_LAYERS_QUERY_MODE == 2)
-                    { // remove from the errors, since they may have been permanently resolved
-                     spatialVectorMapErrors.remove(vector_entry.getKey());
-                    }
-                   }
-                  }
-                 }
-                }
-               }
+                getspatialVectorMap_V4(database,spatialVectorMap,spatialVectorMapErrors);
                return SpatialiteDatabaseType.SPATIALITE4;
             } else {
                 if (b_geometry_columns) { // Spatialite before 4.0
+                    getspatialVectorMap_V3(database,spatialVectorMap,spatialVectorMapErrors,b_layers_statistics);
                     return SpatialiteDatabaseType.SPATIALITE3;
                 }
             }
@@ -1437,8 +1543,8 @@ SELECT view_rowid,read_only FROM views_geometry_columns;
 
     /**
      * Determine the Spatialite version of the Database being used.
-     * 
-     * <ul> 
+     *
+     * <ul>
      * <li> - if (sqlite3_exec(this_handle_sqlite3,"SELECT InitSpatialMetadata()",NULL,NULL,NULL) == SQLITE_OK)
      * <li>  - 'geometry_columns'
      * <li>-- SpatiaLite 2.0 until present version
@@ -1451,9 +1557,9 @@ SELECT view_rowid,read_only FROM views_geometry_columns;
      * <li>-- views: vector_layers_statistics,vector_layers
      * <li>-- SpatiaLite 4.0.0 : introduced
      * </ul>
-     * 
+     *
      * <p>20131129: at the moment not possible to distinguish between 2.4.0 and 3.0.0 [no '2']
-     * 
+     *
      * @param database Database connection to use
      * @param table name of table to read [if empty: list of tables in Database]
      * @return i_spatialite_version [0=not a spatialite version ; 1=until 2.3.1 ; 2=until 2.4.0 ; 3=until 3.1.0-RC2 ; 4=after 4.0.0-RC1]
@@ -1467,14 +1573,14 @@ SELECT view_rowid,read_only FROM views_geometry_columns;
         // tables: geometry_columns,raster_columns
 
         /*
-         * false = not a spatialite Database 
+         * false = not a spatialite Database
          * true = a spatialite Database
          */
         boolean b_geometry_columns = false;
 
         /*
-         * 0=not found = pre 2.4.0 ; 
-         * 1=2.4.0 to 3.1.0 ; 
+         * 0=not found = pre 2.4.0 ;
+         * 1=2.4.0 to 3.1.0 ;
          * 2=starting with 4.0.0
          */
         int i_srs_wkt = 0;
@@ -1576,7 +1682,7 @@ SELECT view_rowid,read_only FROM views_geometry_columns;
      *
      * <br>- name of Field
      * <br>- type of field as defined in Database
-     * 
+     *
      * @param database the database to use.
      * @param tableName name of table to read.
      * @return the {@link HashMap} of fields: [name of field, type of field]
