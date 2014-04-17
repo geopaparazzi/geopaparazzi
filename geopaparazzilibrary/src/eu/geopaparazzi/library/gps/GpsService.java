@@ -158,26 +158,6 @@ public class GpsService extends Service implements LocationListener, Listener {
     private boolean isProviderEnabled;
 
     @Override
-    public void onCreate() {
-        super.onCreate();
-        /*
-         * If the startService(intent) method is called and the service is not 
-         * yet running, the service object is created and the onCreate() 
-         * method of the service is called.
-         */
-    }
-
-    @Override
-    public ComponentName startService( Intent service ) {
-        /*
-         * Once the service is started, the startService(intent) method in the 
-         * service is called. It passes in the Intent object from the 
-         * startService(intent) call.
-         */
-        return super.startService(service);
-    }
-
-    @Override
     public int onStartCommand( Intent intent, int flags, int startId ) {
 
         GPLog.addLogEntry(this, "onStartCommand called with intent: " + intent);
@@ -246,25 +226,6 @@ public class GpsService extends Service implements LocationListener, Listener {
         }
 
         return Service.START_REDELIVER_INTENT;
-    }
-
-    @Override
-    public IBinder onBind( Intent intent ) {
-        // TODO for communication return IBinder implementation
-        return null;
-    }
-
-    @Override
-    public boolean stopService( Intent name ) {
-        /*
-         * You stop a service via the stopService() method. No matter how 
-         * frequently you called the startService(intent) method, one call 
-         * to the stopService() method stops the service.
-         * 
-         * A service can terminate itself by calling the stopSelf() method. 
-         * This is typically done if the service finishes its work.
-         */
-        return super.stopService(name);
     }
 
     @Override
@@ -629,7 +590,7 @@ public class GpsService extends Service implements LocationListener, Listener {
             intent.putExtra(GPS_SERVICE_GPSSTATUS_EXTRAS, new int[]{maxSatellites, satCount, satUsedInFixCount});
         }
 
-        if (GPLog.LOG_HEAVY) {
+        if (GPLog.LOG_ABSURD) {
             StringBuilder sb = new StringBuilder();
             sb.append("GPS SERVICE INFO: ").append(message).append("\n");
             sb.append("---------------------------\n");
@@ -648,5 +609,47 @@ public class GpsService extends Service implements LocationListener, Listener {
         }
 
         sendBroadcast(intent);
+    }
+
+    // /////////////////////////////////////////////
+    // UNUSET METHODS
+    // /////////////////////////////////////////////
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        /*
+         * If the startService(intent) method is called and the service is not 
+         * yet running, the service object is created and the onCreate() 
+         * method of the service is called.
+         */
+    }
+
+    @Override
+    public ComponentName startService( Intent service ) {
+        /*
+         * Once the service is started, the startService(intent) method in the 
+         * service is called. It passes in the Intent object from the 
+         * startService(intent) call.
+         */
+        return super.startService(service);
+    }
+
+    @Override
+    public IBinder onBind( Intent intent ) {
+        // TODO for communication return IBinder implementation
+        return null;
+    }
+
+    @Override
+    public boolean stopService( Intent name ) {
+        /*
+         * You stop a service via the stopService() method. No matter how 
+         * frequently you called the startService(intent) method, one call 
+         * to the stopService() method stops the service.
+         * 
+         * A service can terminate itself by calling the stopSelf() method. 
+         * This is typically done if the service finishes its work.
+         */
+        return super.stopService(name);
     }
 }
