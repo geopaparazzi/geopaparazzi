@@ -191,15 +191,19 @@ public class GpsService extends Service implements LocationListener, Listener {
             preferences = PreferenceManager.getDefaultSharedPreferences(this);
             useNetworkPositions = preferences.getBoolean(LibraryConstants.PREFS_KEY_GPS_USE_NETWORK_POSITION, false);
             isMockMode = preferences.getBoolean(LibraryConstants.PREFS_KEY_MOCKMODE, false);
+
+            log("onStartCommand: Preferences created");
         }
         if (locationManager == null) {
             locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             locationManager.addGpsStatusListener(this);
+            isProviderEnabled = isGpsOn();
 
-            log("GpsService started");
+            log("onStartCommand: LocationManager created + GpsService started");
         }
         if (!isListeningForUpdates) {
             registerForLocationUpdates();
+            log("onStartCommand: Registered for location updates");
         }
         if (intent != null) {
             /*
@@ -208,6 +212,7 @@ public class GpsService extends Service implements LocationListener, Listener {
             if (intent.hasExtra(START_GPS_LOGGING)) {
                 boolean startGpsLogging = intent.getBooleanExtra(START_GPS_LOGGING, false);
                 if (startGpsLogging) {
+                    log("onStartCommand: Start GPS logging called");
                     if (!isDatabaseLogging) {
                         String gpsLogName = intent.getStringExtra(START_GPS_LOG_NAME);
                         String gpsLogHelperClass = intent.getStringExtra(START_GPS_LOG_HELPER_CLASS);
@@ -224,15 +229,17 @@ public class GpsService extends Service implements LocationListener, Listener {
             if (intent.hasExtra(STOP_GPS_LOGGING)) {
                 boolean stopGpsLogging = intent.getBooleanExtra(STOP_GPS_LOGGING, false);
                 if (stopGpsLogging) {
+                    log("onStartCommand: Stop GPS logging called");
                     if (isDatabaseLogging) {
                         stopDatabaseLogging();
                     }
                 }
             }
             if (intent.hasExtra(GPS_SERVICE_DO_BROADCAST)) {
+                log("onStartCommand: broadcast trigger");
                 boolean doBroadcast = intent.getBooleanExtra(GPS_SERVICE_DO_BROADCAST, false);
                 if (doBroadcast) {
-                    broadcast();
+                    broadcast("triggered by onStartCommand Intent");
                 }
             }
 
@@ -257,7 +264,12 @@ public class GpsService extends Service implements LocationListener, Listener {
          * A service can terminate itself by calling the stopSelf() method. 
          * This is typically done if the service finishes its work.
          */
+        return super.stopService(name);
+    }
 
+    @Override
+    public void onDestroy() {
+        log("onDestroy Gpsservice.");
         if (isDatabaseLogging) {
             stopDatabaseLogging();
         }
@@ -266,13 +278,11 @@ public class GpsService extends Service implements LocationListener, Listener {
             locationManager.removeUpdates(this);
             locationManager.removeGpsStatusListener(this);
             isListeningForUpdates = false;
-            broadcast();
         }
         if (TestMock.isOn) {
             TestMock.stopMocking(locationManager);
         }
-        log("Gpsservice stopped.");
-        return super.stopService(name);
+        super.onDestroy();
     }
 
     private void stopDatabaseLogging() {
@@ -299,7 +309,7 @@ public class GpsService extends Service implements LocationListener, Listener {
             isListeningForUpdates = true;
             log("registered for updates.");
         }
-        broadcast();
+        broadcast("triggered by registerForLocationUpdates");
     }
 
     private static void log( String msg ) {
@@ -358,7 +368,7 @@ public class GpsService extends Service implements LocationListener, Listener {
             PositionUtilities.putGpsLocationInPreferences(preferences, recLon, recLat, recAlt);
             previousLoc = loc;
 
-            broadcast();
+            broadcast("triggered by onLocationChanged");
         }
     }
 
@@ -373,12 +383,12 @@ public class GpsService extends Service implements LocationListener, Listener {
         if (!isListeningForUpdates) {
             registerForLocationUpdates();
         }
-        broadcast();
+        broadcast("triggered by onProviderEnabled");
     }
 
     public void onProviderDisabled( String provider ) {
         isProviderEnabled = false;
-        broadcast();
+        broadcast("triggered by onProviderDisabled");
     }
 
     public void onGpsStatusChanged( int event ) {
@@ -398,7 +408,7 @@ public class GpsService extends Service implements LocationListener, Listener {
         }
 
         if (tmpGotFix != gotFix) {
-            broadcast();
+            broadcast("triggered by onGpsStatusChanged on fix change: " + gotFix);
         }
         gotFix = tmpGotFix;
         if (!gotFix) {
@@ -568,7 +578,10 @@ public class GpsService extends Service implements LocationListener, Listener {
         Toast.makeText(GpsService.this, R.string.gpsloggingon, Toast.LENGTH_SHORT).show();
     }
 
-    private void broadcast() {
+    /**
+     * @param message a message that can be used for logging.
+     */
+    private void broadcast( String message ) {
         Intent intent = new Intent(GPS_SERVICE_BROADCAST_NOTIFICATION);
 
         int status = 0; // gps off
@@ -586,25 +599,54 @@ public class GpsService extends Service implements LocationListener, Listener {
             intent.putExtra(GPS_SERVICE_CURRENT_LOG_ID, currentRecordedLogId);
         }
         intent.putExtra(GPS_SERVICE_GPSSTATUS, status);
+        double lon = -1;
+        double lat = -1;
+        double elev = -1;
+        float accuracy = -1;
+        float speed = -1;
+        float bearing = -1;
+        long time = -1;
         if (lastGpsLocation != null) {
-            double lon = lastGpsLocation.getLongitude();
-            double lat = lastGpsLocation.getLatitude();
-            double elev = lastGpsLocation.getAltitude();
+            lon = lastGpsLocation.getLongitude();
+            lat = lastGpsLocation.getLatitude();
+            elev = lastGpsLocation.getAltitude();
             intent.putExtra(GPS_SERVICE_POSITION, new double[]{lon, lat, elev});
-            float accuracy = lastGpsLocation.getAccuracy();
-            float speed = lastGpsLocation.getSpeed();
-            float bearing = lastGpsLocation.getBearing();
+            accuracy = lastGpsLocation.getAccuracy();
+            speed = lastGpsLocation.getSpeed();
+            bearing = lastGpsLocation.getBearing();
             intent.putExtra(GPS_SERVICE_POSITION_EXTRAS, new float[]{accuracy, speed, bearing});
-            long time = lastGpsLocation.getTime();
+            time = lastGpsLocation.getTime();
             intent.putExtra(GPS_SERVICE_POSITION_TIME, time);
         }
+        int maxSatellites = -1;
+        int satCount = -1;
+        int satUsedInFixCount = -1;
         if (mStatus != null) {
             GpsStatusInfo info = new GpsStatusInfo(mStatus);
-            int maxSatellites = info.getMaxSatellites();
-            int satCount = info.getSatCount();
-            int satUsedInFixCount = info.getSatUsedInFixCount();
+            maxSatellites = info.getMaxSatellites();
+            satCount = info.getSatCount();
+            satUsedInFixCount = info.getSatUsedInFixCount();
             intent.putExtra(GPS_SERVICE_GPSSTATUS_EXTRAS, new int[]{maxSatellites, satCount, satUsedInFixCount});
         }
+
+        if (GPLog.LOG_HEAVY) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("GPS SERVICE INFO: ").append(message).append("\n");
+            sb.append("---------------------------\n");
+            sb.append("gps status=").append(GpsServiceStatus.getStatusForCode(status)).append("(" + status).append(")\n");
+            sb.append("lon=").append(lon).append("\n");
+            sb.append("lat=").append(lat).append("\n");
+            sb.append("elev=").append(elev).append("\n");
+            sb.append("accuracy=").append(accuracy).append("\n");
+            sb.append("speed=").append(speed).append("\n");
+            sb.append("bearing=").append(bearing).append("\n");
+            sb.append("time=").append(time).append("\n");
+            sb.append("maxSatellites=").append(maxSatellites).append("\n");
+            sb.append("satCount=").append(satCount).append("\n");
+            sb.append("satUsedInFix=").append(satUsedInFixCount).append("\n");
+            log(sb.toString());
+        }
+
         sendBroadcast(intent);
     }
 }
