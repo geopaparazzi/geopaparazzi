@@ -3,7 +3,7 @@
     package="eu.hydrologis.geopaparazzi"
     android:installLocation="auto"
     android:versionCode="56"
-    android:versionName="3.9.5" >
+    android:versionName="3.9.5" xmlns:tools="http://schemas.android.com/tools">
 
     <!-- permissions -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -17,7 +17,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.BATTERY_STATS" />
-    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" >
+    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" tools:ignore="MockLocation">
     </uses-permission>
 
     <uses-feature

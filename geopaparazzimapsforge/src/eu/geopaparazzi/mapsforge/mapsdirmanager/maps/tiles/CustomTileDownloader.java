@@ -767,8 +767,10 @@ public class CustomTileDownloader extends TileDownloader {
             sb.append(s_host_name);
             sb.append(tilePath);
             // GPLog.androidLog(-1,"CustomTileDownloader.executeJob: name["+getName()+"] host_name["+s_host_name+"] tilePath["+tilePath+"] ");
-            if (isFile)
-                GPLog.androidLog(-1, "CustomTileDownloader.executeJob: request[" + sb.toString() + "] ");
+            if (isFile) {
+                if (GPLog.LOG_ABSURD)
+                    GPLog.androidLog(-1, "CustomTileDownloader.executeJob: request[" + sb.toString() + "] ");
+            }
             Bitmap decodedBitmap = null;
 
             Context context = GeopaparazziLibraryContextHolder.INSTANCE.getContext();

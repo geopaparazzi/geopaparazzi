@@ -331,6 +331,8 @@ public class GPLog {
     * @param exception result of Log.getStackTraceString(exception) will be added to the message.
     */
     public static void androidLog( int logLevel, String message, Throwable exception ) {
+        if (!LOG_ANDROID)
+            return;
         if (exception != null) {
             message += "\n" + Log.getStackTraceString(exception);
         }
@@ -353,6 +355,8 @@ public class GPLog {
     * @param message message text to be shown in logcat.
     */
     public static void androidLog( int logLevel, String message ) {
+        if (!LOG_ANDROID)
+            return;
         if (logLevel < 0)
             logLevel = GLOBAL_LOG_LEVEL;
         if (GLOBAL_LOG_TAG == null || GLOBAL_LOG_TAG.length() == 0)
