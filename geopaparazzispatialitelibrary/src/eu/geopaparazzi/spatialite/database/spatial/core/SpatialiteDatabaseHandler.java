@@ -288,7 +288,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
         if (propertiesTableColumnCount == 0) {
             DaoSpatialite.createPropertiesTable(db_java);
             for( SpatialVectorTable spatialTable : vectorTableList ) {
-                DaoSpatialite.createDefaultPropertiesForTable(db_java, spatialTable.getUniqueNameBasedOnDbFilePath());
+                DaoSpatialite.createDefaultPropertiesForTable(db_java, spatialTable.getUniqueNameBasedOnDbFilePath(),spatialTable.getLabelField());
             }
         }
     }
@@ -1097,7 +1097,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                 for( SpatialVectorTable spatialTable : vectorTableList ) {
                     Style style4Table = null;
                     try {
-                        style4Table = DaoSpatialite.getStyle4Table(db_java, spatialTable.getUniqueNameBasedOnDbFilePath());
+                        style4Table = DaoSpatialite.getStyle4Table(db_java, spatialTable.getUniqueNameBasedOnDbFilePath(),spatialTable.getLabelField());
                     } catch (java.lang.Exception e) {
                         DaoSpatialite.deleteStyleTable(db_java);
                         checkPropertiesTable();
@@ -1134,7 +1134,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
         DaoSpatialite.deleteStyleTable(db_java);
         DaoSpatialite.createPropertiesTable(db_java);
         for( SpatialVectorTable spatialTable : vectorTableList ) {
-            DaoSpatialite.createDefaultPropertiesForTable(db_java, spatialTable.getUniqueNameBasedOnDbFilePath());
+            DaoSpatialite.createDefaultPropertiesForTable(db_java, spatialTable.getUniqueNameBasedOnDbFilePath(),spatialTable.getLabelField());
         }
     }
 

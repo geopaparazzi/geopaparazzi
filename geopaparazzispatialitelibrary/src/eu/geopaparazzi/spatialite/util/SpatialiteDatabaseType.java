@@ -19,16 +19,22 @@ package eu.geopaparazzi.spatialite.util;
 
 /**
  * Spatialite database types with descriptions and codes.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
 public enum SpatialiteDatabaseType {
     // * <li>10 == GeoPackage
+    // * <li>2 == spatialite 2
     // * <li>3 == spatialite 3
     // * <li>4 == spatialite 4
     /**
-     * spatialite 3 database.
+     * spatialite 2.0 - 2.3 database.
+     * prevents IllegalArgumentException
+     */
+    SPATIALITE2("Spatialite 2", 2),
+    /**
+     * spatialite 2.4 and 3 database.
      */
     SPATIALITE3("Spatialite 3", 3),
     /**
@@ -44,7 +50,7 @@ public enum SpatialiteDatabaseType {
     private int code;
 
     /**
-     * @param name a name for the db type. 
+     * @param name a name for the db type.
      * @param code a code for the db type.
      */
     private SpatialiteDatabaseType( String name, int code ) {
@@ -54,7 +60,7 @@ public enum SpatialiteDatabaseType {
 
     /**
      * Get the type for a given code.
-     * 
+     *
      * @param code the code.
      * @return the data type.
      */
@@ -69,7 +75,7 @@ public enum SpatialiteDatabaseType {
 
     /**
      * Get the type for a given name.
-     * 
+     *
      * @param name the name.
      * @return the data type.
      */
@@ -84,7 +90,7 @@ public enum SpatialiteDatabaseType {
 
     /**
      * Get the code for a given name.
-     * 
+     *
      * @param name the name.
      * @return the code.
      */
