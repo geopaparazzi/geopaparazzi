@@ -421,7 +421,6 @@ public class GpsService extends Service implements LocationListener, Listener {
 
                     currentPointsNum = 0;
                     currentDistance = 0;
-                    previousLoc = null;
                     while( isDatabaseLogging ) {
                         if (gotFix || isMockMode) {
                             if (lastGpsLocation == null) {
@@ -430,13 +429,14 @@ public class GpsService extends Service implements LocationListener, Listener {
                                 }
                                 continue;
                             }
-                            if (previousLoc == null) {
-                                previousLoc = lastGpsLocation;
+                            if (lastGpsLocation.getPreviousLoc() == null) {
+                                continue;
                             }
                             double recLon = lastGpsLocation.getLongitude();
                             double recLat = lastGpsLocation.getLatitude();
                             double recAlt = lastGpsLocation.getAltitude();
-                            double lastDistance = previousLoc.distanceTo(lastGpsLocation);
+
+                            double lastDistance = lastGpsLocation.distanceToPrevious();
                             if (GPLog.LOG_ABSURD) {
                                 StringBuilder sb = new StringBuilder();
                                 sb.append("gpsloc: ");
@@ -444,11 +444,13 @@ public class GpsService extends Service implements LocationListener, Listener {
                                 sb.append("/");
                                 sb.append(lastGpsLocation.getLongitude());
                                 sb.append("\n");
-                                sb.append("previousLoc: ");
-                                sb.append(previousLoc.getLatitude());
-                                sb.append("/");
-                                sb.append(previousLoc.getLongitude());
-                                sb.append("\n");
+                                if (lastGpsLocation.getPreviousLoc() != null) {
+                                    sb.append("previousLoc: ");
+                                    sb.append(lastGpsLocation.getPreviousLoc().getLatitude());
+                                    sb.append("/");
+                                    sb.append(lastGpsLocation.getPreviousLoc().getLongitude());
+                                    sb.append("\n");
+                                }
                                 sb.append("distance: ");
                                 sb.append(lastDistance);
                                 sb.append(" - mindistance: ");
@@ -473,7 +475,6 @@ public class GpsService extends Service implements LocationListener, Listener {
                             }
                             currentPointsNum++;
                             currentDistance = currentDistance + lastDistance;
-                            previousLoc = lastGpsLocation;
                         }
                         if (!holdABitAndCheckLogging(waitForSecs)) {
                             break;
@@ -551,10 +552,12 @@ public class GpsService extends Service implements LocationListener, Listener {
         if (isProviderEnabled && isListeningForUpdates && !gotFix) {
             status = 2; // listening for updates but has no fix
         }
-        if ((isProviderEnabled && isListeningForUpdates && gotFix) || isMockMode) {
+        if ((isProviderEnabled && isListeningForUpdates && gotFix) //
+                || isMockMode) {
             status = 3; // listening for updates and has fix
         }
-        if (isProviderEnabled && isListeningForUpdates && gotFix && isDatabaseLogging) {
+        if ((isProviderEnabled && isListeningForUpdates && gotFix && isDatabaseLogging) //
+                || (isDatabaseLogging && isMockMode)) {
             status = 4; // logging to database
             intent.putExtra(GPS_SERVICE_CURRENT_LOG_ID, currentRecordedLogId);
         }

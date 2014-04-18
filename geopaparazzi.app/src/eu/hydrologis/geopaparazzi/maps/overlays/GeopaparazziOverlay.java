@@ -398,9 +398,11 @@ public abstract class GeopaparazziOverlay extends Overlay {
      *
      * @param position the {@link GeoPoint}.
      * @param accuracy the accuracy.
+     * @param gpsServiceStatus the gps status as defined by {@link GpsService#GPS_SERVICE_GPSSTATUS}.
      */
     @SuppressWarnings("nls")
-    public void setGpsPosition( GeoPoint position, float accuracy ) {
+    public void setGpsPosition( GeoPoint position, float accuracy, GpsServiceStatus gpsServiceStatus ) {
+        this.gpsServiceStatus = gpsServiceStatus;
         if (gpsServiceStatus == GpsServiceStatus.GPS_DATABASELOGGING) {
             currentGpsLog.add(position);
         } else {
@@ -412,15 +414,6 @@ public abstract class GeopaparazziOverlay extends Overlay {
         if (position != null) {
             overlayGps.setCircleData(position, accuracy);
         }
-    }
-
-    /**
-     * Tells the overlay if it is logging to database.
-     * 
-     * @param gpsServiceStatus the gps status as defined by {@link GpsService#GPS_SERVICE_GPSSTATUS}.
-     */
-    public void setGpsStatus( GpsServiceStatus gpsServiceStatus ) {
-        this.gpsServiceStatus = gpsServiceStatus;
     }
 
     /**
