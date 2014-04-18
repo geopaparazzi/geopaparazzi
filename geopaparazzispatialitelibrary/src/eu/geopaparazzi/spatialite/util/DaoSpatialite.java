@@ -1385,6 +1385,7 @@ public class DaoSpatialite {
      */
     public static void getSpatialVectorMap_V3( Database database, HashMap<String, String> spatialVectorMap , HashMap<String, String> spatialVectorMapErrors, boolean b_layers_statistics ) throws Exception {
         int i_spatialindex=1;
+        GPLog.androidLog(-1,"-I-> DaoSpatialite: getSpatialVectorMap_V3["+database.getFilename()+"] UpdateLayerStatistics["+i_spatialindex+"] b_layers_statistics["+b_layers_statistics+"] ");
         if (!b_layers_statistics)
         { // if layers_statistics does not exist a UpdateLayerStatistics() is needed for the whole Database
          SpatialiteUpdateLayerStatistics(database,"","",0,SpatialiteDatabaseType.SPATIALITE3);
@@ -1392,7 +1393,7 @@ public class DaoSpatialite {
          { // if this fails then we may have to consider this Database invalid
          }
         }
-        GPLog.androidLog(-1,"DaoSpatialite: getSpatialVectorMap_V3["+database.getFilename()+"] UpdateLayerStatistics["+i_spatialindex+"] b_layers_statistics["+b_layers_statistics+"] ");
+
         i_spatialindex=1;
         String vector_key=""; // term used when building the sql, used as map.key
         String vector_data=""; // term used when building the sql
@@ -1465,7 +1466,7 @@ public class DaoSpatialite {
           }
           else
           { //should never happen
-            // GPLog.androidLog(-1, "DaoSpatialite: getSpatialVectorMap_V3 vector_key[" + vector_key + "] vector_data["+ vector_data+"] vector_extent["+  vector_extent + "] VIEWS_QUERY_EXTENT_VALID_V3["+ VIEWS_QUERY_EXTENT_VALID_V3 + "]");
+            GPLog.androidLog(-1, "-E-> DaoSpatialite: getSpatialVectorMap_V3 vector_key[" + vector_key + "] vector_data["+ vector_data+"] vector_extent["+  vector_extent + "] VIEWS_QUERY_EXTENT_VALID_V3["+ VIEWS_QUERY_EXTENT_VALID_V3 + "]");
           }
          }
         } finally {
@@ -1488,7 +1489,7 @@ public class DaoSpatialite {
           }
           else
           { //should never happen
-            // GPLog.androidLog(-1, "DaoSpatialite: getSpatialVectorMap_V3 vector_key[" + vector_key + "] vector_data["+ vector_data+"] vector_extent["+  vector_extent + "] LAYERS_QUERY_EXTENT_VALID_V3["+ LAYERS_QUERY_EXTENT_VALID_V3 + "]");
+            GPLog.androidLog(-1, "-E-> DaoSpatialite: getSpatialVectorMap_V3 vector_key[" + vector_key + "] vector_data["+ vector_data+"] vector_extent["+  vector_extent + "] LAYERS_QUERY_EXTENT_VALID_V3["+ LAYERS_QUERY_EXTENT_VALID_V3 + "]");
           }
          }
         } finally {
