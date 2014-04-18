@@ -244,8 +244,8 @@ public class DaoBookmarks {
                 double lon = c.getDouble(0);
                 double lat = c.getDouble(1);
                 String text = c.getString(2);
-
-                OverlayItem bookmark = new OverlayItem(new GeoPoint(lat, lon), text, null, marker);
+                text = text + "\n";
+                OverlayItem bookmark = new OverlayItem(new GeoPoint(lat, lon), null, text, marker);
                 bookmarks.add(bookmark);
                 c.moveToNext();
             }

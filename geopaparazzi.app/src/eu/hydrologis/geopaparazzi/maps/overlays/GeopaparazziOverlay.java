@@ -1123,7 +1123,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
             int lonE6 = position.longitudeE6;
             float lat = latE6 / LibraryConstants.E6;
             float lon = lonE6 / LibraryConstants.E6;
-            if (title.toLowerCase().endsWith("jpg") || title.toLowerCase().endsWith("png")) { //$NON-NLS-1$ //$NON-NLS-2$
+            if (title != null && (title.toLowerCase().endsWith("jpg") || title.toLowerCase().endsWith("png"))) { //$NON-NLS-1$ //$NON-NLS-2$
                 Intent intent = new Intent();
                 intent.setAction(android.content.Intent.ACTION_VIEW);
                 File absolutePath = new File(title);
@@ -1177,7 +1177,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     StringBuilder sb = new StringBuilder();
                     if (snippet != null && snippet.length() > 0) {
                         sb.append(snippet);
-                        sb.append("\n\n"); //$NON-NLS-1$
+                        sb.append("\n"); //$NON-NLS-1$
                     }
 
                     String latStr = context.getString(R.string.lat);

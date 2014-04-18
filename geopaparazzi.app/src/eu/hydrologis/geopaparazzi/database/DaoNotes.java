@@ -315,7 +315,7 @@ public class DaoNotes {
 
             StringBuilder description = new StringBuilder();
             description.append(text);
-            description.append("\n");
+            description.append("\n\n");
             description.append(date);
 
             NoteOverlayItem item1 = new NoteOverlayItem(new GeoPoint(lat, lon), text, description.toString(), marker);
