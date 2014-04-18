@@ -1506,6 +1506,7 @@ public class DaoSpatialite {
         String vector_value=""; // to retrieve map.value (=vector_data+vector_extent)
         String table_name="";
         String geometry_column="";
+        int i_spatial_index_enabled=0;
         // for pre-Spatialite : Views and Table must be done in 2 steps
         // First Views
         Stmt statement = null;
@@ -1552,15 +1553,19 @@ public class DaoSpatialite {
         try {
          statement = database.prepare(VIEWS_QUERY_EXTENT_VALID_V3);
          while( statement.step() ) {
-          i_spatialindex=1;
+          i_spatial_index_enabled=0;
           vector_key = statement.column_string(0);
           vector_data = statement.column_string(1);
+          String[] sa_string = vector_data.split(";");
+          if (sa_string.length == 4)
+          {
+           i_spatial_index_enabled=Integer.parseInt(sa_string[3]); // should always be 1
+          }
           vector_extent="";
           if (vector_key.indexOf("SpatialView") != -1)
           { // berlin_1000;map_linestring;SpatialView;ROWID
            //Do not call RecoverSpatialIndex for SpatialViews
-           i_spatialindex=0;
-           String[] sa_string = vector_key.split(";");
+           sa_string = vector_key.split(";");
            GPLog.androidLog(-1, "DaoSpatialite: getSpatialVectorMap_V3 vector_key[" + vector_key + "] length["+ sa_string.length + "]");
            if (sa_string.length == 5) {
             table_name=sa_string[0];
@@ -1572,7 +1577,7 @@ public class DaoSpatialite {
            }
           }
           vector_extent = statement.column_string(2);
-          if (vector_extent != null)
+          if ((vector_extent != null) && (i_spatial_index_enabled == 1))
           {
            spatialVectorMap.put(vector_key,vector_data+vector_extent);
            GPLog.androidLog(-1, "-I-> DaoSpatialite: getSpatialVectorMap_V3[views] vector_key[" + vector_key + "] vector_data["+ vector_data+"] vector_extent["+  vector_extent + "] ");
@@ -1595,12 +1600,17 @@ public class DaoSpatialite {
         try {
          statement = database.prepare(LAYERS_QUERY_EXTENT_VALID_V3);
          while( statement.step() ) {
-          i_spatialindex=1;
+          i_spatial_index_enabled=0;
           vector_key = statement.column_string(0);
           vector_data = statement.column_string(1);
+          String[] sa_string = vector_data.split(";");
+          if (sa_string.length == 4)
+          {
+           i_spatial_index_enabled=Integer.parseInt(sa_string[3]); // should always be 1
+          }
           vector_extent="";
           vector_extent = statement.column_string(2);
-          if (vector_extent != null)
+          if ((vector_extent != null) && (i_spatial_index_enabled == 1))
           {
            spatialVectorMap.put(vector_key,vector_data+vector_extent);
            GPLog.androidLog(-1, "-I-> DaoSpatialite: getSpatialVectorMap_V3[tables] vector_key[" + vector_key + "] vector_data["+ vector_data+"] vector_extent["+  vector_extent + "] ");
@@ -1644,6 +1654,7 @@ public class DaoSpatialite {
         String vector_value=""; // to retrieve map.value (=vector_data+vector_extent)
         String table_name="";
         String geometry_column="";
+        int i_spatial_index_enabled=0;
         Stmt statement = null;
         try
         {
@@ -1667,15 +1678,19 @@ public class DaoSpatialite {
         try {
          statement = database.prepare(VECTOR_LAYERS_QUERY_EXTENT_VALID_V4);
          while( statement.step() ) {
-          i_spatialindex=1;
+          i_spatial_index_enabled=0;
           vector_key = statement.column_string(0);
           vector_data = statement.column_string(1);
+          String[] sa_string = vector_data.split(";");
+          if (sa_string.length == 4)
+          {
+           i_spatial_index_enabled=Integer.parseInt(sa_string[3]); // should always be 1
+          }
           vector_extent="";
           if (vector_key.indexOf("SpatialView") != -1)
           { // berlin_1000;map_linestring;SpatialView;ROWID
            //Do not call RecoverSpatialIndex for SpatialViews
-           i_spatialindex=0;
-           String[] sa_string = vector_key.split(";");
+           sa_string = vector_key.split(";");
            GPLog.androidLog(-1, "DaoSpatialite: getSpatialVectorMap_V4 vector_key[" + vector_key + "] length["+ sa_string.length + "]");
            if (sa_string.length == 5) {
             table_name=sa_string[0];
@@ -1687,7 +1702,7 @@ public class DaoSpatialite {
            }
           }
           vector_extent = statement.column_string(2);
-          if (vector_extent != null)
+          if ((vector_extent != null) && (i_spatial_index_enabled == 1))
           {
            spatialVectorMap.put(vector_key,vector_data+vector_extent);
           }
