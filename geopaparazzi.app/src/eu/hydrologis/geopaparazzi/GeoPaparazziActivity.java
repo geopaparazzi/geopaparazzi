@@ -527,7 +527,7 @@ public class GeoPaparazziActivity extends Activity {
         switch( id ) {
         case R.id.dashboard_note_item_button: {
             boolean isValid = false;
-            if (gpsServiceStatus == GpsServiceStatus.GPS_FIX) {
+            if (gpsServiceStatus.getCode() >= GpsServiceStatus.GPS_FIX.getCode()) {
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
                 double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
                 if (gpsLocation != null) {
