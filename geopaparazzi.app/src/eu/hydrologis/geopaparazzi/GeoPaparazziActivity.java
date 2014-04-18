@@ -120,7 +120,9 @@ public class GeoPaparazziActivity extends Activity {
     private SlidingDrawer slidingDrawer;
     private ProgressDialog initMapsdirDialog;
     private BroadcastReceiver gpsServiceBroadcastReceiver;
-    private GpsServiceStatus gpsServiceStatus = GpsServiceStatus.GPS_OFF;
+    private GpsServiceStatus lastGpsServiceStatus = GpsServiceStatus.GPS_OFF;
+
+    private static boolean checkedGps = false;
 
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
@@ -128,6 +130,7 @@ public class GeoPaparazziActivity extends Activity {
         GpsServiceUtilities.startGpsService(this);
         gpsServiceBroadcastReceiver = new BroadcastReceiver(){
             public void onReceive( Context context, Intent intent ) {
+                checkFirstTimeGps(context);
                 onGpsServiceUpdate(intent);
             }
         };
@@ -378,7 +381,7 @@ public class GeoPaparazziActivity extends Activity {
                 push(logButtonId, v);
             }
         });
-        if (gpsServiceStatus == GpsServiceStatus.GPS_DATABASELOGGING) {
+        if (lastGpsServiceStatus == GpsServiceStatus.GPS_DATABASELOGGING) {
             logButton.setImageResource(R.drawable.dashboard_stop_log_item);
         } else {
             logButton.setImageResource(R.drawable.dashboard_log_item);
@@ -527,7 +530,7 @@ public class GeoPaparazziActivity extends Activity {
         switch( id ) {
         case R.id.dashboard_note_item_button: {
             boolean isValid = false;
-            if (gpsServiceStatus.getCode() >= GpsServiceStatus.GPS_FIX.getCode()) {
+            if (lastGpsServiceStatus.getCode() >= GpsServiceStatus.GPS_FIX.getCode()) {
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
                 double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
                 if (gpsLocation != null) {
@@ -563,7 +566,7 @@ public class GeoPaparazziActivity extends Activity {
         }
         case R.id.dashboard_log_item_button: {
             final GeopaparazziApplication appContext = GeopaparazziApplication.getInstance();
-            if (gpsServiceStatus == GpsServiceStatus.GPS_DATABASELOGGING) {
+            if (lastGpsServiceStatus == GpsServiceStatus.GPS_DATABASELOGGING) {
                 Utilities.yesNoMessageDialog(GeoPaparazziActivity.this, getString(R.string.do_you_want_to_stop_logging),
                         new Runnable(){
                             public void run() {
@@ -581,7 +584,7 @@ public class GeoPaparazziActivity extends Activity {
             } else {
                 // start logging
                 final Context context = this;
-                if (gpsServiceStatus == GpsServiceStatus.GPS_FIX) {
+                if (lastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
                     final String defaultLogName = "log_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()); //$NON-NLS-1$
 
                     Utilities.inputMessageDialog(context, getString(R.string.gps_log), getString(R.string.gps_log_name),
@@ -882,6 +885,7 @@ public class GeoPaparazziActivity extends Activity {
         } catch (Exception e1) {
             e1.printStackTrace();
         } finally {
+            checkedGps = false;
             super.finish();
         }
     }
@@ -1021,16 +1025,27 @@ public class GeoPaparazziActivity extends Activity {
     }
 
     private void onGpsServiceUpdate( Intent intent ) {
-        gpsServiceStatus = GpsServiceUtilities.getGpsServiceStatus(intent);
+        lastGpsServiceStatus = GpsServiceUtilities.getGpsServiceStatus(intent);
         lastGpsPosition = GpsServiceUtilities.getPosition(intent);
         float[] lastGpsPositionExtras = GpsServiceUtilities.getPositionExtras(intent);
         int[] lastGpsStatusExtras = GpsServiceUtilities.getGpsStatusExtras(intent);
         long lastPositiontime = GpsServiceUtilities.getPositionTime(intent);
-        actionBar.setStatus(gpsServiceStatus, lastGpsPosition, lastGpsPositionExtras, lastGpsStatusExtras, lastPositiontime);
-        if (lastGpsPosition == null) {
-            return;
+        actionBar.setStatus(lastGpsServiceStatus, lastGpsPosition, lastGpsPositionExtras, lastGpsStatusExtras, lastPositiontime);
+    }
+
+    private void checkFirstTimeGps( Context context ) {
+        if (!checkedGps) {
+            checkedGps = true;
+            if (lastGpsServiceStatus == GpsServiceStatus.GPS_OFF) {
+                String prompt = getResources().getString(R.string.prompt_gpsenable);
+                Utilities.yesNoMessageDialog(context, prompt, new Runnable(){
+                    public void run() {
+                        Intent gpsOptionsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(gpsOptionsIntent);
+                    }
+                }, null);
+            }
         }
-        // float[] lastGpsPositionExtras = GpsService.getPositionExtras(intent);
     }
 
 }
