@@ -158,7 +158,7 @@ public class CustomTileDownloader extends TileDownloader {
         mapurlMetadata = new LinkedHashMap<String, String>();
         mbtilesMetadataMap = new LinkedHashMap<String, String>();
         mbtilesRequestUrl = new LinkedHashMap<String, String>();
-        if (GPLog.LOG_HEAVY) {
+        if (GPLog.LOG_ABSURD) {
             StringBuilder sb = new StringBuilder();
             sb.append("CustomTileDownloader called with:\n");
             sb.append("parentPath: ");

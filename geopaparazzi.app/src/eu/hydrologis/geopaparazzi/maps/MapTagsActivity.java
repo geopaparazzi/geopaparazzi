@@ -229,11 +229,10 @@ public class MapTagsActivity extends Activity {
     }
 
     @Override
-    protected void onStop() {
+    protected void onDestroy() {
         if (broadcastReceiver != null)
             GpsServiceUtilities.unregisterFromBroadcasts(this, broadcastReceiver);
-
-        super.onStop();
+        super.onDestroy();
     }
 
     private void checkPositionCoordinates() {

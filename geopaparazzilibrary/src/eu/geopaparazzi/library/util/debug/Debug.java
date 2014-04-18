@@ -17,7 +17,6 @@
  */
 package eu.geopaparazzi.library.util.debug;
 
-
 /**
  * Small interface to get hold of all debug possibilities in one place. 
  * 
@@ -31,13 +30,6 @@ public class Debug {
      * <p>For release = <code>false</code>.
      */
     public final static boolean D = false;
-
-    /**
-     * Flag to define the use of mock locations instead of the gps.
-     * 
-     * <p>For release = <code>false</code>.
-     */
-    public final static boolean doMock = false;
 
     /**
      * Flag to define normal drawing of renderers, as opposed to drawing some debug info.

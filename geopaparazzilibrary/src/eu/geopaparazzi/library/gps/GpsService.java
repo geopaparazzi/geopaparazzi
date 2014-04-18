@@ -42,7 +42,6 @@ import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
-import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.library.util.debug.TestMock;
 
 /**
@@ -160,7 +159,7 @@ public class GpsService extends Service implements LocationListener, Listener {
     @Override
     public int onStartCommand( Intent intent, int flags, int startId ) {
 
-        GPLog.addLogEntry(this, "onStartCommand called with intent: " + intent);
+        // GPLog.addLogEntry(this, "onStartCommand called with intent: " + intent);
 
         /*
          * If startService(intent) is called while the service is running, 
@@ -254,7 +253,7 @@ public class GpsService extends Service implements LocationListener, Listener {
      * Starts listening to the gps provider.
      */
     private void registerForLocationUpdates() {
-        if (Debug.doMock || isMockMode) {
+        if (isMockMode) {
             log("Gps started using Mock locations");
             TestMock.startMocking(locationManager, this);
             isListeningForUpdates = true;
@@ -552,7 +551,7 @@ public class GpsService extends Service implements LocationListener, Listener {
         if (isProviderEnabled && isListeningForUpdates && !gotFix) {
             status = 2; // listening for updates but has no fix
         }
-        if (isProviderEnabled && isListeningForUpdates && gotFix) {
+        if ((isProviderEnabled && isListeningForUpdates && gotFix) || isMockMode) {
             status = 3; // listening for updates and has fix
         }
         if (isProviderEnabled && isListeningForUpdates && gotFix && isDatabaseLogging) {
