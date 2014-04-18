@@ -18,6 +18,7 @@
 package eu.geopaparazzi.library.util;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -92,4 +93,15 @@ public enum TimeUtilities {
         EXIFFORMATTER.setTimeZone(TimeZone.getTimeZone(UTC));
     }
 
+    /**
+     * Converts a utc time string to local time.
+     * 
+     * @param dateTime the date time string.
+     * @return the local time string.
+     * @throws Exception if something goes wrong.
+     */
+    public static String utcToLocalTime( String dateTime ) throws Exception {
+        Date date = TimeUtilities.INSTANCE.TIME_FORMATTER_UTC.parse(dateTime);
+        return TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(date);
+    }
 }

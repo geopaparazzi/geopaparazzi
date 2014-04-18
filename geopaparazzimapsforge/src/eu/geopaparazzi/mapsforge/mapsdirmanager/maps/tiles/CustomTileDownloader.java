@@ -151,7 +151,7 @@ public class CustomTileDownloader extends TileDownloader {
         }
         // parentPath = '/mnt/sdcard/maps' : this will be appended to all pathis given in the
         // 'mapurl' file
-        double[] bounds = {-180.0, -85.05113, 180, 85.05113};
+        double[] bounds = new double[]{-180.0, -85.05113, 180, 85.05113};
         double[] center = {0.0, 0.0};
         double[] request_bounds = new double[]{0.0, 0.0, 0.0, 0.0};
         mbtilesFilePath = "";
@@ -159,11 +159,16 @@ public class CustomTileDownloader extends TileDownloader {
         mbtilesMetadataMap = new LinkedHashMap<String, String>();
         mbtilesRequestUrl = new LinkedHashMap<String, String>();
         if (GPLog.LOG_HEAVY) {
-            GPLog.addLogEntry("CustomTileDownloader called with:");
-            GPLog.addLogEntry("parentPath: " + parentPath);
+            StringBuilder sb = new StringBuilder();
+            sb.append("CustomTileDownloader called with:\n");
+            sb.append("parentPath: ");
+            sb.append(parentPath);
+            sb.append("\n");
             for( String fileLine : fileLines ) {
-                GPLog.addLogEntry("-> " + fileLine);
+                sb.append("-> " + fileLine);
+                sb.append("\n");
             }
+            GPLog.addLogEntry(sb.toString());
         }
 
         for( String line : fileLines ) {

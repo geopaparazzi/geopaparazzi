@@ -46,6 +46,7 @@ import eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity;
 import eu.geopaparazzi.library.webproject.WebProjectsListActivity;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
+import eu.hydrologis.geopaparazzi.tantomapurls.TantoMapurlsActivity;
 
 /**
  * Activity for export tasks.
@@ -66,6 +67,14 @@ public class ImportActivity extends Activity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+        });
+        ImageButton tantoMapurlsImportButton = (ImageButton) findViewById(R.id.tantoMapurlsImportButton);
+        tantoMapurlsImportButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick( View v ) {
+                Intent browseIntent = new Intent(ImportActivity.this, TantoMapurlsActivity.class);
+                startActivity(browseIntent);
+                finish();
             }
         });
         ImageButton cloudImportButton = (ImageButton) findViewById(R.id.cloudImportButton);

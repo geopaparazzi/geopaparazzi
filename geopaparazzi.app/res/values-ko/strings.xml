@@ -197,11 +197,23 @@
   <string name="other">기타</string>
   <string name="base_maps">Spatialite 데이터 목록</string>
   <string name="maps_manager">지도 관리자</string>
-  <string name="loading_maps">지도 불러오는 중...</string>
+  <string name="loading_maps">지도 불러오는중...</string>
+  <!--ellipsis character instead of three dots-->
   <string name="project">프로젝트</string>
   <string name="gps_status">GPS 상태</string>
   <string name="no_queriable_layer_is_visible">쿼리가능한 레이어가 없습니다.</string>
   <string name="set_path_manually">수동으로 경로를 설정(설정하면 콤보박스에 우선순위로 표시)</string>
   <string name="choose_from_suggested">또는 제안된 목록에서 선택</string>
   <string name="reset_style_tables">스타일 테이블 초기화</string>
+  <string name="menu_button">메뉴 버튼</string>
+  <string name="track_length">트랙 길이:</string>
+  <string name="gpslog_updateLogLength">갱신</string>
+  <string name="do_you_want_to_stop_logging">로깅을 중지하시겠습니까?</string>
+  <string name="tanto_mapurl_download_service">TANTO mapurl 다운로드 서비스</string>
+  <string name="tap_on_title_to_visit_website">(웹 사이트에 방문하려면 제목을 탭)</string>
+  <string name="use_map_center_coordinate_to_filter_results">결과를 필터링하는데 지도중심 좌표 사용</string>
+  <string name="limit_results_to_20_recommended">검색 결과 20개 제한 (권장)</string>
+  <string name="text_filter">텍스트 필터</string>
+  <string name="tanto_service_query">쿼리</string>
+  <string name="tanto_disclaimer">자세히 읽어보십시오: Geopaparazzi는 다운로드한 데이터에 대해 법적으로 아무 책임도 지지 않습니다. 어떤 WMS 서비스의 지도를 다운로드하기 전에, 사용자는 그 서비스의 라이센스를 확인해야하고, 서비스 제공자가 쿼리를 허용해야 합니다. 어떠한 방식으로든 Geopaparazzi 사용자는 서빗의 오용과 관련된 라이센스 침해에 대해 책임을 져야 합니다.</string>
 </resources>

@@ -34,6 +34,7 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.library.util.activities.LogAnalysisActivity;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler;
@@ -133,6 +134,16 @@ public class SecretActivity extends Activity implements CheckBox.OnCheckedChange
     public void startSqlView( View view ) {
         Intent sqlViewIntent = new Intent(this, SqlViewActivity.class);
         startActivity(sqlViewIntent);
+    }
+
+    /**
+     * Start Analyze log view.
+     * 
+     * @param view parent.
+     */
+    public void analyzeLog( View view ) {
+        Intent analyzeLogViewIntent = new Intent(this, LogAnalysisActivity.class);
+        startActivity(analyzeLogViewIntent);
     }
 
     /**

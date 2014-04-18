@@ -114,6 +114,8 @@
     <string name="osm_notes_properly_uploaded">OSM notes properly uploaded.\n\nDo you want to remove the uploaded notes from the device?</string>
     <string name="an_error_occurred_while_uploading_osm_tags">An error occurred while uploading OSM tags: </string>
     <string name="enable_automatic_center_on_gps">Automatic center on GPS</string>
+    <string name="enable_center_on_gps">Enable center on GPS</string>
+    <string name="disable_center_on_gps">Disable center on GPS</string>
     <string name="profile">profile</string>
     <string name="loading_data">Loading data…</string>
     <string name="profilelable_distance">distance [m]</string>
@@ -213,4 +215,13 @@
     <string name="menu_button">menu button</string>
     <string name="track_length">Track length: </string>
     <string name="gpslog_updateLogLength">Update</string>
+    <string name="do_you_want_to_stop_logging">Do you want to stop logging?</string>
+    <string name="tanto_mapurl_download_service">TANTO mapurl download service</string>
+    <string name="tap_on_title_to_visit_website">(tap on title to visit website)</string>
+    <string name="use_map_center_coordinate_to_filter_results">use map center coordinate to filter results</string>
+    <string name="limit_results_to_20_recommended">limit results to 20 (recommended)</string>
+    <string name="text_filter">text filter</string>
+    <string name="tanto_service_query">query</string>
+    <string name="tanto_disclaimer">PLEASE READ CAREFULLY: Geopaparazzi takes no responsibility over the legal implications of the data downloaded. Before downloading any wms mapurl definition, the user must check the licensing of the service and make sure he is allowed to query it. In no way should the authors of Geopaparazzi be held accountable for any license infringement related to misuse of the service.</string>
+    <string name="service_name_propmt">Enter a name for the service. If left empty, the name will be taken from the service.</string>
 </resources>

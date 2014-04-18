@@ -7,6 +7,16 @@
 
 
     <ImageButton
+        android:id="@+id/tantoMapurlsImportButton"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1"
+        android:background="@drawable/action_bar_button_drawable"
+        android:padding="20dip"
+        android:src="@drawable/import_mapurls" />
+
+    <ImageButton
         android:id="@+id/gpxImportButton"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"

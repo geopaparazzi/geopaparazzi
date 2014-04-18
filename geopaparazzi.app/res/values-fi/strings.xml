@@ -194,7 +194,7 @@
   <string name="end">lopeta</string>
   <string name="other">muu</string>
   <string name="maps_manager">Karttojen hallinta</string>
-  <string name="loading_maps">Ladataan karttoja...</string>
+  <!--ellipsis character instead of three dots-->
   <string name="project">Projekti</string>
   <string name="gps_status">GPS Status</string>
 </resources>

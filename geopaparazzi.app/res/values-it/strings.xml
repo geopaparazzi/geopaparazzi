@@ -108,6 +108,8 @@
   <string name="osm_notes_properly_uploaded">Note OSM correttamente caricate\n\nVuoi rimuovere le note dal dispositivo?</string>
   <string name="an_error_occurred_while_uploading_osm_tags">E\' avvenuto un errore durante il caricamento dei tag OSM: </string>
   <string name="enable_automatic_center_on_gps">Centra automaticamente su GPS</string>
+  <string name="enable_center_on_gps">Abilita centra su GPS</string>
+  <string name="disable_center_on_gps">Disabilita centra su GPS</string>
   <string name="profile">profilo</string>
   <string name="loading_data">Caricamento dei dati...</string>
   <string name="profilelable_distance">distanza [m]</string>
@@ -198,10 +200,23 @@
   <string name="base_maps">Lista dati Spatialite</string>
   <string name="maps_manager">Gestore mappe</string>
   <string name="loading_maps">Caricamento mappe...</string>
+  <!--ellipsis character instead of three dots-->
   <string name="project">Progetto</string>
   <string name="gps_status">Stato del GPS</string>
   <string name="no_queriable_layer_is_visible">Non è visibile alcun piano interrogabile</string>
   <string name="set_path_manually">Impostare manualmente il percorso (se inserito, ha precedenza sul menu a tendina)</string>
   <string name="choose_from_suggested">oppure scegli fra i suggeriti</string>
   <string name="reset_style_tables">Resetta tabelle di stile</string>
+  <string name="menu_button">pulsante menu</string>
+  <string name="track_length">Lunghezza traccia:</string>
+  <string name="gpslog_updateLogLength">Aggiorna</string>
+  <string name="do_you_want_to_stop_logging">Vuoi smettere di tracciare?</string>
+  <string name="tanto_mapurl_download_service">Servizio scaricamento mapurl TANTO</string>
+  <string name="tap_on_title_to_visit_website">(clicca per visitare sito)</string>
+  <string name="use_map_center_coordinate_to_filter_results">usa coordinate di centro mappa per filtrare risultati</string>
+  <string name="limit_results_to_20_recommended">limita i risultati a 20 (consigliato)</string>
+  <string name="text_filter">filtro testuale</string>
+  <string name="tanto_service_query">richiedi</string>
+  <string name="tanto_disclaimer">PLEASE READ CAREFULLY: Geopaparazzi takes no responsibility over the legal implications of the data downloaded. Before downloading any wms mapurl definition, the user must check the licensing of the service and make sure he is allowed to query it. In no way should the authors of Geopaparazzi be held accountable for any license infringement related to misuse of the service.</string>
+  <string name="service_name_propmt">Inserire un nome per il servizio. Se vuoto, il nome verra\' preso dal servizio stesso.</string>
 </resources>

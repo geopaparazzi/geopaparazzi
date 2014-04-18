@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="eu.hydrologis.geopaparazzi"
     android:installLocation="auto"
-    android:versionCode="54"
-    android:versionName="3.9.3" >
+    android:versionCode="55"
+    android:versionName="3.9.4" >
 
     <!-- permissions -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -69,6 +69,16 @@
             </intent-filter>
             <intent-filter>
                 <data
+                    android:host="www.openstreetmap.org"
+                    android:scheme="http" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+            <intent-filter>
+                <data
                     android:host="gp.eu"
                     android:scheme="http" />
 
@@ -105,6 +115,12 @@
             </intent-filter>
         </activity>
         <activity android:name="eu.hydrologis.geopaparazzi.util.SecretActivity" >
+        </activity>
+        <activity android:name="eu.geopaparazzi.library.util.activities.LogAnalysisActivity" >
+        </activity>
+        <activity android:name="eu.hydrologis.geopaparazzi.tantomapurls.TantoMapurlsActivity" >
+        </activity>
+        <activity android:name="eu.hydrologis.geopaparazzi.tantomapurls.TantoMapurlsListActivity" >
         </activity>
         <activity android:name="eu.hydrologis.geopaparazzi.maps.NotesPropertiesActivity" >
         </activity>

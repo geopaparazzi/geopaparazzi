@@ -171,4 +171,5 @@
   <string name="color">Couleur</string>
   <string name="prompt_delete_note">Êtes-vous sûr de que vouloir supprimer la note ? Cette action ne peut pas être annulée.</string>
   <string name="prompt_delete_bookmark">Êtes-vous sûr de que vouloir supprimer le signet ? Cette action ne peut pas être annulée.</string>
+  <!--ellipsis character instead of three dots-->
 </resources>

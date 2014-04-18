@@ -198,10 +198,22 @@
   <string name="base_maps">Seznam prostorových dat</string>
   <string name="maps_manager">Správce map</string>
   <string name="loading_maps">Nahrávají se mapy...</string>
+  <!--ellipsis character instead of three dots-->
   <string name="project">Projekt</string>
   <string name="gps_status">Stav GPS</string>
   <string name="no_queriable_layer_is_visible">Žádná dotazovatelná vrstva není viditelná</string>
   <string name="set_path_manually">Nastavte cestu ručně (pokud je nastavena, má přednost před smíšeným polem se seznamem)</string>
   <string name="choose_from_suggested">nebo vyberte z navrhovaného</string>
   <string name="reset_style_tables">Nastavit stylové tabulky znovu</string>
+  <string name="menu_button">Tlačítko nabídky</string>
+  <string name="track_length">Délka sledování:</string>
+  <string name="gpslog_updateLogLength">Aktualizovat</string>
+  <string name="do_you_want_to_stop_logging">Chcete zastavit přihlašování?</string>
+  <string name="tanto_mapurl_download_service">Služba na stahování mapových adres (mapurl) TANTO</string>
+  <string name="tap_on_title_to_visit_website">(Klepněte na název pro navštívění internetové stránky)</string>
+  <string name="use_map_center_coordinate_to_filter_results">Použijte souřadnice mapového střediska k filtrování výsledků</string>
+  <string name="limit_results_to_20_recommended">Omezit výsledky na 20 (doporučeno)</string>
+  <string name="text_filter">Textový filtr</string>
+  <string name="tanto_service_query">Dotaz</string>
+  <string name="tanto_disclaimer">POZORNĚ SI PŘEČTĚTE: Geopaparazzi nenese žádnou zodpovědnost za zákonné předpoklady týkající se stažených dat. Před stažením jakékoli definice wms mapurl musí uživatel ověřit licencování služby a ujistit se, že je mu dovoleno její dotazování. V žádném ohledu není možné autory Geopaparazzi činit zodpovědnými za jakékoli porušení zákona související se zneužitím služby.</string>
 </resources>

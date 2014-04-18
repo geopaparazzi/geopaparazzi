@@ -171,4 +171,5 @@
   <string name="color">Farge</string>
   <string name="prompt_delete_note">Er du sikker på at du vil slette notatet? Dette kan ikke angres.</string>
   <string name="prompt_delete_bookmark">Er du sikker på at du vil slette bokmerket? Dette kan ikke angres.</string>
+  <!--ellipsis character instead of three dots-->
 </resources>

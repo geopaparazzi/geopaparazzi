@@ -27,25 +27,16 @@ import android.database.sqlite.SQLiteDatabase;
  * @author Andrea Antonello (www.hydrologis.com)
  *
  */
-public class ADbHelper {
-    private static ADbHelper dbHelper = null;
+public enum ADbHelper {
+    /**
+     * The singleton instance.
+     */
+    INSTANCE;
+
     private SQLiteDatabase db = null;
 
-    private ADbHelper() {
-    }
-
     /**
-     * @return singleton instance.
-     */
-    public static ADbHelper getInstance() {
-        if (dbHelper == null) {
-            dbHelper = new ADbHelper();
-        }
-        return dbHelper;
-    }
-
-    /**
-     * @return teh db.
+     * @return the db.
      * @throws IOException  if something goes wrong.
      */
     public SQLiteDatabase getDatabase() throws IOException {
@@ -56,6 +47,11 @@ public class ADbHelper {
      * @param db the db to set.
      */
     public void setDatabase( SQLiteDatabase db ) {
+        if (db == null) {
+            GPLog.error(this, "Null database passed to ADbHelper.", new NullPointerException()); //$NON-NLS-1$
+        } else {
+            GPLog.addLogEntry(this, "Setting database in ADbHelper."); //$NON-NLS-1$
+        }
         this.db = db;
     }
 

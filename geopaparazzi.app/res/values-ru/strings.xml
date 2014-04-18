@@ -158,7 +158,7 @@
   <string name="start">начало</string>
   <string name="end">конец</string>
   <string name="other">другое</string>
-  <string name="loading_maps">Загрузка карт…</string>
+  <!--ellipsis character instead of three dots-->
   <string name="project">Проект</string>
   <string name="gps_status">Статус GPS</string>
 </resources>

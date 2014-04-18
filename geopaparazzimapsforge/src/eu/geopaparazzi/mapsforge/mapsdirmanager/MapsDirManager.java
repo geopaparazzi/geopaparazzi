@@ -169,19 +169,26 @@ public class MapsDirManager {
                 SpatialDatabasesManager.getInstance().init(context, mapsDir);
                 MapDatabasesManager.getInstance().init(context, mapsDir);
                 CustomTileDatabasesManager.getInstance().init(context, mapsDir);
-                GPLog.androidLog(-1, "MapsDirManager manager[SpatialDatabasesManager] size[" //$NON-NLS-1$
-                        + SpatialDatabasesManager.getInstance().getCount() + "]"); //$NON-NLS-1$
-                GPLog.androidLog(-1, "MapsDirManager manager[SpatialDatabasesManager] size_raster[" //$NON-NLS-1$
-                        + SpatialDatabasesManager.getInstance().getRasterDbCount() + "]"); //$NON-NLS-1$
-                GPLog.androidLog(-1, "MapsDirManager manager[SpatialDatabasesManager] size_vector[" //$NON-NLS-1$
-                        + SpatialDatabasesManager.getInstance().getVectorDbCount() + "]"); //$NON-NLS-1$
-                GPLog.androidLog(-1, "MapsDirManager manager[MapDatabasesManager] size[" //$NON-NLS-1$
-                        + MapDatabasesManager.getInstance().size() + "]"); //$NON-NLS-1$
-                GPLog.androidLog(-1, "MapsDirManager manager[CustomTileDatabasesManager] size[" //$NON-NLS-1$
-                        + CustomTileDatabasesManager.getInstance().size() + "]"); //$NON-NLS-1$
-                GPLog.GLOBAL_LOG_LEVEL = -1;
-                // GPLog.GLOBAL_LOG_TAG="mj10777";
-                GPLog.androidLog(1, "MapsDirManager init[" + mapsDir.getAbsolutePath() + "]"); //$NON-NLS-1$ //$NON-NLS-2$
+                StringBuilder sb = new StringBuilder();
+                sb.append("MapsDirManager manager[SpatialDatabasesManager] size[");
+                sb.append(SpatialDatabasesManager.getInstance().getCount());
+                sb.append("]\n");
+                sb.append("MapsDirManager manager[SpatialDatabasesManager] size_raster[");
+                sb.append(SpatialDatabasesManager.getInstance().getRasterDbCount());
+                sb.append("]\n");
+                sb.append("MapsDirManager manager[SpatialDatabasesManager] size_vector[");
+                sb.append(SpatialDatabasesManager.getInstance().getVectorDbCount());
+                sb.append("]\n");
+                sb.append("MapsDirManager manager[MapDatabasesManager] size[");
+                sb.append(MapDatabasesManager.getInstance().size());
+                sb.append("]\n");
+                sb.append("MapsDirManager manager[CustomTileDatabasesManager] size[");
+                sb.append(CustomTileDatabasesManager.getInstance().size());
+                sb.append("]\n");
+                sb.append("MapsDirManager init[");
+                sb.append(mapsDir.getAbsolutePath());
+                sb.append("]");
+                GPLog.androidLog(1, sb.toString());
                 handleTileSources(context);
             } catch (Exception e) {
                 GPLog.androidLog(4, "MapsDirManager init[" + mapsDir.getAbsolutePath() + "]", e); //$NON-NLS-1$ //$NON-NLS-2$

@@ -86,4 +86,5 @@
   <string name="http_ok_msg">Požadavek byl úspěšně zpracován.</string>
   <string name="the_file_exists_wont_overwrite">Soubor existuje. Nebude přepsán:</string>
   <string name="share_note_with">Sdílet poznámku s...</string>
+  <string name="downloading_mapurl_to_the_device">Vybraná služba se stahuje do zařízení.</string>
 </resources>

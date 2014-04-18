@@ -46,7 +46,7 @@ public class DatabaseListActivity extends ListActivity {
 
         SQLiteDatabase database = null;
         try {
-            database = ADbHelper.getInstance().getDatabase();
+            database = ADbHelper.INSTANCE.getDatabase();
             if (!database.isOpen()) {
                 database = null;
             }

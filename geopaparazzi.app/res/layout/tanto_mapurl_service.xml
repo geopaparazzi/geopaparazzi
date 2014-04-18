@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/main_background"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/service_container"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/main_background" >
+
+        <ImageView
+            android:id="@+id/tantoImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/tanto_back" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="3dip"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/tantoImage"
+            android:background="@color/tanto_blue" >
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tanto_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tantoImage"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"
+            android:text="@string/tanto_mapurl_download_service"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/tanto_blue" />
+
+        <TextView
+            android:id="@+id/tanto_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tanto_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="2dp"
+            android:text="@string/tap_on_title_to_visit_website"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/tanto_blue" />
+
+        <CheckBox
+            android:id="@+id/useMapcenterButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/tanto_subtitle"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="15dp"
+            android:paddingLeft="10dp"
+            android:text="@string/use_map_center_coordinate_to_filter_results"
+            android:textColor="@color/tanto_blue" />
+
+        <CheckBox
+            android:id="@+id/uselimitButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/useMapcenterButton"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:paddingLeft="10dp"
+            android:text="@string/limit_results_to_20_recommended"
+            android:textColor="@color/tanto_blue" />
+
+        <TextView
+            android:id="@+id/textfilterLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/uselimitButton"
+            android:layout_marginTop="15dp"
+            android:paddingLeft="10dp"
+            android:text="@string/text_filter"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/tanto_blue" />
+
+        <EditText
+            android:id="@+id/textfilterText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/textfilterLabel"
+            android:layout_margin="20dp"
+            android:inputType="text"
+            android:text="" />
+
+        <Button
+            android:id="@+id/tantoQueryButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textfilterText"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/tanto_button_drawable"
+            android:paddingBottom="10dp"
+            android:paddingLeft="30dp"
+            android:paddingRight="30dp"
+            android:paddingTop="10dp"
+            android:text="@string/tanto_service_query"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/tanto_blue" />
+
+        <TextView
+            android:id="@+id/disclaimerLabel"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/tantoQueryButton"
+            android:layout_marginTop="5dp"
+            android:paddingLeft="10dp"
+            android:gravity="center_horizontal"
+            android:paddingRight="10dp"
+            android:text="@string/tanto_disclaimer"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@color/tanto_blue" />
+    </RelativeLayout>
+
+</ScrollView>

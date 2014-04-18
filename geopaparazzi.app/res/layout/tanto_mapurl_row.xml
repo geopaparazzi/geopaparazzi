@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tantomapurllayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/main_background"
+    android:padding="10dip" >
+
+    <ImageView
+        android:id="@+id/downloadproject_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/mapurls_download" />
+
+    <TextView
+        android:id="@+id/tantolayertitletext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/downloadproject_image"
+        android:layout_toRightOf="@+id/downloadproject_image"
+        android:text="Title"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/tanto_blue" />
+
+    <TextView
+        android:id="@+id/tantoservicetext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tantolayertitletext"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/tantolayertitletext"
+        android:text="Service"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/tanto_blue" />
+
+    <TextView
+        android:id="@+id/tantoidtext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tantoservicetext"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/tantoservicetext"
+        android:text="Id"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/tanto_blue" />
+
+</RelativeLayout>

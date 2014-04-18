@@ -694,12 +694,20 @@ public abstract class GeopaparazziOverlay extends Overlay {
         /*
          * draw from spatialite
          */
-        GeoPoint zeroPoint = projection.fromPixels(0, 0);
-        GeoPoint whPoint = projection.fromPixels(canvas.getWidth(), canvas.getHeight());
-        double n = zeroPoint.getLatitude();
-        double w = zeroPoint.getLongitude();
-        double s = whPoint.getLatitude();
-        double e = whPoint.getLongitude();
+        double n = 90;
+        double w = -180;
+        double s = -90;
+        double e = 180;
+        try {
+            GeoPoint zeroPoint = projection.fromPixels(0, 0);
+            GeoPoint whPoint = projection.fromPixels(canvas.getWidth(), canvas.getHeight());
+            n = zeroPoint.getLatitude();
+            w = zeroPoint.getLongitude();
+            s = whPoint.getLatitude();
+            e = whPoint.getLongitude();
+        } catch (java.lang.Exception e2) {
+            GPLog.error(this, "Problems retrieving viewport bounds", e2); //$NON-NLS-1$
+        }
         Envelope envelope = new Envelope(w, e, s, n);
         try {
             SpatialDatabasesManager sdManager = SpatialDatabasesManager.getInstance();
@@ -729,7 +737,6 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 if (!(spatialDatabaseHandler instanceof SpatialiteDatabaseHandler)) {
                     return;
                 }
-                int i_geometryIterator = 0;
                 GeometryIterator geometryIterator = null;
                 try {
                     Paint fill = null;
@@ -757,11 +764,8 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     geometryIterator = ((SpatialiteDatabaseHandler) spatialDatabaseHandler).getGeometryIteratorInBounds(
                             LibraryConstants.SRID_WGS84_4326, spatialTable, n, s, e, w);
                     while( geometryIterator.hasNext() ) {
-                        i_geometryIterator++;
                         Geometry geom = geometryIterator.next();
                         if (geom != null) {
-                            // TODO get label to draw
-                            // String labelText = geometryIterator.getLabelText();
                             String geometryType = geom.getGeometryType();
                             if (spatialTable.isGeometryCollection()) {
                                 int geometriesCount = geom.getNumGeometries();
@@ -787,21 +791,10 @@ public abstract class GeopaparazziOverlay extends Overlay {
                                     return;
                                 }
                             }
-                            // TODO Draw Label
-                            // if (!labelText.equals("")) {
-                            // GPLog.androidLog(-1, "GeopaparazziOverlay.drawFromSpatialite label["
-                            // + labelText + "] ");
-                            // }
                         } else {
-                            GPLog.androidLog(-1, "GeopaparazziOverlay.drawFromSpatialite  [geom == null] description["
-                                    + spatialTable.getTableName() + "]");
+                            GPLog.error(this, "GeopaparazziOverlay.drawFromSpatialite  [geom == null] description["
+                                    + spatialTable.getTableName() + "]", new NullPointerException());
                         }
-                    }
-                    if (i_geometryIterator == 0) {
-                        // GPLog.androidLog(-1,
-                        // "GeopaparazziOverlay.drawFromSpatialite  geometryIterator[" +
-                        // i_geometryIterator
-                        // + "] description[" + spatialTable.getDescription() + "]");
                     }
                 } finally {
                     if (geometryIterator != null)
@@ -848,7 +841,6 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 if (!(spatialDatabaseHandler instanceof SpatialiteDatabaseHandler)) {
                     return;
                 }
-                int i_geometryIterator = 0;
                 GeometryIterator geometryIterator = null;
                 try {
                     PointTransformation pointTransformer = new MapsforgePointTransformation(projection, drawPosition,
@@ -867,10 +859,8 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     geometryIterator = ((SpatialiteDatabaseHandler) spatialDatabaseHandler).getGeometryIteratorInBounds(
                             LibraryConstants.SRID_WGS84_4326, spatialTable, n, s, e, w);
                     while( geometryIterator.hasNext() ) {
-                        i_geometryIterator++;
                         Geometry geom = geometryIterator.next();
                         if (geom != null) {
-                            // TODO get label to draw
                             String labelText = geometryIterator.getLabelText();
                             if (labelText == null || labelText.length() == 0) {
                                 continue;
@@ -896,21 +886,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                                     return;
                                 }
                             }
-                            // TODO Draw Label
-                            // if (!labelText.equals("")) {
-                            // GPLog.androidLog(-1, "GeopaparazziOverlay.drawFromSpatialite label["
-                            // + labelText + "] ");
-                            // }
-                        } else {
-                            GPLog.androidLog(-1, "GeopaparazziOverlay.drawFromSpatialite  [geom == null] description["
-                                    + spatialTable.getTableName() + "]");
                         }
-                    }
-                    if (i_geometryIterator == 0) {
-                        // GPLog.androidLog(-1,
-                        // "GeopaparazziOverlay.drawFromSpatialite  geometryIterator[" +
-                        // i_geometryIterator
-                        // + "] description[" + spatialTable.getDescription() + "]");
                     }
                 } finally {
                     if (geometryIterator != null)
@@ -918,7 +894,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 }
             }
         } catch (Exception e1) {
-            GPLog.androidLog(4, "GeopaparazziOverlay.drawFromSpatialite [failed]", e1);
+            GPLog.error(this, "GeopaparazziOverlay.drawFromSpatialite [failed]", e1); //$NON-NLS-1$
         }
     }
 
@@ -1155,7 +1131,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                         File mediaDir = ResourcesManager.getInstance(context).getMediaDir();
                         absolutePath = new File(mediaDir.getParentFile(), title);
                     } catch (java.lang.Exception e) {
-                        e.printStackTrace();
+                        GPLog.error(this, "Error", e);
                     }
                 }
                 intent.setDataAndType(Uri.fromFile(absolutePath), "image/*"); //$NON-NLS-1$
@@ -1191,7 +1167,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                             }
                         }
                     } catch (IOException e1) {
-                        // ignore
+                        GPLog.error(this, "Error", e1);
                     }
                 }
 

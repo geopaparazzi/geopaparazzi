@@ -29,5 +29,8 @@
     <color name="gpsblue_stroke">#009aff</color>
     <color name="gpsgreen_fill">#00ff08</color>
     <color name="gpsgreen_stroke">#278b2a</color>
+    
+    <!-- others colors -->
+    <color name="tanto_blue">#27547e</color>
 
 </resources>

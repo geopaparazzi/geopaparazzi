@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/main_background"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:id="@+id/errorToggleLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="5dp"
+            android:background="#FF0000"
+            android:paddingBottom="7dp"
+            android:paddingTop="7dp" >
+
+            <ToggleButton
+                android:id="@+id/errorToggleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textOff="E"
+                android:textOn="E" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/gpsToggleLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="5dp"
+            android:layout_toRightOf="@+id/errorToggleLayout"
+            android:background="#FF0000"
+            android:paddingBottom="7dp"
+            android:paddingTop="7dp" >
+
+            <ToggleButton
+                android:id="@+id/gpsToggleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textOff="G"
+                android:textOn="G" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/infoToggleLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="5dp"
+            android:layout_toRightOf="@+id/gpsToggleLayout"
+            android:background="#FF0000"
+            android:paddingBottom="7dp"
+            android:paddingTop="7dp" >
+
+            <ToggleButton
+                android:id="@+id/infoToggleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textOff="I"
+                android:textOn="I" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/checkToggleLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="5dp"
+            android:layout_toRightOf="@+id/infoToggleLayout"
+            android:background="#FF0000"
+            android:paddingBottom="7dp"
+            android:paddingTop="7dp" >
+
+            <ToggleButton
+                android:id="@+id/checkToggleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textOff="CH"
+                android:textOn="CH" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/anomalieToggleLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="5dp"
+            android:layout_toRightOf="@+id/checkToggleLayout"
+            android:background="#FF0000"
+            android:paddingBottom="7dp"
+            android:paddingTop="7dp" >
+
+            <ToggleButton
+                android:id="@+id/anomalieToggleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textOff="A"
+                android:textOn="A" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/memoryToggleLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="5dp"
+            android:layout_toRightOf="@+id/anomalieToggleLayout"
+            android:background="#FF0000"
+            android:paddingBottom="7dp"
+            android:paddingTop="7dp" >
+
+            <ToggleButton
+                android:id="@+id/memoryToggleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textOff="M"
+                android:textOn="M" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/refreshButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/errorToggleLayout"
+            android:text="Refresh" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/main_background"
+        android:cacheColorHint="#00000000" />
+
+    <TextView
+        android:id="@android:id/empty"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/no_data" />
+
+</LinearLayout>

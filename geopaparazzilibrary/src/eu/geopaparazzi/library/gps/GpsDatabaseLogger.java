@@ -21,9 +21,6 @@ import static eu.geopaparazzi.library.util.LibraryConstants.GPS_LOGGING_DISTANCE
 import static eu.geopaparazzi.library.util.LibraryConstants.GPS_LOGGING_INTERVAL;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGINGDISTANCE;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGINGINTERVAL;
-
-import java.io.IOException;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
@@ -194,8 +191,8 @@ public class GpsDatabaseLogger implements GpsManagerListener {
                                             gpsLoc.getSqlDate());
                                 }
                             } catch (Exception e) {
-                                GPLog.error(this, e.getLocalizedMessage(), e);
-                                throw new IOException(e.getLocalizedMessage());
+                                // we log the exception and try to go on
+                                GPLog.error(this, "Point in db writing error!", e);
                             }
                             currentPointsNum++;
                             currentDistance = currentDistance + lastDistance;
@@ -206,8 +203,8 @@ public class GpsDatabaseLogger implements GpsManagerListener {
                         }
                     }
 
-                    if (currentPointsNum < 2) {
-                        logABS("Removing gpslog, since too few points were added. Logid: " + gpsLogId);
+                    if (currentPointsNum < 4) {
+                        logH("Removing gpslog, since too few points were added. Logid: " + gpsLogId);
                         dbHelper.deleteGpslog(context, gpsLogId);
                     } else {
                         // set the end time stamp and the total distance for the track

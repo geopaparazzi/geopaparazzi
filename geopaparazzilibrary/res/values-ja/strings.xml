@@ -86,4 +86,5 @@
   <string name="http_ok_msg">リクエストは正常に処理されました。</string>
   <string name="the_file_exists_wont_overwrite">ファイルが存在します。上書きできません。</string>
   <string name="share_note_with">ノートのシェア...</string>
+  <string name="downloading_mapurl_to_the_device">選択したサービスを端末にダウンロードしています。</string>
 </resources>

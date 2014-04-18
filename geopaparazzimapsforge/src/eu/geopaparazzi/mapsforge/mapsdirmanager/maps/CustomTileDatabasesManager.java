@@ -24,6 +24,7 @@ import java.util.List;
 
 import jsqlite.Exception;
 import android.content.Context;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.CustomTileDatabaseHandler;
@@ -69,30 +70,33 @@ public class CustomTileDatabasesManager {
      * @return <code>true</code> if the current folder is marked as nomedia.
      */
     public boolean init( Context context, File mapsDir ) {
-        File[] list_files = mapsDir.listFiles();
+        File[] filesList = mapsDir.listFiles();
         List<CustomTileDatabaseHandler> customtile_Handlers = new ArrayList<CustomTileDatabaseHandler>();
         boolean b_nomedia_file = false;
-        for( File this_file : list_files ) {
+        for( File currentFile : filesList ) {
             // nomedia logic: first check the files, if no
             // '.nomedia' found: then its directories
-            if (this_file.isFile()) { // mj10777: collect .mapurl databases
-                String name = this_file.getName();
+            if (currentFile.isFile()) { // mj10777: collect .mapurl databases
+                String name = currentFile.getName();
                 if (Utilities.isNameFromHiddenFile(name)) {
                     continue;
                 }
                 if (name.endsWith(SpatialDataType.MAPURL.getExtension())) {
                     try {
-                        CustomTileDatabaseHandler map = new CustomTileDatabaseHandler(this_file.getAbsolutePath(),
+                        CustomTileDatabaseHandler map = new CustomTileDatabaseHandler(currentFile.getAbsolutePath(),
                                 ResourcesManager.getInstance(context).getMapsDir().getAbsolutePath());
                         customtile_Handlers.add(map);
                     } catch (java.lang.Exception e) {
-                        e.printStackTrace();
+                        GPLog.error(this, "Error reading a Custom tile source.", e); //$NON-NLS-1$
                     }
                 }
-                if (name.equals(ResourcesManager.NO_MEDIA)) { // ignore all files of this directory
-                    b_nomedia_file = true;
-                    customtile_Handlers.clear();
-                    return b_nomedia_file;
+                if (name.equals(ResourcesManager.NO_MEDIA)) {
+                    if (!currentFile.getParentFile().toURI().equals(mapsDir.toURI())) {
+                        // ignore all files of this directory if not maps root
+                        b_nomedia_file = true;
+                        customtile_Handlers.clear();
+                        return b_nomedia_file;
+                    }
                 }
             }
         }
@@ -102,9 +106,10 @@ public class CustomTileDatabasesManager {
             }
         }
         customtile_Handlers.clear();
-        for( File this_file : list_files ) {
-            if (this_file.isDirectory()) { // mj10777: read recursive directories inside the
-                                           // sdcard/maps directory
+        for( File this_file : filesList ) {
+            if (this_file.isDirectory()) {
+                // mj10777: read recursive directories inside the
+                // sdcard/maps directory
                 init(context, this_file);
             }
         }
@@ -145,6 +150,7 @@ public class CustomTileDatabasesManager {
                 }
             } catch (java.lang.Exception e) {
                 // ignore the handler and try to g on
+                GPLog.error(this, "Error", e); //$NON-NLS-1$
             }
         }
         // Collections.sort(tables, new OrderComparator());

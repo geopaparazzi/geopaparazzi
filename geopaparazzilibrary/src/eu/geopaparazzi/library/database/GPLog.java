@@ -142,7 +142,7 @@ public class GPLog {
     public static void addLogEntry( String logMessage ) {
         try {
             Date date = new Date();
-            SQLiteDatabase sqliteDatabase = ADbHelper.getInstance().getDatabase();
+            SQLiteDatabase sqliteDatabase = ADbHelper.INSTANCE.getDatabase();
             if (sqliteDatabase != null && sqliteDatabase.isOpen()) {
                 ContentValues values = new ContentValues();
                 long time = date.getTime();
