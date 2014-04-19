@@ -114,7 +114,7 @@ public class SpatialDatabasesManager {
                                 tmpSpatialdbHandlers.add(sdb);
                             }
                         } catch (IOException e) {
-                            GPLog.error(this, "Error", e); //$NON-NLS-1$
+                            GPLog.error(this, "Error [SpatialDatabasesManager.init]", e); //$NON-NLS-1$
                         }
                     }
                     if (name.equals(ResourcesManager.NO_MEDIA)) {
@@ -226,7 +226,7 @@ public class SpatialDatabasesManager {
                 }
             } catch (java.lang.Exception e) {
                 // ignore the handler and try to go on
-                GPLog.error(this, "Error", e); //$NON-NLS-1$
+                GPLog.error(this, "Error [SpatialDatabasesManagergetSpatialRasterTables]", e); //$NON-NLS-1$
             }
         }
         return tables;

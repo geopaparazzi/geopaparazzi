@@ -109,12 +109,11 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             db_java = new jsqlite.Database();
             db_java.open(databasePath, jsqlite.Constants.SQLITE_OPEN_READWRITE | jsqlite.Constants.SQLITE_OPEN_CREATE);
 
-            checkAndUpdatePropertiesUniqueNames();
-
             // check database and collect the views list
             try {
                 databaseType = DaoSpatialite.checkDatabaseTypeAndValidity(db_java, spatialVectorMap, spatialVectorMapErrors);
-                isDatabaseValid = true;
+                if (spatialVectorMap.size() > 0)
+                 isDatabaseValid = true;
                 // GPLog.androidLog(-1,"GeopaparazziOverlay.getGeometryIteratorInBounds version["+DaoSpatialite.getJavaSqliteDescription(db_java,"test")+"]");
             } catch (Exception e) {
                 isDatabaseValid = false;
@@ -122,6 +121,10 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
 
             if (!isValid()) {
                 close();
+            }
+            else
+            { // Only when valid
+             checkAndUpdatePropertiesUniqueNames();
             }
         } catch (Exception e) {
             GPLog.androidLog(4, "SpatialiteDatabaseHandler[" + databaseFile.getAbsolutePath() + "]", e);
@@ -873,7 +876,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                 centerCoordinate[1] = boundsCoordinates[1] + (boundsCoordinates[3] - boundsCoordinates[1]) / 2;
                }
                checkAndAdaptDatabaseBounds(boundsCoordinates, null);
-               // GPLog.androidLog(-1,"SpatialiteDatabaseHandler["+databaseFile.getAbsolutePath()+"] vector_key["+vector_key+"] vector_data[" + vector_data+ "] ");
+               // GPLog.androidLog(-1,"SpatialiteDatabaseHandler["+databaseFile.getAbsolutePath()+"] vector_key["+vector_key+"] vector_value[" + vector_value+ "] ");
                // no Zoom levels with
                // vector data
                SpatialVectorTable table = new SpatialVectorTable(getDatabasePath(), table_name, geometry_column,
@@ -888,122 +891,6 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
         }
       }
       return table_fields;
-    }
-
-    /**
-* Load list of Table [Vector] for pre-Spatialite+4+ Files
-* - for pre-Spaltialite4 we must gather the bounds ourselfs
-* <br>- name of Field
-* <br>- type of field as defined in Database
-*
-* @return the {@link HashMap} of field name to its type.
-*/
-    private HashMap<String, String> collectSpatialiteTables() throws Exception {
-        Stmt this_stmt = null;
-        List<SpatialVectorTable> vectorTableList;
-        HashMap<String, String> table_fields = new HashMap<String, String>();
-        StringBuilder sb_layers = new StringBuilder();
-        String s_srid = "";
-        int i_srid = 0;
-        String table_name = "";
-        String s_sql_layers = "";
-        switch( databaseType ) {
-        case SPATIALITE3: { // Spatialite Files version 2+3=3
-            sb_layers.append("SELECT ");
-            sb_layers.append("f_table_name");
-            sb_layers.append(", ");
-            sb_layers.append("f_geometry_column");
-            sb_layers.append(", ");
-            sb_layers.append("type");
-            sb_layers.append(",");
-            sb_layers.append("srid");
-            sb_layers.append(" FROM ");
-            sb_layers.append("geometry_columns");
-            sb_layers.append(" ORDER BY f_table_name;");
-            // version 3 ['type' instead of 'geometry_type']:
-            // SELECT f_table_name,f_geometry_column,geometry_type,srid FROM geometry_columns ORDER BY f_table_name
-            s_sql_layers = sb_layers.toString();
-            break;
-        }
-        }
-        if (!s_sql_layers.equals("")) {
-            sb_layers = new StringBuilder();
-            isDatabaseValid = true;
-            vectorTableList = new ArrayList<SpatialVectorTable>();
-            table_fields = new HashMap<String, String>();
-            String geometry_column = "";
-            boolean b_UpdateLayerStatistics = true;
-            try {
-                this_stmt = db_java.prepare(s_sql_layers);
-                while( this_stmt.step() ) {
-                    String s_layer_type = "geometry";
-                    int i_geometry_type = 0;
-                    String s_geometry_type = "";
-                    double[] centerCoordinate = {0.0, 0.0};
-                    double[] boundsCoordinates = {-180.0f, -85.05113f, 180.0f, 85.05113f};
-                    int i_row_count = 0;
-                    HashMap<String, String> fields_list = new HashMap<String, String>();
-                    table_name = this_stmt.column_string(0);
-                    // GPLog.androidLog(-1,"SpatialiteDatabaseHandler["+getFileNamePath()+"] tablename["+table_name+"]");
-                    geometry_column = this_stmt.column_string(1);
-                    // for older spatialite v2+3 : Query extent of table
-                    // and fill boundsCoordinates
-                    s_geometry_type = this_stmt.column_string(2);
-                    i_geometry_type = GeometryType.forValue(s_geometry_type);
-                    i_srid = this_stmt.column_int(3);
-                    s_srid = String.valueOf(i_srid);
-                    // 'rows_count;min_x,min_y,max_x,max_y;datetimestamp_now'
-                    String s_vector_extent=DaoSpatialite.SpatialiteRetrieveBounds(db_java,table_name,geometry_column);
-                    String[] sa_string = s_vector_extent.split(";");
-                    if (sa_string.length == 3) {
-                     i_row_count = Integer.parseInt(sa_string[0]);
-                     String s_bounds=sa_string[1];
-                     String s_last_verified=sa_string[2];
-                     sa_string = s_bounds.split(",");
-                     if (sa_string.length == 4) {
-                      try {
-                       boundsCoordinates[0] = Double.parseDouble(sa_string[0]);
-                       boundsCoordinates[1] = Double.parseDouble(sa_string[1]);
-                       boundsCoordinates[2] = Double.parseDouble(sa_string[2]);
-                       boundsCoordinates[3] = Double.parseDouble(sa_string[3]);
-                      } catch (NumberFormatException e) {
-                      }
-                     }
-                    }
-                    // mj10777 20140315: when a final decision NOT to support normal-views is made
-                    // - the 'table_fields' logic can be removed
-                    // this should have a list of unique geometry-fields, we will look later for
-                    // these in the views
-                    if (table_fields.get(geometry_column) == null)
-                        table_fields.put(geometry_column, s_geometry_type);
-                    if (!s_srid.equals("4326")) { // Transform into wsg84 if needed
-                        collectBoundsAndCenter(s_srid, centerCoordinate, boundsCoordinates);
-                    } else {
-                        centerCoordinate[0] = boundsCoordinates[0] + (boundsCoordinates[2] - boundsCoordinates[0]) / 2;
-                        centerCoordinate[1] = boundsCoordinates[1] + (boundsCoordinates[3] - boundsCoordinates[1]) / 2;
-                    }
-                    checkAndAdaptDatabaseBounds(boundsCoordinates, null);
-                    // no Zoom levels with
-                    // vector data
-                    SpatialVectorTable table = new SpatialVectorTable(getDatabasePath(), table_name, geometry_column,
-                            i_geometry_type, s_srid, centerCoordinate, boundsCoordinates, s_layer_type);
-                    // compleate list of fields of
-                    // this table
-                    fields_list = DaoSpatialite.collectTableFields(db_java, table_name);
-                    table.setFieldsList(fields_list,"ROWID",-1);
-                    vectorTableList.add(table);
-                }
-
-            } catch (Exception e) {
-                GPLog.androidLog(4, "SpatialiteDatabaseHandler.get_tables_spatialite prepair[" + s_sql_layers + "]", e);
-            } finally {
-                if (this_stmt != null) {
-                    this_stmt.close();
-                }
-            }
-            this.vectorTableList = vectorTableList;
-        }
-        return table_fields;
     }
 
     /**
@@ -1068,28 +955,14 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             tableFields = collectGpkgTables();
         }
             break;
-        case SPATIALITE3:{
-         // // Spatialite Files version 2+3=3 only
-         tableFields = collectSpatialiteTables();
-        }
-        break;
+        case SPATIALITE3:
         case SPATIALITE4: {
-            // Spatialite Files version 4=4 only
+            // Spatialite Files version 2.4 ; 3 and 4
              tableFields = collectVectorTables();
-
         }
             break;
         }
         if (isValid()) {
-            switch( databaseType ) {
-            case SPATIALITE3:
-            case SPATIALITE4: {
-                // Spatialite Files version 2+3=3 ; version 4=4
-                // Placeholder for normal-views
-
-            }
-                break;
-            }
             if (vectorTableList != null) {
                 // now read styles
                 checkPropertiesTable();
