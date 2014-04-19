@@ -22,7 +22,6 @@ import static eu.geopaparazzi.library.util.LibraryConstants.GPS_LOGGING_INTERVAL
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGINGDISTANCE;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_GPSLOGGINGINTERVAL;
 import android.app.Service;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -247,10 +246,6 @@ public class GpsService extends Service implements LocationListener, Listener {
         super.onDestroy();
     }
 
-    private void stopDatabaseLogging() {
-        isDatabaseLogging = false;
-    }
-
     /**
      * Starts listening to the gps provider.
      */
@@ -272,119 +267,6 @@ public class GpsService extends Service implements LocationListener, Listener {
             log("registered for updates.");
         }
         broadcast("triggered by registerForLocationUpdates");
-    }
-
-    private static void log( String msg ) {
-        try {
-            if (GPLog.LOG_HEAVY)
-                GPLog.addLogEntry("GPSSERVICE", null, null, msg);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void logABS( String msg ) {
-        try {
-            if (GPLog.LOG_ABSURD)
-                GPLog.addLogEntry("GPSSERVICE", null, null, msg);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Checks if the GPS is switched on.
-     * 
-     * <p>Does not say if the GPS is supplying valid data.</p>
-     * 
-     * @return <code>true</code> if the GPS is switched on.
-     */
-    public boolean isGpsOn() {
-        if (locationManager == null) {
-            return false;
-        }
-        boolean gpsIsEnabled;
-        if (useNetworkPositions) {
-            gpsIsEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        } else {
-            gpsIsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        }
-        logABS("Gps is enabled: " + gpsIsEnabled);
-        return gpsIsEnabled;
-    }
-
-    public void onLocationChanged( Location loc ) {
-        if (loc == null) {
-            lastGpsLocation = null;
-            return;
-        }
-        lastGpsLocation = new GpsLocation(loc);
-        synchronized (lastGpsLocation) {
-            lastLocationupdateMillis = SystemClock.elapsedRealtime();
-            lastGpsLocation.setPreviousLoc(previousLoc);
-            // save last known location
-            double recLon = lastGpsLocation.getLongitude();
-            double recLat = lastGpsLocation.getLatitude();
-            double recAlt = lastGpsLocation.getAltitude();
-            PositionUtilities.putGpsLocationInPreferences(preferences, recLon, recLat, recAlt);
-            previousLoc = loc;
-
-            broadcast("triggered by onLocationChanged");
-        }
-    }
-
-    public void onStatusChanged( String provider, int status, Bundle extras ) {
-        // for( GpsManagerListener activity : listeners ) {
-        // activity.onStatusChanged(provider, status, extras);
-        // }
-    }
-
-    public void onProviderEnabled( String provider ) {
-        isProviderEnabled = true;
-        if (!isListeningForUpdates) {
-            registerForLocationUpdates();
-        }
-        broadcast("triggered by onProviderEnabled");
-    }
-
-    public void onProviderDisabled( String provider ) {
-        isProviderEnabled = false;
-        broadcast("triggered by onProviderDisabled");
-    }
-
-    public void onGpsStatusChanged( int event ) {
-        mStatus = locationManager.getGpsStatus(mStatus);
-
-        // check fix
-        boolean tmpGotFix = GpsStatusInfo.checkFix(gotFix, lastLocationupdateMillis, event);
-        if (!tmpGotFix) {
-            // check if it is just standing still
-            GpsStatusInfo info = new GpsStatusInfo(mStatus);
-            int satForFixCount = info.getSatUsedInFixCount();
-            if (satForFixCount > 2) {
-                tmpGotFix = true;
-                // updating loc update, assuming the still filter is giving troubles
-                lastLocationupdateMillis = SystemClock.elapsedRealtime();
-            }
-        }
-
-        if (DOLOGPOSITION) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("gotFix: ").append(gotFix).append(" tmpGotFix: ").append(tmpGotFix).append("\n");
-            GPLog.addLogEntry("GPSSERVICE", sb.toString());
-        }
-
-        if (tmpGotFix != gotFix) {
-            gotFix = tmpGotFix;
-            broadcast("triggered by onGpsStatusChanged on fix change: " + gotFix);
-        } else {
-            gotFix = tmpGotFix;
-        }
-
-        if (!gotFix) {
-            lastGpsLocation = null;
-        }
     }
 
     /**
@@ -550,6 +432,123 @@ public class GpsService extends Service implements LocationListener, Listener {
         Toast.makeText(GpsService.this, R.string.gpsloggingon, Toast.LENGTH_SHORT).show();
     }
 
+    private void stopDatabaseLogging() {
+        isDatabaseLogging = false;
+    }
+
+    private static void log( String msg ) {
+        try {
+            if (GPLog.LOG_HEAVY)
+                GPLog.addLogEntry("GPSSERVICE", null, null, msg);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void logABS( String msg ) {
+        try {
+            if (GPLog.LOG_ABSURD)
+                GPLog.addLogEntry("GPSSERVICE", null, null, msg);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Checks if the GPS is switched on.
+     * 
+     * <p>Does not say if the GPS is supplying valid data.</p>
+     * 
+     * @return <code>true</code> if the GPS is switched on.
+     */
+    private boolean isGpsOn() {
+        if (locationManager == null) {
+            return false;
+        }
+        boolean gpsIsEnabled;
+        if (useNetworkPositions) {
+            gpsIsEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        } else {
+            gpsIsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        }
+        logABS("Gps is enabled: " + gpsIsEnabled);
+        return gpsIsEnabled;
+    }
+
+    public void onLocationChanged( Location loc ) {
+        if (loc == null) {
+            lastGpsLocation = null;
+            return;
+        }
+        lastGpsLocation = new GpsLocation(loc);
+        synchronized (lastGpsLocation) {
+            lastLocationupdateMillis = SystemClock.elapsedRealtime();
+            lastGpsLocation.setPreviousLoc(previousLoc);
+            // save last known location
+            double recLon = lastGpsLocation.getLongitude();
+            double recLat = lastGpsLocation.getLatitude();
+            double recAlt = lastGpsLocation.getAltitude();
+            PositionUtilities.putGpsLocationInPreferences(preferences, recLon, recLat, recAlt);
+            previousLoc = loc;
+
+            broadcast("triggered by onLocationChanged");
+        }
+    }
+
+    public void onStatusChanged( String provider, int status, Bundle extras ) {
+        // for( GpsManagerListener activity : listeners ) {
+        // activity.onStatusChanged(provider, status, extras);
+        // }
+    }
+
+    public void onProviderEnabled( String provider ) {
+        isProviderEnabled = true;
+        if (!isListeningForUpdates) {
+            registerForLocationUpdates();
+        }
+        broadcast("triggered by onProviderEnabled");
+    }
+
+    public void onProviderDisabled( String provider ) {
+        isProviderEnabled = false;
+        broadcast("triggered by onProviderDisabled");
+    }
+
+    public void onGpsStatusChanged( int event ) {
+        mStatus = locationManager.getGpsStatus(mStatus);
+
+        // check fix
+        boolean tmpGotFix = GpsStatusInfo.checkFix(gotFix, lastLocationupdateMillis, event);
+        if (!tmpGotFix) {
+            // check if it is just standing still
+            GpsStatusInfo info = new GpsStatusInfo(mStatus);
+            int satForFixCount = info.getSatUsedInFixCount();
+            if (satForFixCount > 2) {
+                tmpGotFix = true;
+                // updating loc update, assuming the still filter is giving troubles
+                lastLocationupdateMillis = SystemClock.elapsedRealtime();
+            }
+        }
+
+        if (DOLOGPOSITION) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("gotFix: ").append(gotFix).append(" tmpGotFix: ").append(tmpGotFix).append("\n");
+            GPLog.addLogEntry("GPSSERVICE", sb.toString());
+        }
+
+        if (tmpGotFix != gotFix) {
+            gotFix = tmpGotFix;
+            broadcast("triggered by onGpsStatusChanged on fix change: " + gotFix);
+        } else {
+            gotFix = tmpGotFix;
+        }
+
+        if (!gotFix) {
+            lastGpsLocation = null;
+        }
+    }
+
     /**
      * @param message a message that can be used for logging.
      */
@@ -629,42 +628,41 @@ public class GpsService extends Service implements LocationListener, Listener {
     // /////////////////////////////////////////////
     // UNUSET METHODS
     // /////////////////////////////////////////////
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        /*
-         * If the startService(intent) method is called and the service is not 
-         * yet running, the service object is created and the onCreate() 
-         * method of the service is called.
-         */
-    }
-
-    @Override
-    public ComponentName startService( Intent service ) {
-        /*
-         * Once the service is started, the startService(intent) method in the 
-         * service is called. It passes in the Intent object from the 
-         * startService(intent) call.
-         */
-        return super.startService(service);
-    }
-
+    // @Override
+    // public void onCreate() {
+    // super.onCreate();
+    // /*
+    // * If the startService(intent) method is called and the service is not
+    // * yet running, the service object is created and the onCreate()
+    // * method of the service is called.
+    // */
+    // }
+    //
+    // @Override
+    // public ComponentName startService( Intent service ) {
+    // /*
+    // * Once the service is started, the startService(intent) method in the
+    // * service is called. It passes in the Intent object from the
+    // * startService(intent) call.
+    // */
+    // return super.startService(service);
+    // }
+    //
     @Override
     public IBinder onBind( Intent intent ) {
-        // TODO for communication return IBinder implementation
         return null;
     }
-
-    @Override
-    public boolean stopService( Intent name ) {
-        /*
-         * You stop a service via the stopService() method. No matter how 
-         * frequently you called the startService(intent) method, one call 
-         * to the stopService() method stops the service.
-         * 
-         * A service can terminate itself by calling the stopSelf() method. 
-         * This is typically done if the service finishes its work.
-         */
-        return super.stopService(name);
-    }
+    //
+    // @Override
+    // public boolean stopService( Intent name ) {
+    // /*
+    // * You stop a service via the stopService() method. No matter how
+    // * frequently you called the startService(intent) method, one call
+    // * to the stopService() method stops the service.
+    // *
+    // * A service can terminate itself by calling the stopSelf() method.
+    // * This is typically done if the service finishes its work.
+    // */
+    // return super.stopService(name);
+    // }
 }
