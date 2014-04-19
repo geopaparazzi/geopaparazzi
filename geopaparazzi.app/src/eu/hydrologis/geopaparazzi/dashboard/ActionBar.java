@@ -58,7 +58,6 @@ public class ActionBar {
     private final View actionBarView;
     private ActionItem infoQuickaction;
 
-    private String nodataString;
     private String timeString;
     private String lonString;
     private String latString;
@@ -66,7 +65,6 @@ public class ActionBar {
     private String azimString;
     private String loggingString;
     private String acquirefixString;
-    private String gpsonString;
     private String gpsStatusString;
     private final SensorsManager sensorsManager;
     private String satellitesString;
@@ -137,10 +135,8 @@ public class ActionBar {
         latString = context.getString(R.string.lat);
         altimString = context.getString(R.string.altim);
         azimString = context.getString(R.string.azimuth);
-        nodataString = context.getString(R.string.nogps_data);
         loggingString = context.getString(R.string.text_logging);
         acquirefixString = context.getString(R.string.gps_searching_fix);
-        gpsonString = context.getString(R.string.text_gpson);
         satellitesString = context.getString(R.string.satellites);
         projectString = context.getString(R.string.project);
         gpsStatusString = context.getString(R.string.gps_status);
@@ -290,33 +286,47 @@ public class ActionBar {
             sb.append(projectString).append(":\n");
             sb.append(indent).append(projectName).append("\n\n");
         }
-        sb.append(gpsStatusString).append(":\n");
-        if (lastGpsPosition == null || lastGpsServiceStatus == GpsServiceStatus.GPS_OFF) {
-            // Logger.d("COMPASSVIEW", "Location from gps is null!");
-            sb.append(indent).append(nodataString).append("\n");
-            if (lastGpsServiceStatus == GpsServiceStatus.GPS_ON__NO_LISTENING) {
-                if (lastGpsServiceStatus != GpsServiceStatus.GPS_FIX) {
-                    sb.append(indent).append(acquirefixString);
-                } else {
-                    sb.append(indent).append(gpsonString);
-                    sb.append(": ").append(lastGpsServiceStatus == GpsServiceStatus.GPS_OFF); //$NON-NLS-1$
-                }
-            }
+        if (lastGpsServiceStatus == GpsServiceStatus.GPS_OFF) {
+            // sb.append(indent).append(nodataString).append("\n");
+        } else if (lastGpsServiceStatus == GpsServiceStatus.GPS_LISTENING__NO_FIX) {
+            sb.append(gpsStatusString).append(":\n");
+            sb.append(indent).append(acquirefixString);
+            // if (lastGpsServiceStatus != GpsServiceStatus.GPS_FIX) {
+            // } else {
+            // sb.append(indent).append(gpsonString);
+            //                sb.append(": ").append(lastGpsServiceStatus == GpsServiceStatus.GPS_OFF); //$NON-NLS-1$
+            // }
             sb.append("\n");
             addGpsStatusInfo(sb);
 
         } else {
+            sb.append(gpsStatusString).append(":\n");
+            String lat;
+            String lon;
+            String elev;
+            String time;
+            if (lastGpsPosition != null) {
+                lat = formatter.format(lastGpsPosition[1]);
+                lon = formatter.format(lastGpsPosition[0]);
+                elev = String.valueOf((int) lastGpsPosition[2]);
+                time = TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date(lastGpsPositiontime));
+            } else {
+                time = " - ";
+                lat = " - ";
+                lon = " - ";
+                elev = " - ";
+            }
             sb.append(indent).append(timeString);
-            sb.append(" ").append(TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date(lastGpsPositiontime))); //$NON-NLS-1$
+            sb.append(" ").append(time); //$NON-NLS-1$
             sb.append("\n");
             sb.append(indent).append(latString);
-            sb.append(" ").append(formatter.format(lastGpsPosition[1])); //$NON-NLS-1$
+            sb.append(" ").append(lat); //$NON-NLS-1$
             sb.append("\n");
             sb.append(indent).append(lonString);
-            sb.append(" ").append(formatter.format(lastGpsPosition[0])); //$NON-NLS-1$
+            sb.append(" ").append(lon); //$NON-NLS-1$
             sb.append("\n");
             sb.append(indent).append(altimString);
-            sb.append(" ").append((int) lastGpsPosition[2]); //$NON-NLS-1$
+            sb.append(" ").append(elev); //$NON-NLS-1$
             sb.append("\n");
             sb.append(indent).append(azimString);
             sb.append(" ").append((int) (360 - azimuth)); //$NON-NLS-1$
@@ -328,12 +338,12 @@ public class ActionBar {
         }
         return sb.toString();
     }
-
     private void addGpsStatusInfo( StringBuilder sb ) {
         if (lastGpsStatusExtras != null) {
+            int satForFixCount = lastGpsStatusExtras[2];
             int satCount = lastGpsStatusExtras[1];
-            // int satForFixCount = info.getSatUsedInFixCount();
-            sb.append(indent).append(satellitesString).append(": ").append(satCount).append("\n");
+            sb.append(indent).append(satellitesString).append(": ")//
+                    .append(satForFixCount).append("/").append(satCount).append("\n");
             // sb.append("used for fix: ").append(satForFixCount).append("\n");
         }
     }
