@@ -119,7 +119,7 @@ public class GpsService extends Service implements LocationListener, Listener {
      */
     public static final String GPS_SERVICE_DO_BROADCAST = "GPS_SERVICE_DO_BROADCAST";
 
-    private static final boolean DOLOGPOSITION = GPLog.LOG_HEAVY;
+    private static final boolean DOLOGPOSITION = GPLog.LOG_ABSURD;
 
     private SharedPreferences preferences;
     private LocationManager locationManager;
