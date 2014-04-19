@@ -130,8 +130,8 @@ public class GeoPaparazziActivity extends Activity {
         GpsServiceUtilities.startGpsService(this);
         gpsServiceBroadcastReceiver = new BroadcastReceiver(){
             public void onReceive( Context context, Intent intent ) {
-                checkFirstTimeGps(context);
                 onGpsServiceUpdate(intent);
+                checkFirstTimeGps(context);
             }
         };
         GpsServiceUtilities.registerForBroadcasts(this, gpsServiceBroadcastReceiver);

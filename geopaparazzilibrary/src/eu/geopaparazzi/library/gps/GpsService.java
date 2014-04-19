@@ -120,6 +120,8 @@ public class GpsService extends Service implements LocationListener, Listener {
      */
     public static final String GPS_SERVICE_DO_BROADCAST = "GPS_SERVICE_DO_BROADCAST";
 
+    private static final boolean DOLOGPOSITION = GPLog.LOG_ABSURD;
+
     private SharedPreferences preferences;
     private LocationManager locationManager;
     private boolean useNetworkPositions = false;
@@ -367,10 +369,19 @@ public class GpsService extends Service implements LocationListener, Listener {
             }
         }
 
-        if (tmpGotFix != gotFix) {
-            broadcast("triggered by onGpsStatusChanged on fix change: " + gotFix);
+        if (DOLOGPOSITION) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("gotFix: ").append(gotFix).append(" tmpGotFix: ").append(tmpGotFix).append("\n");
+            GPLog.addLogEntry("GPSSERVICE", sb.toString());
         }
-        gotFix = tmpGotFix;
+
+        if (tmpGotFix != gotFix) {
+            gotFix = tmpGotFix;
+            broadcast("triggered by onGpsStatusChanged on fix change: " + gotFix);
+        } else {
+            gotFix = tmpGotFix;
+        }
+
         if (!gotFix) {
             lastGpsLocation = null;
         }
@@ -573,11 +584,13 @@ public class GpsService extends Service implements LocationListener, Listener {
             lon = lastGpsLocation.getLongitude();
             lat = lastGpsLocation.getLatitude();
             elev = lastGpsLocation.getAltitude();
-            intent.putExtra(GPS_SERVICE_POSITION, new double[]{lon, lat, elev});
+            double[] lastPositionArray = new double[]{lon, lat, elev};
+            intent.putExtra(GPS_SERVICE_POSITION, lastPositionArray);
             accuracy = lastGpsLocation.getAccuracy();
             speed = lastGpsLocation.getSpeed();
             bearing = lastGpsLocation.getBearing();
-            intent.putExtra(GPS_SERVICE_POSITION_EXTRAS, new float[]{accuracy, speed, bearing});
+            float[] lastPositionExtrasArray = new float[]{accuracy, speed, bearing};
+            intent.putExtra(GPS_SERVICE_POSITION_EXTRAS, lastPositionExtrasArray);
             time = lastGpsLocation.getTime();
             intent.putExtra(GPS_SERVICE_POSITION_TIME, time);
         }
@@ -592,7 +605,7 @@ public class GpsService extends Service implements LocationListener, Listener {
             intent.putExtra(GPS_SERVICE_GPSSTATUS_EXTRAS, new int[]{maxSatellites, satCount, satUsedInFixCount});
         }
 
-        if (GPLog.LOG_ABSURD) {
+        if (DOLOGPOSITION) {
             StringBuilder sb = new StringBuilder();
             sb.append("GPS SERVICE INFO: ").append(message).append("\n");
             sb.append("---------------------------\n");
@@ -607,7 +620,7 @@ public class GpsService extends Service implements LocationListener, Listener {
             sb.append("maxSatellites=").append(maxSatellites).append("\n");
             sb.append("satCount=").append(satCount).append("\n");
             sb.append("satUsedInFix=").append(satUsedInFixCount).append("\n");
-            log(sb.toString());
+            GPLog.addLogEntry("GPSSERVICE", sb.toString());
         }
 
         sendBroadcast(intent);

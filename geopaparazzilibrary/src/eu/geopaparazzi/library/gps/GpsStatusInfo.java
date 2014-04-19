@@ -102,6 +102,7 @@ public class GpsStatusInfo {
      * @param event the Gps status event triggered.
      * @return <code>true</code>, if it has fix.
      */
+    @SuppressWarnings("nls")
     public static boolean checkFix( boolean hasFix, long lastLocationUpdateMillis, int event ) {
         switch( event ) {
         case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
