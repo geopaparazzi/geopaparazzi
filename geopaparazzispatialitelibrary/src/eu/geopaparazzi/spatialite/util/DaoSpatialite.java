@@ -215,7 +215,7 @@ public class DaoSpatialite {
      *           sa_vector_data[5].split(","); must return the length of 4
      */
     // Mode Types: 0=strict ; 1=tolerant ; 2=corrective ; 3=corrective with CreateSpatialIndex
-    public static int VECTOR_LAYERS_QUERY_MODE=3;
+    public static int VECTOR_LAYERS_QUERY_MODE=0;
     // for spatialite 4.0 with valid vector_layers_statistics, o all of which have a layers_statistics table
     public static String VECTOR_LAYERS_QUERY_EXTENT_LIST_V4;
     public static String VECTOR_LAYERS_QUERY_EXTENT_VALID_V4;
@@ -1540,7 +1540,6 @@ public class DaoSpatialite {
      */
     private static void getSpatialVectorMap_V3( Database database, HashMap<String, String> spatialVectorMap , HashMap<String, String> spatialVectorMapErrors, boolean b_layers_statistics,boolean b_SpatialIndex ) throws Exception {
         int i_spatialindex=0;
-        VECTOR_LAYERS_QUERY_MODE=3;
          //GPLog.androidLog(-1,"-I-> DaoSpatialite: getSpatialVectorMap_V3["+database.getFilename()+"] b_layers_statistics["+b_layers_statistics+"] ");
         if (!b_SpatialIndex)
         { // pre-spatilite 3.0 Database may not have this Virtual-Table, it must be created to query the geometrys using the SpatialIndex
