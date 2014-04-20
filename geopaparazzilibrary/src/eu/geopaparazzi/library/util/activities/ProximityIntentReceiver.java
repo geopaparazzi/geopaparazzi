@@ -10,7 +10,6 @@ import android.graphics.Color;
 import android.location.LocationManager;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.gps.GpsManager;
 
 /**
  * @author javacodegeeks
@@ -39,7 +38,8 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
                     context.getString(R.string.approaching_poi), pendingIntent);
             notificationManager.notify(NOTIFICATION_ID, notification);
 
-            GpsManager.getInstance(context).getLocationManager().removeProximityAlert(pendingIntent);
+            LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+            locationManager.removeProximityAlert(pendingIntent);
             context.unregisterReceiver(this);
         } else {
             if (GPLog.LOG)
@@ -48,7 +48,7 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
 
     }
 
-    private Notification createNotification() {
+    private static Notification createNotification() {
         Notification notification = new Notification();
 
         notification.icon = R.drawable.current_position;

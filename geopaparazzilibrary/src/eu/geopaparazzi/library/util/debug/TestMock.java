@@ -22,18 +22,19 @@ import java.lang.reflect.Method;
 import android.content.ContentResolver;
 import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.SystemClock;
 import android.provider.Settings;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.gps.GpsManager;
 
 /**
- * A class for when there is no gps cover.
+ * A class for when there is no gps coverage.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("nls")
 public class TestMock {
     /**
      * 
@@ -57,9 +58,9 @@ public class TestMock {
      * Starts to trigger mock locations.
      * 
      * @param locationManager the location manager.
-     * @param gpsManager the gos manager. 
+     * @param locationListener the gps service. 
      */
-    public static void startMocking( final LocationManager locationManager, GpsManager gpsManager ) {
+    public static void startMocking( final LocationManager locationManager, LocationListener locationListener ) {
         if (isOn) {
             return;
         }
@@ -85,7 +86,7 @@ public class TestMock {
                 );
         locationManager.setTestProviderEnabled(MOCK_PROVIDER_NAME, true);
 
-        locationManager.requestLocationUpdates(TestMock.MOCK_PROVIDER_NAME, 2000, 0f, gpsManager);
+        locationManager.requestLocationUpdates(TestMock.MOCK_PROVIDER_NAME, 2000, 0f, locationListener);
 
         try {
             locationJellyBeanFixMethod = Location.class.getMethod("makeComplete");
@@ -180,7 +181,7 @@ public class TestMock {
      * @return true if they were set.
      */
     public static boolean isMockEnabled( ContentResolver contentResolver ) {
-        if (Settings.Secure.getString(contentResolver, Settings.Secure.ALLOW_MOCK_LOCATION).equals("0")) {
+        if (Settings.Secure.getString(contentResolver, Settings.Secure.ALLOW_MOCK_LOCATION).equals("0")) { //$NON-NLS-1$
             return false;
         } else {
             return true;

@@ -29,9 +29,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.ListActivity;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -45,10 +48,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.gps.GpsManager;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.TextRunnable;
 import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.library.util.activities.ProximityIntentReceiver;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
@@ -193,7 +196,7 @@ public class BookmarksListActivity extends ListActivity {
                                     public void run() {
                                         new AsyncTask<String, Void, String>(){
                                             protected String doInBackground( String... params ) {
-                                                return "";
+                                                return ""; //$NON-NLS-1$
                                             }
 
                                             protected void onPostExecute( String response ) {
@@ -249,11 +252,15 @@ public class BookmarksListActivity extends ListActivity {
                                                     // ignore and use default
                                                 }
                                             }
-
                                             Context context = getApplicationContext();
-                                            GpsManager.getInstance(context).addProximityAlert(context, bookmark.getLat(),
-                                                    bookmark.getLon(), (float) radius);
-
+                                            String PROX_ALERT_INTENT = "com.javacodegeeks.android.lbs.ProximityAlert"; //$NON-NLS-1$
+                                            Intent intent = new Intent(PROX_ALERT_INTENT);
+                                            PendingIntent proximityIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+                                            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                                            locationManager.addProximityAlert(bookmark.getLat(), bookmark.getLon(),
+                                                    (float) radius, -1, proximityIntent);
+                                            IntentFilter filter = new IntentFilter(PROX_ALERT_INTENT);
+                                            context.registerReceiver(new ProximityIntentReceiver(), filter);
                                             finish();
                                         }
                                     });
