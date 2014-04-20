@@ -430,7 +430,6 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             double w ) {
         String query = SpatialiteUtilities.buildGeometriesInBoundsQuery(destSrid, table, n, s, e, w);
         // GPLog.androidLog(-1,"GeopaparazziOverlay.getGeometryIteratorInBounds query["+query+"]");
-
         return new GeometryIterator(db_java, query);
     }
 

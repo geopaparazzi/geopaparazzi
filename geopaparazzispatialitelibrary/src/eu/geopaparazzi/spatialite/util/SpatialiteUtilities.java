@@ -360,9 +360,11 @@ public class SpatialiteUtilities {
         qSb.append(table.getGeomName());
         qSb.append(", ");
         qSb.append(mbr);
-        qSb.append(") = 1");
-        qSb.append(" AND ROWID IN (");
-        qSb.append("SELECT ROWID FROM Spatialindex WHERE f_table_name ='");
+        qSb.append(") = 1 AND ");
+        qSb.append(table.getROWID());
+        qSb.append("  IN (SELECT ");
+        qSb.append(table.getROWID());
+        qSb.append(" FROM Spatialindex WHERE f_table_name ='");
         qSb.append(table.getTableName());
         qSb.append("'");
         // if a table has more than 1 geometry, the column-name MUST be given, otherwise no results.
