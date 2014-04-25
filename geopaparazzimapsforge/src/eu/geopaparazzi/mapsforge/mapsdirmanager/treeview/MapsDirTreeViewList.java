@@ -28,11 +28,12 @@ import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.util.NodeSortParameter;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.util.TreeType;
 
 /**
- * Demo activity showing how the tree view can be used.
- *
+ * Map folder and files listing activity.
  */
 @SuppressWarnings({"rawtypes", "unchecked", "nls"})
 public class MapsDirTreeViewList extends Activity {
+    private static final boolean DO_LOG = GPLog.LOG_ABSURD;
+
     private static final String SAVEDINSTANCE__USE_TREE_TYPE = "use_treeType";
     /**
      * The name of the extra data in the result {@link Intent}.
@@ -60,15 +61,15 @@ public class MapsDirTreeViewList extends Activity {
     /**
      * Flag to enable the delete file menu.
      */
-    public static boolean ENABLE_MENU_DELETE_FILE = false;
+    private static boolean ENABLE_MENU_DELETE_FILE = false;
     /**
      * Flag to enable the edit file menu.
      */
-    public static boolean ENABLE_MENU_EDIT_FILE = false;
+    private static boolean ENABLE_MENU_EDIT_FILE = false;
     /**
      * Flag to enable the file properties menu.
      */
-    public static boolean ENABLE_MENU_PROPERTIES_FILE = true;
+    private static boolean ENABLE_MENU_PROPERTIES_FILE = false;
 
     private static TreeNode mapsdirParentTreeNode = null;
 
@@ -125,10 +126,26 @@ public class MapsDirTreeViewList extends Activity {
                 MAX_LEVEL_NUMBER = fileDirectoryLevel;
             sourceNode.setLevel(fileDirectoryLevel);
             directoryFileLevelsNodesList.add(sourceNode);
+            if (GPLog.LOG_ABSURD) {
+                GPLog.addLogEntry("MapsDirTreeViewList", "Added sourceNode: " + sourceNode);
+            }
         }
         MAX_LEVEL_NUMBER++; // add '/mnt/sdcard/maps' to the amount of levels
 
         sourceNodesList = origSourceNodesList;
+
+        if (DO_LOG) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("ORIGSOURCENODESLIST:\n");
+            for( TreeNode< ? > treeNode : origSourceNodesList ) {
+                sb.append(treeNode).append("\n");
+            }
+            sb.append("DIRECTORYFILELEVELSNODESLIST:\n");
+            for( TreeNode< ? > treeNode : directoryFileLevelsNodesList ) {
+                sb.append(treeNode).append("\n");
+            }
+            GPLog.addLogEntry("MapsDirTreeViewList", "STATIC INIT CHECK:\n" + sb.toString());
+        }
 
         Collections.sort(sourceNodesList, typetextDirectoryFileComparator);
         Collections.sort(directoryFileLevelsNodesList, directoryFileComparator);
@@ -174,9 +191,9 @@ public class MapsDirTreeViewList extends Activity {
 
             newTreeType = currentTreeType;
             String s_directory_prev_filedirectory = "";
-            String s_directory_prev_maptype = "";
+            String previousMaptypeFolder = "";
             String previousMaptype = "";
-            String s_directory_new = "";
+            String newFolder = "";
 
             try {
                 for( int i = 0; i < sourceNodesList.size(); i++ ) {
@@ -190,10 +207,13 @@ public class MapsDirTreeViewList extends Activity {
                         // Begin: 'TYPE_TEXT,DIRECTORY,FILE'
                         // ---------------------------------------------
                         currentTreeNode = sourceNodesList.get(i);
+                        if (DO_LOG) {
+                            GPLog.addLogEntry(this, "PROCESSING NODE:" + currentTreeNode);
+                        }
 
                         String newMapType = currentTreeNode.getTypeText() + " [" + mapsdirParentTreeNode.getFilePath() + "]";
-                        String[] sa_string_prev;
-                        String s_directory_prev = "";
+                        String[] previousFolderSplit;
+                        String previousDirectory = "";
                         if (!newMapType.equals(previousMaptype)) {
                             maptypeLevel = 0;
                             String filePath = mapsdirParentTreeNode.getFilePath();
@@ -202,45 +222,52 @@ public class MapsDirTreeViewList extends Activity {
                             previousMaptype = newMapType; // "mbtiles [/mnt/extSdCard/maps]";
                             maptypePosition = (long) (i + maptypeParentDir);
                             treeBuilderMaptype.sequentiallyAddNextNode(maptypePosition, maptypeLevel, dir_classinfo);
+                            if (DO_LOG) {
+                                GPLog.addLogEntry(this, "sequentiallyAddNextNode_208:" + dir_classinfo);
+                            }
                             maptypeParentDir++;
                         }
-                        s_directory_new = "";
-                        if (currentTreeNode.getLevel() > 1) { // level[1] is a file in the
-                                                              // root-map-directory
-                            s_directory_new = currentTreeNode.getFile().getParent()
+                        newFolder = "";
+                        if (currentTreeNode.getLevel() > 1) {
+                            // level[1] is a file in the
+                            // root-map-directory
+                            newFolder = currentTreeNode.getFile().getParent()
                                     .replaceAll(mapsdirParentTreeNode.getFilePath() + File.separator, "")
                                     + File.separator;
                         }
-                        if (((currentTreeNode.getLevel()) != maptypeLevel) || (!s_directory_new.equals(s_directory_prev_maptype))) {
+                        if (((currentTreeNode.getLevel()) != maptypeLevel) || (!newFolder.equals(previousMaptypeFolder))) {
                             String s_directory_path = "";
-                            if (!s_directory_new.equals("")) {
-                                boolean b_directory_prev = s_directory_new.startsWith(s_directory_prev_maptype);
+                            if (!newFolder.equals("")) {
+                                boolean b_directory_prev = newFolder.startsWith(previousMaptypeFolder);
                                 maptypeLevel = mapsdirParentTreeNode.getLevel();
-                                String[] sa_string = s_directory_new.split(File.separator);
-                                sa_string_prev = s_directory_prev_maptype.split(File.separator);
+                                String[] newFolderSplit = newFolder.split(File.separator);
+                                previousFolderSplit = previousMaptypeFolder.split(File.separator);
                                 s_directory_path = mapsdirParentTreeNode.getFilePath() + File.separator;
-                                for( int j = 0; j < sa_string.length; j++ ) {
-                                    String s_directory = sa_string[j] + File.separator;
-                                    s_directory_prev = "";
+                                for( int j = 0; j < newFolderSplit.length; j++ ) {
+                                    String directory = newFolderSplit[j] + File.separator;
+                                    previousDirectory = "";
                                     maptypeLevel++;
                                     if (b_directory_prev) {
-                                        if (j < sa_string_prev.length) {
-                                            s_directory_prev = sa_string_prev[j] + File.separator;
+                                        if (j < previousFolderSplit.length) {
+                                            previousDirectory = previousFolderSplit[j] + File.separator;
                                         }
                                     }
-                                    if (!s_directory.equals(s_directory_prev)) {
+                                    if (!directory.equals(previousDirectory)) {
                                         // First parm must have an absolute path, -
                                         // - second parm 's_directory' : only this will be shown
                                         // 'getShortText()'
                                         TreeNode dir_classinfo = new TreeNode((maptypePosition + 10000), null, s_directory_path
-                                                + s_directory);
+                                                + directory);
                                         dir_classinfo.setLevel(maptypeLevel);
                                         // todo search if exists, add only if it does not
                                         maptypePosition = (long) (i + maptypeParentDir);
                                         treeBuilderMaptype.sequentiallyAddNextNode(maptypePosition, maptypeLevel, dir_classinfo);
                                         maptypeParentDir++;
+                                        if (DO_LOG) {
+                                            GPLog.addLogEntry(this, "sequentiallyAddNextNode_248:" + dir_classinfo);
+                                        }
                                     }
-                                    s_directory_path += s_directory;
+                                    s_directory_path += directory;
                                 }
                             }
                             maptypeLevel = currentTreeNode.getLevel();
@@ -248,12 +275,15 @@ public class MapsDirTreeViewList extends Activity {
                             // "] new[" + s_directory_new+
                             // "] level["+i_level_maptype+"] directory_path[" + s_directory_path+
                             // "]");
-                            s_directory_prev_maptype = s_directory_new;
+                            previousMaptypeFolder = newFolder;
                         }
                         maptypePosition = (long) (i + maptypeParentDir);
                         // GPLog.androidLog(-1,TAG+" onCreate["+this_classinfo.getId()+"] TYPE_TEXT,DIRECTORY,FILE["
                         // + this_classinfo.getFileNamePath()+ "]");
                         treeBuilderMaptype.sequentiallyAddNextNode(maptypePosition, maptypeLevel, currentTreeNode);
+                        if (DO_LOG) {
+                            GPLog.addLogEntry(this, "sequentiallyAddNextNode_267:" + currentTreeNode);
+                        }
                         // ---------------------------------------------
                         // End: 'TYPE_TEXT,DIRECTORY,FILE'
                         // ---------------------------------------------
@@ -265,41 +295,44 @@ public class MapsDirTreeViewList extends Activity {
                             treeBuilderFiledirectory.sequentiallyAddNextNode((long) filedirectoryParentDir++,
                                     mapsdirParentTreeNode.getLevel(), mapsdirParentTreeNode);
                             filedirectoryLevel = mapsdirParentTreeNode.getLevel();
+                            if (DO_LOG) {
+                                GPLog.addLogEntry(this, "sequentiallyAddNextNode_279:" + mapsdirParentTreeNode);
+                            }
                         }
                         // GPLog.androidLog(-1,TAG+" onCreate[" + this_classinfo.toString()+ "]");
                         // String
                         // s_directory_new=TreeNode.getSubDirectory(this_classinfo,i_level_filedirectory,mapsdir_classinfo.getFileNamePath(),s_directory_prev_filedirectory);
-                        s_directory_new = "";
+                        newFolder = "";
                         if (currentTreeNode.getLevel() > 1) { // level[1] is a file in the
                                                               // root-map-directory
-                            s_directory_new = currentTreeNode.getFile().getParent()
+                            newFolder = currentTreeNode.getFile().getParent()
                                     .replaceAll(mapsdirParentTreeNode.getFilePath() + File.separator, "")
                                     + File.separator;
                         }
                         if (((currentTreeNode.getLevel()) != filedirectoryLevel)
-                                || (!s_directory_new.equals(s_directory_prev_filedirectory))) {
+                                || (!newFolder.equals(s_directory_prev_filedirectory))) {
                             // GPLog.androidLog(-1,TAG+" onCreate[FILEDIRECTORY] level["+this_classinfo.getLevel()+"] prev["
                             // + s_directory_prev_filedirectory+ "] new[" + s_directory_new+ "] ");
                             String s_directory_path = "";
-                            if (!s_directory_new.equals("")) {
-                                boolean b_directory_prev = s_directory_new.startsWith(s_directory_prev_filedirectory);
+                            if (!newFolder.equals("")) {
+                                boolean b_directory_prev = newFolder.startsWith(s_directory_prev_filedirectory);
                                 filedirectoryLevel = mapsdirParentTreeNode.getLevel();
                                 // int i_level_filedirectorys =
                                 // (s_directory_new.length()-s_directory_new.replaceAll(File.separator,
                                 // "").length());
-                                String[] sa_string = s_directory_new.split(File.separator);
-                                sa_string_prev = s_directory_prev_filedirectory.split(File.separator);
+                                String[] sa_string = newFolder.split(File.separator);
+                                previousFolderSplit = s_directory_prev_filedirectory.split(File.separator);
                                 s_directory_path = mapsdirParentTreeNode.getFilePath() + File.separator;
                                 for( int j = 0; j < sa_string.length; j++ ) {
                                     String s_directory = sa_string[j] + File.separator;
                                     filedirectoryLevel++;
-                                    s_directory_prev = "";
+                                    previousDirectory = "";
                                     if (b_directory_prev) {
-                                        if (j < sa_string_prev.length) {
-                                            s_directory_prev = sa_string_prev[j] + File.separator;
+                                        if (j < previousFolderSplit.length) {
+                                            previousDirectory = previousFolderSplit[j] + File.separator;
                                         }
                                     }
-                                    if (!s_directory.equals(s_directory_prev)) {
+                                    if (!s_directory.equals(previousDirectory)) {
                                         // First parm must have an absolute path, -
                                         // - second parm 's_directory' : only this will be shown
                                         // 'getShortText()'
@@ -311,6 +344,9 @@ public class MapsDirTreeViewList extends Activity {
                                         treeBuilderFiledirectory.sequentiallyAddNextNode(filedirectoryPosition,
                                                 filedirectoryLevel, dir_classinfo);
                                         filedirectoryParentDir++;
+                                        if (DO_LOG) {
+                                            GPLog.addLogEntry(this, "sequentiallyAddNextNode_328:" + dir_classinfo);
+                                        }
                                     }
                                     s_directory_path += s_directory;
                                 }
@@ -320,7 +356,7 @@ public class MapsDirTreeViewList extends Activity {
                             // s_directory_prev_filedirectory+ "] new[" + s_directory_new+
                             // "] level["+i_level_filedirectory+"] directory_path[" +
                             // s_directory_path+ "]");
-                            s_directory_prev_filedirectory = s_directory_new;
+                            s_directory_prev_filedirectory = newFolder;
                         }
                         filedirectoryPosition = (long) (i + filedirectoryParentDir);
                         treeBuilderFiledirectory.sequentiallyAddNextNode(filedirectoryPosition, filedirectoryLevel,
@@ -333,12 +369,13 @@ public class MapsDirTreeViewList extends Activity {
                     }
                 }
             } catch (Exception e) {
-                GPLog.androidLog(4, TAG + "onCreate creating [filling tree-nodes]", e);
+                GPLog.error(this, TAG + "onCreate creating [filling tree-nodes]", e);
             }
-            // GPLog.androidLog(-1,TAG+" onCreate[" + tree_manager_filedirectory.toString()+ "]");
-            // GPLog.androidLog(-1,TAG+" onCreate[filling ended]");
             makeCollapsible = true;
         } else {
+            if (GPLog.LOG) {
+                GPLog.addLogEntry(this, "Using safed instance of tree viewer.");
+            }
             treeStateManagerMaptype = (TreeStateManager<Long>) savedInstanceState.getSerializable("treetree_manager_maptype");
             if (treeStateManagerMaptype == null) {
                 treeStateManagerMaptype = new InMemoryTreeStateManager<Long>();
@@ -361,7 +398,7 @@ public class MapsDirTreeViewList extends Activity {
             setCollapsible(makeCollapsible);
             registerForContextMenu(this_treeViewList);
         } catch (Exception e) {
-            GPLog.androidLog(4, TAG + "onCreate creating [this_treeViewList_row_Adapter]", e);
+            GPLog.error(this, TAG + "onCreate creating [this_treeViewList_row_Adapter]", e);
         }
         // -- end of Context logic from original 'tree-view-list-android' project
         // Normal click - select the file and exit
@@ -385,18 +422,14 @@ public class MapsDirTreeViewList extends Activity {
                     node_info = treeStateManagerFiledirectory.getNodeInfo(id_node);
                     break;
                 }
-                GPLog.androidLog(-1, TAG + " onItemClick[" + currentTreeType + "] [" + node_info.getFilePath() + "] id_node["
-                        + id_node + "]");
+                if (GPLog.LOG_HEAVY)
+                    GPLog.addLogEntry(this, " onItemClick[" + currentTreeType + "] [" + node_info.getFilePath() + "] id_node["
+                            + id_node + "]");
                 if ((node_info != null) && (!node_info.isWithChildren())) {
                     loadNodeAndFinish(id_node);
                 }
             }
         });
-        // Long-press opens a context menu
-        // setContentView(R.layout.mapsdir_treeview_item_fields);
-        // ImageView this_view = (ImageView)
-        // findViewById(R.id.mapsdir_treeview_item_fields_options_button);
-        // registerForContextMenu(this_view);
     }
     @Override
     protected void onSaveInstanceState( final Bundle outState ) {
@@ -439,8 +472,6 @@ public class MapsDirTreeViewList extends Activity {
                     node_info = treeStateManagerFiledirectory.getNodeInfo(id_node);
                     break;
                 }
-                // GPLog.androidLog(-1,TAG+" onItemClick["+use_treeType+"] [" +
-                // node_info.getLongText()+ "] id_node["+id_node+"]");
                 if ((node_info != null) && (!node_info.isWithChildren())) {
                     loadNodeAndFinish(id_node);
                 }
@@ -582,9 +613,6 @@ public class MapsDirTreeViewList extends Activity {
                 menu.add(0, id_mapsdir_context_menu_properties_delete, 0, R.string.mapsdir_treeview_delete_menu);
             }
             menu.add(0, id_mapsdir_context_menu_load, 0, R.string.mapsdir_treeview_load_menu);
-            // GPLog.androidLog(-1,TAG+" onCreateContextMenu ["+this_view.getId()+"] mapsdir_treeview_item_fields_*["
-            // + node_info.getLongText()+
-            // "] properties["+MapsDirTreeViewList.ENABLE_MENU_PROPERTIES_FILE+"] edit["+MapsDirTreeViewList.ENABLE_MENU_EDIT_FILE+"] delete["+MapsDirTreeViewList.ENABLE_MENU_DELETE_FILE+"]");
             break;
         }
         super.onCreateContextMenu(menu, this_view, menuInfo);
@@ -593,23 +621,9 @@ public class MapsDirTreeViewList extends Activity {
     public boolean onContextItemSelected( final MenuItem item ) {
         final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
         final long id_node = info.id;
-        TreeNodeInfo<Long> node_info = null;
-        switch( currentTreeType ) {
-        case MAPTYPE: {
-            node_info = treeStateManagerMaptype.getNodeInfo(id_node);
-        }
-            break;
-        case FILEDIRECTORY: {
-            node_info = treeStateManagerFiledirectory.getNodeInfo(id_node);
-        }
-            break;
-        }
-        node_info.toString(); // TODO check why this is never used.
 
         switch( item.getItemId() ) {
         case id_mapsdir_context_menu_collapse:
-            // GPLog.androidLog(-1,TAG+" onContextItemSelected mapsdir_context_menu_collapse[" +
-            // item.getTitle()+ "]");
             switch( currentTreeType ) {
             case MAPTYPE: {
                 treeStateManagerMaptype.collapseChildren(id_node);
@@ -622,8 +636,6 @@ public class MapsDirTreeViewList extends Activity {
             }
             break;
         case id_mapsdir_context_menu_expand_all:
-            // GPLog.androidLog(-1,TAG+" onContextItemSelected mapsdir_context_menu_expand_all[" +
-            // item.getTitle()+ "]");
             switch( currentTreeType ) {
             case MAPTYPE: {
                 treeStateManagerMaptype.expandEverythingBelow(id_node);
@@ -636,8 +648,6 @@ public class MapsDirTreeViewList extends Activity {
             }
             break;
         case id_mapsdir_context_menu_expand_item:
-            // GPLog.androidLog(-1,TAG+" onContextItemSelected mapsdir_context_menu_expand_item[" +
-            // item.getTitle()+ "]");
             switch( currentTreeType ) {
             case MAPTYPE: {
                 treeStateManagerMaptype.expandDirectChildren(id_node);
@@ -650,13 +660,9 @@ public class MapsDirTreeViewList extends Activity {
             }
             break;
         case id_mapsdir_context_menu_load:
-            // GPLog.androidLog(-1,TAG+" onContextItemSelected mapsdir_context_menu_load[" +
-            // item.getTitle()+ "] id["+id+"]");
             loadNodeAndFinish(id_node);
             break;
         case id_mapsdir_context_menu_properties:
-            // GPLog.androidLog(-1,TAG+" onContextItemSelected mapsdir_context_menu_properties[" +
-            // item.getTitle()+ "] id["+id+"]");
             switch( currentTreeType ) {
             case MAPTYPE: {
                 // tree_manager_maptype.removeNodeRecursively(id_node);
@@ -669,8 +675,6 @@ public class MapsDirTreeViewList extends Activity {
             }
             break;
         case id_mapsdir_context_menu_properties_edit:
-            // GPLog.androidLog(-1,TAG+" onContextItemSelected mapsdir_context_menu_properties[" +
-            // item.getTitle()+ "] id["+id+"]");
             switch( currentTreeType ) {
             case MAPTYPE: {
                 // tree_manager_maptype.removeNodeRecursively(id_node);
@@ -683,8 +687,6 @@ public class MapsDirTreeViewList extends Activity {
             }
             break;
         case id_mapsdir_context_menu_properties_delete:
-            // GPLog.androidLog(-1,TAG+" onContextItemSelected mapsdir_context_menu_delete[" +
-            // item.getTitle()+ "]");
             switch( currentTreeType ) {
             case MAPTYPE: {
                 treeStateManagerMaptype.removeNodeRecursively(id_node);
@@ -697,12 +699,11 @@ public class MapsDirTreeViewList extends Activity {
             }
             break;
         default:
-            // GPLog.androidLog(-1,TAG+" onContextItemSelected unknown["+item.getItemId()+"] [" +
-            // item.getTitle()+ "]");
             return super.onContextItemSelected(item);
         }
         return true;
     }
+
     protected final void loadNodeAndFinish( final long id_node ) {
         TreeNodeInfo<Long> treeNodeInfo = null;
         switch( currentTreeType ) {
@@ -723,8 +724,10 @@ public class MapsDirTreeViewList extends Activity {
             send_intent.putExtra(SELECTED_TYPE, fileType);
             TreeNode< ? > selectedTreeNode = treeNodeInfo.getTreeNode();
             send_intent.putExtra(SELECTED_CLASSINFO, selectedTreeNode.toString());
-            GPLog.androidLog(-1, TAG + " return_load_file mapsdir_context_menu_load selected_file[" + filePath + "] type["
-                    + fileType + "]");
+
+            if (GPLog.LOG_HEAVY)
+                GPLog.addLogEntry(this, " return_load_file mapsdir_context_menu_load selected_file[" + filePath + "] type["
+                        + fileType + "]");
 
             MapsDirManager.getInstance().setSelectedTreeNode(this, selectedTreeNode, null, null);
 

@@ -467,20 +467,7 @@ public class GeoPaparazziActivity extends Activity {
     }
 
     private void initMapsDirManager() throws jsqlite.Exception, IOException, FileNotFoundException {
-        // [MapDirManager]
-        // define in MapsDirTreeViewList, which Context-Menus should be supported for
-        // this Application
-        // Should the Properties-Menu be supported/shown?
-        MapsDirTreeViewList.ENABLE_MENU_PROPERTIES_FILE = true;
-        // Should the Edit-Menu be supported/shown?
-        MapsDirTreeViewList.ENABLE_MENU_EDIT_FILE = false;
-        // Should the Delete-Menu be supported/shown?
-        MapsDirTreeViewList.ENABLE_MENU_DELETE_FILE = false;
         MapsDirManager.reset();
-        // if the 'maps_dir' parameter is null, then MapsDirManager will call:
-        // - ResourcesManager.getInstance(this).getMapsDir();
-        // to retrieve the 'maps_dir : call:
-        // - maps_dir=MapsDirManager.get_maps_dir();
 
         initMapsdirDialog = new ProgressDialog(this);
         initMapsdirDialog.setCancelable(true);
@@ -701,7 +688,7 @@ public class GeoPaparazziActivity extends Activity {
         try {
             startActivityForResult(new Intent(this, MapsDirTreeViewList.class), MAPSDIR_FILETREE);
         } catch (Exception e) {
-            GPLog.error(this, "GeoPaparazziActivity -E-> failed[startActivity(new Intent(this,MapsDirTreeViewList.class));]", e);
+            GPLog.error(this, "GeoPaparazziActivity -E-> failed[startActivity(new Intent(this,MapsDirTreeViewList.class));]", e); //$NON-NLS-1$
         }
     }
 

@@ -38,7 +38,6 @@ import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.MapsDirTreeViewList;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
 
@@ -197,9 +196,6 @@ public class TantoMapurlsActivity extends Activity implements OnClickListener {
             new Thread(new Runnable(){
                 public void run() {
                     try {
-                        MapsDirTreeViewList.ENABLE_MENU_PROPERTIES_FILE = true;
-                        MapsDirTreeViewList.ENABLE_MENU_EDIT_FILE = false;
-                        MapsDirTreeViewList.ENABLE_MENU_DELETE_FILE = false;
                         MapsDirManager.reset();
                         MapsDirManager.getInstance().init(GeopaparazziApplication.getInstance(), null);
                     } catch (Exception e) {

@@ -94,9 +94,10 @@ class InMemoryTreeNode<T> implements Serializable {
     public synchronized InMemoryTreeNode<T> add( final int index, final T child, final boolean visible, TreeNode< ? > treeNode ) {
         childIdListCache = null;
         // Note! top levell children are always visible (!)
-        final InMemoryTreeNode<T> newNode = new InMemoryTreeNode<T>(child, getId(), getLevel() + 1, getId() == null
-                ? true
-                : visible, treeNode);
+        T id = getId();
+        boolean isIdNull = id == null ? true : visible;
+        int level = getLevel() + 1;
+        final InMemoryTreeNode<T> newNode = new InMemoryTreeNode<T>(child, id, level, isIdNull, treeNode);
         children.add(index, newNode);
         return newNode;
     }

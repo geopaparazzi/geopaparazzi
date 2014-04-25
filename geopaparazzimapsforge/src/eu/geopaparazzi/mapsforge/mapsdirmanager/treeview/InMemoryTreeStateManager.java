@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import android.database.DataSetObserver;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.exceptions.NodeAlreadyInTreeException;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.exceptions.NodeNotInTreeException;
 
@@ -20,6 +21,7 @@ import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.exceptions.NodeNotInTre
  *            type of identifier
  */
 public class InMemoryTreeStateManager<T> implements TreeStateManager<T> {
+    private static final boolean DO_LOG = GPLog.LOG_ABSURD;
     private static final long serialVersionUID = 1L;
     private final Map<T, InMemoryTreeNode<T>> allNodes = new HashMap<T, InMemoryTreeNode<T>>();
 
@@ -116,10 +118,16 @@ public class InMemoryTreeStateManager<T> implements TreeStateManager<T> {
         if (beforeChild == null) {
             final InMemoryTreeNode<T> added = node.add(0, newChild, visibility, this_classinfo);
             allNodes.put(newChild, added);
+            if (DO_LOG) {
+                GPLog.addLogEntry(this, "Adding before child: " + added);
+            }
         } else {
             final int index = node.indexOf(beforeChild);
             final InMemoryTreeNode<T> added = node.add(index == -1 ? 0 : index, newChild, visibility, this_classinfo);
             allNodes.put(newChild, added);
+            if (DO_LOG) {
+                GPLog.addLogEntry(this, "Adding null before child: " + added);
+            }
         }
         if (visibility) {
             internalDataSetChanged();
@@ -134,11 +142,17 @@ public class InMemoryTreeStateManager<T> implements TreeStateManager<T> {
         if (afterChild == null) {
             final InMemoryTreeNode<T> added = node.add(node.getChildrenListSize(), newChild, visibility, this_classinfo);
             allNodes.put(newChild, added);
+            if (DO_LOG) {
+                GPLog.addLogEntry(this, "Adding after child: " + added);
+            }
         } else {
             final int index = node.indexOf(afterChild);
             final InMemoryTreeNode<T> added = node.add(index == -1 ? node.getChildrenListSize() : index + 1, newChild,
                     visibility, this_classinfo);
             allNodes.put(newChild, added);
+            if (DO_LOG) {
+                GPLog.addLogEntry(this, "Adding null after child: " + added);
+            }
         }
         if (visibility) {
             internalDataSetChanged();
