@@ -138,6 +138,8 @@ public class CustomTileDownloader extends TileDownloader {
     private boolean isConnectedToInternet;
     private boolean doScaleTiles;
 
+    private SharedPreferences preferences;
+
     /**
      * Constructor.
      * 
@@ -147,9 +149,9 @@ public class CustomTileDownloader extends TileDownloader {
      */
     public CustomTileDownloader( File sourceFile, String parentPath ) throws IOException {
         super();
+
         Context context = GeopaparazziLibraryContextHolder.INSTANCE.getContext();
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        doScaleTiles = preferences.getBoolean("PREFS_KEY_RETINA", false);
+        preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         this.name = sourceFile.getName().substring(0, sourceFile.getName().lastIndexOf("."));
         List<String> fileLines = new ArrayList<String>();
@@ -722,6 +724,7 @@ public class CustomTileDownloader extends TileDownloader {
         int tileX = (int) tile.tileX;
         int tileY = (int) tile.tileY;
 
+        doScaleTiles = preferences.getBoolean("PREFS_KEY_RETINA", false);
         if (type != TILESCHEMA.wms && doScaleTiles) {
             tileX = tileX / (2 * ZOOM_LEVEL_DIFF);
             tileY = tileY / (2 * ZOOM_LEVEL_DIFF);
@@ -800,7 +803,8 @@ public class CustomTileDownloader extends TileDownloader {
                     urlConnection.setRequestProperty(USER_AGENT_STR, GEOPAPARAZZI_STR);
                     inputStream = urlConnection.getInputStream();
                     decodedBitmap = BitmapFactory.decodeStream(inputStream);
-                    decodedBitmap = resize(decodedBitmap, tileX, tileYOsm, ZOOM_LEVEL_DIFF, tileSize);
+                    if (doScaleTiles)
+                        decodedBitmap = resize(decodedBitmap, tileX, tileYOsm, ZOOM_LEVEL_DIFF, tileSize);
                 } catch (Exception e) {
                     // ignore and set the image as empty
                     if (GPLog.LOG_HEAVY)
