@@ -22,27 +22,19 @@ package eu.geopaparazzi.library.gps;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public enum GpsServiceStatus {
+public enum GpsLoggingStatus {
     /**
-     * GPS is switched off.
+     * GPS is not logging data to the database.
      */
-    GPS_OFF(0), //
+    GPS_DATABASELOGGING_OFF(0),
     /**
-     * GPS is switched on but not register to location updates.
+     * GPS is logging data to the database.
      */
-    GPS_ON__NO_LISTENING(1), //
-    /**
-     * GPS is registered for location updates but has no fix.
-     */
-    GPS_LISTENING__NO_FIX(2), //
-    /**
-     * GPS has fix.
-     */
-    GPS_FIX(3);
+    GPS_DATABASELOGGING_ON(1);
 
     private int code;
 
-    private GpsServiceStatus( int code ) {
+    private GpsLoggingStatus( int code ) {
         this.code = code;
     }
 
@@ -54,14 +46,14 @@ public enum GpsServiceStatus {
     }
 
     /**
-     * Get the {@link GpsServiceStatus} for a given code.
+     * Get the {@link GpsLoggingStatus} for a given code.
      * 
      * @param code the code to check.
      * @return the status.
      */
-    public static GpsServiceStatus getStatusForCode( int code ) {
-        GpsServiceStatus[] values = values();
-        for( GpsServiceStatus gpsServiceStatus : values ) {
+    public static GpsLoggingStatus getStatusForCode( int code ) {
+        GpsLoggingStatus[] values = values();
+        for( GpsLoggingStatus gpsServiceStatus : values ) {
             if (code == gpsServiceStatus.getCode()) {
                 return gpsServiceStatus;
             }

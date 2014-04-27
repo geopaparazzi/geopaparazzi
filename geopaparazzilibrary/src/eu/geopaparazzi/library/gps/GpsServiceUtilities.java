@@ -17,13 +17,14 @@
  */
 package eu.geopaparazzi.library.gps;
 
+import static eu.geopaparazzi.library.gps.GpsService.GPS_LOGGING_STATUS;
 import static eu.geopaparazzi.library.gps.GpsService.GPS_SERVICE_BROADCAST_NOTIFICATION;
 import static eu.geopaparazzi.library.gps.GpsService.GPS_SERVICE_DO_BROADCAST;
-import static eu.geopaparazzi.library.gps.GpsService.GPS_SERVICE_GPSSTATUS;
 import static eu.geopaparazzi.library.gps.GpsService.GPS_SERVICE_GPSSTATUS_EXTRAS;
 import static eu.geopaparazzi.library.gps.GpsService.GPS_SERVICE_POSITION;
 import static eu.geopaparazzi.library.gps.GpsService.GPS_SERVICE_POSITION_EXTRAS;
 import static eu.geopaparazzi.library.gps.GpsService.GPS_SERVICE_POSITION_TIME;
+import static eu.geopaparazzi.library.gps.GpsService.GPS_SERVICE_STATUS;
 import static eu.geopaparazzi.library.gps.GpsService.START_GPS_LOGGING;
 import static eu.geopaparazzi.library.gps.GpsService.START_GPS_LOG_HELPER_CLASS;
 import static eu.geopaparazzi.library.gps.GpsService.START_GPS_LOG_NAME;
@@ -71,8 +72,22 @@ public class GpsServiceUtilities {
         if (intent == null) {
             return null;
         }
-        int gpsServiceStatusCode = intent.getIntExtra(GPS_SERVICE_GPSSTATUS, 0);
+        int gpsServiceStatusCode = intent.getIntExtra(GPS_SERVICE_STATUS, 0);
         return GpsServiceStatus.getStatusForCode(gpsServiceStatusCode);
+    }
+
+    /**
+     * Utility to get the {@link GpsLoggingStatus} from an intent.
+     * 
+     * @param intent the intent.
+     * @return the status.
+     */
+    public static GpsLoggingStatus getGpsLoggingStatus( Intent intent ) {
+        if (intent == null) {
+            return null;
+        }
+        int gpsServiceStatusCode = intent.getIntExtra(GPS_LOGGING_STATUS, 0);
+        return GpsLoggingStatus.getStatusForCode(gpsServiceStatusCode);
     }
 
     /**

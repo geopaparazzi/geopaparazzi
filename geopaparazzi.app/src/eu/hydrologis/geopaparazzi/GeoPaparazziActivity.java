@@ -57,6 +57,7 @@ import android.widget.Toast;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
 import eu.geopaparazzi.library.forms.TagsManager;
+import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.sensors.SensorsManager;
@@ -121,6 +122,8 @@ public class GeoPaparazziActivity extends Activity {
     private ProgressDialog initMapsdirDialog;
     private BroadcastReceiver gpsServiceBroadcastReceiver;
     private GpsServiceStatus lastGpsServiceStatus = GpsServiceStatus.GPS_OFF;
+    private GpsLoggingStatus lastGpsLoggingStatus = GpsLoggingStatus.GPS_DATABASELOGGING_OFF;
+    private double[] lastGpsPosition;
 
     private static boolean checkedGps = false;
 
@@ -381,7 +384,7 @@ public class GeoPaparazziActivity extends Activity {
                 push(logButtonId, v);
             }
         });
-        if (lastGpsServiceStatus == GpsServiceStatus.GPS_DATABASELOGGING) {
+        if (lastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
             logButton.setImageResource(R.drawable.dashboard_stop_log_item);
         } else {
             logButton.setImageResource(R.drawable.dashboard_log_item);
@@ -553,7 +556,7 @@ public class GeoPaparazziActivity extends Activity {
         }
         case R.id.dashboard_log_item_button: {
             final GeopaparazziApplication appContext = GeopaparazziApplication.getInstance();
-            if (lastGpsServiceStatus == GpsServiceStatus.GPS_DATABASELOGGING) {
+            if (lastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
                 Utilities.yesNoMessageDialog(GeoPaparazziActivity.this, getString(R.string.do_you_want_to_stop_logging),
                         new Runnable(){
                             public void run() {
@@ -809,7 +812,6 @@ public class GeoPaparazziActivity extends Activity {
     private int backCount = 0;
     private long previousBackTime = System.currentTimeMillis();
     private ImageButton logButton;
-    private double[] lastGpsPosition;
 
     public boolean onKeyDown( int keyCode, KeyEvent event ) {
         // force to exit through the exit button
@@ -1015,11 +1017,13 @@ public class GeoPaparazziActivity extends Activity {
 
     private void onGpsServiceUpdate( Intent intent ) {
         lastGpsServiceStatus = GpsServiceUtilities.getGpsServiceStatus(intent);
+        lastGpsLoggingStatus = GpsServiceUtilities.getGpsLoggingStatus(intent);
         lastGpsPosition = GpsServiceUtilities.getPosition(intent);
         float[] lastGpsPositionExtras = GpsServiceUtilities.getPositionExtras(intent);
         int[] lastGpsStatusExtras = GpsServiceUtilities.getGpsStatusExtras(intent);
         long lastPositiontime = GpsServiceUtilities.getPositionTime(intent);
-        actionBar.setStatus(lastGpsServiceStatus, lastGpsPosition, lastGpsPositionExtras, lastGpsStatusExtras, lastPositiontime);
+        actionBar.setStatus(lastGpsServiceStatus, lastGpsLoggingStatus, lastGpsPosition, lastGpsPositionExtras,
+                lastGpsStatusExtras, lastPositiontime);
     }
 
     private void checkFirstTimeGps( Context context ) {

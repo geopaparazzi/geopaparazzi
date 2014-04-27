@@ -55,6 +55,7 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.FormActivity;
+import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsService;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.util.ColorUtilities;
@@ -171,6 +172,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
     private boolean isNotesTextVisible;
     private boolean doNotesTextHalo;
     private GpsServiceStatus gpsServiceStatus = GpsServiceStatus.GPS_OFF;
+    private GpsLoggingStatus gpsLoggingStatus = GpsLoggingStatus.GPS_DATABASELOGGING_OFF;
 
     /**
      * Create a {@link OverlayWay} wrapped type.
@@ -398,12 +400,15 @@ public abstract class GeopaparazziOverlay extends Overlay {
      *
      * @param position the {@link GeoPoint}.
      * @param accuracy the accuracy.
-     * @param gpsServiceStatus the gps status as defined by {@link GpsService#GPS_SERVICE_GPSSTATUS}.
+     * @param gpsServiceStatus the gps status as defined by {@link GpsService#GPS_SERVICE_STATUS}.
+     * @param gpsLoggingStatus the database logging status as defined by {@link GpsService#GPS_LOGGING_STATUS}.
      */
     @SuppressWarnings("nls")
-    public void setGpsPosition( GeoPoint position, float accuracy, GpsServiceStatus gpsServiceStatus ) {
+    public void setGpsPosition( GeoPoint position, float accuracy, GpsServiceStatus gpsServiceStatus,
+            GpsLoggingStatus gpsLoggingStatus ) {
         this.gpsServiceStatus = gpsServiceStatus;
-        if (gpsServiceStatus == GpsServiceStatus.GPS_DATABASELOGGING) {
+        this.gpsLoggingStatus = gpsLoggingStatus;
+        if (gpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
             currentGpsLog.add(position);
         } else {
             currentGpsLog.clear();
@@ -567,7 +572,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
         /*
          * gps logging track
          */
-        if (gpsServiceStatus == GpsServiceStatus.GPS_DATABASELOGGING) {
+        if (gpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
             // if a track is recorded, show it
             synchronized (gpslogOverlay) {
                 int size = currentGpsLog.size();
@@ -662,7 +667,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
         if (gpsServiceStatus == GpsServiceStatus.GPS_OFF) {
             gpsStatusFill = gpsRedFill;
         } else {
-            if (gpsServiceStatus == GpsServiceStatus.GPS_DATABASELOGGING) {
+            if (gpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
                 gpsStatusFill = gpsBlueFill;
             } else {
                 if (gpsServiceStatus == GpsServiceStatus.GPS_FIX) {

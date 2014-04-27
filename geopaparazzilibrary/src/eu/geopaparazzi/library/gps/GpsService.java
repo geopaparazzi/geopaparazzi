@@ -90,10 +90,20 @@ public class GpsService extends Service implements LocationListener, Listener {
      * <li>gps on but not listening for updates = 1</li>
      * <li>gps on and listening for updates but no fix= 2</li>
      * <li>gps has fix = 3</li>
-     * <li>gps is logging to db = 4</li>
      * </ul>
      */
-    public static final String GPS_SERVICE_GPSSTATUS = "GPS_SERVICE_GPSSTATUS";
+    public static final String GPS_SERVICE_STATUS = "GPS_SERVICE_STATUS";
+
+    /**
+     * Intent key to use for int gps logging status.
+     * 
+     * <p>Status can be:
+     * <ul>
+     * <li>gps logging off = 0</li>
+     * <li>gps logging on = 1</li>
+     * </ul>
+     */
+    public static final String GPS_LOGGING_STATUS = "GPS_LOGGING_STATUS";
     /**
      * Intent key to use for double array position data [lon, lat, elev].
      */
@@ -569,12 +579,13 @@ public class GpsService extends Service implements LocationListener, Listener {
                 || isMockMode) {
             status = 3; // listening for updates and has fix
         }
-        if ((isProviderEnabled && isListeningForUpdates && gotFix && isDatabaseLogging) //
-                || (isDatabaseLogging && isMockMode)) {
-            status = 4; // logging to database
+        intent.putExtra(GPS_SERVICE_STATUS, status);
+        if (isDatabaseLogging || (isDatabaseLogging && isMockMode)) {
             intent.putExtra(GPS_SERVICE_CURRENT_LOG_ID, currentRecordedLogId);
+            intent.putExtra(GPS_LOGGING_STATUS, 1);
+        } else {
+            intent.putExtra(GPS_LOGGING_STATUS, 0);
         }
-        intent.putExtra(GPS_SERVICE_GPSSTATUS, status);
         double lon = -1;
         double lat = -1;
         double elev = -1;

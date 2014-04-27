@@ -37,6 +37,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.sensors.SensorsManager;
 import eu.geopaparazzi.library.util.ResourcesManager;
@@ -76,6 +77,7 @@ public class ActionBar {
     private double[] lastGpsPosition;
     private int[] lastGpsStatusExtras;
     private long lastGpsPositiontime;
+    private GpsLoggingStatus lastGpsLoggingStatus;
 
     private ActionBar( View actionBarView, SensorsManager sensorsManager ) {
         this.actionBarView = actionBarView;
@@ -332,7 +334,7 @@ public class ActionBar {
             sb.append(" ").append((int) (360 - azimuth)); //$NON-NLS-1$
             sb.append("\n");
             sb.append(indent).append(loggingString);
-            sb.append(": ").append(lastGpsServiceStatus == GpsServiceStatus.GPS_DATABASELOGGING); //$NON-NLS-1$
+            sb.append(": ").append(lastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON); //$NON-NLS-1$
             sb.append("\n");
             addGpsStatusInfo(sb);
         }
@@ -382,7 +384,7 @@ public class ActionBar {
         if (lastGpsServiceStatus != GpsServiceStatus.GPS_OFF) {// gpsManager.isEnabled()) {
             if (LOG_HOW)
                 GPLog.addLogEntry(this, "GPS seems to be on");
-            if (lastGpsServiceStatus == GpsServiceStatus.GPS_DATABASELOGGING) {
+            if (lastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
                 if (LOG_HOW)
                     GPLog.addLogEntry(this, "GPS seems to be also logging");
                 gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_logging));
@@ -408,14 +410,16 @@ public class ActionBar {
      * Set the current status.
      * 
      * @param gpsServiceStatus gps status.
+     * @param gpsLoggingStatus logging status.
      * @param lastGpsPosition gps position.
      * @param lastGpsPositionExtras position extras.
      * @param lastGpsStatusExtras status extras.
      * @param lastPositiontime position time.
      */
-    public void setStatus( GpsServiceStatus gpsServiceStatus, double[] lastGpsPosition, float[] lastGpsPositionExtras,
-            int[] lastGpsStatusExtras, long lastPositiontime ) {
+    public void setStatus( GpsServiceStatus gpsServiceStatus, GpsLoggingStatus gpsLoggingStatus, double[] lastGpsPosition,
+            float[] lastGpsPositionExtras, int[] lastGpsStatusExtras, long lastPositiontime ) {
         this.lastGpsServiceStatus = gpsServiceStatus;
+        this.lastGpsLoggingStatus = gpsLoggingStatus;
         this.lastGpsPosition = lastGpsPosition;
         this.lastGpsStatusExtras = lastGpsStatusExtras;
         this.lastGpsPositiontime = lastPositiontime;

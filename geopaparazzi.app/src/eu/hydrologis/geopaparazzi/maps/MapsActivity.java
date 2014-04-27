@@ -89,6 +89,7 @@ import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.mixare.MixareHandler;
@@ -173,6 +174,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener {
     private double[] lastGpsPosition;
 
     private GpsServiceStatus lastGpsServiceStatus = GpsServiceStatus.GPS_OFF;
+    private GpsLoggingStatus lastGpsLoggingStatus = GpsLoggingStatus.GPS_DATABASELOGGING_OFF;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -646,7 +648,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener {
             if (lastGpsPosition != null) {
                 GeoPoint geoPoint = new GeoPoint((int) (lastGpsPosition[1] * LibraryConstants.E6),
                         (int) (lastGpsPosition[0] * LibraryConstants.E6));
-                dataOverlay.setGpsPosition(geoPoint, 0f, lastGpsServiceStatus);
+                dataOverlay.setGpsPosition(geoPoint, 0f, lastGpsServiceStatus, lastGpsLoggingStatus);
             }
             // dataOverlay.requestRedraw();
         } catch (IOException e1) {
@@ -1460,6 +1462,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener {
             return;
         }
         lastGpsServiceStatus = GpsServiceUtilities.getGpsServiceStatus(intent);
+        lastGpsLoggingStatus = GpsServiceUtilities.getGpsLoggingStatus(intent);
 
         float[] lastGpsPositionExtras = GpsServiceUtilities.getPositionExtras(intent);
         float accuracy = 0;
@@ -1486,7 +1489,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener {
             // Rect bounds = new Rect(wE6, nE6, eE6, sE6);
             if (boundsContain(latE6, lonE6, nE6, sE6, wE6, eE6)) {
                 GeoPoint point = new GeoPoint(latE6, lonE6);
-                dataOverlay.setGpsPosition(point, accuracy, lastGpsServiceStatus);
+                dataOverlay.setGpsPosition(point, accuracy, lastGpsServiceStatus, lastGpsLoggingStatus);
                 dataOverlay.requestRedraw();
             }
 

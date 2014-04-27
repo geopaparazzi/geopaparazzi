@@ -60,7 +60,7 @@ import eu.geopaparazzi.spatialite.util.SpatialDataType;
  *
  * @author Mark Johnson (www.mj10777.de)
  */
-@SuppressWarnings({"rawtypes", "unchecked", "nls"})
+@SuppressWarnings({"nls"})
 public class MapsDirManager {
 
     private File mapsDir = null;
