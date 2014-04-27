@@ -220,6 +220,7 @@
         </activity>
         <!-- FROM LIBRARY -->
         <activity android:name="eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.MapsDirTreeViewList" />
+        <activity android:name="eu.geopaparazzi.mapsforge.mapsdirmanager.sourcesview.SourcesTreeListActivity" />
         <activity
             android:name="eu.geopaparazzi.library.camera.CameraActivity"
             android:configChanges="orientation|screenSize" >
