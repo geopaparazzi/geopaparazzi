@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import jsqlite.Exception;
 
@@ -83,7 +84,7 @@ public class MapsDirManager {
     private double currentY = 0.0;
     private String s_bounds_zoom = "";
     private File mapnikFile;
-    private LinkedHashMap<String, List<String[]>> fodler2TablesMap;
+    private LinkedHashMap<String, List<String[]>> folderPath2TablesDataMap;
 
     private MapsDirManager() {
     }
@@ -294,11 +295,11 @@ public class MapsDirManager {
     }
 
     public LinkedHashMap<String, List<String[]>> getFodler2TablesMap() {
-        return fodler2TablesMap;
+        return folderPath2TablesDataMap;
     }
 
     private void createTree( List<SpatialTable> tilesBasedTables ) {
-        fodler2TablesMap = new LinkedHashMap<String, List<String[]>>();
+        folderPath2TablesDataMap = new LinkedHashMap<String, List<String[]>>();
         List<String> parentPaths = new ArrayList<String>();
         for( SpatialTable spatialTable : tilesBasedTables ) {
             File file = spatialTable.getDatabaseFile();
@@ -322,18 +323,35 @@ public class MapsDirManager {
         Collections.sort(parentPaths, pathComparator);
 
         for( String parentPath : parentPaths ) {
-            fodler2TablesMap.put(parentPath, new ArrayList<String[]>());
+            folderPath2TablesDataMap.put(parentPath, new ArrayList<String[]>());
         }
         for( SpatialTable spatialTable : tilesBasedTables ) {
             File file = spatialTable.getDatabaseFile();
             File parentFolder = file.getParentFile();
             String absolutePath = parentFolder.getAbsolutePath();
-            List<String[]> list = fodler2TablesMap.get(absolutePath);
+            List<String[]> list = folderPath2TablesDataMap.get(absolutePath);
             String[] data = new String[]{//
             spatialTable.getDatabasePath(),//
                     spatialTable.getMapType()//
             };
             list.add(data);
+        }
+
+        // sort the sources
+        for( Entry<String, List<String[]>> entry : folderPath2TablesDataMap.entrySet() ) {
+            List<String[]> value = entry.getValue();
+            Comparator<String[]> sourceNameComparator = new Comparator<String[]>(){
+                public int compare( String[] p1, String[] p2 ) {
+                    String path1 = p1[0];
+                    String path2 = p2[0];
+                    File file1 = new File(path1);
+                    File file2 = new File(path2);
+                    String name1 = file1.getName();
+                    String name2 = file2.getName();
+                    return name1.compareTo(name2);
+                }
+            };
+            Collections.sort(value, sourceNameComparator);
         }
 
     }
