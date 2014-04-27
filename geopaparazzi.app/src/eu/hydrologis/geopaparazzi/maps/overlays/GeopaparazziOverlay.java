@@ -609,7 +609,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
         }
 
         // get the current circle
-        if (overlayGps != null && overlayGps.center != null) {
+        if (gpsServiceStatus == GpsServiceStatus.GPS_FIX && overlayGps != null && overlayGps.center != null) {
             synchronized (overlayGps) {
                 // make sure that the current circle has a center position and a radius
                 if (overlayGps.center != null && overlayGps.radius >= 0) {
