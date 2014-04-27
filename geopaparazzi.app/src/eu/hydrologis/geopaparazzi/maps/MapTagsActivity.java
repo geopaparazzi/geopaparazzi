@@ -105,7 +105,7 @@ public class MapTagsActivity extends Activity {
         broadcastReceiver = new BroadcastReceiver(){
             public void onReceive( Context context, Intent intent ) {
                 GpsServiceStatus gpsServiceStatus = GpsServiceUtilities.getGpsServiceStatus(intent);
-                if (gpsServiceStatus.getCode() >= GpsServiceStatus.GPS_FIX.getCode()) {
+                if (gpsServiceStatus == GpsServiceStatus.GPS_FIX) {
                     gpsLocation = GpsServiceUtilities.getPosition(intent);
                     boolean useMapCenterPosition = preferences.getBoolean(USE_MAPCENTER_POSITION, false);
                     if (useMapCenterPosition) {
@@ -114,11 +114,10 @@ public class MapTagsActivity extends Activity {
                         togglePositionTypeButtonGps.setChecked(true);
                     }
                 } else {
-                    gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
                     togglePositionTypeButtonGps.setChecked(false);
                     togglePositionTypeButtonGps.setEnabled(false);
                     Editor edit = preferences.edit();
-                    edit.putBoolean(USE_MAPCENTER_POSITION, false);
+                    edit.putBoolean(USE_MAPCENTER_POSITION, true);
                     edit.commit();
                 }
             }
