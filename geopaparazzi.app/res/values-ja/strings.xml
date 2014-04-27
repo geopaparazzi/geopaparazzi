@@ -108,6 +108,8 @@
   <string name="osm_notes_properly_uploaded">OSMノートが正しくアップロードされました\n\nアップロードされたノートをデバイスから削除しますか？</string>
   <string name="an_error_occurred_while_uploading_osm_tags">OSM タグのアップロード中にエラーが発生しました。</string>
   <string name="enable_automatic_center_on_gps">地図中心をGPS座標へ</string>
+  <string name="enable_center_on_gps">GPS座標を常に中心にする</string>
+  <string name="disable_center_on_gps">GPS座標を中心にしない</string>
   <string name="profile">プロファイル</string>
   <string name="loading_data">データを読み込んでいます...</string>
   <string name="profilelable_distance">距離 [m]</string>
@@ -216,4 +218,5 @@
   <string name="text_filter">テキストフィルタ</string>
   <string name="tanto_service_query">クエリ</string>
   <string name="tanto_disclaimer">よくお読みください：Geopaparazziは、ダウンロードされたデータの法的な意味のいかなる責任も負いません。任意のWMSのmapurl定義をダウンロードする前に、利用者はサービスのライセンスをチェックし、参照することが可能であることを確認する必要があります。Geopaparazzi著作者達は、決してすべてのサービスの悪用に関連するライセンス権侵害の責任を負いません。</string>
+  <string name="service_name_propmt">サービス名を入力。空白の場合サービス名はサービスから取得されます。</string>
 </resources>

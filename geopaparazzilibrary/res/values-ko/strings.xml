@@ -87,4 +87,5 @@
   <string name="the_file_exists_wont_overwrite">파일이 존재합니다. 덮어 쓰지 않습니다:</string>
   <string name="share_note_with">메모 공유...</string>
   <string name="downloading_mapurl_to_the_device">선택한 서비스를 장치에 다운로드.</string>
+  <string name="mapurl_successfully_downloaded">mapurl을 성공적으로 다운로드 및 설치하였습니다. 서비스를 사용하기 위해 Geopaparazzi를 다시 시작해야 합니다.</string>
 </resources>

@@ -87,4 +87,5 @@
   <string name="the_file_exists_wont_overwrite">ファイルが存在します。上書きできません。</string>
   <string name="share_note_with">ノートのシェア...</string>
   <string name="downloading_mapurl_to_the_device">選択したサービスを端末にダウンロードしています。</string>
+  <string name="mapurl_successfully_downloaded">mapurlは正しくダウンロードされました。サービスリストからGeopaparazziを再起動してください。</string>
 </resources>
