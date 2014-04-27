@@ -89,6 +89,7 @@ public class GeopackageTileDownloader extends TileDownloader {
     public boolean executeJob( MapGeneratorJob mapGeneratorJob, Bitmap bitmap ) {
         try {
             Tile tile = mapGeneratorJob.tile;
+            int tileSize = Tile.TILE_SIZE;
 
             String tileQuery = getTilePath(tile);
 
@@ -104,7 +105,7 @@ public class GeopackageTileDownloader extends TileDownloader {
             // check if the input stream could be decoded into a bitmap
             if (decodedBitmap != null) {
                 // copy all pixels from the decoded bitmap to the color array
-                decodedBitmap.getPixels(this.pixels, 0, Tile.TILE_SIZE, 0, 0, Tile.TILE_SIZE, Tile.TILE_SIZE);
+                decodedBitmap.getPixels(this.pixels, 0, tileSize, 0, 0, tileSize, tileSize);
                 decodedBitmap.recycle();
             } else {
                 for( int i = 0; i < pixels.length; i++ ) {
@@ -113,7 +114,7 @@ public class GeopackageTileDownloader extends TileDownloader {
             }
 
             // copy all pixels from the color array to the tile bitmap
-            bitmap.setPixels(this.pixels, 0, Tile.TILE_SIZE, 0, 0, Tile.TILE_SIZE, Tile.TILE_SIZE);
+            bitmap.setPixels(this.pixels, 0, tileSize, 0, 0, tileSize, tileSize);
             return true;
         } catch (Exception e) {
             GPLog.androidLog(4, "GeopackageTileDownloader.executeJob]", e);

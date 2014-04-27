@@ -55,7 +55,7 @@ public class GeopaparazziApplication extends Application {
         SpatialiteContextHolder.INSTANCE.setContext(instance);
 
         ACRA.init(instance);
-        Log.i("TRACKOIDAPPLICATION", "ACRA Initialized.");
+        Log.i("GEOPAPARAZZIAPPLICATION", "ACRA Initialized.");
 
         if (GPLog.LOG_ANDROID) {
             Log.i(getClass().getSimpleName(), "GeopaparazziApplication singleton created.");

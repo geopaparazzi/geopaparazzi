@@ -95,6 +95,12 @@
             android:summary="@string/keep_use_imperial_sum"
             android:title="@string/keep_use_imperial" >
         </CheckBoxPreference>
+        <CheckBoxPreference
+            android:key="PREFS_KEY_RETINA"
+            android:order="92"
+            android:summary="@string/high_density_display_sum"
+            android:title="@string/high_density_display" >
+        </CheckBoxPreference>
     </PreferenceScreen>
 
     <eu.hydrologis.geopaparazzi.preferences.CustomSdcardPathPreference

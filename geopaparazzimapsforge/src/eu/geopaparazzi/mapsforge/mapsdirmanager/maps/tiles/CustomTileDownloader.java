@@ -31,9 +31,11 @@ import org.mapsforge.core.model.GeoPoint;
 import org.mapsforge.core.model.Tile;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.preference.PreferenceManager;
 import eu.geopaparazzi.library.GeopaparazziLibraryContextHolder;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
@@ -46,6 +48,8 @@ import eu.geopaparazzi.spatialite.database.spatial.core.MbtilesDatabaseHandler;
  */
 @SuppressWarnings("nls")
 public class CustomTileDownloader extends TileDownloader {
+
+    private static final int ZOOM_LEVEL_DIFF = 1;
 
     private static final String YYY_STR = "YYY";
     private static final String XXX_STR = "XXX";
@@ -132,6 +136,7 @@ public class CustomTileDownloader extends TileDownloader {
     private boolean doResetMetadata = false;
     private TILESCHEMA type = TILESCHEMA.google;
     private boolean isConnectedToInternet;
+    private boolean doScaleTiles;
 
     /**
      * Constructor.
@@ -142,12 +147,16 @@ public class CustomTileDownloader extends TileDownloader {
      */
     public CustomTileDownloader( File sourceFile, String parentPath ) throws IOException {
         super();
+        Context context = GeopaparazziLibraryContextHolder.INSTANCE.getContext();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        doScaleTiles = preferences.getBoolean("PREFS_KEY_RETINA", false);
+
         this.name = sourceFile.getName().substring(0, sourceFile.getName().lastIndexOf("."));
         List<String> fileLines = new ArrayList<String>();
         try {
             fileLines = FileUtilities.readfileToList(sourceFile);
         } catch (IOException e) {
-            GPLog.androidLog(4, getClass().getSimpleName() + "[CustomTileDownloader.FileUtilities.readfileToList]", e);
+            GPLog.error(this, getClass().getSimpleName() + "[CustomTileDownloader.FileUtilities.readfileToList]", e);
         }
         // parentPath = '/mnt/sdcard/maps' : this will be appended to all pathis given in the
         // 'mapurl' file
@@ -713,6 +722,11 @@ public class CustomTileDownloader extends TileDownloader {
         int tileX = (int) tile.tileX;
         int tileY = (int) tile.tileY;
 
+        if (type != TILESCHEMA.wms && doScaleTiles) {
+            tileX = tileX / (2 * ZOOM_LEVEL_DIFF);
+            tileY = tileY / (2 * ZOOM_LEVEL_DIFF);
+            zoomLevel = zoomLevel - ZOOM_LEVEL_DIFF;
+        }
         if (type == TILESCHEMA.tms) {
             int[] tmsTiles = Utilities.googleTile2TmsTile(tileX, tileY, zoomLevel);
             tileX = tmsTiles[0];
@@ -739,12 +753,13 @@ public class CustomTileDownloader extends TileDownloader {
     public boolean executeJob( MapGeneratorJob mapGeneratorJob, Bitmap bitmap ) {
         try {
             Tile tile = mapGeneratorJob.tile;
+            int tileSize = Tile.TILE_SIZE;
             String tilePath = getTilePath(tile);
-            int i_zoom = tile.zoomLevel;
-            int i_tile_x = (int) tile.tileX;
-            int i_tile_y_osm = (int) tile.tileY;
+            int zoom = tile.zoomLevel;
+            int tileX = (int) tile.tileX;
+            int tileYOsm = (int) tile.tileY;
             if (mbtilesDatabase != null) { // try to retrieve this tile from the active mbtiles.db
-                if (mbtilesDatabase.getBitmapTile(i_tile_x, i_tile_y_osm, i_zoom, Tile.TILE_SIZE, bitmap)) {
+                if (mbtilesDatabase.getBitmapTile(tileX, tileYOsm, zoom, tileSize, bitmap)) {
                     // tile was found and the bitmap filled, return
                     // GPLog.androidLog(-1,"CustomTileDownloader.executeJob: name["+getName()
                     // +"] mbtiles_db["+mbtiles_db.getFileName()+"] tilePath["+i_zoom+"/"+i_tile_x+"/"+i_tile_y_osm+"] ");
@@ -785,6 +800,7 @@ public class CustomTileDownloader extends TileDownloader {
                     urlConnection.setRequestProperty(USER_AGENT_STR, GEOPAPARAZZI_STR);
                     inputStream = urlConnection.getInputStream();
                     decodedBitmap = BitmapFactory.decodeStream(inputStream);
+                    decodedBitmap = resize(decodedBitmap, tileX, tileYOsm, ZOOM_LEVEL_DIFF, tileSize);
                 } catch (Exception e) {
                     // ignore and set the image as empty
                     if (GPLog.LOG_HEAVY)
@@ -800,10 +816,10 @@ public class CustomTileDownloader extends TileDownloader {
                     // we have a valid image, store this to the active mbtiles.db
                     // [this must be done before recycle() is called]
                     // decodedBitmap == ARGB_8888 ; bitmap == RGB_565
-                    mbtilesDatabase.insertBitmapTile(i_tile_x, i_tile_y_osm, i_zoom, decodedBitmap, i_force_unique);
+                    mbtilesDatabase.insertBitmapTile(tileX, tileYOsm, zoom, decodedBitmap, i_force_unique);
                 }
                 // copy all pixels from the decoded bitmap to the color array
-                decodedBitmap.getPixels(this.pixels, 0, Tile.TILE_SIZE, 0, 0, Tile.TILE_SIZE, Tile.TILE_SIZE);
+                decodedBitmap.getPixels(this.pixels, 0, tileSize, 0, 0, tileSize, tileSize);
                 // GPLog.androidLog(-1,"CustomTileDownloader.executeJob: retrieved["+i_zoom+"/"+i_tile_x+"/"+i_tile_y_osm+"] ");
                 decodedBitmap.recycle();
             } else {
@@ -812,7 +828,7 @@ public class CustomTileDownloader extends TileDownloader {
                 }
             }
             // copy all pixels from the color array to the tile bitmap
-            bitmap.setPixels(this.pixels, 0, Tile.TILE_SIZE, 0, 0, Tile.TILE_SIZE, Tile.TILE_SIZE);
+            bitmap.setPixels(this.pixels, 0, tileSize, 0, 0, tileSize, tileSize);
             return true;
         } catch (UnknownHostException e) {
             return false;
@@ -820,6 +836,18 @@ public class CustomTileDownloader extends TileDownloader {
             e.printStackTrace();
             return false;
         }
+    }
+
+    private static Bitmap resize( Bitmap bitmap, final int rx, final int ry, final int zoomLevelDiff, int mTileSizePixels ) {
+        int px = rx % (2 * zoomLevelDiff);
+        int py = ry % (2 * zoomLevelDiff);
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, //
+                (mTileSizePixels * 2) * zoomLevelDiff, //
+                (mTileSizePixels * 2) * zoomLevelDiff, false);
+        int x = (px == 0) ? 0 : mTileSizePixels * px;
+        int y = (py == 0) ? 0 : mTileSizePixels * py;
+        Bitmap bitmapResized = Bitmap.createBitmap(scaledBitmap, x, y, mTileSizePixels, mTileSizePixels);
+        return bitmapResized;
     }
 
     // TODO mj10777: check if this is safe after final has been removed from TileDownloader
