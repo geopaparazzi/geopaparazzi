@@ -205,6 +205,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
         } catch (NumberFormatException e) {
             // ignore and use default
         }
+        boolean isHighDensity = preferences.getBoolean(Constants.PREFS_KEY_RETINA, false);
 
         crossPath = new Path();
         crossPaint.setAntiAlias(true);
@@ -236,12 +237,18 @@ public abstract class GeopaparazziOverlay extends Overlay {
         gpsTrackPaintYellow = new Paint(Paint.ANTI_ALIAS_FLAG);
         gpsTrackPaintYellow.setStyle(Paint.Style.STROKE);
         gpsTrackPaintYellow.setColor(Color.YELLOW);
-        gpsTrackPaintYellow.setStrokeWidth(3);
 
         gpsTrackPaintBlack = new Paint(Paint.ANTI_ALIAS_FLAG);
         gpsTrackPaintBlack.setStyle(Paint.Style.STROKE);
         gpsTrackPaintBlack.setColor(Color.BLACK);
-        gpsTrackPaintBlack.setStrokeWidth(5);
+
+        if (!isHighDensity) {
+            gpsTrackPaintYellow.setStrokeWidth(3);
+            gpsTrackPaintBlack.setStrokeWidth(5);
+        } else {
+            gpsTrackPaintYellow.setStrokeWidth(8);
+            gpsTrackPaintBlack.setStrokeWidth(12);
+        }
 
         Resources resources = context.getResources();
 

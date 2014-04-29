@@ -301,7 +301,7 @@ public class GpsService extends Service implements LocationListener, Listener {
                     java.sql.Date now = new java.sql.Date(System.currentTimeMillis());
                     long gpsLogId = dbHelper.addGpsLog(now, now, 0, logName, 2f, "red", true);
                     currentRecordedLogId = gpsLogId;
-                    log("Starting gps logging. Logid: " + gpsLogId);
+                    log("GPS Start logging. Logid: " + gpsLogId);
 
                     // get preferences
                     String minDistanceStr = preferences.getString(PREFS_KEY_GPSLOGGINGDISTANCE,
@@ -320,14 +320,15 @@ public class GpsService extends Service implements LocationListener, Listener {
                     } catch (Exception e) {
                         // ignore and use default
                     }
-                    log("Waiting interval: " + waitForSecs);
+                    log("GPS waiting interval: " + waitForSecs);
+                    log("GPS min distance: " + minDistance);
 
                     currentPointsNum = 0;
                     currentDistance = 0;
                     while( isDatabaseLogging ) {
                         if (gotFix || isMockMode) {
                             if (lastGpsLocation == null) {
-                                logABS("JUMP GPS POINT: lastGpsLocation == null");
+                                logABS("GPS JUMP POINT: lastGpsLocation == null");
                                 if (!holdABitAndCheckLogging(waitForSecs)) {
                                     break;
                                 }
@@ -343,7 +344,7 @@ public class GpsService extends Service implements LocationListener, Listener {
                             double lastDistance = lastGpsLocation.distanceToPrevious();
                             if (GPLog.LOG_ABSURD) {
                                 StringBuilder sb = new StringBuilder();
-                                sb.append("gpsloc: ");
+                                sb.append("GPS\ngpsloc: ");
                                 sb.append(lastGpsLocation.getLatitude());
                                 sb.append("/");
                                 sb.append(lastGpsLocation.getLongitude());
@@ -363,7 +364,7 @@ public class GpsService extends Service implements LocationListener, Listener {
                             }
                             // ignore near points
                             if (lastDistance < minDistance) {
-                                logABS("JUMP GPS POINT: distance from previous");
+                                logABS("GPS JUMP POINT: distance from previous");
                                 if (!holdABitAndCheckLogging(waitForSecs)) {
                                     break;
                                 }
@@ -413,7 +414,7 @@ public class GpsService extends Service implements LocationListener, Listener {
                 } finally {
                     isDatabaseLogging = false;
                 }
-                logABS("Exit logging...");
+                logABS("GPS Exit logging...");
             }
 
             /**
