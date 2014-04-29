@@ -327,6 +327,7 @@ public class GpsService extends Service implements LocationListener, Listener {
                     while( isDatabaseLogging ) {
                         if (gotFix || isMockMode) {
                             if (lastGpsLocation == null) {
+                                logABS("JUMP GPS POINT: lastGpsLocation == null");
                                 if (!holdABitAndCheckLogging(waitForSecs)) {
                                     break;
                                 }
@@ -362,6 +363,7 @@ public class GpsService extends Service implements LocationListener, Listener {
                             }
                             // ignore near points
                             if (lastDistance < minDistance) {
+                                logABS("JUMP GPS POINT: distance from previous");
                                 if (!holdABitAndCheckLogging(waitForSecs)) {
                                     break;
                                 }
