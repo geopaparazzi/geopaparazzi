@@ -33,6 +33,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
@@ -166,6 +167,7 @@ public class GpsService extends Service implements LocationListener, Listener {
     private boolean isDatabaseLogging = false;
     private boolean isListeningForUpdates = false;
     private boolean isProviderEnabled;
+    private Handler toastHandler;
 
     @Override
     public int onStartCommand( Intent intent, int flags, int startId ) {
@@ -181,7 +183,7 @@ public class GpsService extends Service implements LocationListener, Listener {
             preferences = PreferenceManager.getDefaultSharedPreferences(this);
             useNetworkPositions = preferences.getBoolean(LibraryConstants.PREFS_KEY_GPS_USE_NETWORK_POSITION, false);
             isMockMode = preferences.getBoolean(LibraryConstants.PREFS_KEY_MOCKMODE, false);
-
+            toastHandler = new Handler();
             log("onStartCommand: Preferences created");
         }
         if (locationManager == null) {
@@ -405,12 +407,12 @@ public class GpsService extends Service implements LocationListener, Listener {
                     e.printStackTrace();
                     String msg = getResources().getString(R.string.error_disk_full);
                     GPLog.error(this, msg, e);
-                    Toast.makeText(GpsService.this, msg, Toast.LENGTH_LONG).show();
+                    toastHandler.post(new ToastRunnable(msg));
                 } catch (Exception e) {
                     e.printStackTrace();
                     String msg = getResources().getString(R.string.cantwrite_gpslog);
                     GPLog.error(this, msg, e);
-                    Toast.makeText(GpsService.this, msg, Toast.LENGTH_LONG).show();
+                    toastHandler.post(new ToastRunnable(msg));
                 } finally {
                     isDatabaseLogging = false;
                 }
@@ -640,6 +642,19 @@ public class GpsService extends Service implements LocationListener, Listener {
         }
 
         sendBroadcast(intent);
+    }
+
+    private class ToastRunnable implements Runnable {
+        String mText;
+
+        public ToastRunnable( String text ) {
+            mText = text;
+        }
+
+        @Override
+        public void run() {
+            Toast.makeText(getApplicationContext(), mText, Toast.LENGTH_LONG).show();
+        }
     }
 
     // /////////////////////////////////////////////

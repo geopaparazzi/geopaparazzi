@@ -857,10 +857,11 @@ public class GeoPaparazziActivity extends Activity {
             }
             Utilities.toast(this, R.string.loggingoff, Toast.LENGTH_LONG);
 
-            GpsServiceUtilities.stopDatabaseLogging(this);
-            GpsServiceUtilities.stopGpsService(this);
-            GpsServiceUtilities.unregisterFromBroadcasts(this, gpsServiceBroadcastReceiver);
-
+            if (gpsServiceBroadcastReceiver != null) {
+                GpsServiceUtilities.stopDatabaseLogging(this);
+                GpsServiceUtilities.stopGpsService(this);
+                GpsServiceUtilities.unregisterFromBroadcasts(this, gpsServiceBroadcastReceiver);
+            }
             try {
                 MapsDirManager.getInstance().finish();
             } catch (Exception e) {
