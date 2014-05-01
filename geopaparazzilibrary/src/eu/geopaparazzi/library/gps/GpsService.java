@@ -159,7 +159,9 @@ public class GpsService extends Service implements LocationListener, Listener {
     /**
      * GPS time interval.
      */
-    public static int WAITSECONDS = 1;
+    private static int WAITSECONDS = 1;
+
+    private static final boolean DO_WHILE_LOOP_LOG = GPLog.LOG_ABSURD;
 
     private GpsStatus mStatus;
     private long currentRecordedLogId = -1;
@@ -329,14 +331,23 @@ public class GpsService extends Service implements LocationListener, Listener {
                     currentDistance = 0;
                     while( isDatabaseLogging ) {
                         if (gotFix || isMockMode) {
+                            if (DO_WHILE_LOOP_LOG)
+                                GPLog.addLogEntry(GpsService.this, "GPS DEBUG: loop while at: " + System.nanoTime());
                             if (lastGpsLocation == null) {
-                                logABS("GPS JUMP POINT: lastGpsLocation == null");
+                                if (DO_WHILE_LOOP_LOG)
+                                    GPLog.addLogEntry(GpsService.this, "GPS JUMP POINT: lastGpsLocation == null");
                                 if (!holdABitAndCheckLogging(waitForSecs)) {
                                     break;
                                 }
                                 continue;
                             }
                             if (lastGpsLocation.getPreviousLoc() == null) {
+                                if (DO_WHILE_LOOP_LOG)
+                                    GPLog.addLogEntry(GpsService.this,
+                                            "GPS JUMP POINT: waiting for second valid point to come in.");
+                                if (!holdABitAndCheckLogging(waitForSecs)) {
+                                    break;
+                                }
                                 continue;
                             }
                             double recLon = lastGpsLocation.getLongitude();
@@ -344,7 +355,7 @@ public class GpsService extends Service implements LocationListener, Listener {
                             double recAlt = lastGpsLocation.getAltitude();
 
                             double lastDistance = lastGpsLocation.distanceToPrevious();
-                            if (GPLog.LOG_ABSURD) {
+                            if (DO_WHILE_LOOP_LOG) {
                                 StringBuilder sb = new StringBuilder();
                                 sb.append("GPS\ngpsloc: ");
                                 sb.append(lastGpsLocation.getLatitude());
@@ -366,7 +377,8 @@ public class GpsService extends Service implements LocationListener, Listener {
                             }
                             // ignore near points
                             if (lastDistance < minDistance) {
-                                logABS("GPS JUMP POINT: distance from previous");
+                                if (DO_WHILE_LOOP_LOG)
+                                    GPLog.addLogEntry(GpsService.this, "GPS JUMP POINT: distance from previous");
                                 if (!holdABitAndCheckLogging(waitForSecs)) {
                                     break;
                                 }
@@ -416,7 +428,7 @@ public class GpsService extends Service implements LocationListener, Listener {
                 } finally {
                     isDatabaseLogging = false;
                 }
-                logABS("GPS Exit logging...");
+                log("GPS Exit logging...");
             }
 
             /**
