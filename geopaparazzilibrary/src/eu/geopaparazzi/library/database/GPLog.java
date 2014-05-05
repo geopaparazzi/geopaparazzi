@@ -25,6 +25,7 @@ import java.util.Set;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.util.TimeUtilities;
 
 /**
@@ -142,7 +143,7 @@ public class GPLog {
     public static void addLogEntry( String logMessage ) {
         try {
             Date date = new Date();
-            SQLiteDatabase sqliteDatabase = ADbHelper.INSTANCE.getDatabase();
+            SQLiteDatabase sqliteDatabase = GPApplication.getInstance().getDatabase();
             if (sqliteDatabase != null && sqliteDatabase.isOpen()) {
                 ContentValues values = new ContentValues();
                 long time = date.getTime();

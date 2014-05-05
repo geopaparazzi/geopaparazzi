@@ -36,7 +36,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
-import eu.geopaparazzi.library.GeopaparazziLibraryContextHolder;
+import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
@@ -150,7 +150,7 @@ public class CustomTileDownloader extends TileDownloader {
     public CustomTileDownloader( File sourceFile, String parentPath ) throws IOException {
         super();
 
-        Context context = GeopaparazziLibraryContextHolder.INSTANCE.getContext();
+        Context context = GPApplication.getInstance();
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         this.name = sourceFile.getName().substring(0, sourceFile.getName().lastIndexOf("."));
@@ -791,7 +791,7 @@ public class CustomTileDownloader extends TileDownloader {
             }
             Bitmap decodedBitmap = null;
 
-            Context context = GeopaparazziLibraryContextHolder.INSTANCE.getContext();
+            Context context = GPApplication.getInstance();
             if (context != null) {
                 isConnectedToInternet = NetworkUtilities.isNetworkAvailable(context);
             }

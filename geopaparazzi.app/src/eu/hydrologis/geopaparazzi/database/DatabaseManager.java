@@ -24,11 +24,9 @@ import java.util.Locale;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-import eu.geopaparazzi.library.database.ADbHelper;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.debug.Debug;
-import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 
 /**
  * The database manager.
@@ -50,31 +48,14 @@ public class DatabaseManager {
     */
     public static final float BUFFER = 0.001f;
 
-    private static DatabaseManager dbManager = null;
-
-    private DatabaseManager() {
-    }
-
     private DatabaseOpenHelper databaseHelper;
 
     /**
-     * Singleton access.
-     * 
-     * @return the {@link DatabaseManager}.
-     */
-    public static DatabaseManager getInstance() {
-        if (dbManager == null) {
-            dbManager = new DatabaseManager();
-        }
-        return dbManager;
-    }
-
-    /**
+     * @param context the {@link Context} to use.
      * @return the db.
      * @throws IOException  if something goes wrong.
      */
-    public SQLiteDatabase getDatabase() throws IOException {
-        Context context = GeopaparazziApplication.getInstance().getApplicationContext();
+    public SQLiteDatabase getDatabase( Context context ) throws IOException {
         File databaseFile;
         try {
             databaseFile = ResourcesManager.getInstance(context).getDatabaseFile();
@@ -112,7 +93,6 @@ public class DatabaseManager {
                 Log.i(DEBUG_TAG, "Database closed");
         }
         databaseHelper = null;
-        dbManager = null;
     }
 
     private static class DatabaseOpenHelper {
@@ -129,7 +109,6 @@ public class DatabaseManager {
                 if (Debug.D)
                     Log.i("SQLiteHelper", "Opening database at " + databaseFile);
                 db = SQLiteDatabase.openOrCreateDatabase(databaseFile, null);
-                ADbHelper.INSTANCE.setDatabase(db);
                 int dbVersion = db.getVersion();
                 if (DATABASE_VERSION > dbVersion)
                     upgrade(DATABASE_VERSION, dbVersion, context);
@@ -140,7 +119,6 @@ public class DatabaseManager {
                     Log.i("SQLiteHelper", "db folder is writable: " + databaseFile.getParentFile().canWrite());
                 }
                 db = SQLiteDatabase.openOrCreateDatabase(databaseFile, null);
-                ADbHelper.INSTANCE.setDatabase(db);
                 create(context);
             }
         }

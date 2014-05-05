@@ -34,6 +34,7 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.TimeUtilities;
+import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.util.Image;
 
 /**
@@ -74,7 +75,7 @@ public class DaoImages {
      */
     public static void addImage( double lon, double lat, double altim, double azim, Date timestamp, String text, String path )
             throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
             ContentValues values = new ContentValues();
@@ -103,7 +104,7 @@ public class DaoImages {
      * @throws IOException  if something goes wrong.
      */
     public static void deleteImage( long id ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
             // delete note
@@ -143,7 +144,7 @@ public class DaoImages {
      */
     public static List<Image> getImagesInWorldBounds( float n, float s, float w, float e ) throws IOException {
 
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         String query = "SELECT _id, lon, lat, altim, azim, path, text, ts FROM XXX WHERE (lon BETWEEN XXX AND XXX) AND (lat BETWEEN XXX AND XXX)";
         // String[] args = new String[]{TABLE_NOTES, String.valueOf(w), String.valueOf(e),
         // String.valueOf(s), String.valueOf(n)};
@@ -184,7 +185,7 @@ public class DaoImages {
      * @throws IOException  if something goes wrong.
      */
     public static List<Image> getImagesList() throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         List<Image> images = new ArrayList<Image>();
         String asColumnsToReturn[] = {COLUMN_ID, COLUMN_LON, COLUMN_LAT, COLUMN_ALTIM, COLUMN_AZIM, COLUMN_PATH, COLUMN_TS,
                 COLUMN_TEXT};
@@ -217,7 +218,7 @@ public class DaoImages {
      * @throws IOException  if something goes wrong.
      */
     public static List<OverlayItem> getImagesOverlayList( Drawable marker ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         List<OverlayItem> images = new ArrayList<OverlayItem>();
         String asColumnsToReturn[] = {COLUMN_LON, COLUMN_LAT, COLUMN_PATH, COLUMN_TEXT};
         String strSortOrder = "_id ASC";
@@ -279,7 +280,7 @@ public class DaoImages {
         sB.append(" );");
         String CREATE_INDEX_IMAGES_X_BY_Y = sB.toString();
 
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         if (GPLog.LOG_HEAVY)
             Log.i("DAOIMAGES", "Create the images table.");
 

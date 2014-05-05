@@ -16,9 +16,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialiteContextHolder;
 import eu.geopaparazzi.spatialite.database.spatial.core.MbtilesDatabaseHandler;
 /**
 // http://www.vogella.com/articles/AndroidBackgroundProcessing/article.html
@@ -274,7 +274,7 @@ public class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, S
             if (i_count_rest < 1)
                 i_count_rest = 1;
         }
-        Context context = SpatialiteContextHolder.INSTANCE.getContext();
+        Context context = GPApplication.getInstance();
         boolean networkAvailable = NetworkUtilities.isNetworkAvailable(context);
         int i_limit = 100; // avoid excesive memory usage
         mbtiles_request_url = db_mbtiles.getRequestUrlsMap(i_limit);

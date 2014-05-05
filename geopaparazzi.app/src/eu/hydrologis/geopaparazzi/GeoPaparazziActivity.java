@@ -54,6 +54,7 @@ import android.widget.ImageButton;
 import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
+import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
 import eu.geopaparazzi.library.forms.TagsManager;
@@ -79,7 +80,6 @@ import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
-import eu.hydrologis.geopaparazzi.database.DatabaseManager;
 import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
 import eu.hydrologis.geopaparazzi.maps.LogMapItem;
@@ -150,7 +150,6 @@ public class GeoPaparazziActivity extends Activity {
         checkIncomingGeosms();
         checkIncomingSmsData();
     }
-
     private void checkMockLocations() {
         /*
          * check mock locations availability
@@ -458,7 +457,7 @@ public class GeoPaparazziActivity extends Activity {
         }
 
         try {
-            DatabaseManager.getInstance().getDatabase();
+            GeopaparazziApplication.getInstance().getDatabase();
             checkMapsAndLogsVisibility();
 
             initMapsDirManager();
@@ -555,7 +554,7 @@ public class GeoPaparazziActivity extends Activity {
             break;
         }
         case R.id.dashboard_log_item_button: {
-            final GeopaparazziApplication appContext = GeopaparazziApplication.getInstance();
+            final GPApplication appContext = GeopaparazziApplication.getInstance();
             if (lastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
                 Utilities.yesNoMessageDialog(GeoPaparazziActivity.this, getString(R.string.do_you_want_to_stop_logging),
                         new Runnable(){
@@ -731,7 +730,7 @@ public class GeoPaparazziActivity extends Activity {
                     editor.putString(LibraryConstants.PREFS_KEY_BASEFOLDER, chosenFolderToLoad);
                     editor.commit();
 
-                    DatabaseManager.getInstance().closeDatabase();
+                    GeopaparazziApplication.getInstance().closeDatabase();
                     ResourcesManager.resetManager();
 
                     Intent intent = getIntent();
@@ -867,7 +866,7 @@ public class GeoPaparazziActivity extends Activity {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            DatabaseManager.getInstance().closeDatabase();
+            GeopaparazziApplication.getInstance().closeDatabase();
             ResourcesManager.resetManager();
             resourcesManager = null;
 
@@ -940,7 +939,7 @@ public class GeoPaparazziActivity extends Activity {
                 try {
                     Editable value = editText.getText();
                     String newName = value.toString();
-                    DatabaseManager.getInstance().closeDatabase();
+                    GeopaparazziApplication.getInstance().closeDatabase();
                     File newGeopaparazziDirFile = new File(applicationParentDir.getAbsolutePath(), newName);
                     if (!newGeopaparazziDirFile.mkdir()) {
                         throw new IOException("Unable to create the geopaparazzi folder."); //$NON-NLS-1$

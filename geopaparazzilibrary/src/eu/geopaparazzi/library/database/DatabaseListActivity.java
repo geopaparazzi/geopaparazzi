@@ -17,13 +17,12 @@
  */
 package eu.geopaparazzi.library.database;
 
-import java.io.IOException;
-
 import android.app.ListActivity;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
@@ -46,11 +45,11 @@ public class DatabaseListActivity extends ListActivity {
 
         SQLiteDatabase database = null;
         try {
-            database = ADbHelper.INSTANCE.getDatabase();
+            database = GPApplication.getInstance().getDatabase();
             if (!database.isOpen()) {
                 database = null;
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

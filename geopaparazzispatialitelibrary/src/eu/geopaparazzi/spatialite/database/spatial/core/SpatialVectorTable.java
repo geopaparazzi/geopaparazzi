@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.Map;
 
 import android.content.Context;
+import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.util.ResourcesManager;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialiteContextHolder;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
 import eu.geopaparazzi.spatialite.util.SpatialDataType;
 import eu.geopaparazzi.spatialite.util.SpatialiteUtilities;
@@ -107,7 +107,7 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
         try {
             // uniqueNameBasedOnDbFileName = this.databaseFileName + SEP + tableName + SEP +
             // geometryColumn;
-            Context context = SpatialiteContextHolder.INSTANCE.getContext();
+            Context context = GPApplication.getInstance();
             ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
             File mapsDir = resourcesManager.getMapsDir();
             String mapsPath = mapsDir.getAbsolutePath();

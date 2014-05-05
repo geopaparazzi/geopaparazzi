@@ -17,7 +17,6 @@
  */
 package eu.geopaparazzi.library.util.activities;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,8 +36,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.R;
-import eu.geopaparazzi.library.database.ADbHelper;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.Utilities;
 
@@ -82,11 +81,11 @@ public class LogAnalysisActivity extends ListActivity {
         query = GPLog.getLogQuery();
 
         try {
-            database = ADbHelper.INSTANCE.getDatabase();
+            database = GPApplication.getInstance().getDatabase();
             if (!database.isOpen()) {
                 database = null;
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

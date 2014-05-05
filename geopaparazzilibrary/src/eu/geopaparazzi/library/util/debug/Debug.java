@@ -38,11 +38,4 @@ public class Debug {
      */
     public final static boolean doOverwriteTags = false;
 
-    /**
-     * Attach an exception handler for uncaught exceptions.
-     */
-    public static void attachUncaughtExceptionHandler() {
-        Thread.currentThread().setUncaughtExceptionHandler(new GPUncaughtExceptionHandler());
-    }
-
 }
