@@ -715,87 +715,87 @@ public class DaoSpatialite {
      * @param database the database to check.
      * @param databaseViewsMap the {@link HashMap} of database views data to clear and repopulate.
      * @return the {@link SpatialiteDatabaseType}.
-     * @throws Exception if something goes wrong.
      */
-    public static SpatialiteDatabaseType checkDatabaseTypeAndValidity( Database database, HashMap<String, String> databaseViewsMap )
-            throws Exception {
-
-        // clear views
-        databaseViewsMap.clear();
-
-        // views: vector_layers_statistics,vector_layers
-        boolean b_vector_layers_statistics = false;
-        boolean b_vector_layers = false;
-
-        // tables: geometry_columns,raster_columns
-        boolean b_geometry_columns = false;
-        // boolean b_raster_columns = false;
-        boolean b_gpkg_contents = false;
-        boolean b_geopackage_contents = false;
-
-        String sqlCommand = "SELECT name,type,sql FROM sqlite_master WHERE ((type='table') OR (type='view')) ORDER BY type DESC,name ASC";
-        String tableType = "";
-        String sqlCreationString = "";
-        String name = "";
-        Stmt statement = database.prepare(sqlCommand);
+    public static SpatialiteDatabaseType checkDatabaseTypeAndValidity( Database database, HashMap<String, String> databaseViewsMap ) {
         try {
-            while( statement.step() ) {
-                name = statement.column_string(0);
-                tableType = statement.column_string(1);
-                sqlCreationString = statement.column_string(2);
-                // GPLog.androidLog(-1,"SpatialiteDatabaseHandler.get_table_fields["+s_table+"] tablename["+s_name+"] type["+s_type+"] sql["
-                // + s_sql_create+ "] ");
-                if (tableType.equals("table")) {
-                    if (name.equals("geometry_columns")) {
-                        b_geometry_columns = true;
-                    } else if (name.equals("gpkg_contents")) {
-                        b_gpkg_contents = true;
-                    } else if (name.equals("geopackage_contents")) {
-                        b_geopackage_contents = true;
-                    }
-                    // if (name.equals("raster_columns")) {
-                    // b_raster_columns = true;
-                    // }
-                } else if (tableType.equals("view")) {
-                    // we are looking for user-defined views only,
-                    // filter out system known views.
-                    if ((!name.equals("geom_cols_ref_sys")) && (!name.startsWith("vector_layers"))) {
-                        databaseViewsMap.put(name, sqlCreationString);
-                    } else if (name.equals("vector_layers_statistics")) {
-                        b_vector_layers_statistics = true;
-                    } else if (name.equals("vector_layers")) {
-                        b_vector_layers = true;
-                    }
-                }
-            }
-        } finally {
-            if (statement != null) {
-                statement.close();
-            }
-        }
-        if (b_geopackage_contents) {
-            // an old geopackage file, may look like a Spatialite Table
-            // - but invalid srid
-            // isDatabaseValid = false;
-            throw new Exception("Database not valid!");
-        }
-        if (b_gpkg_contents) {
-            // this is a GeoPackage, this can also have
-            // vector_layers_statistics and vector_layers
-            // - the results are empty, it does reference the table
-            // also referenced in gpkg_contents
-            return SpatialiteDatabaseType.GEOPACKAGE;
-        } else {
-            if ((b_vector_layers_statistics) && (b_vector_layers)) { // Spatialite 4.0
-                return SpatialiteDatabaseType.SPATIALITE4;
-            } else {
-                if (b_geometry_columns) { // Spatialite before 4.0
-                    return SpatialiteDatabaseType.SPATIALITE3;
-                }
-            }
-        }
+            // clear views
+            databaseViewsMap.clear();
 
-        throw new IllegalArgumentException("No supported database version/type found.");
+            // views: vector_layers_statistics,vector_layers
+            boolean b_vector_layers_statistics = false;
+            boolean b_vector_layers = false;
+
+            // tables: geometry_columns,raster_columns
+            boolean b_geometry_columns = false;
+            // boolean b_raster_columns = false;
+            boolean b_gpkg_contents = false;
+            boolean b_geopackage_contents = false;
+
+            String sqlCommand = "SELECT name,type,sql FROM sqlite_master WHERE ((type='table') OR (type='view')) ORDER BY type DESC,name ASC";
+            String tableType = "";
+            String sqlCreationString = "";
+            String name = "";
+            Stmt statement = database.prepare(sqlCommand);
+            try {
+                while( statement.step() ) {
+                    name = statement.column_string(0);
+                    tableType = statement.column_string(1);
+                    sqlCreationString = statement.column_string(2);
+                    // GPLog.androidLog(-1,"SpatialiteDatabaseHandler.get_table_fields["+s_table+"] tablename["+s_name+"] type["+s_type+"] sql["
+                    // + s_sql_create+ "] ");
+                    if (tableType.equals("table")) {
+                        if (name.equals("geometry_columns")) {
+                            b_geometry_columns = true;
+                        } else if (name.equals("gpkg_contents")) {
+                            b_gpkg_contents = true;
+                        } else if (name.equals("geopackage_contents")) {
+                            b_geopackage_contents = true;
+                        }
+                        // if (name.equals("raster_columns")) {
+                        // b_raster_columns = true;
+                        // }
+                    } else if (tableType.equals("view")) {
+                        // we are looking for user-defined views only,
+                        // filter out system known views.
+                        if ((!name.equals("geom_cols_ref_sys")) && (!name.startsWith("vector_layers"))) {
+                            databaseViewsMap.put(name, sqlCreationString);
+                        } else if (name.equals("vector_layers_statistics")) {
+                            b_vector_layers_statistics = true;
+                        } else if (name.equals("vector_layers")) {
+                            b_vector_layers = true;
+                        }
+                    }
+                }
+            } finally {
+                if (statement != null) {
+                    statement.close();
+                }
+            }
+            if (b_geopackage_contents) {
+                // an old geopackage file, may look like a Spatialite Table
+                // - but invalid srid
+                // isDatabaseValid = false;
+                return SpatialiteDatabaseType.UNKNOWN;
+            }
+            if (b_gpkg_contents) {
+                // this is a GeoPackage, this can also have
+                // vector_layers_statistics and vector_layers
+                // - the results are empty, it does reference the table
+                // also referenced in gpkg_contents
+                return SpatialiteDatabaseType.GEOPACKAGE;
+            } else {
+                if ((b_vector_layers_statistics) && (b_vector_layers)) { // Spatialite 4.0
+                    return SpatialiteDatabaseType.SPATIALITE4;
+                } else {
+                    if (b_geometry_columns) { // Spatialite before 4.0
+                        return SpatialiteDatabaseType.SPATIALITE3;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            GPLog.error("DAOSPATIALITE", "Error in checkDatabaseTypeAndValidity", e);
+        }
+        return SpatialiteDatabaseType.UNKNOWN;
     }
 
     /**

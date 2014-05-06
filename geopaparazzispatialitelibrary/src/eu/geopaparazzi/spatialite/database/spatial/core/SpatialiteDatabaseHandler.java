@@ -110,11 +110,11 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             checkAndUpdatePropertiesUniqueNames();
 
             // check database and collect the views list
-            try {
-                databaseType = DaoSpatialite.checkDatabaseTypeAndValidity(db_java, databaseViewsList);
-                isDatabaseValid = true;
-            } catch (Exception e) {
+            databaseType = DaoSpatialite.checkDatabaseTypeAndValidity(db_java, databaseViewsList);
+            if (databaseType == SpatialiteDatabaseType.UNKNOWN) {
                 isDatabaseValid = false;
+            } else {
+                isDatabaseValid = true;
             }
 
             if (!isValid()) {

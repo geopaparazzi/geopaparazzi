@@ -24,9 +24,10 @@ package eu.geopaparazzi.spatialite.util;
  */
 @SuppressWarnings("nls")
 public enum SpatialiteDatabaseType {
-    // * <li>10 == GeoPackage
-    // * <li>3 == spatialite 3
-    // * <li>4 == spatialite 4
+    /**
+     * Unknown database.
+     */
+    UNKNOWN("Unknown Database Type", -1),
     /**
      * spatialite 3 database.
      */
