@@ -107,24 +107,28 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             db_java = new jsqlite.Database();
             db_java.open(databasePath, jsqlite.Constants.SQLITE_OPEN_READWRITE | jsqlite.Constants.SQLITE_OPEN_CREATE);
 
-            checkAndUpdatePropertiesUniqueNames();
-
             // check database and collect the views list
             databaseType = DaoSpatialite.checkDatabaseTypeAndValidity(db_java, databaseViewsList);
-            if (databaseType == SpatialiteDatabaseType.UNKNOWN) {
-                isDatabaseValid = false;
-            } else {
+            isDatabaseValid = false;
+            switch( databaseType ) {
+            case GEOPACKAGE:
+            case SPATIALITE3:
+            case SPATIALITE4:
                 isDatabaseValid = true;
+                break;
+            default:
+                isDatabaseValid = false;
             }
 
             if (!isValid()) {
                 close();
             }
+
+            checkAndUpdatePropertiesUniqueNames();
         } catch (Exception e) {
             GPLog.androidLog(4, "SpatialiteDatabaseHandler[" + databaseFile.getAbsolutePath() + "]", e);
         }
     }
-
     @Override
     public void open() {
         /*
