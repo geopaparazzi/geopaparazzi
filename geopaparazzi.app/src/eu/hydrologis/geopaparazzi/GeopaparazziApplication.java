@@ -57,7 +57,7 @@ public class GeopaparazziApplication extends GPApplication {
     }
 
     @Override
-    public SQLiteDatabase getDatabase() throws IOException {
+    public synchronized SQLiteDatabase getDatabase() throws IOException {
         if (database == null) {
             DatabaseManager databaseManager = new DatabaseManager();
             database = databaseManager.getDatabase(getInstance());

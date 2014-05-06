@@ -59,6 +59,8 @@ import eu.geopaparazzi.library.util.debug.TestMock;
  */
 @SuppressWarnings("nls")
 public class GpsService extends Service implements LocationListener, Listener {
+    private static final boolean DOLOGPOSITION = GPLog.LOG_ABSURD;
+    private static final boolean DO_WHILE_LOOP_LOG = GPLog.LOG_ABSURD;
 
     /**
      * Intent key to pass the boolean to start gps database logging.
@@ -130,8 +132,6 @@ public class GpsService extends Service implements LocationListener, Listener {
      */
     public static final String GPS_SERVICE_DO_BROADCAST = "GPS_SERVICE_DO_BROADCAST";
 
-    private static final boolean DOLOGPOSITION = GPLog.LOG_ABSURD;
-
     private SharedPreferences preferences;
     private LocationManager locationManager;
     private boolean useNetworkPositions = false;
@@ -160,8 +160,6 @@ public class GpsService extends Service implements LocationListener, Listener {
      * GPS time interval.
      */
     private static int WAITSECONDS = 1;
-
-    private static final boolean DO_WHILE_LOOP_LOG = GPLog.LOG_ABSURD;
 
     private GpsStatus mStatus;
     private long currentRecordedLogId = -1;
@@ -324,8 +322,10 @@ public class GpsService extends Service implements LocationListener, Listener {
                     } catch (Exception e) {
                         // ignore and use default
                     }
-                    log("GPS waiting interval: " + waitForSecs);
-                    log("GPS min distance: " + minDistance);
+                    if (DO_WHILE_LOOP_LOG) {
+                        GPLog.addLogEntry(GpsService.this, "GPS waiting interval: " + waitForSecs);
+                        GPLog.addLogEntry(GpsService.this, "GPS min distance: " + minDistance);
+                    }
 
                     currentPointsNum = 0;
                     currentDistance = 0;
@@ -354,6 +354,8 @@ public class GpsService extends Service implements LocationListener, Listener {
                             double recLat = lastGpsLocation.getLatitude();
                             double recAlt = lastGpsLocation.getAltitude();
 
+                            if (DO_WHILE_LOOP_LOG)
+                                GPLog.addLogEntry(GpsService.this, "GPS DEBUG: loop while 1: " + System.nanoTime());
                             double lastDistance = lastGpsLocation.distanceToPrevious();
                             if (DO_WHILE_LOOP_LOG) {
                                 StringBuilder sb = new StringBuilder();
@@ -375,6 +377,8 @@ public class GpsService extends Service implements LocationListener, Listener {
                                 sb.append(minDistance);
                                 logABS(sb.toString());
                             }
+                            if (DO_WHILE_LOOP_LOG)
+                                GPLog.addLogEntry(GpsService.this, "GPS DEBUG: loop while 2: " + System.nanoTime());
                             // ignore near points
                             if (lastDistance < minDistance) {
                                 if (DO_WHILE_LOOP_LOG)
@@ -384,6 +388,8 @@ public class GpsService extends Service implements LocationListener, Listener {
                                 }
                                 continue;
                             }
+                            if (DO_WHILE_LOOP_LOG)
+                                GPLog.addLogEntry(GpsService.this, "GPS DEBUG: loop while 3: " + System.nanoTime());
                             try {
                                 if (isDatabaseLogging) {
                                     dbHelper.addGpsLogDataPoint(sqliteDatabase, gpsLogId, recLon, recLat, recAlt,
@@ -393,6 +399,8 @@ public class GpsService extends Service implements LocationListener, Listener {
                                 // we log the exception and try to go on
                                 GPLog.error(this, "Point in db writing error!", e);
                             }
+                            if (DO_WHILE_LOOP_LOG)
+                                GPLog.addLogEntry(GpsService.this, "GPS DEBUG: loop while 4: " + System.nanoTime());
                             currentPointsNum++;
                             currentDistance = currentDistance + lastDistance;
                         }
@@ -558,11 +566,11 @@ public class GpsService extends Service implements LocationListener, Listener {
             }
         }
 
-        if (DOLOGPOSITION) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("gotFix: ").append(gotFix).append(" tmpGotFix: ").append(tmpGotFix).append("\n");
-            GPLog.addLogEntry("GPSSERVICE", sb.toString());
-        }
+        // if (DOLOGPOSITION) {
+        // StringBuilder sb = new StringBuilder();
+        // sb.append("gotFix: ").append(gotFix).append(" tmpGotFix: ").append(tmpGotFix).append("\n");
+        // GPLog.addLogEntry("GPSSERVICE", sb.toString());
+        // }
 
         if (tmpGotFix != gotFix) {
             gotFix = tmpGotFix;
