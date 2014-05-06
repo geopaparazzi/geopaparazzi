@@ -54,9 +54,11 @@ import android.widget.ImageButton;
 import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
+import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
 import eu.geopaparazzi.library.forms.TagsManager;
+import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.sensors.SensorsManager;
@@ -72,13 +74,12 @@ import eu.geopaparazzi.library.util.activities.AboutActivity;
 import eu.geopaparazzi.library.util.activities.DirectoryBrowserActivity;
 import eu.geopaparazzi.library.util.debug.TestMock;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
-import eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.MapsDirTreeViewList;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.sourcesview.SourcesTreeListActivity;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
-import eu.hydrologis.geopaparazzi.database.DatabaseManager;
 import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.maps.DataManager;
 import eu.hydrologis.geopaparazzi.maps.LogMapItem;
@@ -120,7 +121,11 @@ public class GeoPaparazziActivity extends Activity {
     private SlidingDrawer slidingDrawer;
     private ProgressDialog initMapsdirDialog;
     private BroadcastReceiver gpsServiceBroadcastReceiver;
-    private GpsServiceStatus gpsServiceStatus = GpsServiceStatus.GPS_OFF;
+    private GpsServiceStatus lastGpsServiceStatus = GpsServiceStatus.GPS_OFF;
+    private GpsLoggingStatus lastGpsLoggingStatus = GpsLoggingStatus.GPS_DATABASELOGGING_OFF;
+    private double[] lastGpsPosition;
+
+    private static boolean checkedGps = false;
 
     public void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
@@ -129,6 +134,7 @@ public class GeoPaparazziActivity extends Activity {
         gpsServiceBroadcastReceiver = new BroadcastReceiver(){
             public void onReceive( Context context, Intent intent ) {
                 onGpsServiceUpdate(intent);
+                checkFirstTimeGps(context);
             }
         };
         GpsServiceUtilities.registerForBroadcasts(this, gpsServiceBroadcastReceiver);
@@ -144,7 +150,6 @@ public class GeoPaparazziActivity extends Activity {
         checkIncomingGeosms();
         checkIncomingSmsData();
     }
-
     private void checkMockLocations() {
         /*
          * check mock locations availability
@@ -378,7 +383,7 @@ public class GeoPaparazziActivity extends Activity {
                 push(logButtonId, v);
             }
         });
-        if (gpsServiceStatus == GpsServiceStatus.GPS_DATABASELOGGING) {
+        if (lastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
             logButton.setImageResource(R.drawable.dashboard_stop_log_item);
         } else {
             logButton.setImageResource(R.drawable.dashboard_log_item);
@@ -452,7 +457,7 @@ public class GeoPaparazziActivity extends Activity {
         }
 
         try {
-            DatabaseManager.getInstance().getDatabase();
+            GeopaparazziApplication.getInstance().getDatabase();
             checkMapsAndLogsVisibility();
 
             initMapsDirManager();
@@ -464,20 +469,7 @@ public class GeoPaparazziActivity extends Activity {
     }
 
     private void initMapsDirManager() throws jsqlite.Exception, IOException, FileNotFoundException {
-        // [MapDirManager]
-        // define in MapsDirTreeViewList, which Context-Menus should be supported for
-        // this Application
-        // Should the Properties-Menu be supported/shown?
-        MapsDirTreeViewList.ENABLE_MENU_PROPERTIES_FILE = true;
-        // Should the Edit-Menu be supported/shown?
-        MapsDirTreeViewList.ENABLE_MENU_EDIT_FILE = false;
-        // Should the Delete-Menu be supported/shown?
-        MapsDirTreeViewList.ENABLE_MENU_DELETE_FILE = false;
         MapsDirManager.reset();
-        // if the 'maps_dir' parameter is null, then MapsDirManager will call:
-        // - ResourcesManager.getInstance(this).getMapsDir();
-        // to retrieve the 'maps_dir : call:
-        // - maps_dir=MapsDirManager.get_maps_dir();
 
         initMapsdirDialog = new ProgressDialog(this);
         initMapsdirDialog.setCancelable(true);
@@ -527,7 +519,7 @@ public class GeoPaparazziActivity extends Activity {
         switch( id ) {
         case R.id.dashboard_note_item_button: {
             boolean isValid = false;
-            if (gpsServiceStatus == GpsServiceStatus.GPS_FIX) {
+            if (lastGpsServiceStatus.getCode() >= GpsServiceStatus.GPS_FIX.getCode()) {
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
                 double[] gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
                 if (gpsLocation != null) {
@@ -562,8 +554,8 @@ public class GeoPaparazziActivity extends Activity {
             break;
         }
         case R.id.dashboard_log_item_button: {
-            final GeopaparazziApplication appContext = GeopaparazziApplication.getInstance();
-            if (gpsServiceStatus == GpsServiceStatus.GPS_DATABASELOGGING) {
+            final GPApplication appContext = GeopaparazziApplication.getInstance();
+            if (lastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
                 Utilities.yesNoMessageDialog(GeoPaparazziActivity.this, getString(R.string.do_you_want_to_stop_logging),
                         new Runnable(){
                             public void run() {
@@ -581,7 +573,7 @@ public class GeoPaparazziActivity extends Activity {
             } else {
                 // start logging
                 final Context context = this;
-                if (gpsServiceStatus == GpsServiceStatus.GPS_FIX) {
+                if (lastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
                     final String defaultLogName = "log_" + TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_LOCAL.format(new Date()); //$NON-NLS-1$
 
                     Utilities.inputMessageDialog(context, getString(R.string.gps_log), getString(R.string.gps_log_name),
@@ -696,9 +688,11 @@ public class GeoPaparazziActivity extends Activity {
      */
     private void startMapsDirTreeViewList() {
         try {
-            startActivityForResult(new Intent(this, MapsDirTreeViewList.class), MAPSDIR_FILETREE);
+            // startActivityForResult(new Intent(this, MapsDirTreeViewList.class),
+            // MAPSDIR_FILETREE);
+            startActivityForResult(new Intent(this, SourcesTreeListActivity.class), MAPSDIR_FILETREE);
         } catch (Exception e) {
-            GPLog.error(this, "GeoPaparazziActivity -E-> failed[startActivity(new Intent(this,MapsDirTreeViewList.class));]", e);
+            GPLog.error(this, "GeoPaparazziActivity -E-> failed[startActivity(new Intent(this,MapsDirTreeViewList.class));]", e); //$NON-NLS-1$
         }
     }
 
@@ -736,7 +730,7 @@ public class GeoPaparazziActivity extends Activity {
                     editor.putString(LibraryConstants.PREFS_KEY_BASEFOLDER, chosenFolderToLoad);
                     editor.commit();
 
-                    DatabaseManager.getInstance().closeDatabase();
+                    GeopaparazziApplication.getInstance().closeDatabase();
                     ResourcesManager.resetManager();
 
                     Intent intent = getIntent();
@@ -817,7 +811,6 @@ public class GeoPaparazziActivity extends Activity {
     private int backCount = 0;
     private long previousBackTime = System.currentTimeMillis();
     private ImageButton logButton;
-    private double[] lastGpsPosition;
 
     public boolean onKeyDown( int keyCode, KeyEvent event ) {
         // force to exit through the exit button
@@ -863,16 +856,17 @@ public class GeoPaparazziActivity extends Activity {
             }
             Utilities.toast(this, R.string.loggingoff, Toast.LENGTH_LONG);
 
-            GpsServiceUtilities.stopDatabaseLogging(this);
-            GpsServiceUtilities.unregisterFromBroadcasts(this, gpsServiceBroadcastReceiver);
-            GpsServiceUtilities.stopGpsService(this);
-
+            if (gpsServiceBroadcastReceiver != null) {
+                GpsServiceUtilities.stopDatabaseLogging(this);
+                GpsServiceUtilities.stopGpsService(this);
+                GpsServiceUtilities.unregisterFromBroadcasts(this, gpsServiceBroadcastReceiver);
+            }
             try {
                 MapsDirManager.getInstance().finish();
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            DatabaseManager.getInstance().closeDatabase();
+            GeopaparazziApplication.getInstance().closeDatabase();
             ResourcesManager.resetManager();
             resourcesManager = null;
 
@@ -882,6 +876,7 @@ public class GeoPaparazziActivity extends Activity {
         } catch (Exception e1) {
             e1.printStackTrace();
         } finally {
+            checkedGps = false;
             super.finish();
         }
     }
@@ -944,7 +939,7 @@ public class GeoPaparazziActivity extends Activity {
                 try {
                     Editable value = editText.getText();
                     String newName = value.toString();
-                    DatabaseManager.getInstance().closeDatabase();
+                    GeopaparazziApplication.getInstance().closeDatabase();
                     File newGeopaparazziDirFile = new File(applicationParentDir.getAbsolutePath(), newName);
                     if (!newGeopaparazziDirFile.mkdir()) {
                         throw new IOException("Unable to create the geopaparazzi folder."); //$NON-NLS-1$
@@ -1021,16 +1016,29 @@ public class GeoPaparazziActivity extends Activity {
     }
 
     private void onGpsServiceUpdate( Intent intent ) {
-        gpsServiceStatus = GpsServiceUtilities.getGpsServiceStatus(intent);
+        lastGpsServiceStatus = GpsServiceUtilities.getGpsServiceStatus(intent);
+        lastGpsLoggingStatus = GpsServiceUtilities.getGpsLoggingStatus(intent);
         lastGpsPosition = GpsServiceUtilities.getPosition(intent);
         float[] lastGpsPositionExtras = GpsServiceUtilities.getPositionExtras(intent);
         int[] lastGpsStatusExtras = GpsServiceUtilities.getGpsStatusExtras(intent);
         long lastPositiontime = GpsServiceUtilities.getPositionTime(intent);
-        actionBar.setStatus(gpsServiceStatus, lastGpsPosition, lastGpsPositionExtras, lastGpsStatusExtras, lastPositiontime);
-        if (lastGpsPosition == null) {
-            return;
+        actionBar.setStatus(lastGpsServiceStatus, lastGpsLoggingStatus, lastGpsPosition, lastGpsPositionExtras,
+                lastGpsStatusExtras, lastPositiontime);
+    }
+
+    private void checkFirstTimeGps( Context context ) {
+        if (!checkedGps) {
+            checkedGps = true;
+            if (lastGpsServiceStatus == GpsServiceStatus.GPS_OFF) {
+                String prompt = getResources().getString(R.string.prompt_gpsenable);
+                Utilities.yesNoMessageDialog(context, prompt, new Runnable(){
+                    public void run() {
+                        Intent gpsOptionsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(gpsOptionsIntent);
+                    }
+                }, null);
+            }
         }
-        // float[] lastGpsPositionExtras = GpsService.getPositionExtras(intent);
     }
 
 }

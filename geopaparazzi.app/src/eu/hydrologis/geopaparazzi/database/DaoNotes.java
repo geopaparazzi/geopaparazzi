@@ -31,6 +31,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.maps.overlays.NoteOverlayItem;
 import eu.hydrologis.geopaparazzi.util.Note;
 
@@ -86,7 +87,7 @@ public class DaoNotes {
             category = NoteType.POI.getDef();
         }
 
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
             addNoteNoTransaction(lon, lat, altim, timestamp, text, category, form, type, sqliteDatabase);
@@ -138,7 +139,7 @@ public class DaoNotes {
      * @throws IOException  if something goes wrong.
      */
     public static void deleteNote( long id ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
             // delete note
@@ -173,7 +174,7 @@ public class DaoNotes {
         String where = COLUMN_ID + "=" + id;
         String[] whereArgs = null;
 
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
 
         sqliteDatabase.update(TABLE_NOTES, updatedValues, where, whereArgs);
     }
@@ -185,7 +186,7 @@ public class DaoNotes {
      * @throws IOException  if something goes wrong.
      */
     public static void deleteNotesByType( NoteType noteType ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
             // delete note
@@ -226,7 +227,7 @@ public class DaoNotes {
      */
     public static List<Note> getNotesInWorldBounds( float n, float s, float w, float e ) throws IOException {
 
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         String query = "SELECT _id, lon, lat, altim, text, cat, ts, type, form FROM XXX WHERE (lon BETWEEN XXX AND XXX) AND (lat BETWEEN XXX AND XXX)";
         query = query.replaceFirst("XXX", TABLE_NOTES);
         query = query.replaceFirst("XXX", String.valueOf(w));
@@ -265,7 +266,7 @@ public class DaoNotes {
      * @throws IOException  if something goes wrong.
      */
     public static List<Note> getNotesList() throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         List<Note> notesList = new ArrayList<Note>();
         String asColumnsToReturn[] = {COLUMN_ID, COLUMN_LON, COLUMN_LAT, COLUMN_ALTIM, COLUMN_TS, COLUMN_TEXT, COLUMN_CATEGORY,
                 COLUMN_FORM, COLUMN_TYPE};
@@ -299,7 +300,7 @@ public class DaoNotes {
      * @throws IOException  if something goes wrong.
      */
     public static List<OverlayItem> getNoteOverlaysList( Drawable marker ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         List<OverlayItem> notesList = new ArrayList<OverlayItem>();
         String asColumnsToReturn[] = {COLUMN_LON, COLUMN_LAT, COLUMN_TS, COLUMN_TEXT};// ,
                                                                                       // COLUMN_FORM};
@@ -315,7 +316,7 @@ public class DaoNotes {
 
             StringBuilder description = new StringBuilder();
             description.append(text);
-            description.append("\n");
+            description.append("\n\n");
             description.append(date);
 
             NoteOverlayItem item1 = new NoteOverlayItem(new GeoPoint(lat, lon), text, description.toString(), marker);
@@ -521,7 +522,7 @@ public class DaoNotes {
         sB.append(" );");
         String CREATE_INDEX_NOTES_X_BY_Y = sB.toString();
 
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         if (GPLog.LOG_HEAVY)
             Log.i("DAONOTES", "Create the notes table.");
 

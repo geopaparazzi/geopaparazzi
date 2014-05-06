@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="stroke_color">Kolor kreski</string>
+  <string name="width">Grubość kreski</string>
+  <string name="alpha">Zabarwienie kreski</string>
+  <string name="fill_color">Kolor wypełnienia</string>
+  <string name="fill_alpha">Zabarwienie wypełnienia</string>
+  <string name="point_shape_">Kształt punktu</string>
+  <string name="point_size">Rozmiar punktu</string>
+  <string name="decimation">decymacja</string>
+  <string name="decimation_factor_default">0,000001</string>
+  <string name="min_zoom">Minimalne powiększenie</string>
+  <string name="max_zoom">Maksymalne powiększenie</string>
+  <string name="dash_pattern">Wzór linii</string>
+  <string name="label_properties">Właściwości etykiety</string>
+  <string name="toggle_visibility">przełącz widoczność</string>
+  <string name="label_field">pole etykiety</string>
+  <string name="label_size">rozmiar etykiety</string>
+</resources>

@@ -67,7 +67,7 @@ public class CustomTileDatabaseHandler extends SpatialDatabaseHandler {
                 tableName = this.databaseFile.getName().substring(0, this.databaseFile.getName().lastIndexOf("."));
             }
         } catch (java.lang.Exception e) {
-            GPLog.androidLog(4, "CustomTileDatabaseHandler[" + databaseFile.getAbsolutePath() + "]", e);
+            GPLog.error(this, "CustomTileDatabaseHandler[" + databaseFile.getAbsolutePath() + "]", e);
         }
     }
 

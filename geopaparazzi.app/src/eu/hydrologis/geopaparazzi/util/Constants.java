@@ -102,6 +102,10 @@ public interface Constants {
      * 
      */
     public static final String PREFS_KEY_IMPERIAL = "PREFS_KEY_IMPERIAL";
+    /**
+     * 
+     */
+    public static final String PREFS_KEY_RETINA = "PREFS_KEY_RETINA";
 
     /**
      * 

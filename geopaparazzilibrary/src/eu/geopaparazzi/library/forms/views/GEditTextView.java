@@ -30,6 +30,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.forms.FormUtilities;
 
 /**
  * A custom {@link EditText} view.
@@ -121,7 +122,9 @@ public class GEditTextView extends View implements GView {
 
     public String getValue() {
         if (editView != null) {
-            return editView.getText().toString();
+            String text = editView.getText().toString();
+            text = FormUtilities.makeTextJsonSafe(text);
+            return text;
         } else {
             return null;
         }

@@ -30,7 +30,6 @@ android {
                 compile project(":geopaparazzimapsforge")
                 compile project(":geopaparazzilibrary")
                 compile project(":geopaparazzimarkerslib")
-                compile files('libs/acra-4.5.0.jar')
         }
 
         sourceSets {

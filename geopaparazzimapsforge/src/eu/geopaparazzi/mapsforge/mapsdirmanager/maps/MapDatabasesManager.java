@@ -75,7 +75,7 @@ public class MapDatabasesManager {
     public boolean init( Context context, File mapsDir ) throws IOException {
         File[] filesList = mapsDir.listFiles();
         List<MapDatabaseHandler> tmpMapHandlers = new ArrayList<MapDatabaseHandler>();
-        boolean b_nomedia_file = false;
+        boolean foundNomediaFile = false;
         for( File currentFile : filesList ) {
             // nomedia logic: first check the files, if no
             // '.nomedia' found: then its directories
@@ -92,14 +92,14 @@ public class MapDatabasesManager {
                     if (!currentFile.getParentFile().toURI().equals(mapsDir.toURI())) {
                         // ignore all files of this directory
                         // apart of the maps root folder
-                        b_nomedia_file = true;
+                        foundNomediaFile = true;
                         tmpMapHandlers.clear();
-                        return b_nomedia_file;
+                        return foundNomediaFile;
                     }
                 }
             }
         }
-        if (!b_nomedia_file) {
+        if (!foundNomediaFile) {
             mapHandlers.addAll(tmpMapHandlers);
         }
         tmpMapHandlers.clear();
@@ -111,7 +111,7 @@ public class MapDatabasesManager {
         }
         // GPLog.androidLog(-1,"MapDatabasesManager init[" + mapsDir.getName() +
         // "] size["+mapHandlers.size()+"]");
-        return b_nomedia_file;
+        return foundNomediaFile;
     }
 
     /**

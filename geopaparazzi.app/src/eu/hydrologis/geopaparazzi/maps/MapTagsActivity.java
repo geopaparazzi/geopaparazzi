@@ -61,10 +61,11 @@ import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
 
 /**
- * Osm tags adding activity.
+ * Map tags adding activity.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("nls")
 public class MapTagsActivity extends Activity {
     private static final String USE_MAPCENTER_POSITION = "USE_MAPCENTER_POSITION";
     private static final int NOTE_RETURN_CODE = 666;
@@ -104,23 +105,20 @@ public class MapTagsActivity extends Activity {
         broadcastReceiver = new BroadcastReceiver(){
             public void onReceive( Context context, Intent intent ) {
                 GpsServiceStatus gpsServiceStatus = GpsServiceUtilities.getGpsServiceStatus(intent);
-                boolean useMapCenterPosition = preferences.getBoolean(USE_MAPCENTER_POSITION, false);
                 if (gpsServiceStatus == GpsServiceStatus.GPS_FIX) {
-                    gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
-                }
-                if (gpsLocation == null) {
-                    // no gps, can use only map center
-                    togglePositionTypeButtonGps.setChecked(false);
-                    togglePositionTypeButtonGps.setEnabled(false);
-                    Editor edit = preferences.edit();
-                    edit.putBoolean(USE_MAPCENTER_POSITION, false);
-                    edit.commit();
-                } else {
+                    gpsLocation = GpsServiceUtilities.getPosition(intent);
+                    boolean useMapCenterPosition = preferences.getBoolean(USE_MAPCENTER_POSITION, false);
                     if (useMapCenterPosition) {
                         togglePositionTypeButtonGps.setChecked(false);
                     } else {
                         togglePositionTypeButtonGps.setChecked(true);
                     }
+                } else {
+                    togglePositionTypeButtonGps.setChecked(false);
+                    togglePositionTypeButtonGps.setEnabled(false);
+                    Editor edit = preferences.edit();
+                    edit.putBoolean(USE_MAPCENTER_POSITION, true);
+                    edit.commit();
                 }
             }
         };
@@ -229,11 +227,10 @@ public class MapTagsActivity extends Activity {
     }
 
     @Override
-    protected void onStop() {
+    protected void onDestroy() {
         if (broadcastReceiver != null)
             GpsServiceUtilities.unregisterFromBroadcasts(this, broadcastReceiver);
-
-        super.onStop();
+        super.onDestroy();
     }
 
     private void checkPositionCoordinates() {

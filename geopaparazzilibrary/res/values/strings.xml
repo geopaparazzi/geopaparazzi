@@ -89,5 +89,6 @@
     <string name="share_note_with">Share note with...</string>
     <string name="downloading_mapurl_to_the_device">Downloading selected service to the device.</string>
     <string name="mapurl_successfully_downloaded">The mapurl has been successfully downloaded and installed. Remember to restart Geopaparazzi to have the service listed.</string>
-
+    <string name="crash_toast_text">The application experienced a fatal error. Crash information will be collected, that are useful to solve the problem. Please send them to the development team when possible.</string>
+    
 </resources>

@@ -16,9 +16,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialiteContextHolder;
 import eu.geopaparazzi.spatialite.database.spatial.core.MbtilesDatabaseHandler;
 /**
 // http://www.vogella.com/articles/AndroidBackgroundProcessing/article.html
@@ -102,7 +102,8 @@ public class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, S
         }
     }
     protected void onPreExecute() {
-        GPLog.androidLog(-1, "mbtiles_Async.tasks[" + db_mbtiles.getName() + "][" + s_message + "]");
+        if (GPLog.LOG_HEAVY)
+            GPLog.androidLog(-1, "mbtiles_Async.tasks[" + db_mbtiles.getName() + "][" + s_message + "]");
     }
     protected Integer doInBackground( MbtilesDatabaseHandler.AsyncTasks... async_values ) {
         int i_rc = 0;
@@ -112,7 +113,8 @@ public class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, S
                 this.async_parms.add(async_values[i]);
             }
         }
-        GPLog.androidLog(-1, "mbtiles_Async.On doInBackground[" + db_mbtiles.getName() + "]");
+        if (GPLog.LOG_HEAVY)
+            GPLog.androidLog(-1, "mbtiles_Async.On doInBackground[" + db_mbtiles.getName() + "]");
         for( int i = 0; i < this.async_parms.size(); i++ ) {
             if (isCancelled()) {
                 i_rc = 1077;
@@ -130,7 +132,7 @@ public class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, S
                                 + db_mbtiles.getBoundsAsString() + "] zoom_levels[" + db_mbtiles.getMinMaxZoomLevelsAsString()
                                 + "] center_parms[" + db_mbtiles.getCenterParms() + "] rc=" + i_rc);
                     } catch (Exception e) {
-                        // TODO
+                        GPLog.error(this, "Error", e);
                     }
                 }
             }
@@ -272,7 +274,7 @@ public class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, S
             if (i_count_rest < 1)
                 i_count_rest = 1;
         }
-        Context context = SpatialiteContextHolder.INSTANCE.getContext();
+        Context context = GPApplication.getInstance();
         boolean networkAvailable = NetworkUtilities.isNetworkAvailable(context);
         int i_limit = 100; // avoid excesive memory usage
         mbtiles_request_url = db_mbtiles.getRequestUrlsMap(i_limit);
@@ -395,8 +397,17 @@ public class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, S
                 }
             } catch (Throwable t) {
                 i_rc = 2;
-                GPLog.androidLog(4, "mbtiles_Async on_request_tile_id_url[" + db_mbtiles.getName() + "][" + s_tile_id + "] ["
-                        + s_tile_url + "] rc=" + i_rc, t);
+
+                StringBuilder sb = new StringBuilder();
+                sb.append("mbtiles_Async on_request_tile_id_url[");
+                sb.append(db_mbtiles.getName());
+                sb.append("][");
+                sb.append(s_tile_id);
+                sb.append("] [");
+                sb.append(s_tile_url);
+                sb.append("] rc=");
+                sb.append(i_rc);
+                GPLog.error(this, sb.toString(), t);
             }
         } else {
             i_rc = 1;
@@ -481,7 +492,7 @@ public class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, S
                 } else {
                     s_message = "mbtiles_Async.on_download_tile: http_code[" + i_http_code + "] [" + s_http_message + "] "
                             + e.getMessage();
-                    GPLog.androidLog(4, s_message, e);
+                    GPLog.error(this, s_message, e);
                     tile_bitmap = null;
                 }
             } finally { // will set values, depending on values to determin if this task should be
@@ -490,7 +501,7 @@ public class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, S
             }
         } catch (Throwable t) {
             s_message = "mbtiles_Async.on_download_tile: http_code[" + i_http_code + "] [" + s_http_message + "]";
-            GPLog.androidLog(4, s_message, t);
+            GPLog.error(this, s_message, t);
         }
         return tile_bitmap;
     }
@@ -540,7 +551,8 @@ public class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, S
         }
             break;
         default:
-            GPLog.androidLog(-1, "mbtiles_Async.get_http_result: " + s_http_result);
+            if (GPLog.LOG_HEAVY)
+                GPLog.androidLog(-1, "mbtiles_Async.get_http_result: " + s_http_result);
             break;
         }
         s_message = "mbtiles_Async.get_http_result: i_image_null[" + i_image_null + "] content_length[" + i_content_length
@@ -964,9 +976,11 @@ public class MBtilesAsync extends AsyncTask<MbtilesDatabaseHandler.AsyncTasks, S
         return i_rc;
     }
     protected void onProgressUpdate( String... a ) {
-        GPLog.androidLog(-1, "mbtiles_Async.[" + a[0] + "]");
+        if (GPLog.LOG_HEAVY)
+            GPLog.androidLog(-1, "mbtiles_Async.[" + a[0] + "]");
     }
     protected void onPostExecute( Integer i_rc ) {
-        GPLog.androidLog(-1, "mbtiles_Async.onPostExecute[" + i_rc + "] [" + s_message + "]");
+        if (GPLog.LOG_HEAVY)
+            GPLog.androidLog(-1, "mbtiles_Async.onPostExecute[" + i_rc + "] [" + s_message + "]");
     }
 }

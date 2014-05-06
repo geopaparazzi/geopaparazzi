@@ -42,10 +42,10 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKBReader;
 
+import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialiteContextHolder;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryIterator;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
 import eu.geopaparazzi.spatialite.util.DaoSpatialite;
@@ -89,7 +89,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
         super(dbPath);
         try {
             try {
-                Context context = SpatialiteContextHolder.INSTANCE.getContext();
+                Context context = GPApplication.getInstance();
                 ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
                 File mapsDir = resourcesManager.getMapsDir();
                 String mapsPath = mapsDir.getAbsolutePath();
