@@ -192,6 +192,8 @@
   <string name="prompt_delete_bookmark">Sei sicuro di che voler eliminare il segnalibro? Azione non annullabile.</string>
   <string name="keep_use_imperial">Usa le unità imperiali</string>
   <string name="keep_use_imperial_sum">Usa, ove possibile, le unità imperiali al posto delle metriche.</string>
+  <string name="high_density_display">Schermo ad alta densità</string>
+  <string name="high_density_display_sum">Se selezionato, le tavolette scaricate da osm verranno scalate per migliorarne la leggibilità.</string>
   <string name="satellites">satelliti</string>
   <string name="crash_toast_text">E\' avvenuto un errore fatale. Verranno raccolte informazioni utili alla risoluzione del problema. Si prega di mandarle al team di sviluppo quando possibile.</string>
   <string name="start">inizio</string>

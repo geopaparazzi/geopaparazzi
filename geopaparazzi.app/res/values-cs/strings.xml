@@ -108,6 +108,8 @@
   <string name="osm_notes_properly_uploaded">Poznámky OSM byly správně nahrány.\n\nChcete nahrané poznámky odstranit ze zařízení?</string>
   <string name="an_error_occurred_while_uploading_osm_tags">Během nahrávání značek OSM se vyskytla chyba:</string>
   <string name="enable_automatic_center_on_gps">Automaticky vystředit na GPS</string>
+  <string name="enable_center_on_gps">Povolit vystředění na GPS</string>
+  <string name="disable_center_on_gps">Zakázat vystředění na GPS</string>
   <string name="profile">Profil</string>
   <string name="loading_data">Nahrávají se data...</string>
   <string name="profilelable_distance">Vzdálenost [m]</string>
@@ -190,6 +192,7 @@
   <string name="prompt_delete_bookmark">Opravdu chcete smazat záložku? Tento krok nelze vrátit zpět.</string>
   <string name="keep_use_imperial">Použít britské rozměrové jednotky</string>
   <string name="keep_use_imperial_sum">Použít britské rozměrové jednotky namísto metrických tam, kde je to možné.</string>
+  <string name="high_density_display">Vysoce husté zobrazení</string>
   <string name="satellites">Družice</string>
   <string name="crash_toast_text">Program postihla vážná chyba. Informace o pádu, které jsou užitečné při řešení potíží, budou sebrány. Pokud je to možné, pošlete je, prosím, vývojářskému týmu.</string>
   <string name="start">Začátek</string>
@@ -216,4 +219,5 @@
   <string name="text_filter">Textový filtr</string>
   <string name="tanto_service_query">Dotaz</string>
   <string name="tanto_disclaimer">POZORNĚ SI PŘEČTĚTE: Geopaparazzi nenese žádnou zodpovědnost za zákonné předpoklady týkající se stažených dat. Před stažením jakékoli definice wms mapurl musí uživatel ověřit licencování služby a ujistit se, že je mu dovoleno její dotazování. V žádném ohledu není možné autory Geopaparazzi činit zodpovědnými za jakékoli porušení zákona související se zneužitím služby.</string>
+  <string name="service_name_propmt">Zadejte název pro službu. Pokud je ponecháno prázdné, název je převzat od služby.</string>
 </resources>
