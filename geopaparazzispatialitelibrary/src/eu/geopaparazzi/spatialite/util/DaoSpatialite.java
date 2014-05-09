@@ -590,14 +590,10 @@ public class DaoSpatialite {
        // - where 'field_name' is shown, that field is invalid
        sb_query.append("CASE WHEN statistics IS NULL THEN 'statistics' ELSE "); // 0
        sb_query.append("pixel_type END "); // 0
-       sb_query.append("||';'||CASE WHEN extent_minx IS NULL THEN 'extent_minx' ELSE "); // 1.0
-       sb_query.append("extent_minx END "); // 1.0
-       sb_query.append("||','||CASE WHEN extent_miny IS NULL THEN 'extent_miny' ELSE "); // 1.1
-       sb_query.append("extent_miny END "); // 1.1
-       sb_query.append("||','||CASE WHEN extent_maxx IS NULL THEN 'extent_maxx' ELSE "); // 1.2
-       sb_query.append("extent_maxx END "); // 1.2
-       sb_query.append("||','||CASE WHEN extent_maxy IS NULL THEN 'extent_maxy' ELSE "); // 1.3
-       sb_query.append("extent_maxy END "); // 1.3
+       sb_query.append("||';'||CASE WHEN extent_minx IS NULL THEN 'extent_minx' ELSE extent_minx END"); // 1.0
+       sb_query.append("||','||CASE WHEN extent_miny IS NULL THEN 'extent_miny' ELSE extent_miny END"); // 1.1
+       sb_query.append("||','||CASE WHEN extent_maxx IS NULL THEN 'extent_maxx' ELSE extent_maxx END"); // 1.2
+       sb_query.append("||','||CASE WHEN extent_maxy IS NULL THEN 'extent_maxy' ELSE extent_maxy END"); // 1.3
        sb_query.append("||';'||strftime('%Y-%m-%dT%H:%M:%fZ','now') AS vector_extent"); // 2
        VECTOR_LAYERS_QUERY_EXTENT_INVALID = sb_query.toString();
        sb_query = new StringBuilder();
@@ -617,7 +613,7 @@ public class DaoSpatialite {
        sb_query.append("table_name"); // 0 of 1st field
        sb_query.append("||';'||CASE"); // 1 of 1st field
        sb_query.append(" WHEN data_type = 'features' THEN 'shape'"); // 1 of 1st field
-       sb_query.append(" WHEN data_type = 'tiles' THEN 'tile_data' "); // 1 of 1st field
+       sb_query.append(" WHEN data_type = 'tiles' THEN 'tile_data'"); // 1 of 1st field
        sb_query.append(" WHEN data_type = 'featuresWithRasters' THEN 'location'"); // 1 of 1st field
        sb_query.append(" END"); // 1 of 1st field
        sb_query.append(" ||';'||CASE"); // 2 of 1st field
@@ -626,7 +622,7 @@ public class DaoSpatialite {
        sb_query.append(" WHEN data_type = 'featuresWithRasters' THEN 'GeoPackage_featuresWithRasters'"); // 2 of 1st field
        sb_query.append(" END"); // 2 of 1st field
        sb_query.append("||';'||'ROWID'"); // 3 of 1st field
-       sb_query.append("||';'||CASE "); // 4 of 1st field
+       sb_query.append("||';'||CASE"); // 4 of 1st field
        sb_query.append(" WHEN data_type = 'features' THEN '-1'"); // 4 of 1st field
        sb_query.append(" WHEN data_type = 'tiles' THEN '-1'"); // 4 of 1st field
        sb_query.append(" WHEN data_type = 'featuresWithRasters' THEN 'picture'"); // 4 of 1st field
@@ -662,7 +658,7 @@ public class DaoSpatialite {
        sb_query.append(" AND (max_x IS NOT NULL)");
        sb_query.append(" AND (max_y IS NOT NULL)");
        VECTOR_LAYERS_QUERY_WHERE = sb_query.toString();
-      sb_query = new StringBuilder();
+       sb_query = new StringBuilder();
        // first Views (Spatialview) then tables (SpatialTable), then Table-Name/Column
        sb_query.append(" ORDER BY table_name ASC");
        sb_query.append(",identifier ASC");
@@ -680,6 +676,7 @@ public class DaoSpatialite {
        sb_query.append(VECTOR_LAYERS_QUERY_ORDER);
        GEOPACKAGE_QUERY_EXTENT_LIST_R9 = sb_query.toString();
        GEOPACKAGE_QUERY_EXTENT_LIST_R9=GEOPACKAGE_QUERY_EXTENT_LIST_R9.replace("AS vector_data,","AS vector_data"); // remove
+       sb_query = new StringBuilder();
       // if the SELECT RL2_LoadRaster(...) was not executed, 
        // - a record may exist with 'statistics and extent=NULL': 
        // - this is an invalid record and must be ignored
@@ -693,16 +690,11 @@ public class DaoSpatialite {
        // if the record is invalid, only this field will what is invalid
        // - where 'field_name' is shown, that field is invalid
        sb_query.append("'-1'"); // 0
-       sb_query.append("||';'||CASE WHEN min_x IS NULL THEN 'min_x' ELSE "); // 1.0
-       sb_query.append("min_x END "); // 1.0
-       sb_query.append("||','||CASE WHEN min_y IS NULL THEN 'min_y' ELSE "); // 1.1
-       sb_query.append("min_y END "); // 1.1
-       sb_query.append("||','||CASE WHEN max_x IS NULL THEN 'max_x' ELSE "); // 1.2
-       sb_query.append("max_x END "); // 1.2
-       sb_query.append("||','||CASE WHEN max_y IS NULL THEN 'max_y' ELSE "); // 1.3
-       sb_query.append("max_y END "); // 1.3
-       sb_query.append("||','||CASE WHEN max_y IS NULL THEN 'max_y' ELSE "); // 1.3
-       sb_query.append("max_y END "); // 1.3
+       sb_query.append("||';'||CASE WHEN min_x IS NULL THEN 'min_x' ELSE min_x END"); // 1.0
+       sb_query.append("||','||CASE WHEN min_y IS NULL THEN 'min_y' ELSE min_y END"); // 1.1
+       sb_query.append("||','||CASE WHEN max_x IS NULL THEN 'max_x' ELSE max_x END"); // 1.2
+       sb_query.append("||','||CASE WHEN max_y IS NULL THEN 'max_y' ELSE max_y END"); // 1.3
+       sb_query.append("||','||CASE WHEN max_y IS NULL THEN 'max_y' ELSE max_y END"); // 1.3
        sb_query.append("||';'||strftime('%Y-%m-%dT%H:%M:%fZ','now') AS vector_extent"); // 2
        VECTOR_LAYERS_QUERY_EXTENT_INVALID = sb_query.toString();
        sb_query = new StringBuilder();
@@ -732,10 +724,10 @@ public class DaoSpatialite {
        GPLog.androidLog(-1, "DaoSpatialite: RASTER_COVERAGES_QUERY_EXTENT_VALID_V42["+ RASTER_COVERAGES_QUERY_EXTENT_VALID_V42+"]");
        GPLog.androidLog(-1, "DaoSpatialite: RASTER_COVERAGES_QUERY_EXTENT_INVALID_V42[" + RASTER_COVERAGES_QUERY_EXTENT_INVALID_V42 + "] ");
        GPLog.androidLog(-1, "DaoSpatialite: RASTER_COVERAGES_QUERY_EXTENT_LIST_V42["+ RASTER_COVERAGES_QUERY_EXTENT_LIST_V42 + "] ");
-       */
        GPLog.androidLog(-1, "DaoSpatialite: GEOPACKAGE_QUERY_EXTENT_VALID_R9["+ GEOPACKAGE_QUERY_EXTENT_VALID_R9+"]");
        GPLog.androidLog(-1, "DaoSpatialite: GEOPACKAGE_QUERY_EXTENT_INVALID_R9[" + GEOPACKAGE_QUERY_EXTENT_INVALID_R9 + "] ");
        GPLog.androidLog(-1, "DaoSpatialite: GEOPACKAGE_QUERY_EXTENT_LIST_R9["+ GEOPACKAGE_QUERY_EXTENT_LIST_R9 + "] ");
+       */
     }
 
     /**
@@ -1983,7 +1975,7 @@ public class DaoSpatialite {
           vector_data = statement.column_string(1);
           vector_extent="";
           vector_extent = statement.column_string(2);
-GPLog.androidLog(-1, "DaoSpatialite: getGeoPackageMap_R9 vector_key[" + vector_key + "] vector_data["+ vector_data+"] vector_extent["+  vector_extent + "] GEOPACKAGE_QUERY_EXTENT_VALID_R9["+ GEOPACKAGE_QUERY_EXTENT_VALID_R9 + "]");
+
           if (vector_extent != null)
           {
            spatialVectorMap.put(vector_key,vector_data+vector_extent);
@@ -2115,7 +2107,6 @@ GPLog.androidLog(-1, "DaoSpatialite: getGeoPackageMap_R9 vector_key[" + vector_k
            vector_data = statement.column_string(1);
            vector_extent="";
            vector_extent = statement.column_string(2);
-GPLog.androidLog(-1, "DaoSpatialite: getSpatialVectorMap_V4 vector_key[" + vector_key + "] vector_data["+ vector_data+"] vector_extent["+  vector_extent + "] VECTOR_LAYERS_QUERY["+ VECTOR_LAYERS_QUERY_EXTENT_VALID_V4 + "]");
            if (vector_extent != null)
            {
             spatialVectorMap.put(vector_key,vector_data+vector_extent);
@@ -2178,8 +2169,9 @@ GPLog.androidLog(-1, "DaoSpatialite: getSpatialVectorMap_V4 vector_key[" + vecto
         String tableType = "";
         String sqlCreationString = "";
         String name = "";
-        Stmt statement = database.prepare(sqlCommand);
+        Stmt statement = null;
         try {
+            statement = database.prepare(sqlCommand);
             while( statement.step() ) {
                 name = statement.column_string(0);
                 tableType = statement.column_string(1);
@@ -2218,7 +2210,7 @@ GPLog.androidLog(-1, "DaoSpatialite: getSpatialVectorMap_V4 vector_key[" + vecto
                 }
              }
         } catch (Exception e) {
-          GPLog.error("DAOSPATIALITE", "Error in checkDatabaseTypeAndValidity", e);
+          GPLog.error("DAOSPATIALITE", "Error in checkDatabaseTypeAndValidity sql["+sqlCommand+"] db[" + database.getFilename() + "]", e);
         }
         finally {
                 if (statement != null) {
@@ -2423,9 +2415,10 @@ GPLog.androidLog(-1, "DaoSpatialite: getSpatialVectorMap_V4 vector_key[" + vecto
         String s_sql_command = "pragma table_info(" + tableName + ")";
         String tableType = "";
         String sqlCreationString = "";
+        Stmt statement = null;
         String name = "";
-        Stmt statement = database.prepare(s_sql_command);
         try {
+            statement = database.prepare(s_sql_command);
             while( statement.step() ) {
                 name = statement.column_string(1);
                 tableType = statement.column_string(2);
@@ -2439,7 +2432,11 @@ GPLog.androidLog(-1, "DaoSpatialite: getSpatialVectorMap_V4 vector_key[" + vecto
                 // geometry-types
                 fieldNamesToTypeMap.put(name, sqlCreationString + ";" + tableType.toUpperCase(Locale.US));
             }
-        } finally {
+        } 
+        catch (jsqlite.Exception e_stmt) {
+          GPLog.androidLog(4, "DaoSpatialite:collectTableFields["+tableName+"] sql["+s_sql_command+"] db[" + database.getFilename() + "]", e_stmt);
+        }
+        finally {
             if (statement != null) {
                 statement.close();
             }
