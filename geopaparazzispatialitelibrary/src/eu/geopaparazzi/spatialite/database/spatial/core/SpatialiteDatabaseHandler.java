@@ -112,25 +112,33 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             // check database and collect the views list
             try {
                 databaseType = DaoSpatialite.checkDatabaseTypeAndValidity(db_java, spatialVectorMap, spatialVectorMapErrors);
-                if (spatialVectorMap.size() > 0)
-                 isDatabaseValid = true;
                 // GPLog.androidLog(-1,"GeopaparazziOverlay.getGeometryIteratorInBounds version["+DaoSpatialite.getJavaSqliteDescription(db_java,"test")+"]");
             } catch (Exception e) {
+             isDatabaseValid = false;
+            }
+            switch( databaseType ) {
+            case GEOPACKAGE:
+            /*
+              if (spatialVectorMap.size() == 0) for SPATIALITE3/4
+               --> DaoSpatialite.checkDatabaseTypeAndValidity will return SpatialiteDatabaseType.UNKNOWN
+               -- there is nothing to load (database empty)
+            */
+            case SPATIALITE3:
+            case SPATIALITE4:
+                 isDatabaseValid = true;
+                break;
+            default:
                 isDatabaseValid = false;
             }
 
             if (!isValid()) {
                 close();
             }
-            else
-            { // Only when valid
-             checkAndUpdatePropertiesUniqueNames();
-            }
+            checkAndUpdatePropertiesUniqueNames();
         } catch (Exception e) {
             GPLog.androidLog(4, "SpatialiteDatabaseHandler[" + databaseFile.getAbsolutePath() + "]", e);
         }
     }
-
     @Override
     public void open() {
         /*

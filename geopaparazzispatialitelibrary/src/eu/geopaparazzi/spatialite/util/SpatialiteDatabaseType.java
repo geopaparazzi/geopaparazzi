@@ -24,10 +24,15 @@ package eu.geopaparazzi.spatialite.util;
  */
 @SuppressWarnings("nls")
 public enum SpatialiteDatabaseType {
-    // * <li>10 == GeoPackage
-    // * <li>2 == spatialite 2
-    // * <li>3 == spatialite 3
-    // * <li>4 == spatialite 4
+    // * <li>-1 == Unknown
+    // * <li>10 == GeoPackage  [Raster]
+    // * <li>2 == spatialite 2 [found but not supported]
+    // * <li>3 == spatialite 3 [Vector]
+    // * <li>4 == spatialite 4 [Vector]
+    /**
+     * Unknown database.
+     */
+    UNKNOWN("Unknown Database Type", -1),
     /**
      * spatialite 2.0 - 2.3 database.
      * prevents IllegalArgumentException
@@ -42,7 +47,7 @@ public enum SpatialiteDatabaseType {
      */
     SPATIALITE4("Spatialite 4", 4),
     /**
-     * spatialite 4 database.
+     * GeoPackage database.
      */
     GEOPACKAGE("GeoPackage", 10);
 

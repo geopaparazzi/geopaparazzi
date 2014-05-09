@@ -25,11 +25,8 @@ import java.util.List;
 import java.util.Map;
 
 import android.content.Context;
-<<<<<<< HEAD
 import eu.geopaparazzi.library.database.GPLog;
-=======
 import eu.geopaparazzi.library.GPApplication;
->>>>>>> 6d0644ab1c69e313f8dcb321914be277740bf919
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
 import eu.geopaparazzi.spatialite.util.SpatialDataType;

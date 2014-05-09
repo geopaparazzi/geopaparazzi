@@ -50,6 +50,10 @@ public class DaoSpatialite {
      */
     public static final String METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME = "vector_layers_statistics";
     /**
+     * From not yet documented [2014-05-09]
+     */
+    public static final String METADATA_RASTERLITE2_RASTER_COVERAGES_TABLE_NAME = "raster_coverages";
+    /**
      * Starting from spatialite 2.4 to 3.1.0
      */
     public static final String METADATA_LAYER_STATISTICS_TABLE_NAME = "layer_statistics";
@@ -216,7 +220,7 @@ public class DaoSpatialite {
      */
     // Mode Types: 0=strict ; 1=tolerant ; 2=corrective ; 3=corrective with CreateSpatialIndex
     public static int VECTOR_LAYERS_QUERY_MODE=0;
-    // for spatialite 4.0 with valid vector_layers_statistics, o all of which have a layers_statistics table
+    // for spatialite 4.0 with valid vector_layers_statistics, all of which have a layers_statistics table
     public static String VECTOR_LAYERS_QUERY_EXTENT_LIST_V4;
     public static String VECTOR_LAYERS_QUERY_EXTENT_VALID_V4;
     public static String VECTOR_LAYERS_QUERY_EXTENT_INVALID_V4;
@@ -232,6 +236,10 @@ public class DaoSpatialite {
     public static String VIEWS_QUERY_EXTENT_LIST_V3;
     public static String VIEWS_QUERY_EXTENT_VALID_V3;
     public static String VIEWS_QUERY_EXTENT_INVALID_V3;
+    // for spatialite 4.2 with valid raster_coverages, RasterLite2 support
+    public static String RASTER_COVERAGES_QUERY_EXTENT_LIST_V42;
+    public static String RASTER_COVERAGES_QUERY_EXTENT_VALID_V42;
+    public static String RASTER_COVERAGES_QUERY_EXTENT_INVALID_V42;
     static {
        String VECTOR_LAYERS_QUERY_BASE="";
        String LAYERS_QUERY_BASE_V4="";
@@ -337,7 +345,7 @@ public class DaoSpatialite {
        sb_query.append(" = "+ METADATA_VIEWS_GEOMETRY_COLUMNS_TABLE_NAME + ".f_geometry_column");
        // VIEWS_QUERY_FROM_V3 is now compleate
        VIEWS_QUERY_FROM_V3 = sb_query.toString();
-        sb_query = new StringBuilder();
+       sb_query = new StringBuilder();
        // if the record is invalid, only this field will be null
        // 'vector_key' and 'vector_data' will be use to attempt to recover from the error.
        sb_query.append(METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + ".row_count"); // 0
@@ -502,7 +510,94 @@ public class DaoSpatialite {
        sb_query.append(LAYERS_QUERY_WHERE);
        sb_query.append(LAYERS_QUERY_ORDER_V4);
        LAYERS_QUERY_EXTENT_INVALID_V4 = sb_query.toString();
-       // This is not someting that should be developed more than once ...
+       // -------------------
+       // RasterLite2 support - begin
+       sb_query = new StringBuilder();
+       sb_query.append("SELECT  DISTINCT ");
+       sb_query.append("coverage_name"); // 0 of 1st field
+       sb_query.append("||';'||REPLACE(title,';','-')"); // 1 of 1st field
+       sb_query.append("||';'||'RasterLite2'"); //  2 of 1st field
+       sb_query.append("||';'||compression||';'||horz_resolution"); // 3+4 of 1st field
+       sb_query.append(" AS vector_key,pixel_type"); // 0 of second field
+       sb_query.append("||';'||tile_width"); // 2
+       sb_query.append("||';'||srid"); // 3
+       sb_query.append("||';'||REPLACE(abstract,';','-')||';' AS vector_data,"); // 4
+       VECTOR_LAYERS_QUERY_BASE = sb_query.toString();
+       sb_query = new StringBuilder();
+       // if the record is invalid, only this field will be null
+       // 'vector_key' and 'vector_data' will be use to attempt to recover from the error.
+       sb_query.append("num_bands"); // 0
+       sb_query.append("||';'||extent_minx"); // 1.0
+       sb_query.append("||','||extent_miny"); // 1.1
+       sb_query.append("||','||extent_maxx"); // 1.2
+       sb_query.append("||','||extent_maxy"); // 1.3
+       sb_query.append("||';'||strftime('%Y-%m-%dT%H:%M:%fZ','now') AS vector_extent"); // 2
+       VECTOR_LAYERS_QUERY_EXTENT_VALID = sb_query.toString();
+       sb_query = new StringBuilder();
+       sb_query.append(" FROM " + METADATA_RASTERLITE2_RASTER_COVERAGES_TABLE_NAME);
+       VECTOR_LAYERS_QUERY_FROM = sb_query.toString();
+       sb_query = new StringBuilder();
+       // first Views (Spatialview) then tables (SpatialTable), then Table-Name/Column
+       sb_query.append(" ORDER BY coverage_name ASC");
+       sb_query.append(",title ASC");
+       VECTOR_LAYERS_QUERY_ORDER = sb_query.toString();
+       sb_query = new StringBuilder();
+       // if the SELECT RL2_LoadRaster(...) was not executed, 
+       // - a record may exist with 'statistics and extent=NULL': 
+       // - this is an invalid record and must be ignored
+       sb_query.append(" WHERE (statistics IS NOT NULL)");
+       sb_query.append(" AND (extent_minx IS NOT NULL)");
+       sb_query.append(" AND (extent_miny IS NOT NULL)");
+       sb_query.append(" AND (extent_maxx IS NOT NULL)");
+       sb_query.append(" AND (extent_maxy IS NOT NULL)");
+       VECTOR_LAYERS_QUERY_WHERE = sb_query.toString();
+       sb_query = new StringBuilder();
+       sb_query.append(VECTOR_LAYERS_QUERY_BASE);
+       sb_query.append(VECTOR_LAYERS_QUERY_EXTENT_VALID);
+       sb_query.append(VECTOR_LAYERS_QUERY_FROM);
+       sb_query.append(VECTOR_LAYERS_QUERY_WHERE);
+       sb_query.append(VECTOR_LAYERS_QUERY_ORDER);
+       RASTER_COVERAGES_QUERY_EXTENT_VALID_V42 = sb_query.toString();
+       sb_query = new StringBuilder();
+       sb_query.append(VECTOR_LAYERS_QUERY_BASE);
+       sb_query.append(VECTOR_LAYERS_QUERY_FROM);
+       sb_query.append(VECTOR_LAYERS_QUERY_ORDER);
+       RASTER_COVERAGES_QUERY_EXTENT_LIST_V42 = sb_query.toString();
+       RASTER_COVERAGES_QUERY_EXTENT_LIST_V42=RASTER_COVERAGES_QUERY_EXTENT_LIST_V42.replace("AS vector_data,","AS vector_data"); // remove
+       sb_query = new StringBuilder();
+       // if the SELECT RL2_LoadRaster(...) was not executed, 
+       // - a record may exist with 'statistics and extent=NULL': 
+       // - this is an invalid record and must be ignored
+       sb_query.append(" WHERE (statistics IS NULL)");
+       sb_query.append(" OR (extent_minx IS NULL)");
+       sb_query.append(" OR (extent_miny IS NULL)");
+       sb_query.append(" OR (extent_maxx IS NULL)");
+       sb_query.append(" OR (extent_maxy IS NULL)");
+       VECTOR_LAYERS_QUERY_WHERE = sb_query.toString();
+       sb_query = new StringBuilder();
+       // if the record is invalid, only this field will what is invalid
+       // - where 'field_name' is shown, that field is invalid
+       sb_query.append("CASE WHEN statistics IS NULL THEN 'statistics' ELSE "); // 0
+       sb_query.append("pixel_type END "); // 0
+       sb_query.append("||';'||CASE WHEN extent_minx IS NULL THEN 'extent_minx' ELSE "); // 1.0
+       sb_query.append("extent_minx END "); // 1.0
+       sb_query.append("||','||CASE WHEN extent_miny IS NULL THEN 'extent_miny' ELSE "); // 1.1
+       sb_query.append("extent_miny END "); // 1.1
+       sb_query.append("||','||CASE WHEN extent_maxx IS NULL THEN 'extent_maxx' ELSE "); // 1.2
+       sb_query.append("extent_maxx END "); // 1.2
+       sb_query.append("||','||CASE WHEN extent_maxy IS NULL THEN 'extent_maxy' ELSE "); // 1.3
+       sb_query.append("extent_maxy END "); // 1.3
+       VECTOR_LAYERS_QUERY_EXTENT_INVALID = sb_query.toString();
+       sb_query = new StringBuilder();
+       sb_query.append(VECTOR_LAYERS_QUERY_BASE);
+       sb_query.append(VECTOR_LAYERS_QUERY_EXTENT_INVALID);
+       sb_query.append(VECTOR_LAYERS_QUERY_FROM);
+       sb_query.append(VECTOR_LAYERS_QUERY_WHERE);
+       sb_query.append(VECTOR_LAYERS_QUERY_ORDER);
+       RASTER_COVERAGES_QUERY_EXTENT_INVALID_V42 = sb_query.toString();
+       // RasterLite2 support - end
+       // -------------------
+       // This is not something that should be developed more than once ...
        /*
        GPLog.androidLog(-1, "DaoSpatialite: VECTOR_LAYERS_QUERY_EXTENT_VALID_V4["+ VECTOR_LAYERS_QUERY_EXTENT_VALID_V4+"]");
        GPLog.androidLog(-1, "DaoSpatialite: VECTOR_LAYERS_QUERY_EXTENT_INVALID_V4[" + VECTOR_LAYERS_QUERY_EXTENT_INVALID_V4 + "] ");
@@ -517,6 +612,9 @@ public class DaoSpatialite {
        GPLog.androidLog(-1, "DaoSpatialite: VIEWS_QUERY_EXTENT_INVALID_V3[" + VIEWS_QUERY_EXTENT_INVALID_V3 + "] ");
        GPLog.androidLog(-1, "DaoSpatialite: VIEWS_QUERY_EXTENT_LIST_V3["+ VIEWS_QUERY_EXTENT_LIST_V3 + "] ");
        */
+       GPLog.androidLog(-1, "DaoSpatialite: RASTER_COVERAGES_QUERY_EXTENT_VALID_V42["+ RASTER_COVERAGES_QUERY_EXTENT_VALID_V42+"]");
+       GPLog.androidLog(-1, "DaoSpatialite: RASTER_COVERAGES_QUERY_EXTENT_INVALID_V42[" + RASTER_COVERAGES_QUERY_EXTENT_INVALID_V42 + "] ");
+       GPLog.androidLog(-1, "DaoSpatialite: RASTER_COVERAGES_QUERY_EXTENT_LIST_V42["+ RASTER_COVERAGES_QUERY_EXTENT_LIST_V42 + "] ");
     }
 
     /**
@@ -961,7 +1059,8 @@ public class DaoSpatialite {
             s_javasqlite_description += "spatialite[" + getSpatialiteVersion(database) + "],";
             s_javasqlite_description += "proj4[" + getProj4Version(database) + "],";
             s_javasqlite_description += "geos[" + getGeosVersion(database) + "],";
-            s_javasqlite_description += "spatialite_properties[" + getSpatialiteProperties(database) + "]]";
+            s_javasqlite_description += "spatialite_properties[" + getSpatialiteProperties(database) + "],";
+            s_javasqlite_description += "rasterlite2_properties[" + getRaster2Version(database) + "]]";
         } catch (Exception e) {
             s_javasqlite_description += "exception[? not a spatialite database, or spatialite < 4 ?]]";
             GPLog.androidLog(4, "DaoSpatialite[" + name + "].getJavaSqliteDescription[" + s_javasqlite_description
@@ -1013,6 +1112,38 @@ public class DaoSpatialite {
         }
         return "-";
     }
+    /**
+     * Return info of Rasterlite2
+     * - will be filled on first Database connection when empty
+     * -- called in checkDatabaseTypeAndValidity
+     * --- if this is empty, then the Driver has NOT been compiled for RasterLite2
+     *  '0.8;x86_64-linux-gnu'
+     */
+     public static String Rasterlite2Version_CPU = "";
+    /**
+     * Get the version of Rasterlite2 with cpu-type.
+     *
+     * @param database the db to use.
+     * @return the version of Spatialite.
+     * @throws Exception  if something goes wrong.
+     */
+    public static String getRaster2Version( Database database ) throws Exception {
+        Stmt stmt = database.prepare("SELECT RL2_Version()||';'||RL2_Target_CPU();");
+        try {
+            if (stmt.step()) {
+                String value = stmt.column_string(0);
+                if (JavaSqliteDescription.equals(""))
+                {
+                 Rasterlite2Version_CPU=value;
+                }
+                return value;
+            }
+        } finally {
+            stmt.close();
+        }
+        return "-";
+    }
+
     /**
      * Get the properties of Spatialite.
      *
@@ -1684,12 +1815,13 @@ public class DaoSpatialite {
      *
      * @param database the database to check.
      * @param spatialVectorMap the {@link HashMap} of Spatialite4+ Vector-data (Views/Tables Geometries) to clear and repopulate.
-      * @param spatialVectorMapErrors the {@link HashMap} of of invalid geometries.
-     * @param b_layers_statistics if a ayers_statistics had been found
+     * @param spatialVectorMapErrors the {@link HashMap} of of invalid geometries.
+     * @param b_layers_statistics if a layers_statistics had been found
+     * @param b_raster_coverages if a raster_coverages had been found [RasterLite2 support]
      * @return nothing
      * @throws Exception  if something goes wrong.
      */
-    private static void getSpatialVectorMap_V4( Database database, HashMap<String, String> spatialVectorMap , HashMap<String, String> spatialVectorMapErrors, boolean b_layers_statistics  ) throws Exception {
+    private static void getSpatialVectorMap_V4( Database database, HashMap<String, String> spatialVectorMap , HashMap<String, String> spatialVectorMapErrors, boolean b_layers_statistics , boolean b_raster_coverages ) throws Exception {
         int i_spatialindex=1;
         String vector_key=""; // term used when building the sql, used as map.key
         String vector_data=""; // term used when building the sql
@@ -1757,8 +1889,55 @@ public class DaoSpatialite {
          }
         }
         if ((VECTOR_LAYERS_QUERY_MODE > 0) && (spatialVectorMapErrors.size() > 0))
-        { // if empty: there are nothing to correct
+        { // if empty: there are nothing to correct [do befor RasterLite2 logic - there is no error control for that]
          getSpatialVectorMap_Errors(database, spatialVectorMap ,spatialVectorMapErrors, SpatialiteDatabaseType.SPATIALITE4 );
+        }
+        if (b_raster_coverages )
+        { // RasterLite2 support: a raster_coverages has been found and the driver supports it
+         try
+         {
+          statement = database.prepare(RASTER_COVERAGES_QUERY_EXTENT_INVALID_V42);
+          while( statement.step() )
+          {
+           vector_key = statement.column_string(0);
+           vector_data = statement.column_string(1);
+           vector_extent = statement.column_string(2);
+           spatialVectorMapErrors.put(vector_key,vector_data+vector_extent);
+          }
+         }
+         catch (jsqlite.Exception e_stmt) {
+          GPLog.androidLog(4, "DaoSpatialite:getSpatialVectorMap_V4["+SpatialiteDatabaseType.SPATIALITE4+"] sql["+RASTER_COVERAGES_QUERY_EXTENT_INVALID_V42+"] db[" + database.getFilename() + "]", e_stmt);
+         }
+         finally {
+          if (statement != null) {
+           statement.close();
+          }
+         }
+         try {
+          statement = database.prepare(RASTER_COVERAGES_QUERY_EXTENT_VALID_V42);
+          while( statement.step() ) {
+           vector_key = statement.column_string(0);
+           vector_data = statement.column_string(1);
+           vector_extent="";
+           vector_extent = statement.column_string(2);
+           if (vector_extent != null)
+           {
+            spatialVectorMap.put(vector_key,vector_data+vector_extent);
+           }
+           else
+           { //should never happen
+            // GPLog.androidLog(-1, "DaoSpatialite: getSpatialVectorMap_V4 vector_key[" + vector_key + "] vector_data["+ vector_data+"] vector_extent["+  vector_extent + "] VECTOR_LAYERS_QUERY["+ VECTOR_LAYERS_QUERY_EXTENT_VALID_V4 + "]");
+           }
+          }
+         }
+         catch (jsqlite.Exception e_stmt) {
+          GPLog.androidLog(4, "DaoSpatialite:getSpatialVectorMap_V4["+SpatialiteDatabaseType.SPATIALITE4+"] sql["+RASTER_COVERAGES_QUERY_EXTENT_VALID_V42+"] db[" + database.getFilename() + "]", e_stmt);
+         }
+         finally {
+          if (statement != null) {
+           statement.close();
+          }
+         }
         }
         // GPLog.androidLog(-1,"DaoSpatialite: getSpatialVectorMap_V4["+database.getFilename()+"] spatialVectorMap["+spatialVectorMap.size()+"]  spatialVectorMapErrors["+spatialVectorMapErrors.size()+"] ");
     }
@@ -1769,7 +1948,6 @@ public class DaoSpatialite {
      * @param database the database to check.
      * @param databaseViewsMap the {@link HashMap} of database views data to clear and repopulate.
      * @return the {@link SpatialiteDatabaseType}.
-     * @throws Exception if something goes wrong.
      */
     public static SpatialiteDatabaseType checkDatabaseTypeAndValidity( Database database, HashMap<String, String> spatialVectorMap , HashMap<String, String> spatialVectorMapErrors )
             throws Exception {
@@ -1778,7 +1956,7 @@ public class DaoSpatialite {
         spatialVectorMap.clear();
         spatialVectorMapErrors.clear();
         if (JavaSqliteDescription.equals(""))
-        {
+        { // Rasterlite2Version_CPU will NOT be empty, if the Driver was compiled with RasterLite2 support
          JavaSqliteDescription=getJavaSqliteDescription(database,"DaoSpatialite.checkDatabaseTypeAndValidity");
          GPLog.androidLog(-1,"DaoSpatialite.JavaSqliteDescription["+JavaSqliteDescription+"]");
         }
@@ -1792,6 +1970,8 @@ public class DaoSpatialite {
         boolean b_geometry_columns = false;
         // spatialite 2.0, 2.1 and 2.3 do NOT have a views_geometry_columns table
         boolean b_views_geometry_columns = false;
+        // spatialite 4.2.0 - RasterLite2 table [raster_coverages]
+        boolean b_raster_coverages = false;
         // this table dissapered (maybe 4.1.0) - when vector_layers_statistics is not set, this may be used for the bounds
         boolean b_layers_statistics = false;
         // boolean b_raster_columns = false;
@@ -1817,6 +1997,8 @@ public class DaoSpatialite {
                        b_SpatialIndex = true;
                     } else if (name.equals("views_geometry_columns")) {
                        b_views_geometry_columns = true;
+                    } else if (name.equals("raster_coverages")) {
+                       b_raster_coverages = true;
                     } else if (name.equals("layers_statistics")) {
                         b_layers_statistics = true;
                     } else if (name.equals("gpkg_contents")) {
@@ -1838,17 +2020,20 @@ public class DaoSpatialite {
                         b_vector_layers = true;
                     }
                 }
-            }
-        } finally {
-            if (statement != null) {
-                statement.close();
-            }
+             }
+        } catch (Exception e) {
+          GPLog.error("DAOSPATIALITE", "Error in checkDatabaseTypeAndValidity", e);
+        }
+        finally {
+                if (statement != null) {
+                    statement.close();
+                }
         }
         if (b_geopackage_contents) {
             // an old geopackage file, may look like a Spatialite Table
             // - but invalid srid
             // isDatabaseValid = false;
-            throw new Exception("Database not valid!");
+            return SpatialiteDatabaseType.UNKNOWN;
         }
         if (b_gpkg_contents) {
             // this is a GeoPackage, this can also have
@@ -1858,22 +2043,33 @@ public class DaoSpatialite {
             return SpatialiteDatabaseType.GEOPACKAGE;
         } else {
             if ((b_vector_layers_statistics) && (b_vector_layers)) { // Spatialite 4.0
-                getSpatialVectorMap_V4(database,spatialVectorMap,spatialVectorMapErrors,b_layers_statistics);
-               return SpatialiteDatabaseType.SPATIALITE4;
+                if ((Rasterlite2Version_CPU.equals("")) && (b_raster_coverages))
+                { // This database has a RasterLite2 table, but the Driver is not compiled to support it
+                 // b_raster_coverages = false;
+                }
+                getSpatialVectorMap_V4(database,spatialVectorMap,spatialVectorMapErrors,b_layers_statistics,b_raster_coverages);
+               if (spatialVectorMap.size() > 0)
+                return SpatialiteDatabaseType.SPATIALITE4;
+               else
+                // if empty, nothing to load
+                return SpatialiteDatabaseType.UNKNOWN;
             } else {
-                if ((b_geometry_columns) && (b_views_geometry_columns)){ // Spatialite from 2.4 until 4.0
-                    getSpatialVectorMap_V3(database,spatialVectorMap,spatialVectorMapErrors,b_layers_statistics,b_SpatialIndex);
-                    return SpatialiteDatabaseType.SPATIALITE3;
+                if ((b_geometry_columns) && (b_views_geometry_columns)) { // Spatialite from 2.4 until 4.0
+                     getSpatialVectorMap_V3(database,spatialVectorMap,spatialVectorMapErrors,b_layers_statistics,b_SpatialIndex);
+                    if (spatialVectorMap.size() > 0)
+                     return SpatialiteDatabaseType.SPATIALITE3;
+                    else
+                     // if empty, nothing to load
+                     return SpatialiteDatabaseType.UNKNOWN;
             } else {
-             if ((b_geometry_columns)){ // Spatialite from 2.0 until 2.3
+             if ((b_geometry_columns)) { // Spatialite from 2.0 until 2.3
                     // avoids IllegalArgumentException
                     return SpatialiteDatabaseType.SPATIALITE2;
                 }
               }
            }
         }
-
-        throw new IllegalArgumentException("No supported database version/type found.");
+        return SpatialiteDatabaseType.UNKNOWN;
     }
 
     /**
