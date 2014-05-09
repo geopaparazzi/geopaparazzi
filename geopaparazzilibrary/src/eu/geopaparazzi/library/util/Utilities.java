@@ -19,6 +19,7 @@ package eu.geopaparazzi.library.util;
 
 import java.io.File;
 import java.util.Date;
+import java.util.HashMap;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -865,43 +866,48 @@ public class Utilities {
     /**
      * Gets the data from a osm url.
      * 
-     * @param url the url to parse.
-     * @return an array with [lat, lon, text] or <code>null</code>.
+     * @param urlString the url to parse.
+     * @return an array with [lat, lon, text, zoom] or <code>null</code>.
      */
     @SuppressWarnings("nls")
-    public static String[] getLatLonTextFromOsmUrl( String url ) {
-        // http://www.openstreetmap.org/#map=19/46.67695/11.12605&layers=N
-        String osmMapsUrl = "http://www.openstreetmap.org/#map=";
-        if (url.startsWith(osmMapsUrl)) {
-            // osm maps url
-            String relativePath = url.substring(osmMapsUrl.length());
+    public static String[] getLatLonTextFromOsmUrl( String urlString ) {
+        // http://www.openstreetmap.org/?mlat=42.082&mlon=9.822#map=6/42.082/9.822&layers=N
+        String osmMapsUrl = "http://www.openstreetmap.org";
+        if (urlString.startsWith(osmMapsUrl)) {
+            String[] urlSplit = urlString.split("#|&|\\?");
+            HashMap<String, String> paramsMap = new HashMap<String, String>();
+            for( String string : urlSplit ) {
+                if (string.indexOf('=') != -1) {
+                    String[] keyValue = string.split("=");
+                    if (keyValue.length == 2) {
+                        paramsMap.put(keyValue[0].toLowerCase(), keyValue[1]);
+                    }
+                }
+            }
 
             // check if there is a dash for adding text
             String textStr = new Date().toLocaleString();
-            int lastDashIndex = relativePath.lastIndexOf('#');
+            int lastDashIndex = urlString.lastIndexOf('#');
             if (lastDashIndex != -1) {
                 // everything after a dash is taken as text
-                textStr = relativePath.substring(lastDashIndex + 1);
-                relativePath = relativePath.substring(0, lastDashIndex);
+                String tmpTextStr = urlString.substring(lastDashIndex + 1);
+                if (!tmpTextStr.startsWith("map=")) {
+                    textStr = tmpTextStr;
+                }
             }
 
-            int indexOfAmp = relativePath.indexOf('&');
-            String coordsStr = null;
-            if (indexOfAmp == -1) {
-                // no other &
-                coordsStr = relativePath;
-            } else {
-                coordsStr = relativePath.substring(0, indexOfAmp);
-            }
-            String[] split = coordsStr.split("/");
-            if (split.length == 3) {
-                try {
-                    double lat = Double.parseDouble(split[1]);
-                    double lon = Double.parseDouble(split[2]);
-
-                    return new String[]{String.valueOf(lat), String.valueOf(lon), textStr};
-                } catch (NumberFormatException e) {
-                    return null;
+            String coordsStr = paramsMap.get("map");
+            if (coordsStr != null) {
+                String[] split = coordsStr.split("/");
+                if (split.length == 3) {
+                    try {
+                        double lat = Double.parseDouble(split[1]);
+                        double lon = Double.parseDouble(split[2]);
+                        int zoom = (int) Double.parseDouble(split[0]);
+                        return new String[]{String.valueOf(lat), String.valueOf(lon), textStr, String.valueOf(zoom)};
+                    } catch (NumberFormatException e) {
+                        return null;
+                    }
                 }
             }
         } else {

@@ -78,7 +78,7 @@ public class GpsDataPropertiesActivity extends Activity {
             try {
                 startTime = TimeUtilities.utcToLocalTime(startTime);
             } catch (Exception e1) {
-                // if something odd happens, utc is ok
+                GPLog.error(this, "error in start time conversion: " + startTime, e1); //$NON-NLS-1$
             }
             String startText = startTimeTextView.getText().toString();
             startTimeTextView.setText(startText + startTime);
@@ -87,7 +87,11 @@ public class GpsDataPropertiesActivity extends Activity {
             try {
                 endTime = TimeUtilities.utcToLocalTime(endTime);
             } catch (Exception e1) {
-                // if something odd happens, utc is ok
+                GPLog.error(this, "error in end time conversion: " + startTime, e1); //$NON-NLS-1$
+            }
+
+            if (startTime.equals(endTime)) {
+                endTime = " - "; //$NON-NLS-1$
             }
 
             String endText = endTimeTextView.getText().toString();
@@ -219,7 +223,7 @@ public class GpsDataPropertiesActivity extends Activity {
                 public void onClick( View v ) {
                     try {
                         long id = item.getId();
-                        new DaoGpsLog().deleteGpslog(GpsDataPropertiesActivity.this, id);
+                        new DaoGpsLog().deleteGpslog(id);
                         finish();
                     } catch (IOException e) {
                         e.printStackTrace();

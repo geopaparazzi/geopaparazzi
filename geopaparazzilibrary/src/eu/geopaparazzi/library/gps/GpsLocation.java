@@ -82,4 +82,13 @@ public class GpsLocation extends Location {
         return new java.sql.Date(getTime());
     }
 
+    /**
+     * @return the distance to the previous location.
+     */
+    public float distanceToPrevious() {
+        if (previousLoc == null) {
+            return 0;
+        }
+        return distanceTo(previousLoc);
+    }
 }

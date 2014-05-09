@@ -108,6 +108,8 @@
   <string name="osm_notes_properly_uploaded">OSM 메모를 업로드했습니다.\n\n\n이 디바이스에서 업로드한 메모를 삭제하시겠습니까?</string>
   <string name="an_error_occurred_while_uploading_osm_tags">OSM 태그를 업로드하는 중 오류가 발생했습니다:</string>
   <string name="enable_automatic_center_on_gps">GPS 자동 중심</string>
+  <string name="enable_center_on_gps">GPS에 센터 활성화</string>
+  <string name="disable_center_on_gps">GPS에 센터 비활성화</string>
   <string name="profile">프로필</string>
   <string name="loading_data">데이터 불러오는 중...</string>
   <string name="profilelable_distance">거리 [m]</string>
@@ -216,4 +218,5 @@
   <string name="text_filter">텍스트 필터</string>
   <string name="tanto_service_query">쿼리</string>
   <string name="tanto_disclaimer">자세히 읽어보십시오: Geopaparazzi는 다운로드한 데이터에 대해 법적으로 아무 책임도 지지 않습니다. 어떤 WMS 서비스의 지도를 다운로드하기 전에, 사용자는 그 서비스의 라이센스를 확인해야하고, 서비스 제공자가 쿼리를 허용해야 합니다. 어떠한 방식으로든 Geopaparazzi 사용자는 서빗의 오용과 관련된 라이센스 침해에 대해 책임을 져야 합니다.</string>
+  <string name="service_name_propmt">서비스 이름을 입력하십시오. 공백인 경우 서비스에서 이름을 가져옵니다.</string>
 </resources>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/main_background"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/sourceTypeToggleButtonsView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal" >
+
+        <ToggleButton
+            android:id="@+id/toggleMapButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textOff="map"
+            android:textOn="map" />
+
+        <ToggleButton
+            android:id="@+id/toggleMapurlButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textOff="mapurl"
+            android:textOn="mapurl" />
+
+        <ToggleButton
+            android:id="@+id/toggleMbtilesButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textOff="mbtiles"
+            android:textOn="mbtiles" />
+    </LinearLayout>
+
+    <ExpandableListView
+        android:id="@+id/expandableSourceListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/sourceTypeToggleButtonsView" />
+
+</RelativeLayout>

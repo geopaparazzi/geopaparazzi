@@ -20,6 +20,7 @@ package eu.hydrologis.geopaparazzi.dashboard;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.app.Activity;
@@ -30,22 +31,18 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.location.GpsStatus;
-import android.location.Location;
 import android.net.Uri;
-import android.os.Bundle;
-import android.os.SystemClock;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.gps.GpsLocation;
-import eu.geopaparazzi.library.gps.GpsManager;
-import eu.geopaparazzi.library.gps.GpsManagerListener;
-import eu.geopaparazzi.library.gps.GpsStatusInfo;
+import eu.geopaparazzi.library.gps.GpsLoggingStatus;
+import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.sensors.SensorsManager;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.TimeUtilities;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.actionbar.ActionItem;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.actionbar.QuickAction;
@@ -56,13 +53,12 @@ import eu.hydrologis.geopaparazzi.dashboard.quickaction.actionbar.QuickAction;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public class ActionBar implements GpsManagerListener {
+public class ActionBar {
     private static final boolean LOG_HOW = GPLog.LOG_ABSURD;
     private static DecimalFormat formatter = new DecimalFormat("0.00000"); //$NON-NLS-1$
     private final View actionBarView;
     private ActionItem infoQuickaction;
 
-    private String nodataString;
     private String timeString;
     private String lonString;
     private String latString;
@@ -70,23 +66,21 @@ public class ActionBar implements GpsManagerListener {
     private String azimString;
     private String loggingString;
     private String acquirefixString;
-    private String gpsonString;
     private String gpsStatusString;
-    private final GpsManager gpsManager;
     private final SensorsManager sensorsManager;
-    private boolean gotFix;
-    private boolean isProviderEnabled;
-    private GpsStatus lastGpsStatus;
-    private long lastLocationupdateMillis;
     private String satellitesString;
     private ImageButton menuButton;
     private String projectName;
     private String projectString;
     private String indent = "  ";
+    private GpsServiceStatus lastGpsServiceStatus;
+    private double[] lastGpsPosition;
+    private int[] lastGpsStatusExtras;
+    private long lastGpsPositiontime;
+    private GpsLoggingStatus lastGpsLoggingStatus;
 
-    private ActionBar( View actionBarView, GpsManager _gpsManager, SensorsManager sensorsManager ) {
+    private ActionBar( View actionBarView, SensorsManager sensorsManager ) {
         this.actionBarView = actionBarView;
-        gpsManager = _gpsManager;
         this.sensorsManager = sensorsManager;
 
         try {
@@ -96,11 +90,6 @@ public class ActionBar implements GpsManagerListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        // set initial enablement
-        isProviderEnabled = gpsManager.isEnabled();
-
-        gpsManager.addListener(this);
 
         initVars();
         createQuickActions();
@@ -128,13 +117,6 @@ public class ActionBar implements GpsManagerListener {
     }
 
     /**
-     * Remove listener.
-     */
-    public void cleanup() {
-        gpsManager.removeListener(this);
-    }
-
-    /**
      * @return the menu button.
      */
     public ImageButton getMenuButton() {
@@ -155,10 +137,8 @@ public class ActionBar implements GpsManagerListener {
         latString = context.getString(R.string.lat);
         altimString = context.getString(R.string.altim);
         azimString = context.getString(R.string.azimuth);
-        nodataString = context.getString(R.string.nogps_data);
         loggingString = context.getString(R.string.text_logging);
         acquirefixString = context.getString(R.string.gps_searching_fix);
-        gpsonString = context.getString(R.string.text_gpson);
         satellitesString = context.getString(R.string.satellites);
         projectString = context.getString(R.string.project);
         gpsStatusString = context.getString(R.string.gps_status);
@@ -169,13 +149,12 @@ public class ActionBar implements GpsManagerListener {
      * 
      * @param activity the parent activity.
      * @param activityId the activity id.
-     * @param gpsManager the {@link GpsManager}.
      * @param sensorsManager teh sensor manager.
      * @return the actionbar.
      */
-    public static ActionBar getActionBar( Activity activity, int activityId, GpsManager gpsManager, SensorsManager sensorsManager ) {
+    public static ActionBar getActionBar( Activity activity, int activityId, SensorsManager sensorsManager ) {
         View view = activity.findViewById(activityId);
-        return new ActionBar(view, gpsManager, sensorsManager);
+        return new ActionBar(view, sensorsManager);
     }
 
     /**
@@ -302,7 +281,6 @@ public class ActionBar implements GpsManagerListener {
 
     private String createGpsInfo() {
         double azimuth = sensorsManager.getNormalAzimuth();
-        GpsLocation loc = gpsManager.getLocation();
 
         StringBuilder sb = new StringBuilder();
         if (projectName != null && projectName.length() != 0) {
@@ -310,51 +288,64 @@ public class ActionBar implements GpsManagerListener {
             sb.append(projectString).append(":\n");
             sb.append(indent).append(projectName).append("\n\n");
         }
-        sb.append(gpsStatusString).append(":\n");
-        if (loc == null || !gpsManager.isEnabled()) {
-            // Logger.d("COMPASSVIEW", "Location from gps is null!");
-            sb.append(indent).append(nodataString).append("\n");
-            if (isProviderEnabled) {
-                if (!gotFix) {
-                    sb.append(indent).append(acquirefixString);
-                } else {
-                    sb.append(indent).append(gpsonString);
-                    sb.append(": ").append(gpsManager.isEnabled()); //$NON-NLS-1$
-                }
-            }
+        if (lastGpsServiceStatus == GpsServiceStatus.GPS_OFF) {
+            // sb.append(indent).append(nodataString).append("\n");
+        } else if (lastGpsServiceStatus == GpsServiceStatus.GPS_LISTENING__NO_FIX) {
+            sb.append(gpsStatusString).append(":\n");
+            sb.append(indent).append(acquirefixString);
+            // if (lastGpsServiceStatus != GpsServiceStatus.GPS_FIX) {
+            // } else {
+            // sb.append(indent).append(gpsonString);
+            //                sb.append(": ").append(lastGpsServiceStatus == GpsServiceStatus.GPS_OFF); //$NON-NLS-1$
+            // }
             sb.append("\n");
             addGpsStatusInfo(sb);
 
         } else {
+            sb.append(gpsStatusString).append(":\n");
+            String lat;
+            String lon;
+            String elev;
+            String time;
+            if (lastGpsPosition != null) {
+                lat = formatter.format(lastGpsPosition[1]);
+                lon = formatter.format(lastGpsPosition[0]);
+                elev = String.valueOf((int) lastGpsPosition[2]);
+                time = TimeUtilities.INSTANCE.TIME_FORMATTER_LOCAL.format(new Date(lastGpsPositiontime));
+            } else {
+                time = " - ";
+                lat = " - ";
+                lon = " - ";
+                elev = " - ";
+            }
             sb.append(indent).append(timeString);
-            sb.append(" ").append(loc.getTimeString()); //$NON-NLS-1$
+            sb.append(" ").append(time); //$NON-NLS-1$
             sb.append("\n");
             sb.append(indent).append(latString);
-            sb.append(" ").append(formatter.format(loc.getLatitude())); //$NON-NLS-1$
+            sb.append(" ").append(lat); //$NON-NLS-1$
             sb.append("\n");
             sb.append(indent).append(lonString);
-            sb.append(" ").append(formatter.format(loc.getLongitude())); //$NON-NLS-1$
+            sb.append(" ").append(lon); //$NON-NLS-1$
             sb.append("\n");
             sb.append(indent).append(altimString);
-            sb.append(" ").append((int) loc.getAltitude()); //$NON-NLS-1$
+            sb.append(" ").append(elev); //$NON-NLS-1$
             sb.append("\n");
             sb.append(indent).append(azimString);
             sb.append(" ").append((int) (360 - azimuth)); //$NON-NLS-1$
             sb.append("\n");
             sb.append(indent).append(loggingString);
-            sb.append(": ").append(gpsManager.isDatabaseLogging()); //$NON-NLS-1$
+            sb.append(": ").append(lastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON); //$NON-NLS-1$
             sb.append("\n");
             addGpsStatusInfo(sb);
         }
         return sb.toString();
     }
-
     private void addGpsStatusInfo( StringBuilder sb ) {
-        if (lastGpsStatus != null) {
-            GpsStatusInfo info = new GpsStatusInfo(lastGpsStatus);
-            int satCount = info.getSatCount();
-            // int satForFixCount = info.getSatUsedInFixCount();
-            sb.append(indent).append(satellitesString).append(": ").append(satCount).append("\n");
+        if (lastGpsStatusExtras != null) {
+            int satForFixCount = lastGpsStatusExtras[2];
+            int satCount = lastGpsStatusExtras[1];
+            sb.append(indent).append(satellitesString).append(": ")//
+                    .append(satForFixCount).append("/").append(satCount).append("\n");
             // sb.append("used for fix: ").append(satForFixCount).append("\n");
         }
     }
@@ -366,15 +357,22 @@ public class ActionBar implements GpsManagerListener {
         Button gpsOnOffView = (Button) actionBarView.findViewById(R.id.gpsOnOff);
         gpsOnOffView.setOnClickListener(new View.OnClickListener(){
             public void onClick( View v ) {
-                Context context = v.getContext();
-                GpsManager.getInstance(context).checkGps(context);
+                if (lastGpsServiceStatus == GpsServiceStatus.GPS_OFF) {
+                    final Context context = v.getContext();
+                    String prompt = context.getResources().getString(R.string.prompt_gpsenable);
+                    Utilities.yesNoMessageDialog(context, prompt, new Runnable(){
+                        public void run() {
+                            Intent gpsOptionsIntent = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            context.startActivity(gpsOptionsIntent);
+                        }
+                    }, null);
+                }
             }
         });
 
-        if (LOG_HOW && lastGpsStatus != null) {
-            GpsStatusInfo info = new GpsStatusInfo(lastGpsStatus);
-            int satCount = info.getSatCount();
-            int satForFixCount = info.getSatUsedInFixCount();
+        if (LOG_HOW && lastGpsStatusExtras != null) {
+            int satCount = lastGpsStatusExtras[1];
+            int satForFixCount = lastGpsStatusExtras[2];
             StringBuilder sb = new StringBuilder();
             sb.append("satellites: ").append(satCount);
             sb.append(" of which for fix: ").append(satForFixCount);
@@ -383,15 +381,15 @@ public class ActionBar implements GpsManagerListener {
 
         Resources resources = gpsOnOffView.getResources();
 
-        if (isProviderEnabled) {// gpsManager.isEnabled()) {
+        if (lastGpsServiceStatus != GpsServiceStatus.GPS_OFF) {// gpsManager.isEnabled()) {
             if (LOG_HOW)
                 GPLog.addLogEntry(this, "GPS seems to be on");
-            if (gpsManager.isDatabaseLogging()) {
+            if (lastGpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
                 if (LOG_HOW)
                     GPLog.addLogEntry(this, "GPS seems to be also logging");
                 gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_logging));
             } else {
-                if (gotFix) {
+                if (lastGpsServiceStatus == GpsServiceStatus.GPS_FIX) {
                     if (LOG_HOW)
                         GPLog.addLogEntry(this, "GPS has fix");
                     gpsOnOffView.setBackgroundDrawable(resources.getDrawable(R.drawable.gps_background_hasfix_notlogging));
@@ -408,84 +406,24 @@ public class ActionBar implements GpsManagerListener {
         }
     }
 
-    public void onLocationChanged( Location location ) {
-        if (location == null) {
-            return;
-        }
-        lastLocationupdateMillis = SystemClock.elapsedRealtime();
-        if (GPLog.LOG_ABSURD)
-            GPLog.addLogEntry(this, "Location update: " + location);
-    }
+    /**
+     * Set the current status.
+     * 
+     * @param gpsServiceStatus gps status.
+     * @param gpsLoggingStatus logging status.
+     * @param lastGpsPosition gps position.
+     * @param lastGpsPositionExtras position extras.
+     * @param lastGpsStatusExtras status extras.
+     * @param lastPositiontime position time.
+     */
+    public void setStatus( GpsServiceStatus gpsServiceStatus, GpsLoggingStatus gpsLoggingStatus, double[] lastGpsPosition,
+            float[] lastGpsPositionExtras, int[] lastGpsStatusExtras, long lastPositiontime ) {
+        this.lastGpsServiceStatus = gpsServiceStatus;
+        this.lastGpsLoggingStatus = gpsLoggingStatus;
+        this.lastGpsPosition = lastGpsPosition;
+        this.lastGpsStatusExtras = lastGpsStatusExtras;
+        this.lastGpsPositiontime = lastPositiontime;
 
-    public void onProviderDisabled( String provider ) {
-        if (LOG_HOW)
-            GPLog.addLogEntry(this, "Check logging on provider disabled.");
-        isProviderEnabled = false;
         checkLogging();
-    }
-
-    public void onProviderEnabled( String provider ) {
-        isProviderEnabled = true;
-        if (LOG_HOW)
-            GPLog.addLogEntry(this, "Check logging on provider enabled.");
-        checkLogging();
-    }
-
-    public void onStatusChanged( String provider, int status, Bundle extras ) {
-        // switch( status ) {
-        // case LocationProvider.AVAILABLE:
-        // if (LOG_HOW)
-        // GPLog.addLogEntry(this, "AVAILABLE.");
-        // break;
-        // case LocationProvider.OUT_OF_SERVICE:
-        // if (LOG_HOW)
-        // GPLog.addLogEntry(this, "AVAILABLE.");
-        // break;
-        // case LocationProvider.TEMPORARILY_UNAVAILABLE:
-        // if (LOG_HOW)
-        // GPLog.addLogEntry(this, "AVAILABLE.");
-        // break;
-        // default:
-        // break;
-        // }
-    }
-
-    public void gpsStart() {
-        gotFix = false;
-    }
-
-    public void gpsStop() {
-        // ignore
-    }
-
-    public void onGpsStatusChanged( int event, GpsStatus status ) {
-        boolean tmpGotFix = GpsStatusInfo.checkFix(gotFix, lastLocationupdateMillis, event);
-        if (tmpGotFix != gotFix) {
-            gotFix = tmpGotFix;
-            if (LOG_HOW)
-                if (gotFix) {
-                    GPLog.addLogEntry(this, "Aquired fix.");
-                } else {
-                    GPLog.addLogEntry(this, "Lost fix.");
-                }
-            if (!gotFix) {
-                // check if it is just standing still
-                GpsStatusInfo info = new GpsStatusInfo(status);
-                int satForFixCount = info.getSatUsedInFixCount();
-                if (satForFixCount > 2) {
-                    gotFix = true;
-                    // updating loc update, assuming the still filter is giving troubles
-                    lastLocationupdateMillis = SystemClock.elapsedRealtime();
-                    if (LOG_HOW)
-                        GPLog.addLogEntry(this, "Fix kept due to fix satellites.");
-                }
-            }
-            checkLogging();
-        }
-        lastGpsStatus = status;
-    }
-
-    public boolean hasFix() {
-        return gotFix;
     }
 }

@@ -198,8 +198,9 @@
     <string name="prompt_delete_bookmark">Are you sure you want to delete the bookmark? This can\'t be undone.</string>
     <string name="keep_use_imperial">Use imperial units</string>
     <string name="keep_use_imperial_sum">Uses imperial units instead of metric where possible.</string>
+    <string name="high_density_display">High density display</string>
+    <string name="high_density_display_sum">If on, online osm maptiles are scaled for better readability.</string>
     <string name="satellites">satellites</string>
-    <string name="crash_toast_text">The application experienced a fatal error. Crash information will be collected, that are useful to solve the problem. Please send them to the development team when possible.</string>
     <string name="start">start</string>
     <string name="end">end</string>
     <string name="other">other</string>

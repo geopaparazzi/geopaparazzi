@@ -25,6 +25,7 @@ import java.util.Set;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.util.TimeUtilities;
 
 /**
@@ -142,7 +143,7 @@ public class GPLog {
     public static void addLogEntry( String logMessage ) {
         try {
             Date date = new Date();
-            SQLiteDatabase sqliteDatabase = ADbHelper.INSTANCE.getDatabase();
+            SQLiteDatabase sqliteDatabase = GPApplication.getInstance().getDatabase();
             if (sqliteDatabase != null && sqliteDatabase.isOpen()) {
                 ContentValues values = new ContentValues();
                 long time = date.getTime();
@@ -331,6 +332,8 @@ public class GPLog {
     * @param exception result of Log.getStackTraceString(exception) will be added to the message.
     */
     public static void androidLog( int logLevel, String message, Throwable exception ) {
+        if (!LOG_ANDROID)
+            return;
         if (exception != null) {
             message += "\n" + Log.getStackTraceString(exception);
         }
@@ -353,6 +356,8 @@ public class GPLog {
     * @param message message text to be shown in logcat.
     */
     public static void androidLog( int logLevel, String message ) {
+        if (!LOG_ANDROID)
+            return;
         if (logLevel < 0)
             logLevel = GLOBAL_LOG_LEVEL;
         if (GLOBAL_LOG_TAG == null || GLOBAL_LOG_TAG.length() == 0)

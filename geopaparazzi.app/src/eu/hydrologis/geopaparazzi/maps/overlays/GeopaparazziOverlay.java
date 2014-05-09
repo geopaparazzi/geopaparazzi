@@ -29,8 +29,6 @@ import org.mapsforge.android.maps.overlay.OverlayItem;
 import org.mapsforge.android.maps.overlay.OverlayWay;
 import org.mapsforge.core.model.GeoPoint;
 
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -57,10 +55,13 @@ import com.vividsolutions.jts.geom.Geometry;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.FormActivity;
-import eu.geopaparazzi.library.gps.GpsManager;
+import eu.geopaparazzi.library.gps.GpsLoggingStatus;
+import eu.geopaparazzi.library.gps.GpsService;
+import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
@@ -165,12 +166,13 @@ public abstract class GeopaparazziOverlay extends Overlay {
     private Paint gpsBlueFill;
 
     private List<GeoPoint> currentGpsLog = new ArrayList<GeoPoint>();
-    private Context context;
     private int inset = 5;
     private Paint textPaint;
     private Paint textHaloPaint;
     private boolean isNotesTextVisible;
     private boolean doNotesTextHalo;
+    private GpsServiceStatus gpsServiceStatus = GpsServiceStatus.GPS_OFF;
+    private GpsLoggingStatus gpsLoggingStatus = GpsLoggingStatus.GPS_DATABASELOGGING_OFF;
 
     /**
      * Create a {@link OverlayWay} wrapped type.
@@ -179,7 +181,6 @@ public abstract class GeopaparazziOverlay extends Overlay {
      */
     public GeopaparazziOverlay( Context context ) {
         super();
-        this.context = context;
         this.wayPath = new Path();
         this.wayPath.setFillType(Path.FillType.EVEN_ODD);
 
@@ -204,6 +205,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
         } catch (NumberFormatException e) {
             // ignore and use default
         }
+        boolean isHighDensity = preferences.getBoolean(Constants.PREFS_KEY_RETINA, false);
 
         crossPath = new Path();
         crossPaint.setAntiAlias(true);
@@ -235,12 +237,18 @@ public abstract class GeopaparazziOverlay extends Overlay {
         gpsTrackPaintYellow = new Paint(Paint.ANTI_ALIAS_FLAG);
         gpsTrackPaintYellow.setStyle(Paint.Style.STROKE);
         gpsTrackPaintYellow.setColor(Color.YELLOW);
-        gpsTrackPaintYellow.setStrokeWidth(3);
 
         gpsTrackPaintBlack = new Paint(Paint.ANTI_ALIAS_FLAG);
         gpsTrackPaintBlack.setStyle(Paint.Style.STROKE);
         gpsTrackPaintBlack.setColor(Color.BLACK);
-        gpsTrackPaintBlack.setStrokeWidth(5);
+
+        if (!isHighDensity) {
+            gpsTrackPaintYellow.setStrokeWidth(3);
+            gpsTrackPaintBlack.setStrokeWidth(5);
+        } else {
+            gpsTrackPaintYellow.setStrokeWidth(8);
+            gpsTrackPaintBlack.setStrokeWidth(12);
+        }
 
         Resources resources = context.getResources();
 
@@ -395,22 +403,29 @@ public abstract class GeopaparazziOverlay extends Overlay {
     }
 
     /**
-     * set the currtn gps position.
+     * Set the current gps position.
      *
      * @param position the {@link GeoPoint}.
      * @param accuracy the accuracy.
+     * @param gpsServiceStatus the gps status as defined by {@link GpsService#GPS_SERVICE_STATUS}.
+     * @param gpsLoggingStatus the database logging status as defined by {@link GpsService#GPS_LOGGING_STATUS}.
      */
     @SuppressWarnings("nls")
-    public void setGpsPosition( GeoPoint position, float accuracy ) {
-        GpsManager gpsManager = GpsManager.getInstance(context);
-        if (gpsManager.isDatabaseLogging()) {
+    public void setGpsPosition( GeoPoint position, float accuracy, GpsServiceStatus gpsServiceStatus,
+            GpsLoggingStatus gpsLoggingStatus ) {
+        this.gpsServiceStatus = gpsServiceStatus;
+        this.gpsLoggingStatus = gpsLoggingStatus;
+        if (gpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
             currentGpsLog.add(position);
         } else {
             currentGpsLog.clear();
         }
-        if (GPLog.LOG_ABSURD)
+        if (GPLog.LOG_ABSURD && position != null)
             GPLog.addLogEntry(this, "Set gps data: " + position.getLongitude() + "/" + position.getLatitude() + "/" + accuracy);
-        overlayGps.setCircleData(position, accuracy);
+
+        if (position != null) {
+            overlayGps.setCircleData(position, accuracy);
+        }
     }
 
     /**
@@ -564,8 +579,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
         /*
          * gps logging track
          */
-        GpsManager gpsManager = GpsManager.getInstance(context);
-        if (gpsManager.isDatabaseLogging()) {
+        if (gpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
             // if a track is recorded, show it
             synchronized (gpslogOverlay) {
                 int size = currentGpsLog.size();
@@ -602,7 +616,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
         }
 
         // get the current circle
-        if (overlayGps != null && overlayGps.center != null) {
+        if (gpsServiceStatus == GpsServiceStatus.GPS_FIX && overlayGps != null && overlayGps.center != null) {
             synchronized (overlayGps) {
                 // make sure that the current circle has a center position and a radius
                 if (overlayGps.center != null && overlayGps.radius >= 0) {
@@ -657,18 +671,18 @@ public abstract class GeopaparazziOverlay extends Overlay {
          * show gps status
          */
         Paint gpsStatusFill = null;
-        if (gpsManager.isEnabled()) {
-            if (gpsManager.isDatabaseLogging()) {
+        if (gpsServiceStatus == GpsServiceStatus.GPS_OFF) {
+            gpsStatusFill = gpsRedFill;
+        } else {
+            if (gpsLoggingStatus == GpsLoggingStatus.GPS_DATABASELOGGING_ON) {
                 gpsStatusFill = gpsBlueFill;
             } else {
-                if (gpsManager.hasFix()) {
+                if (gpsServiceStatus == GpsServiceStatus.GPS_FIX) {
                     gpsStatusFill = gpsGreenFill;
                 } else {
                     gpsStatusFill = gpsOrangeFill;
                 }
             }
-        } else {
-            gpsStatusFill = gpsRedFill;
         }
         gpsStatusPath.reset();
         gpsStatusPath.moveTo(0, canvasHeight);
@@ -1121,7 +1135,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
             int lonE6 = position.longitudeE6;
             float lat = latE6 / LibraryConstants.E6;
             float lon = lonE6 / LibraryConstants.E6;
-            if (title.toLowerCase().endsWith("jpg") || title.toLowerCase().endsWith("png")) { //$NON-NLS-1$ //$NON-NLS-2$
+            if (title != null && (title.toLowerCase().endsWith("jpg") || title.toLowerCase().endsWith("png"))) { //$NON-NLS-1$ //$NON-NLS-2$
                 Intent intent = new Intent();
                 intent.setAction(android.content.Intent.ACTION_VIEW);
                 File absolutePath = new File(title);
@@ -1172,13 +1186,10 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 }
 
                 if (doInfo) {
-                    Builder builder = new AlertDialog.Builder(context);
-                    builder.setIcon(android.R.drawable.ic_menu_info_details);
-                    builder.setTitle(title);
                     StringBuilder sb = new StringBuilder();
                     if (snippet != null && snippet.length() > 0) {
                         sb.append(snippet);
-                        sb.append("\n\n"); //$NON-NLS-1$
+                        sb.append("\n"); //$NON-NLS-1$
                     }
 
                     String latStr = context.getString(R.string.lat);
@@ -1186,18 +1197,16 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     sb.append(latStr).append(" ").append(lat).append("\n"); //$NON-NLS-1$ //$NON-NLS-2$
                     sb.append(lonStr).append(" ").append(lon); //$NON-NLS-1$
 
-                    builder.setMessage(sb.toString());
-                    builder.setPositiveButton(android.R.string.ok, null);
-                    builder.show();
+                    Utilities.messageDialog(context, sb.toString(), null);
                 }
             }
             return true;
         }
         return false;
     }
+
     @Override
     public void dispose() {
-        context = null;
         super.dispose();
     }
 }

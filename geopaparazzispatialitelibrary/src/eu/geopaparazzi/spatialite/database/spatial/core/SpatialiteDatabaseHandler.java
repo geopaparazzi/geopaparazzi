@@ -42,10 +42,10 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKBReader;
 
+import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialiteContextHolder;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryIterator;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
 import eu.geopaparazzi.spatialite.util.DaoSpatialite;
@@ -87,7 +87,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
         super(dbPath);
         try {
             try {
-                Context context = SpatialiteContextHolder.INSTANCE.getContext();
+                Context context = GPApplication.getInstance();
                 ResourcesManager resourcesManager = ResourcesManager.getInstance(context);
                 File mapsDir = resourcesManager.getMapsDir();
                 String mapsPath = mapsDir.getAbsolutePath();
@@ -107,24 +107,28 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             db_java = new jsqlite.Database();
             db_java.open(databasePath, jsqlite.Constants.SQLITE_OPEN_READWRITE | jsqlite.Constants.SQLITE_OPEN_CREATE);
 
-            checkAndUpdatePropertiesUniqueNames();
-
             // check database and collect the views list
-            try {
-                databaseType = DaoSpatialite.checkDatabaseTypeAndValidity(db_java, databaseViewsList);
+            databaseType = DaoSpatialite.checkDatabaseTypeAndValidity(db_java, databaseViewsList);
+            isDatabaseValid = false;
+            switch( databaseType ) {
+            case GEOPACKAGE:
+            case SPATIALITE3:
+            case SPATIALITE4:
                 isDatabaseValid = true;
-            } catch (Exception e) {
+                break;
+            default:
                 isDatabaseValid = false;
             }
 
             if (!isValid()) {
                 close();
             }
+
+            checkAndUpdatePropertiesUniqueNames();
         } catch (Exception e) {
             GPLog.androidLog(4, "SpatialiteDatabaseHandler[" + databaseFile.getAbsolutePath() + "]", e);
         }
     }
-
     @Override
     public void open() {
         /*

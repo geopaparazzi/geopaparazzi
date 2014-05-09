@@ -31,6 +31,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.util.Bookmark;
 
 /**
@@ -69,7 +70,7 @@ public class DaoBookmarks {
      */
     public static void addBookmark( double lon, double lat, String text, double zoom, double north, double south, double west,
             double east ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
             ContentValues values = new ContentValues();
@@ -99,7 +100,7 @@ public class DaoBookmarks {
      * @throws IOException  if something goes wrong.
      */
     public static void deleteBookmark( long id ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
             // delete note
@@ -124,7 +125,7 @@ public class DaoBookmarks {
      * @throws IOException  if something goes wrong.
      */
     public static void updateBookmarkName( long id, String newName ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         sqliteDatabase.beginTransaction();
         try {
             StringBuilder sb = new StringBuilder();
@@ -163,7 +164,7 @@ public class DaoBookmarks {
      */
     public static List<Bookmark> getBookmarksInWorldBounds( float n, float s, float w, float e ) throws IOException {
 
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         String query = "SELECT _id, lon, lat, text FROM XXX WHERE (lon BETWEEN XXX AND XXX) AND (lat BETWEEN XXX AND XXX)";
         // String[] args = new String[]{TABLE_NOTES, String.valueOf(w), String.valueOf(e),
         // String.valueOf(s), String.valueOf(n)};
@@ -199,7 +200,7 @@ public class DaoBookmarks {
      * @throws IOException  if something goes wrong.
      */
     public static List<Bookmark> getAllBookmarks() throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         String query = "SELECT _id, lon, lat, text, zoom, bnorth, bsouth, bwest, beast FROM " + TABLE_BOOKMARKS;
 
         // Logger.i("DAOBOOKMARKS", "Query: " + query);
@@ -232,7 +233,7 @@ public class DaoBookmarks {
      * @throws IOException  if something goes wrong.
      */
     public static List<OverlayItem> getBookmarksOverlays( Drawable marker ) throws IOException {
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         String query = "SELECT lon, lat, text FROM " + TABLE_BOOKMARKS;
 
         Cursor c = null;
@@ -244,8 +245,8 @@ public class DaoBookmarks {
                 double lon = c.getDouble(0);
                 double lat = c.getDouble(1);
                 String text = c.getString(2);
-
-                OverlayItem bookmark = new OverlayItem(new GeoPoint(lat, lon), text, null, marker);
+                text = text + "\n";
+                OverlayItem bookmark = new OverlayItem(new GeoPoint(lat, lon), null, text, marker);
                 bookmarks.add(bookmark);
                 c.moveToNext();
             }
@@ -291,7 +292,7 @@ public class DaoBookmarks {
         sB.append(" );");
         String CREATE_INDEX_BOOKMARKS_X_BY_Y = sB.toString();
 
-        SQLiteDatabase sqliteDatabase = DatabaseManager.getInstance().getDatabase();
+        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         if (GPLog.LOG_ANDROID)
             Log.i("DAOBOOKMARKS", "Create the bookmarks table.");
 

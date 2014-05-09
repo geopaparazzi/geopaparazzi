@@ -22,6 +22,8 @@ import java.sql.Date;
 import java.util.Set;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -44,7 +46,8 @@ import eu.geopaparazzi.library.camera.CameraActivity;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.FormActivity;
 import eu.geopaparazzi.library.forms.TagsManager;
-import eu.geopaparazzi.library.gps.GpsManager;
+import eu.geopaparazzi.library.gps.GpsServiceStatus;
+import eu.geopaparazzi.library.gps.GpsServiceUtilities;
 import eu.geopaparazzi.library.markers.MarkersUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
@@ -58,10 +61,11 @@ import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
 
 /**
- * Osm tags adding activity.
+ * Map tags adding activity.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("nls")
 public class MapTagsActivity extends Activity {
     private static final String USE_MAPCENTER_POSITION = "USE_MAPCENTER_POSITION";
     private static final int NOTE_RETURN_CODE = 666;
@@ -77,6 +81,7 @@ public class MapTagsActivity extends Activity {
     private String[] tagNamesArray;
     private double[] gpsLocation;
     private ToggleButton togglePositionTypeButtonGps;
+    private BroadcastReceiver broadcastReceiver;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -92,28 +97,33 @@ public class MapTagsActivity extends Activity {
             }
         });
 
-        boolean useMapCenterPosition = preferences.getBoolean(USE_MAPCENTER_POSITION, false);
         double[] mapCenter = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
         mapCenterLatitude = mapCenter[1];
         mapCenterLongitude = mapCenter[0];
         mapCenterElevation = 0.0;
-        if (GpsManager.getInstance(this).hasFix()) {
-            gpsLocation = PositionUtilities.getGpsLocationFromPreferences(preferences);
-        }
-        if (gpsLocation == null) {
-            // no gps, can use only map center
-            togglePositionTypeButtonGps.setChecked(false);
-            togglePositionTypeButtonGps.setEnabled(false);
-            Editor edit = preferences.edit();
-            edit.putBoolean(USE_MAPCENTER_POSITION, false);
-            edit.commit();
-        } else {
-            if (useMapCenterPosition) {
-                togglePositionTypeButtonGps.setChecked(false);
-            } else {
-                togglePositionTypeButtonGps.setChecked(true);
+
+        broadcastReceiver = new BroadcastReceiver(){
+            public void onReceive( Context context, Intent intent ) {
+                GpsServiceStatus gpsServiceStatus = GpsServiceUtilities.getGpsServiceStatus(intent);
+                if (gpsServiceStatus == GpsServiceStatus.GPS_FIX) {
+                    gpsLocation = GpsServiceUtilities.getPosition(intent);
+                    boolean useMapCenterPosition = preferences.getBoolean(USE_MAPCENTER_POSITION, false);
+                    if (useMapCenterPosition) {
+                        togglePositionTypeButtonGps.setChecked(false);
+                    } else {
+                        togglePositionTypeButtonGps.setChecked(true);
+                    }
+                } else {
+                    togglePositionTypeButtonGps.setChecked(false);
+                    togglePositionTypeButtonGps.setEnabled(false);
+                    Editor edit = preferences.edit();
+                    edit.putBoolean(USE_MAPCENTER_POSITION, true);
+                    edit.commit();
+                }
             }
-        }
+        };
+        GpsServiceUtilities.registerForBroadcasts(this, broadcastReceiver);
+        GpsServiceUtilities.triggerBroadcast(this);
 
         ImageButton imageButton = (ImageButton) findViewById(R.id.imagefromtag);
         imageButton.setOnClickListener(new Button.OnClickListener(){
@@ -216,6 +226,13 @@ public class MapTagsActivity extends Activity {
         buttonGridView.setAdapter(arrayAdapter);
     }
 
+    @Override
+    protected void onDestroy() {
+        if (broadcastReceiver != null)
+            GpsServiceUtilities.unregisterFromBroadcasts(this, broadcastReceiver);
+        super.onDestroy();
+    }
+
     private void checkPositionCoordinates() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean useMapCenterPosition = preferences.getBoolean(USE_MAPCENTER_POSITION, false);
@@ -247,8 +264,7 @@ public class MapTagsActivity extends Activity {
                     String nameStr = formArray[4];
                     String catStr = formArray[5];
                     String jsonStr = formArray[6];
-                    DaoNotes.addNote(lon, lat, elev, dateStr, nameStr, catStr, jsonStr,
-                            NoteType.POI.getTypeNum());
+                    DaoNotes.addNote(lon, lat, elev, dateStr, nameStr, catStr, jsonStr, NoteType.POI.getTypeNum());
                 } catch (Exception e) {
                     e.printStackTrace();
                     Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);

@@ -693,4 +693,15 @@ public class FormUtilities {
         return images;
     }
 
+    /**
+     * Make the given string json safe.
+     * 
+     * @param text the srting to check.
+     * @return the modified string.
+     */
+    public static String makeTextJsonSafe( String text ) {
+        text = text.replaceAll("\"", "'");
+        return text;
+    }
+
 }

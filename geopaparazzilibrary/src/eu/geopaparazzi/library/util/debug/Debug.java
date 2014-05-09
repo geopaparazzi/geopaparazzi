@@ -17,7 +17,6 @@
  */
 package eu.geopaparazzi.library.util.debug;
 
-
 /**
  * Small interface to get hold of all debug possibilities in one place. 
  * 
@@ -33,31 +32,10 @@ public class Debug {
     public final static boolean D = false;
 
     /**
-     * Flag to define the use of mock locations instead of the gps.
-     * 
-     * <p>For release = <code>false</code>.
-     */
-    public final static boolean doMock = false;
-
-    /**
-     * Flag to define normal drawing of renderers, as opposed to drawing some debug info.
-     * 
-     * <p>For release = <code>true</code>.
-     */
-    public final static boolean doDrawNormal = true;
-
-    /**
      * Flag to define if the tags file should be overwritten. 
      * 
      * <p>For release = <code>false</code>.
      */
     public final static boolean doOverwriteTags = false;
-
-    /**
-     * Attach an exception handler for uncaught exceptions.
-     */
-    public static void attachUncaughtExceptionHandler() {
-        Thread.currentThread().setUncaughtExceptionHandler(new GPUncaughtExceptionHandler());
-    }
 
 }
