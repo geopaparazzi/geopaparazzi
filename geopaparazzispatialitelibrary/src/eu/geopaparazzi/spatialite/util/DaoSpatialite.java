@@ -531,13 +531,14 @@ public class DaoSpatialite {
        sb_query = new StringBuilder();
        sb_query.append("SELECT DISTINCT ");
        sb_query.append("coverage_name"); // 0 of 1st field
-       sb_query.append("||';'||REPLACE(title,';','-')"); // 1 of 1st field
+       sb_query.append("||';'||compression"); // 1 of 1st field
        sb_query.append("||';'||'RasterLite2'"); //  2 of 1st field
-       sb_query.append("||';'||compression||';'||horz_resolution"); // 3+4 of 1st field
+       sb_query.append("||';'||REPLACE(title,';','-')"); // 3 of 1st field
+       sb_query.append("||';'||REPLACE(abstract,';','-')"); // 4 of 1st field
        sb_query.append(" AS vector_key,pixel_type"); // 0 of second field
        sb_query.append("||';'||tile_width"); // 2
        sb_query.append("||';'||srid"); // 3
-       sb_query.append("||';'||REPLACE(abstract,';','-')||';' AS vector_data,"); // 4
+       sb_query.append("||';'||horz_resolution||';' AS vector_data,"); // 4
        VECTOR_LAYERS_QUERY_BASE = sb_query.toString();
        sb_query = new StringBuilder();
        // if the record is invalid, only this field will be null

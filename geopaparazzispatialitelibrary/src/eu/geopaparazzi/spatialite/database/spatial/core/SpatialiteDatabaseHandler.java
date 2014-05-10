@@ -743,10 +743,9 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             HashMap<String, String> fields_list = new HashMap<String, String>();
             int i_geometry_type=0;
             int i_view_read_only = 0;
-            double horz_resolution = 0.0;
             String s_view_read_only="";
             String[] sa_string = vector_key.split(";");
-            // berlin_postgrenzen.1890;Berlin Straube Postgrenzen;RasterLite2;LOSSY_WEBP;1.13008623862252
+            // berlin_postgrenzen.1890;LOSSY_WEBP;RasterLite2;Berlin Straube Postgrenzen;1890 - 1:17777;
             if (sa_string.length == 5) {
              String table_name=sa_string[0];
              String geometry_column=sa_string[1];
@@ -754,7 +753,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
              String s_ROWID_PK=sa_string[3];
              s_view_read_only=sa_string[4];
              sa_string = vector_value.split(";");
-             // RGB;512;3068;1890 - 1:17777;3;17903.0354299312,17211.5335278146,29889.8601630003,26582.2086184726;2014-05-09T09:18:07.230Z
+             // RGB;512;3068;1.13008623862252;3;17903.0354299312,17211.5335278146,29889.8601630003,26582.2086184726;2014-05-09T09:18:07.230Z
              if (sa_string.length == 7) {
               String s_geometry_type = sa_string[0];
               String s_coord_dimension=sa_string[1];
@@ -782,14 +781,15 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                // GPLog.androidLog(-1,"SpatialiteDatabaseHandler["+databaseFile.getAbsolutePath()+"] vector_key["+vector_key+"] vector_value[" + vector_value+ "] ");
                if (vector_key.indexOf("RasterLite2") != -1)
                {
-                horz_resolution = Double.parseDouble(s_view_read_only);
-                // geometry_column == title [Berlin Straube Postgrenzen]  - needed
-                // s_ROWID_PK == compression [LOSSY_WEBP] - not needed
+                // s_ROWID_PK == title [Berlin Straube Postgrenzen]  - needed
+                // s_view_read_only == abstract [1890 - 1:17777] - needed
                 // s_geometry_type == pixel_type [RGB] - not needed
-                // s_coord_dimension = tile_width - maybe usefull
-                // s_spatial_index_enabled == abstract [1890 - 1:17777] - needed
+                // s_coord_dimension == tile_width - maybe usefull
+                // geometry_column == compression [LOSSY_WEBP] - not needed
                 // s_row_count_enabled == num_bands [3] - not needed  
-                int i_tile_width = Integer.parseInt(s_coord_dimension);  
+                int i_tile_width = Integer.parseInt(s_coord_dimension); 
+                double horz_resolution = Double.parseDouble(s_spatial_index_enabled); 
+                int i_num_bands = Integer.parseInt(s_row_count_enabled); 
                 // TODO in next version add RasterTable           
                }
                else
