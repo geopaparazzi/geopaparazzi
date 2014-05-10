@@ -125,10 +125,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             case GEOPACKAGE:
             case SPATIALITE3:
             case SPATIALITE4:
-                 if (spatialVectorMap.count() > 0)
-                  isDatabaseValid = true;
-                 else
-                  isDatabaseValid = false;
+                 isDatabaseValid = true;
                 break;
             default:
                 isDatabaseValid = false;
@@ -604,7 +601,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
 *
 * @return the {@link HashMap} of field name to its type.
 */
-    private HashMap<String, String> collectGpkgTables_v1() throws Exception {
+    private HashMap<String, String> collectGpkgTables() throws Exception {
         // mj10777 20140315: when a final decision NOT to support normal-views is made
         // - the 'table_fields' logic can be removed
          // UU;ERROR_GEOPAPARAZZI;SPATIALDATABASESMANAGER: Error [SpatialDatabasesManagergetSpatialRasterTables]: null
@@ -613,7 +610,6 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
          // I GEOPAPARAZZI: 	at eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler.checkAndCollectTables(SpatialiteDatabaseHandler.java:990)
          // I GEOPAPARAZZI: 	at eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler.getSpatialRasterTables(SpatialiteDatabaseHandler.java:251)
          // I GEOPAPARAZZI: 	at eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager.getSpatialRasterTables(SpatialDatabasesManager.java:220)
-        }
         HashMap<String, String> table_fields = new HashMap<String, String>();
         String vector_key=""; // term used when building the sql, used as map.key
         String vector_value=""; // to retrieve map.value (=vector_data+vector_extent)
@@ -630,23 +626,27 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             double horz_resolution = 0.0;
             String s_view_read_only="";
             String[] sa_string = vector_key.split(";");
-            // berlin_postgrenzen.1890;Berlin Straube Postgrenzen;RasterLite2;LOSSY_WEBP;1.13008623862252
+            // fromosm_tiles;tile_data;GeoPackage_tiles;© OpenStreetMap contributors, See http://www.openstreetmap.org/copyright;OSM Tiles;
+            // geonames;geometry;GeoPackage_features;Data from http://www.geonames.org/, under Creative Commons Attribution 3.0 License;Geonames;
             if (sa_string.length == 5) {
-             String table_name=sa_string[0];
-             String geometry_column=sa_string[1];
-             String s_layer_type=sa_string[2];
-             String s_ROWID_PK=sa_string[3];
-             s_view_read_only=sa_string[4];
+             String table_name=sa_string[0]; // fromosm_tiles / geonames
+             String geometry_column=sa_string[1]; // tile_data / geometry
+             String s_layer_type=sa_string[2]; // GeoPackage_tiles / GeoPackage_features
+             String s_identifier=sa_string[3]; // short description
+             String s_description=sa_string[4]; // long description
              sa_string = vector_value.split(";");
              // RGB;512;3068;1890 - 1:17777;3;17903.0354299312,17211.5335278146,29889.8601630003,26582.2086184726;2014-05-09T09:18:07.230Z
              if (sa_string.length == 7) {
-              String s_geometry_type = sa_string[0];
-              String s_coord_dimension=sa_string[1];
-              String s_srid=sa_string[2];
-              String s_spatial_index_enabled=sa_string[3];
-              String s_row_count_enabled=sa_string[4];
-              String s_bounds = sa_string[5];
-              String s_last_verified=sa_string[6];
+              // 0;10;3857;0;
+              // 1;2;4326;0;
+              String s_geometry_type = sa_string[0]; // 1= POINT / OR min_zoom
+              String s_coord_dimension=sa_string[1]; // 2= XY / OR max_zoom
+              String s_srid=sa_string[2]; // 4326
+              String s_spatial_index_enabled=sa_string[3]; // 0
+              // -1;-75.5;18.0;-71.06667;20.08333;2013-12-24T16:32:14.000000Z
+              String s_row_count=sa_string[4]; // 0 = not possible as sub-query - but also not needed
+              String s_bounds = sa_string[5]; // -75.5;18.0;-71.06667;20.08333
+              String s_last_verified=sa_string[6]; // 2013-12-24T16:32:14.000000Z
               sa_string = s_bounds.split(",");
               if (sa_string.length == 4) {
                try {
@@ -666,265 +666,48 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                // GPLog.androidLog(-1,"SpatialiteDatabaseHandler["+databaseFile.getAbsolutePath()+"] vector_key["+vector_key+"] vector_value[" + vector_value+ "] ");
                if (vector_key.indexOf("GeoPackage_tiles") != -1)
                {
+                int i_min_zoom = Integer.parseInt(s_geometry_type);
+                int i_max_zoom = Integer.parseInt(s_coord_dimension);
                 SpatialRasterTable table = new SpatialRasterTable(getDatabasePath(), "", s_srid,
-                zoomLevels[0], zoomLevels[1], centerCoordinate[0], centerCoordinate[1], null,boundsCoordinates);
-                table.setMapType(s_gpkg);
+                i_min_zoom, i_max_zoom, centerCoordinate[0], centerCoordinate[1], null,boundsCoordinates);
+                table.setMapType(s_layer_type);
                 // table.setTableName(s_table_name);
-                table.setColumnName(s_tiles_field_name);
+                table.setColumnName(geometry_column);
                 // setDescription(s_table_name);
                 // table.setDescription(this.databaseDescription);
-                raster_TableList.add(table);
-                                    }          
+                rasterTableList.add(table);      
                }
                else
-               { // SpatialTable / SpatialView
-                i_view_read_only = Integer.parseInt(s_view_read_only);
-                i_geometry_type = Integer.parseInt(s_geometry_type);
-                GeometryType geometry_type = GeometryType.forValue(i_geometry_type);
-                s_geometry_type = geometry_type.toString();
-                int i_spatial_index_enabled=Integer.parseInt(s_spatial_index_enabled); // should always be 1
-                int i_row_count = Integer.parseInt(s_row_count_enabled);
-                // no Zoom levels with
-                // vector data
-                if (i_spatial_index_enabled == 1)
+               { 
+                if (vector_key.indexOf("GeoPackage_features") != -1)
                 {
-                 SpatialVectorTable table = new SpatialVectorTable(getDatabasePath(), table_name, geometry_column,
-                 i_geometry_type, s_srid, centerCoordinate, boundsCoordinates, s_layer_type);
-                 // compleate list of fields of
-                 // this table
-                 fields_list = DaoSpatialite.collectTableFields(db_java, table_name);
-                 table.setFieldsList(fields_list,s_ROWID_PK,i_view_read_only);
-                 vectorTableList.add(table);
-                }
+                 // String table_name=sa_string[0]; // lakemead_clipped
+                 // String geometry_column=sa_string[1]; // shape
+                 i_view_read_only = 0; // always
+                 i_geometry_type = Integer.parseInt(s_geometry_type);
+                 GeometryType geometry_type = GeometryType.forValue(i_geometry_type);
+                 s_geometry_type = geometry_type.toString();
+                 int i_spatial_index_enabled=Integer.parseInt(s_spatial_index_enabled); // 0=no spatialiIndex for GeoPackage Files
+                 int i_row_count = Integer.parseInt(s_row_count); // will always be 0
+                 // no Zoom levels with
+                 // vector data
+                 if (i_spatial_index_enabled == 1)
+                 {
+                  SpatialVectorTable table = new SpatialVectorTable(getDatabasePath(), table_name, geometry_column,
+                  i_geometry_type, s_srid, centerCoordinate, boundsCoordinates, s_layer_type);
+                  // compleate list of fields of
+                  // this table
+                  fields_list = DaoSpatialite.collectTableFields(db_java, table_name);
+                  table.setFieldsList(fields_list,"ROWID",i_view_read_only);
+                  vectorTableList.add(table);
+                 }
                }               
              }
            }
+         }
         }
       }
       return table_fields;
-    }
-    private HashMap<String, String> collectGpkgTables_v1() throws Exception {
-        Stmt this_stmt = null;
-        HashMap<String, String> fieldName2TypeMap = new HashMap<String, String>();
-        String s_srid = "";
-        String s_gpkg = "gpkg"; // SELECT data_type,table_name,srs_id FROM gpkg_contents
-        int i_srid = 0;
-        String s_table_name = "";
-        String s_tiles_field_name = "";
-        String s_data_type = "";
-        String s_sql_layers = "";
-        int[] zoomLevels = {0, 22};
-        // lakemead_clipped;shape;GeoPackage_features;ROWID;-1;lakemead_clipped;Lake Mead (Clipped);4326;-1;	-1;-114.739703991949,36.0133552500798,-114.7260476107,36.0226841914896;2013-01-18T17:37:23.000Z
-        // o18229_tif_tiles;tile_data;GeoPackage_tiles;ROWID;-1;o18229.tif;Hoover Dam Aerial;3857;-1;	-1;-114.752016387941,36.0065831501379,-114.734321266361,36.0216905435754;2013-01-18T17:37:28.000Z
-        // observations;location;GeoPackage_featuresWithRasters;ROWID;picture;observations;Observations; 3857;-1;	-1;-180.0,-90.0,180.0,90.0;2013-01-18T17:39:20.000Z
-        switch( databaseType ) {
-        case GEOPACKAGE: { // GeoPackage Files [gpkg]
-            StringBuilder sb_layers = new StringBuilder();
-            s_sql_layers = "SELECT data_type,table_name,srs_id FROM " + s_gpkg + "_contents";
-            // 20140101.world_Haiti.gpkg
-            // Luciad_GeoPackage.gpkg: Assume that 1=4326 ; 2=3857
-            // [features] [lakemead_clipped] [1]
-            // [tiles] [o18229_tif_tiles] [2]
-            // [featuresWithRasters] [observations] [2]
-            // this is a list of jpeg-images and points - the points have wsg84 values but are set
-            // as 2
-            // -- the srid for tiles can also be retrieved from raster_columns.srid [also 2]
-            // Sample_Geopackage_Haiti.gpkg:
-            // [tiles] [fromosm_tiles] [3857]
-            // [features] [geonames] [4326]
-            // 'features' == vector ; 'tiles' = raster
-            // SELECT table_name,srs_id FROM gpkg_contents WHERE data_type = 'features';
-            try {
-                this_stmt = db_java.prepare(s_sql_layers);
-                while( this_stmt.step() ) {
-                    i_srid = 0;
-                    s_data_type = this_stmt.column_string(0);
-                    // filter out everything we have no idea how to deal with
-                    if ((s_data_type.equals("features")) || (s_data_type.equals("tiles"))) {
-                        // 'featuresWithRasters' is being ignored until further notice
-                        s_table_name = this_stmt.column_string(1);
-                        s_srid = this_stmt.column_string(2);
-                        if (!s_srid.equals("")) {
-                            i_srid = Integer.parseInt(s_srid);
-                            if ((i_srid > 0) && (i_srid < 3)) {
-                                if (i_srid == 1)
-                                    i_srid = 4326;
-                                if (i_srid == 2)
-                                    i_srid = 3857;
-                            }
-                            if (i_srid > 3)
-                                fieldName2TypeMap.put(s_table_name, i_srid + ";" + s_data_type);
-                        }
-                    }
-                }
-            } catch (java.lang.Exception e) {
-                // invalid gpkg file when gpkg_contents does not exist
-                isDatabaseValid = false;
-                return fieldName2TypeMap;
-            } finally {
-                this_stmt.close();
-            }
-            ArrayList<SpatialVectorTable> vector_TableList = new ArrayList<SpatialVectorTable>();
-            ArrayList<SpatialRasterTable> raster_TableList = new ArrayList<SpatialRasterTable>();
-            HashMap<String, String> table_list = new HashMap<String, String>();
-            fieldName2TypeMap = new HashMap<String, String>();
-            for( int i = 0; i < fieldName2TypeMap.size(); i++ ) {
-                for( Map.Entry<String, String> table_entry : table_list.entrySet() ) {
-                    s_table_name = table_entry.getKey();
-                    s_data_type = table_entry.getValue();
-                    s_tiles_field_name = "tile_data";
-                    String[] sa_split = s_data_type.split(";");
-                    if (sa_split.length == 2) {
-                        s_srid = sa_split[0];
-                        i_srid = Integer.parseInt(s_srid);
-                        s_data_type = sa_split[1];
-                    }
-                    // for 'tiles' the zoom levels
-                    if ((!s_table_name.equals("")) && (s_data_type.equals("tiles"))) {
-                        sb_layers.append("SELECT min(");
-                        sb_layers.append("zoom_level");
-                        sb_layers.append("),max(");
-                        sb_layers.append("zoom_level");
-                        sb_layers.append(") FROM ");
-                        sb_layers.append(s_gpkg + "_tile_matrix");
-                        sb_layers.append(" WHERE ");
-                        sb_layers.append("table_name");
-                        sb_layers.append("='");
-                        sb_layers.append(s_table_name);
-                        sb_layers.append("';");
-                        s_sql_layers = sb_layers.toString();
-                        sb_layers = new StringBuilder();
-                        this_stmt = db_java.prepare(s_sql_layers);
-                        try {
-                            if (this_stmt.step()) {
-                                zoomLevels[0] = this_stmt.column_int(0);
-                                zoomLevels[1] = this_stmt.column_int(1);
-                            }
-                        } catch (java.lang.Exception e) {
-                            GPLog.androidLog(4, "SpatialiteDatabaseHandler.get_tables_gpkg [tiles - min/max zoom] prepair["
-                                    + s_sql_layers + "]", e);
-                        } finally {
-                            if (this_stmt != null) {
-                                this_stmt.close();
-                            }
-                        }
-                    }
-                    // for 'features' and 'tiles' the bounds
-                    if (!s_table_name.equals("")) {
-                        if (!s_srid.equals("4326")) {
-                            // [Sample_Geopackage_Haiti.gpkg, but was 4326
-                            // and does not need to be transformed]
-                            sb_layers.append("SELECT ST_AsBinary(CastToXY(ST_Transform(MakePoint(");
-                            sb_layers.append("(min_x + (max_x-min_x)/2), ");
-                            sb_layers.append("(min_y + (max_y-min_y)/2), ");
-                            sb_layers.append("srs_id");
-                            sb_layers.append("),4326))) AS Center,");
-                            sb_layers.append("ST_AsBinary(CastToXY(ST_Transform(MakePoint(");
-                            sb_layers.append("min_x,min_y, ");
-                            sb_layers.append("srs_id");
-                            sb_layers.append("),4326))) AS South_West,");
-                            sb_layers.append("ST_AsBinary(CastToXY(ST_Transform(MakePoint(");
-                            sb_layers.append("max_x,max_y, ");
-                            sb_layers.append("srs_id");
-                            sb_layers.append("),4326))) AS North_East FROM ");
-                            sb_layers.append(s_gpkg + "_contents");
-                            sb_layers.append(" WHERE ");
-                            sb_layers.append("table_name");
-                            sb_layers.append("='");
-                            sb_layers.append(s_table_name);
-                            // sb_layers.append(METADATA_GEOPACKAGECONTENT_DATA_TYPE);
-                            // sb_layers.append("='");
-                            // sb_layers.append(METADATA_GEOPACKAGECONTENT_DATA_TYPE_FEATURES);
-                            sb_layers.append("';");
-                        } else {
-                            sb_layers.append("SELECT ST_AsBinary(CastToXY(MakePoint(");
-                            sb_layers.append("(min_x + (max_x-min_x)/2), ");
-                            sb_layers.append("(min_y + (max_y-min_y)/2),");
-                            sb_layers.append("4326))) AS Center,");
-                            sb_layers.append("ST_AsBinary(CastToXY(MakePoint(");
-                            sb_layers.append("min_x,min_y,");
-                            sb_layers.append("4326))) AS South_West,");
-                            sb_layers.append("ST_AsBinary(CastToXY(MakePoint(");
-                            sb_layers.append("max_x,max_y,");
-                            sb_layers.append("4326))) AS North_East FROM ");
-                            sb_layers.append(s_gpkg + "_contents");
-                            sb_layers.append(" WHERE ");
-                            sb_layers.append("table_name");
-                            sb_layers.append("='");
-                            sb_layers.append(s_table_name);
-                            sb_layers.append("';");
-                        }
-                        s_sql_layers = sb_layers.toString();
-                        if (!s_sql_layers.equals("")) {
-                            isDatabaseValid = true;
-                            String geometry_column = "";
-                            // GPLog.androidLog(-1,"SpatialiteDatabaseHandler["+getFileNamePath()+"] sql["
-                            // + s_sql_layers+ "] valid["+b_database_valid+"] ");
-                            try {
-                                this_stmt = db_java.prepare(s_sql_layers);
-                                while( this_stmt.step() ) {
-                                    String s_layer_type = "geometry";
-                                    int geometry_type = 0;
-                                    double[] centerCoordinate = {0.0, 0.0};
-                                    double[] boundsCoordinates = {-180.0f, -85.05113f, 180.0f, 85.05113f};
-                                    int i_row_count = 0;
-                                    int i_coord_dimension = 0;
-                                    int i_spatial_index_enabled = 0;
-                                    String s_last_verified = "";
-                                    int i_valid = 0;
-                                    WKBReader wkbReader = new WKBReader();
-                                    byte[] geomBytes = this_stmt.column_bytes(0);
-                                    Geometry geometry = wkbReader.read(geomBytes);
-                                    Coordinate coordinate = geometry.getCoordinate();
-                                    centerCoordinate[0] = coordinate.x;
-                                    centerCoordinate[1] = coordinate.y;
-                                    geomBytes = this_stmt.column_bytes(1);
-                                    geometry = wkbReader.read(geomBytes);
-                                    coordinate = geometry.getCoordinate();
-                                    boundsCoordinates[0] = coordinate.x;
-                                    boundsCoordinates[1] = coordinate.y;
-                                    geomBytes = this_stmt.column_bytes(2);
-                                    geometry = wkbReader.read(geomBytes);
-                                    coordinate = geometry.getCoordinate();
-                                    boundsCoordinates[2] = coordinate.x;
-                                    boundsCoordinates[3] = coordinate.y;
-                                    // Zoom levels with non-vector data
-                                    checkAndAdaptDatabaseBounds(boundsCoordinates, zoomLevels);
-                                    if (s_data_type.equals("features")) {
-                                        // TODO
-                                    }
-                                    if (s_data_type.equals("tiles")) {
-                                        SpatialRasterTable table = new SpatialRasterTable(getDatabasePath(), "", s_srid,
-                                                zoomLevels[0], zoomLevels[1], centerCoordinate[0], centerCoordinate[1], null,
-                                                boundsCoordinates);
-                                        table.setMapType(s_gpkg);
-                                        // table.setTableName(s_table_name);
-                                        table.setColumnName(s_tiles_field_name);
-                                        // setDescription(s_table_name);
-                                        // table.setDescription(this.databaseDescription);
-                                        raster_TableList.add(table);
-                                    }
-                                }
-                            } catch (java.lang.Exception e) {
-                                GPLog.androidLog(4, "SpatialiteDatabaseHandler.get_tables_gpkg [bounds] prepair[" + s_sql_layers
-                                        + "]", e);
-                            } finally {
-                                if (this_stmt != null) {
-                                    this_stmt.close();
-                                }
-                            }
-                            if (vector_TableList.size() > 0)
-                                this.vectorTableList = vector_TableList;
-                            if (raster_TableList.size() > 0)
-                                this.rasterTableList = raster_TableList;
-                        }
-                    }
-                }
-            }
-        }
-            break;
-        }
-        return fieldName2TypeMap;
     }
 
     /**

@@ -56,7 +56,7 @@ public class DaoSpatialite {
     /**
      * From 12-128r9_OGC_GeoPackage_Encoding_Standard_accept_changes_.pdf
      */
-    public static final String METADATA_GEOPACKAGE_TABLE_NAME = "geopackage_contents";
+    public static final String METADATA_GEOPACKAGE_TABLE_NAME = "gpkg_contents";
     /**
      * Starting from spatialite 2.4 to 3.1.0
      */
@@ -197,7 +197,12 @@ public class DaoSpatialite {
      * -- 'vector_key'   : fields often needed and used in map.key [always valid]
      * -- 'vector_data'  : fields NOT often needed and used in map.value [first portion and always valid]
      * -- 'vector_extent': fields NOT often needed and used in map.value [second portion and NOT always valid]
-     * https://github.com/mj10777/Spatialite-Tasks-with-Sql-Scripts/wiki/VECTOR_LAYERS_QUERYS-geopaparazzi-specific
+     * Queries for Spatialite (all versions) at:
+     *  https://github.com/mj10777/Spatialite-Tasks-with-Sql-Scripts/wiki/VECTOR_LAYERS_QUERYS-geopaparazzi-specific
+     * Queries for RasterLite2 at:
+     *  https://github.com/geopaparazzi/Spatialite-Tasks-with-Sql-Scripts/wiki/RASTER_COVERAGES_QUERYS-geopaparazzi-specific
+     * Queries for GeoPackage R10 at:
+     *  https://github.com/geopaparazzi/Spatialite-Tasks-with-Sql-Scripts/wiki/GEOPACKAGE_QUERY_R10-geopaparazzi-specific
      * <ol>
      * <li>3 Fields will be returned with the following structure</li>
      * <li>0 table_name: berlin_stadtteile</li>
@@ -244,10 +249,10 @@ public class DaoSpatialite {
     public static String RASTER_COVERAGES_QUERY_EXTENT_LIST_V42;
     public static String RASTER_COVERAGES_QUERY_EXTENT_VALID_V42;
     public static String RASTER_COVERAGES_QUERY_EXTENT_INVALID_V42;
-    // for GeoPackage R9 based on Luciad_GeoPackage.gpkg, Sample_Geopackage_Haiti.gpkg 
-    public static String GEOPACKAGE_QUERY_EXTENT_LIST_R9;
-    public static String GEOPACKAGE_QUERY_EXTENT_VALID_R9;
-    public static String GEOPACKAGE_QUERY_EXTENT_INVALID_R9;
+    // for GeoPackage R10 based on 20140101.world_Haiti.gpkg
+    public static String GEOPACKAGE_QUERY_EXTENT_LIST_R10;
+    public static String GEOPACKAGE_QUERY_EXTENT_VALID_R10;
+    public static String GEOPACKAGE_QUERY_EXTENT_INVALID_R10;
     static {
        String VECTOR_LAYERS_QUERY_BASE="";
        String LAYERS_QUERY_BASE_V4="";
@@ -606,35 +611,60 @@ public class DaoSpatialite {
        // -------------------
        // RasterLite2 support - end
        // -------------------
-       // GoPackage support - begin
+       // GeoPackage support - begin
        // -------------------
        sb_query = new StringBuilder();
        sb_query.append("SELECT DISTINCT ");
        sb_query.append("table_name"); // 0 of 1st field
        sb_query.append("||';'||CASE"); // 1 of 1st field
-       sb_query.append(" WHEN data_type = 'features' THEN 'shape'"); // 1 of 1st field
-       sb_query.append(" WHEN data_type = 'tiles' THEN 'tile_data'"); // 1 of 1st field
-       sb_query.append(" WHEN data_type = 'featuresWithRasters' THEN 'location'"); // 1 of 1st field
+       sb_query.append(" WHEN data_type = 'features' THEN ("); // 1 of 1st field
+       sb_query.append("SELECT column_name FROM gpkg_geometry_columns WHERE table_name = ''||table_name||''"); // 1 of 1st field
+       sb_query.append(") WHEN data_type = 'tiles' THEN 'tile_data'"); // 1 of 1st field
        sb_query.append(" END"); // 1 of 1st field
        sb_query.append(" ||';'||CASE"); // 2 of 1st field
        sb_query.append(" WHEN data_type = 'features' THEN 'GeoPackage_features'"); // 2 of 1st field
        sb_query.append(" WHEN data_type = 'tiles' THEN 'GeoPackage_tiles'"); // 2 of 1st field
-       sb_query.append(" WHEN data_type = 'featuresWithRasters' THEN 'GeoPackage_featuresWithRasters'"); // 2 of 1st field
        sb_query.append(" END"); // 2 of 1st field
-       sb_query.append("||';'||'ROWID'"); // 3 of 1st field
-       sb_query.append("||';'||CASE"); // 4 of 1st field
-       sb_query.append(" WHEN data_type = 'features' THEN '-1'"); // 4 of 1st field
-       sb_query.append(" WHEN data_type = 'tiles' THEN '-1'"); // 4 of 1st field
-       sb_query.append(" WHEN data_type = 'featuresWithRasters' THEN 'picture'"); // 4 of 1st field
-       sb_query.append(" END"); // 4 of 1st field
-       sb_query.append("||';'||REPLACE(identifier,';','-')"); // 0 of second field
-       sb_query.append("||';'||REPLACE(description,';','-')"); // 1 of second field
+       sb_query.append("||';'||REPLACE(identifier,';','-')"); // 3 of second field
+       sb_query.append("||';'||REPLACE(description,';','-') AS vector_key,"); // 4 of second field
+       // fromosm_tiles;tile_data;GeoPackage_tiles;© OpenStreetMap contributors, See http://www.openstreetmap.org/copyright;OSM Tiles;
+       // geonames;geometry;GeoPackage_features;Data from http://www.geonames.org/, under Creative Commons Attribution 3.0 License;Geonames;
+       sb_query.append("CASE"); // 0 of second field
+       sb_query.append(" WHEN data_type = 'features' THEN ("); // 0 of second field
+       sb_query.append(""); // 0 of second field
+       // Now the horror begins ...
+       LAYERS_QUERY_BASE_V3="SELECT geometry_type_name FROM gpkg_geometry_columns WHERE table_name = ''||table_name||''"; // 0 of second field
+       sb_query.append("CASE WHEN ("+LAYERS_QUERY_BASE_V3+") = 'GEOMETRY' THEN '0'");
+       sb_query.append(" WHEN ("+LAYERS_QUERY_BASE_V3+") = 'POINT' THEN '1'");
+       sb_query.append(" WHEN ("+LAYERS_QUERY_BASE_V3+") = 'LINESTRING' THEN '2'");
+       sb_query.append(" WHEN ("+LAYERS_QUERY_BASE_V3+") = 'POLYGON' THEN '3'");
+       sb_query.append(" WHEN ("+LAYERS_QUERY_BASE_V3+") = 'MULTIPOINT' THEN '4'");
+       sb_query.append(" WHEN ("+LAYERS_QUERY_BASE_V3+") = 'MULTILINESTRING' THEN '5'");
+       sb_query.append(" WHEN ("+LAYERS_QUERY_BASE_V3+") = 'MULTIPOLYGON' THEN '6'");
+       sb_query.append(" WHEN ("+LAYERS_QUERY_BASE_V3+") = 'GEOMETRYCOLLECTION' THEN '7' END");
+       // ... to be continued ...
+       sb_query.append(") WHEN data_type = 'tiles' THEN ("); // 1 of 1st field
+       sb_query.append("SELECT min(zoom_level) FROM gpkg_tile_matrix WHERE table_name = ''||table_name||''"); // 1 of second field
+       sb_query.append(" END"); // 0 of second field
+       sb_query.append("||';'||CASE"); // 1 of second field
+       sb_query.append(" WHEN data_type = 'features' THEN ("); // 1 of second field
+       // ... and now for something completely different ...
+       LAYERS_QUERY_BASE_V3="SELECT z||','||m FROM gpkg_geometry_columns WHERE table_name = ''||table_name||''"; // 1 of second field
+       sb_query.append("CASE WHEN ("+LAYERS_QUERY_BASE_V3+") = '0,0' THEN '2'");
+       sb_query.append(" WHEN ("+LAYERS_QUERY_BASE_V3+") = '1,0' THEN '3'");
+       sb_query.append(" WHEN ("+LAYERS_QUERY_BASE_V3+") = '1,1' THEN '4' END");
+       // ... ich habe fertig.
+       sb_query.append(") WHEN data_type = 'tiles' THEN ("); // 1 of second field
+       sb_query.append("SELECT max(zoom_level) FROM gpkg_tile_matrix WHERE table_name = ''||table_name||''"); // 1 of second field
+       sb_query.append(") END"); // 1 of second field
        sb_query.append("||';'||CASE"); // 2 of second field
-       sb_query.append(" WHEN srid = '1' THEN '4326'"); // 2 of second field
-       sb_query.append(" WHEN srid = '2' THEN '3857'"); // 2 of second field
-       sb_query.append(" ELSE srid "); // 2 of second field
-       sb_query.append(" END"); // 4 of 1st field
-       sb_query.append("||';'||'-1'||';' AS vector_data,"); // 4
+       sb_query.append(" WHEN srs_id = '1' THEN '4326'"); // 2 of second field
+       sb_query.append(" WHEN srs_id = '2' THEN '3857'"); // 2 of second field
+       sb_query.append(" ELSE srs_id "); // 2 of second field
+       sb_query.append(" END"); // 2 of 1st field
+       sb_query.append("||';'||'-1'||';' AS vector_data,"); // 3 of second field
+       // 0;10;3857;0;
+       // 1;2;4326;0;
        VECTOR_LAYERS_QUERY_BASE = sb_query.toString();
        sb_query = new StringBuilder();
        // if the record is invalid, only this field will be null
@@ -645,6 +675,7 @@ public class DaoSpatialite {
        sb_query.append("||','||max_x"); // 1.2
        sb_query.append("||','||max_y"); // 1.3
        sb_query.append("||';'||last_change AS vector_extent"); // 2
+       // -1;-180.0;-90.0;180.0;90.0;2013-01-18T17:39:20.000Z
        VECTOR_LAYERS_QUERY_EXTENT_VALID = sb_query.toString();
        sb_query = new StringBuilder();
        sb_query.append(" FROM " + METADATA_GEOPACKAGE_TABLE_NAME);
@@ -669,13 +700,13 @@ public class DaoSpatialite {
        sb_query.append(VECTOR_LAYERS_QUERY_FROM);
        sb_query.append(VECTOR_LAYERS_QUERY_WHERE);
        sb_query.append(VECTOR_LAYERS_QUERY_ORDER);
-       GEOPACKAGE_QUERY_EXTENT_VALID_R9 = sb_query.toString();
+       GEOPACKAGE_QUERY_EXTENT_VALID_R10 = sb_query.toString();
        sb_query = new StringBuilder();
        sb_query.append(VECTOR_LAYERS_QUERY_BASE);
        sb_query.append(VECTOR_LAYERS_QUERY_FROM);
        sb_query.append(VECTOR_LAYERS_QUERY_ORDER);
-       GEOPACKAGE_QUERY_EXTENT_LIST_R9 = sb_query.toString();
-       GEOPACKAGE_QUERY_EXTENT_LIST_R9=GEOPACKAGE_QUERY_EXTENT_LIST_R9.replace("AS vector_data,","AS vector_data"); // remove
+       GEOPACKAGE_QUERY_EXTENT_LIST_R10 = sb_query.toString();
+       GEOPACKAGE_QUERY_EXTENT_LIST_R10=GEOPACKAGE_QUERY_EXTENT_LIST_R10.replace("AS vector_data,","AS vector_data"); // remove
        sb_query = new StringBuilder();
       // if the SELECT RL2_LoadRaster(...) was not executed, 
        // - a record may exist with 'statistics and extent=NULL': 
@@ -703,7 +734,7 @@ public class DaoSpatialite {
        sb_query.append(VECTOR_LAYERS_QUERY_FROM);
        sb_query.append(VECTOR_LAYERS_QUERY_WHERE);
        sb_query.append(VECTOR_LAYERS_QUERY_ORDER);
-       GEOPACKAGE_QUERY_EXTENT_INVALID_R9 = sb_query.toString();
+       GEOPACKAGE_QUERY_EXTENT_INVALID_R10 = sb_query.toString();
        // -------------------
        // GoPackage support - end
        // -------------------
@@ -724,9 +755,9 @@ public class DaoSpatialite {
        GPLog.androidLog(-1, "DaoSpatialite: RASTER_COVERAGES_QUERY_EXTENT_VALID_V42["+ RASTER_COVERAGES_QUERY_EXTENT_VALID_V42+"]");
        GPLog.androidLog(-1, "DaoSpatialite: RASTER_COVERAGES_QUERY_EXTENT_INVALID_V42[" + RASTER_COVERAGES_QUERY_EXTENT_INVALID_V42 + "] ");
        GPLog.androidLog(-1, "DaoSpatialite: RASTER_COVERAGES_QUERY_EXTENT_LIST_V42["+ RASTER_COVERAGES_QUERY_EXTENT_LIST_V42 + "] ");
-       GPLog.androidLog(-1, "DaoSpatialite: GEOPACKAGE_QUERY_EXTENT_VALID_R9["+ GEOPACKAGE_QUERY_EXTENT_VALID_R9+"]");
-       GPLog.androidLog(-1, "DaoSpatialite: GEOPACKAGE_QUERY_EXTENT_INVALID_R9[" + GEOPACKAGE_QUERY_EXTENT_INVALID_R9 + "] ");
-       GPLog.androidLog(-1, "DaoSpatialite: GEOPACKAGE_QUERY_EXTENT_LIST_R9["+ GEOPACKAGE_QUERY_EXTENT_LIST_R9 + "] ");
+       GPLog.androidLog(-1, "DaoSpatialite: GEOPACKAGE_QUERY_EXTENT_VALID_R10["+ GEOPACKAGE_QUERY_EXTENT_VALID_R10+"]");
+       GPLog.androidLog(-1, "DaoSpatialite: GEOPACKAGE_QUERY_EXTENT_INVALID_R10[" + GEOPACKAGE_QUERY_EXTENT_INVALID_R10 + "] ");
+       GPLog.androidLog(-1, "DaoSpatialite: GEOPACKAGE_QUERY_EXTENT_LIST_R10["+ GEOPACKAGE_QUERY_EXTENT_LIST_R10 + "] ");
        */
     }
 
@@ -1951,7 +1982,7 @@ public class DaoSpatialite {
         Stmt statement = null;
         try
         {
-         statement = database.prepare(GEOPACKAGE_QUERY_EXTENT_INVALID_R9);
+         statement = database.prepare(GEOPACKAGE_QUERY_EXTENT_INVALID_R10);
          while( statement.step() )
          {
           vector_key = statement.column_string(0);
@@ -1961,7 +1992,7 @@ public class DaoSpatialite {
          }
         }
         catch (jsqlite.Exception e_stmt) {
-         GPLog.androidLog(4, "DaoSpatialite:getGeoPackageMap_R9["+SpatialiteDatabaseType.GEOPACKAGE+"] sql["+GEOPACKAGE_QUERY_EXTENT_INVALID_R9+"] db[" + database.getFilename() + "]", e_stmt);
+         GPLog.androidLog(4, "DaoSpatialite:getGeoPackageMap_R9["+SpatialiteDatabaseType.GEOPACKAGE+"] sql["+GEOPACKAGE_QUERY_EXTENT_INVALID_R10+"] db[" + database.getFilename() + "]", e_stmt);
         }
         finally {
          if (statement != null) {
@@ -1969,7 +2000,7 @@ public class DaoSpatialite {
          }
         }
         try {
-         statement = database.prepare(GEOPACKAGE_QUERY_EXTENT_VALID_R9);
+         statement = database.prepare(GEOPACKAGE_QUERY_EXTENT_VALID_R10);
          while( statement.step() ) {
           vector_key = statement.column_string(0);
           vector_data = statement.column_string(1);
@@ -1982,12 +2013,12 @@ public class DaoSpatialite {
           }
           else
           { //should never happen
-            // GPLog.androidLog(-1, "DaoSpatialite: getGeoPackageMap_R9 vector_key[" + vector_key + "] vector_data["+ vector_data+"] vector_extent["+  vector_extent + "] GEOPACKAGE_QUERY_EXTENT_VALID_R9["+ GEOPACKAGE_QUERY_EXTENT_VALID_R9 + "]");
+            // GPLog.androidLog(-1, "DaoSpatialite: getGeoPackageMap_R9 vector_key[" + vector_key + "] vector_data["+ vector_data+"] vector_extent["+  vector_extent + "] GEOPACKAGE_QUERY_EXTENT_VALID_R10["+ GEOPACKAGE_QUERY_EXTENT_VALID_R10 + "]");
           }
          }
         }
         catch (jsqlite.Exception e_stmt) {
-         GPLog.androidLog(4, "DaoSpatialite:getGeoPackageMap_R9["+SpatialiteDatabaseType.GEOPACKAGE+"] sql["+GEOPACKAGE_QUERY_EXTENT_VALID_R9+"] db[" + database.getFilename() + "]", e_stmt);
+         GPLog.androidLog(4, "DaoSpatialite:getGeoPackageMap_R9["+SpatialiteDatabaseType.GEOPACKAGE+"] sql["+GEOPACKAGE_QUERY_EXTENT_VALID_R10+"] db[" + database.getFilename() + "]", e_stmt);
         }
         finally {
          if (statement != null) {
