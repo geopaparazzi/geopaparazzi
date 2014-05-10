@@ -1976,7 +1976,7 @@ public class DaoSpatialite {
      * @return nothing
      * @throws Exception  if something goes wrong.
      */
-    private static void getGeoPackageMap_R9( Database database, HashMap<String, String> spatialVectorMap , HashMap<String, String> spatialVectorMapErrors) throws Exception {
+    private static void getGeoPackageMap_R10( Database database, HashMap<String, String> spatialVectorMap , HashMap<String, String> spatialVectorMapErrors) throws Exception {
         String vector_key=""; // term used when building the sql, used as map.key
         String vector_data=""; // term used when building the sql
         String vector_extent=""; // term used when building the sql
@@ -1993,7 +1993,7 @@ public class DaoSpatialite {
          }
         }
         catch (jsqlite.Exception e_stmt) {
-         GPLog.androidLog(4, "DaoSpatialite:getGeoPackageMap_R9["+SpatialiteDatabaseType.GEOPACKAGE+"] sql["+GEOPACKAGE_QUERY_EXTENT_INVALID_R10+"] db[" + database.getFilename() + "]", e_stmt);
+         GPLog.androidLog(4, "DaoSpatialite:getGeoPackageMap_R10["+SpatialiteDatabaseType.GEOPACKAGE+"] sql["+GEOPACKAGE_QUERY_EXTENT_INVALID_R10+"] db[" + database.getFilename() + "]", e_stmt);
         }
         finally {
          if (statement != null) {
@@ -2014,19 +2014,19 @@ public class DaoSpatialite {
           }
           else
           { //should never happen
-            // GPLog.androidLog(-1, "DaoSpatialite: getGeoPackageMap_R9 vector_key[" + vector_key + "] vector_data["+ vector_data+"] vector_extent["+  vector_extent + "] GEOPACKAGE_QUERY_EXTENT_VALID_R10["+ GEOPACKAGE_QUERY_EXTENT_VALID_R10 + "]");
+            // GPLog.androidLog(-1, "DaoSpatialite: getGeoPackageMap_R10 vector_key[" + vector_key + "] vector_data["+ vector_data+"] vector_extent["+  vector_extent + "] GEOPACKAGE_QUERY_EXTENT_VALID_R10["+ GEOPACKAGE_QUERY_EXTENT_VALID_R10 + "]");
           }
          }
         }
         catch (jsqlite.Exception e_stmt) {
-         GPLog.androidLog(4, "DaoSpatialite:getGeoPackageMap_R9["+SpatialiteDatabaseType.GEOPACKAGE+"] sql["+GEOPACKAGE_QUERY_EXTENT_VALID_R10+"] db[" + database.getFilename() + "]", e_stmt);
+         GPLog.androidLog(4, "DaoSpatialite:getGeoPackageMap_R10["+SpatialiteDatabaseType.GEOPACKAGE+"] sql["+GEOPACKAGE_QUERY_EXTENT_VALID_R10+"] db[" + database.getFilename() + "]", e_stmt);
         }
         finally {
          if (statement != null) {
           statement.close();
          }
         }
-        // GPLog.androidLog(-1,"DaoSpatialite: getGeoPackageMap_R9["+database.getFilename()+"] spatialVectorMap["+spatialVectorMap.size()+"]  spatialVectorMapErrors["+spatialVectorMapErrors.size()+"] ");
+        // GPLog.androidLog(-1,"DaoSpatialite: getGeoPackageMap_R10["+database.getFilename()+"] spatialVectorMap["+spatialVectorMap.size()+"]  spatialVectorMapErrors["+spatialVectorMapErrors.size()+"] ");
     }
 
     /**
@@ -2195,7 +2195,6 @@ public class DaoSpatialite {
         boolean b_layers_statistics = false;
         // boolean b_raster_columns = false;
         boolean b_gpkg_contents = false;
-        boolean b_geopackage_contents = false;
 
         String sqlCommand = "SELECT name,type,sql FROM sqlite_master WHERE ((type='table') OR (type='view')) ORDER BY type DESC,name ASC";
         String tableType = "";
@@ -2221,10 +2220,8 @@ public class DaoSpatialite {
                        b_raster_coverages = true;
                     } else if (name.equals("layers_statistics")) {
                         b_layers_statistics = true;
-                    } else if (name.equals("gpkg_contents")) {
+                    } else if (name.equals(METADATA_GEOPACKAGE_TABLE_NAME)) {
                         b_gpkg_contents = true;
-                    } else if (name.equals("geopackage_contents")) {
-                        b_geopackage_contents = true;
                     }
                     // if (name.equals("raster_columns")) {
                     // b_raster_columns = true;
@@ -2249,20 +2246,15 @@ public class DaoSpatialite {
                     statement.close();
                 }
         }
-        if (b_geopackage_contents) {
-            // an old geopackage file, may look like a Spatialite Table
-            // - but invalid srid
-            // isDatabaseValid = false;
-            return SpatialiteDatabaseType.UNKNOWN;
-        }
         if (b_gpkg_contents) {
             // this is a GeoPackage, this can also have
             // vector_layers_statistics and vector_layers
             // - the results are empty, it does reference the table
             // also referenced in gpkg_contents
-               getGeoPackageMap_R9(database,spatialVectorMap,spatialVectorMapErrors);
+               getGeoPackageMap_R10(database,spatialVectorMap,spatialVectorMapErrors);
                if (spatialVectorMap.size() > 0)
-                return SpatialiteDatabaseType.GEOPACKAGE;
+                return SpatialiteDatabaseType.UNKNOWN;
+                // return SpatialiteDatabaseType.GEOPACKAGE;
                else
                 // if empty, nothing to load
                 return SpatialiteDatabaseType.UNKNOWN;
