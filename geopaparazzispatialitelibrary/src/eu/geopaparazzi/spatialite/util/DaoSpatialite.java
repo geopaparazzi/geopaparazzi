@@ -228,7 +228,7 @@ public class DaoSpatialite {
      *           sa_vector_data[5].split(","); must return the length of 4
      */
     // Mode Types: 0=strict ; 1=tolerant ; 2=corrective ; 3=corrective with CreateSpatialIndex
-    public static int VECTOR_LAYERS_QUERY_MODE=0;
+    public static int VECTOR_LAYERS_QUERY_MODE=3;
     // for spatialite 4.0 with valid vector_layers_statistics, all of which have a layers_statistics table
     public static String VECTOR_LAYERS_QUERY_EXTENT_LIST_V4;
     public static String VECTOR_LAYERS_QUERY_EXTENT_VALID_V4;
@@ -1461,6 +1461,45 @@ public class DaoSpatialite {
     }
 
      /**
+     * Attemt to count geometry field.
+     * returned the number of Geometries that are NOT NULL
+     * - no recovery attemts should be done when this returns 0
+     * -- called from getSpatialiteUpdateLayerStatistics
+     * --- will abort attemts to recover if returns 0
+     * --- this speeds up the loading by 50% in my case
+     * VECTOR_LAYERS_QUERY_MODE=3 : about 5 seconds [before about 10 seconds]
+     * VECTOR_LAYERS_QUERY_MODE=0 : about 2 seconds 
+     * @param database the db to use.
+     * @param table_name the table of the db to use.
+     * @param geometry_column the geometry field of the table to use.
+     * @return count of Geometries NOT NULL
+     * @throws Exception  if something goes wrong.
+     */
+    public static int SpatialiteCountGeometries( Database database, String table_name, String geometry_column,SpatialiteDatabaseType databaseType) throws Exception {
+        int  i_count=0;
+        if ((table_name.equals("")) || (geometry_column.equals("")))
+         return i_count;
+        // SELECT CreateSpatialIndex('prov2008_s','Geometry');
+        String s_CountGeometries = "SELECT count('" + geometry_column + "') FROM '" + table_name + "' WHERE '" + geometry_column + "' IS NOT NULL;";
+        Stmt statement = null;
+        try {
+            statement = database.prepare(s_CountGeometries);
+            if (statement.step()) {
+                i_count = statement.column_int(0);
+                // GPLog.androidLog(-1,"DaoSpatialite:SpatialiteRecoverSpatialIndex["+databaseType+"] db["+database.getFilename()+"] sql["+s_CreateSpatialIndex+"]  result: i_spatialindex["+i_spatialindex+"] ");
+                return i_count;
+            }
+        }
+        catch (jsqlite.Exception e_stmt) {
+          GPLog.androidLog(4, "DaoSpatialite:SpatialiteCountGeometries["+databaseType+"] sql["+s_CountGeometries+"] db[" + database.getFilename() + "]", e_stmt);
+        }
+        finally {
+            statement.close();
+        }
+        return i_count;
+    }
+
+     /**
      * Attemt to create SpatialIndex for this geometry field.
      * returned if the SpatialIndex was created (and therefore useable) or not
      * - This should NOT be the default behavior, there may be a reason why no SpatialIndex was created
@@ -1474,7 +1513,7 @@ public class DaoSpatialite {
         int  i_spatialindex=0;
         if ((table_name.equals("")) || (geometry_column.equals("")))
          return i_spatialindex;
-        // SELECT CreateSpatialIndex('prov2008_s','Geometry');
+       // SELECT CreateSpatialIndex('prov2008_s','Geometry');
         String s_CreateSpatialIndex = "SELECT CreateSpatialIndex('" + table_name + "','" + geometry_column + "');";
         Stmt statement = null;
         try {
@@ -1616,6 +1655,8 @@ public class DaoSpatialite {
      */
     public static String getSpatialiteUpdateLayerStatistics( Database database, String table_name, String geometry_column, int i_spatialindex, SpatialiteDatabaseType databaseType ) throws Exception {
         String s_vector_extent="";
+         if (SpatialiteCountGeometries(database,table_name,geometry_column,databaseType) == 0)
+          return s_vector_extent;
          if (i_spatialindex == 1)
          {
           try {
@@ -2170,7 +2211,6 @@ public class DaoSpatialite {
      */
     public static SpatialiteDatabaseType checkDatabaseTypeAndValidity( Database database, HashMap<String, String> spatialVectorMap , HashMap<String, String> spatialVectorMapErrors )
             throws Exception {
-
         // clear views
         spatialVectorMap.clear();
         spatialVectorMapErrors.clear();
