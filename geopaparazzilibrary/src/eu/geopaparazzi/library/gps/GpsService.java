@@ -600,8 +600,7 @@ public class GpsService extends Service implements LocationListener, Listener {
         if (isProviderEnabled && isListeningForUpdates && !gotFix) {
             status = 2; // listening for updates but has no fix
         }
-        if ((isProviderEnabled && isListeningForUpdates && gotFix) //
-                || isMockMode) {
+        if ((isProviderEnabled && isListeningForUpdates && gotFix && lastGpsLocation != null) || isMockMode) {
             status = 3; // listening for updates and has fix
         }
         intent.putExtra(GPS_SERVICE_STATUS, status);
