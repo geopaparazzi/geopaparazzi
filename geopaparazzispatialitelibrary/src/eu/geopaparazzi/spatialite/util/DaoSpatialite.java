@@ -2302,7 +2302,7 @@ public class DaoSpatialite {
             if ((b_vector_layers_statistics) && (b_vector_layers)) { // Spatialite 4.0
                 if ((Rasterlite2Version_CPU.equals("")) && (b_raster_coverages))
                 { // This database has a RasterLite2 table, but the Driver is not compiled to support it
-                 // b_raster_coverages = false;
+                 b_raster_coverages = false;
                 }
                 getSpatialVectorMap_V4(database,spatialVectorMap,spatialVectorMapErrors,b_layers_statistics,b_raster_coverages);
                if (spatialVectorMap.size() > 0)
