@@ -327,7 +327,7 @@ public class GpsService extends Service implements LocationListener, Listener {
                         GPLog.addLogEntry(GpsService.this, "GPS min distance: " + minDistance);
                     }
 
-                    GpsLocation previousGpsLocationObject = null;
+                    long previousGpsLocationTime = -1;
                     currentPointsNum = 0;
                     currentDistance = 0;
                     while( isDatabaseLogging ) {
@@ -342,7 +342,8 @@ public class GpsService extends Service implements LocationListener, Listener {
                                 }
                                 continue;
                             }
-                            if (previousGpsLocationObject != null && previousGpsLocationObject == lastGpsLocation) {
+                            long time = lastGpsLocation.getTime();
+                            if (previousGpsLocationTime == time) {
                                 if (DO_WHILE_LOOP_LOG)
                                     GPLog.addLogEntry(GpsService.this,
                                             "GPS JUMP POINT: lastGpsLocation == previous (no new point incoming)");
@@ -351,7 +352,7 @@ public class GpsService extends Service implements LocationListener, Listener {
                                 }
                                 continue;
                             }
-                            previousGpsLocationObject = lastGpsLocation;
+                            previousGpsLocationTime = time;
                             if (lastGpsLocation.getPreviousLoc() == null) {
                                 if (DO_WHILE_LOOP_LOG)
                                     GPLog.addLogEntry(GpsService.this,
