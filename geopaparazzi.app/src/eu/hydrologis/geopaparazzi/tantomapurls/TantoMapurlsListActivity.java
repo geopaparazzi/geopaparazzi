@@ -31,6 +31,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -77,6 +78,9 @@ public class TantoMapurlsListActivity extends ListActivity {
         String layersJsonKey = extras.getString(TantoMapurlsActivity.RESULT_KEY);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String layersJson = preferences.getString(layersJsonKey, "");
+        Editor editor = preferences.edit();
+        editor.remove(layersJsonKey);
+        editor.commit();
         try {
             mapurlsList.clear();
             JSONArray baseArray = new JSONArray(layersJson);

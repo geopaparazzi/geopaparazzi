@@ -1266,17 +1266,18 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     }
 
     /**
-     * Check to see if a column is in a table
+     * Check to see if a column is in a table.
      * 
-     * @return true or false for column presence in table
-     * @param inTable the name of the table to test
-     * @param columnToCheck the column to check for presence in table
+     * @param sqliteDatabase the database to check. 
+     * @param inTable the name of the table to test.
+     * @param columnToCheck the column to check for presence in table.
+     * @return true or false for column presence in table.
      * @throws IOException  if something goes wrong.
      */
 
-    public static boolean existsColumnInTable( String inTable, String columnToCheck ) throws IOException {
+    public static boolean existsColumnInTable( SQLiteDatabase sqliteDatabase, String inTable, String columnToCheck )
+            throws IOException {
         try {
-            SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
             // query 1 row
             Cursor mCursor = sqliteDatabase.rawQuery("SELECT * FROM " + inTable + " LIMIT 0", null);
 
@@ -1297,14 +1298,17 @@ public class DaoGpsLog implements IGpsLogDbHelper {
     /**
      * Add a field to a table.
      * 
-     * This is a very simple "add" and should not be used for columns needing indexing or keys
+     * <p>This is a very simple "add" and should not be used for 
+     * columns needing indexing or keys
      * 
+     * @param sqliteDatabase the database to use.
      * @param tableName the name of the table to add the field to
      * @param colName the name of the column
      * @param colType the type of column to add (REAL, DATE, INTEGER, TEXT)
      * @throws IOException  if something goes wrong.
      */
-    public static void addFieldGPSTables( String tableName, String colName, String colType ) throws IOException {
+    public static void addFieldGPSTables( SQLiteDatabase sqliteDatabase, String tableName, String colName, String colType )
+            throws IOException {
 
         StringBuilder sB = new StringBuilder();
         sB.append("ALTER TABLE ");
@@ -1315,7 +1319,6 @@ public class DaoGpsLog implements IGpsLogDbHelper {
 
         String ADD_FIELD_TO_TABLE = sB.toString();
 
-        SQLiteDatabase sqliteDatabase = GeopaparazziApplication.getInstance().getDatabase();
         if (GPLog.LOG_ANDROID) {
             StringBuilder sB2 = new StringBuilder();
             sB2.append("Added ").append(colName).append(" to ").append(tableName);

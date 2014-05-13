@@ -160,28 +160,35 @@ public class DatabaseManager {
          */
         public void upgrade( int newDbVersion, int oldDbVersion, Context context ) throws IOException {
             if (oldDbVersion == 1) {
+                Log.i(DEBUG_TAG, "Db upgrade to 2");
                 DaoNotes.upgradeNotesFromDB1ToDB2(db);
             }
             if (oldDbVersion <= 2) {
+                Log.i(DEBUG_TAG, "Db upgrade to 3");
                 DaoBookmarks.createTables();
             }
             if (oldDbVersion <= 3) {
+                Log.i(DEBUG_TAG, "Db upgrade to 4");
                 DaoImages.createTables();
             }
             if (oldDbVersion <= 4) {
+                Log.i(DEBUG_TAG, "Db upgrade to 5");
                 DaoNotes.upgradeNotesFromDB4ToDB5(db);
             }
             if (oldDbVersion <= 5) {
+                Log.i(DEBUG_TAG, "Db upgrade to 6");
                 DaoNotes.upgradeNotesFromDB5ToDB6(db);
             }
             if (oldDbVersion <= 6) {
+                Log.i(DEBUG_TAG, "Db upgrade to 7");
                 GPLog.createTables(db);
             }
             if (oldDbVersion <= 7) {
+                Log.i(DEBUG_TAG, "Db upgrade to 8");
                 // probably don't need to check (could just add column), but it is safer this way
-                boolean checkField = DaoGpsLog.existsColumnInTable("gpslogs", "lengthm");
+                boolean checkField = DaoGpsLog.existsColumnInTable(db, "gpslogs", "lengthm");
                 if (checkField == false) {
-                    DaoGpsLog.addFieldGPSTables("gpslogs", "lengthm", "REAL");
+                    DaoGpsLog.addFieldGPSTables(db, "gpslogs", "lengthm", "REAL");
                 }
             }
             db.beginTransaction();
