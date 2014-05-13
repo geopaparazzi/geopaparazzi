@@ -22,6 +22,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -153,8 +154,14 @@ public class TantoMapurlsActivity extends Activity implements OnClickListener {
                 if (response.startsWith("ERROR")) {
                     Utilities.messageDialog(context, response, null);
                 } else {
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(TantoMapurlsActivity.this);
+                    Editor editor = preferences.edit();
+                    String key = "MAPURLDATAPREFKEY";
+                    editor.putString(key, response);
+                    editor.commit();
+
                     Intent mapurlsIntent = new Intent(context, TantoMapurlsListActivity.class);
-                    mapurlsIntent.putExtra(RESULT_KEY, response);
+                    mapurlsIntent.putExtra(RESULT_KEY, key);
                     startActivityForResult(mapurlsIntent, CODE);
                 }
             }
