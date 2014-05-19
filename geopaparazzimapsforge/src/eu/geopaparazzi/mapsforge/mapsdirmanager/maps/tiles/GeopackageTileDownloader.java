@@ -25,6 +25,7 @@ import org.mapsforge.core.model.Tile;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
@@ -38,7 +39,8 @@ public class GeopackageTileDownloader extends TileDownloader {
 
     private byte ZOOM_MIN = 0;
     private byte ZOOM_MAX = 18;
-
+    private String mapType = "";
+    private SpatialRasterTable rasterTable;
     private GeoPoint centerPoint = new GeoPoint(0, 0);
 
     private String tilePart;
@@ -46,13 +48,14 @@ public class GeopackageTileDownloader extends TileDownloader {
 
     public GeopackageTileDownloader( SpatialRasterTable table ) throws jsqlite.Exception {
         super();
+        rasterTable=table;
         SpatialDatabasesManager sdManager = SpatialDatabasesManager.getInstance();
-        spatialDatabaseHandler = sdManager.getRasterHandler(table);
+        spatialDatabaseHandler = sdManager.getRasterHandler(rasterTable);
+        this.mapType = rasterTable.getMapType();
+        ZOOM_MAX = (byte) rasterTable.getMaxZoom();
+        ZOOM_MIN = (byte) rasterTable.getMinZoom();
 
-        ZOOM_MAX = (byte) table.getMaxZoom();
-        ZOOM_MIN = (byte) table.getMinZoom();
-
-        tilePart = table.getTileQuery();
+        tilePart = rasterTable.getTileQuery();
     }
 
     public String getHostName() {
@@ -76,7 +79,7 @@ public class GeopackageTileDownloader extends TileDownloader {
     public String getTilePath( Tile tile ) {
         int zoomLevel = tile.zoomLevel;
         int tileX = (int) tile.tileX;
-        int tileY = (int) tile.tileY;
+        int tileY = (int) tile.tileY;        
 
         String tmpTilePart = tilePart.replaceFirst("\\?", String.valueOf(zoomLevel)); //$NON-NLS-1$
         tmpTilePart = tmpTilePart.replaceFirst("\\?", String.valueOf(tileX)); //$NON-NLS-1$
@@ -90,10 +93,22 @@ public class GeopackageTileDownloader extends TileDownloader {
         try {
             Tile tile = mapGeneratorJob.tile;
             int tileSize = Tile.TILE_SIZE;
-
-            String tileQuery = getTilePath(tile);
-
-            byte[] rasterBytes = spatialDatabaseHandler.getRasterTile(tileQuery);
+            byte[] rasterBytes=null;
+            String tileQuery ="";
+            if (mapType.equals("RasterLite2"))
+            {
+             tileQuery=mapType;
+             int zoomLevel = tile.zoomLevel;
+             int tileX = (int) tile.tileX;
+             int tileY = (int) tile.tileY; 
+             double[] tileBounds = Utilities.tileLatLonBounds(tileX, tileY, zoomLevel, Tile.TILE_SIZE);
+             rasterBytes = spatialDatabaseHandler.getRasterTileBounds(rasterTable,tileBounds,tileSize);
+            }
+            else
+            {
+             tileQuery = getTilePath(tile);
+             rasterBytes = spatialDatabaseHandler.getRasterTile(tileQuery);
+            }
             Bitmap decodedBitmap = null;
             try {
                 decodedBitmap = BitmapFactory.decodeByteArray(rasterBytes, 0, rasterBytes.length);

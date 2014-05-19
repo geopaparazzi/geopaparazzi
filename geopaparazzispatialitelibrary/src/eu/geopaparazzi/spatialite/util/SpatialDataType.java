@@ -47,7 +47,11 @@ public enum SpatialDataType {
     /**
      * A mapsurl definition file.
      */
-    MAPURL("mapurl", ".mapurl", 5, false);
+    MAPURL("mapurl", ".mapurl", 5, false),
+    /**
+     * A Rasterlite2 Image in a spatialite 4.2.0 database. 
+     */
+    RASTERLITE2("RasterLite2", ".db", 6, true);
 
     private String name;
     private String extension;

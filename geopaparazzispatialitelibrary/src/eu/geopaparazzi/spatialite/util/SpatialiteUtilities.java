@@ -379,7 +379,22 @@ public class SpatialiteUtilities {
     }
 
     /**
-     * Build a query to retrieve rasterlite2 image of a given bound and size.
+     * Retrieve rasterlite2 tile of a given bound [4326,wsg84] with the given size.
+     *
+     * https://github.com/geopaparazzi/Spatialite-Tasks-with-Sql-Scripts/wiki/RL2_GetMapImage
+     * @param sqlite_db Database connection to use
+     * @param destSrid the destination srid (of the rasterlite2 image).
+     * @param table (coverageName) the table to use.
+     * @param tileBounds [west,south,east,north] [minx, miny, maxx, maxy] bounds.
+     * @param i_tile_size default 256 [Tile.TILE_SIZE].
+     * @return the image data as byte[] as jpeg
+     */
+    public static byte[] rl2_GetMapImageTile( Database sqlite_db,String destSrid, String coverageName,double[] tileBounds,int i_tile_size ) {
+        return SpatialiteUtilities.rl2_GetMapImage(sqlite_db,"4326",destSrid,coverageName,i_tile_size,i_tile_size,tileBounds,"default","image/jpeg","#ffffff",0,80,1 );
+    }
+
+    /**
+     * Retrieve rasterlite2 image of a given bound and size.
      *
      * https://github.com/geopaparazzi/Spatialite-Tasks-with-Sql-Scripts/wiki/RL2_GetMapImage
      * @param sqlite_db Database connection to use
@@ -388,10 +403,7 @@ public class SpatialiteUtilities {
      * @param table (coverageName) the table to use.
      * @param width of image in pixel.
      * @param height of image in pixel.
-     * @param n north bound.
-     * @param s south bound.
-     * @param e east bound.
-     * @param w west bound.
+     * @param tileBounds [west,south,east,north] [minx, miny, maxx, maxy] bounds.
      * @param styleName used in coverage. default: 'default'
      * @param mimeType 'image/tiff' etc. default: 'image/png'
      * @param bgColor html-syntax etc. default: '#ffffff'
@@ -400,8 +412,7 @@ public class SpatialiteUtilities {
      * @param reaspect 1 = adapt image width,height if needed based on given bounds
      * @return the image data as byte[]
      */
-    public static byte[] rl2_GetMapImage( Database sqlite_db,String sourceSrid, String destSrid, String coverageName, int width, int height, double n, double s, double e,
-            double w, String styleName, String mimeType, String bgColor, int transparent, int quality, int reaspect ) {
+    public static byte[] rl2_GetMapImage( Database sqlite_db,String sourceSrid, String destSrid, String coverageName, int width, int height, double[] tileBounds, String styleName, String mimeType, String bgColor, int transparent, int quality, int reaspect ) {
         boolean doTransform = false;
         if (!sourceSrid.equals(destSrid)) {
             doTransform = true;
@@ -418,28 +429,29 @@ public class SpatialiteUtilities {
         if ((quality < 0) || (quality > 100))
          quality=0;
         if ((reaspect < 0) || (reaspect > 1))
-         reaspect=1; // adapt image width,height if needed based on given bounds
+         reaspect=1; // adapt image width,height if needed based on given bounds [needed for tiles]
         StringBuilder mbrSb = new StringBuilder();
         if (doTransform)
             mbrSb.append("ST_Transform(");
         mbrSb.append("BuildMBR(");
-        mbrSb.append(w);
+        mbrSb.append(tileBounds[0]);
         mbrSb.append(",");
-        mbrSb.append(n);
+        mbrSb.append(tileBounds[1]);
         mbrSb.append(",");
-        mbrSb.append(e);
+        mbrSb.append(tileBounds[2]);
         mbrSb.append(",");
-        mbrSb.append(s);
+        mbrSb.append(tileBounds[3]);
         if (doTransform) {
             mbrSb.append(",");
-            mbrSb.append(destSrid);
-            mbrSb.append("),");
             mbrSb.append(sourceSrid);
+            mbrSb.append("),");
+            mbrSb.append(destSrid);
         }
         mbrSb.append(")");
+        // SELECT RL2_GetMapImage('berlin_postgrenzen.1890',BuildMBR(20800.0,22000.0,24000.0,19600.0),1200,1920,'default','image/png','#ffffff',0,0,1);
         String mbr = mbrSb.toString();
         StringBuilder qSb = new StringBuilder();
-        qSb.append("RL2_GetMapImage('");
+        qSb.append("SELECT RL2_GetMapImage('");
         qSb.append(coverageName);
         qSb.append("',");
         qSb.append(mbr);
@@ -447,13 +459,13 @@ public class SpatialiteUtilities {
         qSb.append(Integer.toString(width));
         qSb.append(",");
         qSb.append(Integer.toString(height));
-        qSb.append(",");
+        qSb.append(",'");
         qSb.append(styleName);
-        qSb.append(",");
+        qSb.append("','");
         qSb.append(mimeType);
-        qSb.append(",");
+        qSb.append("','");
         qSb.append(bgColor);
-        qSb.append(",");
+        qSb.append("',");
         qSb.append(Integer.toString(transparent));
         qSb.append(",");
         qSb.append(Integer.toString(quality));

@@ -172,6 +172,10 @@ public class MbtilesDatabaseHandler extends SpatialDatabaseHandler {
         return new float[]{n, s, e, w};
     }
 
+    public byte[] getRasterTileBounds(SpatialTable spatialTable,double[] tileBounds, int i_tile_size)  {
+        byte[] tileAsBytes = null;
+        return tileAsBytes;
+    }
     public byte[] getRasterTile( String query ) {
         String[] split = query.split(",");
         if (split.length != 3) {

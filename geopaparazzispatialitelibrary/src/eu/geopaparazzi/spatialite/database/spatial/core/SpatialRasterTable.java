@@ -76,14 +76,31 @@ public class SpatialRasterTable extends SpatialTable implements Serializable {
     }
 
     /**
-      * Set String of Columnname of Geopackage
-      * 
-      * TODO mj10777, why is the name column but it sets the table name?
-      * 
+      * Set String of Columnname of Geopackage / tablename of RasterLite2 image
+      * [mj10777: not really needed]
       * @param s_table_name the name to set.
       */
     public void setColumnName( String s_table_name ) {
         this.tableName = s_table_name;
+    }
+
+    /**
+      * Set String of Title of RasterLite2 image
+      * 
+      * 
+      * @param s_table_name the name to set.
+      */
+    public void setTitle( String s_title ) {
+        this.title = s_title;
+    }
+    /**
+      * Set String of Description of RasterLite2 image
+      * 
+      * 
+      * @param s_table_name the name to set.
+      */
+    public void setDescription( String s_description ) {
+        this.description = s_description;
     }
 
     /**

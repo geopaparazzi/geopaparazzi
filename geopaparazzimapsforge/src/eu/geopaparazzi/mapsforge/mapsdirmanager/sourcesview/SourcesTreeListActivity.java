@@ -45,9 +45,11 @@ public class SourcesTreeListActivity extends Activity implements OnClickListener
     private ToggleButton mapToggleButton;
     private ToggleButton mapurlToggleButton;
     private ToggleButton mbtilesToggleButton;
+    private ToggleButton rasterLite2ToggleButton;
     private boolean showMaps = true;
     private boolean showMapurls = true;
     private boolean showMbtiles = true;
+    private boolean showRasterLite2 = true;
 
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
@@ -69,6 +71,11 @@ public class SourcesTreeListActivity extends Activity implements OnClickListener
         mbtilesToggleButton.setOnClickListener(this);
         mbtilesToggleButton.setTextOn(SpatialDataType.MBTILES.getTypeName());
         mbtilesToggleButton.setTextOff(SpatialDataType.MBTILES.getTypeName());
+        rasterLite2ToggleButton = (ToggleButton) findViewById(R.id.toggleRasterLite2Button);
+        rasterLite2ToggleButton.setChecked(true);
+        rasterLite2ToggleButton.setOnClickListener(this);
+        rasterLite2ToggleButton.setTextOn(SpatialDataType.RASTERLITE2.getTypeName());
+        rasterLite2ToggleButton.setTextOff(SpatialDataType.RASTERLITE2.getTypeName());
 
         // get the listview
         expListView = (ExpandableListView) findViewById(R.id.expandableSourceListView);
@@ -95,6 +102,8 @@ public class SourcesTreeListActivity extends Activity implements OnClickListener
                 } else if (showMapurls && value[1].equals(SpatialDataType.MAPURL.getTypeName())) {
                     newValues.add(value);
                 } else if (showMbtiles && value[1].equals(SpatialDataType.MBTILES.getTypeName())) {
+                    newValues.add(value);
+                } else if (showRasterLite2 && value[1].equals(SpatialDataType.RASTERLITE2.getTypeName())) {
                     newValues.add(value);
                 }
             }
@@ -133,6 +142,7 @@ public class SourcesTreeListActivity extends Activity implements OnClickListener
         showMaps = mapToggleButton.isChecked();
         showMapurls = mapurlToggleButton.isChecked();
         showMbtiles = mbtilesToggleButton.isChecked();
+        showRasterLite2 = rasterLite2ToggleButton.isChecked();
         try {
             getData();
         } catch (Exception e) {

@@ -424,51 +424,53 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
     }
 
     /**
+     * Retrieve rasterlite2 image of a given bound and size.
+     *
+     * https://github.com/geopaparazzi/Spatialite-Tasks-with-Sql-Scripts/wiki/RL2_GetMapImage
+     * @param table the table to use.
+     * @param tileBounds [west,south,east,north] [minx, miny, maxx, maxy] bounds.
+     * @param i_tile_size default 256 [Tile.TILE_SIZE].
+     * @return the image data as byte[]
+     */
+    @Override
+    public byte[] getRasterTileBounds(SpatialTable rasterTable,double[] tileBounds, int i_tile_size)  {
+        byte[] bytes=SpatialiteUtilities.rl2_GetMapImageTile(db_java,rasterTable.getSrid(),rasterTable.getTableName(),tileBounds,i_tile_size);
+        if (bytes != null) {
+         return bytes;
+        }
+        return null;
+    }
+
+    /**
      * Build a query to retrieve rasterlite2 image of a given bound and size.
      *
      * https://github.com/geopaparazzi/Spatialite-Tasks-with-Sql-Scripts/wiki/RL2_GetMapImage
-     * @param sqlite_db Database connection to use
-     * @param sourceSrid the srid (of the n/s/e/w positions).
-     * @param destSrid the destination srid (of the rasterlite2 image).
-     * @param table (coverageName) the table to use.
-     * @param width of image in pixel.
-     * @param height of image in pixel.
-     * @param n north bound.
-     * @param s south bound.
-     * @param e east bound.
-     * @param w west bound.
-     * @param styleName used in coverage. default: 'default'
-     * @param mimeType 'image/tiff' etc. default: 'image/png'
-     * @param bgColor html-syntax etc. default: '#ffffff'
-     * @param transparent 0 to 100 (?).
-     * @param quality 0-100 (for 'image/jpeg')
-     * @param reaspect 1 = adapt image width,height if needed based on given bounds
+     * @param table the table to use.
+     * @param tileBounds [west,south,east,north] [minx, miny, maxx, maxy] bounds.
+     * @param i_tile_size default 256 [Tile.TILE_SIZE].
+     * @param s_filename file name to save to disk inf not empty
      * @return the image data as byte[]
      */
-    public byte[] getRasterlite2Tile(SpatialRasterTable rasterTable )  {
+    public byte[] getRasterlite2Image(SpatialRasterTable rasterTable,String sourceSrid,int width, int height, double[] tileBounds,String s_filename )  {
         byte[] bytes = null;
-        String sourceSrid=rasterTable.getSrid(); 
         String destSrid=rasterTable.getSrid(); 
         // berlin_postgrenzen.1890;LOSSY_WEBP;RasterLite2;Berlin Straube Postgrenzen;1890 - 1:17777;
-        String coverageName=rasterTable.getTableName();
-        int width=1200; 
-        int height=1920; 
-        double n=22000.000; 
-        double s=19600.000; 
-        double e=24000.000;
-        double w=20800.000;
+        String coverageName=rasterTable.getColumnName();
         String styleName="default"; 
-        String mimeType="image/png"; 
+        String mimeType="image/jpeg"; 
         String bgColor="#ffffff"; 
         int transparent=0; 
-        int quality=0; 
-        int reaspect=1;
-        bytes=SpatialiteUtilities.rl2_GetMapImage(db_java,sourceSrid,destSrid,coverageName, width,height,n,s,e,w, 
+        int quality=80; 
+        int reaspect=1; 
+        bytes=SpatialiteUtilities.rl2_GetMapImage(db_java,sourceSrid,destSrid,coverageName, width,height,tileBounds, 
              styleName, mimeType,bgColor,transparent,quality,reaspect );
         if (bytes != null) {
-         try {
-         eu.geopaparazzi.library.util.FileUtilities.writefiledata(bytes,rasterTable.getFileNameNoExtension()+".png");
-         } catch (IOException ex) {}
+        if (!s_filename.equals(""))
+        {
+          try {
+          eu.geopaparazzi.library.util.FileUtilities.writefiledata(bytes,s_filename);
+          } catch (IOException ex) {}
+        }
          return bytes;
         }
         return null;
@@ -829,8 +831,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                 centerCoordinate[1] = boundsCoordinates[1] + (boundsCoordinates[3] - boundsCoordinates[1]) / 2;
                }
                checkAndAdaptDatabaseBounds(boundsCoordinates, null);
-                GPLog.androidLog(-1,"SpatialiteDatabaseHandler["+databaseFile.getAbsolutePath()+"] vector_key["+vector_key+"] vector_value[" + vector_value+ "] ");
-               if (vector_key.indexOf("RasterLite2") != -1)
+               if (s_layer_type.equals("RasterLite2"))
                {
                 // s_ROWID_PK == title [Berlin Straube Postgrenzen]  - needed
                 // s_view_read_only == abstract [1890 - 1:17777] - needed
@@ -844,17 +845,17 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                 // TODO in next version add RasterTable   
                 // berlin_postgrenzen.1890     
                 SpatialRasterTable table = new SpatialRasterTable(getDatabasePath(),table_name, s_srid,
-                0,0, centerCoordinate[0], centerCoordinate[1], null,boundsCoordinates);
+                0,22, centerCoordinate[0], centerCoordinate[1], null,boundsCoordinates);
                 table.setMapType(s_layer_type);
-                // table.setTableName(s_table_name);
-                table.setColumnName("");
-                // setDescription(s_table_name);
-                // table.setDescription(this.databaseDescription);
-                rasterTableList.add(table); 
-
-                if (table_name.equals("berlin_postgrenzen.1890"))
+                table.setTitle(s_ROWID_PK);
+                table.setDescription(s_view_read_only);
+                rasterTableList.add(table);
+                // 10607, 8292
+                int i_width=3535; 
+                int i_height=2764; 
+                if (table_name.equals("berlin_stadtteilgrenzen.1880"))
                 { 
-                 getRasterlite2Tile(table); 
+                 // getRasterlite2Image(table,"4326",i_width,i_height,boundsCoordinates,table.getDatabasePath()+".image.jpg"); 
                 }
                }
                else

@@ -60,6 +60,10 @@ public abstract class SpatialTable implements Serializable {
      */
     protected String description;
     /**
+     * A title.
+     */
+    protected String title;
+    /**
      * The table srid.
      */
     protected String srid;
@@ -217,7 +221,7 @@ public abstract class SpatialTable implements Serializable {
         if (description != null) {
             return description;
         }
-        return getTableName() + " bounds[" + getBoundsAsString() + "] center[" + getCenterAsString() + "]";
+        return "map_type["+getMapType()+"] table_name["+getTableName() + "] srid["+getSrid()+"] bounds[" + getBoundsAsString() + "] center[" + getCenterAsString() + "]";
     }
 
     /**
