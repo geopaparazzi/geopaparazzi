@@ -81,7 +81,7 @@ public class SourcesTreeListActivity extends Activity implements OnClickListener
     }
 
     private void getData() throws Exception {
-        LinkedHashMap<String, List<String[]>> fodler2TablesMap = MapsDirManager.getInstance().getFodler2TablesMap();
+        LinkedHashMap<String, List<String[]>> fodler2TablesMap = MapsDirManager.getInstance().getFolder2TablesMap();
         final LinkedHashMap<String, List<String[]>> newMap = new LinkedHashMap<String, List<String[]>>();
         for( Entry<String, List<String[]>> item : fodler2TablesMap.entrySet() ) {
             String key = item.getKey();

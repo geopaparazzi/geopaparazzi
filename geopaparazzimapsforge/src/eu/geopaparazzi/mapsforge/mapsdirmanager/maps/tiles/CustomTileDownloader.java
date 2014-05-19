@@ -100,10 +100,10 @@ public class CustomTileDownloader extends TileDownloader {
     }
     // no wonder this was causing problems, must must NOT be static with a manager
     private String HOST_NAME = "";
-    private static String PROTOCOL = HTTP_STR; //$NON-NLS-1$
-    private static byte ZOOM_MIN = 0;
-    private static byte ZOOM_MAX = 22;
-    private static byte ZOOM_DEFAULT = 14; // mbtiles specific
+    private String PROTOCOL = HTTP_STR; //$NON-NLS-1$
+    private byte ZOOM_MIN = 0;
+    private byte ZOOM_MAX = 22;
+    private byte ZOOM_DEFAULT = 14; // mbtiles specific
     private final int minZoom;
     private final int maxZoom;
     private final int defaultZoom; // mbtiles specific

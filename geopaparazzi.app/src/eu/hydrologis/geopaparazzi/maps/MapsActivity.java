@@ -33,13 +33,13 @@ import org.mapsforge.android.maps.MapScaleBar.ScreenPosition;
 import org.mapsforge.android.maps.MapScaleBar.TextField;
 import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.MapViewPosition;
+import org.mapsforge.android.maps.MapZoomControls;
 import org.mapsforge.android.maps.Projection;
 import org.mapsforge.android.maps.mapgenerator.MapGenerator;
 import org.mapsforge.android.maps.overlay.Overlay;
 import org.mapsforge.android.maps.overlay.OverlayItem;
 import org.mapsforge.android.maps.overlay.OverlayWay;
 import org.mapsforge.core.model.GeoPoint;
-import org.mapsforge.map.reader.header.MapFileInfo;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -269,12 +269,17 @@ public class MapsActivity extends MapActivity implements OnTouchListener {
         zoomInButton = (Button) findViewById(R.id.zoomin);
         zoomInButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                int currentZoom = getZoomLevel();
+                int currentZoom = getCurrentZoomLevel();
                 int newZoom = currentZoom + 1;
-                setZoomGuiText(newZoom);
-                mapView.getController().setZoom(getZoomLevel());
-                saveCenterPref();
+                newZoom = setCurrentZoom(newZoom);
+                setGuiZoomText(newZoom);
+                MapZoomControls mapZoomControls = mapView.getMapZoomControls();
+                byte zoomLevelMin = mapZoomControls.getZoomLevelMin();
+                byte zoomLevelMax = mapZoomControls.getZoomLevelMax();
+                System.out.println(zoomLevelMax + "/" + zoomLevelMin);
+                mapView.getController().setZoom(newZoom);
                 invalidateMap();
+                saveCenterPref();
             }
         });
 
@@ -283,12 +288,13 @@ public class MapsActivity extends MapActivity implements OnTouchListener {
         zoomOutButton = (Button) findViewById(R.id.zoomout);
         zoomOutButton.setOnClickListener(new Button.OnClickListener(){
             public void onClick( View v ) {
-                int currentZoom = getZoomLevel();
+                int currentZoom = getCurrentZoomLevel();
                 int newZoom = currentZoom - 1;
-                setZoomGuiText(newZoom);
-                mapView.getController().setZoom(getZoomLevel());
-                saveCenterPref();
+                newZoom = setCurrentZoom(newZoom);
+                setGuiZoomText(newZoom);
+                mapView.getController().setZoom(newZoom);
                 invalidateMap();
+                saveCenterPref();
             }
         });
 
@@ -461,85 +467,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         saveCenterPref();
-
-    }
-    // -----------------------------------------------
-    /**
-     * Function to check and correct bounds / zoom level [for 'Map-Files only']
-     *
-     * @param mapCenterLocation [point/zoom to check] result of PositionUtilities.getMapCenterFromPreferences(preferences,true,true);
-     * @param doCorrectIfOutOfRange if <code>true</code>, change mapCenterLocation values if out of range.
-     * @return 0=inside valid area/zoom ; i_rc > 0 outside area or zoom ; i_parm=0 no corrections ; 1= correct tileBounds values.
-     */
-    public int checkCenterLocation( double[] mapCenterLocation, boolean doCorrectIfOutOfRange ) {
-        /*
-         * mj10777: i_rc=0=inside valid area/zoom ; i_rc > 0 outside area or zoom ;
-         * i_parm=0 no corrections ; 1= correct mapCenterLocation values.
-         */
-        int i_rc = 0; // inside area
-        // MapDatabase().openFile(File).getMapFileInfo()
-        if (this.mapView.getMapDatabase() == null)
-            return 100; // supported only with map files
-        MapFileInfo mapFileInfo = this.mapView.getMapDatabase().getMapFileInfo();
-        double bounds_west = (double) (mapFileInfo.boundingBox.getMinLongitude());
-        double bounds_south = (double) (mapFileInfo.boundingBox.getMinLatitude());
-        double bounds_east = (double) (mapFileInfo.boundingBox.getMaxLongitude());
-        double bounds_north = (double) (mapFileInfo.boundingBox.getMaxLatitude());
-        double centerX = mapFileInfo.boundingBox.getCenterPoint().getLongitude();
-        double centerY = mapFileInfo.boundingBox.getCenterPoint().getLatitude();
-        int maxZoom = this.mapView.getMapZoomControls().getZoomLevelMax();
-        int minZoom = this.mapView.getMapZoomControls().getZoomLevelMin();
-        // SpatialDatabasesManager.app_log(-1,"MapActivity.checkCenterLocation: center_location[x="+mapCenterLocation[0]+" ; y="+mapCenterLocation[1]+" ; z="+mapCenterLocation[2]+"] bbox=["+bounds_west+","+bounds_south+","+bounds_east+","+bounds_north+"]");
-        if (((mapCenterLocation[0] < bounds_west) || (mapCenterLocation[0] > bounds_east))
-                || ((mapCenterLocation[1] < bounds_south) || (mapCenterLocation[1] > bounds_north))
-                || ((mapCenterLocation[2] < minZoom) || (mapCenterLocation[2] > maxZoom))) {
-            if (((mapCenterLocation[0] >= bounds_west) && (mapCenterLocation[0] <= bounds_east))
-                    && ((mapCenterLocation[1] >= bounds_south) && (mapCenterLocation[1] <= bounds_north))) {
-                /*
-                 * We are inside the Map-Area, but Zoom is not correct
-                 */
-                if (mapCenterLocation[2] < minZoom) {
-                    i_rc = 1;
-                    if (doCorrectIfOutOfRange) {
-                        mapCenterLocation[2] = minZoom;
-                    }
-                }
-                if (mapCenterLocation[2] > maxZoom) {
-                    i_rc = 2;
-                    if (doCorrectIfOutOfRange) {
-                        mapCenterLocation[2] = maxZoom;
-                    }
-                }
-            } else {
-                if (mapCenterLocation[2] < minZoom) {
-                    i_rc = 11;
-                    if (doCorrectIfOutOfRange) {
-                        mapCenterLocation[2] = minZoom;
-                    }
-                }
-                if (mapCenterLocation[2] > maxZoom) {
-                    i_rc = 12;
-                    if (doCorrectIfOutOfRange) {
-                        mapCenterLocation[2] = maxZoom;
-                    }
-                }
-                if ((mapCenterLocation[0] < bounds_west) || (mapCenterLocation[0] > bounds_east)) {
-                    i_rc = 13;
-                    if (doCorrectIfOutOfRange) {
-                        mapCenterLocation[0] = centerX;
-                    }
-                }
-                if ((mapCenterLocation[1] < bounds_south) || (mapCenterLocation[1] > bounds_north)) {
-                    i_rc = 14;
-                    if (doCorrectIfOutOfRange) {
-                        mapCenterLocation[1] = centerY;
-                    }
-                }
-            }
-        }
-        return i_rc;
     }
 
     @Override
@@ -677,7 +605,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener {
                     runOnUiThread(new Runnable(){
                         public void run() {
                             int zoom = mapView.getMapPosition().getZoomLevel();
-                            setZoomGuiText(zoom);
+                            zoomLevelText.setText(formatter.format(zoom));
                         }
                     });
                 }
@@ -814,8 +742,10 @@ public class MapsActivity extends MapActivity implements OnTouchListener {
         if (hasFocus) {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             double[] lastCenter = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
-            MapsDirManager.getInstance().setMapViewCenter(mapView, lastCenter, 0);
-            setZoomGuiText(getZoomLevel());
+            MapsDirManager.getInstance().setMapViewCenter(mapView, lastCenter, MapsDirManager.ZOOMTYPE.DEFAULT);
+            int currentZoomLevel = getCurrentZoomLevel();
+            setGuiZoomText(currentZoomLevel);
+
             readData();
             saveCenterPref();
         }
@@ -823,25 +753,30 @@ public class MapsActivity extends MapActivity implements OnTouchListener {
     }
 
     /**
-      * Return current Zoom [from MapsDirManager]
+      * Return current Zoom [from MapsDirManager].
       *
-      * @return integer minzoom
+      * @return integer current zoom level.
       */
-    private static int getZoomLevel() {
+    private static int getCurrentZoomLevel() {
         return MapsDirManager.getInstance().getCurrentZoom();
     }
-    // -----------------------------------------------
+
     /**
-      * Set current Zoom  [in MapsDirManager]
-      * - checking is done to insure that the new Zoom is inside the supported min/max Zoom-levels
-      * -- the present value will be retained if invalid
+      * Set current Zoom level in gui and MapsDirManager.
+      * 
+      * <p>checking is done to insure that the new Zoom is
+      * inside the supported min/max Zoom-levels
+      * <p>the present value will be retained if invalid
       */
-    private void setZoomGuiText( int newZoom ) {
-        // checking is done to insure that the new Zoom is inside the supported min/max Zoom-levels
+    private static int setCurrentZoom( int newZoom ) {
         newZoom = MapsDirManager.getInstance().setCurrentZoom(newZoom);
+        return newZoom;
+    }
+
+    private void setGuiZoomText( int newZoom ) {
         zoomLevelText.setText(formatter.format(newZoom));
     }
-    // -----------------------------------------------
+
     /**
       * set MapView Center point [in MapsDirManager]
       * 
@@ -858,9 +793,8 @@ public class MapsActivity extends MapActivity implements OnTouchListener {
       * @param lat center lat
       */
     public void setNewCenter( double lon, double lat ) {
-        double[] mapCenterLocation = new double[]{lon, lat, (double) getZoomLevel()};
-        MapsDirManager.getInstance().setMapViewCenter(mapView, mapCenterLocation, 0);
-        // mapView.getController().setCenter(new GeoPoint(lat, lon));
+        double[] mapCenterLocation = new double[]{lon, lat, (double) getCurrentZoomLevel()};
+        MapsDirManager.getInstance().setMapViewCenter(mapView, mapCenterLocation, MapsDirManager.ZOOMTYPE.DEFAULT);
         saveCenterPref();
     }
 
@@ -872,9 +806,10 @@ public class MapsActivity extends MapActivity implements OnTouchListener {
      * @param zoom the zoom level to set.
      */
     public void setNewCenterAtZoom( double lon, double lat, int zoom ) {
+        zoom = setCurrentZoom(zoom);
         double[] mapCenterLocation = new double[]{lon, lat, (double) zoom};
-        MapsDirManager.getInstance().setMapViewCenter(mapView, mapCenterLocation, 0);
-        setZoomGuiText(getZoomLevel());
+        MapsDirManager.getInstance().setMapViewCenter(mapView, mapCenterLocation, MapsDirManager.ZOOMTYPE.DEFAULT);
+        setGuiZoomText(zoom);
     }
 
     /**
@@ -958,7 +893,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener {
             return goTo();
         }
         case MENU_CENTER_ON_MAP: {
-            MapsDirManager.getInstance().setMapViewCenter(mapView, null, 1);
+            MapsDirManager.getInstance().setMapViewCenter(mapView, null, MapsDirManager.ZOOMTYPE.DEFAULT);
             saveCenterPref();
             return true;
         }
@@ -1389,6 +1324,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener {
         GeoPoint mapCenter = mapPosition.getMapCenter();
         double lon = mapCenter.longitudeE6 / LibraryConstants.E6;
         double lat = mapCenter.latitudeE6 / LibraryConstants.E6;
+        int zoomLevel = mapPosition.getZoomLevel();
 
         if (GPLog.LOG_ABSURD) {
             StringBuilder sb = new StringBuilder();
@@ -1399,7 +1335,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener {
             GPLog.addLogEntry(this, sb.toString());
         }
 
-        PositionUtilities.putMapCenterInPreferences(preferences, lon, lat, mapPosition.getZoomLevel());
+        PositionUtilities.putMapCenterInPreferences(preferences, lon, lat, zoomLevel);
     }
 
     /**

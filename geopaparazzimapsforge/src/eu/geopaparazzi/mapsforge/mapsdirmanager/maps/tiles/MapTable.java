@@ -94,64 +94,67 @@ public class MapTable extends SpatialTable {
         return this.dbStyleFile;
     }
 
-    /**
-     * Function to check and correct bounds / zoom level [for 'SpatialiteDatabaseHandler']
-     *
-     * @param mapCenterLocation [point/zoom to check] (most probably result of PositionUtilities.getMapCenterFromPreferences(preferences,true,true);)
-     * @param doCorrectIfOutOfRange if <code>true</code>, change mapCenterLocation values if out of range.
-     * @return 0=inside valid area/zoom ; i_rc > 0 outside area or zoom ; i_parm=0 no corrections ; 1= correct tileBounds values.
-     */
-    public int checkCenterLocation( double[] mapCenterLocation, boolean doCorrectIfOutOfRange ) {
-        int i_rc = 0; // inside area
-        if (((mapCenterLocation[0] < boundsWest) || (mapCenterLocation[0] > boundsEast))
-                || ((mapCenterLocation[1] < boundsSouth) || (mapCenterLocation[1] > boundsNorth))
-                || ((mapCenterLocation[2] < minZoom) || (mapCenterLocation[2] > maxZoom))) {
-            if (((mapCenterLocation[0] >= boundsWest) && (mapCenterLocation[0] <= boundsEast))
-                    && ((mapCenterLocation[1] >= boundsSouth) && (mapCenterLocation[1] <= boundsNorth))) {
-                /*
-                 *  We are inside the Map-Area, but Zoom is not correct
-                 */
-                if (mapCenterLocation[2] < minZoom) {
-                    i_rc = 1;
-                    if (doCorrectIfOutOfRange) {
-                        mapCenterLocation[2] = minZoom;
-                    }
-                }
-                if (mapCenterLocation[2] > maxZoom) {
-                    i_rc = 2;
-                    if (doCorrectIfOutOfRange) {
-                        mapCenterLocation[2] = maxZoom;
-                    }
-                }
-            } else {
-                if (mapCenterLocation[2] < minZoom) {
-                    i_rc = 11;
-                    if (doCorrectIfOutOfRange) {
-                        mapCenterLocation[2] = minZoom;
-                    }
-                }
-                if (mapCenterLocation[2] > maxZoom) {
-                    i_rc = 12;
-                    if (doCorrectIfOutOfRange) {
-                        mapCenterLocation[2] = maxZoom;
-                    }
-                }
-                if ((mapCenterLocation[0] < boundsWest) || (mapCenterLocation[0] > boundsEast)) {
-                    i_rc = 13;
-                    if (doCorrectIfOutOfRange) {
-                        mapCenterLocation[0] = centerX;
-                    }
-                }
-                if ((mapCenterLocation[1] < boundsSouth) || (mapCenterLocation[1] > boundsNorth)) {
-                    i_rc = 14;
-                    if (doCorrectIfOutOfRange) {
-                        mapCenterLocation[1] = centerY;
-                    }
-                }
-            }
-        }
-        return i_rc;
-    }
+    // /**
+    // * Function to check and correct bounds / zoom level [for 'SpatialiteDatabaseHandler']
+    // *
+    // * @param mapCenterLocation [point/zoom to check] (most probably result of
+    // PositionUtilities.getMapCenterFromPreferences(preferences,true,true);)
+    // * @param doCorrectIfOutOfRange if <code>true</code>, change mapCenterLocation values if out
+    // of range.
+    // * @return 0=inside valid area/zoom ; i_rc > 0 outside area or zoom ; i_parm=0 no corrections
+    // ; 1= correct tileBounds values.
+    // */
+    // public int checkCenterLocation( double[] mapCenterLocation, boolean doCorrectIfOutOfRange ) {
+    // int i_rc = 0; // inside area
+    // if (((mapCenterLocation[0] < boundsWest) || (mapCenterLocation[0] > boundsEast))
+    // || ((mapCenterLocation[1] < boundsSouth) || (mapCenterLocation[1] > boundsNorth))
+    // || ((mapCenterLocation[2] < minZoom) || (mapCenterLocation[2] > maxZoom))) {
+    // if (((mapCenterLocation[0] >= boundsWest) && (mapCenterLocation[0] <= boundsEast))
+    // && ((mapCenterLocation[1] >= boundsSouth) && (mapCenterLocation[1] <= boundsNorth))) {
+    // /*
+    // * We are inside the Map-Area, but Zoom is not correct
+    // */
+    // if (mapCenterLocation[2] < minZoom) {
+    // i_rc = 1;
+    // if (doCorrectIfOutOfRange) {
+    // mapCenterLocation[2] = minZoom;
+    // }
+    // }
+    // if (mapCenterLocation[2] > maxZoom) {
+    // i_rc = 2;
+    // if (doCorrectIfOutOfRange) {
+    // mapCenterLocation[2] = maxZoom;
+    // }
+    // }
+    // } else {
+    // if (mapCenterLocation[2] < minZoom) {
+    // i_rc = 11;
+    // if (doCorrectIfOutOfRange) {
+    // mapCenterLocation[2] = minZoom;
+    // }
+    // }
+    // if (mapCenterLocation[2] > maxZoom) {
+    // i_rc = 12;
+    // if (doCorrectIfOutOfRange) {
+    // mapCenterLocation[2] = maxZoom;
+    // }
+    // }
+    // if ((mapCenterLocation[0] < boundsWest) || (mapCenterLocation[0] > boundsEast)) {
+    // i_rc = 13;
+    // if (doCorrectIfOutOfRange) {
+    // mapCenterLocation[0] = centerX;
+    // }
+    // }
+    // if ((mapCenterLocation[1] < boundsSouth) || (mapCenterLocation[1] > boundsNorth)) {
+    // i_rc = 14;
+    // if (doCorrectIfOutOfRange) {
+    // mapCenterLocation[1] = centerY;
+    // }
+    // }
+    // }
+    // }
+    // return i_rc;
+    // }
 
     /**
      * Get the tile retrieve query with place holders for zoom, column and row.
