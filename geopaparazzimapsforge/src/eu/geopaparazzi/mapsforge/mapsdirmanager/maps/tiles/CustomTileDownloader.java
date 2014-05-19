@@ -803,7 +803,7 @@ public class CustomTileDownloader extends TileDownloader {
                     urlConnection.setRequestProperty(USER_AGENT_STR, GEOPAPARAZZI_STR);
                     inputStream = urlConnection.getInputStream();
                     decodedBitmap = BitmapFactory.decodeStream(inputStream);
-                    if (doScaleTiles)
+                    if (doScaleTiles && type != TILESCHEMA.wms)
                         decodedBitmap = resize(decodedBitmap, tileX, tileYOsm, ZOOM_LEVEL_DIFF, tileSize);
                 } catch (Exception e) {
                     // ignore and set the image as empty
