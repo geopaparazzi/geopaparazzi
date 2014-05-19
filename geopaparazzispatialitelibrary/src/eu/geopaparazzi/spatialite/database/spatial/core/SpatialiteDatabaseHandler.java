@@ -424,6 +424,57 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
     }
 
     /**
+     * Build a query to retrieve rasterlite2 image of a given bound and size.
+     *
+     * https://github.com/geopaparazzi/Spatialite-Tasks-with-Sql-Scripts/wiki/RL2_GetMapImage
+     * @param sqlite_db Database connection to use
+     * @param sourceSrid the srid (of the n/s/e/w positions).
+     * @param destSrid the destination srid (of the rasterlite2 image).
+     * @param table (coverageName) the table to use.
+     * @param width of image in pixel.
+     * @param height of image in pixel.
+     * @param n north bound.
+     * @param s south bound.
+     * @param e east bound.
+     * @param w west bound.
+     * @param styleName used in coverage. default: 'default'
+     * @param mimeType 'image/tiff' etc. default: 'image/png'
+     * @param bgColor html-syntax etc. default: '#ffffff'
+     * @param transparent 0 to 100 (?).
+     * @param quality 0-100 (for 'image/jpeg')
+     * @param reaspect 1 = adapt image width,height if needed based on given bounds
+     * @return the image data as byte[]
+     */
+    public byte[] getRasterlite2Tile(SpatialRasterTable rasterTable )  {
+        byte[] bytes = null;
+        String sourceSrid=rasterTable.getSrid(); 
+        String destSrid=rasterTable.getSrid(); 
+        // berlin_postgrenzen.1890;LOSSY_WEBP;RasterLite2;Berlin Straube Postgrenzen;1890 - 1:17777;
+        String coverageName=rasterTable.getTableName();
+        int width=1200; 
+        int height=1920; 
+        double n=22000.000; 
+        double s=19600.000; 
+        double e=24000.000;
+        double w=20800.000;
+        String styleName="default"; 
+        String mimeType="image/png"; 
+        String bgColor="#ffffff"; 
+        int transparent=0; 
+        int quality=0; 
+        int reaspect=1;
+        bytes=SpatialiteUtilities.rl2_GetMapImage(db_java,sourceSrid,destSrid,coverageName, width,height,n,s,e,w, 
+             styleName, mimeType,bgColor,transparent,quality,reaspect );
+        if (bytes != null) {
+         try {
+         eu.geopaparazzi.library.util.FileUtilities.writefiledata(bytes,rasterTable.getFileNameNoExtension()+".png");
+         } catch (IOException ex) {}
+         return bytes;
+        }
+        return null;
+    }
+
+    /**
 * Get the {@link GeometryIterator} of a table in a given bound.
 *
 * @param destSrid the srid to which to transform to.
@@ -778,7 +829,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                 centerCoordinate[1] = boundsCoordinates[1] + (boundsCoordinates[3] - boundsCoordinates[1]) / 2;
                }
                checkAndAdaptDatabaseBounds(boundsCoordinates, null);
-               // GPLog.androidLog(-1,"SpatialiteDatabaseHandler["+databaseFile.getAbsolutePath()+"] vector_key["+vector_key+"] vector_value[" + vector_value+ "] ");
+                GPLog.androidLog(-1,"SpatialiteDatabaseHandler["+databaseFile.getAbsolutePath()+"] vector_key["+vector_key+"] vector_value[" + vector_value+ "] ");
                if (vector_key.indexOf("RasterLite2") != -1)
                {
                 // s_ROWID_PK == title [Berlin Straube Postgrenzen]  - needed
@@ -790,7 +841,21 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                 int i_tile_width = Integer.parseInt(s_coord_dimension); 
                 double horz_resolution = Double.parseDouble(s_spatial_index_enabled); 
                 int i_num_bands = Integer.parseInt(s_row_count_enabled); 
-                // TODO in next version add RasterTable           
+                // TODO in next version add RasterTable   
+                // berlin_postgrenzen.1890     
+                SpatialRasterTable table = new SpatialRasterTable(getDatabasePath(),table_name, s_srid,
+                0,0, centerCoordinate[0], centerCoordinate[1], null,boundsCoordinates);
+                table.setMapType(s_layer_type);
+                // table.setTableName(s_table_name);
+                table.setColumnName("");
+                // setDescription(s_table_name);
+                // table.setDescription(this.databaseDescription);
+                rasterTableList.add(table); 
+
+                if (table_name.equals("berlin_postgrenzen.1890"))
+                { 
+                 getRasterlite2Tile(table); 
+                }
                }
                else
                { // SpatialTable / SpatialView

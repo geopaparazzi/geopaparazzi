@@ -377,4 +377,108 @@ public class SpatialiteUtilities {
         String q = qSb.toString();
         return q;
     }
+
+    /**
+     * Build a query to retrieve rasterlite2 image of a given bound and size.
+     *
+     * https://github.com/geopaparazzi/Spatialite-Tasks-with-Sql-Scripts/wiki/RL2_GetMapImage
+     * @param sqlite_db Database connection to use
+     * @param sourceSrid the srid (of the n/s/e/w positions).
+     * @param destSrid the destination srid (of the rasterlite2 image).
+     * @param table (coverageName) the table to use.
+     * @param width of image in pixel.
+     * @param height of image in pixel.
+     * @param n north bound.
+     * @param s south bound.
+     * @param e east bound.
+     * @param w west bound.
+     * @param styleName used in coverage. default: 'default'
+     * @param mimeType 'image/tiff' etc. default: 'image/png'
+     * @param bgColor html-syntax etc. default: '#ffffff'
+     * @param transparent 0 to 100 (?).
+     * @param quality 0-100 (for 'image/jpeg')
+     * @param reaspect 1 = adapt image width,height if needed based on given bounds
+     * @return the image data as byte[]
+     */
+    public static byte[] rl2_GetMapImage( Database sqlite_db,String sourceSrid, String destSrid, String coverageName, int width, int height, double n, double s, double e,
+            double w, String styleName, String mimeType, String bgColor, int transparent, int quality, int reaspect ) {
+        boolean doTransform = false;
+        if (!sourceSrid.equals(destSrid)) {
+            doTransform = true;
+        }
+        // sanity checks
+        if (styleName.equals(""))
+         styleName="default";
+        if (mimeType.equals(""))
+         mimeType="image/png";
+        if (bgColor.equals(""))
+         bgColor="#ffffff";
+        if ((transparent < 0) || (transparent > 100))
+         transparent=0;
+        if ((quality < 0) || (quality > 100))
+         quality=0;
+        if ((reaspect < 0) || (reaspect > 1))
+         reaspect=1; // adapt image width,height if needed based on given bounds
+        StringBuilder mbrSb = new StringBuilder();
+        if (doTransform)
+            mbrSb.append("ST_Transform(");
+        mbrSb.append("BuildMBR(");
+        mbrSb.append(w);
+        mbrSb.append(",");
+        mbrSb.append(n);
+        mbrSb.append(",");
+        mbrSb.append(e);
+        mbrSb.append(",");
+        mbrSb.append(s);
+        if (doTransform) {
+            mbrSb.append(",");
+            mbrSb.append(destSrid);
+            mbrSb.append("),");
+            mbrSb.append(sourceSrid);
+        }
+        mbrSb.append(")");
+        String mbr = mbrSb.toString();
+        StringBuilder qSb = new StringBuilder();
+        qSb.append("RL2_GetMapImage('");
+        qSb.append(coverageName);
+        qSb.append("',");
+        qSb.append(mbr);
+        qSb.append(",");
+        qSb.append(Integer.toString(width));
+        qSb.append(",");
+        qSb.append(Integer.toString(height));
+        qSb.append(",");
+        qSb.append(styleName);
+        qSb.append(",");
+        qSb.append(mimeType);
+        qSb.append(",");
+        qSb.append(bgColor);
+        qSb.append(",");
+        qSb.append(Integer.toString(transparent));
+        qSb.append(",");
+        qSb.append(Integer.toString(quality));
+        qSb.append(",");
+        qSb.append(Integer.toString(reaspect));
+        qSb.append(");");
+        String s_sql_command = qSb.toString();
+        GPLog.androidLog(-1, "SpatialiteUtilities: rl2_GetMapImage sql[" + s_sql_command + "]");
+        Stmt this_stmt = null;
+        byte[] ba_image=null;
+        if (!DaoSpatialite.Rasterlite2Version_CPU.equals(""))
+        { // only if rasterlite2 driver is active
+         try {
+             this_stmt = sqlite_db.prepare(s_sql_command);
+             if (this_stmt.step()) {
+               ba_image = this_stmt.column_bytes(0);
+            }
+         } catch (jsqlite.Exception e_stmt) {
+           int i_rc = sqlite_db.last_error();
+           GPLog.androidLog(4, "SpatialiteUtilities: rl2_GetMapImage sql[" + s_sql_command + "] rc=" + i_rc + "]", e_stmt);
+         }
+         finally {
+           // this_stmt.close();
+         }
+        }
+        return ba_image;
+    }
 }

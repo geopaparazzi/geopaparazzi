@@ -213,6 +213,31 @@ public class FileUtilities {
     }
 
     /**
+     * Write a byte[] to file.
+     * 
+     * @param data byte[].
+     * @param fileName the fileName.
+     * @throws IOException  if something goes wrong.
+     */
+    public static void writefiledata( byte[] data, String fileName ) throws IOException {
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(fileName);
+            out.write(data);
+        } finally {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    GPLog.error("FILEUTILS", e.getLocalizedMessage(), e); //$NON-NLS-1$
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+
+    /**
      * Returns true if all deletions were successful. If a deletion fails, the method stops
      * attempting to delete and returns false.
      *

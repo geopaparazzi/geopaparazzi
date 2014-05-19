@@ -1822,7 +1822,7 @@ public class DaoSpatialite {
           statement.close();
          }
         }
-        if (b_raster_coverages )
+        if ((!Rasterlite2Version_CPU.equals("")) && (b_raster_coverages))
         { // RasterLite2 support: a raster_coverages has been found and the driver supports it
         }
         if ((VECTOR_LAYERS_QUERY_MODE > 0) && (spatialVectorMapErrors.size() > 0))
@@ -1933,10 +1933,6 @@ public class DaoSpatialite {
             return SpatialiteDatabaseType.GEOPACKAGE;
         } else {
             if ((b_vector_layers_statistics) && (b_vector_layers)) { // Spatialite 4.0
-                if ((Rasterlite2Version_CPU.equals("")) && (b_raster_coverages))
-                { // This database has a RasterLite2 table, but the Driver is not compiled to support it
-                 // b_raster_coverages = false;
-                }
                 getSpatialVectorMap_V4(database,spatialVectorMap,spatialVectorMapErrors,b_layers_statistics,b_raster_coverages);
                if (spatialVectorMap.size() > 0)
                 return SpatialiteDatabaseType.SPATIALITE4;
