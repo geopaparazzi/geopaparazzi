@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="yes">بله</string>
+  <string name="no">خير</string>
+  <string name="up">بالا</string>
+  <string name="last_position">آخرين موقعيت</string>
+  <string name="longitude">طول جغرافیایی</string>
+  <string name="latitude">عرض جغرافيايي</string>
+  <string name="message_sent">ارسال پيغام</string>
+  <string name="select_dotdot">انتخاب ...</string>
+  <string name="enterLocationLabel">وارد کردن موقعيت:</string>
+  <string name="lookupLocationButton">برو</string>
+  <string name="go_to_button">رفتن به</string>
+  <string name="save">ذخيره</string>
+  <string name="cancel">لغو</string>
+  <string name="take_picture">انداختن عکس</string>
+  <string name="menu_settings">تنظيمات</string>
+  <string name="point_size">اندازه نقطه</string>
+  <string name="decimation">ابعاد</string>
+  <string name="no_data">اطلاعات در دسترس نيست</string>
+</resources>

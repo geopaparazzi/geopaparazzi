@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="stroke_color">画笔颜色</string>
+  <string name="width">画笔宽度</string>
+  <string name="alpha">画笔最初</string>
+  <string name="fill_color">填充颜色</string>
+  <string name="fill_alpha">填充最初</string>
+  <string name="point_shape_">点形状</string>
+  <string name="point_size">点尺寸</string>
+  <string name="decimation">抽取</string>
+  <string name="decimation_factor_default">0.000001</string>
+</resources>

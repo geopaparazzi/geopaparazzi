@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="stroke_color">Χρώμα γραμμής</string>
+  <string name="width">Πλάτος γραμμής</string>
+  <string name="alpha">Διαφάνεια γραμμής</string>
+  <string name="fill_color">Χρώμα γεμίσματος</string>
+  <string name="fill_alpha">Διαφάνεια επιφάνειας</string>
+  <string name="point_shape_">Σχήμα σημείου</string>
+  <string name="point_size">Μέγεθος σημείου</string>
+  <string name="decimation">Δεκαδικοποίηση</string>
+  <string name="decimation_factor_default">0.000001</string>
+  <string name="min_zoom">Ελάχ. μεγέθυνση</string>
+  <string name="max_zoom">Μέγ. μεγέθυνση</string>
+  <string name="dash_pattern">Μοτίβο από παύλες</string>
+  <string name="label_properties">Ιδιότητες ετικέτας</string>
+  <string name="toggle_visibility">Εναλλαγή ορατότητας</string>
+  <string name="label_field">πεδίο ετικέτας</string>
+  <string name="label_size">μέγεθος ετικέτας</string>
+</resources>

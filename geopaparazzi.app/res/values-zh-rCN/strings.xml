@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="yes">是</string>
+  <string name="no">否</string>
+  <string name="app_name">Geopaparazzi</string>
+  <string name="kmlsaved">数据成功被输出到：</string>
+  <string name="loggingoff">停止所有的传感器</string>
+  <string name="nogps_data">没有可用的GPS数据！</string>
+  <string name="about">关于</string>
+  <string name="exit">退出</string>
+  <string name="utctime">时间：</string>
+  <string name="go_to">跳转</string>
+  <string name="prompt_gpsenable">您的GPS是关闭的，您可以打开它吗？</string>
+  <string name="width_label">宽</string>
+  <string name="color_label">颜色</string>
+  <string name="mainmenu_kmlexport">输出</string>
+  <string name="mainmenu_import">输入</string>
+  <string name="mainmenu_gpsdataselect">GPS数据列表</string>
+  <string name="mainmenu_preferences">设定</string>
+  <string name="gpslog_chart">图</string>
+  <string name="gpslog_zoom">放大</string>
+  <string name="gpslog_delete">删除</string>
+  <string name="mapproperty">属性：</string>
+  <string name="map_zoom">放大到地图</string>
+  <string name="map_delete">删除地图</string>
+  <string name="gps_preferences">GPS偏好设置</string>
+  <string name="gps_logging_distance">最小的GPS日志的距离</string>
+  <string name="gps_logging_interval">最小的GPS记录间隔</string>
+  <string name="gpx_import_processing">读入gpx中...</string>
+  <string name="text_take_a_gps_note">写便签</string>
+  <string name="gps_log">GPS轨迹</string>
+  <string name="audio_recording">重放语音... 按这里结束</string>
+  <string name="audio_recording_stop">停止</string>
+  <string name="panic">恐慌</string>
+  <string name="panic_number">恐慌编号</string>
+  <string name="panic_upper">恐慌！</string>
+  <string name="send_status_update">发送方位</string>
+  <string name="help_needed">需要帮助</string>
+  <string name="message_sent">发送信息</string>
+  <string name="last_note_deleted">删除最近一条记录</string>
+  <string name="last_note_not_deleted">不能删除最后一条便条</string>
+  <string name="text_gpson">打开GPS</string>
+  <string name="installgpsstatus_title">安装GPS Status</string>
+  <!--added after 2.1.2-->
+  <string name="reset">创建新项目</string>
+  <string name="pick_phonenumber_label">…</string>
+  <!--added after 2.1.4-->
+  <string name="select_all">选择全部</string>
+  <string name="unselect_all">不选择全部</string>
+  <string name="delete_visible_notes_title">删除便条</string>
+  <string name="delete_visible_notes_prompt">您真的的要移除所有可见便签？这个操作不可被复原。</string>
+  <string name="delete_visible_bookmarks_title">删除书签</string>
+  <string name="delete_visible_bookmarks_prompt">您真的的要移除所有可见书签？这个操作不可被复原。</string>
+  <string name="bookmarks_list_rename">重命名书签</string>
+  <string name="mapsactivity_delete_bookmarks">删除 {0} 书签</string>
+  <string name="mapsactivity_delete_notes">删除 {0} 便签</string>
+  <string name="mapsactivity_new_bookmark">新书签</string>
+  <string name="mapsactivity_enter_bookmark_name">为新书签输入名字(optional)</string>
+  <string name="maptagsactivity_error_reading_tags">读入tsgs时出错</string>
+  <!--added after 2.3.1-->
+  <!--added after 2.4.3-->
+  <!--added after 2.5.0-->
+  <string name="osm_do_it">允许OSM插件</string>
+  <string name="osm_user_label">用户名</string>
+  <string name="osm_password_label">密码</string>
+  <string name="osm_server_label">服务器连接</string>
+  <string name="profilelable_distance">距离[m]</string>
+  <string name="geopapcloud_user_label">用户名</string>
+  <string name="geopapcloud_password_label">密码</string>
+  <string name="geopapcloud_server_label">服务器连接</string>
+  <string name="exporting_data">输出数据</string>
+  <string name="exporting_data_to_the_cloud">输出数据到云存储</string>
+  <string name="exporting_data_to_kmz">输出数据用KMZ格式</string>
+  <string name="exporting_data_to_gpx">输出数据用KMZ格式</string>
+  <string name="media_upload">上传媒体</string>
+  <string name="add_message">添加信息</string>
+  <string name="enter_a_name_for_the_new_project">请给新项目输入名称</string>
+  <string name="select_map_to_use">选择要使用的地图</string>
+  <string name="enter_project_description">为项目输入一个描写</string>
+  <string name="no_images">没有图片</string>
+  <string name="with_images">使用图片</string>
+  <string name="successfully_imported_bookmarks">成功读入书签</string>
+  <string name="error_bookmarks_import">加载书签时有错误发生</string>
+  <string name="sent_sms">发送sms：</string>
+  <string name="send_data">传送数据</string>
+  <string name="no_message_sent">没有信息发出</string>
+  <string name="distance">距离：</string>
+  <string name="start_">开始：</string>
+  <string name="end_">结束：</string>
+  <string name="database_queries">数据库查询</string>
+  <string name="demo_mode">调试模式</string>
+  <string name="select_database_query">选择数据库查询</string>
+  <string name="custom_sdcard_path">用户SD卡路径</string>
+  <string name="size">尺寸</string>
+  <string name="use_custom">用用户模式</string>
+  <string name="color">颜色</string>
+  <string name="satellites">卫星</string>
+  <string name="start">开始</string>
+  <string name="end">结束</string>
+  <string name="other">其他</string>
+  <string name="maps_manager">地图管理器</string>
+  <!--ellipsis character instead of three dots-->
+  <string name="project">项目</string>
+</resources>

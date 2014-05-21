@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="point_size">اندازه نقطه</string>
+  <string name="decimation_factor_default">0.000001</string>
+</resources>

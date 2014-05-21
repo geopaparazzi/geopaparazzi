@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<resources>
+  <string name="yes">Da</string>
+  <string name="no">Ne</string>
+  <string name="utctime">vreme:</string>
+  <string name="color_label">Boja</string>
+  <string name="gpslog_delete">Obrisati</string>
+  <string name="map_delete">Obrisati mapu</string>
+  <string name="gps_preferences">Gps opcije</string>
+  <string name="sms_preferences">Sms opcije</string>
+  <string name="text_take_a_gps_note">napravi belešku</string>
+  <string name="audio_recording_stop">zaustaviti</string>
+  <string name="message_sent">Poruka poslata</string>
+  <string name="last_note_deleted">Obrisati poslednju belešku</string>
+  <string name="text_gpson">gps uključen</string>
+  <string name="debug">OpenStreetMap opcije</string>
+  <!--added after 2.1.2-->
+  <string name="pick_phonenumber_label">...</string>
+  <!--added after 2.1.4-->
+  <!--added after 2.3.1-->
+  <!--added after 2.4.3-->
+  <!--added after 2.5.0-->
+  <string name="osm_preferences">OpenStreetMap opcije</string>
+  <string name="osm_user_label">Korisničko ime</string>
+  <string name="osm_password_label">Šifra</string>
+  <string name="geopapcloud_user_label">Korisničko ime</string>
+  <string name="geopapcloud_password_label">Šifra</string>
+  <string name="enter_a_name_for_the_new_project">Unesite naziv novog projekta</string>
+  <string name="chosen_project_exists">Projekat sa ovakvim nazivom  već postoji, molimo Vas pokušajte ponovo</string>
+  <string name="no_images">Bez fotografija</string>
+  <string name="with_images">Sa fotografijama</string>
+  <string name="distance">Rastojanje:</string>
+  <string name="start_">Početak:</string>
+  <string name="start">početak</string>
+  <string name="end">kraj</string>
+  <string name="other">ostalo</string>
+  <!--ellipsis character instead of three dots-->
+</resources>
