@@ -1,7 +1,7 @@
 [main]
 host = https://www.transifex.com
 type = ANDROID
-lang_map = pt_BR: pt-rBR
+lang_map = pt_BR: pt-rBR, zh_CN: zh-rCN
 
 [geopaparazzi.geopaparazzi-app-stringsxml]
 file_filter = geopaparazzi.app/res/values-<lang>/strings.xml
