@@ -144,121 +144,128 @@ public class CameraActivity extends Activity {
 
     protected void onActivityResult( int requestCode, int resultCode, Intent data ) {
         if (requestCode == CAMERA_PIC_REQUEST) {
-
             checkTakenPictureConsistency();
 
-            SensorsManager sensorsManager = SensorsManager.getInstance(this);
-            double azimuth = sensorsManager.getPictureAzimuth();
+            Intent intent = getIntent();
 
-            double latitude = lat;
-            double longitude = lon;
+            File imageFile = new File(imageFilePath);
+            if (imageFile.exists()) {
 
-            String latRef = "N";
-            String lonRef = "E";
-            if (lat < 0) {
-                latRef = "S";
-            }
-            if (lon < 0) {
-                lonRef = "W";
-            }
-            double exifLat = Math.abs(latitude);
-            double exifLon = Math.abs(longitude);
+                SensorsManager sensorsManager = SensorsManager.getInstance(this);
+                double azimuth = sensorsManager.getPictureAzimuth();
 
-            String latString = Utilities.degreeDecimal2ExifFormat(exifLat);
-            String lonString = Utilities.degreeDecimal2ExifFormat(exifLon);
-            String altimString = String.valueOf(elevation);
-            String azimuthString = String.valueOf((int) azimuth);
+                double latitude = lat;
+                double longitude = lon;
 
-            if (GPLog.LOG) {
-                GPLog.addLogEntry(this, null, null, "Exif Lat=" + exifLat + " -- Lon=" + exifLon + " -- Azim=" + azimuth
-                        + " -- Altim=" + altimString);
-            }
-
-            try {
-                ExifInterface exif = new ExifInterface(imageFilePath);
-
-                String latStringOld = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
-                String lonStringOld = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
-                String latRefStringOld = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF);
-                String lonRefStringOld = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF);
-                String dateOld = exif.getAttribute(ExifInterface.TAG_GPS_DATESTAMP);
-                String timeOld = exif.getAttribute(ExifInterface.TAG_GPS_TIMESTAMP);
-                String dateTimeOld = exif.getAttribute(ExifInterface.TAG_DATETIME);
-
-                Date date = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.parse(currentDatestring);
-
-                String exifDate = TimeUtilities.INSTANCE.EXIFFORMATTER.format(date);
-
-                String[] dateTimeSplit = exifDate.split("\\s+");
-                if (dateTimeOld == null || dateTimeOld.trim().length() <= 0) {
-                    exif.setAttribute(ExifInterface.TAG_DATETIME, exifDate);
+                String latRef = "N";
+                String lonRef = "E";
+                if (lat < 0) {
+                    latRef = "S";
                 }
-                if (dateOld == null || dateOld.trim().length() <= 0) {
-                    exif.setAttribute(ExifInterface.TAG_GPS_DATESTAMP, dateTimeSplit[0]);
+                if (lon < 0) {
+                    lonRef = "W";
                 }
-                if (timeOld == null || timeOld.trim().length() <= 0) {
-                    exif.setAttribute(ExifInterface.TAG_GPS_TIMESTAMP, dateTimeSplit[1]);
-                }
-                if (latStringOld == null || latRefStringOld == null || latStringOld.trim().length() <= 0) {
-                    exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, latString);
-                    exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, latRef);
-                }
-                if (lonStringOld == null || lonRefStringOld == null || lonStringOld.trim().length() <= 0) {
-                    exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, lonString);
-                    exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, lonRef);
-                }
-                String azz = (int) (azimuth * 100.0) + "/100";
-                String alt = (int) (elevation * 100.0) + "/100";
-                exif.setAttribute("GPSImgDirection", azz);
-                // exif.setAttribute("GPSImgDirectionRef", "M");
-                exif.setAttribute("GPSAltitude", alt);
-                // exif.setAttribute("GPSAltitudeRef", "0");
+                double exifLat = Math.abs(latitude);
+                double exifLon = Math.abs(longitude);
 
-                exif.saveAttributes();
+                String latString = Utilities.degreeDecimal2ExifFormat(exifLat);
+                String lonString = Utilities.degreeDecimal2ExifFormat(exifLon);
+                String altimString = String.valueOf(elevation);
+                String azimuthString = String.valueOf((int) azimuth);
 
-                // create props file
-                String propertiesFilePath = mediaFolder.getAbsolutePath() + File.separator + imagePropertiesName;
-                File propertiesFile = new File(propertiesFilePath);
-                BufferedWriter bW = null;
+                if (GPLog.LOG) {
+                    GPLog.addLogEntry(this, null, null, "Exif Lat=" + exifLat + " -- Lon=" + exifLon + " -- Azim=" + azimuth
+                            + " -- Altim=" + altimString);
+                }
+
                 try {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("latitude=");
-                    sb.append(String.valueOf(latitude));
-                    sb.append("\nlongitude=");
-                    sb.append(String.valueOf(longitude));
-                    sb.append("\nazimuth=");
-                    sb.append(azimuthString);
-                    sb.append("\naltim=");
-                    sb.append(altimString);
-                    sb.append("\nutctimestamp=");
-                    sb.append(currentDatestring).append("\n");
-                    bW = new BufferedWriter(new FileWriter(propertiesFile));
-                    bW.write(sb.toString());
-                } finally {
-                    bW.close();
+                    ExifInterface exif = new ExifInterface(imageFilePath);
+
+                    String latStringOld = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE);
+                    String lonStringOld = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE);
+                    String latRefStringOld = exif.getAttribute(ExifInterface.TAG_GPS_LATITUDE_REF);
+                    String lonRefStringOld = exif.getAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF);
+                    String dateOld = exif.getAttribute(ExifInterface.TAG_GPS_DATESTAMP);
+                    String timeOld = exif.getAttribute(ExifInterface.TAG_GPS_TIMESTAMP);
+                    String dateTimeOld = exif.getAttribute(ExifInterface.TAG_DATETIME);
+
+                    Date date = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.parse(currentDatestring);
+
+                    String exifDate = TimeUtilities.INSTANCE.EXIFFORMATTER.format(date);
+
+                    String[] dateTimeSplit = exifDate.split("\\s+");
+                    if (dateTimeOld == null || dateTimeOld.trim().length() <= 0) {
+                        exif.setAttribute(ExifInterface.TAG_DATETIME, exifDate);
+                    }
+                    if (dateOld == null || dateOld.trim().length() <= 0) {
+                        exif.setAttribute(ExifInterface.TAG_GPS_DATESTAMP, dateTimeSplit[0]);
+                    }
+                    if (timeOld == null || timeOld.trim().length() <= 0) {
+                        exif.setAttribute(ExifInterface.TAG_GPS_TIMESTAMP, dateTimeSplit[1]);
+                    }
+                    if (latStringOld == null || latRefStringOld == null || latStringOld.trim().length() <= 0) {
+                        exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE, latString);
+                        exif.setAttribute(ExifInterface.TAG_GPS_LATITUDE_REF, latRef);
+                    }
+                    if (lonStringOld == null || lonRefStringOld == null || lonStringOld.trim().length() <= 0) {
+                        exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, lonString);
+                        exif.setAttribute(ExifInterface.TAG_GPS_LONGITUDE_REF, lonRef);
+                    }
+                    String azz = (int) (azimuth * 100.0) + "/100";
+                    String alt = (int) (elevation * 100.0) + "/100";
+                    exif.setAttribute("GPSImgDirection", azz);
+                    // exif.setAttribute("GPSImgDirectionRef", "M");
+                    exif.setAttribute("GPSAltitude", alt);
+                    // exif.setAttribute("GPSAltitudeRef", "0");
+
+                    exif.saveAttributes();
+
+                    // create props file
+                    String propertiesFilePath = mediaFolder.getAbsolutePath() + File.separator + imagePropertiesName;
+                    File propertiesFile = new File(propertiesFilePath);
+                    BufferedWriter bW = null;
+                    try {
+                        StringBuilder sb = new StringBuilder();
+                        sb.append("latitude=");
+                        sb.append(String.valueOf(latitude));
+                        sb.append("\nlongitude=");
+                        sb.append(String.valueOf(longitude));
+                        sb.append("\nazimuth=");
+                        sb.append(azimuthString);
+                        sb.append("\naltim=");
+                        sb.append(altimString);
+                        sb.append("\nutctimestamp=");
+                        sb.append(currentDatestring).append("\n");
+                        bW = new BufferedWriter(new FileWriter(propertiesFile));
+                        bW.write(sb.toString());
+                    } finally {
+                        bW.close();
+                    }
+
+                    /*
+                     * add the image to the database
+                     */
+                    String relativeImageFilePath = mediaFolder.getName() + File.separator + imageName;
+
+                    intent.putExtra(LibraryConstants.PREFS_KEY_PATH, relativeImageFilePath);
+                    intent.putExtra(LibraryConstants.LATITUDE, latitude);
+                    intent.putExtra(LibraryConstants.LONGITUDE, longitude);
+                    intent.putExtra(LibraryConstants.ELEVATION, elevation);
+                    intent.putExtra(LibraryConstants.AZIMUTH, azimuth);
+                    intent.putExtra(LibraryConstants.OBJECT_EXISTS, true);
+                } catch (Exception e) {
+                    Utilities.messageDialog(this, "An error occurred while adding gps info to the picture.", null);
+                    e.printStackTrace();
                 }
-
-                /*
-                 * add the image to the database
-                 */
-                String relativeImageFilePath = mediaFolder.getName() + File.separator + imageName;
-
-                Intent intent = getIntent();
-                intent.putExtra(LibraryConstants.PREFS_KEY_PATH, relativeImageFilePath);
-                intent.putExtra(LibraryConstants.LATITUDE, latitude);
-                intent.putExtra(LibraryConstants.LONGITUDE, longitude);
-                intent.putExtra(LibraryConstants.ELEVATION, elevation);
-                intent.putExtra(LibraryConstants.AZIMUTH, azimuth);
-                setResult(Activity.RESULT_OK, intent);
-
-            } catch (Exception e) {
-                Utilities.messageDialog(this, "An error occurred while adding gps info to the picture.", null);
-                e.printStackTrace();
+            } else {
+                intent.putExtra(LibraryConstants.OBJECT_EXISTS, false);
             }
+
+            setResult(Activity.RESULT_OK, intent);
+
             finish();
         }
     }
-
     private void checkTakenPictureConsistency() {
         /*
          * Checking for duplicate images
@@ -288,7 +295,11 @@ public class CameraActivity extends Activity {
 
         File imageFile = new File(imageFilePath);
 
-        if (!imageFile.exists() && cameraTakenMediaFiles.size() > 0) {
+        boolean imageExists = imageFile.exists();
+        if (GPLog.LOG)
+            GPLog.addLogEntry("Image file: " + imageFilePath + " exists: " + imageExists);
+
+        if (!imageExists && cameraTakenMediaFiles.size() > 0) {
             // was not saved where I wanted, but the camera saved one in the media folder
             // try to copy over the one saved by the camera and then delete
             try {
