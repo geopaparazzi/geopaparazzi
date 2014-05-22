@@ -26,18 +26,12 @@ package eu.geopaparazzi.spatialite.util;
 public enum SpatialiteDatabaseType {
     // * <li>-1 == Unknown
     // * <li>10 == GeoPackage  [Raster]
-    // * <li>2 == spatialite 2 [found but not supported]
     // * <li>3 == spatialite 3 [Vector]
-    // * <li>4 == spatialite 4 [Vector]
+    // * <li>4 == spatialite 4 [Vector+RasterLite2]
     /**
      * Unknown database.
      */
     UNKNOWN("Unknown Database Type", -1),
-    /**
-     * spatialite 2.0 - 2.3 database.
-     * prevents IllegalArgumentException
-     */
-    SPATIALITE2("Spatialite 2", 2),
     /**
      * spatialite 2.4 and 3 database.
      */

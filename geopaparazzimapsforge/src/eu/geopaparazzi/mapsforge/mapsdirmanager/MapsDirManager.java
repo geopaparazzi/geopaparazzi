@@ -270,7 +270,6 @@ public class MapsDirManager {
                 String tableName = table.getTableName(); //$NON-NLS-1$//$NON-NLS-2$
                 if (!ignoreTileSource(tableName)) {
                     tilesBasedTables.add(table);
-        GPLog.androidLog(-1,"MapsDirManager handleTileSources["+table.getTableName()+"]");
                     if ((selectedSpatialTable == null) && (selectedTableName.equals(table.getDatabasePath()))) {
                         selectedSpatialTable = table;
                         selectedTileSourceType = table.getMapType();
@@ -306,7 +305,6 @@ public class MapsDirManager {
             File file = spatialTable.getDatabaseFile();
             File parentFolder = file.getParentFile();
             String absolutePath = parentFolder.getAbsolutePath();
-        GPLog.androidLog(-1,"MapsDirManager createTree["+spatialTable.getTableName()+"]");
             if (!parentPaths.contains(absolutePath))
                 parentPaths.add(absolutePath);
         }
@@ -331,7 +329,6 @@ public class MapsDirManager {
             File file = spatialTable.getDatabaseFile();
             File parentFolder = file.getParentFile();
             String absolutePath = parentFolder.getAbsolutePath();
-        GPLog.androidLog(-1,"MapsDirManager createTree["+spatialTable.getTableName()+"] ["+spatialTable.getMapType()+"]");
             List<String[]> list = folderPath2TablesDataMap.get(absolutePath);
             String[] data = new String[]{//
             spatialTable.getDatabasePath(),//

@@ -71,11 +71,20 @@ public class SourcesTreeListActivity extends Activity implements OnClickListener
         mbtilesToggleButton.setOnClickListener(this);
         mbtilesToggleButton.setTextOn(SpatialDataType.MBTILES.getTypeName());
         mbtilesToggleButton.setTextOff(SpatialDataType.MBTILES.getTypeName());
-        rasterLite2ToggleButton = (ToggleButton) findViewById(R.id.toggleRasterLite2Button);
-        rasterLite2ToggleButton.setChecked(true);
-        rasterLite2ToggleButton.setOnClickListener(this);
-        rasterLite2ToggleButton.setTextOn(SpatialDataType.RASTERLITE2.getTypeName());
-        rasterLite2ToggleButton.setTextOff(SpatialDataType.RASTERLITE2.getTypeName());
+        rasterLite2ToggleButton = (ToggleButton) findViewById(R.id.toggleRasterLite2Button);        
+        if (!eu.geopaparazzi.spatialite.util.DaoSpatialite.Rasterlite2Version_CPU.equals(""))
+        { // show this only if the driver is installed and active
+         rasterLite2ToggleButton.setChecked(true);
+         rasterLite2ToggleButton.setOnClickListener(this);
+         rasterLite2ToggleButton.setTextOn(SpatialDataType.RASTERLITE2.getTypeName());
+         rasterLite2ToggleButton.setTextOff(SpatialDataType.RASTERLITE2.getTypeName());
+        }
+        else
+        { // hide R.id.toggleRasterLite2Button ?
+         rasterLite2ToggleButton.setVisibility(View.GONE);
+         showRasterLite2=false;
+        }
+         
 
         // get the listview
         expListView = (ExpandableListView) findViewById(R.id.expandableSourceListView);
@@ -142,7 +151,8 @@ public class SourcesTreeListActivity extends Activity implements OnClickListener
         showMaps = mapToggleButton.isChecked();
         showMapurls = mapurlToggleButton.isChecked();
         showMbtiles = mbtilesToggleButton.isChecked();
-        showRasterLite2 = rasterLite2ToggleButton.isChecked();
+        if (!eu.geopaparazzi.spatialite.util.DaoSpatialite.Rasterlite2Version_CPU.equals(""))
+         showRasterLite2 = rasterLite2ToggleButton.isChecked();
         try {
             getData();
         } catch (Exception e) {

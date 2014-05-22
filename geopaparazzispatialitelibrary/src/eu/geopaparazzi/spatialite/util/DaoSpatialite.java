@@ -559,8 +559,8 @@ public class DaoSpatialite {
        sb_query.append(",title ASC");
        VECTOR_LAYERS_QUERY_ORDER = sb_query.toString();
        sb_query = new StringBuilder();
-       // if the SELECT RL2_LoadRaster(...) was not executed, 
-       // - a record may exist with 'statistics and extent=NULL': 
+       // if the SELECT RL2_LoadRaster(...) was not executed,
+       // - a record may exist with 'statistics and extent=NULL':
        // - this is an invalid record and must be ignored
        sb_query.append(" WHERE (statistics IS NOT NULL)");
        sb_query.append(" AND (extent_minx IS NOT NULL)");
@@ -582,8 +582,8 @@ public class DaoSpatialite {
        RASTER_COVERAGES_QUERY_EXTENT_LIST_V42 = sb_query.toString();
        RASTER_COVERAGES_QUERY_EXTENT_LIST_V42=RASTER_COVERAGES_QUERY_EXTENT_LIST_V42.replace("AS vector_data,","AS vector_data"); // remove
        sb_query = new StringBuilder();
-       // if the SELECT RL2_LoadRaster(...) was not executed, 
-       // - a record may exist with 'statistics and extent=NULL': 
+       // if the SELECT RL2_LoadRaster(...) was not executed,
+       // - a record may exist with 'statistics and extent=NULL':
        // - this is an invalid record and must be ignored
        sb_query.append(" WHERE (statistics IS NULL)");
        sb_query.append(" OR (extent_minx IS NULL)");
@@ -709,8 +709,8 @@ public class DaoSpatialite {
        GEOPACKAGE_QUERY_EXTENT_LIST_R10 = sb_query.toString();
        GEOPACKAGE_QUERY_EXTENT_LIST_R10=GEOPACKAGE_QUERY_EXTENT_LIST_R10.replace("AS vector_data,","AS vector_data"); // remove
        sb_query = new StringBuilder();
-      // if the SELECT RL2_LoadRaster(...) was not executed, 
-       // - a record may exist with 'statistics and extent=NULL': 
+      // if the SELECT RL2_LoadRaster(...) was not executed,
+       // - a record may exist with 'statistics and extent=NULL':
        // - this is an invalid record and must be ignored
        sb_query.append(" WHERE (last_change IS NULL)");
        sb_query.append(" OR (min_x IS NULL)");
@@ -1191,34 +1191,36 @@ public class DaoSpatialite {
      * <br>- Geos
      * <br>-- there is no Spatialite function to retrieve the Sqlite version
      * <br>-- the Has() functions do not work with spatialite 3.0.1
-     *
+     * - this must always be called when checkDatabaseTypeAndValidity runs the first time
      * @param database the db to use.
      * @param name a name for the log.
      * @return info of supported versions in JavaSqlite.
      */
     public static String getJavaSqliteDescription( Database database, String name ) {
-        String s_javasqlite_description = "";
-        try {
+        if (JavaSqliteDescription.equals(""))
+        {
+         try {
             // s_javasqlite_description = "javasqlite[" + getJavaSqliteVersion() + "],";
-            s_javasqlite_description = "sqlite[" + getSqliteVersion(database) + "],";
-            s_javasqlite_description += "spatialite[" + getSpatialiteVersion(database) + "],";
-            s_javasqlite_description += "proj4[" + getProj4Version(database) + "],";
-            s_javasqlite_description += "geos[" + getGeosVersion(database) + "],";
-            s_javasqlite_description += "spatialite_properties[" + getSpatialiteProperties(database) + "],";
-            s_javasqlite_description += "rasterlite2_properties[" + getRaster2Version(database) + "]]";
-        } catch (Exception e) {
-            if (Rasterlite2Version_CPU.equals(""))
-            { // This is not an error, Driver not compiled with RasterLite2
-             s_javasqlite_description += "rasterlite2_properties[none]]";
-            }            
-            if (!"4".equals(SpatialiteVersion.charAt(0)))
+            JavaSqliteDescription = "sqlite[" + getSqliteVersion(database) + "],";
+            JavaSqliteDescription += "spatialite[" + getspatialiteVersion(database) + "],";
+            JavaSqliteDescription += "proj4[" + getProj4Version(database) + "],";
+            JavaSqliteDescription += "geos[" + getGeosVersion(database) + "],";
+            JavaSqliteDescription += "spatialite_properties[" + getSpatialiteProperties(database) + "],";
+            JavaSqliteDescription += "rasterlite2_properties[" + getRaster2Version(database) + "]]";
+         } catch (Exception e) {
+            if (i_SpatialiteVersion > 3)
             {
-             s_javasqlite_description += "exception[? not a spatialite database, or spatialite < 4 ?]]";
-             GPLog.androidLog(4, "DaoSpatialite[" + name + "].getJavaSqliteDescription[" + s_javasqlite_description
+             JavaSqliteDescription += "rasterlite2_properties[none]]";
+            }
+            else
+            {
+             JavaSqliteDescription += "exception[? not a spatialite database, or spatialite < 4 ?]]";
+             GPLog.androidLog(4, "DaoSpatialite[" + name + "].getJavaSqliteDescription[" + JavaSqliteDescription
                     + "]", e);
             }
-        }
-        return s_javasqlite_description;
+         }
+        } 
+        return JavaSqliteDescription;
     }
      /**
      * Return SQLite version number as string.
@@ -1244,7 +1246,7 @@ public class DaoSpatialite {
     public static String getJavaSqliteVersion() {
         return "" + Constants.drv_minor;
     }
-    public static String SpatialiteVersion = "";
+    public static int i_SpatialiteVersion = 0;
     /**
      * Get the version of Spatialite.
      *
@@ -1252,14 +1254,14 @@ public class DaoSpatialite {
      * @return the version of Spatialite.
      * @throws Exception  if something goes wrong.
      */
-    public static String getSpatialiteVersion( Database database ) throws Exception {
+    public static String getspatialiteVersion( Database database ) throws Exception {
         Stmt stmt = database.prepare("SELECT spatialite_version();");
         try {
             if (stmt.step()) {
                 String value = stmt.column_string(0);
-                if (SpatialiteVersion.equals(""))
+                if (i_SpatialiteVersion == 0)
                 {
-                 SpatialiteVersion=value;
+                 i_SpatialiteVersion=Integer.parseInt(value.substring(0,1));
                 }
                 return value;
             }
@@ -1278,17 +1280,20 @@ public class DaoSpatialite {
      public static String Rasterlite2Version_CPU = "";
     /**
      * Get the version of Rasterlite2 with cpu-type.
-     *
+     * - used by: mapsforge.mapsdirmanager.sourcesview.SourcesTreeListActivity 
+     * -- to prevent RaterLite2 button being shown when empty
+     * note: this is returning the version number of the first static lib being compilrd into it
+     * - 2014-05-22: libpng 1.6.10
      * @param database the db to use.
      * @return the version of Spatialite.
      * @throws Exception  if something goes wrong.
      */
     public static String getRaster2Version( Database database ) throws Exception {
-        Stmt stmt = database.prepare("SELECT RL2_Version()||';'||RL2_Target_CPU();");
+        Stmt stmt = database.prepare("SELECT RL2_Version();");
         try {
             if (stmt.step()) {
                 String value = stmt.column_string(0);
-                if (JavaSqliteDescription.equals(""))
+                if (Rasterlite2Version_CPU.equals(""))
                 {
                  Rasterlite2Version_CPU=value;
                 }
@@ -1300,6 +1305,14 @@ public class DaoSpatialite {
         }
         return "";
     }
+
+    /**
+     * Return hasGeoPackage
+     * - can AutoGPKGStart() and AutoGPKGStop() be used
+     * -- VirtualGPKG
+     * --- needed to retrieve/update GPKG geometry tables as if they are spatialite tables
+     */
+     public static boolean hasGeoPackage = false;
 
     /**
      * Get the properties of Spatialite.
@@ -1324,6 +1337,16 @@ public class DaoSpatialite {
                 s_value += "HasGeosTrunk[" + stmt.column_int(6) + "],HasLwGeom[" + stmt.column_int(7) + "],HasLibXML2["
                         + stmt.column_int(8) + "],";
                 s_value += "HasEpsg[" + stmt.column_int(9) + "],HasFreeXL[" + stmt.column_int(10) + "]";
+            }
+        } finally {
+            stmt.close();
+        }
+        try { // since spatialite 4.2.0-rc1
+            stmt = database.prepare("SELECT HasGeoPackage(),spatialite_target_cpu();");
+            if (stmt.step()) {
+                if (stmt.column_int(0)==1)
+                 hasGeoPackage=true;
+                s_value += ",HasGeoPackage[" + stmt.column_int(0) + "],target_cpu[" + stmt.column_string(1) + "]";
             }
         } finally {
             stmt.close();
@@ -1380,7 +1403,7 @@ public class DaoSpatialite {
      * @return formatted version for map.key
      * @throws Exception  if something goes wrong.
      */
-    public static String getViewRowid( Database database , String table_name, SpatialiteDatabaseType databaseType ) throws Exception {
+    private static String getViewRowid( Database database , String table_name, SpatialiteDatabaseType databaseType ) throws Exception {
         String s_sql = "SELECT view_rowid,read_only FROM views_geometry_columns WHERE (view_name='"+table_name+"')";
         if (databaseType == SpatialiteDatabaseType.SPATIALITE3)
          s_sql = "SELECT view_rowid FROM views_geometry_columns WHERE (view_name='"+table_name+"')";
@@ -1420,7 +1443,7 @@ public class DaoSpatialite {
      * @return formatted string with 3rd field used in DaoSpatialite.checkDatabaseTypeAndValidity() [vector_extent]
      * @throws Exception  if something goes wrong.
      */
-    public static String SpatialiteRetrieveBounds( Database database, String table_name, String geometry_column) throws Exception {
+    public static String spatialiteRetrieveBounds( Database database, String table_name, String geometry_column) throws Exception {
         StringBuilder sb_query = new StringBuilder();
         String s_vector_extent="";
         // return the format used in DaoSpatialite.checkDatabaseTypeAndValidity()
@@ -1452,7 +1475,7 @@ public class DaoSpatialite {
             }
         }
         catch (jsqlite.Exception e_stmt) {
-          GPLog.androidLog(4, "DaoSpatialite:SpatialiteRetrieveBounds sql["+s_select_bounds+"] db[" + database.getFilename() + "]", e_stmt);
+          GPLog.androidLog(4, "DaoSpatialite:spatialiteRetrieveBounds sql["+s_select_bounds+"] db[" + database.getFilename() + "]", e_stmt);
         }
         finally {
             statement.close();
@@ -1468,14 +1491,14 @@ public class DaoSpatialite {
      * --- will abort attemts to recover if returns 0
      * --- this speeds up the loading by 50% in my case
      * VECTOR_LAYERS_QUERY_MODE=3 : about 5 seconds [before about 10 seconds]
-     * VECTOR_LAYERS_QUERY_MODE=0 : about 2 seconds 
+     * VECTOR_LAYERS_QUERY_MODE=0 : about 2 seconds
      * @param database the db to use.
      * @param table_name the table of the db to use.
      * @param geometry_column the geometry field of the table to use.
      * @return count of Geometries NOT NULL
      * @throws Exception  if something goes wrong.
      */
-    public static int SpatialiteCountGeometries( Database database, String table_name, String geometry_column,SpatialiteDatabaseType databaseType) throws Exception {
+    public static int spatialiteCountGeometries( Database database, String table_name, String geometry_column,SpatialiteDatabaseType databaseType) throws Exception {
         int  i_count=0;
         if ((table_name.equals("")) || (geometry_column.equals("")))
          return i_count;
@@ -1486,17 +1509,125 @@ public class DaoSpatialite {
             statement = database.prepare(s_CountGeometries);
             if (statement.step()) {
                 i_count = statement.column_int(0);
-                // GPLog.androidLog(-1,"DaoSpatialite:SpatialiteRecoverSpatialIndex["+databaseType+"] db["+database.getFilename()+"] sql["+s_CreateSpatialIndex+"]  result: i_spatialindex["+i_spatialindex+"] ");
+                // GPLog.androidLog(-1,"DaoSpatialite:spatialiteRecoverSpatialIndex["+databaseType+"] db["+database.getFilename()+"] sql["+s_CreateSpatialIndex+"]  result: i_spatialindex["+i_spatialindex+"] ");
                 return i_count;
             }
         }
         catch (jsqlite.Exception e_stmt) {
-          GPLog.androidLog(4, "DaoSpatialite:SpatialiteCountGeometries["+databaseType+"] sql["+s_CountGeometries+"] db[" + database.getFilename() + "]", e_stmt);
+          GPLog.androidLog(4, "DaoSpatialite:spatialiteCountGeometries["+databaseType+"] sql["+s_CountGeometries+"] db[" + database.getFilename() + "]", e_stmt);
         }
         finally {
             statement.close();
         }
         return i_count;
+    }
+    /**
+     * Retrieve rasterlite2 image of a given bound and size.
+     * - used by: SpatialiteUtilities.rl2_GetMapImageTile to retrieve tiles only
+     * https://github.com/geopaparazzi/Spatialite-Tasks-with-Sql-Scripts/wiki/RL2_GetMapImage
+     * @param sqlite_db Database connection to use
+     * @param sourceSrid the srid (of the n/s/e/w positions).
+     * @param destSrid the destination srid (of the rasterlite2 image).
+     * @param table (coverageName) the table to use.
+     * @param width of image in pixel.
+     * @param height of image in pixel.
+     * @param tileBounds [west,south,east,north] [minx, miny, maxx, maxy] bounds.
+     * @param styleName used in coverage. default: 'default'
+     * @param mimeType 'image/tiff' etc. default: 'image/png'
+     * @param bgColor html-syntax etc. default: '#ffffff'
+     * @param transparent 0 to 100 (?).
+     * @param quality 0-100 (for 'image/jpeg')
+     * @param reaspect 1 = adapt image width,height if needed based on given bounds
+     * @return the image data as byte[]
+     */
+    public static byte[] rl2_GetMapImage( Database sqlite_db,String sourceSrid, String destSrid, String coverageName, int width, int height, double[] tileBounds, String styleName, String mimeType, String bgColor, int transparent, int quality, int reaspect ) {
+        boolean doTransform = false;
+        if (!sourceSrid.equals(destSrid)) {
+            doTransform = true;
+        }
+        // sanity checks
+        if (styleName.equals(""))
+         styleName="default";
+        if (mimeType.equals(""))
+         mimeType="image/png";
+        if (bgColor.equals(""))
+         bgColor="#ffffff";
+        if ((transparent < 0) || (transparent > 100))
+         transparent=0;
+        if ((quality < 0) || (quality > 100))
+         quality=0;
+        if ((reaspect < 0) || (reaspect > 1))
+         reaspect=1; // adapt image width,height if needed based on given bounds [needed for tiles]
+        StringBuilder mbrSb = new StringBuilder();
+        if (doTransform)
+            mbrSb.append("ST_Transform(");
+        mbrSb.append("BuildMBR(");
+        mbrSb.append(tileBounds[0]);
+        mbrSb.append(",");
+        mbrSb.append(tileBounds[1]);
+        mbrSb.append(",");
+        mbrSb.append(tileBounds[2]);
+        mbrSb.append(",");
+        mbrSb.append(tileBounds[3]);
+        if (doTransform) {
+            mbrSb.append(",");
+            mbrSb.append(sourceSrid);
+            mbrSb.append("),");
+            mbrSb.append(destSrid);
+        }
+        mbrSb.append(")");
+        // SELECT RL2_GetMapImage('berlin_postgrenzen.1890',BuildMBR(20800.0,22000.0,24000.0,19600.0),1200,1920,'default','image/png','#ffffff',0,0,1);
+        String mbr = mbrSb.toString();
+        StringBuilder qSb = new StringBuilder();
+        qSb.append("SELECT RL2_GetMapImage('");
+        qSb.append(coverageName);
+        qSb.append("',");
+        qSb.append(mbr);
+        qSb.append(",");
+        qSb.append(Integer.toString(width));
+        qSb.append(",");
+        qSb.append(Integer.toString(height));
+        qSb.append(",'");
+        qSb.append(styleName);
+        qSb.append("','");
+        qSb.append(mimeType);
+        qSb.append("','");
+        qSb.append(bgColor);
+        qSb.append("',");
+        qSb.append(Integer.toString(transparent));
+        qSb.append(",");
+        qSb.append(Integer.toString(quality));
+        qSb.append(",");
+        qSb.append(Integer.toString(reaspect));
+        qSb.append(");");
+        String s_sql_command = qSb.toString();
+        // GPLog.androidLog(-1, "DaoSpatialite: rl2_GetMapImage sql[" + s_sql_command + "]");
+        Stmt this_stmt = null;
+        byte[] ba_image=null;
+        if (!Rasterlite2Version_CPU.equals(""))
+        { // only if rasterlite2 driver is active
+         try {
+             this_stmt = sqlite_db.prepare(s_sql_command);
+             if (this_stmt.step()) {
+               ba_image = this_stmt.column_bytes(0);
+            }
+         } catch (jsqlite.Exception e_stmt) {
+           /*
+             this internal lib error is not being caught and the application crashes
+             - the request was for a image 1/3 of the orignal size of 10607x8292 (3535x2764)
+             - big images should be avoided, since the application dies
+             'libc    : Fatal signal 11 (SIGSEGV) at 0x80c7a000 (code=1), thread 4216 (AsyncTask #2)'
+             '/data/app-lib/eu.hydrologis.geopaparazzi-2/libjsqlite.so (rl2_raster_decode+8248)'
+             'I WindowState: WIN DEATH: Window{41ee0100 u0 eu.hydrologis.geopaparazzi/eu.hydrologis.geopaparazzi.GeoPaparazziActivity}'
+           */
+           int i_rc = sqlite_db.last_error();
+           GPLog.androidLog(4, "DaoSpatialite: rl2_GetMapImage sql[" + s_sql_command + "] rc=" + i_rc + "]", e_stmt);
+         }
+         finally {
+           // this_stmt.close();
+         }
+        }
+        return ba_image;
     }
 
      /**
@@ -1509,7 +1640,7 @@ public class DaoSpatialite {
      * @return 0=invalid SpatialIndex ; 1=valid SpatialIndex
      * @throws Exception  if something goes wrong.
      */
-    public static int SpatialiteCreateSpatialIndex( Database database, String table_name, String geometry_column,SpatialiteDatabaseType databaseType) throws Exception {
+    private static int spatialiteCreateSpatialIndex( Database database, String table_name, String geometry_column,SpatialiteDatabaseType databaseType) throws Exception {
         int  i_spatialindex=0;
         if ((table_name.equals("")) || (geometry_column.equals("")))
          return i_spatialindex;
@@ -1520,12 +1651,12 @@ public class DaoSpatialite {
             statement = database.prepare(s_CreateSpatialIndex);
             if (statement.step()) {
                 i_spatialindex = statement.column_int(0);
-                // GPLog.androidLog(-1,"DaoSpatialite:SpatialiteRecoverSpatialIndex["+databaseType+"] db["+database.getFilename()+"] sql["+s_CreateSpatialIndex+"]  result: i_spatialindex["+i_spatialindex+"] ");
+                // GPLog.androidLog(-1,"DaoSpatialite:spatialiteRecoverSpatialIndex["+databaseType+"] db["+database.getFilename()+"] sql["+s_CreateSpatialIndex+"]  result: i_spatialindex["+i_spatialindex+"] ");
                 return i_spatialindex;
             }
         }
         catch (jsqlite.Exception e_stmt) {
-          GPLog.androidLog(4, "DaoSpatialite:SpatialiteCreateSpatialIndex["+databaseType+"] sql["+s_CreateSpatialIndex+"] db[" + database.getFilename() + "]", e_stmt);
+          GPLog.androidLog(4, "DaoSpatialite:spatialiteCreateSpatialIndex["+databaseType+"] sql["+s_CreateSpatialIndex+"] db[" + database.getFilename() + "]", e_stmt);
         }
         finally {
             statement.close();
@@ -1541,7 +1672,7 @@ public class DaoSpatialite {
      * @return 0=invalid SpatialIndex ; 1=valid SpatialIndex
      * @throws Exception  if something goes wrong.
      */
-    public static int SpatialiteVirtualSpatialIndex( Database database,SpatialiteDatabaseType databaseType ) throws Exception {
+    private static int spatialiteVirtualSpatialIndex( Database database,SpatialiteDatabaseType databaseType ) throws Exception {
         String s_VirtualSpatialIndex = "CREATE VIRTUAL TABLE SpatialIndex USING VirtualSpatialIndex();";
         int i_spatialindex=0;
         Stmt statement = null;
@@ -1555,7 +1686,7 @@ public class DaoSpatialite {
             }
         }
         catch (jsqlite.Exception e_stmt) {
-          GPLog.androidLog(4, "DaoSpatialite:SpatialiteVirtualSpatialIndex["+databaseType+"] sql["+s_VirtualSpatialIndex+"] db[" + database.getFilename() + "]", e_stmt);
+          GPLog.androidLog(4, "DaoSpatialite:spatialiteVirtualSpatialIndex["+databaseType+"] sql["+s_VirtualSpatialIndex+"] db[" + database.getFilename() + "]", e_stmt);
         }
         finally {
             statement.close();
@@ -1575,7 +1706,7 @@ public class DaoSpatialite {
      * @return 0=invalid SpatialIndex ; 1=valid SpatialIndex
      * @throws Exception  if something goes wrong.
      */
-    public static int SpatialiteRecoverSpatialIndex( Database database, String table_name, String geometry_column, int i_spatialindex,SpatialiteDatabaseType databaseType ) throws Exception {
+    private static int spatialiteRecoverSpatialIndex( Database database, String table_name, String geometry_column, int i_spatialindex,SpatialiteDatabaseType databaseType ) throws Exception {
         String s_RecoverSpatialIndex = "SELECT RecoverSpatialIndex("+i_spatialindex+");";
         if ((!table_name.equals("")) &&  (!geometry_column.equals("")))
          s_RecoverSpatialIndex = "SELECT RecoverSpatialIndex('" + table_name + "','" + geometry_column + "',"+i_spatialindex+");";
@@ -1585,12 +1716,12 @@ public class DaoSpatialite {
             statement = database.prepare(s_RecoverSpatialIndex);
             if (statement.step()) {
                 i_spatialindex = statement.column_int(0);
-                // GPLog.androidLog(-1,"DaoSpatialite:SpatialiteRecoverSpatialIndex["+databaseType+"] db["+database.getFilename()+"] sql["+s_RecoverSpatialIndex+"]  result: i_spatialindex["+i_spatialindex+"] ");
+                // GPLog.androidLog(-1,"DaoSpatialite:spatialiteRecoverSpatialIndex["+databaseType+"] db["+database.getFilename()+"] sql["+s_RecoverSpatialIndex+"]  result: i_spatialindex["+i_spatialindex+"] ");
                 return i_spatialindex;
             }
         }
         catch (jsqlite.Exception e_stmt) {
-          GPLog.androidLog(4, "DaoSpatialite:SpatialiteRecoverSpatialIndex["+databaseType+"] sql["+s_RecoverSpatialIndex+"] db[" + database.getFilename() + "]", e_stmt);
+          GPLog.androidLog(4, "DaoSpatialite:spatialiteRecoverSpatialIndex["+databaseType+"] sql["+s_RecoverSpatialIndex+"] db[" + database.getFilename() + "]", e_stmt);
         }
         finally {
             statement.close();
@@ -1610,11 +1741,11 @@ public class DaoSpatialite {
      * @return 0=invalid SpatialIndex ; 1=valid SpatialIndex
      * @throws Exception  if something goes wrong.
      */
-    public static int SpatialiteUpdateLayerStatistics( Database database, String table_name, String geometry_column, int i_spatialindex ,SpatialiteDatabaseType databaseType) throws Exception {
+    private static int spatialiteUpdateLayerStatistics( Database database, String table_name, String geometry_column, int i_spatialindex ,SpatialiteDatabaseType databaseType) throws Exception {
         if (i_spatialindex == 1)
         {
          try {
-          i_spatialindex=SpatialiteRecoverSpatialIndex(database,table_name,geometry_column,0,databaseType);
+          i_spatialindex=spatialiteRecoverSpatialIndex(database,table_name,geometry_column,0,databaseType);
          } finally {
          }
          if (i_spatialindex == 0)
@@ -1634,7 +1765,7 @@ public class DaoSpatialite {
             }
         }
         catch (jsqlite.Exception e_stmt) {
-          GPLog.androidLog(4, "DaoSpatialite:SpatialiteUpdateLayerStatistics["+databaseType+"] sql["+s_UpdateLayerStatistics+"] db[" + database.getFilename() + "]", e_stmt);
+          GPLog.androidLog(4, "DaoSpatialite:spatialiteUpdateLayerStatistics["+databaseType+"] sql["+s_UpdateLayerStatistics+"] db[" + database.getFilename() + "]", e_stmt);
         }
         finally {
             statement.close();
@@ -1653,14 +1784,14 @@ public class DaoSpatialite {
      * @return the retrieved bounds data, if possible (vector_extent).
      * @throws Exception  if something goes wrong.
      */
-    public static String getSpatialiteUpdateLayerStatistics( Database database, String table_name, String geometry_column, int i_spatialindex, SpatialiteDatabaseType databaseType ) throws Exception {
+    private static String getSpatialiteUpdateLayerStatistics( Database database, String table_name, String geometry_column, int i_spatialindex, SpatialiteDatabaseType databaseType ) throws Exception {
         String s_vector_extent="";
-         if (SpatialiteCountGeometries(database,table_name,geometry_column,databaseType) == 0)
+         if (spatialiteCountGeometries(database,table_name,geometry_column,databaseType) == 0)
           return s_vector_extent;
          if (i_spatialindex == 1)
          {
           try {
-           i_spatialindex=SpatialiteUpdateLayerStatistics(database,table_name,geometry_column,i_spatialindex,databaseType);
+           i_spatialindex=spatialiteUpdateLayerStatistics(database,table_name,geometry_column,i_spatialindex,databaseType);
           } finally {
           }
           if (i_spatialindex == 0)
@@ -1706,7 +1837,7 @@ public class DaoSpatialite {
           }
           if (s_vector_extent.equals(""))
           { // Last attempt, if this does not work - then the geometry must be considered invalid
-           s_vector_extent=SpatialiteRetrieveBounds(database,table_name,geometry_column);
+           s_vector_extent=spatialiteRetrieveBounds(database,table_name,geometry_column);
           }
          }
         return s_vector_extent;
@@ -1758,7 +1889,7 @@ public class DaoSpatialite {
             int i_spatial_index_enabled=Integer.parseInt(sa_string[3]); // should always be 1
             if ((i_spatial_index_enabled == 0) && (VECTOR_LAYERS_QUERY_MODE > 2))
             { // This should NOT be the default behavior, there may be a reason why no SpatialIndex was created
-             i_spatial_index_enabled=SpatialiteCreateSpatialIndex(database,table_name,geometry_column,databaseType);
+             i_spatial_index_enabled=spatialiteCreateSpatialIndex(database,table_name,geometry_column,databaseType);
             }
             vector_data=s_geometry_type+";"+s_coord_dimension+";"+s_srid+";"+i_spatial_index_enabled+";";
             int i_row_count=-1;
@@ -1794,7 +1925,7 @@ public class DaoSpatialite {
              }
              if ((VECTOR_LAYERS_QUERY_MODE == 1) && (i_spatialindex == 1))
              { // we do not try to query the dementions of faulty SpatialView's
-              vector_extent=SpatialiteRetrieveBounds(database,table_name,geometry_column);
+              vector_extent=spatialiteRetrieveBounds(database,table_name,geometry_column);
              }
              if (VECTOR_LAYERS_QUERY_MODE > 1)
              {
@@ -1872,7 +2003,7 @@ public class DaoSpatialite {
          //GPLog.androidLog(-1,"-I-> DaoSpatialite: getSpatialVectorMap_V3["+database.getFilename()+"] b_layers_statistics["+b_layers_statistics+"] ");
         if (!b_SpatialIndex)
         { // pre-spatilite 3.0 Database may not have this Virtual-Table, it must be created to query the geometrys using the SpatialIndex
-         i_spatialindex=SpatialiteVirtualSpatialIndex(database,SpatialiteDatabaseType.SPATIALITE3);
+         i_spatialindex=spatialiteVirtualSpatialIndex(database,SpatialiteDatabaseType.SPATIALITE3);
          if (i_spatialindex == 0)
          { // if this fails then we may have to consider this Database invalid
            return;
@@ -1880,8 +2011,8 @@ public class DaoSpatialite {
         }
         if (!b_layers_statistics)
         { // if layers_statistics does not exist a UpdateLayerStatistics() is needed for the whole Database
-         i_spatialindex=SpatialiteUpdateLayerStatistics(database,"","", i_spatialindex,SpatialiteDatabaseType.SPATIALITE3);
-         // GPLog.androidLog(-1,"-I-> DaoSpatialite: getSpatialVectorMap_V3["+database.getFilename()+"] SpatialiteUpdateLayerStatistics["+i_spatialindex+"] ");
+         i_spatialindex=spatialiteUpdateLayerStatistics(database,"","", i_spatialindex,SpatialiteDatabaseType.SPATIALITE3);
+         // GPLog.androidLog(-1,"-I-> DaoSpatialite: getSpatialVectorMap_V3["+database.getFilename()+"] spatialiteUpdateLayerStatistics["+i_spatialindex+"] ");
          if (i_spatialindex == 0)
          { // if this fails then we may have to consider this Database invalid
           return;
@@ -1895,7 +2026,7 @@ public class DaoSpatialite {
         String geometry_column="";
         String[] sa_string;
         // for pre-Spatialite : Views and Table must be done in 2 steps
-        // First Views
+        // First: Views
         Stmt statement = null;
         try
         {
@@ -1916,7 +2047,7 @@ public class DaoSpatialite {
           statement.close();
          }
         }
-        // Second Tables
+        // Second: Tables
         try
         {
          statement = database.prepare(LAYERS_QUERY_EXTENT_INVALID_V3);
@@ -2048,7 +2179,6 @@ public class DaoSpatialite {
           vector_data = statement.column_string(1);
           vector_extent="";
           vector_extent = statement.column_string(2);
-
           if (vector_extent != null)
           {
            spatialVectorMap.put(vector_key,vector_data+vector_extent);
@@ -2082,7 +2212,6 @@ public class DaoSpatialite {
      * @throws Exception  if something goes wrong.
      */
     private static void getSpatialVectorMap_V4( Database database, HashMap<String, String> spatialVectorMap , HashMap<String, String> spatialVectorMapErrors, boolean b_layers_statistics , boolean b_raster_coverages ) throws Exception {
-        int i_spatialindex=1;
         String vector_key=""; // term used when building the sql, used as map.key
         String vector_data=""; // term used when building the sql
         String vector_extent=""; // term used when building the sql
@@ -2149,7 +2278,7 @@ public class DaoSpatialite {
          }
         }
         if ((VECTOR_LAYERS_QUERY_MODE > 0) && (spatialVectorMapErrors.size() > 0))
-        { // if empty: there are nothing to correct [do befor RasterLite2 logic - there is no error control for that]
+        { // if empty: there are nothing to correct [do before RasterLite2 logic - there is no error control for that]
          getSpatialVectorMap_Errors(database, spatialVectorMap ,spatialVectorMapErrors, SpatialiteDatabaseType.SPATIALITE4 );
         }
         if ((!Rasterlite2Version_CPU.equals("")) && (b_raster_coverages))
@@ -2172,7 +2301,7 @@ public class DaoSpatialite {
           if (statement != null) {
            statement.close();
           }
-         }
+         }         
          try {
           statement = database.prepare(RASTER_COVERAGES_QUERY_EXTENT_VALID_V42);
           while( statement.step() ) {
@@ -2181,12 +2310,12 @@ public class DaoSpatialite {
            vector_extent="";
            vector_extent = statement.column_string(2);
            if (vector_extent != null)
-           {
+           { // mj10777: for some reason, this is being filled twice
             spatialVectorMap.put(vector_key,vector_data+vector_extent);
            }
            else
            { //should never happen
-            // GPLog.androidLog(-1, "DaoSpatialite: getSpatialVectorMap_V4 vector_key[" + vector_key + "] vector_data["+ vector_data+"] vector_extent["+  vector_extent + "] VECTOR_LAYERS_QUERY["+ VECTOR_LAYERS_QUERY_EXTENT_VALID_V4 + "]");
+            // GPLog.androidLog(-1, "DaoSpatialite: getSpatialVectorMap_V4 vector_key[" + vector_key + "] vector_data["+ vector_data+"] vector_extent["+  vector_extent + "] RASTER_COVERAGES_QUERY["+ RASTER_COVERAGES_QUERY_EXTENT_VALID_V42 + "]");
            }
           }
          }
@@ -2235,7 +2364,6 @@ public class DaoSpatialite {
         boolean b_layers_statistics = false;
         // boolean b_raster_columns = false;
         boolean b_gpkg_contents = false;
-
         String sqlCommand = "SELECT name,type,sql FROM sqlite_master WHERE ((type='table') OR (type='view')) ORDER BY type DESC,name ASC";
         String tableType = "";
         String sqlCreationString = "";
@@ -2314,12 +2442,7 @@ public class DaoSpatialite {
                     else
                      // if empty, nothing to load
                      return SpatialiteDatabaseType.UNKNOWN;
-            } else {
-             if ((b_geometry_columns)) { // Spatialite from 2.0 until 2.3
-                    // avoids IllegalArgumentException
-                    return SpatialiteDatabaseType.SPATIALITE2;
-                }
-              }
+            } 
            }
         }
         return SpatialiteDatabaseType.UNKNOWN;
@@ -2492,7 +2615,7 @@ public class DaoSpatialite {
                 // geometry-types
                 fieldNamesToTypeMap.put(name, sqlCreationString + ";" + tableType.toUpperCase(Locale.US));
             }
-        } 
+        }
         catch (jsqlite.Exception e_stmt) {
           GPLog.androidLog(4, "DaoSpatialite:collectTableFields["+tableName+"] sql["+s_sql_command+"] db[" + database.getFilename() + "]", e_stmt);
         }
