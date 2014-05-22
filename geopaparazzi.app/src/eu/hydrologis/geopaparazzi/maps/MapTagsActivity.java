@@ -290,23 +290,27 @@ public class MapTagsActivity extends Activity {
             break;
         }
         case (CAMERA_RETURN_CODE): {
-            String relativeImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
-            if (relativeImagePath != null) {
-                try {
-                    File imgFile = new File(ResourcesManager.getInstance(this).getMediaDir().getParentFile(), relativeImagePath);
-                    if (!imgFile.exists()) {
-                        return;
+            boolean imageExists = data.getBooleanExtra(LibraryConstants.OBJECT_EXISTS, false);
+            if (imageExists) {
+                String relativeImagePath = data.getStringExtra(LibraryConstants.PREFS_KEY_PATH);
+                if (relativeImagePath != null) {
+                    try {
+                        File imgFile = new File(ResourcesManager.getInstance(this).getMediaDir().getParentFile(),
+                                relativeImagePath);
+                        if (!imgFile.exists()) {
+                            return;
+                        }
+                        double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
+                        double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
+                        double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
+                        double azim = data.getDoubleExtra(LibraryConstants.AZIMUTH, 0.0);
+
+                        DaoImages.addImage(lon, lat, elev, azim, new Date(new java.util.Date().getTime()), "", relativeImagePath);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+
+                        Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
                     }
-                    double lat = data.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
-                    double lon = data.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
-                    double elev = data.getDoubleExtra(LibraryConstants.ELEVATION, 0.0);
-                    double azim = data.getDoubleExtra(LibraryConstants.AZIMUTH, 0.0);
-
-                    DaoImages.addImage(lon, lat, elev, azim, new Date(new java.util.Date().getTime()), "", relativeImagePath);
-                } catch (Exception e) {
-                    e.printStackTrace();
-
-                    Utilities.messageDialog(this, eu.geopaparazzi.library.R.string.notenonsaved, null);
                 }
             }
             break;
