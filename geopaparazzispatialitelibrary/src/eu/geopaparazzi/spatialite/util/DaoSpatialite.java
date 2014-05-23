@@ -646,7 +646,7 @@ public class DaoSpatialite {
        // ... to be continued ...
        sb_query.append(") WHEN data_type = 'tiles' THEN ("); // 1 of 1st field
        sb_query.append("SELECT min(zoom_level) FROM gpkg_tile_matrix WHERE table_name = ''||table_name||''"); // 1 of second field
-       sb_query.append(" END"); // 0 of second field
+       sb_query.append(") END"); // 0 of second field
        sb_query.append("||';'||CASE"); // 1 of second field
        sb_query.append(" WHEN data_type = 'features' THEN ("); // 1 of second field
        // ... and now for something completely different ...
@@ -1495,6 +1495,7 @@ public class DaoSpatialite {
      * @param database the db to use.
      * @param table_name the table of the db to use.
      * @param geometry_column the geometry field of the table to use.
+     * @param databaseType for Spatialite 3 and 4 specific Tasks
      * @return count of Geometries NOT NULL
      * @throws Exception  if something goes wrong.
      */
@@ -1630,6 +1631,78 @@ public class DaoSpatialite {
         return ba_image;
     }
 
+
+     /**
+     * Attemt to create VirtualGPKG wrapper for GeoPackage geometry tables.
+     * This function will inspect the DB layout, 
+     * - then automatically creating/refreshing a VirtualGPKG wrapper for each GPKG geometry table
+     * @param database the db to use.
+     * @param i_stop 0=AutoGPKGStart ; 1=AutoGPKGStop
+     * @param databaseType for Spatialite 3 and 4 specific Tasks
+     * @return returns amount of tables effected
+     * @throws Exception  if something goes wrong.
+     */
+    private static int spatialiteAutoGPKG( Database database, int i_stop,SpatialiteDatabaseType databaseType) throws Exception {
+        int  i_count_tables=0;
+       if (!hasGeoPackage)
+        return i_count_tables;
+       // SELECT CreateSpatialIndex('prov2008_s','Geometry');
+        String s_AutoGPKG = "SELECT AutoGPKGStart();";
+        if (i_stop == 1)
+         s_AutoGPKG = "SELECT AutoGPKGStop();";
+        Stmt statement = null;
+        try {
+            statement = database.prepare(s_AutoGPKG);
+            if (statement.step()) {
+                i_count_tables = statement.column_int(0);
+                // GPLog.androidLog(-1,"DaoSpatialite:spatialiteAutoGPKG["+databaseType+"] db["+database.getFilename()+"] sql["+s_AutoGPKG+"]  result: i_count_tables["+i_count_tables+"] ");
+                return i_count_tables;
+            }
+        }
+        catch (jsqlite.Exception e_stmt) {
+          GPLog.androidLog(4, "DaoSpatialite:spatialiteAutoGPKG["+databaseType+"] sql["+s_AutoGPKG+"] db[" + database.getFilename() + "]", e_stmt);
+        }
+        finally {
+            statement.close();
+        }
+        return i_count_tables;
+    }
+
+     /**
+     * Attemt to create GeoPackage-SpatialIndex for this geometry field.
+     * returned if the SpatialIndex was created (and therefore useable) or not
+     * - This should NOT be the default behavior, there may be a reason why no SpatialIndex was created
+     * @param database the db to use.
+     * @param table_name the table of the db to use.
+     * @param geometry_column the geometry field of the table to use.
+     * @param databaseType for Spatialite 3 and 4 specific Tasks
+     * @return 0=invalid SpatialIndex ; 1=valid SpatialIndex
+     * @throws Exception  if something goes wrong.
+     */
+    private static int spatialitegpkgAddSpatialIndex( Database database, String table_name, String geometry_column,SpatialiteDatabaseType databaseType) throws Exception {
+        int  i_spatialindex=0;
+        if ((table_name.equals("")) || (geometry_column.equals("")))
+         return i_spatialindex;
+       // SELECT CreateSpatialIndex('prov2008_s','Geometry');
+        String s_CreateSpatialIndex = "SELECT gpkgAddSpatialIndex('" + table_name + "','" + geometry_column + "');";
+        Stmt statement = null;
+        try {
+            statement = database.prepare(s_CreateSpatialIndex);
+            if (statement.step()) {
+                i_spatialindex = statement.column_int(0);
+                // GPLog.androidLog(-1,"DaoSpatialite:gpkgAddSpatialIndex["+databaseType+"] db["+database.getFilename()+"] sql["+s_CreateSpatialIndex+"]  result: i_spatialindex["+i_spatialindex+"] ");
+                return i_spatialindex;
+            }
+        }
+        catch (jsqlite.Exception e_stmt) {
+          GPLog.androidLog(4, "DaoSpatialite:gpkgAddSpatialIndex["+databaseType+"] sql["+s_CreateSpatialIndex+"] db[" + database.getFilename() + "]", e_stmt);
+        }
+        finally {
+            statement.close();
+        }
+        return i_spatialindex;
+    }
+
      /**
      * Attemt to create SpatialIndex for this geometry field.
      * returned if the SpatialIndex was created (and therefore useable) or not
@@ -1637,6 +1710,7 @@ public class DaoSpatialite {
      * @param database the db to use.
      * @param table_name the table of the db to use.
      * @param geometry_column the geometry field of the table to use.
+     * @param databaseType for Spatialite 3 and 4 specific Tasks
      * @return 0=invalid SpatialIndex ; 1=valid SpatialIndex
      * @throws Exception  if something goes wrong.
      */
@@ -2152,6 +2226,7 @@ public class DaoSpatialite {
         String vector_key=""; // term used when building the sql, used as map.key
         String vector_data=""; // term used when building the sql
         String vector_extent=""; // term used when building the sql
+        String s_vgpkg="vgpkg_";
         Stmt statement = null;
         try
         {
@@ -2180,12 +2255,48 @@ public class DaoSpatialite {
           vector_extent="";
           vector_extent = statement.column_string(2);
           if (vector_extent != null)
-          {
-           spatialVectorMap.put(vector_key,vector_data+vector_extent);
+          { // geonames;geometry;GeoPackage_features;Geonames;Data from http://www.geonames.org/, under Creative Commons Attribution 3.0 License;
+           boolean b_valid=true;
+           if (vector_key.indexOf("GeoPackage_features") != -1)
+           {
+            b_valid=false;
+            String[] sa_string = vector_key.split(";");
+            if (sa_string.length == 5)
+            {
+             String table_name=sa_string[0];
+             String geometry_column=sa_string[1];
+             String s_layer_type=sa_string[2];
+             String s_ROWID_PK=sa_string[3];
+             String s_view_read_only = sa_string[4];
+             HashMap<String, String> fieldNamesToTypeMap=collectTableFields(database,s_vgpkg+table_name);
+             if (fieldNamesToTypeMap.size() > 0)
+              b_valid=true; // vgpkg_table-name exists
+             else
+             { // only when AutoGPKGStart must be called
+              int i_count=spatialiteAutoGPKG(database,0,SpatialiteDatabaseType.GEOPACKAGE);
+              if (i_count > 0)
+              { // there must be at least 1 table
+               fieldNamesToTypeMap=collectTableFields(database,s_vgpkg+table_name);
+               if (fieldNamesToTypeMap.size() > 0)
+               { // vgpkg_table-name exists ; AutoGPKGStart worked              
+                b_valid=true;
+               }
+              }
+             }
+             if (b_valid)
+             { // return spatialite VirtualGPKG table-name instead of geopackage table-name
+              vector_key=s_vgpkg+table_name+";"+geometry_column+";"+s_layer_type+";"+s_view_read_only+";";
+             }
+            }
+           }
+           if (b_valid)
+           {
+            spatialVectorMap.put(vector_key,vector_data+vector_extent);
+           }
           }
           else
           { //should never happen
-            // GPLog.androidLog(-1, "DaoSpatialite: getGeoPackageMap_R10 vector_key[" + vector_key + "] vector_data["+ vector_data+"] vector_extent["+  vector_extent + "] GEOPACKAGE_QUERY_EXTENT_VALID_R10["+ GEOPACKAGE_QUERY_EXTENT_VALID_R10 + "]");
+           // GPLog.androidLog(-1, "DaoSpatialite:getGeoPackageMap_R10 -W-> vector_key[" + vector_key + "] vector_data["+ vector_data+"] vector_extent["+  vector_extent + "] GEOPACKAGE_QUERY_EXTENT_VALID_R10["+ GEOPACKAGE_QUERY_EXTENT_VALID_R10 + "]");
           }
          }
         }

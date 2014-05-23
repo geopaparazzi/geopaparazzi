@@ -163,7 +163,6 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
     public List<SpatialVectorTable> getSpatialVectorTables( boolean forceRead ) throws Exception {
         if (vectorTableList == null || forceRead) {
             vectorTableList = new ArrayList<SpatialVectorTable>();
-GPLog.androidLog(-1, "SpatialiteDatabaseHandler.getSpatialVectorTables[" + databaseFile.getAbsolutePath() + "]");
             checkAndCollectTables();
         }
         return vectorTableList;
