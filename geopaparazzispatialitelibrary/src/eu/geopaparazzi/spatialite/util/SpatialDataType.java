@@ -50,10 +50,14 @@ public enum SpatialDataType {
     MAPURL("mapurl", ".mapurl", 5, false),
     /**
      * A Rasterlite2 Image in a spatialite 4.2.0 database. 
+     * - avoids .db being read 2x
+     * - real spatialite .atlas files can also be read
      */
-    RASTERLITE2("RasterLite2", ".db", 6, true);
+    RASTERLITE2("RasterLite2", ".atlas", 6, true);
 
     private String name;
+    // extention must be unique 
+    // - otherwise will be read in twice in SpatialDatabasesManager.init
     private String extension;
     private int code;
     private boolean isSpatialiteBased;
