@@ -301,7 +301,7 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
                 // field is NOT a primary-key = '0;Data-Type'
                 String s_field_type = field_list.getValue();
                 // GPLog.androidLog(-1,"SpatialVectorTable.setFieldsList["+getName()+"] field_name["+s_field_name+"] field_type["+s_field_type+"]");
-                if ((s_field_type.indexOf("POINT") == -1) && (s_field_type.indexOf("LINESTRING") == -1)
+                if ((s_field_type.indexOf("BLOB") == -1) && (s_field_type.indexOf("POINT") == -1) && (s_field_type.indexOf("LINESTRING") == -1)
                         && (s_field_type.indexOf("POLYGON") == -1) && (s_field_type.indexOf("GEOMETRYCOLLECTION") == -1)) {
                     fields_list_non_vector.put(s_field_name, s_field_type);
                     labelList.add(s_field_name);

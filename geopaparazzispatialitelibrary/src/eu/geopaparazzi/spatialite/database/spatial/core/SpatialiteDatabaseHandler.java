@@ -480,6 +480,13 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
     public void intersectionToStringBBOX( String boundsSrid, SpatialVectorTable spatialTable, double n, double s, double e,
             double w, StringBuilder resultStringBuilder, String indentStr ) throws Exception {
         boolean doTransform = false;
+        String s_field_list="";
+        // List of non-blob fields
+        for (String s_field : spatialTable.getLabelList())  {
+          if (!s_field_list.equals(""))
+           s_field_list+=",";
+          s_field_list+=s_field;
+        }
         if (!spatialTable.getSrid().equals(boundsSrid)) {
             doTransform = true;
         }
@@ -487,7 +494,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
         {
             StringBuilder sbQ = new StringBuilder();
             sbQ.append("SELECT ");
-            sbQ.append("*");
+            sbQ.append(s_field_list);
             sbQ.append(" FROM ").append(spatialTable.getTableName());
             sbQ.append(" WHERE ST_Intersects(");
             if (doTransform)
@@ -519,10 +526,6 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                 int column_count = stmt.column_count();
                 for( int i = 0; i < column_count; i++ ) {
                     String cName = stmt.column_name(i);
-                    if (cName.equalsIgnoreCase(spatialTable.getGeomName())) {
-                        continue;
-                    }
-
                     String value = stmt.column_string(i);
                     resultStringBuilder.append(indentStr).append(cName).append(": ").append(value).append("\n");
                 }
