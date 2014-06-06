@@ -741,7 +741,8 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     continue;
                 }
                 if (!envelope.intersects(spatialTable.getTableEnvelope())) {
-                    continue;
+                 //  GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite -W-> geometry_envelope["+spatialTable.getTableEnvelope().toString()+"]: map_envelope["+envelope.toString()+"]");
+                   continue;
                 }
                 if (drawZoomLevel < style4Table.minZoom || drawZoomLevel > style4Table.maxZoom) {
                     // we do not draw outside of the zoom levels
@@ -930,6 +931,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 shape.fill(canvas, fill);
             if (stroke != null)
                 shape.draw(canvas, stroke);
+         //GPLog.androidLog(-1,"GeopaparazziOverlay.drawGeometry geometry_type["+s_geometry_type+"]: ["+i_geometry_type+"]");
         }
             break;
         case LINESTRING_XY:
