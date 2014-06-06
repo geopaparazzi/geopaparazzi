@@ -171,72 +171,12 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
 
     /**
 * Collects bounds and center as wgs84 4326.
-*
+* - 20140606: moves to SpatialiteUtilities
+* -- if no problems accur, this copy should be removed
 * @param srid the source srid.
 * @param centerCoordinate the coordinate array to fill with the center.
 * @param boundsCoordinates the coordinate array to fill with the bounds as [w,s,e,n].
 */
-    private void collectBoundsAndCenter( String srid, double[] centerCoordinate, double[] boundsCoordinates ) {
-        String centerQuery = "";
-        try {
-            Stmt centerStmt = null;
-            double bounds_west = boundsCoordinates[0];
-            double bounds_south = boundsCoordinates[1];
-            double bounds_east = boundsCoordinates[2];
-            double bounds_north = boundsCoordinates[3];
-            /*
-            SELECT ST_Transform(BuildMBR(14121.000000,187578.000000,467141.000000,48006927.000000,23030),4326);
-             SRID=4326;POLYGON((
-             -7.364919057793379 1.69098037889473,
-             -3.296335497384673 1.695910088657131,
-             -131.5972302288043 89.99882674963366,
-             -131.5972302288043 89.99882674963366,
-             -7.364919057793379 1.69098037889473))
-            SELECT MbrMaxX(ST_Transform(BuildMBR(14121.000000,187578.000000,467141.000000,48006927.000000,23030),4326));
-            -3.296335
-            */
-            try {
-                WKBReader wkbReader = new WKBReader();
-                StringBuilder centerBuilder = new StringBuilder();
-                centerBuilder.append("SELECT ST_AsBinary(CastToXY(ST_Transform(MakePoint(");
-                // centerBuilder.append("select AsText(ST_Transform(MakePoint(");
-                centerBuilder.append("(" + bounds_west + " + (" + bounds_east + " - " + bounds_west + ")/2), ");
-                centerBuilder.append("(" + bounds_south + " + (" + bounds_north + " - " + bounds_south + ")/2), ");
-                centerBuilder.append(srid);
-                centerBuilder.append("),4326))) AS Center,");
-                centerBuilder.append("ST_AsBinary(CastToXY(ST_Transform(BuildMBR(");
-                centerBuilder.append("" + bounds_west + "," + bounds_south + ", ");
-                centerBuilder.append("" + bounds_east + "," + bounds_north + ", ");
-                centerBuilder.append(srid);
-                centerBuilder.append("),4326))) AS Envelope ");
-                // centerBuilder.append("';");
-                centerQuery = centerBuilder.toString();
-                // GPLog.androidLog(-1, "SpatialiteDatabaseHandler.collectBoundsAndCenter Bounds[" + centerQuery + "]");
-                centerStmt = db_java.prepare(centerQuery);
-                if (centerStmt.step()) {
-                    byte[] geomBytes = centerStmt.column_bytes(0);
-                    Geometry geometry = wkbReader.read(geomBytes);
-                    Coordinate coordinate = geometry.getCoordinate();
-                    centerCoordinate[0] = coordinate.x;
-                    centerCoordinate[1] = coordinate.y;
-                    geomBytes = centerStmt.column_bytes(1);
-                    geometry = wkbReader.read(geomBytes);
-                    Envelope envelope = geometry.getEnvelopeInternal();
-                    boundsCoordinates[0] = envelope.getMinX();
-                    boundsCoordinates[1] = envelope.getMinY();
-                    boundsCoordinates[2] = envelope.getMaxX();
-                    boundsCoordinates[3] = envelope.getMaxY();
-                }
-            } catch (java.lang.Exception e) {
-                GPLog.androidLog(4, "SpatialiteDatabaseHandler.collectBoundsAndCenter Bounds[" + centerQuery + "]", e);
-            } finally {
-                if (centerStmt != null)
-                    centerStmt.close();
-            }
-        } catch (java.lang.Exception e) {
-            GPLog.androidLog(4, "SpatialiteDatabaseHandler[" + databasePath + "] sql[" + centerQuery + "]", e);
-        }
-    }
 
     private void collectBoundsAndCenter_original( String srid, double[] centerCoordinate, double[] boundsCoordinates ) {
         String centerQuery = "";
@@ -732,7 +672,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                } catch (NumberFormatException e) {
                }
                if (!s_srid.equals("4326")) { // Transform into wsg84 if needed
-                collectBoundsAndCenter(s_srid, centerCoordinate, boundsCoordinates);
+                SpatialiteUtilities.collectBoundsAndCenter(db_java,s_srid, centerCoordinate, boundsCoordinates);
                } else {
                 centerCoordinate[0] = boundsCoordinates[0] + (boundsCoordinates[2] - boundsCoordinates[0]) / 2;
                 centerCoordinate[1] = boundsCoordinates[1] + (boundsCoordinates[3] - boundsCoordinates[1]) / 2;
@@ -838,7 +778,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                } catch (NumberFormatException e) {
                }
                if (!s_srid.equals("4326")) { // Transform into wsg84 if needed
-                collectBoundsAndCenter(s_srid, centerCoordinate, boundsCoordinates);
+                SpatialiteUtilities.collectBoundsAndCenter(db_java,s_srid, centerCoordinate, boundsCoordinates);
                } else {
                 centerCoordinate[0] = boundsCoordinates[0] + (boundsCoordinates[2] - boundsCoordinates[0]) / 2;
                 centerCoordinate[1] = boundsCoordinates[1] + (boundsCoordinates[3] - boundsCoordinates[1]) / 2;

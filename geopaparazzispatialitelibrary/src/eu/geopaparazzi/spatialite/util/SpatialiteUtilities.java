@@ -26,6 +26,10 @@ import java.util.Map;
 import jsqlite.Database;
 import jsqlite.Stmt;
 import android.content.Context;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.WKBReader;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
@@ -376,6 +380,76 @@ public class SpatialiteUtilities {
         qSb.append(");");
         String q = qSb.toString();
         return q;
+    }
+
+    /**
+     * Collects bounds and center as wgs84 4326.
+     * - Note: use of getEnvelopeInternal() insures that, after transformation,
+     * -- possible false values are given - since the transformed result might not be square
+     * @param srid the source srid.
+     * @param centerCoordinate the coordinate array to fill with the center.
+     * @param boundsCoordinates the coordinate array to fill with the bounds as [w,s,e,n].
+    */
+    public static void collectBoundsAndCenter( Database sqlite_db, String srid, double[] centerCoordinate, double[] boundsCoordinates ) {
+        String centerQuery = "";
+        try {
+            Stmt centerStmt = null;
+            double bounds_west = boundsCoordinates[0];
+            double bounds_south = boundsCoordinates[1];
+            double bounds_east = boundsCoordinates[2];
+            double bounds_north = boundsCoordinates[3];
+            /*
+            SELECT ST_Transform(BuildMBR(14121.000000,187578.000000,467141.000000,48006927.000000,23030),4326);
+             SRID=4326;POLYGON((
+             -7.364919057793379 1.69098037889473,
+             -3.296335497384673 1.695910088657131,
+             -131.5972302288043 89.99882674963366,
+             -131.5972302288043 89.99882674963366,
+             -7.364919057793379 1.69098037889473))
+            SELECT MbrMaxX(ST_Transform(BuildMBR(14121.000000,187578.000000,467141.000000,48006927.000000,23030),4326));
+            -3.296335
+            */
+            try {
+                WKBReader wkbReader = new WKBReader();
+                StringBuilder centerBuilder = new StringBuilder();
+                centerBuilder.append("SELECT ST_AsBinary(CastToXY(ST_Transform(MakePoint(");
+                // centerBuilder.append("select AsText(ST_Transform(MakePoint(");
+                centerBuilder.append("(" + bounds_west + " + (" + bounds_east + " - " + bounds_west + ")/2), ");
+                centerBuilder.append("(" + bounds_south + " + (" + bounds_north + " - " + bounds_south + ")/2), ");
+                centerBuilder.append(srid);
+                centerBuilder.append("),4326))) AS Center,");
+                centerBuilder.append("ST_AsBinary(CastToXY(ST_Transform(BuildMBR(");
+                centerBuilder.append("" + bounds_west + "," + bounds_south + ", ");
+                centerBuilder.append("" + bounds_east + "," + bounds_north + ", ");
+                centerBuilder.append(srid);
+                centerBuilder.append("),4326))) AS Envelope ");
+                // centerBuilder.append("';");
+                centerQuery = centerBuilder.toString();
+                // GPLog.androidLog(-1, "SpatialiteUtilities.collectBoundsAndCenter Bounds[" + centerQuery + "]");
+                centerStmt = sqlite_db.prepare(centerQuery);
+                if (centerStmt.step()) {
+                    byte[] geomBytes = centerStmt.column_bytes(0);
+                    Geometry geometry = wkbReader.read(geomBytes);
+                    Coordinate coordinate = geometry.getCoordinate();
+                    centerCoordinate[0] = coordinate.x;
+                    centerCoordinate[1] = coordinate.y;
+                    geomBytes = centerStmt.column_bytes(1);
+                    geometry = wkbReader.read(geomBytes);
+                    Envelope envelope = geometry.getEnvelopeInternal();
+                    boundsCoordinates[0] = envelope.getMinX();
+                    boundsCoordinates[1] = envelope.getMinY();
+                    boundsCoordinates[2] = envelope.getMaxX();
+                    boundsCoordinates[3] = envelope.getMaxY();
+                }
+            } catch (java.lang.Exception e) {
+                GPLog.androidLog(4, "SpatialiteUtilities.collectBoundsAndCenter Bounds[" + centerQuery + "]", e);
+            } finally {
+                if (centerStmt != null)
+                    centerStmt.close();
+            }
+        } catch (java.lang.Exception e) {
+            GPLog.androidLog(4, "SpatialiteUtilities[" + sqlite_db.getFilename() + "] sql[" + centerQuery + "]", e);
+        }
     }
 
     /**
