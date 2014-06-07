@@ -1394,9 +1394,45 @@ public class DaoSpatialite {
         return "-";
     }
 
+     /**
+     * Attemt to count Triggers for a specific Table.
+     * returned the number of Triggers 
+     * - SpatialView read_only should be set to 0, if result is 0
+     * -- called when SpatialView read_only = 1 in getViewRowid
+     * --- a SpatialView with out INSERT,UPDATE and DELETE tringgers is invalid
+     * --- there is no way to check if these triggers really work correctly
+     * --- this the reason why writable Views can be VERY dangerous
+     * @param database the db to use.
+     * @param table_name the table of the db to use.
+     * @param databaseType for Spatialite 3 and 4 specific Tasks
+     * @return count of Triggers found
+     * @throws Exception  if something goes wrong.
+     */
+    private static int spatialiteCountTriggers( Database database, String table_name,SpatialiteDatabaseType databaseType) throws Exception {
+        int  i_count=0;
+        if (table_name.equals(""))
+         return i_count;
+        String s_CountTriggers = "SELECT count(name) FROM sqlite_master WHERE (type = 'trigger' AND tbl_name= '" + table_name + "');";
+        Stmt statement = null;
+        try {
+            statement = database.prepare(s_CountTriggers);
+            if (statement.step()) {
+                i_count = statement.column_int(0);
+                return i_count;
+            }
+        }
+        catch (jsqlite.Exception e_stmt) {
+          GPLog.androidLog(4, "DaoSpatialite:spatialiteCountTriggers["+databaseType+"] sql["+s_CountTriggers+"] db[" + database.getFilename() + "]", e_stmt);
+        }
+        finally {
+            statement.close();
+        }
+        return i_count;
+    }
+
     /**
      * Get the Primary key of the SpatialView and read_only parameter.
-     *
+     * - check if writable Views has at least 3 triggers, set to read only if not
      * @param database the db to use.
      * @param table_name the view of the db to use.
      * @param databaseType SPATIALITE4 for version of spatialite that have a 'read_only' field.
@@ -1417,7 +1453,16 @@ public class DaoSpatialite {
            ROWID_PK = statement.column_string(0);
            int i_read_only = 0;
            if ((databaseType == SpatialiteDatabaseType.SPATIALITE4) && (statement.column_count() > 1))
+           {
             i_read_only = statement.column_int(1);
+            if (i_read_only == 1)
+            { // it is not possible to check the validity of the triggers
+             if (spatialiteCountTriggers(database,table_name,databaseType) < 3)
+             { // there must be at least 3 triggers, the view CANNOT be writable
+              i_read_only=0;
+             }
+            }
+           }
            ROWID_PK=ROWID_PK+";"+i_read_only;
           //  GPLog.androidLog(-1, "DaoSpatialite:getViewRowid["+databaseType+"] ["+statement.column_count()+"] ROWID_PK["+ROWID_PK+"] sql["+s_sql+"] db[" + database.getFilename() + "]");
           }
@@ -1522,6 +1567,7 @@ public class DaoSpatialite {
         }
         return i_count;
     }
+
     /**
      * Retrieve rasterlite2 image of a given bound and size.
      * - used by: SpatialiteUtilities.rl2_GetMapImageTile to retrieve tiles only
