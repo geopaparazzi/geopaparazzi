@@ -297,10 +297,14 @@ public class SliderDrawView extends View {
         try {
             final SpatialDatabasesManager sdbManager = SpatialDatabasesManager.getInstance();
             List<SpatialVectorTable> spatialTables = sdbManager.getSpatialVectorTables(false);
-
+            double[] boundsCoordinates=new double[]{w,s,e,n};
             final List<SpatialVectorTable> visibleTables = new ArrayList<SpatialVectorTable>();
             for( SpatialVectorTable spatialTable : spatialTables ) {
-                if (spatialTable.getStyle().enabled == 0) {
+                if (spatialTable.getStyle().enabled == 0)  {
+                    continue;
+                }
+                // do not add tables that are out of range
+                if (!spatialTable.checkBounds(boundsCoordinates))  {
                     continue;
                 }
                 visibleTables.add(spatialTable);
@@ -338,18 +342,23 @@ public class SliderDrawView extends View {
                             for( SpatialVectorTable spatialTable : visibleTables ) {
                                 StringBuilder sbTmp = new StringBuilder();
                                 sdbManager.intersectionToString("4326", spatialTable, north, south, east, west, sbTmp, "\t");
-                                sb.append(spatialTable.getTableName()).append("\n");
-                                sb.append(sbTmp);
-                                sb.append("\n----------------------\n");
-
+                                if (sbTmp.length() > 0)
+                                { // do not add empty results
+                                 sb.append(spatialTable.getTableName()).append("\n");
+                                 sb.append(sbTmp);
+                                 sb.append("\n----------------------\n");
+                                }
                                 publishProgress(1);
                                 // Escape early if cancel() is called
                                 if (isCancelled())
                                     break;
                             }
                         }
-                        return sb.toString();
-                    } catch (Exception e) {
+                        if (sb.length() > 0)
+                         return sb.toString();
+                        else
+                         return "no results";
+                    } catch (Exception e) { 
                         return "ERROR: " + e.getLocalizedMessage();
                     }
 

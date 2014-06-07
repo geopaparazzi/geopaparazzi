@@ -108,13 +108,13 @@ public class SpatialDatabasesManager {
                                 sdb = new MbtilesDatabaseHandler(currentFile.getAbsolutePath(), null);
                             } else {
                                 sdb = new SpatialiteDatabaseHandler(currentFile.getAbsolutePath());
-                            }
-                            // GPLog.androidLog(-1,"SpatialDatabasesManager["+i+"]["+sa_extentions[i]+"]: init["+this_file.getAbsolutePath()+"] ");
+                            }                            
                             if (sdb.isValid()) {
-                                tmpSpatialdbHandlers.add(sdb);
+                             // GPLog.androidLog(-1,"SpatialDatabasesManager["+extension+"]: init["+currentFile.getAbsolutePath()+"] ");
+                             tmpSpatialdbHandlers.add(sdb);
                             }
                         } catch (IOException e) {
-                            GPLog.error(this, "Error", e); //$NON-NLS-1$
+                            GPLog.error(this, "Error [SpatialDatabasesManager.init]", e); //$NON-NLS-1$
                         }
                     }
                     if (name.equals(ResourcesManager.NO_MEDIA)) {
@@ -226,7 +226,7 @@ public class SpatialDatabasesManager {
                 }
             } catch (java.lang.Exception e) {
                 // ignore the handler and try to go on
-                GPLog.error(this, "Error", e); //$NON-NLS-1$
+                GPLog.error(this, "Error [SpatialDatabasesManager.getSpatialRasterTables]", e); //$NON-NLS-1$
             }
         }
         return tables;

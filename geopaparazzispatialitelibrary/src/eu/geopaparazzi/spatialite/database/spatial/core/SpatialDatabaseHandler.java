@@ -320,7 +320,7 @@ public abstract class SpatialDatabaseHandler {
      * Get the spatial raster tables from the database.
      *
      * @param forceRead force a clean read from the db instead of using cached.
-     * @return the list of {@link SpatialVectorTable}s.
+     * @return the list of {@link SpatialRasterTable}s.
      * @throws Exception  if something goes wrong.
      */
     public abstract List<SpatialRasterTable> getSpatialRasterTables( boolean forceRead ) throws Exception;
@@ -332,6 +332,16 @@ public abstract class SpatialDatabaseHandler {
     * @return the tile image bytes.
     */
     public abstract byte[] getRasterTile( String query );
+
+    /**
+    * Fetch the rasterlite2 tile in bytes for a given RaterLite2Table with bounds.
+    *
+    * @param rasterTable the {@link SpatialRasterTable}.
+    * @param tileBounds [west,south,east,north] [minx, miny, maxx, maxy] bounds.
+    * @param i_tile_size default 256 [Tile.TILE_SIZE].
+    * @return the tile image bytes.
+    */
+    public abstract byte[] getRasterTileBounds( SpatialTable spatialTable,double[] tileBounds, int i_tile_size );
 
     /**
      * Get the table of the supplied bounds.

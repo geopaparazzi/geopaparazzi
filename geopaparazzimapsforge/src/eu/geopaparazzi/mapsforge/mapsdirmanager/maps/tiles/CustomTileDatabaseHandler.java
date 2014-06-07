@@ -139,7 +139,11 @@ public class CustomTileDatabaseHandler extends SpatialDatabaseHandler {
             customTileDownloader.cleanup();
         }
     }
-
+    @Override
+    public byte[] getRasterTileBounds(SpatialTable spatialTable,double[] tileBounds, int i_tile_size)  {
+        byte[] tileAsBytes = null;
+        return tileAsBytes;
+    }
     public byte[] getRasterTile( String query ) {
         throw new RuntimeException("should not be called");
     }

@@ -455,6 +455,7 @@ public class MapsDirManager {
                     break;
                 case MBTILES:
                 case GPKG:
+                case RASTERLITE2:
                 case SQLITE: {
                     SpatialRasterTable selected_table = SpatialDatabasesManager.getInstance().getRasterTableByName(
                             selectedTableName);

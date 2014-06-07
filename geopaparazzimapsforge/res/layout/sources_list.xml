@@ -37,6 +37,14 @@
             android:layout_weight="1"
             android:textOff="mbtiles"
             android:textOn="mbtiles" />
+
+        <ToggleButton
+            android:id="@+id/toggleRasterLite2Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textOff="rasterlite2"
+            android:textOn="rasterlite2" />
     </LinearLayout>
 
     <ExpandableListView

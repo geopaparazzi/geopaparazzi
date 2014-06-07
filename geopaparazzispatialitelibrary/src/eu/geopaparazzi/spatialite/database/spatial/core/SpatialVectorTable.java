@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import android.content.Context;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
@@ -47,7 +48,6 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
     private final int geomType;
 
     private Style style;
-
     private String geometryTypeDescription = "geometry";
 
     private boolean checkDone = false;
@@ -71,14 +71,18 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
     private String labelField = "";
     // list of possible primary keys - for more that one: seperated with ';'
     private String primaryKeyFields = "";
+    // SpatialTable=always ROWID ; SpatialView: can also be ROWID - but something else
+    private String ROWID_PK="ROWID";
+    // SpatialTable=-1 ; SpatialView: read_only=0 ; writable=1
+    private int view_read_only=-1;
     private String uniqueNameBasedOnDbFilePath = "";
     // private String uniqueNameBasedOnDbFileName = "";
 
     /**
      * Constructor.
-     * 
+     *
      * @param databasePath the database file the table belongs to.
-     * @param tableName the name of the table to use. 
+     * @param tableName the name of the table to use.
      * @param geometryColumn the name of the geometry column.
      * @param geomType the geometry type as off {@link GeometryType}.
      * @param srid the srid code.
@@ -125,7 +129,8 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
                 uniqueNameBasedOnDbFilePath = sb.toString();
 
             } else {
-                throw new RuntimeException();
+             uniqueNameBasedOnDbFilePath = databasePath + SEP + tableName + SEP + geometryColumn;
+                throw new RuntimeException("SpatialVectorTable.createUniqueNames mapsPath["+mapsPath+"] ["+uniqueNameBasedOnDbFilePath+"]");
             }
         } catch (Exception e) {
             // ignore and use absolute path
@@ -135,7 +140,7 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
 
     /**
       * Return geometryTypeDescription
-      *
+      * SpatialView or SpatialTable
       * @return the geometryTypeDescription
       */
     public String getGeometryTypeDescription() {
@@ -151,9 +156,9 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
 
     /**
       * Unique name for the spatial table.
-      * 
+      *
       * <p><b>This is the one that should be used for the properties table (name).</b>
-      * 
+      *
       * <ul>
       * <li>- needed to identify one specfic field inside the whole Maps-Directory
       * <li>--- Maps-Directory:  '/storage/emulated/0/maps/'
@@ -190,8 +195,8 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
 
     /**
      * Defines if the layer is enabled.
-     * 
-     * @return 1 is enabled. 
+     *
+     * @return 1 is enabled.
      */
     public int isTableEnabled() {
         return style.enabled;
@@ -199,7 +204,7 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
 
     /**
      * Getter for the style.
-     * 
+     *
      * @return the style of this table.
      */
     public Style getStyle() {
@@ -208,7 +213,7 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
 
     /**
       * Returns a list of non-geometry fields of this table.
-      * 
+      *
      * @return list of field names.
       */
     public List<String> getLabelList() {
@@ -217,9 +222,9 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
 
     /**
       * Returns Primary Key Fields
-      * 
+      *
       * <p>- separated with ';' when more than one
-      * 
+      *
       * @return primary key fields.
       */
     public String getPrimaryKeyFields() {
@@ -227,10 +232,21 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
     }
 
     /**
+      * Returns Primary Key Field or ROWID for tables
+      *
+      * <p>- used in SpatialiteUtilities.buildGeometriesInBoundsQuery
+      *
+      * @return primary key field used as ROWID.
+      */
+    public String getROWID() {
+        return ROWID_PK;
+    }
+
+    /**
       * Returns selected label field of this table
-      * 
+      *
       * <p>- to help retrieve the value for a label
-      * 
+      *
      * @return the label field.
       */
     public String getLabelField() {
@@ -239,10 +255,10 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
 
     /**
       * Set selected label field of this table
-      * 
+      *
       * <p>- as a result of a ComboBox selection
       * <p>- to help retrieve the value for a label
-      * 
+      *
      * @param labelField the labe field to use.
       */
     public void setLabelField( String labelField ) {
@@ -251,7 +267,7 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
 
     /**
       * Set Fields map of table
-      * 
+      *
       * <ul>
       * <li>- a second fields list will be created from non-vector Fields
       * <li>-- fields_list_non_vector [with name,type]
@@ -260,8 +276,9 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
       * <li>-- if none are found, first field
       * </ul>
      * @param fieldName2TypeMap the fields map to set.
+     * @param s_ROWID_PK the field to replace the default ROWID when SpatialView.
       */
-    public void setFieldsList( HashMap<String, String> fieldName2TypeMap ) {
+    public void setFieldsList( HashMap<String, String> fieldName2TypeMap, String s_ROWID_PK,int i_view_read_only ) {
         this.fieldName2TypeMap = fieldName2TypeMap;
         labelField = "";
         String s_label_field_alt = "";
@@ -284,7 +301,7 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
                 // field is NOT a primary-key = '0;Data-Type'
                 String s_field_type = field_list.getValue();
                 // GPLog.androidLog(-1,"SpatialVectorTable.setFieldsList["+getName()+"] field_name["+s_field_name+"] field_type["+s_field_type+"]");
-                if ((s_field_type.indexOf("POINT") == -1) && (s_field_type.indexOf("LINESTRING") == -1)
+                if ((s_field_type.indexOf("BLOB") == -1) && (s_field_type.indexOf("POINT") == -1) && (s_field_type.indexOf("LINESTRING") == -1)
                         && (s_field_type.indexOf("POLYGON") == -1) && (s_field_type.indexOf("GEOMETRYCOLLECTION") == -1)) {
                     fields_list_non_vector.put(s_field_name, s_field_type);
                     labelList.add(s_field_name);
@@ -308,7 +325,15 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
                 // if no charater field was found, set first field as default
                 labelField = s_label_field_alt;
             }
+            setLabelField(labelField);
             // GPLog.androidLog(-1,"SpatialVectorTable.setFieldsList["+getName()+"] label_list["+label_list.size()+"] fields_list_non_vector["+fields_list_non_vector.size()+"] fields_list["+this.fields_list.size()+"]  selected_name["+s_label_field+"] field_type["+s_primary_key_fields+"]");
+        }
+        // GPLog.androidLog(-1,"SpatialVectorTable.setFieldsList s_ROWID_PK["+s_ROWID_PK+"] view_read_only["+i_view_read_only +"] primaryKeyFields["+primaryKeyFields+"]");
+        if ((i_view_read_only == 0) || (i_view_read_only == 1))
+         view_read_only=i_view_read_only; // -1=SpatialTable otherwise SpatialView
+        if ((!s_ROWID_PK.equals("")) && (s_ROWID_PK.indexOf("ROWID") == -1))
+        {
+         ROWID_PK=s_ROWID_PK;
         }
     }
 

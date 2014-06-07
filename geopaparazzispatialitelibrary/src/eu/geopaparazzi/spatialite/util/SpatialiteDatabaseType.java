@@ -19,17 +19,21 @@ package eu.geopaparazzi.spatialite.util;
 
 /**
  * Spatialite database types with descriptions and codes.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
 public enum SpatialiteDatabaseType {
+    // * <li>-1 == Unknown
+    // * <li>10 == GeoPackage  [Raster]
+    // * <li>3 == spatialite 3 [Vector]
+    // * <li>4 == spatialite 4 [Vector+RasterLite2]
     /**
      * Unknown database.
      */
     UNKNOWN("Unknown Database Type", -1),
     /**
-     * spatialite 3 database.
+     * spatialite 2.4 and 3 database.
      */
     SPATIALITE3("Spatialite 3", 3),
     /**
@@ -37,7 +41,7 @@ public enum SpatialiteDatabaseType {
      */
     SPATIALITE4("Spatialite 4", 4),
     /**
-     * spatialite 4 database.
+     * GeoPackage database.
      */
     GEOPACKAGE("GeoPackage", 10);
 
@@ -45,7 +49,7 @@ public enum SpatialiteDatabaseType {
     private int code;
 
     /**
-     * @param name a name for the db type. 
+     * @param name a name for the db type.
      * @param code a code for the db type.
      */
     private SpatialiteDatabaseType( String name, int code ) {
@@ -55,7 +59,7 @@ public enum SpatialiteDatabaseType {
 
     /**
      * Get the type for a given code.
-     * 
+     *
      * @param code the code.
      * @return the data type.
      */
@@ -70,7 +74,7 @@ public enum SpatialiteDatabaseType {
 
     /**
      * Get the type for a given name.
-     * 
+     *
      * @param name the name.
      * @return the data type.
      */
@@ -85,7 +89,7 @@ public enum SpatialiteDatabaseType {
 
     /**
      * Get the code for a given name.
-     * 
+     *
      * @param name the name.
      * @return the code.
      */
