@@ -102,6 +102,16 @@
             android:title="@string/high_density_display" >
         </CheckBoxPreference>
     </PreferenceScreen>
+    <PreferenceScreen
+        android:order="40"
+        android:title="@string/spatialite_preferences" >
+        <CheckBoxPreference
+            android:key="PREFS_KEY_SPATIALITE_RECOVERY_MODE"
+            android:order="41"
+            android:title="@string/spatialite_recovery_mode"
+            android:summary="@string/spatialite_recover_mode_tooltip" >
+        </CheckBoxPreference>
+    </PreferenceScreen>
 
     <eu.hydrologis.geopaparazzi.preferences.CustomSdcardPathPreference
         android:defaultValue=""

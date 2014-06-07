@@ -30,6 +30,11 @@ public interface SpatialiteLibraryConstants {
     public static final String PREFS_KEY_TEXT = "PREFS_KEY_TEXT"; //$NON-NLS-1$
 
     /**
+     * Key used to define the spatialite recovery mode.
+     */
+    public static final String PREFS_KEY_SPATIALITE_RECOVERY_MODE = "PREFS_KEY_SPATIALITE_RECOVERY_MODE"; //$NON-NLS-1$
+
+    /**
      * Key used to pass a lat temporarily through bundles. 
      */
     public static final String LATITUDE = "LATITUDE"; //$NON-NLS-1$

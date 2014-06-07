@@ -227,4 +227,7 @@
     <string name="service_name_propmt">Enter a name for the service. If left empty, the name will be taken from the service.</string>
     <string name="info">INFO</string>
     <string name="calculate_length">Calculate length...</string>
+    <string name="spatialite_preferences">Spatialite Preferences</string>
+    <string name="spatialite_recovery_mode">Spatialite Recovery Mode</string>
+    <string name="spatialite_recover_mode_tooltip">If on, on next startup an attempt will be made to correct faulty tables.</string>
 </resources>
