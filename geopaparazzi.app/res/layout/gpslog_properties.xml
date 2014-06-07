@@ -190,16 +190,14 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/main_text_color" />
 
-        <Button
+        <ImageButton
             android:id="@+id/gpslog_refreshLogLength"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/trackLength_label"
             android:layout_alignBottom="@+id/trackLength_label"
             android:layout_alignParentRight="true"
-            android:background="@drawable/button_background_drawable"
+            android:background="@drawable/ic_navigation_refresh"
             android:padding="@dimen/button_indent"
-            android:text="@string/gpslog_updateLogLength"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/main_text_color" />
 

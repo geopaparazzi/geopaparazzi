@@ -33,10 +33,12 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.StringAsyncTask;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.chart.ProfileChartActivity;
@@ -122,17 +124,32 @@ public class GpsDataPropertiesActivity extends Activity {
             trackLengthTextView.setText(lengthText + " " + lengthm + "m"); //$NON-NLS-1$ //$NON-NLS-2$
 
             // button to update the log (track) length field
-            final Button refreshLogLenButton = (Button) findViewById(R.id.gpslog_refreshLogLength);
+            final ImageButton refreshLogLenButton = (ImageButton) findViewById(R.id.gpslog_refreshLogLength);
             refreshLogLenButton.setOnClickListener(new Button.OnClickListener(){
                 public void onClick( View v ) {
-                    long logID = item.getLogID();
-                    try {
-                        newLengthm = DaoGpsLog.updateLogLength(logID);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    String newLen = Long.toString(Math.round(newLengthm));
-                    trackLengthTextView.setText(lengthText + " " + newLen + "m"); //$NON-NLS-1$ //$NON-NLS-2$
+                    final long logID = item.getLogID();
+                    @SuppressWarnings("nls")
+                    StringAsyncTask task = new StringAsyncTask(GpsDataPropertiesActivity.this){
+                        @Override
+                        protected void doUiPostWork( String response ) {
+                            trackLengthTextView.setText(response);
+                            dispose();
+                        }
+                        @Override
+                        protected String doBackgroundWork() {
+                            try {
+                                newLengthm = DaoGpsLog.updateLogLength(logID);
+                            } catch (IOException e) {
+                                GPLog.error(GpsDataPropertiesActivity.this, "ERROR", e);
+                                return "ERROR";
+                            }
+                            String newLen = Long.toString(Math.round(newLengthm));
+                            return lengthText + " " + newLen + "m";
+                        }
+                    };
+                    task.startProgressDialog(getString(R.string.info), getString(R.string.calculate_length), false, null);
+                    task.execute();
+
                 }
             });
 
