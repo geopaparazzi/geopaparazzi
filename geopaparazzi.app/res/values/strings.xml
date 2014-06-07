@@ -230,4 +230,7 @@
     <string name="spatialite_preferences">Spatialite Preferences</string>
     <string name="spatialite_recovery_mode">Spatialite Recovery Mode</string>
     <string name="spatialite_recover_mode_tooltip">If on, on next startup an attempt will be made to correct faulty tables.</string>
+    <string name="map">Map</string>
+    <string name="name">name</string>
+    <string name="bounds">bounds</string>
 </resources>

@@ -43,6 +43,8 @@ import eu.geopaparazzi.library.sensors.SensorsManager;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialTable;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.actionbar.ActionItem;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.actionbar.QuickAction;
@@ -78,6 +80,9 @@ public class ActionBar {
     private int[] lastGpsStatusExtras;
     private long lastGpsPositiontime;
     private GpsLoggingStatus lastGpsLoggingStatus;
+    private String mapString;
+    private String nameString;
+    private String boundsString;
 
     private ActionBar( View actionBarView, SensorsManager sensorsManager ) {
         this.actionBarView = actionBarView;
@@ -142,6 +147,9 @@ public class ActionBar {
         satellitesString = context.getString(R.string.satellites);
         projectString = context.getString(R.string.project);
         gpsStatusString = context.getString(R.string.gps_status);
+        mapString = context.getString(R.string.map);
+        nameString = context.getString(R.string.name);
+        boundsString = context.getString(R.string.bounds);
     }
 
     /**
@@ -284,9 +292,22 @@ public class ActionBar {
 
         StringBuilder sb = new StringBuilder();
         if (projectName != null && projectName.length() != 0) {
-
             sb.append(projectString).append(":\n");
             sb.append(indent).append(projectName).append("\n\n");
+        }
+
+        SpatialTable selectedMapTable = MapsDirManager.getInstance().getSelectedSpatialTable();
+        if (selectedMapTable != null) {
+            String tableName = selectedMapTable.getTableName();
+            float[] bounds = selectedMapTable.getTableBounds();
+            String mapType = selectedMapTable.getMapType();
+            sb.append(mapString).append(":\n");
+            sb.append(indent).append(nameString).append(": ").append(tableName).append(" (").append(mapType).append(")\n");
+            sb.append(indent).append(boundsString).append(":\n");
+            sb.append(indent).append(indent).append("s = ").append(bounds[1]).append("\n");
+            sb.append(indent).append(indent).append("n = ").append(bounds[0]).append("\n");
+            sb.append(indent).append(indent).append("w = ").append(bounds[3]).append("\n");
+            sb.append(indent).append(indent).append("e = ").append(bounds[2]).append("\n\n");
         }
         if (lastGpsServiceStatus == GpsServiceStatus.GPS_OFF) {
             // sb.append(indent).append(nodataString).append("\n");

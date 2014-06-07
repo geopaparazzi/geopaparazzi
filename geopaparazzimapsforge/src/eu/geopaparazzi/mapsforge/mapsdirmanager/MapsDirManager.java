@@ -388,6 +388,15 @@ public class MapsDirManager {
     }
 
     /**
+     * Getter for the current selected map table.
+     * 
+     * @return the current selected map table.
+     */
+    public SpatialTable getSelectedSpatialTable() {
+        return selectedSpatialTable;
+    }
+
+    /**
       * Selected a Map through its {@link SpatialTable}.
       *
       * <p>call from Application or Map-Activity
