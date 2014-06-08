@@ -84,7 +84,7 @@ public class MapsDirManager {
     private String selectedTileSourceType = "";
     private String selectedTableName = "";
     private SpatialTable selectedSpatialTable = null;
-    private MapGenerator selected_mapGenerator;
+    private MapGenerator selectedMapGenerator;
     private double bounds_west = 180.0;
     private double bounds_south = -85.05113;
     private double bounds_east = 180.0;
@@ -164,10 +164,11 @@ public class MapsDirManager {
         DefaultMapurls.checkAllSourcesExistence(context, mapsDir);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        boolean doSpatialiteRecoveryMode = preferences.getBoolean(SpatialiteLibraryConstants.PREFS_KEY_SPATIALITE_RECOVERY_MODE, false);
+        boolean doSpatialiteRecoveryMode = preferences.getBoolean(SpatialiteLibraryConstants.PREFS_KEY_SPATIALITE_RECOVERY_MODE,
+                false);
         if (doSpatialiteRecoveryMode) {
-         // Turn on Spatialite Recovery Modus
-         eu.geopaparazzi.spatialite.util.DaoSpatialite.VECTOR_LAYERS_QUERY_MODE=3;
+            // Turn on Spatialite Recovery Modus
+            eu.geopaparazzi.spatialite.util.DaoSpatialite.VECTOR_LAYERS_QUERY_MODE = 3;
         }
         selectedTileSourceType = preferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE, ""); //$NON-NLS-1$
         selectedTableName = preferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE_FILE, ""); //$NON-NLS-1$
@@ -204,11 +205,11 @@ public class MapsDirManager {
                     GPLog.addLogEntry(this, sb.toString());
                 handleTileSources(context);
                 if (doSpatialiteRecoveryMode) {
-                 // Turn off Spatialite Recovery Modus after compleation
-                 eu.geopaparazzi.spatialite.util.DaoSpatialite.VECTOR_LAYERS_QUERY_MODE=0;
-                 Editor editor = preferences.edit();
-                 editor.putBoolean(SpatialiteLibraryConstants.PREFS_KEY_SPATIALITE_RECOVERY_MODE, false);
-                 editor.commit();
+                    // Turn off Spatialite Recovery Modus after compleation
+                    eu.geopaparazzi.spatialite.util.DaoSpatialite.VECTOR_LAYERS_QUERY_MODE = 0;
+                    Editor editor = preferences.edit();
+                    editor.putBoolean(SpatialiteLibraryConstants.PREFS_KEY_SPATIALITE_RECOVERY_MODE, false);
+                    editor.commit();
                 }
             } catch (Exception e) {
                 GPLog.error(this, "MapsDirManager init[" + mapsDir.getAbsolutePath() + "]", e); //$NON-NLS-1$ //$NON-NLS-2$
@@ -416,13 +417,45 @@ public class MapsDirManager {
       * 
       * @param context  the context to use.
       * @param spatialTableData the table.
+     * @throws Exception 
       */
-    public void setSelectedSpatialTable( Context context, String[] spatialTableData ) {
+    public void setSelectedSpatialTable( Context context, String[] spatialTableData ) throws Exception {
         // selectedNode = spatialTable;
         // selectedSpatialDataTypeCode = selectedNode.getType();
         selectedTileSourceType = spatialTableData[1];
         selectedSpatialDataTypeCode = SpatialDataType.getCode4Name(selectedTileSourceType);
         selectedTableName = spatialTableData[0];
+
+        SpatialDataType selectedSpatialDataType = SpatialDataType.getType4Code(selectedSpatialDataTypeCode);
+        switch( selectedSpatialDataType ) {
+        case MAP: {
+            MapTable selected_table = MapDatabasesManager.getInstance().getMapTableByName(selectedTableName);
+            if (selected_table != null) {
+                selectedSpatialTable = selected_table;
+            }
+        }
+            break;
+        case MBTILES:
+        case GPKG:
+        case RASTERLITE2:
+        case SQLITE: {
+            SpatialRasterTable selected_table = SpatialDatabasesManager.getInstance().getRasterTableByName(selectedTableName);
+            if (selected_table != null) {
+                selectedSpatialTable = selected_table;
+            }
+        }
+            break;
+        case MAPURL: {
+            CustomTileTable selected_table = CustomTileDatabasesManager.getInstance().getCustomTileTableByName(selectedTableName);
+            if (selected_table != null) {
+                selectedSpatialTable = selected_table;
+            }
+        }
+            break;
+        default:
+            break;
+        }
+
         // This will save the values to the user-proverences
         setTileSource(context, selectedTileSourceType, selectedTableName);
     }
@@ -439,7 +472,7 @@ public class MapsDirManager {
     public void loadSelectedMap( MapView mapView, double[] mapCenterLocation ) {
         if (selectedSpatialTable != null) {
             try {
-                selected_mapGenerator = null;
+                selectedMapGenerator = null;
                 minZoom = 0;
                 maxZoom = 18;
                 defaultZoom = 17;
@@ -452,26 +485,28 @@ public class MapsDirManager {
                 SpatialDataType selectedSpatialDataType = SpatialDataType.getType4Code(selectedSpatialDataTypeCode);
                 switch( selectedSpatialDataType ) {
                 case MAP: {
-                    MapTable selected_table = MapDatabasesManager.getInstance().getMapTableByName(selectedTableName);
-                    if (selected_table != null) {
-                        minZoom = selected_table.getMinZoom();
-                        maxZoom = selected_table.getMaxZoom();
-                        defaultZoom = selected_table.getDefaultZoom();
-                        bounds_west = selected_table.getMinLongitude();
-                        bounds_east = selected_table.getMaxLongitude();
-                        bounds_south = selected_table.getMinLatitude();
-                        bounds_north = selected_table.getMaxLatitude();
-                        centerX = selected_table.getCenterX();
-                        centerY = selected_table.getCenterY();
+                    MapTable selectedMapTable = (MapTable) selectedSpatialTable;
+                    if (selectedMapTable != null) {
+                        minZoom = selectedMapTable.getMinZoom();
+                        maxZoom = selectedMapTable.getMaxZoom();
+                        defaultZoom = selectedMapTable.getDefaultZoom();
+                        bounds_west = selectedMapTable.getMinLongitude();
+                        bounds_east = selectedMapTable.getMaxLongitude();
+                        bounds_south = selectedMapTable.getMinLatitude();
+                        bounds_north = selectedMapTable.getMaxLatitude();
+                        centerX = selectedMapTable.getCenterX();
+                        centerY = selectedMapTable.getCenterY();
                         clearTileCache(mapView);
-                        mapView.setMapFile(selected_table.getDatabaseFile());
-                        if (selected_table.getXmlFile().exists()) {
+                        mapView.setMapFile(selectedMapTable.getDatabaseFile());
+                        if (selectedMapTable.getXmlFile().exists()) {
                             try {
-                                mapView.setRenderTheme(selected_table.getXmlFile());
-                            } catch (FileNotFoundException e) { // ignore the theme
+                                mapView.setRenderTheme(selectedMapTable.getXmlFile());
+                            } catch (java.lang.Exception e) {
+                                // ignore the theme
+                                GPLog.error(this, "ERROR", e);
                             }
                         }
-                        selected_mapGenerator = mapView.getMapGenerator();
+                        selectedMapGenerator = mapView.getMapGenerator();
                     }
                 }
                     break;
@@ -479,43 +514,41 @@ public class MapsDirManager {
                 case GPKG:
                 case RASTERLITE2:
                 case SQLITE: {
-                    SpatialRasterTable selected_table = SpatialDatabasesManager.getInstance().getRasterTableByName(
-                            selectedTableName);
-                    if (selected_table != null) {
-                        minZoom = selected_table.getMinZoom();
-                        maxZoom = selected_table.getMaxZoom();
-                        defaultZoom = selected_table.getDefaultZoom();
-                        bounds_west = selected_table.getMinLongitude();
-                        bounds_east = selected_table.getMaxLongitude();
-                        bounds_south = selected_table.getMinLatitude();
-                        bounds_north = selected_table.getMaxLatitude();
-                        centerX = selected_table.getCenterX();
-                        centerY = selected_table.getCenterY();
-                        selected_mapGenerator = new GeopackageTileDownloader(selected_table);
+                    SpatialRasterTable selectedSpatialRasterTable = (SpatialRasterTable) selectedSpatialTable;
+                    if (selectedSpatialRasterTable != null) {
+                        minZoom = selectedSpatialRasterTable.getMinZoom();
+                        maxZoom = selectedSpatialRasterTable.getMaxZoom();
+                        defaultZoom = selectedSpatialRasterTable.getDefaultZoom();
+                        bounds_west = selectedSpatialRasterTable.getMinLongitude();
+                        bounds_east = selectedSpatialRasterTable.getMaxLongitude();
+                        bounds_south = selectedSpatialRasterTable.getMinLatitude();
+                        bounds_north = selectedSpatialRasterTable.getMaxLatitude();
+                        centerX = selectedSpatialRasterTable.getCenterX();
+                        centerY = selectedSpatialRasterTable.getCenterY();
+                        selectedMapGenerator = new GeopackageTileDownloader(selectedSpatialRasterTable);
                         clearTileCache(mapView);
-                        mapView.setMapGenerator(selected_mapGenerator);
+                        mapView.setMapGenerator(selectedMapGenerator);
                     }
                 }
                     break;
                 case MAPURL: {
-                    CustomTileTable selected_table = CustomTileDatabasesManager.getInstance().getCustomTileTableByName(
-                            selectedTableName);
+                    CustomTileTable selectedCustomTilesTable = (CustomTileTable) selectedSpatialTable;
                     CustomTileDatabaseHandler customTileDatabaseHandler = CustomTileDatabasesManager.getInstance()
-                            .getCustomTileDatabaseHandler(selected_table);
-                    if (selected_table != null) {
-                        minZoom = selected_table.getMinZoom();
-                        maxZoom = selected_table.getMaxZoom();
-                        defaultZoom = selected_table.getDefaultZoom();
-                        bounds_west = selected_table.getMinLongitude();
-                        bounds_east = selected_table.getMaxLongitude();
-                        bounds_south = selected_table.getMinLatitude();
-                        bounds_north = selected_table.getMaxLatitude();
-                        centerX = selected_table.getCenterX();
-                        centerY = selected_table.getCenterY();
-                        selected_mapGenerator = customTileDatabaseHandler.getCustomTileDownloader();
+                            .getCustomTileDatabaseHandler(selectedCustomTilesTable);
+                    if (selectedCustomTilesTable != null) {
+                        minZoom = selectedCustomTilesTable.getMinZoom();
+                        maxZoom = selectedCustomTilesTable.getMaxZoom();
+                        defaultZoom = selectedCustomTilesTable.getDefaultZoom();
+                        bounds_west = selectedCustomTilesTable.getMinLongitude();
+                        bounds_east = selectedCustomTilesTable.getMaxLongitude();
+                        bounds_south = selectedCustomTilesTable.getMinLatitude();
+                        bounds_north = selectedCustomTilesTable.getMaxLatitude();
+                        centerX = selectedCustomTilesTable.getCenterX();
+                        centerY = selectedCustomTilesTable.getCenterY();
+                        selectedMapGenerator = customTileDatabaseHandler.getCustomTileDownloader();
                         try {
                             clearTileCache(mapView);
-                            mapView.setMapGenerator(selected_mapGenerator);
+                            mapView.setMapGenerator(selectedMapGenerator);
                             if (GPLog.LOG_HEAVY)
                                 GPLog.addLogEntry(this, "MapsDirManager -I-> MAPURL setMapGenerator[" + selectedTileSourceType
                                         + "] selected_map[" + selectedTableName + "]");
@@ -530,11 +563,11 @@ public class MapsDirManager {
                     break;
                 }
             } catch (jsqlite.Exception e) {
-                selected_mapGenerator = MapGeneratorInternal.createMapGenerator(MapGeneratorInternal.mapnik);
-                mapView.setMapGenerator(selected_mapGenerator);
+                selectedMapGenerator = MapGeneratorInternal.createMapGenerator(MapGeneratorInternal.mapnik);
+                mapView.setMapGenerator(selectedMapGenerator);
                 GPLog.error(this, "ERROR", e);
             }
-            if (selected_mapGenerator != null) {
+            if (selectedMapGenerator != null) {
                 // if mapCenterLocation == null, default values from seleted map will be used
                 setMapViewCenter(mapView, mapCenterLocation, ZOOMTYPE.DEFAULT);
             }
