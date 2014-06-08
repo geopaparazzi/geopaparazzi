@@ -1889,7 +1889,7 @@ public class DaoSpatialite {
               i_spatialindex = statement.column_int(0);
               if (i_spatialindex == 1)
               {
-               fieldNamesToTypeMap=collectTableFields(database,"layer_statistics");
+               HashMap<String, String> fieldNamesToTypeMap=collectTableFields(database,"layer_statistics");
                if (fieldNamesToTypeMap.size() > 0)
                { // SpatialTable virts_layer_statistics             
                 b_valid=true;
@@ -1903,6 +1903,8 @@ public class DaoSpatialite {
                  i_spatialindex=2;
                 }
                }
+               if (!b_valid)
+                i_spatialindex=0;
               }
               // GPLog.androidLog(-1,"DaoSpatialite:UpdateLayerStatistics["+databaseType+"] db["+database.getFilename()+"] sql["+s_UpdateLayerStatistics+"]  result: i_spatialindex["+i_spatialindex+"] ");
             }
