@@ -13,7 +13,7 @@
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginLeft="20dp"
-        android:src="@drawable/folder_closed" >
+        android:src="@drawable/ic_folder" >
     </ImageView>
 
     <TextView

@@ -23,17 +23,21 @@ import java.util.Map.Entry;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
-import android.widget.ToggleButton;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.mapsforge.R;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
 import eu.geopaparazzi.spatialite.util.SpatialDataType;
 
 /**
- * Activity for tile source visualization.
+ * Activity for tile source visualisation.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  *
@@ -42,79 +46,104 @@ public class SourcesTreeListActivity extends Activity implements OnClickListener
 
     SourcesExpandableListAdapter listAdapter;
     ExpandableListView expListView;
-    private ToggleButton mapToggleButton;
-    private ToggleButton mapurlToggleButton;
-    private ToggleButton mbtilesToggleButton;
-    private ToggleButton rasterLite2ToggleButton;
+    private Button mapToggleButton;
+    private Button mapurlToggleButton;
+    private Button mbtilesToggleButton;
+    private Button rasterLite2ToggleButton;
     private boolean showMaps = true;
     private boolean showMapurls = true;
     private boolean showMbtiles = true;
     private boolean showRasterLite2 = true;
+    private EditText filterText;
+    private String textToFilter = "";
 
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sources_list);
 
-        mapToggleButton = (ToggleButton) findViewById(R.id.toggleMapButton);
-        mapToggleButton.setChecked(true);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        filterText = (EditText) findViewById(R.id.search_box);
+        filterText.addTextChangedListener(filterTextWatcher);
+
+        mapToggleButton = (Button) findViewById(R.id.toggleMapButton);
         mapToggleButton.setOnClickListener(this);
-        mapToggleButton.setTextOn(SpatialDataType.MAP.getTypeName());
-        mapToggleButton.setTextOff(SpatialDataType.MAP.getTypeName());
-        mapurlToggleButton = (ToggleButton) findViewById(R.id.toggleMapurlButton);
-        mapurlToggleButton.setChecked(true);
+        mapToggleButton.setText(SpatialDataType.MAP.getTypeName());
+        mapToggleButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_background_drawable_selected));
+
+        mapurlToggleButton = (Button) findViewById(R.id.toggleMapurlButton);
         mapurlToggleButton.setOnClickListener(this);
-        mapurlToggleButton.setTextOn(SpatialDataType.MAPURL.getTypeName());
-        mapurlToggleButton.setTextOff(SpatialDataType.MAPURL.getTypeName());
-        mbtilesToggleButton = (ToggleButton) findViewById(R.id.toggleMbtilesButton);
-        mbtilesToggleButton.setChecked(true);
+        mapurlToggleButton.setText(SpatialDataType.MAPURL.getTypeName());
+        mapurlToggleButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_background_drawable_selected));
+
+        mbtilesToggleButton = (Button) findViewById(R.id.toggleMbtilesButton);
         mbtilesToggleButton.setOnClickListener(this);
-        mbtilesToggleButton.setTextOn(SpatialDataType.MBTILES.getTypeName());
-        mbtilesToggleButton.setTextOff(SpatialDataType.MBTILES.getTypeName());
-        rasterLite2ToggleButton = (ToggleButton) findViewById(R.id.toggleRasterLite2Button);        
-        if (!eu.geopaparazzi.spatialite.util.DaoSpatialite.Rasterlite2Version_CPU.equals(""))
-        { // show this only if the driver is installed and active
-         rasterLite2ToggleButton.setChecked(true);
-         rasterLite2ToggleButton.setOnClickListener(this);
-         rasterLite2ToggleButton.setTextOn(SpatialDataType.RASTERLITE2.getTypeName());
-         rasterLite2ToggleButton.setTextOff(SpatialDataType.RASTERLITE2.getTypeName());
+        mbtilesToggleButton.setText(SpatialDataType.MBTILES.getTypeName());
+        mbtilesToggleButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_background_drawable_selected));
+
+        rasterLite2ToggleButton = (Button) findViewById(R.id.toggleRasterLite2Button);
+        if (!eu.geopaparazzi.spatialite.util.DaoSpatialite.Rasterlite2Version_CPU.equals("")) { //$NON-NLS-1$
+            // show this only if the driver is installed and active
+            rasterLite2ToggleButton.setOnClickListener(this);
+            rasterLite2ToggleButton.setText(SpatialDataType.RASTERLITE2.getTypeName());
+            rasterLite2ToggleButton.setBackgroundDrawable(getResources().getDrawable(
+                    R.drawable.button_background_drawable_selected));
+        } else {
+            // hide R.id.toggleRasterLite2Button ?
+            rasterLite2ToggleButton.setVisibility(View.GONE);
+            showRasterLite2 = false;
         }
-        else
-        { // hide R.id.toggleRasterLite2Button ?
-         rasterLite2ToggleButton.setVisibility(View.GONE);
-         showRasterLite2=false;
-        }
-         
 
         // get the listview
         expListView = (ExpandableListView) findViewById(R.id.expandableSourceListView);
 
         try {
-            getData();
+            refreshData();
         } catch (Exception e) {
             GPLog.error(this, "Problem getting sources.", e); //$NON-NLS-1$
         }
     }
 
-    private void getData() throws Exception {
+    protected void onDestroy() {
+        super.onDestroy();
+        filterText.removeTextChangedListener(filterTextWatcher);
+    }
+
+    private void refreshData() throws Exception {
         LinkedHashMap<String, List<String[]>> fodler2TablesMap = MapsDirManager.getInstance().getFolder2TablesMap();
         final LinkedHashMap<String, List<String[]>> newMap = new LinkedHashMap<String, List<String[]>>();
         for( Entry<String, List<String[]>> item : fodler2TablesMap.entrySet() ) {
             String key = item.getKey();
             ArrayList<String[]> newValues = new ArrayList<String[]>();
-            newMap.put(key, newValues);
 
+            boolean doAdd = false;
             List<String[]> values = item.getValue();
             for( String[] value : values ) {
                 if (showMaps && value[1].equals(SpatialDataType.MAP.getTypeName())) {
-                    newValues.add(value);
+                    doAdd = true;
                 } else if (showMapurls && value[1].equals(SpatialDataType.MAPURL.getTypeName())) {
-                    newValues.add(value);
+                    doAdd = true;
                 } else if (showMbtiles && value[1].equals(SpatialDataType.MBTILES.getTypeName())) {
-                    newValues.add(value);
+                    doAdd = true;
                 } else if (showRasterLite2 && value[1].equals(SpatialDataType.RASTERLITE2.getTypeName())) {
-                    newValues.add(value);
+                    doAdd = true;
                 }
+
+                if (textToFilter.length() > 0) {
+                    // filter text
+                    String valueString = value[0].toLowerCase();
+                    String filterString = textToFilter.toLowerCase();
+                    if (!valueString.contains(filterString)) {
+                        doAdd = false;
+                    }
+                }
+                if (doAdd)
+                    newValues.add(value);
+            }
+
+            if (newValues.size() > 0) {
+                newMap.put(key, newValues);
             }
 
         }
@@ -148,15 +177,68 @@ public class SourcesTreeListActivity extends Activity implements OnClickListener
     }
     @Override
     public void onClick( View view ) {
-        showMaps = mapToggleButton.isChecked();
-        showMapurls = mapurlToggleButton.isChecked();
-        showMbtiles = mbtilesToggleButton.isChecked();
+        if (view == mapToggleButton) {
+            if (!showMaps) {
+                mapToggleButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_background_drawable_selected));
+            } else {
+                mapToggleButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_background_drawable));
+            }
+            showMaps = !showMaps;
+        }
+        if (view == mapurlToggleButton) {
+            if (!showMapurls) {
+                mapurlToggleButton.setBackgroundDrawable(getResources().getDrawable(
+                        R.drawable.button_background_drawable_selected));
+            } else {
+                mapurlToggleButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_background_drawable));
+            }
+            showMapurls = !showMapurls;
+        }
+        if (view == mbtilesToggleButton) {
+            if (!showMbtiles) {
+                mbtilesToggleButton.setBackgroundDrawable(getResources().getDrawable(
+                        R.drawable.button_background_drawable_selected));
+            } else {
+                mbtilesToggleButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_background_drawable));
+            }
+            showMbtiles = !showMbtiles;
+        }
+
         if (!eu.geopaparazzi.spatialite.util.DaoSpatialite.Rasterlite2Version_CPU.equals(""))
-         showRasterLite2 = rasterLite2ToggleButton.isChecked();
+            if (view == rasterLite2ToggleButton) {
+                if (!showRasterLite2) {
+                    rasterLite2ToggleButton.setBackgroundDrawable(getResources().getDrawable(
+                            R.drawable.button_background_drawable_selected));
+                } else {
+                    rasterLite2ToggleButton.setBackgroundDrawable(getResources().getDrawable(
+                            R.drawable.button_background_drawable));
+                }
+                showRasterLite2 = !showRasterLite2;
+            }
         try {
-            getData();
+            refreshData();
         } catch (Exception e) {
             GPLog.error(this, "Error getting source data.", e); //$NON-NLS-1$
         }
     }
+
+    private TextWatcher filterTextWatcher = new TextWatcher(){
+
+        public void afterTextChanged( Editable s ) {
+            // ignore
+        }
+
+        public void beforeTextChanged( CharSequence s, int start, int count, int after ) {
+            // ignore
+        }
+
+        public void onTextChanged( CharSequence s, int start, int before, int count ) {
+            textToFilter = s.toString();
+            try {
+                refreshData();
+            } catch (Exception e) {
+                GPLog.error(SourcesTreeListActivity.this, "ERROR", e);
+            }
+        }
+    };
 }
