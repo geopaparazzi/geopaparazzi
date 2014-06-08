@@ -54,6 +54,7 @@ import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialTable;
 import eu.geopaparazzi.spatialite.util.SpatialDataType;
+import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
 
 /**
  * The manager of supported maps in the Application maps dir.
@@ -163,6 +164,11 @@ public class MapsDirManager {
         DefaultMapurls.checkAllSourcesExistence(context, mapsDir);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean doSpatialiteRecoveryMode = preferences.getBoolean(SpatialiteLibraryConstants.PREFS_KEY_SPATIALITE_RECOVERY_MODE, false);
+        if (doSpatialiteRecoveryMode) {
+         // Turn on Spatialite Recovery Modus
+         eu.geopaparazzi.spatialite.util.DaoSpatialite.VECTOR_LAYERS_QUERY_MODE=3;
+        }
         selectedTileSourceType = preferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE, ""); //$NON-NLS-1$
         selectedTableName = preferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE_FILE, ""); //$NON-NLS-1$
 
@@ -197,6 +203,13 @@ public class MapsDirManager {
                 if (GPLog.LOG)
                     GPLog.addLogEntry(this, sb.toString());
                 handleTileSources(context);
+                if (doSpatialiteRecoveryMode) {
+                 // Turn off Spatialite Recovery Modus after compleation
+                 eu.geopaparazzi.spatialite.util.DaoSpatialite.VECTOR_LAYERS_QUERY_MODE=0;
+                 Editor editor = preferences.edit();
+                 editor.putBoolean(SpatialiteLibraryConstants.PREFS_KEY_SPATIALITE_RECOVERY_MODE, false);
+                 editor.commit();
+                }
             } catch (Exception e) {
                 GPLog.error(this, "MapsDirManager init[" + mapsDir.getAbsolutePath() + "]", e); //$NON-NLS-1$ //$NON-NLS-2$
             }

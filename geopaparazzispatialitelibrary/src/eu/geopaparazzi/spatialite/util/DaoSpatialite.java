@@ -228,7 +228,11 @@ public class DaoSpatialite {
      *           sa_vector_data[5].split(","); must return the length of 4
      */
     // Mode Types: 0=strict ; 1=tolerant ; 2=corrective ; 3=corrective with CreateSpatialIndex
-    public static int VECTOR_LAYERS_QUERY_MODE=3;
+    // SpatialiteLibraryConstants.PREFS_KEY_SPATIALITE_RECOVERY_MODE
+    // read in MapsDirManager.init. 
+    // - Set to 3 if desired. After compleation of init, turn back to 0
+    // - Set SpatialiteLibraryConstants.PREFS_KEY_SPATIALITE_RECOVERY_MODE to false
+    public static int VECTOR_LAYERS_QUERY_MODE=0;
     // for spatialite 4.0 with valid vector_layers_statistics, all of which have a layers_statistics table
     public static String VECTOR_LAYERS_QUERY_EXTENT_LIST_V4;
     public static String VECTOR_LAYERS_QUERY_EXTENT_VALID_V4;
@@ -2503,7 +2507,7 @@ public class DaoSpatialite {
         if (JavaSqliteDescription.equals(""))
         { // Rasterlite2Version_CPU will NOT be empty, if the Driver was compiled with RasterLite2 support
          JavaSqliteDescription=getJavaSqliteDescription(database,"DaoSpatialite.checkDatabaseTypeAndValidity");
-         GPLog.androidLog(-1,"DaoSpatialite.JavaSqliteDescription["+JavaSqliteDescription+"]");
+         GPLog.androidLog(-1,"DaoSpatialite.JavaSqliteDescription["+JavaSqliteDescription+"] recovery_mode["+VECTOR_LAYERS_QUERY_MODE+"]");
         }
         // views: vector_layers_statistics,vector_layers
         // pre-spatialite 3.0 Databases often do not have a Virtual-SpatialIndex table
