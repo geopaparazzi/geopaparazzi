@@ -117,9 +117,9 @@ public class SourcesTreeListActivity extends Activity implements OnClickListener
             String key = item.getKey();
             ArrayList<String[]> newValues = new ArrayList<String[]>();
 
-            boolean doAdd = false;
             List<String[]> values = item.getValue();
             for( String[] value : values ) {
+                boolean doAdd = false;
                 if (showMaps && value[1].equals(SpatialDataType.MAP.getTypeName())) {
                     doAdd = true;
                 } else if (showMapurls && value[1].equals(SpatialDataType.MAPURL.getTypeName())) {
