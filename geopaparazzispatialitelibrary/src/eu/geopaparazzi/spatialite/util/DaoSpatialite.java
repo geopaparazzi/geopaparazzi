@@ -1856,6 +1856,7 @@ public class DaoSpatialite {
     /**
      * Attemt to execute a UpdateLayerStatistics for this geometry field or whole Database.
      * - Note: only for SpatialTable, SpatialViews ALWAYS returns 0.
+     * - Note: only for VirtualTable, returns 2.
      * - if table_name and geometry_column are empty: for whole Database
      * @param database the db to use.
      * @param table_name the table of the db to use.
@@ -1876,6 +1877,7 @@ public class DaoSpatialite {
           return i_spatialindex; // Invalid for use with geopaparazzi
         }
         i_spatialindex=0;
+        boolean b_valid=false;
         String s_UpdateLayerStatistics = "SELECT UpdateLayerStatistics();";
         if ((!table_name.equals("")) &&  (!geometry_column.equals("")))
          s_UpdateLayerStatistics = "SELECT UpdateLayerStatistics('" + table_name + "','" + geometry_column + "');";
@@ -1885,6 +1887,23 @@ public class DaoSpatialite {
             statement = database.prepare(s_UpdateLayerStatistics);
             if (statement.step()) {
               i_spatialindex = statement.column_int(0);
+              if (i_spatialindex == 1)
+              {
+               fieldNamesToTypeMap=collectTableFields(database,"layer_statistics");
+               if (fieldNamesToTypeMap.size() > 0)
+               { // SpatialTable virts_layer_statistics             
+                b_valid=true;
+               }
+               else
+               {
+                fieldNamesToTypeMap=collectTableFields(database,"virts_layer_statistics");
+                if (fieldNamesToTypeMap.size() > 0)
+                { // VirtualTable virts_layer_statistics            
+                 b_valid=true;
+                 i_spatialindex=2;
+                }
+               }
+              }
               // GPLog.androidLog(-1,"DaoSpatialite:UpdateLayerStatistics["+databaseType+"] db["+database.getFilename()+"] sql["+s_UpdateLayerStatistics+"]  result: i_spatialindex["+i_spatialindex+"] ");
             }
         }
@@ -1918,7 +1937,7 @@ public class DaoSpatialite {
            i_spatialindex=spatialiteUpdateLayerStatistics(database,table_name,geometry_column,i_spatialindex,databaseType);
           } finally {
           }
-          if (i_spatialindex == 0)
+          if (i_spatialindex != 1)
            return s_vector_extent; // Invalid for use with geopaparazzi
          }
         if ((!table_name.equals("")) &&  (!geometry_column.equals("")))
@@ -2137,7 +2156,7 @@ public class DaoSpatialite {
         { // if layers_statistics does not exist a UpdateLayerStatistics() is needed for the whole Database
          i_spatialindex=spatialiteUpdateLayerStatistics(database,"","", i_spatialindex,SpatialiteDatabaseType.SPATIALITE3);
          // GPLog.androidLog(-1,"-I-> DaoSpatialite: getSpatialVectorMap_V3["+database.getFilename()+"] spatialiteUpdateLayerStatistics["+i_spatialindex+"] ");
-         if (i_spatialindex == 0)
+         if (i_spatialindex != 1)
          { // if this fails then we may have to consider this Database invalid
           return;
          }
