@@ -19,8 +19,8 @@
             android:id="@+id/toggleMapButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="2dip"
             android:layout_weight="1"
-        android:layout_margin="2dip"
             android:background="@drawable/button_background_drawable"
             android:padding="@dimen/button_indent"
             android:textAppearance="?android:attr/textAppearanceMedium"
@@ -30,8 +30,8 @@
             android:id="@+id/toggleMapurlButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_margin="2dip"
+            android:layout_weight="1"
             android:background="@drawable/button_background_drawable"
             android:padding="@dimen/button_indent"
             android:textAppearance="?android:attr/textAppearanceMedium"
@@ -41,8 +41,8 @@
             android:id="@+id/toggleMbtilesButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_margin="2dip"
+            android:layout_weight="1"
             android:background="@drawable/button_background_drawable"
             android:padding="@dimen/button_indent"
             android:textAppearance="?android:attr/textAppearanceMedium"
@@ -52,6 +52,7 @@
             android:id="@+id/toggleRasterLite2Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="2dip"
             android:layout_weight="1"
             android:background="@drawable/button_background_drawable"
             android:padding="@dimen/button_indent"
@@ -59,10 +60,19 @@
             android:textColor="@color/main_text_color" />
     </LinearLayout>
 
+    <EditText
+        android:id="@+id/search_box"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/type_to_filter"
+        android:inputType="text"
+        android:layout_below="@+id/sourceTypeToggleButtonsView" 
+        android:maxLines="1" />
+
     <ExpandableListView
         android:id="@+id/expandableSourceListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/sourceTypeToggleButtonsView" />
+        android:layout_below="@+id/search_box" />
 
 </RelativeLayout>
