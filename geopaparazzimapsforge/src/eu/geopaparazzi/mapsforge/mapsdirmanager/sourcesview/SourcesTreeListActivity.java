@@ -165,7 +165,11 @@ public class SourcesTreeListActivity extends Activity implements OnClickListener
                     }
                     index++;
                 }
-                MapsDirManager.getInstance().setSelectedSpatialTable(SourcesTreeListActivity.this, spatialTableDate);
+                try {
+                    MapsDirManager.getInstance().setSelectedSpatialTable(SourcesTreeListActivity.this, spatialTableDate);
+                } catch (jsqlite.Exception e) {
+                    GPLog.error(SourcesTreeListActivity.this, "ERROR", e);
+                }
                 finish();
                 return false;
             }
