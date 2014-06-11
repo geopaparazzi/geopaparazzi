@@ -101,7 +101,7 @@ public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
         tableNameView.setText(name);
 
         TextView tableTypeView = (TextView) convertView.findViewById(R.id.source_header_descriptiontext);
-        tableTypeView.setText("[" + spatialTableData[1] + "]");
+        tableTypeView.setText("[" + spatialTableData[1] + "] ["+spatialTableData[2]+"]");
 
         return convertView;
     }

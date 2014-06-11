@@ -291,5 +291,9 @@ public interface LibraryConstants {
      * Key for tilesource file in preferences. 
      */
     public static final String PREFS_KEY_TILESOURCE_FILE = "PREFS_KEY_TILESOURCE_FILE";
+    /**
+     * Key for tilesource title in preferences. 
+     */
+    public static final String PREFS_KEY_TILESOURCE_TITLE = "PREFS_KEY_TILESOURCE_TITLE";
 
 }

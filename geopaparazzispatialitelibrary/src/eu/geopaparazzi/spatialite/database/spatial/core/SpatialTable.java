@@ -213,6 +213,18 @@ public abstract class SpatialTable implements Serializable {
     }
 
     /**
+     * Returns the title
+     *
+     * @return a title.
+     */
+    public String getTitle() {
+        if (title != null) {
+            return title;
+        }
+        return getTableName();
+    }
+
+    /**
      * Returns a description.
      *
      * @return a description.

@@ -83,6 +83,7 @@ public class MapsDirManager {
     private int selectedSpatialDataTypeCode = SpatialDataType.MBTILES.getCode();
     private String selectedTileSourceType = "";
     private String selectedTableName = "";
+    private String selectedTableTitle = "";
     private SpatialTable selectedSpatialTable = null;
     private MapGenerator selectedMapGenerator;
     private double bounds_west = 180.0;
@@ -172,6 +173,7 @@ public class MapsDirManager {
         }
         selectedTileSourceType = preferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE, ""); //$NON-NLS-1$
         selectedTableName = preferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE_FILE, ""); //$NON-NLS-1$
+        selectedTableTitle = preferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE_TITLE, ""); //$NON-NLS-1$
 
         GPLog.GLOBAL_LOG_LEVEL = -1;
         SpatialDatabasesManager.reset();
@@ -298,7 +300,8 @@ public class MapsDirManager {
                 String tableName = table.getTableName(); //$NON-NLS-1$//$NON-NLS-2$
                 if (!ignoreTileSource(tableName)) {
                     tilesBasedTables.add(table);
-                    if ((selectedSpatialTable == null) && (selectedTableName.equals(table.getDatabasePath()))) {
+                    if ((selectedSpatialTable == null) && 
+                        (selectedTableName.equals(table.getDatabasePath())) && (selectedTableTitle.equals(table.getTitle()))) {
                         selectedSpatialTable = table;
                         selectedTileSourceType = table.getMapType();
                         selectedSpatialDataTypeCode = SpatialDataType.getCode4Name(selectedTileSourceType);
@@ -315,9 +318,10 @@ public class MapsDirManager {
             selectedTileSourceType = selectedSpatialTable.getMapType();
             selectedSpatialDataTypeCode = SpatialDataType.getCode4Name(selectedTileSourceType);
             selectedTableName = selectedSpatialTable.getDatabasePath();
+            selectedTableTitle = selectedSpatialTable.getTitle();
         }
         if (GPLog.LOG)
-            GPLog.addLogEntry(this, "MapsDirManager handleTileSources selected_map[" + selectedTableName + "]");
+            GPLog.addLogEntry(this, "MapsDirManager handleTileSources selected_map[" + selectedTableName + ","+selectedTableTitle+"]");
 
         createTree(tilesBasedTables);
     }
@@ -365,7 +369,8 @@ public class MapsDirManager {
             List<String[]> list = folderPath2TablesDataMap.get(absolutePath);
             String[] data = new String[]{//
             spatialTable.getDatabasePath(),//
-                    spatialTable.getMapType()//
+                    spatialTable.getMapType()
+                    ,spatialTable.getTitle()//
             };
             list.add(data);
         }
@@ -425,6 +430,7 @@ public class MapsDirManager {
         selectedTileSourceType = spatialTableData[1];
         selectedSpatialDataTypeCode = SpatialDataType.getCode4Name(selectedTileSourceType);
         selectedTableName = spatialTableData[0];
+        selectedTableTitle = spatialTableData[2];
 
         SpatialDataType selectedSpatialDataType = SpatialDataType.getType4Code(selectedSpatialDataTypeCode);
         switch( selectedSpatialDataType ) {
@@ -439,7 +445,7 @@ public class MapsDirManager {
         case GPKG:
         case RASTERLITE2:
         case SQLITE: {
-            SpatialRasterTable selected_table = SpatialDatabasesManager.getInstance().getRasterTableByName(selectedTableName);
+            SpatialRasterTable selected_table = SpatialDatabasesManager.getInstance().getRasterTableByName(selectedTableName, selectedTableTitle);
             if (selected_table != null) {
                 selectedSpatialTable = selected_table;
             }
@@ -457,7 +463,7 @@ public class MapsDirManager {
         }
 
         // This will save the values to the user-proverences
-        setTileSource(context, selectedTileSourceType, selectedTableName);
+        setTileSource(context, selectedTileSourceType, selectedTableName,selectedTableTitle);
     }
 
     /**
@@ -476,7 +482,7 @@ public class MapsDirManager {
                 minZoom = 0;
                 maxZoom = 18;
                 defaultZoom = 17;
-                bounds_west = 180.0;
+                bounds_west = -180.0;
                 bounds_south = -85.05113;
                 bounds_east = 180.0;
                 bounds_north = 85.05113;
@@ -1031,11 +1037,12 @@ public class MapsDirManager {
      * @param s_selected_type map-type of file
      * @param s_selected_map absolute path of file
      */
-    private static void setTileSource( Context context, String s_selected_type, String s_selected_map ) {
+    private static void setTileSource( Context context, String s_selected_type, String s_selected_map , String s_selected_title) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         Editor editor = preferences.edit();
         editor.putString(LibraryConstants.PREFS_KEY_TILESOURCE, s_selected_type);
         editor.putString(LibraryConstants.PREFS_KEY_TILESOURCE_FILE, s_selected_map);
+        editor.putString(LibraryConstants.PREFS_KEY_TILESOURCE_TITLE, s_selected_title);
         editor.commit();
     }
 
