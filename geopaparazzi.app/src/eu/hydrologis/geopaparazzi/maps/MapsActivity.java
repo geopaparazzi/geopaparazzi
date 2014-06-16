@@ -118,6 +118,8 @@ import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.maps.overlays.ArrayGeopaparazziOverlay;
+import eu.hydrologis.geopaparazzi.maptools.InfoTool;
+import eu.hydrologis.geopaparazzi.maptools.TapMeasureTool;
 import eu.hydrologis.geopaparazzi.osm.OsmCategoryActivity;
 import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
@@ -1389,11 +1391,10 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                 toggleMeasuremodeButton.setBackgroundResource(R.drawable.measuremode);
             }
             if (isInMeasureMode) {
-                mapView.setClickable(true);
-                sliderDrawView.disableMeasureMode();
+                sliderDrawView.disableTool();
             } else {
-                mapView.setClickable(false);
-                sliderDrawView.enableMeasureMode(mapView);
+                TapMeasureTool measureTool = new TapMeasureTool(sliderDrawView, mapView);
+                sliderDrawView.enableTool(measureTool);
             }
             break;
         case R.id.info:
@@ -1423,11 +1424,10 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                 infoModeButton.setBackgroundResource(R.drawable.infomode);
             }
             if (isInInfoMode) {
-                mapView.setClickable(true);
-                sliderDrawView.disableInfo();
+                sliderDrawView.disableTool();
             } else {
-                mapView.setClickable(false);
-                sliderDrawView.enableInfo(mapView);
+                InfoTool infoTool = new InfoTool(sliderDrawView, mapView);
+                sliderDrawView.enableTool(infoTool);
             }
             break;
 
