@@ -20,33 +20,29 @@ package eu.hydrologis.geopaparazzi.maptools;
 import java.util.ArrayList;
 import java.util.List;
 
-import jsqlite.Database;
-import jsqlite.Exception;
-import jsqlite.Stmt;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.vividsolutions.jts.geom.Geometry;
-
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 
 /**
  * A spatial feature container.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-@SuppressWarnings("rawtypes")
-public class Feature {
+public class Feature implements Parcelable {
 
-    private String id;
+    String id;
 
-    private String tableName;
+    String tableName;
 
-    private Geometry defaultGeometry;
+    Geometry defaultGeometry;
 
-    private List<String> attributeNames = new ArrayList<String>();
-    private List<String> attributeValuesStrings = new ArrayList<String>();
-    private List<Class> attributeClasses = new ArrayList<Class>();
+    List<String> attributeNames = new ArrayList<String>();
+    List<String> attributeValuesStrings = new ArrayList<String>();
+    List<String> attributeClasses = new ArrayList<String>();
 
-    private Feature() {
+    Feature() {
     }
 
     /**
@@ -94,7 +90,7 @@ public class Feature {
     /**
      * @return the list of attributes classes.
      */
-    public List<Class> getAttributeClasses() {
+    public List<String> getAttributeClasses() {
         return attributeClasses;
     }
 
@@ -105,46 +101,35 @@ public class Feature {
         return tableName;
     }
 
-    /**
-     * Build the features given by a query.
-     * 
-     * <b>Note that it is mandatory that the first item of the 
-     * query is the id of the feature, which can be used at any time
-     * to update the feature in the db. 
-     * 
-     * @param database the database to use.
-     * @param query the query to run.
-     * @param spatialTable the parent Spatialtable.
-     * @return the list of feature from the query. 
-     * @throws Exception is something goes wrong.
-     */
-    public static List<Feature> build( Database database, String query, SpatialVectorTable spatialTable ) throws Exception {
-        List<Feature> featuresList = new ArrayList<Feature>();
-
-        String tableName = spatialTable.getTableName();
-
-        Stmt stmt = database.prepare(query);
-        try {
-            while( stmt.step() ) {
-                Feature feature = new Feature();
-                feature.tableName = tableName;
-                int column_count = stmt.column_count();
-                String id = stmt.column_string(0);
-                feature.id = id;
-                for( int i = 1; i < column_count; i++ ) {
-                    String cName = stmt.column_name(i);
-                    String value = stmt.column_string(i);
-                    int columnType = stmt.column_type(i);
-                    System.out.println(columnType);
-                    feature.attributeNames.add(cName);
-                    feature.attributeValuesStrings.add(value);
-                    feature.attributeClasses.add(Float.class);
-                }
-                featuresList.add(feature);
-            }
-        } finally {
-            stmt.close();
-        }
-        return featuresList;
+    public int describeContents() {
+        return 0;
     }
+
+    public void writeToParcel( Parcel dest, int flags ) {
+        dest.writeString(id);
+        dest.writeString(tableName);
+        dest.writeList(attributeNames);
+        dest.writeList(attributeValuesStrings);
+        dest.writeList(attributeClasses);
+        // TODO add geometry
+    }
+
+    @SuppressWarnings("javadoc")
+    public static final Parcelable.Creator<Feature> CREATOR = new Parcelable.Creator<Feature>(){
+        @SuppressWarnings("unchecked")
+        public Feature createFromParcel( Parcel in ) {
+            Feature feature = new Feature();
+            feature.id = in.readString();
+            feature.tableName = in.readString();
+            feature.attributeNames = in.readArrayList(String.class.getClassLoader());
+            feature.attributeValuesStrings = in.readArrayList(String.class.getClassLoader());
+            feature.attributeClasses = in.readArrayList(String.class.getClassLoader());
+
+            return feature;
+        }
+
+        public Feature[] newArray( int size ) {
+            return new Feature[size];
+        }
+    };
 }

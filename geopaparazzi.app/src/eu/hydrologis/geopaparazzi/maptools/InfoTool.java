@@ -23,6 +23,7 @@ import static java.lang.Math.round;
 import java.util.ArrayList;
 import java.util.List;
 
+import jsqlite.Database;
 import jsqlite.Exception;
 
 import org.mapsforge.android.maps.MapView;
@@ -31,18 +32,23 @@ import org.mapsforge.core.model.GeoPoint;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.view.MotionEvent;
 import android.view.View;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler;
 import eu.hydrologis.geopaparazzi.maps.overlays.SliderDrawProjection;
 import eu.hydrologis.geopaparazzi.maptools.core.DrawingTool;
 import eu.hydrologis.geopaparazzi.maptools.core.MapTool;
@@ -199,11 +205,12 @@ public class InfoTool extends MapTool implements DrawingTool {
             infoProgressDialog.show();
 
             new AsyncTask<String, Integer, String>(){
+                private List<Feature> features = new ArrayList<Feature>();
 
                 protected String doInBackground( String... params ) {
                     try {
+                        features.clear();
                         boolean oneEnabled = visibleTables.size() > 0;
-                        StringBuilder sb = new StringBuilder();
                         if (oneEnabled) {
                             double north = n;
                             double south = s;
@@ -217,23 +224,25 @@ public class InfoTool extends MapTool implements DrawingTool {
                             }
 
                             for( SpatialVectorTable spatialTable : visibleTables ) {
-                                StringBuilder sbTmp = new StringBuilder();
-                                sdbManager.intersectionToString("4326", spatialTable, north, south, east, west, sbTmp, "\t");
-                                if (sbTmp.length() > 0) { // do not add empty results
-                                    sb.append(spatialTable.getTableName()).append("\n");
-                                    sb.append(sbTmp);
-                                    sb.append("\n----------------------\n");
+                                SpatialDatabaseHandler vectorHandler = sdbManager.getVectorHandler(spatialTable);
+                                if (vectorHandler instanceof SpatialiteDatabaseHandler) {
+                                    SpatialiteDatabaseHandler spatialiteDbHandler = (SpatialiteDatabaseHandler) vectorHandler;
+
+                                    String query = SpatialiteDatabaseHandler.getIntersectionQueryBBOX(
+                                            LibraryConstants.SRID_WGS84_4326, spatialTable, north, south, east, west);
+
+                                    Database database = spatialiteDbHandler.getDatabase();
+                                    List<Feature> featuresList = FeatureUtilities.build(database, query, spatialTable);
+                                    features.addAll(featuresList);
+
+                                    publishProgress(1);
+                                    // Escape early if cancel() is called
+                                    if (isCancelled())
+                                        break;
                                 }
-                                publishProgress(1);
-                                // Escape early if cancel() is called
-                                if (isCancelled())
-                                    break;
                             }
                         }
-                        if (sb.length() > 0)
-                            return sb.toString();
-                        else
-                            return "no results";
+                        return "";
                     } catch (Exception e) {
                         return "ERROR: " + e.getLocalizedMessage();
                     }
@@ -250,7 +259,9 @@ public class InfoTool extends MapTool implements DrawingTool {
                     if (response.startsWith("ERROR")) {
                         Utilities.messageDialog(context, response, null);
                     } else {
-                        Utilities.messageDialog(context, response, null);
+                        Intent intent = new Intent(context, FeaturePagerActivity.class);
+                        intent.putParcelableArrayListExtra("FEATURESLIST", (ArrayList< ? extends Parcelable>) features); //$NON-NLS-1$
+                        context.startActivity(intent);
                     }
                 }
 
