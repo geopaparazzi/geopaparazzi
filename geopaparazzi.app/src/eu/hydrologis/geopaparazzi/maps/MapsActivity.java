@@ -74,6 +74,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -129,7 +130,7 @@ import eu.hydrologis.geopaparazzi.util.Note;
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class MapsActivity extends MapActivity implements OnTouchListener {
+public class MapsActivity extends MapActivity implements OnTouchListener, OnClickListener {
     private final int INSERTCOORD_RETURN_CODE = 666;
     private final int ZOOM_RETURN_CODE = 667;
     private final int GPSDATAPROPERTIES_RETURN_CODE = 668;
@@ -162,9 +163,6 @@ public class MapsActivity extends MapActivity implements OnTouchListener {
     private boolean doOsm;
 
     private ArrayGeopaparazziOverlay dataOverlay;
-    private Button zoomInButton;
-    private Button zoomOutButton;
-    private Button batteryButton;
 
     private SliderDrawView sliderDrawView;
     private List<String> smsString;
@@ -173,8 +171,22 @@ public class MapsActivity extends MapActivity implements OnTouchListener {
     private BroadcastReceiver gpsServiceBroadcastReceiver;
     private double[] lastGpsPosition;
 
+    private TextView zoomLevelText;
+    private BroadcastReceiver batteryReceiver = new BroadcastReceiver(){
+        @Override
+        public void onReceive( Context context, Intent intent ) {
+            int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+            int maxValue = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+            int chargedPct = (level * 100) / maxValue;
+            updateBatteryCondition(chargedPct);
+        }
+
+    };
+
     private GpsServiceStatus lastGpsServiceStatus = GpsServiceStatus.GPS_OFF;
     private GpsLoggingStatus lastGpsLoggingStatus = GpsLoggingStatus.GPS_DATABASELOGGING_OFF;
+    private ImageButton centerOnGps;
+    private Button batteryButton;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -188,13 +200,8 @@ public class MapsActivity extends MapActivity implements OnTouchListener {
         GpsServiceUtilities.registerForBroadcasts(this, gpsServiceBroadcastReceiver);
         GpsServiceUtilities.triggerBroadcast(this);
 
-        // register menu button
-        final Button menuButton = (Button) findViewById(R.id.menu_map_btn);
-        menuButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
-                openContextMenu(menuButton);
-            }
-        });
+        Button menuButton = (Button) findViewById(R.id.menu_map_btn);
+        menuButton.setOnClickListener(this);
         registerForContextMenu(menuButton);
 
         // register for battery updates
@@ -266,49 +273,18 @@ public class MapsActivity extends MapActivity implements OnTouchListener {
         if (zoomOutLevel < minZoomLevel) {
             zoomOutLevel = minZoomLevel;
         }
-        zoomInButton = (Button) findViewById(R.id.zoomin);
-        zoomInButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
-                int currentZoom = getCurrentZoomLevel();
-                int newZoom = currentZoom + 1;
-                newZoom = setCurrentZoom(newZoom);
-                setGuiZoomText(newZoom);
-                MapZoomControls mapZoomControls = mapView.getMapZoomControls();
-                byte zoomLevelMin = mapZoomControls.getZoomLevelMin();
-                byte zoomLevelMax = mapZoomControls.getZoomLevelMax();
-                System.out.println(zoomLevelMax + "/" + zoomLevelMin);
-                mapView.getController().setZoom(newZoom);
-                invalidateMap();
-                saveCenterPref();
-            }
-        });
+        Button zoomInButton = (Button) findViewById(R.id.zoomin);
+        zoomInButton.setOnClickListener(this);
 
         zoomLevelText = (TextView) findViewById(R.id.zoomlevel);
 
-        zoomOutButton = (Button) findViewById(R.id.zoomout);
-        zoomOutButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
-                int currentZoom = getCurrentZoomLevel();
-                int newZoom = currentZoom - 1;
-                newZoom = setCurrentZoom(newZoom);
-                setGuiZoomText(newZoom);
-                mapView.getController().setZoom(newZoom);
-                invalidateMap();
-                saveCenterPref();
-            }
-        });
+        Button zoomOutButton = (Button) findViewById(R.id.zoomout);
+        zoomOutButton.setOnClickListener(this);
 
         batteryButton = (Button) findViewById(R.id.battery);
 
-        // center on gps button
-        ImageButton centerOnGps = (ImageButton) findViewById(R.id.center_on_gps_btn);
-        centerOnGps.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
-                if (lastGpsPosition != null) {
-                    setNewCenter(lastGpsPosition[0], lastGpsPosition[1]);
-                }
-            }
-        });
+        centerOnGps = (ImageButton) findViewById(R.id.center_on_gps_btn);
+        centerOnGps.setOnClickListener(this);
 
         // slidingdrawer
         final int slidingId = R.id.mapslide;
@@ -339,128 +315,23 @@ public class MapsActivity extends MapActivity implements OnTouchListener {
 
         sliderDrawView = (SliderDrawView) findViewById(R.id.sliderdrawview);
 
-        /*
-        * tool buttons
-        */
         ImageButton addnotebytagButton = (ImageButton) findViewById(R.id.addnotebytagbutton);
-        addnotebytagButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
-                // generate screenshot in background in order to not freeze
-                try {
-                    File mediaDir = ResourcesManager.getInstance(MapsActivity.this).getMediaDir();
-                    final File tmpImageFile = new File(mediaDir.getParentFile(), LibraryConstants.TMPPNGIMAGENAME);
-                    new Thread(new Runnable(){
-                        public void run() {
-                            try {
-                                Rect t = new Rect();
-                                mapView.getDrawingRect(t);
-                                Bitmap bufferedBitmap = Bitmap.createBitmap(t.width(), t.height(), Bitmap.Config.ARGB_8888);
-                                Canvas bufferedCanvas = new Canvas(bufferedBitmap);
-                                mapView.draw(bufferedCanvas);
-                                FileOutputStream out = new FileOutputStream(tmpImageFile);
-                                bufferedBitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
-                                out.close();
-                            } catch (Exception e) {
-                                // ignore
-                            }
-                        }
-                    }).start();
-                    // MapViewPosition mapPosition = mapView.getMapPosition();
-                    // GeoPoint mapCenter = mapPosition.getMapCenter();
-                    Intent mapTagsIntent = new Intent(MapsActivity.this, MapTagsActivity.class);
-                    // mapTagsIntent.putExtra(LibraryConstants.LATITUDE, (double)
-                    // (mapCenter.latitudeE6 / LibraryConstants.E6));
-                    // mapTagsIntent.putExtra(LibraryConstants.LONGITUDE, (double)
-                    // (mapCenter.longitudeE6 / LibraryConstants.E6));
-                    // mapTagsIntent.putExtra(LibraryConstants.ELEVATION, 0.0);
-                    // mapTagsIntent.putExtra(LibraryConstants.TMPPNGIMAGENAME,
-                    // tmpImageFile.getAbsolutePath());
-                    startActivity(mapTagsIntent);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-            }
-        });
+        addnotebytagButton.setOnClickListener(this);
 
         ImageButton addBookmarkButton = (ImageButton) findViewById(R.id.addbookmarkbutton);
-        addBookmarkButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
-                addBookmark();
-            }
-        });
+        addBookmarkButton.setOnClickListener(this);
 
         ImageButton listNotesButton = (ImageButton) findViewById(R.id.listnotesbutton);
-        listNotesButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
-                Intent intent = new Intent(MapsActivity.this, NotesListActivity.class);
-                startActivityForResult(intent, ZOOM_RETURN_CODE);
-            }
-        });
+        listNotesButton.setOnClickListener(this);
 
         ImageButton listBookmarksButton = (ImageButton) findViewById(R.id.bookmarkslistbutton);
-        listBookmarksButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
-                Intent intent = new Intent(MapsActivity.this, BookmarksListActivity.class);
-                startActivityForResult(intent, ZOOM_RETURN_CODE);
-            }
-        });
+        listBookmarksButton.setOnClickListener(this);
 
         final ImageButton toggleMeasuremodeButton = (ImageButton) findViewById(R.id.togglemeasuremodebutton);
-        toggleMeasuremodeButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
-                boolean isInMeasureMode = !mapView.isClickable();
-                if (!isInMeasureMode) {
-                    toggleMeasuremodeButton.setBackgroundResource(R.drawable.measuremode_on);
-                } else {
-                    toggleMeasuremodeButton.setBackgroundResource(R.drawable.measuremode);
-                }
-                if (isInMeasureMode) {
-                    mapView.setClickable(true);
-                    sliderDrawView.disableMeasureMode();
-                } else {
-                    mapView.setClickable(false);
-                    sliderDrawView.enableMeasureMode(mapView);
-                }
-            }
-        });
+        toggleMeasuremodeButton.setOnClickListener(this);
 
         final Button infoModeButton = (Button) findViewById(R.id.info);
-        infoModeButton.setOnClickListener(new Button.OnClickListener(){
-            public void onClick( View v ) {
-                boolean isInInfoMode = !mapView.isClickable();
-                if (!isInInfoMode) {
-                    // check maps enablement
-                    try {
-                        final SpatialDatabasesManager sdbManager = SpatialDatabasesManager.getInstance();
-                        final List<SpatialVectorTable> spatialTables = sdbManager.getSpatialVectorTables(false);
-                        boolean atLeastOneEnabled = false;
-                        for( SpatialVectorTable spatialVectorTable : spatialTables ) {
-                            if (spatialVectorTable.getStyle().enabled == 1) {
-                                atLeastOneEnabled = true;
-                                break;
-                            }
-                        }
-                        if (!atLeastOneEnabled) {
-                            Utilities.messageDialog(MapsActivity.this, R.string.no_queriable_layer_is_visible, null);
-                            return;
-                        }
-                    } catch (jsqlite.Exception e) {
-                        e.printStackTrace();
-                    }
-                    infoModeButton.setBackgroundResource(R.drawable.infomode_on);
-                } else {
-                    infoModeButton.setBackgroundResource(R.drawable.infomode);
-                }
-                if (isInInfoMode) {
-                    mapView.setClickable(true);
-                    sliderDrawView.disableInfo();
-                } else {
-                    mapView.setClickable(false);
-                    sliderDrawView.enableInfo(mapView);
-                }
-            }
-        });
+        infoModeButton.setOnClickListener(this);
 
         try {
             handleOsmSliderView();
@@ -469,7 +340,6 @@ public class MapsActivity extends MapActivity implements OnTouchListener {
         }
         saveCenterPref();
     }
-
     @Override
     protected void onPause() {
         Utilities.dismissProgressDialog(syncProgressDialog);
@@ -613,7 +483,6 @@ public class MapsActivity extends MapActivity implements OnTouchListener {
         }
         return false;
     }
-
     private void handleOsmSliderView() throws Exception {
         OsmTagsManager osmTagsManager = OsmTagsManager.getInstance();
         String[] categoriesNamesArray = osmTagsManager.getTagCategories(this);
@@ -1294,7 +1163,6 @@ public class MapsActivity extends MapActivity implements OnTouchListener {
                     }
                 }).setCancelable(false).show();
     }
-    private TextView zoomLevelText;
 
     /**
      * Calls the mapview redraw.
@@ -1370,17 +1238,6 @@ public class MapsActivity extends MapActivity implements OnTouchListener {
         PositionUtilities.putMapCenterInPreferences(preferences, cx, cy, zoomLevel);
     }
 
-    private BroadcastReceiver batteryReceiver = new BroadcastReceiver(){
-        @Override
-        public void onReceive( Context context, Intent intent ) {
-            int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-            int maxValue = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-            int chargedPct = (level * 100) / maxValue;
-            updateBatteryCondition(chargedPct);
-        }
-
-    };
-
     private void updateBatteryCondition( int level ) {
         if (GPLog.LOG_ABSURD)
             GPLog.addLogEntry(this, "BATTERY LEVEL GEOPAP: " + level); //$NON-NLS-1$
@@ -1452,6 +1309,133 @@ public class MapsActivity extends MapActivity implements OnTouchListener {
             GPLog.error(this, "On location change error", e); //$NON-NLS-1$
             // finish the activity to reset
             finish();
+        }
+    }
+
+    public void onClick( View v ) {
+        switch( v.getId() ) {
+        case R.id.menu_map_btn:
+            Button menuButton = (Button) findViewById(R.id.menu_map_btn);
+            openContextMenu(menuButton);
+            break;
+        case R.id.zoomin:
+            int currentZoom = getCurrentZoomLevel();
+            int newZoom = currentZoom + 1;
+            newZoom = setCurrentZoom(newZoom);
+            setGuiZoomText(newZoom);
+            MapZoomControls mapZoomControls = mapView.getMapZoomControls();
+            byte zoomLevelMin = mapZoomControls.getZoomLevelMin();
+            byte zoomLevelMax = mapZoomControls.getZoomLevelMax();
+            System.out.println(zoomLevelMax + "/" + zoomLevelMin);
+            mapView.getController().setZoom(newZoom);
+            invalidateMap();
+            saveCenterPref();
+            break;
+        case R.id.zoomout:
+            currentZoom = getCurrentZoomLevel();
+            newZoom = currentZoom - 1;
+            newZoom = setCurrentZoom(newZoom);
+            setGuiZoomText(newZoom);
+            mapView.getController().setZoom(newZoom);
+            invalidateMap();
+            saveCenterPref();
+            break;
+        case R.id.center_on_gps_btn:
+            if (lastGpsPosition != null) {
+                setNewCenter(lastGpsPosition[0], lastGpsPosition[1]);
+            }
+            break;
+        case R.id.addnotebytagbutton:
+            // generate screenshot in background in order to not freeze
+            try {
+                File mediaDir = ResourcesManager.getInstance(MapsActivity.this).getMediaDir();
+                final File tmpImageFile = new File(mediaDir.getParentFile(), LibraryConstants.TMPPNGIMAGENAME);
+                new Thread(new Runnable(){
+                    public void run() {
+                        try {
+                            Rect t = new Rect();
+                            mapView.getDrawingRect(t);
+                            Bitmap bufferedBitmap = Bitmap.createBitmap(t.width(), t.height(), Bitmap.Config.ARGB_8888);
+                            Canvas bufferedCanvas = new Canvas(bufferedBitmap);
+                            mapView.draw(bufferedCanvas);
+                            FileOutputStream out = new FileOutputStream(tmpImageFile);
+                            bufferedBitmap.compress(Bitmap.CompressFormat.PNG, 90, out);
+                            out.close();
+                        } catch (Exception e) {
+                            // ignore
+                        }
+                    }
+                }).start();
+                Intent mapTagsIntent = new Intent(MapsActivity.this, MapTagsActivity.class);
+                startActivity(mapTagsIntent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            break;
+        case R.id.addbookmarkbutton:
+            addBookmark();
+            break;
+        case R.id.listnotesbutton:
+            Intent intent = new Intent(MapsActivity.this, NotesListActivity.class);
+            startActivityForResult(intent, ZOOM_RETURN_CODE);
+            break;
+        case R.id.bookmarkslistbutton:
+            intent = new Intent(MapsActivity.this, BookmarksListActivity.class);
+            startActivityForResult(intent, ZOOM_RETURN_CODE);
+            break;
+        case R.id.togglemeasuremodebutton:
+            boolean isInMeasureMode = !mapView.isClickable();
+            final ImageButton toggleMeasuremodeButton = (ImageButton) findViewById(R.id.togglemeasuremodebutton);
+            if (!isInMeasureMode) {
+                toggleMeasuremodeButton.setBackgroundResource(R.drawable.measuremode_on);
+            } else {
+                toggleMeasuremodeButton.setBackgroundResource(R.drawable.measuremode);
+            }
+            if (isInMeasureMode) {
+                mapView.setClickable(true);
+                sliderDrawView.disableMeasureMode();
+            } else {
+                mapView.setClickable(false);
+                sliderDrawView.enableMeasureMode(mapView);
+            }
+            break;
+        case R.id.info:
+            boolean isInInfoMode = !mapView.isClickable();
+            final Button infoModeButton = (Button) findViewById(R.id.info);
+            if (!isInInfoMode) {
+                // check maps enablement
+                try {
+                    final SpatialDatabasesManager sdbManager = SpatialDatabasesManager.getInstance();
+                    final List<SpatialVectorTable> spatialTables = sdbManager.getSpatialVectorTables(false);
+                    boolean atLeastOneEnabled = false;
+                    for( SpatialVectorTable spatialVectorTable : spatialTables ) {
+                        if (spatialVectorTable.getStyle().enabled == 1) {
+                            atLeastOneEnabled = true;
+                            break;
+                        }
+                    }
+                    if (!atLeastOneEnabled) {
+                        Utilities.messageDialog(MapsActivity.this, R.string.no_queriable_layer_is_visible, null);
+                        return;
+                    }
+                } catch (jsqlite.Exception e) {
+                    e.printStackTrace();
+                }
+                infoModeButton.setBackgroundResource(R.drawable.infomode_on);
+            } else {
+                infoModeButton.setBackgroundResource(R.drawable.infomode);
+            }
+            if (isInInfoMode) {
+                mapView.setClickable(true);
+                sliderDrawView.disableInfo();
+            } else {
+                mapView.setClickable(false);
+                sliderDrawView.enableInfo(mapView);
+            }
+            break;
+
+        default:
+            break;
         }
     }
 
