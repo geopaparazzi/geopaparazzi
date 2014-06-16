@@ -33,7 +33,6 @@ import org.mapsforge.android.maps.MapScaleBar.ScreenPosition;
 import org.mapsforge.android.maps.MapScaleBar.TextField;
 import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.MapViewPosition;
-import org.mapsforge.android.maps.MapZoomControls;
 import org.mapsforge.android.maps.Projection;
 import org.mapsforge.android.maps.mapgenerator.MapGenerator;
 import org.mapsforge.android.maps.overlay.Overlay;
@@ -475,7 +474,9 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                     runOnUiThread(new Runnable(){
                         public void run() {
                             int zoom = mapView.getMapPosition().getZoomLevel();
-                            zoomLevelText.setText(formatter.format(zoom));
+                            zoom = setCurrentZoom(zoom);
+                            setGuiZoomText(zoom);
+                            saveCenterPref();
                         }
                     });
                 }
@@ -1323,10 +1324,6 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
             int newZoom = currentZoom + 1;
             newZoom = setCurrentZoom(newZoom);
             setGuiZoomText(newZoom);
-            MapZoomControls mapZoomControls = mapView.getMapZoomControls();
-            byte zoomLevelMin = mapZoomControls.getZoomLevelMin();
-            byte zoomLevelMax = mapZoomControls.getZoomLevelMax();
-            System.out.println(zoomLevelMax + "/" + zoomLevelMin);
             mapView.getController().setZoom(newZoom);
             invalidateMap();
             saveCenterPref();
