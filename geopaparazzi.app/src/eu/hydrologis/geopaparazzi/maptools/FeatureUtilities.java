@@ -31,6 +31,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("nls")
 public class FeatureUtilities {
 
     /**
@@ -41,7 +42,7 @@ public class FeatureUtilities {
     /**
      * Key to pass a readonly flag through activities.
      */
-    public static final String KEY_READONLY = "KEY_READONLY"; //$NON-NLS-1$
+    public static final String KEY_READONLY = "KEY_READONLY";
 
     /**
      * Build the features given by a query.

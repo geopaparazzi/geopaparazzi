@@ -438,7 +438,14 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
         String fieldNamesList = SpatialiteUtilities.SPATIALTABLE_ID_FIELD;
         // List of non-blob fields
         for( String field : spatialTable.getLabelList() ) {
-            if (!field.equals(SpatialiteUtilities.SPATIALTABLE_ID_FIELD))
+            boolean ignore = false;
+            for( String ingoredField : SpatialiteUtilities.INGORED_FIELDS ) {
+                if (field.equals(ingoredField)) {
+                    ignore = true;
+                    break;
+                }
+            }
+            if (!ignore)
                 fieldNamesList += "," + field;
         }
         if (!spatialTable.getSrid().equals(boundsSrid)) {

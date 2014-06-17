@@ -48,6 +48,12 @@ public class SpatialiteUtilities {
      * Name of the table field that s used to identify the record.
      */
     public static final String SPATIALTABLE_ID_FIELD = "ROWID"; //$NON-NLS-1$
+
+    /**
+     * Array of fields that will be ingored in attributes handling.
+     */
+    public static String[] INGORED_FIELDS = {SPATIALTABLE_ID_FIELD, "PK_UID", "_id"};
+
     /**
      * Name/path separator for spatialite table names.
      */
