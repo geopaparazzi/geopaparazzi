@@ -52,7 +52,7 @@ public class SpatialiteUtilities {
     /**
      * Array of fields that will be ingored in attributes handling.
      */
-    public static String[] INGORED_FIELDS = {SPATIALTABLE_ID_FIELD, "PK_UID", "_id"};
+    public static String[] IGNORED_FIELDS = {SPATIALTABLE_ID_FIELD, "PK_UID", "_id"};
 
     /**
      * Name/path separator for spatialite table names.
@@ -63,6 +63,21 @@ public class SpatialiteUtilities {
      * Extension for shapefiles prjs.
      */
     public static final String PRJ_EXTENSION = ".prj"; //$NON-NLS-1$
+
+    /**
+     * Checks if a field needs to be ignores.
+     * 
+     * @param field the field to check. 
+     * @return <code>true</code> if the field needs to be ignored.
+     */
+    public static boolean doIgnoreField( String field ) {
+        for( String ingoredField : SpatialiteUtilities.IGNORED_FIELDS ) {
+            if (field.equals(ingoredField)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
       * Create geometry Table from Shape Table.

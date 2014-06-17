@@ -429,7 +429,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
      * @param s south bound.
      * @param e east bound.
      * @param w west bound.
-     * @return the query to run to get all fields
+     * @return the query to run to get all fields.
      */
     public static String getIntersectionQueryBBOX( String boundsSrid, SpatialVectorTable spatialTable, double n, double s,
             double e, double w ) {
@@ -438,13 +438,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
         String fieldNamesList = SpatialiteUtilities.SPATIALTABLE_ID_FIELD;
         // List of non-blob fields
         for( String field : spatialTable.getLabelList() ) {
-            boolean ignore = false;
-            for( String ingoredField : SpatialiteUtilities.INGORED_FIELDS ) {
-                if (field.equals(ingoredField)) {
-                    ignore = true;
-                    break;
-                }
-            }
+            boolean ignore = SpatialiteUtilities.doIgnoreField(field);
             if (!ignore)
                 fieldNamesList += "," + field;
         }

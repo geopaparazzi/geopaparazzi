@@ -15,15 +15,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi.maptools;
+package eu.geopaparazzi.library.features;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.vividsolutions.jts.geom.Geometry;
+import eu.geopaparazzi.library.util.DataType;
 
 /**
  * A spatial feature container.
@@ -32,19 +32,30 @@ import com.vividsolutions.jts.geom.Geometry;
  */
 public class Feature implements Parcelable {
 
-    String id;
+    private String id;
 
-    String tableName;
+    private String readableTableName;
+    private String uniqueTableName;
 
-    Geometry defaultGeometry;
+    private Object defaultGeometry;
 
-    List<String> attributeNames = new ArrayList<String>();
-    List<String> attributeValuesStrings = new ArrayList<String>();
-    List<String> attributeTypes = new ArrayList<String>();
+    private List<String> attributeNames = new ArrayList<String>();
+    private List<String> attributeValuesStrings = new ArrayList<String>();
+    private List<String> attributeTypes = new ArrayList<String>();
 
-    boolean isDirty = false;
+    private boolean isDirty = false;
 
-    Feature() {
+    /**
+     * Constructor.
+     * 
+     * @param tableName the table the feature belongs to.
+     * @param uniqueTableName the unique table name through which get the spatialtable.
+     * @param id the unique id of the feature.
+     */
+    public Feature( String tableName, String uniqueTableName, String id ) {
+        this.readableTableName = tableName;
+        this.uniqueTableName = uniqueTableName;
+        this.id = id;
     }
 
     /**
@@ -52,6 +63,23 @@ public class Feature implements Parcelable {
      */
     public String getId() {
         return id;
+    }
+
+    /**
+     * Add a new attribute.
+     * 
+     * @param name name of the field.
+     * @param value value of the field as string.
+     * @param type type of the field as of {@link DataType#name()}.
+     */
+    public synchronized void addAttribute( String name, String value, String type ) {
+        if (attributeNames.contains(name)) {
+            throw new IllegalArgumentException(MessageFormat.format(
+                    "Attribute already present: {0}. Use setAttribute instead.", name)); //$NON-NLS-1$
+        }
+        attributeNames.add(name);
+        attributeValuesStrings.add(value);
+        attributeTypes.add(type);
     }
 
     /**
@@ -73,7 +101,7 @@ public class Feature implements Parcelable {
      * @param index the index.
      * @param value the new value to set.
      */
-    private void setAttribute( int index, String value ) {
+    public void setAttribute( int index, String value ) {
         attributeValuesStrings.set(index, value);
         isDirty = true;
     }
@@ -95,7 +123,7 @@ public class Feature implements Parcelable {
     /**
      * @return the default geometry.
      */
-    public Geometry getDefaultGeometry() {
+    public Object getDefaultGeometry() {
         return defaultGeometry;
     }
 
@@ -124,7 +152,14 @@ public class Feature implements Parcelable {
      * @return the name of the table the feature is part of.
      */
     public String getTableName() {
-        return tableName;
+        return readableTableName;
+    }
+
+    /**
+     * @return the unique table name.
+     */
+    public String getUniqueTableName() {
+        return uniqueTableName;
     }
 
     /**
@@ -140,7 +175,8 @@ public class Feature implements Parcelable {
 
     public void writeToParcel( Parcel dest, int flags ) {
         dest.writeString(id);
-        dest.writeString(tableName);
+        dest.writeString(readableTableName);
+        dest.writeString(uniqueTableName);
         dest.writeList(attributeNames);
         dest.writeList(attributeValuesStrings);
         dest.writeList(attributeTypes);
@@ -151,13 +187,13 @@ public class Feature implements Parcelable {
     public static final Parcelable.Creator<Feature> CREATOR = new Parcelable.Creator<Feature>(){
         @SuppressWarnings("unchecked")
         public Feature createFromParcel( Parcel in ) {
-            Feature feature = new Feature();
-            feature.id = in.readString();
-            feature.tableName = in.readString();
+            String id = in.readString();
+            String tableName = in.readString();
+            String uniqueTableName = in.readString();
+            Feature feature = new Feature(tableName, uniqueTableName, id);
             feature.attributeNames = in.readArrayList(String.class.getClassLoader());
             feature.attributeValuesStrings = in.readArrayList(String.class.getClassLoader());
             feature.attributeTypes = in.readArrayList(String.class.getClassLoader());
-
             return feature;
         }
 

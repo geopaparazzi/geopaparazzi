@@ -23,6 +23,7 @@ import java.util.List;
 import jsqlite.Database;
 import jsqlite.Exception;
 import jsqlite.Stmt;
+import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.util.DataType;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 
@@ -61,26 +62,21 @@ public class FeatureUtilities {
         List<Feature> featuresList = new ArrayList<Feature>();
 
         String tableName = spatialTable.getTableName();
+        String uniqueNameBasedOnDbFilePath = spatialTable.getUniqueNameBasedOnDbFilePath();
 
         Stmt stmt = database.prepare(query);
         try {
             while( stmt.step() ) {
-                Feature feature = new Feature();
-                feature.tableName = tableName;
                 int column_count = stmt.column_count();
                 // the first is the id, transparent to the user
                 String id = stmt.column_string(0);
-                feature.id = id;
+                Feature feature = new Feature(tableName, uniqueNameBasedOnDbFilePath, id);
                 for( int i = 1; i < column_count; i++ ) {
                     String cName = stmt.column_name(i);
                     String value = stmt.column_string(i);
                     int columnType = stmt.column_type(i);
-                    System.out.println(columnType);
-                    feature.attributeNames.add(cName);
-                    feature.attributeValuesStrings.add(value);
-
                     DataType type = DataType.getType4SqliteCode(columnType);
-                    feature.attributeTypes.add(type.name());
+                    feature.addAttribute(cName, value, type.name());
                 }
                 featuresList.add(feature);
             }

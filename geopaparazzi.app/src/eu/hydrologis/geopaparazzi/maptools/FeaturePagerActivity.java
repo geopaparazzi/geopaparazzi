@@ -18,7 +18,10 @@
 package eu.hydrologis.geopaparazzi.maptools;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import jsqlite.Database;
+import jsqlite.Exception;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -28,6 +31,15 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.features.Feature;
+import eu.geopaparazzi.library.util.StringAsyncTask;
+import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler;
+import eu.geopaparazzi.spatialite.util.DaoSpatialite;
 import eu.hydrologis.geopaparazzi.R;
 
 /**
@@ -82,6 +94,73 @@ public class FeaturePagerActivity extends Activity implements OnPageChangeListen
         finish();
     }
 
+    /**
+     * Save button action.
+     * 
+     * @param view the parent view.
+     */
+    public void onSave( View view ) {
+        int dirtyCount = 0;
+        for( Feature feature : featuresList ) {
+            if (feature.isDirty()) {
+                dirtyCount++;
+            }
+        }
+        if (dirtyCount == 0) {
+            finish();
+            return;
+        }
+
+        StringAsyncTask saveDataTask = new StringAsyncTask(this){
+            private Exception ex;
+            @Override
+            protected String doBackgroundWork() {
+                try {
+                    saveData();
+                } catch (Exception e) {
+                    ex = e;
+                }
+                return "";
+            }
+
+            @Override
+            protected void doUiPostWork( String response ) {
+                if (ex != null) {
+                    GPLog.error(this, "ERROR", ex);
+                    Utilities.errorDialog(FeaturePagerActivity.this, ex, null);
+                }
+                finish();
+            }
+
+        };
+        saveDataTask.startProgressDialog("SAVE", "Saving data to database...", false, null);
+        saveDataTask.execute();
+
+    }
+
+    private void saveData() throws Exception {
+        List<SpatialVectorTable> spatialVectorTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(false);
+        for( Feature feature : featuresList ) {
+            if (feature.isDirty()) {
+                String tableName = feature.getUniqueTableName();
+
+                for( SpatialVectorTable spatialVectorTable : spatialVectorTables ) {
+                    String uniqueNameBasedOnDbFilePath = spatialVectorTable.getUniqueNameBasedOnDbFilePath();
+                    if (tableName.equals(uniqueNameBasedOnDbFilePath)) {
+                        SpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(
+                                spatialVectorTable);
+                        if (vectorHandler instanceof SpatialiteDatabaseHandler) {
+                            SpatialiteDatabaseHandler spatialiteDatabaseHandler = (SpatialiteDatabaseHandler) vectorHandler;
+                            Database database = spatialiteDatabaseHandler.getDatabase();
+                            DaoSpatialite.updateFeatureAttributes(database, feature);
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
     public void onPageScrollStateChanged( int arg0 ) {
         // TODO Auto-generated method stub
 
@@ -94,7 +173,7 @@ public class FeaturePagerActivity extends Activity implements OnPageChangeListen
 
     public void onPageSelected( int state ) {
         Feature feature = featuresList.get(state);
-        tableNameView.setText(feature.tableName);
+        tableNameView.setText(feature.getTableName());
         int count = state + 1;
         featureCounterView.setText(count + "/" + featuresList.size());
     }

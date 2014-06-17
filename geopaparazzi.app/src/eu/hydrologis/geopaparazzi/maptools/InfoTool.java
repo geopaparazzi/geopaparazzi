@@ -43,6 +43,7 @@ import android.os.Parcelable;
 import android.view.MotionEvent;
 import android.view.View;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
