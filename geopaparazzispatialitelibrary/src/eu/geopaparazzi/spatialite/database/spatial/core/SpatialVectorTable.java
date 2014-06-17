@@ -435,7 +435,9 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
 
     @Override
     public boolean isEditable() {
-        // TODO implement properly
-        return true;
+        if (view_read_only < 0) {
+            return true;
+        }
+        return false;
     }
 }
