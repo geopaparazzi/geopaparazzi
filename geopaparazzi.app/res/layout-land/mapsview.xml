@@ -189,12 +189,12 @@
                     </ImageButton>
 
                     <Button
-                        android:id="@+id/info"
+                        android:id="@+id/toggleEditingButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/mapview_bottom_space"
                         android:layout_marginLeft="@dimen/mapview_bottom_space"
-                        android:background="@drawable/infomode" >
+                        android:background="@drawable/ic_toggle_editing_off" >
                     </Button>
                 </LinearLayout>
             </FrameLayout>

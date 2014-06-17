@@ -334,9 +334,9 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         final ImageButton toggleMeasuremodeButton = (ImageButton) findViewById(R.id.togglemeasuremodebutton);
         toggleMeasuremodeButton.setOnClickListener(this);
 
-        final Button infoModeButton = (Button) findViewById(R.id.info);
-        infoModeButton.setOnClickListener(this);
-        infoModeButton.setOnLongClickListener(this);
+        final Button toggleEditingButton = (Button) findViewById(R.id.toggleEditingButton);
+        toggleEditingButton.setOnClickListener(this);
+        toggleEditingButton.setOnLongClickListener(this);
 
         try {
             handleOsmSliderView();
@@ -1401,9 +1401,9 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                 sliderDrawView.enableTool(measureTool);
             }
             break;
-        case R.id.info:
+        case R.id.toggleEditingButton:
             MapTool mapTool = sliderDrawView.getMapTool();
-            final Button infoModeButton = (Button) findViewById(R.id.info);
+            final Button toggleEditingButton = (Button) findViewById(R.id.toggleEditingButton);
             if (!(mapTool instanceof InfoTool)) {
                 // check maps enablement
                 try {
@@ -1423,11 +1423,11 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                 } catch (jsqlite.Exception e) {
                     e.printStackTrace();
                 }
-                infoModeButton.setBackgroundResource(R.drawable.infomode_on);
+                toggleEditingButton.setBackgroundResource(R.drawable.ic_toggle_editing_on);
                 InfoTool infoTool = new InfoTool(sliderDrawView, mapView);
                 sliderDrawView.enableTool(infoTool);
             } else {
-                infoModeButton.setBackgroundResource(R.drawable.infomode);
+                toggleEditingButton.setBackgroundResource(R.drawable.ic_toggle_editing_off);
                 sliderDrawView.disableTool();
             }
             break;
@@ -1439,7 +1439,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
 
     public boolean onLongClick( View v ) {
         switch( v.getId() ) {
-        case R.id.info:
+        case R.id.toggleEditingButton:
             Intent editableLayersIntent = new Intent(MapsActivity.this, EditableLayersListActivity.class);
             startActivity(editableLayersIntent);
             return true;
