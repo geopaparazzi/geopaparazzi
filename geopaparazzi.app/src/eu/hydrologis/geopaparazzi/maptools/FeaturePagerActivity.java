@@ -49,6 +49,7 @@ public class FeaturePagerActivity extends Activity implements OnPageChangeListen
         Bundle extras = getIntent().getExtras();
         featuresList = extras.getParcelableArrayList(FeatureUtilities.KEY_FEATURESLIST);
         boolean isReadOnly = extras.getBoolean(FeatureUtilities.KEY_READONLY);
+        isReadOnly = false; // FIXME
 
         PagerAdapter featureAdapter = new FeaturePageAdapter(this, featuresList, isReadOnly);
 

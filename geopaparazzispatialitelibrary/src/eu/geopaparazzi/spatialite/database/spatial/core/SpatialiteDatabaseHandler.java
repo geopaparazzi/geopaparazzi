@@ -420,6 +420,9 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
     /**
      * Get the query to run for a bounding box intersection.
      * 
+     * <p>This assures that the first element of the query is
+     * the id field for the record as defined in {@link SpatialiteUtilities#SPATIALTABLE_ID_FIELD}.
+     * 
      * @param boundsSrid the srid of the bounds requested.
      * @param spatialTable the {@link SpatialVectorTable} to query.
      * @param n north bound.
@@ -432,12 +435,11 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             double e, double w ) {
         String query = null;
         boolean doTransform = false;
-        String fieldNamesList = "";
+        String fieldNamesList = SpatialiteUtilities.SPATIALTABLE_ID_FIELD;
         // List of non-blob fields
         for( String field : spatialTable.getLabelList() ) {
-            if (!fieldNamesList.equals(""))
-                fieldNamesList += ",";
-            fieldNamesList += field;
+            if (!field.equals(SpatialiteUtilities.SPATIALTABLE_ID_FIELD))
+                fieldNamesList += "," + field;
         }
         if (!spatialTable.getSrid().equals(boundsSrid)) {
             doTransform = true;

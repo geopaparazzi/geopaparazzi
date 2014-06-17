@@ -21,7 +21,9 @@ import java.util.List;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -30,6 +32,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import eu.geopaparazzi.library.R;
+import eu.geopaparazzi.library.util.DataType;
 
 /**
  * Page adapter for features.
@@ -71,7 +74,7 @@ public class FeaturePageAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem( ViewGroup container, int position ) {
-        Feature feature = featuresList.get(position);
+        final Feature feature = featuresList.get(position);
 
         int bgColor = context.getResources().getColor(R.color.formbgcolor);
         int textColor = context.getResources().getColor(R.color.formcolor);
@@ -96,9 +99,12 @@ public class FeaturePageAdapter extends PagerAdapter {
 
         List<String> attributeNames = feature.getAttributeNames();
         List<String> attributeValues = feature.getAttributeValuesStrings();
+        List<String> attributeTypes = feature.getAttributeTypes();
         for( int i = 0; i < attributeNames.size(); i++ ) {
-            String name = attributeNames.get(i);
+            final String name = attributeNames.get(i);
             String value = attributeValues.get(i);
+            String typeString = attributeTypes.get(i);
+            DataType type = DataType.getType4Name(typeString);
 
             TextView textView = new TextView(context);
             textView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
@@ -109,7 +115,7 @@ public class FeaturePageAdapter extends PagerAdapter {
 
             linearLayoutView.addView(textView);
 
-            EditText editView = new EditText(context);
+            final EditText editView = new EditText(context);
             LinearLayout.LayoutParams editViewParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                     LayoutParams.WRAP_CONTENT);
             editViewParams.setMargins(margin, 0, margin, 0);
@@ -119,22 +125,38 @@ public class FeaturePageAdapter extends PagerAdapter {
             editView.setEnabled(!isReadOnly);
             // editView.setTextAppearance(context, android.R.style.TextAppearance_Medium);
 
-            switch( 0 ) {
-            case 1:
+            switch( type ) {
+            case DOUBLE:
+            case FLOAT:
                 editView.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
                 break;
-            case 2:
+            case PHONE:
                 editView.setInputType(InputType.TYPE_CLASS_PHONE);
                 break;
-            case 3:
+            case DATE:
                 editView.setInputType(InputType.TYPE_CLASS_DATETIME);
                 break;
-            case 4:
+            case INTEGER:
                 editView.setInputType(InputType.TYPE_CLASS_NUMBER);
                 break;
             default:
                 break;
             }
+
+            editView.addTextChangedListener(new TextWatcher(){
+                public void onTextChanged( CharSequence s, int start, int before, int count ) {
+                    // ignore
+                }
+
+                public void beforeTextChanged( CharSequence s, int start, int count, int after ) {
+                    // ignore
+                }
+
+                public void afterTextChanged( Editable s ) {
+                    String text = editView.getText().toString();
+                    feature.setAttribute(name, text);
+                }
+            });
 
             linearLayoutView.addView(editView);
         }

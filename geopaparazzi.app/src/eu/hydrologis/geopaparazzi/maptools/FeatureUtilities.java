@@ -23,6 +23,7 @@ import java.util.List;
 import jsqlite.Database;
 import jsqlite.Exception;
 import jsqlite.Stmt;
+import eu.geopaparazzi.library.util.DataType;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 
 /**
@@ -66,6 +67,7 @@ public class FeatureUtilities {
                 Feature feature = new Feature();
                 feature.tableName = tableName;
                 int column_count = stmt.column_count();
+                // the first is the id, transparent to the user
                 String id = stmt.column_string(0);
                 feature.id = id;
                 for( int i = 1; i < column_count; i++ ) {
@@ -75,8 +77,9 @@ public class FeatureUtilities {
                     System.out.println(columnType);
                     feature.attributeNames.add(cName);
                     feature.attributeValuesStrings.add(value);
-                    // FIXME
-                    feature.attributeClasses.add(Float.class.getCanonicalName());
+
+                    DataType type = DataType.getType4SqliteCode(columnType);
+                    feature.attributeTypes.add(type.name());
                 }
                 featuresList.add(feature);
             }

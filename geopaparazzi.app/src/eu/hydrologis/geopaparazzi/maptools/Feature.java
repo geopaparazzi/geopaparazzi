@@ -40,7 +40,9 @@ public class Feature implements Parcelable {
 
     List<String> attributeNames = new ArrayList<String>();
     List<String> attributeValuesStrings = new ArrayList<String>();
-    List<String> attributeClasses = new ArrayList<String>();
+    List<String> attributeTypes = new ArrayList<String>();
+
+    boolean isDirty = false;
 
     Feature() {
     }
@@ -50,6 +52,30 @@ public class Feature implements Parcelable {
      */
     public String getId() {
         return id;
+    }
+
+    /**
+     * Change an attribute through its field name.
+     * 
+     * @param field the field name to change.
+     * @param value the new value to set.
+     */
+    public void setAttribute( String field, String value ) {
+        int indexOf = attributeNames.indexOf(field);
+        if (indexOf != -1) {
+            setAttribute(indexOf, value);
+        }
+    }
+
+    /**
+     * Change an attribute through its index.
+     * 
+     * @param index the index.
+     * @param value the new value to set.
+     */
+    private void setAttribute( int index, String value ) {
+        attributeValuesStrings.set(index, value);
+        isDirty = true;
     }
 
     /**
@@ -90,8 +116,8 @@ public class Feature implements Parcelable {
     /**
      * @return the list of attributes classes.
      */
-    public List<String> getAttributeClasses() {
-        return attributeClasses;
+    public List<String> getAttributeTypes() {
+        return attributeTypes;
     }
 
     /**
@@ -99,6 +125,13 @@ public class Feature implements Parcelable {
      */
     public String getTableName() {
         return tableName;
+    }
+
+    /**
+     * @return <code>true</code> if the features has been modified.
+     */
+    public boolean isDirty() {
+        return isDirty;
     }
 
     public int describeContents() {
@@ -110,7 +143,7 @@ public class Feature implements Parcelable {
         dest.writeString(tableName);
         dest.writeList(attributeNames);
         dest.writeList(attributeValuesStrings);
-        dest.writeList(attributeClasses);
+        dest.writeList(attributeTypes);
         // TODO add geometry
     }
 
@@ -123,7 +156,7 @@ public class Feature implements Parcelable {
             feature.tableName = in.readString();
             feature.attributeNames = in.readArrayList(String.class.getClassLoader());
             feature.attributeValuesStrings = in.readArrayList(String.class.getClassLoader());
-            feature.attributeClasses = in.readArrayList(String.class.getClassLoader());
+            feature.attributeTypes = in.readArrayList(String.class.getClassLoader());
 
             return feature;
         }

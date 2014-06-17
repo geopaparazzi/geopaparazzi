@@ -238,7 +238,7 @@ public class InfoTool extends MapTool implements DrawingTool {
                                     publishProgress(1);
                                     // Escape early if cancel() is called
                                     if (isCancelled())
-                                        break;
+                                        return "CANCEL";
                                 }
                             }
                         }
@@ -258,6 +258,8 @@ public class InfoTool extends MapTool implements DrawingTool {
                     Utilities.dismissProgressDialog(infoProgressDialog);
                     if (response.startsWith("ERROR")) {
                         Utilities.messageDialog(context, response, null);
+                    } else if (response.startsWith("CANCEL")) {
+                        return;
                     } else {
                         Intent intent = new Intent(context, FeaturePagerActivity.class);
                         intent.putParcelableArrayListExtra(FeatureUtilities.KEY_FEATURESLIST,

@@ -26,10 +26,12 @@ import java.util.Map;
 import jsqlite.Database;
 import jsqlite.Stmt;
 import android.content.Context;
+
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKBReader;
+
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
@@ -42,6 +44,10 @@ import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
  */
 @SuppressWarnings("nls")
 public class SpatialiteUtilities {
+    /**
+     * Name of the table field that s used to identify the record.
+     */
+    public static final String SPATIALTABLE_ID_FIELD = "ROWID"; //$NON-NLS-1$
     /**
      * Name/path separator for spatialite table names.
      */
@@ -390,7 +396,8 @@ public class SpatialiteUtilities {
      * @param centerCoordinate the coordinate array to fill with the center.
      * @param boundsCoordinates the coordinate array to fill with the bounds as [w,s,e,n].
     */
-    public static void collectBoundsAndCenter( Database sqlite_db, String srid, double[] centerCoordinate, double[] boundsCoordinates ) {
+    public static void collectBoundsAndCenter( Database sqlite_db, String srid, double[] centerCoordinate,
+            double[] boundsCoordinates ) {
         String centerQuery = "";
         try {
             Stmt centerStmt = null;
@@ -425,7 +432,8 @@ public class SpatialiteUtilities {
                 centerBuilder.append("),4326))) AS Envelope ");
                 // centerBuilder.append("';");
                 centerQuery = centerBuilder.toString();
-                // GPLog.androidLog(-1, "SpatialiteUtilities.collectBoundsAndCenter Bounds[" + centerQuery + "]");
+                // GPLog.androidLog(-1, "SpatialiteUtilities.collectBoundsAndCenter Bounds[" +
+                // centerQuery + "]");
                 centerStmt = sqlite_db.prepare(centerQuery);
                 if (centerStmt.step()) {
                     byte[] geomBytes = centerStmt.column_bytes(0);
@@ -463,8 +471,10 @@ public class SpatialiteUtilities {
      * @param i_tile_size default 256 [Tile.TILE_SIZE].
      * @return the image data as byte[] as jpeg
      */
-    public static byte[] rl2_GetMapImageTile( Database sqlite_db,String destSrid, String coverageName,double[] tileBounds,int i_tile_size ) {
-        return DaoSpatialite.rl2_GetMapImage(sqlite_db,"4326",destSrid,coverageName,i_tile_size,i_tile_size,tileBounds,"default","image/jpeg","#ffffff",0,80,1 );
+    public static byte[] rl2_GetMapImageTile( Database sqlite_db, String destSrid, String coverageName, double[] tileBounds,
+            int i_tile_size ) {
+        return DaoSpatialite.rl2_GetMapImage(sqlite_db, "4326", destSrid, coverageName, i_tile_size, i_tile_size, tileBounds,
+                "default", "image/jpeg", "#ffffff", 0, 80, 1);
     }
 
 }
