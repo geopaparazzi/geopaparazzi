@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -85,15 +84,12 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.library.features.EditManager;
-import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
@@ -114,9 +110,8 @@ import eu.geopaparazzi.library.util.debug.Debug;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.activities.DataListActivity;
+import eu.geopaparazzi.spatialite.database.spatial.activities.EditableLayersListActivity;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTableLayer;
-import eu.geopaparazzi.spatialite.util.SpatialTableNameComparator;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
@@ -1445,55 +1440,8 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
     public boolean onLongClick( View v ) {
         switch( v.getId() ) {
         case R.id.info:
-            final List<SpatialVectorTable> editableSpatialVectorTables = new ArrayList<SpatialVectorTable>();
-            final List<String> editableSpatialVectorTablesNames = new ArrayList<String>();
-            try {
-                List<SpatialVectorTable> spatialVectorTables = SpatialDatabasesManager.getInstance()
-                        .getSpatialVectorTables(false);
-
-                for( SpatialVectorTable spatialVectorTable : spatialVectorTables ) {
-                    if (spatialVectorTable.isEditable()) {
-                        editableSpatialVectorTables.add(spatialVectorTable);
-                        editableSpatialVectorTablesNames.add(spatialVectorTable.getTableName());
-                    }
-                }
-
-            } catch (jsqlite.Exception e) {
-                e.printStackTrace();
-            }
-
-            Collections.sort(editableSpatialVectorTables, new SpatialTableNameComparator());
-            Collections.sort(editableSpatialVectorTablesNames);
-
-            String[] items = editableSpatialVectorTablesNames.toArray(new String[0]);
-
-            ILayer editLayer = EditManager.INSTANCE.getEditLayer();
-            int index = 0;
-            if (editLayer instanceof SpatialVectorTableLayer) {
-                SpatialVectorTableLayer layer = (SpatialVectorTableLayer) editLayer;
-                SpatialVectorTable spatialVectorTable = layer.getSpatialVectorTable();
-                int indexOf = editableSpatialVectorTables.indexOf(spatialVectorTable);
-                if (indexOf != -1) {
-                    index = indexOf;
-                }
-            }
-            Builder dialogBuilder = new AlertDialog.Builder(this).setSingleChoiceItems(items, index, null).setPositiveButton(
-                    android.R.string.ok, new DialogInterface.OnClickListener(){
-                        public void onClick( DialogInterface dialog, int whichButton ) {
-                            dialog.dismiss();
-                            int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
-                            SpatialVectorTable spatialVectorTable = editableSpatialVectorTables.get(selectedPosition);
-                            ILayer layer = new SpatialVectorTableLayer(spatialVectorTable);
-                            EditManager.INSTANCE.setEditLayer(layer);
-                        }
-                    });
-            AlertDialog dialog = dialogBuilder.create();
-            dialog.show();
-            if (index != -1) {
-                // move to the right position (this does not actually select the item)
-                ListView listView = dialog.getListView();
-                listView.setSelection(index);
-            }
+            Intent editableLayersIntent = new Intent(MapsActivity.this, EditableLayersListActivity.class);
+            startActivity(editableLayersIntent);
             return true;
         default:
             break;

@@ -225,7 +225,7 @@ public class GPLog {
      * Error log.
      * 
      * @param caller caller object.
-     * @param msg message.
+     * @param msg message or <code>null</code>.
      * @param t a throwable.
      */
     public static void error( Object caller, String msg, Throwable t ) {
