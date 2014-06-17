@@ -74,6 +74,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -83,12 +84,15 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.features.EditManager;
+import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
@@ -110,6 +114,7 @@ import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.activities.DataListActivity;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTableLayer;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
@@ -120,6 +125,7 @@ import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.maps.overlays.ArrayGeopaparazziOverlay;
 import eu.hydrologis.geopaparazzi.maptools.InfoTool;
 import eu.hydrologis.geopaparazzi.maptools.TapMeasureTool;
+import eu.hydrologis.geopaparazzi.maptools.core.MapTool;
 import eu.hydrologis.geopaparazzi.osm.OsmCategoryActivity;
 import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
@@ -131,7 +137,7 @@ import eu.hydrologis.geopaparazzi.util.Note;
 /**
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class MapsActivity extends MapActivity implements OnTouchListener, OnClickListener {
+public class MapsActivity extends MapActivity implements OnTouchListener, OnClickListener, OnLongClickListener {
     private final int INSERTCOORD_RETURN_CODE = 666;
     private final int ZOOM_RETURN_CODE = 667;
     private final int GPSDATAPROPERTIES_RETURN_CODE = 668;
@@ -333,6 +339,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
 
         final Button infoModeButton = (Button) findViewById(R.id.info);
         infoModeButton.setOnClickListener(this);
+        infoModeButton.setOnLongClickListener(this);
 
         try {
             handleOsmSliderView();
@@ -1398,9 +1405,9 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
             }
             break;
         case R.id.info:
-            boolean isInInfoMode = !mapView.isClickable();
+            MapTool mapTool = sliderDrawView.getMapTool();
             final Button infoModeButton = (Button) findViewById(R.id.info);
-            if (!isInInfoMode) {
+            if (!(mapTool instanceof InfoTool)) {
                 // check maps enablement
                 try {
                     final SpatialDatabasesManager sdbManager = SpatialDatabasesManager.getInstance();
@@ -1420,20 +1427,72 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                     e.printStackTrace();
                 }
                 infoModeButton.setBackgroundResource(R.drawable.infomode_on);
-            } else {
-                infoModeButton.setBackgroundResource(R.drawable.infomode);
-            }
-            if (isInInfoMode) {
-                sliderDrawView.disableTool();
-            } else {
                 InfoTool infoTool = new InfoTool(sliderDrawView, mapView);
                 sliderDrawView.enableTool(infoTool);
+            } else {
+                infoModeButton.setBackgroundResource(R.drawable.infomode);
+                sliderDrawView.disableTool();
             }
             break;
 
         default:
             break;
         }
+    }
+
+    public boolean onLongClick( View v ) {
+        switch( v.getId() ) {
+        case R.id.info:
+            final List<SpatialVectorTable> editableSpatialVectorTables = new ArrayList<SpatialVectorTable>();
+            final List<String> editableSpatialVectorTablesNames = new ArrayList<String>();
+            try {
+                List<SpatialVectorTable> spatialVectorTables = SpatialDatabasesManager.getInstance()
+                        .getSpatialVectorTables(false);
+
+                for( SpatialVectorTable spatialVectorTable : spatialVectorTables ) {
+                    if (spatialVectorTable.isEditable()) {
+                        editableSpatialVectorTables.add(spatialVectorTable);
+                        editableSpatialVectorTablesNames.add(spatialVectorTable.getTableName());
+                    }
+                }
+
+            } catch (jsqlite.Exception e) {
+                e.printStackTrace();
+            }
+
+            String[] items = editableSpatialVectorTablesNames.toArray(new String[0]);
+
+            ILayer editLayer = EditManager.INSTANCE.getEditLayer();
+            int index = 0;
+            if (editLayer instanceof SpatialVectorTableLayer) {
+                SpatialVectorTableLayer layer = (SpatialVectorTableLayer) editLayer;
+                SpatialVectorTable spatialVectorTable = layer.getSpatialVectorTable();
+                int indexOf = editableSpatialVectorTables.indexOf(spatialVectorTable);
+                if (indexOf != -1) {
+                    index = indexOf;
+                }
+            }
+            Builder dialogBuilder = new AlertDialog.Builder(this).setSingleChoiceItems(items, index, null).setPositiveButton(
+                    android.R.string.ok, new DialogInterface.OnClickListener(){
+                        public void onClick( DialogInterface dialog, int whichButton ) {
+                            dialog.dismiss();
+                            int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                            SpatialVectorTable spatialVectorTable = editableSpatialVectorTables.get(selectedPosition);
+                            ILayer layer = new SpatialVectorTableLayer(spatialVectorTable);
+                            EditManager.INSTANCE.setEditLayer(layer);
+                        }
+                    });
+            AlertDialog dialog = dialogBuilder.create();
+            dialog.show();
+            if (index != -1) {
+                ListView listView = dialog.getListView();
+                listView.setSelection(index);
+            }
+            return true;
+        default:
+            break;
+        }
+        return false;
     }
 
 }

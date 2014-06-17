@@ -221,7 +221,8 @@ public abstract class SpatialTable implements Serializable {
         if (description != null) {
             return description;
         }
-        return "map_type["+getMapType()+"] table_name["+getTableName() + "] srid["+getSrid()+"] bounds[" + getBoundsAsString() + "] center[" + getCenterAsString() + "]";
+        return "map_type[" + getMapType() + "] table_name[" + getTableName() + "] srid[" + getSrid() + "] bounds["
+                + getBoundsAsString() + "] center[" + getCenterAsString() + "]";
     }
 
     /**
@@ -402,4 +403,9 @@ public abstract class SpatialTable implements Serializable {
     public String getCenterAsString() {
         return centerX + "," + centerY + "," + defaultZoom;
     }
+
+    /**
+     * @return true if the table is editable.
+     */
+    public abstract boolean isEditable();
 }

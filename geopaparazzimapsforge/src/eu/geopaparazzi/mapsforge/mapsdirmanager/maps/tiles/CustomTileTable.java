@@ -135,4 +135,9 @@ public class CustomTileTable extends SpatialTable {
         return tileQuery;
     }
 
+    @Override
+    public boolean isEditable() {
+        return false;
+    }
+
 }

@@ -60,16 +60,30 @@ public class SliderDrawView extends View {
      * Disable tool. 
      */
     public void disableTool() {
-        mapTool.disable();
+        if (mapTool != null)
+            mapTool.disable();
         mapTool = null;
     }
 
     /**
      * Enable tool.
+     * 
+     * <p>If a tool is already enabled, that one is disabled first.
      *  
      * @param mapTool the tool to use.
      */
     public void enableTool( MapTool mapTool ) {
+        if (mapTool != null) {
+            // first disable the current tool
+            disableTool();
+        }
         this.mapTool = mapTool;
+    }
+
+    /**
+     * @return the current {@link MapTool} or <code>null</code>.
+     */
+    public MapTool getMapTool() {
+        return mapTool;
     }
 }

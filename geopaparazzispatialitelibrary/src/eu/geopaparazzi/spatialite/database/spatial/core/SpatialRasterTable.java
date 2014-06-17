@@ -171,4 +171,9 @@ public class SpatialRasterTable extends SpatialTable implements Serializable {
         return tileQuery;
     }
 
+    @Override
+    public boolean isEditable() {
+        return false;
+    }
+
 }
