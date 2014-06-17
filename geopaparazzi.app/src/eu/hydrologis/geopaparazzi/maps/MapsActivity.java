@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -115,6 +116,7 @@ import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.activities.DataListActivity;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTableLayer;
+import eu.geopaparazzi.spatialite.util.SpatialTableNameComparator;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
@@ -1460,6 +1462,9 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                 e.printStackTrace();
             }
 
+            Collections.sort(editableSpatialVectorTables, new SpatialTableNameComparator());
+            Collections.sort(editableSpatialVectorTablesNames);
+
             String[] items = editableSpatialVectorTablesNames.toArray(new String[0]);
 
             ILayer editLayer = EditManager.INSTANCE.getEditLayer();
@@ -1485,6 +1490,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
             AlertDialog dialog = dialogBuilder.create();
             dialog.show();
             if (index != -1) {
+                // move to the right position (this does not actually select the item)
                 ListView listView = dialog.getListView();
                 listView.setSelection(index);
             }
