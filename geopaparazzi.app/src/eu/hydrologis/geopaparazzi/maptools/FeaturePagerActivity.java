@@ -23,7 +23,11 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.TextView;
 import eu.hydrologis.geopaparazzi.R;
 
 /**
@@ -31,7 +35,11 @@ import eu.hydrologis.geopaparazzi.R;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class FeaturePagerActivity extends Activity {
+public class FeaturePagerActivity extends Activity implements OnPageChangeListener {
+
+    private TextView tableNameView;
+    private TextView featureCounterView;
+    private ArrayList<Feature> featuresList;
 
     @Override
     protected void onCreate( Bundle savedInstanceState ) {
@@ -39,14 +47,54 @@ public class FeaturePagerActivity extends Activity {
         setContentView(R.layout.features_viewer);
 
         Bundle extras = getIntent().getExtras();
-        ArrayList<Feature> featuresList = extras.getParcelableArrayList("FEATURESLIST");
+        featuresList = extras.getParcelableArrayList(FeatureUtilities.KEY_FEATURESLIST);
+        boolean isReadOnly = extras.getBoolean(FeatureUtilities.KEY_READONLY);
 
-        PagerAdapter featureAdapter = new FeaturePageAdapter(this, featuresList, true);
+        PagerAdapter featureAdapter = new FeaturePageAdapter(this, featuresList, isReadOnly);
 
         ViewPager featuresPager = (ViewPager) findViewById(R.id.featurePager);
         // ViewPager viewPager = new ViewPager(this);
         featuresPager.setAdapter(featureAdapter);
+        featuresPager.setOnPageChangeListener(this);
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+        tableNameView = (TextView) findViewById(R.id.tableNameView);
+        featureCounterView = (TextView) findViewById(R.id.featureCounterView);
+
+        if (isReadOnly) {
+            Button saveButton = (Button) findViewById(R.id.saveButton);
+            saveButton.setVisibility(View.GONE);
+            Button editButton = (Button) findViewById(R.id.editButton);
+            editButton.setVisibility(View.GONE);
+        }
+
+        onPageSelected(0);
+    }
+
+    /**
+     * Cancel button action.
+     * 
+     * @param view the parent view.
+     */
+    public void onCancel( View view ) {
+        finish();
+    }
+
+    public void onPageScrollStateChanged( int arg0 ) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void onPageScrolled( int arg0, float arg1, int arg2 ) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void onPageSelected( int state ) {
+        Feature feature = featuresList.get(state);
+        tableNameView.setText(feature.tableName);
+        int count = state + 1;
+        featureCounterView.setText(count + "/" + featuresList.size());
     }
 }

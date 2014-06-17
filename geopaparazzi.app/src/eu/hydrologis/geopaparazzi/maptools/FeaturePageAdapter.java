@@ -90,7 +90,7 @@ public class FeaturePageAdapter extends PagerAdapter {
         layoutParams.setMargins(margin, margin, margin, margin);
         linearLayoutView.setLayoutParams(layoutParams);
         linearLayoutView.setOrientation(LinearLayout.VERTICAL);
-        int padding = 40;
+        int padding = 10;
         linearLayoutView.setPadding(padding, padding, padding, padding);
         scrollView.addView(linearLayoutView);
 
@@ -110,7 +110,10 @@ public class FeaturePageAdapter extends PagerAdapter {
             linearLayoutView.addView(textView);
 
             EditText editView = new EditText(context);
-            editView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+            LinearLayout.LayoutParams editViewParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+                    LayoutParams.WRAP_CONTENT);
+            editViewParams.setMargins(margin, 0, margin, 0);
+            editView.setLayoutParams(editViewParams);
             editView.setPadding(padding * 2, padding, padding * 2, padding);
             editView.setText(value);
             editView.setEnabled(!isReadOnly);

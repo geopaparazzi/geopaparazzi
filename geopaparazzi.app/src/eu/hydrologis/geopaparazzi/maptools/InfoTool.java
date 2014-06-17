@@ -260,7 +260,9 @@ public class InfoTool extends MapTool implements DrawingTool {
                         Utilities.messageDialog(context, response, null);
                     } else {
                         Intent intent = new Intent(context, FeaturePagerActivity.class);
-                        intent.putParcelableArrayListExtra("FEATURESLIST", (ArrayList< ? extends Parcelable>) features); //$NON-NLS-1$
+                        intent.putParcelableArrayListExtra(FeatureUtilities.KEY_FEATURESLIST,
+                                (ArrayList< ? extends Parcelable>) features);
+                        intent.putExtra(FeatureUtilities.KEY_READONLY, true);
                         context.startActivity(intent);
                     }
                 }

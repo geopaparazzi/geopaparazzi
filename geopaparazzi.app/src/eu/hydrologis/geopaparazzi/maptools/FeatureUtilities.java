@@ -33,6 +33,16 @@ import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 public class FeatureUtilities {
 
     /**
+     * Key to pass featuresLists through activities.
+     */
+    public static final String KEY_FEATURESLIST = "KEY_FEATURESLIST"; //$NON-NLS-1$
+
+    /**
+     * Key to pass a readonly flag through activities.
+     */
+    public static final String KEY_READONLY = "KEY_READONLY"; //$NON-NLS-1$
+
+    /**
      * Build the features given by a query.
      * 
      * <b>Note that it is mandatory that the first item of the 
