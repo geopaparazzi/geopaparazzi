@@ -83,7 +83,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
@@ -155,9 +154,8 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
     private final int MENU_COMPASS_ID = 8;
     private final int MENU_SENDDATA_ID = 9;
 
-    private static final String IS_SLIDER_OPEN = "IS_SLIDER_OPEN"; //$NON-NLS-1$
+    private static final String ARE_BUTTONSVISIBLE_OPEN = "ARE_BUTTONSVISIBLE_OPEN"; //$NON-NLS-1$
     private DecimalFormat formatter = new DecimalFormat("00"); //$NON-NLS-1$
-    private SlidingDrawer slidingDrawer;
     private MapView mapView;
     private int maxZoomLevel = -1;
     private int minZoomLevel = -1;
@@ -209,6 +207,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
 
         Button menuButton = (Button) findViewById(R.id.menu_map_btn);
         menuButton.setOnClickListener(this);
+        menuButton.setOnLongClickListener(this);
         registerForContextMenu(menuButton);
 
         // register for battery updates
@@ -224,7 +223,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         if (keepScreenOn) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
-        boolean isSliderOpen = preferences.getBoolean(IS_SLIDER_OPEN, false);
+        boolean areButtonsVisible = preferences.getBoolean(ARE_BUTTONSVISIBLE_OPEN, false);
 
         /*
          * create main mapview
@@ -293,31 +292,10 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         centerOnGps = (ImageButton) findViewById(R.id.center_on_gps_btn);
         centerOnGps.setOnClickListener(this);
 
-        // slidingdrawer
-        final int slidingId = R.id.mapslide;
-        slidingDrawer = (SlidingDrawer) findViewById(slidingId);
-        final ImageView slideHandleButton = (ImageView) findViewById(R.id.mapslidehandle);
-
-        slidingDrawer.setOnDrawerOpenListener(new SlidingDrawer.OnDrawerOpenListener(){
-            public void onDrawerOpened() {
-                slideHandleButton.setBackgroundResource(R.drawable.min);
-                Editor edit = preferences.edit();
-                edit.putBoolean(IS_SLIDER_OPEN, true);
-                edit.commit();
-            }
-        });
-        slidingDrawer.setOnDrawerCloseListener(new SlidingDrawer.OnDrawerCloseListener(){
-            public void onDrawerClosed() {
-                slideHandleButton.setBackgroundResource(R.drawable.max);
-                Editor edit = preferences.edit();
-                edit.putBoolean(IS_SLIDER_OPEN, false);
-                edit.commit();
-            }
-        });
-        if (isSliderOpen) {
-            slidingDrawer.open();
+        if (areButtonsVisible) {
+            setAllButtoonsEnablement(true);
         } else {
-            slidingDrawer.close();
+            setAllButtoonsEnablement(false);
         }
 
         sliderDrawView = (SliderDrawView) findViewById(R.id.sliderdrawview);
@@ -1447,11 +1425,53 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         }
     }
 
+    private void setAllButtoonsEnablement( boolean enable ) {
+        ImageButton addnotebytagButton = (ImageButton) findViewById(R.id.addnotebytagbutton);
+        ImageButton addBookmarkButton = (ImageButton) findViewById(R.id.addbookmarkbutton);
+        ImageButton listNotesButton = (ImageButton) findViewById(R.id.listnotesbutton);
+        ImageButton listBookmarksButton = (ImageButton) findViewById(R.id.bookmarkslistbutton);
+        ImageButton toggleMeasuremodeButton = (ImageButton) findViewById(R.id.togglemeasuremodebutton);
+        Button zoomInButton = (Button) findViewById(R.id.zoomin);
+        Button zoomOutButton = (Button) findViewById(R.id.zoomout);
+        Button toggleEditingButton = (Button) findViewById(R.id.toggleEditingButton);
+
+        if (enable) {
+            addnotebytagButton.setVisibility(View.VISIBLE);
+            addBookmarkButton.setVisibility(View.VISIBLE);
+            listNotesButton.setVisibility(View.VISIBLE);
+            listBookmarksButton.setVisibility(View.VISIBLE);
+            toggleMeasuremodeButton.setVisibility(View.VISIBLE);
+            batteryButton.setVisibility(View.VISIBLE);
+            centerOnGps.setVisibility(View.VISIBLE);
+            zoomInButton.setVisibility(View.VISIBLE);
+            zoomOutButton.setVisibility(View.VISIBLE);
+            toggleEditingButton.setVisibility(View.VISIBLE);
+        } else {
+            addnotebytagButton.setVisibility(View.GONE);
+            addBookmarkButton.setVisibility(View.GONE);
+            listNotesButton.setVisibility(View.GONE);
+            listBookmarksButton.setVisibility(View.GONE);
+            toggleMeasuremodeButton.setVisibility(View.GONE);
+            batteryButton.setVisibility(View.GONE);
+            centerOnGps.setVisibility(View.GONE);
+            zoomInButton.setVisibility(View.GONE);
+            zoomOutButton.setVisibility(View.GONE);
+            toggleEditingButton.setVisibility(View.GONE);
+        }
+    }
+
     public boolean onLongClick( View v ) {
         switch( v.getId() ) {
         case R.id.toggleEditingButton:
             Intent editableLayersIntent = new Intent(MapsActivity.this, EditableLayersListActivity.class);
             startActivity(editableLayersIntent);
+            return true;
+        case R.id.menu_map_btn:
+            boolean areButtonsVisible = preferences.getBoolean(ARE_BUTTONSVISIBLE_OPEN, false);
+            setAllButtoonsEnablement(!areButtonsVisible);
+            Editor edit = preferences.edit();
+            edit.putBoolean(ARE_BUTTONSVISIBLE_OPEN, !areButtonsVisible);
+            edit.commit();
             return true;
         default:
             break;
