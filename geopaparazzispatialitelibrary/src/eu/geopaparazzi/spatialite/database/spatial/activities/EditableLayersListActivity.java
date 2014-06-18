@@ -41,6 +41,7 @@ import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTableLayer;
+import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
 import eu.geopaparazzi.spatialite.util.SpatialTableNameComparator;
 
 /**
@@ -72,8 +73,19 @@ public class EditableLayersListActivity extends ListActivity {
             List<SpatialVectorTable> spatialVectorTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(false);
             for( SpatialVectorTable spatialVectorTable : spatialVectorTables ) {
                 if (spatialVectorTable.isEditable()) {
-                    editableSpatialVectorTables.add(spatialVectorTable);
-                    editableSpatialVectorTablesNames.add(spatialVectorTable.getTableName());
+                    int geomType = spatialVectorTable.getGeomType();
+                    GeometryType geometryType = GeometryType.forValue(geomType);
+                    switch( geometryType ) {
+                    case POLYGON_XY:
+                    case POLYGON_XYM:
+                    case POLYGON_XYZ:
+                    case POLYGON_XYZM:
+                        editableSpatialVectorTables.add(spatialVectorTable);
+                        editableSpatialVectorTablesNames.add(spatialVectorTable.getTableName());
+                        break;
+                    default:
+                        break;
+                    }
                 }
             }
         } catch (jsqlite.Exception e) {
