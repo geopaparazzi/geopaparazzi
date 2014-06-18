@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi.maptools;
+package eu.hydrologis.geopaparazzi.maptools.tools;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.round;
@@ -42,7 +42,6 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.maptools.core.DrawingTool;
 import eu.hydrologis.geopaparazzi.maptools.core.MapTool;
 import eu.hydrologis.geopaparazzi.util.Constants;
 
@@ -51,7 +50,7 @@ import eu.hydrologis.geopaparazzi.util.Constants;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class TapMeasureTool extends MapTool implements DrawingTool {
+public class TapMeasureTool extends MapTool {
     private final Paint measurePaint = new Paint();
     private final Paint measureTextPaint = new Paint();
     private Path measurePath = new Path();

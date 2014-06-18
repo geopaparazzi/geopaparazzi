@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/osm_frameLayout"
+    android:id="@+id/container_root"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@color/main_background"
@@ -134,9 +134,9 @@
                         android:id="@+id/togglemeasuremodebutton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/mapview_sides_space"
-                        android:layout_marginLeft="@dimen/mapview_sides_space"
                         android:layout_marginBottom="@dimen/mapview_bottom_space"
+                        android:layout_marginLeft="@dimen/mapview_sides_space"
+                        android:layout_marginTop="@dimen/mapview_sides_space"
                         android:background="@drawable/measuremode" >
                     </ImageButton>
                 </LinearLayout>
@@ -235,10 +235,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|right"
-        android:layout_marginTop="@dimen/mapview_bottom_space"
         android:layout_marginRight="@dimen/mapview_sides_space"
+        android:layout_marginTop="@dimen/mapview_bottom_space"
         android:background="@drawable/menu" >
-        <!-- android:alpha="0.5"  -->
+
+        <!-- android:alpha="0.5" -->
     </Button>
+
+    <LinearLayout
+        android:id="@+id/editingToolsLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|bottom"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/mapview_sides_space"
+        android:paddingLeft="@dimen/mapview_sides_space" >
+    </LinearLayout>
 
 </FrameLayout>

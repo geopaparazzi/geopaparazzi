@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi.maptools;
+package eu.hydrologis.geopaparazzi.maptools.tools;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.round;
@@ -41,7 +41,6 @@ import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Parcelable;
 import android.view.MotionEvent;
-import android.view.View;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.util.LibraryConstants;
@@ -50,8 +49,10 @@ import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler;
+import eu.hydrologis.geopaparazzi.maps.SliderDrawView;
 import eu.hydrologis.geopaparazzi.maps.overlays.SliderDrawProjection;
-import eu.hydrologis.geopaparazzi.maptools.core.DrawingTool;
+import eu.hydrologis.geopaparazzi.maptools.FeaturePagerActivity;
+import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
 import eu.hydrologis.geopaparazzi.maptools.core.MapTool;
 
 /**
@@ -59,7 +60,7 @@ import eu.hydrologis.geopaparazzi.maptools.core.MapTool;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class InfoTool extends MapTool implements DrawingTool {
+public class InfoTool extends MapTool {
     private static final int TOUCH_BOX_THRES = 10;
 
     private final Paint infoRectPaintStroke = new Paint();
@@ -81,7 +82,7 @@ public class InfoTool extends MapTool implements DrawingTool {
 
     private ProgressDialog infoProgressDialog;
 
-    private View drawingView;
+    private SliderDrawView drawingView;
     private SliderDrawProjection sliderDrawProjection;
 
     /**
@@ -90,7 +91,7 @@ public class InfoTool extends MapTool implements DrawingTool {
      * @param drawingView the view used to draw on. 
      * @param mapView the mapview reference.
      */
-    public InfoTool( View drawingView, MapView mapView ) {
+    public InfoTool( SliderDrawView drawingView, MapView mapView ) {
         super(mapView);
         this.drawingView = drawingView;
         sliderDrawProjection = new SliderDrawProjection(mapView, drawingView);
@@ -171,10 +172,14 @@ public class InfoTool extends MapTool implements DrawingTool {
     }
 
     public void disable() {
-        mapView.setClickable(true);
-        mapView = null;
-        drawingView.invalidate();
-        drawingView = null;
+        if (mapView != null) {
+            mapView.setClickable(true);
+            mapView = null;
+        }
+        if (drawingView != null) {
+            drawingView.invalidate();
+            drawingView = null;
+        }
     }
 
     private void infoDialog( final double n, final double w, final double s, final double e ) {
@@ -262,11 +267,15 @@ public class InfoTool extends MapTool implements DrawingTool {
                     } else if (response.startsWith("CANCEL")) {
                         return;
                     } else {
-                        Intent intent = new Intent(context, FeaturePagerActivity.class);
-                        intent.putParcelableArrayListExtra(FeatureUtilities.KEY_FEATURESLIST,
-                                (ArrayList< ? extends Parcelable>) features);
-                        intent.putExtra(FeatureUtilities.KEY_READONLY, true);
-                        context.startActivity(intent);
+                        if (features.size() > 0) {
+                            Intent intent = new Intent(context, FeaturePagerActivity.class);
+                            intent.putParcelableArrayListExtra(FeatureUtilities.KEY_FEATURESLIST,
+                                    (ArrayList< ? extends Parcelable>) features);
+                            intent.putExtra(FeatureUtilities.KEY_READONLY, true);
+                            context.startActivity(intent);
+                        }
+                        drawingView.disableTool();
+                        disable();
                     }
                 }
 

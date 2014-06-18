@@ -53,7 +53,7 @@ public class SliderDrawView extends View {
     public boolean onTouchEvent( MotionEvent event ) {
         if (mapTool != null)
             return mapTool.onToolTouchEvent(event);
-        return true;
+        return false;
     }
 
     /**
@@ -73,7 +73,7 @@ public class SliderDrawView extends View {
      * @param mapTool the tool to use.
      */
     public void enableTool( MapTool mapTool ) {
-        if (mapTool != null) {
+        if (this.mapTool != null) {
             // first disable the current tool
             disableTool();
         }

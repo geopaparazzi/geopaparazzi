@@ -15,28 +15,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi.maptools.core;
+package eu.geopaparazzi.library.features;
 
-import org.mapsforge.android.maps.MapView;
-
-import eu.geopaparazzi.library.features.DrawingTool;
 
 /**
- * A tool that works on a {@link MapView}.
+ * A tool.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public abstract class MapTool implements DrawingTool {
-
-    protected MapView mapView;
+public interface Tool {
 
     /**
-     * Constructor.
-     * 
-     * @param mapView the mapview to work on
+     * Disables the tool.
      */
-    public MapTool( MapView mapView ) {
-        this.mapView = mapView;
-    }
+    public void disable();
 
 }

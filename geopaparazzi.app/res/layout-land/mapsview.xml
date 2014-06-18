@@ -258,7 +258,18 @@
         android:layout_marginRight="@dimen/mapview_sides_space"
         android:layout_marginTop="@dimen/mapview_bottom_space"
         android:background="@drawable/menu" >
+
         <!-- android:alpha="0.5" -->
     </Button>
+
+    <LinearLayout
+        android:id="@+id/editingToolsLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|bottom"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/mapview_sides_space"
+        android:paddingLeft="@dimen/mapview_sides_space" >
+    </LinearLayout>
 
 </FrameLayout>

@@ -84,6 +84,7 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.SlidingDrawer;
@@ -111,7 +112,6 @@ import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.activities.DataListActivity;
 import eu.geopaparazzi.spatialite.database.spatial.activities.EditableLayersListActivity;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
@@ -120,9 +120,8 @@ import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.maps.overlays.ArrayGeopaparazziOverlay;
-import eu.hydrologis.geopaparazzi.maptools.InfoTool;
-import eu.hydrologis.geopaparazzi.maptools.TapMeasureTool;
-import eu.hydrologis.geopaparazzi.maptools.core.MapTool;
+import eu.hydrologis.geopaparazzi.maptools.tools.MainEditingToolGroup;
+import eu.hydrologis.geopaparazzi.maptools.tools.TapMeasureTool;
 import eu.hydrologis.geopaparazzi.osm.OsmCategoryActivity;
 import eu.hydrologis.geopaparazzi.osm.OsmTagsManager;
 import eu.hydrologis.geopaparazzi.osm.OsmUtilities;
@@ -191,6 +190,8 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
     private GpsLoggingStatus lastGpsLoggingStatus = GpsLoggingStatus.GPS_DATABASELOGGING_OFF;
     private ImageButton centerOnGps;
     private Button batteryButton;
+    private LinearLayout editingToolsLayout;
+    private MainEditingToolGroup mainEditingToolGroup;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -203,6 +204,8 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         };
         GpsServiceUtilities.registerForBroadcasts(this, gpsServiceBroadcastReceiver);
         GpsServiceUtilities.triggerBroadcast(this);
+
+        editingToolsLayout = (LinearLayout) findViewById(R.id.editingToolsLayout);
 
         Button menuButton = (Button) findViewById(R.id.menu_map_btn);
         menuButton.setOnClickListener(this);
@@ -1402,38 +1405,45 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
             }
             break;
         case R.id.toggleEditingButton:
-            MapTool mapTool = sliderDrawView.getMapTool();
             final Button toggleEditingButton = (Button) findViewById(R.id.toggleEditingButton);
-            if (!(mapTool instanceof InfoTool)) {
-                // check maps enablement
-                try {
-                    final SpatialDatabasesManager sdbManager = SpatialDatabasesManager.getInstance();
-                    final List<SpatialVectorTable> spatialTables = sdbManager.getSpatialVectorTables(false);
-                    boolean atLeastOneEnabled = false;
-                    for( SpatialVectorTable spatialVectorTable : spatialTables ) {
-                        if (spatialVectorTable.getStyle().enabled == 1) {
-                            atLeastOneEnabled = true;
-                            break;
-                        }
-                    }
-                    if (!atLeastOneEnabled) {
-                        Utilities.messageDialog(MapsActivity.this, R.string.no_queriable_layer_is_visible, null);
-                        return;
-                    }
-                } catch (jsqlite.Exception e) {
-                    e.printStackTrace();
-                }
+            if (mainEditingToolGroup == null) {
                 toggleEditingButton.setBackgroundResource(R.drawable.ic_toggle_editing_on);
-                InfoTool infoTool = new InfoTool(sliderDrawView, mapView);
-                sliderDrawView.enableTool(infoTool);
+
+                mainEditingToolGroup = new MainEditingToolGroup(editingToolsLayout, sliderDrawView, mapView);
+                mainEditingToolGroup.setToolUI();
+                setLeftButtoonsEnablement(false);
             } else {
                 toggleEditingButton.setBackgroundResource(R.drawable.ic_toggle_editing_off);
-                sliderDrawView.disableTool();
+                mainEditingToolGroup.disableTools();
+                mainEditingToolGroup.disable();
+                mainEditingToolGroup = null;
+                setLeftButtoonsEnablement(true);
             }
             break;
 
         default:
             break;
+        }
+    }
+
+    private void setLeftButtoonsEnablement( boolean enable ) {
+        ImageButton addnotebytagButton = (ImageButton) findViewById(R.id.addnotebytagbutton);
+        ImageButton addBookmarkButton = (ImageButton) findViewById(R.id.addbookmarkbutton);
+        ImageButton listNotesButton = (ImageButton) findViewById(R.id.listnotesbutton);
+        ImageButton listBookmarksButton = (ImageButton) findViewById(R.id.bookmarkslistbutton);
+        ImageButton toggleMeasuremodeButton = (ImageButton) findViewById(R.id.togglemeasuremodebutton);
+        if (enable) {
+            addnotebytagButton.setVisibility(View.VISIBLE);
+            addBookmarkButton.setVisibility(View.VISIBLE);
+            listNotesButton.setVisibility(View.VISIBLE);
+            listBookmarksButton.setVisibility(View.VISIBLE);
+            toggleMeasuremodeButton.setVisibility(View.VISIBLE);
+        } else {
+            addnotebytagButton.setVisibility(View.GONE);
+            addBookmarkButton.setVisibility(View.GONE);
+            listNotesButton.setVisibility(View.GONE);
+            listBookmarksButton.setVisibility(View.GONE);
+            toggleMeasuremodeButton.setVisibility(View.GONE);
         }
     }
 

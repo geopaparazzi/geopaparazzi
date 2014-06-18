@@ -15,17 +15,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi.maptools.core;
+package eu.geopaparazzi.library.features;
 
 /**
- * A tool.
+ * A group of tools.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public interface Tool {
+public interface ToolGroup {
 
     /**
-     * Disables the tool.
+     * Sets a custom UI for the tool if necessary.
+     */
+    public void setToolUI();
+
+    /**
+     * Disables the active tools contained in the toolgroup.
+     */
+    public void disableTools();
+
+    /**
+     * Disables the toolgroup.
      */
     public void disable();
 
