@@ -17,6 +17,7 @@
  */
 package eu.hydrologis.geopaparazzi.maptools.tools;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.mapsforge.android.maps.MapView;
@@ -24,11 +25,13 @@ import org.mapsforge.android.maps.MapViewPosition;
 import org.mapsforge.android.maps.Projection;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PorterDuff.Mode;
+import android.os.Parcelable;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -54,6 +57,8 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.maps.SliderDrawView;
 import eu.hydrologis.geopaparazzi.maps.overlays.MapsforgePointTransformation;
 import eu.hydrologis.geopaparazzi.maps.overlays.SliderDrawProjection;
+import eu.hydrologis.geopaparazzi.maptools.FeaturePagerActivity;
+import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
 import eu.hydrologis.geopaparazzi.maptools.core.MapTool;
 
 /**
@@ -87,6 +92,7 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
      * Stores the map position after drawing is finished.
      */
     private Point positionBeforeDraw;
+    private ImageButton editAttributesButton;
 
     /**
      * Constructor.
@@ -108,9 +114,10 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
 
         selectedGeometryPaintFill.setAntiAlias(true);
         selectedGeometryPaintFill.setColor(Color.RED);
+        selectedGeometryPaintFill.setAlpha(180);
         selectedGeometryPaintFill.setStyle(Paint.Style.FILL);
         selectedGeometryPaintStroke.setAntiAlias(true);
-        selectedGeometryPaintStroke.setStrokeWidth(3f);
+        selectedGeometryPaintStroke.setStrokeWidth(5f);
         selectedGeometryPaintStroke.setColor(Color.YELLOW);
         selectedGeometryPaintStroke.setStyle(Paint.Style.STROKE);
 
@@ -132,14 +139,16 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
             deleteFeatureButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_delete_feature));
             deleteFeatureButton.setPadding(0, padding, 0, padding);
             deleteFeatureButton.setOnTouchListener(this);
+            deleteFeatureButton.setOnClickListener(this);
             parent.addView(deleteFeatureButton);
 
-            ImageButton editAttributesButton = new ImageButton(context);
+            editAttributesButton = new ImageButton(context);
             editAttributesButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
             editAttributesButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_view_attributes));
             editAttributesButton.setPadding(0, padding, 0, padding);
             editAttributesButton.setOnTouchListener(this);
+            editAttributesButton.setOnClickListener(this);
             parent.addView(editAttributesButton);
 
             ImageButton undoButton = new ImageButton(context);
@@ -147,6 +156,7 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
             undoButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_undo));
             undoButton.setPadding(0, padding, 0, padding);
             undoButton.setOnTouchListener(this);
+            undoButton.setOnClickListener(this);
             parent.addView(undoButton);
 
             ImageButton commitButton = new ImageButton(context);
@@ -154,6 +164,7 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
             commitButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_commit));
             commitButton.setPadding(0, padding, 0, padding);
             commitButton.setOnTouchListener(this);
+            commitButton.setOnClickListener(this);
             parent.addView(commitButton);
         }
     }
@@ -173,13 +184,15 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
     }
 
     public void onClick( View v ) {
-        if (v == deleteFeatureButton) {
-
-            // TODO
-            System.out.println(selectedFeatures);
-
-            activeTool = new InfoTool(this, sliderDrawView, mapView);
-            sliderDrawView.enableTool(activeTool);
+        if (v == editAttributesButton) {
+            if (selectedFeatures.size() > 0) {
+                Context context = v.getContext();
+                Intent intent = new Intent(context, FeaturePagerActivity.class);
+                intent.putParcelableArrayListExtra(FeatureUtilities.KEY_FEATURESLIST,
+                        (ArrayList< ? extends Parcelable>) selectedFeatures);
+                intent.putExtra(FeatureUtilities.KEY_READONLY, false);
+                context.startActivity(intent);
+            }
         }
     }
 
@@ -297,7 +310,6 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
     }
 
     public boolean onToolTouchEvent( MotionEvent event ) {
-        // TODO Auto-generated method stub
         return false;
     }
 

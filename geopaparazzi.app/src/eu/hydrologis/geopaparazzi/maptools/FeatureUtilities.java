@@ -97,8 +97,8 @@ public class FeatureUtilities {
     /**
      * Build the features given by a query.
      * 
-     * <b>Note that this query needs to have 2 arguments, the first
-     * being the ROWID and the second the geometry. Else if will fail. 
+     * <p><b>Note that this query needs to have at least 2 arguments, the first
+     * being the ROWID and the second the geometry. Else if will fail.</b> 
      * 
      * @param query the query to run.
      * @param spatialTable the parent Spatialtable.
@@ -117,11 +117,6 @@ public class FeatureUtilities {
             Stmt stmt = database.prepare(query);
             try {
                 while( stmt.step() ) {
-                    int column_count = stmt.column_count();
-                    if (column_count != 2) {
-                        throw new IllegalArgumentException("This query should return ROWID and Geometry: " + query);
-                    }
-                    // the first is the id, transparent to the user
                     String id = stmt.column_string(0);
                     byte[] geometryBytes = stmt.column_bytes(1);
                     Feature feature = new Feature(tableName, uniqueNameBasedOnDbFilePath, id, geometryBytes);

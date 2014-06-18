@@ -634,6 +634,11 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         zoomLevelText.setText(formatter.format(newZoom));
     }
 
+    private void invalidateEditingLayer() {
+        if (mainEditingToolGroup != null)
+            sliderDrawView.invalidate();
+    }
+
     /**
       * set MapView Center point [in MapsDirManager]
       * 
@@ -1192,6 +1197,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         }
 
         PositionUtilities.putMapCenterInPreferences(preferences, lon, lat, zoomLevel);
+        invalidateEditingLayer();
     }
 
     /**
