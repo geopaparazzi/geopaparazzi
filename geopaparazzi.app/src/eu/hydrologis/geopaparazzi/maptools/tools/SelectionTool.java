@@ -258,11 +258,10 @@ public class SelectionTool extends MapTool {
                         // context.startActivity(intent);
                         Utilities.toast(context, "Selected features: " + features.size(), Toast.LENGTH_SHORT);
                     }
-                    // drawingView.disableTool();
-                    // disable();
 
                     OnSelectionToolGroup selectionGroup = new OnSelectionToolGroup(parent, drawingView, mapView, features);
                     selectionGroup.setToolUI();
+                    drawingView.enableTool(selectionGroup);
                 }
             }
 

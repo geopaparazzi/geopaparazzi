@@ -42,6 +42,7 @@ import android.os.Parcelable;
 import android.view.MotionEvent;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.Feature;
+import eu.geopaparazzi.library.features.ToolGroup;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
@@ -83,14 +84,18 @@ public class InfoTool extends MapTool {
     private SliderDrawView drawingView;
     private SliderDrawProjection sliderDrawProjection;
 
+    private ToolGroup parentGroup;
+
     /**
      * Constructor.
      * 
+     * @param parentGroup the parent group. 
      * @param drawingView the view used to draw on. 
      * @param mapView the mapview reference.
      */
-    public InfoTool( SliderDrawView drawingView, MapView mapView ) {
+    public InfoTool( ToolGroup parentGroup, SliderDrawView drawingView, MapView mapView ) {
         super(mapView);
+        this.parentGroup = parentGroup;
         this.drawingView = drawingView;
         sliderDrawProjection = new SliderDrawProjection(mapView, drawingView);
         mapView.setClickable(false);
@@ -266,9 +271,8 @@ public class InfoTool extends MapTool {
                             intent.putExtra(FeatureUtilities.KEY_READONLY, true);
                             context.startActivity(intent);
                         }
-                        drawingView.disableTool();
-                        disable();
                     }
+                    parentGroup.onToolFinished(InfoTool.this);
                 }
 
             }.execute((String) null);

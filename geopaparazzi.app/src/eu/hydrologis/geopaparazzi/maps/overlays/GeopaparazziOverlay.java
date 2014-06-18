@@ -741,8 +741,8 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     continue;
                 }
                 if (!envelope.intersects(spatialTable.getTableEnvelope())) {
-                 //  GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite -W-> geometry_envelope["+spatialTable.getTableEnvelope().toString()+"]: map_envelope["+envelope.toString()+"]");
-                   continue;
+                    // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite -W-> geometry_envelope["+spatialTable.getTableEnvelope().toString()+"]: map_envelope["+envelope.toString()+"]");
+                    continue;
                 }
                 if (drawZoomLevel < style4Table.minZoom || drawZoomLevel > style4Table.maxZoom) {
                     // we do not draw outside of the zoom levels
@@ -762,20 +762,20 @@ public abstract class GeopaparazziOverlay extends Overlay {
                         stroke = ((SpatialiteDatabaseHandler) spatialDatabaseHandler).getStrokePaint4Style(style4Table);
                     PointTransformation pointTransformer = new MapsforgePointTransformation(projection, drawPosition,
                             drawZoomLevel);
-                    ShapeWriter shape_writer = null;
+                    ShapeWriter shapeWriter = null;
                     ShapeWriter shape_writer_point = null;
                     if (spatialTable.isPoint()) {
-                        shape_writer = new ShapeWriter(pointTransformer, spatialTable.getStyle().shape,
+                        shapeWriter = new ShapeWriter(pointTransformer, spatialTable.getStyle().shape,
                                 spatialTable.getStyle().size);
                     } else {
-                        shape_writer = new ShapeWriter(pointTransformer);
+                        shapeWriter = new ShapeWriter(pointTransformer);
                         if (spatialTable.isGeometryCollection()) {
                             shape_writer_point = new ShapeWriter(pointTransformer, spatialTable.getStyle().shape,
                                     spatialTable.getStyle().size);
                         }
                     }
-                    shape_writer.setRemoveDuplicatePoints(true);
-                    shape_writer.setDecimation(spatialTable.getStyle().decimationFactor);
+                    shapeWriter.setRemoveDuplicatePoints(true);
+                    shapeWriter.setDecimation(spatialTable.getStyle().decimationFactor);
                     geometryIterator = ((SpatialiteDatabaseHandler) spatialDatabaseHandler).getGeometryIteratorInBounds(
                             LibraryConstants.SRID_WGS84_4326, spatialTable, n, s, e, w);
                     while( geometryIterator.hasNext() ) {
@@ -793,7 +793,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                                         if (geometryType.toUpperCase().indexOf("POINT") != -1) {
                                             drawGeometry(geom_collect, canvas, shape_writer_point, fill, stroke);
                                         } else {
-                                            drawGeometry(geom_collect, canvas, shape_writer, fill, stroke);
+                                            drawGeometry(geom_collect, canvas, shapeWriter, fill, stroke);
                                         }
                                         if (isInterrupted() || sizeHasChanged()) { // stop working
                                             return;
@@ -801,7 +801,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                                     }
                                 }
                             } else {
-                                drawGeometry(geom, canvas, shape_writer, fill, stroke);
+                                drawGeometry(geom, canvas, shapeWriter, fill, stroke);
                                 if (isInterrupted() || sizeHasChanged()) { // stop working
                                     return;
                                 }
@@ -931,7 +931,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 shape.fill(canvas, fill);
             if (stroke != null)
                 shape.draw(canvas, stroke);
-         //GPLog.androidLog(-1,"GeopaparazziOverlay.drawGeometry geometry_type["+s_geometry_type+"]: ["+i_geometry_type+"]");
+            // GPLog.androidLog(-1,"GeopaparazziOverlay.drawGeometry geometry_type["+s_geometry_type+"]: ["+i_geometry_type+"]");
         }
             break;
         case LINESTRING_XY:

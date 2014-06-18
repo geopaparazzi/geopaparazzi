@@ -22,6 +22,7 @@ import java.util.List;
 import org.mapsforge.android.maps.MapView;
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.PorterDuff.Mode;
 import android.view.MotionEvent;
 import android.view.View;
@@ -33,6 +34,7 @@ import android.widget.LinearLayout;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.ILayer;
+import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.features.ToolGroup;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
@@ -83,12 +85,14 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
             cutButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             cutButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_cut));
             cutButton.setPadding(0, padding, 0, padding);
+            cutButton.setOnTouchListener(this);
             parent.addView(cutButton);
 
             ImageButton extendButton = new ImageButton(context);
             extendButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             extendButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_extend));
             extendButton.setPadding(0, padding, 0, padding);
+            extendButton.setOnTouchListener(this);
             parent.addView(extendButton);
 
             ImageButton createFeatureButton = new ImageButton(context);
@@ -96,6 +100,7 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
                     LayoutParams.WRAP_CONTENT));
             createFeatureButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_create_polygon));
             createFeatureButton.setPadding(0, padding, 0, padding);
+            createFeatureButton.setOnTouchListener(this);
             parent.addView(createFeatureButton);
 
             selectEditableButton = new ImageButton(context);
@@ -104,6 +109,7 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
             selectEditableButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_select_editable));
             selectEditableButton.setPadding(0, padding, 0, padding);
             selectEditableButton.setOnClickListener(this);
+            selectEditableButton.setOnTouchListener(this);
             parent.addView(selectEditableButton);
         }
 
@@ -120,12 +126,14 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
             undoButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             undoButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_undo));
             undoButton.setPadding(0, padding, 0, padding);
+            undoButton.setOnTouchListener(this);
             parent.addView(undoButton);
 
             ImageButton commitButton = new ImageButton(context);
             commitButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             commitButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_commit));
             commitButton.setPadding(0, padding, 0, padding);
+            commitButton.setOnTouchListener(this);
             parent.addView(commitButton);
         }
     }
@@ -165,7 +173,7 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
                 GPLog.error(this, null, e);
             }
 
-            activeTool = new InfoTool(sliderDrawView, mapView);
+            activeTool = new InfoTool(this, sliderDrawView, mapView);
             sliderDrawView.enableTool(activeTool);
         } else if (v == selectEditableButton) {
             activeTool = new SelectionTool(parent, sliderDrawView, mapView);
@@ -187,5 +195,24 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
         }
         }
         return false;
+    }
+
+    public void onToolFinished( Tool tool ) {
+        if (activeTool == null) {
+            return;
+        }
+        if (tool == activeTool) {
+            sliderDrawView.disableTool();
+            activeTool.disable();
+            activeTool = null;
+        }
+    }
+
+    public void onToolDraw( Canvas canvas ) {
+        // nothing to draw
+    }
+
+    public boolean onToolTouchEvent( MotionEvent event ) {
+        return true;
     }
 }

@@ -22,7 +22,7 @@ import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import eu.hydrologis.geopaparazzi.maptools.core.MapTool;
+import eu.geopaparazzi.library.features.DrawingTool;
 
 /**
  * A slider view to draw on.
@@ -30,7 +30,7 @@ import eu.hydrologis.geopaparazzi.maptools.core.MapTool;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class SliderDrawView extends View {
-    private MapTool mapTool;
+    private DrawingTool drawingTool;
 
     /**
      * Constructor.
@@ -45,14 +45,14 @@ public class SliderDrawView extends View {
     @Override
     protected void onDraw( Canvas canvas ) {
         super.onDraw(canvas);
-        if (mapTool != null)
-            mapTool.onToolDraw(canvas);
+        if (drawingTool != null)
+            drawingTool.onToolDraw(canvas);
     }
 
     @Override
     public boolean onTouchEvent( MotionEvent event ) {
-        if (mapTool != null)
-            return mapTool.onToolTouchEvent(event);
+        if (drawingTool != null)
+            return drawingTool.onToolTouchEvent(event);
         return false;
     }
 
@@ -60,30 +60,32 @@ public class SliderDrawView extends View {
      * Disable tool. 
      */
     public void disableTool() {
-        if (mapTool != null)
-            mapTool.disable();
-        mapTool = null;
+        if (drawingTool != null)
+            drawingTool.disable();
+        drawingTool = null;
     }
 
     /**
      * Enable tool.
      * 
      * <p>If a tool is already enabled, that one is disabled first.
+     * Then invalidate is called on the view.
      *  
-     * @param mapTool the tool to use.
+     * @param drawingTool the tool to use.
      */
-    public void enableTool( MapTool mapTool ) {
-        if (this.mapTool != null) {
+    public void enableTool( DrawingTool drawingTool ) {
+        if (this.drawingTool != null) {
             // first disable the current tool
             disableTool();
         }
-        this.mapTool = mapTool;
+        this.drawingTool = drawingTool;
+        invalidate();
     }
 
     /**
-     * @return the current {@link MapTool} or <code>null</code>.
+     * @return the current {@link DrawingTool} or <code>null</code>.
      */
-    public MapTool getMapTool() {
-        return mapTool;
+    public DrawingTool getDrawingTool() {
+        return drawingTool;
     }
 }

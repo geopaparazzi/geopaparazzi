@@ -22,7 +22,7 @@ package eu.geopaparazzi.library.features;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public interface ToolGroup {
+public interface ToolGroup extends DrawingTool {
 
     /**
      * Sets a custom UI for the tool if necessary.
@@ -38,5 +38,12 @@ public interface ToolGroup {
      * Disables the toolgroup.
      */
     public void disable();
+
+    /**
+     * Callback when a tool finishes.
+     * 
+     * @param tool the tool that finished.
+     */
+    public void onToolFinished( Tool tool );
 
 }
