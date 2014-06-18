@@ -30,32 +30,29 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
+import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.features.ToolGroup;
-import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.maps.SliderDrawView;
 import eu.hydrologis.geopaparazzi.maptools.core.MapTool;
 
 /**
- * The main editing tool, which just shows the tool palette.
+ * The group of tools active when a selection has been done.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouchListener {
+public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouchListener {
 
     private LinearLayout parent;
-    private ImageButton selectAllButton;
     private SliderDrawView sliderDrawView;
     private MapView mapView;
 
     private MapTool activeTool = null;
-    private ImageButton selectEditableButton;
     private int selectionColor;
+    private List<Feature> selectedFeatures;
+    private ImageButton deleteFeatureButton;
 
     /**
      * Constructor.
@@ -63,59 +60,40 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
      * @param parent the view into which to place the UI parts.
      * @param sliderDrawView the draw view.
      * @param mapView the map view.
+     * @param selectedFeatures the set of selected features.
      */
-    public MainEditingToolGroup( LinearLayout parent, SliderDrawView sliderDrawView, MapView mapView ) {
+    public OnSelectionToolGroup( LinearLayout parent, SliderDrawView sliderDrawView, MapView mapView,
+            List<Feature> selectedFeatures ) {
         this.parent = parent;
         this.sliderDrawView = sliderDrawView;
         this.mapView = mapView;
+        this.selectedFeatures = selectedFeatures;
 
         selectionColor = parent.getContext().getResources().getColor(R.color.main_selection);
     }
 
     public void setToolUI() {
+        parent.removeAllViews();
 
         Context context = parent.getContext();
         ILayer editLayer = EditManager.INSTANCE.getEditLayer();
         int padding = 2;
 
         if (editLayer != null) {
-            ImageButton cutButton = new ImageButton(context);
-            cutButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            cutButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_cut));
-            cutButton.setPadding(0, padding, 0, padding);
-            parent.addView(cutButton);
-
-            ImageButton extendButton = new ImageButton(context);
-            extendButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            extendButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_extend));
-            extendButton.setPadding(0, padding, 0, padding);
-            parent.addView(extendButton);
-
-            ImageButton createFeatureButton = new ImageButton(context);
-            createFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+            deleteFeatureButton = new ImageButton(context);
+            deleteFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            createFeatureButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_create_polygon));
-            createFeatureButton.setPadding(0, padding, 0, padding);
-            parent.addView(createFeatureButton);
+            deleteFeatureButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_delete_feature));
+            deleteFeatureButton.setPadding(0, padding, 0, padding);
+            parent.addView(deleteFeatureButton);
 
-            selectEditableButton = new ImageButton(context);
-            selectEditableButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+            ImageButton editAttributesButton = new ImageButton(context);
+            editAttributesButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
-            selectEditableButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_select_editable));
-            selectEditableButton.setPadding(0, padding, 0, padding);
-            selectEditableButton.setOnClickListener(this);
-            parent.addView(selectEditableButton);
-        }
+            editAttributesButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_view_attributes));
+            editAttributesButton.setPadding(0, padding, 0, padding);
+            parent.addView(editAttributesButton);
 
-        selectAllButton = new ImageButton(context);
-        selectAllButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        selectAllButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_select_all));
-        selectAllButton.setPadding(0, padding, 0, padding);
-        selectAllButton.setOnClickListener(this);
-        selectAllButton.setOnTouchListener(this);
-        parent.addView(selectAllButton);
-
-        if (editLayer != null) {
             ImageButton undoButton = new ImageButton(context);
             undoButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             undoButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_undo));
@@ -145,30 +123,12 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
     }
 
     public void onClick( View v ) {
-        if (v == selectAllButton) {
-            // check maps enablement
-            try {
-                final SpatialDatabasesManager sdbManager = SpatialDatabasesManager.getInstance();
-                final List<SpatialVectorTable> spatialTables = sdbManager.getSpatialVectorTables(false);
-                boolean atLeastOneEnabled = false;
-                for( SpatialVectorTable spatialVectorTable : spatialTables ) {
-                    if (spatialVectorTable.getStyle().enabled == 1) {
-                        atLeastOneEnabled = true;
-                        break;
-                    }
-                }
-                if (!atLeastOneEnabled) {
-                    Utilities.messageDialog(parent.getContext(), R.string.no_queriable_layer_is_visible, null);
-                    return;
-                }
-            } catch (jsqlite.Exception e) {
-                GPLog.error(this, null, e);
-            }
+        if (v == deleteFeatureButton) {
+
+            // TODO
+            System.out.println(selectedFeatures);
 
             activeTool = new InfoTool(sliderDrawView, mapView);
-            sliderDrawView.enableTool(activeTool);
-        } else if (v == selectEditableButton) {
-            activeTool = new SelectionTool(parent, sliderDrawView, mapView);
             sliderDrawView.enableTool(activeTool);
         }
     }

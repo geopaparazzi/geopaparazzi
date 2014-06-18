@@ -37,7 +37,7 @@ public class Feature implements Parcelable {
     private String readableTableName;
     private String uniqueTableName;
 
-    private Object defaultGeometry;
+    private byte[] defaultGeometry;
 
     private List<String> attributeNames = new ArrayList<String>();
     private List<String> attributeValuesStrings = new ArrayList<String>();
@@ -56,6 +56,21 @@ public class Feature implements Parcelable {
         this.readableTableName = tableName;
         this.uniqueTableName = uniqueTableName;
         this.id = id;
+    }
+
+    /**
+     * Constructor for case with geometry.
+     * 
+     * @param tableName the table the feature belongs to.
+     * @param uniqueTableName the unique table name through which get the spatialtable.
+     * @param id the unique id of the feature.
+     * @param geometry the default geometry.
+     */
+    public Feature( String tableName, String uniqueTableName, String id, byte[] geometry ) {
+        this.readableTableName = tableName;
+        this.uniqueTableName = uniqueTableName;
+        this.id = id;
+        defaultGeometry = geometry;
     }
 
     /**
@@ -123,7 +138,7 @@ public class Feature implements Parcelable {
     /**
      * @return the default geometry.
      */
-    public Object getDefaultGeometry() {
+    public byte[] getDefaultGeometry() {
         return defaultGeometry;
     }
 

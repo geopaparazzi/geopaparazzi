@@ -335,6 +335,7 @@ public class SpatialiteUtilities {
      * Build a query to retrieve geometries from a table in a given bound.
      *
      * @param destSrid the destination srid.
+     * @param withRowId if <code>true</code>, the ROWID is added in position 0 of the query.
      * @param table the table to use.
      * @param n north bound.
      * @param s south bound.
@@ -342,8 +343,8 @@ public class SpatialiteUtilities {
      * @param w west bound.
      * @return the query.
      */
-    public static String buildGeometriesInBoundsQuery( String destSrid, SpatialVectorTable table, double n, double s, double e,
-            double w ) {
+    public static String buildGeometriesInBoundsQuery( String destSrid, boolean withRowId, SpatialVectorTable table, double n,
+            double s, double e, double w ) {
         boolean doTransform = false;
         if (!table.getSrid().equals(destSrid)) {
             doTransform = true;
@@ -368,7 +369,11 @@ public class SpatialiteUtilities {
         mbrSb.append(")");
         String mbr = mbrSb.toString();
         StringBuilder qSb = new StringBuilder();
-        qSb.append("SELECT ST_AsBinary(CastToXY(");
+        qSb.append("SELECT ");
+        if (withRowId) {
+            qSb.append(SPATIALTABLE_ID_FIELD).append(",");
+        }
+        qSb.append("ST_AsBinary(CastToXY(");
         if (doTransform)
             qSb.append("ST_Transform(");
         qSb.append(table.getGeomName());

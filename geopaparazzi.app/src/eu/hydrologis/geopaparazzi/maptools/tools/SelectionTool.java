@@ -31,38 +31,40 @@ import org.mapsforge.core.model.GeoPoint;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.AsyncTask;
-import android.os.Parcelable;
 import android.view.MotionEvent;
-import eu.geopaparazzi.library.database.GPLog;
+import android.widget.LinearLayout;
+import android.widget.Toast;
+import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.Feature;
+import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTableLayer;
+import eu.geopaparazzi.spatialite.util.SpatialiteUtilities;
 import eu.hydrologis.geopaparazzi.maps.SliderDrawView;
 import eu.hydrologis.geopaparazzi.maps.overlays.SliderDrawProjection;
-import eu.hydrologis.geopaparazzi.maptools.FeaturePagerActivity;
 import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
 import eu.hydrologis.geopaparazzi.maptools.core.MapTool;
 
 /**
- * A tool to query data.
+ * A tool to select data.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class InfoTool extends MapTool {
+public class SelectionTool extends MapTool {
     private static final int TOUCH_BOX_THRES = 10;
 
     private final Paint infoRectPaintStroke = new Paint();
     private final Paint infoRectPaintFill = new Paint();
+    private final Paint selectedGeometryPaintStroke = new Paint();
+    private final Paint selectedGeometryPaintFill = new Paint();
     private final Rect rect = new Rect();
 
     private float currentX;
@@ -83,14 +85,18 @@ public class InfoTool extends MapTool {
     private SliderDrawView drawingView;
     private SliderDrawProjection sliderDrawProjection;
 
+    private LinearLayout parent;
+
     /**
      * Constructor.
      * 
+     * @param parent the parent view in which the selectiontool button resides. 
      * @param drawingView the view used to draw on. 
      * @param mapView the mapview reference.
      */
-    public InfoTool( SliderDrawView drawingView, MapView mapView ) {
+    public SelectionTool( LinearLayout parent, SliderDrawView drawingView, MapView mapView ) {
         super(mapView);
+        this.parent = parent;
         this.drawingView = drawingView;
         sliderDrawProjection = new SliderDrawProjection(mapView, drawingView);
         mapView.setClickable(false);
@@ -98,13 +104,23 @@ public class InfoTool extends MapTool {
         // Context context = GeopaparazziApplication.getInstance().getApplicationContext();
         // SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         infoRectPaintFill.setAntiAlias(true);
-        infoRectPaintFill.setColor(Color.BLUE);
+        infoRectPaintFill.setColor(Color.RED);
         infoRectPaintFill.setAlpha(80);
         infoRectPaintFill.setStyle(Paint.Style.FILL);
         infoRectPaintStroke.setAntiAlias(true);
         infoRectPaintStroke.setStrokeWidth(1.5f);
-        infoRectPaintStroke.setColor(Color.BLUE);
+        infoRectPaintStroke.setColor(Color.YELLOW);
         infoRectPaintStroke.setStyle(Paint.Style.STROKE);
+
+        selectedGeometryPaintFill.setAntiAlias(true);
+        selectedGeometryPaintFill.setColor(Color.RED);
+        // selectedGeometryPaintFill.setAlpha(80);
+        selectedGeometryPaintFill.setStyle(Paint.Style.FILL);
+        selectedGeometryPaintStroke.setAntiAlias(true);
+        selectedGeometryPaintStroke.setStrokeWidth(3f);
+        selectedGeometryPaintStroke.setColor(Color.YELLOW);
+        selectedGeometryPaintStroke.setStyle(Paint.Style.STROKE);
+
     }
 
     public void onToolDraw( Canvas canvas ) {
@@ -158,11 +174,9 @@ public class InfoTool extends MapTool {
                 GeoPoint ul = pj.fromPixels((int) left, (int) top);
                 GeoPoint lr = pj.fromPixels((int) right, (int) bottom);
 
-                infoDialog(ul.getLatitude(), ul.getLongitude(), lr.getLatitude(), lr.getLongitude());
+                select(ul.getLatitude(), ul.getLongitude(), lr.getLatitude(), lr.getLongitude());
             }
 
-            if (GPLog.LOG_HEAVY)
-                GPLog.addLogEntry(this, "UNTOUCH: " + tmpP.x + "/" + tmpP.y); //$NON-NLS-1$//$NON-NLS-2$
             break;
         }
 
@@ -180,102 +194,80 @@ public class InfoTool extends MapTool {
         }
     }
 
-    private void infoDialog( final double n, final double w, final double s, final double e ) {
-        try {
-            final SpatialDatabasesManager sdbManager = SpatialDatabasesManager.getInstance();
-            List<SpatialVectorTable> spatialTables = sdbManager.getSpatialVectorTables(false);
-            double[] boundsCoordinates = new double[]{w, s, e, n};
-            final List<SpatialVectorTable> visibleTables = new ArrayList<SpatialVectorTable>();
-            for( SpatialVectorTable spatialTable : spatialTables ) {
-                if (spatialTable.getStyle().enabled == 0) {
-                    continue;
+    private void select( final double n, final double w, final double s, final double e ) {
+
+        ILayer editLayer = EditManager.INSTANCE.getEditLayer();
+        SpatialVectorTableLayer layer = (SpatialVectorTableLayer) editLayer;
+        final SpatialVectorTable spatialVectorTable = layer.getSpatialVectorTable();
+
+        final Context context = drawingView.getContext();
+        infoProgressDialog = new ProgressDialog(context);
+        infoProgressDialog.setCancelable(true);
+        infoProgressDialog.setTitle("SELECT");
+        infoProgressDialog.setMessage("Selecting features...");
+        infoProgressDialog.setCancelable(false);
+        infoProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        infoProgressDialog.setIndeterminate(true);
+        infoProgressDialog.show();
+
+        new AsyncTask<String, Integer, String>(){
+            private List<Feature> features = new ArrayList<Feature>();
+
+            protected String doInBackground( String... params ) {
+                try {
+                    features.clear();
+                    double north = n;
+                    double south = s;
+                    if (n - s == 0) {
+                        south = n - 1;
+                    }
+                    double west = w;
+                    double east = e;
+                    if (e - w == 0) {
+                        west = e - 1;
+                    }
+
+                    String query = SpatialiteUtilities.buildGeometriesInBoundsQuery(LibraryConstants.SRID_WGS84_4326, true,
+                            spatialVectorTable, north, south, east, west);
+                    features = FeatureUtilities.buildRowidGeometryFeatures(query, spatialVectorTable);
+
+                    return "";
+                } catch (Exception e) {
+                    return "ERROR: " + e.getLocalizedMessage();
                 }
-                // do not add tables that are out of range
-                if (!spatialTable.checkBounds(boundsCoordinates)) {
-                    continue;
-                }
-                visibleTables.add(spatialTable);
+
             }
 
-            final Context context = drawingView.getContext();
-            infoProgressDialog = new ProgressDialog(context);
-            infoProgressDialog.setCancelable(true);
-            infoProgressDialog.setTitle("INFO");
-            infoProgressDialog.setMessage("Extracting information...");
-            infoProgressDialog.setCancelable(true);
-            infoProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            infoProgressDialog.setProgress(0);
-            infoProgressDialog.setMax(visibleTables.size());
-            infoProgressDialog.show();
+            protected void onProgressUpdate( Integer... progress ) { // on UI thread!
+                if (infoProgressDialog != null && infoProgressDialog.isShowing())
+                    infoProgressDialog.incrementProgressBy(progress[0]);
+            }
 
-            new AsyncTask<String, Integer, String>(){
-                private List<Feature> features = new ArrayList<Feature>();
-
-                protected String doInBackground( String... params ) {
-                    try {
-                        features.clear();
-                        boolean oneEnabled = visibleTables.size() > 0;
-                        if (oneEnabled) {
-                            double north = n;
-                            double south = s;
-                            if (n - s == 0) {
-                                south = n - 1;
-                            }
-                            double west = w;
-                            double east = e;
-                            if (e - w == 0) {
-                                west = e - 1;
-                            }
-
-                            for( SpatialVectorTable spatialTable : visibleTables ) {
-                                String query = SpatialiteDatabaseHandler.getIntersectionQueryBBOX(
-                                        LibraryConstants.SRID_WGS84_4326, spatialTable, north, south, east, west);
-
-                                List<Feature> featuresList = FeatureUtilities.build(query, spatialTable);
-                                features.addAll(featuresList);
-
-                                publishProgress(1);
-                                // Escape early if cancel() is called
-                                if (isCancelled())
-                                    return "CANCEL";
-                            }
-                        }
-                        return "";
-                    } catch (Exception e) {
-                        return "ERROR: " + e.getLocalizedMessage();
+            protected void onPostExecute( String response ) { // on UI thread!
+                Utilities.dismissProgressDialog(infoProgressDialog);
+                if (response.startsWith("ERROR")) {
+                    Utilities.messageDialog(context, response, null);
+                } else if (response.startsWith("CANCEL")) {
+                    return;
+                } else {
+                    if (features.size() > 0) {
+                        // Intent intent = new Intent(context, FeaturePagerActivity.class);
+                        // intent.putParcelableArrayListExtra(FeatureUtilities.KEY_FEATURESLIST,
+                        // (ArrayList< ? extends Parcelable>) features);
+                        // intent.putExtra(FeatureUtilities.KEY_READONLY, true);
+                        // context.startActivity(intent);
+                        Utilities.toast(context, "Selected features: " + features.size(), Toast.LENGTH_SHORT);
                     }
+                    // drawingView.disableTool();
+                    // disable();
 
+                    OnSelectionToolGroup selectionGroup = new OnSelectionToolGroup(parent, drawingView, mapView, features);
+                    selectionGroup.setToolUI();
                 }
+            }
 
-                protected void onProgressUpdate( Integer... progress ) { // on UI thread!
-                    if (infoProgressDialog != null && infoProgressDialog.isShowing())
-                        infoProgressDialog.incrementProgressBy(progress[0]);
-                }
+        }.execute((String) null);
 
-                protected void onPostExecute( String response ) { // on UI thread!
-                    Utilities.dismissProgressDialog(infoProgressDialog);
-                    if (response.startsWith("ERROR")) {
-                        Utilities.messageDialog(context, response, null);
-                    } else if (response.startsWith("CANCEL")) {
-                        return;
-                    } else {
-                        if (features.size() > 0) {
-                            Intent intent = new Intent(context, FeaturePagerActivity.class);
-                            intent.putParcelableArrayListExtra(FeatureUtilities.KEY_FEATURESLIST,
-                                    (ArrayList< ? extends Parcelable>) features);
-                            intent.putExtra(FeatureUtilities.KEY_READONLY, true);
-                            context.startActivity(intent);
-                        }
-                        drawingView.disableTool();
-                        disable();
-                    }
-                }
-
-            }.execute((String) null);
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
     }
 
 }

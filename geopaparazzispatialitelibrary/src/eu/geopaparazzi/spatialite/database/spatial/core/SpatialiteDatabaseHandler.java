@@ -306,7 +306,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
     */
     public List<byte[]> getWKBFromTableInBounds( String destSrid, SpatialVectorTable table, double n, double s, double e, double w ) {
         List<byte[]> list = new ArrayList<byte[]>();
-        String query = SpatialiteUtilities.buildGeometriesInBoundsQuery(destSrid, table, n, s, e, w);
+        String query = SpatialiteUtilities.buildGeometriesInBoundsQuery(destSrid, false, table, n, s, e, w);
         try {
             Stmt stmt = dbJava.prepare(query);
             try {
@@ -374,7 +374,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
     */
     public GeometryIterator getGeometryIteratorInBounds( String destSrid, SpatialVectorTable table, double n, double s, double e,
             double w ) {
-        String query = SpatialiteUtilities.buildGeometriesInBoundsQuery(destSrid, table, n, s, e, w);
+        String query = SpatialiteUtilities.buildGeometriesInBoundsQuery(destSrid, false, table, n, s, e, w);
         // GPLog.androidLog(-1,"GeopaparazziOverlay.getGeometryIteratorInBounds query["+query+"]");
         return new GeometryIterator(dbJava, query);
     }
