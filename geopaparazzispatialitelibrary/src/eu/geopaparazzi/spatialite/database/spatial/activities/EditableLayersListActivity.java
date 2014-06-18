@@ -80,6 +80,10 @@ public class EditableLayersListActivity extends ListActivity {
                     case POLYGON_XYM:
                     case POLYGON_XYZ:
                     case POLYGON_XYZM:
+                    case MULTIPOLYGON_XY:
+                    case MULTIPOLYGON_XYM:
+                    case MULTIPOLYGON_XYZ:
+                    case MULTIPOLYGON_XYZM:
                         editableSpatialVectorTables.add(spatialVectorTable);
                         editableSpatialVectorTablesNames.add(spatialVectorTable.getTableName());
                         break;
@@ -133,8 +137,13 @@ public class EditableLayersListActivity extends ListActivity {
                             }
                         }
                     });
+                    editableButton.setEnabled(true);
                     if (spatialVectorTable != null && spatialVectorTable == item) {
                         editableButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_layer_editable));
+                    } else if (item.isTableEnabled() == 1) {
+                        editableButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_layer_visible));
+                    } else {
+                        editableButton.setEnabled(false);
                     }
 
                     // rowView.setBackgroundColor(ColorUtilities.toColor(item.getColor()));
