@@ -48,18 +48,17 @@ import com.vividsolutions.jts.io.WKBReader;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
+import eu.geopaparazzi.library.features.EditingView;
 import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.features.ToolGroup;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.maps.SliderDrawView;
 import eu.hydrologis.geopaparazzi.maps.overlays.MapsforgePointTransformation;
 import eu.hydrologis.geopaparazzi.maps.overlays.SliderDrawProjection;
 import eu.hydrologis.geopaparazzi.maptools.FeaturePagerActivity;
 import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
-import eu.hydrologis.geopaparazzi.maptools.core.MapTool;
 
 /**
  * The group of tools active when a selection has been done.
@@ -68,11 +67,8 @@ import eu.hydrologis.geopaparazzi.maptools.core.MapTool;
  */
 public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouchListener {
 
-    private LinearLayout parent;
-    private SliderDrawView sliderDrawView;
     private MapView mapView;
 
-    private MapTool activeTool = null;
     private int buttonSelectionColor;
     private List<Feature> selectedFeatures;
     private ImageButton deleteFeatureButton;
@@ -97,20 +93,16 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
     /**
      * Constructor.
      * 
-     * @param parent the view into which to place the UI parts.
-     * @param sliderDrawView the draw view.
      * @param mapView the map view.
      * @param selectedFeatures the set of selected features.
      */
-    public OnSelectionToolGroup( LinearLayout parent, SliderDrawView sliderDrawView, MapView mapView,
-            List<Feature> selectedFeatures ) {
-        this.parent = parent;
-        this.sliderDrawView = sliderDrawView;
+    public OnSelectionToolGroup( MapView mapView, List<Feature> selectedFeatures ) {
         this.mapView = mapView;
         this.selectedFeatures = selectedFeatures;
 
-        sliderDrawProjection = new SliderDrawProjection(mapView, sliderDrawView);
-        buttonSelectionColor = parent.getContext().getResources().getColor(R.color.main_selection);
+        EditingView editingView = EditManager.INSTANCE.getEditingView();
+        sliderDrawProjection = new SliderDrawProjection(mapView, editingView);
+        buttonSelectionColor = editingView.getContext().getResources().getColor(R.color.main_selection);
 
         selectedGeometryPaintFill.setAntiAlias(true);
         selectedGeometryPaintFill.setColor(Color.RED);
@@ -125,7 +117,8 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
         positionBeforeDraw = new Point();
     }
 
-    public void setToolUI() {
+    public void initUI() {
+        LinearLayout parent = EditManager.INSTANCE.getToolsLayout();
         parent.removeAllViews();
 
         Context context = parent.getContext();
@@ -169,15 +162,8 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
         }
     }
 
-    public void disableTools() {
-        if (activeTool != null) {
-            sliderDrawView.disableTool();
-            activeTool.disable();
-            activeTool = null;
-        }
-    }
-
     public void disable() {
+        LinearLayout parent = EditManager.INSTANCE.getToolsLayout();
         if (parent != null)
             parent.removeAllViews();
         parent = null;
@@ -237,7 +223,6 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
 
                 MapViewPosition mapPosition = mapView.getMapPosition();
                 byte zoomLevel = mapPosition.getZoomLevel();
-                // GeoPoint mapCenter = mapPosition.getMapCenter();
 
                 PointTransformation pointTransformer = new MapsforgePointTransformation(projection, point, zoomLevel);
                 ShapeWriter shapeWriter = new ShapeWriter(pointTransformer);

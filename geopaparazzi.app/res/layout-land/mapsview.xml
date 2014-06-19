@@ -19,11 +19,11 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
 
-        <eu.hydrologis.geopaparazzi.maps.SliderDrawView
-            android:id="@+id/sliderdrawview"
+        <eu.geopaparazzi.library.features.EditingView
+            android:id="@+id/editingview"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" >
-        </eu.hydrologis.geopaparazzi.maps.SliderDrawView>
+        </eu.geopaparazzi.library.features.EditingView>
 
         <!-- the zoombar -->
 

@@ -69,6 +69,7 @@ import android.provider.ContactsContract;
 import android.text.Editable;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -90,6 +91,9 @@ import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.features.EditManager;
+import eu.geopaparazzi.library.features.EditingView;
+import eu.geopaparazzi.library.features.ToolGroup;
 import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
 import eu.geopaparazzi.library.gps.GpsServiceUtilities;
@@ -165,7 +169,6 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
 
     private ArrayGeopaparazziOverlay dataOverlay;
 
-    private SliderDrawView sliderDrawView;
     private List<String> smsString;
     private Drawable notesDrawable;
     private ProgressDialog syncProgressDialog;
@@ -188,8 +191,6 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
     private GpsLoggingStatus lastGpsLoggingStatus = GpsLoggingStatus.GPS_DATABASELOGGING_OFF;
     private ImageButton centerOnGps;
     private Button batteryButton;
-    private LinearLayout editingToolsLayout;
-    private MainEditingToolGroup mainEditingToolGroup;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
@@ -202,8 +203,6 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         };
         GpsServiceUtilities.registerForBroadcasts(this, gpsServiceBroadcastReceiver);
         GpsServiceUtilities.triggerBroadcast(this);
-
-        editingToolsLayout = (LinearLayout) findViewById(R.id.editingToolsLayout);
 
         Button menuButton = (Button) findViewById(R.id.menu_map_btn);
         menuButton.setOnClickListener(this);
@@ -292,14 +291,6 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         centerOnGps = (ImageButton) findViewById(R.id.center_on_gps_btn);
         centerOnGps.setOnClickListener(this);
 
-        if (areButtonsVisible) {
-            setAllButtoonsEnablement(true);
-        } else {
-            setAllButtoonsEnablement(false);
-        }
-
-        sliderDrawView = (SliderDrawView) findViewById(R.id.sliderdrawview);
-
         ImageButton addnotebytagButton = (ImageButton) findViewById(R.id.addnotebytagbutton);
         addnotebytagButton.setOnClickListener(this);
 
@@ -325,6 +316,23 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
             e.printStackTrace();
         }
         saveCenterPref();
+
+        if (areButtonsVisible) {
+            setAllButtoonsEnablement(true);
+        } else {
+            setAllButtoonsEnablement(false);
+        }
+        EditingView editingView = (EditingView) findViewById(R.id.editingview);
+        LinearLayout editingToolsLayout = (LinearLayout) findViewById(R.id.editingToolsLayout);
+        EditManager.INSTANCE.setEditingView(editingView, editingToolsLayout);
+
+        // if after rotation a toolgroup is there, enable ti with its icons
+        ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
+        if (activeToolGroup != null) {
+            toggleEditingButton.setBackgroundResource(R.drawable.ic_toggle_editing_on);
+            activeToolGroup.initUI();
+            setLeftButtoonsEnablement(true);
+        }
     }
     @Override
     protected void onPause() {
@@ -384,6 +392,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
 
     @Override
     protected void onDestroy() {
+        EditManager.INSTANCE.setEditingView(null, null);
         unregisterReceiver(batteryReceiver);
         if (gpsServiceBroadcastReceiver != null)
             GpsServiceUtilities.unregisterFromBroadcasts(this, gpsServiceBroadcastReceiver);
@@ -396,6 +405,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                 mapGenerator.cleanup();
             }
         }
+
         super.onDestroy();
     }
 
@@ -632,11 +642,6 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
 
     private void setGuiZoomText( int newZoom ) {
         zoomLevelText.setText(formatter.format(newZoom));
-    }
-
-    private void invalidateEditingLayer() {
-        if (mainEditingToolGroup != null)
-            sliderDrawView.invalidate();
     }
 
     /**
@@ -1197,7 +1202,8 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         }
 
         PositionUtilities.putMapCenterInPreferences(preferences, lon, lat, zoomLevel);
-        invalidateEditingLayer();
+
+        EditManager.INSTANCE.invalidateEditingView();
     }
 
     /**
@@ -1382,31 +1388,34 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
                 toggleMeasuremodeButton.setBackgroundResource(R.drawable.measuremode);
             }
             if (isInMeasureMode) {
-                sliderDrawView.disableTool();
+                EditManager.INSTANCE.setActiveTool(null);
             } else {
-                TapMeasureTool measureTool = new TapMeasureTool(sliderDrawView, mapView);
-                sliderDrawView.enableTool(measureTool);
+                TapMeasureTool measureTool = new TapMeasureTool(mapView);
+                EditManager.INSTANCE.setActiveTool(measureTool);
             }
             break;
         case R.id.toggleEditingButton:
-            final Button toggleEditingButton = (Button) findViewById(R.id.toggleEditingButton);
-            if (mainEditingToolGroup == null) {
-                toggleEditingButton.setBackgroundResource(R.drawable.ic_toggle_editing_on);
-
-                mainEditingToolGroup = new MainEditingToolGroup(editingToolsLayout, sliderDrawView, mapView);
-                mainEditingToolGroup.setToolUI();
-                setLeftButtoonsEnablement(false);
-            } else {
-                toggleEditingButton.setBackgroundResource(R.drawable.ic_toggle_editing_off);
-                mainEditingToolGroup.disableTools();
-                mainEditingToolGroup.disable();
-                mainEditingToolGroup = null;
-                setLeftButtoonsEnablement(true);
-            }
+            toggleEditing();
             break;
 
         default:
             break;
+        }
+    }
+    private void toggleEditing() {
+        final Button toggleEditingButton = (Button) findViewById(R.id.toggleEditingButton);
+        ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
+        if (activeToolGroup == null) {
+            toggleEditingButton.setBackgroundResource(R.drawable.ic_toggle_editing_on);
+
+            activeToolGroup = new MainEditingToolGroup(mapView);
+            EditManager.INSTANCE.setActiveToolGroup(activeToolGroup);
+            setLeftButtoonsEnablement(false);
+        } else {
+            toggleEditingButton.setBackgroundResource(R.drawable.ic_toggle_editing_off);
+            EditManager.INSTANCE.setActiveTool(null);
+            EditManager.INSTANCE.setActiveToolGroup(null);
+            setLeftButtoonsEnablement(true);
         }
     }
 
@@ -1485,4 +1494,16 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         return false;
     }
 
+    public boolean onKeyDown( int keyCode, KeyEvent event ) {
+        // force to exit through the exit button
+        // System.out.println(keyCode + "/" + KeyEvent.KEYCODE_BACK);
+        switch( keyCode ) {
+        case KeyEvent.KEYCODE_BACK:
+            if (EditManager.INSTANCE.getActiveToolGroup() != null) {
+                toggleEditing();
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 }

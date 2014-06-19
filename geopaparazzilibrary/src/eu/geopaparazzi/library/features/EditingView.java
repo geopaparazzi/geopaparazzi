@@ -15,22 +15,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.hydrologis.geopaparazzi.maps;
+package eu.geopaparazzi.library.features;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import eu.geopaparazzi.library.features.DrawingTool;
 
 /**
  * A slider view to draw on.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class SliderDrawView extends View {
-    private DrawingTool drawingTool;
+public class EditingView extends View {
 
     /**
      * Constructor.
@@ -38,54 +36,33 @@ public class SliderDrawView extends View {
      * @param context  the context to use.
      * @param attrs the attributes.
      */
-    public SliderDrawView( Context context, AttributeSet attrs ) {
+    public EditingView( Context context, AttributeSet attrs ) {
         super(context, attrs);
     }
 
     @Override
     protected void onDraw( Canvas canvas ) {
         super.onDraw(canvas);
-        if (drawingTool != null)
-            drawingTool.onToolDraw(canvas);
+        ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
+        if (activeToolGroup instanceof DrawingTool) {
+            ((DrawingTool) activeToolGroup).onToolDraw(canvas);
+        }
+        Tool activeTool = EditManager.INSTANCE.getActiveTool();
+        if (activeTool instanceof DrawingTool) {
+            ((DrawingTool) activeTool).onToolDraw(canvas);
+        }
     }
 
     @Override
     public boolean onTouchEvent( MotionEvent event ) {
-        if (drawingTool != null)
-            return drawingTool.onToolTouchEvent(event);
-        return false;
-    }
-
-    /**
-     * Disable tool. 
-     */
-    public void disableTool() {
-        if (drawingTool != null)
-            drawingTool.disable();
-        drawingTool = null;
-    }
-
-    /**
-     * Enable tool.
-     * 
-     * <p>If a tool is already enabled, that one is disabled first.
-     * Then invalidate is called on the view.
-     *  
-     * @param drawingTool the tool to use.
-     */
-    public void enableTool( DrawingTool drawingTool ) {
-        if (this.drawingTool != null) {
-            // first disable the current tool
-            disableTool();
+        Tool activeTool = EditManager.INSTANCE.getActiveTool();
+        if (activeTool instanceof DrawingTool) {
+            return ((DrawingTool) activeTool).onToolTouchEvent(event);
         }
-        this.drawingTool = drawingTool;
-        invalidate();
-    }
-
-    /**
-     * @return the current {@link DrawingTool} or <code>null</code>.
-     */
-    public DrawingTool getDrawingTool() {
-        return drawingTool;
+        ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
+        if (activeToolGroup instanceof DrawingTool) {
+            return ((DrawingTool) activeToolGroup).onToolTouchEvent(event);
+        }
+        return false;
     }
 }

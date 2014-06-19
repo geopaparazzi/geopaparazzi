@@ -37,8 +37,8 @@ import android.location.Location;
 import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.view.MotionEvent;
-import android.view.View;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
@@ -69,17 +69,14 @@ public class TapMeasureTool extends MapTool {
 
     private StringBuilder textBuilder = new StringBuilder();
     private boolean doImperial = false;
-    private View drawingView;
 
     /**
      * Constructor.
      * 
-     * @param drawingView the view used to draw on. 
      * @param mapView the mapview reference.
      */
-    public TapMeasureTool( View drawingView, MapView mapView ) {
+    public TapMeasureTool( MapView mapView ) {
         super(mapView);
-        this.drawingView = drawingView;
         mapView.setClickable(false);
 
         Context context = GeopaparazziApplication.getInstance().getApplicationContext();
@@ -186,7 +183,7 @@ public class TapMeasureTool extends MapTool {
             lastX = currentX;
             lastY = currentY;
             measuredDistance = measuredDistance + distanceTo;
-            drawingView.invalidate();
+            EditManager.INSTANCE.invalidateEditingView();
             break;
         case MotionEvent.ACTION_UP:
             if (GPLog.LOG_HEAVY)
@@ -202,8 +199,7 @@ public class TapMeasureTool extends MapTool {
         mapView = null;
         measuredDistance = 0;
         measurePath = null;
-        drawingView.invalidate();
-        drawingView = null;
+        EditManager.INSTANCE.setActiveTool(null);
     }
 
 }

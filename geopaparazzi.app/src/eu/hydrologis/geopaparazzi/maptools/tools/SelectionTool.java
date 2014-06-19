@@ -38,7 +38,6 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.view.MotionEvent;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.Feature;
@@ -48,7 +47,6 @@ import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTableLayer;
 import eu.geopaparazzi.spatialite.util.SpatialiteUtilities;
-import eu.hydrologis.geopaparazzi.maps.SliderDrawView;
 import eu.hydrologis.geopaparazzi.maps.overlays.SliderDrawProjection;
 import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
 import eu.hydrologis.geopaparazzi.maptools.core.MapTool;
@@ -82,23 +80,16 @@ public class SelectionTool extends MapTool {
 
     private ProgressDialog infoProgressDialog;
 
-    private SliderDrawView drawingView;
     private SliderDrawProjection sliderDrawProjection;
-
-    private LinearLayout parent;
 
     /**
      * Constructor.
      * 
-     * @param parent the parent view in which the selectiontool button resides. 
-     * @param drawingView the view used to draw on. 
      * @param mapView the mapview reference.
      */
-    public SelectionTool( LinearLayout parent, SliderDrawView drawingView, MapView mapView ) {
+    public SelectionTool( MapView mapView ) {
         super(mapView);
-        this.parent = parent;
-        this.drawingView = drawingView;
-        sliderDrawProjection = new SliderDrawProjection(mapView, drawingView);
+        sliderDrawProjection = new SliderDrawProjection(mapView, EditManager.INSTANCE.getEditingView());
         mapView.setClickable(false);
 
         // Context context = GeopaparazziApplication.getInstance().getApplicationContext();
@@ -164,7 +155,7 @@ public class SelectionTool extends MapTool {
             top = Math.min(tmpP.y, startP.y);
             rect.set((int) left, (int) top, (int) right, (int) bottom);
 
-            drawingView.invalidate();
+            EditManager.INSTANCE.invalidateEditingView();
             break;
         case MotionEvent.ACTION_UP:
 
@@ -188,10 +179,6 @@ public class SelectionTool extends MapTool {
             mapView.setClickable(true);
             mapView = null;
         }
-        if (drawingView != null) {
-            drawingView.invalidate();
-            drawingView = null;
-        }
     }
 
     private void select( final double n, final double w, final double s, final double e ) {
@@ -200,7 +187,7 @@ public class SelectionTool extends MapTool {
         SpatialVectorTableLayer layer = (SpatialVectorTableLayer) editLayer;
         final SpatialVectorTable spatialVectorTable = layer.getSpatialVectorTable();
 
-        final Context context = drawingView.getContext();
+        final Context context = EditManager.INSTANCE.getEditingView().getContext();
         infoProgressDialog = new ProgressDialog(context);
         infoProgressDialog.setCancelable(true);
         infoProgressDialog.setTitle("SELECT");
@@ -259,9 +246,8 @@ public class SelectionTool extends MapTool {
                         Utilities.toast(context, "Selected features: " + features.size(), Toast.LENGTH_SHORT);
                     }
 
-                    OnSelectionToolGroup selectionGroup = new OnSelectionToolGroup(parent, drawingView, mapView, features);
-                    selectionGroup.setToolUI();
-                    drawingView.enableTool(selectionGroup);
+                    OnSelectionToolGroup selectionGroup = new OnSelectionToolGroup(mapView, features);
+                    EditManager.INSTANCE.setActiveToolGroup(selectionGroup);
                 }
             }
 

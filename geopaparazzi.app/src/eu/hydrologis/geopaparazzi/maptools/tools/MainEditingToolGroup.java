@@ -40,8 +40,6 @@ import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.maps.SliderDrawView;
-import eu.hydrologis.geopaparazzi.maptools.core.MapTool;
 
 /**
  * The main editing tool, which just shows the tool palette.
@@ -50,32 +48,27 @@ import eu.hydrologis.geopaparazzi.maptools.core.MapTool;
  */
 public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouchListener {
 
-    private LinearLayout parent;
     private ImageButton selectAllButton;
-    private SliderDrawView sliderDrawView;
     private MapView mapView;
 
-    private MapTool activeTool = null;
     private ImageButton selectEditableButton;
     private int selectionColor;
 
     /**
      * Constructor.
      * 
-     * @param parent the view into which to place the UI parts.
-     * @param sliderDrawView the draw view.
      * @param mapView the map view.
      */
-    public MainEditingToolGroup( LinearLayout parent, SliderDrawView sliderDrawView, MapView mapView ) {
-        this.parent = parent;
-        this.sliderDrawView = sliderDrawView;
+    public MainEditingToolGroup( MapView mapView ) {
         this.mapView = mapView;
 
+        LinearLayout parent = EditManager.INSTANCE.getToolsLayout();
         selectionColor = parent.getContext().getResources().getColor(R.color.main_selection);
     }
 
-    public void setToolUI() {
+    public void initUI() {
 
+        LinearLayout parent = EditManager.INSTANCE.getToolsLayout();
         Context context = parent.getContext();
         ILayer editLayer = EditManager.INSTANCE.getEditLayer();
         int padding = 2;
@@ -138,15 +131,9 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
         }
     }
 
-    public void disableTools() {
-        if (activeTool != null) {
-            sliderDrawView.disableTool();
-            activeTool.disable();
-            activeTool = null;
-        }
-    }
-
     public void disable() {
+        EditManager.INSTANCE.setActiveTool(null);
+        LinearLayout parent = EditManager.INSTANCE.getToolsLayout();
         if (parent != null)
             parent.removeAllViews();
         parent = null;
@@ -166,18 +153,20 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
                     }
                 }
                 if (!atLeastOneEnabled) {
-                    Utilities.messageDialog(parent.getContext(), R.string.no_queriable_layer_is_visible, null);
+                    LinearLayout parent = EditManager.INSTANCE.getToolsLayout();
+                    if (parent != null)
+                        Utilities.messageDialog(parent.getContext(), R.string.no_queriable_layer_is_visible, null);
                     return;
                 }
             } catch (jsqlite.Exception e) {
                 GPLog.error(this, null, e);
             }
 
-            activeTool = new InfoTool(this, sliderDrawView, mapView);
-            sliderDrawView.enableTool(activeTool);
+            Tool activeTool = new InfoTool(this, mapView);
+            EditManager.INSTANCE.setActiveTool(activeTool);
         } else if (v == selectEditableButton) {
-            activeTool = new SelectionTool(parent, sliderDrawView, mapView);
-            sliderDrawView.enableTool(activeTool);
+            Tool activeTool = new SelectionTool(mapView);
+            EditManager.INSTANCE.setActiveTool(activeTool);
         }
     }
 
@@ -198,14 +187,14 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
     }
 
     public void onToolFinished( Tool tool ) {
-        if (activeTool == null) {
-            return;
-        }
-        if (tool == activeTool) {
-            sliderDrawView.disableTool();
-            activeTool.disable();
-            activeTool = null;
-        }
+        // if (activeTool == null) {
+        // return;
+        // }
+        // if (tool == activeTool) {
+        // sliderDrawView.disableTool();
+        // activeTool.disable();
+        // activeTool = null;
+        // }
     }
 
     public void onToolDraw( Canvas canvas ) {

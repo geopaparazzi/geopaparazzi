@@ -25,14 +25,9 @@ package eu.geopaparazzi.library.features;
 public interface ToolGroup extends DrawingTool {
 
     /**
-     * Sets a custom UI for the tool if necessary.
+     * Create a custom UI for the tool if necessary.
      */
-    public void setToolUI();
-
-    /**
-     * Disables the active tools contained in the toolgroup.
-     */
-    public void disableTools();
+    public void initUI();
 
     /**
      * Disables the toolgroup.

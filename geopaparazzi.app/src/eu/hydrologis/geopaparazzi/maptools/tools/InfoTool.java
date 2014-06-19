@@ -41,6 +41,7 @@ import android.os.AsyncTask;
 import android.os.Parcelable;
 import android.view.MotionEvent;
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.features.ToolGroup;
 import eu.geopaparazzi.library.util.LibraryConstants;
@@ -48,7 +49,6 @@ import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler;
-import eu.hydrologis.geopaparazzi.maps.SliderDrawView;
 import eu.hydrologis.geopaparazzi.maps.overlays.SliderDrawProjection;
 import eu.hydrologis.geopaparazzi.maptools.FeaturePagerActivity;
 import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
@@ -81,7 +81,6 @@ public class InfoTool extends MapTool {
 
     private ProgressDialog infoProgressDialog;
 
-    private SliderDrawView drawingView;
     private SliderDrawProjection sliderDrawProjection;
 
     private ToolGroup parentGroup;
@@ -90,14 +89,12 @@ public class InfoTool extends MapTool {
      * Constructor.
      * 
      * @param parentGroup the parent group. 
-     * @param drawingView the view used to draw on. 
      * @param mapView the mapview reference.
      */
-    public InfoTool( ToolGroup parentGroup, SliderDrawView drawingView, MapView mapView ) {
+    public InfoTool( ToolGroup parentGroup, MapView mapView ) {
         super(mapView);
         this.parentGroup = parentGroup;
-        this.drawingView = drawingView;
-        sliderDrawProjection = new SliderDrawProjection(mapView, drawingView);
+        sliderDrawProjection = new SliderDrawProjection(mapView, EditManager.INSTANCE.getEditingView());
         mapView.setClickable(false);
 
         // Context context = GeopaparazziApplication.getInstance().getApplicationContext();
@@ -153,7 +150,7 @@ public class InfoTool extends MapTool {
             top = Math.min(tmpP.y, startP.y);
             rect.set((int) left, (int) top, (int) right, (int) bottom);
 
-            drawingView.invalidate();
+            EditManager.INSTANCE.invalidateEditingView();
             break;
         case MotionEvent.ACTION_UP:
 
@@ -179,10 +176,6 @@ public class InfoTool extends MapTool {
             mapView.setClickable(true);
             mapView = null;
         }
-        if (drawingView != null) {
-            drawingView.invalidate();
-            drawingView = null;
-        }
     }
 
     private void infoDialog( final double n, final double w, final double s, final double e ) {
@@ -202,7 +195,7 @@ public class InfoTool extends MapTool {
                 visibleTables.add(spatialTable);
             }
 
-            final Context context = drawingView.getContext();
+            final Context context = EditManager.INSTANCE.getEditingView().getContext();
             infoProgressDialog = new ProgressDialog(context);
             infoProgressDialog.setCancelable(true);
             infoProgressDialog.setTitle("INFO");

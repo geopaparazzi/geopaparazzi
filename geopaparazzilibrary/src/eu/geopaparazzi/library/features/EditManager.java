@@ -17,6 +17,9 @@
  */
 package eu.geopaparazzi.library.features;
 
+import android.widget.LinearLayout;
+import eu.geopaparazzi.library.database.GPLog;
+
 /**
  * The editing layer manager.
  * 
@@ -29,6 +32,10 @@ public enum EditManager {
     INSTANCE;
 
     private ILayer editLayer;
+    private Tool activeTool;
+    private ToolGroup activeToolGroup;
+    private EditingView editingView;
+    private LinearLayout toolsLayout;
 
     /**
      * @return the editing layer.
@@ -44,5 +51,94 @@ public enum EditManager {
      */
     public void setEditLayer( ILayer editLayer ) {
         this.editLayer = editLayer;
+    }
+
+    /**
+     * Set the current active {@link Tool}.
+     * 
+     * <p>Only one tool can be active at the time.</p>
+     * <p>Setting the active tool to <code>null</code> has the 
+     * result of disabling the current tool.
+     * 
+     * @param activeTool the new active tool to set.
+     */
+    public void setActiveTool( Tool activeTool ) {
+        if (this.activeTool != null) {
+            // disable current active tool
+            this.activeTool.disable();
+            this.activeTool = null;
+        }
+        this.activeTool = activeTool;
+        invalidateEditingView();
+    }
+
+    /**
+     * @return the current active tool.
+     */
+    public Tool getActiveTool() {
+        return activeTool;
+    }
+
+    /**
+     * Set the current active {@link ToolGroup}.
+     * 
+     * <p>The tool group gets initialized inside here. Don't call initUI before.
+     * <p>Only one toolgroup can be active at the time.</p>
+     * <p>Setting the active toolgroup to <code>null</code> has the 
+     * result of disabling the current toolgroup.
+     * 
+     * @param activeToolGroup the new active tool to set.
+     */
+    public void setActiveToolGroup( ToolGroup activeToolGroup ) {
+        if (this.activeToolGroup != null) {
+            // disable current active tool
+            this.activeToolGroup.disable();
+            this.activeToolGroup = null;
+        }
+        this.activeToolGroup = activeToolGroup;
+        activeToolGroup.initUI();
+        invalidateEditingView();
+    }
+    /**
+     * @return the current active tool.
+     */
+    public ToolGroup getActiveToolGroup() {
+        return activeToolGroup;
+    }
+
+    /**
+     * Set the editing view.
+     * 
+     * @param editingView the editing view to set.
+     * @param toolsLayout the layout for the tools gui.
+     */
+    public void setEditingView( EditingView editingView, LinearLayout toolsLayout ) {
+        this.editingView = editingView;
+        this.toolsLayout = toolsLayout;
+    }
+
+    /**
+     * @return the current editing view.
+     */
+    public EditingView getEditingView() {
+        return editingView;
+    }
+
+    /**
+     * Invalidate the editing view.
+     */
+    public void invalidateEditingView() {
+        if (editingView != null) {
+            editingView.invalidate();
+        } else {
+            GPLog.error(this, null, new RuntimeException("Tried to invalidate null editingview"));
+        }
+    }
+
+    /**
+     * @return the tools layout.
+     */
+    public LinearLayout getToolsLayout() {
+        return toolsLayout;
     }
 }
