@@ -415,6 +415,74 @@ public class SpatialiteUtilities {
     }
 
     /**
+     * Get the query to run for a bounding box intersection to retrieve features.
+     * 
+     * <p>This assures that the first element of the query is
+     * the id field for the record as defined in {@link SpatialiteUtilities#SPATIALTABLE_ID_FIELD}
+     * and the last one the geometry.
+     * 
+     * @param boundsSrid the srid of the bounds requested.
+     * @param spatialTable the {@link SpatialVectorTable} to query.
+     * @param n north bound.
+     * @param s south bound.
+     * @param e east bound.
+     * @param w west bound.
+     * @return the query to run to get all fields.
+     */
+    public static String getBboxIntersectingFeaturesQuery( String boundsSrid, SpatialVectorTable spatialTable, double n,
+            double s, double e, double w ) {
+        String query = null;
+        boolean doTransform = false;
+        String fieldNamesList = SpatialiteUtilities.SPATIALTABLE_ID_FIELD;
+        // List of non-blob fields
+        for( String field : spatialTable.getLabelList() ) {
+            boolean ignore = SpatialiteUtilities.doIgnoreField(field);
+            if (!ignore)
+                fieldNamesList += "," + field;
+        }
+        if (!spatialTable.getSrid().equals(boundsSrid)) {
+            doTransform = true;
+        }
+        StringBuilder sbQ = new StringBuilder();
+        sbQ.append("SELECT ");
+        sbQ.append(fieldNamesList);
+        sbQ.append(",ST_AsBinary(CastToXY(");
+        if (doTransform)
+            sbQ.append("ST_Transform(");
+        sbQ.append(spatialTable.getGeomName());
+        if (doTransform) {
+            sbQ.append(",");
+            sbQ.append(boundsSrid);
+            sbQ.append(")");
+        }
+        sbQ.append("))");
+        sbQ.append(" FROM ").append(spatialTable.getTableName());
+        sbQ.append(" WHERE ST_Intersects(");
+        if (doTransform)
+            sbQ.append("ST_Transform(");
+        sbQ.append("BuildMBR(");
+        sbQ.append(w);
+        sbQ.append(",");
+        sbQ.append(s);
+        sbQ.append(",");
+        sbQ.append(e);
+        sbQ.append(",");
+        sbQ.append(n);
+        if (doTransform) {
+            sbQ.append(",");
+            sbQ.append(boundsSrid);
+            sbQ.append("),");
+            sbQ.append(spatialTable.getSrid());
+        }
+        sbQ.append("),");
+        sbQ.append(spatialTable.getGeomName());
+        sbQ.append(");");
+
+        query = sbQ.toString();
+        return query;
+    }
+
+    /**
      * Collects bounds and center as wgs84 4326.
      * - Note: use of getEnvelopeInternal() insures that, after transformation,
      * -- possible false values are given - since the transformed result might not be square

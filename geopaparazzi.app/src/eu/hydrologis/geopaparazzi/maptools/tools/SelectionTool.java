@@ -214,9 +214,9 @@ public class SelectionTool extends MapTool {
                         west = e - 1;
                     }
 
-                    String query = SpatialiteUtilities.buildGeometriesInBoundsQuery(LibraryConstants.SRID_WGS84_4326, true,
+                    String query = SpatialiteUtilities.getBboxIntersectingFeaturesQuery(LibraryConstants.SRID_WGS84_4326,
                             spatialVectorTable, north, south, east, west);
-                    features = FeatureUtilities.buildRowidGeometryFeatures(query, spatialVectorTable);
+                    features = FeatureUtilities.buildFeatures(query, spatialVectorTable);
 
                     return "";
                 } catch (Exception e) {

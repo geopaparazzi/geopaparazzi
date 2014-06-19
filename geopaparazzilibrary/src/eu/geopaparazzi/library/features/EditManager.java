@@ -96,7 +96,8 @@ public enum EditManager {
             this.activeToolGroup = null;
         }
         this.activeToolGroup = activeToolGroup;
-        activeToolGroup.initUI();
+        if (activeToolGroup != null)
+            activeToolGroup.initUI();
         invalidateEditingView();
     }
     /**

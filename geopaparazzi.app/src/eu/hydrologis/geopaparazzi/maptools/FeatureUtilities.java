@@ -98,6 +98,49 @@ public class FeatureUtilities {
      * Build the features given by a query.
      * 
      * <p><b>Note that this query needs to have at least 2 arguments, the first
+     * being the ROWID and the last the geometry. Else if will fail.</b> 
+     * 
+     * @param query the query to run.
+     * @param spatialTable the parent Spatialtable.
+     * @return the list of feature from the query. 
+     * @throws Exception is something goes wrong.
+     */
+    public static List<Feature> buildFeatures( String query, SpatialVectorTable spatialTable ) throws Exception {
+        List<Feature> featuresList = new ArrayList<Feature>();
+        SpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(spatialTable);
+        if (vectorHandler instanceof SpatialiteDatabaseHandler) {
+            SpatialiteDatabaseHandler spatialiteDbHandler = (SpatialiteDatabaseHandler) vectorHandler;
+            Database database = spatialiteDbHandler.getDatabase();
+            String tableName = spatialTable.getTableName();
+            String uniqueNameBasedOnDbFilePath = spatialTable.getUniqueNameBasedOnDbFilePath();
+
+            Stmt stmt = database.prepare(query);
+            try {
+                while( stmt.step() ) {
+                    int count = stmt.column_count();
+                    String id = stmt.column_string(0);
+                    byte[] geometryBytes = stmt.column_bytes(count - 1);
+                    Feature feature = new Feature(tableName, uniqueNameBasedOnDbFilePath, id, geometryBytes);
+                    for( int i = 1; i < count - 1; i++ ) {
+                        String cName = stmt.column_name(i);
+                        String value = stmt.column_string(i);
+                        int columnType = stmt.column_type(i);
+                        DataType type = DataType.getType4SqliteCode(columnType);
+                        feature.addAttribute(cName, value, type.name());
+                    }
+                    featuresList.add(feature);
+                }
+            } finally {
+                stmt.close();
+            }
+        }
+        return featuresList;
+    }
+
+    /**
+     * Build the features given by a query.
+     * 
+     * <p><b>Note that this query needs to have at least 2 arguments, the first
      * being the ROWID and the second the geometry. Else if will fail.</b> 
      * 
      * @param query the query to run.
@@ -106,6 +149,7 @@ public class FeatureUtilities {
      * @throws Exception is something goes wrong.
      */
     public static List<Feature> buildRowidGeometryFeatures( String query, SpatialVectorTable spatialTable ) throws Exception {
+
         List<Feature> featuresList = new ArrayList<Feature>();
         SpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(spatialTable);
         if (vectorHandler instanceof SpatialiteDatabaseHandler) {
