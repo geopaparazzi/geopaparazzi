@@ -53,6 +53,7 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
 
     private ImageButton selectEditableButton;
     private int selectionColor;
+    private ImageButton createFeatureButton;
 
     /**
      * Constructor.
@@ -78,6 +79,7 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
             cutButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             cutButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_cut));
             cutButton.setPadding(0, padding, 0, padding);
+            cutButton.setOnClickListener(this);
             cutButton.setOnTouchListener(this);
             parent.addView(cutButton);
 
@@ -85,14 +87,16 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
             extendButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             extendButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_extend));
             extendButton.setPadding(0, padding, 0, padding);
+            extendButton.setOnClickListener(this);
             extendButton.setOnTouchListener(this);
             parent.addView(extendButton);
 
-            ImageButton createFeatureButton = new ImageButton(context);
+            createFeatureButton = new ImageButton(context);
             createFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
             createFeatureButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_create_polygon));
             createFeatureButton.setPadding(0, padding, 0, padding);
+            createFeatureButton.setOnClickListener(this);
             createFeatureButton.setOnTouchListener(this);
             parent.addView(createFeatureButton);
 
@@ -119,6 +123,7 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
             undoButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             undoButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_undo));
             undoButton.setPadding(0, padding, 0, padding);
+            undoButton.setOnClickListener(this);
             undoButton.setOnTouchListener(this);
             parent.addView(undoButton);
 
@@ -126,6 +131,7 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
             commitButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             commitButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_commit));
             commitButton.setPadding(0, padding, 0, padding);
+            commitButton.setOnClickListener(this);
             commitButton.setOnTouchListener(this);
             parent.addView(commitButton);
         }
@@ -167,6 +173,9 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
         } else if (v == selectEditableButton) {
             Tool activeTool = new SelectionTool(mapView);
             EditManager.INSTANCE.setActiveTool(activeTool);
+        } else if (v == createFeatureButton) {
+            ToolGroup createFeatureToolGroup = new CreateFeatureToolGroup(mapView);
+            EditManager.INSTANCE.setActiveToolGroup(createFeatureToolGroup);
         }
     }
 

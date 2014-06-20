@@ -34,6 +34,10 @@ import jsqlite.Stmt;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.util.DataType;
+import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler;
 
 /**
  * Spatialite support methods.
@@ -1038,6 +1042,56 @@ public class DaoSpatialite {
         }
     }
 
+    /**
+     * Delete a list of features in the given database.
+     * 
+     * <b>The features need to be from the same table</b>
+     * 
+     * @param features the features list.
+     * @throws Exception if something goes wrong.
+     */
+    public static void deleteFeatures( List<Feature> features ) throws Exception {
+        Feature firstFeature = features.get(0);
+
+        String uniqueTableName = firstFeature.getUniqueTableName();
+        Database database = getDatabaseFromUniqueTableName(uniqueTableName);
+        String tableName = firstFeature.getTableName();
+
+        StringBuilder sbIn = new StringBuilder();
+        sbIn.append("delete from ").append(tableName);
+        sbIn.append(" where ");
+
+        StringBuilder sb = new StringBuilder();
+        for( int i = 0; i < features.size(); i++ ) {
+            Feature feature = features.get(i);
+            sb.append(" OR ");
+            sb.append(SpatialiteUtilities.SPATIALTABLE_ID_FIELD).append("=");
+            sb.append(feature.getId());
+        }
+        String valuesPart = sb.substring(4);
+
+        sbIn.append(valuesPart);
+
+        String updateQuery = sbIn.toString();
+        database.exec(updateQuery, null);
+    }
+
+    /**
+     * Retrieves a {@link Database} from a unique table name. 
+     * 
+     * @param uniqueTableName the table name.
+     * @return the database the table is in.
+     * @throws Exception
+     */
+    private static Database getDatabaseFromUniqueTableName( String uniqueTableName ) throws Exception {
+        SpatialVectorTable spatialTable = SpatialDatabasesManager.getInstance().getVectorTableByName(uniqueTableName);
+        SpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(spatialTable);
+        if (vectorHandler instanceof SpatialiteDatabaseHandler) {
+            SpatialiteDatabaseHandler spatialiteDbHandler = (SpatialiteDatabaseHandler) vectorHandler;
+            return spatialiteDbHandler.getDatabase();
+        }
+        return null;
+    }
     /**
      * Updates the values of a feature in the given database.
      * 

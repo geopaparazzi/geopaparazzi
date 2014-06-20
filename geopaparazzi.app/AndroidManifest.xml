@@ -299,6 +299,8 @@
 
         <service android:name="eu.geopaparazzi.library.gps.GpsService" >
         </service>
+        <service android:name="eu.hydrologis.geopaparazzi.maps.MapsSupportService" >
+        </service>
     </application>
 
 </manifest>

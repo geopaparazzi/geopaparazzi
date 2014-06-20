@@ -17,21 +17,16 @@
  */
 package eu.hydrologis.geopaparazzi.maptools.tools;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.MapViewPosition;
 import org.mapsforge.android.maps.Projection;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PorterDuff.Mode;
-import android.os.Parcelable;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -43,21 +38,16 @@ import android.widget.LinearLayout;
 import com.vividsolutions.jts.android.PointTransformation;
 import com.vividsolutions.jts.android.ShapeWriter;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.WKBReader;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.EditingView;
-import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.features.ToolGroup;
-import eu.geopaparazzi.spatialite.util.DaoSpatialite;
 import eu.hydrologis.geopaparazzi.R;
-import eu.hydrologis.geopaparazzi.maps.MapsSupportService;
 import eu.hydrologis.geopaparazzi.maps.overlays.MapsforgePointTransformation;
 import eu.hydrologis.geopaparazzi.maps.overlays.SliderDrawProjection;
-import eu.hydrologis.geopaparazzi.maptools.FeaturePagerActivity;
 import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
 
 /**
@@ -65,24 +55,18 @@ import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouchListener {
+public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTouchListener {
 
     private MapView mapView;
 
     private int buttonSelectionColor;
-    private List<Feature> selectedFeatures = new ArrayList<Feature>();
-    private ImageButton deleteFeatureButton;
-    private SliderDrawProjection sliderDrawProjection;
 
-    private Paint geometryPaintStroke = new Paint();
-    private Paint geometryPaintFill = new Paint();
+    private Geometry buildingGeometry;
+    private ImageButton addVertexButton;
+    private SliderDrawProjection sliderDrawProjection;
 
     private final Paint selectedGeometryPaintStroke = new Paint();
     private final Paint selectedGeometryPaintFill = new Paint();
-    private final Paint selectedPreviewGeometryPaintStroke = new Paint();
-    private final Paint selectedPreviewGeometryPaintFill = new Paint();
-
-    private WKBReader wkbReader = new WKBReader();
 
     /**
      * Stores the top-left map position at which the redraw should happen.
@@ -93,23 +77,15 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
      * Stores the map position after drawing is finished.
      */
     private Point positionBeforeDraw;
-    private ImageButton editAttributesButton;
-
-    private boolean isInDeletePreview;
-
-    private ImageButton commitButton;
-
-    private ImageButton undoButton;
+    private ImageButton gpsStreamButton;
 
     /**
      * Constructor.
      * 
      * @param mapView the map view.
-     * @param selectedFeatures the set of selected features.
      */
-    public OnSelectionToolGroup( MapView mapView, List<Feature> selectedFeatures ) {
+    public CreateFeatureToolGroup( MapView mapView ) {
         this.mapView = mapView;
-        this.selectedFeatures.addAll(selectedFeatures);
 
         EditingView editingView = EditManager.INSTANCE.getEditingView();
         sliderDrawProjection = new SliderDrawProjection(mapView, editingView);
@@ -124,18 +100,6 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
         selectedGeometryPaintStroke.setColor(Color.YELLOW);
         selectedGeometryPaintStroke.setStyle(Paint.Style.STROKE);
 
-        selectedPreviewGeometryPaintFill.setAntiAlias(true);
-        selectedPreviewGeometryPaintFill.setColor(Color.GRAY);
-        selectedPreviewGeometryPaintFill.setAlpha(180);
-        selectedPreviewGeometryPaintFill.setStyle(Paint.Style.FILL);
-        selectedPreviewGeometryPaintStroke.setAntiAlias(true);
-        selectedPreviewGeometryPaintStroke.setStrokeWidth(5f);
-        selectedPreviewGeometryPaintStroke.setColor(Color.DKGRAY);
-        selectedPreviewGeometryPaintStroke.setStyle(Paint.Style.STROKE);
-
-        geometryPaintFill = selectedGeometryPaintFill;
-        geometryPaintStroke = selectedGeometryPaintStroke;
-
         point = new Point();
         positionBeforeDraw = new Point();
     }
@@ -149,25 +113,23 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
         int padding = 2;
 
         if (editLayer != null) {
-            deleteFeatureButton = new ImageButton(context);
-            deleteFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
-                    LayoutParams.WRAP_CONTENT));
-            deleteFeatureButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_delete_feature));
-            deleteFeatureButton.setPadding(0, padding, 0, padding);
-            deleteFeatureButton.setOnTouchListener(this);
-            deleteFeatureButton.setOnClickListener(this);
-            parent.addView(deleteFeatureButton);
+            addVertexButton = new ImageButton(context);
+            addVertexButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+            addVertexButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_add_vertex));
+            addVertexButton.setPadding(0, padding, 0, padding);
+            addVertexButton.setOnTouchListener(this);
+            addVertexButton.setOnClickListener(this);
+            parent.addView(addVertexButton);
 
-            editAttributesButton = new ImageButton(context);
-            editAttributesButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
-                    LayoutParams.WRAP_CONTENT));
-            editAttributesButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_view_attributes));
-            editAttributesButton.setPadding(0, padding, 0, padding);
-            editAttributesButton.setOnTouchListener(this);
-            editAttributesButton.setOnClickListener(this);
-            parent.addView(editAttributesButton);
+            gpsStreamButton = new ImageButton(context);
+            gpsStreamButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+            gpsStreamButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_gps_stream));
+            gpsStreamButton.setPadding(0, padding, 0, padding);
+            gpsStreamButton.setOnTouchListener(this);
+            gpsStreamButton.setOnClickListener(this);
+            parent.addView(gpsStreamButton);
 
-            undoButton = new ImageButton(context);
+            ImageButton undoButton = new ImageButton(context);
             undoButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             undoButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_undo));
             undoButton.setPadding(0, padding, 0, padding);
@@ -175,7 +137,7 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
             undoButton.setOnClickListener(this);
             parent.addView(undoButton);
 
-            commitButton = new ImageButton(context);
+            ImageButton commitButton = new ImageButton(context);
             commitButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             commitButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_commit));
             commitButton.setPadding(0, padding, 0, padding);
@@ -193,62 +155,16 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
     }
 
     public void onClick( View v ) {
-        if (v == editAttributesButton) {
-            if (selectedFeatures.size() > 0) {
-                Context context = v.getContext();
-                Intent intent = new Intent(context, FeaturePagerActivity.class);
-                intent.putParcelableArrayListExtra(FeatureUtilities.KEY_FEATURESLIST,
-                        (ArrayList< ? extends Parcelable>) selectedFeatures);
-                intent.putExtra(FeatureUtilities.KEY_READONLY, false);
-                context.startActivity(intent);
-            }
-        } else if (v == deleteFeatureButton) {
-            if (!isInDeletePreview) {
-                isInDeletePreview = true;
-                geometryPaintFill = selectedPreviewGeometryPaintFill;
-                geometryPaintStroke = selectedPreviewGeometryPaintStroke;
-                EditManager.INSTANCE.invalidateEditingView();
-            }
-        } else if (v == undoButton) {
-            if (isInDeletePreview) {
-                // if in delete preview, disable it
-                isInDeletePreview = false;
-                geometryPaintFill = selectedGeometryPaintFill;
-                geometryPaintStroke = selectedGeometryPaintStroke;
-
-                EditManager.INSTANCE.invalidateEditingView();
-            } else if (selectedFeatures.size() > 0) {
-                // if in selection mode, clear the selection
-                selectedFeatures.clear();
-                EditManager.INSTANCE.setActiveToolGroup(new MainEditingToolGroup(mapView));
-                EditManager.INSTANCE.setActiveTool(null);
-            }
-        } else if (v == commitButton) {
-            if (isInDeletePreview) {
-                isInDeletePreview = false;
-
-                try {
-                    // delete features
-                    DaoSpatialite.deleteFeatures(selectedFeatures);
-                    selectedFeatures.clear();
-
-                    // reset mapview
-                    Context context = v.getContext();
-                    Intent intent = new Intent(context, MapsSupportService.class);
-                    intent.putExtra(MapsSupportService.REREAD_MAP_REQUEST, true);
-                    context.startService(intent);
-
-                    // reset drawview
-                    EditManager.INSTANCE.invalidateEditingView();
-
-                } catch (jsqlite.Exception e) {
-                    GPLog.error(this, null, e);
-                }
-
-                geometryPaintFill = selectedGeometryPaintFill;
-                geometryPaintStroke = selectedGeometryPaintStroke;
-            }
-        }
+        // if (v == gpsStreamButton) {
+        // if (selectedFeatures.size() > 0) {
+        // Context context = v.getContext();
+        // Intent intent = new Intent(context, FeaturePagerActivity.class);
+        // intent.putParcelableArrayListExtra(FeatureUtilities.KEY_FEATURESLIST,
+        // (ArrayList< ? extends Parcelable>) selectedFeatures);
+        // intent.putExtra(FeatureUtilities.KEY_READONLY, false);
+        // context.startActivity(intent);
+        // }
+        // }
     }
 
     public boolean onTouch( View v, MotionEvent event ) {
@@ -273,7 +189,7 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
 
     public void onToolDraw( Canvas canvas ) {
         try {
-            if (selectedFeatures.size() > 0) {
+            if (buildingGeometry != null) {
                 // int centerX = canvas.getWidth() / 2;
                 // int centerY = canvas.getHeight() / 2;
                 // Point drawPosition = new Point(centerX, centerY);
@@ -299,11 +215,8 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
                 // shapeWriter.setDecimation(spatialTable.getStyle().decimationFactor);
 
                 // draw features
-                for( Feature feature : selectedFeatures ) {
-                    byte[] defaultGeometry = feature.getDefaultGeometry();
-                    Geometry geometry = wkbReader.read(defaultGeometry);
-                    FeatureUtilities.drawGeometry(geometry, canvas, shapeWriter, geometryPaintFill, geometryPaintStroke);
-                }
+                FeatureUtilities.drawGeometry(buildingGeometry, canvas, shapeWriter, selectedGeometryPaintFill,
+                        selectedGeometryPaintStroke);
             }
         } catch (Exception e) {
             GPLog.error(this, null, e);

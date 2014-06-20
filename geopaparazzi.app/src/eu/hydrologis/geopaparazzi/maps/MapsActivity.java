@@ -191,10 +191,25 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
     private GpsLoggingStatus lastGpsLoggingStatus = GpsLoggingStatus.GPS_DATABASELOGGING_OFF;
     private ImageButton centerOnGps;
     private Button batteryButton;
+    private BroadcastReceiver mapsSupportBroadcastReceiver;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
         setContentView(R.layout.mapsview);
+
+        mapsSupportBroadcastReceiver = new BroadcastReceiver(){
+            public void onReceive( Context context, Intent intent ) {
+                if (intent.hasExtra(MapsSupportService.REREAD_MAP_REQUEST)) {
+                    boolean rereadMap = intent.getBooleanExtra(MapsSupportService.REREAD_MAP_REQUEST, false);
+                    if (rereadMap) {
+                        readData();
+                        mapView.invalidate();
+                    }
+                }
+            }
+        };
+        registerReceiver(mapsSupportBroadcastReceiver, new IntentFilter(
+                MapsSupportService.MAPSSUPPORT_SERVICE_BROADCAST_NOTIFICATION));
 
         gpsServiceBroadcastReceiver = new BroadcastReceiver(){
             public void onReceive( Context context, Intent intent ) {
@@ -394,8 +409,14 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
     protected void onDestroy() {
         EditManager.INSTANCE.setEditingView(null, null);
         unregisterReceiver(batteryReceiver);
+
+        if (mapsSupportBroadcastReceiver != null) {
+            unregisterReceiver(mapsSupportBroadcastReceiver);
+        }
+
         if (gpsServiceBroadcastReceiver != null)
             GpsServiceUtilities.unregisterFromBroadcasts(this, gpsServiceBroadcastReceiver);
+
         if (dataOverlay != null)
             dataOverlay.dispose();
 

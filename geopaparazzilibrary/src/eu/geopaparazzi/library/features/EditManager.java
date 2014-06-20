@@ -18,7 +18,6 @@
 package eu.geopaparazzi.library.features;
 
 import android.widget.LinearLayout;
-import eu.geopaparazzi.library.database.GPLog;
 
 /**
  * The editing layer manager.
@@ -126,13 +125,11 @@ public enum EditManager {
     }
 
     /**
-     * Invalidate the editing view.
+     * Invalidate the editing view if it exists.
      */
     public void invalidateEditingView() {
         if (editingView != null) {
             editingView.invalidate();
-        } else {
-            GPLog.error(this, null, new RuntimeException("Tried to invalidate null editingview"));
         }
     }
 

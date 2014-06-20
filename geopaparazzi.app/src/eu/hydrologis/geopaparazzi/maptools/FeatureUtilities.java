@@ -23,12 +23,20 @@ import java.util.List;
 import jsqlite.Database;
 import jsqlite.Exception;
 import jsqlite.Stmt;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+
+import com.vividsolutions.jts.android.ShapeWriter;
+import com.vividsolutions.jts.android.geom.DrawableShape;
+import com.vividsolutions.jts.geom.Geometry;
+
 import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.util.DataType;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
 
 /**
  * A spatial feature container.
@@ -171,5 +179,68 @@ public class FeatureUtilities {
             }
         }
         return featuresList;
+    }
+
+    /**
+     * Draw a geometry on a canvas.
+     * 
+     * @param geom the {@link Geometry} to draw.
+     * @param canvas the {@link Canvas}.
+     * @param shapeWriter the shape writer.
+     * @param geometryPaintFill the fill.
+     * @param geometryPaintStroke the stroke.
+     */
+    public static void drawGeometry( Geometry geom, Canvas canvas, ShapeWriter shapeWriter, Paint geometryPaintFill,
+            Paint geometryPaintStroke ) {
+        String geometryTypeStr = geom.getGeometryType();
+        int geometryTypeInt = GeometryType.forValue(geometryTypeStr);
+        GeometryType geometryType = GeometryType.forValue(geometryTypeInt);
+        DrawableShape shape = shapeWriter.toShape(geom);
+        switch( geometryType ) {
+        // case POINT_XY:
+        // case POINT_XYM:
+        // case POINT_XYZ:
+        // case POINT_XYZM:
+        // case MULTIPOINT_XY:
+        // case MULTIPOINT_XYM:
+        // case MULTIPOINT_XYZ:
+        // case MULTIPOINT_XYZM: {
+        // if (selectedGeometryPaintFill != null)
+        // shape.fill(canvas, selectedGeometryPaintFill);
+        // if (selectedGeometryPaintStroke != null)
+        // shape.draw(canvas, selectedGeometryPaintStroke);
+        // //
+        // GPLog.androidLog(-1,"GeopaparazziOverlay.drawGeometry geometry_type["+s_geometry_type+"]: ["+i_geometry_type+"]");
+        // }
+        // break;
+        // case LINESTRING_XY:
+        // case LINESTRING_XYM:
+        // case LINESTRING_XYZ:
+        // case LINESTRING_XYZM:
+        // case MULTILINESTRING_XY:
+        // case MULTILINESTRING_XYM:
+        // case MULTILINESTRING_XYZ:
+        // case MULTILINESTRING_XYZM: {
+        // if (selectedGeometryPaintStroke != null)
+        // shape.draw(canvas, selectedGeometryPaintStroke);
+        // }
+        // break;
+        case POLYGON_XY:
+        case POLYGON_XYM:
+        case POLYGON_XYZ:
+        case POLYGON_XYZM:
+        case MULTIPOLYGON_XY:
+        case MULTIPOLYGON_XYM:
+        case MULTIPOLYGON_XYZ:
+        case MULTIPOLYGON_XYZM: {
+            if (geometryPaintFill != null)
+                shape.fill(canvas, geometryPaintFill);
+            if (geometryPaintStroke != null)
+                shape.draw(canvas, geometryPaintStroke);
+        }
+            break;
+        default:
+            break;
+        }
     }
 }
