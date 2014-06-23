@@ -95,7 +95,6 @@ public class InfoTool extends MapTool {
         super(mapView);
         this.parentGroup = parentGroup;
         sliderDrawProjection = new SliderDrawProjection(mapView, EditManager.INSTANCE.getEditingView());
-        mapView.setClickable(false);
 
         // Context context = GeopaparazziApplication.getInstance().getApplicationContext();
         // SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);

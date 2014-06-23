@@ -217,6 +217,6 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
     }
 
     public boolean onToolTouchEvent( MotionEvent event ) {
-        return true;
+        return false;
     }
 }
