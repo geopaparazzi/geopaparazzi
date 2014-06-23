@@ -17,16 +17,22 @@
  */
 package eu.hydrologis.geopaparazzi.maptools.tools;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.MapViewPosition;
 import org.mapsforge.android.maps.Projection;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.PorterDuff.Mode;
+import android.preference.PreferenceManager;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -37,6 +43,7 @@ import android.widget.LinearLayout;
 
 import com.vividsolutions.jts.android.PointTransformation;
 import com.vividsolutions.jts.android.ShapeWriter;
+import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 
 import eu.geopaparazzi.library.database.GPLog;
@@ -45,6 +52,9 @@ import eu.geopaparazzi.library.features.EditingView;
 import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.features.ToolGroup;
+import eu.geopaparazzi.library.util.PositionUtilities;
+import eu.geopaparazzi.spatialite.util.JtsUtilities;
+import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.maps.overlays.MapsforgePointTransformation;
 import eu.hydrologis.geopaparazzi.maps.overlays.SliderDrawProjection;
@@ -61,12 +71,13 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
 
     private int buttonSelectionColor;
 
-    private Geometry buildingGeometry;
+    private List<Coordinate> coordinatesList = new ArrayList<Coordinate>();
     private ImageButton addVertexButton;
-    private SliderDrawProjection sliderDrawProjection;
+    private SliderDrawProjection editingViewProjection;
 
-    private final Paint selectedGeometryPaintStroke = new Paint();
-    private final Paint selectedGeometryPaintFill = new Paint();
+    private final Paint createdGeometryPaintHaloStroke = new Paint();
+    private final Paint createdGeometryPaintStroke = new Paint();
+    private final Paint createdGeometryPaintFill = new Paint();
 
     /**
      * Stores the top-left map position at which the redraw should happen.
@@ -79,6 +90,10 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
     private Point positionBeforeDraw;
     private ImageButton gpsStreamButton;
 
+    private ImageButton commitButton;
+
+    private ImageButton undoButton;
+
     /**
      * Constructor.
      * 
@@ -88,17 +103,23 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
         this.mapView = mapView;
 
         EditingView editingView = EditManager.INSTANCE.getEditingView();
-        sliderDrawProjection = new SliderDrawProjection(mapView, editingView);
+        editingViewProjection = new SliderDrawProjection(mapView, editingView);
         buttonSelectionColor = editingView.getContext().getResources().getColor(R.color.main_selection);
 
-        selectedGeometryPaintFill.setAntiAlias(true);
-        selectedGeometryPaintFill.setColor(Color.RED);
-        selectedGeometryPaintFill.setAlpha(180);
-        selectedGeometryPaintFill.setStyle(Paint.Style.FILL);
-        selectedGeometryPaintStroke.setAntiAlias(true);
-        selectedGeometryPaintStroke.setStrokeWidth(5f);
-        selectedGeometryPaintStroke.setColor(Color.YELLOW);
-        selectedGeometryPaintStroke.setStyle(Paint.Style.STROKE);
+        createdGeometryPaintFill.setAntiAlias(true);
+        createdGeometryPaintFill.setColor(Color.YELLOW);
+        createdGeometryPaintFill.setAlpha(180);
+        createdGeometryPaintFill.setStyle(Paint.Style.FILL);
+
+        createdGeometryPaintHaloStroke.setAntiAlias(true);
+        createdGeometryPaintHaloStroke.setStrokeWidth(7f);
+        createdGeometryPaintHaloStroke.setColor(Color.BLACK);
+        createdGeometryPaintHaloStroke.setStyle(Paint.Style.STROKE);
+
+        createdGeometryPaintStroke.setAntiAlias(true);
+        createdGeometryPaintStroke.setStrokeWidth(5f);
+        createdGeometryPaintStroke.setColor(Color.YELLOW);
+        createdGeometryPaintStroke.setStyle(Paint.Style.STROKE);
 
         point = new Point();
         positionBeforeDraw = new Point();
@@ -134,7 +155,7 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
             gpsStreamButton.setOnClickListener(this);
             parent.addView(gpsStreamButton);
 
-            ImageButton undoButton = new ImageButton(context);
+            undoButton = new ImageButton(context);
             undoButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             undoButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_undo));
             undoButton.setPadding(0, padding, 0, padding);
@@ -142,12 +163,13 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
             undoButton.setOnClickListener(this);
             parent.addView(undoButton);
 
-            ImageButton commitButton = new ImageButton(context);
+            commitButton = new ImageButton(context);
             commitButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             commitButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_commit));
             commitButton.setPadding(0, padding, 0, padding);
             commitButton.setOnTouchListener(this);
             commitButton.setOnClickListener(this);
+            commitButton.setVisibility(View.GONE);
             parent.addView(commitButton);
         }
     }
@@ -160,18 +182,32 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
     }
 
     public void onClick( View v ) {
-        // if (v == gpsStreamButton) {
-        // if (selectedFeatures.size() > 0) {
-        // Context context = v.getContext();
-        // Intent intent = new Intent(context, FeaturePagerActivity.class);
-        // intent.putParcelableArrayListExtra(FeatureUtilities.KEY_FEATURESLIST,
-        // (ArrayList< ? extends Parcelable>) selectedFeatures);
-        // intent.putExtra(FeatureUtilities.KEY_READONLY, false);
-        // context.startActivity(intent);
-        // }
-        // }
-    }
+        if (v == addVertexButton) {
 
+            final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GeopaparazziApplication
+                    .getInstance());
+            double[] mapCenter = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
+
+            Coordinate coordinate = new Coordinate(mapCenter[0], mapCenter[1]);
+            coordinatesList.add(coordinate);
+            EditManager.INSTANCE.invalidateEditingView();
+
+            commitButton.setVisibility(View.VISIBLE);
+        } else if (v == undoButton) {
+            if (coordinatesList.size() == 0) {
+                EditManager.INSTANCE.setActiveToolGroup(new MainEditingToolGroup(mapView));
+                EditManager.INSTANCE.setActiveTool(null);
+                return;
+            } else if (coordinatesList.size() > 0) {
+                coordinatesList.remove(coordinatesList.size() - 1);
+                commitButton.setVisibility(View.VISIBLE);
+            }
+            if (coordinatesList.size() == 0) {
+                commitButton.setVisibility(View.GONE);
+            }
+            EditManager.INSTANCE.invalidateEditingView();
+        }
+    }
     public boolean onTouch( View v, MotionEvent event ) {
         switch( event.getAction() ) {
         case MotionEvent.ACTION_DOWN: {
@@ -194,35 +230,57 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
 
     public void onToolDraw( Canvas canvas ) {
         try {
-            if (buildingGeometry != null) {
-                // int centerX = canvas.getWidth() / 2;
-                // int centerY = canvas.getHeight() / 2;
-                // Point drawPosition = new Point(centerX, centerY);
-                Projection projection = sliderDrawProjection;
-
-                byte zoomLevelBeforeDraw;
-                synchronized (mapView) {
-                    zoomLevelBeforeDraw = mapView.getMapPosition().getZoomLevel();
-                    positionBeforeDraw = projection.toPoint(mapView.getMapPosition().getMapCenter(), positionBeforeDraw,
-                            zoomLevelBeforeDraw);
-                }
-
-                // calculate the top-left point of the visible rectangle
-                point.x = positionBeforeDraw.x - (canvas.getWidth() >> 1);
-                point.y = positionBeforeDraw.y - (canvas.getHeight() >> 1);
-
-                MapViewPosition mapPosition = mapView.getMapPosition();
-                byte zoomLevel = mapPosition.getZoomLevel();
-
-                PointTransformation pointTransformer = new MapsforgePointTransformation(projection, point, zoomLevel);
-                ShapeWriter shapeWriter = new ShapeWriter(pointTransformer);
-                shapeWriter.setRemoveDuplicatePoints(true);
-                // shapeWriter.setDecimation(spatialTable.getStyle().decimationFactor);
-
-                // draw features
-                FeatureUtilities.drawGeometry(buildingGeometry, canvas, shapeWriter, selectedGeometryPaintFill,
-                        selectedGeometryPaintStroke);
+            if (coordinatesList.size() == 0) {
+                return;
             }
+            Geometry polygonGeometry = null;
+            if (coordinatesList.size() > 2) {
+                polygonGeometry = JtsUtilities.createPolygon(coordinatesList);
+            }
+
+            Projection projection = editingViewProjection;
+
+            byte zoomLevelBeforeDraw;
+            synchronized (mapView) {
+                zoomLevelBeforeDraw = mapView.getMapPosition().getZoomLevel();
+                positionBeforeDraw = projection.toPoint(mapView.getMapPosition().getMapCenter(), positionBeforeDraw,
+                        zoomLevelBeforeDraw);
+            }
+
+            // calculate the top-left point of the visible rectangle
+            point.x = positionBeforeDraw.x - (canvas.getWidth() >> 1);
+            point.y = positionBeforeDraw.y - (canvas.getHeight() >> 1);
+
+            MapViewPosition mapPosition = mapView.getMapPosition();
+            byte zoomLevel = mapPosition.getZoomLevel();
+
+            PointTransformation pointTransformer = new MapsforgePointTransformation(projection, point, zoomLevel);
+            ShapeWriter shapeWriter = new ShapeWriter(pointTransformer);
+            shapeWriter.setRemoveDuplicatePoints(true);
+            // shapeWriter.setDecimation(spatialTable.getStyle().decimationFactor);
+
+            // draw features
+            if (polygonGeometry != null) {
+                FeatureUtilities.drawGeometry(polygonGeometry, canvas, shapeWriter, createdGeometryPaintFill,
+                        createdGeometryPaintHaloStroke);
+                FeatureUtilities.drawGeometry(polygonGeometry, canvas, shapeWriter, null, createdGeometryPaintStroke);
+            }
+
+            final PointF vertexPoint = new PointF();
+            final PointF vertexPoint2 = new PointF();
+            if (coordinatesList.size() == 2) {
+                pointTransformer.transform(coordinatesList.get(0), vertexPoint);
+                pointTransformer.transform(coordinatesList.get(1), vertexPoint2);
+                canvas.drawLine(vertexPoint.x, vertexPoint.y, vertexPoint2.x, vertexPoint2.y, createdGeometryPaintHaloStroke);
+                canvas.drawLine(vertexPoint.x, vertexPoint.y, vertexPoint2.x, vertexPoint2.y, createdGeometryPaintStroke);
+            }
+
+            for( Coordinate vertexCoordinate : coordinatesList ) {
+                pointTransformer.transform(vertexCoordinate, vertexPoint);
+                canvas.drawCircle(vertexPoint.x, vertexPoint.y, 10f, createdGeometryPaintHaloStroke);
+                canvas.drawCircle(vertexPoint.x, vertexPoint.y, 10f, createdGeometryPaintStroke);
+            }
+
         } catch (Exception e) {
             GPLog.error(this, null, e);
         }

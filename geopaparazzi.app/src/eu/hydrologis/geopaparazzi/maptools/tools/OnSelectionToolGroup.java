@@ -72,7 +72,7 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
     private int buttonSelectionColor;
     private List<Feature> selectedFeatures = new ArrayList<Feature>();
     private ImageButton deleteFeatureButton;
-    private SliderDrawProjection sliderDrawProjection;
+    private SliderDrawProjection editingViewProjection;
 
     private Paint geometryPaintStroke = new Paint();
     private Paint geometryPaintFill = new Paint();
@@ -112,7 +112,7 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
         this.selectedFeatures.addAll(selectedFeatures);
 
         EditingView editingView = EditManager.INSTANCE.getEditingView();
-        sliderDrawProjection = new SliderDrawProjection(mapView, editingView);
+        editingViewProjection = new SliderDrawProjection(mapView, editingView);
         buttonSelectionColor = editingView.getContext().getResources().getColor(R.color.main_selection);
 
         selectedGeometryPaintFill.setAntiAlias(true);
@@ -286,10 +286,7 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
     public void onToolDraw( Canvas canvas ) {
         try {
             if (selectedFeatures.size() > 0) {
-                // int centerX = canvas.getWidth() / 2;
-                // int centerY = canvas.getHeight() / 2;
-                // Point drawPosition = new Point(centerX, centerY);
-                Projection projection = sliderDrawProjection;
+                Projection projection = editingViewProjection;
 
                 byte zoomLevelBeforeDraw;
                 synchronized (mapView) {

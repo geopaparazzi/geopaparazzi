@@ -80,7 +80,7 @@ public class SelectionTool extends MapTool {
 
     private ProgressDialog infoProgressDialog;
 
-    private SliderDrawProjection sliderDrawProjection;
+    private SliderDrawProjection editingViewProjection;
 
     /**
      * Constructor.
@@ -89,7 +89,7 @@ public class SelectionTool extends MapTool {
      */
     public SelectionTool( MapView mapView ) {
         super(mapView);
-        sliderDrawProjection = new SliderDrawProjection(mapView, EditManager.INSTANCE.getEditingView());
+        editingViewProjection = new SliderDrawProjection(mapView, EditManager.INSTANCE.getEditingView());
 
         // Context context = GeopaparazziApplication.getInstance().getApplicationContext();
         // SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -127,7 +127,7 @@ public class SelectionTool extends MapTool {
         if (mapView == null || mapView.isClickable()) {
             return false;
         }
-        Projection pj = sliderDrawProjection;
+        Projection pj = editingViewProjection;
 
         // handle drawing
         currentX = event.getX();
