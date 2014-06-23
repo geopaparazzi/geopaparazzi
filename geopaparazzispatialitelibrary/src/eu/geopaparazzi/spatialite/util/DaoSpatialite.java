@@ -31,6 +31,9 @@ import jsqlite.Constants;
 import jsqlite.Database;
 import jsqlite.Exception;
 import jsqlite.Stmt;
+
+import com.vividsolutions.jts.geom.Geometry;
+
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.util.DataType;
@@ -1074,6 +1077,37 @@ public class DaoSpatialite {
 
         String updateQuery = sbIn.toString();
         database.exec(updateQuery, null);
+    }
+
+    /**
+     * Add a new spatial record by adding a geometry.
+     * 
+     * <p>The other attributes will not be populated.
+     * 
+     * @param geometry the geometry that will create the new record.
+     * @param spatialVectorTable the table into which to insert the record.
+     * @throws Exception if something goes wrong.
+     */
+    public static void addNewFeatureByGeometry( Geometry geometry, SpatialVectorTable spatialVectorTable ) throws Exception {
+        String uniqueTableName = spatialVectorTable.getUniqueNameBasedOnDbFilePath();
+        Database database = getDatabaseFromUniqueTableName(uniqueTableName);
+        String tableName = spatialVectorTable.getTableName();
+        String geometryFieldName = spatialVectorTable.getGeomName();
+        String srid = spatialVectorTable.getSrid();
+
+        StringBuilder sbIn = new StringBuilder();
+        sbIn.append("insert into ").append(tableName);
+        sbIn.append(" (");
+        sbIn.append(geometryFieldName);
+        sbIn.append(") values (");
+        sbIn.append("ST_Transform(GeomFromText('");
+        sbIn.append(geometry.toText());
+        sbIn.append("' , 4326),");
+        sbIn.append(srid);
+        sbIn.append(")");
+        sbIn.append(")");
+        String insertQuery = sbIn.toString();
+        database.exec(insertQuery, null);
     }
 
     /**

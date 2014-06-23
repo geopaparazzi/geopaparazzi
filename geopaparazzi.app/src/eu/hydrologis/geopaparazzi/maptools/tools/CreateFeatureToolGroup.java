@@ -25,6 +25,7 @@ import org.mapsforge.android.maps.MapViewPosition;
 import org.mapsforge.android.maps.Projection;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -40,11 +41,13 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.vividsolutions.jts.android.PointTransformation;
 import com.vividsolutions.jts.android.ShapeWriter;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.Polygon;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
@@ -53,9 +56,13 @@ import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.features.ToolGroup;
 import eu.geopaparazzi.library.util.PositionUtilities;
+import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTableLayer;
+import eu.geopaparazzi.spatialite.util.DaoSpatialite;
 import eu.geopaparazzi.spatialite.util.JtsUtilities;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi.maps.MapsSupportService;
 import eu.hydrologis.geopaparazzi.maps.overlays.MapsforgePointTransformation;
 import eu.hydrologis.geopaparazzi.maps.overlays.SliderDrawProjection;
 import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
@@ -190,9 +197,27 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
 
             Coordinate coordinate = new Coordinate(mapCenter[0], mapCenter[1]);
             coordinatesList.add(coordinate);
-            EditManager.INSTANCE.invalidateEditingView();
+        } else if (v == commitButton) {
+            if (coordinatesList.size() > 2) {
+                Polygon polygonGeometry = JtsUtilities.createPolygon(coordinatesList);
+                ILayer editLayer = EditManager.INSTANCE.getEditLayer();
+                if (editLayer instanceof SpatialVectorTableLayer) {
+                    SpatialVectorTableLayer spatialVectorTableLayer = (SpatialVectorTableLayer) editLayer;
+                    try {
+                        DaoSpatialite.addNewFeatureByGeometry(polygonGeometry, spatialVectorTableLayer.getSpatialVectorTable());
+                        Utilities.toast(commitButton.getContext(), "Geometry saved.", Toast.LENGTH_SHORT);
+                        coordinatesList.clear();
 
-            commitButton.setVisibility(View.VISIBLE);
+                        // reset mapview
+                        Context context = v.getContext();
+                        Intent intent = new Intent(context, MapsSupportService.class);
+                        intent.putExtra(MapsSupportService.REREAD_MAP_REQUEST, true);
+                        context.startService(intent);
+                    } catch (jsqlite.Exception e) {
+                        GPLog.error(this, null, e);
+                    }
+                }
+            }
         } else if (v == undoButton) {
             if (coordinatesList.size() == 0) {
                 EditManager.INSTANCE.setActiveToolGroup(new MainEditingToolGroup(mapView));
@@ -202,11 +227,13 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
                 coordinatesList.remove(coordinatesList.size() - 1);
                 commitButton.setVisibility(View.VISIBLE);
             }
-            if (coordinatesList.size() == 0) {
-                commitButton.setVisibility(View.GONE);
-            }
-            EditManager.INSTANCE.invalidateEditingView();
         }
+        if (coordinatesList.size() > 2) {
+            commitButton.setVisibility(View.VISIBLE);
+        } else {
+            commitButton.setVisibility(View.GONE);
+        }
+        EditManager.INSTANCE.invalidateEditingView();
     }
     public boolean onTouch( View v, MotionEvent event ) {
         switch( event.getAction() ) {
@@ -230,11 +257,12 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
 
     public void onToolDraw( Canvas canvas ) {
         try {
-            if (coordinatesList.size() == 0) {
+            int coordinatesCount = coordinatesList.size();
+            if (coordinatesCount == 0) {
                 return;
             }
             Geometry polygonGeometry = null;
-            if (coordinatesList.size() > 2) {
+            if (coordinatesCount > 2) {
                 polygonGeometry = JtsUtilities.createPolygon(coordinatesList);
             }
 
@@ -267,8 +295,8 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
             }
 
             final PointF vertexPoint = new PointF();
-            final PointF vertexPoint2 = new PointF();
-            if (coordinatesList.size() == 2) {
+            if (coordinatesCount == 2) {
+                final PointF vertexPoint2 = new PointF();
                 pointTransformer.transform(coordinatesList.get(0), vertexPoint);
                 pointTransformer.transform(coordinatesList.get(1), vertexPoint2);
                 canvas.drawLine(vertexPoint.x, vertexPoint.y, vertexPoint2.x, vertexPoint2.y, createdGeometryPaintHaloStroke);
