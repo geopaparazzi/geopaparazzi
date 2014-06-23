@@ -187,6 +187,7 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
             commitButton.setOnTouchListener(this);
             commitButton.setOnClickListener(this);
             parent.addView(commitButton);
+            commitButton.setVisibility(View.GONE);
         }
     }
 
@@ -212,6 +213,7 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
                 isInDeletePreview = true;
                 geometryPaintFill = selectedPreviewGeometryPaintFill;
                 geometryPaintStroke = selectedPreviewGeometryPaintStroke;
+                commitButton.setVisibility(View.VISIBLE);
                 EditManager.INSTANCE.invalidateEditingView();
             }
         } else if (v == undoButton) {
@@ -222,7 +224,7 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
                 isInDeletePreview = false;
                 geometryPaintFill = selectedGeometryPaintFill;
                 geometryPaintStroke = selectedGeometryPaintStroke;
-
+                commitButton.setVisibility(View.GONE);
                 EditManager.INSTANCE.invalidateEditingView();
             } else if (selectedFeatures.size() > 0) {
                 /*
@@ -231,6 +233,7 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
                 selectedFeatures.clear();
                 EditManager.INSTANCE.setActiveToolGroup(new MainEditingToolGroup(mapView));
                 EditManager.INSTANCE.setActiveTool(null);
+                commitButton.setVisibility(View.GONE);
             }
         } else if (v == commitButton) {
             if (isInDeletePreview) {
