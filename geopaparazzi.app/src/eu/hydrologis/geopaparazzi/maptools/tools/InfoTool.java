@@ -109,6 +109,11 @@ public class InfoTool extends MapTool {
         infoRectPaintStroke.setStyle(Paint.Style.STROKE);
     }
 
+    public void activate() {
+        if (mapView != null)
+            mapView.setClickable(false);
+    }
+
     public void onToolDraw( Canvas canvas ) {
         canvas.drawRect(rect, infoRectPaintFill);
         canvas.drawRect(rect, infoRectPaintStroke);

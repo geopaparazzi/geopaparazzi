@@ -77,7 +77,6 @@ public class TapMeasureTool extends MapTool {
      */
     public TapMeasureTool( MapView mapView ) {
         super(mapView);
-        mapView.setClickable(false);
 
         Context context = GeopaparazziApplication.getInstance().getApplicationContext();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -94,6 +93,11 @@ public class TapMeasureTool extends MapTool {
         measureTextPaint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
 
         distanceString = context.getString(R.string.distance);
+    }
+
+    public void activate() {
+        if (mapView != null)
+            mapView.setClickable(false);
     }
 
     public void onToolDraw( Canvas canvas ) {
@@ -195,11 +199,12 @@ public class TapMeasureTool extends MapTool {
     }
 
     public void disable() {
-        mapView.setClickable(true);
-        mapView = null;
+        if (mapView != null) {
+            mapView.setClickable(true);
+            mapView = null;
+        }
         measuredDistance = 0;
         measurePath = null;
-        EditManager.INSTANCE.setActiveTool(null);
     }
 
 }

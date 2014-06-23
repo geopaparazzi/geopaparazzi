@@ -140,6 +140,11 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
         positionBeforeDraw = new Point();
     }
 
+    public void activate() {
+        if (mapView != null)
+            mapView.setClickable(true);
+    }
+
     public void initUI() {
         LinearLayout parent = EditManager.INSTANCE.getToolsLayout();
         parent.removeAllViews();
@@ -211,14 +216,18 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
             }
         } else if (v == undoButton) {
             if (isInDeletePreview) {
-                // if in delete preview, disable it
+                /*
+                 * if in delete preview, disable it
+                 */
                 isInDeletePreview = false;
                 geometryPaintFill = selectedGeometryPaintFill;
                 geometryPaintStroke = selectedGeometryPaintStroke;
 
                 EditManager.INSTANCE.invalidateEditingView();
             } else if (selectedFeatures.size() > 0) {
-                // if in selection mode, clear the selection
+                /*
+                 * if in selection mode, clear the selection
+                 */
                 selectedFeatures.clear();
                 EditManager.INSTANCE.setActiveToolGroup(new MainEditingToolGroup(mapView));
                 EditManager.INSTANCE.setActiveTool(null);
@@ -313,5 +322,4 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
     public boolean onToolTouchEvent( MotionEvent event ) {
         return false;
     }
-
 }

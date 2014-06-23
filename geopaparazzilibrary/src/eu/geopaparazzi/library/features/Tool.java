@@ -17,13 +17,17 @@
  */
 package eu.geopaparazzi.library.features;
 
-
 /**
  * A tool.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public interface Tool {
+
+    /**
+     * Activate the tool.
+     */
+    public void activate();
 
     /**
      * Disables the tool.

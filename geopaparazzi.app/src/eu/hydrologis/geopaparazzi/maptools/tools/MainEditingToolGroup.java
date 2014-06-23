@@ -67,6 +67,11 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
         selectionColor = parent.getContext().getResources().getColor(R.color.main_selection);
     }
 
+    public void activate() {
+        if (mapView != null)
+            mapView.setClickable(true);
+    }
+
     public void initUI() {
 
         LinearLayout parent = EditManager.INSTANCE.getToolsLayout();
@@ -118,23 +123,6 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
         selectAllButton.setOnTouchListener(this);
         parent.addView(selectAllButton);
 
-        if (editLayer != null) {
-            ImageButton undoButton = new ImageButton(context);
-            undoButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            undoButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_undo));
-            undoButton.setPadding(0, padding, 0, padding);
-            undoButton.setOnClickListener(this);
-            undoButton.setOnTouchListener(this);
-            parent.addView(undoButton);
-
-            ImageButton commitButton = new ImageButton(context);
-            commitButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            commitButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_commit));
-            commitButton.setPadding(0, padding, 0, padding);
-            commitButton.setOnClickListener(this);
-            commitButton.setOnTouchListener(this);
-            parent.addView(commitButton);
-        }
     }
 
     public void disable() {
@@ -177,6 +165,24 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
             ToolGroup createFeatureToolGroup = new CreateFeatureToolGroup(mapView);
             EditManager.INSTANCE.setActiveToolGroup(createFeatureToolGroup);
         }
+        handleToolIcons(v);
+    }
+
+    @SuppressWarnings("deprecation")
+    private void handleToolIcons( View activeToolButton ) {
+        Context context = activeToolButton.getContext();
+        if (activeToolButton == selectEditableButton) {
+            selectEditableButton.setBackgroundDrawable(context.getResources().getDrawable(
+                    R.drawable.ic_editing_select_editable_active));
+        } else {
+            selectEditableButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_select_editable));
+        }
+        if (activeToolButton == selectAllButton) {
+            selectAllButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_select_all_active));
+        } else {
+            selectAllButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_select_all));
+        }
+
     }
 
     public boolean onTouch( View v, MotionEvent event ) {

@@ -59,15 +59,18 @@ public enum EditManager {
      * <p>Setting the active tool to <code>null</code> has the 
      * result of disabling the current tool.
      * 
-     * @param activeTool the new active tool to set.
+     * @param newActiveTool the new active tool to set.
      */
-    public void setActiveTool( Tool activeTool ) {
+    public void setActiveTool( Tool newActiveTool ) {
         if (this.activeTool != null) {
             // disable current active tool
             this.activeTool.disable();
             this.activeTool = null;
         }
-        this.activeTool = activeTool;
+        this.activeTool = newActiveTool;
+        if (newActiveTool != null) {
+            newActiveTool.activate();
+        }
         invalidateEditingView();
     }
 
@@ -95,8 +98,10 @@ public enum EditManager {
             this.activeToolGroup = null;
         }
         this.activeToolGroup = activeToolGroup;
-        if (activeToolGroup != null)
+        if (activeToolGroup != null) {
+            activeToolGroup.activate();
             activeToolGroup.initUI();
+        }
         invalidateEditingView();
     }
     /**

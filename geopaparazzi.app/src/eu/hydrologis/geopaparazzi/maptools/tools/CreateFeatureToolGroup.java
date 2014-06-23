@@ -104,6 +104,11 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
         positionBeforeDraw = new Point();
     }
 
+    public void activate() {
+        if (mapView != null)
+            mapView.setClickable(true);
+    }
+
     public void initUI() {
         LinearLayout parent = EditManager.INSTANCE.getToolsLayout();
         parent.removeAllViews();

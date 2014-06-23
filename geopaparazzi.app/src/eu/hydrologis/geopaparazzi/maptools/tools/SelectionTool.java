@@ -90,7 +90,6 @@ public class SelectionTool extends MapTool {
     public SelectionTool( MapView mapView ) {
         super(mapView);
         sliderDrawProjection = new SliderDrawProjection(mapView, EditManager.INSTANCE.getEditingView());
-        mapView.setClickable(false);
 
         // Context context = GeopaparazziApplication.getInstance().getApplicationContext();
         // SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -112,6 +111,11 @@ public class SelectionTool extends MapTool {
         selectedGeometryPaintStroke.setColor(Color.YELLOW);
         selectedGeometryPaintStroke.setStyle(Paint.Style.STROKE);
 
+    }
+
+    public void activate() {
+        if (mapView != null)
+            mapView.setClickable(false);
     }
 
     public void onToolDraw( Canvas canvas ) {
