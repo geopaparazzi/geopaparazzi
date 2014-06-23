@@ -1,5 +1,5 @@
 ext {
-    geopaparazziVersion = "3.9.7"
+    geopaparazziVersion = "3.9.9"
 }
 
 buildscript {
