@@ -251,7 +251,8 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
                     context.startService(intent);
 
                     // reset drawview
-                    EditManager.INSTANCE.invalidateEditingView();
+                    EditManager.INSTANCE.setActiveToolGroup(new MainEditingToolGroup(mapView));
+                    EditManager.INSTANCE.setActiveTool(null);
 
                 } catch (jsqlite.Exception e) {
                     GPLog.error(this, null, e);
