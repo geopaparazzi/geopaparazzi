@@ -29,62 +29,104 @@ public enum GeometryType {
     /*
      * XY
      */
-    GEOMETRY_XY(0, "geometry_xy"), //
-    POINT_XY(1, "point_xy"), //
-    LINESTRING_XY(2, "linestring_xy"), //
-    POLYGON_XY(3, "polygon_xy"), //
-    MULTIPOINT_XY(4, "multipoint_xy"), //
-    MULTILINESTRING_XY(5, "multilinestring_xy"), //
-    MULTIPOLYGON_XY(6, "multipolygon_xy"), //
-    GEOMETRYCOLLECTION_XY(7, "geometrycollection_xy"), //
+    GEOMETRY_XY(0, "geometry_xy", null, "CastToXY", null), //
+    POINT_XY(1, "point_xy", "CastToPoint", "CastToXY", "CastToSingle"), //
+    LINESTRING_XY(2, "linestring_xy", "CastToLinestring", "CastToXY", "CastToSingle"), //
+    POLYGON_XY(3, "polygon_xy", "CastToPolygon", "CastToXY", "CastToSingle"), //
+    MULTIPOINT_XY(4, "multipoint_xy", "CastToMultiPoint", "CastToXY", "CastToMulti"), //
+    MULTILINESTRING_XY(5, "multilinestring_xy", "CastToMultiLinestring", "CastToXY", "CastToMulti"), //
+    MULTIPOLYGON_XY(6, "multipolygon_xy", "CastToMultiPolygon", "CastToXY", "CastToMulti"), //
+    GEOMETRYCOLLECTION_XY(7, "geometrycollection_xy", "CastToGeometyCollection", "CastToXY", null), //
     /*
      * XYZ
      */
-    GEOMETRY_XYZ(1000, "geometry_xyz"), //
-    POINT_XYZ(1001, "point_xyz"), //
-    LINESTRING_XYZ(1002, "linestring_xyz"), //
-    POLYGON_XYZ(1003, "polygon_xyz"), //
-    MULTIPOINT_XYZ(1004, "multipoint_xyz"), //
-    MULTILINESTRING_XYZ(1005, "multilinestring_xyz"), //
-    MULTIPOLYGON_XYZ(1006, "multipolygon_xyz"), //
-    GEOMETRYCOLLECTION_XYZ(1007, "geometrycollection_xyz"), //
+    GEOMETRY_XYZ(1000, "geometry_xyz", null, "CastToXYZ", null), //
+    POINT_XYZ(1001, "point_xyz", "CastToPoint", "CastToXYZ", "CastToSingle"), //
+    LINESTRING_XYZ(1002, "linestring_xyz", "CastToLinestring", "CastToXYZ", "CastToSingle"), //
+    POLYGON_XYZ(1003, "polygon_xyz", "CastToPolygon", "CastToXYZ", "CastToSingle"), //
+    MULTIPOINT_XYZ(1004, "multipoint_xyz", "CastToMultiPoint", "CastToXYZ", "CastToMulti"), //
+    MULTILINESTRING_XYZ(1005, "multilinestring_xyz", "CastToMultiLinestring", "CastToXYZ", "CastToMulti"), //
+    MULTIPOLYGON_XYZ(1006, "multipolygon_xyz", "CastToMultiPolygon", "CastToXYZ", "CastToMulti"), //
+    GEOMETRYCOLLECTION_XYZ(1007, "geometrycollection_xyz", "CastToGeometyCollection", "CastToXYZ", null), //
     /*
      * XYM
      */
-    GEOMETRY_XYM(2000, "geometry_xym"), //
-    POINT_XYM(2001, "point_xym"), //
-    LINESTRING_XYM(2002, "linestring_xym"), //
-    POLYGON_XYM(2003, "polygon_xym"), //
-    MULTIPOINT_XYM(2004, "multipoint_xym"), //
-    MULTILINESTRING_XYM(2005, "multilinestring_xym"), //
-    MULTIPOLYGON_XYM(2006, "multipolygon_xym"), //
-    GEOMETRYCOLLECTION_XYM(2007, "geometrycollection_xym"), //
+    GEOMETRY_XYM(2000, "geometry_xym", null, "CastToXYM", null), //
+    POINT_XYM(2001, "point_xym", "CastToPoint", "CastToXYM", "CastToSingle"), //
+    LINESTRING_XYM(2002, "linestring_xym", "CastToLinestring", "CastToXYM", "CastToSingle"), //
+    POLYGON_XYM(2003, "polygon_xym", "CastToPolygon", "CastToXYM", "CastToSingle"), //
+    MULTIPOINT_XYM(2004, "multipoint_xym", "CastToMultiPoint", "CastToXYM", "CastToMulti"), //
+    MULTILINESTRING_XYM(2005, "multilinestring_xym", "CastToMultiLinestring", "CastToXYM", "CastToMulti"), //
+    MULTIPOLYGON_XYM(2006, "multipolygon_xym", "CastToMultiPolygon", "CastToXYM", "CastToMulti"), //
+    GEOMETRYCOLLECTION_XYM(2007, "geometrycollection_xym", "CastToGeometyCollection", "CastToXYM", null), //
     /*
      * XYZM
      */
-    GEOMETRY_XYZM(3000, "geometry_xyzm"), //
-    POINT_XYZM(3001, "point_xyzm"), //
-    LINESTRING_XYZM(3002, "linestring_xyzm"), //
-    POLYGON_XYZM(3003, "polygon_xyzm"), //
-    MULTIPOINT_XYZM(3004, "multipoint_xyzm"), //
-    MULTILINESTRING_XYZM(3005, "multilinestring_xyzm"), //
-    MULTIPOLYGON_XYZM(3006, "multipolygon_xyzm"), //
-    GEOMETRYCOLLECTION_XYZM(3007, "geometrycollection_xyzm");//
+    GEOMETRY_XYZM(3000, "geometry_xyzm", null, "CastToXYZM", null), //
+    POINT_XYZM(3001, "point_xyzm", "CastToPoint", "CastToXYZM", "CastToSingle"), //
+    LINESTRING_XYZM(3002, "linestring_xyzm", "CastToLinestring", "CastToXYZM", "CastToSingle"), //
+    POLYGON_XYZM(3003, "polygon_xyzm", "CastToPolygon", "CastToXYZM", "CastToSingle"), //
+    MULTIPOINT_XYZM(3004, "multipoint_xyzm", "CastToMultiPoint", "CastToXYZM", "CastToMulti"), //
+    MULTILINESTRING_XYZM(3005, "multilinestring_xyzm", "CastToMultiLinestring", "CastToXYZM", "CastToMulti"), //
+    MULTIPOLYGON_XYZM(3006, "multipolygon_xyzm", "CastToMultiPolygon", "CastToXYZM", "CastToMulti"), //
+    GEOMETRYCOLLECTION_XYZM(3007, "geometrycollection_xyzm", "CastToGeometyCollection", "CastToXYZM", null);//
 
     private final int type;
     private final String description;
+    private String geometryTypeCast;
+    private String spaceDimensionsCast;
+    private String multiSingleCast;
 
-    GeometryType( int type, String description ) {
+    /**
+     * Create the type.
+     * 
+     * @param type the geometry type.
+     * @param description the human readable description.
+     * @param geometryTypeCast the geometry cast sql piece.
+     * @param spaceDimensionsCast the space dimension cast sql piece.
+     * @param multiSingleCast the cast sql piece for single or multi geom.
+     */
+    GeometryType( int type, String description, String geometryTypeCast, String spaceDimensionsCast, String multiSingleCast ) {
         this.type = type;
         this.description = description;
+        this.geometryTypeCast = geometryTypeCast;
+        this.spaceDimensionsCast = spaceDimensionsCast;
+        this.multiSingleCast = multiSingleCast;
     }
 
+    /**
+     * @return the geometry type.
+     */
     public int getType() {
         return type;
     }
 
+    /**
+     * @return the human readable description.
+     */
     public String getDescription() {
         return description;
+    }
+
+    /**
+     * @return the geometry cast sql piece.
+     */
+    public String getGeometryTypeCast() {
+        return geometryTypeCast;
+    }
+
+    /**
+     * @return the space dimension cast sql piece.
+     */
+    public String getSpaceDimensionsCast() {
+        return spaceDimensionsCast;
+    }
+
+    /**
+     * @return the cast sql piece for single or multi geom. 
+     */
+    public String getMultiSingleCast() {
+        return multiSingleCast;
     }
 
     /**

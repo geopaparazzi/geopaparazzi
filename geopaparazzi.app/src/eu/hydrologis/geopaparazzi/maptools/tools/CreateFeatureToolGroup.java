@@ -55,6 +55,7 @@ import eu.geopaparazzi.library.features.EditingView;
 import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.features.ToolGroup;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTableLayer;
@@ -204,7 +205,8 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
                 if (editLayer instanceof SpatialVectorTableLayer) {
                     SpatialVectorTableLayer spatialVectorTableLayer = (SpatialVectorTableLayer) editLayer;
                     try {
-                        DaoSpatialite.addNewFeatureByGeometry(polygonGeometry, spatialVectorTableLayer.getSpatialVectorTable());
+                        DaoSpatialite.addNewFeatureByGeometry(polygonGeometry, LibraryConstants.SRID_WGS84_4326,
+                                spatialVectorTableLayer.getSpatialVectorTable());
                         Utilities.toast(commitButton.getContext(), "Geometry saved.", Toast.LENGTH_SHORT);
                         coordinatesList.clear();
 

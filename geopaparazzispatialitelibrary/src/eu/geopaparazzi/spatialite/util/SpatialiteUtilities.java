@@ -435,7 +435,7 @@ public class SpatialiteUtilities {
         boolean doTransform = false;
         String fieldNamesList = SpatialiteUtilities.SPATIALTABLE_ID_FIELD;
         // List of non-blob fields
-        for( String field : spatialTable.getLabelList() ) {
+        for( String field : spatialTable.getTableFieldNamesList() ) {
             boolean ignore = SpatialiteUtilities.doIgnoreField(field);
             if (!ignore)
                 fieldNamesList += "," + field;

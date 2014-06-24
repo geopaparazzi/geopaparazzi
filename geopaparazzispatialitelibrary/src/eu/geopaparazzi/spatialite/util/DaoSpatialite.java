@@ -41,6 +41,7 @@ import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
 
 /**
  * Spatialite support methods.
@@ -1046,71 +1047,6 @@ public class DaoSpatialite {
     }
 
     /**
-     * Delete a list of features in the given database.
-     * 
-     * <b>The features need to be from the same table</b>
-     * 
-     * @param features the features list.
-     * @throws Exception if something goes wrong.
-     */
-    public static void deleteFeatures( List<Feature> features ) throws Exception {
-        Feature firstFeature = features.get(0);
-
-        String uniqueTableName = firstFeature.getUniqueTableName();
-        Database database = getDatabaseFromUniqueTableName(uniqueTableName);
-        String tableName = firstFeature.getTableName();
-
-        StringBuilder sbIn = new StringBuilder();
-        sbIn.append("delete from ").append(tableName);
-        sbIn.append(" where ");
-
-        StringBuilder sb = new StringBuilder();
-        for( int i = 0; i < features.size(); i++ ) {
-            Feature feature = features.get(i);
-            sb.append(" OR ");
-            sb.append(SpatialiteUtilities.SPATIALTABLE_ID_FIELD).append("=");
-            sb.append(feature.getId());
-        }
-        String valuesPart = sb.substring(4);
-
-        sbIn.append(valuesPart);
-
-        String updateQuery = sbIn.toString();
-        database.exec(updateQuery, null);
-    }
-
-    /**
-     * Add a new spatial record by adding a geometry.
-     * 
-     * <p>The other attributes will not be populated.
-     * 
-     * @param geometry the geometry that will create the new record.
-     * @param spatialVectorTable the table into which to insert the record.
-     * @throws Exception if something goes wrong.
-     */
-    public static void addNewFeatureByGeometry( Geometry geometry, SpatialVectorTable spatialVectorTable ) throws Exception {
-        String uniqueTableName = spatialVectorTable.getUniqueNameBasedOnDbFilePath();
-        Database database = getDatabaseFromUniqueTableName(uniqueTableName);
-        String tableName = spatialVectorTable.getTableName();
-        String geometryFieldName = spatialVectorTable.getGeomName();
-        String srid = spatialVectorTable.getSrid();
-
-        StringBuilder sbIn = new StringBuilder();
-        sbIn.append("insert into ").append(tableName);
-        sbIn.append(" (");
-        sbIn.append(geometryFieldName);
-        sbIn.append(") values (");
-        sbIn.append("ST_Transform(GeomFromText('");
-        sbIn.append(geometry.toText());
-        sbIn.append("' , 4326),");
-        sbIn.append(srid);
-        sbIn.append(")");
-        sbIn.append(")");
-        String insertQuery = sbIn.toString();
-        database.exec(insertQuery, null);
-    }
-
-    /**
      * Retrieves a {@link Database} from a unique table name. 
      * 
      * @param uniqueTableName the table name.
@@ -1126,6 +1062,7 @@ public class DaoSpatialite {
         }
         return null;
     }
+
     /**
      * Updates the values of a feature in the given database.
      * 
@@ -3029,5 +2966,123 @@ public class DaoSpatialite {
             }
         }
         return fieldNamesToTypeMap;
+    }
+
+    /**
+     * Delete a list of features in the given database.
+     * 
+     * <b>The features need to be from the same table</b>
+     * 
+     * @param features the features list.
+     * @throws Exception if something goes wrong.
+     */
+    public static void deleteFeatures( List<Feature> features ) throws Exception {
+        Feature firstFeature = features.get(0);
+
+        String uniqueTableName = firstFeature.getUniqueTableName();
+        Database database = getDatabaseFromUniqueTableName(uniqueTableName);
+        String tableName = firstFeature.getTableName();
+
+        StringBuilder sbIn = new StringBuilder();
+        sbIn.append("delete from ").append(tableName);
+        sbIn.append(" where ");
+
+        StringBuilder sb = new StringBuilder();
+        for( int i = 0; i < features.size(); i++ ) {
+            Feature feature = features.get(i);
+            sb.append(" OR ");
+            sb.append(SpatialiteUtilities.SPATIALTABLE_ID_FIELD).append("=");
+            sb.append(feature.getId());
+        }
+        String valuesPart = sb.substring(4);
+
+        sbIn.append(valuesPart);
+
+        String updateQuery = sbIn.toString();
+        database.exec(updateQuery, null);
+    }
+
+    /**
+     * Add a new spatial record by adding a geometry.
+     * 
+     * <p>The other attributes will not be populated.
+     * 
+     * @param geometry the geometry that will create the new record.
+     * @param geometrySrid the srid of the geometry without the EPSG prefix.
+     * @param spatialVectorTable the table into which to insert the record.
+     * @throws Exception if something goes wrong.
+     */
+    public static void addNewFeatureByGeometry( Geometry geometry, String geometrySrid, SpatialVectorTable spatialVectorTable )
+            throws Exception {
+        String uniqueTableName = spatialVectorTable.getUniqueNameBasedOnDbFilePath();
+        Database database = getDatabaseFromUniqueTableName(uniqueTableName);
+        String tableName = spatialVectorTable.getTableName();
+        String geometryFieldName = spatialVectorTable.getGeomName();
+        String srid = spatialVectorTable.getSrid();
+        int geomType = spatialVectorTable.getGeomType();
+        GeometryType geometryType = GeometryType.forValue(geomType);
+        String geometryTypeCast = geometryType.getGeometryTypeCast();
+        String spaceDimensionsCast = geometryType.getSpaceDimensionsCast();
+        String multiSingleCast = geometryType.getMultiSingleCast();
+
+        // get list of non geom fields and default values
+        String nonGeomFieldsNames = "";
+        String nonGeomFieldsValues = "";
+        for( String field : spatialVectorTable.getTableFieldNamesList() ) {
+            boolean ignore = SpatialiteUtilities.doIgnoreField(field);
+            if (!ignore) {
+                DataType tableFieldType = spatialVectorTable.getTableFieldType(field);
+                if (tableFieldType != null) {
+                    nonGeomFieldsNames = nonGeomFieldsNames + "," + field;
+                    nonGeomFieldsValues = nonGeomFieldsValues + "," + tableFieldType.getDefaultValueForSql();
+                }
+            }
+        }
+
+        boolean doTransform = true;
+        if (srid.equals(geometrySrid)) {
+            doTransform = false;
+        }
+
+        StringBuilder sbIn = new StringBuilder();
+        sbIn.append("insert into ").append(tableName);
+        sbIn.append(" (");
+        sbIn.append(geometryFieldName);
+        // add fields
+        if (nonGeomFieldsNames.length() > 0) {
+            sbIn.append(nonGeomFieldsNames);
+        }
+        sbIn.append(") values (");
+        if (doTransform)
+            sbIn.append("ST_Transform(");
+        if (multiSingleCast != null)
+            sbIn.append(multiSingleCast + "(");
+        if (spaceDimensionsCast != null)
+            sbIn.append(spaceDimensionsCast + "(");
+        if (geometryTypeCast != null)
+            sbIn.append(geometryTypeCast + "(");
+        sbIn.append("GeomFromText('");
+        sbIn.append(geometry.toText());
+        sbIn.append("' , ");
+        sbIn.append(geometrySrid);
+        sbIn.append(")");
+        if (geometryTypeCast != null)
+            sbIn.append(")");
+        if (spaceDimensionsCast != null)
+            sbIn.append(")");
+        if (multiSingleCast != null)
+            sbIn.append(")");
+        if (doTransform) {
+            sbIn.append(",");
+            sbIn.append(srid);
+            sbIn.append(")");
+        }
+        // add field default values
+        if (nonGeomFieldsNames.length() > 0) {
+            sbIn.append(nonGeomFieldsValues);
+        }
+        sbIn.append(")");
+        String insertQuery = sbIn.toString();
+        database.exec(insertQuery, null);
     }
 }

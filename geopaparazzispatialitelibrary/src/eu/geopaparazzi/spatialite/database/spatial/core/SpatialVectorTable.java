@@ -22,10 +22,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import android.content.Context;
 import eu.geopaparazzi.library.GPApplication;
+import eu.geopaparazzi.library.util.DataType;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
 import eu.geopaparazzi.spatialite.util.SpatialDataType;
@@ -216,8 +218,36 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
       *
      * @return list of field names.
       */
-    public List<String> getLabelList() {
+    public List<String> getTableFieldNamesList() {
         return labelList;
+    }
+
+    /**
+     * Get the data type for a given field name.
+     * 
+     * @param fieldName the field name.
+     * @return the {@link DataType} or <code>null</code>.
+     */
+    public DataType getTableFieldType( String fieldName ) {
+        String type = fieldName2TypeMap.get(fieldName);
+        // 1;Data-TypeTEXT || DOUBLE || INTEGER || REAL || DATE || BLOB ||
+        if (type != null) {
+            type = type.toUpperCase(Locale.US);
+            if (type.indexOf("TEXT") != -1) {
+                return DataType.TEXT;
+            } else if (type.indexOf("DOUBLE") != -1) {
+                return DataType.DOUBLE;
+            } else if (type.indexOf("INTEGER") != -1) {
+                return DataType.INTEGER;
+            } else if (type.indexOf("REAL") != -1) {
+                return DataType.DOUBLE;
+            } else if (type.indexOf("DATE") != -1) {
+                return DataType.DATE;
+            } else if (type.indexOf("BLOB") != -1) {
+                return DataType.BLOB;
+            }
+        }
+        return null;
     }
 
     /**
@@ -278,7 +308,7 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
      * @param fieldName2TypeMap the fields map to set.
      * @param s_ROWID_PK the field to replace the default ROWID when SpatialView.
       */
-    public void setFieldsList( HashMap<String, String> fieldName2TypeMap, String s_ROWID_PK, int i_view_read_only ) {
+    void setFieldsList( HashMap<String, String> fieldName2TypeMap, String s_ROWID_PK, int i_view_read_only ) {
         this.fieldName2TypeMap = fieldName2TypeMap;
         labelField = "";
         String s_label_field_alt = "";
@@ -293,13 +323,13 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
             fields_list_non_vector = new LinkedHashMap<String, String>();
         }
         if (this.fieldName2TypeMap != null) {
-            for( Map.Entry<String, String> field_list : this.fieldName2TypeMap.entrySet() ) {
-                String s_field_name = field_list.getKey();
+            for( Map.Entry<String, String> fieldList : this.fieldName2TypeMap.entrySet() ) {
+                String s_field_name = fieldList.getKey();
                 // pk: 0 || 1;Data-TypeTEXT || DOUBLE || INTEGER || REAL || DATE || BLOB ||
                 // geometry-types
                 // field is a primary-key = '1;Data-Type'
                 // field is NOT a primary-key = '0;Data-Type'
-                String s_field_type = field_list.getValue();
+                String s_field_type = fieldList.getValue();
                 // GPLog.androidLog(-1,"SpatialVectorTable.setFieldsList["+getName()+"] field_name["+s_field_name+"] field_type["+s_field_type+"]");
                 if ((s_field_type.indexOf("BLOB") == -1) && (s_field_type.indexOf("POINT") == -1)
                         && (s_field_type.indexOf("LINESTRING") == -1) && (s_field_type.indexOf("POLYGON") == -1)

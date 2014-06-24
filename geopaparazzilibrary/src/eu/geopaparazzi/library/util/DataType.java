@@ -22,28 +22,31 @@ package eu.geopaparazzi.library.util;
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
+@SuppressWarnings("nls")
 public enum DataType {
     /** * */
-    TEXT(0, String.class), //
+    TEXT(0, String.class, "''"), //
     /** * */
-    DOUBLE(1, Double.class), //
+    DOUBLE(1, Double.class, "-1.0"), //
     /** * */
-    PHONE(2, String.class), //
+    PHONE(2, String.class, "''"), //
     /** * */
-    DATE(3, String.class), //
+    DATE(3, String.class, "''"), //
     /** * */
-    INTEGER(4, Integer.class), //
+    INTEGER(4, Integer.class, "0"), //
     /** * */
-    FLOAT(5, Float.class),
+    FLOAT(5, Float.class, "0.0"),
     /** * */
-    BLOB(6, Object.class);
+    BLOB(6, Object.class, "''");
 
     private int code;
     private Class< ? > clazz;
+    private String defaultValueForSql;
 
-    private DataType( int code, Class< ? > clazz ) {
+    private DataType( int code, Class< ? > clazz, String defaultValueForSql ) {
         this.code = code;
         this.clazz = clazz;
+        this.defaultValueForSql = defaultValueForSql;
     }
 
     /**
@@ -58,6 +61,13 @@ public enum DataType {
      */
     public Class< ? > getClazz() {
         return clazz;
+    }
+
+    /**
+     * @return the default value for an sql query.
+     */
+    public String getDefaultValueForSql() {
+        return defaultValueForSql;
     }
 
     /**

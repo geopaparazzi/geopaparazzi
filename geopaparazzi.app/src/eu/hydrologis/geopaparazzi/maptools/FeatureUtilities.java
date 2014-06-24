@@ -30,6 +30,7 @@ import com.vividsolutions.jts.android.ShapeWriter;
 import com.vividsolutions.jts.android.geom.DrawableShape;
 import com.vividsolutions.jts.geom.Geometry;
 
+import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.util.DataType;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
@@ -134,6 +135,11 @@ public class FeatureUtilities {
                         String value = stmt.column_string(i);
                         int columnType = stmt.column_type(i);
                         DataType type = DataType.getType4SqliteCode(columnType);
+                        if (type == null) {
+                            GPLog.addLogEntry("Featureutilities#buildFeatures", "Unexpected type " + columnType + " for column "
+                                    + cName);
+                            continue;
+                        }
                         feature.addAttribute(cName, value, type.name());
                     }
                     featuresList.add(feature);
