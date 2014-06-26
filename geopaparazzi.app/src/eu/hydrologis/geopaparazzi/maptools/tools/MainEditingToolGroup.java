@@ -54,6 +54,8 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
     private ImageButton selectEditableButton;
     private int selectionColor;
     private ImageButton createFeatureButton;
+    private ImageButton cutButton;
+    private ImageButton extendButton;
 
     /**
      * Constructor.
@@ -80,7 +82,7 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
         int padding = 2;
 
         if (editLayer != null) {
-            ImageButton cutButton = new ImageButton(context);
+            cutButton = new ImageButton(context);
             cutButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             cutButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_cut));
             cutButton.setPadding(0, padding, 0, padding);
@@ -88,7 +90,7 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
             cutButton.setOnTouchListener(this);
             parent.addView(cutButton);
 
-            ImageButton extendButton = new ImageButton(context);
+            extendButton = new ImageButton(context);
             extendButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             extendButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_extend));
             extendButton.setPadding(0, padding, 0, padding);
@@ -164,6 +166,12 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
         } else if (v == createFeatureButton) {
             ToolGroup createFeatureToolGroup = new CreateFeatureToolGroup(mapView);
             EditManager.INSTANCE.setActiveToolGroup(createFeatureToolGroup);
+        } else if (v == cutButton) {
+            Tool activeTool = new CutExtendTool(mapView, true);
+            EditManager.INSTANCE.setActiveTool(activeTool);
+        } else if (v == extendButton) {
+            Tool activeTool = new CutExtendTool(mapView, false);
+            EditManager.INSTANCE.setActiveTool(activeTool);
         }
         handleToolIcons(v);
     }
@@ -181,6 +189,16 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
             selectAllButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_select_all_active));
         } else {
             selectAllButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_select_all));
+        }
+        if (activeToolButton == cutButton) {
+            cutButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_cut_active));
+        } else {
+            cutButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_cut));
+        }
+        if (activeToolButton == extendButton) {
+            extendButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_extend_active));
+        } else {
+            extendButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_extend));
         }
 
     }

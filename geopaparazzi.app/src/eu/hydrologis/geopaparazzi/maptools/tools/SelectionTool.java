@@ -59,8 +59,8 @@ import eu.hydrologis.geopaparazzi.maptools.core.MapTool;
 public class SelectionTool extends MapTool {
     private static final int TOUCH_BOX_THRES = 10;
 
-    private final Paint infoRectPaintStroke = new Paint();
-    private final Paint infoRectPaintFill = new Paint();
+    private final Paint selectRectPaintStroke = new Paint();
+    private final Paint selectRectPaintFill = new Paint();
     private final Paint selectedGeometryPaintStroke = new Paint();
     private final Paint selectedGeometryPaintFill = new Paint();
     private final Rect rect = new Rect();
@@ -93,14 +93,14 @@ public class SelectionTool extends MapTool {
 
         // Context context = GeopaparazziApplication.getInstance().getApplicationContext();
         // SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        infoRectPaintFill.setAntiAlias(true);
-        infoRectPaintFill.setColor(Color.RED);
-        infoRectPaintFill.setAlpha(80);
-        infoRectPaintFill.setStyle(Paint.Style.FILL);
-        infoRectPaintStroke.setAntiAlias(true);
-        infoRectPaintStroke.setStrokeWidth(1.5f);
-        infoRectPaintStroke.setColor(Color.YELLOW);
-        infoRectPaintStroke.setStyle(Paint.Style.STROKE);
+        selectRectPaintFill.setAntiAlias(true);
+        selectRectPaintFill.setColor(Color.RED);
+        selectRectPaintFill.setAlpha(80);
+        selectRectPaintFill.setStyle(Paint.Style.FILL);
+        selectRectPaintStroke.setAntiAlias(true);
+        selectRectPaintStroke.setStrokeWidth(1.5f);
+        selectRectPaintStroke.setColor(Color.YELLOW);
+        selectRectPaintStroke.setStyle(Paint.Style.STROKE);
 
         selectedGeometryPaintFill.setAntiAlias(true);
         selectedGeometryPaintFill.setColor(Color.RED);
@@ -119,8 +119,8 @@ public class SelectionTool extends MapTool {
     }
 
     public void onToolDraw( Canvas canvas ) {
-        canvas.drawRect(rect, infoRectPaintFill);
-        canvas.drawRect(rect, infoRectPaintStroke);
+        canvas.drawRect(rect, selectRectPaintFill);
+        canvas.drawRect(rect, selectRectPaintStroke);
     }
 
     public boolean onToolTouchEvent( MotionEvent event ) {
