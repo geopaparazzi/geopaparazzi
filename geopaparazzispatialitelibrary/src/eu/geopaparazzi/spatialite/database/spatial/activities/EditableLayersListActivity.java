@@ -24,9 +24,12 @@ import java.util.List;
 
 import android.app.ListActivity;
 import android.content.Context;
+import android.graphics.PorterDuff.Mode;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
@@ -49,7 +52,7 @@ import eu.geopaparazzi.spatialite.util.SpatialTableNameComparator;
  *
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class EditableLayersListActivity extends ListActivity {
+public class EditableLayersListActivity extends ListActivity implements OnTouchListener {
 
     private String mapsDirPath;
 
@@ -57,9 +60,13 @@ public class EditableLayersListActivity extends ListActivity {
 
     private SpatialVectorTable spatialVectorTable;
 
+    private int buttonSelectionColor;
+
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
         setContentView(R.layout.data_list);
+
+        buttonSelectionColor = getResources().getColor(R.color.main_selection);
 
         try {
             mapsDirPath = ResourcesManager.getInstance(this).getMapsDir().getPath();
@@ -137,6 +144,7 @@ public class EditableLayersListActivity extends ListActivity {
                             }
                         }
                     });
+                    editableButton.setOnTouchListener(EditableLayersListActivity.this);
                     editableButton.setEnabled(true);
                     if (spatialVectorTable != null && spatialVectorTable == item) {
                         editableButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_layer_editable));
@@ -182,6 +190,22 @@ public class EditableLayersListActivity extends ListActivity {
             listView.setSelection(index);
         }
 
+    }
+
+    public boolean onTouch( View v, MotionEvent event ) {
+        switch( event.getAction() ) {
+        case MotionEvent.ACTION_DOWN: {
+            v.getBackground().setColorFilter(buttonSelectionColor, Mode.SRC_OVER);
+            v.invalidate();
+            break;
+        }
+        case MotionEvent.ACTION_UP: {
+            v.getBackground().clearColorFilter();
+            v.invalidate();
+            break;
+        }
+        }
+        return false;
     }
 
 }
