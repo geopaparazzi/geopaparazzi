@@ -39,6 +39,9 @@ import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.view.MotionEvent;
 import android.widget.Toast;
+
+import com.vividsolutions.jts.geom.Geometry;
+
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.features.ILayer;
@@ -242,12 +245,17 @@ public class SelectionTool extends MapTool {
                     return;
                 } else {
                     if (features.size() > 0) {
-                        // Intent intent = new Intent(context, FeaturePagerActivity.class);
-                        // intent.putParcelableArrayListExtra(FeatureUtilities.KEY_FEATURESLIST,
-                        // (ArrayList< ? extends Parcelable>) features);
-                        // intent.putExtra(FeatureUtilities.KEY_READONLY, true);
-                        // context.startActivity(intent);
-                        Utilities.toast(context, "Selected features: " + features.size(), Toast.LENGTH_SHORT);
+                        try {
+                            int geomsCount = 0;
+                            for( Feature feature : features ) {
+                                Geometry geometry = FeatureUtilities.getGeometry(feature);
+                                geomsCount = geomsCount + geometry.getNumGeometries();
+                            }
+                            Utilities.toast(context, "Selected " + features.size() + " features with " + geomsCount
+                                    + " polygons.", Toast.LENGTH_SHORT);
+                        } catch (java.lang.Exception e) {
+                            e.printStackTrace();
+                        }
                     }
 
                     OnSelectionToolGroup selectionGroup = new OnSelectionToolGroup(mapView, features);

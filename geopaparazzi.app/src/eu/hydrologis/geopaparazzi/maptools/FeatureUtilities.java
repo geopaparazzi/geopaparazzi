@@ -29,6 +29,7 @@ import android.graphics.Paint;
 import com.vividsolutions.jts.android.ShapeWriter;
 import com.vividsolutions.jts.android.geom.DrawableShape;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.WKBReader;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.Feature;
@@ -56,6 +57,8 @@ public class FeatureUtilities {
      * Key to pass a readonly flag through activities.
      */
     public static final String KEY_READONLY = "KEY_READONLY";
+
+    public static WKBReader WKBREADER = new WKBReader();
 
     /**
      * Build the features given by a query.
@@ -249,4 +252,20 @@ public class FeatureUtilities {
             break;
         }
     }
+
+    /**
+     * Get geometry from feature.
+     * 
+     * @param feature the feature.
+     * @return the {@link Geometry} or <code>null</code>.
+     * @throws java.lang.Exception if something goes wrong.
+     */
+    public static Geometry getGeometry( Feature feature ) throws java.lang.Exception {
+        byte[] defaultGeometry = feature.getDefaultGeometry();
+        if (defaultGeometry == null) {
+            return null;
+        }
+        return WKBREADER.read(defaultGeometry);
+    }
+
 }
