@@ -102,6 +102,10 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
 
     private ImageButton undoButton;
 
+    private Geometry polygonGeometry;
+
+    private boolean firstInvalid = true;
+
     /**
      * Constructor.
      * 
@@ -198,15 +202,47 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
 
             Coordinate coordinate = new Coordinate(mapCenter[0], mapCenter[1]);
             coordinatesList.add(coordinate);
+
+            int coordinatesCount = coordinatesList.size();
+            if (coordinatesCount == 0) {
+                return;
+            }
+            polygonGeometry = null;
+            if (coordinatesCount > 2) {
+                polygonGeometry = JtsUtilities.createPolygon(coordinatesList);
+                if (!polygonGeometry.isValid() && firstInvalid) {
+                    Utilities.messageDialog(v.getContext(), "The added vertex has created an invalid feature!", null);
+                    firstInvalid = false;
+                }
+            }
         } else if (v == commitButton) {
             if (coordinatesList.size() > 2) {
+                List<Geometry> geomsList = new ArrayList<Geometry>();
                 Polygon polygonGeometry = JtsUtilities.createPolygon(coordinatesList);
+                if (polygonGeometry.isValid()) {
+                    geomsList.add(polygonGeometry);
+                } else {
+                    try {
+                        Geometry polygonSplit = FeatureUtilities.invalidPolygonSplit(polygonGeometry);
+                        for( int i = 0; i < polygonSplit.getNumGeometries(); i++ ) {
+                            geomsList.add(polygonSplit.getGeometryN(i));
+                        }
+                    } catch (Exception e) {
+                        GPLog.error(this, null, e);
+                        // just clean it up through buffer
+                        Geometry buffer = polygonGeometry.buffer(0);
+                        geomsList.add(buffer);
+                    }
+                }
+
                 ILayer editLayer = EditManager.INSTANCE.getEditLayer();
                 if (editLayer instanceof SpatialVectorTableLayer) {
                     SpatialVectorTableLayer spatialVectorTableLayer = (SpatialVectorTableLayer) editLayer;
                     try {
-                        DaoSpatialite.addNewFeatureByGeometry(polygonGeometry, LibraryConstants.SRID_WGS84_4326,
-                                spatialVectorTableLayer.getSpatialVectorTable());
+                        for( Geometry geometry : geomsList ) {
+                            DaoSpatialite.addNewFeatureByGeometry(geometry, LibraryConstants.SRID_WGS84_4326,
+                                    spatialVectorTableLayer.getSpatialVectorTable());
+                        }
                         Utilities.toast(commitButton.getContext(), "Geometry saved.", Toast.LENGTH_SHORT);
                         coordinatesList.clear();
 
@@ -237,6 +273,7 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
         }
         EditManager.INSTANCE.invalidateEditingView();
     }
+
     public boolean onTouch( View v, MotionEvent event ) {
         switch( event.getAction() ) {
         case MotionEvent.ACTION_DOWN: {
@@ -259,14 +296,6 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
 
     public void onToolDraw( Canvas canvas ) {
         try {
-            int coordinatesCount = coordinatesList.size();
-            if (coordinatesCount == 0) {
-                return;
-            }
-            Geometry polygonGeometry = null;
-            if (coordinatesCount > 2) {
-                polygonGeometry = JtsUtilities.createPolygon(coordinatesList);
-            }
 
             Projection projection = editingViewProjection;
 
@@ -297,7 +326,7 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
             }
 
             final PointF vertexPoint = new PointF();
-            if (coordinatesCount == 2) {
+            if (coordinatesList.size() == 2) {
                 final PointF vertexPoint2 = new PointF();
                 pointTransformer.transform(coordinatesList.get(0), vertexPoint);
                 pointTransformer.transform(coordinatesList.get(1), vertexPoint2);

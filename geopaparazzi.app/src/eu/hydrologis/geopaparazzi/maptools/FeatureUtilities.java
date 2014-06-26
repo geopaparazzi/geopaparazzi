@@ -18,6 +18,7 @@
 package eu.hydrologis.geopaparazzi.maptools;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import jsqlite.Database;
@@ -29,7 +30,14 @@ import android.graphics.Paint;
 import com.vividsolutions.jts.android.ShapeWriter;
 import com.vividsolutions.jts.android.geom.DrawableShape;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.PrecisionModel;
+import com.vividsolutions.jts.geom.util.LinearComponentExtracter;
 import com.vividsolutions.jts.io.WKBReader;
+import com.vividsolutions.jts.noding.snapround.GeometryNoder;
+import com.vividsolutions.jts.operation.polygonize.Polygonizer;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.Feature;
@@ -266,6 +274,30 @@ public class FeatureUtilities {
             return null;
         }
         return WKBREADER.read(defaultGeometry);
+    }
+
+    /**
+     * Tries to split an invalid polygon in its {@link GeometryCollection}.
+     * 
+     * <p>Based on JTSBuilder code.
+     * 
+     * @param invalidPolygon the invalid polygon.
+     * @return the geometries.
+     */
+    public static Geometry invalidPolygonSplit( Geometry invalidPolygon ) {
+        PrecisionModel pm = new PrecisionModel();
+        GeometryFactory geomFact = invalidPolygon.getFactory();
+        List lines = LinearComponentExtracter.getLines(invalidPolygon);
+        List nodedLinework = new GeometryNoder(pm).node(lines);
+        // union the noded linework to remove duplicates
+        Geometry nodedDedupedLinework = geomFact.buildGeometry(nodedLinework).union();
+        // polygonize the result
+        Polygonizer polygonizer = new Polygonizer();
+        polygonizer.add(nodedDedupedLinework);
+        Collection polys = polygonizer.getPolygons();
+        // convert to collection for return
+        Polygon[] polyArray = GeometryFactory.toPolygonArray(polys);
+        return geomFact.createGeometryCollection(polyArray);
     }
 
 }
