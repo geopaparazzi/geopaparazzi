@@ -58,19 +58,6 @@
         android:layout_alignParentLeft="true" >
 
         <Button
-            android:id="@+id/editButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/button_indent"
-            android:layout_weight="1"
-            android:background="@drawable/button_background_drawable"
-            android:onClick="onEdit"
-            android:padding="@dimen/button_indent"
-            android:text="edit"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/main_text_color" />
-
-        <Button
             android:id="@+id/saveButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

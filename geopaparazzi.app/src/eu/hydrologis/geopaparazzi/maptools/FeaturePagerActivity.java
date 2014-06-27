@@ -77,8 +77,6 @@ public class FeaturePagerActivity extends Activity implements OnPageChangeListen
         if (isReadOnly) {
             Button saveButton = (Button) findViewById(R.id.saveButton);
             saveButton.setVisibility(View.GONE);
-            Button editButton = (Button) findViewById(R.id.editButton);
-            editButton.setVisibility(View.GONE);
         }
 
         onPageSelected(0);
