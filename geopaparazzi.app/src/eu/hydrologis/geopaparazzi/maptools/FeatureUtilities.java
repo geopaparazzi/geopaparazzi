@@ -59,13 +59,16 @@ public class FeatureUtilities {
     /**
      * Key to pass featuresLists through activities.
      */
-    public static final String KEY_FEATURESLIST = "KEY_FEATURESLIST"; //$NON-NLS-1$
+    public static final String KEY_FEATURESLIST = "KEY_FEATURESLIST";
 
     /**
      * Key to pass a readonly flag through activities.
      */
     public static final String KEY_READONLY = "KEY_READONLY";
 
+    /**
+     * A well known binary reader to use for geometry deserialization.
+     */
     public static WKBReader WKBREADER = new WKBReader();
 
     /**
@@ -284,8 +287,9 @@ public class FeatureUtilities {
      * @param invalidPolygon the invalid polygon.
      * @return the geometries.
      */
+    @SuppressWarnings("rawtypes")
     public static Geometry invalidPolygonSplit( Geometry invalidPolygon ) {
-        PrecisionModel pm = new PrecisionModel();
+        PrecisionModel pm = new PrecisionModel(10000000);
         GeometryFactory geomFact = invalidPolygon.getFactory();
         List lines = LinearComponentExtracter.getLines(invalidPolygon);
         List nodedLinework = new GeometryNoder(pm).node(lines);
