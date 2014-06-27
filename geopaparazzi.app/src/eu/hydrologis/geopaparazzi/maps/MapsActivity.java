@@ -1521,7 +1521,6 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         switch( keyCode ) {
         case KeyEvent.KEYCODE_BACK:
             if (EditManager.INSTANCE.getActiveToolGroup() != null) {
-                toggleEditing();
                 return true;
             }
         }

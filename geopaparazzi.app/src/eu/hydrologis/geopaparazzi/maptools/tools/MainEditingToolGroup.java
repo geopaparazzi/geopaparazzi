@@ -137,41 +137,65 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
 
     public void onClick( View v ) {
         if (v == selectAllButton) {
-            // check maps enablement
-            try {
-                final SpatialDatabasesManager sdbManager = SpatialDatabasesManager.getInstance();
-                final List<SpatialVectorTable> spatialTables = sdbManager.getSpatialVectorTables(false);
-                boolean atLeastOneEnabled = false;
-                for( SpatialVectorTable spatialVectorTable : spatialTables ) {
-                    if (spatialVectorTable.getStyle().enabled == 1) {
-                        atLeastOneEnabled = true;
-                        break;
+            Tool currentTool = EditManager.INSTANCE.getActiveTool();
+            if (currentTool != null && currentTool instanceof InfoTool) {
+                // if the same tool is re-selected, it is disabled
+                EditManager.INSTANCE.setActiveTool(null);
+            } else {
+                // check maps enablement
+                try {
+                    final SpatialDatabasesManager sdbManager = SpatialDatabasesManager.getInstance();
+                    final List<SpatialVectorTable> spatialTables = sdbManager.getSpatialVectorTables(false);
+                    boolean atLeastOneEnabled = false;
+                    for( SpatialVectorTable spatialVectorTable : spatialTables ) {
+                        if (spatialVectorTable.getStyle().enabled == 1) {
+                            atLeastOneEnabled = true;
+                            break;
+                        }
                     }
+                    if (!atLeastOneEnabled) {
+                        LinearLayout parent = EditManager.INSTANCE.getToolsLayout();
+                        if (parent != null)
+                            Utilities.messageDialog(parent.getContext(), R.string.no_queriable_layer_is_visible, null);
+                        return;
+                    }
+                } catch (jsqlite.Exception e) {
+                    GPLog.error(this, null, e);
                 }
-                if (!atLeastOneEnabled) {
-                    LinearLayout parent = EditManager.INSTANCE.getToolsLayout();
-                    if (parent != null)
-                        Utilities.messageDialog(parent.getContext(), R.string.no_queriable_layer_is_visible, null);
-                    return;
-                }
-            } catch (jsqlite.Exception e) {
-                GPLog.error(this, null, e);
-            }
 
-            Tool activeTool = new InfoTool(this, mapView);
-            EditManager.INSTANCE.setActiveTool(activeTool);
+                Tool activeTool = new InfoTool(this, mapView);
+                EditManager.INSTANCE.setActiveTool(activeTool);
+            }
         } else if (v == selectEditableButton) {
-            Tool activeTool = new SelectionTool(mapView);
-            EditManager.INSTANCE.setActiveTool(activeTool);
+            Tool currentTool = EditManager.INSTANCE.getActiveTool();
+            if (currentTool != null && currentTool instanceof SelectionTool) {
+                // if the same tool is re-selected, it is disabled
+                EditManager.INSTANCE.setActiveTool(null);
+            } else {
+                Tool activeTool = new SelectionTool(mapView);
+                EditManager.INSTANCE.setActiveTool(activeTool);
+            }
         } else if (v == createFeatureButton) {
             ToolGroup createFeatureToolGroup = new CreateFeatureToolGroup(mapView);
             EditManager.INSTANCE.setActiveToolGroup(createFeatureToolGroup);
         } else if (v == cutButton) {
-            Tool activeTool = new CutExtendTool(mapView, true);
-            EditManager.INSTANCE.setActiveTool(activeTool);
+            Tool currentTool = EditManager.INSTANCE.getActiveTool();
+            if (currentTool != null && currentTool instanceof CutExtendTool) {
+                // if the same tool is re-selected, it is disabled
+                EditManager.INSTANCE.setActiveTool(null);
+            } else {
+                Tool activeTool = new CutExtendTool(mapView, true);
+                EditManager.INSTANCE.setActiveTool(activeTool);
+            }
         } else if (v == extendButton) {
-            Tool activeTool = new CutExtendTool(mapView, false);
-            EditManager.INSTANCE.setActiveTool(activeTool);
+            Tool currentTool = EditManager.INSTANCE.getActiveTool();
+            if (currentTool != null && currentTool instanceof CutExtendTool) {
+                // if the same tool is re-selected, it is disabled
+                EditManager.INSTANCE.setActiveTool(null);
+            } else {
+                Tool activeTool = new CutExtendTool(mapView, false);
+                EditManager.INSTANCE.setActiveTool(activeTool);
+            }
         }
         handleToolIcons(v);
     }
@@ -179,27 +203,35 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
     @SuppressWarnings("deprecation")
     private void handleToolIcons( View activeToolButton ) {
         Context context = activeToolButton.getContext();
-        if (activeToolButton == selectEditableButton) {
-            selectEditableButton.setBackgroundDrawable(context.getResources().getDrawable(
-                    R.drawable.ic_editing_select_editable_active));
-        } else {
-            selectEditableButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_select_editable));
+        Tool currentTool = EditManager.INSTANCE.getActiveTool();
+        if (selectEditableButton != null) {
+            if (currentTool != null && activeToolButton == selectEditableButton) {
+                selectEditableButton.setBackgroundDrawable(context.getResources().getDrawable(
+                        R.drawable.ic_editing_select_editable_active));
+            } else {
+                selectEditableButton.setBackgroundDrawable(context.getResources().getDrawable(
+                        R.drawable.ic_editing_select_editable));
+            }
         }
-        if (activeToolButton == selectAllButton) {
-            selectAllButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_select_all_active));
-        } else {
-            selectAllButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_select_all));
-        }
-        if (activeToolButton == cutButton) {
-            cutButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_cut_active));
-        } else {
-            cutButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_cut));
-        }
-        if (activeToolButton == extendButton) {
-            extendButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_extend_active));
-        } else {
-            extendButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_extend));
-        }
+        if (selectAllButton != null)
+            if (currentTool != null && activeToolButton == selectAllButton) {
+                selectAllButton
+                        .setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_select_all_active));
+            } else {
+                selectAllButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_select_all));
+            }
+        if (cutButton != null)
+            if (currentTool != null && activeToolButton == cutButton) {
+                cutButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_cut_active));
+            } else {
+                cutButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_cut));
+            }
+        if (extendButton != null)
+            if (currentTool != null && activeToolButton == extendButton) {
+                extendButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_extend_active));
+            } else {
+                extendButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_extend));
+            }
 
     }
 
