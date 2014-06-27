@@ -144,4 +144,16 @@ public enum EditManager {
     public LinearLayout getToolsLayout() {
         return toolsLayout;
     }
+
+    /**
+     * Callback for position updates. 
+     * 
+     * @param lon longitude.
+     * @param lat latitude.
+     */
+    public void onGpsUpdate( double lon, double lat ) {
+        if (this.activeToolGroup != null) {
+            this.activeToolGroup.onGpsUpdate(lon, lat);
+        }
+    }
 }

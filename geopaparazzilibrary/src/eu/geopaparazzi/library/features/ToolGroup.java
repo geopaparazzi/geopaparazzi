@@ -40,4 +40,12 @@ public interface ToolGroup extends DrawingTool {
      * @param tool the tool that finished.
      */
     public void onToolFinished( Tool tool );
+
+    /**
+     * Callback for position updates. 
+     * 
+     * @param lon longitude.
+     * @param lat latitude.
+     */
+    public void onGpsUpdate( double lon, double lat );
 }

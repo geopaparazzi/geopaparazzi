@@ -1290,6 +1290,10 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         try {
             double lat = lastGpsPosition[1];
             double lon = lastGpsPosition[0];
+
+            // send updates to the editing framework
+            EditManager.INSTANCE.onGpsUpdate(lon, lat);
+
             float[] nsweE6 = getMapWorldBoundsE6();
             int latE6 = (int) ((float) lat * LibraryConstants.E6);
             int lonE6 = (int) ((float) lon * LibraryConstants.E6);

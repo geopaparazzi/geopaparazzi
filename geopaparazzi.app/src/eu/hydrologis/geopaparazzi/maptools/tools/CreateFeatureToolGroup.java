@@ -17,12 +17,15 @@
  */
 package eu.hydrologis.geopaparazzi.maptools.tools;
 
+import static java.lang.Math.round;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.MapViewPosition;
 import org.mapsforge.android.maps.Projection;
+import org.mapsforge.core.model.GeoPoint;
 
 import android.content.Context;
 import android.content.Intent;
@@ -106,6 +109,11 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
 
     private boolean firstInvalid = true;
 
+    private boolean gpsStreamActive = false;
+
+    private ImageButton addVertexByTapButton;
+    private boolean addVertexByTapActive = false;
+
     /**
      * Constructor.
      * 
@@ -159,6 +167,15 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
             addVertexButton.setOnClickListener(this);
             parent.addView(addVertexButton);
 
+            addVertexByTapButton = new ImageButton(context);
+            addVertexByTapButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+                    LayoutParams.WRAP_CONTENT));
+            addVertexByTapButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_add_vertex_tap));
+            addVertexByTapButton.setPadding(0, padding, 0, padding);
+            addVertexByTapButton.setOnTouchListener(this);
+            addVertexByTapButton.setOnClickListener(this);
+            parent.addView(addVertexByTapButton);
+
             gpsStreamButton = new ImageButton(context);
             gpsStreamButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             gpsStreamButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_gps_stream));
@@ -191,6 +208,8 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
         if (parent != null)
             parent.removeAllViews();
         parent = null;
+        gpsStreamActive = false;
+        addVertexByTapActive = false;
     }
 
     public void onClick( View v ) {
@@ -201,20 +220,14 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
             double[] mapCenter = PositionUtilities.getMapCenterFromPreferences(preferences, true, true);
 
             Coordinate coordinate = new Coordinate(mapCenter[0], mapCenter[1]);
-            coordinatesList.add(coordinate);
 
-            int coordinatesCount = coordinatesList.size();
-            if (coordinatesCount == 0) {
+            if (addVertex(v.getContext(), coordinate)) {
                 return;
             }
-            polygonGeometry = null;
-            if (coordinatesCount > 2) {
-                polygonGeometry = JtsUtilities.createPolygon(coordinatesList);
-                if (!polygonGeometry.isValid() && firstInvalid) {
-                    Utilities.messageDialog(v.getContext(), "The added vertex has created an invalid feature!", null);
-                    firstInvalid = false;
-                }
-            }
+        } else if (v == gpsStreamButton) {
+            gpsStreamActive = !gpsStreamActive;
+        } else if (v == addVertexByTapButton) {
+            addVertexByTapActive = !addVertexByTapActive;
         } else if (v == commitButton) {
             if (coordinatesList.size() > 2) {
                 List<Geometry> geomsList = new ArrayList<Geometry>();
@@ -262,8 +275,10 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
                 EditManager.INSTANCE.setActiveTool(null);
                 return;
             } else if (coordinatesList.size() > 0) {
-                coordinatesList.remove(coordinatesList.size() - 1);
-                commitButton.setVisibility(View.VISIBLE);
+                int size = coordinatesList.size() - 1;
+                coordinatesList.remove(size);
+                // commitButton.setVisibility(View.VISIBLE);
+                reCreateGeometry(v.getContext(), size);
             }
         }
         if (coordinatesList.size() > 2) {
@@ -272,6 +287,49 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
             commitButton.setVisibility(View.GONE);
         }
         EditManager.INSTANCE.invalidateEditingView();
+        handleToolIcons(v);
+    }
+
+    private boolean addVertex( Context context, Coordinate coordinate ) {
+        coordinatesList.add(coordinate);
+        int coordinatesCount = coordinatesList.size();
+        if (coordinatesCount == 0) {
+            return true;
+        }
+        reCreateGeometry(context, coordinatesCount);
+        return false;
+    }
+
+    private void reCreateGeometry( Context context, int coordinatesCount ) {
+        polygonGeometry = null;
+        if (coordinatesCount > 2) {
+            polygonGeometry = JtsUtilities.createPolygon(coordinatesList);
+            if (!polygonGeometry.isValid() && firstInvalid) {
+                Utilities.messageDialog(context, "The added vertex has created an invalid feature!", null);
+                firstInvalid = false;
+            }
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    private void handleToolIcons( View activeToolButton ) {
+        Context context = activeToolButton.getContext();
+        if (gpsStreamButton != null)
+            if (gpsStreamActive) {
+                gpsStreamButton
+                        .setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_gps_stream_active));
+            } else {
+                gpsStreamButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_gps_stream));
+            }
+        if (addVertexByTapButton != null)
+            if (addVertexByTapActive) {
+                addVertexByTapButton.setBackgroundDrawable(context.getResources().getDrawable(
+                        R.drawable.ic_editing_add_vertex_tap_active));
+            } else {
+                addVertexByTapButton.setBackgroundDrawable(context.getResources().getDrawable(
+                        R.drawable.ic_editing_add_vertex_tap));
+            }
+
     }
 
     public boolean onTouch( View v, MotionEvent event ) {
@@ -346,7 +404,44 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
     }
 
     public boolean onToolTouchEvent( MotionEvent event ) {
+        if (addVertexByTapActive) {
+            if (mapView == null) {
+                return false;
+            }
+
+            Projection pj = mapView.getProjection();
+            float currentX = event.getX();
+            float currentY = event.getY();
+
+            int action = event.getAction();
+            if (action == MotionEvent.ACTION_DOWN) {
+                GeoPoint tapGeoPoint = pj.fromPixels(round(currentX), round(currentY));
+                Coordinate coordinate = new Coordinate(tapGeoPoint.getLongitude(), tapGeoPoint.getLatitude());
+                addVertex(mapView.getContext(), coordinate);
+                if (coordinatesList.size() > 2) {
+                    commitButton.setVisibility(View.VISIBLE);
+                } else {
+                    commitButton.setVisibility(View.GONE);
+                }
+                EditManager.INSTANCE.invalidateEditingView();
+                return true;
+            }
+        }
         return false;
+    }
+
+    public void onGpsUpdate( double lon, double lat ) {
+        if (gpsStreamActive) {
+            Coordinate gpsCoordinate = new Coordinate(lon, lat);
+            addVertex(mapView.getContext(), gpsCoordinate);
+
+            if (coordinatesList.size() > 2) {
+                commitButton.setVisibility(View.VISIBLE);
+            } else {
+                commitButton.setVisibility(View.GONE);
+            }
+            EditManager.INSTANCE.invalidateEditingView();
+        }
     }
 
 }

@@ -323,4 +323,8 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
     public boolean onToolTouchEvent( MotionEvent event ) {
         return false;
     }
+
+    public void onGpsUpdate( double lon, double lat ) {
+        // ignore
+    }
 }
