@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import eu.geopaparazzi.spatialite.util.DaoSpatialite;
 import jsqlite.Database;
 import jsqlite.Exception;
 import jsqlite.Stmt;
@@ -83,7 +84,7 @@ public class FeatureUtilities {
      * @return the list of feature from the query. 
      * @throws Exception is something goes wrong.
      */
-    public static List<Feature> build( String query, SpatialVectorTable spatialTable ) throws Exception {
+    public static List<Feature> buildWithoutGeometry( String query, SpatialVectorTable spatialTable ) throws Exception {
         List<Feature> featuresList = new ArrayList<Feature>();
         SpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(spatialTable);
         if (vectorHandler instanceof SpatialiteDatabaseHandler) {
@@ -161,19 +162,26 @@ public class FeatureUtilities {
             } finally {
                 stmt.close();
             }
+            for (Feature feature: featuresList) {
+                String id = feature.getId();
+                double[] areaLength = DaoSpatialite.getAreaLengthById(id, spatialTable);
+                feature.setOriginalArea(areaLength[0]);
+                feature.setOriginalLength(areaLength[1]);
+            }
         }
+
         return featuresList;
     }
 
     /**
      * Build the features given by a query.
-     * 
+     *
      * <p><b>Note that this query needs to have at least 2 arguments, the first
-     * being the ROWID and the second the geometry. Else if will fail.</b> 
-     * 
+     * being the ROWID and the second the geometry. Else if will fail.</b>
+     *
      * @param query the query to run.
      * @param spatialTable the parent Spatialtable.
-     * @return the list of feature from the query. 
+     * @return the list of feature from the query.
      * @throws Exception is something goes wrong.
      */
     public static List<Feature> buildRowidGeometryFeatures( String query, SpatialVectorTable spatialTable ) throws Exception {

@@ -56,7 +56,7 @@ import eu.hydrologis.geopaparazzi.maptools.core.MapTool;
 
 /**
  * A tool to select data.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class SelectionTool extends MapTool {
@@ -64,12 +64,8 @@ public class SelectionTool extends MapTool {
 
     private final Paint selectRectPaintStroke = new Paint();
     private final Paint selectRectPaintFill = new Paint();
-    private final Paint selectedGeometryPaintStroke = new Paint();
-    private final Paint selectedGeometryPaintFill = new Paint();
     private final Rect rect = new Rect();
 
-    private float currentX;
-    private float currentY;
     private float lastX = -1;
     private float lastY = -1;
 
@@ -87,10 +83,10 @@ public class SelectionTool extends MapTool {
 
     /**
      * Constructor.
-     * 
+     *
      * @param mapView the mapview reference.
      */
-    public SelectionTool( MapView mapView ) {
+    public SelectionTool(MapView mapView) {
         super(mapView);
         editingViewProjection = new SliderDrawProjection(mapView, EditManager.INSTANCE.getEditingView());
 
@@ -104,16 +100,6 @@ public class SelectionTool extends MapTool {
         selectRectPaintStroke.setStrokeWidth(1.5f);
         selectRectPaintStroke.setColor(Color.YELLOW);
         selectRectPaintStroke.setStyle(Paint.Style.STROKE);
-
-        selectedGeometryPaintFill.setAntiAlias(true);
-        selectedGeometryPaintFill.setColor(Color.RED);
-        // selectedGeometryPaintFill.setAlpha(80);
-        selectedGeometryPaintFill.setStyle(Paint.Style.FILL);
-        selectedGeometryPaintStroke.setAntiAlias(true);
-        selectedGeometryPaintStroke.setStrokeWidth(3f);
-        selectedGeometryPaintStroke.setColor(Color.YELLOW);
-        selectedGeometryPaintStroke.setStyle(Paint.Style.STROKE);
-
     }
 
     public void activate() {
@@ -121,61 +107,61 @@ public class SelectionTool extends MapTool {
             mapView.setClickable(false);
     }
 
-    public void onToolDraw( Canvas canvas ) {
+    public void onToolDraw(Canvas canvas) {
         canvas.drawRect(rect, selectRectPaintFill);
         canvas.drawRect(rect, selectRectPaintStroke);
     }
 
-    public boolean onToolTouchEvent( MotionEvent event ) {
+    public boolean onToolTouchEvent(MotionEvent event) {
         if (mapView == null || mapView.isClickable()) {
             return false;
         }
         Projection pj = editingViewProjection;
 
         // handle drawing
-        currentX = event.getX();
-        currentY = event.getY();
+        float currentX = event.getX();
+        float currentY = event.getY();
 
         int action = event.getAction();
-        switch( action ) {
-        case MotionEvent.ACTION_DOWN:
-            GeoPoint startGeoPoint = pj.fromPixels(round(currentX), round(currentY));
-            pj.toPixels(startGeoPoint, startP);
+        switch (action) {
+            case MotionEvent.ACTION_DOWN:
+                GeoPoint startGeoPoint = pj.fromPixels(round(currentX), round(currentY));
+                pj.toPixels(startGeoPoint, startP);
 
-            lastX = currentX;
-            lastY = currentY;
-            break;
-        case MotionEvent.ACTION_MOVE:
-            float dx = currentX - lastX;
-            float dy = currentY - lastY;
-            if (abs(dx) < 1 && abs(dy) < 1) {
                 lastX = currentX;
                 lastY = currentY;
-                return true;
-            }
-            GeoPoint currentGeoPoint = pj.fromPixels(round(currentX), round(currentY));
-            pj.toPixels(currentGeoPoint, tmpP);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                float dx = currentX - lastX;
+                float dy = currentY - lastY;
+                if (abs(dx) < 1 && abs(dy) < 1) {
+                    lastX = currentX;
+                    lastY = currentY;
+                    return true;
+                }
+                GeoPoint currentGeoPoint = pj.fromPixels(round(currentX), round(currentY));
+                pj.toPixels(currentGeoPoint, tmpP);
 
-            left = Math.min(tmpP.x, startP.x);
-            right = Math.max(tmpP.x, startP.x);
-            bottom = Math.max(tmpP.y, startP.y);
-            top = Math.min(tmpP.y, startP.y);
-            rect.set((int) left, (int) top, (int) right, (int) bottom);
+                left = Math.min(tmpP.x, startP.x);
+                right = Math.max(tmpP.x, startP.x);
+                bottom = Math.max(tmpP.y, startP.y);
+                top = Math.min(tmpP.y, startP.y);
+                rect.set((int) left, (int) top, (int) right, (int) bottom);
 
-            EditManager.INSTANCE.invalidateEditingView();
-            break;
-        case MotionEvent.ACTION_UP:
+                EditManager.INSTANCE.invalidateEditingView();
+                break;
+            case MotionEvent.ACTION_UP:
 
-            float deltaY = abs(top - bottom);
-            float deltaX = abs(right - left);
-            if (deltaX > TOUCH_BOX_THRES && deltaY > TOUCH_BOX_THRES) {
-                GeoPoint ul = pj.fromPixels((int) left, (int) top);
-                GeoPoint lr = pj.fromPixels((int) right, (int) bottom);
+                float deltaY = abs(top - bottom);
+                float deltaX = abs(right - left);
+                if (deltaX > TOUCH_BOX_THRES && deltaY > TOUCH_BOX_THRES) {
+                    GeoPoint ul = pj.fromPixels((int) left, (int) top);
+                    GeoPoint lr = pj.fromPixels((int) right, (int) bottom);
 
-                select(ul.getLatitude(), ul.getLongitude(), lr.getLatitude(), lr.getLongitude());
-            }
+                    select(ul.getLatitude(), ul.getLongitude(), lr.getLatitude(), lr.getLongitude());
+                }
 
-            break;
+                break;
         }
 
         return true;
@@ -188,7 +174,7 @@ public class SelectionTool extends MapTool {
         }
     }
 
-    private void select( final double n, final double w, final double s, final double e ) {
+    private void select(final double n, final double w, final double s, final double e) {
 
         ILayer editLayer = EditManager.INSTANCE.getEditLayer();
         SpatialVectorTableLayer layer = (SpatialVectorTableLayer) editLayer;
@@ -204,10 +190,10 @@ public class SelectionTool extends MapTool {
         infoProgressDialog.setIndeterminate(true);
         infoProgressDialog.show();
 
-        new AsyncTask<String, Integer, String>(){
+        new AsyncTask<String, Integer, String>() {
             private List<Feature> features = new ArrayList<Feature>();
 
-            protected String doInBackground( String... params ) {
+            protected String doInBackground(String... params) {
                 try {
                     features.clear();
                     double north = n;
@@ -232,12 +218,12 @@ public class SelectionTool extends MapTool {
 
             }
 
-            protected void onProgressUpdate( Integer... progress ) { // on UI thread!
+            protected void onProgressUpdate(Integer... progress) { // on UI thread!
                 if (infoProgressDialog != null && infoProgressDialog.isShowing())
                     infoProgressDialog.incrementProgressBy(progress[0]);
             }
 
-            protected void onPostExecute( String response ) { // on UI thread!
+            protected void onPostExecute(String response) { // on UI thread!
                 Utilities.dismissProgressDialog(infoProgressDialog);
                 if (response.startsWith("ERROR")) {
                     Utilities.messageDialog(context, response, null);
@@ -247,7 +233,7 @@ public class SelectionTool extends MapTool {
                     if (features.size() > 0) {
                         try {
                             int geomsCount = 0;
-                            for( Feature feature : features ) {
+                            for (Feature feature : features) {
                                 Geometry geometry = FeatureUtilities.getGeometry(feature);
                                 geomsCount = geomsCount + geometry.getNumGeometries();
                             }

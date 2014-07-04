@@ -43,6 +43,9 @@ public class Feature implements Parcelable {
     private List<String> attributeValuesStrings = new ArrayList<String>();
     private List<String> attributeTypes = new ArrayList<String>();
 
+    private double originalArea = -1;
+    private double originalLength = -1;
+
     private boolean isDirty = false;
 
     /**
@@ -184,6 +187,22 @@ public class Feature implements Parcelable {
         return isDirty;
     }
 
+    public double getOriginalArea() {
+        return originalArea;
+    }
+
+    public void setOriginalArea(double originalArea) {
+        this.originalArea = originalArea;
+    }
+
+    public double getOriginalLength() {
+        return originalLength;
+    }
+
+    public void setOriginalLength(double originalLength) {
+        this.originalLength = originalLength;
+    }
+
     public int describeContents() {
         return 0;
     }
@@ -195,7 +214,9 @@ public class Feature implements Parcelable {
         dest.writeList(attributeNames);
         dest.writeList(attributeValuesStrings);
         dest.writeList(attributeTypes);
-        // TODO add geometry
+        dest.writeDouble(originalArea);
+        dest.writeDouble(originalLength);
+        dest.writeByteArray(defaultGeometry);
     }
 
     @SuppressWarnings("javadoc")
@@ -209,6 +230,12 @@ public class Feature implements Parcelable {
             feature.attributeNames = in.readArrayList(String.class.getClassLoader());
             feature.attributeValuesStrings = in.readArrayList(String.class.getClassLoader());
             feature.attributeTypes = in.readArrayList(String.class.getClassLoader());
+            double area = in.readDouble();
+            double length = in.readDouble();
+            feature.setOriginalArea(area);
+            feature.setOriginalLength(length);
+            byte[] geomBytes = in.createByteArray();
+            feature.defaultGeometry = geomBytes;
             return feature;
         }
 

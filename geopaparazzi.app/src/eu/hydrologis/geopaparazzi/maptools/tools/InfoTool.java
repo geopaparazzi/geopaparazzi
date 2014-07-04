@@ -233,7 +233,7 @@ public class InfoTool extends MapTool {
                                 String query = SpatialiteDatabaseHandler.getIntersectionQueryBBOX(
                                         LibraryConstants.SRID_WGS84_4326, spatialTable, north, south, east, west);
 
-                                List<Feature> featuresList = FeatureUtilities.build(query, spatialTable);
+                                List<Feature> featuresList = FeatureUtilities.buildWithoutGeometry(query, spatialTable);
                                 features.addAll(featuresList);
 
                                 publishProgress(1);

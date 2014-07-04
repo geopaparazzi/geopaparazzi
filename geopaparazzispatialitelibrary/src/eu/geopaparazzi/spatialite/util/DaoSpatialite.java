@@ -1047,8 +1047,8 @@ public class DaoSpatialite {
     }
 
     /**
-     * Retrieves a {@link Database} from a unique table name. 
-     * 
+     * Retrieves a {@link Database} from a unique table name.
+     *
      * @param uniqueTableName the table name.
      * @return the database the table is in.
      * @throws Exception
@@ -1061,51 +1061,6 @@ public class DaoSpatialite {
             return spatialiteDbHandler.getDatabase();
         }
         return null;
-    }
-
-    /**
-     * Updates the values of a feature in the given database.
-     * 
-     * @param database the database.
-     * @param feature the feature.
-     * @throws Exception if something goes wrong.
-     */
-    public static void updateFeatureAttributes( Database database, Feature feature ) throws Exception {
-        String tableName = feature.getTableName();
-        List<String> attributeNames = feature.getAttributeNames();
-        List<String> attributeValuesStrings = feature.getAttributeValuesStrings();
-        List<String> attributeTypes = feature.getAttributeTypes();
-
-        StringBuilder sbIn = new StringBuilder();
-        sbIn.append("update ").append(tableName);
-        sbIn.append(" set ");
-
-        StringBuilder sb = new StringBuilder();
-        for( int i = 0; i < attributeNames.size(); i++ ) {
-            String fieldName = attributeNames.get(i);
-            String value = attributeValuesStrings.get(i);
-            String type = attributeTypes.get(i);
-            boolean ignore = SpatialiteUtilities.doIgnoreField(fieldName);
-            if (!ignore) {
-                DataType dataType = DataType.getType4Name(type);
-                if (dataType == DataType.TEXT) {
-                    sb.append(" , ").append(fieldName).append("='").append(value).append("'");
-                } else {
-                    sb.append(" , ").append(fieldName).append("=").append(value);
-                }
-            }
-        }
-        String valuesPart = sb.substring(3);
-
-        sbIn.append(" ");
-        sbIn.append(valuesPart);
-        sbIn.append(" where ");
-        sbIn.append(SpatialiteUtilities.SPATIALTABLE_ID_FIELD);
-        sbIn.append("=");
-        sbIn.append(feature.getId());
-
-        String updateQuery = sbIn.toString();
-        database.exec(updateQuery, null);
     }
 
     /**
@@ -1406,7 +1361,7 @@ public class DaoSpatialite {
     public static String Rasterlite2Version_CPU = "";
     /**
      * Get the version of Rasterlite2 with cpu-type.
-     * - used by: mapsforge.mapsdirmanager.sourcesview.SourcesTreeListActivity 
+     * - used by: mapsforge.mapsdirmanager.sourcesview.SourcesTreeListActivity
      * -- to prevent RaterLite2 button being shown when empty
      * note: this is returning the version number of the first static lib being compilrd into it
      * - 2014-05-22: libpng 1.6.10
@@ -1520,7 +1475,7 @@ public class DaoSpatialite {
 
     /**
     * Attemt to count Triggers for a specific Table.
-    * returned the number of Triggers 
+    * returned the number of Triggers
     * - SpatialView read_only should be set to 0, if result is 0
     * -- called when SpatialView read_only = 1 in getViewRowid
     * --- a SpatialView with out INSERT,UPDATE and DELETE tringgers is invalid
@@ -1710,10 +1665,11 @@ public class DaoSpatialite {
      * Retrieve rasterlite2 image of a given bound and size.
      * - used by: SpatialiteUtilities.rl2_GetMapImageTile to retrieve tiles only
      * https://github.com/geopaparazzi/Spatialite-Tasks-with-Sql-Scripts/wiki/RL2_GetMapImage
+     *
      * @param sqlite_db Database connection to use
      * @param sourceSrid the srid (of the n/s/e/w positions).
      * @param destSrid the destination srid (of the rasterlite2 image).
-     * @param table (coverageName) the table to use.
+     * @param coverageName the table to use.
      * @param width of image in pixel.
      * @param height of image in pixel.
      * @param tileBounds [west,south,east,north] [minx, miny, maxx, maxy] bounds.
@@ -1819,7 +1775,7 @@ public class DaoSpatialite {
 
     /**
     * Attemt to create VirtualGPKG wrapper for GeoPackage geometry tables.
-    * This function will inspect the DB layout, 
+    * This function will inspect the DB layout,
     * - then automatically creating/refreshing a VirtualGPKG wrapper for each GPKG geometry table
     * @param database the db to use.
     * @param i_stop 0=AutoGPKGStart ; 1=AutoGPKGStop
@@ -2123,11 +2079,11 @@ public class DaoSpatialite {
     /**
     * Attemt to correction of geometries in error .
     * - if table_name and geometry_column are empty: for whole Database
+    *
     * @param database the database to check.
     * @param spatialVectorMap the {@link HashMap} of Spatialite4+ Vector-data (Views/Tables Geometries) to clear and repopulate.
     * @param spatialVectorMapErrors the {@link HashMap} of of invalid geometries.
     * @param databaseType for Spatialite 3 and 4 specific Tasks
-    * @return nothing
     * @throws Exception  if something goes wrong.
     */
     private static void getSpatialVectorMap_Errors( Database database, HashMap<String, String> spatialVectorMap,
@@ -2670,8 +2626,10 @@ public class DaoSpatialite {
     /**
      * Checks the database type and its validity.
      * - Spatialite 2.4 to present version are supported (2.4 will be set as 3)
+     *
      * @param database the database to check.
-     * @param databaseViewsMap the {@link HashMap} of database views data to clear and repopulate.
+     * @param spatialVectorMap the {@link HashMap} of database views data to clear and repopulate.
+     * @param spatialVectorMapErrors
      * @return the {@link SpatialiteDatabaseType}.
      */
     public static SpatialiteDatabaseType checkDatabaseTypeAndValidity( Database database,
@@ -2970,9 +2928,9 @@ public class DaoSpatialite {
 
     /**
      * Delete a list of features in the given database.
-     * 
+     *
      * <b>The features need to be from the same table</b>
-     * 
+     *
      * @param features the features list.
      * @throws Exception if something goes wrong.
      */
@@ -3004,9 +2962,9 @@ public class DaoSpatialite {
 
     /**
      * Add a new spatial record by adding a geometry.
-     * 
+     *
      * <p>The other attributes will not be populated.
-     * 
+     *
      * @param geometry the geometry that will create the new record.
      * @param geometrySrid the srid of the geometry without the EPSG prefix.
      * @param spatialVectorTable the table into which to insert the record.
@@ -3084,5 +3042,95 @@ public class DaoSpatialite {
         sbIn.append(")");
         String insertQuery = sbIn.toString();
         database.exec(insertQuery, null);
+    }
+
+    /**
+     * Updates the values of a feature in the given database.
+     *
+     * @param database the database.
+     * @param feature the feature.
+     * @throws Exception if something goes wrong.
+     */
+    public static void updateFeatureAttributes( Database database, Feature feature ) throws Exception {
+        String tableName = feature.getTableName();
+        List<String> attributeNames = feature.getAttributeNames();
+        List<String> attributeValuesStrings = feature.getAttributeValuesStrings();
+        List<String> attributeTypes = feature.getAttributeTypes();
+
+        StringBuilder sbIn = new StringBuilder();
+        sbIn.append("update ").append(tableName);
+        sbIn.append(" set ");
+
+        StringBuilder sb = new StringBuilder();
+        for( int i = 0; i < attributeNames.size(); i++ ) {
+            String fieldName = attributeNames.get(i);
+            String value = attributeValuesStrings.get(i);
+            String type = attributeTypes.get(i);
+            boolean ignore = SpatialiteUtilities.doIgnoreField(fieldName);
+            if (!ignore) {
+                DataType dataType = DataType.getType4Name(type);
+                if (dataType == DataType.TEXT) {
+                    sb.append(" , ").append(fieldName).append("='").append(value).append("'");
+                } else {
+                    sb.append(" , ").append(fieldName).append("=").append(value);
+                }
+            }
+        }
+        String valuesPart = sb.substring(3);
+
+        sbIn.append(" ");
+        sbIn.append(valuesPart);
+        sbIn.append(" where ");
+        sbIn.append(SpatialiteUtilities.SPATIALTABLE_ID_FIELD);
+        sbIn.append("=");
+        sbIn.append(feature.getId());
+
+        String updateQuery = sbIn.toString();
+        database.exec(updateQuery, null);
+    }
+
+
+    /**
+     * Get the area and length in original units of a feature by its id.
+     * @param id the id of the feature, as defined by field
+     *           {@link eu.geopaparazzi.spatialite.util.SpatialiteUtilities#SPATIALTABLE_ID_FIELD}
+     * @param spatialVectorTable the table in which the feature resides.
+     * @return the array with [area, length].
+     * @throws Exception if something goes wrong.
+     */
+    public static double[] getAreaLengthById(String id, SpatialVectorTable  spatialVectorTable) throws Exception {
+        String uniqueTableName = spatialVectorTable.getUniqueNameBasedOnDbFilePath();
+        Database database = getDatabaseFromUniqueTableName(uniqueTableName);
+        String tableName = spatialVectorTable.getTableName();
+        String geomName = spatialVectorTable.getGeomName();
+
+        StringBuilder sbIn = new StringBuilder();
+        sbIn.append("SELECT ");
+        sbIn.append("Area(").append(geomName).append("),");
+        sbIn.append("Length(").append(geomName).append(")");
+        sbIn.append(" from ").append(tableName);
+        sbIn.append(" where ");
+        sbIn.append(SpatialiteUtilities.SPATIALTABLE_ID_FIELD).append(" = ").append(id);
+
+        String selectQuery = sbIn.toString();
+        Stmt statement = null;
+        try {
+            statement = database.prepare(selectQuery);
+            if( statement.step() ) {
+                double area = statement.column_double(0);
+                double length= statement.column_double(1);
+
+                return new double[]{area,length};
+            }
+        } catch (jsqlite.Exception e_stmt) {
+            GPLog.androidLog(4,
+                    "DaoSpatialite:getAreaLengthById[" + tableName + "] sql[" + selectQuery + "] db[" + database.getFilename()
+                            + "]", e_stmt);
+        } finally {
+            if (statement != null) {
+                statement.close();
+            }
+        }
+        return null;
     }
 }

@@ -17,6 +17,7 @@
  */
 package eu.hydrologis.geopaparazzi.maptools;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import android.content.Context;
@@ -44,6 +45,8 @@ public class FeaturePageAdapter extends PagerAdapter {
     private Context context;
     private List<Feature> featuresList;
     private boolean isReadOnly;
+
+    private DecimalFormat areaLengthFormatter = new DecimalFormat("#.00");
 
     /**
      * Constructor.
@@ -160,6 +163,24 @@ public class FeaturePageAdapter extends PagerAdapter {
             });
 
             linearLayoutView.addView(editView);
+        }
+
+        /*
+         * add also area and length
+         */
+        if (feature.getOriginalArea()>-1) {
+            TextView areaTextView = new TextView(context);
+            areaTextView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+            areaTextView.setPadding(padding, padding, padding, padding);
+            areaTextView.setText("Area: " + areaLengthFormatter.format(feature.getOriginalArea()));
+            areaTextView.setTextColor(textColor);
+            TextView lengthTextView = new TextView(context);
+            lengthTextView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+            lengthTextView.setPadding(padding, padding, padding, padding);
+            lengthTextView.setText("Length: " + areaLengthFormatter.format(feature.getOriginalLength()));
+            lengthTextView.setTextColor(textColor);
+            linearLayoutView.addView(areaTextView);
+            linearLayoutView.addView(lengthTextView);
         }
         container.addView(scrollView);
 
