@@ -30,3 +30,7 @@ tx.exe
 .gradle
 **/build/
 build/
+
+# android-studio stuff
+.idea/
+*.iml
