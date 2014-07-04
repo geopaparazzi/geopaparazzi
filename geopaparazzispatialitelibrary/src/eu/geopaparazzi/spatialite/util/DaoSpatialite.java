@@ -3045,13 +3045,13 @@ public class DaoSpatialite {
     }
 
     /**
-     * Updates the values of a feature in the given database.
+     * Updates the alphanumeric values of a feature in the given database.
      *
      * @param database the database.
      * @param feature the feature.
      * @throws Exception if something goes wrong.
      */
-    public static void updateFeatureAttributes( Database database, Feature feature ) throws Exception {
+    public static void updateFeatureAlphanumericAttributes( Database database, Feature feature ) throws Exception {
         String tableName = feature.getTableName();
         List<String> attributeNames = feature.getAttributeNames();
         List<String> attributeValuesStrings = feature.getAttributeValuesStrings();
@@ -3089,6 +3089,65 @@ public class DaoSpatialite {
         database.exec(updateQuery, null);
     }
 
+    /**
+     * Updates the geometry of a feature in the given database.
+     *
+     * @throws Exception if something goes wrong.
+     */
+    public static void updateFeatureGeometry(String id, Geometry geometry, String geometrySrid, SpatialVectorTable spatialVectorTable )
+            throws Exception {
+        String uniqueTableName = spatialVectorTable.getUniqueNameBasedOnDbFilePath();
+        Database database = getDatabaseFromUniqueTableName(uniqueTableName);
+        String tableName = spatialVectorTable.getTableName();
+        String geometryFieldName = spatialVectorTable.getGeomName();
+        String srid = spatialVectorTable.getSrid();
+        int geomType = spatialVectorTable.getGeomType();
+        GeometryType geometryType = GeometryType.forValue(geomType);
+        String geometryTypeCast = geometryType.getGeometryTypeCast();
+        String spaceDimensionsCast = geometryType.getSpaceDimensionsCast();
+        String multiSingleCast = geometryType.getMultiSingleCast();
+
+        boolean doTransform = true;
+        if (srid.equals(geometrySrid)) {
+            doTransform = false;
+        }
+
+        StringBuilder sbIn = new StringBuilder();
+        sbIn.append("update ").append(tableName);
+        sbIn.append(" set ");
+        sbIn.append(geometryFieldName);
+        sbIn.append(" = ");
+        if (doTransform)
+            sbIn.append("ST_Transform(");
+        if (multiSingleCast != null)
+            sbIn.append(multiSingleCast + "(");
+        if (spaceDimensionsCast != null)
+            sbIn.append(spaceDimensionsCast + "(");
+        if (geometryTypeCast != null)
+            sbIn.append(geometryTypeCast + "(");
+        sbIn.append("GeomFromText('");
+        sbIn.append(geometry.toText());
+        sbIn.append("' , ");
+        sbIn.append(geometrySrid);
+        sbIn.append(")");
+        if (geometryTypeCast != null)
+            sbIn.append(")");
+        if (spaceDimensionsCast != null)
+            sbIn.append(")");
+        if (multiSingleCast != null)
+            sbIn.append(")");
+        if (doTransform) {
+            sbIn.append(",");
+            sbIn.append(srid);
+            sbIn.append(")");
+        }
+        sbIn.append("");
+        sbIn.append(" where ");
+        sbIn.append(SpatialiteUtilities.SPATIALTABLE_ID_FIELD).append("=");
+        sbIn.append(id);
+        String insertQuery = sbIn.toString();
+        database.exec(insertQuery, null);
+    }
 
     /**
      * Get the area and length in original units of a feature by its id.

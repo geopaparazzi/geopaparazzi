@@ -149,7 +149,7 @@ public class FeaturePagerActivity extends Activity implements OnPageChangeListen
                         if (vectorHandler instanceof SpatialiteDatabaseHandler) {
                             SpatialiteDatabaseHandler spatialiteDatabaseHandler = (SpatialiteDatabaseHandler) vectorHandler;
                             Database database = spatialiteDatabaseHandler.getDatabase();
-                            DaoSpatialite.updateFeatureAttributes(database, feature);
+                            DaoSpatialite.updateFeatureAlphanumericAttributes(database, feature);
                         }
                     }
                 }

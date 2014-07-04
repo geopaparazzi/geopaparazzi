@@ -37,6 +37,7 @@ import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.geom.PrecisionModel;
 import com.vividsolutions.jts.geom.util.LinearComponentExtracter;
 import com.vividsolutions.jts.io.WKBReader;
+import com.vividsolutions.jts.io.WKBWriter;
 import com.vividsolutions.jts.noding.snapround.GeometryNoder;
 import com.vividsolutions.jts.operation.polygonize.Polygonizer;
 
@@ -71,6 +72,11 @@ public class FeatureUtilities {
      * A well known binary reader to use for geometry deserialization.
      */
     public static WKBReader WKBREADER = new WKBReader();
+
+    /**
+     * A well known binary writer to use for geometry serialization.
+     */
+    public static WKBWriter WKBWRITER = new WKBWriter();
 
     /**
      * Build the features given by a query.
@@ -173,41 +179,41 @@ public class FeatureUtilities {
         return featuresList;
     }
 
-    /**
-     * Build the features given by a query.
-     *
-     * <p><b>Note that this query needs to have at least 2 arguments, the first
-     * being the ROWID and the second the geometry. Else if will fail.</b>
-     *
-     * @param query the query to run.
-     * @param spatialTable the parent Spatialtable.
-     * @return the list of feature from the query.
-     * @throws Exception is something goes wrong.
-     */
-    public static List<Feature> buildRowidGeometryFeatures( String query, SpatialVectorTable spatialTable ) throws Exception {
-
-        List<Feature> featuresList = new ArrayList<Feature>();
-        SpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(spatialTable);
-        if (vectorHandler instanceof SpatialiteDatabaseHandler) {
-            SpatialiteDatabaseHandler spatialiteDbHandler = (SpatialiteDatabaseHandler) vectorHandler;
-            Database database = spatialiteDbHandler.getDatabase();
-            String tableName = spatialTable.getTableName();
-            String uniqueNameBasedOnDbFilePath = spatialTable.getUniqueNameBasedOnDbFilePath();
-
-            Stmt stmt = database.prepare(query);
-            try {
-                while( stmt.step() ) {
-                    String id = stmt.column_string(0);
-                    byte[] geometryBytes = stmt.column_bytes(1);
-                    Feature feature = new Feature(tableName, uniqueNameBasedOnDbFilePath, id, geometryBytes);
-                    featuresList.add(feature);
-                }
-            } finally {
-                stmt.close();
-            }
-        }
-        return featuresList;
-    }
+//    /**
+//     * Build the features given by a query.
+//     *
+//     * <p><b>Note that this query needs to have at least 2 arguments, the first
+//     * being the ROWID and the second the geometry. Else if will fail.</b>
+//     *
+//     * @param query the query to run.
+//     * @param spatialTable the parent Spatialtable.
+//     * @return the list of feature from the query.
+//     * @throws Exception is something goes wrong.
+//     */
+//    public static List<Feature> buildRowidGeometryFeatures( String query, SpatialVectorTable spatialTable ) throws Exception {
+//
+//        List<Feature> featuresList = new ArrayList<Feature>();
+//        SpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(spatialTable);
+//        if (vectorHandler instanceof SpatialiteDatabaseHandler) {
+//            SpatialiteDatabaseHandler spatialiteDbHandler = (SpatialiteDatabaseHandler) vectorHandler;
+//            Database database = spatialiteDbHandler.getDatabase();
+//            String tableName = spatialTable.getTableName();
+//            String uniqueNameBasedOnDbFilePath = spatialTable.getUniqueNameBasedOnDbFilePath();
+//
+//            Stmt stmt = database.prepare(query);
+//            try {
+//                while( stmt.step() ) {
+//                    String id = stmt.column_string(0);
+//                    byte[] geometryBytes = stmt.column_bytes(1);
+//                    Feature feature = new Feature(tableName, uniqueNameBasedOnDbFilePath, id, geometryBytes);
+//                    featuresList.add(feature);
+//                }
+//            } finally {
+//                stmt.close();
+//            }
+//        }
+//        return featuresList;
+//    }
 
     /**
      * Draw a geometry on a canvas.

@@ -17,22 +17,49 @@
  */
 package eu.hydrologis.geopaparazzi.maptools.tools;
 
-import static java.lang.Math.abs;
-import static java.lang.Math.round;
-
-import org.mapsforge.android.maps.MapView;
-import org.mapsforge.android.maps.Projection;
-import org.mapsforge.core.model.GeoPoint;
-
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.os.AsyncTask;
 import android.view.MotionEvent;
+import android.widget.Toast;
+
+import com.vividsolutions.jts.android.PointTransformation;
+import com.vividsolutions.jts.android.ShapeWriter;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Envelope;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+
+import org.mapsforge.android.maps.MapView;
+import org.mapsforge.android.maps.MapViewPosition;
+import org.mapsforge.android.maps.Projection;
+import org.mapsforge.core.model.GeoPoint;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import eu.geopaparazzi.library.features.EditManager;
+import eu.geopaparazzi.library.features.EditingView;
+import eu.geopaparazzi.library.features.Feature;
+import eu.geopaparazzi.library.features.ILayer;
+import eu.geopaparazzi.library.features.ToolGroup;
+import eu.geopaparazzi.library.util.LibraryConstants;
+import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTableLayer;
+import eu.geopaparazzi.spatialite.util.SpatialiteUtilities;
+import eu.hydrologis.geopaparazzi.maps.overlays.MapsforgePointTransformation;
 import eu.hydrologis.geopaparazzi.maps.overlays.SliderDrawProjection;
+import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
 import eu.hydrologis.geopaparazzi.maptools.core.MapTool;
+
+import static java.lang.Math.abs;
+import static java.lang.Math.round;
 
 /**
  * A tool to cut or extend features.
@@ -43,11 +70,11 @@ public class CutExtendTool extends MapTool {
 
     private final Paint drawingPaintStroke = new Paint();
     private final Paint drawingPaintFill = new Paint();
-    private final Paint selectedGeometryPaintStroke = new Paint();
-    private final Paint selectedGeometryPaintFill = new Paint();
+    private final Paint selectedPreviewGeometryPaintStroke = new Paint();
+    private final Paint selectedPreviewGeometryPaintFill = new Paint();
 
-    private float currentX;
-    private float currentY;
+    private float currentX = 0;
+    private float currentY = 0;
     private float lastX = -1;
     private float lastY = -1;
 
@@ -57,9 +84,25 @@ public class CutExtendTool extends MapTool {
 
     private Path drawingPath = new Path();
 
+    private GeoPoint startGeoPoint;
+    private Geometry previewGeometry = null;
+
+    /**
+     * Stores the top-left map position at which the redraw should happen.
+     */
+    private final Point point;
+
+    /**
+     * Stores the map position after drawing is finished.
+     */
+    private Point positionBeforeDraw;
+
     // private ProgressDialog infoProgressDialog;
 
     private SliderDrawProjection editingViewProjection;
+    private Feature startFeature;
+    private Feature endFeature;
+    private boolean doCut;
 
     /**
      * Constructor.
@@ -69,7 +112,11 @@ public class CutExtendTool extends MapTool {
      */
     public CutExtendTool( MapView mapView, boolean doCut ) {
         super(mapView);
+        this.doCut = doCut;
         editingViewProjection = new SliderDrawProjection(mapView, EditManager.INSTANCE.getEditingView());
+
+        point = new Point();
+        positionBeforeDraw = new Point();
 
         // Context context = GeopaparazziApplication.getInstance().getApplicationContext();
         // SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -82,14 +129,14 @@ public class CutExtendTool extends MapTool {
         drawingPaintStroke.setColor(Color.RED);
         drawingPaintStroke.setStyle(Paint.Style.STROKE);
 
-        selectedGeometryPaintFill.setAntiAlias(true);
-        selectedGeometryPaintFill.setColor(Color.RED);
-        // selectedGeometryPaintFill.setAlpha(80);
-        selectedGeometryPaintFill.setStyle(Paint.Style.FILL);
-        selectedGeometryPaintStroke.setAntiAlias(true);
-        selectedGeometryPaintStroke.setStrokeWidth(3f);
-        selectedGeometryPaintStroke.setColor(Color.YELLOW);
-        selectedGeometryPaintStroke.setStyle(Paint.Style.STROKE);
+        selectedPreviewGeometryPaintFill.setAntiAlias(true);
+        selectedPreviewGeometryPaintFill.setColor(Color.GRAY);
+        selectedPreviewGeometryPaintFill.setAlpha(180);
+        selectedPreviewGeometryPaintFill.setStyle(Paint.Style.FILL);
+        selectedPreviewGeometryPaintStroke.setAntiAlias(true);
+        selectedPreviewGeometryPaintStroke.setStrokeWidth(5f);
+        selectedPreviewGeometryPaintStroke.setColor(Color.DKGRAY);
+        selectedPreviewGeometryPaintStroke.setStyle(Paint.Style.STROKE);
 
     }
 
@@ -99,10 +146,35 @@ public class CutExtendTool extends MapTool {
     }
 
     public void onToolDraw( Canvas canvas ) {
+        if (startP.x == 0 && startP.y == 0) return;
         canvas.drawCircle(startP.x, startP.y, 15, drawingPaintFill);
         canvas.drawPath(drawingPath, drawingPaintStroke);
         if (endP != null) {
             canvas.drawCircle(endP.x, endP.y, 15, drawingPaintFill);
+        }
+
+        if (previewGeometry!=null) {
+            Projection projection = editingViewProjection;
+
+            byte zoomLevelBeforeDraw;
+            synchronized (mapView) {
+                zoomLevelBeforeDraw = mapView.getMapPosition().getZoomLevel();
+                positionBeforeDraw = projection.toPoint(mapView.getMapPosition().getMapCenter(), positionBeforeDraw,
+                        zoomLevelBeforeDraw);
+            }
+
+            // calculate the top-left point of the visible rectangle
+            point.x = positionBeforeDraw.x - (canvas.getWidth() >> 1);
+            point.y = positionBeforeDraw.y - (canvas.getHeight() >> 1);
+
+            MapViewPosition mapPosition = mapView.getMapPosition();
+            byte zoomLevel = mapPosition.getZoomLevel();
+
+            PointTransformation pointTransformer = new MapsforgePointTransformation(projection, point, zoomLevel);
+            ShapeWriter shapeWriter = new ShapeWriter(pointTransformer);
+            shapeWriter.setRemoveDuplicatePoints(true);
+
+            FeatureUtilities.drawGeometry(previewGeometry, canvas, shapeWriter, selectedPreviewGeometryPaintFill, selectedPreviewGeometryPaintStroke);
         }
     }
 
@@ -119,7 +191,7 @@ public class CutExtendTool extends MapTool {
         int action = event.getAction();
         switch( action ) {
         case MotionEvent.ACTION_DOWN:
-            GeoPoint startGeoPoint = pj.fromPixels(round(currentX), round(currentY));
+            startGeoPoint = pj.fromPixels(round(currentX), round(currentY));
             pj.toPixels(startGeoPoint, startP);
 
             endP = null;
@@ -150,7 +222,17 @@ public class CutExtendTool extends MapTool {
             GeoPoint endGeoPoint = pj.fromPixels(round(currentX), round(currentY));
             pj.toPixels(endGeoPoint, endP);
 
-            EditManager.INSTANCE.invalidateEditingView();
+            GeometryFactory gf = new GeometryFactory();
+
+            Coordinate startCoord = new Coordinate(startGeoPoint.getLongitude(), startGeoPoint.getLatitude());
+            com.vividsolutions.jts.geom.Point startPoint = gf.createPoint(startCoord);
+            Coordinate endCoord = new Coordinate(endGeoPoint.getLongitude(), endGeoPoint.getLatitude());
+            com.vividsolutions.jts.geom.Point endPoint = gf.createPoint(endCoord);
+            Envelope env = new Envelope(startCoord, endCoord);
+            select(env.getMaxY(), env.getMinX(), env.getMinY(), env.getMaxX(), startPoint, endPoint);
+
+
+//            EditManager.INSTANCE.invalidateEditingView();
             break;
         }
 
@@ -162,81 +244,103 @@ public class CutExtendTool extends MapTool {
             mapView.setClickable(true);
             mapView = null;
         }
+        previewGeometry = null;
+        startFeature = null;
+        endFeature = null;
     }
 
-    // private void select( final double n, final double w, final double s, final double e ) {
-    //
-    // ILayer editLayer = EditManager.INSTANCE.getEditLayer();
-    // SpatialVectorTableLayer layer = (SpatialVectorTableLayer) editLayer;
-    // final SpatialVectorTable spatialVectorTable = layer.getSpatialVectorTable();
-    //
-    // final Context context = EditManager.INSTANCE.getEditingView().getContext();
-    // infoProgressDialog = new ProgressDialog(context);
-    // infoProgressDialog.setCancelable(true);
-    // infoProgressDialog.setTitle("SELECT");
-    // infoProgressDialog.setMessage("Selecting features...");
-    // infoProgressDialog.setCancelable(false);
-    // infoProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-    // infoProgressDialog.setIndeterminate(true);
-    // infoProgressDialog.show();
-    //
-    // new AsyncTask<String, Integer, String>(){
-    // private List<Feature> features = new ArrayList<Feature>();
-    //
-    // protected String doInBackground( String... params ) {
-    // try {
-    // features.clear();
-    // double north = n;
-    // double south = s;
-    // if (n - s == 0) {
-    // south = n - 1;
-    // }
-    // double west = w;
-    // double east = e;
-    // if (e - w == 0) {
-    // west = e - 1;
-    // }
-    //
-    // String query =
-    // SpatialiteUtilities.getBboxIntersectingFeaturesQuery(LibraryConstants.SRID_WGS84_4326,
-    // spatialVectorTable, north, south, east, west);
-    // features = FeatureUtilities.buildFeatures(query, spatialVectorTable);
-    //
-    // return "";
-    // } catch (Exception e) {
-    // return "ERROR: " + e.getLocalizedMessage();
-    // }
-    //
-    // }
-    //
-    // protected void onProgressUpdate( Integer... progress ) { // on UI thread!
-    // if (infoProgressDialog != null && infoProgressDialog.isShowing())
-    // infoProgressDialog.incrementProgressBy(progress[0]);
-    // }
-    //
-    // protected void onPostExecute( String response ) { // on UI thread!
-    // Utilities.dismissProgressDialog(infoProgressDialog);
-    // if (response.startsWith("ERROR")) {
-    // Utilities.messageDialog(context, response, null);
-    // } else if (response.startsWith("CANCEL")) {
-    // return;
-    // } else {
-    // if (features.size() > 0) {
-    // // Intent intent = new Intent(context, FeaturePagerActivity.class);
-    // // intent.putParcelableArrayListExtra(FeatureUtilities.KEY_FEATURESLIST,
-    // // (ArrayList< ? extends Parcelable>) features);
-    // // intent.putExtra(FeatureUtilities.KEY_READONLY, true);
-    // // context.startActivity(intent);
-    // Utilities.toast(context, "Selected features: " + features.size(), Toast.LENGTH_SHORT);
-    // }
-    //
-    // OnSelectionToolGroup selectionGroup = new OnSelectionToolGroup(mapView, features);
-    // EditManager.INSTANCE.setActiveToolGroup(selectionGroup);
-    // }
-    // }
-    //
-    // }.execute((String) null);
-    //
-    // }
+    private void select(final double n, final double w, final double s, final double e,//
+     final com.vividsolutions.jts.geom.Point startPoint, final com.vividsolutions.jts.geom.Point endPoint) {
 
+        ILayer editLayer = EditManager.INSTANCE.getEditLayer();
+        SpatialVectorTableLayer layer = (SpatialVectorTableLayer) editLayer;
+        final SpatialVectorTable spatialVectorTable = layer.getSpatialVectorTable();
+
+        final Context context = EditManager.INSTANCE.getEditingView().getContext();
+        final ProgressDialog infoProgressDialog = new ProgressDialog(context);
+        infoProgressDialog.setCancelable(true);
+        infoProgressDialog.setTitle("SELECT");
+        infoProgressDialog.setMessage("Selecting features...");
+        infoProgressDialog.setCancelable(false);
+        infoProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        infoProgressDialog.setIndeterminate(true);
+        infoProgressDialog.show();
+
+        new AsyncTask<String, Integer, String>() {
+
+            protected String doInBackground(String... params) {
+                try {
+                    double north = n;
+                    double south = s;
+                    if (n - s == 0) {
+                        south = n - 1;
+                    }
+                    double west = w;
+                    double east = e;
+                    if (e - w == 0) {
+                        west = e - 1;
+                    }
+
+                    String query =
+                            SpatialiteUtilities.getBboxIntersectingFeaturesQuery(LibraryConstants.SRID_WGS84_4326,
+                                    spatialVectorTable, north, south, east, west);
+                    List<Feature> features = FeatureUtilities.buildFeatures(query, spatialVectorTable);
+                    Geometry startGeometry = null;
+                    Geometry endGeometry = null;
+                    for (Feature feature: features) {
+                        if (startGeometry != null && endGeometry != null) break;
+                        Geometry geometry = FeatureUtilities.getGeometry(feature);
+                        if (startGeometry == null && geometry.intersects(startPoint)) {
+                            startGeometry = geometry;
+                            startFeature  = feature;
+                        } else if (endGeometry == null && geometry.intersects(endPoint)) {
+                            endGeometry = geometry;
+                            endFeature = feature;
+                        }
+                    }
+
+                    previewGeometry = startGeometry.union(endGeometry);
+                    return "";
+                } catch (Exception e) {
+                    return "ERROR: " + e.getLocalizedMessage();
+                }
+
+            }
+
+            protected void onProgressUpdate(Integer... progress) { // on UI thread!
+                if (infoProgressDialog != null && infoProgressDialog.isShowing())
+                    infoProgressDialog.incrementProgressBy(progress[0]);
+            }
+
+            protected void onPostExecute(String response) { // on UI thread!
+                Utilities.dismissProgressDialog(infoProgressDialog);
+                if (response.startsWith("ERROR")) {
+                    Utilities.messageDialog(context, response, null);
+                } else {
+                    EditManager.INSTANCE.invalidateEditingView();
+
+                    ToolGroup activeToolGroup = EditManager.INSTANCE.getActiveToolGroup();
+                    if (activeToolGroup != null) {
+                        activeToolGroup.onToolFinished(CutExtendTool.this);
+                    }
+                }
+            }
+
+        }.execute((String) null);
+
+    }
+
+    /**
+     * Get the features as processed by the cut or extend.
+     *
+     * <p>The first feature is assured to have the right id and geometry to be used
+     * for the db update.</p>
+     *
+     * @return the processed feature and the one to remove.
+     */
+    public Feature[] getProcessedFeatures() {
+        byte[] geomBytes = FeatureUtilities.WKBWRITER.write(previewGeometry);
+        Feature feature = new Feature(startFeature.getTableName(),startFeature.getUniqueTableName(), startFeature.getId(),  geomBytes);
+        return new Feature[]{feature, endFeature}; // new geom feature + feature to remove
+    }
 }

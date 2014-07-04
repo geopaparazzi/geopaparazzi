@@ -17,11 +17,14 @@
  */
 package eu.hydrologis.geopaparazzi.maptools.tools;
 
+import java.lang.Exception;
+import java.util.Arrays;
 import java.util.List;
 
 import org.mapsforge.android.maps.MapView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.PorterDuff.Mode;
 import android.view.MotionEvent;
@@ -31,15 +34,27 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+
+import com.vividsolutions.jts.geom.Geometry;
+
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
+import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.features.ToolGroup;
+import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler;
+import eu.geopaparazzi.spatialite.util.DaoSpatialite;
+import eu.geopaparazzi.spatialite.util.SpatialiteUtilities;
 import eu.hydrologis.geopaparazzi.R;
+import eu.hydrologis.geopaparazzi.maps.MapsSupportService;
+import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
+import jsqlite.*;
 
 /**
  * The main editing tool, which just shows the tool palette.
@@ -56,6 +71,11 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
     private ImageButton createFeatureButton;
     private ImageButton cutButton;
     private ImageButton extendButton;
+    private ImageButton commitButton;
+    private ImageButton undoButton;
+
+    private Feature cutExtendProcessedFeature;
+    private Feature cutExtendFeatureToRemove;
 
     /**
      * Constructor.
@@ -115,15 +135,33 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
             selectEditableButton.setOnClickListener(this);
             selectEditableButton.setOnTouchListener(this);
             parent.addView(selectEditableButton);
-        }
 
-        selectAllButton = new ImageButton(context);
-        selectAllButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        selectAllButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_select_all));
-        selectAllButton.setPadding(0, padding, 0, padding);
-        selectAllButton.setOnClickListener(this);
-        selectAllButton.setOnTouchListener(this);
-        parent.addView(selectAllButton);
+            selectAllButton = new ImageButton(context);
+            selectAllButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+            selectAllButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_select_all));
+            selectAllButton.setPadding(0, padding, 0, padding);
+            selectAllButton.setOnClickListener(this);
+            selectAllButton.setOnTouchListener(this);
+            parent.addView(selectAllButton);
+
+            undoButton = new ImageButton(context);
+            undoButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+            undoButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_undo));
+            undoButton.setPadding(0, padding, 0, padding);
+            undoButton.setOnTouchListener(this);
+            undoButton.setOnClickListener(this);
+            parent.addView(undoButton);
+            undoButton.setVisibility(View.GONE);
+
+            commitButton = new ImageButton(context);
+            commitButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+            commitButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_commit));
+            commitButton.setPadding(0, padding, 0, padding);
+            commitButton.setOnTouchListener(this);
+            commitButton.setOnClickListener(this);
+            parent.addView(commitButton);
+            commitButton.setVisibility(View.GONE);
+        }
 
     }
 
@@ -196,6 +234,51 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
                 Tool activeTool = new CutExtendTool(mapView, false);
                 EditManager.INSTANCE.setActiveTool(activeTool);
             }
+        } else if (v == commitButton) {
+            if (cutExtendProcessedFeature != null && cutExtendFeatureToRemove != null){
+                // substitute the feature's geometry in the db
+                try {
+                    String tableName = cutExtendProcessedFeature.getUniqueTableName();
+                    List<SpatialVectorTable> spatialVectorTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(false);
+
+                    for( SpatialVectorTable spatialVectorTable : spatialVectorTables ) {
+                        String uniqueNameBasedOnDbFilePath = spatialVectorTable.getUniqueNameBasedOnDbFilePath();
+                        if (tableName.equals(uniqueNameBasedOnDbFilePath)) {
+                            SpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(
+                                    spatialVectorTable);
+                            if (vectorHandler instanceof SpatialiteDatabaseHandler) {
+                                Geometry newGeom = FeatureUtilities.WKBREADER.read(cutExtendProcessedFeature.getDefaultGeometry());
+                                DaoSpatialite.updateFeatureGeometry(
+                                        cutExtendProcessedFeature.getId(),
+                                        newGeom, LibraryConstants.SRID_WGS84_4326,  spatialVectorTable);
+
+                                DaoSpatialite.deleteFeatures(Arrays.asList(cutExtendFeatureToRemove));
+
+                                // reset mapview
+                                Context context = v.getContext();
+                                Intent intent = new Intent(context, MapsSupportService.class);
+                                intent.putExtra(MapsSupportService.REREAD_MAP_REQUEST, true);
+                                context.startService(intent);
+                                break;
+                            }
+                        }
+                    }
+
+                    EditManager.INSTANCE.setActiveTool(null);
+                    commitButton.setVisibility(View.GONE);
+                    undoButton.setVisibility(View.GONE);
+                    EditManager.INSTANCE.invalidateEditingView();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } else if (v == undoButton) {
+            if (cutExtendProcessedFeature!=null){
+                EditManager.INSTANCE.setActiveTool(null);
+                commitButton.setVisibility(View.GONE);
+                undoButton.setVisibility(View.GONE);
+                EditManager.INSTANCE.invalidateEditingView();
+            }
         }
         handleToolIcons(v);
     }
@@ -252,6 +335,15 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
     }
 
     public void onToolFinished( Tool tool ) {
+        if (tool instanceof CutExtendTool) {
+            CutExtendTool cutExtendTool = (CutExtendTool) tool;
+            Feature[] processedFeatures = cutExtendTool.getProcessedFeatures();
+            cutExtendProcessedFeature = processedFeatures[0];
+            cutExtendFeatureToRemove = processedFeatures[1];
+
+            commitButton.setVisibility(View.VISIBLE);
+            undoButton.setVisibility(View.VISIBLE);
+        }
         // if (activeTool == null) {
         // return;
         // }
