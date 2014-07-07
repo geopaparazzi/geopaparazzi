@@ -39,6 +39,7 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.R;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
@@ -103,6 +104,16 @@ public class EditableLayersListActivity extends ListActivity implements OnTouchL
             e.printStackTrace();
         }
 
+        if (editableSpatialVectorTables.size()==0){
+            Utilities.messageDialog(this, "No editable layers found", new Runnable() {
+                @Override
+                public void run() {
+                    finish();
+                }
+            });
+            return;
+        }
+
         Collections.sort(editableSpatialVectorTables, new SpatialTableNameComparator());
         Collections.sort(editableSpatialVectorTablesNames);
 
@@ -135,13 +146,11 @@ public class EditableLayersListActivity extends ListActivity implements OnTouchL
                     ImageButton editableButton = (ImageButton) rowView.findViewById(R.id.editableButton);
                     editableButton.setOnClickListener(new View.OnClickListener(){
                         public void onClick( View v ) {
-                            if (position > 0) {
-                                SpatialVectorTable spatialVectorTable = editableSpatialVectorTables.get(position);
-                                ILayer layer = new SpatialVectorTableLayer(spatialVectorTable);
-                                EditManager.INSTANCE.setEditLayer(layer);
+                            SpatialVectorTable spatialVectorTable = editableSpatialVectorTables.get(position);
+                            ILayer layer = new SpatialVectorTableLayer(spatialVectorTable);
+                            EditManager.INSTANCE.setEditLayer(layer);
 
-                                finish();
-                            }
+                            finish();
                         }
                     });
                     editableButton.setOnTouchListener(EditableLayersListActivity.this);

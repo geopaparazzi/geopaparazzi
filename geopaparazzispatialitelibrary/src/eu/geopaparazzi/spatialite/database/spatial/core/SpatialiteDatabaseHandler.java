@@ -107,6 +107,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             try {
                 databaseType = DaoSpatialite.checkDatabaseTypeAndValidity(dbJava, spatialVectorMap, spatialVectorMapErrors);
             } catch (Exception e) {
+                GPLog.error(this, "Database marked as invalid: " + databasePath, e);
                 isDatabaseValid = false;
             }
             switch( databaseType ) {
