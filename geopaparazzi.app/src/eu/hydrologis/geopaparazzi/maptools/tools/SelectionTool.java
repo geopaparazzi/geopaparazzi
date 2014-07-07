@@ -235,17 +235,21 @@ public class SelectionTool extends MapTool {
                             int geomsCount = 0;
                             for (Feature feature : features) {
                                 Geometry geometry = FeatureUtilities.getGeometry(feature);
-                                geomsCount = geomsCount + geometry.getNumGeometries();
+                                if(geometry!=null)
+                                    geomsCount = geomsCount + geometry.getNumGeometries();
                             }
                             Utilities.toast(context, "Selected " + features.size() + " features with " + geomsCount
                                     + " polygons.", Toast.LENGTH_SHORT);
                         } catch (java.lang.Exception e) {
                             e.printStackTrace();
                         }
+                        OnSelectionToolGroup selectionGroup = new OnSelectionToolGroup(mapView, features);
+                        EditManager.INSTANCE.setActiveToolGroup(selectionGroup);
+                    }else{
+                        rect.setEmpty();
+                        EditManager.INSTANCE.invalidateEditingView();
                     }
 
-                    OnSelectionToolGroup selectionGroup = new OnSelectionToolGroup(mapView, features);
-                    EditManager.INSTANCE.setActiveToolGroup(selectionGroup);
                 }
             }
 

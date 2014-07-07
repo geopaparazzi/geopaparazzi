@@ -26,7 +26,6 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.os.AsyncTask;
 import android.view.MotionEvent;
-import android.widget.Toast;
 
 import com.vividsolutions.jts.android.PointTransformation;
 import com.vividsolutions.jts.android.ShapeWriter;
@@ -40,11 +39,9 @@ import org.mapsforge.android.maps.MapViewPosition;
 import org.mapsforge.android.maps.Projection;
 import org.mapsforge.core.model.GeoPoint;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import eu.geopaparazzi.library.features.EditManager;
-import eu.geopaparazzi.library.features.EditingView;
 import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.features.ToolGroup;
@@ -80,7 +77,7 @@ public class CutExtendTool extends MapTool {
 
     private final Point tmpP = new Point();
     private final Point startP = new Point();
-    private Point endP = null;
+    private final Point endP =  new Point();
 
     private Path drawingPath = new Path();
 
@@ -149,9 +146,7 @@ public class CutExtendTool extends MapTool {
         if (startP.x == 0 && startP.y == 0) return;
         canvas.drawCircle(startP.x, startP.y, 15, drawingPaintFill);
         canvas.drawPath(drawingPath, drawingPaintStroke);
-        if (endP != null) {
-            canvas.drawCircle(endP.x, endP.y, 15, drawingPaintFill);
-        }
+        canvas.drawCircle(endP.x, endP.y, 15, drawingPaintFill);
 
         if (previewGeometry!=null) {
             Projection projection = editingViewProjection;
@@ -193,8 +188,7 @@ public class CutExtendTool extends MapTool {
         case MotionEvent.ACTION_DOWN:
             startGeoPoint = pj.fromPixels(round(currentX), round(currentY));
             pj.toPixels(startGeoPoint, startP);
-
-            endP = null;
+            endP.set(startP.x, startP.y);
 
             drawingPath.reset();
             drawingPath.moveTo(startP.x, startP.y);
@@ -213,26 +207,21 @@ public class CutExtendTool extends MapTool {
             GeoPoint currentGeoPoint = pj.fromPixels(round(currentX), round(currentY));
             pj.toPixels(currentGeoPoint, tmpP);
             drawingPath.lineTo(tmpP.x, tmpP.y);
+            endP.set(tmpP.x, tmpP.y);
 
             EditManager.INSTANCE.invalidateEditingView();
             break;
         case MotionEvent.ACTION_UP:
 
-            endP = new Point();
             GeoPoint endGeoPoint = pj.fromPixels(round(currentX), round(currentY));
-            pj.toPixels(endGeoPoint, endP);
-
             GeometryFactory gf = new GeometryFactory();
-
             Coordinate startCoord = new Coordinate(startGeoPoint.getLongitude(), startGeoPoint.getLatitude());
             com.vividsolutions.jts.geom.Point startPoint = gf.createPoint(startCoord);
             Coordinate endCoord = new Coordinate(endGeoPoint.getLongitude(), endGeoPoint.getLatitude());
             com.vividsolutions.jts.geom.Point endPoint = gf.createPoint(endCoord);
             Envelope env = new Envelope(startCoord, endCoord);
             select(env.getMaxY(), env.getMinX(), env.getMinY(), env.getMaxX(), startPoint, endPoint);
-
-
-//            EditManager.INSTANCE.invalidateEditingView();
+            //            EditManager.INSTANCE.invalidateEditingView();
             break;
         }
 
@@ -299,7 +288,11 @@ public class CutExtendTool extends MapTool {
                         }
                     }
 
-                    previewGeometry = startGeometry.union(endGeometry);
+                    if (!doCut) {
+                        previewGeometry = startGeometry.union(endGeometry);
+                    }else{
+                        previewGeometry = startGeometry.difference(endGeometry);
+                    }
                     return "";
                 } catch (Exception e) {
                     return "ERROR: " + e.getLocalizedMessage();

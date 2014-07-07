@@ -182,7 +182,12 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
     * @throws Exception if something went wrong.
     */
     private void checkAndUpdatePropertiesUniqueNames() throws Exception {
-        List<Style> allStyles = DaoSpatialite.getAllStyles(dbJava);
+        List<Style> allStyles = null;
+        try {
+            allStyles = DaoSpatialite.getAllStyles(dbJava);
+        } catch (java.lang.Exception e) {
+            // ignore and create a default one
+        }
         if (allStyles == null) {
             /*
             * something went wrong in the reading of the table,

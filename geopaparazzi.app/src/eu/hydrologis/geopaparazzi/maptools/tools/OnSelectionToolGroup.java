@@ -43,6 +43,7 @@ import android.widget.LinearLayout;
 import com.vividsolutions.jts.android.PointTransformation;
 import com.vividsolutions.jts.android.ShapeWriter;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKBReader;
 
 import eu.geopaparazzi.library.database.GPLog;
@@ -311,8 +312,14 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
                 // draw features
                 for( Feature feature : selectedFeatures ) {
                     byte[] defaultGeometry = feature.getDefaultGeometry();
-                    Geometry geometry = wkbReader.read(defaultGeometry);
-                    FeatureUtilities.drawGeometry(geometry, canvas, shapeWriter, geometryPaintFill, geometryPaintStroke);
+                    if(defaultGeometry!=null) {
+                        try {
+                            Geometry geometry = wkbReader.read(defaultGeometry);
+                            FeatureUtilities.drawGeometry(geometry, canvas, shapeWriter, geometryPaintFill, geometryPaintStroke);
+                        } catch (Exception e) {
+                            // ignore and try to go on
+                        }
+                    }
                 }
             }
         } catch (Exception e) {
