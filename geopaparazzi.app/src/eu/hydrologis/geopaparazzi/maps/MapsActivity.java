@@ -506,16 +506,16 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         OsmTagsManager osmTagsManager = OsmTagsManager.getInstance();
         String[] categoriesNamesArray = osmTagsManager.getTagCategories(this);
 
-        int visibility = 0;
+        int visibility = View.VISIBLE;
         if (categoriesNamesArray == null) {
             categoriesNamesArray = new String[]{""}; //$NON-NLS-1$
-            visibility = 4; // invisible
+            visibility = View.GONE; // invisible
         }
-        doOsm = visibility != 4;
+        doOsm = visibility != View.GONE;
         boolean doOsmPref = preferences.getBoolean(Constants.PREFS_KEY_DOOSM, false);
         doOsm = doOsm && doOsmPref;
         if (!doOsm) {
-            visibility = 4; // invisible
+            visibility = View.GONE; // invisible
         }
 
         final String[] categoriesNamesArrayFinal = categoriesNamesArray;
@@ -1472,32 +1472,25 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
         ImageButton listBookmarksButton = (ImageButton) findViewById(R.id.bookmarkslistbutton);
         ImageButton toggleMeasuremodeButton = (ImageButton) findViewById(R.id.togglemeasuremodebutton);
         Button zoomInButton = (Button) findViewById(R.id.zoomin);
+        TextView zoomLevelTextview = (TextView) findViewById(R.id.zoomlevel);
         Button zoomOutButton = (Button) findViewById(R.id.zoomout);
         Button toggleEditingButton = (Button) findViewById(R.id.toggleEditingButton);
 
-        if (enable) {
-            addnotebytagButton.setVisibility(View.VISIBLE);
-            addBookmarkButton.setVisibility(View.VISIBLE);
-            listNotesButton.setVisibility(View.VISIBLE);
-            listBookmarksButton.setVisibility(View.VISIBLE);
-            toggleMeasuremodeButton.setVisibility(View.VISIBLE);
-            batteryButton.setVisibility(View.VISIBLE);
-            centerOnGps.setVisibility(View.VISIBLE);
-            zoomInButton.setVisibility(View.VISIBLE);
-            zoomOutButton.setVisibility(View.VISIBLE);
-            toggleEditingButton.setVisibility(View.VISIBLE);
-        } else {
-            addnotebytagButton.setVisibility(View.GONE);
-            addBookmarkButton.setVisibility(View.GONE);
-            listNotesButton.setVisibility(View.GONE);
-            listBookmarksButton.setVisibility(View.GONE);
-            toggleMeasuremodeButton.setVisibility(View.GONE);
-            batteryButton.setVisibility(View.GONE);
-            centerOnGps.setVisibility(View.GONE);
-            zoomInButton.setVisibility(View.GONE);
-            zoomOutButton.setVisibility(View.GONE);
-            toggleEditingButton.setVisibility(View.GONE);
+        int visibility = View.VISIBLE;
+        if (!enable) {
+            visibility = View.GONE;
         }
+        addnotebytagButton.setVisibility(visibility);
+        addBookmarkButton.setVisibility(visibility);
+        listNotesButton.setVisibility(visibility);
+        listBookmarksButton.setVisibility(visibility);
+        toggleMeasuremodeButton.setVisibility(visibility);
+        batteryButton.setVisibility(visibility);
+        centerOnGps.setVisibility(visibility);
+        zoomInButton.setVisibility(visibility);
+        zoomLevelTextview.setVisibility(visibility);
+        zoomOutButton.setVisibility(visibility);
+        toggleEditingButton.setVisibility(visibility);
     }
 
     public boolean onLongClick( View v ) {
