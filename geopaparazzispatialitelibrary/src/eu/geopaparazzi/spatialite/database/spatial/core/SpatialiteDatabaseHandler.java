@@ -111,7 +111,6 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             if (isValid()) {
              // check database and collect the views list
              try {
-                dbJava.open(databasePath, jsqlite.Constants.SQLITE_OPEN_READWRITE | jsqlite.Constants.SQLITE_OPEN_CREATE);
                 databaseType = DaoSpatialite.checkDatabaseTypeAndValidity(dbJava, spatialVectorMap, spatialVectorMapErrors);
              } catch (Exception e) {
                 isDatabaseValid = false;
