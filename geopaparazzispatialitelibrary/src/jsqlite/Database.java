@@ -659,6 +659,22 @@ public class Database {
     private native int _db_status( int op, int info[], boolean flag );
 
     /**
+     * Return information on SQLite active connections.
+     * - SPATIALITE_MAX_CONNECTIONS = 64
+     * -- added to by each open, if valid
+     * -- resuced by each close
+     * @return SPATIALITE_CONNECTIONS
+     */
+
+    public int db_connections() {
+        synchronized (this) {
+            return _count_connections();
+        }
+    }
+
+    private native int _count_connections();
+
+    /**
      * Compile and return SQLite VM for SQL statement. Only available
      * in SQLite 2.8.0 and above, otherwise a no-op.
      *
