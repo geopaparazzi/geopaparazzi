@@ -19,6 +19,8 @@ package eu.geopaparazzi.spatialite.database.spatial.core.geometry;
 
 import android.annotation.SuppressLint;
 
+import com.vividsolutions.jts.geom.Geometry;
+
 /**
  * Geometry types.
  *
@@ -214,6 +216,36 @@ public enum GeometryType {
             break;
         }
         throw new IllegalArgumentException("No geometry type of value: " + value);
+    }
+
+    /**
+     * Checks if the given geometry is compatible with this type.
+     *
+     * <p>Compatible means that the type is the same and a cast from multi to
+     * single is not required.<p/>
+     *
+     * @param geometry the geometry to check.
+     * @return <code>true</code>, if the geometry is compatible.
+     */
+    public boolean isGeometryCompatible(Geometry geometry){
+        String geometryType = geometry.getGeometryType().toLowerCase();
+
+        String description = getDescription().toLowerCase();
+        if (!description.startsWith(geometryType)){
+            return false;
+        }
+        /*
+         * Geometry is not compatible if the type is single
+         * and the geometry is multi.
+         */
+        String multiSingleCast = getMultiSingleCast().toLowerCase();
+        if (multiSingleCast.contains("tosingle")){
+            // layer is single geometry
+            if (geometryType.contains("multi")){
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

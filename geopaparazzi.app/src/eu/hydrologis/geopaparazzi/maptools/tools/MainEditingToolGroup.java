@@ -49,6 +49,7 @@ import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
 import eu.geopaparazzi.spatialite.util.DaoSpatialite;
 import eu.geopaparazzi.spatialite.util.SpatialiteUtilities;
 import eu.hydrologis.geopaparazzi.R;
@@ -247,18 +248,26 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
                             SpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(
                                     spatialVectorTable);
                             if (vectorHandler instanceof SpatialiteDatabaseHandler) {
+                                int geomType = spatialVectorTable.getGeomType();
+                                GeometryType geometryType = GeometryType.forValue(geomType);
+
                                 Geometry newGeom = FeatureUtilities.WKBREADER.read(cutExtendProcessedFeature.getDefaultGeometry());
-                                DaoSpatialite.updateFeatureGeometry(
-                                        cutExtendProcessedFeature.getId(),
-                                        newGeom, LibraryConstants.SRID_WGS84_4326,  spatialVectorTable);
 
-                                DaoSpatialite.deleteFeatures(Arrays.asList(cutExtendFeatureToRemove));
+                                if (geometryType.isGeometryCompatible(newGeom)) {
+                                    DaoSpatialite.updateFeatureGeometry(
+                                            cutExtendProcessedFeature.getId(),
+                                            newGeom, LibraryConstants.SRID_WGS84_4326, spatialVectorTable);
 
-                                // reset mapview
-                                Context context = v.getContext();
-                                Intent intent = new Intent(context, MapsSupportService.class);
-                                intent.putExtra(MapsSupportService.REREAD_MAP_REQUEST, true);
-                                context.startService(intent);
+                                    DaoSpatialite.deleteFeatures(Arrays.asList(cutExtendFeatureToRemove));
+                                    // reset mapview
+                                    Context context = v.getContext();
+                                    Intent intent = new Intent(context, MapsSupportService.class);
+                                    intent.putExtra(MapsSupportService.REREAD_MAP_REQUEST, true);
+                                    context.startService(intent);
+                                } else {
+                                    Utilities.messageDialog(v.getContext(), "The resulting geometry is not compatible with the destination layer.", null);
+                                    return;
+                                }
                                 break;
                             }
                         }
