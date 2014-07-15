@@ -59,7 +59,7 @@ import jsqlite.*;
 
 /**
  * The main editing tool, which just shows the tool palette.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouchListener {
@@ -80,10 +80,10 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
 
     /**
      * Constructor.
-     * 
+     *
      * @param mapView the map view.
      */
-    public MainEditingToolGroup( MapView mapView ) {
+    public MainEditingToolGroup(MapView mapView) {
         this.mapView = mapView;
 
         LinearLayout parent = EditManager.INSTANCE.getToolsLayout();
@@ -136,15 +136,17 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
             selectEditableButton.setOnClickListener(this);
             selectEditableButton.setOnTouchListener(this);
             parent.addView(selectEditableButton);
+        }
 
-            selectAllButton = new ImageButton(context);
-            selectAllButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            selectAllButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_select_all));
-            selectAllButton.setPadding(0, padding, 0, padding);
-            selectAllButton.setOnClickListener(this);
-            selectAllButton.setOnTouchListener(this);
-            parent.addView(selectAllButton);
+        selectAllButton = new ImageButton(context);
+        selectAllButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        selectAllButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_select_all));
+        selectAllButton.setPadding(0, padding, 0, padding);
+        selectAllButton.setOnClickListener(this);
+        selectAllButton.setOnTouchListener(this);
+        parent.addView(selectAllButton);
 
+        if (editLayer != null) {
             undoButton = new ImageButton(context);
             undoButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             undoButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_undo));
@@ -163,7 +165,6 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
             parent.addView(commitButton);
             commitButton.setVisibility(View.GONE);
         }
-
     }
 
     public void disable() {
@@ -174,7 +175,7 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
         parent = null;
     }
 
-    public void onClick( View v ) {
+    public void onClick(View v) {
         if (v == selectAllButton) {
             Tool currentTool = EditManager.INSTANCE.getActiveTool();
             if (currentTool != null && currentTool instanceof InfoTool) {
@@ -186,7 +187,7 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
                     final SpatialDatabasesManager sdbManager = SpatialDatabasesManager.getInstance();
                     final List<SpatialVectorTable> spatialTables = sdbManager.getSpatialVectorTables(false);
                     boolean atLeastOneEnabled = false;
-                    for( SpatialVectorTable spatialVectorTable : spatialTables ) {
+                    for (SpatialVectorTable spatialVectorTable : spatialTables) {
                         if (spatialVectorTable.getStyle().enabled == 1) {
                             atLeastOneEnabled = true;
                             break;
@@ -236,13 +237,13 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
                 EditManager.INSTANCE.setActiveTool(activeTool);
             }
         } else if (v == commitButton) {
-            if (cutExtendProcessedFeature != null && cutExtendFeatureToRemove != null){
+            if (cutExtendProcessedFeature != null && cutExtendFeatureToRemove != null) {
                 // substitute the feature's geometry in the db
                 try {
                     String tableName = cutExtendProcessedFeature.getUniqueTableName();
                     List<SpatialVectorTable> spatialVectorTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(false);
 
-                    for( SpatialVectorTable spatialVectorTable : spatialVectorTables ) {
+                    for (SpatialVectorTable spatialVectorTable : spatialVectorTables) {
                         String uniqueNameBasedOnDbFilePath = spatialVectorTable.getUniqueNameBasedOnDbFilePath();
                         if (tableName.equals(uniqueNameBasedOnDbFilePath)) {
                             SpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(
@@ -282,7 +283,7 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
                 }
             }
         } else if (v == undoButton) {
-            if (cutExtendProcessedFeature!=null){
+            if (cutExtendProcessedFeature != null) {
                 EditManager.INSTANCE.setActiveTool(null);
                 commitButton.setVisibility(View.GONE);
                 undoButton.setVisibility(View.GONE);
@@ -293,7 +294,7 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
     }
 
     @SuppressWarnings("deprecation")
-    private void handleToolIcons( View activeToolButton ) {
+    private void handleToolIcons(View activeToolButton) {
         Context context = activeToolButton.getContext();
         Tool currentTool = EditManager.INSTANCE.getActiveTool();
         if (selectEditableButton != null) {
@@ -327,23 +328,23 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
 
     }
 
-    public boolean onTouch( View v, MotionEvent event ) {
-        switch( event.getAction() ) {
-        case MotionEvent.ACTION_DOWN: {
-            v.getBackground().setColorFilter(selectionColor, Mode.SRC_ATOP);
-            v.invalidate();
-            break;
-        }
-        case MotionEvent.ACTION_UP: {
-            v.getBackground().clearColorFilter();
-            v.invalidate();
-            break;
-        }
+    public boolean onTouch(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN: {
+                v.getBackground().setColorFilter(selectionColor, Mode.SRC_ATOP);
+                v.invalidate();
+                break;
+            }
+            case MotionEvent.ACTION_UP: {
+                v.getBackground().clearColorFilter();
+                v.invalidate();
+                break;
+            }
         }
         return false;
     }
 
-    public void onToolFinished( Tool tool ) {
+    public void onToolFinished(Tool tool) {
         if (tool instanceof CutExtendTool) {
             CutExtendTool cutExtendTool = (CutExtendTool) tool;
             Feature[] processedFeatures = cutExtendTool.getProcessedFeatures();
@@ -363,15 +364,15 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
         // }
     }
 
-    public void onToolDraw( Canvas canvas ) {
+    public void onToolDraw(Canvas canvas) {
         // nothing to draw
     }
 
-    public boolean onToolTouchEvent( MotionEvent event ) {
+    public boolean onToolTouchEvent(MotionEvent event) {
         return false;
     }
 
-    public void onGpsUpdate( double lon, double lat ) {
+    public void onGpsUpdate(double lon, double lat) {
         // ignore
     }
 }
