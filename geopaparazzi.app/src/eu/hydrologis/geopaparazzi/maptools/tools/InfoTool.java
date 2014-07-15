@@ -56,7 +56,7 @@ import eu.hydrologis.geopaparazzi.maptools.core.MapTool;
 
 /**
  * A tool to query data.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class InfoTool extends MapTool {
@@ -87,8 +87,8 @@ public class InfoTool extends MapTool {
 
     /**
      * Constructor.
-     * 
-     * @param parentGroup the parent group. 
+     *
+     * @param parentGroup the parent group.
      * @param mapView the mapview reference.
      */
     public InfoTool( ToolGroup parentGroup, MapView mapView ) {
@@ -193,9 +193,10 @@ public class InfoTool extends MapTool {
                     continue;
                 }
                 // do not add tables that are out of range
-                if (!spatialTable.checkBounds(boundsCoordinates)) {
-                    continue;
-                }
+                // TODO activate this only when a decent strategy has been developed to update the bounds also
+                //                if (!spatialTable.checkBounds(boundsCoordinates)) {
+                //                    continue;
+                //                }
                 visibleTables.add(spatialTable);
             }
 

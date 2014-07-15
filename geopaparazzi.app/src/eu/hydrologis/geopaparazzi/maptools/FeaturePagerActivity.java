@@ -22,6 +22,7 @@ import java.util.List;
 
 import jsqlite.Database;
 import jsqlite.Exception;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -31,6 +32,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.util.StringAsyncTask;
@@ -44,7 +46,7 @@ import eu.hydrologis.geopaparazzi.R;
 
 /**
  * The activity to page features.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class FeaturePagerActivity extends Activity implements OnPageChangeListener {
@@ -52,9 +54,10 @@ public class FeaturePagerActivity extends Activity implements OnPageChangeListen
     private TextView tableNameView;
     private TextView featureCounterView;
     private ArrayList<Feature> featuresList;
+    private TextView dbNameView;
 
     @Override
-    protected void onCreate( Bundle savedInstanceState ) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.features_viewer);
 
@@ -72,6 +75,7 @@ public class FeaturePagerActivity extends Activity implements OnPageChangeListen
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         tableNameView = (TextView) findViewById(R.id.tableNameView);
+        dbNameView = (TextView) findViewById(R.id.databaseNameView);
         featureCounterView = (TextView) findViewById(R.id.featureCounterView);
 
         if (isReadOnly) {
@@ -84,21 +88,21 @@ public class FeaturePagerActivity extends Activity implements OnPageChangeListen
 
     /**
      * Cancel button action.
-     * 
+     *
      * @param view the parent view.
      */
-    public void onCancel( View view ) {
+    public void onCancel(View view) {
         finish();
     }
 
     /**
      * Save button action.
-     * 
+     *
      * @param view the parent view.
      */
-    public void onSave( View view ) {
+    public void onSave(View view) {
         int dirtyCount = 0;
-        for( Feature feature : featuresList ) {
+        for (Feature feature : featuresList) {
             if (feature.isDirty()) {
                 dirtyCount++;
             }
@@ -108,8 +112,9 @@ public class FeaturePagerActivity extends Activity implements OnPageChangeListen
             return;
         }
 
-        StringAsyncTask saveDataTask = new StringAsyncTask(this){
+        StringAsyncTask saveDataTask = new StringAsyncTask(this) {
             private Exception ex;
+
             @Override
             protected String doBackgroundWork() {
                 try {
@@ -121,7 +126,7 @@ public class FeaturePagerActivity extends Activity implements OnPageChangeListen
             }
 
             @Override
-            protected void doUiPostWork( String response ) {
+            protected void doUiPostWork(String response) {
                 if (ex != null) {
                     GPLog.error(this, "ERROR", ex);
                     Utilities.errorDialog(FeaturePagerActivity.this, ex, null);
@@ -137,11 +142,11 @@ public class FeaturePagerActivity extends Activity implements OnPageChangeListen
 
     private void saveData() throws Exception {
         List<SpatialVectorTable> spatialVectorTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(false);
-        for( Feature feature : featuresList ) {
+        for (Feature feature : featuresList) {
             if (feature.isDirty()) {
                 String tableName = feature.getUniqueTableName();
 
-                for( SpatialVectorTable spatialVectorTable : spatialVectorTables ) {
+                for (SpatialVectorTable spatialVectorTable : spatialVectorTables) {
                     String uniqueNameBasedOnDbFilePath = spatialVectorTable.getUniqueNameBasedOnDbFilePath();
                     if (tableName.equals(uniqueNameBasedOnDbFilePath)) {
                         SpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(
@@ -158,20 +163,45 @@ public class FeaturePagerActivity extends Activity implements OnPageChangeListen
         }
     }
 
-    public void onPageScrollStateChanged( int arg0 ) {
+    public void onPageScrollStateChanged(int arg0) {
         // TODO Auto-generated method stub
 
     }
 
-    public void onPageScrolled( int arg0, float arg1, int arg2 ) {
+    public void onPageScrolled(int arg0, float arg1, int arg2) {
         // TODO Auto-generated method stub
 
     }
 
-    public void onPageSelected( int state ) {
+    public void onPageSelected(int state) {
         Feature feature = featuresList.get(state);
         tableNameView.setText(feature.getTableName());
         int count = state + 1;
         featureCounterView.setText(count + "/" + featuresList.size());
+
+        try {
+            List<SpatialVectorTable> spatialVectorTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(false);
+            String tableName = feature.getUniqueTableName();
+
+            for (SpatialVectorTable spatialVectorTable : spatialVectorTables) {
+                String uniqueNameBasedOnDbFilePath = spatialVectorTable.getUniqueNameBasedOnDbFilePath();
+                if (tableName.equals(uniqueNameBasedOnDbFilePath)) {
+                    SpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(
+                            spatialVectorTable);
+                    if (vectorHandler instanceof SpatialiteDatabaseHandler) {
+                        SpatialiteDatabaseHandler spatialiteDatabaseHandler = (SpatialiteDatabaseHandler) vectorHandler;
+                        String dbName = spatialiteDatabaseHandler.getName();
+                        dbNameView.setText(dbName);
+                        break;
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            GPLog.error(this, null, e);
+            dbNameView.setText("");
+        }
+
+
     }
 }
