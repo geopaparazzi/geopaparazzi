@@ -101,6 +101,7 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
     private ImageButton commitButton;
 
     private ImageButton undoButton;
+    private ImageButton copyFeatureButton;
 
     /**
      * Constructor.
@@ -164,6 +165,15 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
             deleteFeatureButton.setOnClickListener(this);
             parent.addView(deleteFeatureButton);
 
+            copyFeatureButton = new ImageButton(context);
+            copyFeatureButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+                    LayoutParams.WRAP_CONTENT));
+            copyFeatureButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_copy_geoms));
+            copyFeatureButton.setPadding(0, padding, 0, padding);
+            copyFeatureButton.setOnTouchListener(this);
+            copyFeatureButton.setOnClickListener(this);
+            parent.addView(copyFeatureButton);
+
             editAttributesButton = new ImageButton(context);
             editAttributesButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
                     LayoutParams.WRAP_CONTENT));
@@ -216,6 +226,15 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
                 geometryPaintStroke = selectedPreviewGeometryPaintStroke;
                 commitButton.setVisibility(View.VISIBLE);
                 EditManager.INSTANCE.invalidateEditingView();
+            }
+        } else if (v == copyFeatureButton) {
+            if (selectedFeatures.size() > 0) {
+                Context context = v.getContext();
+                Intent intent = new Intent(context, FeaturePagerActivity.class);
+                intent.putParcelableArrayListExtra(FeatureUtilities.KEY_FEATURESLIST,
+                        (ArrayList< ? extends Parcelable>) selectedFeatures);
+                intent.putExtra(FeatureUtilities.KEY_READONLY, false);
+                context.startActivity(intent);
             }
         } else if (v == undoButton) {
             if (isInDeletePreview) {
