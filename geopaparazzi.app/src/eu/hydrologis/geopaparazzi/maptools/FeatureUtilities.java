@@ -69,6 +69,11 @@ public class FeatureUtilities {
     public static final String KEY_READONLY = "KEY_READONLY";
 
     /**
+     * Key to pass a geometry type through activities.
+     */
+    public static final String KEY_GEOMETRYTYPE = "KEY_GEOMETRYTYPE";
+
+    /**
      * A well known binary reader to use for geometry deserialization.
      */
     public static WKBReader WKBREADER = new WKBReader();
@@ -316,6 +321,26 @@ public class FeatureUtilities {
         // convert to collection for return
         Polygon[] polyArray = GeometryFactory.toPolygonArray(polys);
         return geomFact.createGeometryCollection(polyArray);
+    }
+
+    /**
+     * Get the SpatialVectorTable from the Feature.
+     *
+     * @param feature teh feature to get the table from.
+     * @return the table or <code>null</code>.
+     * @throws Exception
+     */
+    public static SpatialVectorTable getTableFromFeature(Feature feature) throws Exception {
+        String tableName = feature.getUniqueTableName();
+        List<SpatialVectorTable> spatialVectorTables = SpatialDatabasesManager.getInstance().getSpatialVectorTables(false);
+
+        for (SpatialVectorTable spatialVectorTable : spatialVectorTables) {
+            String uniqueNameBasedOnDbFilePath = spatialVectorTable.getUniqueNameBasedOnDbFilePath();
+            if (tableName.equals(uniqueNameBasedOnDbFilePath)) {
+                return spatialVectorTable;
+            }
+        }
+        return null;
     }
 
 }

@@ -146,6 +146,8 @@
         </activity>
         <activity android:name="eu.geopaparazzi.spatialite.database.spatial.activities.EditableLayersListActivity" >
         </activity>
+        <activity android:name="eu.hydrologis.geopaparazzi.maptools.CopyToLayersListActivity" >
+        </activity>
         <activity android:name=".maps.MapsActivity" >
             <intent-filter>
                 <action android:name="eu.hydrologis.geopaparazzi.maps.MAP_VIEW" />
@@ -204,13 +206,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".maps.MeasureInfoActivity" >
-            <intent-filter>
-                <action android:name="eu.hydrologis.geopaparazzi.maps.MEASUREMENT_INFO" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
         <activity android:name=".maps.BookmarksListActivity" >
         </activity>
         <activity android:name=".maps.NotesListActivity" >
@@ -227,7 +222,6 @@
         <activity android:name=".util.ImportActivity" >
         </activity>
         <!-- FROM LIBRARY -->
-        <activity android:name="eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.MapsDirTreeViewList" />
         <activity android:name="eu.geopaparazzi.mapsforge.mapsdirmanager.sourcesview.SourcesTreeListActivity" />
         <activity
             android:name="eu.geopaparazzi.library.camera.CameraActivity"

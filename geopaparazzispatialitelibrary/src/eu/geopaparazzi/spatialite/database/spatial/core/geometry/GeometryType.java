@@ -249,6 +249,36 @@ public enum GeometryType {
     }
 
     /**
+     * Checks if the given geometry type is compatible with this type.
+     *
+     * <p>Compatible means that the type is the same and a cast from multi to
+     * single is not required.<p/>
+     *
+     * @param geometryType the geometry type to check.
+     * @return <code>true</code>, if the geometry is compatible.
+     */
+    public boolean isGeometryTypeCompatible(GeometryType geometryType){
+        String otherDescription = geometryType.getDescription();
+        String thisDescription = getDescription();
+        /*
+         * Geometry is not compatible if the type is single
+         * and the geometry is multi.
+         */
+        String multiSingleCast = getMultiSingleCast().toLowerCase();
+        if (multiSingleCast.contains("tosingle")){
+            // layer is single geometry
+            if (otherDescription.contains("multi")){
+                return false;
+            }
+        }
+
+        String otherBaseDescription = otherDescription.split("\\_")[0].replaceFirst("multi", "");
+        String baseDescription = thisDescription.split("\\_")[0].replaceFirst("multi", "");
+
+        return baseDescription.equals(otherBaseDescription);
+    }
+
+    /**
      * Get the {@link GeometryType} int value from the geometry type name as of spatialite 3.
      *
      * <b>WARNING: this returns just the basic geom types!</b>

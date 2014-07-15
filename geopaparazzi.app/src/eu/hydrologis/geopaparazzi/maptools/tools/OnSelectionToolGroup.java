@@ -58,6 +58,7 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.maps.MapsSupportService;
 import eu.hydrologis.geopaparazzi.maps.overlays.MapsforgePointTransformation;
 import eu.hydrologis.geopaparazzi.maps.overlays.SliderDrawProjection;
+import eu.hydrologis.geopaparazzi.maptools.CopyToLayersListActivity;
 import eu.hydrologis.geopaparazzi.maptools.FeaturePagerActivity;
 import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
 
@@ -229,12 +230,17 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
             }
         } else if (v == copyFeatureButton) {
             if (selectedFeatures.size() > 0) {
+                List<Feature> copySelectedFeatures = new ArrayList<Feature>(selectedFeatures);
                 Context context = v.getContext();
-                Intent intent = new Intent(context, FeaturePagerActivity.class);
+                Intent intent = new Intent(context, CopyToLayersListActivity.class);
                 intent.putParcelableArrayListExtra(FeatureUtilities.KEY_FEATURESLIST,
-                        (ArrayList< ? extends Parcelable>) selectedFeatures);
-                intent.putExtra(FeatureUtilities.KEY_READONLY, false);
+                        (ArrayList< ? extends Parcelable>) copySelectedFeatures);
                 context.startActivity(intent);
+
+                selectedFeatures.clear();
+                EditManager.INSTANCE.setActiveToolGroup(new MainEditingToolGroup(mapView));
+                EditManager.INSTANCE.setActiveTool(null);
+
             }
         } else if (v == undoButton) {
             if (isInDeletePreview) {
