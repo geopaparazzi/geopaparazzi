@@ -308,10 +308,10 @@ public class SpatialDatabasesManager {
      * @return the raster table or <code>null</code>.
      * @throws Exception  if something goes wrong.
      */
-    public SpatialRasterTable getRasterTableByName( String tableName ) throws Exception {
+    public SpatialRasterTable getRasterTableByName( String tableName,String tableTitle  ) throws Exception {
         List<SpatialRasterTable> spatialTables = getSpatialRasterTables(false);
         for( SpatialRasterTable spatialTable : spatialTables ) {
-            if (spatialTable.getDatabasePath().equals(tableName)) {
+            if ((spatialTable.getDatabasePath().equals(tableName)) && (spatialTable.getTitle().equals(tableTitle))) {
                 return spatialTable;
             }
         }

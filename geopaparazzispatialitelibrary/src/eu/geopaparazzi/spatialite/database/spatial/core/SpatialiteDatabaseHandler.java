@@ -101,27 +101,34 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                 GPLog.androidLog(4, "SpatialiteDatabaseHandler[" + databaseFile.getAbsolutePath() + "]", e);
             }
             dbJava = new jsqlite.Database();
-            dbJava.open(databasePath, jsqlite.Constants.SQLITE_OPEN_READWRITE | jsqlite.Constants.SQLITE_OPEN_CREATE);
-
-            // check database and collect the views list
             try {
-                databaseType = DaoSpatialite.checkDatabaseTypeAndValidity(dbJava, spatialVectorMap, spatialVectorMapErrors);
+                dbJava.open(databasePath, jsqlite.Constants.SQLITE_OPEN_READWRITE | jsqlite.Constants.SQLITE_OPEN_CREATE);
+                isDatabaseValid = true;
             } catch (Exception e) {
                 isDatabaseValid = false;
+                GPLog.androidLog(4, "SpatialiteDatabaseHandler[" + databaseFile.getAbsolutePath() + "].open has failed", e);
             }
-            switch( databaseType ) {
-            /*
-              if (spatialVectorMap.size() == 0) for SPATIALITE3/4
-               --> DaoSpatialite.checkDatabaseTypeAndValidity will return SpatialiteDatabaseType.UNKNOWN
-               -- there is nothing to load (database empty)
-            */
-            case GEOPACKAGE:
-            case SPATIALITE3:
-            case SPATIALITE4:
-                isDatabaseValid = true;
-                break;
-            default:
+            if (isValid()) {
+             // check database and collect the views list
+             try {
+                databaseType = DaoSpatialite.checkDatabaseTypeAndValidity(dbJava, spatialVectorMap, spatialVectorMapErrors);
+             } catch (Exception e) {
                 isDatabaseValid = false;
+             }
+             switch( databaseType ) {
+             /*
+               if (spatialVectorMap.size() == 0) for SPATIALITE3/4
+                --> DaoSpatialite.checkDatabaseTypeAndValidity will return SpatialiteDatabaseType.UNKNOWN
+                -- there is nothing to load (database empty)
+             */
+             case GEOPACKAGE:
+             case SPATIALITE3:
+             case SPATIALITE4:
+                 isDatabaseValid = true;
+                 break;
+             default:
+                 isDatabaseValid = false;
+             }
             }
             if (!isValid()) {
                 close();
