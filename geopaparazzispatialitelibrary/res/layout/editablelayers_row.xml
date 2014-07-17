@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/row_container"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/main_background"
+    android:padding="5dp" >
+
+    <ImageButton
+        android:id="@+id/editableButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/ic_layer_non_editable"
+        />
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/editableButton"
+        android:layout_centerHorizontal="true"
+        android:layout_toRightOf="@+id/editableButton"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:paddingLeft="10dp"
+        android:text="asd"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/main_text_color" />
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/name"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/editableButton"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:text="asd"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/main_text_color" />
+
+</RelativeLayout>

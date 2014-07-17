@@ -105,6 +105,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                 dbJava.open(databasePath, jsqlite.Constants.SQLITE_OPEN_READWRITE | jsqlite.Constants.SQLITE_OPEN_CREATE);
                 isDatabaseValid = true;
             } catch (Exception e) {
+                GPLog.error(this, "Database marked as invalid: " + databasePath, e);
                 isDatabaseValid = false;
                 GPLog.androidLog(4, "SpatialiteDatabaseHandler[" + databaseFile.getAbsolutePath() + "].open has failed", e);
             }
@@ -188,7 +189,12 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
     * @throws Exception if something went wrong.
     */
     private void checkAndUpdatePropertiesUniqueNames() throws Exception {
-        List<Style> allStyles = DaoSpatialite.getAllStyles(dbJava);
+        List<Style> allStyles = null;
+        try {
+            allStyles = DaoSpatialite.getAllStyles(dbJava);
+        } catch (java.lang.Exception e) {
+            // ignore and create a default one
+        }
         if (allStyles == null) {
             /*
             * something went wrong in the reading of the table,
@@ -313,7 +319,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
     */
     public List<byte[]> getWKBFromTableInBounds( String destSrid, SpatialVectorTable table, double n, double s, double e, double w ) {
         List<byte[]> list = new ArrayList<byte[]>();
-        String query = SpatialiteUtilities.buildGeometriesInBoundsQuery(destSrid, table, n, s, e, w);
+        String query = SpatialiteUtilities.buildGeometriesInBoundsQuery(destSrid, false, table, n, s, e, w);
         try {
             Stmt stmt = dbJava.prepare(query);
             try {
@@ -381,7 +387,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
     */
     public GeometryIterator getGeometryIteratorInBounds( String destSrid, SpatialVectorTable table, double n, double s, double e,
             double w ) {
-        String query = SpatialiteUtilities.buildGeometriesInBoundsQuery(destSrid, table, n, s, e, w);
+        String query = SpatialiteUtilities.buildGeometriesInBoundsQuery(destSrid, false, table, n, s, e, w);
         // GPLog.androidLog(-1,"GeopaparazziOverlay.getGeometryIteratorInBounds query["+query+"]");
         return new GeometryIterator(dbJava, query);
     }
@@ -407,47 +413,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
     */
     public void intersectionToStringBBOX( String boundsSrid, SpatialVectorTable spatialTable, double n, double s, double e,
             double w, StringBuilder resultStringBuilder, String indentStr ) throws Exception {
-        boolean doTransform = false;
-        String s_field_list = "";
-        // List of non-blob fields
-        for( String s_field : spatialTable.getLabelList() ) {
-            if (!s_field_list.equals(""))
-                s_field_list += ",";
-            s_field_list += s_field;
-        }
-        if (!spatialTable.getSrid().equals(boundsSrid)) {
-            doTransform = true;
-        }
-        String query = null;
-        {
-            StringBuilder sbQ = new StringBuilder();
-            sbQ.append("SELECT ");
-            sbQ.append(s_field_list);
-            sbQ.append(" FROM ").append(spatialTable.getTableName());
-            sbQ.append(" WHERE ST_Intersects(");
-            if (doTransform)
-                sbQ.append("ST_Transform(");
-            sbQ.append("BuildMBR(");
-            sbQ.append(w);
-            sbQ.append(",");
-            sbQ.append(s);
-            sbQ.append(",");
-            sbQ.append(e);
-            sbQ.append(",");
-            sbQ.append(n);
-            if (doTransform) {
-                sbQ.append(",");
-                sbQ.append(boundsSrid);
-                sbQ.append("),");
-                sbQ.append(spatialTable.getSrid());
-            }
-            sbQ.append("),");
-            sbQ.append(spatialTable.getGeomName());
-            sbQ.append(");");
-
-            query = sbQ.toString();
-        }
-
+        String query = getIntersectionQueryBBOX(boundsSrid, spatialTable, n, s, e, w);
         Stmt stmt = dbJava.prepare(query);
         try {
             while( stmt.step() ) {
@@ -462,6 +428,63 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
         } finally {
             stmt.close();
         }
+    }
+
+    /**
+     * Get the query to run for a bounding box intersection.
+     * 
+     * <p>This assures that the first element of the query is
+     * the id field for the record as defined in {@link SpatialiteUtilities#SPATIALTABLE_ID_FIELD}.
+     * 
+     * @param boundsSrid the srid of the bounds requested.
+     * @param spatialTable the {@link SpatialVectorTable} to query.
+     * @param n north bound.
+     * @param s south bound.
+     * @param e east bound.
+     * @param w west bound.
+     * @return the query to run to get all fields.
+     */
+    public static String getIntersectionQueryBBOX( String boundsSrid, SpatialVectorTable spatialTable, double n, double s,
+            double e, double w ) {
+        String query = null;
+        boolean doTransform = false;
+        String fieldNamesList = SpatialiteUtilities.SPATIALTABLE_ID_FIELD;
+        // List of non-blob fields
+        for( String field : spatialTable.getTableFieldNamesList() ) {
+            boolean ignore = SpatialiteUtilities.doIgnoreField(field);
+            if (!ignore)
+                fieldNamesList += "," + field;
+        }
+        if (!spatialTable.getSrid().equals(boundsSrid)) {
+            doTransform = true;
+        }
+        StringBuilder sbQ = new StringBuilder();
+        sbQ.append("SELECT ");
+        sbQ.append(fieldNamesList);
+        sbQ.append(" FROM ").append(spatialTable.getTableName());
+        sbQ.append(" WHERE ST_Intersects(");
+        if (doTransform)
+            sbQ.append("ST_Transform(");
+        sbQ.append("BuildMBR(");
+        sbQ.append(w);
+        sbQ.append(",");
+        sbQ.append(s);
+        sbQ.append(",");
+        sbQ.append(e);
+        sbQ.append(",");
+        sbQ.append(n);
+        if (doTransform) {
+            sbQ.append(",");
+            sbQ.append(boundsSrid);
+            sbQ.append("),");
+            sbQ.append(spatialTable.getSrid());
+        }
+        sbQ.append("),");
+        sbQ.append(spatialTable.getGeomName());
+        sbQ.append(");");
+
+        query = sbQ.toString();
+        return query;
     }
 
     // public void intersectionToString4Polygon( String queryPointSrid, SpatialVectorTable

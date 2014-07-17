@@ -22,11 +22,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import android.content.Context;
-import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.GPApplication;
+import eu.geopaparazzi.library.util.DataType;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
 import eu.geopaparazzi.spatialite.util.SpatialDataType;
@@ -72,9 +73,9 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
     // list of possible primary keys - for more that one: seperated with ';'
     private String primaryKeyFields = "";
     // SpatialTable=always ROWID ; SpatialView: can also be ROWID - but something else
-    private String ROWID_PK="ROWID";
+    private String ROWID_PK = "ROWID";
     // SpatialTable=-1 ; SpatialView: read_only=0 ; writable=1
-    private int view_read_only=-1;
+    private int view_read_only = -1;
     private String uniqueNameBasedOnDbFilePath = "";
     // private String uniqueNameBasedOnDbFileName = "";
 
@@ -129,8 +130,9 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
                 uniqueNameBasedOnDbFilePath = sb.toString();
 
             } else {
-             uniqueNameBasedOnDbFilePath = databasePath + SEP + tableName + SEP + geometryColumn;
-                throw new RuntimeException("SpatialVectorTable.createUniqueNames mapsPath["+mapsPath+"] ["+uniqueNameBasedOnDbFilePath+"]");
+                uniqueNameBasedOnDbFilePath = databasePath + SEP + tableName + SEP + geometryColumn;
+                throw new RuntimeException("SpatialVectorTable.createUniqueNames mapsPath[" + mapsPath + "] ["
+                        + uniqueNameBasedOnDbFilePath + "]");
             }
         } catch (Exception e) {
             // ignore and use absolute path
@@ -216,8 +218,36 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
       *
      * @return list of field names.
       */
-    public List<String> getLabelList() {
+    public List<String> getTableFieldNamesList() {
         return labelList;
+    }
+
+    /**
+     * Get the data type for a given field name.
+     * 
+     * @param fieldName the field name.
+     * @return the {@link DataType} or <code>null</code>.
+     */
+    public DataType getTableFieldType( String fieldName ) {
+        String type = fieldName2TypeMap.get(fieldName);
+        // 1;Data-TypeTEXT || DOUBLE || INTEGER || REAL || DATE || BLOB ||
+        if (type != null) {
+            type = type.toUpperCase(Locale.US);
+            if (type.indexOf("TEXT") != -1) {
+                return DataType.TEXT;
+            } else if (type.indexOf("DOUBLE") != -1) {
+                return DataType.DOUBLE;
+            } else if (type.indexOf("INTEGER") != -1) {
+                return DataType.INTEGER;
+            } else if (type.indexOf("REAL") != -1) {
+                return DataType.DOUBLE;
+            } else if (type.indexOf("DATE") != -1) {
+                return DataType.DATE;
+            } else if (type.indexOf("BLOB") != -1) {
+                return DataType.BLOB;
+            }
+        }
+        return null;
     }
 
     /**
@@ -278,7 +308,7 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
      * @param fieldName2TypeMap the fields map to set.
      * @param s_ROWID_PK the field to replace the default ROWID when SpatialView.
       */
-    public void setFieldsList( HashMap<String, String> fieldName2TypeMap, String s_ROWID_PK,int i_view_read_only ) {
+    void setFieldsList( HashMap<String, String> fieldName2TypeMap, String s_ROWID_PK, int i_view_read_only ) {
         this.fieldName2TypeMap = fieldName2TypeMap;
         labelField = "";
         String s_label_field_alt = "";
@@ -293,16 +323,17 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
             fields_list_non_vector = new LinkedHashMap<String, String>();
         }
         if (this.fieldName2TypeMap != null) {
-            for( Map.Entry<String, String> field_list : this.fieldName2TypeMap.entrySet() ) {
-                String s_field_name = field_list.getKey();
+            for( Map.Entry<String, String> fieldList : this.fieldName2TypeMap.entrySet() ) {
+                String s_field_name = fieldList.getKey();
                 // pk: 0 || 1;Data-TypeTEXT || DOUBLE || INTEGER || REAL || DATE || BLOB ||
                 // geometry-types
                 // field is a primary-key = '1;Data-Type'
                 // field is NOT a primary-key = '0;Data-Type'
-                String s_field_type = field_list.getValue();
+                String s_field_type = fieldList.getValue();
                 // GPLog.androidLog(-1,"SpatialVectorTable.setFieldsList["+getName()+"] field_name["+s_field_name+"] field_type["+s_field_type+"]");
-                if ((s_field_type.indexOf("BLOB") == -1) && (s_field_type.indexOf("POINT") == -1) && (s_field_type.indexOf("LINESTRING") == -1)
-                        && (s_field_type.indexOf("POLYGON") == -1) && (s_field_type.indexOf("GEOMETRYCOLLECTION") == -1)) {
+                if ((s_field_type.indexOf("BLOB") == -1) && (s_field_type.indexOf("POINT") == -1)
+                        && (s_field_type.indexOf("LINESTRING") == -1) && (s_field_type.indexOf("POLYGON") == -1)
+                        && (s_field_type.indexOf("GEOMETRYCOLLECTION") == -1)) {
                     fields_list_non_vector.put(s_field_name, s_field_type);
                     labelList.add(s_field_name);
                     if (s_label_field_alt.equals("")) {
@@ -328,12 +359,12 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
             setLabelField(labelField);
             // GPLog.androidLog(-1,"SpatialVectorTable.setFieldsList["+getName()+"] label_list["+label_list.size()+"] fields_list_non_vector["+fields_list_non_vector.size()+"] fields_list["+this.fields_list.size()+"]  selected_name["+s_label_field+"] field_type["+s_primary_key_fields+"]");
         }
-        // GPLog.androidLog(-1,"SpatialVectorTable.setFieldsList s_ROWID_PK["+s_ROWID_PK+"] view_read_only["+i_view_read_only +"] primaryKeyFields["+primaryKeyFields+"]");
+        // GPLog.androidLog(-1,"SpatialVectorTable.setFieldsList s_ROWID_PK["+s_ROWID_PK+"] view_read_only["+i_view_read_only
+        // +"] primaryKeyFields["+primaryKeyFields+"]");
         if ((i_view_read_only == 0) || (i_view_read_only == 1))
-         view_read_only=i_view_read_only; // -1=SpatialTable otherwise SpatialView
-        if ((!s_ROWID_PK.equals("")) && (s_ROWID_PK.indexOf("ROWID") == -1))
-        {
-         ROWID_PK=s_ROWID_PK;
+            view_read_only = i_view_read_only; // -1=SpatialTable otherwise SpatialView
+        if ((!s_ROWID_PK.equals("")) && (s_ROWID_PK.indexOf("ROWID") == -1)) {
+            ROWID_PK = s_ROWID_PK;
         }
     }
 
@@ -430,5 +461,13 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
     public void makeDefaultStyle() {
         style = new Style();
         style.name = getUniqueNameBasedOnDbFilePath();
+    }
+
+    @Override
+    public boolean isEditable() {
+        if (view_read_only < 0) {
+            return true;
+        }
+        return false;
     }
 }

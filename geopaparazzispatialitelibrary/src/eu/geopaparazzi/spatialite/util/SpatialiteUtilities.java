@@ -26,10 +26,12 @@ import java.util.Map;
 import jsqlite.Database;
 import jsqlite.Stmt;
 import android.content.Context;
+
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.io.WKBReader;
+
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
@@ -43,6 +45,16 @@ import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
 @SuppressWarnings("nls")
 public class SpatialiteUtilities {
     /**
+     * Name of the table field that s used to identify the record.
+     */
+    public static final String SPATIALTABLE_ID_FIELD = "ROWID"; //$NON-NLS-1$
+
+    /**
+     * Array of fields that will be ingored in attributes handling.
+     */
+    public static String[] IGNORED_FIELDS = {SPATIALTABLE_ID_FIELD, "PK_UID", "_id"};
+
+    /**
      * Name/path separator for spatialite table names.
      */
     public static final String UNIQUENAME_SEPARATOR = "#"; //$NON-NLS-1$
@@ -51,6 +63,21 @@ public class SpatialiteUtilities {
      * Extension for shapefiles prjs.
      */
     public static final String PRJ_EXTENSION = ".prj"; //$NON-NLS-1$
+
+    /**
+     * Checks if a field needs to be ignores.
+     * 
+     * @param field the field to check. 
+     * @return <code>true</code> if the field needs to be ignored.
+     */
+    public static boolean doIgnoreField( String field ) {
+        for( String ingoredField : SpatialiteUtilities.IGNORED_FIELDS ) {
+            if (field.equals(ingoredField)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
       * Create geometry Table from Shape Table.
@@ -308,6 +335,7 @@ public class SpatialiteUtilities {
      * Build a query to retrieve geometries from a table in a given bound.
      *
      * @param destSrid the destination srid.
+     * @param withRowId if <code>true</code>, the ROWID is added in position 0 of the query.
      * @param table the table to use.
      * @param n north bound.
      * @param s south bound.
@@ -315,8 +343,8 @@ public class SpatialiteUtilities {
      * @param w west bound.
      * @return the query.
      */
-    public static String buildGeometriesInBoundsQuery( String destSrid, SpatialVectorTable table, double n, double s, double e,
-            double w ) {
+    public static String buildGeometriesInBoundsQuery( String destSrid, boolean withRowId, SpatialVectorTable table, double n,
+            double s, double e, double w ) {
         boolean doTransform = false;
         if (!table.getSrid().equals(destSrid)) {
             doTransform = true;
@@ -341,7 +369,11 @@ public class SpatialiteUtilities {
         mbrSb.append(")");
         String mbr = mbrSb.toString();
         StringBuilder qSb = new StringBuilder();
-        qSb.append("SELECT ST_AsBinary(CastToXY(");
+        qSb.append("SELECT ");
+        if (withRowId) {
+            qSb.append(SPATIALTABLE_ID_FIELD).append(",");
+        }
+        qSb.append("ST_AsBinary(CastToXY(");
         if (doTransform)
             qSb.append("ST_Transform(");
         qSb.append(table.getGeomName());
@@ -383,6 +415,74 @@ public class SpatialiteUtilities {
     }
 
     /**
+     * Get the query to run for a bounding box intersection to retrieve features.
+     * 
+     * <p>This assures that the first element of the query is
+     * the id field for the record as defined in {@link SpatialiteUtilities#SPATIALTABLE_ID_FIELD}
+     * and the last one the geometry.
+     * 
+     * @param boundsSrid the srid of the bounds requested.
+     * @param spatialTable the {@link SpatialVectorTable} to query.
+     * @param n north bound.
+     * @param s south bound.
+     * @param e east bound.
+     * @param w west bound.
+     * @return the query to run to get all fields.
+     */
+    public static String getBboxIntersectingFeaturesQuery( String boundsSrid, SpatialVectorTable spatialTable, double n,
+            double s, double e, double w ) {
+        String query = null;
+        boolean doTransform = false;
+        String fieldNamesList = SpatialiteUtilities.SPATIALTABLE_ID_FIELD;
+        // List of non-blob fields
+        for( String field : spatialTable.getTableFieldNamesList() ) {
+            boolean ignore = SpatialiteUtilities.doIgnoreField(field);
+            if (!ignore)
+                fieldNamesList += "," + field;
+        }
+        if (!spatialTable.getSrid().equals(boundsSrid)) {
+            doTransform = true;
+        }
+        StringBuilder sbQ = new StringBuilder();
+        sbQ.append("SELECT ");
+        sbQ.append(fieldNamesList);
+        sbQ.append(",ST_AsBinary(CastToXY(");
+        if (doTransform)
+            sbQ.append("ST_Transform(");
+        sbQ.append(spatialTable.getGeomName());
+        if (doTransform) {
+            sbQ.append(",");
+            sbQ.append(boundsSrid);
+            sbQ.append(")");
+        }
+        sbQ.append("))");
+        sbQ.append(" FROM ").append(spatialTable.getTableName());
+        sbQ.append(" WHERE ST_Intersects(");
+        if (doTransform)
+            sbQ.append("ST_Transform(");
+        sbQ.append("BuildMBR(");
+        sbQ.append(w);
+        sbQ.append(",");
+        sbQ.append(s);
+        sbQ.append(",");
+        sbQ.append(e);
+        sbQ.append(",");
+        sbQ.append(n);
+        if (doTransform) {
+            sbQ.append(",");
+            sbQ.append(boundsSrid);
+            sbQ.append("),");
+            sbQ.append(spatialTable.getSrid());
+        }
+        sbQ.append("),");
+        sbQ.append(spatialTable.getGeomName());
+        sbQ.append(");");
+
+        query = sbQ.toString();
+        return query;
+    }
+
+    /**
      * Collects bounds and center as wgs84 4326.
      * - Note: use of getEnvelopeInternal() insures that, after transformation,
      * -- possible false values are given - since the transformed result might not be square
@@ -390,7 +490,8 @@ public class SpatialiteUtilities {
      * @param centerCoordinate the coordinate array to fill with the center.
      * @param boundsCoordinates the coordinate array to fill with the bounds as [w,s,e,n].
     */
-    public static void collectBoundsAndCenter( Database sqlite_db, String srid, double[] centerCoordinate, double[] boundsCoordinates ) {
+    public static void collectBoundsAndCenter( Database sqlite_db, String srid, double[] centerCoordinate,
+            double[] boundsCoordinates ) {
         String centerQuery = "";
         try {
             Stmt centerStmt = null;
@@ -425,7 +526,8 @@ public class SpatialiteUtilities {
                 centerBuilder.append("),4326))) AS Envelope ");
                 // centerBuilder.append("';");
                 centerQuery = centerBuilder.toString();
-                // GPLog.androidLog(-1, "SpatialiteUtilities.collectBoundsAndCenter Bounds[" + centerQuery + "]");
+                // GPLog.androidLog(-1, "SpatialiteUtilities.collectBoundsAndCenter Bounds[" +
+                // centerQuery + "]");
                 centerStmt = sqlite_db.prepare(centerQuery);
                 if (centerStmt.step()) {
                     byte[] geomBytes = centerStmt.column_bytes(0);
@@ -463,8 +565,10 @@ public class SpatialiteUtilities {
      * @param i_tile_size default 256 [Tile.TILE_SIZE].
      * @return the image data as byte[] as jpeg
      */
-    public static byte[] rl2_GetMapImageTile( Database sqlite_db,String destSrid, String coverageName,double[] tileBounds,int i_tile_size ) {
-        return DaoSpatialite.rl2_GetMapImage(sqlite_db,"4326",destSrid,coverageName,i_tile_size,i_tile_size,tileBounds,"default","image/jpeg","#ffffff",0,80,1 );
+    public static byte[] rl2_GetMapImageTile( Database sqlite_db, String destSrid, String coverageName, double[] tileBounds,
+            int i_tile_size ) {
+        return DaoSpatialite.rl2_GetMapImage(sqlite_db, "4326", destSrid, coverageName, i_tile_size, i_tile_size, tileBounds,
+                "default", "image/jpeg", "#ffffff", 0, 80, 1);
     }
 
 }

@@ -165,4 +165,9 @@ public class MapTable extends SpatialTable {
         return tileQuery;
     }
 
+    @Override
+    public boolean isEditable() {
+        return false;
+    }
+
 }

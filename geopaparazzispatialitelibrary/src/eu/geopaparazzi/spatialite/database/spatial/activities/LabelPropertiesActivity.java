@@ -21,9 +21,7 @@ import java.util.List;
 
 import jsqlite.Exception;
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -44,14 +42,11 @@ import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class LabelPropertiesActivity extends Activity {
-    private SharedPreferences preferences;
     private SpatialVectorTable spatialTable;
 
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
         setContentView(R.layout.vector_label_properties);
-
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         Bundle extras = getIntent().getExtras();
         String tableName = extras.getString(SpatialiteLibraryConstants.PREFS_KEY_TEXT);
@@ -121,7 +116,7 @@ public class LabelPropertiesActivity extends Activity {
     }
 
     private void makeFieldsSpinner() {
-        List<String> labelFieldsList = spatialTable.getLabelList();
+        List<String> labelFieldsList = spatialTable.getTableFieldNamesList();
         String labelField = spatialTable.getStyle().labelfield;
 
         int index = 0;

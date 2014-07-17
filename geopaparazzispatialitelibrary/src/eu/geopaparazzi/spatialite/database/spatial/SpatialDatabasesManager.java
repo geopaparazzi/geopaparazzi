@@ -108,10 +108,10 @@ public class SpatialDatabasesManager {
                                 sdb = new MbtilesDatabaseHandler(currentFile.getAbsolutePath(), null);
                             } else {
                                 sdb = new SpatialiteDatabaseHandler(currentFile.getAbsolutePath());
-                            }                            
+                            }
                             if (sdb.isValid()) {
-                             // GPLog.androidLog(-1,"SpatialDatabasesManager["+extension+"]: init["+currentFile.getAbsolutePath()+"] ");
-                             tmpSpatialdbHandlers.add(sdb);
+                                // GPLog.androidLog(-1,"SpatialDatabasesManager["+extension+"]: init["+currentFile.getAbsolutePath()+"] ");
+                                tmpSpatialdbHandlers.add(sdb);
                             }
                         } catch (IOException e) {
                             GPLog.error(this, "Error [SpatialDatabasesManager.init]", e); //$NON-NLS-1$
@@ -187,7 +187,7 @@ public class SpatialDatabasesManager {
      * @return the list of spatial vector tables.
      * @throws Exception  if something goes wrong.
      */
-    public List<SpatialVectorTable> getSpatialVectorTables( boolean forceRead ) throws Exception {
+    public synchronized List<SpatialVectorTable> getSpatialVectorTables( boolean forceRead ) throws Exception {
         List<SpatialVectorTable> tables = new ArrayList<SpatialVectorTable>();
         for( SpatialDatabaseHandler sdbHandler : spatialDbHandlers ) {
             List<SpatialVectorTable> spatialTables = sdbHandler.getSpatialVectorTables(forceRead);
@@ -213,7 +213,7 @@ public class SpatialDatabasesManager {
      * @return the list of spatial raster tables.
      * @throws Exception  if something goes wrong.
      */
-    public List<SpatialRasterTable> getSpatialRasterTables( boolean forceRead ) throws Exception {
+    public synchronized List<SpatialRasterTable> getSpatialRasterTables( boolean forceRead ) throws Exception {
         List<SpatialRasterTable> tables = new ArrayList<SpatialRasterTable>();
         for( SpatialDatabaseHandler sdbHandler : spatialDbHandlers ) {
             try {

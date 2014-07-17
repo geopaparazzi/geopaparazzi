@@ -19,186 +19,163 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" >
 
-        <SlidingDrawer
-            android:id="@+id/mapslide"
+        <eu.geopaparazzi.library.features.EditingView
+            android:id="@+id/editingview"
             android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+        </eu.geopaparazzi.library.features.EditingView>
+
+        <!-- the zoombar -->
+
+        <LinearLayout
+            android:id="@+id/seekbarlayout"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:content="@+id/mapslidecontent"
-            android:handle="@+id/mapslidehandle"
+            android:layout_gravity="right|bottom"
             android:orientation="vertical" >
 
-            <ImageView
-                android:id="@+id/mapslidehandle"
-                android:layout_width="fill_parent"
+            <Button
+                android:id="@+id/zoomin"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/max" >
-            </ImageView>
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/mapview_sides_space"
+                android:background="@drawable/buttoncirclezoomin" >
+            </Button>
 
-            <FrameLayout
-                android:id="@+id/mapslidecontent"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+            <TextView
+                android:id="@+id/zoomlevel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/mapview_sides_space"
+                android:shadowColor="@color/main_background"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="0.01"
+                android:text="01"
+                android:textColor="@color/main_text_color_neutral"
+                android:textStyle="bold" >
+            </TextView>
+
+            <Button
+                android:id="@+id/zoomout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="@dimen/mapview_bottom_space"
+                android:layout_marginLeft="@dimen/mapview_sides_space"
+                android:layout_marginRight="@dimen/mapview_sides_space"
+                android:layout_marginTop="@dimen/mapview_sides_space"
+                android:background="@drawable/buttoncirclezoomout" >
+            </Button>
+        </LinearLayout>
+        <!-- the tools buttons -->
+
+        <LinearLayout
+            android:id="@+id/maptoolslayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|bottom"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:orientation="vertical" >
 
-                <eu.hydrologis.geopaparazzi.maps.SliderDrawView
-                    android:id="@+id/sliderdrawview"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent" >
-                </eu.hydrologis.geopaparazzi.maps.SliderDrawView>
-
-                <!-- the zoombar -->
-
-                <LinearLayout
-                    android:id="@+id/seekbarlayout"
+                <ImageButton
+                    android:id="@+id/addnotebytagbutton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right|bottom"
-                    android:orientation="vertical" >
+                    android:layout_margin="@dimen/mapview_sides_space"
+                    android:background="@drawable/addnote" >
+                </ImageButton>
 
-                    <Button
-                        android:id="@+id/zoomin"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_margin="@dimen/mapview_sides_space"
-                        android:background="@drawable/buttoncirclezoomin" >
-                    </Button>
-
-                    <TextView
-                        android:id="@+id/zoomlevel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_margin="@dimen/mapview_sides_space"
-                        android:shadowColor="@color/main_background"
-                        android:shadowDx="2"
-                        android:shadowDy="2"
-                        android:shadowRadius="0.01"
-                        android:text="01"
-                        android:textColor="@color/main_text_color_neutral"
-                        android:textStyle="bold" >
-                    </TextView>
-
-                    <Button
-                        android:id="@+id/zoomout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="@dimen/mapview_bottom_space"
-                        android:layout_marginLeft="@dimen/mapview_sides_space"
-                        android:layout_marginRight="@dimen/mapview_sides_space"
-                        android:layout_marginTop="@dimen/mapview_sides_space"
-                        android:background="@drawable/buttoncirclezoomout" >
-                    </Button>
-                </LinearLayout>
-                <!-- the tools buttons -->
-
-                <LinearLayout
-                    android:id="@+id/maptoolslayout"
+                <ImageButton
+                    android:id="@+id/listnotesbutton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left|bottom"
-                    android:orientation="horizontal" >
+                    android:layout_margin="@dimen/mapview_sides_space"
+                    android:background="@drawable/noteslist" >
+                </ImageButton>
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical" >
-
-                        <ImageButton
-                            android:id="@+id/addnotebytagbutton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/mapview_sides_space"
-                            android:background="@drawable/addnote" >
-                        </ImageButton>
-
-                        <ImageButton
-                            android:id="@+id/listnotesbutton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/mapview_sides_space"
-                            android:background="@drawable/noteslist" >
-                        </ImageButton>
-
-                        <ImageButton
-                            android:id="@+id/togglemeasuremodebutton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/mapview_bottom_space"
-                            android:layout_marginLeft="@dimen/mapview_sides_space"
-                            android:layout_marginRight="@dimen/mapview_sides_space"
-                            android:layout_marginTop="@dimen/mapview_sides_space"
-                            android:background="@drawable/measuremode" >
-                        </ImageButton>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="left|bottom"
-                        android:orientation="vertical" >
-
-                        <ImageButton
-                            android:id="@+id/addbookmarkbutton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/mapview_sides_space"
-                            android:background="@drawable/addbookmark" >
-                        </ImageButton>
-
-                        <ImageButton
-                            android:id="@+id/bookmarkslistbutton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/mapview_bottom_space"
-                            android:layout_marginLeft="@dimen/mapview_sides_space"
-                            android:layout_marginRight="@dimen/mapview_sides_space"
-                            android:layout_marginTop="@dimen/mapview_sides_space"
-                            android:background="@drawable/bookmarkslist" >
-                        </ImageButton>
-                    </LinearLayout>
-                </LinearLayout>
-                <!-- the center on gps button -->
-
-                <LinearLayout
+                <ImageButton
+                    android:id="@+id/togglemeasuremodebutton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|center"
-                    android:orientation="horizontal" >
+                    android:layout_marginBottom="@dimen/mapview_bottom_space"
+                    android:layout_marginLeft="@dimen/mapview_sides_space"
+                    android:layout_marginRight="@dimen/mapview_sides_space"
+                    android:layout_marginTop="@dimen/mapview_sides_space"
+                    android:background="@drawable/measuremode" >
+                </ImageButton>
+            </LinearLayout>
 
-                    <Button
-                        android:id="@+id/battery"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/mapview_bottom_space"
-                        android:layout_marginRight="@dimen/mapview_bottom_space"
-                        android:background="@drawable/battery"
-                        android:text="-"
-                        android:textColor="@color/main_text_color_neutral"
-                        android:textStyle="bold" >
-                    </Button>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|bottom"
+                android:orientation="vertical" >
 
-                    <ImageButton
-                        android:id="@+id/center_on_gps_btn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/action_bar_button_drawable"
-                        android:padding="@dimen/mapview_sides_space"
-                        android:src="@android:drawable/ic_menu_mylocation" >
-                    </ImageButton>
+                <ImageButton
+                    android:id="@+id/addbookmarkbutton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/mapview_sides_space"
+                    android:background="@drawable/addbookmark" >
+                </ImageButton>
 
-                    <Button
-                        android:id="@+id/info"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/mapview_bottom_space"
-                        android:layout_marginLeft="@dimen/mapview_bottom_space"
-                        android:background="@drawable/infomode" >
-                    </Button>
-                </LinearLayout>
-            </FrameLayout>
-        </SlidingDrawer>
+                <ImageButton
+                    android:id="@+id/bookmarkslistbutton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/mapview_bottom_space"
+                    android:layout_marginLeft="@dimen/mapview_sides_space"
+                    android:layout_marginRight="@dimen/mapview_sides_space"
+                    android:layout_marginTop="@dimen/mapview_sides_space"
+                    android:background="@drawable/bookmarkslist" >
+                </ImageButton>
+            </LinearLayout>
+        </LinearLayout>
+        <!-- the center on gps button -->
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/battery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/mapview_bottom_space"
+                android:layout_marginRight="@dimen/mapview_bottom_space"
+                android:background="@drawable/battery"
+                android:text="-"
+                android:textColor="@color/main_text_color_neutral"
+                android:textStyle="bold" >
+            </Button>
+
+            <ImageButton
+                android:id="@+id/center_on_gps_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/action_bar_button_drawable"
+                android:padding="@dimen/mapview_sides_space"
+                android:src="@android:drawable/ic_menu_mylocation" >
+            </ImageButton>
+
+            <Button
+                android:id="@+id/toggleEditingButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/mapview_bottom_space"
+                android:layout_marginLeft="@dimen/mapview_bottom_space"
+                android:background="@drawable/ic_toggle_editing_off" >
+            </Button>
+        </LinearLayout>
     </FrameLayout>
 
     <FrameLayout
@@ -258,7 +235,18 @@
         android:layout_marginRight="@dimen/mapview_sides_space"
         android:layout_marginTop="@dimen/mapview_bottom_space"
         android:background="@drawable/menu" >
+
         <!-- android:alpha="0.5" -->
     </Button>
+
+    <LinearLayout
+        android:id="@+id/editingToolsLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left|bottom"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/mapview_sides_space"
+        android:paddingLeft="@dimen/mapview_sides_space" >
+    </LinearLayout>
 
 </FrameLayout>

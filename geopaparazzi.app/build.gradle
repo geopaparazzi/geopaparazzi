@@ -3,7 +3,7 @@ buildscript {
                 mavenCentral()
         }
         dependencies {
-                classpath 'com.android.tools.build:gradle:0.6.+'
+                classpath 'com.android.tools.build:gradle:0.12.+'
         }
 }
 
@@ -16,15 +16,24 @@ task copyNativeLibs(type: Copy) {
 tasks.withType(Compile) { compileTask -> compileTask.dependsOn copyNativeLibs }
 clean.dependsOn 'cleanCopyNativeLibs'
 tasks.withType(com.android.build.gradle.tasks.PackageApplication) { pkgTask ->
-    pkgTask.jniDir new File(buildDir, 'native-libs')
+    //pkgTask.jniDir new File(buildDir, 'native-libs')
+    pkgTask.jniFolders = new HashSet<File>()
+    pkgTask.jniFolders.add(new File(buildDir, 'native-libs'))
 }
 
 
 
 android {
         compileSdkVersion 19
-        buildToolsVersion "19"
-        
+        buildToolsVersion "19.1"
+
+
+
+    packagingOptions {
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/LICENSE.txt'
+    }
+
         dependencies {
                 compile project(":geopaparazzispatialitelibrary")
                 compile project(":geopaparazzimapsforge")

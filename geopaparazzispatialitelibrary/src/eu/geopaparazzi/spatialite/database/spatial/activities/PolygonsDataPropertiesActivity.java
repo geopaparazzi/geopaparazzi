@@ -30,7 +30,6 @@ import eu.geopaparazzi.spatialite.R;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
-import eu.geopaparazzi.library.database.GPLog;
 
 /**
  * Polygon Data properties activity.
@@ -62,9 +61,11 @@ public class PolygonsDataPropertiesActivity extends Activity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        GPLog.androidLog(-1, "PolygonsDataPropertiesActivity.onCreate[" + spatialTable.getUniqueNameBasedOnDbFilePath() + "] label_list.size["
-                + spatialTable.getLabelList().size() + "] selected_label[" + spatialTable.getLabelField() + "] PrimaryKeys["
-                + spatialTable.getPrimaryKeyFields() + "] ");
+        // GPLog.androidLog(-1, "PolygonsDataPropertiesActivity.onCreate[" +
+        // spatialTable.getUniqueNameBasedOnDbFilePath() + "] label_list.size["
+        // + spatialTable.getTableFieldNamesList().size() + "] selected_label[" +
+        // spatialTable.getLabelField() + "] PrimaryKeys["
+        // + spatialTable.getPrimaryKeyFields() + "] ");
         colorSpinner = (Spinner) findViewById(R.id.color_spinner);
         String strokecolor = spatialTable.getStyle().strokecolor;
         int count = colorSpinner.getCount();
@@ -178,6 +179,7 @@ public class PolygonsDataPropertiesActivity extends Activity {
         try {
             decimation = Float.parseFloat(decimationString);
         } catch (java.lang.Exception e) {
+            // use default
         }
         spatialTable.getStyle().decimationFactor = decimation;
 
