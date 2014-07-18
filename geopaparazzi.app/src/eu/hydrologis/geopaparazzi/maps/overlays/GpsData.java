@@ -14,11 +14,11 @@
  */
 package eu.hydrologis.geopaparazzi.maps.overlays;
 
-import org.mapsforge.android.maps.overlay.Overlay;
-import org.mapsforge.core.model.GeoPoint;
-
 import android.graphics.Paint;
 import android.graphics.Point;
+
+import org.mapsforge.android.maps.overlay.Overlay;
+import org.mapsforge.core.model.GeoPoint;
 
 /**
  * GpsData holds all parameters of a single circle on a Gpsoverlay. All rendering parameters like

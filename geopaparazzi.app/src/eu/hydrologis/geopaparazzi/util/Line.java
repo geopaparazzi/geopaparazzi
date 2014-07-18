@@ -17,14 +17,11 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
-import static java.lang.Math.abs;
-import static java.lang.Math.pow;
-import static java.lang.Math.sqrt;
+import android.location.Location;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import android.location.Location;
 import eu.geopaparazzi.library.gpx.GpxRepresenter;
 import eu.geopaparazzi.library.gpx.GpxUtilities;
 import eu.geopaparazzi.library.kml.KmlRepresenter;
@@ -32,6 +29,10 @@ import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.DynamicDoubleArray;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
+
+import static java.lang.Math.abs;
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
 
 /**
  * Represents a line (log or map).

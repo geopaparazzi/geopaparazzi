@@ -17,13 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.maptools.tools;
 
-import static java.lang.Math.abs;
-import static java.lang.Math.round;
-
-import org.mapsforge.android.maps.MapView;
-import org.mapsforge.android.maps.Projection;
-import org.mapsforge.core.model.GeoPoint;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
@@ -37,6 +30,11 @@ import android.location.Location;
 import android.preference.PreferenceManager;
 import android.util.TypedValue;
 import android.view.MotionEvent;
+
+import org.mapsforge.android.maps.MapView;
+import org.mapsforge.android.maps.Projection;
+import org.mapsforge.core.model.GeoPoint;
+
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.util.Utilities;
@@ -44,6 +42,9 @@ import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.maptools.core.MapTool;
 import eu.hydrologis.geopaparazzi.util.Constants;
+
+import static java.lang.Math.abs;
+import static java.lang.Math.round;
 
 /**
  * A tool to measure by means of drawing on the map.

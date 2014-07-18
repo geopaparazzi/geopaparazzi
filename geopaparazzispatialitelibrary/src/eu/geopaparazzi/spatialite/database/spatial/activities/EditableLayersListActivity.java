@@ -17,11 +17,6 @@
  */
 package eu.geopaparazzi.spatialite.database.spatial.activities;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import android.app.ListActivity;
 import android.content.Context;
 import android.graphics.PorterDuff.Mode;
@@ -35,6 +30,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.ILayer;

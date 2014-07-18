@@ -17,18 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.maptools.tools;
 
-import static java.lang.Math.abs;
-import static java.lang.Math.round;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import jsqlite.Exception;
-
-import org.mapsforge.android.maps.MapView;
-import org.mapsforge.android.maps.Projection;
-import org.mapsforge.core.model.GeoPoint;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -40,6 +28,14 @@ import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Parcelable;
 import android.view.MotionEvent;
+
+import org.mapsforge.android.maps.MapView;
+import org.mapsforge.android.maps.Projection;
+import org.mapsforge.core.model.GeoPoint;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.Feature;
@@ -53,6 +49,10 @@ import eu.hydrologis.geopaparazzi.maps.overlays.SliderDrawProjection;
 import eu.hydrologis.geopaparazzi.maptools.FeaturePagerActivity;
 import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
 import eu.hydrologis.geopaparazzi.maptools.core.MapTool;
+import jsqlite.Exception;
+
+import static java.lang.Math.abs;
+import static java.lang.Math.round;
 
 /**
  * A tool to query data.

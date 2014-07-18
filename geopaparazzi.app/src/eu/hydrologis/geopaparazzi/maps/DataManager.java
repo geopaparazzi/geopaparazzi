@@ -18,6 +18,7 @@
 package eu.hydrologis.geopaparazzi.maps;
 
 import android.graphics.Color;
+
 import eu.geopaparazzi.library.util.ColorUtilities;
 
 /**

@@ -17,13 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.maptools.tools;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.mapsforge.android.maps.MapView;
-import org.mapsforge.android.maps.MapViewPosition;
-import org.mapsforge.android.maps.Projection;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
@@ -43,8 +36,14 @@ import android.widget.LinearLayout;
 import com.vividsolutions.jts.android.PointTransformation;
 import com.vividsolutions.jts.android.ShapeWriter;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKBReader;
+
+import org.mapsforge.android.maps.MapView;
+import org.mapsforge.android.maps.MapViewPosition;
+import org.mapsforge.android.maps.Projection;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
@@ -53,7 +52,7 @@ import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.features.ILayer;
 import eu.geopaparazzi.library.features.Tool;
 import eu.geopaparazzi.library.features.ToolGroup;
-import eu.geopaparazzi.spatialite.util.DaoSpatialite;
+import eu.geopaparazzi.spatialite.database.spatial.daos.DaoSpatialite;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.maps.MapsSupportService;
 import eu.hydrologis.geopaparazzi.maps.overlays.MapsforgePointTransformation;

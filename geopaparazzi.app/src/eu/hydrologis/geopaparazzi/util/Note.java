@@ -17,12 +17,12 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import eu.geopaparazzi.library.forms.FormUtilities;
 import eu.geopaparazzi.library.forms.TagsManager;

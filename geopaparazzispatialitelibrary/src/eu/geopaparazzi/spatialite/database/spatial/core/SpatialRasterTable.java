@@ -67,16 +67,16 @@ public class SpatialRasterTable extends SpatialTable implements Serializable {
     }
 
     /**
-      * Return String of Columnname of Geopackage
+      * Return String of Columnname of SPL_Geopackage
       *
-      * @return Columnname of Geopackage
+      * @return Columnname of SPL_Geopackage
       */
     public String getColumnName() {
         return tableName;
     }
 
     /**
-      * Set String of Columnname of Geopackage / tablename of RasterLite2 image
+      * Set String of Columnname of SPL_Geopackage / tablename of RasterLite2 image
       * [mj10777: not really needed]
       * @param s_table_name the name to set.
       */

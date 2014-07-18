@@ -14,21 +14,6 @@
  */
 package eu.hydrologis.geopaparazzi.maps.overlays;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import jsqlite.Exception;
-
-import org.mapsforge.android.maps.MapView;
-import org.mapsforge.android.maps.Projection;
-import org.mapsforge.android.maps.overlay.ItemizedOverlay;
-import org.mapsforge.android.maps.overlay.Overlay;
-import org.mapsforge.android.maps.overlay.OverlayItem;
-import org.mapsforge.android.maps.overlay.OverlayWay;
-import org.mapsforge.core.model.GeoPoint;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -53,6 +38,19 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 
+import org.mapsforge.android.maps.MapView;
+import org.mapsforge.android.maps.Projection;
+import org.mapsforge.android.maps.overlay.ItemizedOverlay;
+import org.mapsforge.android.maps.overlay.Overlay;
+import org.mapsforge.android.maps.overlay.OverlayItem;
+import org.mapsforge.android.maps.overlay.OverlayWay;
+import org.mapsforge.core.model.GeoPoint;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.FormActivity;
 import eu.geopaparazzi.library.gps.GpsLoggingStatus;
@@ -75,6 +73,7 @@ import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.maps.MapsActivity;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Note;
+import jsqlite.Exception;
 
 /**
  * GeopaparazziOverlay is an abstract base class to display {@link OverlayWay OverlayWays}. The class defines some methods to

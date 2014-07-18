@@ -1,13 +1,13 @@
 package eu.hydrologis.geopaparazzi.maps.overlays;
 
-import org.mapsforge.android.maps.Projection;
-import org.mapsforge.core.model.GeoPoint;
-
 import android.graphics.Point;
 import android.graphics.PointF;
 
 import com.vividsolutions.jts.android.PointTransformation;
 import com.vividsolutions.jts.geom.Coordinate;
+
+import org.mapsforge.android.maps.Projection;
+import org.mapsforge.core.model.GeoPoint;
 
 /**
  * Transformation that handles mapsforge transforms.

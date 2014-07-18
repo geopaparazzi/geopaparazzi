@@ -18,10 +18,10 @@
 
 package eu.hydrologis.geopaparazzi.maps.overlays;
 
+import android.graphics.drawable.Drawable;
+
 import org.mapsforge.android.maps.overlay.OverlayItem;
 import org.mapsforge.core.model.GeoPoint;
-
-import android.graphics.drawable.Drawable;
 
 /**
  * Wrapper shell.

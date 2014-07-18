@@ -17,14 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.database;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Set;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetManager;
@@ -33,6 +25,15 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Scanner;
+import java.util.Set;
+
 import eu.geopaparazzi.library.database.DatabaseListActivity;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.hydrologis.geopaparazzi.R;

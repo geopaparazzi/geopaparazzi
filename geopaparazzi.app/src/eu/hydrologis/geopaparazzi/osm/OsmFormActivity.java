@@ -17,29 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.osm;
 
-import static eu.hydrologis.geopaparazzi.osm.FormUtilities.CONSTRAINT_MANDATORY;
-import static eu.hydrologis.geopaparazzi.osm.FormUtilities.CONSTRAINT_RANGE;
-import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_KEY;
-import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_LONGNAME;
-import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_TYPE;
-import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_VALUE;
-import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TYPE_BOOLEAN;
-import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TYPE_DOUBLE;
-import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TYPE_STRING;
-import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TYPE_STRINGCOMBO;
-import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TYPE_STRINGMULTIPLECHOICE;
-
-import java.io.File;
-import java.sql.Date;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -52,6 +29,18 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.sql.Date;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.constraints.Constraints;
 import eu.geopaparazzi.library.forms.constraints.MandatoryConstraint;
@@ -64,6 +53,18 @@ import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.util.Constants;
+
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.CONSTRAINT_MANDATORY;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.CONSTRAINT_RANGE;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_KEY;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_LONGNAME;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_TYPE;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_VALUE;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TYPE_BOOLEAN;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TYPE_DOUBLE;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TYPE_STRING;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TYPE_STRINGCOMBO;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TYPE_STRINGMULTIPLECHOICE;
 
 /**
  * The osm form activity.

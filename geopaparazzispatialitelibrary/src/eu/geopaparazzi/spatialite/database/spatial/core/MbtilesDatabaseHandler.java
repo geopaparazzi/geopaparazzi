@@ -17,6 +17,10 @@
  */
 package eu.geopaparazzi.spatialite.database.spatial.core;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,15 +29,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import jsqlite.Exception;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.spatialite.database.spatial.core.mbtiles.MBTilesDroidSpitter;
 import eu.geopaparazzi.spatialite.database.spatial.core.mbtiles.MBtilesAsync;
 import eu.geopaparazzi.spatialite.database.spatial.core.mbtiles.MbTilesMetadata;
 import eu.geopaparazzi.spatialite.util.SpatialDataType;
+import jsqlite.Exception;
 
 /**
  * An utility class to handle an mbtiles database.

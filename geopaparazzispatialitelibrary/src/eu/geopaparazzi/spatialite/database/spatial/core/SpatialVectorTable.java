@@ -16,6 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package eu.geopaparazzi.spatialite.database.spatial.core;
+
+import android.content.Context;
+
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -25,7 +28,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import android.content.Context;
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.util.DataType;
 import eu.geopaparazzi.library.util.ResourcesManager;

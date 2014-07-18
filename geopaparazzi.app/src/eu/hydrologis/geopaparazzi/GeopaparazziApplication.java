@@ -17,15 +17,16 @@
  */
 package eu.hydrologis.geopaparazzi;
 
-import java.io.IOException;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import org.acra.ACRA;
 import org.acra.ReportField;
 import org.acra.ReportingInteractionMode;
 import org.acra.annotation.ReportsCrashes;
 
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
+import java.io.IOException;
+
 import eu.geopaparazzi.library.GPApplication;
 import eu.hydrologis.geopaparazzi.database.DatabaseManager;
 

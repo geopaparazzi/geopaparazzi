@@ -17,9 +17,6 @@
  */
 package eu.geopaparazzi.spatialite.database.spatial.activities;
 
-import java.util.List;
-
-import jsqlite.Exception;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
@@ -30,11 +27,15 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Spinner;
+
+import java.util.List;
+
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.R;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
+import jsqlite.Exception;
 
 /**
  * Notes properties activity.

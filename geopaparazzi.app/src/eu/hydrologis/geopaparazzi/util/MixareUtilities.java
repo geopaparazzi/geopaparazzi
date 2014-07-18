@@ -17,10 +17,11 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import android.content.Context;
 import eu.geopaparazzi.library.mixare.MixareHandler;
 import eu.geopaparazzi.library.util.PointF3D;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;

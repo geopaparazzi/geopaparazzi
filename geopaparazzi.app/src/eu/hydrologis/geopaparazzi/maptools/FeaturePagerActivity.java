@@ -17,12 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.maptools;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import jsqlite.Database;
-import jsqlite.Exception;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -33,6 +27,9 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.util.StringAsyncTask;
@@ -41,8 +38,10 @@ import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler;
-import eu.geopaparazzi.spatialite.util.DaoSpatialite;
+import eu.geopaparazzi.spatialite.database.spatial.daos.DaoSpatialite;
 import eu.hydrologis.geopaparazzi.R;
+import jsqlite.Database;
+import jsqlite.Exception;
 
 /**
  * The activity to page features.

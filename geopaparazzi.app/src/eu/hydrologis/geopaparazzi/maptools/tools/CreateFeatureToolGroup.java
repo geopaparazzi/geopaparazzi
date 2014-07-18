@@ -17,16 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.maptools.tools;
 
-import static java.lang.Math.round;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.mapsforge.android.maps.MapView;
-import org.mapsforge.android.maps.MapViewPosition;
-import org.mapsforge.android.maps.Projection;
-import org.mapsforge.core.model.GeoPoint;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -52,6 +42,14 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Polygon;
 
+import org.mapsforge.android.maps.MapView;
+import org.mapsforge.android.maps.MapViewPosition;
+import org.mapsforge.android.maps.Projection;
+import org.mapsforge.core.model.GeoPoint;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.EditingView;
@@ -62,7 +60,7 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTableLayer;
-import eu.geopaparazzi.spatialite.util.DaoSpatialite;
+import eu.geopaparazzi.spatialite.database.spatial.daos.DaoSpatialite;
 import eu.geopaparazzi.spatialite.util.JtsUtilities;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
@@ -70,6 +68,8 @@ import eu.hydrologis.geopaparazzi.maps.MapsSupportService;
 import eu.hydrologis.geopaparazzi.maps.overlays.MapsforgePointTransformation;
 import eu.hydrologis.geopaparazzi.maps.overlays.SliderDrawProjection;
 import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
+
+import static java.lang.Math.round;
 
 /**
  * The group of tools active when a selection has been done.

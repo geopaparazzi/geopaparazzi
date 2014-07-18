@@ -14,14 +14,14 @@
  */
 package eu.hydrologis.geopaparazzi.maps.overlays;
 
+import android.graphics.Point;
+import android.view.View;
+
 import org.mapsforge.android.maps.MapView;
 import org.mapsforge.android.maps.Projection;
 import org.mapsforge.core.model.GeoPoint;
 import org.mapsforge.core.model.MapPosition;
 import org.mapsforge.core.util.MercatorProjection;
-
-import android.graphics.Point;
-import android.view.View;
 
 /**
  * @author mapsforge

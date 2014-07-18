@@ -27,6 +27,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import eu.geopaparazzi.spatialite.database.spatial.daos.SPL_Vectors;
+import eu.geopaparazzi.spatialite.database.spatial.daos.VectorLayerQueryModes;
+import eu.geopaparazzi.spatialite.database.spatial.daos.DaoSpatialite;
 import jsqlite.Exception;
 
 import org.mapsforge.android.maps.MapView;
@@ -169,7 +172,7 @@ public class MapsDirManager {
                 false);
         if (doSpatialiteRecoveryMode) {
             // Turn on Spatialite Recovery Modus
-            eu.geopaparazzi.spatialite.util.DaoSpatialite.VECTOR_LAYERS_QUERY_MODE = 3;
+            SPL_Vectors.VECTORLAYER_QUERYMODE = VectorLayerQueryModes.CORRECTIVEWITHINDEX;
         }
         selectedTileSourceType = preferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE, ""); //$NON-NLS-1$
         selectedTableName = preferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE_FILE, ""); //$NON-NLS-1$
@@ -208,7 +211,7 @@ public class MapsDirManager {
                 handleTileSources(context);
                 if (doSpatialiteRecoveryMode) {
                     // Turn off Spatialite Recovery Modus after compleation
-                    eu.geopaparazzi.spatialite.util.DaoSpatialite.VECTOR_LAYERS_QUERY_MODE = 0;
+                    SPL_Vectors.VECTORLAYER_QUERYMODE = VectorLayerQueryModes.STRICT;
                     Editor editor = preferences.edit();
                     editor.putBoolean(SpatialiteLibraryConstants.PREFS_KEY_SPATIALITE_RECOVERY_MODE, false);
                     editor.commit();

@@ -17,17 +17,16 @@
  */
 package eu.geopaparazzi.spatialite.database.spatial.core.geometry;
 
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.io.WKBReader;
+
 import java.util.Iterator;
 
+import eu.geopaparazzi.library.database.GPLog;
 import jsqlite.Constants;
 import jsqlite.Database;
 import jsqlite.Exception;
 import jsqlite.Stmt;
-
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.io.WKBReader;
-
-import eu.geopaparazzi.library.database.GPLog;
 
 /**
  * Class that iterates over Database geometries and doesn't keep everything in memory.

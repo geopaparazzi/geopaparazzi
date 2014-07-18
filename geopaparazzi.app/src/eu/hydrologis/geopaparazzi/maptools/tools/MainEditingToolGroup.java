@@ -17,12 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.maptools.tools;
 
-import java.lang.Exception;
-import java.util.Arrays;
-import java.util.List;
-
-import org.mapsforge.android.maps.MapView;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
@@ -37,6 +31,11 @@ import android.widget.LinearLayout;
 
 import com.vividsolutions.jts.geom.Geometry;
 
+import org.mapsforge.android.maps.MapView;
+
+import java.util.Arrays;
+import java.util.List;
+
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.Feature;
@@ -50,12 +49,10 @@ import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
-import eu.geopaparazzi.spatialite.util.DaoSpatialite;
-import eu.geopaparazzi.spatialite.util.SpatialiteUtilities;
+import eu.geopaparazzi.spatialite.database.spatial.daos.DaoSpatialite;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.maps.MapsSupportService;
 import eu.hydrologis.geopaparazzi.maptools.FeatureUtilities;
-import jsqlite.*;
 
 /**
  * The main editing tool, which just shows the tool palette.

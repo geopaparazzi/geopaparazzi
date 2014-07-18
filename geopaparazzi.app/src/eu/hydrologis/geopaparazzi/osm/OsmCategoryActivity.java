@@ -29,6 +29,7 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.util.Constants;
 

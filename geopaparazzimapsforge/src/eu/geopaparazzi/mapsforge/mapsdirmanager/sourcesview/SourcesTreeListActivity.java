@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import android.app.Activity;
+import android.graphics.Rasterizer;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -34,6 +35,8 @@ import android.widget.ExpandableListView;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.mapsforge.R;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
+import eu.geopaparazzi.spatialite.database.spatial.daos.DaoSpatialite;
+import eu.geopaparazzi.spatialite.database.spatial.daos.SPL_Rasterlite;
 import eu.geopaparazzi.spatialite.util.SpatialDataType;
 
 /**
@@ -83,7 +86,7 @@ public class SourcesTreeListActivity extends Activity implements OnClickListener
         mbtilesToggleButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.button_background_drawable_selected));
 
         rasterLite2ToggleButton = (Button) findViewById(R.id.toggleRasterLite2Button);
-        if (!eu.geopaparazzi.spatialite.util.DaoSpatialite.Rasterlite2Version_CPU.equals("")) { //$NON-NLS-1$
+        if (!SPL_Rasterlite.Rasterlite2Version_CPU.equals("")) { //$NON-NLS-1$
             // show this only if the driver is installed and active
             rasterLite2ToggleButton.setOnClickListener(this);
             rasterLite2ToggleButton.setText(SpatialDataType.RASTERLITE2.getTypeName());
@@ -208,7 +211,7 @@ public class SourcesTreeListActivity extends Activity implements OnClickListener
             showMbtiles = !showMbtiles;
         }
 
-        if (!eu.geopaparazzi.spatialite.util.DaoSpatialite.Rasterlite2Version_CPU.equals(""))
+        if (!SPL_Rasterlite.Rasterlite2Version_CPU.equals(""))
             if (view == rasterLite2ToggleButton) {
                 if (!showRasterLite2) {
                     rasterLite2ToggleButton.setBackgroundDrawable(getResources().getDrawable(

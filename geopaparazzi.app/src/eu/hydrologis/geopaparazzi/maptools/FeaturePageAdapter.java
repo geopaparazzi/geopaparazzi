@@ -17,9 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.maptools;
 
-import java.text.DecimalFormat;
-import java.util.List;
-
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.text.Editable;
@@ -32,6 +29,10 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
+import java.text.DecimalFormat;
+import java.util.List;
+
 import eu.geopaparazzi.library.R;
 import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.util.DataType;

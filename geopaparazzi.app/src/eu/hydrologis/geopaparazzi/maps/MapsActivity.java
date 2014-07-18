@@ -17,29 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.maps;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.mapsforge.android.maps.DebugSettings;
-import org.mapsforge.android.maps.MapActivity;
-import org.mapsforge.android.maps.MapScaleBar;
-import org.mapsforge.android.maps.MapScaleBar.ScreenPosition;
-import org.mapsforge.android.maps.MapScaleBar.TextField;
-import org.mapsforge.android.maps.MapView;
-import org.mapsforge.android.maps.MapViewPosition;
-import org.mapsforge.android.maps.Projection;
-import org.mapsforge.android.maps.mapgenerator.MapGenerator;
-import org.mapsforge.android.maps.overlay.Overlay;
-import org.mapsforge.android.maps.overlay.OverlayItem;
-import org.mapsforge.android.maps.overlay.OverlayWay;
-import org.mapsforge.core.model.GeoPoint;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -90,6 +67,30 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.mapsforge.android.maps.DebugSettings;
+import org.mapsforge.android.maps.MapActivity;
+import org.mapsforge.android.maps.MapScaleBar;
+import org.mapsforge.android.maps.MapScaleBar.ScreenPosition;
+import org.mapsforge.android.maps.MapScaleBar.TextField;
+import org.mapsforge.android.maps.MapView;
+import org.mapsforge.android.maps.MapViewPosition;
+import org.mapsforge.android.maps.Projection;
+import org.mapsforge.android.maps.mapgenerator.MapGenerator;
+import org.mapsforge.android.maps.overlay.Overlay;
+import org.mapsforge.android.maps.overlay.OverlayItem;
+import org.mapsforge.android.maps.overlay.OverlayWay;
+import org.mapsforge.core.model.GeoPoint;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.EditManager;
 import eu.geopaparazzi.library.features.EditingView;

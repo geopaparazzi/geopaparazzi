@@ -49,7 +49,7 @@ import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
-import eu.geopaparazzi.spatialite.util.DaoSpatialite;
+import eu.geopaparazzi.spatialite.database.spatial.daos.DaoSpatialite;
 import eu.geopaparazzi.spatialite.util.SpatialTableNameComparator;
 import eu.hydrologis.geopaparazzi.maps.MapsSupportService;
 

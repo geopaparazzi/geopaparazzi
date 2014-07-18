@@ -17,6 +17,8 @@
  */
 package eu.geopaparazzi.spatialite.database.spatial;
 
+import android.content.Context;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,8 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jsqlite.Exception;
-import android.content.Context;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
@@ -37,6 +37,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.util.OrderComparator;
 import eu.geopaparazzi.spatialite.util.SpatialDataType;
+import jsqlite.Exception;
 
 /**
  * The spatial database manager.

@@ -1,11 +1,12 @@
 package eu.hydrologis.geopaparazzi.util;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.DECIMATION_FACTOR;
-import static eu.hydrologis.geopaparazzi.util.Constants.PANICKEY;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+
+import static eu.hydrologis.geopaparazzi.util.Constants.DECIMATION_FACTOR;
+import static eu.hydrologis.geopaparazzi.util.Constants.PANICKEY;
 
 /**
  * Utilities.

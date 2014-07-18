@@ -17,16 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.PREF_KEY_PWD;
-import static eu.hydrologis.geopaparazzi.util.Constants.PREF_KEY_SERVER;
-import static eu.hydrologis.geopaparazzi.util.Constants.PREF_KEY_USER;
-
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.util.List;
-import java.util.TreeSet;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -37,6 +27,13 @@ import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.util.List;
+import java.util.TreeSet;
+
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.LibraryConstants;
@@ -47,6 +44,10 @@ import eu.geopaparazzi.library.webproject.WebProjectsListActivity;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
 import eu.hydrologis.geopaparazzi.tantomapurls.TantoMapurlsActivity;
+
+import static eu.hydrologis.geopaparazzi.util.Constants.PREF_KEY_PWD;
+import static eu.hydrologis.geopaparazzi.util.Constants.PREF_KEY_SERVER;
+import static eu.hydrologis.geopaparazzi.util.Constants.PREF_KEY_USER;
 
 /**
  * Activity for export tasks.

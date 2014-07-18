@@ -17,10 +17,10 @@
  */
 package eu.geopaparazzi.spatialite.database.spatial.core;
 
+import com.vividsolutions.jts.geom.Envelope;
+
 import java.io.File;
 import java.io.Serializable;
-
-import com.vividsolutions.jts.geom.Envelope;
 
 /**
  * Spatial table interface.

@@ -12,6 +12,7 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
+
 import eu.hydrologis.geopaparazzi.R;
 
 /**

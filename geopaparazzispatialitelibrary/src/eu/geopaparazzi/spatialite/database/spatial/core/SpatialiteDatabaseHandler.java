@@ -17,7 +17,11 @@
 */
 package eu.geopaparazzi.spatialite.database.spatial.core;
 
-import static eu.geopaparazzi.spatialite.util.DaoSpatialite.PROPERTIESTABLE;
+import android.content.Context;
+import android.graphics.DashPathEffect;
+import android.graphics.Paint;
+import android.graphics.Paint.Cap;
+import android.graphics.Paint.Join;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,25 +31,31 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jsqlite.Database;
-import jsqlite.Exception;
-import jsqlite.Stmt;
-import android.content.Context;
-import android.graphics.DashPathEffect;
-import android.graphics.Paint;
-import android.graphics.Paint.Cap;
-import android.graphics.Paint.Join;
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryIterator;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
-import eu.geopaparazzi.spatialite.util.DaoSpatialite;
+import eu.geopaparazzi.spatialite.database.spatial.daos.DaoSpatialite;
+import eu.geopaparazzi.spatialite.database.spatial.daos.DatabaseCreationAndProperties;
+import eu.geopaparazzi.spatialite.database.spatial.daos.GeopaparazziDatabaseProperties;
+import eu.geopaparazzi.spatialite.database.spatial.daos.SPL_Rasterlite;
 import eu.geopaparazzi.spatialite.util.OrderComparator;
 import eu.geopaparazzi.spatialite.util.SpatialiteDatabaseType;
 import eu.geopaparazzi.spatialite.util.SpatialiteUtilities;
 import eu.geopaparazzi.spatialite.util.Style;
+import jsqlite.Database;
+import jsqlite.Exception;
+import jsqlite.Stmt;
+
+import static eu.geopaparazzi.spatialite.database.spatial.daos.DaoSpatialite.PROPERTIESTABLE;
+import static eu.geopaparazzi.spatialite.database.spatial.daos.GeopaparazziDatabaseProperties.createDefaultPropertiesForTable;
+import static eu.geopaparazzi.spatialite.database.spatial.daos.GeopaparazziDatabaseProperties.createPropertiesTable;
+import static eu.geopaparazzi.spatialite.database.spatial.daos.GeopaparazziDatabaseProperties.deleteStyleTable;
+import static eu.geopaparazzi.spatialite.database.spatial.daos.GeopaparazziDatabaseProperties.getAllStyles;
+import static eu.geopaparazzi.spatialite.database.spatial.daos.GeopaparazziDatabaseProperties.getStyle4Table;
+import static eu.geopaparazzi.spatialite.database.spatial.daos.GeopaparazziDatabaseProperties.updateStyleName;
 
 /**
 * An utility class to handle the spatial database.
@@ -112,7 +122,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             if (isValid()) {
              // check database and collect the views list
              try {
-                databaseType = DaoSpatialite.checkDatabaseTypeAndValidity(dbJava, spatialVectorMap, spatialVectorMapErrors);
+                databaseType = DatabaseCreationAndProperties.checkDatabaseTypeAndValidity(dbJava, spatialVectorMap, spatialVectorMapErrors);
              } catch (Exception e) {
                 isDatabaseValid = false;
              }
@@ -191,7 +201,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
     private void checkAndUpdatePropertiesUniqueNames() throws Exception {
         List<Style> allStyles = null;
         try {
-            allStyles = DaoSpatialite.getAllStyles(dbJava);
+            allStyles = getAllStyles(dbJava);
         } catch (java.lang.Exception e) {
             // ignore and create a default one
         }
@@ -201,8 +211,8 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             * which might be due to an upgrade of table structure.
             * Remove and recreate the table.
             */
-            DaoSpatialite.deleteStyleTable(dbJava);
-            DaoSpatialite.createPropertiesTable(dbJava);
+            deleteStyleTable(dbJava);
+            createPropertiesTable(dbJava);
         } else {
             for( Style style : allStyles ) {
                 if (!style.name.startsWith(uniqueDbName4DataProperties + SpatialiteUtilities.UNIQUENAME_SEPARATOR)) {
@@ -212,7 +222,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                         String newName = uniqueDbName4DataProperties + SpatialiteUtilities.UNIQUENAME_SEPARATOR + split[1]
                                 + SpatialiteUtilities.UNIQUENAME_SEPARATOR + split[2];
                         style.name = newName;
-                        DaoSpatialite.updateStyleName(dbJava, newName, style.id);
+                        updateStyleName(dbJava, newName, style.id);
                     }
                 }
             }
@@ -225,11 +235,11 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
     * @throws Exception
     */
     private void checkPropertiesTable() throws Exception {
-        int propertiesTableColumnCount = DaoSpatialite.checkTableExistence(dbJava, PROPERTIESTABLE);
+        int propertiesTableColumnCount = DatabaseCreationAndProperties.checkTableExistence(dbJava, PROPERTIESTABLE);
         if (propertiesTableColumnCount == 0) {
-            DaoSpatialite.createPropertiesTable(dbJava);
+            createPropertiesTable(dbJava);
             for( SpatialVectorTable spatialTable : vectorTableList ) {
-                DaoSpatialite.createDefaultPropertiesForTable(dbJava, spatialTable.getUniqueNameBasedOnDbFilePath(),
+                createDefaultPropertiesForTable(dbJava, spatialTable.getUniqueNameBasedOnDbFilePath(),
                         spatialTable.getLabelField());
             }
         }
@@ -366,7 +376,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
      */
     @Override
     public byte[] getRasterTileBounds( SpatialTable rasterTable, double[] tileBounds, int i_tile_size ) {
-        byte[] bytes = SpatialiteUtilities.rl2_GetMapImageTile(dbJava, rasterTable.getSrid(), rasterTable.getTableName(),
+        byte[] bytes = SPL_Rasterlite.rl2_GetMapImageTile(dbJava, rasterTable.getSrid(), rasterTable.getTableName(),
                 tileBounds, i_tile_size);
         if (bytes != null) {
             return bytes;
@@ -568,7 +578,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
     * <br>- OGC 12-128r9 from 2013-11-19
     * <br>-- older versions will not be supported
     * <br>- With SQLite versions 3.7.17 and later : 'PRAGMA application_id' [1196437808]
-    * <br>-- older (for us invalid) Geopackage Files return 0
+    * <br>-- older (for us invalid) SPL_Geopackage Files return 0
     *
     */
     private void collectGpkgTables() throws Exception {
@@ -862,10 +872,10 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                 for( SpatialVectorTable spatialTable : vectorTableList ) {
                     Style style4Table = null;
                     try {
-                        style4Table = DaoSpatialite.getStyle4Table(dbJava, spatialTable.getUniqueNameBasedOnDbFilePath(),
+                        style4Table = getStyle4Table(dbJava, spatialTable.getUniqueNameBasedOnDbFilePath(),
                                 spatialTable.getLabelField());
                     } catch (java.lang.Exception e) {
-                        DaoSpatialite.deleteStyleTable(dbJava);
+                        deleteStyleTable(dbJava);
                         checkPropertiesTable();
                     }
                     if (style4Table == null) {
@@ -888,7 +898,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
     * @throws Exception if something goes wrong.
     */
     public void updateStyle( Style style ) throws Exception {
-        DaoSpatialite.updateStyle(dbJava, style);
+        GeopaparazziDatabaseProperties.updateStyle(dbJava, style);
     }
 
     /**
@@ -897,10 +907,10 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
     * @throws Exception if something goes wrong.
     */
     public void resetStyleTable() throws Exception {
-        DaoSpatialite.deleteStyleTable(dbJava);
-        DaoSpatialite.createPropertiesTable(dbJava);
+        deleteStyleTable(dbJava);
+        createPropertiesTable(dbJava);
         for( SpatialVectorTable spatialTable : vectorTableList ) {
-            DaoSpatialite.createDefaultPropertiesForTable(dbJava, spatialTable.getUniqueNameBasedOnDbFilePath(),
+            createDefaultPropertiesForTable(dbJava, spatialTable.getUniqueNameBasedOnDbFilePath(),
                     spatialTable.getLabelField());
         }
     }

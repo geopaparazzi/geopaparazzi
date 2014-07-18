@@ -17,14 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.maptools;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import eu.geopaparazzi.spatialite.util.DaoSpatialite;
-import jsqlite.Database;
-import jsqlite.Exception;
-import jsqlite.Stmt;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
@@ -41,6 +33,10 @@ import com.vividsolutions.jts.io.WKBWriter;
 import com.vividsolutions.jts.noding.snapround.GeometryNoder;
 import com.vividsolutions.jts.operation.polygonize.Polygonizer;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.util.DataType;
@@ -49,6 +45,10 @@ import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
+import eu.geopaparazzi.spatialite.database.spatial.daos.DaoSpatialite;
+import jsqlite.Database;
+import jsqlite.Exception;
+import jsqlite.Stmt;
 
 /**
  * A spatial feature container.
@@ -175,7 +175,7 @@ public class FeatureUtilities {
             }
             for (Feature feature: featuresList) {
                 String id = feature.getId();
-                double[] areaLength = DaoSpatialite.getAreaLengthById(id, spatialTable);
+                double[] areaLength = DaoSpatialite.getAreaAndLengthById(id, spatialTable);
                 feature.setOriginalArea(areaLength[0]);
                 feature.setOriginalLength(areaLength[1]);
             }

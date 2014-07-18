@@ -17,19 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
-import static eu.hydrologis.geopaparazzi.util.Constants.PREF_KEY_PWD;
-import static eu.hydrologis.geopaparazzi.util.Constants.PREF_KEY_SERVER;
-import static eu.hydrologis.geopaparazzi.util.Constants.PREF_KEY_USER;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map.Entry;
-import java.util.TreeSet;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -43,6 +30,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.TreeSet;
+
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gpx.GpxExport;
 import eu.geopaparazzi.library.gpx.GpxRepresenter;
@@ -60,6 +57,10 @@ import eu.hydrologis.geopaparazzi.database.DaoGpsLog;
 import eu.hydrologis.geopaparazzi.database.DaoImages;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.maps.LogMapItem;
+
+import static eu.hydrologis.geopaparazzi.util.Constants.PREF_KEY_PWD;
+import static eu.hydrologis.geopaparazzi.util.Constants.PREF_KEY_SERVER;
+import static eu.hydrologis.geopaparazzi.util.Constants.PREF_KEY_USER;
 
 /**
  * Activity for export tasks.
