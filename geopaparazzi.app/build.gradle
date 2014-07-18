@@ -21,7 +21,11 @@ tasks.withType(com.android.build.gradle.tasks.PackageApplication) { pkgTask ->
     pkgTask.jniFolders.add(new File(buildDir, 'native-libs'))
 }
 
-
+tasks.whenTaskAdded { task ->
+    if (task.name.startsWith("lint")) {
+        task.enabled = false
+    }
+}
 
 android {
         compileSdkVersion 19
