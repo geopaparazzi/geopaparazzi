@@ -18,10 +18,13 @@
 package eu.hydrologis.geopaparazzi.maptools;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.view.PagerAdapter;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -39,7 +42,7 @@ import eu.geopaparazzi.library.util.DataType;
 
 /**
  * Page adapter for features.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class FeaturePageAdapter extends PagerAdapter {
@@ -51,12 +54,12 @@ public class FeaturePageAdapter extends PagerAdapter {
 
     /**
      * Constructor.
-     * 
-     * @param context the {@link Context} to use.
+     *
+     * @param context      the {@link Context} to use.
      * @param featuresList the list of features to show.
-     * @param isReadOnly if <code>true</code>, the adapter will be initially readonly.
+     * @param isReadOnly   if <code>true</code>, the adapter will be initially readonly.
      */
-    public FeaturePageAdapter( Context context, List<Feature> featuresList, boolean isReadOnly ) {
+    public FeaturePageAdapter(Context context, List<Feature> featuresList, boolean isReadOnly) {
         super();
         this.context = context;
         this.featuresList = featuresList;
@@ -65,10 +68,10 @@ public class FeaturePageAdapter extends PagerAdapter {
 
     /**
      * Mark the adapter as readonly.
-     * 
+     *
      * @param isReadOnly if <code>true</code>, then editing will be disabled.
      */
-    public void setReadOnly( boolean isReadOnly ) {
+    public void setReadOnly(boolean isReadOnly) {
         this.isReadOnly = isReadOnly;
     }
 
@@ -78,7 +81,7 @@ public class FeaturePageAdapter extends PagerAdapter {
     }
 
     @Override
-    public Object instantiateItem( ViewGroup container, int position ) {
+    public Object instantiateItem(ViewGroup container, int position) {
         final Feature feature = featuresList.get(position);
 
         int bgColor = context.getResources().getColor(R.color.formbgcolor);
@@ -105,7 +108,7 @@ public class FeaturePageAdapter extends PagerAdapter {
         List<String> attributeNames = feature.getAttributeNames();
         List<String> attributeValues = feature.getAttributeValuesStrings();
         List<String> attributeTypes = feature.getAttributeTypes();
-        for( int i = 0; i < attributeNames.size(); i++ ) {
+        for (int i = 0; i < attributeNames.size(); i++) {
             final String name = attributeNames.get(i);
             String value = attributeValues.get(i);
             String typeString = attributeTypes.get(i);
@@ -127,37 +130,49 @@ public class FeaturePageAdapter extends PagerAdapter {
             editView.setLayoutParams(editViewParams);
             editView.setPadding(padding * 2, padding, padding * 2, padding);
             editView.setText(value);
-            editView.setEnabled(!isReadOnly);
+//            editView.setEnabled(!isReadOnly);
+            editView.setFocusable(!isReadOnly);
             // editView.setTextAppearance(context, android.R.style.TextAppearance_Medium);
 
-            switch( type ) {
-            case DOUBLE:
-            case FLOAT:
-                editView.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-                break;
-            case PHONE:
-                editView.setInputType(InputType.TYPE_CLASS_PHONE);
-                break;
-            case DATE:
-                editView.setInputType(InputType.TYPE_CLASS_DATETIME);
-                break;
-            case INTEGER:
-                editView.setInputType(InputType.TYPE_CLASS_NUMBER);
-                break;
-            default:
-                break;
+            if (isReadOnly) {
+                editView.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        String text = editView.getText().toString();
+                        FeatureUtilities.viewIfApplicable(v.getContext(), text);
+                        return false;
+                    }
+                });
             }
 
-            editView.addTextChangedListener(new TextWatcher(){
-                public void onTextChanged( CharSequence s, int start, int before, int count ) {
+            switch (type) {
+                case DOUBLE:
+                case FLOAT:
+                    editView.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                    break;
+                case PHONE:
+                    editView.setInputType(InputType.TYPE_CLASS_PHONE);
+                    break;
+                case DATE:
+                    editView.setInputType(InputType.TYPE_CLASS_DATETIME);
+                    break;
+                case INTEGER:
+                    editView.setInputType(InputType.TYPE_CLASS_NUMBER);
+                    break;
+                default:
+                    break;
+            }
+
+            editView.addTextChangedListener(new TextWatcher() {
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
                     // ignore
                 }
 
-                public void beforeTextChanged( CharSequence s, int start, int count, int after ) {
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                     // ignore
                 }
 
-                public void afterTextChanged( Editable s ) {
+                public void afterTextChanged(Editable s) {
                     String text = editView.getText().toString();
                     feature.setAttribute(name, text);
                 }
@@ -169,7 +184,7 @@ public class FeaturePageAdapter extends PagerAdapter {
         /*
          * add also area and length
          */
-        if (feature.getOriginalArea()>-1) {
+        if (feature.getOriginalArea() > -1) {
             TextView areaTextView = new TextView(context);
             areaTextView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
             areaTextView.setPadding(padding, padding, padding, padding);
@@ -189,12 +204,12 @@ public class FeaturePageAdapter extends PagerAdapter {
     }
 
     @Override
-    public void destroyItem( ViewGroup container, int position, Object object ) {
+    public void destroyItem(ViewGroup container, int position, Object object) {
         container.removeView((View) object);
     }
 
     @Override
-    public boolean isViewFromObject( View view, Object object ) {
+    public boolean isViewFromObject(View view, Object object) {
         return view == object;
     }
 

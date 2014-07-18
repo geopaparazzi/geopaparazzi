@@ -17,8 +17,11 @@
  */
 package eu.hydrologis.geopaparazzi.maptools;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.net.Uri;
 
 import com.vividsolutions.jts.android.ShapeWriter;
 import com.vividsolutions.jts.android.geom.DrawableShape;
@@ -52,7 +55,7 @@ import jsqlite.Stmt;
 
 /**
  * A spatial feature container.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
@@ -85,17 +88,17 @@ public class FeatureUtilities {
 
     /**
      * Build the features given by a query.
-     * 
-     * <b>Note that it is mandatory that the first item of the 
+     * <p/>
+     * <b>Note that it is mandatory that the first item of the
      * query is the id of the feature, which can be used at any time
-     * to update the feature in the db. 
-     * 
-     * @param query the query to run.
+     * to update the feature in the db.
+     *
+     * @param query        the query to run.
      * @param spatialTable the parent Spatialtable.
-     * @return the list of feature from the query. 
+     * @return the list of feature from the query.
      * @throws Exception is something goes wrong.
      */
-    public static List<Feature> buildWithoutGeometry( String query, SpatialVectorTable spatialTable ) throws Exception {
+    public static List<Feature> buildWithoutGeometry(String query, SpatialVectorTable spatialTable) throws Exception {
         List<Feature> featuresList = new ArrayList<Feature>();
         AbstractSpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(spatialTable);
         if (vectorHandler instanceof SpatialiteDatabaseHandler) {
@@ -107,12 +110,12 @@ public class FeatureUtilities {
 
             Stmt stmt = database.prepare(query);
             try {
-                while( stmt.step() ) {
+                while (stmt.step()) {
                     int column_count = stmt.column_count();
                     // the first is the id, transparent to the user
                     String id = stmt.column_string(0);
                     Feature feature = new Feature(tableName, uniqueNameBasedOnDbFilePath, id);
-                    for( int i = 1; i < column_count; i++ ) {
+                    for (int i = 1; i < column_count; i++) {
                         String cName = stmt.column_name(i);
                         String value = stmt.column_string(i);
                         int columnType = stmt.column_type(i);
@@ -131,16 +134,16 @@ public class FeatureUtilities {
 
     /**
      * Build the features given by a query.
-     * 
+     * <p/>
      * <p><b>Note that this query needs to have at least 2 arguments, the first
-     * being the ROWID and the last the geometry. Else if will fail.</b> 
-     * 
-     * @param query the query to run.
+     * being the ROWID and the last the geometry. Else if will fail.</b>
+     *
+     * @param query        the query to run.
      * @param spatialTable the parent Spatialtable.
-     * @return the list of feature from the query. 
+     * @return the list of feature from the query.
      * @throws Exception is something goes wrong.
      */
-    public static List<Feature> buildFeatures( String query, SpatialVectorTable spatialTable ) throws Exception {
+    public static List<Feature> buildFeatures(String query, SpatialVectorTable spatialTable) throws Exception {
         List<Feature> featuresList = new ArrayList<Feature>();
         AbstractSpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(spatialTable);
         if (vectorHandler instanceof SpatialiteDatabaseHandler) {
@@ -151,12 +154,12 @@ public class FeatureUtilities {
 
             Stmt stmt = database.prepare(query);
             try {
-                while( stmt.step() ) {
+                while (stmt.step()) {
                     int count = stmt.column_count();
                     String id = stmt.column_string(0);
                     byte[] geometryBytes = stmt.column_bytes(count - 1);
                     Feature feature = new Feature(tableName, uniqueNameBasedOnDbFilePath, id, geometryBytes);
-                    for( int i = 1; i < count - 1; i++ ) {
+                    for (int i = 1; i < count - 1; i++) {
                         String cName = stmt.column_name(i);
                         String value = stmt.column_string(i);
                         int columnType = stmt.column_type(i);
@@ -173,7 +176,7 @@ public class FeatureUtilities {
             } finally {
                 stmt.close();
             }
-            for (Feature feature: featuresList) {
+            for (Feature feature : featuresList) {
                 String id = feature.getId();
                 double[] areaLength = DaoSpatialite.getAreaAndLengthById(id, spatialTable);
                 feature.setOriginalArea(areaLength[0]);
@@ -222,75 +225,75 @@ public class FeatureUtilities {
 
     /**
      * Draw a geometry on a canvas.
-     * 
-     * @param geom the {@link Geometry} to draw.
-     * @param canvas the {@link Canvas}.
-     * @param shapeWriter the shape writer.
-     * @param geometryPaintFill the fill.
+     *
+     * @param geom                the {@link Geometry} to draw.
+     * @param canvas              the {@link Canvas}.
+     * @param shapeWriter         the shape writer.
+     * @param geometryPaintFill   the fill.
      * @param geometryPaintStroke the stroke.
      */
-    public static void drawGeometry( Geometry geom, Canvas canvas, ShapeWriter shapeWriter, Paint geometryPaintFill,
-            Paint geometryPaintStroke ) {
+    public static void drawGeometry(Geometry geom, Canvas canvas, ShapeWriter shapeWriter, Paint geometryPaintFill,
+                                    Paint geometryPaintStroke) {
         String geometryTypeStr = geom.getGeometryType();
         int geometryTypeInt = GeometryType.forValue(geometryTypeStr);
         GeometryType geometryType = GeometryType.forValue(geometryTypeInt);
         DrawableShape shape = shapeWriter.toShape(geom);
-        switch( geometryType ) {
-        // case POINT_XY:
-        // case POINT_XYM:
-        // case POINT_XYZ:
-        // case POINT_XYZM:
-        // case MULTIPOINT_XY:
-        // case MULTIPOINT_XYM:
-        // case MULTIPOINT_XYZ:
-        // case MULTIPOINT_XYZM: {
-        // if (selectedGeometryPaintFill != null)
-        // shape.fill(canvas, selectedGeometryPaintFill);
-        // if (selectedGeometryPaintStroke != null)
-        // shape.draw(canvas, selectedGeometryPaintStroke);
-        // //
-        // GPLog.androidLog(-1,"GeopaparazziOverlay.drawGeometry geometry_type["+s_geometry_type+"]: ["+i_geometry_type+"]");
-        // }
-        // break;
-        // case LINESTRING_XY:
-        // case LINESTRING_XYM:
-        // case LINESTRING_XYZ:
-        // case LINESTRING_XYZM:
-        // case MULTILINESTRING_XY:
-        // case MULTILINESTRING_XYM:
-        // case MULTILINESTRING_XYZ:
-        // case MULTILINESTRING_XYZM: {
-        // if (selectedGeometryPaintStroke != null)
-        // shape.draw(canvas, selectedGeometryPaintStroke);
-        // }
-        // break;
-        case POLYGON_XY:
-        case POLYGON_XYM:
-        case POLYGON_XYZ:
-        case POLYGON_XYZM:
-        case MULTIPOLYGON_XY:
-        case MULTIPOLYGON_XYM:
-        case MULTIPOLYGON_XYZ:
-        case MULTIPOLYGON_XYZM: {
-            if (geometryPaintFill != null)
-                shape.fill(canvas, geometryPaintFill);
-            if (geometryPaintStroke != null)
-                shape.draw(canvas, geometryPaintStroke);
-        }
+        switch (geometryType) {
+            // case POINT_XY:
+            // case POINT_XYM:
+            // case POINT_XYZ:
+            // case POINT_XYZM:
+            // case MULTIPOINT_XY:
+            // case MULTIPOINT_XYM:
+            // case MULTIPOINT_XYZ:
+            // case MULTIPOINT_XYZM: {
+            // if (selectedGeometryPaintFill != null)
+            // shape.fill(canvas, selectedGeometryPaintFill);
+            // if (selectedGeometryPaintStroke != null)
+            // shape.draw(canvas, selectedGeometryPaintStroke);
+            // //
+            // GPLog.androidLog(-1,"GeopaparazziOverlay.drawGeometry geometry_type["+s_geometry_type+"]: ["+i_geometry_type+"]");
+            // }
+            // break;
+            // case LINESTRING_XY:
+            // case LINESTRING_XYM:
+            // case LINESTRING_XYZ:
+            // case LINESTRING_XYZM:
+            // case MULTILINESTRING_XY:
+            // case MULTILINESTRING_XYM:
+            // case MULTILINESTRING_XYZ:
+            // case MULTILINESTRING_XYZM: {
+            // if (selectedGeometryPaintStroke != null)
+            // shape.draw(canvas, selectedGeometryPaintStroke);
+            // }
+            // break;
+            case POLYGON_XY:
+            case POLYGON_XYM:
+            case POLYGON_XYZ:
+            case POLYGON_XYZM:
+            case MULTIPOLYGON_XY:
+            case MULTIPOLYGON_XYM:
+            case MULTIPOLYGON_XYZ:
+            case MULTIPOLYGON_XYZM: {
+                if (geometryPaintFill != null)
+                    shape.fill(canvas, geometryPaintFill);
+                if (geometryPaintStroke != null)
+                    shape.draw(canvas, geometryPaintStroke);
+            }
             break;
-        default:
-            break;
+            default:
+                break;
         }
     }
 
     /**
      * Get geometry from feature.
-     * 
+     *
      * @param feature the feature.
      * @return the {@link Geometry} or <code>null</code>.
      * @throws java.lang.Exception if something goes wrong.
      */
-    public static Geometry getGeometry( Feature feature ) throws java.lang.Exception {
+    public static Geometry getGeometry(Feature feature) throws java.lang.Exception {
         byte[] defaultGeometry = feature.getDefaultGeometry();
         if (defaultGeometry == null) {
             return null;
@@ -300,14 +303,14 @@ public class FeatureUtilities {
 
     /**
      * Tries to split an invalid polygon in its {@link GeometryCollection}.
-     * 
+     * <p/>
      * <p>Based on JTSBuilder code.
-     * 
+     *
      * @param invalidPolygon the invalid polygon.
      * @return the geometries.
      */
     @SuppressWarnings("rawtypes")
-    public static Geometry invalidPolygonSplit( Geometry invalidPolygon ) {
+    public static Geometry invalidPolygonSplit(Geometry invalidPolygon) {
         PrecisionModel pm = new PrecisionModel(10000000);
         GeometryFactory geomFact = invalidPolygon.getFactory();
         List lines = LinearComponentExtracter.getLines(invalidPolygon);
@@ -343,4 +346,29 @@ public class FeatureUtilities {
         return null;
     }
 
+    /**
+     * Checks if the text is a vievable string (ex urls or files) and if yes, opens the intent.
+     *
+     * @param context the context to use.
+     * @param text the text to check.
+     * @return true if the text is viewable.
+     */
+    public static void viewIfApplicable(Context context, String text) {
+        String textLC = text.toLowerCase();
+        Intent intent=null;
+        if (textLC.startsWith("http")) {
+            intent = new Intent(Intent.ACTION_VIEW, Uri.parse(text));
+            context.startActivity(intent);
+        } else if (textLC.endsWith("png")) {
+            intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.parse("file://" + text), "image/png");
+        } else if (textLC.endsWith("jpg")) {
+            intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.parse("file://" + text), "image/jpg");
+        }
+        if (intent != null)
+            context.startActivity(intent);
+    }
 }
