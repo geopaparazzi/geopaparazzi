@@ -25,7 +25,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public class SpatialRasterTable extends SpatialTable implements Serializable {
+public class SpatialRasterTable extends AbstractSpatialTable implements Serializable {
     private static final long serialVersionUID = 1L;
     private String tileQuery;
 
@@ -50,7 +50,7 @@ public class SpatialRasterTable extends SpatialTable implements Serializable {
         if (tileQuery != null) {
             this.tileQuery = tileQuery;
         } else {
-            tileQuery = "select " + name + " from " + dbPath + " where zoom_level = ? AND tile_column = ? AND tile_row = ?";
+            this.tileQuery = "select " + name + " from " + dbPath + " where zoom_level = ? AND tile_column = ? AND tile_row = ?";
         }
     }
 
@@ -88,19 +88,19 @@ public class SpatialRasterTable extends SpatialTable implements Serializable {
       * Set String of Title of RasterLite2 image
       * 
       * 
-      * @param s_table_name the name to set.
+      * @param title the name to set.
       */
-    public void setTitle( String s_title ) {
-        this.title = s_title;
+    public void setTitle( String title ) {
+        this.title = title;
     }
     /**
       * Set String of Description of RasterLite2 image
       * 
       * 
-      * @param s_table_name the name to set.
+      * @param description the name to set.
       */
-    public void setDescription( String s_description ) {
-        this.description = s_description;
+    public void setDescription( String description ) {
+        this.description = description;
     }
 
     /**

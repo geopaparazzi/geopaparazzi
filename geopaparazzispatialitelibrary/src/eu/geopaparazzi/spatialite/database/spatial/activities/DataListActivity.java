@@ -40,7 +40,7 @@ import java.util.List;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.spatialite.R;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.util.comparators.OrderComparator;
 import eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteLibraryConstants;
@@ -90,7 +90,7 @@ public class DataListActivity extends ListActivity {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 final View rowView = inflater.inflate(R.layout.data_row, null);
                 final SpatialVectorTable item = spatialTables.get(position);
-                SpatialDatabaseHandler tableHandler = null;
+                AbstractSpatialDatabaseHandler tableHandler = null;
                 try {
                     tableHandler = SpatialDatabasesManager.getInstance().getVectorHandler(item);
                 } catch (jsqlite.Exception e1) {

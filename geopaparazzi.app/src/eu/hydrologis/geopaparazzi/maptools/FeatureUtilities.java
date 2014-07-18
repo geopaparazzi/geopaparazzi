@@ -41,7 +41,7 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.features.Feature;
 import eu.geopaparazzi.library.util.DataType;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
@@ -97,7 +97,7 @@ public class FeatureUtilities {
      */
     public static List<Feature> buildWithoutGeometry( String query, SpatialVectorTable spatialTable ) throws Exception {
         List<Feature> featuresList = new ArrayList<Feature>();
-        SpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(spatialTable);
+        AbstractSpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(spatialTable);
         if (vectorHandler instanceof SpatialiteDatabaseHandler) {
             SpatialiteDatabaseHandler spatialiteDbHandler = (SpatialiteDatabaseHandler) vectorHandler;
             Database database = spatialiteDbHandler.getDatabase();
@@ -142,7 +142,7 @@ public class FeatureUtilities {
      */
     public static List<Feature> buildFeatures( String query, SpatialVectorTable spatialTable ) throws Exception {
         List<Feature> featuresList = new ArrayList<Feature>();
-        SpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(spatialTable);
+        AbstractSpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(spatialTable);
         if (vectorHandler instanceof SpatialiteDatabaseHandler) {
             SpatialiteDatabaseHandler spatialiteDbHandler = (SpatialiteDatabaseHandler) vectorHandler;
             Database database = spatialiteDbHandler.getDatabase();
@@ -198,7 +198,7 @@ public class FeatureUtilities {
 //    public static List<Feature> buildRowidGeometryFeatures( String query, SpatialVectorTable spatialTable ) throws Exception {
 //
 //        List<Feature> featuresList = new ArrayList<Feature>();
-//        SpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(spatialTable);
+//        AbstractSpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(spatialTable);
 //        if (vectorHandler instanceof SpatialiteDatabaseHandler) {
 //            SpatialiteDatabaseHandler spatialiteDbHandler = (SpatialiteDatabaseHandler) vectorHandler;
 //            Database database = spatialiteDbHandler.getDatabase();

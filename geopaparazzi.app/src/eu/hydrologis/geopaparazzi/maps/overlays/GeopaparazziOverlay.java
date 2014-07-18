@@ -61,7 +61,7 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryIterator;
@@ -747,7 +747,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     // we do not draw outside of the zoom levels
                     continue;
                 }
-                SpatialDatabaseHandler spatialDatabaseHandler = sdManager.getVectorHandler(spatialTable);
+                AbstractSpatialDatabaseHandler spatialDatabaseHandler = sdManager.getVectorHandler(spatialTable);
                 if (!(spatialDatabaseHandler instanceof SpatialiteDatabaseHandler)) {
                     return;
                 }
@@ -851,7 +851,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 dbTextHaloPaint.setColor(Color.WHITE);
                 dbTextHaloPaint.setTextSize(style4Table.labelsize);
 
-                SpatialDatabaseHandler spatialDatabaseHandler = sdManager.getVectorHandler(spatialTable);
+                AbstractSpatialDatabaseHandler spatialDatabaseHandler = sdManager.getVectorHandler(spatialTable);
                 if (!(spatialDatabaseHandler instanceof SpatialiteDatabaseHandler)) {
                     return;
                 }

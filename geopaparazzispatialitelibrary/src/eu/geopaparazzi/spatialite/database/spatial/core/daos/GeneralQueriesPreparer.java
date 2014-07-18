@@ -45,9 +45,9 @@ import java.util.HashMap;
  * <li>3 Fields will be returned with the following structure</li>
  * <li>0 table_name: berlin_stadtteile</li>
  * <li>1: geometry_column - soldner_polygon</li>
- * <li>2: layer_type - SpatialView or SpatialTable</li>
- * <li>3: ROWID - SpatialTable: default ; when SpatialView or will be replaced</li>
- * <li>4: view_read_only - SpatialTable: -1 ; when SpatialView: 0=read_only or 1 writable</li>
+ * <li>2: layer_type - SpatialView or AbstractSpatialTable</li>
+ * <li>3: ROWID - AbstractSpatialTable: default ; when SpatialView or will be replaced</li>
+ * <li>4: view_read_only - AbstractSpatialTable: -1 ; when SpatialView: 0=read_only or 1 writable</li>
  * <li>vector_data: Seperator: ';' 7 values</li>
  * <li>0: geometry_type - 3</li>
  * <li>1: coord_dimension - 2</li>
@@ -302,7 +302,7 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append("SELECT DISTINCT ");
             sb_query.append(" f_table_name"); // 0 of 1st field
             sb_query.append("||';'||f_geometry_column"); // 1 of 1st field
-            sb_query.append("||';'||'SpatialTable'"); // 2 of 1st field
+            sb_query.append("||';'||'AbstractSpatialTable'"); // 2 of 1st field
             sb_query.append("||';ROWID;-1'"); // 3+4 of 1st field
             sb_query.append(VECTOR_KEY_BASE);
             LAYERS_QUERY_BASE_V3 = sb_query.toString();
@@ -425,7 +425,7 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
         String VECTOR_LAYERS_QUERY_ORDER = "";
         {
             StringBuilder sb_query = new StringBuilder();
-            // first Views (Spatialview) then tables (SpatialTable), then Table-Name/Column
+            // first Views (Spatialview) then tables (AbstractSpatialTable), then Table-Name/Column
             sb_query.append(" ORDER BY " + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + "." + "layer_type DESC");
             sb_query.append("," + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + "." + "table_name ASC");
             sb_query.append("," + METADATA_VECTOR_LAYERS_STATISTICS_TABLE_NAME + "." + "geometry_column ASC");
@@ -512,7 +512,7 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append(VECTOR_LAYERS_QUERY_FROM);
             sb_query.append(VECTOR_LAYERS_QUERY_WHERE);
             sb_query.append(VECTOR_LAYERS_QUERY_ORDER);
-            // priority_marks_joined_lincoln;geometry;SpatialTable;ROWID 1;2;2913;1 NULL
+            // priority_marks_joined_lincoln;geometry;AbstractSpatialTable;ROWID 1;2;2913;1 NULL
             String query = sb_query.toString();
             queriesMap.put("VECTOR_LAYERS_QUERY_EXTENT_VALID_V4", query);
         }
@@ -523,7 +523,7 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append(LAYERS_QUERY_FROM_V3);
             sb_query.append(LAYERS_QUERY_WHERE);
             sb_query.append(LAYERS_QUERY_ORDER_V3);
-            // priority_marks_joined_lincoln;geometry;SpatialTable;ROWID 1;2;2913;1 NULL
+            // priority_marks_joined_lincoln;geometry;AbstractSpatialTable;ROWID 1;2;2913;1 NULL
             String query = sb_query.toString();
             queriesMap.put("LAYERS_QUERY_EXTENT_VALID_V3", query);
         }
@@ -534,7 +534,7 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append(VIEWS_QUERY_FROM_V3);
             sb_query.append(LAYERS_QUERY_WHERE);
             sb_query.append(LAYERS_QUERY_ORDER_V3);
-            // priority_marks_joined_lincoln;geometry;SpatialTable;ROWID 1;2;2913;1 NULL
+            // priority_marks_joined_lincoln;geometry;AbstractSpatialTable;ROWID 1;2;2913;1 NULL
             String query = sb_query.toString();
             queriesMap.put("VIEWS_QUERY_EXTENT_VALID_V3", query);
         }
@@ -545,7 +545,7 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append(LAYERS_QUERY_FROM_V4);
             sb_query.append(LAYERS_QUERY_WHERE);
             sb_query.append(LAYERS_QUERY_ORDER_V4);
-            // priority_marks_joined_lincoln;geometry;SpatialTable;ROWID 1;2;2913;1 NULL
+            // priority_marks_joined_lincoln;geometry;AbstractSpatialTable;ROWID 1;2;2913;1 NULL
             String query = sb_query.toString();
             queriesMap.put("LAYERS_QUERY_EXTENT_VALID_V4", query);
         }
@@ -594,7 +594,7 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
             sb_query.append(VIEWS_QUERY_FROM_V3);
             sb_query.append(LAYERS_QUERY_WHERE);
             sb_query.append(LAYERS_QUERY_ORDER_V3);
-            // priority_marks_joined_lincoln;geometry;SpatialTable;ROWID 1;2;2913;1 NULL
+            // priority_marks_joined_lincoln;geometry;AbstractSpatialTable;ROWID 1;2;2913;1 NULL
             String query = sb_query.toString();
             queriesMap.put("VIEWS_QUERY_EXTENT_INVALID_V3", query);
         }
@@ -646,7 +646,7 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
         }
         {
             StringBuilder sb_query = new StringBuilder();
-            // first Views (Spatialview) then tables (SpatialTable), then Table-Name/Column
+            // first Views (Spatialview) then tables (AbstractSpatialTable), then Table-Name/Column
             sb_query.append(" ORDER BY coverage_name ASC");
             sb_query.append(",title ASC");
             VECTOR_LAYERS_QUERY_ORDER = sb_query.toString();
@@ -826,7 +826,7 @@ public enum GeneralQueriesPreparer implements ISpatialiteTableAndFieldsNames {
         }
         {
             StringBuilder sb_query = new StringBuilder();
-            // first Views (Spatialview) then tables (SpatialTable), then Table-Name/Column
+            // first Views (Spatialview) then tables (AbstractSpatialTable), then Table-Name/Column
             sb_query.append(" ORDER BY table_name ASC");
             sb_query.append(",identifier ASC");
             VECTOR_LAYERS_QUERY_ORDER = sb_query.toString();

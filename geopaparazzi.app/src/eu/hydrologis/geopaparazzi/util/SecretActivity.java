@@ -37,7 +37,7 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.LogAnalysisActivity;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
@@ -171,8 +171,8 @@ public class SecretActivity extends Activity implements CheckBox.OnCheckedChange
     public void resetStyleTables( View view ) {
         try {
             SpatialDatabasesManager dbManager = SpatialDatabasesManager.getInstance();
-            List<SpatialDatabaseHandler> spatialDatabaseHandlers = dbManager.getSpatialDatabaseHandlers();
-            for( SpatialDatabaseHandler iSpatialDatabaseHandler : spatialDatabaseHandlers ) {
+            List<AbstractSpatialDatabaseHandler> spatialDatabaseHandlers = dbManager.getSpatialDatabaseHandlers();
+            for( AbstractSpatialDatabaseHandler iSpatialDatabaseHandler : spatialDatabaseHandlers ) {
                 if (iSpatialDatabaseHandler instanceof SpatialiteDatabaseHandler) {
                     SpatialiteDatabaseHandler sdHandler = (SpatialiteDatabaseHandler) iSpatialDatabaseHandler;
                     sdHandler.resetStyleTable();

@@ -136,7 +136,7 @@ public class SpatialiteIndexing {
 
     /**
      * Attemt to execute a RecoverSpatialIndex for this geometry field or whole Database.
-     * - Note: only for SpatialTable, SpatialViews ALWAYS returns 0.
+     * - Note: only for AbstractSpatialTable, SpatialViews ALWAYS returns 0.
      * - if table_name and geometry_column are empty: for whole Database
      *
      * @param database        the db to use.

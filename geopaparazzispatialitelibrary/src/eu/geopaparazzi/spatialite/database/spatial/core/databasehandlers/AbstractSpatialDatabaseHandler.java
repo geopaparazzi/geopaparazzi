@@ -15,26 +15,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package eu.geopaparazzi.spatialite.database.spatial.core.tables;
-
-import com.vividsolutions.jts.geom.Envelope;
+package eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers;
 
 import java.io.File;
-import java.io.Serializable;
+import java.io.IOException;
+import java.util.List;
+
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialRasterTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
+import jsqlite.Exception;
 
 /**
- * Spatial table interface.
+ * Abstract class for spatial database handlers.
+ * 
+ * <p>Spatial databases are spatialite db seen for their
+ * vector and raster content. They therefore can be containing 
+ * geometries or raster tiles. 
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public abstract class SpatialTable implements Serializable {
-    private static final long serialVersionUID = 1L;
-    /**
-     * Table type description. 
-     */
-    protected String tableTypeDescription;
-
+public abstract class AbstractSpatialDatabaseHandler {
     /**
      * The database path. 
      */
@@ -55,14 +57,6 @@ public abstract class SpatialTable implements Serializable {
      * A name for the table.
      */
     protected String tableName;
-    /**
-     * A description.
-     */
-    protected String description;
-    /**
-     * A title.
-     */
-    protected String title;
     /**
      * The table srid.
      */
@@ -105,51 +99,40 @@ public abstract class SpatialTable implements Serializable {
     protected int defaultZoom = 17;
 
     /**
-     * The map type.
+     * Flag to define the validity of the database.
      */
-    protected String mapType;
+    protected boolean isDatabaseValid = false;
 
     /**
      * Constructor.
      * 
-     * @param databasePath the db path.
-     * @param tableName a name for the table.
-     * @param mapType the map type.
-     * @param srid srid of the table.
-     * @param minZoom min zoom.
-     * @param maxZoom max zoom.
-     * @param centerX center x.
-     * @param centerY center y.
-     * @param bounds the bounds as [w,s,e,n]
+     * @param databasePath the path to the database to handle.
+     * @throws IOException  if something goes wrong.
      */
-    public SpatialTable( String databasePath, String tableName, String mapType, String srid, int minZoom, int maxZoom,
-            double centerX, double centerY, double[] bounds ) {
+    public AbstractSpatialDatabaseHandler(String databasePath) throws IOException {
         this.databasePath = databasePath;
-        this.tableName = tableName;
-        this.mapType = mapType;
-        this.minZoom = minZoom;
-        this.maxZoom = maxZoom;
-        this.databaseFile = new File(databasePath);
-        this.databaseFileName = databaseFile.getName();
-        this.databaseFileNameNoExtension = databaseFileName.substring(0, databaseFileName.lastIndexOf("."));
-        this.srid = srid;
-        this.centerX = centerX;
-        this.centerY = centerY;
-        this.boundsWest = bounds[0];
-        this.boundsSouth = bounds[1];
-        this.boundsEast = bounds[2];
-        this.boundsNorth = bounds[3];
+        databaseFile = new File(databasePath);
+        // if (!databaseFile.exists()) {
+        // throw new FileNotFoundException("Database file not found: " + databasePath);
+        // }
+        databaseFileName = databaseFile.getName();
+        databaseFileNameNoExtension = databaseFile.getName().substring(0, databaseFile.getName().lastIndexOf("."));
     }
 
     /**
-     * Return the absolute path of the database.
-     *
-     * <p>default: file name with path and extention
-     * <p>mbtiles : will be a '.mbtiles' sqlite-file-name
-     * <p>map : will be a mapforge '.map' file-name
-     *
-     * @return the absolute database path.
+     * Open the database, with all default tasks
      */
+    public abstract void open();
+
+    /**
+      * Return the absolute path of the database.
+      *
+      * <p>default: file name with path and extention
+      * <p>mbtiles : will be a '.mbtiles' sqlite-file-name
+      * <p>map : will be a mapforge '.map' file-name
+      *
+      * @return the absolute database path.
+      */
     public String getDatabasePath() {
         return databasePath;
     }
@@ -159,17 +142,8 @@ public abstract class SpatialTable implements Serializable {
      *
      * @return the database file.
      */
-    public File getDatabaseFile() {
+    public File getFile() {
         return databaseFile;
-    }
-
-    /**
-     * Getter for the table's srid.
-     * 
-     * @return the table srid.
-     */
-    public String getSrid() {
-        return srid;
     }
 
     /**
@@ -186,55 +160,8 @@ public abstract class SpatialTable implements Serializable {
      *
      * @return the database file name without extension.
      */
-    public String getFileNameNoExtension() {
-        return databaseFileNameNoExtension;
-    }
-
-    /**
-     * Getter for the table name.
-     * 
-     * @return the name of the {@link SpatialTable}.
-     */
-    public String getTableName() {
-        return tableName;
-    }
-
-    /**
-     * Return type of map/file
-     *
-     * <p>raster: can be different: mbtiles,db,sqlite,gpkg
-     * <p>mbtiles : mbtiles
-     * <p>map : map
-     *
-     * @return s_name as short name of map/file
-     */
-    public String getMapType() {
-        return mapType;
-    }
-
-    /**
-     * Returns the title
-     *
-     * @return a title.
-     */
-    public String getTitle() {
-        if (title != null) {
-            return title;
-        }
-        return getTableName();
-    }
-
-    /**
-     * Returns a description.
-     *
-     * @return a description.
-     */
-    public String getDescription() {
-        if (description != null) {
-            return description;
-        }
-        return "map_type[" + getMapType() + "] table_name[" + getTableName() + "] srid[" + getSrid() + "] bounds["
-                + getBoundsAsString() + "] center[" + getCenterAsString() + "]";
+    public String getName() {
+        return this.databaseFileNameNoExtension;
     }
 
     /**
@@ -355,51 +282,11 @@ public abstract class SpatialTable implements Serializable {
     }
 
     /**
-     * Get table bounds.
-     * 
-     * @return the table bounds as [n, s, e, w].
-     */
-    public float[] getTableBounds() {
-        float w = (float) boundsWest;
-        float s = (float) boundsSouth;
-        float e = (float) boundsEast;
-        float n = (float) boundsNorth;
-        return new float[]{n, s, e, w};
-    }
-
-    /**
-     * Get table envelope.
-     * 
-     * @return the {@link Envelope}.
-     */
-    public Envelope getTableEnvelope() {
-        float w = (float) boundsWest;
-        float s = (float) boundsSouth;
-        float e = (float) boundsEast;
-        float n = (float) boundsNorth;
-        return new Envelope(w, e, s, n);
-    }
-
-    /**
-     * Check the supplied bounds against the current table bounds.
-     * 
-     * @param boundsCoordinates as wsg84 [w,s,e,n]
-     * @return <code>true</code> if the given bounds are inside the bounds the current table.
-     */
-    public boolean checkBounds( double[] boundsCoordinates ) {
-        if ((boundsCoordinates[0] >= boundsWest) && (boundsCoordinates[1] >= this.boundsSouth)
-                && (boundsCoordinates[2] <= boundsEast) && (boundsCoordinates[3] <= this.boundsNorth)) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Return String of bounds [wms-format]
      *
      * <p>x_min,y_min,x_max,y_max
      *
-     * @return bounds formatted using wms format [w,s,e,n]
+     * @return bounds formatted using wms format
      */
     public String getBoundsAsString() {
         return boundsWest + "," + boundsSouth + "," + boundsEast + "," + boundsNorth;
@@ -417,7 +304,52 @@ public abstract class SpatialTable implements Serializable {
     }
 
     /**
-     * @return true if the table is editable.
+      * Is the database file considered valid.
+      * 
+      * @return <code>true</code> if the db file is valid.
+      */
+    public abstract boolean isValid();
+
+    /**
+     * Get the spatial vector tables from the database.
+     *
+     * @param forceRead force a clean read from the db instead of using cached.
+     * @return the list of {@link eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable}s.
+     * @throws Exception  if something goes wrong.
      */
-    public abstract boolean isEditable();
+    public abstract List<SpatialVectorTable> getSpatialVectorTables( boolean forceRead ) throws Exception;
+
+    /**
+     * Get the spatial raster tables from the database.
+     *
+     * @param forceRead force a clean read from the db instead of using cached.
+     * @return the list of {@link eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialRasterTable}s.
+     * @throws Exception  if something goes wrong.
+     */
+    public abstract List<SpatialRasterTable> getSpatialRasterTables( boolean forceRead ) throws Exception;
+
+    /**
+    * Fetch the raster tile in bytes for a given query.
+    *
+    * @param query the query to use.
+    * @return the tile image bytes.
+    */
+    public abstract byte[] getRasterTile( String query );
+
+    /**
+     * Get the table of the supplied bounds.
+     * 
+     * @param spatialTable the {@link eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable}.
+     * @return the table bounds as wgs84 [n, s, e, w].
+     * @throws Exception  if something goes wrong.
+     */
+    public abstract float[] getTableBounds( AbstractSpatialTable spatialTable ) throws Exception;
+
+    /**
+    * Closes the database handler, freeing its resources.
+    *
+    * @throws Exception if something goes wrong.
+    */
+    public abstract void close() throws Exception;
+
 }

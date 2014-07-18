@@ -44,7 +44,7 @@ import eu.geopaparazzi.spatialite.database.spatial.util.Style;
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public class SpatialVectorTable extends SpatialTable implements Serializable {
+public class SpatialVectorTable extends AbstractSpatialTable implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final String geometryColumn;
@@ -74,9 +74,9 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
     private String labelField = "";
     // list of possible primary keys - for more that one: seperated with ';'
     private String primaryKeyFields = "";
-    // SpatialTable=always ROWID ; SpatialView: can also be ROWID - but something else
+    // AbstractSpatialTable=always ROWID ; SpatialView: can also be ROWID - but something else
     private String ROWID_PK = "ROWID";
-    // SpatialTable=-1 ; SpatialView: read_only=0 ; writable=1
+    // AbstractSpatialTable=-1 ; SpatialView: read_only=0 ; writable=1
     private int view_read_only = -1;
     private String uniqueNameBasedOnDbFilePath = "";
     // private String uniqueNameBasedOnDbFileName = "";
@@ -144,7 +144,7 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
 
     /**
      * Return geometryTypeDescription
-     * SpatialView or SpatialTable
+     * SpatialView or AbstractSpatialTable
      *
      * @return the geometryTypeDescription
      */
@@ -367,7 +367,7 @@ public class SpatialVectorTable extends SpatialTable implements Serializable {
         // GPLog.androidLog(-1,"SpatialVectorTable.setFieldsList s_ROWID_PK["+s_ROWID_PK+"] view_read_only["+i_view_read_only
         // +"] primaryKeyFields["+primaryKeyFields+"]");
         if ((i_view_read_only == 0) || (i_view_read_only == 1))
-            view_read_only = i_view_read_only; // -1=SpatialTable otherwise SpatialView
+            view_read_only = i_view_read_only; // -1=AbstractSpatialTable otherwise SpatialView
         if ((!s_ROWID_PK.equals("")) && (!s_ROWID_PK.contains("ROWID"))) {
             ROWID_PK = s_ROWID_PK;
         }

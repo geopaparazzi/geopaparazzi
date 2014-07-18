@@ -19,17 +19,17 @@ package eu.geopaparazzi.spatialite.database.spatial.util.comparators;
 
 import java.util.Comparator;
 
-import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 
 /**
  * Comparator for table names.
  * 
  * @author Andrea Antonello (www.hydrologis.com)
  */
-public class SpatialTableNameComparator implements Comparator<SpatialTable> {
+public class SpatialTableNameComparator implements Comparator<AbstractSpatialTable> {
 
     @Override
-    public int compare( SpatialTable t1, SpatialTable t2 ) {
+    public int compare( AbstractSpatialTable t1, AbstractSpatialTable t2 ) {
         return t1.getTableName().compareTo(t2.getTableName());
     }
 }

@@ -46,7 +46,7 @@ import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.R;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
@@ -124,7 +124,7 @@ public class CopyToLayersListActivity extends ListActivity implements OnTouchLis
                     final View rowView = inflater.inflate(R.layout.editablelayers_row, null);
                     try {
                         final SpatialVectorTable item = compatibleSpatialVectorTables.get(position);
-                        SpatialDatabaseHandler tableHandler = null;
+                        AbstractSpatialDatabaseHandler tableHandler = null;
                         tableHandler = SpatialDatabasesManager.getInstance().getVectorHandler(item);
 
                         TextView nameView = (TextView) rowView.findViewById(R.id.name);

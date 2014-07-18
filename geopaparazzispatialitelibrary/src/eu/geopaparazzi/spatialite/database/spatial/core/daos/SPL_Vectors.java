@@ -41,7 +41,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
 
     /**
      * Attemt to execute a UpdateLayerStatistics for this geometry field or whole Database.
-     * - Note: only for SpatialTable, SpatialViews ALWAYS returns 0.
+     * - Note: only for AbstractSpatialTable, SpatialViews ALWAYS returns 0.
      * - Note: only for VirtualTable, returns 2.
      * - if table_name and geometry_column are empty: for whole Database
      *
@@ -73,7 +73,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                 i_spatialindex = statement.column_int(0);
                 if (i_spatialindex == 1) {
                     HashMap<String, String> fieldNamesToTypeMap = collectTableFields(database, "layer_statistics");
-                    if (fieldNamesToTypeMap.size() > 0) { // SpatialTable virts_layer_statistics
+                    if (fieldNamesToTypeMap.size() > 0) { // AbstractSpatialTable virts_layer_statistics
                         b_valid = true;
                     } else {
                         fieldNamesToTypeMap = collectTableFields(database, "virts_layer_statistics");
@@ -189,7 +189,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
             for (Map.Entry<String, String> vector_entry : spatialVectorMapErrors.entrySet()) {
                 vector_key = vector_entry.getKey();
                 // soldner_polygon;14;3;2;3068;1;20847.6171111586,18733.613614603,20847.6171111586,18733.613614603
-                // vector_key[priority_marks_joined_lincoln;geometry;SpatialTable;ROWID;-1]
+                // vector_key[priority_marks_joined_lincoln;geometry;AbstractSpatialTable;ROWID;-1]
                 vector_value = vector_entry.getValue();
                 vector_data = "";
                 String[] sa_string = vector_key.split(";");

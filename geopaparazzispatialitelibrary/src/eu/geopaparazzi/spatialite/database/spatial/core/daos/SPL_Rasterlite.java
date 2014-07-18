@@ -19,6 +19,7 @@
 package eu.geopaparazzi.spatialite.database.spatial.core.daos;
 
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import jsqlite.Database;
 import jsqlite.Stmt;
 
@@ -37,6 +38,27 @@ public class SPL_Rasterlite {
      * '0.8;x86_64-linux-gnu'
      */
     public static String Rasterlite2Version_CPU = "";
+
+    /**
+     * Retrieve rasterlite2 image of a given bound and size.
+     * <p/>
+     * <p>https://github.com/geopaparazzi/Spatialite-Tasks-with-Sql-Scripts/wiki/RL2_GetMapImage
+     *
+     * @param db the database to use.
+     * @param rasterTable the table to use.
+     * @param tileBounds  [west,south,east,north] [minx, miny, maxx, maxy] bounds.
+     * @param tileSize default 256 [Tile.TILE_SIZE].
+     * @return the image data as byte[]
+     */
+    public static byte[] getRasterTileInBounds(Database db, AbstractSpatialTable rasterTable, double[] tileBounds, int tileSize) {
+
+        byte[] bytes = SPL_Rasterlite.rl2_GetMapImageTile(db, rasterTable.getSrid(), rasterTable.getTableName(),
+                tileBounds, tileSize);
+        if (bytes != null) {
+            return bytes;
+        }
+        return null;
+    }
 
     /**
      * Retrieve rasterlite2 tile of a given bound [4326,wsg84] with the given size.

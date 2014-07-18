@@ -30,8 +30,8 @@ import java.util.List;
 import java.util.Map;
 
 import eu.geopaparazzi.library.database.GPLog;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialRasterTable;
-import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.mbtiles.MBTilesDroidSpitter;
 import eu.geopaparazzi.spatialite.database.spatial.core.mbtiles.MBtilesAsync;
@@ -46,7 +46,7 @@ import jsqlite.Exception;
  * adapted to create and fill mbtiles databases Mark Johnson (www.mj10777.de)
  */
 @SuppressWarnings("nls")
-public class MbtilesDatabaseHandler extends SpatialDatabaseHandler {
+public class MbtilesDatabaseHandler extends AbstractSpatialDatabaseHandler {
 
     private List<SpatialRasterTable> rasterTableList;
     private MBTilesDroidSpitter mbtilesSplitter;
@@ -81,6 +81,8 @@ public class MbtilesDatabaseHandler extends SpatialDatabaseHandler {
     public String s_request_protocol = ""; // 'file' or 'http'
     /** * */
     public String s_request_bounds = "";
+
+
     /** * */
     public String s_request_bounds_url = "";
     /** * */
@@ -166,7 +168,7 @@ public class MbtilesDatabaseHandler extends SpatialDatabaseHandler {
         return rasterTableList;
     }
 
-    public float[] getTableBounds( SpatialTable spatialTable ) throws Exception {
+    public float[] getTableBounds( AbstractSpatialTable spatialTable ) throws Exception {
         MbTilesMetadata metadata = mbtilesSplitter.getMetadata();
         float[] bounds = metadata.bounds;// left, bottom, right, top
         float w = bounds[0];
@@ -176,10 +178,6 @@ public class MbtilesDatabaseHandler extends SpatialDatabaseHandler {
         return new float[]{n, s, e, w};
     }
 
-    public byte[] getRasterTileBounds(SpatialTable spatialTable,double[] tileBounds, int i_tile_size)  {
-        byte[] tileAsBytes = null;
-        return tileAsBytes;
-    }
     public byte[] getRasterTile( String query ) {
         String[] split = query.split(",");
         if (split.length != 3) {

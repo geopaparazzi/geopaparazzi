@@ -45,7 +45,7 @@ import eu.geopaparazzi.library.features.ToolGroup;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
@@ -243,7 +243,7 @@ public class MainEditingToolGroup implements ToolGroup, OnClickListener, OnTouch
                     for (SpatialVectorTable spatialVectorTable : spatialVectorTables) {
                         String uniqueNameBasedOnDbFilePath = spatialVectorTable.getUniqueNameBasedOnDbFilePath();
                         if (tableName.equals(uniqueNameBasedOnDbFilePath)) {
-                            SpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(
+                            AbstractSpatialDatabaseHandler vectorHandler = SpatialDatabasesManager.getInstance().getVectorHandler(
                                     spatialVectorTable);
                             if (vectorHandler instanceof SpatialiteDatabaseHandler) {
                                 int geomType = spatialVectorTable.getGeomType();

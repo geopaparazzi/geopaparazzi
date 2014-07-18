@@ -19,7 +19,7 @@ package eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles;
 import java.io.File;
 
 import eu.geopaparazzi.library.util.FileUtilities;
-import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
 /**
  * A map table from the map db.
@@ -28,7 +28,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
  *  adapted to work with map databases [mapsforge] Mark Johnson (www.mj10777.de)
  */
 @SuppressWarnings("nls")
-public class MapTable extends SpatialTable {
+public class MapTable extends AbstractSpatialTable {
 
     private static final long serialVersionUID = 1L;
     private File dbStyleFile;

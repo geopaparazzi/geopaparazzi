@@ -35,8 +35,8 @@ import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialRasterTable;
-import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryIterator;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
@@ -66,7 +66,7 @@ import static eu.geopaparazzi.spatialite.database.spatial.core.daos.Geopaparazzi
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
-public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
+public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
 
     private String uniqueDbName4DataProperties = "";
 
@@ -248,7 +248,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
         }
     }
 
-    public float[] getTableBounds(SpatialTable spatialTable) throws Exception {
+    public float[] getTableBounds(AbstractSpatialTable spatialTable) throws Exception {
         return spatialTable.getTableBounds();
     }
 
@@ -362,26 +362,6 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
-     * Retrieve rasterlite2 image of a given bound and size.
-     * <p/>
-     * <p>https://github.com/geopaparazzi/Spatialite-Tasks-with-Sql-Scripts/wiki/RL2_GetMapImage
-     *
-     * @param rasterTable the table to use.
-     * @param tileBounds  [west,south,east,north] [minx, miny, maxx, maxy] bounds.
-     * @param i_tile_size default 256 [Tile.TILE_SIZE].
-     * @return the image data as byte[]
-     */
-    @Override
-    public byte[] getRasterTileBounds(SpatialTable rasterTable, double[] tileBounds, int i_tile_size) {
-        byte[] bytes = SPL_Rasterlite.rl2_GetMapImageTile(dbJava, rasterTable.getSrid(), rasterTable.getTableName(),
-                tileBounds, i_tile_size);
-        if (bytes != null) {
-            return bytes;
         }
         return null;
     }
@@ -766,7 +746,7 @@ public class SpatialiteDatabaseHandler extends SpatialDatabaseHandler {
                                 rasterTableList = new ArrayList<SpatialRasterTable>();
                             rasterTableList.add(table);
                         }
-                        if ((s_layer_type.equals("SpatialTable")) || (s_layer_type.equals("SpatialView"))) { // SpatialTable
+                        if ((s_layer_type.equals("AbstractSpatialTable")) || (s_layer_type.equals("SpatialView"))) { // AbstractSpatialTable
                             // /
                             // SpatialView
                             i_view_read_only = Integer.parseInt(s_view_read_only);
