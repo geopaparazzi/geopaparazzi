@@ -31,10 +31,10 @@ import org.mapsforge.map.reader.header.MapFileInfo;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialTable;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialRasterTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 
 /**
  * An utility class to handle a map database.

@@ -28,8 +28,8 @@ import android.graphics.Color;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialRasterTable;
 
 /**
  * A MapGenerator that downloads tiles from geopackage databases.

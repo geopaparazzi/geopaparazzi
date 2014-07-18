@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialTable;
-import eu.geopaparazzi.spatialite.util.SpatialDataType;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
 /**
  * A cutom tiles producer table.
  *

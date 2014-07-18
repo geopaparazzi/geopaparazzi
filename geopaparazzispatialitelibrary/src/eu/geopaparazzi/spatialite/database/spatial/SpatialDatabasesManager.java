@@ -30,13 +30,13 @@ import java.util.Map;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.spatialite.database.spatial.core.MbtilesDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler;
-import eu.geopaparazzi.spatialite.util.OrderComparator;
-import eu.geopaparazzi.spatialite.util.SpatialDataType;
+import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.MbtilesDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialRasterTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.util.comparators.OrderComparator;
+import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
 import jsqlite.Exception;
 
 /**

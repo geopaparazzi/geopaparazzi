@@ -27,9 +27,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import eu.geopaparazzi.spatialite.database.spatial.daos.SPL_Vectors;
-import eu.geopaparazzi.spatialite.database.spatial.daos.VectorLayerQueryModes;
-import eu.geopaparazzi.spatialite.database.spatial.daos.DaoSpatialite;
+import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Vectors;
+import eu.geopaparazzi.spatialite.database.spatial.core.enums.VectorLayerQueryModes;
 import jsqlite.Exception;
 
 import org.mapsforge.android.maps.MapView;
@@ -54,10 +53,10 @@ import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapGeneratorInternal;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapTable;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.utils.DefaultMapurls;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialTable;
-import eu.geopaparazzi.spatialite.util.SpatialDataType;
-import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialRasterTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
+import eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteLibraryConstants;
 
 /**
  * The manager of supported maps in the Application maps dir.

@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import android.app.Activity;
-import android.graphics.Rasterizer;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -35,9 +34,8 @@ import android.widget.ExpandableListView;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.mapsforge.R;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
-import eu.geopaparazzi.spatialite.database.spatial.daos.DaoSpatialite;
-import eu.geopaparazzi.spatialite.database.spatial.daos.SPL_Rasterlite;
-import eu.geopaparazzi.spatialite.util.SpatialDataType;
+import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Rasterlite;
+import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
 
 /**
  * Activity for tile source visualisation.

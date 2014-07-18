@@ -40,10 +40,10 @@ import java.util.List;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.spatialite.R;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
-import eu.geopaparazzi.spatialite.util.OrderComparator;
-import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
+import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
+import eu.geopaparazzi.spatialite.database.spatial.util.comparators.OrderComparator;
+import eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteLibraryConstants;
 
 /**
  * Data listing activity.

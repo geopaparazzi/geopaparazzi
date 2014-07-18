@@ -43,11 +43,11 @@ import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.R;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTableLayer;
-import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
-import eu.geopaparazzi.spatialite.util.SpatialTableNameComparator;
+import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.layers.SpatialVectorTableLayer;
+import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
+import eu.geopaparazzi.spatialite.database.spatial.util.comparators.SpatialTableNameComparator;
 
 /**
  * Editable spatialtables listing and choosing activity.

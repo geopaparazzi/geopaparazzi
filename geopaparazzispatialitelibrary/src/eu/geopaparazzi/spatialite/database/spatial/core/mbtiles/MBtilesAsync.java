@@ -20,7 +20,7 @@ import java.util.Map;
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
-import eu.geopaparazzi.spatialite.database.spatial.core.MbtilesDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.MbtilesDatabaseHandler;
 /**
 // http://www.vogella.com/articles/AndroidBackgroundProcessing/article.html
 // - CursorLoader

@@ -41,7 +41,7 @@ import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.network.NetworkUtilities;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.Utilities;
-import eu.geopaparazzi.spatialite.database.spatial.core.MbtilesDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.MbtilesDatabaseHandler;
 
 /**
  * A MapGenerator that downloads tiles from the Mapnik server at OpenStreetMap.
