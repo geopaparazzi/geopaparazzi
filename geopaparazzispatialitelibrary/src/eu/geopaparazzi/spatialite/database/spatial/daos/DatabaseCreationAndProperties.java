@@ -42,9 +42,6 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
      */
     public static String JavaSqliteDescription = "";
 
-    public static int i_SpatialiteVersion = 0;
-
-
     /**
      * General Function to create jsqlite.Database with spatialite support.
      * <ol>
@@ -57,7 +54,6 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
      * @throws java.io.IOException if something goes wrong.
      */
     public static Database createDb(String databasePath) throws IOException {
-        Database spatialiteDatabase = null;
         File file_db = new File(databasePath);
         if (!file_db.getParentFile().exists()) {
             File dir_db = file_db.getParentFile();
@@ -65,16 +61,14 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
                 throw new IOException("DaoSpatialite: create_db: dir_db[" + dir_db.getAbsolutePath() + "] creation failed"); //$NON-NLS-1$ //$NON-NLS-2$
             }
         }
-        spatialiteDatabase = new jsqlite.Database();
-        if (spatialiteDatabase != null) {
-            try {
-                spatialiteDatabase.open(file_db.getAbsolutePath(), jsqlite.Constants.SQLITE_OPEN_READWRITE
-                        | jsqlite.Constants.SQLITE_OPEN_CREATE);
-                createSpatialiteDb(spatialiteDatabase, false);
-            } catch (jsqlite.Exception e_stmt) {
-                GPLog.error("DAOSPATIALIE", "create_spatialite[spatialite] dir_file[" + file_db.getAbsolutePath() //$NON-NLS-1$
-                        + "]", e_stmt); //$NON-NLS-1$
-            }
+        Database spatialiteDatabase = new Database();
+        try {
+            spatialiteDatabase.open(file_db.getAbsolutePath(), jsqlite.Constants.SQLITE_OPEN_READWRITE
+                    | jsqlite.Constants.SQLITE_OPEN_CREATE);
+            createSpatialiteDb(spatialiteDatabase, false);
+        } catch (jsqlite.Exception e_stmt) {
+            GPLog.error("DAOSPATIALIE", "create_spatialite[spatialite] dir_file[" + file_db.getAbsolutePath() //$NON-NLS-1$
+                    + "]", e_stmt); //$NON-NLS-1$
         }
         return spatialiteDatabase;
     }
@@ -270,7 +264,8 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
             }
             return 0;
         } finally {
-            statement.close();
+            if (statement != null)
+                statement.close();
         }
     }
 
@@ -283,7 +278,6 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
      * <br>- Geos
      * <br>-- there is no Spatialite function to retrieve the Sqlite version
      * <br>-- the Has() functions do not work with spatialite 3.0.1
-     * - this must always be called when checkDatabaseTypeAndValidity runs the first time
      *
      * @param database the db to use.
      * @param name     a name for the log.
@@ -291,16 +285,21 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
      */
     public static String getJavaSqliteDescription(Database database, String name) {
         if (JavaSqliteDescription.equals("")) {
+            int majorVersion = 0;
             try {
                 // s_javasqlite_description = "javasqlite[" + getJavaSqliteVersion() + "],";
                 JavaSqliteDescription = "sqlite[" + getSqliteVersion(database) + "],";
-                JavaSqliteDescription += "spatialite[" + getspatialiteVersion(database) + "],";
+
+                String spatialiteVersionNumber = getSpatialiteVersionNumber(database);
+                if (!spatialiteVersionNumber.equals("-"))
+                    majorVersion = Integer.parseInt(spatialiteVersionNumber.substring(0, 1));
+                JavaSqliteDescription += "spatialite[" + spatialiteVersionNumber + "],";
                 JavaSqliteDescription += "proj4[" + getProj4Version(database) + "],";
                 JavaSqliteDescription += "geos[" + getGeosVersion(database) + "],";
                 JavaSqliteDescription += "spatialite_properties[" + getSpatialiteProperties(database) + "],";
                 JavaSqliteDescription += "rasterlite2_properties[" + getRaster2Version(database) + "]]";
             } catch (Exception e) {
-                if (i_SpatialiteVersion > 3) {
+                if (majorVersion > 3) {
                     JavaSqliteDescription += "rasterlite2_properties[none]]";
                 } else {
                     JavaSqliteDescription += "exception[? not a spatialite database, or spatialite < 4 ?]]";
@@ -323,17 +322,6 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
         return database.dbversion();
     }
 
-    /**
-     * Get the version of JavaSqlite.
-     * <p/>
-     * <p>known values: 20120209,20131124 as int
-     *
-     * @return the version of JavaSqlite in 'Constants.drv_minor'.
-     */
-    public static String getJavaSqliteVersion() {
-        return "" + Constants.drv_minor;
-    }
-
 
     /**
      * Get the version of Spatialite.
@@ -342,15 +330,11 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
      * @return the version of Spatialite.
      * @throws Exception if something goes wrong.
      */
-    public static String getspatialiteVersion(Database database) throws Exception {
+    public static String getSpatialiteVersionNumber(Database database) throws Exception {
         Stmt stmt = database.prepare("SELECT spatialite_version();");
         try {
             if (stmt.step()) {
-                String value = stmt.column_string(0);
-                if (i_SpatialiteVersion == 0) {
-                    i_SpatialiteVersion = Integer.parseInt(value.substring(0, 1));
-                }
-                return value;
+                return stmt.column_string(0);
             }
         } finally {
             stmt.close();
@@ -384,7 +368,6 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
      * @throws Exception if something goes wrong.
      */
     public static SpatialiteVersion getSpatialiteDatabaseVersion(Database database, String table) throws Exception {
-        Stmt this_stmt = null;
         // views: vector_layers_statistics,vector_layers
         // boolean b_vector_layers_statistics = false;
         // boolean b_vector_layers = false;
@@ -396,39 +379,39 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
          */
         boolean b_geometry_columns = false;
 
-        SpatialiteVersion i_srs_wkt = SpatialiteVersion.SRS_WKT__NOTFOUND_PRE_2_4_0;
+        SpatialiteVersion versionFromSrswktPresence = SpatialiteVersion.SRS_WKT__NOTFOUND_PRE_2_4_0;
         boolean b_spatial_ref_sys = false;
         // boolean b_views_geometry_columns = false;
         SpatialiteVersion spatialiteVersion = SpatialiteVersion.NO_SPATIALITE;
-        String s_sql_command = "";
+        String s_sql_command;
         if (!table.equals("")) { // pragma table_info(geodb_geometry)
             s_sql_command = "pragma table_info(" + table + ")";
         } else {
             s_sql_command = "SELECT name,type FROM sqlite_master WHERE ((type='table') OR (type='view')) ORDER BY type DESC,name ASC";
         }
-        String s_type = "";
-        String s_name = "";
-        this_stmt = database.prepare(s_sql_command);
+        String type;
+        String name;
+        Stmt this_stmt = database.prepare(s_sql_command);
         try {
             while (this_stmt.step()) {
                 if (!table.equals("")) { // pragma table_info(berlin_strassen_geometry)
-                    s_name = this_stmt.column_string(1);
+                    name = this_stmt.column_string(1);
                     // 'proj4text' must always exist - otherwise invalid
-                    if (s_name.equals("proj4text"))
+                    if (name.equals("proj4text"))
                         b_spatial_ref_sys = true;
-                    if (s_name.equals("srs_wkt"))
-                        i_srs_wkt = SpatialiteVersion.SRS_WKT__2_4_0_to_3_1_0;
-                    if (s_name.equals("srtext"))
-                        i_srs_wkt = SpatialiteVersion.SRS_WKT__FROM_4_0_0;
+                    if (name.equals("srs_wkt"))
+                        versionFromSrswktPresence = SpatialiteVersion.SRS_WKT__2_4_0_to_3_1_0;
+                    if (name.equals("srtext"))
+                        versionFromSrswktPresence = SpatialiteVersion.SRS_WKT__FROM_4_0_0;
                 }
                 if (table.equals("")) {
-                    s_name = this_stmt.column_string(0);
-                    s_type = this_stmt.column_string(1);
-                    if (s_type.equals("table")) {
+                    name = this_stmt.column_string(0);
+                    type = this_stmt.column_string(1);
+                    if (type.equals("table")) {
                         // if (s_name.equals("geometry_columns")) {
                         // b_geometry_columns = true;
                         // }
-                        if (s_name.equals("spatial_ref_sys")) {
+                        if (name.equals("spatial_ref_sys")) {
                             b_spatial_ref_sys = true;
                         }
                     }
@@ -457,17 +440,17 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
         if (table.equals("")) {
             if ((b_geometry_columns) && (b_spatial_ref_sys)) {
                 if (b_spatial_ref_sys) {
-                    i_srs_wkt = getSpatialiteDatabaseVersion(database, "spatial_ref_sys");
-                    if (i_srs_wkt == SpatialiteVersion.AFTER_4_0_0_RC1) { // Spatialite 4.0
+                    versionFromSrswktPresence = getSpatialiteDatabaseVersion(database, "spatial_ref_sys");
+                    if (versionFromSrswktPresence == SpatialiteVersion.AFTER_4_0_0_RC1) { // Spatialite 4.0
                         spatialiteVersion = SpatialiteVersion.AFTER_4_0_0_RC1;
                     } else {
-                        spatialiteVersion = i_srs_wkt;
+                        spatialiteVersion = versionFromSrswktPresence;
                     }
                 }
             }
         } else {
             if (b_spatial_ref_sys) { // 'proj4text' must always exist - otherwise invalid
-                switch (i_srs_wkt) {
+                switch (versionFromSrswktPresence) {
                     case SRS_WKT__NOTFOUND_PRE_2_4_0:
                         spatialiteVersion = SpatialiteVersion.UNTIL_2_4_0; // no 'srs_wkt' or 'srtext' fields
                         break;
@@ -563,8 +546,7 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
         Stmt stmt = database.prepare("SELECT proj4_version();");
         try {
             if (stmt.step()) {
-                String value = stmt.column_string(0);
-                return value;
+                return stmt.column_string(0);
             }
         } finally {
             stmt.close();
@@ -583,8 +565,7 @@ public class DatabaseCreationAndProperties implements ISpatialiteTableAndFieldsN
         Stmt stmt = database.prepare("SELECT geos_version();");
         try {
             if (stmt.step()) {
-                String value = stmt.column_string(0);
-                return value;
+                return stmt.column_string(0);
             }
         } finally {
             stmt.close();
