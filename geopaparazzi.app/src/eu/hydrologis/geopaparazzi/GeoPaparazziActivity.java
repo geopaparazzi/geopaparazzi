@@ -623,7 +623,7 @@ public class GeoPaparazziActivity extends Activity {
         }
         case R.id.dashboard_map_item_button: {
             if (!MapsDirManager.getInstance().finishedLoading()) {
-                Utilities.messageDialog(this, "Maps loading has not finished yet. Please wait a few moments and try again.", null);
+                Utilities.messageDialog(this, getString(R.string.maps_loading_not_finished_yet), null);
                 return;
             }
             Intent mapIntent = new Intent(this, MapsActivity.class);
