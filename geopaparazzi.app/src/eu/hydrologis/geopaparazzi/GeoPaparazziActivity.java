@@ -54,6 +54,7 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.database.GPLog;
@@ -151,6 +152,7 @@ public class GeoPaparazziActivity extends Activity {
         checkIncomingGeosms();
         checkIncomingSmsData();
     }
+
     private void checkMockLocations() {
         /*
          * check mock locations availability
@@ -196,6 +198,8 @@ public class GeoPaparazziActivity extends Activity {
                     DaoBookmarks.addBookmark(lon, lat, latLonTextFromGmapUrl[2], 16, -1, -1, -1, -1);
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
                     PositionUtilities.putMapCenterInPreferences(preferences, lon, lat, 16);
+
+                    checkMapsLoadingFinished();
                     Intent mapIntent = new Intent(this, MapsActivity.class);
                     startActivity(mapIntent);
                 } else {
@@ -208,6 +212,7 @@ public class GeoPaparazziActivity extends Activity {
                         DaoBookmarks.addBookmark(lon, lat, latLonTextFromOsmUrl[2], zoom, -1, -1, -1, -1);
                         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
                         PositionUtilities.putMapCenterInPreferences(preferences, lon, lat, 16);
+                        checkMapsLoadingFinished();
                         Intent mapIntent = new Intent(this, MapsActivity.class);
                         startActivity(mapIntent);
                     }
@@ -223,6 +228,7 @@ public class GeoPaparazziActivity extends Activity {
             }
         }
     }
+
     private void checkIncomingSmsData() {
         /*
          * check if it was opened for a link of the kind
@@ -263,6 +269,18 @@ public class GeoPaparazziActivity extends Activity {
                 }
             } catch (Exception e) {
                 Utilities.messageDialog(this, getString(eu.hydrologis.geopaparazzi.R.string.could_not_open_sms), null);
+            }
+        }
+    }
+
+
+    private void checkMapsLoadingFinished() {
+        int maxTimes = 0;
+        while (!MapsDirManager.getInstance().finishedLoading() && maxTimes++ < 200){ // max wait 60 seconds
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -464,7 +482,6 @@ public class GeoPaparazziActivity extends Activity {
             initMapsDirManager();
         } catch (Exception e) {
             Log.e(getClass().getSimpleName(), e.getLocalizedMessage(), e);
-            e.printStackTrace();
             Utilities.toast(this, R.string.databaseError, Toast.LENGTH_LONG);
         }
     }
@@ -500,7 +517,7 @@ public class GeoPaparazziActivity extends Activity {
         try {
             asyncTask.execute((String) null);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(getClass().getSimpleName(), e.getLocalizedMessage(), e);
         }
         // MapsDirManager will read the preferences values for the last map
         // - it will collect all information about the maps on the sdcard/maps
@@ -605,6 +622,10 @@ public class GeoPaparazziActivity extends Activity {
             break;
         }
         case R.id.dashboard_map_item_button: {
+            if (!MapsDirManager.getInstance().finishedLoading()) {
+                Utilities.messageDialog(this, "Maps loading has not finished yet. Please wait a few moments and try again.", null);
+                return;
+            }
             Intent mapIntent = new Intent(this, MapsActivity.class);
             startActivity(mapIntent);
             break;
@@ -907,7 +928,7 @@ public class GeoPaparazziActivity extends Activity {
 
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(eu.geopaparazzi.library.R.layout.inputdialog);
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.getWindow().setBackgroundDrawableResource(getResources().getColor(android.R.color.transparent));
         final TextView text = (TextView) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogtext);
         text.setText(enterNewProjectString);
         final EditText editText = (EditText) dialog.findViewById(eu.geopaparazzi.library.R.id.dialogEdittext);
@@ -923,7 +944,7 @@ public class GeoPaparazziActivity extends Activity {
             public void afterTextChanged( Editable s ) {
                 String newName = s.toString();
                 File newProjectFile = new File(applicationParentDir, newName);
-                if (newName == null || newName.length() < 1) {
+                if (newName.length() < 1) {
                     text.setText(enterNewProjectString);
                     yesButton.setEnabled(false);
                 } else if (newProjectFile.exists()) {

@@ -351,7 +351,7 @@ public class FeatureUtilities {
      *
      * @param context the context to use.
      * @param text the text to check.
-     * @return true if the text is viewable.
+     * @return <code>true</code> if the text is viewable.
      */
     public static void viewIfApplicable(Context context, String text) {
         String textLC = text.toLowerCase();

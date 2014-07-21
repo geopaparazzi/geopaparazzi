@@ -103,6 +103,7 @@ public class MapsDirManager {
     private String s_bounds_zoom = "";
     private File mapnikFile;
     private LinkedHashMap<String, List<String[]>> folderPath2TablesDataMap;
+    private static boolean finishedLoading = false;
 
     private MapsDirManager() {
     }
@@ -122,6 +123,7 @@ public class MapsDirManager {
       */
     public static MapsDirManager getInstance() {
         if (mapsdirManager == null) {
+            finishedLoading = false;
             mapsdirManager = new MapsDirManager();
         }
         return mapsdirManager;
@@ -337,6 +339,15 @@ public class MapsDirManager {
         return folderPath2TablesDataMap;
     }
 
+    /**
+     * Check if the loading of sources has finished.
+     *
+     * @return <code>true</code>, if the loading process has finished.
+     */
+    public boolean finishedLoading() {
+        return finishedLoading;
+    }
+
     private void createTree( List<AbstractSpatialTable> tilesBasedTables ) {
         folderPath2TablesDataMap = new LinkedHashMap<String, List<String[]>>();
         List<String> parentPaths = new ArrayList<String>();
@@ -394,6 +405,7 @@ public class MapsDirManager {
             Collections.sort(value, sourceNameComparator);
         }
 
+        finishedLoading = true;
     }
     /**
       * Filter out certain file-types
