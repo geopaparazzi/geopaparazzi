@@ -48,9 +48,9 @@ public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
 
     /**
      * @param activity activity to use.
-     * @param fodler2TablesMap the folder and table map.
+     * @param folder2TablesMap the folder and table map.
      */
-    public SourcesExpandableListAdapter( Activity activity, LinkedHashMap<String, List<String[]>> fodler2TablesMap ) {
+    public SourcesExpandableListAdapter( Activity activity, LinkedHashMap<String, List<String[]>> folder2TablesMap ) {
         this.activity = activity;
         try {
             File mapsDir = ResourcesManager.getInstance(activity).getMapsDir();
@@ -60,7 +60,7 @@ public class SourcesExpandableListAdapter extends BaseExpandableListAdapter {
         }
         folderList = new ArrayList<String>();
         tablesList = new ArrayList<List<String[]>>();
-        for( Entry<String, List<String[]>> entry : fodler2TablesMap.entrySet() ) {
+        for( Entry<String, List<String[]>> entry : folder2TablesMap.entrySet() ) {
             folderList.add(entry.getKey());
             tablesList.add(entry.getValue());
         }
