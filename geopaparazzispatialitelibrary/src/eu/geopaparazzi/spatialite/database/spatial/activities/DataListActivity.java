@@ -171,8 +171,7 @@ public class DataListActivity extends ListActivity {
                 ImageButton labelsButton = (ImageButton) rowView.findViewById(R.id.labelsButton);
                 labelsButton.setOnClickListener(new View.OnClickListener(){
                     public void onClick( View v ) {
-                        Intent intent = getIntent();
-                        intent = new Intent(DataListActivity.this, LabelPropertiesActivity.class);
+                        Intent intent = new Intent(DataListActivity.this, LabelPropertiesActivity.class);
                         intent.putExtra(SpatialiteLibraryConstants.PREFS_KEY_TEXT, item.getUniqueNameBasedOnDbFilePath());
                         startActivity(intent);
                     }
