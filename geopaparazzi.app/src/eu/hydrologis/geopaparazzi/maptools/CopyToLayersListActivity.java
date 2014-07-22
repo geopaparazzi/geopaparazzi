@@ -28,7 +28,10 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,6 +75,10 @@ public class CopyToLayersListActivity extends ListActivity implements OnTouchLis
         super.onCreate(icicle);
         setContentView(R.layout.data_list);
 
+        EditText filterText = (EditText) findViewById(R.id.search_box);
+        filterText.setVisibility(View.GONE);
+        LinearLayout toggleButtonsView = (LinearLayout) findViewById(R.id.sourceTypeToggleButtonsView);
+        toggleButtonsView.setVisibility(View.GONE);
 
         Bundle extras = getIntent().getExtras();
         featuresList = extras.getParcelableArrayList(FeatureUtilities.KEY_FEATURESLIST);
@@ -121,7 +128,9 @@ public class CopyToLayersListActivity extends ListActivity implements OnTouchLis
                 @Override
                 public View getView(final int position, View cView, ViewGroup parent) {
                     LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    final View rowView = inflater.inflate(R.layout.editablelayers_row, null);
+                    View rowView = cView;
+                    if (rowView == null)
+                        rowView = inflater.inflate(R.layout.editablelayers_row, null);
                     try {
                         final SpatialVectorTable item = compatibleSpatialVectorTables.get(position);
                         AbstractSpatialDatabaseHandler tableHandler = null;

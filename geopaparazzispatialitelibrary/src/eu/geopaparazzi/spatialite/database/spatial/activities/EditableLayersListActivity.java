@@ -27,7 +27,9 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -67,6 +69,11 @@ public class EditableLayersListActivity extends ListActivity implements OnTouchL
     public void onCreate( Bundle icicle ) {
         super.onCreate(icicle);
         setContentView(R.layout.data_list);
+
+        EditText filterText = (EditText) findViewById(R.id.search_box);
+        filterText.setVisibility(View.GONE);
+        LinearLayout toggleButtonsView = (LinearLayout) findViewById(R.id.sourceTypeToggleButtonsView);
+        toggleButtonsView.setVisibility(View.GONE);
 
         buttonSelectionColor = getResources().getColor(R.color.main_selection);
 
