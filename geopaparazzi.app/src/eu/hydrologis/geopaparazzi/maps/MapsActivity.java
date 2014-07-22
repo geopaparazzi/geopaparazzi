@@ -116,7 +116,6 @@ import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.activities.DataListActivity;
 import eu.geopaparazzi.spatialite.database.spatial.activities.EditableLayersListActivity;
-import eu.geopaparazzi.spatialite.database.spatial.activities.SpatialiteSourcesTreeListActivity;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.dashboard.ActionBar;
 import eu.hydrologis.geopaparazzi.database.DaoBookmarks;
@@ -746,7 +745,7 @@ public class MapsActivity extends MapActivity implements OnTouchListener, OnClic
             startActivityForResult(gpsDatalistIntent, GPSDATAPROPERTIES_RETURN_CODE);
             return true;
         case MENU_DATA:
-            Intent datalistIntent = new Intent(this, SpatialiteSourcesTreeListActivity.class);
+            Intent datalistIntent = new Intent(this, DataListActivity.class);
             startActivityForResult(datalistIntent, DATAPROPERTIES_RETURN_CODE);
             return true;
         case MENU_SCALE_ID:
