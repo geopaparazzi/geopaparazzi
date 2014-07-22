@@ -725,7 +725,6 @@ public abstract class GeopaparazziOverlay extends Overlay {
         try {
             SpatialDatabasesManager sdManager = SpatialDatabasesManager.getInstance();
             List<SpatialVectorTable> spatialVectorTables = sdManager.getSpatialVectorTables(false);
-            // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite size["+spatialTables.size()+"]: ["+drawZoomLevel+"]");
             /*
              * draw geometries
              */
@@ -739,10 +738,10 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 if (style4Table.enabled == 0) {
                     continue;
                 }
-                if (!envelope.intersects(spatialTable.getTableEnvelope())) {
-                    // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite -W-> geometry_envelope["+spatialTable.getTableEnvelope().toString()+"]: map_envelope["+envelope.toString()+"]");
-                    continue;
-                }
+                // TODO enable this again only when updating of bound when adding geometries has been done
+                //                if (!envelope.intersects(spatialTable.getTableEnvelope())) {
+                //                    continue;
+                //                }
                 if (drawZoomLevel < style4Table.minZoom || drawZoomLevel > style4Table.maxZoom) {
                     // we do not draw outside of the zoom levels
                     continue;
@@ -780,16 +779,19 @@ public abstract class GeopaparazziOverlay extends Overlay {
                     while( geometryIterator.hasNext() ) {
                         Geometry geom = geometryIterator.next();
                         if (geom != null) {
-                            String geometryType = geom.getGeometryType();
+                            if (!envelope.intersects(geom.getEnvelopeInternal())) {
+                                // TODO check the performance impact of this
+                                continue;
+                            }
                             if (spatialTable.isGeometryCollection()) {
                                 int geometriesCount = geom.getNumGeometries();
                                 // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite type["+s_geometry_type+"]: count_geometries["+i_count_geometries+"]: ["+drawZoomLevel+"]");
                                 for( int j = 0; j < geometriesCount; j++ ) {
                                     Geometry geom_collect = geom.getGeometryN(j);
                                     if (geom_collect != null) {
-                                        geometryType = geom_collect.getGeometryType();
+                                        String geometryType = geom_collect.getGeometryType();
                                         // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite type["+s_geometry_type+"]: ["+drawZoomLevel+"]");
-                                        if (geometryType.toUpperCase().indexOf("POINT") != -1) {
+                                        if (geometryType.toUpperCase().contains("POINT")) {
                                             drawGeometry(geom_collect, canvas, shape_writer_point, fill, stroke);
                                         } else {
                                             drawGeometry(geom_collect, canvas, shapeWriter, fill, stroke);
