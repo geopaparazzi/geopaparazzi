@@ -171,6 +171,7 @@ public class MapsDirManager {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean doSpatialiteRecoveryMode = preferences.getBoolean(SpatialiteLibraryConstants.PREFS_KEY_SPATIALITE_RECOVERY_MODE,
                 false);
+        // doSpatialiteRecoveryMode=true;
         if (doSpatialiteRecoveryMode) {
             // Turn on Spatialite Recovery Modus
             SPL_Vectors.VECTORLAYER_QUERYMODE = VectorLayerQueryModes.CORRECTIVEWITHINDEX;

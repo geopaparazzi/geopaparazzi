@@ -57,12 +57,18 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                                                        int i_spatialindex, SpatialiteDatabaseType databaseType) throws jsqlite.Exception {
         if (i_spatialindex == 1) {
             i_spatialindex = SpatialiteIndexing.spatialiteRecoverSpatialIndex(database, table_name, geometry_column, 0, databaseType);
-            if (i_spatialindex == 0)
+            if (i_spatialindex == 0) {
+              GPLog.addLogEntry("DAOSPATIALIE", "spatialiteUpdateLayerStatistics[" + databaseType
+                                            + "] [spatialiteRecoverSpatialIndex failed] table_name[" + table_name + "] geometry_column[" + geometry_column + "]db[" + database.getFilename() + "]");
                 return i_spatialindex; // Invalid for use with geopaparazzi
+            }
         }
         i_spatialindex = 0;
         boolean b_valid = false;
         String s_UpdateLayerStatistics = "SELECT UpdateLayerStatistics();";
+        String s_layer_statistics = "layer_statistics";
+        if (databaseType == SpatialiteDatabaseType.SPATIALITE4)
+         s_layer_statistics = "vector_layers_statistics";
         if ((!table_name.equals("")) && (!geometry_column.equals("")))
             s_UpdateLayerStatistics = "SELECT UpdateLayerStatistics('" + table_name + "','" + geometry_column + "');";
         Stmt statement = null;
@@ -72,7 +78,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
             if (statement.step()) {
                 i_spatialindex = statement.column_int(0);
                 if (i_spatialindex == 1) {
-                    HashMap<String, String> fieldNamesToTypeMap = collectTableFields(database, "layer_statistics");
+                    HashMap<String, String> fieldNamesToTypeMap = collectTableFields(database, s_layer_statistics);
                     if (fieldNamesToTypeMap.size() > 0) { // AbstractSpatialTable virts_layer_statistics
                         b_valid = true;
                     } else {
@@ -82,8 +88,11 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                             i_spatialindex = 2;
                         }
                     }
-                    if (!b_valid)
+                    if (!b_valid) {
                         i_spatialindex = 0;
+                     GPLog.addLogEntry("DAOSPATIALIE", "spatialiteUpdateLayerStatistics[" + databaseType
+                                            + "] [no valid layer_statistics table found] table_name[" + table_name + "] geometry_column[" + geometry_column + "]db[" + database.getFilename() + "]");
+                    }
                 }
             }
         } catch (jsqlite.Exception e_stmt) {
@@ -111,16 +120,20 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
     private static String getSpatialiteUpdateLayerStatistics(Database database, String tableName, String geometryColumn,
                                                              int i_spatialindex, SpatialiteDatabaseType databaseType) throws Exception {
         String s_vector_extent = "";
-        if (DaoSpatialite.getGeometriesCount(database, tableName, geometryColumn) == 0)
+        if (DaoSpatialite.getGeometriesCount(database, tableName, geometryColumn) == 0) {
+           GPLog.addLogEntry("DAOSPATIALIE", "getSpatialiteUpdateLayerStatistics[" + databaseType + "] error[getGeometriesCount == 0] db[" + database.getFilename() + "]");
             return s_vector_extent;
+        }
         if (i_spatialindex == 1) {
             try {
                 i_spatialindex = spatialiteUpdateLayerStatistics(database, tableName, geometryColumn, i_spatialindex,
                         databaseType);
             } finally {
             }
-            if (i_spatialindex != 1)
+            if (i_spatialindex != 1) {
+            GPLog.addLogEntry("DAOSPATIALIE", "getSpatialiteUpdateLayerStatistics[" + databaseType + "] error[UpdateLayerStatistic != 1 ]["+i_spatialindex+"] db[" + database.getFilename() + "]");
                 return s_vector_extent; // Invalid for use with geopaparazzi
+         }
         }
         // for table/geometry support, otherwise for whole Database (Spatialite3+4) try to retrieve the needed bounds again
         if ((!tableName.equals("")) && (!geometryColumn.equals(""))) {
@@ -160,7 +173,9 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
             // Last attempt, if this does not work - then the geometry must be considered invalid
             if (s_vector_extent.equals("")) {
                 s_vector_extent = DaoSpatialite.getGeometriesBoundsString(database, tableName, geometryColumn);
-            }
+             if (s_vector_extent.equals(""))
+              GPLog.addLogEntry("DAOSPATIALIE", "getSpatialiteUpdateLayerStatistics[" + databaseType + "] error[GeometriesBoundsString empty] db[" + database.getFilename() + "]");
+            }           
         }
         return s_vector_extent;
     }
@@ -190,6 +205,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                 vector_key = vector_entry.getKey();
                 // soldner_polygon;14;3;2;3068;1;20847.6171111586,18733.613614603,20847.6171111586,18733.613614603
                 // vector_key[priority_marks_joined_lincoln;geometry;AbstractSpatialTable;ROWID;-1]
+                String recovery_text = "";
                 vector_value = vector_entry.getValue();
                 vector_data = "";
                 String[] sa_string = vector_key.split(";");
@@ -210,12 +226,24 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                         if ((i_spatial_index_enabled == 0) && (VECTORLAYER_QUERYMODE == VectorLayerQueryModes.CORRECTIVE || VECTORLAYER_QUERYMODE == VectorLayerQueryModes.CORRECTIVEWITHINDEX)) {
                             i_spatial_index_enabled = SpatialiteIndexing.spatialiteCreateSpatialIndex(database, table_name, geometry_column,
                                     databaseType);
+                          if (!recovery_text.equals(""))
+                           recovery_text+=",";
+                          if (i_spatial_index_enabled==1)
+                           recovery_text+="CreateSpatialIndex[corrected]";
+                          else
+                           recovery_text+="CreateSpatialIndex[failed]";
                         }
                         vector_data = s_geometry_type + ";" + s_coord_dimension + ";" + s_srid + ";" + i_spatial_index_enabled
                                 + ";";
                         int i_row_count = -1;
                         if (!sa_string[4].equals("row_count"))
                             i_row_count = Integer.parseInt(sa_string[4]);
+                        if (i_row_count == 0)
+                        {
+                         if (!recovery_text.equals(""))
+                          recovery_text+=",";
+                         recovery_text+="row_count=0";
+                        }
                         String s_bounds = sa_string[5];
                         String s_last_verified = sa_string[6];
                         if (s_bounds.equals("extent_min_x,extent_min_y,extent_max_x,extent_max_y")) {
@@ -244,6 +272,12 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                             // we do not try to query the dementions of faulty SpatialView's
                             if ((VECTORLAYER_QUERYMODE == VectorLayerQueryModes.TOLERANT) && (i_spatialindex == 1)) {
                                 vector_extent = DaoSpatialite.getGeometriesBoundsString(database, table_name, geometry_column);
+                             if (!recovery_text.equals(""))
+                              recovery_text+=",";
+                             if (!vector_extent.equals(""))
+                              recovery_text+="GeometriesBoundsString[corrected]";
+                             else
+                              recovery_text+="GeometriesBoundsString[failed]";
                             }
                             if (VECTORLAYER_QUERYMODE != VectorLayerQueryModes.STRICT && VECTORLAYER_QUERYMODE != VectorLayerQueryModes.TOLERANT) {
                                     /* RecoverSpatialIndex will be done if needed
@@ -253,6 +287,12 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                                     */
                                 vector_extent = getSpatialiteUpdateLayerStatistics(database, table_name, geometry_column,
                                         i_spatialindex, databaseType);
+                             if (!recovery_text.equals(""))
+                              recovery_text+=",";
+                             if (!vector_extent.equals(""))
+                              recovery_text+="UpdateLayerStatistics[corrected]";
+                             else
+                              recovery_text+="UpdateLayerStatistics[failed]";
                             }
                         }
                         if (!vector_extent.equals("")) { // all of the geomtries of this column may
@@ -273,12 +313,14 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
                             spatialVectorMap.put(vector_key, vector_data + vector_extent);
                             if (VECTORLAYER_QUERYMODE != VectorLayerQueryModes.STRICT && VECTORLAYER_QUERYMODE != VectorLayerQueryModes.TOLERANT) { // remove from the errors, since
                                 // they may have been permanently
-                                // resolved, but not here
+                                // resolved, but not here    
                                 spatialVectorMapCorrections.put(vector_entry.getKey(), vector_entry.getValue());
                             }
                         } else {
                             // GPLog.asd(-1,"getSpatialVectorMap_Errors[not resolved]["+VECTOR_LAYERS_QUERY_MODE+"]  vector_key["+vector_key+"]  vector_value["+vector_value+"] vector_extent["+vector_extent+"]");
                         }
+                        GPLog.addLogEntry("DAOSPATIALIE", "getSpatialVectorMap_Errors[" + databaseType
+                                            + "] ["+recovery_text+"] vector_key[" + vector_key + "] db[" + database.getFilename() + "]");
                     }
                 }
             }
@@ -301,7 +343,7 @@ public class SPL_Vectors implements ISpatialiteTableAndFieldsNames {
      * @param database               the database to check.
      * @param spatialVectorMap       the {@link HashMap} of Spatialite4+ Vector-data (Views/Tables Geometries) to clear and repopulate.
      * @param spatialVectorMapErrors the {@link HashMap} of of invalid geometries.
-     * @param b_layers_statistics    if a ayers_statistics had been found
+     * @param b_layers_statistics    if a layers_statistics had been found
      * @return nothing
      * @throws Exception if something goes wrong.
      */
