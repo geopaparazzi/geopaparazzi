@@ -159,6 +159,14 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
         int padding = 2;
 
         if (editLayer != null) {
+            gpsStreamButton = new ImageButton(context);
+            gpsStreamButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+            gpsStreamButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_gps_stream));
+            gpsStreamButton.setPadding(0, padding, 0, padding);
+            gpsStreamButton.setOnTouchListener(this);
+            gpsStreamButton.setOnClickListener(this);
+            parent.addView(gpsStreamButton);
+
             addVertexButton = new ImageButton(context);
             addVertexButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
             addVertexButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_add_vertex));
@@ -175,14 +183,6 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
             addVertexByTapButton.setOnTouchListener(this);
             addVertexByTapButton.setOnClickListener(this);
             parent.addView(addVertexByTapButton);
-
-            gpsStreamButton = new ImageButton(context);
-            gpsStreamButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-            gpsStreamButton.setBackgroundDrawable(context.getResources().getDrawable(R.drawable.ic_editing_gps_stream));
-            gpsStreamButton.setPadding(0, padding, 0, padding);
-            gpsStreamButton.setOnTouchListener(this);
-            gpsStreamButton.setOnClickListener(this);
-            parent.addView(gpsStreamButton);
 
             undoButton = new ImageButton(context);
             undoButton.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
