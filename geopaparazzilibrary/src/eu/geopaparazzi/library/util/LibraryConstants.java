@@ -176,6 +176,11 @@ public interface LibraryConstants {
     public static final String PREFS_KEY_BASEFOLDER = "PREFS_KEY_BASEFOLDER"; //$NON-NLS-1$
 
     /**
+     * Key used to store and retrieve a custom maps folder name.
+     */
+    public static final String PREFS_KEY_CUSTOM_MAPSFOLDER = "PREFS_KEY_CUSTOM_MAPSFOLDER"; //$NON-NLS-1$
+
+    /**
      * Key used to store and retrieve the gps logging interval to use.
      */
     public static final String PREFS_KEY_GPSLOGGINGINTERVAL = "PREFS_KEY_GPS_LOGGING_INTERVAL"; //$NON-NLS-1$

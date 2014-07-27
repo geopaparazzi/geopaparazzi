@@ -47,13 +47,13 @@ public class FileUtilities {
      */
     public static List<String> getPossibleSdcardsList() {
         List<String> list_sdcards = new ArrayList<String>();
-        File dir_mnt = new File("/mnt");
+        File dir_mnt = new File("/mnt"); //$NON-NLS-1$
         if ((dir_mnt != null) && (dir_mnt.exists()) && (dir_mnt.canRead())) {
-            // '/mnt' will list the mounted directories accessable and can be soft-link's
+            // '/mnt' will list the mounted directories accessible and can be soft-links
             File[] list_files = dir_mnt.listFiles();
             for( File this_file : list_files ) {
                 if (this_file.isDirectory()) {
-                    if (this_file.getAbsolutePath().toLowerCase().indexOf("sd") != -1) {
+                    if (this_file.getAbsolutePath().toLowerCase().indexOf("sd") != -1) { //$NON-NLS-1$
                         // 'sdcard' (now shown as '/storage/emulated/0') ; 'extSdCard'
                         list_sdcards.add(this_file.getAbsolutePath().trim());
                     }
@@ -64,12 +64,35 @@ public class FileUtilities {
     }
 
     /**
-     * Copy a file.
+     * Get a list of folder names (for custom maps folder choices).
+     * Assume user prefaces the custom folder with "maps_" or 
+     * other initial letters as specified and passed to this function 
      * 
-     * @param fromFile source file.
-     * @param toFile dest file.
-     * @throws IOException  if something goes wrong. 
+     * @param path the path from which to list folders
+     * @param start the initial start letters. Can be empty string. 
+     * @return the list of possible maps folders.
      */
+    public static List<String> getPossibleMapsFoldersList( String path, String start ) {
+        List<String> list_mapsFolds = new ArrayList<String>();
+        File f = new File(path);
+        File[] file = f.listFiles();
+
+        for( File fi : file ) {
+            String name = fi.getName();
+            if (fi.isDirectory() && name.contains(start)) {
+                list_mapsFolds.add(name);
+            }
+        }
+        return list_mapsFolds;
+    }
+
+    /**
+    * Copy a file.
+    * 
+    * @param fromFile source file.
+    * @param toFile dest file.
+    * @throws IOException  if something goes wrong. 
+    */
     public static void copyFile( String fromFile, String toFile ) throws IOException {
         File in = new File(fromFile);
         File out = new File(toFile);
@@ -235,7 +258,6 @@ public class FileUtilities {
             }
         }
     }
-
 
     /**
      * Returns true if all deletions were successful. If a deletion fails, the method stops
