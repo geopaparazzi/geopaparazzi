@@ -19,6 +19,7 @@ package eu.geopaparazzi.library.util;
 
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_BASEFOLDER;
 import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_CUSTOM_EXTERNALSTORAGE;
+import static eu.geopaparazzi.library.util.LibraryConstants.PREFS_KEY_CUSTOM_MAPSFOLDER;
 import static eu.geopaparazzi.library.util.Utilities.messageDialog;
 
 import java.io.File;
@@ -44,8 +45,8 @@ import eu.geopaparazzi.library.database.GPLog;
  */
 public class ResourcesManager implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    private static final String PATH_MAPS = "maps"; //$NON-NLS-1$
+    // move down to access prefs
+    //private static final String PATH_MAPS = "maps"; //$NON-NLS-1$
 
     private static final String PATH_MEDIA = "media"; //$NON-NLS-1$
 
@@ -146,6 +147,8 @@ public class ResourcesManager implements Serializable {
          */
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(appContext);
         String baseFolder = preferences.getString(PREFS_KEY_BASEFOLDER, ""); //$NON-NLS-1$
+        String PATH_MAPS = preferences.getString(PREFS_KEY_CUSTOM_MAPSFOLDER, "maps"); //$NON-NLS-1$
+
         applicationDir = new File(baseFolder);
         File parentFile = applicationDir.getParentFile();
         boolean parentExists = false;
