@@ -14,14 +14,14 @@
  */
 package eu.hydrologis.geopaparazzi.maps.overlays;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import android.content.Context;
 
 import org.mapsforge.android.maps.overlay.OverlayItem;
 import org.mapsforge.android.maps.overlay.OverlayWay;
 
-import android.content.Context;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * ArrayGeopaparazziOverlay is a thread-safe implementation of the {@link GeopaparazziOverlay} class using an {@link ArrayList} as

@@ -1,5 +1,5 @@
 ext {
-    geopaparazziVersion = "3.9.7"
+    geopaparazziVersion = "3.9.9"
 }
 
 buildscript {
@@ -7,8 +7,9 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.6.+'
+        classpath 'com.android.tools.build:gradle:0.12.+'
     }
+
 }
 
 allprojects {
@@ -17,4 +18,5 @@ allprojects {
         mavenCentral()
     }
 }
+
 

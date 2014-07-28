@@ -17,13 +17,12 @@
  */
 package eu.hydrologis.geopaparazzi.osm;
 
-import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_FORM;
-import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_FORMITEMS;
-import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_ITEM;
-import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_ITEMS;
-import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_LONGNAME;
-import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_SHORTNAME;
-import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_VALUES;
+import android.content.Context;
+import android.content.res.AssetManager;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -32,15 +31,17 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Set;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.content.Context;
-import android.content.res.AssetManager;
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.debug.Debug;
+
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_FORM;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_FORMITEMS;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_ITEM;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_ITEMS;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_LONGNAME;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_SHORTNAME;
+import static eu.hydrologis.geopaparazzi.osm.FormUtilities.TAG_VALUES;
 
 /**
  * Singleton that takes care of tags.

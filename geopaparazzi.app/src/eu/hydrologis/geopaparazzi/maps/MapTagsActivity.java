@@ -17,10 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.maps;
 
-import java.io.File;
-import java.sql.Date;
-import java.util.Set;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -42,6 +38,11 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import java.io.File;
+import java.sql.Date;
+import java.util.Set;
+
 import eu.geopaparazzi.library.camera.CameraActivity;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.FormActivity;

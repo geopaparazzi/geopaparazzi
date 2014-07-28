@@ -14,21 +14,6 @@
  */
 package eu.hydrologis.geopaparazzi.maps.overlays;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import jsqlite.Exception;
-
-import org.mapsforge.android.maps.MapView;
-import org.mapsforge.android.maps.Projection;
-import org.mapsforge.android.maps.overlay.ItemizedOverlay;
-import org.mapsforge.android.maps.overlay.Overlay;
-import org.mapsforge.android.maps.overlay.OverlayItem;
-import org.mapsforge.android.maps.overlay.OverlayWay;
-import org.mapsforge.core.model.GeoPoint;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -53,6 +38,19 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 
+import org.mapsforge.android.maps.MapView;
+import org.mapsforge.android.maps.Projection;
+import org.mapsforge.android.maps.overlay.ItemizedOverlay;
+import org.mapsforge.android.maps.overlay.Overlay;
+import org.mapsforge.android.maps.overlay.OverlayItem;
+import org.mapsforge.android.maps.overlay.OverlayWay;
+import org.mapsforge.core.model.GeoPoint;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.forms.FormActivity;
 import eu.geopaparazzi.library.gps.GpsLoggingStatus;
@@ -63,18 +61,19 @@ import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryIterator;
-import eu.geopaparazzi.spatialite.database.spatial.core.geometry.GeometryType;
-import eu.geopaparazzi.spatialite.util.Style;
+import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
+import eu.geopaparazzi.spatialite.database.spatial.util.Style;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.DaoNotes;
 import eu.hydrologis.geopaparazzi.database.NoteType;
 import eu.hydrologis.geopaparazzi.maps.MapsActivity;
 import eu.hydrologis.geopaparazzi.util.Constants;
 import eu.hydrologis.geopaparazzi.util.Note;
+import jsqlite.Exception;
 
 /**
  * GeopaparazziOverlay is an abstract base class to display {@link OverlayWay OverlayWays}. The class defines some methods to
@@ -726,7 +725,6 @@ public abstract class GeopaparazziOverlay extends Overlay {
         try {
             SpatialDatabasesManager sdManager = SpatialDatabasesManager.getInstance();
             List<SpatialVectorTable> spatialVectorTables = sdManager.getSpatialVectorTables(false);
-            // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite size["+spatialTables.size()+"]: ["+drawZoomLevel+"]");
             /*
              * draw geometries
              */
@@ -740,15 +738,15 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 if (style4Table.enabled == 0) {
                     continue;
                 }
-                if (!envelope.intersects(spatialTable.getTableEnvelope())) {
-                 //  GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite -W-> geometry_envelope["+spatialTable.getTableEnvelope().toString()+"]: map_envelope["+envelope.toString()+"]");
-                   continue;
-                }
+                // TODO enable this again only when updating of bound when adding geometries has been done
+                //                if (!envelope.intersects(spatialTable.getTableEnvelope())) {
+                //                    continue;
+                //                }
                 if (drawZoomLevel < style4Table.minZoom || drawZoomLevel > style4Table.maxZoom) {
                     // we do not draw outside of the zoom levels
                     continue;
                 }
-                SpatialDatabaseHandler spatialDatabaseHandler = sdManager.getVectorHandler(spatialTable);
+                AbstractSpatialDatabaseHandler spatialDatabaseHandler = sdManager.getVectorHandler(spatialTable);
                 if (!(spatialDatabaseHandler instanceof SpatialiteDatabaseHandler)) {
                     return;
                 }
@@ -762,38 +760,41 @@ public abstract class GeopaparazziOverlay extends Overlay {
                         stroke = ((SpatialiteDatabaseHandler) spatialDatabaseHandler).getStrokePaint4Style(style4Table);
                     PointTransformation pointTransformer = new MapsforgePointTransformation(projection, drawPosition,
                             drawZoomLevel);
-                    ShapeWriter shape_writer = null;
+                    ShapeWriter shapeWriter = null;
                     ShapeWriter shape_writer_point = null;
                     if (spatialTable.isPoint()) {
-                        shape_writer = new ShapeWriter(pointTransformer, spatialTable.getStyle().shape,
+                        shapeWriter = new ShapeWriter(pointTransformer, spatialTable.getStyle().shape,
                                 spatialTable.getStyle().size);
                     } else {
-                        shape_writer = new ShapeWriter(pointTransformer);
+                        shapeWriter = new ShapeWriter(pointTransformer);
                         if (spatialTable.isGeometryCollection()) {
                             shape_writer_point = new ShapeWriter(pointTransformer, spatialTable.getStyle().shape,
                                     spatialTable.getStyle().size);
                         }
                     }
-                    shape_writer.setRemoveDuplicatePoints(true);
-                    shape_writer.setDecimation(spatialTable.getStyle().decimationFactor);
+                    shapeWriter.setRemoveDuplicatePoints(true);
+                    shapeWriter.setDecimation(spatialTable.getStyle().decimationFactor);
                     geometryIterator = ((SpatialiteDatabaseHandler) spatialDatabaseHandler).getGeometryIteratorInBounds(
                             LibraryConstants.SRID_WGS84_4326, spatialTable, n, s, e, w);
                     while( geometryIterator.hasNext() ) {
                         Geometry geom = geometryIterator.next();
                         if (geom != null) {
-                            String geometryType = geom.getGeometryType();
+                            if (!envelope.intersects(geom.getEnvelopeInternal())) {
+                                // TODO check the performance impact of this
+                                continue;
+                            }
                             if (spatialTable.isGeometryCollection()) {
                                 int geometriesCount = geom.getNumGeometries();
                                 // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite type["+s_geometry_type+"]: count_geometries["+i_count_geometries+"]: ["+drawZoomLevel+"]");
                                 for( int j = 0; j < geometriesCount; j++ ) {
                                     Geometry geom_collect = geom.getGeometryN(j);
                                     if (geom_collect != null) {
-                                        geometryType = geom_collect.getGeometryType();
+                                        String geometryType = geom_collect.getGeometryType();
                                         // GPLog.androidLog(-1,"GeopaparazziOverlay.drawFromSpatialite type["+s_geometry_type+"]: ["+drawZoomLevel+"]");
-                                        if (geometryType.toUpperCase().indexOf("POINT") != -1) {
+                                        if (geometryType.toUpperCase().contains("POINT")) {
                                             drawGeometry(geom_collect, canvas, shape_writer_point, fill, stroke);
                                         } else {
-                                            drawGeometry(geom_collect, canvas, shape_writer, fill, stroke);
+                                            drawGeometry(geom_collect, canvas, shapeWriter, fill, stroke);
                                         }
                                         if (isInterrupted() || sizeHasChanged()) { // stop working
                                             return;
@@ -801,7 +802,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                                     }
                                 }
                             } else {
-                                drawGeometry(geom, canvas, shape_writer, fill, stroke);
+                                drawGeometry(geom, canvas, shapeWriter, fill, stroke);
                                 if (isInterrupted() || sizeHasChanged()) { // stop working
                                     return;
                                 }
@@ -852,7 +853,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 dbTextHaloPaint.setColor(Color.WHITE);
                 dbTextHaloPaint.setTextSize(style4Table.labelsize);
 
-                SpatialDatabaseHandler spatialDatabaseHandler = sdManager.getVectorHandler(spatialTable);
+                AbstractSpatialDatabaseHandler spatialDatabaseHandler = sdManager.getVectorHandler(spatialTable);
                 if (!(spatialDatabaseHandler instanceof SpatialiteDatabaseHandler)) {
                     return;
                 }
@@ -931,7 +932,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                 shape.fill(canvas, fill);
             if (stroke != null)
                 shape.draw(canvas, stroke);
-         //GPLog.androidLog(-1,"GeopaparazziOverlay.drawGeometry geometry_type["+s_geometry_type+"]: ["+i_geometry_type+"]");
+            // GPLog.androidLog(-1,"GeopaparazziOverlay.drawGeometry geometry_type["+s_geometry_type+"]: ["+i_geometry_type+"]");
         }
             break;
         case LINESTRING_XY:

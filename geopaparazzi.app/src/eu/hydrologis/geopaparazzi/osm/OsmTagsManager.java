@@ -17,11 +17,12 @@
  */
 package eu.hydrologis.geopaparazzi.osm;
 
+import android.content.Context;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.util.Arrays;
 
-import android.content.Context;
 import eu.geopaparazzi.library.util.ResourcesManager;
 
 /**

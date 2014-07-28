@@ -25,11 +25,16 @@ import org.mapsforge.core.model.Tile;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Rasterlite;
+import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialRasterTable;
+import jsqlite.Database;
 
 /**
  * A MapGenerator that downloads tiles from geopackage databases.
@@ -39,19 +44,26 @@ public class GeopackageTileDownloader extends TileDownloader {
 
     private byte ZOOM_MIN = 0;
     private byte ZOOM_MAX = 18;
-    private String mapType = "";
+    private SpatialDataType mapType;
     private SpatialRasterTable rasterTable;
     private GeoPoint centerPoint = new GeoPoint(0, 0);
 
     private String tilePart;
-    private SpatialDatabaseHandler spatialDatabaseHandler;
+    private AbstractSpatialDatabaseHandler spatialDatabaseHandler;
+    private Database spatialiteDatabase;
 
-    public GeopackageTileDownloader( SpatialRasterTable table ) throws jsqlite.Exception {
+    public GeopackageTileDownloader(SpatialRasterTable table) throws jsqlite.Exception {
         super();
-        rasterTable=table;
+        rasterTable = table;
         SpatialDatabasesManager sdManager = SpatialDatabasesManager.getInstance();
         spatialDatabaseHandler = sdManager.getRasterHandler(rasterTable);
-        this.mapType = rasterTable.getMapType();
+        String mapTypeString = rasterTable.getMapType();
+        mapType = SpatialDataType.getType4Name(mapTypeString);
+        if (mapType == SpatialDataType.RASTERLITE2) {
+            SpatialiteDatabaseHandler databaseHandler = (SpatialiteDatabaseHandler) spatialDatabaseHandler;
+            spatialiteDatabase = databaseHandler.getDatabase();
+        }
+
         ZOOM_MAX = (byte) rasterTable.getMaxZoom();
         ZOOM_MIN = (byte) rasterTable.getMinZoom();
 
@@ -76,10 +88,10 @@ public class GeopackageTileDownloader extends TileDownloader {
         return ZOOM_MIN;
     }
 
-    public String getTilePath( Tile tile ) {
+    public String getTilePath(Tile tile) {
         int zoomLevel = tile.zoomLevel;
         int tileX = (int) tile.tileX;
-        int tileY = (int) tile.tileY;        
+        int tileY = (int) tile.tileY;
 
         String tmpTilePart = tilePart.replaceFirst("\\?", String.valueOf(zoomLevel)); //$NON-NLS-1$
         tmpTilePart = tmpTilePart.replaceFirst("\\?", String.valueOf(tileX)); //$NON-NLS-1$
@@ -89,25 +101,22 @@ public class GeopackageTileDownloader extends TileDownloader {
     }
 
     @Override
-    public boolean executeJob( MapGeneratorJob mapGeneratorJob, Bitmap bitmap ) {
+    public boolean executeJob(MapGeneratorJob mapGeneratorJob, Bitmap bitmap) {
         try {
             Tile tile = mapGeneratorJob.tile;
             int tileSize = Tile.TILE_SIZE;
-            byte[] rasterBytes=null;
-            String tileQuery ="";
-            if (mapType.equals("RasterLite2"))
-            {
-             tileQuery=mapType;
-             int zoomLevel = tile.zoomLevel;
-             int tileX = (int) tile.tileX;
-             int tileY = (int) tile.tileY; 
-             double[] tileBounds = Utilities.tileLatLonBounds(tileX, tileY, zoomLevel, Tile.TILE_SIZE);
-             rasterBytes = spatialDatabaseHandler.getRasterTileBounds(rasterTable,tileBounds,tileSize);
-            }
-            else
-            {
-             tileQuery = getTilePath(tile);
-             rasterBytes = spatialDatabaseHandler.getRasterTile(tileQuery);
+            byte[] rasterBytes = null;
+            String tileQuery;
+            if (mapType == SpatialDataType.RASTERLITE2) {
+                tileQuery = mapType.name();
+                int zoomLevel = tile.zoomLevel;
+                int tileX = (int) tile.tileX;
+                int tileY = (int) tile.tileY;
+                double[] tileBounds = Utilities.tileLatLonBounds(tileX, tileY, zoomLevel, Tile.TILE_SIZE);
+                rasterBytes = SPL_Rasterlite.getRasterTileInBounds(spatialiteDatabase, rasterTable, tileBounds, tileSize);
+            } else {
+                tileQuery = getTilePath(tile);
+                rasterBytes = spatialDatabaseHandler.getRasterTile(tileQuery);
             }
             Bitmap decodedBitmap = null;
             try {
@@ -115,7 +124,7 @@ public class GeopackageTileDownloader extends TileDownloader {
             } catch (Exception e) {
                 // ignore and set the image as empty
                 if (GPLog.LOG_HEAVY)
-                    GPLog.addLogEntry(this, "Could not find image: " + tileQuery); //$NON-NLS-1$
+                    GPLog.error(this, "Could not find image: " + tileQuery, e); //$NON-NLS-1$
             }
             // check if the input stream could be decoded into a bitmap
             if (decodedBitmap != null) {
@@ -123,7 +132,7 @@ public class GeopackageTileDownloader extends TileDownloader {
                 decodedBitmap.getPixels(this.pixels, 0, tileSize, 0, 0, tileSize, tileSize);
                 decodedBitmap.recycle();
             } else {
-                for( int i = 0; i < pixels.length; i++ ) {
+                for (int i = 0; i < pixels.length; i++) {
                     pixels[i] = Color.WHITE;
                 }
             }
@@ -132,10 +141,11 @@ public class GeopackageTileDownloader extends TileDownloader {
             bitmap.setPixels(this.pixels, 0, tileSize, 0, 0, tileSize, tileSize);
             return true;
         } catch (Exception e) {
-            GPLog.androidLog(4, "GeopackageTileDownloader.executeJob]", e);
+            GPLog.error(this, "GeopackageTileDownloader.executeJob]", e);
             return false;
         }
     }
+
     public byte getZoomLevelMax() {
         return ZOOM_MAX;
     }

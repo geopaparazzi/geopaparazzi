@@ -148,7 +148,7 @@
     <string name="enter_a_name_for_the_new_project">Enter a name for the new project</string>
     <string name="chosen_project_exists">The chosen project name already exists, please choose another name</string>
     <string name="no_external_sdcard_for_db_renderer">Database rendering is supported only from external storage. Could not find external storage, is one available?</string>
-    <string name="no_map_files_found_go_online">No map files were found in the /sdcard/maps folder. Switching to online maps.\nMaps can be downloaded from: http://download.mapsforge.org</string>
+    <string name="no_map_files_found_go_online">No map files were found in the /sdcard/maps folder. Switching to online maps.\nMaps can be downloaded from: http://download.mapsforge.org</string>
     <string name="select_map_to_use">Select map to use</string>
     <string name="no_map_file_found_going_to_mapnik">Could not find map file, switching to MAPNIK tile source.</string>
     <string name="enter_project_description">Enter a description for the project</string>
@@ -163,7 +163,7 @@
     <string name="sent_sms">Sent sms : </string>
     <string name="send_data">Send data</string>
     <string name="found_no_data_to_send">Found no data to send in the current visible map.</string>
-    <string name="insert_phone_to_send">" sms will be sent to transfer the selected data.\nPlease insert a valid phone number to send the data to."</string>
+    <string name="insert_phone_to_send">" sms will be sent to transfer the selected data.\nPlease insert a valid phone number to send the data to."</string>
     <string name="no_message_sent">No message sent.</string>
     <string name="logs_will_be_merged"> logs will be merged together in this operation. Continue?</string>
     <string name="distance">Distance: </string>
@@ -233,4 +233,5 @@
     <string name="map">Map</string>
     <string name="name">name</string>
     <string name="bounds">bounds</string>
+    <string name="maps_loading_not_finished_yet">Maps loading has not finished yet. Please wait a few moments and try again.</string>
 </resources>

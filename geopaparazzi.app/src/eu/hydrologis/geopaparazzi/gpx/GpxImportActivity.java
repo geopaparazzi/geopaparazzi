@@ -17,14 +17,15 @@
  */
 package eu.hydrologis.geopaparazzi.gpx;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gpx.GpxItem;
 import eu.geopaparazzi.library.gpx.parser.GpxParser;

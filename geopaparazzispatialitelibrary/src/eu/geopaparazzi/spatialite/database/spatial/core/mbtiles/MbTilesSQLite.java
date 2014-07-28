@@ -4,8 +4,8 @@ package eu.geopaparazzi.spatialite.database.spatial.core.mbtiles;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
+import android.database.sqlite.SQLiteOpenHelper;
 
 // sqlite3 <your_sqlite_db>
 // private final static String ANDROID_REQUIREMENT_TABLE = "CREATE TABLE IF NOT EXISTS android_metadata (locale TEXT DEFAULT 'en_US');";

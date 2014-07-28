@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
 import jsqlite.Exception;
 
 import org.mapsforge.core.model.GeoPoint;
@@ -31,10 +32,9 @@ import org.mapsforge.map.reader.header.MapFileInfo;
 
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.LibraryConstants;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialTable;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialRasterTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 
 /**
  * An utility class to handle a map database.
@@ -43,7 +43,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
  * adapted to work with map databases [mapsforge] Mark Johnson (www.mj10777.de)
  */
 @SuppressWarnings("nls")
-public class MapDatabaseHandler extends SpatialDatabaseHandler {
+public class MapDatabaseHandler extends AbstractSpatialDatabaseHandler {
     private List<MapTable> mapTableList;
     private FileOpenResult fileOpenResult;
     private MapDatabase mapDatabase = null;
@@ -145,18 +145,12 @@ public class MapDatabaseHandler extends SpatialDatabaseHandler {
     }
 
     @Override
-    public float[] getTableBounds( SpatialTable spatialTable ) throws Exception {
+    public float[] getTableBounds( AbstractSpatialTable spatialTable ) throws Exception {
         float w = (float) boundsWest;
         float s = (float) boundsSouth;
         float e = (float) boundsEast;
         float n = (float) boundsNorth;
         return new float[]{n, s, e, w};
-    }
-
-    @Override
-    public byte[] getRasterTileBounds(SpatialTable spatialTable,double[] tileBounds, int i_tile_size)  {
-        byte[] tileAsBytes = null;
-        return tileAsBytes;
     }
 
     @Override

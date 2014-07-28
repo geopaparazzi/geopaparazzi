@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_background"
+    android:padding="10dip">
+
+    <TextView
+        android:id="@+id/tableNameView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="5dp"
+        android:gravity="center_vertical"
+        android:text="Table name"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/main_text_color" />
+
+    <TextView
+        android:id="@+id/databaseNameView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tableNameView"
+        android:layout_below="@+id/tableNameView"
+        android:layout_margin="5dp"
+        android:gravity="center_vertical"
+        android:text="Db name"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/main_text_color" />
+
+    <TextView
+        android:id="@+id/featureCounterView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/databaseNameView"
+        android:layout_alignParentRight="true"
+        android:layout_margin="5dp"
+        android:background="@drawable/button_background_drawable"
+        android:padding="@dimen/button_indent"
+        android:text="0/0"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/main_text_color" />
+
+    <LinearLayout
+        android:id="@+id/spacer"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/databaseNameView"
+        android:background="@color/main_decorations"
+        android:orientation="horizontal"/>
+
+    <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/featurePager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottomButtonsLayout"
+        android:layout_below="@+id/spacer" />
+
+    <LinearLayout
+        android:id="@+id/bottomButtonsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true">
+
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/button_indent"
+            android:layout_weight="1"
+            android:background="@drawable/button_background_drawable"
+            android:onClick="onSave"
+            android:padding="@dimen/button_indent"
+            android:text="save"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/main_text_color" />
+
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/button_indent"
+            android:layout_weight="1"
+            android:background="@drawable/button_background_drawable"
+            android:onClick="onCancel"
+            android:padding="@dimen/button_indent"
+            android:text="cancel"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/main_text_color" />
+    </LinearLayout>
+
+
+</RelativeLayout>

@@ -17,8 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.preferences;
 
-import java.util.List;
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.preference.DialogPreference;
@@ -30,6 +28,9 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import java.util.List;
+
 import eu.geopaparazzi.library.util.FileUtilities;
 import eu.hydrologis.geopaparazzi.R;
 

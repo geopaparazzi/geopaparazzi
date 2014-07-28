@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="eu.hydrologis.geopaparazzi"
     android:installLocation="auto"
-    android:versionCode="59"
-    android:versionName="3.9.8" xmlns:tools="http://schemas.android.com/tools">
+    android:versionCode="60"
+    android:versionName="3.9.9" >
 
     <!-- permissions -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -17,7 +18,9 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.BATTERY_STATS" />
-    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" tools:ignore="MockLocation">
+    <uses-permission
+        android:name="android.permission.ACCESS_MOCK_LOCATION"
+        tools:ignore="MockLocation" >
     </uses-permission>
 
     <uses-feature
@@ -45,6 +48,7 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
+        tools:replace="android:label"
         android:largeHeap="true"
         android:launchMode="singleTask"
         android:theme="@android:style/Theme.NoTitleBar" >
@@ -134,9 +138,15 @@
         </activity>
         <activity android:name="eu.geopaparazzi.spatialite.database.spatial.activities.PointsDataPropertiesActivity" >
         </activity>
-        <activity android:name="eu.geopaparazzi.spatialite.database.spatial.activities.DataListActivity" >
+        <activity android:name="eu.geopaparazzi.spatialite.database.spatial.activities.SpatialiteSourcesTreeListActivity" >
         </activity>
         <activity android:name="eu.geopaparazzi.spatialite.database.spatial.activities.LabelPropertiesActivity" >
+        </activity>
+        <activity android:name="eu.hydrologis.geopaparazzi.maptools.FeaturePagerActivity" >
+        </activity>
+        <activity android:name="eu.geopaparazzi.spatialite.database.spatial.activities.EditableLayersListActivity" >
+        </activity>
+        <activity android:name="eu.hydrologis.geopaparazzi.maptools.CopyToLayersListActivity" >
         </activity>
         <activity android:name=".maps.MapsActivity" >
             <intent-filter>
@@ -196,13 +206,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".maps.MeasureInfoActivity" >
-            <intent-filter>
-                <action android:name="eu.hydrologis.geopaparazzi.maps.MEASUREMENT_INFO" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
         <activity android:name=".maps.BookmarksListActivity" >
         </activity>
         <activity android:name=".maps.NotesListActivity" >
@@ -219,7 +222,6 @@
         <activity android:name=".util.ImportActivity" >
         </activity>
         <!-- FROM LIBRARY -->
-        <activity android:name="eu.geopaparazzi.mapsforge.mapsdirmanager.treeview.MapsDirTreeViewList" />
         <activity android:name="eu.geopaparazzi.mapsforge.mapsdirmanager.sourcesview.SourcesTreeListActivity" />
         <activity
             android:name="eu.geopaparazzi.library.camera.CameraActivity"
@@ -291,6 +293,8 @@
         </receiver>
 
         <service android:name="eu.geopaparazzi.library.gps.GpsService" >
+        </service>
+        <service android:name="eu.hydrologis.geopaparazzi.maps.MapsSupportService" >
         </service>
     </application>
 

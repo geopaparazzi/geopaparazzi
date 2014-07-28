@@ -27,6 +27,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import eu.geopaparazzi.spatialite.database.spatial.core.daos.SPL_Vectors;
+import eu.geopaparazzi.spatialite.database.spatial.core.enums.VectorLayerQueryModes;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import jsqlite.Exception;
 
 import org.mapsforge.android.maps.MapView;
@@ -51,10 +54,9 @@ import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapGeneratorInternal;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapTable;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.utils.DefaultMapurls;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialTable;
-import eu.geopaparazzi.spatialite.util.SpatialDataType;
-import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialRasterTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
+import eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteLibraryConstants;
 
 /**
  * The manager of supported maps in the Application maps dir.
@@ -84,7 +86,7 @@ public class MapsDirManager {
     private String selectedTileSourceType = "";
     private String selectedTableName = "";
     private String selectedTableTitle = "";
-    private SpatialTable selectedSpatialTable = null;
+    private AbstractSpatialTable selectedSpatialTable = null;
     private MapGenerator selectedMapGenerator;
     private double bounds_west = 180.0;
     private double bounds_south = -85.05113;
@@ -101,6 +103,7 @@ public class MapsDirManager {
     private String s_bounds_zoom = "";
     private File mapnikFile;
     private LinkedHashMap<String, List<String[]>> folderPath2TablesDataMap;
+    private static boolean finishedLoading = false;
 
     private MapsDirManager() {
     }
@@ -120,6 +123,7 @@ public class MapsDirManager {
       */
     public static MapsDirManager getInstance() {
         if (mapsdirManager == null) {
+            finishedLoading = false;
             mapsdirManager = new MapsDirManager();
         }
         return mapsdirManager;
@@ -167,9 +171,10 @@ public class MapsDirManager {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean doSpatialiteRecoveryMode = preferences.getBoolean(SpatialiteLibraryConstants.PREFS_KEY_SPATIALITE_RECOVERY_MODE,
                 false);
+        // doSpatialiteRecoveryMode=true;
         if (doSpatialiteRecoveryMode) {
             // Turn on Spatialite Recovery Modus
-            eu.geopaparazzi.spatialite.util.DaoSpatialite.VECTOR_LAYERS_QUERY_MODE = 3;
+            SPL_Vectors.VECTORLAYER_QUERYMODE = VectorLayerQueryModes.CORRECTIVEWITHINDEX;
         }
         selectedTileSourceType = preferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE, ""); //$NON-NLS-1$
         selectedTableName = preferences.getString(LibraryConstants.PREFS_KEY_TILESOURCE_FILE, ""); //$NON-NLS-1$
@@ -208,7 +213,7 @@ public class MapsDirManager {
                 handleTileSources(context);
                 if (doSpatialiteRecoveryMode) {
                     // Turn off Spatialite Recovery Modus after compleation
-                    eu.geopaparazzi.spatialite.util.DaoSpatialite.VECTOR_LAYERS_QUERY_MODE = 0;
+                    SPL_Vectors.VECTORLAYER_QUERYMODE = VectorLayerQueryModes.STRICT;
                     Editor editor = preferences.edit();
                     editor.putBoolean(SpatialiteLibraryConstants.PREFS_KEY_SPATIALITE_RECOVERY_MODE, false);
                     editor.commit();
@@ -232,8 +237,8 @@ public class MapsDirManager {
      * @param context  the context to use.
       */
     private void handleTileSources( Context context ) throws Exception, IOException, FileNotFoundException {
-        List<SpatialTable> tilesBasedTables = new ArrayList<SpatialTable>();
-        SpatialTable mapnikTable = null;
+        List<AbstractSpatialTable> tilesBasedTables = new ArrayList<AbstractSpatialTable>();
+        AbstractSpatialTable mapnikTable = null;
         /*
           * add MAPURL TABLES
           */
@@ -335,10 +340,19 @@ public class MapsDirManager {
         return folderPath2TablesDataMap;
     }
 
-    private void createTree( List<SpatialTable> tilesBasedTables ) {
+    /**
+     * Check if the loading of sources has finished.
+     *
+     * @return <code>true</code>, if the loading process has finished.
+     */
+    public boolean finishedLoading() {
+        return finishedLoading;
+    }
+
+    private void createTree( List<AbstractSpatialTable> tilesBasedTables ) {
         folderPath2TablesDataMap = new LinkedHashMap<String, List<String[]>>();
         List<String> parentPaths = new ArrayList<String>();
-        for( SpatialTable spatialTable : tilesBasedTables ) {
+        for( AbstractSpatialTable spatialTable : tilesBasedTables ) {
             File file = spatialTable.getDatabaseFile();
             File parentFolder = file.getParentFile();
             String absolutePath = parentFolder.getAbsolutePath();
@@ -362,7 +376,7 @@ public class MapsDirManager {
         for( String parentPath : parentPaths ) {
             folderPath2TablesDataMap.put(parentPath, new ArrayList<String[]>());
         }
-        for( SpatialTable spatialTable : tilesBasedTables ) {
+        for( AbstractSpatialTable spatialTable : tilesBasedTables ) {
             File file = spatialTable.getDatabaseFile();
             File parentFolder = file.getParentFile();
             String absolutePath = parentFolder.getAbsolutePath();
@@ -392,6 +406,7 @@ public class MapsDirManager {
             Collections.sort(value, sourceNameComparator);
         }
 
+        finishedLoading = true;
     }
     /**
       * Filter out certain file-types
@@ -411,12 +426,12 @@ public class MapsDirManager {
      * 
      * @return the current selected map table.
      */
-    public SpatialTable getSelectedSpatialTable() {
+    public AbstractSpatialTable getSelectedSpatialTable() {
         return selectedSpatialTable;
     }
 
     /**
-      * Selected a Map through its {@link SpatialTable}.
+      * Selected a Map through its {@link eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable}.
       *
       * <p>call from Application or Map-Activity
       * 

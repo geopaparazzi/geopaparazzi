@@ -30,6 +30,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Spinner;
+
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.util.Constants;
 

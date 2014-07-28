@@ -1,7 +1,5 @@
 package eu.hydrologis.geopaparazzi.dashboard.quickaction.dashboard;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -16,6 +14,9 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import java.util.ArrayList;
+
 import eu.hydrologis.geopaparazzi.R;
 
 /**

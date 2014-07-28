@@ -17,12 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.dashboard;
 
-import java.io.File;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -36,6 +30,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import java.io.File;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.gps.GpsLoggingStatus;
 import eu.geopaparazzi.library.gps.GpsServiceStatus;
@@ -44,7 +45,7 @@ import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.MapsDirManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.actionbar.ActionItem;
 import eu.hydrologis.geopaparazzi.dashboard.quickaction.actionbar.QuickAction;
@@ -296,7 +297,7 @@ public class ActionBar {
             sb.append(indent).append(projectName).append("\n\n");
         }
 
-        SpatialTable selectedMapTable = MapsDirManager.getInstance().getSelectedSpatialTable();
+        AbstractSpatialTable selectedMapTable = MapsDirManager.getInstance().getSelectedSpatialTable();
         if (selectedMapTable != null) {
             String tableName = selectedMapTable.getTableName();
             float[] bounds = selectedMapTable.getTableBounds();

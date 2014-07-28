@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialTable;
-import eu.geopaparazzi.spatialite.util.SpatialDataType;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
 /**
  * A cutom tiles producer table.
  *
@@ -25,7 +25,7 @@ import eu.geopaparazzi.spatialite.util.SpatialDataType;
  *  adapted to work with custom tiles databases [mapsforge] Mark Johnson (www.mj10777.de)
  */
 @SuppressWarnings("nls")
-public class CustomTileTable extends SpatialTable {
+public class CustomTileTable extends AbstractSpatialTable {
 
     private static final long serialVersionUID = 1L;
     private String tileQuery;
@@ -133,6 +133,11 @@ public class CustomTileTable extends SpatialTable {
      */
     public String getTileQuery() {
         return tileQuery;
+    }
+
+    @Override
+    public boolean isEditable() {
+        return false;
     }
 
 }

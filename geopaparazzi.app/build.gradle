@@ -1,96 +1,109 @@
+import com.android.build.gradle.tasks.PackageApplication
+
 buildscript {
-        repositories {
-                mavenCentral()
-        }
-        dependencies {
-                classpath 'com.android.tools.build:gradle:0.6.+'
-        }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.12.+'
+    }
 }
 
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 
 task copyNativeLibs(type: Copy) {
-    from(new File(project(':geopaparazzispatialitelibrary').projectDir, 'libs')) { include '**/*.so' }
+    from(new File(project(':geopaparazzispatialitelibrary').projectDir, 'libs')) {
+        include 'armeabi/libjsqlite.so'
+        include 'armeabi-v7a/libjsqlite.so'
+    }
     into new File(buildDir, 'native-libs')
 }
 tasks.withType(Compile) { compileTask -> compileTask.dependsOn copyNativeLibs }
 clean.dependsOn 'cleanCopyNativeLibs'
-tasks.withType(com.android.build.gradle.tasks.PackageApplication) { pkgTask ->
-    pkgTask.jniDir new File(buildDir, 'native-libs')
+
+tasks.withType(PackageApplication) { pkgTask ->
+    //pkgTask.jniDir new File(buildDir, 'native-libs')
+    pkgTask.jniFolders = new HashSet<File>()
+    pkgTask.jniFolders.add(new File(buildDir, 'native-libs'))
 }
 
+tasks.whenTaskAdded { task ->
+    if (task.name.startsWith("lint")) {
+        task.enabled = false
+    }
+}
 
+dependencies {
+    compile project(":geopaparazzispatialitelibrary")
+    compile project(":geopaparazzimapsforge")
+    compile project(":geopaparazzilibrary")
+    compile project(":geopaparazzimarkerslib")
+}
 
 android {
-        compileSdkVersion 19
-        buildToolsVersion "19"
-        
-        dependencies {
-                compile project(":geopaparazzispatialitelibrary")
-                compile project(":geopaparazzimapsforge")
-                compile project(":geopaparazzilibrary")
-                compile project(":geopaparazzimarkerslib")
-        }
+    compileSdkVersion 19
+    buildToolsVersion "19.1"
 
-        sourceSets {
-                main {
-                        manifest {
-                                srcFile 'AndroidManifest.xml'
-                        }
-                        java {
-                                srcDir 'src'
-                        }
-                        res {
-                                srcDir 'res'
-                        }
-                        assets {
-                                srcDir 'assets'
-                        }
-                        resources {
-                                srcDir 'src'
-                        }
-                        aidl {
-                                srcDir 'src'
-                        }
-                }
-        }
-        signingConfigs {
-         release
-        }
-        def Properties props = new Properties()
-        def propFile = new File('geopaparazzi.app/ant.properties')
-        if (propFile.canRead())
-        {
-         props.load(new FileInputStream(propFile)) 
-         if (props!=null && props.containsKey('key.store') && props.containsKey('key.store.password') &&
-             props.containsKey('key.alias') && props.containsKey('key.alias.password')) 
-         {
-          android.signingConfigs.release.storeFile = file(props['key.store'])
-          android.signingConfigs.release.storePassword = props['key.store.password']
-          android.signingConfigs.release.keyAlias = props['key.alias']
-          android.signingConfigs.release.keyPassword = props['key.alias.password']
-         } 
-         else 
-         {
-          println 'geopaparazzi.app/ant.properties found but some entries are missing'
-          android.buildTypes.release.signingConfig = null
-         }
-        }
-        else 
-        {
-         println 'geopaparazzi.app/ant.properties not found'
-         android.buildTypes.release.signingConfig = null
-        }
-  
-        buildTypes {
-            release {
-                signingConfig signingConfigs.release
-                applicationVariants.all { variant ->
-                    def file = variant.outputFile
-                    variant.outputFile = new File(file.parent, file.name.replace("geopaparazzi.app-release.apk", "GeoPaparazzi_" + geopaparazziVersion + ".apk")) 
-                }
+
+
+    packagingOptions {
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/LICENSE.txt'
+    }
+
+    sourceSets {
+        main {
+            manifest {
+                srcFile 'AndroidManifest.xml'
             }
-        }       
+            java {
+                srcDir 'src'
+            }
+            res {
+                srcDir 'res'
+            }
+            assets {
+                srcDir 'assets'
+            }
+            resources {
+                srcDir 'src'
+            }
+            aidl {
+                srcDir 'src'
+            }
+        }
+    }
+    signingConfigs {
+        release
+    }
+    def Properties props = new Properties()
+    def propFile = new File('geopaparazzi.app/ant.properties')
+    if (propFile.canRead()) {
+        props.load(new FileInputStream(propFile))
+        if (props != null && props.containsKey('key.store') && props.containsKey('key.store.password') &&
+                props.containsKey('key.alias') && props.containsKey('key.alias.password')) {
+            android.signingConfigs.release.storeFile = file(props['key.store'])
+            android.signingConfigs.release.storePassword = props['key.store.password']
+            android.signingConfigs.release.keyAlias = props['key.alias']
+            android.signingConfigs.release.keyPassword = props['key.alias.password']
+        } else {
+            println 'geopaparazzi.app/ant.properties found but some entries are missing'
+            android.buildTypes.release.signingConfig = null
+        }
+    } else {
+        println 'geopaparazzi.app/ant.properties not found'
+        android.buildTypes.release.signingConfig = null
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            applicationVariants.all { variant ->
+                def file = variant.outputFile
+                variant.outputFile = new File(file.parent, file.name.replace("geopaparazzi.app-release.apk", "GeoPaparazzi_" + geopaparazziVersion + ".apk"))
+            }
+        }
+    }
 
 
 }

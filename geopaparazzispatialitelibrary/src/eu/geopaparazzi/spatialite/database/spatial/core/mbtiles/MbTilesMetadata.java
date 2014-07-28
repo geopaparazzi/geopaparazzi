@@ -3,12 +3,12 @@
  */
 package eu.geopaparazzi.spatialite.database.spatial.core.mbtiles;
 
+import android.database.Cursor;
+
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
-
-import android.database.Cursor;
 
 public class MbTilesMetadata {
     public final String name, description, type, version, format;

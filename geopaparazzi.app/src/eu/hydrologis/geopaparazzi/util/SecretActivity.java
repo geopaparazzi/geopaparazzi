@@ -17,8 +17,6 @@
  */
 package eu.hydrologis.geopaparazzi.util;
 
-import java.util.List;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,14 +28,17 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+
+import java.util.List;
+
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.database.GPLogPreferencesHandler;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.library.util.activities.LogAnalysisActivity;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialiteDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.SpatialiteDatabaseHandler;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
 import eu.hydrologis.geopaparazzi.database.SqlViewActivity;
@@ -170,8 +171,8 @@ public class SecretActivity extends Activity implements CheckBox.OnCheckedChange
     public void resetStyleTables( View view ) {
         try {
             SpatialDatabasesManager dbManager = SpatialDatabasesManager.getInstance();
-            List<SpatialDatabaseHandler> spatialDatabaseHandlers = dbManager.getSpatialDatabaseHandlers();
-            for( SpatialDatabaseHandler iSpatialDatabaseHandler : spatialDatabaseHandlers ) {
+            List<AbstractSpatialDatabaseHandler> spatialDatabaseHandlers = dbManager.getSpatialDatabaseHandlers();
+            for( AbstractSpatialDatabaseHandler iSpatialDatabaseHandler : spatialDatabaseHandlers ) {
                 if (iSpatialDatabaseHandler instanceof SpatialiteDatabaseHandler) {
                     SpatialiteDatabaseHandler sdHandler = (SpatialiteDatabaseHandler) iSpatialDatabaseHandler;
                     sdHandler.resetStyleTable();

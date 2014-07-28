@@ -17,21 +17,22 @@
  */
 package eu.hydrologis.geopaparazzi.database;
 
-import java.io.IOException;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.mapsforge.android.maps.overlay.OverlayItem;
-import org.mapsforge.core.model.GeoPoint;
-
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+
+import org.mapsforge.android.maps.overlay.OverlayItem;
+import org.mapsforge.core.model.GeoPoint;
+
+import java.io.IOException;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.TimeUtilities;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;

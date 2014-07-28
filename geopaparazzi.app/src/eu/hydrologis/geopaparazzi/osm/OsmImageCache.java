@@ -1,11 +1,11 @@
 package eu.hydrologis.geopaparazzi.osm;
 
+import android.content.Context;
+import android.graphics.drawable.Drawable;
+
 import java.io.File;
 import java.lang.ref.SoftReference;
 import java.util.LinkedHashMap;
-
-import android.content.Context;
-import android.graphics.drawable.Drawable;
 
 /**
  * Image cache.

@@ -17,19 +17,20 @@
  */
 package eu.geopaparazzi.spatialite.database.spatial.activities;
 
-import java.util.ArrayList;
-
-import jsqlite.Exception;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import java.util.ArrayList;
+
 import eu.geopaparazzi.spatialite.R;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
-import eu.geopaparazzi.spatialite.util.SpatialiteLibraryConstants;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
+import eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteLibraryConstants;
+import jsqlite.Exception;
 
 /**
  * Line Data properties activity.

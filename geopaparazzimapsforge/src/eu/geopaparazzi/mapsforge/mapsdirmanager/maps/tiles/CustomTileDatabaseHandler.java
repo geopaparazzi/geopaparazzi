@@ -22,12 +22,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import jsqlite.Exception;
 import eu.geopaparazzi.library.database.GPLog;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialRasterTable;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialTable;
-import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialRasterTable;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 
 /**
  * An utility class to handle an custom tiles database.
@@ -36,7 +36,7 @@ import eu.geopaparazzi.spatialite.database.spatial.core.SpatialVectorTable;
  * adapted to work with custom tiles databases [mapsforge] Mark Johnson (www.mj10777.de)
  */
 @SuppressWarnings("nls")
-public class CustomTileDatabaseHandler extends SpatialDatabaseHandler {
+public class CustomTileDatabaseHandler extends AbstractSpatialDatabaseHandler {
     private List<CustomTileTable> customtileTableList = null;
 
     private CustomTileDownloader customTileDownloader = null;
@@ -139,11 +139,7 @@ public class CustomTileDatabaseHandler extends SpatialDatabaseHandler {
             customTileDownloader.cleanup();
         }
     }
-    @Override
-    public byte[] getRasterTileBounds(SpatialTable spatialTable,double[] tileBounds, int i_tile_size)  {
-        byte[] tileAsBytes = null;
-        return tileAsBytes;
-    }
+
     public byte[] getRasterTile( String query ) {
         throw new RuntimeException("should not be called");
     }
@@ -169,7 +165,7 @@ public class CustomTileDatabaseHandler extends SpatialDatabaseHandler {
     }
 
     @Override
-    public float[] getTableBounds( SpatialTable spatialTable ) throws Exception {
+    public float[] getTableBounds( AbstractSpatialTable spatialTable ) throws Exception {
         float w = (float) boundsWest;
         float s = (float) boundsSouth;
         float e = (float) boundsEast;

@@ -30,7 +30,7 @@ import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.library.util.Utilities;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapDatabaseHandler;
 import eu.geopaparazzi.mapsforge.mapsdirmanager.maps.tiles.MapTable;
-import eu.geopaparazzi.spatialite.util.SpatialDataType;
+import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
 
 /**
  * The map database manager.
