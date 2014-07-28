@@ -24,19 +24,19 @@ import java.io.Serializable;
 
 /**
  * Spatial table interface.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
 public abstract class AbstractSpatialTable implements Serializable {
     private static final long serialVersionUID = 1L;
     /**
-     * Table type description. 
+     * Table type description.
      */
     protected String tableTypeDescription;
 
     /**
-     * The database path. 
+     * The database path.
      */
     protected String databasePath;
     /**
@@ -110,17 +110,22 @@ public abstract class AbstractSpatialTable implements Serializable {
     protected String mapType;
 
     /**
+     * If true, then the table is a view.
+     */
+    protected boolean isView = false;
+
+    /**
      * Constructor.
-     * 
+     *
      * @param databasePath the db path.
-     * @param tableName a name for the table.
-     * @param mapType the map type.
-     * @param srid srid of the table.
-     * @param minZoom min zoom.
-     * @param maxZoom max zoom.
-     * @param centerX center x.
-     * @param centerY center y.
-     * @param bounds the bounds as [w,s,e,n]
+     * @param tableName    a name for the table.
+     * @param mapType      the map type.
+     * @param srid         srid of the table.
+     * @param minZoom      min zoom.
+     * @param maxZoom      max zoom.
+     * @param centerX      center x.
+     * @param centerY      center y.
+     * @param bounds       the bounds as [w,s,e,n]
      */
     public AbstractSpatialTable(String databasePath, String tableName, String mapType, String srid, int minZoom, int maxZoom,
                                 double centerX, double centerY, double[] bounds) {
@@ -143,7 +148,7 @@ public abstract class AbstractSpatialTable implements Serializable {
 
     /**
      * Return the absolute path of the database.
-     *
+     * <p/>
      * <p>default: file name with path and extention
      * <p>mbtiles : will be a '.mbtiles' sqlite-file-name
      * <p>map : will be a mapforge '.map' file-name
@@ -165,7 +170,7 @@ public abstract class AbstractSpatialTable implements Serializable {
 
     /**
      * Getter for the table's srid.
-     * 
+     *
      * @return the table srid.
      */
     public String getSrid() {
@@ -192,7 +197,7 @@ public abstract class AbstractSpatialTable implements Serializable {
 
     /**
      * Getter for the table name.
-     * 
+     *
      * @return the name of the {@link AbstractSpatialTable}.
      */
     public String getTableName() {
@@ -201,7 +206,7 @@ public abstract class AbstractSpatialTable implements Serializable {
 
     /**
      * Return type of map/file
-     *
+     * <p/>
      * <p>raster: can be different: mbtiles,db,sqlite,gpkg
      * <p>mbtiles : mbtiles
      * <p>map : map
@@ -247,10 +252,10 @@ public abstract class AbstractSpatialTable implements Serializable {
     }
 
     /**
-      * Return Max Zoom.
-      *
-      * @return integer maxzoom.
-      */
+     * Return Max Zoom.
+     *
+     * @return integer maxzoom.
+     */
     public int getMaxZoom() {
         return maxZoom;
     }
@@ -258,7 +263,7 @@ public abstract class AbstractSpatialTable implements Serializable {
     /**
      * Retrieve Zoom level
      *
-    * @return defaultZoom
+     * @return defaultZoom
      */
     public int getDefaultZoom() {
         return defaultZoom;
@@ -269,7 +274,7 @@ public abstract class AbstractSpatialTable implements Serializable {
      *
      * @param defaultZoom desired Zoom level
      */
-    public void setDefaultZoom( int defaultZoom ) {
+    public void setDefaultZoom(int defaultZoom) {
         this.defaultZoom = defaultZoom;
     }
 
@@ -284,7 +289,7 @@ public abstract class AbstractSpatialTable implements Serializable {
 
     /**
      * Return West X Value [Longitude]
-     *
+     * <p/>
      * <p>default :  -180.0 [if not otherwise set]
      * <p>mbtiles : taken from 1st value of metadata 'bounds'
      *
@@ -295,68 +300,68 @@ public abstract class AbstractSpatialTable implements Serializable {
     }
 
     /**
-      * Return South Y Value [Latitude]
-      *
-      * <p>default :  -85.05113 [if not otherwise set]
-      * <p>mbtiles : taken from 2nd value of metadata 'bounds'
-      *
-      * @return double of South Y Value [Latitude]
-      */
+     * Return South Y Value [Latitude]
+     * <p/>
+     * <p>default :  -85.05113 [if not otherwise set]
+     * <p>mbtiles : taken from 2nd value of metadata 'bounds'
+     *
+     * @return double of South Y Value [Latitude]
+     */
     public double getMinLatitude() {
         return boundsSouth;
     }
 
     /**
-      * Return East X Value [Longitude]
-      *
-      * <p>default :  180.0 [if not otherwise set]
-      * <p>mbtiles : taken from 3th value of metadata 'bounds'
-      *
-      * @return double of East X Value [Longitude]
-      */
+     * Return East X Value [Longitude]
+     * <p/>
+     * <p>default :  180.0 [if not otherwise set]
+     * <p>mbtiles : taken from 3th value of metadata 'bounds'
+     *
+     * @return double of East X Value [Longitude]
+     */
     public double getMaxLongitude() {
         return boundsEast;
     }
 
     /**
-      * Return North Y Value [Latitude]
-      *
-      * <p>default :  85.05113 [if not otherwise set]
-      * <p>mbtiles : taken from 4th value of metadata 'bounds'
-      *
-      * @return double of North Y Value [Latitude]
-      */
+     * Return North Y Value [Latitude]
+     * <p/>
+     * <p>default :  85.05113 [if not otherwise set]
+     * <p>mbtiles : taken from 4th value of metadata 'bounds'
+     *
+     * @return double of North Y Value [Latitude]
+     */
     public double getMaxLatitude() {
         return boundsNorth;
     }
 
     /**
-      * Return Center X Value [Longitude]
-      *
-      * <p>default : center of bounds
-      * <p>mbtiles : taken from 1st value of metadata 'center'
-      *
-      * @return double of X Value [Longitude]
-      */
+     * Return Center X Value [Longitude]
+     * <p/>
+     * <p>default : center of bounds
+     * <p>mbtiles : taken from 1st value of metadata 'center'
+     *
+     * @return double of X Value [Longitude]
+     */
     public double getCenterX() {
         return centerX;
     }
 
     /**
-      * Return Center Y Value [Latitude]
-      *
-      * <p>default : center of bounds
-      * <p>mbtiles : taken from 2nd value of metadata 'center'
-      *
-      * @return double of Y Value [Latitude]
-      */
+     * Return Center Y Value [Latitude]
+     * <p/>
+     * <p>default : center of bounds
+     * <p>mbtiles : taken from 2nd value of metadata 'center'
+     *
+     * @return double of Y Value [Latitude]
+     */
     public double getCenterY() {
         return centerY;
     }
 
     /**
      * Get table bounds.
-     * 
+     *
      * @return the table bounds as [n, s, e, w].
      */
     public float[] getTableBounds() {
@@ -369,7 +374,7 @@ public abstract class AbstractSpatialTable implements Serializable {
 
     /**
      * Get table envelope.
-     * 
+     *
      * @return the {@link Envelope}.
      */
     public Envelope getTableEnvelope() {
@@ -382,11 +387,11 @@ public abstract class AbstractSpatialTable implements Serializable {
 
     /**
      * Check the supplied bounds against the current table bounds.
-     * 
+     *
      * @param boundsCoordinates as wsg84 [w,s,e,n]
      * @return <code>true</code> if the given bounds are inside the bounds the current table.
      */
-    public boolean checkBounds( double[] boundsCoordinates ) {
+    public boolean checkBounds(double[] boundsCoordinates) {
         if ((boundsCoordinates[0] >= boundsWest) && (boundsCoordinates[1] >= this.boundsSouth)
                 && (boundsCoordinates[2] <= boundsEast) && (boundsCoordinates[3] <= this.boundsNorth)) {
             return true;
@@ -396,7 +401,7 @@ public abstract class AbstractSpatialTable implements Serializable {
 
     /**
      * Return String of bounds [wms-format]
-     *
+     * <p/>
      * <p>x_min,y_min,x_max,y_max
      *
      * @return bounds formatted using wms format [w,s,e,n]
@@ -407,7 +412,7 @@ public abstract class AbstractSpatialTable implements Serializable {
 
     /**
      * Return String of Map-Center with default Zoom
-     *
+     * <p/>
      * <p>x_position,y_position,default_zoom
      *
      * @return center formatted using mbtiles format
@@ -420,4 +425,18 @@ public abstract class AbstractSpatialTable implements Serializable {
      * @return true if the table is editable.
      */
     public abstract boolean isEditable();
+
+    /**
+     * 'SpatialTable' = false [SpatialVectorTable]
+     * 'RasterLite2' = false [SpatialRasterTable]
+     * 'GeoPackage_features' = false [SpatialVectorTable]
+     * 'GeoPackage_tiles' = false [SpatialRasterTable]
+     * 'SpatialView' = true [SpatialVectorTable]
+     *
+     * @return true if this is a SpatialView
+     */
+    public boolean isView(){
+        return isView;
+    }
+
 }

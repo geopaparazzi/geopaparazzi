@@ -35,6 +35,7 @@ import eu.geopaparazzi.library.GPApplication;
 import eu.geopaparazzi.library.database.GPLog;
 import eu.geopaparazzi.library.util.ColorUtilities;
 import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.spatialite.database.spatial.core.enums.TableTypes;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.AbstractSpatialTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialRasterTable;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
@@ -672,7 +673,6 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
      * - rasterTableList or vectorTableList will be created if == null
      * <br>- name of Field
      * <br>- type of field as defined in Database
-     *
      */
     private void collectVectorTables() throws Exception {
         String vector_key = ""; // term used when building the sql, used as map.key
@@ -694,7 +694,7 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
             if (sa_string.length == 5) {
                 String table_name = sa_string[0];
                 String geometry_column = sa_string[1];
-                String s_layer_type = sa_string[2];
+                String layerType = sa_string[2];
                 String s_ROWID_PK = sa_string[3];
                 s_view_read_only = sa_string[4];
                 sa_string = vector_value.split(";");
@@ -724,21 +724,21 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
                             centerCoordinate[1] = boundsCoordinates[1] + (boundsCoordinates[3] - boundsCoordinates[1]) / 2;
                         }
                         checkAndAdaptDatabaseBounds(boundsCoordinates, null);
-                        if (s_layer_type.equals("RasterLite2")) {
+                        if (layerType.equals("RasterLite2")) {
                             // s_ROWID_PK == title [Berlin Straube Postgrenzen] - needed
                             // s_view_read_only == abstract [1890 - 1:17777] - needed
                             // s_geometry_type == pixel_type [RGB] - not needed
                             // s_coord_dimension == tile_width - maybe usefull
                             // geometry_column == compression [LOSSY_WEBP] - not needed
                             // s_row_count_enabled == num_bands [3] - not needed
-                            int i_tile_width = Integer.parseInt(s_coord_dimension);
-                            double horz_resolution = Double.parseDouble(s_spatial_index_enabled);
-                            int i_num_bands = Integer.parseInt(s_row_count_enabled);
+                            //                            int i_tile_width = Integer.parseInt(s_coord_dimension);
+                            //                            double horz_resolution = Double.parseDouble(s_spatial_index_enabled);
+                            //                            int i_num_bands = Integer.parseInt(s_row_count_enabled);
                             // TODO in next version add RasterTable
                             // berlin_postgrenzen.1890
                             SpatialRasterTable table = new SpatialRasterTable(getDatabasePath(), table_name, s_srid, 0, 22,
                                     centerCoordinate[0], centerCoordinate[1], null, boundsCoordinates);
-                            table.setMapType(s_layer_type);
+                            table.setMapType(layerType);
                             table.setTitle(s_ROWID_PK);
                             table.setDescription(s_view_read_only);
                             // prevent a possible double loading
@@ -746,9 +746,7 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
                                 rasterTableList = new ArrayList<SpatialRasterTable>();
                             rasterTableList.add(table);
                         }
-                        if ((s_layer_type.equals("AbstractSpatialTable")) || (s_layer_type.equals("SpatialView"))) { // AbstractSpatialTable
-                            // /
-                            // SpatialView
+                        if ((layerType.equals(TableTypes.SPATIALTABLE.getDescription())) || (layerType.equals(TableTypes.SPATIALVIEW.getDescription()))) {
                             i_view_read_only = Integer.parseInt(s_view_read_only);
                             i_geometry_type = Integer.parseInt(s_geometry_type);
                             GeometryType geometry_type = GeometryType.forValue(i_geometry_type);
@@ -762,7 +760,7 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
                             // vector data
                             if (i_spatial_index_enabled == 1) {
                                 SpatialVectorTable table = new SpatialVectorTable(getDatabasePath(), table_name, geometry_column,
-                                        i_geometry_type, s_srid, centerCoordinate, boundsCoordinates, s_layer_type);
+                                        i_geometry_type, s_srid, centerCoordinate, boundsCoordinates, layerType);
                                 // compleate list of fields of
                                 // this table
                                 fields_list = DaoSpatialite.collectTableFields(dbJava, table_name);

@@ -33,6 +33,7 @@ import eu.geopaparazzi.library.util.DataType;
 import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
 import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
+import eu.geopaparazzi.spatialite.database.spatial.core.enums.TableTypes;
 import eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteUtilities;
 import eu.geopaparazzi.spatialite.database.spatial.util.Style;
 
@@ -100,6 +101,10 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
         this.geometryColumn = geometryColumn;
         this.geomType = geomType;
         this.geometryTypeDescription = geometryTypeDescription;
+
+        if (this.geometryTypeDescription.equals(TableTypes.SPATIALVIEW.getDescription())) {
+            isView = true;
+        }
 
         createUniqueNames();
 
@@ -472,4 +477,5 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
     public boolean isEditable() {
         return view_read_only < 0;
     }
+
 }

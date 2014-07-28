@@ -115,7 +115,7 @@ public class DataListActivity extends ListActivity implements View.OnClickListen
 
         final List<SpatialVectorTable> filteredTables = new ArrayList<SpatialVectorTable>();
         for (SpatialVectorTable spatialTable : spatialTables) {
-            boolean isView = !spatialTable.isEditable(); // TODO this needs to be made better
+            boolean isView = spatialTable.isView();
 
             boolean doAdd = false;
             if (showTables && !isView) {
