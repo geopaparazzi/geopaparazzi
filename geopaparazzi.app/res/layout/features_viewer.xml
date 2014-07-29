@@ -50,7 +50,7 @@
         android:layout_alignParentRight="true"
         android:layout_below="@+id/databaseNameView"
         android:background="@color/main_decorations"
-        android:orientation="horizontal"/>
+        android:orientation="horizontal" />
 
     <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/featurePager"
@@ -75,7 +75,20 @@
             android:background="@drawable/button_background_drawable"
             android:onClick="onSave"
             android:padding="@dimen/button_indent"
-            android:text="save"
+            android:text="@string/save"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="@color/main_text_color" />
+
+        <Button
+            android:id="@+id/gotoButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/button_indent"
+            android:layout_weight="1"
+            android:background="@drawable/button_background_drawable"
+            android:onClick="onGotoFeature"
+            android:padding="@dimen/button_indent"
+            android:text="@string/goto_feature"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/main_text_color" />
 
@@ -88,9 +101,10 @@
             android:background="@drawable/button_background_drawable"
             android:onClick="onCancel"
             android:padding="@dimen/button_indent"
-            android:text="cancel"
+            android:text="@string/cancel"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/main_text_color" />
+
     </LinearLayout>
 
 

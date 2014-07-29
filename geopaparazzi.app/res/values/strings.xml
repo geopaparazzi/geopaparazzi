@@ -234,4 +234,7 @@
     <string name="name">name</string>
     <string name="bounds">bounds</string>
     <string name="maps_loading_not_finished_yet">Maps loading has not finished yet. Please wait a few moments and try again.</string>
+    <string name="save">save</string>
+    <string name="goto_feature">go to</string>
+    <string name="cancel">cancel</string>
 </resources>

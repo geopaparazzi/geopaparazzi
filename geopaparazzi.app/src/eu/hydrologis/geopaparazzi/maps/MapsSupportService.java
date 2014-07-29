@@ -21,16 +21,18 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
+import eu.geopaparazzi.library.util.LibraryConstants;
+
 /**
  * A service to support the {@link MapsActivity}.
- * 
- * <p>
+ * <p/>
+ * <p/>
  * use this to start and trigger a service</br>
  * <code>Intent i= new Intent(context, MapsSupportService.class)</code>;</br>
  * add data to the intent</br>
  * <code>i.putExtra("KEY1", "Value to be used by the service");</br>
- * context.startService(i);</code> 
- * 
+ * context.startService(i);</code>
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 @SuppressWarnings("nls")
@@ -55,8 +57,13 @@ public class MapsSupportService extends Service {
      */
     public static final String REREAD_MAP_REQUEST = "REREAD_MAP_REQUEST";
 
+    /**
+     * Intent key to use for center on position requests.
+     */
+    public static final String CENTER_ON_POSITION_REQUEST = "CENTER_ON_POSITION_REQUEST";
+
     @Override
-    public int onStartCommand( Intent intent, int flags, int startId ) {
+    public int onStartCommand(Intent intent, int flags, int startId) {
 
         // GPLog.addLogEntry(this, "onStartCommand called with intent: " + intent);
 
@@ -70,10 +77,17 @@ public class MapsSupportService extends Service {
                 Intent sendIntent = new Intent(MAPSSUPPORT_SERVICE_BROADCAST_NOTIFICATION);
                 sendIntent.putExtra(REDRAW_MAP_REQUEST, true);
                 sendBroadcast(sendIntent);
-            }
-            if (intent.hasExtra(REREAD_MAP_REQUEST)) {
+            } else if (intent.hasExtra(REREAD_MAP_REQUEST)) {
                 Intent sendIntent = new Intent(MAPSSUPPORT_SERVICE_BROADCAST_NOTIFICATION);
                 sendIntent.putExtra(REREAD_MAP_REQUEST, true);
+                sendBroadcast(sendIntent);
+            } else if (intent.hasExtra(CENTER_ON_POSITION_REQUEST)) {
+                Intent sendIntent = new Intent(MAPSSUPPORT_SERVICE_BROADCAST_NOTIFICATION);
+                sendIntent.putExtra(CENTER_ON_POSITION_REQUEST, true);
+                double lon = intent.getDoubleExtra(LibraryConstants.LONGITUDE, 0.0);
+                double lat = intent.getDoubleExtra(LibraryConstants.LATITUDE, 0.0);
+                sendIntent.putExtra(LibraryConstants.LONGITUDE, lon);
+                sendIntent.putExtra(LibraryConstants.LATITUDE, lat);
                 sendBroadcast(sendIntent);
             }
         }
@@ -110,7 +124,7 @@ public class MapsSupportService extends Service {
     // }
     //
     @Override
-    public IBinder onBind( Intent intent ) {
+    public IBinder onBind(Intent intent) {
         return null;
     }
     //

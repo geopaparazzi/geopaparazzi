@@ -309,6 +309,7 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
         // nothing
     }
 
+
     public void onToolDraw( Canvas canvas ) {
         try {
             if (selectedFeatures.size() > 0) {
@@ -357,5 +358,18 @@ public class OnSelectionToolGroup implements ToolGroup, OnClickListener, OnTouch
 
     public void onGpsUpdate( double lon, double lat ) {
         // ignore
+    }
+
+    /**
+     * Forces a feature selection.
+     *
+     * <p>Previous selections are cleared and a redrawing is triggered.
+     *
+     * @param features the new features to select.
+     */
+    public void setSelectedFeatures(List<Feature> features) {
+        selectedFeatures.clear();
+        selectedFeatures.addAll(features);
+        EditManager.INSTANCE.invalidateEditingView();
     }
 }
