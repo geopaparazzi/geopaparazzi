@@ -188,7 +188,7 @@ public class EditableLayersListActivity extends ListActivity implements OnTouchL
                         }
                     }
 
-                    descriptionView.setText(item.getGeomName() + ": " + item.getGeometryTypeDescription() + "\n" + "database: "
+                    descriptionView.setText(item.getGeomName() + ": " + item.getLayerTypeDescription() + "\n" + "database: "
                             + dbName);
 
                 } catch (jsqlite.Exception e1) {

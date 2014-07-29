@@ -584,7 +584,7 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
             if (sa_string.length == 5) {
                 String table_name = sa_string[0]; // fromosm_tiles / geonames
                 String geometry_column = sa_string[1]; // tile_data / geometry
-                String s_layer_type = sa_string[2]; // GeoPackage_tiles / GeoPackage_features
+                String layerType = sa_string[2]; // GeoPackage_tiles / GeoPackage_features
                 String s_identifier = sa_string[3]; // short description
                 String s_description = sa_string[4]; // long description
                 sa_string = vector_value.split(";");
@@ -623,7 +623,7 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
                             int i_max_zoom = Integer.parseInt(s_coord_dimension);
                             SpatialRasterTable table = new SpatialRasterTable(getDatabasePath(), "", s_srid, i_min_zoom,
                                     i_max_zoom, centerCoordinate[0], centerCoordinate[1], null, boundsCoordinates);
-                            table.setMapType(s_layer_type);
+                            table.setMapType(layerType);
                             // table.setTableName(s_table_name);
                             table.setColumnName(geometry_column);
                             // setDescription(s_table_name);
@@ -650,7 +650,7 @@ public class SpatialiteDatabaseHandler extends AbstractSpatialDatabaseHandler {
                                 if (i_spatial_index_enabled == 1) {
                                     SpatialVectorTable table = new SpatialVectorTable(getDatabasePath(), table_name,
                                             geometry_column, i_geometry_type, s_srid, centerCoordinate, boundsCoordinates,
-                                            s_layer_type);
+                                            layerType);
                                     // compleate list of fields of
                                     // this table
                                     fields_list = DaoSpatialite.collectTableFields(dbJava, table_name);

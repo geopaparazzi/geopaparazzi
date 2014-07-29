@@ -204,7 +204,7 @@
 //
 //        String dbName = item.getFileName();
 //
-//        descriptionView.setText(item.getGeomName() + ": " + item.getGeometryTypeDescription() + ", db: " + dbName);
+//        descriptionView.setText(item.getGeomName() + ": " + item.getLayerTypeDescription() + ", db: " + dbName);
 //
 //        visibleView.setChecked(item.getStyle().enabled != 0);
 //        visibleView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){

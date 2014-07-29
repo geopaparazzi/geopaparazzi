@@ -28,7 +28,6 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -199,7 +198,7 @@ public class CopyToLayersListActivity extends ListActivity implements OnTouchLis
                             }
                         }
 
-                        descriptionView.setText(item.getGeomName() + ": " + item.getGeometryTypeDescription() + "\n" + "database: "
+                        descriptionView.setText(item.getGeomName() + ": " + item.getLayerTypeDescription() + "\n" + "database: "
                                 + dbName);
 
                     } catch (jsqlite.Exception e1) {

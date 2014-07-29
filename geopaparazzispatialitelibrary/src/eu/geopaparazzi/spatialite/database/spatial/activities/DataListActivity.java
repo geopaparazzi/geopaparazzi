@@ -47,7 +47,6 @@ import eu.geopaparazzi.library.util.ResourcesManager;
 import eu.geopaparazzi.spatialite.R;
 import eu.geopaparazzi.spatialite.database.spatial.SpatialDatabasesManager;
 import eu.geopaparazzi.spatialite.database.spatial.core.databasehandlers.AbstractSpatialDatabaseHandler;
-import eu.geopaparazzi.spatialite.database.spatial.core.enums.SpatialDataType;
 import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.util.comparators.OrderComparator;
 import eu.geopaparazzi.spatialite.database.spatial.util.SpatialiteLibraryConstants;
@@ -265,7 +264,7 @@ public class DataListActivity extends ListActivity implements View.OnClickListen
                     }
                 }
 
-                descriptionView.setText(item.getGeomName() + ": " + item.getGeometryTypeDescription() + ", db: " + dbName);
+                descriptionView.setText(item.getGeomName() + ": " + item.getLayerTypeDescription() + ", db: " + dbName);
 
                 visibleView.setChecked(item.getStyle().enabled != 0);
                 visibleView.setOnCheckedChangeListener(new OnCheckedChangeListener() {

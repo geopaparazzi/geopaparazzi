@@ -52,7 +52,7 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
     private final int geomType;
 
     private Style style;
-    private String geometryTypeDescription = "geometry";
+    private String layerTypeDescription = "geometry";
 
     private boolean checkDone = false;
     private boolean isPolygon = false;
@@ -92,17 +92,17 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
      * @param srid                    the srid code.
      * @param center                  the wgs84 center coordinates.
      * @param bounds                  the table bounds in wgs84.
-     * @param geometryTypeDescription the geometry description.
+     * @param layerTypeDescription    the layer type description.
      */
     public SpatialVectorTable(String databasePath, String tableName, String geometryColumn, int geomType, String srid,
-                              double[] center, double[] bounds, String geometryTypeDescription) {
+                              double[] center, double[] bounds, String layerTypeDescription) {
         super(databasePath, tableName, SpatialDataType.SQLITE.getTypeName(), srid, 0, 22, center[0], center[1], bounds);
 
         this.geometryColumn = geometryColumn;
         this.geomType = geomType;
-        this.geometryTypeDescription = geometryTypeDescription;
+        this.layerTypeDescription = layerTypeDescription;
 
-        if (this.geometryTypeDescription.equals(TableTypes.SPATIALVIEW.getDescription())) {
+        if (this.layerTypeDescription.equals(TableTypes.SPATIALVIEW.getDescription())) {
             isView = true;
         }
 
@@ -148,13 +148,12 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
     }
 
     /**
-     * Return geometryTypeDescription
-     * SpatialView or AbstractSpatialTable
+     * Return layerTypeDescription
      *
-     * @return the geometryTypeDescription
+     * @return the layerTypeDescription
      */
-    public String getGeometryTypeDescription() {
-        return this.geometryTypeDescription;
+    public String getLayerTypeDescription() {
+        return this.layerTypeDescription;
     }
 
     /**
@@ -461,7 +460,7 @@ public class SpatialVectorTable extends AbstractSpatialTable implements Serializ
                 throw new IllegalArgumentException("No geom type for: " + TYPE + " isGeometryCollection[" + isGeometryCollection
                         + "]");
         }
-        geometryTypeDescription = TYPE.getDescription();
+        layerTypeDescription = TYPE.getDescription();
         checkDone = true;
     }
 

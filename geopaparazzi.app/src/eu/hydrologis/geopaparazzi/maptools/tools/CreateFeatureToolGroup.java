@@ -59,8 +59,10 @@ import eu.geopaparazzi.library.features.ToolGroup;
 import eu.geopaparazzi.library.util.LibraryConstants;
 import eu.geopaparazzi.library.util.PositionUtilities;
 import eu.geopaparazzi.library.util.Utilities;
+import eu.geopaparazzi.spatialite.database.spatial.core.enums.GeometryType;
 import eu.geopaparazzi.spatialite.database.spatial.core.layers.SpatialVectorTableLayer;
 import eu.geopaparazzi.spatialite.database.spatial.core.daos.DaoSpatialite;
+import eu.geopaparazzi.spatialite.database.spatial.core.tables.SpatialVectorTable;
 import eu.geopaparazzi.spatialite.database.spatial.util.JtsUtilities;
 import eu.hydrologis.geopaparazzi.GeopaparazziApplication;
 import eu.hydrologis.geopaparazzi.R;
@@ -73,7 +75,7 @@ import static java.lang.Math.round;
 
 /**
  * The group of tools active when a selection has been done.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTouchListener {
@@ -116,10 +118,10 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
 
     /**
      * Constructor.
-     * 
+     *
      * @param mapView the map view.
      */
-    public CreateFeatureToolGroup( MapView mapView ) {
+    public CreateFeatureToolGroup(MapView mapView) {
         this.mapView = mapView;
 
         EditingView editingView = EditManager.INSTANCE.getEditingView();
@@ -212,7 +214,7 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
         addVertexByTapActive = false;
     }
 
-    public void onClick( View v ) {
+    public void onClick(View v) {
         if (v == addVertexButton) {
 
             final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(GeopaparazziApplication
@@ -237,7 +239,7 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
                 } else {
                     try {
                         Geometry polygonSplit = FeatureUtilities.invalidPolygonSplit(polygonGeometry);
-                        for( int i = 0; i < polygonSplit.getNumGeometries(); i++ ) {
+                        for (int i = 0; i < polygonSplit.getNumGeometries(); i++) {
                             geomsList.add(polygonSplit.getGeometryN(i));
                         }
                     } catch (Exception e) {
@@ -252,7 +254,7 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
                 if (editLayer instanceof SpatialVectorTableLayer) {
                     SpatialVectorTableLayer spatialVectorTableLayer = (SpatialVectorTableLayer) editLayer;
                     try {
-                        for( Geometry geometry : geomsList ) {
+                        for (Geometry geometry : geomsList) {
                             DaoSpatialite.addNewFeatureByGeometry(geometry, LibraryConstants.SRID_WGS84_4326,
                                     spatialVectorTableLayer.getSpatialVectorTable());
                         }
@@ -290,7 +292,7 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
         handleToolIcons(v);
     }
 
-    private boolean addVertex( Context context, Coordinate coordinate ) {
+    private boolean addVertex(Context context, Coordinate coordinate) {
         coordinatesList.add(coordinate);
         int coordinatesCount = coordinatesList.size();
         if (coordinatesCount == 0) {
@@ -300,19 +302,30 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
         return false;
     }
 
-    private void reCreateGeometry( Context context, int coordinatesCount ) {
+    private void reCreateGeometry(Context context, int coordinatesCount) {
         polygonGeometry = null;
         if (coordinatesCount > 2) {
             polygonGeometry = JtsUtilities.createPolygon(coordinatesList);
             if (!polygonGeometry.isValid() && firstInvalid) {
-                Utilities.messageDialog(context, "The added vertex has created an invalid feature!", null);
+                ILayer editLayer = EditManager.INSTANCE.getEditLayer();
+                if (editLayer instanceof SpatialVectorTableLayer) {
+                    SpatialVectorTableLayer spatialVectorTableLayer = (SpatialVectorTableLayer) editLayer;
+                    SpatialVectorTable spatialVectorTable = spatialVectorTableLayer.getSpatialVectorTable();
+                    int geomType = spatialVectorTable.getGeomType();
+                    GeometryType geometryType = GeometryType.forValue(geomType);
+                    if (!geometryType.isGeometryCompatible(polygonGeometry)) {
+                        Utilities.messageDialog(context, "The added vertex has created a selfintersection of the polygon and your layer doesn't support it.", null);
+                    }
+                }
+
+
                 firstInvalid = false;
             }
         }
     }
 
     @SuppressWarnings("deprecation")
-    private void handleToolIcons( View activeToolButton ) {
+    private void handleToolIcons(View activeToolButton) {
         Context context = activeToolButton.getContext();
         if (gpsStreamButton != null)
             if (gpsStreamActive) {
@@ -332,27 +345,27 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
 
     }
 
-    public boolean onTouch( View v, MotionEvent event ) {
-        switch( event.getAction() ) {
-        case MotionEvent.ACTION_DOWN: {
-            v.getBackground().setColorFilter(buttonSelectionColor, Mode.SRC_ATOP);
-            v.invalidate();
-            break;
-        }
-        case MotionEvent.ACTION_UP: {
-            v.getBackground().clearColorFilter();
-            v.invalidate();
-            break;
-        }
+    public boolean onTouch(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN: {
+                v.getBackground().setColorFilter(buttonSelectionColor, Mode.SRC_ATOP);
+                v.invalidate();
+                break;
+            }
+            case MotionEvent.ACTION_UP: {
+                v.getBackground().clearColorFilter();
+                v.invalidate();
+                break;
+            }
         }
         return false;
     }
 
-    public void onToolFinished( Tool tool ) {
+    public void onToolFinished(Tool tool) {
         // nothing
     }
 
-    public void onToolDraw( Canvas canvas ) {
+    public void onToolDraw(Canvas canvas) {
         try {
 
             Projection projection = editingViewProjection;
@@ -392,7 +405,7 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
                 canvas.drawLine(vertexPoint.x, vertexPoint.y, vertexPoint2.x, vertexPoint2.y, createdGeometryPaintStroke);
             }
 
-            for( Coordinate vertexCoordinate : coordinatesList ) {
+            for (Coordinate vertexCoordinate : coordinatesList) {
                 pointTransformer.transform(vertexCoordinate, vertexPoint);
                 canvas.drawCircle(vertexPoint.x, vertexPoint.y, 10f, createdGeometryPaintHaloStroke);
                 canvas.drawCircle(vertexPoint.x, vertexPoint.y, 10f, createdGeometryPaintStroke);
@@ -403,7 +416,7 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
         }
     }
 
-    public boolean onToolTouchEvent( MotionEvent event ) {
+    public boolean onToolTouchEvent(MotionEvent event) {
         if (addVertexByTapActive) {
             if (mapView == null) {
                 return false;
@@ -430,7 +443,7 @@ public class CreateFeatureToolGroup implements ToolGroup, OnClickListener, OnTou
         return false;
     }
 
-    public void onGpsUpdate( double lon, double lat ) {
+    public void onGpsUpdate(double lon, double lat) {
         if (gpsStreamActive) {
             Coordinate gpsCoordinate = new Coordinate(lon, lat);
             addVertex(mapView.getContext(), gpsCoordinate);
