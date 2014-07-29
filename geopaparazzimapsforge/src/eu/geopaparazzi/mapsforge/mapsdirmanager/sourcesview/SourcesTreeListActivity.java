@@ -112,9 +112,9 @@ public class SourcesTreeListActivity extends Activity implements OnClickListener
     }
 
     private void refreshData() throws Exception {
-        LinkedHashMap<String, List<String[]>> folder2TablesMap = MapsDirManager.getInstance().getFolder2TablesMap();
+        LinkedHashMap<String, List<String[]>> fodler2TablesMap = MapsDirManager.getInstance().getFolder2TablesMap();
         final LinkedHashMap<String, List<String[]>> newMap = new LinkedHashMap<String, List<String[]>>();
-        for( Entry<String, List<String[]>> item : folder2TablesMap.entrySet() ) {
+        for( Entry<String, List<String[]>> item : fodler2TablesMap.entrySet() ) {
             String key = item.getKey();
             ArrayList<String[]> newValues = new ArrayList<String[]>();
 
@@ -133,13 +133,13 @@ public class SourcesTreeListActivity extends Activity implements OnClickListener
 
                 if (textToFilter.length() > 0) {
                     // filter text
-                    String filterString = textToFilter.toLowerCase();
                     String valueString = value[0].toLowerCase();
+                    String filterString = textToFilter.toLowerCase();
                     if (!valueString.contains(filterString)) {
-                        valueString = value[2].toLowerCase();
-                        if (!valueString.contains(filterString)) {
-                            doAdd = false;
-                        }
+                      valueString = value[2].toLowerCase();
+                     if (!valueString.contains(filterString)) {
+                        doAdd = false;
+                     }
                     }
                 }
                 if (doAdd)

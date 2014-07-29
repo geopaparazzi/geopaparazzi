@@ -234,4 +234,10 @@
     <string name="name">name</string>
     <string name="bounds">bounds</string>
     <string name="maps_loading_not_finished_yet">Maps loading has not finished yet. Please wait a few moments and try again.</string>
+    <string name="storage_settings">Storage Preferences</string>
+    <string name="use_custom_maps_folder_summary">Change the folder from which basemaps and spatialite data are accessed.</string>
+    <string name="custom_maps_folder">Custom maps folder</string>
+    <string name="set_maps_folder_manually">Set the maps folder manually (text here has precedence over combobox)</string>
+    <string name="choose_from_suggested_folders">or choose from a filtered list of folders containing the word maps</string>
+    <string name="restart_after_setting_maps_folder">You must restart Geopaparazzi if you change the maps folder!</string>
 </resources>

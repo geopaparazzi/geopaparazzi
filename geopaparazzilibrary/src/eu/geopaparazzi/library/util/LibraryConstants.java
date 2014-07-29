@@ -27,6 +27,11 @@ import java.text.DecimalFormat;
 public interface LibraryConstants {
 
     /**
+     * The value for the mapsdir-directory. 
+     */
+    public final String DEFAULT_MAPSDIR = "maps"; //$NON-NLS-1$
+
+    /**
      * The epsg for lat/long wgs84. 
      */
     public final String SRID_WGS84_4326 = "4326"; //$NON-NLS-1$
@@ -174,6 +179,11 @@ public interface LibraryConstants {
      * Key used to store and retrieve the base folder of the application.
      */
     public static final String PREFS_KEY_BASEFOLDER = "PREFS_KEY_BASEFOLDER"; //$NON-NLS-1$
+
+    /**
+     * Key used to store and retrieve a custom maps folder name.
+     */
+    public static final String PREFS_KEY_CUSTOM_MAPSFOLDER = "PREFS_KEY_CUSTOM_MAPSFOLDER"; //$NON-NLS-1$
 
     /**
      * Key used to store and retrieve the gps logging interval to use.

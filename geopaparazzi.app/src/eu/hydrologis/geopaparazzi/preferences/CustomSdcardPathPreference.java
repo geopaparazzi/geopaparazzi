@@ -32,6 +32,8 @@ import android.widget.TextView;
 import java.util.List;
 
 import eu.geopaparazzi.library.util.FileUtilities;
+import eu.geopaparazzi.library.util.ResourcesManager;
+import eu.geopaparazzi.library.database.GPLog;
 import eu.hydrologis.geopaparazzi.R;
 
 /**
@@ -53,12 +55,19 @@ public class CustomSdcardPathPreference extends DialogPreference {
     public CustomSdcardPathPreference( Context ctxt, AttributeSet attrs ) {
         super(ctxt, attrs);
         this.context = ctxt;
+        try {
+         // mj10777: set start value with existing value
+         customPath=ResourcesManager.getInstance(this.context).getSdcardDir().getAbsolutePath();
+        }
+        catch (Exception e) {
+         GPLog.error(this, "CustomSdcardPathPreference[invalid getSdcardDir]", e);
+        }
         setPositiveButtonText(ctxt.getString(android.R.string.ok));
         setNegativeButtonText(ctxt.getString(android.R.string.cancel));
     }
 
     @Override
-    protected View onCreateDialogView() {
+    protected View onCreateDialogView() {        
         LinearLayout mainLayout = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.WRAP_CONTENT);
@@ -90,7 +99,8 @@ public class CustomSdcardPathPreference extends DialogPreference {
         mainLayout.addView(guessedPathsSpinner);
 
         guessedSdcardsList = FileUtilities.getPossibleSdcardsList();
-        guessedSdcardsList.add(0, ""); //$NON-NLS-1$
+        // mj10777: why is an empty string needed?
+        // guessedSdcardsList.add(0, ""); //$NON-NLS-1$
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, guessedSdcardsList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
