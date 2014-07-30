@@ -41,10 +41,4 @@ public interface KmlRepresenter {
      */
     public boolean hasImages();
 
-    /**
-     * Getter for the relative image path against the application folder. 
-     * 
-     * @return the image path.
-     */
-    public List<String> getImagePaths();
 }

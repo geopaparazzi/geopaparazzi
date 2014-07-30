@@ -181,7 +181,7 @@ public class NotesListActivity extends ListActivity {
                                 text = text + "\n" + osmUrl;
                                 ShareUtilities.shareText(NotesListActivity.this, SHARE_NOTE_WITH, text);
                             } else {
-                                int type = note.getType();
+                                int type = note.getIsDirty();
                                 String form = note.getForm();
                                 try {
                                     String formText = FormUtilities.formToPlainText(form, false);
@@ -247,7 +247,7 @@ public class NotesListActivity extends ListActivity {
                                 return;
                             }
 
-                            int type = note.getType();
+                            int type = note.getIsDirty();
                             double lat = note.getLat();
                             double lon = note.getLon();
                             String form = note.getForm();

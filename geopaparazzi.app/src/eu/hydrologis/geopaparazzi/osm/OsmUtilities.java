@@ -130,7 +130,7 @@ public class OsmUtilities {
         List<Note> notesList = DaoNotes.getNotesList();
         StringBuilder sb = new StringBuilder();
         for( Note note : notesList ) {
-            if (note.getType() == NoteType.OSM.getTypeNum()) {
+            if (note.getIsDirty() == NoteType.OSM.getTypeNum()) {
                 String form = note.getForm();
                 if (form != null) {
                     sb.append(",\n");

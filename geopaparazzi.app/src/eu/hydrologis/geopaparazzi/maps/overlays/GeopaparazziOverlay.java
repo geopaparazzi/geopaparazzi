@@ -1168,7 +1168,7 @@ public abstract class GeopaparazziOverlay extends Overlay {
                         List<Note> notesInWorldBounds = DaoNotes.getNotesInWorldBounds(n, s, w, e);
                         if (notesInWorldBounds.size() > 0) {
                             Note note = notesInWorldBounds.get(0);
-                            int type = note.getType();
+                            int type = note.getIsDirty();
                             String form = note.getForm();
                             if (form != null && form.length() > 0 && type != NoteType.OSM.getTypeNum()) {
                                 String name = note.getName();

@@ -26,37 +26,66 @@ import eu.geopaparazzi.library.util.Utilities;
 
 /**
  * Represents an image.
- * 
+ *
  * @author Andrea Antonello (www.hydrologis.com)
  */
 public class Image implements INote, KmlRepresenter {
     /**
-     * 
+     *
      */
     public static final String IMAGE_NOTE = "image note";
+    /**
+     * Image name.
+     */
     private String name;
+    /**
+     * Image database id.
+     */
     private final long id;
+
+    /**
+     * Image longitude.
+     */
     private final double lon;
+    /**
+     * Image latitude.
+     */
     private final double lat;
+    /**
+     * Image elevation.
+     */
     private final double altim;
+    /**
+     * Image azimuth.
+     */
     private final double azim;
-    private final String path;
-    private final String ts;
+    /**
+     * Id of the image data.
+     */
+    private final long imageDataId;
+    /**
+     * Connected note id.
+     */
+    private long noteId;
+
+    private final long ts;
 
     /**
      * A wrapper for an image.
-     * 
-     * @param id the image id.
-     * @param name the text of the note.
-     * @param lon lon
-     * @param lat lat
-     * @param altim elevation
-     * @param azim azimuth
-     * @param path image path.
-     * @param ts the timestamp.
+     *
+     * @param id          the image id.
+     * @param name        the text of the note.
+     * @param lon         lon
+     * @param lat         lat
+     * @param altim       elevation
+     * @param azim        azimuth
+     * @param imageDataId image data id.
+     * @param noteId      note id.
+     * @param ts          the timestamp.
      */
-    public Image( long id, String name, double lon, double lat, double altim, double azim, String path, String ts ) {
+    public Image(long id, String name, double lon, double lat, double altim, double azim, long imageDataId, long noteId, long ts) {
         this.id = id;
+        this.noteId = noteId;
         if (name != null) {
             this.name = name;
         } else {
@@ -66,7 +95,7 @@ public class Image implements INote, KmlRepresenter {
         this.lat = lat;
         this.altim = altim;
         this.azim = azim;
-        this.path = path;
+        this.imageDataId = imageDataId;
         this.ts = ts;
     }
 
@@ -83,7 +112,7 @@ public class Image implements INote, KmlRepresenter {
     }
 
     /**
-     * @return teh elevation.
+     * @return the elevation.
      */
     public double getAltim() {
         return altim;
@@ -104,23 +133,26 @@ public class Image implements INote, KmlRepresenter {
     }
 
     /**
-     * @return the image path.
+     * @return the image data id.
      */
-    public String getPath() {
-        return path;
+    public long getImageDataId() {
+        return imageDataId;
+    }
+
+    public long getNoteId() {
+        return noteId;
     }
 
     /**
      * @return the timestamp.
      */
-    public String getTs() {
+    public long getTs() {
         return ts;
     }
 
     @SuppressWarnings("nls")
     public String toKmlString() {
-        File img = new File(path);
-        String imgName = img.getName();
+        String imgName = getName();
 
         String name = Utilities.makeXmlSafe(this.name);
         StringBuilder sB = new StringBuilder();
@@ -151,9 +183,4 @@ public class Image implements INote, KmlRepresenter {
         return true;
     }
 
-    public List<String> getImagePaths() {
-        List<String> imgs = new ArrayList<String>();
-        imgs.add(path);
-        return imgs;
-    }
 }
