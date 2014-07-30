@@ -216,12 +216,11 @@ public class FragmentDetail extends Fragment {
                     } else if (type.equals(TYPE_MAP)) {
                         if (value == null || value.length() <= 0) {
                             File applicationDir = ResourcesManager.getInstance(activity).getApplicationDir();
-                            File mediaDir = ResourcesManager.getInstance(activity).getMediaDir();
                             File tmpImage = new File(applicationDir, LibraryConstants.TMPPNGIMAGENAME);
                             if (tmpImage.exists()) {
                                 Date currentDate = new Date();
                                 String currentDatestring = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.format(currentDate);
-                                File newImageFile = new File(mediaDir, "IMG_" + currentDatestring + ".png"); //$NON-NLS-1$ //$NON-NLS-2$
+                                File newImageFile = new File(applicationDir, "IMG_" + currentDatestring + ".png"); //$NON-NLS-1$ //$NON-NLS-2$
                                 FileUtilities.copyFile(tmpImage, newImageFile);
                                 value = newImageFile.getParentFile().getName() + File.separator + newImageFile.getName();
                             }

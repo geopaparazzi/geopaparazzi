@@ -47,24 +47,31 @@ public class ResourcesManager implements Serializable {
 
     private static final String PATH_MAPS = "maps"; //$NON-NLS-1$
 
-    private static final String PATH_MEDIA = "media"; //$NON-NLS-1$
-
     /**
      * The nomedia file defining folders that should not be searched for media.
      */
     public static final String NO_MEDIA = ".nomedia"; //$NON-NLS-1$
 
+    /**
+     * The support folder for geopap. If not there, it is created.
+     */
     private File applicationDir;
 
+    /**
+     * The database file for geopap.
+     */
     private File databaseFile;
 
-    private File mediaDir;
+    /**
+     * The basemaps folder.
+     */
     private File mapsDir;
-
-    private File exportDir;
 
     private static ResourcesManager resourcesManager;
 
+    /**
+     * The name of the application.
+     */
     private String applicationLabel;
 
     private static boolean useInternalMemory = true;
@@ -83,7 +90,7 @@ public class ResourcesManager implements Serializable {
     /**
      * The getter for the {@link ResourcesManager} singleton.
      * 
-     * <p>This is a singletone but might require to be recreated
+     * <p>This is a singleton but might require to be recreated
      * in every moment of the application. This is due to the fact
      * that when the application looses focus (for example because of
      * an incoming call, and therefore at a random moment, if the memory 
@@ -128,20 +135,20 @@ public class ResourcesManager implements Serializable {
             applicationLabel = packageName.substring(lastDot + 1, packageName.length());
         }
         applicationLabel = applicationLabel.toLowerCase();
-        String databaseName = applicationLabel + ".db"; //$NON-NLS-1$
+        String databaseName = applicationLabel + ".gpap"; //$NON-NLS-1$
         /*
          * take care to create all the folders needed
-         * 
+         *
          * The default structure is:
-         * 
+         *
          * sdcard
          *    |
-         *    |-- applicationname 
-         *    |          | 
-         *    |          |--- applicationname.db 
-         *    |          |--- media  (folder)
-         *    |          |--- export  (folder)
-         *    |          `--- debug.log 
+         *    |-- applicationname.gpap -> main database
+         *    |-- applicationfolder
+         *    |          |
+         *    |          |--- temporary files
+         *    |          `--- tags.json
+         *    |
          *    `-- mapsdir
          */
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(appContext);
@@ -262,15 +269,6 @@ public class ResourcesManager implements Serializable {
         }
         databaseFile = new File(applicationDirPath, databaseName);
 
-        mediaDir = new File(applicationDir, PATH_MEDIA);
-        if (!mediaDir.exists())
-            if (!mediaDir.mkdir()) {
-                String msgFormat = Utilities.format(cantCreateSdcardmsg, mediaDir.getAbsolutePath());
-                throw new IOException(msgFormat);
-            }
-
-        exportDir = applicationDir.getParentFile();
-
         mapsDir = new File(sdcardDir, PATH_MAPS);
         if (!mapsDir.exists())
             if (!mapsDir.mkdir()) {
@@ -345,24 +343,6 @@ public class ResourcesManager implements Serializable {
      */
     public File getDatabaseFile() {
         return databaseFile;
-    }
-
-    /**
-     * Get the default media folder.
-     * 
-     * @return the default media folder.
-     */
-    public File getMediaDir() {
-        return mediaDir;
-    }
-
-    /**
-     * Get the default export folder.
-     * 
-     * @return the default export folder.
-     */
-    public File getExportDir() {
-        return exportDir;
     }
 
     /**

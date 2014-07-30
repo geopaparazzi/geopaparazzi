@@ -159,18 +159,13 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
         String currentDatestring = TimeUtilities.INSTANCE.TIMESTAMPFORMATTER_UTC.format(currentDate);
         String imageName = "SKETCH_" + currentDatestring + ".png";
         String imagePropertiesName = "SKETCH_" + currentDatestring + ".properties";
-        File imageSaveFolder = ResourcesManager.getInstance(this).getMediaDir();
-
-        File imagePropertiesFile = null;
+        File imageSaveFolder = ResourcesManager.getInstance(this).getApplicationDir();
 
         if (imageSavePath == null || imageSavePath.length() == 0) {
             imageFile = new File(imageSaveFolder, imageName);
-            imagePropertiesFile = new File(imageSaveFolder, imagePropertiesName);
         } else {
             imageFile = new File(imageSavePath);
-            String propFileName = FileUtilities.getNameWithoutExtention(imageFile) + ".properties";
             imageSaveFolder = imageFile.getParentFile();
-            imagePropertiesFile = new File(imageSaveFolder, propFileName);
         }
 
         if (!imageSaveFolder.exists()) {
@@ -192,23 +187,6 @@ public class DrawingActivity extends Activity implements View.OnTouchListener {
             if (count++ > 50) {
                 throw new RuntimeException("An error occurred during the saving of the image.");
             }
-        }
-
-        // create props file
-        BufferedWriter bW = null;
-        try {
-            bW = new BufferedWriter(new FileWriter(imagePropertiesFile));
-            bW.write("latitude=");
-            bW.write(String.valueOf(lat));
-            bW.write("\nlongitude=");
-            bW.write(String.valueOf(lon));
-            bW.write("\naltim=");
-            bW.write(String.valueOf(elevation));
-            bW.write("\nutctimestamp=");
-            bW.write(currentDatestring);
-        } finally {
-            if (bW != null)
-                bW.close();
         }
 
         Intent intent = getIntent();
